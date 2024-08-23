@@ -1,0 +1,40 @@
+"use client";
+
+import React from "react";
+
+// Types
+import type { AuthSliderBarProps, AuthSliderContentprops } from "./types";
+
+// Imports
+import clsx from "clsx";
+
+export const AuthSliderBar = React.forwardRef<
+  HTMLDivElement,
+  AuthSliderBarProps
+>(({ active }, ref) => (
+  <div
+    ref={ref}
+    className={clsx("w-1 h-5 rounded-lg", {
+      "opacity-40 bg-brand-secondary": !active,
+      "bg-brand-primary flex-1": active,
+    })}
+  ></div>
+));
+
+AuthSliderBar.displayName = "AuthSliderBar";
+
+export const AuthSliderContent = React.forwardRef<
+  HTMLDivElement,
+  AuthSliderContentprops
+>(({ height, title, children }, ref) => (
+  <div
+    ref={ref}
+    className="p-5 custom-flex-col gap-3 justify-center opacity-0"
+    style={{ height }}
+  >
+    <p className="text-brand-primary text-4xl font-bold capitalize">{title}</p>
+    <p className="text-text-secondary text-base font-normal">{children}</p>
+  </div>
+));
+
+AuthSliderContent.displayName = "AuthSliderContent";
