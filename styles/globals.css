@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Standard css start */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* Root styles */
+:root {
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Custom utilities */
+/* -------------------------------------------------------------- */
+
+.custom-flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-flex-col > * {
+  width: 100%;
+}
+
+/* -------------------------------------------------------------- */
