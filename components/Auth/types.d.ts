@@ -26,3 +26,7 @@ export interface AuthPinFieldProps {
 export interface ProgresBarProps {
   progress: number;
 }
+
+export interface ProgresBarProps {
+  progress: number;
+}
