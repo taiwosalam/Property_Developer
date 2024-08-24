@@ -12,6 +12,8 @@ const config = {
   theme: {
     extend: {
       colors: {
+        background: "#FBFBFB",
+
         brand: {
           1: "#EFF6FF",
           9: "#0033C4",
@@ -25,10 +27,21 @@ const config = {
 
           label: "#5A5D61",
           black: "#232324",
+          disabled: "#A4A7B0",
         },
 
         neutral: {
           2: "#FAFAFA",
+        },
+
+        status: {
+          success: {
+            primary: "#01BA4C",
+          },
+        },
+
+        supporting: {
+          1: "#38BDF8",
         },
       },
       container: {

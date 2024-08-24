@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // Types
 import type { InputProps } from "./types";
@@ -13,17 +13,28 @@ import EyeShow from "@/public/icons/eye-show.svg";
 // Imports
 import clsx from "clsx";
 import Label from "../Label/label";
+import { checkValidatonError } from "@/utils/validation";
 
 const Input: React.FC<InputProps> = ({
   id,
   label,
+  value,
   placeholder,
+  initialValue,
   type = "text",
+  validationErrors = {},
+  onChange,
 }) => {
+  // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
+  // State to store validation error message
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Reference to the input element
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Toggle the visibility of the password field
   const handleInputTypeChange = () => {
     setIsPasswordVisible((prev) => !prev);
     if (inputRef.current) {
@@ -31,24 +42,47 @@ const Input: React.FC<InputProps> = ({
     }
   };
 
+  // Set the input's "value" to an "initial value" when component mounts or when initialValue changes
+  useEffect(() => {
+    if (initialValue !== undefined && onChange != undefined) {
+      onChange(initialValue);
+    }
+  }, [initialValue, onChange]);
+
+  // Check and set validation error for this input when validationErrors or id changes
+  useEffect(() => {
+    setValidationError(
+      checkValidatonError({ errors: validationErrors, key: id })
+    );
+  }, [validationErrors, id]);
+
   return (
     <div className="custom-flex-col gap-2">
+      {/* Render the label if provided */}
       {label && <Label id={id}>{label}</Label>}
       <div className="relative flex items-center">
         <input
           id={id}
           name={id}
+          value={value}
           ref={inputRef}
-          type={type === "password" && isPasswordVisible ? "text" : type}
           placeholder={placeholder}
+          // Reset validation error when the user interacts with the input
+          onInput={() => setValidationError(null)}
+          // Call onChange prop if provided when input value changes
+          onChange={({ target }) => onChange && onChange(target.value)}
+          // Conditionally change the input type based on password visibility state
+          type={type === "password" && isPasswordVisible ? "text" : type}
+          // Input styles
           className={clsx(
             "p-3 rounded-[4px] w-full focus:outline-brand-primary border border-solid bg-neutral-2",
             {
-              "pr-11": type === "password",
+              "pr-11": type === "password", // Add padding-right if the input type is password (for icon)
             }
           )}
-          style={{ borderColor: "rgba(186, 199, 213, 0.50)" }}
+          style={{ borderColor: "rgba(186, 199, 213, 0.50)" }} // Add custom border color
         />
+        {/* Toggle button for showing/hiding password */}
         {type === "password" && (
           <button
             type="button"
@@ -64,8 +98,10 @@ const Input: React.FC<InputProps> = ({
           </button>
         )}
       </div>
-      {/* NOTE: Hide this when conditions are met */}
-      <p className="text-sm text-red-500 font-medium">Error messages go here</p>
+      {/* Render validation error message if present */}
+      {validationError && (
+        <p className="text-sm text-red-500 font-medium">{validationError}</p>
+      )}
     </div>
   );
 };
