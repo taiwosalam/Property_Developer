@@ -22,3 +22,7 @@ export interface AuthActionProps {
 export interface AuthPinFieldProps {
   onChange: (data: any) => void;
 }
+
+export interface ProgresBarProps {
+  progress: number;
+}
