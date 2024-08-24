@@ -31,3 +31,29 @@ body {
 }
 
 /* -------------------------------------------------------------- */
+
+/* Overwriting default behaviour */
+/* -------------------------------------------------------------- */
+
+/* Hide the default eye icon in password fields */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+input[type="password"]::-webkit-clear-button,
+input[type="password"]::-webkit-inner-spin-button,
+input[type="password"]::-webkit-outer-spin-button {
+  display: none;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove spin buttons */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* -------------------------------------------------------------- */
