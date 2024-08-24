@@ -11,3 +11,7 @@ export interface AuthFormProps {
     React.SetStateAction<AuthErrorMsgsProps | null>
   >;
 }
+
+export interface ProgresBarProps {
+  progress: number;
+}
