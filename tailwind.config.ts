@@ -19,8 +19,16 @@ const config = {
           primary: "#315EE7",
           secondary: "#6083ED",
         },
+
         text: {
           secondary: "#3F4247",
+
+          label: "#5A5D61",
+          black: "#232324",
+        },
+
+        neutral: {
+          2: "#FAFAFA",
         },
       },
       container: {

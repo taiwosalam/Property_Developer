@@ -7,7 +7,7 @@ import type { AuthSliderProps } from "./types";
 
 // Imports
 import gsap from "gsap";
-import { AuthSliderBar, AuthSliderContent } from "./auth-components";
+import { AuthSliderBar, AuthSliderContent } from "./auth-slider-components";
 
 const AuthSlider: React.FC<AuthSliderProps> = ({ content = [] }) => {
   const height = 177; // Height of the slider content area
