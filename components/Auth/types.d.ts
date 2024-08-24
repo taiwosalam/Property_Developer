@@ -18,3 +18,7 @@ export interface AuthActionProps {
   linkText: string;
   children: React.ReactNode;
 }
+
+export interface AuthPinFieldProps {
+  onChange: (data: any) => void;
+}

@@ -22,7 +22,7 @@ const Input: React.FC<InputProps> = ({
   placeholder,
   initialValue,
   type = "text",
-  validationErrors,
+  validationErrors = {},
   onChange,
 }) => {
   // State to control password visibility

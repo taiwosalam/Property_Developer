@@ -8,6 +8,6 @@ export interface InputProps {
   placeholder: string;
   initialValue?: string;
   type?: React.HTMLInputTypeAttribute;
-  validationErrors: ValidationErrors;
+  validationErrors?: ValidationErrors;
   onChange?: (data: string) => void;
 }

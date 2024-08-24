@@ -10,8 +10,27 @@ import { z } from "zod";
 
 // Validation schemas for each field
 const validation_schemas = {
-  email: z.string().email({ message: "Please enter a valid email address." }),
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  "confirm-password": z
+    .string()
+    .min(1, { message: "Confirm password cannot be empty" }),
   password: z.string().min(1, { message: "Password cannot be empty" }),
+  "new-password": z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long" })
+    .regex(/[A-Z]/, {
+      message: "Password must contain at least one uppercase letter",
+    })
+    .regex(/[a-z]/, {
+      message: "Password must contain at least one lowercase letter",
+    })
+    .regex(/\d/, { message: "Password must contain at least one number" })
+    .regex(/[@$!%*?&]/, {
+      message: "Password must contain at least one special character",
+    }),
+  code: z
+    .string()
+    .length(4, { message: "Code must be exactly 4 characters long" }),
 };
 
 // Main validation function
@@ -29,7 +48,8 @@ export const validateData = (data: ValidateDataProps) => {
   if (!result.success) {
     Object.entries(result.error.formErrors.fieldErrors).forEach(
       ([key, errors]) => {
-        output.invalidKeys[key] = errors.join(", ");
+        output.invalidKeys[key] = errors.join(", ") + ".";
+        // output.invalidKeys[key] = errors[0] + ".";
       }
     );
   }
@@ -40,6 +60,22 @@ export const validateData = (data: ValidateDataProps) => {
       output.unknownKeys.push(key);
     }
   });
+
+  // Check exceptions only if there are no existing errors
+  //----------------------------------
+  // Check exception if confirm-password doesn't already have a message
+  if (!output.invalidKeys["confirm-password"]) {
+    // Ensure both "confirm-password" and "new-password" are present in the data
+    if (
+      data["confirm-password"] !== undefined &&
+      data["new-password"] !== undefined
+    ) {
+      if (data["confirm-password"] !== data["new-password"]) {
+        output.invalidKeys["confirm-password"] = "Passwords do not match.";
+      }
+    }
+  }
+  //----------------------------------
 
   return output;
 };
