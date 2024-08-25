@@ -1,0 +1,68 @@
+import React, { useState } from "react";
+
+// Types
+import type { FlowComponentProps } from "./types";
+import type { ValidationErrors } from "@/utils/types";
+
+// Imports
+import {
+  AuthForm,
+  AuthAction,
+  AuthHeading,
+} from "@/components/Auth/auth-components";
+import Input from "@/components/Form/Input/input";
+import Button from "@/components/Form/Button/button";
+
+const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
+  // State for managing error messages
+  const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
+
+  const handleSignUp = (data: any) => {
+    console.log(data);
+    // NOTE: This is the part where you send the data to the backend and handle any necessary logic.
+    changeStep("next"); // Change the form step to the next step in the flow
+  };
+
+  return (
+    <AuthForm
+      onFormSubmit={handleSignUp} // Callback function to handle form submission
+      setValidationErrors={setErrorMsgs} // Function to set validation error messages
+      className="custom-flex-col gap-10" // Additional class names for styling
+    >
+      <AuthHeading title="Create Your Account">
+        Please provide the following information to set up your account.
+      </AuthHeading>
+      <Input
+        id="email" // Input field ID, used for form handling and accessibility
+        type="email" // Specifies that the input is for email addresses
+        label="email" // Label text for the input field
+        placeholder="Email Address" // Placeholder text for the input field
+        validationErrors={errorMsgs} // Passes validation errors to the input component
+      />
+      <div className="custom-flex-col gap-4">
+        <Input
+          id="password"
+          type="password"
+          label="password"
+          placeholder="Write here"
+          validationErrors={errorMsgs}
+        />
+        <Input
+          id="confirm_password"
+          type="password"
+          label="confirm password"
+          placeholder="Write here"
+          validationErrors={errorMsgs}
+        />
+      </div>
+      <div className="flex items-center justify-between">
+        <AuthAction href="/auth/sign-in" linkText="sign in">
+          Got an account?
+        </AuthAction>
+        <Button type="submit">continue</Button>
+      </div>
+    </AuthForm>
+  );
+};
+
+export default SignUp;

@@ -1,80 +1,48 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import React, { useState } from "react";
+
+// Types
+import type { FormSteps } from "../types";
 
 // Imports
-import { ProgressBar } from "@/components/Auth/auth-progress";
-import Input from "@/components/Form/Input/input";
-import Button from "@/components/Form/Button/button";
-import { AuthForm, AuthHeading } from "@/components/Auth/auth-components";
-import OtpScreen from "@/components/Auth/otp-screen";
+import FlowProgress from "@/components/FlowProgress/flow-progress";
+import SignUp from "@/components/Auth/Flow/sign-up";
+import VerifyEmailAddress from "@/components/Auth/Flow/verify-email-address";
 
-const SignUp = () => {
-  const [progress, setProgress] = useState(50);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+const SignUpFlow = () => {
+  // Define the index of the last step in the flow
+  const last_step = 1;
 
-  const handleSubmit = () => {
-    // Validation and submission logic
-    setIsFormSubmitted(true);
-    setProgress(100);
+  // State to track the current step in the flow
+  const [activeStep, setActiveStep] = useState(0);
+
+  // Function to handle changing steps
+  const handleStepChange = (step: FormSteps) => {
+    setActiveStep((num) => {
+      // If the step is "next", increment the step number but clamp to last_step
+      if (step === "next") {
+        return Math.min(num + 1, last_step); // Ensure step does not exceed last_step
+      } else {
+        // If the step is not "next", decrement the step number but clamp to 0
+        return Math.max(num - 1, 0); // Ensure step does not go below 0
+      }
+    });
   };
 
   return (
-    <AuthForm className="custom-flex-col gap-10">
-      <ProgressBar progress={progress} />
-      {isFormSubmitted ? (
-        <>
-          <AuthHeading title="Verify Email Address">
-            An OTP code has been sent to your email for verification.
-          </AuthHeading>
-          <OtpScreen />
-        </>
-      ) : (
-        <>
-          <AuthHeading title="Create Your Account">
-            Please provide the following information to set up your account.
-          </AuthHeading>
-          <div className="custom-flex-col gap-6">
-            <Input
-              id="email"
-              type="email"
-              label="Email"
-              placeholder="Email address"
-            />
-            <div className="custom-flex-col gap-4">
-              <Input
-                id="password"
-                type="password"
-                label="Password"
-                placeholder="Write here"
-              />
-              <Input
-                id="confirmPassword"
-                type="password"
-                label="Confirm Password"
-                placeholder="Write here"
-              />
-            </div>
-          </div>
-          <div className="flex items-center justify-between">
-            <p className="text-text-black text-base font-normal">
-              Got an account?
-              <Link
-                href={"/auth/sign-in"}
-                className="text-brand-9 font-medium ml-1"
-              >
-                Sign In
-              </Link>
-            </p>
-            <Button type="button" onClick={handleSubmit}>
-              Sign Up
-            </Button>
-          </div>
-        </>
-      )}
-    </AuthForm>
+    <FlowProgress
+      steps={last_step + 1}
+      activeStep={activeStep}
+      className="custom-flex-col gap-4"
+    >
+      {activeStep === 0 ? (
+        <SignUp changeStep={handleStepChange} />
+      ) : activeStep === 1 ? (
+        <VerifyEmailAddress changeStep={handleStepChange} />
+      ) : null}
+    </FlowProgress>
   );
 };
 
-export default SignUp;
+export default SignUpFlow;
