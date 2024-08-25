@@ -50,14 +50,17 @@ const SignIn = () => {
           />
           <div className="flex items-center justify-between">
             <Checkbox>remember me</Checkbox>
-            <Link href={"/auth/forgot-password"} className="text-brand-9 text-sm font-medium">
+            <Link
+              href={"/auth/forgot-password"}
+              className="text-brand-9 text-sm font-medium"
+            >
               Forgot Password?
             </Link>
           </div>
         </div>
       </div>
       <div className="flex items-center justify-between">
-        <AuthAction href="" linkText="sign up">
+        <AuthAction href="/auth/sign-up" linkText="sign up">
           No account yet?
         </AuthAction>
         <Button type="submit">sign in</Button>
