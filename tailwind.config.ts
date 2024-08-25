@@ -43,6 +43,14 @@ const config = {
         supporting: {
           1: "#38BDF8",
         },
+
+        orange: {
+          normal: "#E98305",
+        },
+
+        cloud: {
+          dark: "#E8EDF1",
+        },
       },
       container: {
         center: true,

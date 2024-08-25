@@ -1,4 +1,5 @@
 // Types
+import type { Color } from "@/types/global";
 import type { ValidationErrors, ValidationOutput } from "@/utils/types";
 
 export interface AuthHeadingProps {
@@ -23,10 +24,17 @@ export interface AuthPinFieldProps {
   onChange: (data: any) => void;
 }
 
-export interface ProgresBarProps {
-  progress: number;
-}
+export type PasswordConditionsProps = Record<
+  string,
+  { text: string; condition: RegExp }
+>;
 
-export interface ProgresBarProps {
-  progress: number;
+export type PasswordStrengthProps = Record<
+  number,
+  { label: string; color: Color }
+>;
+
+export interface AuthNewPasswordProps {
+  setValue?: React.Dispatch<React.SetStateAction<string>>;
+  validationErrors?: ValidationErrors;
 }
