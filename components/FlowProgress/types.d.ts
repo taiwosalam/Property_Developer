@@ -1,10 +1,12 @@
 // Types
 import type { Color } from "@/types/global";
+import { CSSProperties } from "react";
 
 export interface FlowProgressProps {
   steps: number;
   activeStep: number;
   className?: string;
+  style?: CSSProperties;
   children: React.ReactNode;
 }
 

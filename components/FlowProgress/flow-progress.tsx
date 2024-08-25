@@ -11,6 +11,7 @@ import FlowProgressBar from "./flow-progress-bar";
 
 const FlowProgress: React.FC<FlowProgressProps> = ({
   steps,
+  style,
   children,
   className,
   activeStep,
@@ -48,7 +49,7 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
 
   return (
     <div ref={containerRef} className={className}>
-      <div className="flex gap-[10px]">
+      <div className="flex gap-[10px]" style={style}>
         {Array(steps)
           .fill(null)
           .map((_, index) => (
@@ -56,8 +57,8 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
               key={index}
               complete={activeStep > index}
               ref={activeStep === index ? barRef : undefined}
-              bg_color="#EFF6FF"
-              // bg_color={error ? "#FF0000" : undefined}
+              bg_color="#D9D9D9"
+              // bg_color="#EFF6FF"
             />
           ))}
       </div>

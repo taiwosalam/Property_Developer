@@ -17,9 +17,9 @@ import type { Color } from "@/types/global";
 import gsap from "gsap";
 import PinField from "react-pin-field";
 import Input from "../Form/Input/input";
-import { password_conditions, password_strength } from "./data";
 import { validateData } from "@/utils/validation";
 import { objectLength } from "@/utils/object-length";
+import { password_conditions, password_strength } from "./data";
 import FlowProgressBar from "../FlowProgress/flow-progress-bar";
 
 // AuthHeading Component: Displays the heading and subheading for the auth form
