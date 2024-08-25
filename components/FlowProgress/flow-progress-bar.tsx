@@ -2,6 +2,8 @@ import React from "react";
 
 // Types
 import type { FlowProgressBarProps } from "./types";
+
+// Imports
 import clsx from "clsx";
 
 const FlowProgressBar = React.forwardRef<HTMLDivElement, FlowProgressBarProps>(
@@ -13,7 +15,7 @@ const FlowProgressBar = React.forwardRef<HTMLDivElement, FlowProgressBarProps>(
       >
         <div
           ref={ref}
-          className={clsx("h-full", {
+          className={clsx("h-full rounded-full", {
             "w-0": !complete,
             "w-full": complete,
           })}

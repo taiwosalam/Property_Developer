@@ -8,6 +8,7 @@ import {
   AuthForm,
   AuthAction,
   AuthHeading,
+  AuthNewPassword,
 } from "@/components/Auth/auth-components";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
@@ -36,13 +37,8 @@ const CreateNewPassword = () => {
 
       {/* Container for password input fields */}
       <div className="custom-flex-col gap-6">
-        <Input
-          id="new-password"
-          type="password"
-          label="password"
-          placeholder="Write here"
-          validationErrors={errorMsgs}
-        />
+        {/* Component to handle password input and strength validation */}
+        <AuthNewPassword validationErrors={errorMsgs} />
         <Input
           id="confirm-password"
           type="password"
