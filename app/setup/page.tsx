@@ -43,7 +43,7 @@ const Setup = () => {
   });
 
   // Handle input changes
-  const handleChange = (field, value) => {
+  const handleChange = (field:any, value: any) => {
     setFormData(prevState => ({
       ...prevState,
       [field]: value,
@@ -51,15 +51,15 @@ const Setup = () => {
   };
 
    // Handle nested changes, e.g., company details
-  const handleNestedChange = (section, field, value) => {
-    setFormData(prevState => ({
-      ...prevState,
-      [section]: {
-        ...prevState[section],
-        [field]: value,
-      },
-    }));
-  };
+  // const handleNestedChange = (section:any, field:any, value: any) => {
+  //   setFormData(prevState => ({
+  //     ...prevState,
+  //     [section]: {
+  //       ...prevState[section],
+  //       [field]: value,
+  //     },
+  //   }));
+  // };
 
 
  const handleSubmit = async () => {
@@ -111,9 +111,9 @@ const Setup = () => {
             </div>
              <CompanyDetails
               formData={formData.companyDetails}
-              onChange={(field, value) =>
-                handleNestedChange("companyDetails", field, value)
-              }
+              // onChange={(field, value) =>
+              //   handleNestedChange("companyDetails", field, value)
+              // }
             />
             <CompanyMobileNumber />
           </div>

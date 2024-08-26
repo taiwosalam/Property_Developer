@@ -6,7 +6,8 @@ import Button from "../Form/Button/button";
 import { SectionHeading } from "../Section/section-components";
 
 interface CompanyDetailsProps {
-  onChange: (field: string, value: any) => void;
+  // onChange: (field: string, value: any) => void;
+  onChange?: (a: any) => void;
   formData: {
     regDate: string;
     cacCertificate: File | null;
@@ -31,7 +32,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({onChange, formData}) => 
           placeholder="07/02/2014"
           className="flex-1"
           value={formData.regDate}
-          onChange={(value) => onChange("regDate", value)}
+          // onChange={(value) => onChange("regDate", value)}
         />
         <div className="flex flex-1 gap-2">
           <Input
@@ -41,7 +42,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({onChange, formData}) => 
             placeholder="Company CAC.pdf"
             className="flex-1"
             type="file"
-            onChange={(value) => onChange("cacCertificate", value)}
+            // onChange={(value) => onChange("cacCertificate", value)}
           />
           <div className="flex items-end">
             <Button variant="change" size="sm">
@@ -58,7 +59,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({onChange, formData}) => 
           placeholder="Real Estate Agent"
           className="flex-1"
           value={formData.industry}
-          onChange={(value) => onChange("industry", value)}
+          // onChange={(value) => onChange("industry", value)}
         />
         <div className="flex flex-1 gap-2">
           <Input
@@ -67,7 +68,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({onChange, formData}) => 
             placeholder="NAIVS Certificate.pdf"
             className="flex-1"
       type="file"
-            onChange={(value) => onChange("membershipCertificate", value)}
+            // onChange={(value) => onChange("membershipCertificate", value)}
           />
           <div className="flex items-end">
             <Button variant="change" size="sm">
