@@ -22,10 +22,10 @@ const AuthSlider: React.FC<AuthSliderProps> = ({ content = [] }) => {
 
   useEffect(() => {
     // Skip the animation on the initial mount
-    if (skip_animation.current) {
-      skip_animation.current = false;
-      return;
-    }
+    // if (skip_animation.current) {
+    //   skip_animation.current = false;
+    //   return;
+    // }
 
     // Check if refs are available
     const bars = barsRef.current;
