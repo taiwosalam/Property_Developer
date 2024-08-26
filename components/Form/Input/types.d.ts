@@ -5,6 +5,8 @@ export interface InputProps {
   id: string;
   value?: string;
   label?: string;
+  className?: string;
+  required?: boolean;
   placeholder: string;
   initialValue?: string;
   type?: React.HTMLInputTypeAttribute;

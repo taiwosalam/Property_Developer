@@ -1,19 +1,11 @@
 // Types
 import type { LabelProps } from "./types";
 
-const Label: React.FC<LabelProps> = ({
-  id,
-  children,
-  important = false,
-  className,
-}) => {
+const Label: React.FC<LabelProps> = ({ id, required, children }) => {
   return (
-    <label
-      htmlFor={id}
-      className={`text-base font-medium capitalize text-text-label ${className}`}
-    >
-      {important && <span className="text-status-error-primary">*</span>}
-      {children}
+    <label htmlFor={id} className="flex gap-[2px] text-base font-medium">
+      {required && <span className="text-status-error-primary">*</span>}
+      <p className="text-text-label capitalize">{children}</p>
     </label>
   );
 };

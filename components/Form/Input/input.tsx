@@ -19,6 +19,8 @@ const Input: React.FC<InputProps> = ({
   id,
   label,
   value,
+  required,
+  className,
   placeholder,
   initialValue,
   type = "text",
@@ -57,9 +59,13 @@ const Input: React.FC<InputProps> = ({
   }, [validationErrors, id]);
 
   return (
-    <div className="custom-flex-col gap-2">
+    <div className={clsx("custom-flex-col gap-2", className)}>
       {/* Render the label if provided */}
-      {label && <Label id={id}>{label}</Label>}
+      {label && (
+        <Label id={id} required={required}>
+          {label}
+        </Label>
+      )}
       <div className="relative flex items-center">
         <input
           id={id}

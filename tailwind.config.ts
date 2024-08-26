@@ -26,6 +26,7 @@ const config = {
           primary: "#050901",
           secondary: "#3F4247",
           tertiary: "#696B70",
+          quaternary: "#2F364B",
 
           label: "#5A5D61",
           black: "#232324",
@@ -55,6 +56,10 @@ const config = {
 
         cloud: {
           dark: "#E8EDF1",
+        },
+
+        borders: {
+          dark: "#C0C2C8",
         },
       },
       container: {
