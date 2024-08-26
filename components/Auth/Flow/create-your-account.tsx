@@ -26,7 +26,7 @@ const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
   // Function to handle form submission
   const handleSignUp = async (data: any) => {
     // Update the form data in the store
-    updateFormData(data);
+    updateFormData({ ...data, password: data["new-password"] });
     try {
       // Call the signup function from the API service
       await signup();
