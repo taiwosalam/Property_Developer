@@ -30,7 +30,7 @@ const validation_schemas = {
     }),
   code: z
     .string()
-    .length(4, { message: "Code must be exactly 4 characters long" }),
+    .length(6, { message: "OTP must be exactly 6 characters long" }),
 };
 
 // Main validation function

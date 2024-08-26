@@ -15,6 +15,8 @@ import Button from "@/components/Form/Button/button";
 import { objectLength } from "@/utils/object-length";
 import { AuthHeading, AuthPinField } from "../auth-components";
 import { checkValidatonError, validateData } from "@/utils/validation";
+import { useFormDataStore } from "@/store/formdatastore";
+import { verifyEmail } from "@/app/auth/data";
 
 const VerifyEmailAddress: React.FC<FlowComponentProps> = ({ changeStep }) => {
   // State for managing error messages
@@ -30,7 +32,7 @@ const VerifyEmailAddress: React.FC<FlowComponentProps> = ({ changeStep }) => {
   };
 
   // Handler for when the form is submitted
-  const handleCodeSubmit = () => {
+  const handleCodeSubmit = async () => {
     const data = {
       code, // Include the entered code in the data object
     };
@@ -41,8 +43,12 @@ const VerifyEmailAddress: React.FC<FlowComponentProps> = ({ changeStep }) => {
     // If there are no validation errors, proceed to the next step
     if (!objectLength(validation.invalidKeys)) {
       console.log(data);
-      // NOTE: This is where you would perform backend operations, such as verifying the code
-      changeStep("next"); // Move to the next step in the flow
+      try {
+        await verifyEmail(code); // Pass the OTP to the verifyEmail function
+        changeStep("next"); // Move to the next step in the flow
+      } catch (error) {
+        console.error("Error during verification:", error);
+      }
     } else {
       setErrorMsgs(validation.invalidKeys); // Set error messages if validation fails
     }
@@ -54,13 +60,14 @@ const VerifyEmailAddress: React.FC<FlowComponentProps> = ({ changeStep }) => {
     key: "code",
   });
 
+  const email = useFormDataStore((state) => state.formData.email);
+
   return (
     <div className="custom-flex-col gap-20">
       {/* Heading for the verification step */}
       <AuthHeading title="Verify Email Address">
         An OTP code has been sent to your email (
-        <span className="text-supporting-1">addedejiajoke@gmail.com</span>) for
-        verification
+        <span className="text-supporting-1">{email}</span>) for verification
       </AuthHeading>
 
       <div className="custom-flex-col gap-10">
