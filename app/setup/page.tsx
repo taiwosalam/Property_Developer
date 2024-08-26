@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -24,6 +24,48 @@ const Setup = () => {
   // State to track the current step in the flow
   const [activeStep, setActiveStep] = useState(0);
 
+  const [formData, setFormData] = useState({
+    companyType: "",
+    companyName: "",
+    referralId: "",
+     companyDetails: {
+      regDate: "",
+      cacCertificate: null,
+      industry: "",
+      membershipCertificate: null,
+    },
+    companyMobileNumber: "",
+    companyLogo: null,
+    directorDetails: {
+      profilePicture: null,
+      profileInformation: {}, // structure this based on ProfileInformation component
+    },
+  });
+
+  // Handle input changes
+  const handleChange = (field, value) => {
+    setFormData(prevState => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
+
+   // Handle nested changes, e.g., company details
+  const handleNestedChange = (section, field, value) => {
+    setFormData(prevState => ({
+      ...prevState,
+      [section]: {
+        ...prevState[section],
+        [field]: value,
+      },
+    }));
+  };
+
+
+ const handleSubmit = async () => {
+  
+  };
+
   return (
     <FlowProgress
       steps={last_step + 1}
@@ -46,10 +88,10 @@ const Setup = () => {
             account and company profile.
           </p>
         </div>
-        <Button>submit</Button>
+        <Button onClick={handleSubmit}>submit</Button>
       </div>
       <div className="relative z-[1] custom-flex-col gap-6 pt-6 pb-20 px-10">
-        <CompanyType />
+        <CompanyType onChange={(value) => handleChange('companyType', value)} />
         <Section>
           <div className="custom-flex-col gap-5">
             <div className="flex gap-5">
@@ -67,7 +109,12 @@ const Setup = () => {
                 className="flex-1"
               />
             </div>
-            <CompanyDetails />
+             <CompanyDetails
+              formData={formData.companyDetails}
+              onChange={(field, value) =>
+                handleNestedChange("companyDetails", field, value)
+              }
+            />
             <CompanyMobileNumber />
           </div>
         </Section>

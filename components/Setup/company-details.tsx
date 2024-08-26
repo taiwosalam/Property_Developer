@@ -5,7 +5,17 @@ import Input from "../Form/Input/input";
 import Button from "../Form/Button/button";
 import { SectionHeading } from "../Section/section-components";
 
-const CompanyDetails = () => {
+interface CompanyDetailsProps {
+  onChange: (field: string, value: any) => void;
+  formData: {
+    regDate: string;
+    cacCertificate: File | null;
+    industry: string;
+    membershipCertificate: File | null;
+  };
+}
+
+const CompanyDetails: React.FC<CompanyDetailsProps> = ({onChange, formData}) => {
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading title="company details">
@@ -20,6 +30,8 @@ const CompanyDetails = () => {
           type="date"
           placeholder="07/02/2014"
           className="flex-1"
+          value={formData.regDate}
+          onChange={(value) => onChange("regDate", value)}
         />
         <div className="flex flex-1 gap-2">
           <Input
@@ -28,6 +40,8 @@ const CompanyDetails = () => {
             label="CAC Certificate"
             placeholder="Company CAC.pdf"
             className="flex-1"
+            type="file"
+            onChange={(value) => onChange("cacCertificate", value)}
           />
           <div className="flex items-end">
             <Button variant="change" size="sm">
@@ -43,6 +57,8 @@ const CompanyDetails = () => {
           label="industry"
           placeholder="Real Estate Agent"
           className="flex-1"
+          value={formData.industry}
+          onChange={(value) => onChange("industry", value)}
         />
         <div className="flex flex-1 gap-2">
           <Input
@@ -50,6 +66,8 @@ const CompanyDetails = () => {
             label="membership Certificate"
             placeholder="NAIVS Certificate.pdf"
             className="flex-1"
+      type="file"
+            onChange={(value) => onChange("membershipCertificate", value)}
           />
           <div className="flex items-end">
             <Button variant="change" size="sm">
