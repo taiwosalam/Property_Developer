@@ -7,7 +7,7 @@ import type { FormSteps } from "../types";
 
 // Imports
 import FlowProgress from "@/components/FlowProgress/flow-progress";
-import SignUp from "@/components/Auth/Flow/sign-up";
+import SignUp from "@/components/Auth/Flow/create-your-account";
 import VerifyEmailAddress from "@/components/Auth/Flow/verify-email-address";
 
 const SignUpFlow = () => {

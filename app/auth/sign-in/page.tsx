@@ -13,14 +13,24 @@ import {
   AuthHeading,
 } from "@/components/Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
+import { login } from "@/app/auth/data";
+import { useFormDataStore } from "@/store/formdatastore";
 
 const SignIn = () => {
   // State for managing error messages
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
-  const handleSignIn = (data: any) => {
-    console.log(data);
-    // NOTE: This is the part where you send the data to the backend and all that shit
+  // Access the store's update function
+  const updateFormData = useFormDataStore((state) => state.updateFormData);
+
+  const handleSignIn = async (data: any) => {
+    const { email, password } = data;
+    updateFormData(data);
+    try {
+      await login(email, password);
+    } catch (error) {
+      console.error("Error during sign-in:", error);
+    }
   };
 
   return (
