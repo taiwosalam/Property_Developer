@@ -36,6 +36,7 @@ const config = {
 
         neutral: {
           2: "#FAFAFA",
+          4: "#C1C2C3",
         },
 
         status: {
@@ -61,6 +62,7 @@ const config = {
 
         borders: {
           dark: "#C0C2C8",
+          normal: "#787A7E",
         },
       },
       container: {

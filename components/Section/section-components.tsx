@@ -1,4 +1,5 @@
 // Types
+import clsx from "clsx";
 import type {
   SectionDescProps,
   SectionTitleProps,
@@ -31,13 +32,20 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
   </div>
 );
 
-export const SectionSeparator: React.FC<{}> = () => (
-  <div className={"h-[1px] w-full bg-borders-dark opacity-10"} />
+export const SectionSeparator: React.FC<{ className?: string }> = ({
+  className,
+}) => (
+  <div
+    className={clsx("h-[1px] w-full bg-borders-dark opacity-10", className)}
+  />
 );
 
-export const Section: React.FC<SectionProps> = ({ children }) => (
+export const Section: React.FC<SectionProps> = ({
+  children,
+  separatorStyles,
+}) => (
   <div className="custom-flex-col gap-6">
     {children}
-    <SectionSeparator />
+    <SectionSeparator className={separatorStyles} />
   </div>
 );

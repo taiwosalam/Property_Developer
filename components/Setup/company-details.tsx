@@ -1,22 +1,20 @@
-import React from "react";
-
 // Imports
 import Input from "../Form/Input/input";
 import Button from "../Form/Button/button";
+import DateInput from "../Form/DateInput/dateInput";
+import FileInput from "../Form/FileInput/file-input";
 import { SectionHeading } from "../Section/section-components";
+import type { CompanyDetails } from "@/app/setup/types";
 
 interface CompanyDetailsProps {
-  // onChange: (field: string, value: any) => void;
-  onChange?: (a: any) => void;
-  formData: {
-    regDate: string;
-    cacCertificate: File | null;
-    industry: string;
-    membershipCertificate: File | null;
-  };
+  companyDetails: CompanyDetails;
+  onChange: (field: keyof CompanyDetails, value: string | File | null) => void;
 }
 
-const CompanyDetails: React.FC<CompanyDetailsProps> = ({onChange, formData}) => {
+const CompanyDetails: React.FC<CompanyDetailsProps> = ({
+  onChange,
+  companyDetails,
+}) => {
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading title="company details">
@@ -24,32 +22,28 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({onChange, formData}) => 
         PDF format and should not exceed 2mb.
       </SectionHeading>
       <div className="flex gap-5">
-        <Input
+        <DateInput
           required
-          id="reg-date"
+          id="registration-date"
           label="date of registration"
-          type="date"
           placeholder="07/02/2014"
-          className="flex-1"
-          value={formData.regDate}
-          // onChange={(value) => onChange("regDate", value)}
+          className="flex-1 max-w-[300px]"
+          inputTextStyles={`text-sm font-normal ${
+            companyDetails.registrationDate === "" ? "bg-transparent" : ""
+          }`}
+          onChange={(value) => onChange("registrationDate", value)}
+          value={companyDetails.registrationDate}
         />
-        <div className="flex flex-1 gap-2">
-          <Input
-            required
-            id="cac-certificate"
-            label="CAC Certificate"
-            placeholder="Company CAC.pdf"
-            className="flex-1"
-            type="file"
-            // onChange={(value) => onChange("cacCertificate", value)}
-          />
-          <div className="flex items-end">
-            <Button variant="change" size="sm">
-              Change CAC
-            </Button>
-          </div>
-        </div>
+
+        <FileInput
+          required
+          id="cac-certificate"
+          label="CAC Certificate"
+          className="flex-1"
+          placeholder="Click the side button to upload CAC"
+          buttonName="CAC"
+          onChange={(value) => onChange("cacCertificate", value)}
+        />
       </div>
       <div className="flex gap-5">
         <Input
@@ -57,24 +51,22 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({onChange, formData}) => 
           id="industry"
           label="industry"
           placeholder="Real Estate Agent"
-          className="flex-1"
-          value={formData.industry}
-          // onChange={(value) => onChange("industry", value)}
+          className="flex-1 max-w-[300px]"
+          value={companyDetails.industry}
+          inputTextStyles={`text-sm font-normal ${
+            companyDetails.industry === "" ? "bg-transparent" : ""
+          }`}
+          onChange={(value) => onChange("industry", value)}
         />
         <div className="flex flex-1 gap-2">
-          <Input
+          <FileInput
             id="membership-certificate"
             label="membership Certificate"
-            placeholder="NAIVS Certificate.pdf"
             className="flex-1"
-      type="file"
-            // onChange={(value) => onChange("membershipCertificate", value)}
+            placeholder="Click the side button to upload certificate"
+            buttonName="Certificate"
+            onChange={(value) => onChange("membershipCertificate", value)}
           />
-          <div className="flex items-end">
-            <Button variant="change" size="sm">
-              Upload certificate
-            </Button>
-          </div>
         </div>
       </div>
     </div>

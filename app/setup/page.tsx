@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -16,6 +16,7 @@ import CompanyMobileNumber from "@/components/Setup/company-mobile-number";
 import CompanyLogo from "@/components/Setup/company-logo";
 import ProfilePicture from "@/components/Setup/profile-picture";
 import ProfileInformation from "@/components/Setup/profile-information";
+import type { SetupFormData, DirectorDetails } from "./types";
 
 const Setup = () => {
   // Define the index of the last step in the flow
@@ -24,47 +25,70 @@ const Setup = () => {
   // State to track the current step in the flow
   const [activeStep, setActiveStep] = useState(0);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<SetupFormData>({
     companyType: "",
     companyName: "",
     referralId: "",
-     companyDetails: {
-      regDate: "",
+    companyDetails: {
+      registrationDate: "",
       cacCertificate: null,
       industry: "",
       membershipCertificate: null,
     },
-    companyMobileNumber: "",
+    companyMobileNumber: ["", "", "", ""],
     companyLogo: null,
     directorDetails: {
       profilePicture: null,
-      profileInformation: {}, // structure this based on ProfileInformation component
+      fullName: "",
+      titleOrQualification: "",
+      yearsInBusiness: 0,
+      aboutDirector: "",
+      phoneNumber: "",
+      altEmail:''
     },
   });
 
   // Handle input changes
-  const handleChange = (field:any, value: any) => {
-    setFormData(prevState => ({
+  const handleChange = <K extends keyof SetupFormData>(
+    field: K,
+    value: SetupFormData[K]
+  ) => {
+    setFormData((prevState) => ({
       ...prevState,
       [field]: value,
     }));
   };
 
-   // Handle nested changes, e.g., company details
-  // const handleNestedChange = (section:any, field:any, value: any) => {
-  //   setFormData(prevState => ({
-  //     ...prevState,
-  //     [section]: {
-  //       ...prevState[section],
-  //       [field]: value,
-  //     },
-  //   }));
-  // };
-
-
- const handleSubmit = async () => {
-  
+  // Handle change for specific phone number by index
+  const handlePhoneNumberChange = (index: number, value: string) => {
+    setFormData((prevState) => {
+      const newNumbers = [...prevState.companyMobileNumber];
+      newNumbers[index] = value;
+      return {
+        ...prevState,
+        companyMobileNumber: newNumbers,
+      };
+    });
   };
+
+  // Handler for ProfileInformation changes
+  const handleProfileInfoChange = (
+    field: keyof DirectorDetails,
+    value: string | File | null | number
+  ) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      directorDetails: {
+        ...prevState.directorDetails,
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleSubmit = async () => {};
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   return (
     <FlowProgress
@@ -88,11 +112,13 @@ const Setup = () => {
             account and company profile.
           </p>
         </div>
-        <Button onClick={handleSubmit}>submit</Button>
+        <Button onClick={handleSubmit} style={{ opacity: 0.5 }}>
+          submit
+        </Button>
       </div>
       <div className="relative z-[1] custom-flex-col gap-6 pt-6 pb-20 px-10">
-        <CompanyType onChange={(value) => handleChange('companyType', value)} />
-        <Section>
+        <CompanyType onChange={(value) => handleChange("companyType", value)} />
+        <Section separatorStyles="max-w-[1200px]">
           <div className="custom-flex-col gap-5">
             <div className="flex gap-5">
               <Input
@@ -100,30 +126,54 @@ const Setup = () => {
                 id="company-name"
                 label="company name"
                 placeholder="Taiwo Salam & Co. Properties Ltd"
-                className="flex-1"
+                className="flex-1 max-w-[480px]"
+                inputTextStyles={`text-sm font-normal ${
+                  formData.companyName === "" ? "bg-transparent" : ""
+                }`}
+                onChange={(value) => handleChange("companyName", value)}
               />
               <Input
                 id="referral-id"
                 label="Referral ID (Optional)"
-                placeholder="Write Here"
-                className="flex-1"
+                placeholder="Enter your Referral ID"
+                className="flex-1 max-w-[320px]"
+                inputTextStyles={`text-sm font-normal ${
+                  formData.referralId === "" ? "bg-transparent" : ""
+                }`}
+                onChange={(value) => handleChange("referralId", value)}
               />
             </div>
-             <CompanyDetails
-              formData={formData.companyDetails}
-              // onChange={(field, value) =>
-              //   handleNestedChange("companyDetails", field, value)
-              // }
+            <CompanyDetails
+              onChange={(field, value) =>
+                handleChange("companyDetails", {
+                  ...formData.companyDetails,
+                  [field]: value,
+                })
+              }
+              companyDetails={formData.companyDetails}
             />
-            <CompanyMobileNumber />
+            <CompanyMobileNumber
+              companyMobileNumber={formData.companyMobileNumber}
+              onChange={handlePhoneNumberChange}
+            />
           </div>
         </Section>
-        <CompanyLogo />
+        <CompanyLogo onChange={(file) => handleChange("companyLogo", file)} />
         <SectionHeading title="directors details">
           Fill the details below to add a director to your company
         </SectionHeading>
-        <ProfilePicture />
-        <ProfileInformation />
+        <ProfilePicture
+          onChange={(file) =>
+            handleChange("directorDetails", {
+              ...formData.directorDetails,
+              profilePicture: file,
+            })
+          }
+        />
+        <ProfileInformation
+          directorDetails={formData.directorDetails}
+          onChange={handleProfileInfoChange}
+        />
       </div>
     </FlowProgress>
   );

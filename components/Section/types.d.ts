@@ -14,5 +14,6 @@ export interface SectionHeadingProps {
 }
 
 export interface SectionProps {
+  separatorStyles?: string;
   children: React.ReactNode;
 }
