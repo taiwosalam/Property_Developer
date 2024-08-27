@@ -57,3 +57,15 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 /* -------------------------------------------------------------- */
+
+.nav-button:hover {
+  background-color: #0033c4;
+}
+
+.nav-button:hover p {
+  color: white;
+}
+
+.nav-button:hover path {
+  stroke: white;
+}

@@ -16,6 +16,7 @@ const config = {
 
         brand: {
           1: "#EFF6FF",
+          3: "#BFDBFE",
           9: "#0033C4",
 
           primary: "#315EE7",
