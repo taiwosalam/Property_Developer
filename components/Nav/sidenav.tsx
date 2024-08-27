@@ -23,10 +23,66 @@ const Sidenav = () => {
       </NavDropdown>
       <NavDropdown
         type="briefcase_timer"
-        content={["complaints", "inspections", "examine", "maintenance"]}
+        content={[
+          "complaints",
+          "inspections",
+          "examine",
+          "maintenance",
+          "service providers",
+          "calendars",
+          "announcements",
+          "call back request",
+          "visitors request",
+          "property request",
+          "deposits request",
+          "vehicles record",
+        ]}
       >
         tasks
       </NavDropdown>
+      <NavDropdown
+        type="briefcase_timer"
+        content={["units", "statistics", "property"]}
+      >
+        listing
+      </NavDropdown>
+      <NavDropdown
+        type="briefcase_timer"
+        content={[
+          "invoice",
+          "recepits",
+          "expenses",
+          "disbursement",
+          "statement",
+          "VAT",
+        ]}
+      >
+        accounting
+      </NavDropdown>
+      <NavDropdown
+        type="briefcase_timer"
+        content={[
+          "tenants / occupants",
+          "landlord / landlady",
+          "properties",
+          "units",
+          "rent roll",
+          "listings",
+          "email",
+          "SMS",
+          "tracking",
+          "call request",
+          "visitors request",
+          "undo",
+          "vehicles record",
+        ]}
+      >
+        reports
+      </NavDropdown>
+      <NavButton type="buildings">wallet</NavButton>
+      <NavButton type="buildings">applications</NavButton>
+      <NavButton type="buildings">documents</NavButton>
+      <NavButton type="buildings">settings</NavButton>
     </div>
   );
 };
