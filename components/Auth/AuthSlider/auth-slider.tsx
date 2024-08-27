@@ -79,7 +79,7 @@ const AuthSlider: React.FC<AuthSliderProps> = ({ content = [] }) => {
 
   return (
     <div className="flex justify-center gap-[6px]" style={{ height }}>
-      <div className="flex flex-col justify-center gap-1 p-5">
+      <div className="flex flex-col justify-center gap-1 p-4 xl:p-5">
         {content.map((_, index) => (
           <AuthSliderBar
             key={index}
