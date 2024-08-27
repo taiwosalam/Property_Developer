@@ -3,6 +3,8 @@ import React from "react";
 
 import { dashboardCardData, walletBalanceCardData } from "./data";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
+import DashboarddCalendar from "@/components/dashboard/calendar";
+import NotificationCard from "@/components/dashboard/notification-card";
 
 const Dashboard = () => {
   return (
@@ -29,8 +31,13 @@ const Dashboard = () => {
             mainBalance={walletBalanceCardData.mainBalance}
             cautionDeposit={walletBalanceCardData.cautionDeposit}
           />
-          <div>{/* Calendar */}</div>
-          <div>{/* Recent Messages */}</div>
+          <DashboarddCalendar />
+          <div>
+            <NotificationCard />
+          </div>
+          <div>
+            <NotificationCard />
+          </div>
         </div>
       </div>
       <div>{/* Recent Invoice */}</div>

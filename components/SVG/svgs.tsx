@@ -242,8 +242,8 @@ export const svgs = {
       <path
         d="M0.541668 1.08317L3.45833 3.99984L0.541668 6.9165"
         stroke="#4F5E71"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   ),

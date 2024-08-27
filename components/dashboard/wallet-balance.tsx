@@ -53,7 +53,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
           <span className="text-white ml-2"></span>₦{cautionDeposit}{" "}
           <Image src="/icons/caution.svg" alt="info" width={12} height={12} />
         </div>
-        <div className="w-full flex justify-between space-x-10">
+        <div className="w-full flex justify-between">
           {options.map((option, index) => (
             <div key={index} className="space-y-2">
               <div className="bg-white w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
