@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 
 // Styles
 import "@/styles/globals.css";
@@ -21,7 +22,10 @@ export default function RootLayout({
         className={`${dmSans.className} antialiased`}
         suppressHydrationWarning
       >
-        <div className="w-full relative z-[1]">{children}</div>
+        <div className="w-full relative z-[1]">
+          {children}{" "}
+          <Toaster richColors className={`${dmSans.className} antialiased`} />
+        </div>
         <div id="portal" className="z-[2]"></div>
       </body>
     </html>
