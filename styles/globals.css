@@ -97,3 +97,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 /* -------------------------------------------------------------- */
+
+.nav-button:hover {
+  background-color: #0033c4;
+}
+
+.nav-button:hover p {
+  color: white;
+}
+
+.nav-button:hover path {
+  stroke: white;
+}

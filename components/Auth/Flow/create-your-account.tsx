@@ -13,16 +13,27 @@ import {
 } from "@/components/Auth/auth-components";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
+import { signup } from "@/app/auth/data";
+import { useFormDataStore } from "@/store/formdatastore";
 
 const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
   // State for managing error messages
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
+  // Access the store's update function
+  const updateFormData = useFormDataStore((state) => state.updateFormData);
+
   // Function to handle form submission
-  const handleSignUp = (data: any) => {
-    console.log(data);
-    // NOTE: This is the part where you send the data to the backend and handle any necessary logic.
-    changeStep("next"); // Change the form step to the next step in the flow
+  const handleSignUp = async (data: any) => {
+    // Update the form data in the store
+    updateFormData({ ...data, password: data["new-password"] });
+    try {
+      // Call the signup function from the API service
+      await signup();
+      changeStep("next"); // Change the form step to the next step in the flow
+    } catch (error) {
+      console.error("Error during sign-up:", error);
+    }
   };
 
   return (
