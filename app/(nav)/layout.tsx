@@ -95,12 +95,12 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <Sidenav />
         </div>
         <div className="custom-flex-col flex-1 bg-neutral-2">
-          <div className="custom-flex-col">
+          <div className="custom-flex-col sticky top-[99px] bg-white z-[2]">
             <div
               className="h-[1px]"
               style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
             ></div>
-            <div className="h-[50px] pl-3 pr-10 flex items-center justify-between bg-white">
+            <div className="h-[50px] pl-3 pr-10 flex items-center justify-between bg-white ">
               <button onClick={() => setSidenavIsOpen((prev) => !prev)}>
                 <SVG type="sidebar" color="#0033C4" className="w-8 h-8" />
               </button>
@@ -113,7 +113,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
             ></div>
           </div>
-          <div className="p-6">{children}</div>
+          <div className="p-6 relative z-[1]">{children}</div>
         </div>
       </div>
     </div>
