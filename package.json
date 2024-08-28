@@ -29,6 +29,7 @@
     "react-pin-field": "^3.1.5",
     "recharts": "^2.12.7",
     "sharp": "^0.33.5",
+    "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8",
