@@ -133,7 +133,7 @@ const Setup = () => {
       industry: formData.companyDetails.industry,
       cac_certificate: formData.companyDetails.cacCertificate,
       membership_certificate: formData.companyDetails.membershipCertificate,
-      // cac_number: formData.companyDetails.registrationDate, // Assuming cac_number is the same as registrationDate
+      cac_number: formData.companyDetails.cacNumber, // Assuming cac_number is the same as registrationDate
       cac_date: formData.companyDetails.registrationDate,
       company_phone: formData.companyMobileNumber.filter((num) => num !== ""), // Remove any empty phone numbers
       logo: formData.companyLogo,

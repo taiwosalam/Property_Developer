@@ -74,3 +74,45 @@ export const titleOrQualifications = [
   "AIA",
   "ENGR",
 ];
+
+export interface LocalGovernments {
+  [localGovernment: string]: string[];
+}
+
+// Define the structure for the states array
+export interface State {
+  [stateName: string]: LocalGovernments;
+}
+
+export const states: State[] = [
+  {
+    Oyo: {
+      Afijio: ["Ilora", "Fiditi"],
+      "Ibadan North": ["Agbowo", "Bodija", "Sango"],
+      "Ibadan North-East": ["Monatan", "Iyana Church", "Oje"],
+      " Ibadan North-West": ["Dugbe", "Onireke", "Jericho"],
+      "Ibadan South-East": ["Mapo", "Orita Aperin", "Oke Ado"],
+      "Ibadan South-West": ["Ring Road", "Molete", "Challenge"],
+      "Ibarapa Central": ["Igbo Ora", "Idere"],
+      "Ibarapa East": ["Eruwa", "Lanlate"],
+      " Ibarapa North": ["Ayete", "Tapa", "Igangan"],
+      Ido: ["Apata", "Omi Adio"],
+    },
+  },
+  {
+    Lagos: {
+      Ikeja: ["Ikeja", "Ogba", "Alausa"],
+      Surulere: ["Surulere", "Aguda", "Ijesha"],
+      "Eti-Osa": ["Victoria Island", "Lekki", "Ikoyi"],
+      Badagry: ["Badagry", "Mowo", "Ajara"],
+    },
+  },
+  {
+    Kano: {
+      "Kano Municipal": ["Tudun Wada", "Fagge", "Sabon Gari"],
+      Nasarawa: ["Kano Nasarawa", "Gidan Salanke"],
+      Gwale: ["Dorayi", "Goron Dutse"],
+      Dala: ["Kofar Nassarawa", "Kofar Mata"],
+    },
+  },
+];

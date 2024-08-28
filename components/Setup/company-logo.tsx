@@ -90,7 +90,7 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ onChange }) => {
                 src={image}
                 alt="Company Logo"
                 layout="fill"
-                objectFit="cover"
+                objectFit="contain"
                 className="rounded-md"
               />
             </div>

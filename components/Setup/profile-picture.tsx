@@ -114,7 +114,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ onChange }) => {
         {image && (
           <div className="flex items-end">
             <Button variant="change" size="sm" onClick={handleButtonClick}>
-              Change logo
+              Change Picture
             </Button>
           </div>
         )}

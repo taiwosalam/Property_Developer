@@ -4,7 +4,8 @@ import Select from "../Form/Select/select";
 import FileInput from "../Form/FileInput/file-input";
 import { SectionHeading } from "../Section/section-components";
 import type { CompanyDetails } from "@/app/setup/types";
-import { industryOptions } from "@/data";
+import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
+import { useState, useEffect } from "react";
 
 interface CompanyDetailsProps {
   companyDetails: CompanyDetails;
@@ -15,6 +16,35 @@ const CompanyAddress: React.FC<CompanyDetailsProps> = ({
   onChange,
   companyDetails,
 }) => {
+  const [localGovernments, setLocalGovernments] = useState<string[]>([]);
+  const [cities, setCities] = useState<string[]>([]);
+
+  // Update local governments when the state changes
+ useEffect(() => {
+   if (companyDetails.state) {
+     setLocalGovernments(getLocalGovernments(companyDetails.state));
+
+     // Clear LGA and City when the state changes
+     onChange("lga", ""); // Clear LGA
+     onChange("city", ""); // Clear City
+   } else {
+     setLocalGovernments([]);
+     setCities([]);
+   }
+ }, [companyDetails.state]);
+
+  // Update cities when the state or local government changes
+  useEffect(() => {
+    if (companyDetails.state && companyDetails.lga) {
+      setCities(getCities(companyDetails.state, companyDetails.lga));
+
+      // Clear city if LGA is changed
+      onChange("city", "");
+    } else {
+      setCities([]);
+    }
+  }, [companyDetails.lga]);
+
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading title="company address">
@@ -24,20 +54,24 @@ const CompanyAddress: React.FC<CompanyDetailsProps> = ({
       </SectionHeading>
       <div className="flex gap-5">
         <Select
-          options={[]}
+          options={getAllStates()}
           id="state"
           label="state"
           className="flex-1 max-w-[300px]"
           textStyles={`text-sm font-normal ${
             companyDetails.state === "" ? "bg-transparent" : ""
           }`}
-          onChange={(value) => onChange("state", value)}
+          onChange={(value) => {
+            onChange("state", value); // Update state value
+            onChange("lga", ""); // Clear lga value
+            onChange("city", ""); // Clear city value
+          }}
           value={companyDetails.state}
         />
         <Select
-          options={[]}
+          options={localGovernments}
           id="lga"
-          label="local goovernmeant"
+          label="local goovernment"
           className="flex-1 max-w-[300px]"
           textStyles={`text-sm font-normal ${
             companyDetails.lga === "" ? "bg-transparent" : ""
@@ -78,7 +112,7 @@ const CompanyAddress: React.FC<CompanyDetailsProps> = ({
           sizeUnit="MB"
           className="flex-1"
           placeholder="Click the side button to upload utility"
-          buttonName="Utility"
+          buttonName="Document"
           onChange={(value) => onChange("utilityDocument", value)}
         />
       </div>

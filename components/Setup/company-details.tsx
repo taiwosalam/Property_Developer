@@ -53,7 +53,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({
           label="CAC Certificate"
           className="flex-1"
           placeholder="Click the side button to upload CAC"
-          buttonName="CAC"
+          buttonName="Document"
           fileType="pdf"
           size={5}
           sizeUnit="MB"
@@ -90,7 +90,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({
           sizeUnit="MB"
           className="flex-1"
           placeholder="Click the side button to upload certificate"
-          buttonName="Certificate"
+          buttonName="Document"
           onChange={(value) => onChange("membershipCertificate", value)}
         />
       </div>
