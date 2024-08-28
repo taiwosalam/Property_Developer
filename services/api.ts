@@ -2,6 +2,7 @@ import axios from "axios";
 import { useAuthStoreSelectors } from "@/store/authstrore";
 import { getToken, storeToken } from "@/utils/cookies";
 import { useFormDataStore } from "@/store/formdatastore";
+import { toast } from "sonner";
 
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -32,7 +33,7 @@ instance.interceptors.response.use(
   },
   (error) => {
     // Handle response errors
-    if (error.response.status === 401) {
+    if (error?.response?.status! === 401) {
       const updateAuthenticationState =
         useAuthStoreSelectors.getState().updateAuthenticationState;
 
@@ -50,6 +51,7 @@ export const _protectedRequest = async (url: string) => {
     return res.data;
   } catch (e) {
     console.error(e); // Logs the error.
+    toast.error("An error occurred. Please try again."); // Displays an error toast.
     // Handle errors appropriately
   }
 };
@@ -61,6 +63,7 @@ export const getRequest = async (url: string) => {
     return response.data;
   } catch (error) {
     console.error("GET request error:", error);
+    toast.error(error?.message); // Displays an error toast.
     throw error; // Propagate error for further handling
   }
 };
@@ -73,6 +76,7 @@ export const postRequest = async (url: string, data: any) => {
     return response.data;
   } catch (error) {
     console.error("POST request error:", error);
+    toast.error(error?.message); // Displays an error toast.
     throw error; // Propagate error for further handling
   }
 };
