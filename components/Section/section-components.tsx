@@ -51,7 +51,7 @@ export const Section: React.FC<SectionProps> = ({
 }) => (
   <div className="custom-flex-col gap-6">
     {children}
-    <SectionSeparator />
+    <SectionSeparator className={separatorStyles} />
   </div>
 );
 
@@ -70,7 +70,7 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
           <p className="text-text-label text-base font-medium">See all</p>
           <SVG
             color="#5A5D61"
-            type="arrow_right"
+            type="right_arrow"
             className="w-4 flex justify-center"
           />
         </Link>
