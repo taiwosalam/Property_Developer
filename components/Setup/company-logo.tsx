@@ -1,9 +1,11 @@
 // imports
 import { SectionHeading } from "../Section/section-components";
 import Button from "../Form/Button/button";
+import imageCompression from "browser-image-compression";
 import { useState, useRef } from "react";
 import Image from "next/image";
-import UploadIcon from "/public/icons/upload-image.svg";
+import UploadIcon from "@/public/icons/upload-image.svg";
+import DeleteIcon from "@/public/icons/delete-icon-orange.svg";
 
 interface CompanyLogoProps {
   onChange: (file: File | null) => void;
@@ -19,19 +21,45 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ onChange }) => {
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result as string);
-        onChange(file); // Pass the file to the parent component
-      };
-      reader.readAsDataURL(file);
-    } else {
-      alert("Please select an image file.");
-      onChange(null); // Clear the selection if not a valid image
-    }
+   const handleFileChange = async (
+     event: React.ChangeEvent<HTMLInputElement>
+   ) => {
+     const file = event.target.files?.[0];
+     if (file && file.type.startsWith("image/")) {
+       // Check image size (max 2MB)
+       if (file.size > 2 * 1024 * 1024) {
+         alert("The image size should not exceed 2 MB.");
+         onChange(null); // Clear the file if validation fails
+         return;
+       }
+
+       // Compress and resize the image
+       const options = {
+         maxWidthOrHeight: 105, // Target height
+         useWebWorker: true,
+       };
+
+       try {
+         const compressedFile = await imageCompression(file, options);
+         const reader = new FileReader();
+         reader.onloadend = () => {
+           setImage(reader.result as string);
+           onChange(compressedFile); // Pass the compressed file to the parent component
+         };
+         reader.readAsDataURL(compressedFile);
+       } catch (error) {
+         console.error("Error resizing image:", error);
+         alert("There was an error processing your image. Please try again.");
+       }
+     } else {
+       alert("Please select a valid image file.");
+       onChange(null); // Clear the file if invalid
+     }
+   };
+
+  const handleDeleteImage = () => {
+    setImage(null);
+    onChange(null); // Clear the file when the delete icon is clicked
   };
 
   return (
@@ -42,9 +70,30 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ onChange }) => {
         ideally 160px x 450px.
       </SectionHeading>
       <div className="flex gap-2">
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          className="hidden"
+        />
         {image ? (
           <div className="w-[375px] h-[150px] relative rounded-xl p-6 bg-brand-1 flex items-center justify-center">
-            <div>
+            {/* Delete icon positioned at the top-right corner */}
+            <button
+              type="button"
+              onClick={handleDeleteImage}
+              className="absolute top-[-15px] right-[-25px] z-10"
+              aria-label="Delete"
+            >
+              <Image
+                src={DeleteIcon}
+                alt="Delete Icon"
+                width={40}
+                height={40}
+              />
+            </button>
+            <div className="relative w-full h-full rounded-md overflow-hidden">
               <Image
                 src={image}
                 alt="Company Logo"
@@ -70,13 +119,6 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ onChange }) => {
             <span className="text-text-secondary text-sm font-normal">
               Upload logo here
             </span>
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
-            />
           </button>
         )}
         {image && (

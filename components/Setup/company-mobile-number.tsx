@@ -1,7 +1,7 @@
 import React from "react";
 
 // Imports
-import Input from "../Form/Input/input";
+import PhoneNumberInput from "../Form/PhoneNumber/phone-number";
 import {
   SectionHeading,
   SectionSeparator,
@@ -21,14 +21,14 @@ const CompanyMobileNumber: React.FC<CompanyMobileNumberProps> = ({
       <SectionHeading title="company mobile number">
         Please provide a valid phone number as it is essential for the company
         profile.
-        <SectionSeparator className="max-w-[1200px] mt-1.5" />
+        {/* <SectionSeparator className="max-w-[1200px] mt-1.5" /> */}
       </SectionHeading>
       <div className="flex gap-5">
-        {companyMobileNumber.map((number, index) => (
-          <Input
+        {companyMobileNumber.map((number, index: number) => (
+          <PhoneNumberInput
             key={index}
             id={`number-${index}`}
-            placeholder="08065558146"
+            placeholder="800 0000 000"
             value={number} // Set the value to the corresponding phone number
             className="flex-1 max-w-[300px]"
             inputTextStyles={`text-sm font-normal ${

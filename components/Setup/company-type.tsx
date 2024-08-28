@@ -1,9 +1,12 @@
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { useState } from "react";
 import { Section, SectionHeading } from "../Section/section-components";
+import profileCircleIcon from "@/public/icons/profile-circle.svg";
+import userEditIcon from "@/public/icons/user-edit.svg";
+import userTagIcon from "@/public/icons/user-tag.svg";
 
 interface CompanyTypeItem {
-  icon: string;
+  icon: StaticImageData;
   name: string;
   description: string;
 }
@@ -14,19 +17,19 @@ interface CompanyTypeProps {
 
 const companyTypes: CompanyTypeItem[] = [
   {
-    icon: "profile-circle.svg",
+    icon: profileCircleIcon,
     name: "Property Manager",
     description:
       "A company specializing in the management of tenants and overseeing occupants within gated estates.",
   },
   {
-    icon: "user-edit.svg",
+    icon: userEditIcon,
     name: "Hospitality Manager",
     description:
       "A company specializing in the management of short-stay apartments, holiday homes, and hotels, catering to occupants for brief durations.",
   },
   {
-    icon: "user-tag.svg",
+    icon: userTagIcon,
     name: "Property Developer",
     description:
       "A company or enterprise engaged in the construction and sale of real estate properties, offering options for payment plans and spreading.",
@@ -51,7 +54,7 @@ const SingleCompany: React.FC<
         onChange={onClick}
         className="hidden" // This hides the radio button
       />
-      <Image src={`/icons/${icon}`} alt={icon} width={24} height={24} />
+      <Image src={icon} alt={"icon"} width={24} height={24} />
       <p className="text-text-secondary text-base font-medium">{name}</p>
       <p className="text-text-disabled text-sm font-normal">{description}</p>
     </label>

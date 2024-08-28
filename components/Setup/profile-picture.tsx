@@ -1,9 +1,11 @@
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { useState, useRef } from "react";
+import imageCompression from "browser-image-compression";
 // Import
 import { SectionHeading } from "../Section/section-components";
 import Button from "../Form/Button/button";
 import UploadIcon from "/public/icons/upload-image.svg";
+import DeleteIcon from "@/public/icons/delete-icon-orange.svg";
 
 interface ProfilePictureProps {
   onChange: (file: File | null) => void; // onChange prop to pass file to parent
@@ -19,61 +21,102 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ onChange }) => {
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result as string);
-        onChange(file); 
+      // Check image size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        alert("The image size should not exceed 2 MB.");
+        onChange(null); // Clear the file if validation fails
+        return;
+      }
+
+      // Compress and resize the image
+      const options = {
+        maxWidthOrHeight: 100, // Resize to 100x100 pixels
+        useWebWorker: true,
       };
-      reader.readAsDataURL(file);
+
+      try {
+        const compressedFile = await imageCompression(file, options);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImage(reader.result as string);
+          onChange(compressedFile); // Pass the compressed file to the parent component
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error("Error resizing image:", error);
+        alert("There was an error processing your image. Please try again.");
+      }
     } else {
-      alert("Please select an image file.");
-      onChange(null); 
+      alert("Please select a valid image file.");
+      onChange(null); // Clear the file if invalid
     }
+  };
+
+  const handleDeleteImage = () => {
+    setImage(null);
+    onChange(null); // Clear the file when the delete icon is clicked
   };
 
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading required title="profile picture">
-        The profile photo size should be 180 x 180 pixels with a maximum file
+        The profile photo size should be 100 x 100 pixels with a maximum file
         size of 2MB.
       </SectionHeading>
 
       <div className="flex gap-2">
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          className="hidden"
+        />
         {image ? (
-          <div className="w-[100px] h-[100px] relative rounded-lg">
+          <div className="w-[100px] h-[100px] relative">
+            {/* Delete icon positioned at the top-right corner */}
+            <button
+              type="button"
+              onClick={handleDeleteImage}
+              className="absolute top-[-15px] right-[-25px] z-10"
+              aria-label="Delete"
+            >
+              <Image
+                src={DeleteIcon}
+                alt="Delete Icon"
+                width={40}
+                height={40}
+              />
+            </button>
             <Image
               src={image}
-              width={100}
-              height={100}
-              alt="Company Logo"
+              alt="Profile Picture"
               layout="fill"
               objectFit="cover"
-              // className="rounded-lg"
+              className="rounded-lg"
             />
           </div>
         ) : (
           <button
             type="button"
             onClick={handleButtonClick}
-            className="w-[100px] h-[100px] bg-[#D9D9D9] rounded-lg border border-solid border-neutral-4 flex items-center justify-center cursor-pointer"
+            className="w-[100px] h-[100px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
           >
             <Image
               src={UploadIcon}
               alt="Upload Icon"
-              width={40}
-              height={40}
+              width={25}
+              height={25}
               className="mb-2"
             />
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
-            />
+            <span className="text-text-secondary text-[8.8px] font-normal">
+              Upload Profile Picture
+            </span>
           </button>
         )}
         {image && (

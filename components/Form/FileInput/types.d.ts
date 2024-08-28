@@ -5,5 +5,8 @@ export interface FileInputProps {
   required?: boolean;
   placeholder?: string;
   buttonName?: string;
+  fileType?: string;
+  size: number;
+  sizeUnit: "KB" | "MB";
   onChange?: (value: File) => void;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -17,6 +17,8 @@ import CompanyLogo from "@/components/Setup/company-logo";
 import ProfilePicture from "@/components/Setup/profile-picture";
 import ProfileInformation from "@/components/Setup/profile-information";
 import type { SetupFormData, DirectorDetails } from "./types";
+import { signupCompany } from "./data";
+import { useFormDataStore } from "@/store/formdatastore";
 
 const Setup = () => {
   // Define the index of the last step in the flow
@@ -32,8 +34,13 @@ const Setup = () => {
     companyDetails: {
       registrationDate: "",
       cacCertificate: null,
-      industry: "",
+      cacNumber: "",
+      membershipNumber: "",
       membershipCertificate: null,
+      industry: "",
+      headOfficeAddress: "",
+      utilityDate: "",
+      utilityDocument: null,
     },
     companyMobileNumber: ["", "", "", ""],
     companyLogo: null,
@@ -41,10 +48,10 @@ const Setup = () => {
       profilePicture: null,
       fullName: "",
       titleOrQualification: "",
-      yearsInBusiness: 0,
+      yearsInBusiness: null,
       aboutDirector: "",
       phoneNumber: "",
-      altEmail:''
+      altEmail: "",
     },
   });
 
@@ -76,6 +83,8 @@ const Setup = () => {
     field: keyof DirectorDetails,
     value: string | File | null | number
   ) => {
+    // console.log(formData.directorDetails);
+
     setFormData((prevState) => ({
       ...prevState,
       directorDetails: {
@@ -85,10 +94,64 @@ const Setup = () => {
     }));
   };
 
-  const handleSubmit = async () => {};
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
+  const isFormValid = () => {
+    return (
+      formData.companyType !== "" &&
+      formData.companyName !== "" &&
+      formData.companyDetails.registrationDate !== "" &&
+      formData.companyDetails.cacCertificate !== null &&
+      formData.companyLogo !== null &&
+      formData.directorDetails.profilePicture !== null &&
+      formData.directorDetails.fullName !== ""
+    );
+  };
+
+  // const isFormValid = () => {
+  //   return (
+  //     companyTypeRef.current?.value !== "" &&
+  //     companyNameRef.current?.value !== "" &&
+  //     registrationDateRef.current?.value !== "" &&
+  //     companyLogo !== null &&
+  //     profilePicture !== null &&
+  //     directorFullNameRef.current?.value !== ""
+  //   );
+  // };
+
+  // Access the store's update function
+  const updateFormData = useFormDataStore((state) => state.updateFormData);
+
+  const handleSubmit = async () => {
+    // Extract the required fields from formData
+    const payload = {
+      user_id: "your_user_id",
+      company_name: formData.companyName,
+      type: formData.companyType,
+      industry: formData.companyDetails.industry,
+      cac_certificate: formData.companyDetails.cacCertificate,
+      membership_certificate: formData.companyDetails.membershipCertificate,
+      // cac_number: formData.companyDetails.registrationDate, // Assuming cac_number is the same as registrationDate
+      cac_date: formData.companyDetails.registrationDate,
+      company_phone: formData.companyMobileNumber.filter((num) => num !== ""), // Remove any empty phone numbers
+      logo: formData.companyLogo,
+      profile_pic: formData.directorDetails.profilePicture,
+      director_name: formData.directorDetails.fullName,
+      director_title: formData.directorDetails.titleOrQualification,
+      director_experience: formData.directorDetails.yearsInBusiness,
+      director_email: formData.directorDetails.altEmail,
+      director_about: formData.directorDetails.aboutDirector,
+      director_phone: formData.directorDetails.phoneNumber,
+    };
+
+    updateFormData(payload);
+
+    try {
+      // Call the signupCompny function with the prepared data
+      await signupCompany();
+      console.log("Company successfully signed up!");
+    } catch (error) {
+      console.error("Error signing up company:", error);
+    }
+  };
 
   return (
     <FlowProgress
@@ -112,7 +175,11 @@ const Setup = () => {
             account and company profile.
           </p>
         </div>
-        <Button onClick={handleSubmit} style={{ opacity: 0.5 }}>
+        <Button
+          onClick={handleSubmit}
+          disabled={!isFormValid()}
+          style={{ opacity: isFormValid() ? 1 : "0.5" }}
+        >
           submit
         </Button>
       </div>
@@ -131,6 +198,7 @@ const Setup = () => {
                   formData.companyName === "" ? "bg-transparent" : ""
                 }`}
                 onChange={(value) => handleChange("companyName", value)}
+                value={formData.companyName}
               />
               <Input
                 id="referral-id"
@@ -141,6 +209,7 @@ const Setup = () => {
                   formData.referralId === "" ? "bg-transparent" : ""
                 }`}
                 onChange={(value) => handleChange("referralId", value)}
+                value={formData.referralId}
               />
             </div>
             <CompanyDetails

@@ -1,7 +1,9 @@
 // Imports
 import Input from "../Form/Input/input";
+import Select from "../Form/Select/select";
 import TextArea from "../Form/TextArea/textarea";
 import type { DirectorDetails } from "@/app/setup/types";
+import { titleOrQualifications } from "@/data";
 interface ProfileInformationProps {
   directorDetails: DirectorDetails;
   onChange: (
@@ -22,34 +24,40 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
           id="fullname"
           label="full name"
           placeholder="Ajadi david"
-          className="flex-1 max-w-[300px]"
+          className="flex-1 max-w-[620px]"
           inputTextStyles={`text-sm font-normal ${
             directorDetails.fullName === "" ? "bg-transparent" : ""
           }`}
           value={directorDetails.fullName}
           onChange={(value) => onChange("fullName", value)}
         />
-        <Input
+        <Select
           id="title"
           label="personal title / qualification"
-          placeholder="ESQ"
-          className="flex-1 max-w-[300px]"
-          inputTextStyles={`text-sm font-normal ${
-            directorDetails.titleOrQualification === "" ? "bg-transparent" : ""
-          }`}
+          className="flex w-[300px]"
           value={directorDetails.titleOrQualification}
           onChange={(value) => onChange("titleOrQualification", value)}
+          options={titleOrQualifications}
+          textStyles={`text-sm font-normal ${
+            directorDetails.titleOrQualification === "" ? "bg-transparent" : ""
+          }`}
         />
+      </div>
+      <div className="flex gap-5">
         <Input
           id="business-years"
           label="years in business"
-          placeholder="10"
+          placeholder="5"
           className="flex-1 max-w-[300px]"
           inputTextStyles={`text-sm font-normal ${
-            directorDetails.yearsInBusiness === 0 ? "bg-transparent" : ""
+            !directorDetails.yearsInBusiness ? "bg-transparent" : ""
           }`}
           type="number"
-          value={directorDetails.yearsInBusiness.toString()}
+          value={
+            directorDetails.yearsInBusiness
+              ? directorDetails.yearsInBusiness.toString()
+              : ""
+          }
           onChange={(value) => onChange("yearsInBusiness", value)}
         />
         <Input
@@ -63,26 +71,26 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
           onChange={(value) => onChange("altEmail", value)}
           value={directorDetails.altEmail}
         />
-      </div>
-      <div className="flex gap-5">
-        <TextArea
-          id="about-director"
-          label="About Director"
-          placeholder="Write about the director"
-          value={directorDetails.aboutDirector}
-          onChange={(value) => onChange("aboutDirector", value)}
-          textAreaStyles="w-[620px]"
-        />
         <Input
           id="phone-number"
           label="phone number"
           placeholder="08159225689"
           className="flex-1 max-w-[300px]"
           inputTextStyles={`text-sm font-normal ${
-            directorDetails.phoneNumber === '' ? "bg-transparent" : ""
+            directorDetails.phoneNumber === "" ? "bg-transparent" : ""
           }`}
           value={directorDetails.phoneNumber}
           onChange={(value) => onChange("phoneNumber", value)}
+        />
+      </div>
+      <div className="flex">
+        <TextArea
+          id="about-director"
+          label="About Director"
+          placeholder="Write about the director"
+          value={directorDetails.aboutDirector}
+          onChange={(value) => onChange("aboutDirector", value)}
+          textAreaStyles="w-[940px]"
         />
       </div>
     </div>
