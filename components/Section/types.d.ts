@@ -16,3 +16,9 @@ export interface SectionHeadingProps {
 export interface SectionProps {
   children: React.ReactNode;
 }
+
+export interface SectionContainerProps {
+  href?: string;
+  heading: string;
+  children: React.ReactNode;
+}
