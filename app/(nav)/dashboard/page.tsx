@@ -6,17 +6,24 @@ import Avatar from "@/public/empty/avatar.png";
 
 // Imports
 import Card from "@/components/dashboard/card";
-import DashboarddCalendar from "@/components/dashboard/calendar";
-import { dashboardCardData, walletBalanceCardData } from "./data";
+
+import {
+  complaintsData,
+  dashboardCardData,
+  recentMessagesData,
+  walletBalanceCardData,
+} from "./data";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import NotificationCard from "@/components/dashboard/notification-card";
+import { DashboardChart } from "@/components/dashboard/chart";
+import DashboarddCalendar from "@/components/dashboard/calendar";
 import { SectionContainer } from "@/components/Section/section-components";
 
 const Dashboard = () => {
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full md:flex gap-x-10">
-        <div className="w-full md:w-[70%] h-full space-y-10">
+        <div className="w-full md:w-[70%] h-full space-y-8">
           <div className="w-full h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {dashboardCardData.map((card, index) => (
               <Card
@@ -29,28 +36,36 @@ const Dashboard = () => {
               />
             ))}
           </div>
-          {
-            // <div className="h-[300px]">{/* performance graph */}</div>
-            // <div className="h-[300px]">{/* listing grap */}</div>
-          }
+          <div className="w-full h-fit">
+            <DashboardChart />
+          </div>
+          <div className="w-full h-fit">
+            <DashboardChart />
+          </div>
         </div>
-        <div className="w-full md:w-[30%] h-full space-y-4">
+        <div className="w-full md:w-[30%] h-full space-y-7">
           <WalletBalanceCard
             mainBalance={walletBalanceCardData.mainBalance}
             cautionDeposit={walletBalanceCardData.cautionDeposit}
           />
           <DashboarddCalendar />
           <div>
-            <NotificationCard />
+            <NotificationCard
+              sectionHeader="Recent Messages"
+              notifications={recentMessagesData}
+            />
           </div>
           <div>
-            <NotificationCard />
+            <NotificationCard
+              sectionHeader="Complaints"
+              notifications={complaintsData}
+            />
           </div>
         </div>
       </div>
       <SectionContainer heading="Recent invoice" href="/">
         <div className="rounded-lg overflow-hidden">
-          <table>
+          <table className="dash-table">
             <colgroup>
               <col className="w-[72px]" />
             </colgroup>

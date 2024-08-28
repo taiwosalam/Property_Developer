@@ -107,3 +107,84 @@ export const walletBalanceCardData = {
   mainBalance: 1000,
   cautionDeposit: 200,
 };
+
+export const recentMessagesData = [
+  {
+    avatarFallback: "OM",
+    avatarSrc: "/empty/avatar.png",
+    name: "Amori Ademakinwa",
+    message: "Hello, this is Makinwa, and i want to ask you how",
+    time: "2:30pm",
+  },
+  {
+    avatarFallback: "JL",
+    avatarSrc: "/empty/avatar.png",
+    name: "Amori Ademakinwa",
+    message: "Hello, this is Makinwa, and i want to ask you how",
+    time: "2:30pm",
+  },
+  {
+    avatarFallback: "IN",
+    avatarSrc: "/empty/avatar.png",
+    name: "Amori Ademakinwa",
+    message: "Hello, this is Makinwa, and i want to ask you how",
+    time: "2:30pm",
+  },
+  {
+    avatarFallback: "WK",
+    avatarSrc: "/empty/avatar.png",
+    name: "Amori Ademakinwa",
+    message: "Hello, this is Makinwa, and i want to ask you how",
+    time: "2:30pm",
+  },
+  {
+    avatarFallback: "SD",
+    avatarSrc: "/empty/avatar.png",
+    name: "Amori Ademakinwa",
+    message: "Hello, this is Makinwa, and i want to ask you how",
+    time: "2:30pm",
+  },
+];
+
+export const complaintsData = [
+  {
+    avatarFallback: "OM",
+    avatarSrc: "/empty/avatar.png",
+    name: "Amori Ademakinwa",
+    message: "Hello, this is Makinwa, and i want to ask you how",
+    time: "2:30pm",
+    title: "Door complain",
+  },
+  {
+    avatarFallback: "JL",
+    avatarSrc: "/empty/avatar.png",
+    name: "Amori Ademakinwa",
+    message: "Hello, this is Makinwa, and i want to ask you how",
+    time: "2:30pm",
+    title: "Visitor door and water",
+  },
+  {
+    avatarFallback: "IN",
+    avatarSrc: "/empty/avatar.png",
+    name: "Amori Ademakinwa",
+    message: "Hello, this is Makinwa, and i want to ask you how",
+    time: "2:30pm",
+    title: "Water complain",
+  },
+  {
+    avatarFallback: "WK",
+    avatarSrc: "/empty/avatar.png",
+    name: "Amori Ademakinwa",
+    message: "Hello, this is Makinwa, and i want to ask you how",
+    time: "2:30pm",
+    title: "Door complain",
+  },
+  {
+    avatarFallback: "SD",
+    avatarSrc: "/empty/avatar.png",
+    name: "Amori Ademakinwa",
+    message: "Hello, this is Makinwa, and i want to ask you how",
+    time: "2:30pm",
+    title: "Door complain",
+  },
+];
