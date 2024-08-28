@@ -62,7 +62,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
                   alt="icon"
                   width={12}
                   height={12}
-                  className="mx-auto"
+                  className="w-[14px] h-[14px]"
                 />
               </div>
               <p className="capitalize text-white text-xs font-normal">

@@ -2,6 +2,7 @@ import axios from "axios";
 import { useAuthStoreSelectors } from "@/store/authstrore";
 import { getToken, storeToken } from "@/utils/cookies";
 import { useFormDataStore } from "@/store/formdatastore";
+import { toast } from "sonner";
 
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -32,7 +33,7 @@ instance.interceptors.response.use(
   },
   (error) => {
     // Handle response errors
-    if (error.response.status === 401) {
+    if (error?.response?.status! === 401) {
       const updateAuthenticationState =
         useAuthStoreSelectors.getState().updateAuthenticationState;
 
@@ -50,6 +51,7 @@ export const _protectedRequest = async (url: string) => {
     return res.data;
   } catch (e) {
     console.error(e); // Logs the error.
+    toast.error("An error occurred. Please try again."); // Displays an error toast.
     // Handle errors appropriately
   }
 };
@@ -59,8 +61,10 @@ export const getRequest = async (url: string) => {
     const formData = useFormDataStore.getState().formData; // Access form data from the store
     const response = await instance.get(url, { params: formData }); // Include form data in the request
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("GET request error:", error);
+    const errorMessage = error?.message || "An unexpected error occurred.";
+    toast.error(errorMessage); // Displays the error message or a fallback message.
     throw error; // Propagate error for further handling
   }
 };
@@ -71,8 +75,10 @@ export const postRequest = async (url: string, data: any) => {
     const formData = useFormDataStore.getState().formData; // Access form data from the store
     const response = await instance.post(url, { ...data, ...formData }); // Include form data in the request
     return response.data;
-  } catch (error) {
-    console.error("POST request error:", error);
+  } catch (error: any) {
+    console.error("GET request error:", error);
+    const errorMessage = error?.message || "An unexpected error occurred.";
+    toast.error(errorMessage); // Displays the error message or a fallback message.
     throw error; // Propagate error for further handling
   }
 };

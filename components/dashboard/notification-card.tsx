@@ -1,86 +1,54 @@
-"use client";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import React from "react";
+import { notificationCardProps } from "./types";
 
-export default function NotificationCard() {
+const NotificationCard: React.FC<notificationCardProps> = ({
+  sectionHeader,
+  notifications,
+}) => {
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-[16px]">
-          <h3 className="font-medium">Recent {}</h3>
-          <Link href="" className="text-[#4F5E71] flex items-center">
-            <p>See all</p>
+          <p className="font-medium">{sectionHeader}</p>
+          <p className="text-[#4F5E71] flex items-center">
+            See all
             <ChevronRight className="w-5 h-5" />
-          </Link>
+          </p>
         </CardTitle>
       </CardHeader>
       <CardContent className="grid gap-8">
-        <div className="flex items-center gap-4">
-          <Avatar className="hidden h-9 w-9 sm:flex">
-            <AvatarImage src="/empty/avatar.png" alt="Avatar" />
-            <AvatarFallback>OM</AvatarFallback>
-          </Avatar>
-          <div className="grid gap-1">
-            <p className="text-sm font-medium text-text-primary">
-              Olivia Martin
-            </p>
-            <p className="text-sm text-muted-foreground">
-              olivia.martin@email.com
-            </p>
+        {notifications.map((notification, index) => (
+          <div className="flex items-center gap-3" key={index}>
+            <Avatar className="hidden h-9 w-9 sm:flex">
+              <AvatarImage src={notification.avatarSrc} alt="Avatar" />
+              <AvatarFallback>{notification.avatarFallback}</AvatarFallback>
+            </Avatar>
+            <div className="w-full gap-1">
+              <div className="w-full flex items-center justify-between">
+                <p className="text-sm font-medium text-text-primary">
+                  {notification.name}
+                </p>
+                <p className="text-[10px] text-text-disabled">
+                  {notification.time}
+                </p>
+              </div>
+              {notification.title && (
+                <p className="text-xs text-text-secondary capitalize">
+                  {notification.title}
+                </p>
+              )}
+              <p className="text-xs text-text-tertiary font-normal">
+                {notification.message.trim().slice(0, 35)}...
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <Avatar className="hidden h-9 w-9 sm:flex">
-            <AvatarImage src="/empty/avatar.png" alt="Avatar" />
-            <AvatarFallback>JL</AvatarFallback>
-          </Avatar>
-          <div className="grid gap-1">
-            <p className="text-sm font-medium text-text-primary">Jackson Lee</p>
-            <p className="text-sm text-muted-foreground">
-              jackson.lee@email.com
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <Avatar className="hidden h-9 w-9 sm:flex">
-            <AvatarImage src="/empty/avatar.png" alt="Avatar" />
-            <AvatarFallback>IN</AvatarFallback>
-          </Avatar>
-          <div className="grid gap-1">
-            <p className="text-sm font-medium text-text-primary">
-              Isabella Nguyen
-            </p>
-            <p className="text-sm text-muted-foreground">
-              isabella.nguyen@email.com
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <Avatar className="hidden h-9 w-9 sm:flex">
-            <AvatarImage src="/empty/avatar.png" alt="Avatar" />
-            <AvatarFallback>WK</AvatarFallback>
-          </Avatar>
-          <div className="grid gap-1">
-            <p className="text-sm font-medium text-text-primary">William Kim</p>
-            <p className="text-sm text-muted-foreground">will@email.com</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <Avatar className="hidden h-9 w-9 sm:flex">
-            <AvatarImage src="/empty/avatar.png" alt="Avatar" />
-            <AvatarFallback>SD</AvatarFallback>
-          </Avatar>
-          <div className="grid gap-1">
-            <p className="text-sm font-medium text-text-primary">Sofia Davis</p>
-            <p className="text-sm text-muted-foreground">
-              sofia.davis@email.com
-            </p>
-          </div>
-        </div>
+        ))}
       </CardContent>
     </Card>
   );
-}
+};
+
+export default NotificationCard;

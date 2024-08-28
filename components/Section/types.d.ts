@@ -17,3 +17,9 @@ export interface SectionProps {
   separatorStyles?: string;
   children: React.ReactNode;
 }
+
+export interface SectionContainerProps {
+  href?: string;
+  heading: string;
+  children: React.ReactNode;
+}

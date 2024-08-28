@@ -11,10 +11,10 @@ import Moon from "@/public/icons/moon.svg";
 import Avatar from "@/public/empty/avatar.png";
 
 // Imports
+import SVG from "@/components/SVG/svg";
 import Sidenav from "@/components/Nav/sidenav";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
-import SVG from "@/components/SVG/svg";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const sidenav_width = 250;
@@ -22,7 +22,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [sidenavIsOpen, setSidenavIsOpen] = useState(true);
 
   return (
-    <div>
+    <>
       <div className="sticky top-0 z-[2] w-full h-[100px] px-10 flex items-center border-b border-solid border-neutral-2 bg-white">
         <div className="flex w-full gap-6 justify-between">
           <div className="flex flex-1 gap-6 items-center">
@@ -88,19 +88,19 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <div
           style={{
             height: "calc(100vh - 100px)",
-            width: sidenavIsOpen ? sidenav_width : 0,
+            minWidth: sidenavIsOpen ? sidenav_width : 0,
           }}
           className="sticky top-[100px] w-0 overflow-x-hidden overflow-y-auto no-scrollbar bg-white"
         >
           <Sidenav />
         </div>
         <div className="custom-flex-col flex-1 bg-neutral-2">
-          <div className="custom-flex-col">
+          <div className="custom-flex-col sticky top-[99px] bg-white z-[2]">
             <div
               className="h-[1px]"
               style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
             ></div>
-            <div className="h-[50px] pl-3 pr-10 flex items-center justify-between bg-white">
+            <div className="h-[50px] pl-3 pr-10 flex items-center justify-between bg-white ">
               <button onClick={() => setSidenavIsOpen((prev) => !prev)}>
                 <SVG type="sidebar" color="#0033C4" className="w-8 h-8" />
               </button>
@@ -113,10 +113,10 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
             ></div>
           </div>
-          <div className="p-6">{children}</div>
+          <div className="p-6 relative z-[1]">{children}</div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

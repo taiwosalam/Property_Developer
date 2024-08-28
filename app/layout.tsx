@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 
 // Styles
 import "@/styles/globals.css";
 import "@/styles/mobile.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import { dmSans } from "@/utils/fonts";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,8 +17,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${dmSans.className} antialiased`}
+        suppressHydrationWarning
+      >
+        <div className="w-full relative z-[1]">
+          {children}{" "}
+          <Toaster richColors className={`${dmSans.className} antialiased`} />
+        </div>
+        <div id="portal" className="z-[2]"></div>
+      </body>
     </html>
   );
 }

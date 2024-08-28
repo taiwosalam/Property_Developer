@@ -18,6 +18,18 @@ body {
   min-height: 100vh;
 }
 
+#portal {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#portal > * {
+  position: absolute;
+  pointer-events: all;
+}
+
 /* Custom utilities */
 /* -------------------------------------------------------------- */
 
@@ -28,6 +40,18 @@ body {
 
 .custom-flex-col > * {
   width: 100%;
+}
+
+.custom-truncated {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-truncated {
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
 }
 
 /* -------------------------------------------------------------- */
@@ -113,4 +137,39 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .nav-button:hover path {
   stroke: white;
+}
+
+.dash-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.dash-table thead {
+  @apply bg-brand-5;
+}
+
+.dash-table tbody tr:nth-child(2n + 1) {
+  @apply bg-brand-1;
+}
+
+.dash-table th {
+  white-space: nowrap;
+}
+
+.dash-table th,
+.dash-table td {
+  height: 76px;
+  text-transform: capitalize;
+  text-align: start;
+  padding: 12px 16px;
+
+  @apply text-text-primary text-base font-medium;
+}
+
+.dash-table td p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* @apply custom-truncated; */
 }

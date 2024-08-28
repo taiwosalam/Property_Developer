@@ -1,11 +1,16 @@
+import Image from "next/image";
+
 // Types
+import Link from "next/link";
 import clsx from "clsx";
 import type {
   SectionDescProps,
   SectionTitleProps,
   SectionHeadingProps,
   SectionProps,
+  SectionContainerProps,
 } from "./types";
+import SVG from "../SVG/svg";
 
 export const SectionTitle: React.FC<SectionTitleProps> = ({
   children,
@@ -46,6 +51,31 @@ export const Section: React.FC<SectionProps> = ({
 }) => (
   <div className="custom-flex-col gap-6">
     {children}
-    <SectionSeparator className={separatorStyles} />
+    <SectionSeparator />
+  </div>
+);
+
+export const SectionContainer: React.FC<SectionContainerProps> = ({
+  href,
+  heading,
+  children,
+}) => (
+  <div className="custom-flex-col gap-4">
+    <div className="flex items-center justify-between">
+      <h1 className="text-text-primary text-xl font-medium capitalize">
+        {heading}
+      </h1>
+      {href && (
+        <Link href={href} className="flex items-center gap-1">
+          <p className="text-text-label text-base font-medium">See all</p>
+          <SVG
+            color="#5A5D61"
+            type="arrow_right"
+            className="w-4 flex justify-center"
+          />
+        </Link>
+      )}
+    </div>
+    {children}
   </div>
 );
