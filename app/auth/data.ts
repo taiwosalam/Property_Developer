@@ -29,19 +29,29 @@ export const login = async (email: string, password: string) => {
 
 // Signup function
 export const signup = async () => {
+  var status = false;
   try {
     const result = await postRequest("/initiate", {}); // Empty object if no additional data is needed
     console.log(result);
+    if (result?.status === "success") {
+      status = true;
+    }
   } catch (error) {
     console.error("Error fetching result:", error);
   }
+  return status;
 };
 
 export const verifyEmail = async (otp: string) => {
+  var status = false;
   try {
     const result = await postRequest("/verify", { otp }); // Send the OTP to the backend
     console.log(result);
+    if (result?.status === "success") {
+      status = true;
+    }
   } catch (error) {
     console.error("Error verifying email:", error);
   }
+  return status;
 };
