@@ -1,7 +1,12 @@
 import Card from "@/components/dashboard/card";
 import React from "react";
 
-import { dashboardCardData, walletBalanceCardData } from "./data";
+import {
+  complaintsData,
+  dashboardCardData,
+  recentMessagesData,
+  walletBalanceCardData,
+} from "./data";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import DashboarddCalendar from "@/components/dashboard/calendar";
 import NotificationCard from "@/components/dashboard/notification-card";
@@ -33,10 +38,16 @@ const Dashboard = () => {
           />
           <DashboarddCalendar />
           <div>
-            <NotificationCard />
+            <NotificationCard
+              sectionHeader="Recent Messages"
+              notifications={recentMessagesData}
+            />
           </div>
           <div>
-            <NotificationCard />
+            <NotificationCard
+              sectionHeader="Complaints"
+              notifications={complaintsData}
+            />
           </div>
         </div>
       </div>

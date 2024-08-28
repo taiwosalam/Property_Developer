@@ -14,3 +14,16 @@ export interface walletBalanceCardProps
   mainBalance: number;
   cautionDeposit: number;
 }
+
+export interface notificationCardProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  sectionHeader: string;
+  notifications: {
+    avatarFallback: string;
+    avatarSrc: string;
+    name: string;
+    message: string;
+    time: string;
+    title?: string;
+  }[];
+}
