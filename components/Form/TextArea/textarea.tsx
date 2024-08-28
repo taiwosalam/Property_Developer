@@ -1,13 +1,12 @@
-"use client";
 import { useEffect, useRef, useState } from "react";
-// Types
+import dynamic from "next/dynamic";
 import type { TextAreaProps } from "./types";
-
-// Imports
 import clsx from "clsx";
 import Label from "../Label/label";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+
+// Dynamically import ReactQuill with ssr option set to false
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const TextArea: React.FC<TextAreaProps> = ({
   id,
@@ -20,17 +19,20 @@ const TextArea: React.FC<TextAreaProps> = ({
   onChange,
   textAreaStyles,
 }) => {
-  // Reference to the input element
-
-  const quillRef = useRef<ReactQuill>(null);
+  const quillRef = useRef<any>(null);
   const [editorClass, setEditorClass] = useState<string>("");
+  const [mounted, setMounted] = useState(false);
+
   const handleChange = (content: string) => {
     if (onChange) {
       onChange(content);
     }
   };
 
-  // Set the input's "value" to an "initial value" when component mounts or when initialValue changes
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (initialValue !== undefined && onChange != undefined) {
       onChange(initialValue);
@@ -38,33 +40,30 @@ const TextArea: React.FC<TextAreaProps> = ({
   }, [initialValue, onChange]);
 
   useEffect(() => {
-    const editor = quillRef.current?.getEditor();
-    if (editor) {
-      const updateBackground = () => {
-        const content = editor.getText().trim();
-        if (content) {
-          setEditorClass("quill-editor-content-filled");
-        } else {
-          setEditorClass("");
-        }
-      };
+    if (mounted) {
+      const editor = quillRef.current?.getEditor();
+      if (editor) {
+        const updateBackground = () => {
+          const content = editor.getText().trim();
+          setEditorClass(content ? "quill-editor-content-filled" : "");
+        };
 
-      // Update the background when the content changes
-      editor.on("text-change", updateBackground);
+        editor.on("text-change", updateBackground);
+        updateBackground();
 
-      // Initial check for the existing content
-      updateBackground();
-
-      // Cleanup
-      return () => {
-        editor.off("text-change", updateBackground);
-      };
+        return () => {
+          editor.off("text-change", updateBackground);
+        };
+      }
     }
-  }, [value]);
+  }, [value, mounted]);
+
+  if (!mounted) {
+    return null; // or a loading placeholder
+  }
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
-      {/* Render the label if provided */}
       {label && (
         <Label id={id} required={required}>
           {label}
@@ -72,7 +71,6 @@ const TextArea: React.FC<TextAreaProps> = ({
       )}
       <div className="flex flex-col">
         <ReactQuill
-          ref={quillRef}
           id={id}
           value={value}
           onChange={handleChange}
@@ -84,7 +82,6 @@ const TextArea: React.FC<TextAreaProps> = ({
             },
           }}
         />
-        {/* Custom toolbar container */}
         <div id="toolbar" className="quill-toolbar bg-[#F3F6F9]">
           <button className="ql-bold">Bold</button>
           <button className="ql-italic">Italic</button>

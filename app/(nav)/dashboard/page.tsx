@@ -18,6 +18,7 @@ import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
 import DashboarddCalendar from "@/components/dashboard/calendar";
 import { SectionContainer } from "@/components/Section/section-components";
+import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 
 const Dashboard = () => {
   return (
@@ -112,7 +113,9 @@ const Dashboard = () => {
           </table>
         </div>
       </SectionContainer>
-      <div>{/* {Todo List} */}</div>
+      <SectionContainer heading="To do list">
+        <KanbanBoard />
+      </SectionContainer>
     </section>
   );
 };
