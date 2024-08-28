@@ -247,4 +247,19 @@ export const svgs = {
       />
     </svg>
   ),
+  arrow_right: (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="6"
+      height="12"
+      viewBox="0 0 6 12"
+      fill="none"
+    >
+      <path
+        d="M0.666668 1.33317L5.33333 5.99984L0.666668 10.6665"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
 };

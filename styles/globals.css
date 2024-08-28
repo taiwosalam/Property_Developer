@@ -30,6 +30,18 @@ body {
   width: 100%;
 }
 
+.custom-truncated {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-truncated {
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+}
+
 /* -------------------------------------------------------------- */
 
 /* Overwriting default behaviour */
@@ -68,4 +80,39 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .nav-button:hover path {
   stroke: white;
+}
+
+table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+thead {
+  @apply bg-brand-5;
+}
+
+tbody tr:nth-child(2n + 1) {
+  @apply bg-brand-1;
+}
+
+th {
+  white-space: nowrap;
+}
+
+th,
+td {
+  height: 76px;
+  text-transform: capitalize;
+  text-align: start;
+  padding: 12px 16px;
+
+  @apply text-text-primary text-base font-medium;
+}
+
+td p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* @apply custom-truncated; */
 }
