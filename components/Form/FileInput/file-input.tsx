@@ -24,6 +24,10 @@ const FileInput: React.FC<FileInputProps> = ({
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileURL, setFileURL] = useState<string | null>(null);
 
+  const acceptedFormats = fileType
+    ? [`.${fileType}`, "image/jgp", "image/jpeg", "image/png", "image/gif"]
+    : ["image/jgp", "image/jpeg", "image/png", "image/gif"];
+
   const handleButtonClick = () => {
     if (inputRef.current) {
       inputRef.current.click(); // Open file dialog
@@ -33,9 +37,15 @@ const FileInput: React.FC<FileInputProps> = ({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Validate file type if fileType prop is provided
-      if (fileType && !file.name.endsWith(`.${fileType}`)) {
-        alert(`Please upload a ${fileType} file.`);
+      const fileExtension = file.name.split(".").pop()?.toLowerCase();
+      const typeOfFile = file.type;
+
+      // Validate file type
+      if (
+        !acceptedFormats.includes(`.${fileExtension}`) &&
+        !acceptedFormats.includes(typeOfFile)
+      ) {
+        alert(`Please upload a ${fileType} or image file.`);
         return;
       }
 
@@ -64,9 +74,12 @@ const FileInput: React.FC<FileInputProps> = ({
   };
 
   const handleDeleteFile = () => {
+    if (inputRef.current) {
+      inputRef.current.value = ""; // Reset file input value
+    }
     setFileName(null);
     setFileURL(null);
-    onChange && onChange(null)
+    onChange && onChange(null);
   };
 
   return (
@@ -96,7 +109,7 @@ const FileInput: React.FC<FileInputProps> = ({
               borderColor: "rgba(186, 199, 213, 0.50)",
             }}
           >
-            <span>
+            <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
               {fileName
                 ? fileName
                 : placeholder

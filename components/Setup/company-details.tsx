@@ -39,7 +39,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({
           required
           label="CAC Registration Number"
           id="cac-number"
-          placeholder="CAC3787256"
+          placeholder="Write here"
           value={companyDetails.cacNumber}
           onChange={(value) => onChange("cacNumber", value)}
           className="flex-1 max-w-[300px]"
@@ -73,7 +73,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({
         <Input
           label="Membership Number"
           id="membership-number"
-          placeholder="56"
+          placeholder="Write here"
           value={companyDetails.membershipNumber}
           onChange={(value) => onChange("membershipNumber", value)}
           className="flex-1 max-w-[300px]"

@@ -1,5 +1,6 @@
 // Imports
 import Input from "../Form/Input/input";
+import PhoneNumberInput from "../Form/PhoneNumber/phone-number";
 import Select from "../Form/Select/select";
 import TextArea from "../Form/TextArea/textarea";
 import type { DirectorDetails } from "@/app/setup/types";
@@ -23,7 +24,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
           required
           id="fullname"
           label="full name"
-          placeholder="Ajadi david"
+          placeholder="Write here"
           className="flex-1 max-w-[620px]"
           inputTextStyles={`text-sm font-normal ${
             directorDetails.fullName === "" ? "bg-transparent" : ""
@@ -44,26 +45,27 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
         />
       </div>
       <div className="flex gap-5">
-        <Input
+        <Select
           id="business-years"
           label="years in business"
           placeholder="5"
           className="flex-1 max-w-[300px]"
-          inputTextStyles={`text-sm font-normal ${
+          textStyles={`text-sm font-normal ${
             !directorDetails.yearsInBusiness ? "bg-transparent" : ""
           }`}
-          type="number"
           value={
             directorDetails.yearsInBusiness
               ? directorDetails.yearsInBusiness.toString()
               : ""
           }
+          options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
           onChange={(value) => onChange("yearsInBusiness", value)}
         />
         <Input
           id="alt-email"
           label="alternative email"
-          placeholder="ajadidavid@gmail.com"
+          type="email"
+          placeholder="example@mail.com"
           className="flex-1 max-w-[300px]"
           inputTextStyles={`text-sm font-normal ${
             directorDetails.altEmail === "" ? "bg-transparent" : ""
@@ -71,10 +73,10 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
           onChange={(value) => onChange("altEmail", value)}
           value={directorDetails.altEmail}
         />
-        <Input
+        <PhoneNumberInput
           id="phone-number"
           label="phone number"
-          placeholder="08159225689"
+          placeholder="80 0000 0000"
           className="flex-1 max-w-[300px]"
           inputTextStyles={`text-sm font-normal ${
             directorDetails.phoneNumber === "" ? "bg-transparent" : ""

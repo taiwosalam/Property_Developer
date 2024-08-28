@@ -62,7 +62,7 @@ const CompanyAddress: React.FC<CompanyDetailsProps> = ({
         <Input
           label="head office address"
           id="head-office-address"
-          placeholder="3 Bodija, Ibadan"
+          placeholder="Write here"
           value={companyDetails.headOfficeAddress}
           onChange={(value) => onChange("headOfficeAddress", value)}
           className="flex-1 max-w-[620px]"

@@ -196,7 +196,7 @@ const Setup = () => {
                 required
                 id="company-name"
                 label="company name"
-                placeholder="Taiwo Salam & Co. Properties Ltd"
+                placeholder="Write here"
                 className="flex-1 max-w-[480px]"
                 inputTextStyles={`text-sm font-normal ${
                   formData.companyName === "" ? "bg-transparent" : ""
