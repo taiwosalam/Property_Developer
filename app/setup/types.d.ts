@@ -8,7 +8,9 @@ export interface CompanyDetails {
   industry: string;
   membershipCertificate: File | null;
   headOfficeAddress: string;
-  utilityDate: string;
+  state: string;
+  lga: string;
+  city: string;
   utilityDocument: File | null;
 }
 

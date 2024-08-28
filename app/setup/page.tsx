@@ -14,6 +14,7 @@ import {
 import FlowProgress from "@/components/FlowProgress/flow-progress";
 import CompanyMobileNumber from "@/components/Setup/company-mobile-number";
 import CompanyLogo from "@/components/Setup/company-logo";
+import CompanyAddress from "@/components/Setup/company-address";
 import ProfilePicture from "@/components/Setup/profile-picture";
 import ProfileInformation from "@/components/Setup/profile-information";
 import type { SetupFormData, DirectorDetails } from "./types";
@@ -38,8 +39,10 @@ const Setup = () => {
       membershipNumber: "",
       membershipCertificate: null,
       industry: "",
+      state: "",
+      lga: "",
+      city: "",
       headOfficeAddress: "",
-      utilityDate: "",
       utilityDocument: null,
     },
     companyMobileNumber: ["", "", "", ""],
@@ -100,6 +103,7 @@ const Setup = () => {
       formData.companyName !== "" &&
       formData.companyDetails.registrationDate !== "" &&
       formData.companyDetails.cacCertificate !== null &&
+      formData.companyDetails.cacNumber !== "" &&
       formData.companyLogo !== null &&
       formData.directorDetails.profilePicture !== null &&
       formData.directorDetails.fullName !== ""
@@ -213,6 +217,15 @@ const Setup = () => {
               />
             </div>
             <CompanyDetails
+              onChange={(field, value) =>
+                handleChange("companyDetails", {
+                  ...formData.companyDetails,
+                  [field]: value,
+                })
+              }
+              companyDetails={formData.companyDetails}
+            />
+            <CompanyAddress
               onChange={(field, value) =>
                 handleChange("companyDetails", {
                   ...formData.companyDetails,

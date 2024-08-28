@@ -1,12 +1,10 @@
-import Image, { StaticImageData } from "next/image";
 import { useState } from "react";
 import { Section, SectionHeading } from "../Section/section-components";
-import profileCircleIcon from "@/public/icons/profile-circle.svg";
-import userEditIcon from "@/public/icons/user-edit.svg";
-import userTagIcon from "@/public/icons/user-tag.svg";
-
+import clsx from "clsx";
+import SVG from "../SVG/svg";
+import { SVGType } from "../SVG/types";
 interface CompanyTypeItem {
-  icon: StaticImageData;
+  iconType: SVGType;
   name: string;
   description: string;
 }
@@ -17,19 +15,19 @@ interface CompanyTypeProps {
 
 const companyTypes: CompanyTypeItem[] = [
   {
-    icon: profileCircleIcon,
+    iconType: "profile_circle",
     name: "Property Manager",
     description:
       "A company specializing in the management of tenants and overseeing occupants within gated estates.",
   },
   {
-    icon: userEditIcon,
+    iconType: "user_edit",
     name: "Hospitality Manager",
     description:
       "A company specializing in the management of short-stay apartments, holiday homes, and hotels, catering to occupants for brief durations.",
   },
   {
-    icon: userTagIcon,
+    iconType: "user_tag",
     name: "Property Developer",
     description:
       "A company or enterprise engaged in the construction and sale of real estate properties, offering options for payment plans and spreading.",
@@ -38,7 +36,7 @@ const companyTypes: CompanyTypeItem[] = [
 
 const SingleCompany: React.FC<
   CompanyTypeItem & { onClick: () => void; selected: boolean }
-> = ({ icon, name, description, onClick, selected }) => {
+> = ({ iconType, name, description, onClick, selected }) => {
   return (
     <label
       className={`p-4 rounded-lg cursor-pointer ${
@@ -54,8 +52,15 @@ const SingleCompany: React.FC<
         onChange={onClick}
         className="hidden" // This hides the radio button
       />
-      <Image src={icon} alt={"icon"} width={24} height={24} />
-      <p className="text-text-secondary text-base font-medium">{name}</p>
+      <SVG type={iconType} color={selected ? "#0033C4" : "#3F4247"} />
+      <p
+        className={clsx(
+          "text-base font-medium",
+          selected ? "text-brand-9" : "text-text-secondary"
+        )}
+      >
+        {name}
+      </p>
       <p className="text-text-disabled text-sm font-normal">{description}</p>
     </label>
   );

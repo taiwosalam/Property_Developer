@@ -1,7 +1,6 @@
 // imports
 import { SectionHeading } from "../Section/section-components";
 import Button from "../Form/Button/button";
-import imageCompression from "browser-image-compression";
 import { useState, useRef } from "react";
 import Image from "next/image";
 import UploadIcon from "@/public/icons/upload-image.svg";
@@ -21,41 +20,34 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ onChange }) => {
     }
   };
 
-   const handleFileChange = async (
-     event: React.ChangeEvent<HTMLInputElement>
-   ) => {
-     const file = event.target.files?.[0];
-     if (file && file.type.startsWith("image/")) {
-       // Check image size (max 2MB)
-       if (file.size > 2 * 1024 * 1024) {
-         alert("The image size should not exceed 2 MB.");
-         onChange(null); // Clear the file if validation fails
-         return;
-       }
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      // Check image size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("The image size should not exceed 5 MB.");
+        onChange(null); // Clear the file if validation fails
+        return;
+      }
 
-       // Compress and resize the image
-       const options = {
-         maxWidthOrHeight: 105, // Target height
-         useWebWorker: true,
-       };
-
-       try {
-         const compressedFile = await imageCompression(file, options);
-         const reader = new FileReader();
-         reader.onloadend = () => {
-           setImage(reader.result as string);
-           onChange(compressedFile); // Pass the compressed file to the parent component
-         };
-         reader.readAsDataURL(compressedFile);
-       } catch (error) {
-         console.error("Error resizing image:", error);
-         alert("There was an error processing your image. Please try again.");
-       }
-     } else {
-       alert("Please select a valid image file.");
-       onChange(null); // Clear the file if invalid
-     }
-   };
+      try {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImage(reader.result as string);
+          onChange(file); // Pass the compressed file to the parent component
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error resizing image:", error);
+        alert("There was an error processing your image. Please try again.");
+      }
+    } else {
+      alert("Please select a valid image file.");
+      onChange(null); // Clear the file if invalid
+    }
+  };
 
   const handleDeleteImage = () => {
     setImage(null);
@@ -66,7 +58,7 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ onChange }) => {
     <div className="custom-flex-col gap-5">
       <SectionHeading required title="company logo">
         Ensure that your company logo has a white background, with a maximum
-        size of 2MB. The picture must be between 250 to 600 pixels wide, or
+        size of 5MB. The picture must be between 250 to 600 pixels wide, or
         ideally 160px x 450px.
       </SectionHeading>
       <div className="flex gap-2">
@@ -78,7 +70,7 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ onChange }) => {
           className="hidden"
         />
         {image ? (
-          <div className="w-[375px] h-[150px] relative rounded-xl p-6 bg-brand-1 flex items-center justify-center">
+          <div className="w-[375px] h-[150px] relative rounded-xl flex items-center justify-center">
             {/* Delete icon positioned at the top-right corner */}
             <button
               type="button"

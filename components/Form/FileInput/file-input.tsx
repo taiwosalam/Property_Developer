@@ -66,9 +66,7 @@ const FileInput: React.FC<FileInputProps> = ({
   const handleDeleteFile = () => {
     setFileName(null);
     setFileURL(null);
-    if (inputRef.current) {
-      inputRef.current.value = ""; // Clear the file input
-    }
+    onChange && onChange(null)
   };
 
   return (

@@ -19,8 +19,8 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading title="company details">
-        Kindly provide the following details below. Note your CAC should be in
-        PDF format and should not exceed 2mb.
+        Kindly provide the following details below. Note your documents should be in
+        PDF format and should not exceed 5mb.
       </SectionHeading>
       <div className="flex gap-5">
         <DateInput
@@ -55,7 +55,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({
           placeholder="Click the side button to upload CAC"
           buttonName="CAC"
           fileType="pdf"
-          size={2}
+          size={5}
           sizeUnit="MB"
           onChange={(value) => onChange("cacCertificate", value)}
         />
@@ -86,47 +86,12 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({
           id="membership-certificate"
           label="membership Certificate"
           fileType="pdf"
-          size={2}
+          size={5}
           sizeUnit="MB"
           className="flex-1"
           placeholder="Click the side button to upload certificate"
           buttonName="Certificate"
           onChange={(value) => onChange("membershipCertificate", value)}
-        />
-      </div>
-      <div className="flex gap-5">
-        <Input
-          label="head office address"
-          id="head-office-address"
-          placeholder="3 Bodija, Ibadan"
-          value={companyDetails.headOfficeAddress}
-          onChange={(value) => onChange("headOfficeAddress", value)}
-          className="flex-1 max-w-[300px]"
-          inputTextStyles={`text-sm font-normal ${
-            companyDetails.headOfficeAddress === "" ? "bg-transparent" : ""
-          }`}
-        />
-        <DateInput
-          id="utility-date"
-          label="utility date"
-          placeholder="07/02/2014"
-          className="flex-1 max-w-[300px]"
-          inputTextStyles={`text-sm font-normal ${
-            companyDetails.utilityDate === "" ? "bg-transparent" : ""
-          }`}
-          onChange={(value) => onChange("utilityDate", value)}
-          value={companyDetails.utilityDate}
-        />
-        <FileInput
-          id="utility-document"
-          label="utility document"
-          fileType="pdf"
-          size={2}
-          sizeUnit="MB"
-          className="flex-1"
-          placeholder="Click the side button to upload utility"
-          buttonName="Utility"
-          onChange={(value) => onChange("utilityDocument", value)}
         />
       </div>
     </div>

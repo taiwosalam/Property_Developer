@@ -1,6 +1,5 @@
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { useState, useRef } from "react";
-import imageCompression from "browser-image-compression";
 // Import
 import { SectionHeading } from "../Section/section-components";
 import Button from "../Form/Button/button";
@@ -26,27 +25,20 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ onChange }) => {
   ) => {
     const file = event.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
-      // Check image size (max 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        alert("The image size should not exceed 2 MB.");
+      // Check image size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("The image size should not exceed 5 MB.");
         onChange(null); // Clear the file if validation fails
         return;
       }
 
-      // Compress and resize the image
-      const options = {
-        maxWidthOrHeight: 100, // Resize to 100x100 pixels
-        useWebWorker: true,
-      };
-
       try {
-        const compressedFile = await imageCompression(file, options);
         const reader = new FileReader();
         reader.onloadend = () => {
           setImage(reader.result as string);
-          onChange(compressedFile); // Pass the compressed file to the parent component
+          onChange(file); // Pass the compressed file to the parent component
         };
-        reader.readAsDataURL(compressedFile);
+        reader.readAsDataURL(file);
       } catch (error) {
         console.error("Error resizing image:", error);
         alert("There was an error processing your image. Please try again.");
@@ -66,7 +58,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ onChange }) => {
     <div className="custom-flex-col gap-5">
       <SectionHeading required title="profile picture">
         The profile photo size should be 100 x 100 pixels with a maximum file
-        size of 2MB.
+        size of 5MB.
       </SectionHeading>
 
       <div className="flex gap-2">
