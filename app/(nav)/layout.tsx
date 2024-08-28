@@ -22,7 +22,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [sidenavIsOpen, setSidenavIsOpen] = useState(true);
 
   return (
-    <div>
+    <>
       <div className="sticky top-0 z-[2] w-full h-[100px] px-10 flex items-center border-b border-solid border-neutral-2 bg-white">
         <div className="flex w-full gap-6 justify-between">
           <div className="flex flex-1 gap-6 items-center">
@@ -88,7 +88,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <div
           style={{
             height: "calc(100vh - 100px)",
-            width: sidenavIsOpen ? sidenav_width : 0,
+            minWidth: sidenavIsOpen ? sidenav_width : 0,
           }}
           className="sticky top-[100px] w-0 overflow-x-hidden overflow-y-auto no-scrollbar bg-white"
         >
@@ -116,7 +116,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <div className="p-6 relative z-[1]">{children}</div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

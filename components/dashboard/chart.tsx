@@ -150,9 +150,9 @@ export function DashboardChart() {
   return (
     <Card className="">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
-        <div className="grid flex-1 gap-1 text-center sm:text-left">
+        <div className="custom-flex-col gap-6">
           <CardTitle>Chart Title</CardTitle>
-          <div className="md:flex  grid">
+          <div className="flex justify-between gap-6 flex-wrap">
             <div className="flex space-x-1">
               <span className="flex items-center space-x-1">
                 <Switch id="sales" />
@@ -167,7 +167,7 @@ export function DashboardChart() {
                 <Label htmlFor="expense">Expenses</Label>
               </span>
             </div>
-            <div className="flex justify-start items-center">
+            <div className="flex gap-2 items-center">
               <DatePickerWithRange />
               <Select value={timeRange} onValueChange={setTimeRange}>
                 <SelectTrigger
