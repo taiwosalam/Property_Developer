@@ -1,5 +1,3 @@
-import React from "react";
-
 // Types
 import type { ButtonProps } from "./types";
 
@@ -20,7 +18,7 @@ const Button: React.FC<ButtonProps> = ({
         "rounded-[4px] capitalize",
         button_variants.size[size],
         button_variants.variant[variant],
-        className
+        className,
       )}
       {...props}
     >

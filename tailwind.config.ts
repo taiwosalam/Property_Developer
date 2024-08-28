@@ -16,6 +16,7 @@ const config = {
 
         brand: {
           1: "#EFF6FF",
+          2: "#DBEAFE",
           3: "#BFDBFE",
           5: "#60A5FA",
           9: "#0033C4",
@@ -37,6 +38,7 @@ const config = {
 
         neutral: {
           2: "#FAFAFA",
+          4: "#C1C2C3",
         },
 
         status: {
@@ -62,6 +64,7 @@ const config = {
 
         borders: {
           dark: "#C0C2C8",
+          normal: "#787A7E",
         },
       },
       container: {

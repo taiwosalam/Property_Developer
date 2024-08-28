@@ -26,6 +26,7 @@ const Input: React.FC<InputProps> = ({
   type = "text",
   validationErrors = {},
   onChange,
+  inputTextStyles,
 }) => {
   // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -84,7 +85,8 @@ const Input: React.FC<InputProps> = ({
             "p-3 rounded-[4px] w-full focus:outline-brand-primary border border-solid bg-neutral-2",
             {
               "pr-11": type === "password", // Add padding-right if the input type is password (for icon)
-            }
+            },
+            inputTextStyles
           )}
           style={{ borderColor: "rgba(186, 199, 213, 0.50)" }} // Add custom border color
         />

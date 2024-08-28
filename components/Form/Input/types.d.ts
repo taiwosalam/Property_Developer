@@ -12,4 +12,5 @@ export interface InputProps {
   type?: React.HTMLInputTypeAttribute;
   validationErrors?: ValidationErrors;
   onChange?: (data: string) => void;
+  inputTextStyles?: string
 }

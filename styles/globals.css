@@ -80,6 +80,51 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 
+/* Hide default calendat icon */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  background: transparent;
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: auto;
+}
+/* input[type="date"] {
+  -moz-appearance: none;
+  appearance: none;
+} */
+
+.quill-editor {
+  height: 160px; /* Adjust the height as needed */
+  @apply rounded-t-lg; /* Rounded corners */
+  border: 1px solid #dcdcdc; /* Optional: Add a border */
+  border-bottom: none;
+  padding: 0.5rem; /* Optional: Add padding inside the editor */
+}
+
+.quill-editor-content-filled {
+  @apply bg-neutral-2; /* Light grey background */
+}
+
+.quill-toolbar {
+  display: flex;
+  justify-content: left;
+  /* border-top: 1px solid #ddd; */
+  padding: 5px;
+}
+.quill-toolbar.ql-snow {
+  @apply rounded-b-lg;
+  border: none !important;
+}
+
+.ql-container.ql-snow {
+  border: none !important;
+}
+
 /* -------------------------------------------------------------- */
 
 .nav-button:hover {
