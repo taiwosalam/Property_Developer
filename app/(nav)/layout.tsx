@@ -11,10 +11,10 @@ import Moon from "@/public/icons/moon.svg";
 import Avatar from "@/public/empty/avatar.png";
 
 // Imports
+import SVG from "@/components/SVG/svg";
 import Sidenav from "@/components/Nav/sidenav";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
-import SVG from "@/components/SVG/svg";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const sidenav_width = 250;

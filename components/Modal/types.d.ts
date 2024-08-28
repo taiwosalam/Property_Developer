@@ -1,3 +1,6 @@
+// Imports
+import { modal_presets } from "./data";
+
 // Context interface for managing modal state
 export interface ModalContextProps {
   // Indicates whether the modal is open or closed
@@ -32,5 +35,12 @@ export interface ModalTriggerProps
 export interface ModalContentProps
   extends React.HTMLAttributes<HTMLDivElement> {
   // React nodes to be rendered inside the ModalContent
+  children: React.ReactNode;
+}
+
+export type ModalPresetType = keyof typeof modal_presets;
+
+export interface ModalPresetProps {
+  type: ModalPresetType;
   children: React.ReactNode;
 }

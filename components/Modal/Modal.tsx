@@ -104,7 +104,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
     }
 
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen]);
+  }, [isOpen, setIsOpen]);
 
   // Render nothing if the modal is not open
   if (!isOpen) return null;
