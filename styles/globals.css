@@ -10,11 +10,24 @@
 }
 
 /* Root styles */
-:root {}
+:root {
+}
 
 body {
   width: 100%;
   min-height: 100vh;
+}
+
+#portal {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#portal > * {
+  position: absolute;
+  pointer-events: all;
 }
 
 /* Custom utilities */
@@ -25,7 +38,7 @@ body {
   flex-direction: column;
 }
 
-.custom-flex-col>* {
+.custom-flex-col > * {
   width: 100%;
 }
 
@@ -82,39 +95,36 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .dash-table {
-  table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
-  }
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
 
-  thead {
-    @apply bg-brand-5;
-  }
+.dash-table thead {
+  @apply bg-brand-5;
+}
 
-  tbody tr:nth-child(2n + 1) {
-    @apply bg-brand-1;
-  }
+.dash-table tbody tr:nth-child(2n + 1) {
+  @apply bg-brand-1;
+}
 
-  th {
-    white-space: nowrap;
-  }
+.dash-table th {
+  white-space: nowrap;
+}
 
-  th,
-  td {
-    height: 76px;
-    text-transform: capitalize;
-    text-align: start;
-    padding: 12px 16px;
+.dash-table th,
+.dash-table td {
+  height: 76px;
+  text-transform: capitalize;
+  text-align: start;
+  padding: 12px 16px;
 
-    @apply text-text-primary text-base font-medium;
-  }
+  @apply text-text-primary text-base font-medium;
+}
 
-  td p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    /* @apply custom-truncated; */
-  }
-
+.dash-table td p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* @apply custom-truncated; */
 }

@@ -21,7 +21,8 @@ export default function RootLayout({
         className={`${dmSans.className} antialiased`}
         suppressHydrationWarning
       >
-        {children}
+        <div className="w-full relative z-[1]">{children}</div>
+        <div id="portal" className="z-[2]"></div>
       </body>
     </html>
   );
