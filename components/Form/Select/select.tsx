@@ -99,7 +99,7 @@ const Select: React.FC<SelectProps> = ({
                 "flex-1 bg-transparent outline-none text-sm",
                 textStyles
               )}
-              placeholder="Search..."
+              placeholder={placeholder}
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
