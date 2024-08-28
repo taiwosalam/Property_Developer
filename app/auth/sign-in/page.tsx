@@ -20,6 +20,9 @@ const SignIn = () => {
   // State for managing error messages
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
+  // State for "Remember Me" checkbox
+  const [rememberMe, setRememberMe] = useState(false);
+
   // Access the store's update function
   const updateFormData = useFormDataStore((state) => state.updateFormData);
 
@@ -27,7 +30,7 @@ const SignIn = () => {
     const { email, password } = data;
     updateFormData(data);
     try {
-      await login(email, password);
+      await login(email, password, rememberMe); // Pass the rememberMe state to the login function
     } catch (error) {
       console.error("Error during sign-in:", error);
     }
@@ -59,7 +62,12 @@ const SignIn = () => {
             validationErrors={errorMsgs}
           />
           <div className="flex items-center justify-between">
-            <Checkbox>remember me</Checkbox>
+            <Checkbox
+              checked={rememberMe}
+              onChange={() => setRememberMe(!rememberMe)}
+            >
+              remember me
+            </Checkbox>
             <Link
               href={"/auth/forgot-password"}
               className="text-brand-9 text-sm font-medium"

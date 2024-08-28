@@ -56,10 +56,15 @@ export const _protectedRequest = async (url: string) => {
   }
 };
 
+// API call to make a GET request
 export const getRequest = async (url: string) => {
   try {
     const formData = useFormDataStore.getState().formData; // Access form data from the store
     const response = await instance.get(url, { params: formData }); // Include form data in the request
+    console.log(response.data);
+    if (response.status === 200) {
+      toast.success("Action successful"); // Displays a success message
+    }
     return response.data;
   } catch (error: any) {
     console.error("GET request error:", error);
@@ -70,13 +75,26 @@ export const getRequest = async (url: string) => {
 };
 
 // API call to make a POST request
-export const postRequest = async (url: string, data: any) => {
+export const postRequest = async (
+  url: string,
+  data: any,
+  rememberMe: boolean = false
+) => {
   try {
     const formData = useFormDataStore.getState().formData; // Access form data from the store
     const response = await instance.post(url, { ...data, ...formData }); // Include form data in the request
+    if (response.data.company_id === null) {
+      window.location.href = "/setup"; // Redirects to the setup page.
+    }
+    if (response.status === 200) {
+      if (response?.data?.data?.accessToken) {
+        storeToken(response.data.data.accessToken, rememberMe); // Store token with "Remember Me" option
+      }
+      toast.success("Action successful"); // Displays a success message
+    }
     return response.data;
   } catch (error: any) {
-    console.error("GET request error:", error);
+    console.error("POST request error:", error);
     const errorMessage = error?.message || "An unexpected error occurred.";
     toast.error(errorMessage); // Displays the error message or a fallback message.
     throw error; // Propagate error for further handling
