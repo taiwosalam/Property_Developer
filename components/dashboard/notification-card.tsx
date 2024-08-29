@@ -44,7 +44,12 @@ const NotificationCard: React.FC<notificationCardProps> = ({
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-[16px]">
           <p className="font-medium">{sectionHeader}</p>
-          <p className="text-[#4F5E71] flex items-center">
+          <p
+            className={clsx(
+              "flex items-center font-medium",
+              notifications.length === 0 ? "text-[#C1C2C3]" : "text-[#4F5E71]"
+            )}
+          >
             See all
             <ChevronRight className="w-5 h-5" />
           </p>

@@ -1,49 +1,59 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
 // Imports
 import Input from "../Form/Input/input";
 import Select from "../Form/Select/select";
 import FileInput from "../Form/FileInput/file-input";
 import { SectionHeading } from "../Section/section-components";
-import type { CompanyDetails } from "@/app/setup/types";
 import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
-import { useState, useEffect } from "react";
 
-interface CompanyDetailsProps {
-  companyDetails: CompanyDetails;
-  onChange: (field: keyof CompanyDetails, value: string | File | null) => void;
-}
-
-const CompanyAddress: React.FC<CompanyDetailsProps> = ({
-  onChange,
-  companyDetails,
-}) => {
+const CompanyAddress = () => {
+  // State to hold selected values
+  const [selectedState, setSelectedState] = useState<string | null>(null);
+  const [selectedLGA, setSelectedLGA] = useState<string | null>(null);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [localGovernments, setLocalGovernments] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
 
-  // Update local governments when the state changes
- useEffect(() => {
-   if (companyDetails.state) {
-     setLocalGovernments(getLocalGovernments(companyDetails.state));
-
-     // Clear LGA and City when the state changes
-     onChange("lga", ""); // Clear LGA
-     onChange("city", ""); // Clear City
-   } else {
-     setLocalGovernments([]);
-     setCities([]);
-   }
- }, [companyDetails.state]);
-
-  // Update cities when the state or local government changes
+  // Update local governments when state changes
   useEffect(() => {
-    if (companyDetails.state && companyDetails.lga) {
-      setCities(getCities(companyDetails.state, companyDetails.lga));
+    if (selectedState) {
+      const lgas = getLocalGovernments(selectedState);
+      setLocalGovernments(lgas);
+      setSelectedLGA(null); // Clear LGA selection
+      setCities([]); // Clear cities when state changes
+    } else {
+      setLocalGovernments([]);
+    }
+  }, [selectedState]);
 
-      // Clear city if LGA is changed
-      onChange("city", "");
+  // Update cities when LGA changes
+  useEffect(() => {
+    if (selectedLGA && selectedState) {
+      const cityList = getCities(selectedState, selectedLGA);
+      setCities(cityList);
+      setSelectedCity(null); // Clear city selection
     } else {
       setCities([]);
     }
-  }, [companyDetails.lga]);
+  }, [selectedLGA, selectedState]);
+
+  // Handle state change
+  const handleStateChange = (value: string | null) => {
+    setSelectedState(value);
+  };
+
+  // Handle LGA change
+  const handleLGAChange = (value: string | null) => {
+    setSelectedLGA(value);
+  };
+
+  // Handle city change
+  const handleCityChange = (value: string | null) => {
+    setSelectedCity(value);
+  };
 
   return (
     <div className="custom-flex-col gap-5">
@@ -53,42 +63,35 @@ const CompanyAddress: React.FC<CompanyDetailsProps> = ({
         utility bill that is no older than 3 months.
       </SectionHeading>
       <div className="flex gap-5">
+        {/* State Selector */}
         <Select
           options={getAllStates()}
           id="state"
           label="state"
           className="flex-1 max-w-[300px]"
-          textStyles={`text-sm font-normal ${
-            companyDetails.state === "" ? "bg-transparent" : ""
-          }`}
-          onChange={(value) => {
-            onChange("state", value); // Update state value
-            onChange("lga", ""); // Clear lga value
-            onChange("city", ""); // Clear city value
-          }}
-          value={companyDetails.state}
+          textStyles={`text-sm font-normal`}
+          onChange={handleStateChange} // Update handler
         />
+        {/* Local Government Selector */}
         <Select
           options={localGovernments}
           id="lga"
-          label="local goovernment"
+          label="local government"
           className="flex-1 max-w-[300px]"
-          textStyles={`text-sm font-normal ${
-            companyDetails.lga === "" ? "bg-transparent" : ""
-          }`}
-          onChange={(value) => onChange("lga", value)}
-          value={companyDetails.lga}
+          textStyles={`text-sm font-normal`}
+          onChange={() => handleLGAChange(selectedLGA)} // Update handler
+          value={selectedLGA ?? ""} // Controlled value
         />
-        <Input
-          label="city"
+        {/* City Selector */}
+        <Select
+          options={cities}
           id="city"
-          placeholder="Write here"
-          value={companyDetails.city}
-          onChange={(value) => onChange("city", value)}
-          className="flex-1 max-w-[410px]"
-          inputTextStyles={`text-sm font-normal ${
-            companyDetails.city === "" ? "bg-transparent" : ""
-          }`}
+          label="city"
+          className="flex-1 max-w-[300px]"
+          textStyles={`text-sm font-normal`}
+          allowCustom={true}
+          onChange={() => handleCityChange(selectedCity)} // Update handler
+          value={selectedCity ?? ""} // Controlled value
         />
       </div>
 
@@ -97,12 +100,8 @@ const CompanyAddress: React.FC<CompanyDetailsProps> = ({
           label="head office address"
           id="head-office-address"
           placeholder="Write here"
-          value={companyDetails.headOfficeAddress}
-          onChange={(value) => onChange("headOfficeAddress", value)}
           className="flex-1 max-w-[620px]"
-          inputTextStyles={`text-sm font-normal ${
-            companyDetails.headOfficeAddress === "" ? "bg-transparent" : ""
-          }`}
+          inputTextStyles={`text-sm font-normal`}
         />
         <FileInput
           id="utility-document"
@@ -113,7 +112,6 @@ const CompanyAddress: React.FC<CompanyDetailsProps> = ({
           className="flex-1"
           placeholder="Click the side button to upload utility"
           buttonName="Document"
-          onChange={(value) => onChange("utilityDocument", value)}
         />
       </div>
     </div>
