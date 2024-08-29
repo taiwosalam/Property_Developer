@@ -20,10 +20,14 @@ import ProfileInformation from "@/components/Setup/profile-information";
 import type { SetupFormData, DirectorDetails } from "./types";
 import { signupCompany } from "./data";
 import { useFormDataStore } from "@/store/formdatastore";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { ValidationErrors } from "@/utils/types";
 
 const Setup = () => {
   // Define the index of the last step in the flow
   const last_step = 0;
+
+  const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
   // State to track the current step in the flow
   const [activeStep, setActiveStep] = useState(0);
@@ -169,94 +173,101 @@ const Setup = () => {
         zIndex: 3,
       }}
     >
-      <div className="sticky top-[52px] z-[2] py-5 px-10 bg-brand-1 flex justify-between">
-        <div className="custom-flex-col">
-          <h1 className="text-text-primary text-2xl font-medium">
-            Finish Setting Up Your Account!
-          </h1>
-          <p className="text-text-tertiary">
-            Please furnish the following details to finalize the setup of your
-            account and company profile.
-          </p>
+      <AuthForm
+        onFormSubmit={(data) => console.log(data)}
+        setValidationErrors={setErrorMsgs}
+      >
+        <div className="sticky top-[52px] z-[2] py-5 px-10 bg-brand-1 flex justify-between">
+          <div className="custom-flex-col">
+            <h1 className="text-text-primary text-2xl font-medium">
+              Finish Setting Up Your Account!
+            </h1>
+            <p className="text-text-tertiary">
+              Please furnish the following details to finalize the setup of your
+              account and company profile.
+            </p>
+          </div>
+          <Button
+            onClick={handleSubmit}
+            disabled={!isFormValid()}
+            style={{ opacity: isFormValid() ? 1 : "0.5" }}
+          >
+            submit
+          </Button>
         </div>
-        <Button
-          onClick={handleSubmit}
-          disabled={!isFormValid()}
-          style={{ opacity: isFormValid() ? 1 : "0.5" }}
-        >
-          submit
-        </Button>
-      </div>
-      <div className="relative z-[1] custom-flex-col gap-6 pt-6 pb-20 px-10">
-        <CompanyType onChange={(value) => handleChange("companyType", value)} />
-        <Section separatorStyles="max-w-[1200px]">
-          <div className="custom-flex-col gap-5">
-            <div className="flex gap-5">
-              <Input
-                required
-                id="company-name"
-                label="company name"
-                placeholder="Write here"
-                className="flex-1 max-w-[480px]"
-                inputTextStyles={`text-sm font-normal ${
-                  formData.companyName === "" ? "bg-transparent" : ""
-                }`}
-                onChange={(value) => handleChange("companyName", value)}
-                value={formData.companyName}
+        <div className="relative z-[1] custom-flex-col gap-6 pt-6 pb-20 px-10">
+          <CompanyType
+            onChange={(value) => handleChange("companyType", value)}
+          />
+          <Section separatorStyles="max-w-[1200px]">
+            <div className="custom-flex-col gap-5">
+              <div className="flex gap-5">
+                <Input
+                  required
+                  id="company-name"
+                  label="company name"
+                  placeholder="Write here"
+                  className="flex-1 max-w-[480px]"
+                  inputTextStyles={`text-sm font-normal ${
+                    formData.companyName === "" ? "bg-transparent" : ""
+                  }`}
+                  onChange={(value) => handleChange("companyName", value)}
+                  value={formData.companyName}
+                />
+                <Input
+                  id="referral-id"
+                  label="Referral ID (Optional)"
+                  placeholder="Enter your Referral ID"
+                  className="flex-1 max-w-[320px]"
+                  inputTextStyles={`text-sm font-normal ${
+                    formData.referralId === "" ? "bg-transparent" : ""
+                  }`}
+                  onChange={(value) => handleChange("referralId", value)}
+                  value={formData.referralId}
+                />
+              </div>
+              <CompanyDetails
+                onChange={(field, value) =>
+                  handleChange("companyDetails", {
+                    ...formData.companyDetails,
+                    [field]: value,
+                  })
+                }
+                companyDetails={formData.companyDetails}
               />
-              <Input
-                id="referral-id"
-                label="Referral ID (Optional)"
-                placeholder="Enter your Referral ID"
-                className="flex-1 max-w-[320px]"
-                inputTextStyles={`text-sm font-normal ${
-                  formData.referralId === "" ? "bg-transparent" : ""
-                }`}
-                onChange={(value) => handleChange("referralId", value)}
-                value={formData.referralId}
+              <CompanyAddress
+                onChange={(field, value) =>
+                  handleChange("companyDetails", {
+                    ...formData.companyDetails,
+                    [field]: value,
+                  })
+                }
+                companyDetails={formData.companyDetails}
+              />
+              <CompanyMobileNumber
+                companyMobileNumber={formData.companyMobileNumber}
+                onChange={handlePhoneNumberChange}
               />
             </div>
-            <CompanyDetails
-              onChange={(field, value) =>
-                handleChange("companyDetails", {
-                  ...formData.companyDetails,
-                  [field]: value,
-                })
-              }
-              companyDetails={formData.companyDetails}
-            />
-            <CompanyAddress
-              onChange={(field, value) =>
-                handleChange("companyDetails", {
-                  ...formData.companyDetails,
-                  [field]: value,
-                })
-              }
-              companyDetails={formData.companyDetails}
-            />
-            <CompanyMobileNumber
-              companyMobileNumber={formData.companyMobileNumber}
-              onChange={handlePhoneNumberChange}
-            />
-          </div>
-        </Section>
-        <CompanyLogo onChange={(file) => handleChange("companyLogo", file)} />
-        <SectionHeading title="directors details">
-          Fill the details below to add a director to your company
-        </SectionHeading>
-        <ProfilePicture
-          onChange={(file) =>
-            handleChange("directorDetails", {
-              ...formData.directorDetails,
-              profilePicture: file,
-            })
-          }
-        />
-        <ProfileInformation
-          directorDetails={formData.directorDetails}
-          onChange={handleProfileInfoChange}
-        />
-      </div>
+          </Section>
+          <CompanyLogo onChange={(file) => handleChange("companyLogo", file)} />
+          <SectionHeading title="directors details">
+            Fill the details below to add a director to your company
+          </SectionHeading>
+          <ProfilePicture
+            onChange={(file) =>
+              handleChange("directorDetails", {
+                ...formData.directorDetails,
+                profilePicture: file,
+              })
+            }
+          />
+          <ProfileInformation
+            directorDetails={formData.directorDetails}
+            onChange={handleProfileInfoChange}
+          />
+        </div>
+      </AuthForm>
     </FlowProgress>
   );
 };
