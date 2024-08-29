@@ -6,14 +6,24 @@ import type { CheckboxProps } from "./types";
 
 // Images
 import CheckboxDefault from "@/public/icons/checkbox-default.svg";
+import CheckboxChecked from "@/public/icons/checkbox-checked.svg"; // Add the checked state image
 
-const Checkbox: React.FC<CheckboxProps> = ({ children }) => {
-  // NOTE: Manage checkbox state when chack stte image is available
+const Checkbox: React.FC<CheckboxProps> = ({ children, checked, onChange }) => {
+  // Handle the click event to toggle the checkbox state
+  const handleCheckboxClick = () => {
+    if (onChange) {
+      onChange(!checked);
+    }
+  };
 
   return (
-    <button className="flex items-center gap-2">
+    <button
+      className="flex items-center gap-2"
+      onClick={handleCheckboxClick}
+      type="button"
+    >
       <Image
-        src={CheckboxDefault}
+        src={checked ? CheckboxChecked : CheckboxDefault}
         alt="checkbox"
         width={24}
         height={24}

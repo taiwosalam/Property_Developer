@@ -2,6 +2,7 @@ import Image from "next/image";
 
 // Types
 import Link from "next/link";
+import clsx from "clsx";
 import type {
   SectionDescProps,
   SectionTitleProps,
@@ -36,14 +37,21 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
   </div>
 );
 
-export const SectionSeparator: React.FC<{}> = () => (
-  <div className={"h-[1px] w-full bg-borders-dark opacity-10"} />
+export const SectionSeparator: React.FC<{ className?: string }> = ({
+  className,
+}) => (
+  <div
+    className={clsx("h-[1px] w-full bg-borders-dark opacity-10", className)}
+  />
 );
 
-export const Section: React.FC<SectionProps> = ({ children }) => (
+export const Section: React.FC<SectionProps> = ({
+  children,
+  separatorStyles,
+}) => (
   <div className="custom-flex-col gap-6">
     {children}
-    <SectionSeparator />
+    <SectionSeparator className={separatorStyles} />
   </div>
 );
 
@@ -62,7 +70,7 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
           <p className="text-text-label text-base font-medium">See all</p>
           <SVG
             color="#5A5D61"
-            type="arrow_right"
+            type="right_arrow"
             className="w-4 flex justify-center"
           />
         </Link>

@@ -17,10 +17,12 @@ import { AuthHeading, AuthPinField } from "../auth-components";
 import { checkValidatonError, validateData } from "@/utils/validation";
 import { useFormDataStore } from "@/store/formdatastore";
 import { verifyEmail } from "@/app/auth/data";
+import { useRouter } from "next/navigation";
 
 const VerifyEmailAddress: React.FC<FlowComponentProps> = ({ changeStep }) => {
   // State for managing error messages
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
+  const router = useRouter();
 
   // State for storing the entered code
   const [code, setCode] = useState("");
@@ -43,11 +45,9 @@ const VerifyEmailAddress: React.FC<FlowComponentProps> = ({ changeStep }) => {
     // If there are no validation errors, proceed to the next step
     if (!objectLength(validation.invalidKeys)) {
       console.log(data);
-      try {
-        await verifyEmail(code); // Pass the OTP to the verifyEmail function
-        changeStep("next"); // Move to the next step in the flow
-      } catch (error) {
-        console.error("Error during verification:", error);
+      const status = await verifyEmail(code); // Pass the OTP to the verifyEmail function
+      if (status) {
+        router.push("/setup"); // Proceed to the next step in the flow
       }
     } else {
       setErrorMsgs(validation.invalidKeys); // Set error messages if validation fails

@@ -23,16 +23,24 @@ const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
   // Access the store's update function
   const updateFormData = useFormDataStore((state) => state.updateFormData);
 
+  const getFormData = useFormDataStore((state) => state.formData);
+
   // Function to handle form submission
   const handleSignUp = async (data: any) => {
     // Update the form data in the store
     updateFormData({ ...data, password: data["new-password"] });
-    try {
-      // Call the signup function from the API service
-      await signup();
+    console.log(data, "submitted data");
+
+    // Call the signup function from the API service
+    const status = await signup();
+    console.log(status, "signup status");
+
+    if (status === true) {
+      // console.log(getFormData(), "state form data after signup");
       changeStep("next"); // Change the form step to the next step in the flow
-    } catch (error) {
-      console.error("Error during sign-up:", error);
+      console.log("Step changed to next");
+    } else {
+      console.error("Signup failed or did not return true");
     }
   };
 

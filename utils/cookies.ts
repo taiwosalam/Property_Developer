@@ -1,16 +1,17 @@
+// utils/cookies.ts
 import Cookies from "js-cookie";
 
-// Function to get the token from cookies
-export const getToken = (): string | undefined => {
-  return Cookies.get("token");
+export const storeToken = (token: string, rememberMe: boolean = false) => {
+  const options = rememberMe
+    ? { expires: 10 } // Token expires in 10 days
+    : undefined; // Default behavior (session cookie)
+  Cookies.set("authToken", token, options);
 };
 
-// Function to store the token in cookies
-export const storeToken = (token: string) => {
-  Cookies.set("token", token, { expires: 7 }); // Set token with a 7-day expiration
+export const getToken = () => {
+  return Cookies.get("authToken");
 };
 
-// Function to remove the token from cookies
 export const removeToken = () => {
-  Cookies.remove("token");
+  Cookies.remove("authToken");
 };
