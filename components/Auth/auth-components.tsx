@@ -43,6 +43,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   setValidationErrors,
 }) => (
   <form
+    method="post"
     onSubmit={(e) => {
       e.preventDefault(); // Prevent the default form submission behavior
 

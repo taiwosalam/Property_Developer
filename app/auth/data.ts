@@ -23,8 +23,28 @@ export const login = async (
   password: string,
   rememberMe: boolean
 ) => {
-  const data = { email, password };
-  return await postRequest("/login", data, rememberMe);
+  try {
+    const data = { email, password };
+    const response = await postRequest("/login", data, rememberMe);
+
+    if (!response) {
+      return { error: "Invalid Credentials" };
+    }
+
+    if (response.error) {
+      return { error: response.error }; // Return the error message from the response
+    }
+
+    if (response.company_id === null) {
+      window.location.href = "/setup"; // Redirects to the setup page.
+      return; // Stop further execution
+    }
+
+    window.location.href = "/dashboard"; // Redirects to the dashboard.
+  } catch (error) {
+    console.error("Error during sign-in:", error);
+    return { error: "An unexpected error occurred during sign-in." };
+  }
 };
 
 // Signup function
