@@ -39,7 +39,7 @@ const SignUpFlow = () => {
       {activeStep === 0 ? (
         <SignUp changeStep={handleStepChange} />
       ) : activeStep === 1 ? (
-        <VerifyEmailAddress changeStep={handleStepChange} />
+        <VerifyEmailAddress type="sign up" changeStep={handleStepChange} />
       ) : null}
     </FlowProgress>
   );

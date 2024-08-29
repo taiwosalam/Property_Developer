@@ -7,26 +7,22 @@ import type { AuthSliderProps } from "./types";
 
 // Imports
 import gsap from "gsap";
+import { useThemeStoreSelectors } from "@/store/themeStore";
 import { AuthSliderBar, AuthSliderContent } from "./auth-slider-components";
 
 const AuthSlider: React.FC<AuthSliderProps> = ({ content = [] }) => {
   const height = 177; // Height of the slider content area
 
-  const skip_animation = useRef(true); // Ref to skip the initial animation on mount
-
   const [activeIndex, setActiveIndex] = useState(0); // State to track the currently active index
+
+  const primaryColor = useThemeStoreSelectors.use.primaryColor();
+  const secondaryColor = useThemeStoreSelectors.use.secondaryColor();
 
   const barsRef = useRef<(HTMLDivElement | null)[]>([]); // Ref to store bar elements
   const sliderRef = useRef<HTMLDivElement | null>(null); // Ref to store the slider container element
   const contentsRef = useRef<(HTMLDivElement | null)[]>([]); // Ref to store content elements
 
   useEffect(() => {
-    // Skip the animation on the initial mount
-    // if (skip_animation.current) {
-    //   skip_animation.current = false;
-    //   return;
-    // }
-
     // Check if refs are available
     const bars = barsRef.current;
     const slider = sliderRef.current;
@@ -52,9 +48,17 @@ const AuthSlider: React.FC<AuthSliderProps> = ({ content = [] }) => {
 
     timeline
       // Reset styles for all bars except the active one
-      .to(remaining_bars, { flex: 0, opacity: 0.4, backgroundColor: "#6083ed" })
+      .to(remaining_bars, {
+        flex: 0,
+        opacity: 0.4,
+        backgroundColor: secondaryColor,
+      })
       // Apply styles to the active bar
-      .to(active_bar, { flex: 1, opacity: 1, backgroundColor: "#315ee7" }, "0")
+      .to(
+        active_bar,
+        { flex: 1, opacity: 1, backgroundColor: primaryColor },
+        "0"
+      )
       // Reset opacity for all content except the active one
       .to(remaining_contents, { opacity: 0 }, "0")
       // Apply opacity to the active content

@@ -69,7 +69,7 @@ const DateInput: React.FC<DateInputProps> = ({
           onChange={({ target }) => onChange && onChange(target.value)}
           // Input styles
           className={clsx(
-            "p-3 rounded-[4px] w-full focus:outline-brand-primary border border-solid bg-neutral-2",
+            "p-3 rounded-[4px] w-full custom-primary-outline border border-solid bg-neutral-2",
             inputTextStyles
           )}
           style={{

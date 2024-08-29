@@ -11,6 +11,10 @@
 
 /* Root styles */
 :root {
+  --color: 49, 94, 231;
+  /* --color: 233, 33, 46; */
+  --primary-color: rgb(var(--color));
+  --secondary-color: rgba(var(--color), 0.7);
 }
 
 body {
@@ -32,6 +36,22 @@ body {
 
 /* Custom utilities */
 /* -------------------------------------------------------------- */
+
+.custom-primary-bg {
+  background-color: var(--primary-color);
+}
+
+.custom-primary-color {
+  color: var(--primary-color);
+}
+
+.custom-secondary-color {
+  color: var(--secondary-color);
+}
+
+.custom-primary-outline:focus {
+  outline-color: var(--primary-color);
+}
 
 .custom-flex-col {
   display: flex;
@@ -128,7 +148,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* -------------------------------------------------------------- */
 
 .nav-button:hover {
-  background-color: #0033c4;
+  background-color: var(--primary-color);
 }
 
 .nav-button:hover p {

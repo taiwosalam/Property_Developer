@@ -82,7 +82,7 @@ const Input: React.FC<InputProps> = ({
           type={type === "password" && isPasswordVisible ? "text" : type}
           // Input styles
           className={clsx(
-            "p-3 rounded-[4px] w-full focus:outline-brand-primary border border-solid bg-neutral-2",
+            "p-3 rounded-[4px] w-full custom-primary-outline border border-solid bg-neutral-2",
             {
               "pr-11": type === "password", // Add padding-right if the input type is password (for icon)
             },

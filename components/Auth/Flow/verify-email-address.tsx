@@ -3,23 +3,26 @@
 import Image from "next/image";
 import React, { useState } from "react";
 
+import { useRouter } from "next/navigation";
 // Types
-import type { FlowComponentProps } from "./types";
 import type { ValidationErrors } from "@/utils/types";
+import type { VerifyEmailAddressProps } from "./types";
 
 // Images
 import ReloadBlue from "@/public/icons/reload-blue.svg";
 
 // Imports
+import { verifyEmail } from "@/app/auth/data";
 import Button from "@/components/Form/Button/button";
 import { objectLength } from "@/utils/object-length";
+import { useFormDataStore } from "@/store/formdatastore";
 import { AuthHeading, AuthPinField } from "../auth-components";
 import { checkValidatonError, validateData } from "@/utils/validation";
-import { useFormDataStore } from "@/store/formdatastore";
-import { verifyEmail } from "@/app/auth/data";
-import { useRouter } from "next/navigation";
 
-const VerifyEmailAddress: React.FC<FlowComponentProps> = ({ changeStep }) => {
+const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
+  type,
+  changeStep,
+}) => {
   // State for managing error messages
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
   const router = useRouter();
@@ -47,7 +50,11 @@ const VerifyEmailAddress: React.FC<FlowComponentProps> = ({ changeStep }) => {
       console.log(data);
       const status = await verifyEmail(code); // Pass the OTP to the verifyEmail function
       if (status) {
-        router.push("/setup"); // Proceed to the next step in the flow
+        if (type === "sign up") {
+          router.push("/setup"); // Proceed to account setup
+        } else if (type === "forgot password") {
+          changeStep("next"); // Proceed to the next step in the flow
+        }
       }
     } else {
       setErrorMsgs(validation.invalidKeys); // Set error messages if validation fails
@@ -61,6 +68,7 @@ const VerifyEmailAddress: React.FC<FlowComponentProps> = ({ changeStep }) => {
   });
 
   const email = useFormDataStore((state) => state.formData.email);
+  console.log(email);
 
   return (
     <div className="custom-flex-col gap-20">
@@ -87,7 +95,7 @@ const VerifyEmailAddress: React.FC<FlowComponentProps> = ({ changeStep }) => {
 
       <div className="flex items-center justify-between">
         {/* Resend code button */}
-        <button className="flex gap-1 text-brand-secondary text-base font-medium">
+        <button className="flex gap-1 custom-secondary-color text-base font-medium">
           <Image src={ReloadBlue} alt="resend" height={20} />
           <p className="opacity-50">Resend code</p>
           <p>(40s)</p>
@@ -95,7 +103,7 @@ const VerifyEmailAddress: React.FC<FlowComponentProps> = ({ changeStep }) => {
         {/* Button to go back and change the email */}
         <button
           onClick={() => changeStep("prev")}
-          className="text-brand-secondary text-base font-medium"
+          className="custom-secondary-color text-base font-medium"
         >
           Change email
         </button>
