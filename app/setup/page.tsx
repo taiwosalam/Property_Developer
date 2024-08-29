@@ -17,7 +17,6 @@ import CompanyLogo from "@/components/Setup/company-logo";
 import CompanyAddress from "@/components/Setup/company-address";
 import ProfilePicture from "@/components/Setup/profile-picture";
 import ProfileInformation from "@/components/Setup/profile-information";
-import type { SetupFormData, DirectorDetails } from "./types";
 import { signupCompany } from "./data";
 import { useFormDataStore } from "@/store/formdatastore";
 import { AuthForm } from "@/components/Auth/auth-components";
@@ -32,125 +31,15 @@ const Setup = () => {
   // State to track the current step in the flow
   const [activeStep, setActiveStep] = useState(0);
 
-  const [formData, setFormData] = useState<SetupFormData>({
-    companyType: "",
-    companyName: "",
-    referralId: "",
-    companyDetails: {
-      registrationDate: "",
-      cacCertificate: null,
-      cacNumber: "",
-      membershipNumber: "",
-      membershipCertificate: null,
-      industry: "",
-      state: "",
-      lga: "",
-      city: "",
-      headOfficeAddress: "",
-      utilityDocument: null,
-    },
-    companyMobileNumber: ["", "", "", ""],
-    companyLogo: null,
-    directorDetails: {
-      profilePicture: null,
-      fullName: "",
-      titleOrQualification: "",
-      yearsInBusiness: null,
-      aboutDirector: "",
-      phoneNumber: "",
-      altEmail: "",
-    },
-  });
-
-  // Handle input changes
-  const handleChange = <K extends keyof SetupFormData>(
-    field: K,
-    value: SetupFormData[K]
-  ) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [field]: value,
-    }));
-  };
-
-  // Handle change for specific phone number by index
-  const handlePhoneNumberChange = (index: number, value: string) => {
-    setFormData((prevState) => {
-      const newNumbers = [...prevState.companyMobileNumber];
-      newNumbers[index] = value;
-      return {
-        ...prevState,
-        companyMobileNumber: newNumbers,
-      };
-    });
-  };
-
-  // Handler for ProfileInformation changes
-  const handleProfileInfoChange = (
-    field: keyof DirectorDetails,
-    value: string | File | null | number
-  ) => {
-    // console.log(formData.directorDetails);
-
-    setFormData((prevState) => ({
-      ...prevState,
-      directorDetails: {
-        ...prevState.directorDetails,
-        [field]: value,
-      },
-    }));
-  };
-
   const isFormValid = () => {
-    return (
-      formData.companyType !== "" &&
-      formData.companyName !== "" &&
-      formData.companyDetails.registrationDate !== "" &&
-      formData.companyDetails.cacCertificate !== null &&
-      formData.companyDetails.cacNumber !== "" &&
-      formData.companyLogo !== null &&
-      formData.directorDetails.profilePicture !== null &&
-      formData.directorDetails.fullName !== ""
-    );
+    return false;
   };
-
-  // const isFormValid = () => {
-  //   return (
-  //     companyTypeRef.current?.value !== "" &&
-  //     companyNameRef.current?.value !== "" &&
-  //     registrationDateRef.current?.value !== "" &&
-  //     companyLogo !== null &&
-  //     profilePicture !== null &&
-  //     directorFullNameRef.current?.value !== ""
-  //   );
-  // };
 
   // Access the store's update function
   const updateFormData = useFormDataStore((state) => state.updateFormData);
 
   const handleSubmit = async () => {
-    // Extract the required fields from formData
-    const payload = {
-      user_id: "your_user_id",
-      company_name: formData.companyName,
-      type: formData.companyType,
-      industry: formData.companyDetails.industry,
-      cac_certificate: formData.companyDetails.cacCertificate,
-      membership_certificate: formData.companyDetails.membershipCertificate,
-      cac_number: formData.companyDetails.cacNumber, // Assuming cac_number is the same as registrationDate
-      cac_date: formData.companyDetails.registrationDate,
-      company_phone: formData.companyMobileNumber.filter((num) => num !== ""), // Remove any empty phone numbers
-      logo: formData.companyLogo,
-      profile_pic: formData.directorDetails.profilePicture,
-      director_name: formData.directorDetails.fullName,
-      director_title: formData.directorDetails.titleOrQualification,
-      director_experience: formData.directorDetails.yearsInBusiness,
-      director_email: formData.directorDetails.altEmail,
-      director_about: formData.directorDetails.aboutDirector,
-      director_phone: formData.directorDetails.phoneNumber,
-    };
-
-    updateFormData(payload);
+    // updateFormData(payload);
 
     try {
       // Call the signupCompny function with the prepared data
@@ -196,9 +85,7 @@ const Setup = () => {
           </Button>
         </div>
         <div className="relative z-[1] custom-flex-col gap-6 pt-6 pb-20 px-10">
-          <CompanyType
-            onChange={(value) => handleChange("companyType", value)}
-          />
+          <CompanyType />
           <Section separatorStyles="max-w-[1200px]">
             <div className="custom-flex-col gap-5">
               <div className="flex gap-5">
@@ -208,64 +95,27 @@ const Setup = () => {
                   label="company name"
                   placeholder="Write here"
                   className="flex-1 max-w-[480px]"
-                  inputTextStyles={`text-sm font-normal ${
-                    formData.companyName === "" ? "bg-transparent" : ""
-                  }`}
-                  onChange={(value) => handleChange("companyName", value)}
-                  value={formData.companyName}
+                  inputTextStyles={`text-sm font-normal`}
                 />
                 <Input
                   id="referral-id"
                   label="Referral ID (Optional)"
                   placeholder="Enter your Referral ID"
                   className="flex-1 max-w-[320px]"
-                  inputTextStyles={`text-sm font-normal ${
-                    formData.referralId === "" ? "bg-transparent" : ""
-                  }`}
-                  onChange={(value) => handleChange("referralId", value)}
-                  value={formData.referralId}
+                  inputTextStyles={`text-sm font-normal`}
                 />
               </div>
-              <CompanyDetails
-                onChange={(field, value) =>
-                  handleChange("companyDetails", {
-                    ...formData.companyDetails,
-                    [field]: value,
-                  })
-                }
-                companyDetails={formData.companyDetails}
-              />
-              <CompanyAddress
-                onChange={(field, value) =>
-                  handleChange("companyDetails", {
-                    ...formData.companyDetails,
-                    [field]: value,
-                  })
-                }
-                companyDetails={formData.companyDetails}
-              />
-              <CompanyMobileNumber
-                companyMobileNumber={formData.companyMobileNumber}
-                onChange={handlePhoneNumberChange}
-              />
+              <CompanyDetails />
+              <CompanyAddress />
+              <CompanyMobileNumber />
             </div>
           </Section>
-          <CompanyLogo onChange={(file) => handleChange("companyLogo", file)} />
+          <CompanyLogo />
           <SectionHeading title="directors details">
             Fill the details below to add a director to your company
           </SectionHeading>
-          <ProfilePicture
-            onChange={(file) =>
-              handleChange("directorDetails", {
-                ...formData.directorDetails,
-                profilePicture: file,
-              })
-            }
-          />
-          <ProfileInformation
-            directorDetails={formData.directorDetails}
-            onChange={handleProfileInfoChange}
-          />
+          <ProfilePicture />
+          <ProfileInformation />
         </div>
       </AuthForm>
     </FlowProgress>

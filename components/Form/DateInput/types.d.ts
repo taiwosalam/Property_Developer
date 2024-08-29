@@ -1,11 +1,15 @@
+// Types
+// import type { ValidationErrors } from "@/utils/types";
+
 export interface DateInputProps {
   id: string;
   value?: string;
   label?: string;
   className?: string;
   required?: boolean;
-  placeholder: string;
   initialValue?: string;
-  onChange?: (value: string) => void;
-  inputTextStyles?: string;
+  //   type?: React.HTMLInputTypeAttribute;
+  //   validationErrors?: ValidationErrors;
+  onChange?: (data: string) => void;
+  textStyles?: string;
 }

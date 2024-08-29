@@ -7,15 +7,7 @@ import {
   SectionSeparator,
 } from "../Section/section-components";
 
-interface CompanyMobileNumberProps {
-  companyMobileNumber: string[];
-  onChange: (index: number, value: string) => void;
-}
-
-const CompanyMobileNumber: React.FC<CompanyMobileNumberProps> = ({
-  companyMobileNumber,
-  onChange,
-}) => {
+const CompanyMobileNumber = () => {
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading title="company mobile number">
@@ -24,17 +16,13 @@ const CompanyMobileNumber: React.FC<CompanyMobileNumberProps> = ({
         {/* <SectionSeparator className="max-w-[1200px] mt-1.5" /> */}
       </SectionHeading>
       <div className="flex gap-5">
-        {companyMobileNumber.map((number, index: number) => (
+        {Array.from({ length: 4 }).map((_, index: number) => (
           <PhoneNumberInput
             key={index}
-            id={`number-${index}`}
+            id={`phone-number-${index}`}
             placeholder="800 0000 000"
-            value={number} // Set the value to the corresponding phone number
             className="flex-1 max-w-[300px]"
-            inputTextStyles={`text-sm font-normal ${
-              number === "" ? "bg-transparent" : ""
-            }`}
-            onChange={(value) => onChange(index, value)} // Handle change for each phone number
+            inputTextStyles={`text-sm font-normal`}
           />
         ))}
       </div>

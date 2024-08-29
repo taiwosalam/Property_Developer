@@ -34,6 +34,9 @@ const config = {
           label: "#5A5D61",
           black: "#232324",
           disabled: "#A4A7B0",
+          white: {
+            secondary: "#FFFFFFA6",
+          },
         },
 
         neutral: {

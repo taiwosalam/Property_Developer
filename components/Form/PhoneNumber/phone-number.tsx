@@ -57,7 +57,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
           onChange={handleInputChange}
           // Input styles
           className={clsx(
-            "p-3 w-full custom-primary-outline border border-solid bg-neutral-2 rounded-r-[4px] border-l-0 h-[50px]",
+            "p-3 w-full custom-primary-outline border border-solid rounded-r-[4px] border-l-0 h-[50px]",
             inputTextStyles
           )}
           style={{ borderColor: "rgba(186, 199, 213, 0.50)" }} // Add custom border color

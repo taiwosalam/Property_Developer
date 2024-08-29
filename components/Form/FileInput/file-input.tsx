@@ -93,10 +93,10 @@ const FileInput: React.FC<FileInputProps> = ({
         )}
         <div className="relative flex items-center gap-2">
           <input
-            ref={inputRef}
-            type="file"
             id={id}
             name={id}
+            ref={inputRef}
+            type="file"
             className="hidden"
             onChange={handleFileChange}
           />

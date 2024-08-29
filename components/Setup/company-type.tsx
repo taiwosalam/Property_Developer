@@ -9,10 +9,6 @@ interface CompanyTypeItem {
   description: string;
 }
 
-interface CompanyTypeProps {
-  onChange: (value: string) => void;
-}
-
 const companyTypes: CompanyTypeItem[] = [
   {
     iconType: "profile_circle",
@@ -66,12 +62,11 @@ const SingleCompany: React.FC<
   );
 };
 
-const CompanyType: React.FC<CompanyTypeProps> = ({ onChange }) => {
+const CompanyType = () => {
   const [selectedType, setSelectedType] = useState<string>("");
 
   const handleSelect = (name: string) => {
     setSelectedType(name);
-    onChange(name);
   };
 
   return (

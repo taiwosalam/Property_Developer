@@ -11,14 +11,16 @@ import deleteIcon from "@/public/icons/delete-icon.svg";
 const Select: React.FC<SelectProps> = ({
   id,
   label,
-  value: propValue,
+  value: propValue = "",
   required,
   className,
   options,
   onChange,
   textStyles,
   placeholder = "Select",
+  allowCustom = false,
 }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOptions, setFilteredOptions] = useState(options);
@@ -33,6 +35,12 @@ const Select: React.FC<SelectProps> = ({
     setSearchTerm(""); // Clear search term
     setIsOpen(false); // Close dropdown
   };
+
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpen]);
 
   // Sync internal state with propValue
   useEffect(() => {
@@ -53,6 +61,7 @@ const Select: React.FC<SelectProps> = ({
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
+        setSearchTerm("");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -67,11 +76,12 @@ const Select: React.FC<SelectProps> = ({
         </Label>
       )}
       <div className="relative" ref={dropdownRef}>
+        <input type="text" name={id} className="hidden" value={selectedValue} />
         {/* Trigger for the custom dropdown with embedded search field */}
         <div
           className={clsx(
             "flex items-center border border-solid py-3 pl-10 pr-3 rounded-[4px]",
-            { "bg-neutral-2": selectedValue || isOpen },
+            { "bg-neutral-2": selectedValue },
             { "cursor-pointer": !selectedValue }
           )}
           onClick={() => {
@@ -94,6 +104,7 @@ const Select: React.FC<SelectProps> = ({
             </span>
           ) : (
             <input
+              ref={inputRef}
               type="text"
               className={clsx(
                 "flex-1 bg-transparent outline-none text-sm",
@@ -112,7 +123,7 @@ const Select: React.FC<SelectProps> = ({
               autoFocus={isOpen} // Autofocus when opened
             />
           )}
-          <div className="ml-2">
+          <div className="ml-2 flex items-center justify-center">
             {!selectedValue ? (
               <Image
                 src={isOpen ? ArrowUpIcon : ArrowDownIcon}
@@ -127,7 +138,13 @@ const Select: React.FC<SelectProps> = ({
                   e.stopPropagation();
                 }}
               >
-                <Image src={deleteIcon} alt="Clear" />
+                <Image
+                  src={deleteIcon}
+                  alt="Clear"
+                  width={18}
+                  height={18}
+                  className="w-[18px] h-[18px]"
+                />
               </button>
             )}
           </div>
@@ -135,7 +152,15 @@ const Select: React.FC<SelectProps> = ({
 
         {/* Options dropdown */}
         {isOpen && (
-          <div className="absolute z-10 mt-2 w-full bg-white border border-solid rounded-[4px] shadow-lg">
+          <div
+            className={clsx(
+              "absolute z-10 mt-2 w-full bg-white border border-solid rounded-[4px] shadow-lg",
+              {
+                "border-[0] mt-0 shadow-[none]":
+                  !searchTerm && filteredOptions.length === 0,
+              }
+            )}
+          >
             <div className="max-h-60 overflow-y-auto">
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (
@@ -147,9 +172,23 @@ const Select: React.FC<SelectProps> = ({
                     {option}
                   </div>
                 ))
-              ) : (
-                <div className="p-2 text-gray-500">No match</div>
-              )}
+              ) : searchTerm ? ( // Show "No match" only if there's a search term
+                <div className="p-2 text-gray-500">
+                  <p>No match</p>
+                  {allowCustom && (
+                    <>
+                      <hr className="mb-[1px]" /> <hr />
+                      <button
+                        type="button"
+                        onClick={() => handleSelection(searchTerm)}
+                        className="w-full hover:bg-gray-100 text-left"
+                      >
+                        Add {searchTerm}
+                      </button>
+                    </>
+                  )}
+                </div>
+              ) : null}
             </div>
           </div>
         )}
