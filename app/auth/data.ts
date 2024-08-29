@@ -24,7 +24,13 @@ export const login = async (
   rememberMe: boolean
 ) => {
   const data = { email, password };
-  return await postRequest("/login", data, rememberMe);
+  const response = await postRequest("/login", data, rememberMe);
+  console.log(response);
+  if (response.company_id === null) {
+    window.location.href = "/setup"; // Redirects to the setup page.
+  } else {
+    window.location.href = "/dashboard"; // Redirects to the dashboard.
+  }
 };
 
 // Signup function
