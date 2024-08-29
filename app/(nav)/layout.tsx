@@ -12,12 +12,16 @@ import Avatar from "@/public/empty/avatar.png";
 
 // Imports
 import SVG from "@/components/SVG/svg";
+import { Color } from "@/types/global";
 import Sidenav from "@/components/Nav/sidenav";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
+import { useThemeStoreSelectors } from "@/store/themeStore";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const sidenav_width = 250;
+
+  const primaryColor = useThemeStoreSelectors.use.primaryColor();
 
   const [sidenavIsOpen, setSidenavIsOpen] = useState(true);
 
@@ -102,7 +106,11 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             ></div>
             <div className="h-[50px] pl-3 pr-10 flex items-center justify-between bg-white ">
               <button onClick={() => setSidenavIsOpen((prev) => !prev)}>
-                <SVG type="sidebar" color="#0033C4" className="w-8 h-8" />
+                <SVG
+                  type="sidebar"
+                  color={primaryColor as Color}
+                  className="w-8 h-8"
+                />
               </button>
               <p className="capitalize text-text-primary text-sm font-medium">
                 dashboard

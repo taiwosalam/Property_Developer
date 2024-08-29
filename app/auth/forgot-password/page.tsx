@@ -40,7 +40,10 @@ const ForgotPasswordFlow = () => {
       {activeStep === 0 ? (
         <ForgotPassword changeStep={handleStepChange} />
       ) : activeStep === 1 ? (
-        <VerifyEmailAddress changeStep={handleStepChange} />
+        <VerifyEmailAddress
+          type="forgot password"
+          changeStep={handleStepChange}
+        />
       ) : activeStep === 2 ? (
         <CreateNewPassword />
       ) : null}

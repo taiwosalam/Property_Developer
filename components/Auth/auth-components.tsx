@@ -28,7 +28,7 @@ export const AuthHeading: React.FC<AuthHeadingProps> = ({
   children,
 }) => (
   <div className="custom-flex-col gap-1">
-    <h1 className="text-brand-primary text-[32px] font-bold capitalize">
+    <h1 className="custom-primary-color text-[32px] font-bold capitalize">
       {title}
     </h1>
     <p className="text-text-label text-base font-normal">{children}</p>
@@ -81,7 +81,7 @@ export const AuthAction: React.FC<AuthActionProps> = ({
   // Render a paragraph with children content and a link
   <p className="text-text-black text-base font-normal">
     {children}{" "}
-    <Link href={href} className="text-brand-9 font-medium capitalize">
+    <Link href={href} className="custom-primary-color font-medium capitalize">
       {/* Render link text or a default value if not provided */}
       {linkText || "link"}
     </Link>
@@ -113,7 +113,7 @@ export const AuthPinField: React.FC<AuthPinFieldProps> = ({ onChange }) => {
         inputMode="numeric" // Ensure that the input is numeric
         onChange={onChange} // Handle input changes
         validate={/^[0-9]$/} // Regex to allow only numeric characters
-        className="w-[35px] h-10 text-center text-brand-9 rounded-[4px] border border-solid focus:outline-brand-9 bg-background"
+        className="w-[35px] h-10 text-center custom-primary-color rounded-[4px] border border-solid custom-primary-outline bg-background"
         style={{ borderColor: "rgba(186, 199, 213, 0.50)" }} // Inline style for border color
       />
     </div>

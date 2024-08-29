@@ -6,10 +6,11 @@ import React, { useState } from "react";
 import type { NavDropdownProps } from "./types";
 
 // Imports
-import { NavButton } from "./nav-components";
-import SVG from "../SVG/svg";
-import { boolean } from "zod";
 import clsx from "clsx";
+import SVG from "../SVG/svg";
+import { Color } from "@/types/global";
+import { NavButton } from "./nav-components";
+import { useThemeStoreSelectors } from "@/store/themeStore";
 
 const NavDropdown: React.FC<NavDropdownProps> = ({
   type,
@@ -17,6 +18,8 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
   children,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const primaryColor = useThemeStoreSelectors.use.primaryColor();
 
   return (
     <div className="custom-flex-col">
@@ -31,7 +34,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
             "rotate-180": !isOpen,
           })}
         >
-          <SVG type="arrow_down" color="#0033C4" />
+          <SVG type="arrow_down" color={primaryColor as Color} />
         </div>
       </div>
       {isOpen && (

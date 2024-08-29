@@ -12,14 +12,20 @@ import {
 } from "@/components/Auth/auth-components";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
+import { useFormDataStore } from "@/store/formdatastore";
 
 const ForgotPassword: React.FC<FlowComponentProps> = ({ changeStep }) => {
   // State for managing error messages
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
+  // Access the store's update function
+  const updateFormData = useFormDataStore((state) => state.updateFormData);
+
   const handleForgotPassword = (data: any) => {
-    console.log(data);
-    // NOTE: This is the part where you send the data to the backend and handle any necessary logic.
+    // Update the form data in the store
+    updateFormData({ ...data, password: data["new-password"] });
+    console.log(data, "submitted data");
+
     changeStep("next"); // Change the form step to the next step in the flow
   };
 

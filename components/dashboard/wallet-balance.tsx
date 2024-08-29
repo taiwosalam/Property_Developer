@@ -41,7 +41,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
           <SVG type="right_arrow" className="ml-2" />
         </Link>
       </div>
-      <div className="p-5 bg-brand-primary space-y-3 rounded-lg">
+      <div className="p-5 custom-primary-bg space-y-3 rounded-lg">
         <div className="flex items-center text-white opacity-95 font-normal text-sm">
           <p>My balance</p>
 

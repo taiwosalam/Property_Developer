@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
 import { Toaster } from "sonner";
+import type { Metadata } from "next";
 
 // Styles
 import "@/styles/globals.css";
 import "@/styles/mobile.css";
 import { dmSans } from "@/utils/fonts";
+import ThemeProvider from "./theme-provider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,8 +23,9 @@ export default function RootLayout({
         className={`${dmSans.className} antialiased`}
         suppressHydrationWarning
       >
+        <ThemeProvider />
         <div className="w-full relative z-[1]">
-          {children}{" "}
+          {children}
           <Toaster richColors className={`${dmSans.className} antialiased`} />
         </div>
         <div id="portal" className="z-[2]"></div>

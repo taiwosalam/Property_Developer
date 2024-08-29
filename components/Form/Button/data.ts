@@ -1,7 +1,7 @@
 export const button_variants = {
   variant: {
     change: "bg-neutral-2 text-brand-9",
-    default: "bg-brand-primary text-white",
+    default: "custom-primary-bg text-white",
   },
   size: {
     sm: "py-2 px-3 text-sm font-normal",

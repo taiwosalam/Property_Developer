@@ -102,7 +102,7 @@ const FileInput: React.FC<FileInputProps> = ({
           />
           <div
             className={clsx(
-              "p-3 rounded-[4px] w-full focus:outline-brand-primary border border-solid text-text-disabled text-sm font-normal max-w-[300px] overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between",
+              "p-3 rounded-[4px] w-full custom-primary-outline border border-solid text-text-disabled text-sm font-normal max-w-[300px] overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between",
               fileName ? "bg-neutral-2" : "bg-none"
             )}
             style={{

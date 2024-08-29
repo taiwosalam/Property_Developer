@@ -15,8 +15,8 @@ export const AuthSliderBar = React.forwardRef<
   <div
     ref={ref}
     className={clsx("w-1 h-5 rounded-lg", {
-      "opacity-40 bg-brand-secondary": !active,
-      "bg-brand-primary flex-1": active,
+      "opacity-40 bg-transparent": !active,
+      "bg-transparent flex-1": active,
     })}
   ></div>
 ));
@@ -32,7 +32,7 @@ export const AuthSliderContent = React.forwardRef<
     className="p-4 xl:p-5 custom-flex-col gap-3 justify-center opacity-0"
     style={{ height }}
   >
-    <p className="text-brand-primary text-3xl xl:text-4xl font-bold capitalize">
+    <p className="custom-primary-color text-3xl xl:text-4xl font-bold capitalize">
       {title}
     </p>
     <p className="text-text-secondary text-sm xl:text-base font-normal">
