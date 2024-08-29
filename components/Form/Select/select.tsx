@@ -183,7 +183,7 @@ const Select: React.FC<SelectProps> = ({
                         onClick={() => handleSelection(searchTerm)}
                         className="w-full hover:bg-gray-100 text-left"
                       >
-                        Add "{searchTerm}"
+                        Add {searchTerm}
                       </button>
                     </>
                   )}
