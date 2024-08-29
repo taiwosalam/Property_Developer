@@ -36,11 +36,12 @@ instance.interceptors.response.use(
     if (error?.response?.status! === 401) {
       const updateAuthenticationState =
         useAuthStoreSelectors.getState().updateAuthenticationState;
-
       updateAuthenticationState(false); // Updates authentication state to false (logged out).
-      window.location.href = "/auth/sign-in"; // Redirects to the login page.
+      if (window.location.pathname !== "/auth/sign-in") {
+        window.location.href = "/auth/sign-in"; // Redirects to the login page.      }
+      }
+      // throw error; // Propagates the error for further handling.
     }
-    throw error; // Propagates the error for further handling.
   }
 );
 
@@ -70,7 +71,7 @@ export const getRequest = async (url: string) => {
     console.error("GET request error:", error);
     const errorMessage = error?.message || "An unexpected error occurred.";
     toast.error(errorMessage); // Displays the error message or a fallback message.
-    throw error; // Propagate error for further handling
+    // throw error; // Propagate error for further handling
   }
 };
 
@@ -83,20 +84,21 @@ export const postRequest = async (
   try {
     const formData = useFormDataStore.getState().formData; // Access form data from the store
     const response = await instance.post(url, { ...data, ...formData }); // Include form data in the request
-    if (response.data.company_id === null) {
-      window.location.href = "/setup"; // Redirects to the setup page.
-    }
+
     if (response.status === 200) {
       if (response?.data?.data?.accessToken) {
         storeToken(response.data.data.accessToken, rememberMe); // Store token with "Remember Me" option
       }
       toast.success("Action successful"); // Displays a success message
     }
+
     return response.data;
   } catch (error: any) {
-    console.error("POST request error:", error);
-    const errorMessage = error?.message || "An unexpected error occurred.";
+    const errorMessage =
+      error?.response?.data?.error ||
+      error?.message ||
+      "An unexpected error occurred.";
     toast.error(errorMessage); // Displays the error message or a fallback message.
-    throw error; // Propagate error for further handling
+    return { error: errorMessage }; // Return the error to the caller
   }
 };
