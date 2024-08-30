@@ -85,7 +85,7 @@ export const postRequest = async (
     const formData = useFormDataStore.getState().formData; // Access form data from the store
     const response = await instance.post(url, { ...data, ...formData }); // Include form data in the request
 
-    if (response.status === 200) {
+    if (response?.status === 200) {
       if (response?.data?.data?.accessToken) {
         storeToken(response.data.data.accessToken, rememberMe); // Store token with "Remember Me" option
       }

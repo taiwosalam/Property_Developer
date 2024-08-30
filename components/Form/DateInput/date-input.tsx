@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 // Types
 import type { DateInputProps } from "./types";
 
 // Imports
 import clsx from "clsx";
 import Label from "../Label/label";
+// import { DatePicker } from "@nextui-org/react";
 import DatePicker from "./date-picker";
+import { getLocalTimeZone, today } from "@internationalized/date";
 // import { checkValidatonError } from "@/utils/validation";
 
 const DateInput: React.FC<DateInputProps> = ({
@@ -17,19 +17,18 @@ const DateInput: React.FC<DateInputProps> = ({
   value,
   required,
   className,
-  initialValue,
+  textStyles,
   //   validationErrors = {},
   onChange,
 }) => {
   // State to store validation error message
   //   const [validationError, setValidationError] = useState<string | null>(null);
 
-  // Set the input's "value" to an "initial value" when component mounts or when initialValue changes
-  useEffect(() => {
-    if (initialValue !== undefined && onChange != undefined) {
-      onChange(initialValue);
+  const handleDateChange = (date: Date | undefined) => {
+    if (onChange) {
+      onChange(date);
     }
-  }, [initialValue, onChange]);
+  };
 
   // Check and set validation error for this input when validationErrors or id changes
   //   useEffect(() => {
@@ -47,8 +46,12 @@ const DateInput: React.FC<DateInputProps> = ({
         </Label>
       )}
       <DatePicker
-        className="h-[50px] p-4"
-        textStyles="text-text-disabled text-[12px] font-normal"
+        className="p-4 h-[50px]"
+        textStyles={clsx("text-text-disabled", textStyles)}
+        // label="outside"
+        // maxValue={today(getLocalTimeZone())}
+        dateValueProp={value}
+        onDateChange={handleDateChange}
       />
     </div>
   );

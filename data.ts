@@ -38,7 +38,7 @@ export const industryOptions = [
   "Real Estate Company",
 ];
 
-export const titleOrQualifications = [
+export const titles = [
   "Prince",
   "Princess",
   "Alhaji",

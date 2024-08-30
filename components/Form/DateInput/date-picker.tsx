@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import SVG from "@/components/SVG/svg";
 import { cn } from "@/lib/utils";
+import { CalendarIcon } from "@/public/icons/icons";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -15,10 +15,30 @@ import {
 interface DatePickerProps {
   className?: string;
   textStyles?: string;
+  dateValueProp?: Date;
+  onDateChange?: (date: Date | undefined) => void;
 }
 
-const DatePicker: React.FC<DatePickerProps> = ({ className, textStyles }) => {
+const DatePicker: React.FC<DatePickerProps> = ({
+  className,
+  textStyles,
+  dateValueProp,
+  onDateChange,
+}) => {
   const [date, setDate] = React.useState<Date>();
+
+  React.useEffect(() => {
+    if (dateValueProp !== undefined) {
+      setDate(dateValueProp);
+    }
+  }, [dateValueProp]);
+
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    if (onDateChange) {
+      onDateChange(selectedDate);
+    }
+  };
 
   return (
     <Popover>
@@ -34,14 +54,14 @@ const DatePicker: React.FC<DatePickerProps> = ({ className, textStyles }) => {
           <p className={textStyles}>
             {date ? format(date, "MM/dd/yyyy") : <span>mm/dd/yyyy</span>}
           </p>
-          <SVG type="calendar" className="mr-2 h-4 w-4" />
+          <CalendarIcon/>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={handleDateSelect}
           initialFocus
         />
       </PopoverContent>

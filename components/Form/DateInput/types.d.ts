@@ -3,13 +3,11 @@
 
 export interface DateInputProps {
   id: string;
-  value?: string;
+  value?: Date;
   label?: string;
   className?: string;
   required?: boolean;
-  initialValue?: string;
-  //   type?: React.HTMLInputTypeAttribute;
   //   validationErrors?: ValidationErrors;
-  onChange?: (data: string) => void;
+  onChange?: (date: Date | undefined) => void;
   textStyles?: string;
 }

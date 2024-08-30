@@ -83,6 +83,17 @@ h1 {
   -webkit-line-clamp: 1;
 }
 
+.custom-grid-area {
+  @media (min-width: 1024px) {
+    grid-area: 2/1 / span 1 / span 2;
+  }
+}
+.specific-grid {
+  @media (min-width: 1024px) and (max-width: 1165px) {
+    width: 85%;
+  }
+}
+
 /* -------------------------------------------------------------- */
 
 /* Overwriting default behaviour */
@@ -133,10 +144,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border: 1px solid #dcdcdc; /* Optional: Add a border */
   border-bottom: none;
   padding: 0.5rem; /* Optional: Add padding inside the editor */
-}
-
-.quill-editor-content-filled {
-  @apply bg-neutral-2; /* Light grey background */
 }
 
 .quill-toolbar {

@@ -51,13 +51,14 @@ const ProfilePicture = () => {
 
   return (
     <div className="custom-flex-col gap-5">
-      <SectionHeading required title="profile picture">
+      <SectionHeading title="profile picture">
         The profile photo size should be 100 x 100 pixels with a maximum file
         size of 5MB.
       </SectionHeading>
 
       <div className="flex gap-2">
         <input
+          name="profile_pic"
           type="file"
           accept="image/*"
           ref={fileInputRef}
@@ -78,6 +79,7 @@ const ProfilePicture = () => {
                 alt="Delete Icon"
                 width={40}
                 height={40}
+                className="w-[40px] h-[40px]"
               />
             </button>
             <Image
@@ -85,7 +87,7 @@ const ProfilePicture = () => {
               alt="Profile Picture"
               layout="fill"
               objectFit="cover"
-              className="rounded-lg"
+              className="rounded-lg w-[100px] h-[100px]"
             />
           </div>
         ) : (
@@ -99,9 +101,9 @@ const ProfilePicture = () => {
               alt="Upload Icon"
               width={25}
               height={25}
-              className="mb-2"
+              className="w-[25px] h-[25px] mb-2"
             />
-            <span className="text-text-secondary text-[8.8px] font-normal">
+            <span className="text-text-secondary text-sm font-normal">
               Upload Profile Picture
             </span>
           </button>

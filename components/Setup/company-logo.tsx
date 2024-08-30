@@ -58,6 +58,7 @@ const CompanyLogo = () => {
       </SectionHeading>
       <div className="flex gap-2">
         <input
+          name="logo"
           type="file"
           accept="image/*"
           ref={fileInputRef}
@@ -86,7 +87,7 @@ const CompanyLogo = () => {
                 alt="Company Logo"
                 layout="fill"
                 objectFit="contain"
-                className="rounded-md"
+                className="rounded-md w-[375px] h-[150px]"
               />
             </div>
           </div>
@@ -94,7 +95,7 @@ const CompanyLogo = () => {
           <button
             type="button"
             onClick={handleButtonClick}
-            className="w-[274px] h-[150px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
+            className="w-[375px] h-[150px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
           >
             <Image
               src={UploadIcon}

@@ -3,9 +3,10 @@ import dynamic from "next/dynamic";
 import type { TextAreaProps } from "./types";
 import clsx from "clsx";
 import Label from "../Label/label";
+import type { ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-// Dynamically import ReactQuill with ssr option set to false
+// Dynamically import ReactQuill with SSR option set to false
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const TextArea: React.FC<TextAreaProps> = ({
@@ -15,52 +16,21 @@ const TextArea: React.FC<TextAreaProps> = ({
   required,
   className,
   placeholder,
-  initialValue,
   onChange,
   textAreaStyles,
 }) => {
-  const quillRef = useRef<any>(null);
   const [editorClass, setEditorClass] = useState<string>("");
   const [mounted, setMounted] = useState(false);
 
   const handleChange = (content: string) => {
     if (onChange) {
-      onChange(content);
+      onChange(content.trim());
     }
   };
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  useEffect(() => {
-    if (initialValue !== undefined && onChange != undefined) {
-      onChange(initialValue);
-    }
-  }, [initialValue, onChange]);
-
-  useEffect(() => {
-    if (mounted) {
-      const editor = quillRef.current?.getEditor();
-      if (editor) {
-        const updateBackground = () => {
-          const content = editor.getText().trim();
-          setEditorClass(content ? "quill-editor-content-filled" : "");
-        };
-
-        editor.on("text-change", updateBackground);
-        updateBackground();
-
-        return () => {
-          editor.off("text-change", updateBackground);
-        };
-      }
-    }
-  }, [value, mounted]);
-
-  if (!mounted) {
-    return null; // or a loading placeholder
-  }
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
@@ -70,18 +40,20 @@ const TextArea: React.FC<TextAreaProps> = ({
         </Label>
       )}
       <div className="flex flex-col">
-        <ReactQuill
-          id={id}
-          value={value}
-          onChange={handleChange}
-          placeholder={placeholder}
-          className={clsx("quill-editor", textAreaStyles, editorClass)}
-          modules={{
-            toolbar: {
-              container: "#toolbar",
-            },
-          }}
-        />
+        {mounted && (
+          <ReactQuill
+            id={id}
+            value={value}
+            onChange={handleChange}
+            placeholder={placeholder}
+            className={clsx("quill-editor", textAreaStyles, editorClass)}
+            modules={{
+              toolbar: {
+                container: "#toolbar",
+              },
+            }}
+          />
+        )}
         <div id="toolbar" className="quill-toolbar bg-[#F3F6F9]">
           <button className="ql-bold">Bold</button>
           <button className="ql-italic">Italic</button>

@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import type { FileInputProps } from "./types";
 import clsx from "clsx";
 import Label from "../Label/label";
@@ -12,6 +12,7 @@ const FileInput: React.FC<FileInputProps> = ({
   id,
   label,
   className,
+  textStyles,
   required,
   onChange,
   placeholder,
@@ -20,6 +21,7 @@ const FileInput: React.FC<FileInputProps> = ({
   size,
   sizeUnit,
 }) => {
+  const [isLgScreen, setIsLgScreen] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileURL, setFileURL] = useState<string | null>(null);
@@ -67,6 +69,7 @@ const FileInput: React.FC<FileInputProps> = ({
       onChange && onChange(file); // Call onChange if provided
     }
   };
+
   const handleViewFile = () => {
     if (fileURL) {
       window.open(fileURL, "_blank");
@@ -82,70 +85,102 @@ const FileInput: React.FC<FileInputProps> = ({
     onChange && onChange(null);
   };
 
+  useEffect(() => {
+    const updateScreenSize = () => {
+      setIsLgScreen(window.innerWidth >= 1024);
+    };
+
+    updateScreenSize(); // Set initial value
+
+    window.addEventListener("resize", updateScreenSize);
+
+    return () => window.removeEventListener("resize", updateScreenSize);
+  }, []);
+
   return (
-    <div className="flex flex-1 gap-2">
-      <div className={clsx("custom-flex-col gap-2", className)}>
-        {/* Render the label if provided */}
-        {label && (
-          <Label id={id} required={required}>
-            {label}
-          </Label>
-        )}
-        <div className="relative flex items-center gap-2">
-          <input
-            id={id}
-            name={id}
-            ref={inputRef}
-            type="file"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-          <div
+    <div className={clsx("custom-flex-col gap-2", className)}>
+      {/* Render the label if provided */}
+      {label && (
+        <Label id={id} required={required}>
+          {label}
+        </Label>
+      )}
+      <div className="relative">
+        <input
+          id={id}
+          name={id}
+          ref={inputRef}
+          type="file"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+        <button
+          type="button"
+          onClick={handleButtonClick}
+          disabled={isLgScreen}
+          className={clsx(
+            "p-3 rounded-[4px] w-full custom-primary-outline border border-solid text-text-disabled text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between lg:pointer-events-none",
+            fileName ? "bg-neutral-2" : "bg-none"
+          )}
+          style={{
+            borderColor: "rgba(186, 199, 213, 0.50)",
+          }}
+        >
+          <span
             className={clsx(
-              "p-3 rounded-[4px] w-full custom-primary-outline border border-solid text-text-disabled text-sm font-normal max-w-[300px] overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between",
-              fileName ? "bg-neutral-2" : "bg-none"
+              "flex-1 overflow-hidden text-ellipsis whitespace-nowrap",
+              textStyles
             )}
-            style={{
-              borderColor: "rgba(186, 199, 213, 0.50)",
-            }}
           >
-            <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
-              {fileName
-                ? fileName
-                : placeholder
-                ? placeholder
-                : "Click the side button to upload your file"}
-            </span>
-            {fileName && (
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  aria-label="View File"
-                  onClick={handleViewFile}
-                >
-                  <Image src={eyeShowIcon} alt="View File" />
-                </button>
-                <button
-                  type="button"
-                  aria-label="Delete File"
-                  onClick={handleDeleteFile}
-                >
-                  <Image src={deleteIcon} alt="Delete File" />
-                </button>
-              </div>
-            )}
-          </div>
-          <div className="flex items-end">
-            <Button
-              variant="change"
-              size="sm"
-              style={{ background: fileName ? "" : "none" }}
-              type="button"
-              onClick={handleButtonClick}
-            >
-              {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
-            </Button>
-          </div>
+            {fileName
+              ? fileName
+              : `Click ${isLgScreen ? "the side button" : "here"} to upload ${
+                  placeholder || "file"
+                }`}
+          </span>
+          {fileName && (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                aria-label="View File"
+                onClick={(e) => {
+                  handleViewFile();
+                  e.stopPropagation();
+                }}
+              >
+                <Image src={eyeShowIcon} alt="View File" />
+              </button>
+              <button
+                type="button"
+                aria-label="Delete File"
+                onClick={(e) => {
+                  handleDeleteFile();
+                  e.stopPropagation();
+                }}
+                className="p-1"
+              >
+                <Image
+                  src={deleteIcon}
+                  alt="Delete File"
+                  width={18}
+                  height={18}
+                  className="w-[18px] h-[18px]"
+                />
+              </button>
+            </div>
+          )}
+        </button>
+        <div className="hidden lg:block absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2">
+          <Button
+            variant="change"
+            size="sm"
+            className="whitespace-nowrap text-ellipsis"
+            style={{ background: fileName ? "" : "none" }}
+            type="button"
+            onClick={handleButtonClick}
+          >
+            {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
+          </Button>
         </div>
       </div>
     </div>

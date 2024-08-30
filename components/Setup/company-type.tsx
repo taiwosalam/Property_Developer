@@ -34,20 +34,14 @@ const SingleCompany: React.FC<
   CompanyTypeItem & { onClick: () => void; selected: boolean }
 > = ({ iconType, name, description, onClick, selected }) => {
   return (
-    <label
-      className={`p-4 rounded-lg cursor-pointer ${
-        selected ? "bg-brand-2" : "bg-neutral-2 hover:bg-[#dbeafe80]"
-      }`}
+    <div
+      className={clsx(
+        "p-4 rounded-lg cursor-pointer w-[300px]",
+        selected ? "bg-brand-2" : "bg-neutral-2 hover:bg-[#dbeafe80]",
+        "min-w-[230px]"
+      )}
       onClick={onClick}
     >
-      <input
-        type="radio"
-        name="companyType"
-        value={name}
-        checked={selected}
-        onChange={onClick}
-        className="hidden" // This hides the radio button
-      />
       <SVG type={iconType} color={selected ? "#0033C4" : "#3F4247"} />
       <p
         className={clsx(
@@ -57,8 +51,15 @@ const SingleCompany: React.FC<
       >
         {name}
       </p>
-      <p className="text-text-disabled text-sm font-normal">{description}</p>
-    </label>
+      <p
+        className={clsx(
+          "text-sm font-normal",
+          !selected && "text-text-disabled "
+        )}
+      >
+        {description}
+      </p>
+    </div>
   );
 };
 
@@ -76,7 +77,15 @@ const CompanyType = () => {
           Please choose the company type that best fits your default dashboard
           configuration.
         </SectionHeading>
-        <div className="flex gap-5 max-w-[940px]">
+        <div className="flex gap-5 overflow-x-auto">
+          <input
+            type="radio"
+            name="type"
+            value={selectedType}
+            className="hidden"
+            checked={!!selectedType} // Checked if there is a selection
+            readOnly
+          />
           {companyTypes.map((c) => (
             <SingleCompany
               key={c.name}
