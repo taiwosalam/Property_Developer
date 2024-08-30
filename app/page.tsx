@@ -1,11 +1,16 @@
-import React from "react";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const Home = () => {
-  return (
-    <div className="w-full h-screen flex items-center justify-center font-medium text-2xl">
-      Home page
-    </div>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/auth/sign-in");
+  }, [router]);
+
+  return null;
 };
 
 export default Home;

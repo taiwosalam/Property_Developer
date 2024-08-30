@@ -1,9 +1,11 @@
-import { Toaster } from "sonner";
 import type { Metadata } from "next";
 
 // Styles
-import "@/styles/globals.css";
 import "@/styles/mobile.css";
+import "@/styles/globals.css";
+
+// Imports
+import { Toaster } from "sonner";
 import { dmSans } from "@/utils/fonts";
 import ThemeProvider from "./theme-provider";
 
