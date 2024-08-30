@@ -67,13 +67,13 @@ const CompanyAddress = () => {
         Please select your state, local government area, city, and upload a
         utility bill that is no older than 3 months.
       </SectionHeading>
-      <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-[950px]">
         {/* State Selector */}
         <Select
           options={getAllStates()}
           id="state"
           label="state"
-          textStyles="text-sm font-normal"
+          textStyles={`text-xs md:text-sm font-normal`}
           value={selectedState}
           onChange={handleStateChange} // Update handler
         />
@@ -83,7 +83,7 @@ const CompanyAddress = () => {
           options={localGovernments}
           id="lga"
           label="local government"
-          textStyles="text-sm font-normal"
+          textStyles={`text-xs md:text-sm font-normal`}
           onChange={handleLGAChange} // Update handler
           value={selectedLGA} // Controlled value
         />
@@ -93,8 +93,7 @@ const CompanyAddress = () => {
           options={cities}
           id="city"
           label="city"
-          // className="lg:col-span-1"
-          textStyles="text-sm font-normal"
+          textStyles={`text-xs md:text-sm font-normal`}
           allowCustom={true}
           onChange={handleCityChange} // Update handler
           value={selectedCity} // Controlled value
@@ -109,6 +108,7 @@ const CompanyAddress = () => {
           sizeUnit="MB"
           placeholder="Click the side button to upload utility"
           buttonName="Document"
+          textStyles={`text-xs md:text-sm font-normal`}
         />
 
         {/* Head Office Address (spans the full width on small screens and 2 columns on large screens) */}
@@ -117,7 +117,7 @@ const CompanyAddress = () => {
           id="head-office-address"
           placeholder="Write here"
           className="sm:col-span-2 custom-grid-area"
-          inputTextStyles="text-sm font-normal"
+          inputTextStyles={`text-xs md:text-sm font-normal`}
         />
       </div>
     </div>

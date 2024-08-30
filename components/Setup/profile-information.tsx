@@ -9,31 +9,28 @@ import { titles } from "@/data";
 const ProfileInformation = () => {
   const [aboutDirector, setAboutDirector] = useState("");
   return (
-    <div className="custom-flex-col gap-6">
-      <div className="flex gap-5">
+    <div className="custom-flex-col gap-6 max-w-[940px]">
+      <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <Input
           required
           id="director_name"
           label="full name"
           placeholder="Write here"
-          className="flex-1 max-w-[620px]"
-          inputTextStyles={`text-sm font-normal`}
+          inputTextStyles={`text-xs md:text-sm font-normal`}
+          className="lg:col-span-2"
         />
         <Select
           id="director_title"
           label="personal title / qualification"
-          className="flex w-[300px]"
           options={titles}
-          textStyles={`text-sm font-normal`}
+          textStyles={`text-xs md:text-sm font-normal`}
         />
-      </div>
-      <div className="flex gap-5">
+
         <Select
           id="director_experience"
           label="years in business"
           placeholder="Write here"
-          className="flex-1 max-w-[300px]"
-          textStyles={`text-sm font-normal`}
+          textStyles={`text-xs md:text-sm font-normal`}
           options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
         />
         <Input
@@ -41,15 +38,13 @@ const ProfileInformation = () => {
           label="alternative email"
           type="email"
           placeholder="example@mail.com"
-          className="flex-1 max-w-[300px]"
-          inputTextStyles={`text-sm font-normal`}
+          inputTextStyles={`text-xs md:text-sm font-normal`}
         />
         <PhoneNumberInput
           id="director_phone"
           label="phone number"
           placeholder="80 0000 0000"
-          className="flex-1 max-w-[300px]"
-          inputTextStyles={`text-sm font-normal`}
+          inputTextStyles={`text-xs md:text-sm font-normal`}
         />
       </div>
       <div>
@@ -60,7 +55,6 @@ const ProfileInformation = () => {
             id="director_about"
             label="About Director"
             placeholder="Write about the director"
-            textAreaStyles="w-[940px]"
             value={aboutDirector}
             onChange={setAboutDirector}
           />

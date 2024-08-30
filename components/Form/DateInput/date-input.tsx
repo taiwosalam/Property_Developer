@@ -17,6 +17,7 @@ const DateInput: React.FC<DateInputProps> = ({
   value,
   required,
   className,
+  textStyles,
   //   validationErrors = {},
   onChange,
 }) => {
@@ -38,7 +39,7 @@ const DateInput: React.FC<DateInputProps> = ({
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
-    {/* Render the label if provided */}
+      {/* Render the label if provided */}
       {label && (
         <Label id={id} required={required}>
           {label}
@@ -46,7 +47,7 @@ const DateInput: React.FC<DateInputProps> = ({
       )}
       <DatePicker
         className="p-4 h-[50px]"
-        textStyles="text-text-disabled text-[12px] font-normal"
+        textStyles={clsx("text-text-disabled", textStyles)}
         // label="outside"
         // maxValue={today(getLocalTimeZone())}
         dateValueProp={value}

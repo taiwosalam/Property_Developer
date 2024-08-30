@@ -17,8 +17,7 @@ const CompanyDetails = () => {
         Kindly provide the following details below. Note your documents should
         be in PDF format and should not exceed 5mb.
       </SectionHeading>
-
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 max-w-[950px]">
         <div>
           {/* Hidden input field for registration-date */}
           <input
@@ -31,6 +30,7 @@ const CompanyDetails = () => {
             id="cac_date"
             label="date of registration"
             onChange={setRegistrationDate}
+            textStyles={`text-xs md:text-sm font-normal`}
           />
         </div>
         <Input

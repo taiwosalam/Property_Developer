@@ -45,7 +45,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
         </Label>
       )}
       <div className="relative flex items-center">
-        <div className="bg-[#F3F6F9] p-3 text-center text-text-disabled rounded-l-[4px] border border-solid border-r-0 h-[50px]">
+        <div className="bg-[#F3F6F9] p-3 text-center text-text-disabled rounded-l-[4px] border border-solid border-r-0 h-[50px] text-xs md:text-sm font-normal grid place-items-center">
           +234
         </div>
         <input

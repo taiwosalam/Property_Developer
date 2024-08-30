@@ -91,7 +91,7 @@ const FileInput: React.FC<FileInputProps> = ({
           {label}
         </Label>
       )}
-      <div className="lg:flex lg:items-center lg:gap-2">
+      <div className="relative">
         <input
           id={id}
           name={id}
@@ -140,10 +140,11 @@ const FileInput: React.FC<FileInputProps> = ({
             </div>
           )}
         </div>
-        <div className="hidden lg:flex lg:items-end">
+        <div className="hidden lg:block absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2">
           <Button
             variant="change"
             size="sm"
+            className="whitespace-nowrap text-ellipsis"
             style={{ background: fileName ? "" : "none" }}
             type="button"
             onClick={handleButtonClick}

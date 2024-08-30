@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 // Types
 import Link from "next/link";
 import clsx from "clsx";
@@ -51,7 +49,7 @@ export const Section: React.FC<SectionProps> = ({
   children,
   separatorStyles,
 }) => (
-  <div className="custom-flex-col gap-6">
+  <div className={"custom-flex-col gap-6"}>
     {children}
     <SectionSeparator className={separatorStyles} />
   </div>

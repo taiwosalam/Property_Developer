@@ -115,21 +115,20 @@ const Setup = () => {
           <CompanyType />
           <Section separatorStyles="max-w-[1200px]">
             <div className="custom-flex-col gap-5">
-              <div className="flex gap-5">
+              <div className="grid gap-5 grid-cols-2 lg:grid-cols-3 max-w-[860px]">
                 <Input
                   required
                   id="company-name"
                   label="company name"
                   placeholder="Write here"
-                  className="flex-1 max-w-[480px]"
-                  inputTextStyles={`text-sm font-normal text-ellipsis`}
+                  inputTextStyles={`text-xs md:text-sm font-normal`}
+                  className="lg:col-span-2"
                 />
                 <Input
                   id="referral-id"
                   label="Referral ID (Optional)"
                   placeholder="Enter your Referral ID"
-                  className="flex-1 max-w-[320px]"
-                  inputTextStyles={`text-sm font-normal `}
+                  inputTextStyles={`text-xs md:text-sm font-normal`}
                 />
               </div>
               <CompanyDetails />
