@@ -3,11 +3,11 @@ import dynamic from "next/dynamic";
 import type { TextAreaProps } from "./types";
 import clsx from "clsx";
 import Label from "../Label/label";
+import type { ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import ReactQuill from "react-quill";
 
 // Dynamically import ReactQuill with SSR option set to false
-// const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const TextArea: React.FC<TextAreaProps> = ({
   id,
@@ -19,7 +19,6 @@ const TextArea: React.FC<TextAreaProps> = ({
   onChange,
   textAreaStyles,
 }) => {
-  const quillRef = useRef<ReactQuill | null>(null);
   const [editorClass, setEditorClass] = useState<string>("");
   const [mounted, setMounted] = useState(false);
 
@@ -41,19 +40,20 @@ const TextArea: React.FC<TextAreaProps> = ({
         </Label>
       )}
       <div className="flex flex-col">
-        <ReactQuill
-          ref={quillRef}
-          id={id}
-          value={value}
-          onChange={handleChange}
-          placeholder={placeholder}
-          className={clsx("quill-editor", textAreaStyles, editorClass)}
-          modules={{
-            toolbar: {
-              container: "#toolbar",
-            },
-          }}
-        />
+        {mounted && (
+          <ReactQuill
+            id={id}
+            value={value}
+            onChange={handleChange}
+            placeholder={placeholder}
+            className={clsx("quill-editor", textAreaStyles, editorClass)}
+            modules={{
+              toolbar: {
+                container: "#toolbar",
+              },
+            }}
+          />
+        )}
         <div id="toolbar" className="quill-toolbar bg-[#F3F6F9]">
           <button className="ql-bold">Bold</button>
           <button className="ql-italic">Italic</button>

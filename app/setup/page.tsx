@@ -63,8 +63,12 @@ const Setup = () => {
       payload.director_experience = `${payload.director_experience} years`;
     }
 
-    console.log(payload); // Debug log to see the modified data
+    if (payload.director_about) {
+      payload.director_about = payload.director_about.replace(/<\/?p>/g, "");
+    }
 
+    console.log(payload); // Debug log to see the modified data
+    updateFormData(payload);
     try {
       await signupCompany();
       // console.log("Company successfully signed up!");
@@ -101,9 +105,8 @@ const Setup = () => {
             </p>
           </div>
           <Button
-            type="button"
+            type="submit"
             size="sm"
-            onClick={handleSubmit}
             disabled={!isFormValid()}
             style={{ opacity: isFormValid() ? 1 : "0.5" }}
             className=""
@@ -118,7 +121,7 @@ const Setup = () => {
               <div className="grid gap-5 grid-cols-2 lg:grid-cols-3 max-w-[860px]">
                 <Input
                   required
-                  id="company-name"
+                  id="company_name"
                   label="company name"
                   placeholder="Write here"
                   inputTextStyles={`text-xs md:text-sm font-normal`}

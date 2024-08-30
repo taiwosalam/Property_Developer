@@ -49,7 +49,7 @@ const ProfileInformation = () => {
       </div>
       <div>
         <div>
-          {/* Hidden input field for about director*/}
+       
           <input type="hidden" name="director_about" value={aboutDirector} />
           <TextArea
             id="director_about"

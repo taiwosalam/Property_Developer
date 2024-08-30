@@ -103,7 +103,7 @@ const ProfilePicture = () => {
               height={25}
               className="w-[25px] h-[25px] mb-2"
             />
-            <span className="text-text-secondary text-[8.8px] font-normal">
+            <span className="text-text-secondary text-sm font-normal">
               Upload Profile Picture
             </span>
           </button>

@@ -67,7 +67,7 @@ const CompanyAddress = () => {
         Please select your state, local government area, city, and upload a
         utility bill that is no older than 3 months.
       </SectionHeading>
-      <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-[950px]">
+      <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-[950px] specific-grid">
         {/* State Selector */}
         <Select
           options={getAllStates()}
@@ -106,7 +106,7 @@ const CompanyAddress = () => {
           fileType="pdf"
           size={5}
           sizeUnit="MB"
-          placeholder="Click the side button to upload utility"
+          placeholder="utility"
           buttonName="Document"
           textStyles={`text-xs md:text-sm font-normal`}
         />

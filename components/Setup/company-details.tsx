@@ -17,7 +17,7 @@ const CompanyDetails = () => {
         Kindly provide the following details below. Note your documents should
         be in PDF format and should not exceed 5mb.
       </SectionHeading>
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 max-w-[950px]">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 max-w-[950px] specific-grid">
         <div>
           {/* Hidden input field for registration-date */}
           <input
@@ -44,7 +44,7 @@ const CompanyDetails = () => {
           required
           id="cac_certificate"
           label="CAC Certificate"
-          placeholder="Click the side button to upload CAC"
+          placeholder="CAC"
           buttonName="Document"
           fileType="pdf"
           size={5}
@@ -70,7 +70,7 @@ const CompanyDetails = () => {
           fileType="pdf"
           size={5}
           sizeUnit="MB"
-          placeholder="Click the side button to upload certificate"
+          placeholder="certificate"
           buttonName="Document"
           textStyles={`text-xs md:text-sm font-normal`}
         />
