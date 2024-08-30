@@ -32,7 +32,8 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
 
   // Handle input change and format the value
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedValue = formatPhoneNumber(event.target.value);
+    const input = event.target.value.replace(/\D/g, ""); // Remove any non-numeric characters
+    const formattedValue = formatPhoneNumber(input); // Format the input value
     onChange && onChange(formattedValue); // Call the provided onChange handler with formatted value
   };
   return (

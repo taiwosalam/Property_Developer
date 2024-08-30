@@ -6,7 +6,7 @@ export interface SelectProps {
   className?: string;
   required?: boolean;
   placeholder?: string;
-  onChange?: (data: string|null) => void;
+  onChange?: (data: string) => void;
   textStyles?: string;
-  allowCustom?:booleab;
+  allowCustom?: booleab;
 }

@@ -16,14 +16,16 @@ export const SectionTitle: React.FC<SectionTitleProps> = ({
   children,
   required,
 }) => (
-  <div className="flex gap-[2px] text-base font-medium">
+  <div className="flex gap-[2px] text-xs md:text-sm lg:text-base font-medium">
     {required && <span className="text-status-error-primary">*</span>}
     <p className="text-text-quaternary capitalize">{children}</p>
   </div>
 );
 
 export const SectionDesc: React.FC<SectionDescProps> = ({ children }) => (
-  <p className="text-text-disabled text-sm font-normal">{children}</p>
+  <p className="text-text-disabled text-xs md:text-sm font-normal">
+    {children}
+  </p>
 );
 
 export const SectionHeading: React.FC<SectionHeadingProps> = ({

@@ -4,9 +4,10 @@ import type { TextAreaProps } from "./types";
 import clsx from "clsx";
 import Label from "../Label/label";
 import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill";
 
-// Dynamically import ReactQuill with ssr option set to false
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+// Dynamically import ReactQuill with SSR option set to false
+// const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const TextArea: React.FC<TextAreaProps> = ({
   id,
@@ -15,52 +16,22 @@ const TextArea: React.FC<TextAreaProps> = ({
   required,
   className,
   placeholder,
-  initialValue,
   onChange,
   textAreaStyles,
 }) => {
-  const quillRef = useRef<any>(null);
+  const quillRef = useRef<ReactQuill | null>(null);
   const [editorClass, setEditorClass] = useState<string>("");
   const [mounted, setMounted] = useState(false);
 
   const handleChange = (content: string) => {
     if (onChange) {
-      onChange(content);
+      onChange(content.trim());
     }
   };
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  useEffect(() => {
-    if (initialValue !== undefined && onChange != undefined) {
-      onChange(initialValue);
-    }
-  }, [initialValue, onChange]);
-
-  useEffect(() => {
-    if (mounted) {
-      const editor = quillRef.current?.getEditor();
-      if (editor) {
-        const updateBackground = () => {
-          const content = editor.getText().trim();
-          setEditorClass(content ? "quill-editor-content-filled" : "");
-        };
-
-        editor.on("text-change", updateBackground);
-        updateBackground();
-
-        return () => {
-          editor.off("text-change", updateBackground);
-        };
-      }
-    }
-  }, [value, mounted]);
-
-  if (!mounted) {
-    return null; // or a loading placeholder
-  }
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
@@ -71,6 +42,7 @@ const TextArea: React.FC<TextAreaProps> = ({
       )}
       <div className="flex flex-col">
         <ReactQuill
+          ref={quillRef}
           id={id}
           value={value}
           onChange={handleChange}

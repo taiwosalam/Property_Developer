@@ -15,13 +15,12 @@ const CompanyMobileNumber = () => {
         profile.
         {/* <SectionSeparator className="max-w-[1200px] mt-1.5" /> */}
       </SectionHeading>
-      <div className="flex gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         {Array.from({ length: 4 }).map((_, index: number) => (
           <PhoneNumberInput
             key={index}
-            id={`phone-number-${index}`}
+            id={`${index === 0 ? "company_phone" : `phone-number-${index}`}`}
             placeholder="800 0000 000"
-            className="flex-1 max-w-[300px]"
             inputTextStyles={`text-sm font-normal`}
           />
         ))}

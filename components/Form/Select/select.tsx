@@ -31,9 +31,9 @@ const Select: React.FC<SelectProps> = ({
 
   const handleSelection = (option: string) => {
     setSelectedValue(option); // Update selected value
-    onChange && onChange(option); // Call the onChange prop if provided
     setSearchTerm(""); // Clear search term
     setIsOpen(false); // Close dropdown
+    onChange && onChange(option); // Call the onChange prop if provided
   };
 
   useEffect(() => {
@@ -41,11 +41,6 @@ const Select: React.FC<SelectProps> = ({
       inputRef.current.focus();
     }
   }, [isOpen]);
-
-  // Sync internal state with propValue
-  useEffect(() => {
-    setSelectedValue(propValue);
-  }, [propValue]);
 
   // Filter options based on the search term
   useEffect(() => {
@@ -68,6 +63,11 @@ const Select: React.FC<SelectProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Sync internal state with propValue
+  useEffect(() => {
+    setSelectedValue(propValue);
+  }, [propValue]);
+
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
       {label && (
@@ -76,7 +76,7 @@ const Select: React.FC<SelectProps> = ({
         </Label>
       )}
       <div className="relative" ref={dropdownRef}>
-        <input type="text" name={id} className="hidden" value={selectedValue} />
+        <input type="hidden" name={id} value={selectedValue} />
         {/* Trigger for the custom dropdown with embedded search field */}
         <div
           className={clsx(
@@ -90,7 +90,13 @@ const Select: React.FC<SelectProps> = ({
         >
           {/* Search icon positioned absolutely */}
           <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-            <Image src={SearchIcon} alt="Search Icon" height={18} width={18} />
+            <Image
+              src={SearchIcon}
+              alt="Search Icon"
+              height={18}
+              width={18}
+              className="w-[18px] h-[18px]"
+            />
           </div>
           {/* Conditionally render input or selected value */}
           {selectedValue && !isOpen ? (

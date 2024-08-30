@@ -5,67 +5,74 @@ import DateInput from "../Form/DateInput/date-input";
 import FileInput from "../Form/FileInput/file-input";
 import { SectionHeading } from "../Section/section-components";
 import { industryOptions } from "@/data";
+import { useState } from "react";
 
 const CompanyDetails = () => {
+  const [registrationDate, setRegistrationDate] = useState<Date | undefined>(
+    undefined
+  );
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading title="company details">
         Kindly provide the following details below. Note your documents should
         be in PDF format and should not exceed 5mb.
       </SectionHeading>
-      <div className="flex gap-5">
-        <DateInput
-          required
-          id="registration-date"
-          label="date of registration"
-          className="flex-1 max-w-[300px]"
-        />
 
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
+        <div>
+          {/* Hidden input field for registration-date */}
+          <input
+            type="hidden"
+            name="cac_date"
+            value={registrationDate ? registrationDate.toISOString() : ""}
+          />
+          <DateInput
+            required
+            id="cac_date"
+            label="date of registration"
+            onChange={setRegistrationDate}
+          />
+        </div>
         <Input
           required
           label="CAC Registration Number"
-          id="cac-number"
+          id="cac_number"
           placeholder="Write here"
-          className="flex-1 max-w-[300px]"
-          inputTextStyles={`text-sm font-normal`}
+          inputTextStyles={`text-xs md:text-sm font-normal`}
         />
         <FileInput
           required
-          id="cac-certificate"
+          id="cac_certificate"
           label="CAC Certificate"
-          className="flex-1"
           placeholder="Click the side button to upload CAC"
           buttonName="Document"
           fileType="pdf"
           size={5}
           sizeUnit="MB"
+          textStyles={`text-xs md:text-sm font-normal`}
         />
-      </div>
-      <div className="flex gap-5">
         <Select
           id="industry"
           label="industry"
-          className="flex w-[300px]"
           options={industryOptions}
-          textStyles={`text-sm font-normal`}
+          textStyles={`text-xs md:text-sm font-normal`}
         />
         <Input
           label="Membership Number"
           id="membership-number"
           placeholder="Write here"
-          className="flex-1 max-w-[300px]"
-          inputTextStyles={`text-sm font-normal`}
+          inputTextStyles={`text-xs md:text-sm font-normal`}
         />
 
         <FileInput
-          id="membership-certificate"
+          id="membership_certificate"
           label="membership Certificate"
           fileType="pdf"
           size={5}
           sizeUnit="MB"
-          className="flex-1"
           placeholder="Click the side button to upload certificate"
           buttonName="Document"
+          textStyles={`text-xs md:text-sm font-normal`}
         />
       </div>
     </div>

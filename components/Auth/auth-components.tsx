@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, forwardRef, Ref } from "react";
 
 // Types
 import type {
@@ -36,42 +36,44 @@ export const AuthHeading: React.FC<AuthHeadingProps> = ({
 );
 
 // AuthForm Component: Handles form submission and validation
-export const AuthForm: React.FC<AuthFormProps> = ({
-  children,
-  className,
-  onFormSubmit,
-  setValidationErrors,
-}) => (
-  <form
-    method="post"
-    onSubmit={(e) => {
-      e.preventDefault(); // Prevent the default form submission behavior
+export const AuthForm = forwardRef<HTMLFormElement, AuthFormProps>(
+  (
+    { children, className, onFormSubmit, setValidationErrors },
+    ref: Ref<HTMLFormElement>
+  ) => {
+    return (
+      <form
+        ref={ref} // Forward the ref to the form element
+        method="post"
+        onSubmit={(e) => {
+          e.preventDefault();
 
-      const form = e.target as HTMLFormElement; // Get the form element
-      const formData = new FormData(form); // Collect form data into a FormData object
+          const form = e.target as HTMLFormElement;
+          const formData = new FormData(form);
 
-      // Convert FormData to an object of strings
-      const data: Record<string, string> = {};
-      formData.forEach((value, key) => {
-        data[key] = value.toString(); // Convert each form field value to a string
-      });
+          const data: Record<string, string> = {};
+          formData.forEach((value, key) => {
+            data[key] = value.toString();
+          });
 
-      // Validate the form data and check for errors
-      const validation = validateData(data);
+          const validation = validateData(data);
 
-      // If no errors are found, submit the form
-      if (!objectLength(validation.invalidKeys)) {
-        onFormSubmit(data);
-      } else {
-        // If errors are found, set the error messages
-        setValidationErrors(validation.invalidKeys);
-      }
-    }}
-    className={className} // Apply custom styles if provided
-  >
-    {children} {/* Render any child components inside the form */}
-  </form>
+          if (!objectLength(validation.invalidKeys)) {
+            onFormSubmit(data);
+          } else {
+            setValidationErrors(validation.invalidKeys);
+          }
+        }}
+        className={className}
+      >
+        {children}
+      </form>
+    );
+  }
 );
+
+// Ensure to use displayName for better debugging
+AuthForm.displayName = "AuthForm";
 
 // AuthAction Component: Renders a form's alternative action with a link
 export const AuthAction: React.FC<AuthActionProps> = ({

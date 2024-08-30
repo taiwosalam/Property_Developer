@@ -12,6 +12,7 @@ const FileInput: React.FC<FileInputProps> = ({
   id,
   label,
   className,
+  textStyles,
   required,
   onChange,
   placeholder,
@@ -83,69 +84,72 @@ const FileInput: React.FC<FileInputProps> = ({
   };
 
   return (
-    <div className="flex flex-1 gap-2">
-      <div className={clsx("custom-flex-col gap-2", className)}>
-        {/* Render the label if provided */}
-        {label && (
-          <Label id={id} required={required}>
-            {label}
-          </Label>
-        )}
-        <div className="relative flex items-center gap-2">
-          <input
-            id={id}
-            name={id}
-            ref={inputRef}
-            type="file"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-          <div
+    <div className={clsx("custom-flex-col gap-2", className)}>
+      {/* Render the label if provided */}
+      {label && (
+        <Label id={id} required={required}>
+          {label}
+        </Label>
+      )}
+      <div className="lg:flex lg:items-center lg:gap-2">
+        <input
+          id={id}
+          name={id}
+          ref={inputRef}
+          type="file"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+        <div
+          className={clsx(
+            "p-3 rounded-[4px] w-full custom-primary-outline border border-solid text-text-disabled text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between",
+            fileName ? "bg-neutral-2" : "bg-none"
+          )}
+          style={{
+            borderColor: "rgba(186, 199, 213, 0.50)",
+          }}
+        >
+          <span
             className={clsx(
-              "p-3 rounded-[4px] w-full custom-primary-outline border border-solid text-text-disabled text-sm font-normal max-w-[300px] overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between",
-              fileName ? "bg-neutral-2" : "bg-none"
+              "flex-1 overflow-hidden text-ellipsis whitespace-nowrap",
+              textStyles
             )}
-            style={{
-              borderColor: "rgba(186, 199, 213, 0.50)",
-            }}
           >
-            <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
-              {fileName
-                ? fileName
-                : placeholder
-                ? placeholder
-                : "Click the side button to upload your file"}
-            </span>
-            {fileName && (
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  aria-label="View File"
-                  onClick={handleViewFile}
-                >
-                  <Image src={eyeShowIcon} alt="View File" />
-                </button>
-                <button
-                  type="button"
-                  aria-label="Delete File"
-                  onClick={handleDeleteFile}
-                >
-                  <Image src={deleteIcon} alt="Delete File" />
-                </button>
-              </div>
-            )}
-          </div>
-          <div className="flex items-end">
-            <Button
-              variant="change"
-              size="sm"
-              style={{ background: fileName ? "" : "none" }}
-              type="button"
-              onClick={handleButtonClick}
-            >
-              {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
-            </Button>
-          </div>
+            {fileName
+              ? fileName
+              : placeholder
+              ? placeholder
+              : "Click the side button to upload your file"}
+          </span>
+          {fileName && (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                aria-label="View File"
+                onClick={handleViewFile}
+              >
+                <Image src={eyeShowIcon} alt="View File" />
+              </button>
+              <button
+                type="button"
+                aria-label="Delete File"
+                onClick={handleDeleteFile}
+              >
+                <Image src={deleteIcon} alt="Delete File" />
+              </button>
+            </div>
+          )}
+        </div>
+        <div className="hidden lg:flex lg:items-end">
+          <Button
+            variant="change"
+            size="sm"
+            style={{ background: fileName ? "" : "none" }}
+            type="button"
+            onClick={handleButtonClick}
+          >
+            {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
+          </Button>
         </div>
       </div>
     </div>
