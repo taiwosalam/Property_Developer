@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 
 // Imports
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
+import type { ButtonSize } from "@/components/Form/Button/types";
 import CompanyType from "@/components/Setup/company-type";
 import CompanyDetails from "@/components/Setup/company-details";
 import {
@@ -12,6 +13,7 @@ import {
   SectionHeading,
 } from "@/components/Section/section-components";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
+import useWindowDimensions from "@/hooks/useWindowDimensions";
 import CompanyMobileNumber from "@/components/Setup/company-mobile-number";
 import CompanyLogo from "@/components/Setup/company-logo";
 import CompanyAddress from "@/components/Setup/company-address";
@@ -23,27 +25,15 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
 
 const Setup = () => {
-  const formRef = useRef<HTMLFormElement | null>(null);
+  const { width } = useWindowDimensions();
+  const [buttonSize, setButtonSize] = useState<ButtonSize>("default");
   // Define the index of the last step in the flow
   const last_step = 0;
 
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
-  // State to track the current step in the flow
-  const [activeStep, setActiveStep] = useState(0);
-
   const isFormValid = () => {
     return true;
-    // if (!formRef.current) return false;
-    // const formData = new FormData(formRef.current);
-    // const data: Record<string, string> = {};
-    // formData.forEach((value, key) => {
-    //   data[key] = value.toString();
-    // });
-    // // Define required fields
-    // const requiredFields = ["company-name", "referral-id"]; // Add required field IDs
-    // // Check if all required fields are filled
-    // return requiredFields.every((field) => !!data[field]);
   };
 
   // Access the store's update function
@@ -60,7 +50,13 @@ const Setup = () => {
 
     // Update the director_experience field to include "years"
     if (payload.director_experience) {
-      payload.director_experience = `${payload.director_experience} years`;
+      // Check if the experience is exactly 1
+      if (parseInt(payload.director_experience, 10) === 1) {
+        payload.director_experience = "1 year";
+      } else {
+        // For any other value, append "years"
+        payload.director_experience = `${payload.director_experience} years`;
+      }
     }
 
     if (payload.director_about) {
@@ -77,10 +73,15 @@ const Setup = () => {
     }
   };
 
+  useEffect(() => {
+    const buttonSize = width >= 1024 ? "default" : width >= 768 ? "mid" : "sm";
+    setButtonSize(buttonSize);
+  }, [width]);
+
   return (
     <FlowProgress
       steps={last_step + 1}
-      activeStep={activeStep}
+      activeStep={0}
       style={{
         top: 0,
         position: "sticky",
@@ -88,12 +89,9 @@ const Setup = () => {
         backgroundColor: "white",
         zIndex: 3,
       }}
+      inputClassName="setup-f"
     >
-      <AuthForm
-        onFormSubmit={handleSubmit}
-        setValidationErrors={setErrorMsgs}
-        ref={formRef}
-      >
+      <AuthForm onFormSubmit={handleSubmit} setValidationErrors={setErrorMsgs}>
         <div className="sticky top-[52px] z-[2] py-5 px-10 bg-brand-1 flex justify-between items-center gap-1">
           <div className="custom-flex-col">
             <h1 className="text-text-primary font-medium md:text:xl lg:text-2xl">
@@ -106,10 +104,9 @@ const Setup = () => {
           </div>
           <Button
             type="submit"
-            size="sm"
+            size={buttonSize}
             disabled={!isFormValid()}
             style={{ opacity: isFormValid() ? 1 : "0.5" }}
-            className=""
           >
             submit
           </Button>
@@ -118,20 +115,20 @@ const Setup = () => {
           <CompanyType />
           <Section separatorStyles="max-w-[1200px]">
             <div className="custom-flex-col gap-5">
-              <div className="grid gap-5 grid-cols-2 lg:grid-cols-3 max-w-[860px]">
+              <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-[860px]">
                 <Input
                   required
                   id="company_name"
                   label="company name"
                   placeholder="Write here"
-                  inputTextStyles={`text-xs md:text-sm font-normal`}
+                  inputClassName={`text-xs md:text-sm font-normal setup-f`}
                   className="lg:col-span-2"
                 />
                 <Input
                   id="referral-id"
                   label="Referral ID (Optional)"
                   placeholder="Enter your Referral ID"
-                  inputTextStyles={`text-xs md:text-sm font-normal`}
+                  inputClassName={`text-xs md:text-sm font-normal setup-f`}
                 />
               </div>
               <CompanyDetails />

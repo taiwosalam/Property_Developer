@@ -7,9 +7,12 @@ import Input from "../Form/Input/input";
 import Select from "../Form/Select/select";
 import FileInput from "../Form/FileInput/file-input";
 import { SectionHeading } from "../Section/section-components";
+import { useContext } from "react";
 import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
+import { FlowProgressContext } from "../FlowProgress/flow-progress";
 
 const CompanyAddress = () => {
+  const { handleInputChange } = useContext(FlowProgressContext);
   // State to hold selected values
   const [selectedState, setSelectedState] = useState("");
   const [selectedLGA, setSelectedLGA] = useState("");
@@ -45,6 +48,10 @@ const CompanyAddress = () => {
     }
   }, [selectedLGA, selectedState]);
 
+  useEffect(() => {
+    handleInputChange();
+  }, [selectedState, selectedLGA, selectedCity, handleInputChange]);
+
   // Handle state change
   const handleStateChange = (value: string) => {
     setSelectedState(value);
@@ -67,14 +74,15 @@ const CompanyAddress = () => {
         Please select your state, local government area, city, and upload a
         utility bill that is no older than 3 months.
       </SectionHeading>
-      <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-[950px] specific-grid">
+      <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-[950px] specific-grid">
         {/* State Selector */}
         <Select
           options={getAllStates()}
           id="state"
           label="state"
-          textStyles={`text-xs md:text-sm font-normal`}
+          inputTextStyles={`text-xs md:text-sm font-normal`}
           value={selectedState}
+          hiddenInputClassName="setup-f"
           onChange={handleStateChange} // Update handler
         />
 
@@ -83,7 +91,8 @@ const CompanyAddress = () => {
           options={localGovernments}
           id="lga"
           label="local government"
-          textStyles={`text-xs md:text-sm font-normal`}
+          inputTextStyles={`text-xs md:text-sm font-normal`}
+          hiddenInputClassName="setup-f"
           onChange={handleLGAChange} // Update handler
           value={selectedLGA} // Controlled value
         />
@@ -92,14 +101,22 @@ const CompanyAddress = () => {
         <Select
           options={cities}
           id="city"
-          label="city"
-          textStyles={`text-xs md:text-sm font-normal`}
+          label="City / Area"
+          inputTextStyles={`text-xs md:text-sm font-normal`}
           allowCustom={true}
+          hiddenInputClassName="setup-f"
           onChange={handleCityChange} // Update handler
           value={selectedCity} // Controlled value
         />
 
-        {/* Utility Document (will be on the second row for small screens) */}
+        <Input
+          label="head office address"
+          id="head-office-address"
+          placeholder="Write here"
+          className="lg:col-span-2"
+          inputClassName={`text-xs md:text-sm font-normal setup-f`}
+        />
+
         <FileInput
           id="utility-document"
           label="utility document"
@@ -109,15 +126,7 @@ const CompanyAddress = () => {
           placeholder="utility"
           buttonName="Document"
           textStyles={`text-xs md:text-sm font-normal`}
-        />
-
-        {/* Head Office Address (spans the full width on small screens and 2 columns on large screens) */}
-        <Input
-          label="head office address"
-          id="head-office-address"
-          placeholder="Write here"
-          className="sm:col-span-2 custom-grid-area"
-          inputTextStyles={`text-xs md:text-sm font-normal`}
+          className="md:col-span-2 lg:col-span-1"
         />
       </div>
     </div>

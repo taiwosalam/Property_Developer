@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-
+import Head from "next/head";
 // Styles
 import "@/styles/mobile.css";
 import "@/styles/globals.css";

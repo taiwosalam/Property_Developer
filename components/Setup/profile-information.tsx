@@ -43,13 +43,12 @@ const ProfileInformation = () => {
         <PhoneNumberInput
           id="director_phone"
           label="phone number"
-          placeholder="80 0000 0000"
+          placeholder="800 0000 000"
           inputTextStyles={`text-xs md:text-sm font-normal`}
         />
       </div>
       <div>
         <div>
-       
           <input type="hidden" name="director_about" value={aboutDirector} />
           <TextArea
             id="director_about"

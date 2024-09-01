@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, forwardRef, Ref } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Types
 import type {
@@ -11,7 +11,6 @@ import type {
   AuthPinFieldProps,
   AuthNewPasswordProps,
 } from "./types";
-import type { Color } from "@/types/global";
 
 // Imports
 import gsap from "gsap";
@@ -36,41 +35,41 @@ export const AuthHeading: React.FC<AuthHeadingProps> = ({
 );
 
 // AuthForm Component: Handles form submission and validation
-export const AuthForm = forwardRef<HTMLFormElement, AuthFormProps>(
-  (
-    { children, className, onFormSubmit, setValidationErrors },
-    ref: Ref<HTMLFormElement>
-  ) => {
-    return (
-      <form
-        ref={ref} // Forward the ref to the form element
-        method="post"
-        onSubmit={(e) => {
-          e.preventDefault();
+export const AuthForm: React.FC<AuthFormProps> = ({
+  children,
+  className,
+  onFormSubmit,
+  setValidationErrors,
+}) => {
+  return (
+    <form
+      method="post"
+      onSubmit={(e) => {
+        e.preventDefault();
 
-          const form = e.target as HTMLFormElement;
-          const formData = new FormData(form);
+        const form = e.target as HTMLFormElement;
+        const formData = new FormData(form);
 
-          const data: Record<string, string> = {};
-          formData.forEach((value, key) => {
-            data[key] = value.toString();
-          });
+        const data: Record<string, any> = {};
 
-          const validation = validateData(data);
+        formData.forEach((value, key) => {
+          data[key] = value instanceof File ? value : value.toString();
+        });
 
-          if (!objectLength(validation.invalidKeys)) {
-            onFormSubmit(data);
-          } else {
-            setValidationErrors(validation.invalidKeys);
-          }
-        }}
-        className={className}
-      >
-        {children}
-      </form>
-    );
-  }
-);
+        const validation = validateData(data);
+
+        if (!objectLength(validation.invalidKeys)) {
+          onFormSubmit(data);
+        } else {
+          setValidationErrors(validation.invalidKeys);
+        }
+      }}
+      className={className}
+    >
+      {children}
+    </form>
+  );
+};
 
 // Ensure to use displayName for better debugging
 AuthForm.displayName = "AuthForm";

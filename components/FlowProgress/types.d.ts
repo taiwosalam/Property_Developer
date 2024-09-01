@@ -8,6 +8,8 @@ export interface FlowProgressProps {
   className?: string;
   style?: CSSProperties;
   children: React.ReactNode;
+  inputClassName?: string;
+  onInputChange?: (updateProgress: () => void) => void;
 }
 
 export interface FlowProgressBarProps {

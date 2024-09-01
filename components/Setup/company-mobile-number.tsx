@@ -15,7 +15,7 @@ const CompanyMobileNumber = () => {
         profile.
         {/* <SectionSeparator className="max-w-[1200px] mt-1.5" /> */}
       </SectionHeading>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 max-w-[1300px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-[1300px]">
         {Array.from({ length: 4 }).map((_, index: number) => (
           <PhoneNumberInput
             key={index}

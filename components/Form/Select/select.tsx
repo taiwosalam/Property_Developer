@@ -11,29 +11,25 @@ import deleteIcon from "@/public/icons/delete-icon.svg";
 const Select: React.FC<SelectProps> = ({
   id,
   label,
-  value: propValue = "",
+  value: propValue,
   required,
   className,
   options,
   onChange,
-  textStyles,
+  inputTextStyles,
   placeholder = "Select",
   allowCustom = false,
+  hiddenInputClassName,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOptions, setFilteredOptions] = useState(options);
-  const [selectedValue, setSelectedValue] = useState<string | undefined>(
-    propValue
-  );
+  const [selectedValue, setSelectedValue] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleSelection = (option: string) => {
     setSelectedValue(option); // Update selected value
-    setSearchTerm(""); // Clear search term
-    setIsOpen(false); // Close dropdown
-    onChange && onChange(option); // Call the onChange prop if provided
   };
 
   useEffect(() => {
@@ -63,13 +59,28 @@ const Select: React.FC<SelectProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Sync internal state with propValue
   useEffect(() => {
-    setSelectedValue(propValue);
-  }, [propValue]);
+    setSearchTerm(""); // Clear search term
+    setIsOpen(false); // Close dropdown
+    onChange && onChange(selectedValue); // Call the onChange prop if provided
+  }, [onChange, selectedValue]);
+
+  // Sync internal state with propValue when propValue changes
+  // useEffect(() => {
+  //   if (!propValue) {
+  //     setSelectedValue("");
+  //   } else {
+  //     setSelectedValue(propValue);
+  //   }
+  // }, [propValue]);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
+      <input
+        type="hidden"
+        className={hiddenInputClassName}
+        value={propValue || selectedValue}
+      />
       {label && (
         <Label id={id} required={required}>
           {label}
@@ -99,14 +110,14 @@ const Select: React.FC<SelectProps> = ({
             />
           </div>
           {/* Conditionally render input or selected value */}
-          {selectedValue && !isOpen ? (
+          {(propValue || selectedValue) && !isOpen ? (
             <span
               className={clsx(
                 "flex-1 capitalize text-text-disabled",
-                textStyles
+                inputTextStyles
               )}
             >
-              {selectedValue}
+              {propValue || selectedValue}
             </span>
           ) : (
             <input
@@ -114,7 +125,7 @@ const Select: React.FC<SelectProps> = ({
               type="text"
               className={clsx(
                 "flex-1 bg-transparent outline-none text-sm",
-                textStyles
+                inputTextStyles
               )}
               placeholder={placeholder}
               value={searchTerm}

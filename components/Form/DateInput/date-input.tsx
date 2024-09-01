@@ -6,9 +6,7 @@ import type { DateInputProps } from "./types";
 // Imports
 import clsx from "clsx";
 import Label from "../Label/label";
-// import { DatePicker } from "@nextui-org/react";
 import DatePicker from "./date-picker";
-import { getLocalTimeZone, today } from "@internationalized/date";
 // import { checkValidatonError } from "@/utils/validation";
 
 const DateInput: React.FC<DateInputProps> = ({

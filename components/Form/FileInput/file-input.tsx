@@ -1,7 +1,8 @@
 "use client";
 import Image from "next/image";
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { FileInputProps } from "./types";
+import useWindowDimensions from "@/hooks/useWindowDimensions";
 import clsx from "clsx";
 import Label from "../Label/label";
 import Button from "../Button/button";
@@ -21,53 +22,42 @@ const FileInput: React.FC<FileInputProps> = ({
   size,
   sizeUnit,
 }) => {
-  const [isLgScreen, setIsLgScreen] = useState<boolean>(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [fileURL, setFileURL] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState("");
+  const [fileURL, setFileURL] = useState("");
+  const { width } = useWindowDimensions();
+  const [isLgScreen, setIsLgScreen] = useState(true);
 
-  const acceptedFormats = fileType
-    ? [`.${fileType}`, "image/jgp", "image/jpeg", "image/png", "image/gif"]
-    : ["image/jgp", "image/jpeg", "image/png", "image/gif"];
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleButtonClick = () => {
-    if (inputRef.current) {
-      inputRef.current.click(); // Open file dialog
+  const handleClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSetFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const fileExtension = file.name.split(".").pop()?.toLowerCase();
-      const typeOfFile = file.type;
-
-      // Validate file type
-      if (
-        !acceptedFormats.includes(`.${fileExtension}`) &&
-        !acceptedFormats.includes(typeOfFile)
-      ) {
-        alert(`Please upload a ${fileType} or image file.`);
-        return;
-      }
-
-      // Convert size to bytes based on sizeUnit
-      const sizeInBytes = sizeUnit === "MB" ? size * 1024 * 1024 : size * 1024;
-
-      // Validate file size
-      if (file.size > sizeInBytes) {
-        alert(
-          `File size should not exceed ${
-            sizeUnit === "MB" ? size / 1024 : size
-          } ${sizeUnit}.`
-        );
-        return;
-      }
-
-      setFileName(file.name);
-      setFileURL(URL.createObjectURL(file)); // Create a URL for the file to view it in another tab
-      onChange && onChange(file); // Call onChange if provided
+    if (!file) return;
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
+    if (
+      !file.type.startsWith("image/") &&
+      fileExtension !== fileType?.toLowerCase()
+    ) {
+      alert(`Please upload a ${fileType} or image file.`);
+      event.target.value = ""; // Clear the input field
+      return;
     }
+    // Convert size to bytes based on sizeUnit
+    const sizeInBytes = sizeUnit === "MB" ? size * 1024 * 1024 : size * 1024;
+
+    // Validate file size
+    if (file.size > sizeInBytes) {
+      alert(`File size should not exceed ${size} ${sizeUnit}.`);
+      event.target.value = ""; // Clear the input field
+      return;
+    }
+    setFile(file);
   };
 
   const handleViewFile = () => {
@@ -77,25 +67,24 @@ const FileInput: React.FC<FileInputProps> = ({
   };
 
   const handleDeleteFile = () => {
-    if (inputRef.current) {
-      inputRef.current.value = ""; // Reset file input value
-    }
-    setFileName(null);
-    setFileURL(null);
-    onChange && onChange(null);
+    setFile(null);
   };
 
   useEffect(() => {
-    const updateScreenSize = () => {
-      setIsLgScreen(window.innerWidth >= 1024);
-    };
+    setIsLgScreen(width >= 1024);
+  }, [width]);
 
-    updateScreenSize(); // Set initial value
-
-    window.addEventListener("resize", updateScreenSize);
-
-    return () => window.removeEventListener("resize", updateScreenSize);
-  }, []);
+  useEffect(() => {
+    if (file) {
+      setFileURL(URL.createObjectURL(file));
+      setFileName(file.name);
+      onChange && onChange(file); // Call onChange if provided
+    } else {
+      setFileURL("");
+      setFileName("");
+      onChange && onChange(null);
+    }
+  }, [file, onChange]);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
@@ -109,17 +98,17 @@ const FileInput: React.FC<FileInputProps> = ({
         <input
           id={id}
           name={id}
-          ref={inputRef}
           type="file"
           className="hidden"
-          onChange={handleFileChange}
+          ref={fileInputRef}
+          onChange={handleSetFile}
         />
-        <button
-          type="button"
-          onClick={handleButtonClick}
-          disabled={isLgScreen}
+        <div
+          role="button"
+          aria-label="upload"
+          onClick={handleClick}
           className={clsx(
-            "p-3 rounded-[4px] w-full custom-primary-outline border border-solid text-text-disabled text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between lg:pointer-events-none",
+            "p-3 rounded-[4px] w-full custom-primary-outline border border-solid text-text-disabled text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between",
             fileName ? "bg-neutral-2" : "bg-none"
           )}
           style={{
@@ -169,7 +158,7 @@ const FileInput: React.FC<FileInputProps> = ({
               </button>
             </div>
           )}
-        </button>
+        </div>
         <div className="hidden lg:block absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2">
           <Button
             variant="change"
@@ -177,7 +166,7 @@ const FileInput: React.FC<FileInputProps> = ({
             className="whitespace-nowrap text-ellipsis"
             style={{ background: fileName ? "" : "none" }}
             type="button"
-            onClick={handleButtonClick}
+            onClick={handleClick}
           >
             {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
           </Button>
