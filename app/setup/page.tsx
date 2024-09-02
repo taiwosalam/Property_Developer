@@ -87,7 +87,6 @@ const Setup = () => {
     >
       <AuthForm onFormSubmit={handleSubmit} setValidationErrors={setErrorMsgs}>
         <div className="sticky top-[52px] z-[2] py-5 px-10 bg-brand-1 flex justify-between">
->>>>>>> Stashed changes
           <div className="custom-flex-col">
             <h1 className="text-text-primary font-medium md:text:xl lg:text-2xl">
               Finish Setting Up Your Account!
