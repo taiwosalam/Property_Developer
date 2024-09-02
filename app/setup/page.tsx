@@ -33,43 +33,39 @@ const Setup = () => {
   const [activeStep, setActiveStep] = useState(0);
 
   const isFormValid = () => {
-    return true;
-    // if (!formRef.current) return false;
-    // const formData = new FormData(formRef.current);
-    // const data: Record<string, string> = {};
-    // formData.forEach((value, key) => {
-    //   data[key] = value.toString();
-    // });
-    // // Define required fields
-    // const requiredFields = ["company-name", "referral-id"]; // Add required field IDs
-    // // Check if all required fields are filled
-    // return requiredFields.every((field) => !!data[field]);
+    if (Object.keys(errorMsgs).length === 0) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   // Access the store's update function
   const updateFormData = useFormDataStore((state) => state.updateFormData);
 
+  // remove later
   const handleSubmit = async (data: any) => {
-    if (!isFormValid()) return;
-    // Add user_id to the data object
-    const user_id = "123456"; // Replace this with your logic for getting the user_id
-    const payload = {
-      ...data,
-      user_id, // Append user_id to data
+    const formattedData = {
+      company_name: data["company-name"],
+      type: data["companyType"],
+      industry: data["industry"],
+      cac_certificate: data["cac-certificate"],
+      logo: data["utility-document"],
+      cac_number: data["cac-number"],
+      cac_date: "02-17-2021",
+      company_phone: data["company-phone"],
+      director_name: data["fullname"],
+      director_title: data["title"],
+      director_experience: data["business-years"],
+      director_email: data["alt-email"],
+      director_about: "lol",
+      director_phone: data["phone-number"],
     };
 
-    // Update the director_experience field to include "years"
-    if (payload.director_experience) {
-      payload.director_experience = `${payload.director_experience} years`;
-    }
+    updateFormData(formattedData);
 
-    if (payload.director_about) {
-      payload.director_about = payload.director_about.replace(/<\/?p>/g, "");
-    }
-
-    console.log(payload); // Debug log to see the modified data
-    updateFormData(payload);
     try {
+      // Call the signupCompny function with the prepared data
       await signupCompany();
       // console.log("Company successfully signed up!");
     } catch (error) {
@@ -89,12 +85,9 @@ const Setup = () => {
         zIndex: 3,
       }}
     >
-      <AuthForm
-        onFormSubmit={handleSubmit}
-        setValidationErrors={setErrorMsgs}
-        ref={formRef}
-      >
-        <div className="sticky top-[52px] z-[2] py-5 px-10 bg-brand-1 flex justify-between items-center gap-1">
+      <AuthForm onFormSubmit={handleSubmit} setValidationErrors={setErrorMsgs}>
+        <div className="sticky top-[52px] z-[2] py-5 px-10 bg-brand-1 flex justify-between">
+>>>>>>> Stashed changes
           <div className="custom-flex-col">
             <h1 className="text-text-primary font-medium md:text:xl lg:text-2xl">
               Finish Setting Up Your Account!
@@ -105,11 +98,9 @@ const Setup = () => {
             </p>
           </div>
           <Button
-            type="submit"
-            size="sm"
             disabled={!isFormValid()}
             style={{ opacity: isFormValid() ? 1 : "0.5" }}
-            className=""
+            type="submit"
           >
             submit
           </Button>
