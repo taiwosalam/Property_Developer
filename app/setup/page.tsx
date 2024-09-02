@@ -31,6 +31,7 @@ const Setup = () => {
   // Access the store's update function
   const updateFormData = useFormDataStore((state) => state.updateFormData);
 
+  // remove later
   const handleSubmit = async (data: any) => {
     // if (!canSubmit) return;
     // Add user_id to the data object
