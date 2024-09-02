@@ -9,7 +9,7 @@ const SingleCompany: React.FC<
     <button
       type="button"
       className={clsx(
-        "p-4 rounded-lg cursor-pointer text-left w-[300px]",
+        "p-4 rounded-lg cursor-pointer text-left min-w-[255px] max-w-[300px] block",
         selected ? "bg-brand-2" : "bg-neutral-2 hover:bg-[#dbeafe80]"
       )}
       onClick={onClick}
