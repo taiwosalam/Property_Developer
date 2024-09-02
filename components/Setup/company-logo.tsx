@@ -1,12 +1,18 @@
 // imports
 import { SectionHeading } from "../Section/section-components";
 import Button from "../Form/Button/button";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import Image from "next/image";
+import { FlowProgressContext } from "../FlowProgress/flow-progress";
 import UploadIcon from "@/public/icons/upload-image.svg";
 import DeleteIcon from "@/public/icons/delete-icon-orange.svg";
 
-const CompanyLogo = () => {
+interface CompanyLogoProps {
+  hiddenInputClassName?: string;
+}
+
+const CompanyLogo: React.FC<CompanyLogoProps> = ({ hiddenInputClassName }) => {
+  const { handleInputChange } = useContext(FlowProgressContext);
   const [image, setImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -48,7 +54,9 @@ const CompanyLogo = () => {
       fileInputRef.current.value = "";
     }
   };
-
+  useEffect(() => {
+    handleInputChange();
+  }, [image, handleInputChange]);
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading required title="company logo">
@@ -57,6 +65,12 @@ const CompanyLogo = () => {
         ideally 160px x 450px.
       </SectionHeading>
       <div className="flex gap-2">
+        {/* input for flow progress */}
+        <input
+          type="hidden"
+          className={hiddenInputClassName}
+          value={image ? "filled" : ""}
+        />
         <input
           name="logo"
           type="file"
@@ -85,9 +99,9 @@ const CompanyLogo = () => {
               <Image
                 src={image}
                 alt="Company Logo"
-                layout="fill"
-                objectFit="contain"
-                className="rounded-md w-[375px] h-[150px]"
+                fill
+                style={{ objectFit: "contain" }}
+                className="rounded-md w-[375px] h-[150px] object-contain"
               />
             </div>
           </div>

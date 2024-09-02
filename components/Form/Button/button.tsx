@@ -2,6 +2,7 @@
 import type { ButtonProps } from "./types";
 
 // Imports
+
 import clsx from "clsx";
 import { button_variants } from "./data";
 
@@ -18,7 +19,7 @@ const Button: React.FC<ButtonProps> = ({
         "rounded-[4px] capitalize",
         button_variants.size[size],
         button_variants.variant[variant],
-        className,
+        className
       )}
       {...props}
     >

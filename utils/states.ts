@@ -1,15 +1,9 @@
 import { states } from "@/data";
 
-interface StateData {
-  [localGovernment: string]: string[];
-}
-
-interface State {
-  [stateName: string]: StateData;
-}
-
 export const getAllStates = (): string[] => {
-  return states.map((stateObj) => Object.keys(stateObj)[0]);
+  const allStates = states.map((stateObj) => Object.keys(stateObj)[0]).sort();
+  // console.log(allStates.length);
+  return allStates;
 };
 
 export const getLocalGovernments = (stateName: string): string[] => {
@@ -18,7 +12,7 @@ export const getLocalGovernments = (stateName: string): string[] => {
   );
   if (state) {
     const stateData = state[stateName as keyof typeof state]; // Use type assertion here
-    return Object.keys(stateData);
+    return Object.keys(stateData).sort();
   }
   return [];
 };
@@ -31,7 +25,7 @@ export const getCities = (
     (stateObj) => Object.keys(stateObj)[0] === stateName
   );
   if (state && state[stateName][localGovernment]) {
-    return state[stateName][localGovernment];
+    return state[stateName][localGovernment].sort();
   }
   return [];
 };

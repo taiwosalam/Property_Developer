@@ -7,6 +7,7 @@ export interface SelectProps {
   required?: boolean;
   placeholder?: string;
   onChange?: (data: string) => void;
-  textStyles?: string;
+  inputTextStyles?: string;
   allowCustom?: booleab;
+  hiddenInputClassName?: string;
 }

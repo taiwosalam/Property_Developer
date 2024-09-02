@@ -2,6 +2,7 @@ export interface FileInputProps {
   id: string;
   label?: string;
   className?: string;
+  hiddenInputClassName?: string;
   textStyles?: string;
   required?: boolean;
   placeholder?: string;

@@ -1,12 +1,13 @@
 import clsx from "clsx";
 import Image from "next/image";
 import Label from "../Label/label";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import type { SelectProps } from "./types";
 import SearchIcon from "@/public/icons/search-icon.svg";
 import ArrowDownIcon from "@/public/icons/arrow-down.svg";
 import ArrowUpIcon from "@/public/icons/arrow-up.svg";
 import deleteIcon from "@/public/icons/delete-icon.svg";
+import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 
 const Select: React.FC<SelectProps> = ({
   id,
@@ -16,17 +17,17 @@ const Select: React.FC<SelectProps> = ({
   className,
   options,
   onChange,
-  textStyles,
+  inputTextStyles,
   placeholder = "Select",
   allowCustom = false,
+  hiddenInputClassName,
 }) => {
+  const { handleInputChange } = useContext(FlowProgressContext);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOptions, setFilteredOptions] = useState(options);
-  const [selectedValue, setSelectedValue] = useState<string | undefined>(
-    propValue
-  );
+  const [selectedValue, setSelectedValue] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleSelection = (option: string) => {
@@ -63,20 +64,29 @@ const Select: React.FC<SelectProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Sync internal state with propValue
+  // Initialize
   useEffect(() => {
     setSelectedValue(propValue);
   }, [propValue]);
 
+  useEffect(() => {
+    handleInputChange();
+  }, [selectedValue, handleInputChange, onChange]);
+
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
+      {/* input for flow progress */}
+      <input
+        type="hidden"
+        className={hiddenInputClassName}
+        value={selectedValue || ""}
+      />
       {label && (
         <Label id={id} required={required}>
           {label}
         </Label>
       )}
       <div className="relative" ref={dropdownRef}>
-        <input type="hidden" name={id} value={selectedValue} />
         {/* Trigger for the custom dropdown with embedded search field */}
         <div
           className={clsx(
@@ -103,7 +113,7 @@ const Select: React.FC<SelectProps> = ({
             <span
               className={clsx(
                 "flex-1 capitalize text-text-disabled",
-                textStyles
+                inputTextStyles
               )}
             >
               {selectedValue}
@@ -114,7 +124,7 @@ const Select: React.FC<SelectProps> = ({
               type="text"
               className={clsx(
                 "flex-1 bg-transparent outline-none text-sm",
-                textStyles
+                inputTextStyles
               )}
               placeholder={placeholder}
               value={searchTerm}

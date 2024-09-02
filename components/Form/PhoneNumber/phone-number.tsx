@@ -36,6 +36,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
     const formattedValue = formatPhoneNumber(input); // Format the input value
     onChange && onChange(formattedValue); // Call the provided onChange handler with formatted value
   };
+
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
       {/* Render the label if provided */}
@@ -45,7 +46,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
         </Label>
       )}
       <div className="relative flex items-center">
-        <div className="bg-[#F3F6F9] p-3 text-center text-text-disabled rounded-l-[4px] border border-solid border-r-0 h-[50px] text-xs md:text-sm font-normal grid place-items-center">
+        <div className="bg-[#F3F6F9] p-3 text-center text-text-disabled rounded-l-[4px] border border-solid border-r-0 text-xs md:text-sm font-normal grid place-items-center">
           +234
         </div>
         <input
@@ -58,7 +59,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
           onChange={handleInputChange}
           // Input styles
           className={clsx(
-            "p-3 w-full custom-primary-outline border border-solid rounded-r-[4px] border-l-0 h-[50px]",
+            "p-3 w-full custom-primary-outline border border-solid rounded-r-[4px] border-l-0",
             inputTextStyles
           )}
           style={{ borderColor: "rgba(186, 199, 213, 0.50)" }} // Add custom border color
