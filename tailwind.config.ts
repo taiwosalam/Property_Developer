@@ -69,6 +69,10 @@ const config = {
           dark: "#C0C2C8",
           normal: "#787A7E",
         },
+
+        primary: {
+          navy: "#092C4C",
+        },
       },
       container: {
         center: true,

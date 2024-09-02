@@ -7,5 +7,7 @@ export const button_variants = {
     sm: "py-2 px-3 text-sm font-normal",
     mid: "py-[10px] px-3 text-base font-medium",
     default: "py-[10px] px-12 text-lg font-bold",
+
+    base_medium: "font-medium text-base",
   },
 };
