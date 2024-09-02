@@ -36,42 +36,6 @@ export const AuthHeading: React.FC<AuthHeadingProps> = ({
 );
 
 // AuthForm Component: Handles form submission and validation
-<<<<<<< Updated upstream
-export const AuthForm = forwardRef<HTMLFormElement, AuthFormProps>(
-  (
-    { children, className, onFormSubmit, setValidationErrors },
-    ref: Ref<HTMLFormElement>
-  ) => {
-    return (
-      <form
-        ref={ref} // Forward the ref to the form element
-        method="post"
-        onSubmit={(e) => {
-          e.preventDefault();
-
-          const form = e.target as HTMLFormElement;
-          const formData = new FormData(form);
-
-          const data: Record<string, string> = {};
-          formData.forEach((value, key) => {
-            data[key] = value.toString();
-          });
-
-          const validation = validateData(data);
-
-          if (!objectLength(validation.invalidKeys)) {
-            onFormSubmit(data);
-          } else {
-            setValidationErrors(validation.invalidKeys);
-          }
-        }}
-        className={className}
-      >
-        {children}
-      </form>
-    );
-  }
-=======
 export const AuthForm: React.FC<AuthFormProps> = ({
   children,
   className,
@@ -108,7 +72,6 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   >
     {children} {/* Render any child components inside the form */}
   </form>
->>>>>>> Stashed changes
 );
 
 // Ensure to use displayName for better debugging
