@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import type { TextAreaProps } from "./types";
 import clsx from "clsx";
 import Label from "../Label/label";
-import type { ReactQuillProps } from "react-quill";
+// import type { ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 // Dynamically import ReactQuill with SSR option set to false

@@ -5,7 +5,7 @@ export interface CapitalizeProps {
 }
 
 // Validation
-export type ValidateDataProps = Record<string, string>;
+export type ValidateDataProps = Record<string, any>;
 
 export type ValidationErrors = Record<string, string>;
 

@@ -7,5 +7,5 @@ export interface ButtonProps
   variant?: ButtonVariant;
 }
 
-type ButtonSize = keyof typeof button_variants.size;
+export type ButtonSize = keyof typeof button_variants.size;
 type ButtonVariant = keyof typeof button_variants.variant;

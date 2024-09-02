@@ -6,9 +6,7 @@ import type { DateInputProps } from "./types";
 // Imports
 import clsx from "clsx";
 import Label from "../Label/label";
-// import { DatePicker } from "@nextui-org/react";
 import DatePicker from "./date-picker";
-import { getLocalTimeZone, today } from "@internationalized/date";
 // import { checkValidatonError } from "@/utils/validation";
 
 const DateInput: React.FC<DateInputProps> = ({
@@ -18,6 +16,7 @@ const DateInput: React.FC<DateInputProps> = ({
   required,
   className,
   textStyles,
+  hiddenInputClassName,
   //   validationErrors = {},
   onChange,
 }) => {
@@ -39,6 +38,11 @@ const DateInput: React.FC<DateInputProps> = ({
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
+      <input
+        type="hidden"
+        className={hiddenInputClassName}
+        // value={selectedValue}
+      />
       {/* Render the label if provided */}
       {label && (
         <Label id={id} required={required}>

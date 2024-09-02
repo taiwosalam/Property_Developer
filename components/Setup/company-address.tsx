@@ -67,14 +67,15 @@ const CompanyAddress = () => {
         Please select your state, local government area, city, and upload a
         utility bill that is no older than 3 months.
       </SectionHeading>
-      <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-[950px] specific-grid">
+      <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-[950px] specific-grid">
         {/* State Selector */}
         <Select
           options={getAllStates()}
           id="state"
           label="state"
-          textStyles={`text-xs md:text-sm font-normal`}
-          value={selectedState}
+          inputTextStyles={`text-xs md:text-sm font-normal`}
+          value={selectedState ? selectedState : undefined}
+          hiddenInputClassName="setup-f"
           onChange={handleStateChange} // Update handler
         />
 
@@ -83,23 +84,32 @@ const CompanyAddress = () => {
           options={localGovernments}
           id="lga"
           label="local government"
-          textStyles={`text-xs md:text-sm font-normal`}
+          inputTextStyles={`text-xs md:text-sm font-normal`}
+          hiddenInputClassName="setup-f"
           onChange={handleLGAChange} // Update handler
-          value={selectedLGA} // Controlled value
+          value={selectedLGA ? selectedLGA : undefined} // Controlled value
         />
 
         {/* City Selector */}
         <Select
           options={cities}
           id="city"
-          label="city"
-          textStyles={`text-xs md:text-sm font-normal`}
+          label="City / Area"
+          inputTextStyles={`text-xs md:text-sm font-normal`}
           allowCustom={true}
+          hiddenInputClassName="setup-f"
           onChange={handleCityChange} // Update handler
-          value={selectedCity} // Controlled value
+          value={selectedCity ? selectedCity : undefined} // Controlled value
         />
 
-        {/* Utility Document (will be on the second row for small screens) */}
+        <Input
+          label="head office address"
+          id="head-office-address"
+          placeholder="Write here"
+          className="lg:col-span-2"
+          inputClassName={`text-xs md:text-sm font-normal setup-f`}
+        />
+
         <FileInput
           id="utility-document"
           label="utility document"
@@ -108,16 +118,10 @@ const CompanyAddress = () => {
           sizeUnit="MB"
           placeholder="utility"
           buttonName="Document"
+          // onChange={handleInputChange}
+          hiddenInputClassName="setup-f"
           textStyles={`text-xs md:text-sm font-normal`}
-        />
-
-        {/* Head Office Address (spans the full width on small screens and 2 columns on large screens) */}
-        <Input
-          label="head office address"
-          id="head-office-address"
-          placeholder="Write here"
-          className="sm:col-span-2 custom-grid-area"
-          inputTextStyles={`text-xs md:text-sm font-normal`}
+          className="md:col-span-2 lg:col-span-1"
         />
       </div>
     </div>

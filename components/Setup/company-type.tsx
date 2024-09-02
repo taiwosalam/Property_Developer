@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import { FlowProgressContext } from "../FlowProgress/flow-progress";
 import { Section, SectionHeading } from "../Section/section-components";
-import clsx from "clsx";
-import SVG from "../SVG/svg";
+import SingleCompany from "./single-company";
+
 import { SVGType } from "../SVG/types";
-interface CompanyTypeItem {
+export interface CompanyTypeItem {
   iconType: SVGType;
   name: string;
   description: string;
@@ -30,45 +31,16 @@ const companyTypes: CompanyTypeItem[] = [
   },
 ];
 
-const SingleCompany: React.FC<
-  CompanyTypeItem & { onClick: () => void; selected: boolean }
-> = ({ iconType, name, description, onClick, selected }) => {
-  return (
-    <div
-      className={clsx(
-        "p-4 rounded-lg cursor-pointer w-[300px]",
-        selected ? "bg-brand-2" : "bg-neutral-2 hover:bg-[#dbeafe80]",
-        "min-w-[230px]"
-      )}
-      onClick={onClick}
-    >
-      <SVG type={iconType} color={selected ? "#0033C4" : "#3F4247"} />
-      <p
-        className={clsx(
-          "text-base font-medium",
-          selected ? "text-brand-9" : "text-text-secondary"
-        )}
-      >
-        {name}
-      </p>
-      <p
-        className={clsx(
-          "text-sm font-normal",
-          !selected && "text-text-disabled "
-        )}
-      >
-        {description}
-      </p>
-    </div>
-  );
-};
-
 const CompanyType = () => {
   const [selectedType, setSelectedType] = useState<string>("");
-
+  const { handleInputChange } = useContext(FlowProgressContext);
   const handleSelect = (name: string) => {
     setSelectedType(name);
   };
+  // Use useEffect to call handleInputChange after selectedType has been updated
+  useEffect(() => {
+    handleInputChange();
+  }, [selectedType, handleInputChange]);
 
   return (
     <Section separatorStyles="max-w-[1200px]">
@@ -79,12 +51,10 @@ const CompanyType = () => {
         </SectionHeading>
         <div className="flex gap-5 overflow-x-auto">
           <input
-            type="radio"
+            type="hidden"
             name="type"
             value={selectedType}
-            className="hidden"
-            checked={!!selectedType} // Checked if there is a selection
-            readOnly
+            className="setup-f"
           />
           {companyTypes.map((c) => (
             <SingleCompany
