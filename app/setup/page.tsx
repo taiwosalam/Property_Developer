@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // Imports
+import SetupHeader from "@/components/Setup/setup-header";
 import Input from "@/components/Form/Input/input";
-import Button from "@/components/Form/Button/button";
-import type { ButtonSize } from "@/components/Form/Button/types";
 import CompanyType from "@/components/Setup/company-type";
 import CompanyDetails from "@/components/Setup/company-details";
 import {
@@ -13,7 +12,6 @@ import {
   SectionHeading,
 } from "@/components/Section/section-components";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
-import useWindowDimensions from "@/hooks/useWindowDimensions";
 import CompanyMobileNumber from "@/components/Setup/company-mobile-number";
 import CompanyLogo from "@/components/Setup/company-logo";
 import CompanyAddress from "@/components/Setup/company-address";
@@ -25,22 +23,16 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
 
 const Setup = () => {
-  const { width } = useWindowDimensions();
-  const [buttonSize, setButtonSize] = useState<ButtonSize>("default");
   // Define the index of the last step in the flow
   const last_step = 0;
 
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
-  const isFormValid = () => {
-    return true;
-  };
-
   // Access the store's update function
   const updateFormData = useFormDataStore((state) => state.updateFormData);
 
   const handleSubmit = async (data: any) => {
-    if (!isFormValid()) return;
+    // if (!canSubmit) return;
     // Add user_id to the data object
     const user_id = "123456"; // Replace this with your logic for getting the user_id
     const payload = {
@@ -73,10 +65,15 @@ const Setup = () => {
     }
   };
 
-  useEffect(() => {
-    const buttonSize = width >= 1024 ? "default" : width >= 768 ? "mid" : "sm";
-    setButtonSize(buttonSize);
-  }, [width]);
+  const requiredFields = [
+    "type",
+    "company_name",
+    "cac_date",
+    "cac_number",
+    "cac_certificate",
+    "logo",
+    "director_name",
+  ];
 
   return (
     <FlowProgress
@@ -90,27 +87,10 @@ const Setup = () => {
         zIndex: 3,
       }}
       inputClassName="setup-f"
+      requiredFields={requiredFields}
     >
       <AuthForm onFormSubmit={handleSubmit} setValidationErrors={setErrorMsgs}>
-        <div className="sticky top-[52px] z-[2] py-5 px-10 bg-brand-1 flex justify-between items-center gap-1">
-          <div className="custom-flex-col">
-            <h1 className="text-text-primary font-medium md:text:xl lg:text-2xl">
-              Finish Setting Up Your Account!
-            </h1>
-            <p className="text-text-tertiary hidden md:block">
-              Please furnish the following details to finalize the setup of your
-              account and company profile.
-            </p>
-          </div>
-          <Button
-            type="submit"
-            size={buttonSize}
-            disabled={!isFormValid()}
-            style={{ opacity: isFormValid() ? 1 : "0.5" }}
-          >
-            submit
-          </Button>
-        </div>
+        <SetupHeader />
         <div className="relative z-[1] custom-flex-col gap-6 pt-6 pb-20 px-10">
           <CompanyType />
           <Section separatorStyles="max-w-[1200px]">
@@ -136,11 +116,11 @@ const Setup = () => {
               <CompanyMobileNumber />
             </div>
           </Section>
-          <CompanyLogo />
+          <CompanyLogo hiddenInputClassName="setup-f required" />
           <SectionHeading title="directors details">
             Fill the details below to add a director to your company
           </SectionHeading>
-          <ProfilePicture />
+          <ProfilePicture hiddenInputClassName="setup-f" />
           <ProfileInformation />
         </div>
       </AuthForm>

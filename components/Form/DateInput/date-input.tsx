@@ -16,6 +16,7 @@ const DateInput: React.FC<DateInputProps> = ({
   required,
   className,
   textStyles,
+  hiddenInputClassName,
   //   validationErrors = {},
   onChange,
 }) => {
@@ -37,6 +38,11 @@ const DateInput: React.FC<DateInputProps> = ({
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
+      <input
+        type="hidden"
+        className={hiddenInputClassName}
+        // value={selectedValue}
+      />
       {/* Render the label if provided */}
       {label && (
         <Label id={id} required={required}>

@@ -55,6 +55,9 @@ export const AuthForm: React.FC<AuthFormProps> = ({
         formData.forEach((value, key) => {
           data[key] = value instanceof File ? value : value.toString();
         });
+        // formData.forEach((value, key) => {
+        //   data[key] = value.toString();
+        // });
 
         const validation = validateData(data);
 

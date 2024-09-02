@@ -9,6 +9,7 @@ export interface FlowProgressProps {
   style?: CSSProperties;
   children: React.ReactNode;
   inputClassName?: string;
+  requiredFields?: string[];
   onInputChange?: (updateProgress: () => void) => void;
 }
 

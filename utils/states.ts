@@ -2,7 +2,7 @@ import { states } from "@/data";
 
 export const getAllStates = (): string[] => {
   const allStates = states.map((stateObj) => Object.keys(stateObj)[0]).sort();
-  console.log(allStates.length);
+  // console.log(allStates.length);
   return allStates;
 };
 

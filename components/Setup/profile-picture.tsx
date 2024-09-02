@@ -1,12 +1,19 @@
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 // Import
 import { SectionHeading } from "../Section/section-components";
 import Button from "../Form/Button/button";
 import UploadIcon from "/public/icons/upload-image.svg";
 import DeleteIcon from "@/public/icons/delete-icon-orange.svg";
+import { FlowProgressContext } from "../FlowProgress/flow-progress";
+interface ProfilePictureProps {
+  hiddenInputClassName?: string;
+}
 
-const ProfilePicture = () => {
+const ProfilePicture: React.FC<ProfilePictureProps> = ({
+  hiddenInputClassName,
+}) => {
+  const { handleInputChange } = useContext(FlowProgressContext);
   const [image, setImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -48,6 +55,9 @@ const ProfilePicture = () => {
       fileInputRef.current.value = "";
     }
   };
+  useEffect(() => {
+    handleInputChange();
+  }, [image, handleInputChange]);
 
   return (
     <div className="custom-flex-col gap-5">
@@ -57,6 +67,12 @@ const ProfilePicture = () => {
       </SectionHeading>
 
       <div className="flex gap-2">
+        {/* input for flow progress */}
+        <input
+          type="hidden"
+          className={hiddenInputClassName}
+          value={image ? "filled" : ""}
+        />
         <input
           name="profile_pic"
           type="file"
@@ -85,8 +101,8 @@ const ProfilePicture = () => {
             <Image
               src={image}
               alt="Profile Picture"
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{ objectFit: "cover" }}
               className="rounded-lg w-[100px] h-[100px]"
             />
           </div>

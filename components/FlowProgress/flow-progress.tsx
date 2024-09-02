@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, createContext, useCallback } from "react";
+import { useEffect, useRef, createContext, useCallback, useState } from "react";
 
 // Types
 import type { FlowProgressProps } from "./types";
@@ -18,33 +18,55 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
   className,
   activeStep,
   inputClassName, // New optional prop
+  requiredFields, // New optional prop
 }) => {
   const progress = useRef(0);
   const barRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [canSubmit, setCanSubmit] = useState(false);
 
   const handleInputChange = useCallback(() => {
-    console.log("as");
+    // console.log("as");
     const selector = inputClassName ? `.${inputClassName}` : "input";
     const inputs = Array.from(
       containerRef.current?.querySelectorAll(selector) || []
-    );
-    console.log(inputs.map((i) => i.value));
+    ) as (HTMLInputElement | HTMLTextAreaElement)[];
 
     const stepValue = 100 / inputs.length;
-    const filledInputs = inputs.filter((input) => input.value.trim());
+    // Update the filter condition to account for Quill empty values
+    const filledInputs = inputs.filter((input) => {
+      const value = input.value.trim();
+      return value && value !== "<p><br></p>" && value !== "<p></p>";
+    });
     progress.current = filledInputs.length * stepValue;
     gsap.to(barRef.current, {
       width: `${progress.current}%`,
       ease: "expo.out",
     });
-  }, [inputClassName]);
+
+    // Check if all required fields are filled
+    const allRequired = inputs.filter((input) => {
+      // Select inputs that either have the 'required' class or match a name in requiredFields
+      return (
+        input.classList.contains("required") ||
+        (requiredFields && requiredFields.includes(input.name))
+      );
+    });
+
+    const allRequiredFilled = allRequired.every(
+      (input) => input.value.trim() !== ""
+    );
+
+    setCanSubmit(allRequiredFilled);
+    // console.log("Setting canSubmit to: ", allRequiredFilled);
+  }, [inputClassName, requiredFields]);
 
   useEffect(() => {
     const selector = inputClassName ? `.${inputClassName}` : "input";
     const inputs = Array.from(
       containerRef.current?.querySelectorAll(selector) || []
     );
+
     handleInputChange();
 
     // Invoke the passed callback function when input changes
@@ -60,7 +82,9 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
   }, [activeStep, handleInputChange, inputClassName]);
 
   return (
-    <FlowProgressContext.Provider value={{ handleInputChange }}>
+    <FlowProgressContext.Provider
+      value={{ handleInputChange, canSubmit: canSubmit }}
+    >
       <div ref={containerRef} className={className}>
         <div className="flex gap-[10px]" style={style}>
           {Array(steps)

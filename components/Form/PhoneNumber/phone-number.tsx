@@ -36,6 +36,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
     const formattedValue = formatPhoneNumber(input); // Format the input value
     onChange && onChange(formattedValue); // Call the provided onChange handler with formatted value
   };
+
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
       {/* Render the label if provided */}

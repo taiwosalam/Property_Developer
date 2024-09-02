@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import type { FileInputProps } from "./types";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import clsx from "clsx";
@@ -8,11 +8,13 @@ import Label from "../Label/label";
 import Button from "../Button/button";
 import deleteIcon from "@/public/icons/delete-icon.svg";
 import eyeShowIcon from "@/public/icons/eye-show.svg";
+import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 
 const FileInput: React.FC<FileInputProps> = ({
   id,
   label,
   className,
+  hiddenInputClassName,
   textStyles,
   required,
   onChange,
@@ -22,6 +24,7 @@ const FileInput: React.FC<FileInputProps> = ({
   size,
   sizeUnit,
 }) => {
+  const { handleInputChange } = useContext(FlowProgressContext);
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
   const [fileURL, setFileURL] = useState("");
@@ -68,6 +71,9 @@ const FileInput: React.FC<FileInputProps> = ({
 
   const handleDeleteFile = () => {
     setFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Reset the input value to allow reselecting the same file
+    }
   };
 
   useEffect(() => {
@@ -84,10 +90,17 @@ const FileInput: React.FC<FileInputProps> = ({
       setFileName("");
       onChange && onChange(null);
     }
-  }, [file, onChange]);
+    handleInputChange();
+  }, [file, handleInputChange, onChange]);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
+      {/* input for flow progress */}
+      <input
+        type="hidden"
+        className={hiddenInputClassName}
+        value={file?.name || ""}
+      />
       {/* Render the label if provided */}
       {label && (
         <Label id={id} required={required}>

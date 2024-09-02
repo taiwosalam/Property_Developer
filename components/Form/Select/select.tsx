@@ -1,17 +1,18 @@
 import clsx from "clsx";
 import Image from "next/image";
 import Label from "../Label/label";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import type { SelectProps } from "./types";
 import SearchIcon from "@/public/icons/search-icon.svg";
 import ArrowDownIcon from "@/public/icons/arrow-down.svg";
 import ArrowUpIcon from "@/public/icons/arrow-up.svg";
 import deleteIcon from "@/public/icons/delete-icon.svg";
+import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 
 const Select: React.FC<SelectProps> = ({
   id,
   label,
-  value: propValue,
+  value: propValue = "",
   required,
   className,
   options,
@@ -21,6 +22,7 @@ const Select: React.FC<SelectProps> = ({
   allowCustom = false,
   hiddenInputClassName,
 }) => {
+  const { handleInputChange } = useContext(FlowProgressContext);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,6 +32,9 @@ const Select: React.FC<SelectProps> = ({
 
   const handleSelection = (option: string) => {
     setSelectedValue(option); // Update selected value
+    setSearchTerm(""); // Clear search term
+    setIsOpen(false); // Close dropdown
+    onChange && onChange(option); // Call the onChange prop if provided
   };
 
   useEffect(() => {
@@ -59,27 +64,22 @@ const Select: React.FC<SelectProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Initialize
   useEffect(() => {
-    setSearchTerm(""); // Clear search term
-    setIsOpen(false); // Close dropdown
-    onChange && onChange(selectedValue); // Call the onChange prop if provided
-  }, [onChange, selectedValue]);
+    setSelectedValue(propValue);
+  }, [propValue]);
 
-  // Sync internal state with propValue when propValue changes
-  // useEffect(() => {
-  //   if (!propValue) {
-  //     setSelectedValue("");
-  //   } else {
-  //     setSelectedValue(propValue);
-  //   }
-  // }, [propValue]);
+  useEffect(() => {
+    handleInputChange();
+  }, [selectedValue, handleInputChange, onChange]);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
+      {/* input for flow progress */}
       <input
         type="hidden"
         className={hiddenInputClassName}
-        value={propValue || selectedValue}
+        value={selectedValue || ""}
       />
       {label && (
         <Label id={id} required={required}>
@@ -87,7 +87,6 @@ const Select: React.FC<SelectProps> = ({
         </Label>
       )}
       <div className="relative" ref={dropdownRef}>
-        <input type="hidden" name={id} value={selectedValue} />
         {/* Trigger for the custom dropdown with embedded search field */}
         <div
           className={clsx(
@@ -110,14 +109,14 @@ const Select: React.FC<SelectProps> = ({
             />
           </div>
           {/* Conditionally render input or selected value */}
-          {(propValue || selectedValue) && !isOpen ? (
+          {selectedValue && !isOpen ? (
             <span
               className={clsx(
                 "flex-1 capitalize text-text-disabled",
                 inputTextStyles
               )}
             >
-              {propValue || selectedValue}
+              {selectedValue}
             </span>
           ) : (
             <input

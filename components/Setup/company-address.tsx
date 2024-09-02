@@ -7,12 +7,9 @@ import Input from "../Form/Input/input";
 import Select from "../Form/Select/select";
 import FileInput from "../Form/FileInput/file-input";
 import { SectionHeading } from "../Section/section-components";
-import { useContext } from "react";
 import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
-import { FlowProgressContext } from "../FlowProgress/flow-progress";
 
 const CompanyAddress = () => {
-  const { handleInputChange } = useContext(FlowProgressContext);
   // State to hold selected values
   const [selectedState, setSelectedState] = useState("");
   const [selectedLGA, setSelectedLGA] = useState("");
@@ -48,10 +45,6 @@ const CompanyAddress = () => {
     }
   }, [selectedLGA, selectedState]);
 
-  useEffect(() => {
-    handleInputChange();
-  }, [selectedState, selectedLGA, selectedCity, handleInputChange]);
-
   // Handle state change
   const handleStateChange = (value: string) => {
     setSelectedState(value);
@@ -81,7 +74,7 @@ const CompanyAddress = () => {
           id="state"
           label="state"
           inputTextStyles={`text-xs md:text-sm font-normal`}
-          value={selectedState}
+          value={selectedState ? selectedState : undefined}
           hiddenInputClassName="setup-f"
           onChange={handleStateChange} // Update handler
         />
@@ -94,7 +87,7 @@ const CompanyAddress = () => {
           inputTextStyles={`text-xs md:text-sm font-normal`}
           hiddenInputClassName="setup-f"
           onChange={handleLGAChange} // Update handler
-          value={selectedLGA} // Controlled value
+          value={selectedLGA ? selectedLGA : undefined} // Controlled value
         />
 
         {/* City Selector */}
@@ -106,7 +99,7 @@ const CompanyAddress = () => {
           allowCustom={true}
           hiddenInputClassName="setup-f"
           onChange={handleCityChange} // Update handler
-          value={selectedCity} // Controlled value
+          value={selectedCity ? selectedCity : undefined} // Controlled value
         />
 
         <Input
@@ -125,6 +118,8 @@ const CompanyAddress = () => {
           sizeUnit="MB"
           placeholder="utility"
           buttonName="Document"
+          // onChange={handleInputChange}
+          hiddenInputClassName="setup-f"
           textStyles={`text-xs md:text-sm font-normal`}
           className="md:col-span-2 lg:col-span-1"
         />

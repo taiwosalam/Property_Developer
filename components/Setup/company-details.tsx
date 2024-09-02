@@ -14,21 +14,10 @@ const CompanyDetails = () => {
   const [registrationDate, setRegistrationDate] = useState<Date | undefined>(
     undefined
   );
-  const [cac_certificate, setCac_certificate] = useState<File | null>(null);
-  const [membership_certificate, setMembership_certificate] =
-    useState<File | null>(null);
-  // const [industry, setIndustry] = useState("");
-
   // To trigger Flow Progress
   useEffect(() => {
     handleInputChange();
-  }, [
-    registrationDate,
-    handleInputChange,
-    cac_certificate,
-    membership_certificate,
-    // industry,
-  ]);
+  }, [handleInputChange, registrationDate]);
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading title="company details">
@@ -65,65 +54,49 @@ const CompanyDetails = () => {
           placeholder="Write here"
           inputClassName={`text-xs md:text-sm font-normal setup-f`}
         />
-        <div>
-          {/* input for flow progress */}
-          <input
-            type="hidden"
-            className="setup-f"
-            value={cac_certificate ? cac_certificate.name : ""}
-          />
-          <FileInput
-            required
-            id="cac_certificate"
-            label="CAC Certificate"
-            placeholder="CAC"
-            buttonName="Document"
-            fileType="pdf"
-            size={5}
-            sizeUnit="MB"
-            textStyles={`text-xs md:text-sm font-normal`}
-            onChange={(x) => {
-              setCac_certificate(x);
-            }}
-          />
-        </div>
-        <div>
-          <Select
-            id="industry"
-            label="industry"
-            options={industryOptions}
-            inputTextStyles={`text-xs md:text-sm font-normal`}
-            hiddenInputClassName="setup-f"
-            onChange={handleInputChange}
-          />
-        </div>
+
+        <FileInput
+          required
+          id="cac_certificate"
+          label="CAC Certificate"
+          placeholder="CAC"
+          buttonName="Document"
+          fileType="pdf"
+          size={5}
+          sizeUnit="MB"
+          hiddenInputClassName="setup-f required"
+          textStyles={`text-xs md:text-sm font-normal`}
+          // onChange={handleInputChange}
+        />
+
+        <Select
+          id="industry"
+          label="industry"
+          options={industryOptions}
+          inputTextStyles={`text-xs md:text-sm font-normal`}
+          hiddenInputClassName="setup-f"
+          // onChange={handleInputChange}
+        />
+
         <Input
           label="Membership Number"
           id="membership-number"
           placeholder="Write here"
           inputClassName={`text-xs md:text-sm font-normal setup-f`}
         />
-        <div>
-          {/* input for flow progress */}
-          <input
-            type="hidden"
-            className="setup-f"
-            value={membership_certificate ? membership_certificate.name : ""}
-          />
-          <FileInput
-            id="membership_certificate"
-            label="membership Certificate"
-            fileType="pdf"
-            size={5}
-            sizeUnit="MB"
-            placeholder="certificate"
-            buttonName="Document"
-            textStyles={`text-xs md:text-sm font-normal`}
-            onChange={(x) => {
-              setMembership_certificate(x);
-            }}
-          />
-        </div>
+
+        <FileInput
+          id="membership_certificate"
+          label="membership Certificate"
+          fileType="pdf"
+          size={5}
+          sizeUnit="MB"
+          placeholder="certificate"
+          buttonName="Document"
+          hiddenInputClassName="setup-f"
+          textStyles={`text-xs md:text-sm font-normal`}
+          // onChange={handleInputChange}
+        />
       </div>
     </div>
   );

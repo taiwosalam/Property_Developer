@@ -1,5 +1,3 @@
-import React from "react";
-
 // Imports
 import PhoneNumberInput from "../Form/PhoneNumber/phone-number";
 import {
@@ -21,7 +19,7 @@ const CompanyMobileNumber = () => {
             key={index}
             id={`${index === 0 ? "company_phone" : `phone-number-${index}`}`}
             placeholder="800 0000 000"
-            inputTextStyles={`text-xs md:text-sm font-normal`}
+            inputTextStyles={`text-xs md:text-sm font-normal setup-f`}
           />
         ))}
       </div>
