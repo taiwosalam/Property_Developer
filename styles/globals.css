@@ -94,6 +94,23 @@ h1 {
   }
 }
 
+.custom-round-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-round-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+.custom-round-scrollbar::-webkit-scrollbar-button {
+  display: none;
+}
+
+.custom-round-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #e3e5e7;
+}
+
 /* -------------------------------------------------------------- */
 
 /* Overwriting default behaviour */

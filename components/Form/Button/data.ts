@@ -1,6 +1,7 @@
 export const button_variants = {
   variant: {
     change: "bg-neutral-2 text-brand-9",
+    sky_blue: "bg-brand-1 text-brand-9",
     default: "custom-primary-bg text-white",
   },
   size: {
@@ -8,6 +9,8 @@ export const button_variants = {
     mid: "py-[10px] px-3 text-base font-medium",
     default: "py-[10px] px-12 text-lg font-bold",
 
+    xs_medium: "font-medium text-xs",
+    sm_medium: "font-medium text-sm",
     base_medium: "font-medium text-base",
   },
 };
