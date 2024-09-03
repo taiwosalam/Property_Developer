@@ -1,7 +1,7 @@
 // Imports
 import Button from "@/components/Form/Button/button";
 import AddLandlordModal from "@/components/Management/Landlord/add-landlord-modal";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/Modal";
 import LandlordCard from "@/components/Management/Landlord/landlord-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import CustomTable from "@/components/Table/table";
