@@ -73,6 +73,7 @@ const getUniqueKey = (item: DataItem) => {
 const CustomTable: React.FC<CustomTableProps> = ({
   data,
   fields,
+  displayTableHead = true,
   className,
   handleSelect,
   actionButtonIcon,
@@ -90,24 +91,26 @@ const CustomTable: React.FC<CustomTableProps> = ({
       sx={{ boxShadow: "none" }}
     >
       <Table sx={{ boxShadow: "none" }}>
-        <TableHead
-          className={clsx("sticky top-0 z-[2]", tableHeadClassName)}
-          style={tableHeadStyle} // Apply custom inline styles
-        >
-          <TableRow>
-            {fields.map((field) => (
-              <TableCell
-                key={field.id}
-                sx={{
-                  textAlign: "center",
-                  ...tableHeadCellSx,
-                }}
-              >
-                {field.label}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
+        {displayTableHead && (
+          <TableHead
+            className={clsx("sticky top-0 z-[2]", tableHeadClassName)}
+            style={tableHeadStyle} // Apply custom inline styles
+          >
+            <TableRow>
+              {fields.map((field) => (
+                <TableCell
+                  key={field.id}
+                  sx={{
+                    textAlign: "center",
+                    ...tableHeadCellSx,
+                  }}
+                >
+                  {field.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+        )}
         <TableBody>
           {data.map((x, index) => (
             <TableRow

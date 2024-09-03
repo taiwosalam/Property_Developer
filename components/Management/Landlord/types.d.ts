@@ -24,7 +24,7 @@ export interface LandlordCardProps {
   email: string;
   user_tag: "web" | "mobile";
   phone_number: string;
-  picture: string;
-  avatar: string;
+  picture?: string;
+  avatar?: string;
   picture_url: string;
 }

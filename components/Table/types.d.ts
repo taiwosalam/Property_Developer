@@ -1,7 +1,7 @@
 // Define the type for Fields
 export interface Field {
   id: string;
-  label: string;
+  label?: string;
   accessor: string;
   isImage?: boolean;
   cellStyle?: SxProps; // For styling the cell
@@ -18,6 +18,7 @@ export interface DataItem {
 export interface CustomTableProps {
   data: DataItem[];
   fields: Field[];
+  displayTableHead?: boolean;
   className?: string;
   handleSelect?: (item?: DataItem) => void;
   actionButtonIcon?: ReactNode;

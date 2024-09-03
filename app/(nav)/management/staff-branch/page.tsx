@@ -1,4 +1,4 @@
-import BranchCard from "@/components/Staff-And-Branches/branch-card";
+import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
 import CustomTable from "@/components/Table/table";
 import { branches } from "./data";
 import type { Field } from "@/components/Table/types";
@@ -65,7 +65,7 @@ const StaffAndBranches = () => {
         <button>Create Branch Button</button>
       </div>
       <section className="capitalize">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {branches.slice(0, 30).map((b) => (
             <BranchCard key={b.id} {...b} />
           ))}
