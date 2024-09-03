@@ -122,9 +122,8 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 <TableCell
                   key={field.id}
                   sx={{
-                    textAlign: "center",
                     ...tableBodyCellSx,
-                    ...field.cellStyle,
+                    // ...field.cellStyle, //avoiding TypeScript error
                   }}
                 >
                   {renderValue(x, field, index, actionButtonIcon)}

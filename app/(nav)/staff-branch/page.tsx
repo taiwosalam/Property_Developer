@@ -5,7 +5,7 @@ import type { Field } from "@/components/Staff-And-Branches/types";
 
 const StaffAndBranches = () => {
   const fields: Field[] = [
-    { id: "1", label: "S/N", accessor:'S/N' },
+    { id: "1", label: "S/N", accessor: "S/N" },
     { id: "2", label: "", accessor: "avatar", isImage: true },
     { id: "3", label: "Branch Name", accessor: "branch_title" },
     { id: "4", label: "Branch Address", accessor: "branch_full_address" },
@@ -20,7 +20,7 @@ const StaffAndBranches = () => {
         borderRadius: "8px",
         backgroundColor: "#8C62FF",
         display: "grid",
-        placeItems:'center',
+        placeItems: "center",
         width: "32px",
       },
     },
@@ -34,7 +34,7 @@ const StaffAndBranches = () => {
         borderRadius: "8px",
         backgroundColor: "#2DD4BF",
         display: "grid",
-        placeItems:'center',
+        placeItems: "center",
         width: "32px",
       },
     },
@@ -48,7 +48,7 @@ const StaffAndBranches = () => {
         borderRadius: "8px",
         backgroundColor: "#38BDF8",
         display: "grid",
-        placeItems:'center',
+        placeItems: "center",
         width: "32px",
       },
     },
@@ -88,6 +88,7 @@ const StaffAndBranches = () => {
             fontSize: "16px",
             color: "#050901",
             border: "none",
+            textAlign: "center",
           }}
           evenRowColor="#fff"
           oddRowColor="#EFF6FF"

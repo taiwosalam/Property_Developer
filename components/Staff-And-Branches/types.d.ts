@@ -18,8 +18,8 @@ export interface Field {
   label: string;
   accessor: string;
   isImage?: boolean;
-  cellStyle?: SxProps<Theme>; // For styling the cell
-  contentStyle?: React.CSSProperties; // For styling the content inside the cell
+  cellStyle?: SxProps; // For styling the cell
+  contentStyle?: CSSProperties; // For styling the content inside the cell
 }
 
 // Define the type for the data items in the table
