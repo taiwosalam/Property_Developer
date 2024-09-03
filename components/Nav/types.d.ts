@@ -1,4 +1,5 @@
 // Types
+import { StaticImageData } from "next/image";
 import type { SVGType } from "../SVG/types";
 
 // Imports

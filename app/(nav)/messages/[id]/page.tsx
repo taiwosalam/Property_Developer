@@ -1,0 +1,56 @@
+"use client";
+
+import React from "react";
+import { useParams, useRouter } from "next/navigation";
+
+// Images
+import Picture from "@/components/Picture/picture";
+import ChevronLeft from "@/public/icons/chevron-left.svg";
+
+// Imports
+import Messages from "@/components/Message/messages";
+import { message_card_data } from "@/components/Message/data";
+
+const Chat = () => {
+  const router = useRouter();
+  const { id } = useParams();
+
+  const data = message_card_data.find((item) => item.id === id);
+
+  if (!data) return router.replace("/messages");
+
+  return (
+    <>
+      <div className="py-4 px-6 bg-neutral-2">
+        <div className="flex items-center gap-3">
+          <button onClick={() => router.push("/messages")}>
+            <Picture src={ChevronLeft} alt="back" size={20} />
+          </button>
+          <button className="flex items-center gap-4 text-left">
+            <Picture
+              src={data.pfp}
+              alt="profile picture"
+              size={32}
+              rounded
+              status
+            />
+            <div className="custom-flex-col">
+              <p className="text-text-primary text-base font-medium capitalize">
+                {data.fullname}
+              </p>
+              <p className="text-text-disabled text-[10px] font-normal">
+                Tap here for contact info
+              </p>
+            </div>
+          </button>
+        </div>
+      </div>
+      <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white custom-flex-col gap-8">
+        <Messages day="yesterday" />
+        <Messages day="today" />
+      </div>
+    </>
+  );
+};
+
+export default Chat;
