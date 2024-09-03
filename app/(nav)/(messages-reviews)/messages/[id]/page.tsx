@@ -4,10 +4,10 @@ import React from "react";
 import { useParams, useRouter } from "next/navigation";
 
 // Images
-import Picture from "@/components/Picture/picture";
 import ChevronLeft from "@/public/icons/chevron-left.svg";
 
 // Imports
+import Picture from "@/components/Picture/picture";
 import Messages from "@/components/Message/messages";
 import { message_card_data } from "@/components/Message/data";
 

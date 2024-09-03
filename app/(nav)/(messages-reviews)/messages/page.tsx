@@ -1,10 +1,10 @@
 import React from "react";
+import Image from "next/image";
 
 // Images
 import LogoPlaceholder from "@/public/empty/logo-placeholder.svg";
 
 // Imports
-import Image from "next/image";
 import Button from "@/components/Form/Button/button";
 
 const Messages = () => {
