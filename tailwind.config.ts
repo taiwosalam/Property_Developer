@@ -52,6 +52,11 @@ const config = {
             primary: "#E9212E",
           },
         },
+        support: {
+          1: "#38BDF8",
+          2: "#2DD4BF",
+          3: "#8C62FF",
+        },
 
         supporting: {
           1: "#38BDF8",
