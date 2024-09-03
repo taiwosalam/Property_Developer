@@ -5,10 +5,16 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cva } from "class-variance-authority";
 import { GripVertical } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { ColumnId } from "./KanbanBoard";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Progress } from "@/components/ui/progress";
+import Image from "next/image";
 
+// Icons
+import Mail from "@/public/icons/mail.svg";
+import Clip from "@/public/icons/clip.svg";
+import List from "@/public/icons/list.svg";
+import Drag from "@/public/icons/drag.svg";
 export interface Task {
   id: UniqueIdentifier;
   columnId: ColumnId;
@@ -71,6 +77,13 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
     },
   });
 
+  const bg =
+    task.content.status === "processing"
+      ? "#FDB82C"
+      : task.content.status === "approved"
+      ? "#01BA4C"
+      : "#E9212E";
+
   return (
     <Card
       ref={setNodeRef}
@@ -96,31 +109,49 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
             </p>
           </div>
         </div>
-        <Button
-          variant={"ghost"}
+        <button
           {...attributes}
           {...listeners}
-          className="p-0.5 text-secondary-foreground/50 h-auto cursor-pointer"
+          className="stext-secondary-foreground/50 h-auto cursor-pointer"
         >
           <span className="sr-only">Move task</span>
-          <GripVertical />
-        </Button>
+          <Image src={Drag} alt="theme" width={20} height={20} />
+        </button>
       </CardHeader>
       <CardContent className="px-3 py-3">
         <div>
           <div className="w-full flex items-center justify-between text-xs py-3">
-            <p className="text-text-disabled font-bold">
-              {task.content.status}
-            </p>
+            <div className="flex items-center align-middle">
+              <Image src={List} alt="theme" width={20} height={20} />
+              <p className="text-text-disabled font-bold">
+                {task.content.status}
+              </p>
+            </div>
             <p className="text-text-tertiary font-normal">
               {task.content.progress}/100%
             </p>
           </div>
-          <div></div>
+          <div className="py-2">
+            <Progress value={task.content.progress} bg={bg} fillColor="#fff" />
+          </div>
         </div>
-        <div>
-          <div></div>
-          <div></div>
+        <div className="flex space-x-5">
+          <div className="flex space-x-2 items-center">
+            <Image
+              src={Mail}
+              alt="messages"
+              width={20}
+              height={20}
+              className="w-5 h-5"
+            />
+            <Image
+              src={Clip}
+              alt="theme"
+              width={16}
+              height={16}
+              className="w-4 h-4"
+            />
+          </div>
           <div className="w-full flex items-center justify-between">
             <div className="flex -space-x-2.5 overflow-hidden">
               {task.content.userAvatars.map((avatar, index) => (

@@ -56,13 +56,13 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
   };
 
   const variants = cva(
-    "h-[500px] max-h-[500px] w-fit max-w-full bg-primary-foreground flex flex-col flex-shrink-0 snap-center",
+    "h-[500px] max-h-[500px] w-[32%] bg-primary-foreground flex flex-col flex-shrink-0 snap-center",
     {
       variants: {
         dragging: {
-          default: "border-2 border-transparent",
-          over: "ring-2 opacity-30",
-          overlay: "ring-2 ring-primary",
+          default: "border-2 border-dotted",
+          over: "ring-2 opacity-30 border-dotted",
+          overlay: "ring-2 ring-primary border-dotted",
         },
       },
     }
@@ -120,7 +120,7 @@ export function BoardContainer({ children }: { children: React.ReactNode }) {
         dragging: dndContext.active ? "active" : "default",
       })}
     >
-      <div className="flex gap-4 items-center flex-row justify-center">
+      <div className="flex gap-4 items-center flex-row justify-between">
         {children}
       </div>
       <ScrollBar orientation="horizontal" />
