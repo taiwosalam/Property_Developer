@@ -5,8 +5,8 @@ import Image from "next/image";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 
 // Imports
-import Input from "../Form/Input/input";
-import Button from "../Form/Button/button";
+import Input from "../../Form/Input/input";
+import Button from "../../Form/Button/button";
 
 const AddLandlord = () => {
   return (

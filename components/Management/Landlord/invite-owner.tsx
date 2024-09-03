@@ -1,8 +1,8 @@
 import React from "react";
 
 // Imports
-import Input from "../Form/Input/input";
-import Button from "../Form/Button/button";
+import Input from "../../Form/Input/input";
+import Button from "../../Form/Button/button";
 
 const InviteOwner = () => {
   return (

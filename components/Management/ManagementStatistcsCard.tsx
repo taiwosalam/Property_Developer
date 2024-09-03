@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface DonutChartProps {
@@ -53,7 +52,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
   );
 };
 
-export function LandlordHeaderCard() {
+const ManagementStatistcsCard = () => {
   const existingLandlords = 457;
   const newLandlords = 200;
   const totalLandlords = existingLandlords + newLandlords;
@@ -81,4 +80,6 @@ export function LandlordHeaderCard() {
       </CardContent>
     </Card>
   );
-}
+};
+
+export default ManagementStatistcsCard;
