@@ -35,6 +35,7 @@ const config = {
           label: "#5A5D61",
           black: "#232324",
           disabled: "#A4A7B0",
+          invert: "#F4F4F9",
           white: {
             secondary: "#FFFFFFA6",
           },
@@ -51,6 +52,9 @@ const config = {
           },
           error: {
             primary: "#E9212E",
+          },
+          caution: {
+            3: "#FFF8EE",
           },
         },
         success: {
@@ -83,6 +87,8 @@ const config = {
         primary: {
           navy: "#092C4C",
         },
+
+        highlight: "#E15B0F",
       },
       container: {
         center: true,
