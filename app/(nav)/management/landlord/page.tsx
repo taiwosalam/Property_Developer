@@ -1,9 +1,8 @@
-import React from "react";
-
 // Imports
 import Button from "@/components/Form/Button/button";
 import AddLandlordModal from "@/components/Landlord/add-landlord-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/Modal";
+import LandlordCard from "@/components/Landlord/landlord-card";
 
 const Landlord = () => {
   return (

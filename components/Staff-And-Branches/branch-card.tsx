@@ -1,6 +1,6 @@
 import type { BranchCardProps } from "./types";
-import BranchPicture from "@/public/empty/branch.png";
-import BranchManagerAvatar from "@/public/icons/contact.svg";
+import DefaultBranchPicture from "@/public/empty/branch.png";
+import DefaultBranchManagerAvatar from "@/public/icons/contact.svg";
 import Image from "next/image";
 
 const BranchCard: React.FC<BranchCardProps> = ({
@@ -22,19 +22,12 @@ const BranchCard: React.FC<BranchCardProps> = ({
         }}
       ></div>
       <div className="absolute left-[50%] translate-x-[-50%] top-[-2.8rem] bg-white rounded-full w-[80px] h-[80px] overflow-hidden border-[3px] border-white">
-        {/* <Image
-          src={avatar || BranchPicture}
-          alt={branch_title || ""}
-          width={94}
-          height={94}
-          className="w-[94px] h-[94px] rounded-full"
-        /> */}
         <Image
-          src={BranchPicture}
+          src={avatar || DefaultBranchPicture}
           alt={branch_title || ""}
           width={94}
           height={94}
-          className="w-[94px] h-[94px] rounded-full"
+          className="w-[94px] h-[94px] rounded-full object-cover"
         />
       </div>
       <div className="rounded-2xl bg-white px-[25px] pt-[55px] pb-[20px] items-center text-center flex flex-col border border-support-1 border-solid">
@@ -46,11 +39,10 @@ const BranchCard: React.FC<BranchCardProps> = ({
         </p>
         <div className="flex items-center gap-2 justify-center mb-5">
           <div className="bg-brand-1 rounded-full w-5 h-5 grid place-items-center">
-            {/* <Image
+            <Image
               alt={manager_name || ""}
-              src={manager_avatar || BranchManagerAvatar}
-            /> */}
-            <Image alt={manager_name || ""} src={BranchManagerAvatar} />
+              src={manager_avatar || DefaultBranchManagerAvatar}
+            />
           </div>
           <p className="text-black font-medium text-sm">{manager_name}</p>
         </div>

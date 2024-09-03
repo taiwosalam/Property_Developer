@@ -65,12 +65,12 @@ const StaffAndBranches = () => {
         <button>Create Branch Button</button>
       </div>
       <section className="capitalize">
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
           {branches.slice(0, 30).map((b) => (
             <BranchCard key={b.id} {...b} />
           ))}
-        </div> */}
-        <CustomTable
+        </div>
+        {/* <CustomTable
           fields={fields}
           data={branches.slice(0, 30)}
           tableHeadClassName="bg-brand-5"
@@ -92,7 +92,7 @@ const StaffAndBranches = () => {
           }}
           evenRowColor="#fff"
           oddRowColor="#EFF6FF"
-        />
+        /> */}
       </section>
     </div>
   );

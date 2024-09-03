@@ -23,6 +23,7 @@ const config = {
 
           primary: "#315EE7",
           secondary: "#6083ED",
+          tertiary: "#93C5FD",
         },
 
         text: {
@@ -51,6 +52,10 @@ const config = {
           error: {
             primary: "#E9212E",
           },
+        },
+        success: {
+          1: "#E6FAEE",
+          3: "#005623",
         },
         support: {
           1: "#38BDF8",
