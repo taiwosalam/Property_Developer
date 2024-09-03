@@ -1,7 +1,7 @@
 import React from "react";
 
 // Imports
-import Button from "../Form/Button/button";
+import Button from "../../Form/Button/button";
 import AddLandlordCard from "./add-landlord-card";
 import { AddLandlordOptionsProps } from "./types";
 

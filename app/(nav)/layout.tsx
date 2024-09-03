@@ -121,7 +121,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
             ></div>
           </div>
-          <div className="p-6 relative z-[1]">{children}</div>
+          <main className="p-6 relative z-[1]">{children}</main>
         </div>
       </div>
     </>

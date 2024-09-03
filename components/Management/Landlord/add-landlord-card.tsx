@@ -4,7 +4,7 @@ import React from "react";
 import type { AddLandlordCardProps } from "./types";
 
 // Imports
-import Button from "../Form/Button/button";
+import Button from "../../Form/Button/button";
 
 const AddLandlordCard: React.FC<AddLandlordCardProps> = ({
   desc,

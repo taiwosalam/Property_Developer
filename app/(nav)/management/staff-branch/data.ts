@@ -1,4 +1,4 @@
-import type { BranchCardProps } from "@/components/Staff-And-Branches/types";
+import type { BranchCardProps } from "@/components/Management/Staff-And-Branches/types";
 export const branches: BranchCardProps[] = [
   {
     id: 1,

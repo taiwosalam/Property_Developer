@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 
 // Images
-import Button from "../Form/Button/button";
+import Button from "../../Form/Button/button";
 import ImportCircle from "@/public/icons/import-circle.svg";
 
 const AddMultipleOwners = () => {
