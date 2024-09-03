@@ -28,7 +28,12 @@ export default function RootLayout({
         <ThemeProvider />
         <div className="w-full relative z-[1]">
           {children}
-          <Toaster richColors className={`${dmSans.className} antialiased`} />
+          <Toaster
+            richColors
+            className={`${dmSans.className} antialiased`}
+            position="top-right"
+            duration={5000}
+          />
         </div>
         <div id="portal" className="z-[2]"></div>
       </body>
