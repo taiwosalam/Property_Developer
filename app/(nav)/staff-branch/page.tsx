@@ -1,7 +1,7 @@
 import BranchCard from "@/components/Staff-And-Branches/branch-card";
-import CustomTable from "@/components/Staff-And-Branches/table";
+import CustomTable from "@/components/Table/table";
 import { branches } from "./data";
-import type { Field } from "@/components/Staff-And-Branches/types";
+import type { Field } from "@/components/Table/types";
 
 const StaffAndBranches = () => {
   const fields: Field[] = [
