@@ -11,7 +11,7 @@ import CloseCircle from "@/public/icons/close-circle.svg";
 import ChevronLeft from "@/public/icons/chevron-left.svg";
 
 // Imports
-import { ModalTrigger } from "../Modal/modal";
+import { ModalTrigger } from "@/components/Modal/Modal";
 import AddLandlordOptions from "./add-landlord-options";
 import AddLandlord from "./add-landlord";
 import AddMultipleOwners from "./add-multiple-owners";
