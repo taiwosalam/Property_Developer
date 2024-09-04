@@ -77,6 +77,7 @@ const Select: React.FC<SelectProps> = ({
     <div className={clsx("custom-flex-col gap-2", className)}>
       {/* input for flow progress */}
       <input
+        name={id}
         type="hidden"
         className={hiddenInputClassName}
         value={selectedValue || ""}

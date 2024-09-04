@@ -35,7 +35,7 @@ const Setup = () => {
   const handleSubmit = async (data: any) => {
     // if (!canSubmit) return;
     // Add user_id to the data object
-    const user_id = "123456"; // Replace this with your logic for getting the user_id
+    const user_id = "58"; // Replace this with your logic for getting the user_id
     const payload = {
       ...data,
       user_id, // Append user_id to data
@@ -57,9 +57,9 @@ const Setup = () => {
     }
 
     console.log(payload); // Debug log to see the modified data
-    updateFormData(payload);
+    // updateFormData(payload);
     try {
-      await signupCompany();
+      await signupCompany(payload);
       // console.log("Company successfully signed up!");
     } catch (error) {
       console.error("Error signing up company:", error);
