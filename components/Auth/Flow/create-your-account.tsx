@@ -23,7 +23,7 @@ const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
   // Access the store's update function
   const updateFormData = useFormDataStore((state) => state.updateFormData);
 
-  const getFormData = useFormDataStore((state) => state.formData);
+  // const getFormData = useFormDataStore((state) => state.formData);
 
   // Function to handle form submission
   const handleSignUp = async (data: any) => {
