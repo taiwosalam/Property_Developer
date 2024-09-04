@@ -8,7 +8,7 @@ import {
 const CompanyMobileNumber = () => {
   return (
     <div className="custom-flex-col gap-5">
-      <SectionHeading title="company mobile number">
+      <SectionHeading title="Company Mobile Number">
         Please provide a valid phone number as it is essential for the company
         profile.
         {/* <SectionSeparator className="max-w-[1200px] mt-1.5" /> */}
@@ -17,7 +17,7 @@ const CompanyMobileNumber = () => {
         {Array.from({ length: 4 }).map((_, index: number) => (
           <PhoneNumberInput
             key={index}
-            id={`${index === 0 ? "company_phone" : `phone-number-${index}`}`}
+            id={`company_phone${index === 0 ? "" : `${index + 1}`}`}
             placeholder="800 0000 000"
             inputTextStyles={`text-xs md:text-sm font-normal setup-f`}
           />
