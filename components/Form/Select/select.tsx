@@ -11,6 +11,7 @@ import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 
 const Select: React.FC<SelectProps> = ({
   id,
+  name,
   label,
   value: propValue = "",
   required,
@@ -77,7 +78,7 @@ const Select: React.FC<SelectProps> = ({
     <div className={clsx("custom-flex-col gap-2", className)}>
       {/* input for flow progress */}
       <input
-        name={id}
+        name={name}
         type="hidden"
         className={hiddenInputClassName}
         value={selectedValue || ""}

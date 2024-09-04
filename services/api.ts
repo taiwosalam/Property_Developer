@@ -83,6 +83,7 @@ export const postRequest = async (
 ) => {
   try {
     const formData = useFormDataStore.getState().formData; // Access form data from the store
+    console.log(formData);
     const response = await instance.post(url, { ...data, ...formData }); // Include form data in the request
 
     if (response?.status === 200) {

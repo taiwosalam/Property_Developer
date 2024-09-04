@@ -34,12 +34,26 @@ export const AuthHeading: React.FC<AuthHeadingProps> = ({
   </div>
 );
 
+export const formDataToString = (formData: any) => {
+  //change to FormData
+  const data: Record<string, any> = {};
+  formData.forEach((value: { toString: () => any }, key: string | number) => {
+    if (value instanceof File) {
+      data[key] = value; // Keep the File object intact
+    } else {
+      data[key] = value.toString();
+    }
+  });
+  return data;
+};
+
 // AuthForm Component: Handles form submission and validation
 export const AuthForm: React.FC<AuthFormProps> = ({
   children,
   className,
   onFormSubmit,
   setValidationErrors,
+  returnType = "string",
 }) => {
   return (
     <form
@@ -50,24 +64,16 @@ export const AuthForm: React.FC<AuthFormProps> = ({
 
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
-
-        const data: Record<string, any> = {};
-
-        formData.forEach((value, key) => {
-          data[key] = value instanceof File ? value : value.toString();
-        });
-        // formData.forEach((value, key) => {
-        //   data[key] = value.toString();
-        // });
-
+        const data = formDataToString(formData);
         const validation = validateData(data);
 
         if (!objectLength(validation.invalidKeys)) {
-          onFormSubmit(data);
+          onFormSubmit(returnType === "form-data" ? formData : data);
         } else {
           setValidationErrors(validation.invalidKeys);
         }
       }}
+      // action={"https://api.services.hodessy.com/webhook/oup12"}
       className={className}
     >
       {children}
