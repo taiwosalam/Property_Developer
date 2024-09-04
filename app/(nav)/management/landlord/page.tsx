@@ -50,6 +50,7 @@ const Landlord = () => {
           </Modal>
         </div>
       </section>
+      {/* make this a component */}
       <section className="w-full flex items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4">
         <div>
           <h1 className="text-2xl font-bold text-black">
@@ -83,16 +84,26 @@ const Landlord = () => {
             />
           </div>
           <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-            <Image
-              src="/icons/sliders.svg"
-              alt="filter"
-              width={20}
-              height={20}
-            />
-            <p>Filters</p>
+            <Modal>
+              <ModalTrigger asChild>
+                <div className="flex items-center gap-2 cursor-pointer">
+                  <Image
+                    src="/icons/sliders.svg"
+                    alt="filter"
+                    width={20}
+                    height={20}
+                  />
+                  <p>Filters</p>
+                </div>
+              </ModalTrigger>
+              <ModalContent>
+                <AddLandlordModal />
+              </ModalContent>
+            </Modal>
           </div>
         </div>
       </section>
+      {/*  */}
       <section>
         {gridView ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 auto-rows-fr">

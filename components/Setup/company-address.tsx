@@ -82,7 +82,7 @@ const CompanyAddress = () => {
         {/* Local Government Selector */}
         <Select
           options={localGovernments}
-          id="lga"
+          id="local_government"
           label="local government"
           inputTextStyles={`text-xs md:text-sm font-normal`}
           hiddenInputClassName="setup-f"
@@ -104,7 +104,7 @@ const CompanyAddress = () => {
 
         <Input
           label="head office address"
-          id="head-office-address"
+          id="address"
           placeholder="Write here"
           className="lg:col-span-2"
           inputClassName={`text-xs md:text-sm font-normal setup-f`}

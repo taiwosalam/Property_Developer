@@ -135,7 +135,7 @@ const S = () => {
                   className="lg:col-span-2"
                 />
                 <Input
-                  id="referral-id"
+                  id="referral_id"
                   label="Referral ID (Optional)"
                   placeholder="Enter your Referral ID"
                   inputClassName={`text-xs md:text-sm font-normal setup-f`}
