@@ -35,7 +35,7 @@ const Setup = () => {
   const handleSubmit = async (data: FormData) => {
     // if (!canSubmit) return;
     // Add user_id to the data object
-    const user_id = "81"; // Replace this with your logic for getting the user_id
+    const user_id = "80"; // Replace this with your logic for getting the user_id
     const payload = formDataToString(data);
 
     data.set("user_id", user_id);
