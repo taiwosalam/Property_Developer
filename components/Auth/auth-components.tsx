@@ -34,9 +34,10 @@ export const AuthHeading: React.FC<AuthHeadingProps> = ({
   </div>
 );
 
-export const formDataToString = (formData: FormData) => {
+export const formDataToString = (formData: any) => {
+  //change to FormData
   const data: Record<string, any> = {};
-  formData.forEach((value, key) => {
+  formData.forEach((value: { toString: () => any }, key: string | number) => {
     if (value instanceof File) {
       data[key] = value; // Keep the File object intact
     } else {
