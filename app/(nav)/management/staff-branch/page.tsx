@@ -1,9 +1,25 @@
+"use client";
+
 import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
 import CustomTable from "@/components/Table/table";
 import { branches } from "./data";
 import type { Field } from "@/components/Table/types";
+import Input from "@/components/Form/Input/input";
+import Image from "next/image";
+import { useState } from "react";
+import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 
 const StaffAndBranches = () => {
+  const [gridView, setGridView] = useState(true);
+
+  function toggleGridView() {
+    setGridView(true);
+  }
+
+  function toggleListView() {
+    setGridView(false);
+  }
+
   const fields: Field[] = [
     { id: "1", label: "S/N", accessor: "S/N" },
     { id: "2", label: "", accessor: "avatar", isImage: true },
@@ -55,46 +71,92 @@ const StaffAndBranches = () => {
     { id: "9", label: "", accessor: "action" },
   ];
   return (
-    <div>
+    <main className="space-y-9">
       <div className="flex justify-between items-center mb-5">
-        <div className="flex gap-4">
-          {Array.from({ length: 3 }).map((x, i) => {
-            return <div key={i}>Card {i}</div>;
-          })}
+        <div className="grid grid-cols-3 gap-4">
+          <ManagementStatistcsCard />
+          <ManagementStatistcsCard />
+          <ManagementStatistcsCard />
         </div>
         <button>Create Branch Button</button>
       </div>
-      <section className="capitalize">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {branches.slice(0, 30).map((b) => (
-            <BranchCard key={b.id} {...b} />
-          ))}
+      <section className="w-full flex items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4">
+        <div>
+          <h1 className="text-2xl font-bold text-black">
+            Landlords/Landladies (Owners)
+          </h1>
         </div>
-        {/* <CustomTable
-          fields={fields}
-          data={branches.slice(0, 30)}
-          tableHeadClassName="bg-brand-5"
-          tableHeadStyle={{
-            borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
-          }}
-          tableHeadCellSx={{
-            color: "#fff",
-            fontWeight: 500,
-            fontSize: "16px",
-            border: "none",
-          }}
-          tableBodyCellSx={{
-            fontWeight: 500,
-            fontSize: "16px",
-            color: "#050901",
-            border: "none",
-            textAlign: "center",
-          }}
-          evenRowColor="#fff"
-          oddRowColor="#EFF6FF"
-        /> */}
+        <div className="flex items-center space-x-4">
+          <div>
+            <Input
+              id="search"
+              placeholder="Search for landlords"
+              className="flex-1 max-w-[200px]"
+            />
+          </div>
+          <div className="flex items-center space-x-3">
+            <Image
+              src="/icons/list-view.svg"
+              alt="filter"
+              width={20}
+              height={20}
+              className="cursor-pointer"
+              onClick={toggleListView}
+            />
+            <Image
+              src="/icons/grid-view.svg"
+              alt="filter"
+              width={20}
+              height={20}
+              className="cursor-pointer"
+              onClick={toggleGridView}
+            />
+          </div>
+          <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
+            <Image
+              src="/icons/sliders.svg"
+              alt="filter"
+              width={20}
+              height={20}
+            />
+            <p>Filters</p>
+          </div>
+        </div>
       </section>
-    </div>
+      <section className="capitalize">
+        {gridView ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {branches.slice(0, 30).map((b) => (
+              <BranchCard key={b.id} {...b} />
+            ))}
+          </div>
+        ) : (
+          <CustomTable
+            fields={fields}
+            data={branches.slice(0, 30)}
+            tableHeadClassName="bg-brand-5"
+            tableHeadStyle={{
+              borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
+            }}
+            tableHeadCellSx={{
+              color: "#fff",
+              fontWeight: 500,
+              fontSize: "16px",
+              border: "none",
+            }}
+            tableBodyCellSx={{
+              fontWeight: 500,
+              fontSize: "16px",
+              color: "#050901",
+              border: "none",
+              textAlign: "center",
+            }}
+            evenRowColor="#fff"
+            oddRowColor="#EFF6FF"
+          />
+        )}
+      </section>
+    </main>
   );
 };
 
