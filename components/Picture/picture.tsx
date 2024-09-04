@@ -12,8 +12,9 @@ const Picture: React.FC<PictureProps> = ({
   src = empty,
   alt = "profile picture",
   size = 60,
-  rounded,
   status,
+  rounded,
+  className,
 }) => {
   const status_wh = Math.min(12, Math.floor(size / 3));
 
@@ -26,6 +27,7 @@ const Picture: React.FC<PictureProps> = ({
         height={size * 2}
         className={clsx("object-cover", {
           "rounded-full": rounded,
+          className,
         })}
         style={{
           width: size,
