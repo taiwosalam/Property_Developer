@@ -37,11 +37,19 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
   </div>
 );
 
-export const SectionSeparator: React.FC<{ className?: string }> = ({
-  className,
-}) => (
+export const SectionSeparator: React.FC<{
+  className?: string;
+  direction?: "x" | "y";
+}> = ({ className, direction = "x" }) => (
   <div
-    className={clsx("h-[1px] w-full bg-borders-dark opacity-10", className)}
+    className={clsx(
+      "bg-borders-dark opacity-10",
+      {
+        "h-[1px] w-full": direction === "x",
+        "w-[1px] h-full": direction === "y",
+      },
+      className
+    )}
   />
 );
 
