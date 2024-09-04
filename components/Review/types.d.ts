@@ -3,8 +3,16 @@ export interface ReviewCardProps {
   pfp: string;
   desc: string;
   time: string;
-  fullname: string;
   replies: number;
+  fullname: string;
   verified?: boolean;
   highlight?: boolean;
+}
+
+export interface ReviewProps {
+  pfp: string;
+  desc: string;
+  main?: boolean;
+  fullname: string;
+  verified?: boolean;
 }
