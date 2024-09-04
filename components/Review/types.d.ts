@@ -10,9 +10,9 @@ export interface ReviewCardProps {
 }
 
 export interface ReviewProps {
-  pfp: string;
-  desc: string;
+  pfp?: string;
+  desc?: string;
   main?: boolean;
-  fullname: string;
+  fullname?: string;
   verified?: boolean;
 }
