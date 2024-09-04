@@ -44,6 +44,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   return (
     <form
       method="post"
+      encType="multipart/form-data"
       onSubmit={(e) => {
         e.preventDefault();
 
