@@ -5,7 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Button from "@/components/Form/Button/button";
 import AddLandlordModal from "@/components/Management/Landlord/add-landlord-modal";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/Modal";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordCard from "@/components/Management/Landlord/landlord-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import CustomTable from "@/components/Table/table";
@@ -49,23 +49,21 @@ const Landlord = () => {
     full_name: `${l.first_name} ${l.last_name}`,
     user_tag: <UserTag type={l.user_tag} />,
     "manage/chat": (
-      <div className="flex gap-x-[4%] items-center w-full">
-        <Button
+      <div className="flex gap-x-[4%] items-center w-full text-white [&>button]:rounded-[4px] [&>button]:capitalize">
+        <button
           type="button"
-          size="mid"
-          className="w-[53%]"
+          className="py-[10px] px-2 lg:px-3 text-sm lg:text-base font-medium bg-brand-9"
           onClick={() => onClickManage(l)}
         >
           Manage
-        </Button>
-        <Button
+        </button>
+        <button
           type="button"
-          size="mid"
-          className="!bg-brand-tertiary w-[43%]"
+          className="py-[10px] px-2 lg:px-3 text-sm lg:text-base font-medium bg-brand-tertiary"
           onClick={() => onClickChat(l)}
         >
           Chat
-        </Button>
+        </button>
       </div>
     ),
   }));
@@ -99,22 +97,19 @@ const Landlord = () => {
   const { gridView, total_pages, current_page } = state;
 
   return (
-    <div className="w-full h-fit space-y-9">
-      <section className="w-full h-fit flex items-center justify-between">
-        <div className="grid grid-cols-3 gap-4">
+    <div className="space-y-9">
+      <section className="w-full h-fit flex items-center justify-between gap-4">
+        <div className="hidden lg:grid lg:grid-cols-3 lg:gap-4">
           <ManagementStatistcsCard />
           <ManagementStatistcsCard />
           <ManagementStatistcsCard />
         </div>
-        <div>
+        <div className="lg:ml-auto">
           <Modal>
             <ModalTrigger asChild>
-              <Button
-                type="button"
-                className="py-2 px-3 text-sm md:py-[10px] md:text-base lg:px-12 lg:text-lg"
-              >
+              <button type="button" className="page-header-button">
                 + create new landlord
-              </Button>
+              </button>
             </ModalTrigger>
             <ModalContent>
               <AddLandlordModal />
@@ -124,7 +119,7 @@ const Landlord = () => {
       </section>
       <div className="w-full flex items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4">
         <div>
-          <h1 className="text-mg md:text-lg lg:text-xl xl:text-2xl font-bold text-black">
+          <h1 className="text-md md:text-lg lg:text-xl xl:text-2xl font-bold text-black">
             Landlords/Landladies (Owners)
           </h1>
         </div>
@@ -156,13 +151,22 @@ const Landlord = () => {
             />
           </div>
           <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-            <Image
-              src="/icons/sliders.svg"
-              alt="filter"
-              width={20}
-              height={20}
-            />
-            <p>Filters</p>
+            <Modal>
+              <ModalTrigger asChild>
+                <div className="flex items-center gap-2 cursor-pointer">
+                  <Image
+                    src="/icons/sliders.svg"
+                    alt="filter"
+                    width={20}
+                    height={20}
+                  />
+                  <p>Filters</p>
+                </div>
+              </ModalTrigger>
+              <ModalContent>
+                <AddLandlordModal />
+              </ModalContent>
+            </Modal>
           </div>
         </div>
       </div>

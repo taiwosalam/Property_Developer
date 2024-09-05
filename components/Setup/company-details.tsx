@@ -71,6 +71,7 @@ const CompanyDetails = () => {
 
         <Select
           id="industry"
+          name="industry"
           label="industry"
           options={industryOptions}
           inputTextStyles={`text-xs md:text-sm font-normal`}
@@ -80,7 +81,7 @@ const CompanyDetails = () => {
 
         <Input
           label="Membership Number"
-          id="membership-number"
+          id="membership_number"
           placeholder="Write here"
           inputClassName={`text-xs md:text-sm font-normal setup-f`}
         />

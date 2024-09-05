@@ -9,6 +9,7 @@ import type {
   SectionContainerProps,
 } from "./types";
 import SVG from "../SVG/svg";
+import { CSSProperties } from "react";
 
 export const SectionTitle: React.FC<SectionTitleProps> = ({
   children,
@@ -37,11 +38,21 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
   </div>
 );
 
-export const SectionSeparator: React.FC<{ className?: string }> = ({
-  className,
-}) => (
+export const SectionSeparator: React.FC<{
+  className?: string;
+  direction?: "x" | "y";
+  style?: CSSProperties;
+}> = ({ className, direction = "x", style }) => (
   <div
-    className={clsx("h-[1px] w-full bg-borders-dark opacity-10", className)}
+    style={style}
+    className={clsx(
+      "bg-borders-dark opacity-10",
+      {
+        "h-[1px] w-full": direction === "x",
+        "w-[1px] h-full": direction === "y",
+      },
+      className
+    )}
   />
 );
 
