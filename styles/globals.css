@@ -32,7 +32,7 @@ body {
   pointer-events: none;
 }
 
-#portal > * {
+#portal>* {
   position: absolute;
   pointer-events: all;
 }
@@ -67,7 +67,7 @@ h1 {
   flex-direction: column;
 }
 
-.custom-flex-col > * {
+.custom-flex-col>* {
   width: 100%;
 }
 
@@ -88,6 +88,7 @@ h1 {
     grid-area: 2/1 / span 1 / span 2;
   }
 }
+
 .specific-grid {
   @media (min-width: 1024px) and (max-width: 1165px) {
     width: 85%;
@@ -99,7 +100,7 @@ h1 {
 }
 
 .custom-round-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #f5f5f5;
+  background-color: #d2d3d5;
   border-radius: 5px;
 }
 
@@ -108,7 +109,7 @@ h1 {
 }
 
 .custom-round-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #e3e5e7;
+  background-color: #c1c1c1;
 }
 
 /* -------------------------------------------------------------- */
@@ -150,17 +151,22 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   top: 0;
   width: auto;
 }
+
 /* input[type="date"] {
   -moz-appearance: none;
   appearance: none;
 } */
 
 .quill-editor {
-  height: 160px; /* Adjust the height as needed */
-  @apply rounded-t-lg; /* Rounded corners */
-  border: 1px solid #dcdcdc; /* Optional: Add a border */
+  height: 160px;
+  /* Adjust the height as needed */
+  @apply rounded-t-lg;
+  /* Rounded corners */
+  border: 1px solid #dcdcdc;
+  /* Optional: Add a border */
   border-bottom: none;
-  padding: 0.5rem; /* Optional: Add padding inside the editor */
+  padding: 0.5rem;
+  /* Optional: Add padding inside the editor */
 }
 
 .quill-toolbar {
@@ -169,6 +175,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   /* border-top: 1px solid #ddd; */
   padding: 5px;
 }
+
 .quill-toolbar.ql-snow {
   @apply rounded-b-lg;
   border: none !important;

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { ModalTrigger } from "@/components/Modal/modal";
-import { ChevronRight, Check } from "lucide-react";
+import { ChevronRight, Check, ChevronLeft } from "lucide-react";
 
 // Types
 type FilterOption = {
@@ -21,12 +21,14 @@ type FilterModalProps = {
   filterOptions: FilterOption[];
   onApply: (selectedFilters: string[]) => void;
   title?: string;
+  onStateSelect?: (state: string) => void;
 };
 
 const FilterModal: React.FC<FilterModalProps> = ({
   filterOptionsWithDropdown,
   filterOptions,
   onApply,
+  onStateSelect,
   title = "Filters by",
 }) => {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
@@ -75,6 +77,10 @@ const FilterModal: React.FC<FilterModalProps> = ({
     setActiveDropdownOption(option);
   };
 
+  const hideDropdownOptions = () => {
+    setActiveDropdownOption(null);
+  };
+
   // Check if any dropdown option is selected
   const isDropdownOptionSelected = (dropdownLabel: string) => {
     return (dropdownSelections[dropdownLabel] || []).length > 0;
@@ -89,9 +95,17 @@ const FilterModal: React.FC<FilterModalProps> = ({
     return (
       <>
         <div className="flex items-center justify-between border-b border-solid border-gray-300">
-          <h2 className="text-xl font-bold text-primary-navy">
-            {activeDropdownOption?.label}
-          </h2>
+          <div
+            onClick={hideDropdownOptions}
+            className="flex items-center cursor-pointer"
+          >
+            <span className="text-sm capitalize">
+              <ChevronLeft />
+            </span>
+            <h2 className="text-lg font-bold text-primary-navy">
+              {activeDropdownOption?.label}
+            </h2>
+          </div>
           <button
             className="p-2"
             onClick={() => setActiveDropdownOption(null)} // Go back to main options
@@ -105,7 +119,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
             />
           </button>
         </div>
-
         {/* Search bar */}
         <input
           type="text"
@@ -114,31 +127,30 @@ const FilterModal: React.FC<FilterModalProps> = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-
-        {/* Dropdown options with checkboxes */}
-        {filteredDropdownOptions?.map((option) => (
-          <div
-            key={option.value}
-            className="flex items-center justify-between py-2 px-5 my-2 bg-[#F5F5F5]"
-          >
-            <label className="text-sm capitalize">{option.label}</label>
-            <input
-              type="checkbox"
-              value={option.value}
-              className="cursor-pointer"
-              onChange={() =>
-                handleDropdownCheckboxChange(
-                  activeDropdownOption!.label,
-                  option.value
-                )
-              }
-              checked={(
-                dropdownSelections[activeDropdownOption!.label] || []
-              ).includes(option.value)}
-            />
-          </div>
-        ))}
-
+        <div className="max-h-[150px] overflow-y-auto pr-2 custom-round-scrollbar">
+          {filteredDropdownOptions?.map((option, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between py-2 px-5 my-2 bg-[#F5F5F5]"
+            >
+              <label className="text-sm capitalize">{option.label}</label>
+              <input
+                type="checkbox"
+                value={option.value}
+                className="cursor-pointer"
+                onChange={() =>
+                  handleDropdownCheckboxChange(
+                    activeDropdownOption!.label,
+                    option.value
+                  )
+                }
+                checked={(
+                  dropdownSelections[activeDropdownOption!.label] || []
+                ).includes(option.value)}
+              />
+            </div>
+          ))}
+        </div>
         <button
           className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg"
           onClick={() => setActiveDropdownOption(null)} // Return to the main options
@@ -153,7 +165,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const renderMainOptions = () => (
     <>
       <div className="flex items-center justify-between border-b border-solid border-gray-300">
-        <h2 className="text-xl font-bold text-primary-navy">{title}</h2>
+        <h2 className="text-lg font-bold text-primary-navy">{title}</h2>
         <ModalTrigger close className="p-2">
           <Image
             src="/icons/cancel.svg"
