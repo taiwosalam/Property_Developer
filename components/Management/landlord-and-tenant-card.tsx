@@ -1,5 +1,4 @@
 import type { LandlordProps } from "./Landlord/types";
-import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import SampleLandlord from "@/public/empty/SampleLandlord.jpeg";
 import UserTag from "@/components/Tags/user-tag";
 import Image from "next/image";

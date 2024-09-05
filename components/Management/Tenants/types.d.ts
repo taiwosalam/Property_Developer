@@ -1,3 +1,15 @@
+export type AddTenantModalOptions =
+  | "options"
+  | "add-tenant"
+  | "add-multiple-users"
+  | "invite-single-user"
+  | "invite-multiple-users"
+  | "add-user-with-id";
+
+export interface AddTenantOptionsProps {
+  showForm: React.Dispatch<React.SetStateAction<AddTenantModalOptions>>;
+}
+
 export interface TenantProps {
   id: string | number;
   first_name: string;

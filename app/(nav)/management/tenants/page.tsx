@@ -12,7 +12,7 @@ import { landlords as tenants } from "../data";
 import SearchInput from "@/components/SearchInput/search-input";
 import Pagination from "@/components/Pagination/pagination";
 import UserTag from "@/components/Tags/user-tag";
-import AddLandlordModal from "@/components/Management/Landlord/add-landlord-modal";
+import AddTenantModal from "@/components/Management/Tenants/add-tenant-modal";
 
 const Tenants = () => {
   const initialState = {
@@ -110,7 +110,7 @@ const Tenants = () => {
               </button>
             </ModalTrigger>
             <ModalContent>
-              <AddLandlordModal />
+              <AddTenantModal />
             </ModalContent>
           </Modal>
         </div>
@@ -164,7 +164,7 @@ const Tenants = () => {
                 </div>
               </ModalTrigger>
               <ModalContent>
-                <AddLandlordModal />
+                <AddTenantModal />
               </ModalContent>
             </Modal>
           </div>

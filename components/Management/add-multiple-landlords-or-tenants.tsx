@@ -1,11 +1,10 @@
-import React from "react";
 import Image from "next/image";
 
 // Images
-import Button from "../../Form/Button/button";
+import Button from "../Form/Button/button";
 import ImportCircle from "@/public/icons/import-circle.svg";
 
-const AddMultipleOwners = () => {
+const AddMultipleLandlordsOrTenants = () => {
   return (
     <>
       <div className="flex justify-center">
@@ -26,7 +25,7 @@ const AddMultipleOwners = () => {
         <p className="text-sm font-normal">
           How it works:{" "}
           <span className="text-brand-9 font-bold">Download the Template</span>,
-          enter list of your landlord/landlady details, and then upload it to
+          enter list of your landlord/landlady/tenants/users details, and then upload it to
           proceed.
         </p>
         <Button size="base_medium" className="py-2 px-8">
@@ -37,4 +36,4 @@ const AddMultipleOwners = () => {
   );
 };
 
-export default AddMultipleOwners;
+export default AddMultipleLandlordsOrTenants;
