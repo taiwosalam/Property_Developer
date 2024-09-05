@@ -1,3 +1,5 @@
+import { SxProps } from "@mui/material";
+import { CSSProperties } from "react";
 // Define the type for Fields
 export interface Field {
   id: string;
@@ -23,9 +25,9 @@ export interface CustomTableProps {
   handleSelect?: (item?: DataItem) => void;
   actionButtonIcon?: ReactNode;
   tableHeadClassName?: string;
-  tableHeadStyle?: React.CSSProperties; // For custom TableHead inline style
+  tableHeadStyle?: CSSProperties; // For custom TableHead inline style
   tableHeadCellSx?: SxProps;
-  tableBodyCellSx?: SxProps;
+  tableBodyCellSx?: CSSProperties;
   evenRowColor?: CSSProperties["color"];
   oddRowColor?: CSSProperties["color"];
 }
