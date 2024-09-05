@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 
 // Types
 import type { NavDropdownProps } from "./types";
@@ -16,8 +17,11 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
   type,
   content,
   children,
+  highlight,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+
+  const [isOpen, setIsOpen] = useState(highlight);
 
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
 
@@ -27,22 +31,33 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
         onClick={() => setIsOpen((prev) => !prev)}
         className="relative flex items-center nav-button"
       >
-        <NavButton type={type}>{children}</NavButton>
+        <NavButton type={type} highlight={isOpen || highlight}>
+          {children}
+        </NavButton>
         <div
-          className={clsx("absolute right-1", {
+          className={clsx("absolute right-5", {
             "rotate-0": isOpen,
             "rotate-180": !isOpen,
           })}
         >
-          <SVG type="arrow_down" color={primaryColor as Color} />
+          <SVG
+            type="arrow_down"
+            color={isOpen || highlight ? "#fff" : (primaryColor as Color)}
+          />
         </div>
       </div>
       {isOpen && (
         <div className="h-full">
           <div className="custom-flex-col">
-            {content.map((item, index) => (
-              <NavButton key={index} minimized type="horizontal_line">
-                {item}
+            {content.map(({ href, label }, index) => (
+              <NavButton
+                minimized_highlight={href ? pathname.includes(href) : false}
+                href={href && `/${children}${href}`}
+                key={index}
+                minimized
+                type="horizontal_line"
+              >
+                {label}
               </NavButton>
             ))}
           </div>

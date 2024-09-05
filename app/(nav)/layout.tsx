@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
 // Images
 import Mail from "@/public/icons/mail.svg";
@@ -11,19 +12,35 @@ import Moon from "@/public/icons/moon.svg";
 import Avatar from "@/public/empty/avatar.png";
 
 // Imports
+import gsap from "gsap";
 import SVG from "@/components/SVG/svg";
 import { Color } from "@/types/global";
 import Sidenav from "@/components/Nav/sidenav";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import { useThemeStoreSelectors } from "@/store/themeStore";
+import clsx from "clsx";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const pathname = usePathname();
+
   const sidenav_width = 250;
 
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
 
   const [sidenavIsOpen, setSidenavIsOpen] = useState(true);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const timeline = gsap.timeline();
+
+    timeline.to(containerRef.current, {
+      width: sidenavIsOpen ? sidenav_width : 110,
+      duration: 0.5,
+      ease: "expo.out",
+    });
+  }, [sidenavIsOpen]);
 
   return (
     <>
@@ -90,15 +107,25 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </div>
       <div className="w-full flex relative z-[1]">
         <div
+          ref={containerRef}
           style={{
             height: "calc(100vh - 100px)",
-            minWidth: sidenavIsOpen ? sidenav_width : 0,
           }}
-          className="sticky top-[100px] w-0 overflow-x-hidden overflow-y-auto no-scrollbar bg-white"
+          className={clsx(
+            "sticky top-[100px] overflow-x-hidden overflow-y-auto no-scrollbar bg-white",
+            {
+              "sidenav-collapsed": !sidenavIsOpen,
+            }
+          )}
         >
           <Sidenav />
         </div>
-        <div className="custom-flex-col flex-1 bg-neutral-2">
+        <div
+          className="custom-flex-col flex-1 bg-neutral-2"
+          // style={{
+          //   maxWidth: `calc(100vw - ${sidenavIsOpen ? sidenav_width : 0}px)`,
+          // }}
+        >
           <div className="custom-flex-col sticky top-[99px] bg-white z-[2]">
             <div
               className="h-[1px]"
@@ -113,7 +140,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 />
               </button>
               <p className="capitalize text-text-primary text-sm font-medium">
-                dashboard
+                {pathname.split("/").slice(1).join(" > ")}
               </p>
             </div>
             <div

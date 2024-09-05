@@ -1,88 +1,37 @@
 import React from "react";
+import { usePathname } from "next/navigation";
 
 // Imports
+import { nav_items } from "./data";
 import NavDropdown from "./nav-dropdown";
 import { NavButton } from "./nav-components";
 
 const Sidenav = () => {
+  const pathname = usePathname();
+
   return (
-    <div className="custom-flex-col">
-      <NavButton type="buildings">dashboard</NavButton>
-      <NavDropdown
-        type="people"
-        content={[
-          "landlord & landlady",
-          "tenants & occupants",
-          "staff & branches",
-          "inventory",
-          "properties",
-          "rent & unit",
-        ]}
-      >
-        management
-      </NavDropdown>
-      <NavDropdown
-        type="briefcase_timer"
-        content={[
-          "complaints",
-          "inspections",
-          "examine",
-          "maintenance",
-          "service providers",
-          "calendars",
-          "announcements",
-          "call back request",
-          "visitors request",
-          "property request",
-          "deposits request",
-          "vehicles record",
-        ]}
-      >
-        tasks
-      </NavDropdown>
-      <NavDropdown
-        type="briefcase_timer"
-        content={["units", "statistics", "property"]}
-      >
-        listing
-      </NavDropdown>
-      <NavDropdown
-        type="briefcase_timer"
-        content={[
-          "invoice",
-          "recepits",
-          "expenses",
-          "disbursement",
-          "statement",
-          "VAT",
-        ]}
-      >
-        accounting
-      </NavDropdown>
-      <NavDropdown
-        type="briefcase_timer"
-        content={[
-          "tenants / occupants",
-          "landlord / landlady",
-          "properties",
-          "units",
-          "rent roll",
-          "listings",
-          "email",
-          "SMS",
-          "tracking",
-          "call request",
-          "visitors request",
-          "undo",
-          "vehicles record",
-        ]}
-      >
-        reports
-      </NavDropdown>
-      <NavButton type="buildings">wallet</NavButton>
-      <NavButton type="buildings">applications</NavButton>
-      <NavButton type="buildings">documents</NavButton>
-      <NavButton type="buildings">settings</NavButton>
+    <div className="custom-flex-col w-[250px] min-w-[250px]">
+      {nav_items.map((item, idx) =>
+        item.content ? (
+          <NavDropdown
+            highlight={item.content.some((i) => pathname.includes(i.href))}
+            key={idx}
+            type={item.type}
+            content={item.content}
+          >
+            {item.label}
+          </NavDropdown>
+        ) : (
+          <NavButton
+            highlight={item.href ? pathname.includes(item.href) : false}
+            key={idx}
+            href={item.href}
+            type={item.type}
+          >
+            {item.label}
+          </NavButton>
+        )
+      )}
     </div>
   );
 };

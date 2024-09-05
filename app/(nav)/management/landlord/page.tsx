@@ -15,6 +15,8 @@ import { landlords } from "../data";
 import SearchInput from "@/components/SearchInput/search-input";
 import UserTag from "@/components/Tags/user-tag";
 import Pagination from "@/components/Pagination/pagination";
+import FilterModal from "@/components/Management/Landlord/filters-modal";
+import { getAllStates } from "@/utils/states";
 
 const Landlord = () => {
   const initialState = {
@@ -42,6 +44,52 @@ const Landlord = () => {
   const onClickChat = (landlord: LandlordProps) => {
     console.log("Chat clicked for:", landlord);
     // Add your logic here to chat with the landlord
+  };
+
+  const states = getAllStates();
+
+  const landlordFiltersWithOptions = [
+    {
+      label: "Branch",
+      value: [
+        { label: "Branch 1", value: "branch1" },
+        { label: "Branch 2", value: "branch2" },
+        { label: "Branch 3", value: "branch3" },
+      ],
+    },
+    {
+      label: "Account Officer",
+      value: [
+        { label: "Account Officer 1", value: "account_officer1" },
+        { label: "Account Officer 2", value: "account_officer2" },
+        { label: "Account Officer 3", value: "account_officer3" },
+      ],
+    },
+    {
+      label: "State",
+      value: states.map((state) => ({
+        label: state,
+        value: state.toLowerCase(),
+      })),
+    },
+    {
+      label: "Landlord Type",
+      value: [
+        { label: "Mobile Landlord", value: "mobile_landlord" },
+        { label: "Web Landlord", value: "web_landlord" },
+        { label: "All Landlords", value: "all_landlords" },
+      ],
+    },
+  ];
+
+  const landlordFilters = [
+    { label: "Alphabetically", value: "alphabetically" },
+    { label: "Registration Date", value: "registration_date" },
+  ];
+
+  const handleFilterApply = (filters: any) => {
+    console.log("Filter applied:", filters);
+    // Add  logic here to filter landlords
   };
 
   const transformedLandlords = landlords.map((l) => ({
@@ -166,7 +214,11 @@ const Landlord = () => {
                 </div>
               </ModalTrigger>
               <ModalContent>
-                <AddLandlordModal />
+                <FilterModal
+                  filterOptionsWithDropdown={landlordFiltersWithOptions}
+                  filterOptions={landlordFilters}
+                  onApply={handleFilterApply}
+                />
               </ModalContent>
             </Modal>
           </div>
