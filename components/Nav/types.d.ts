@@ -7,11 +7,13 @@ import { CSSProperties } from "react";
 
 export interface NavButtonProps {
   type: SVGType;
-  children: React.ReactNode;
-  style?: CSSProperties;
+  href?: string;
   minimized?: boolean;
+  highlight?: boolean;
+  style?: CSSProperties;
+  children: React.ReactNode;
 }
 
 export interface NavDropdownProps extends NavButtonProps {
-  content: string[];
+  content: { label: string; href: string }[];
 }

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 
 // Images
 import Mail from "@/public/icons/mail.svg";
@@ -19,6 +20,8 @@ import Button from "@/components/Form/Button/button";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const pathname = usePathname();
+
   const sidenav_width = 250;
 
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
@@ -113,7 +116,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 />
               </button>
               <p className="capitalize text-text-primary text-sm font-medium">
-                dashboard
+                {pathname.split("/").slice(1).join(" > ")}
               </p>
             </div>
             <div
