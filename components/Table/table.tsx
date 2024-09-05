@@ -30,10 +30,20 @@ const renderValue = (
   if (field.isImage) {
     return field.contentStyle ? (
       <div style={field.contentStyle}>
-        <Avatar src={value} className="mx-auto" alt="avatar" />
+        <Avatar
+          src={value}
+          className="mx-auto"
+          alt="avatar"
+          sx={{ width: 60, height: 60 }}
+        />
       </div>
     ) : (
-      <Avatar src={value} className="mx-auto" alt="avatar" />
+      <Avatar
+        src={value}
+        className="mx-auto"
+        alt="avatar"
+        sx={{ width: 60, height: 60 }}
+      />
     );
   }
   switch (field.accessor) {

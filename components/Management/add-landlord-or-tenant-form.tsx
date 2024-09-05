@@ -1,16 +1,12 @@
 import React from "react";
 import Image from "next/image";
-
-// Images
 import CameraCircle from "@/public/icons/camera-circle.svg";
+import Input from "../Form/Input/input";
+import Button from "../Form/Button/button";
 
-// Imports
-import Input from "../../Form/Input/input";
-import Button from "../../Form/Button/button";
-
-const AddLandlord = () => {
+const AddLandLordOrTenantForm = () => {
   return (
-    <div className="custom-flex-col gap-5">
+    <form className="custom-flex-col gap-5">
       <div className="flex gap-5">
         <Input id="first-name" label="first name" required className="flex-1" />
         <Input id="last-name" label="last name" required className="flex-1" />
@@ -33,7 +29,7 @@ const AddLandlord = () => {
       </div>
       <div className="flex gap-5">
         <Input id="address" label="address" className="flex-1" />
-        <Input id="owner-type" label="owner type" className="flex-1" />
+        <Input id="owner-type" label="landlord/tenant/occupant type" className="flex-1" />
         <Input id="gender" label="gender" className="flex-1" />
       </div>
       <div className="flex justify-between">
@@ -74,8 +70,8 @@ const AddLandlord = () => {
           </Button>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 
-export default AddLandlord;
+export default AddLandLordOrTenantForm;

@@ -1,18 +1,22 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
 import CustomTable from "@/components/Table/table";
 import { branches } from "./data";
 import type { Field } from "@/components/Table/types";
 import Input from "@/components/Form/Input/input";
 import Image from "next/image";
-import { useState } from "react";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
+import { getAllStates, getLocalGovernments } from "@/utils/states";
 
 const StaffAndBranches = () => {
   const [gridView, setGridView] = useState(true);
+  const [selectedState, setSelectedState] = useState("");
+  const [localGovernments, setLocalGovernments] = useState<string[]>([]);
+  const [selectedLGA, setSelectedLGA] = useState("");
 
   function toggleGridView() {
     setGridView(true);
@@ -22,34 +26,43 @@ const StaffAndBranches = () => {
     setGridView(false);
   }
 
-  const StaffAndranchFiltersWithOptions = [
+  const states = getAllStates() || [];
+
+  // Handle the selected state and update local governments
+  useEffect(() => {
+    if (selectedState) {
+      const lgas = getLocalGovernments(selectedState);
+      setLocalGovernments(lgas || []);
+    }
+  }, [selectedState]);
+
+  const StaffAndBranchFiltersWithOptions = [
     {
       label: "State",
-      value: [
-        { label: "State1 1", value: "state1" },
-        { label: "State1 2", value: "state2" },
-        { label: "State1 3", value: "state3" },
-      ],
+      value: states.map((state) => ({
+        label: state,
+        value: state,
+      })),
     },
     {
       label: "Local Government",
-      value: [
-        { label: "Local Government 1", value: "local_government1" },
-        { label: "Local Government 2", value: "local_government2" },
-        { label: "Local Government 3", value: "local_government3" },
-      ],
+      value: selectedState
+        ? localGovernments.map((lga) => ({
+            label: lga,
+            value: lga,
+          }))
+        : [],
     },
   ];
 
   const StaffAndBranchFilters = [
-    { label: "State", value: "state" },
     { label: "Alphabetically", value: "alphabetically" },
     { label: "Registration Date", value: "registration_date" },
   ];
 
   const handleFilterApply = (filters: any) => {
     console.log("Filter applied:", filters);
-    // Add  logic here to filter landlords
+    // Add filtering logic here for branches
   };
 
   const fields: Field[] = [
@@ -102,6 +115,7 @@ const StaffAndBranches = () => {
     },
     { id: "9", label: "", accessor: "action" },
   ];
+
   return (
     <div className="space-y-9">
       <div className="flex justify-between items-center mb-5">
@@ -120,15 +134,15 @@ const StaffAndBranches = () => {
           <div>
             <Input
               id="search"
-              placeholder="Search for landlords"
+              placeholder="Search for branches"
               className="flex-1 max-w-[200px]"
-              inputClassName={`text-xs md:text-sm`}
+              inputClassName="text-xs md:text-sm"
             />
           </div>
           <div className="flex items-center space-x-3">
             <Image
               src="/icons/list-view.svg"
-              alt="filter"
+              alt="list view"
               width={20}
               height={20}
               className="cursor-pointer"
@@ -136,7 +150,7 @@ const StaffAndBranches = () => {
             />
             <Image
               src="/icons/grid-view.svg"
-              alt="filter"
+              alt="grid view"
               width={20}
               height={20}
               className="cursor-pointer"
@@ -149,7 +163,7 @@ const StaffAndBranches = () => {
                 <div className="flex items-center gap-2 cursor-pointer">
                   <Image
                     src="/icons/sliders.svg"
-                    alt="filter"
+                    alt="filters"
                     width={20}
                     height={20}
                   />
@@ -158,15 +172,18 @@ const StaffAndBranches = () => {
               </ModalTrigger>
               <ModalContent>
                 <FilterModal
-                  filterOptionsWithDropdown={StaffAndranchFiltersWithOptions}
+                  filterOptionsWithDropdown={StaffAndBranchFiltersWithOptions}
                   filterOptions={StaffAndBranchFilters}
                   onApply={handleFilterApply}
+                  // Set the selected state in the parent component
+                  onStateSelect={(state: string) => setSelectedState(state)}
                 />
               </ModalContent>
             </Modal>
           </div>
         </div>
       </section>
+
       <section className="capitalize">
         {gridView ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
