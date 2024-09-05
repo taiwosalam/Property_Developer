@@ -38,7 +38,9 @@ const AddTenantModal = () => {
     },
     "add-tenant": {
       heading: "Add Tenant/Occupant Profile",
-      content: <AddLandLordOrTenantForm />,
+      content: (
+        <AddLandLordOrTenantForm type="tenant" submitAction={() => {}} />
+      ),
     },
     "add-multiple-users": {
       heading: "Import bulk Tenants/Occupants list",
