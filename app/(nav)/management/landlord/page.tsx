@@ -15,6 +15,7 @@ import Input from "@/components/Form/Input/input";
 import UserTag from "@/components/Tags/user-tag";
 import Pagination from "@/components/Pagination/pagination";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
+import { getAllStates } from "@/utils/states";
 
 const Landlord = () => {
   const initialState = {
@@ -44,6 +45,8 @@ const Landlord = () => {
     // Add your logic here to chat with the landlord
   };
 
+  const states = getAllStates();
+
   const landlordFiltersWithOptions = [
     {
       label: "Branch",
@@ -61,13 +64,25 @@ const Landlord = () => {
         { label: "Account Officer 3", value: "account_officer3" },
       ],
     },
+    {
+      label: "State",
+      value: states.map((state) => ({
+        label: state,
+        value: state.toLowerCase(),
+      })),
+    },
+    {
+      label: "Landlord Type",
+      value: [
+        { label: "Mobile Landlord", value: "mobile_landlord" },
+        { label: "Web Landlord", value: "web_landlord" },
+        { label: "All Landlords", value: "all_landlords" },
+      ],
+    },
   ];
 
   const landlordFilters = [
-    { label: "State", value: "state" },
     { label: "Alphabetically", value: "alphabetically" },
-    { label: "Mobile Landlord", value: "mobile_landlord" },
-    { label: "Web Landlord", value: "web_landlord" },
     { label: "Registration Date", value: "registration_date" },
   ];
 

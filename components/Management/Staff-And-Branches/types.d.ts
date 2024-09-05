@@ -12,6 +12,3 @@ export interface BranchCardProps {
   property_count?: number;
   unit_count?: number;
 }
-
-
-
