@@ -1,5 +1,9 @@
 import type { LandlordProps } from "@/components/Management/Landlord/types";
-export const landlords: LandlordProps[] = [
+import type { TenantProps } from "@/components/Management/Tenants/types";
+
+type LandlordOrTenantProps = LandlordProps | TenantProps;
+
+export const landlords: LandlordOrTenantProps[] = [
   {
     id: 1,
     first_name: "Allys",

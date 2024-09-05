@@ -14,7 +14,7 @@
 
 /* Root styles */
 :root {
-  --color: 49, 94, 231;
+  --color: 0, 51, 196;
   /* --color: 233, 33, 46; */
   --primary-color: rgb(var(--color));
   --secondary-color: rgba(var(--color), 0.7);
@@ -240,5 +240,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* ------------------------ */
 .page-header-button {
-  @apply rounded-[4px] capitalize py-2 px-3 text-sm md:py-[10px] md:text-base lg:px-10 xl:px-12 lg:text-lg bg-brand-9 text-white;
+  @apply rounded-[8px] capitalize px-3 text-sm py-[12px] lg:px-10 xl:px-12 bg-brand-9 text-white;
+}
+
+.page-header-container {
+  @apply flex items-center justify-between gap-4;
+}
+
+.page-title-container {
+  @apply flex items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4;
+}
+
+.page-title {
+  @apply text-base md:text-lg lg:text-xl font-bold text-black relative;
+  &::after {
+    content: "!";
+    @apply bg-black text-white flex items-center justify-center w-4 h-4 rounded-full absolute pt-[0.2rem] right-[-1.5rem] top-[27%] text-[0.8rem];
+  }
 }

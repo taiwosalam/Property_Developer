@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 
 // Types
-import type { AddLandlordModalOptions } from "./types";
+import type { AddTenantModalOptions } from "./types";
 
 // Images
 import CloseCircle from "@/public/icons/close-circle.svg";
@@ -12,47 +12,47 @@ import ChevronLeft from "@/public/icons/chevron-left.svg";
 
 // Imports
 import { ModalTrigger } from "@/components/Modal/modal";
-import AddLandlordOptions from "./add-landlord-options";
+import AddTenantOptions from "./add-tenant-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
 import InvitationForm from "../invitation-form";
 
-const AddLandlordModal = () => {
+const AddTenantModal = () => {
   const [activeStep, setActiveStep] =
-    useState<AddLandlordModalOptions>("options");
+    useState<AddTenantModalOptions>("options");
 
   const handleBack = () => {
     setActiveStep("options");
   };
 
   const modal_states: Record<
-    AddLandlordModalOptions,
+    AddTenantModalOptions,
     {
       heading: string;
       content: React.ReactNode;
     }
   > = {
     options: {
-      heading: "Add Landlord/Landlady Profile",
-      content: <AddLandlordOptions showForm={setActiveStep} />,
+      heading: "Add Tenant/Occupant Profile",
+      content: <AddTenantOptions showForm={setActiveStep} />,
     },
-    "add-landlord": {
-      heading: "Add landlord/landlady Profile",
+    "add-tenant": {
+      heading: "Add Tenant/Occupant Profile",
       content: <AddLandLordOrTenantForm />,
     },
-    "add-multiple-owners": {
-      heading: "Import bulk landlord/landlady list.",
+    "add-multiple-users": {
+      heading: "Import bulk Tenants/Occupants list",
       content: <AddMultipleLandlordsOrTenants />,
     },
-    "invite-multiple-owners": {
-      heading: "Invite Multiple Landlords/Landladies with Email",
+    "invite-multiple-users": {
+      heading: "Invite Multiple Tenants/Occupants with Email",
       content: <AddMultipleLandlordsOrTenants />,
     },
-    "invite-owner": {
-      heading: "Invite Landlord/Landlady with Email",
+    "invite-single-user": {
+      heading: "Invite Tenant/Occupant with Email",
       content: <InvitationForm />,
     },
-    "add-landlord-with-id": {
+    "add-user-with-id": {
       heading: "Add Landlord/Landlady with ID",
       content: <InvitationForm />,
     },
@@ -90,4 +90,4 @@ const AddLandlordModal = () => {
   );
 };
 
-export default AddLandlordModal;
+export default AddTenantModal;

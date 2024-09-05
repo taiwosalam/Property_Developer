@@ -1,12 +1,14 @@
-import React from "react";
-
-// Types
-import type { AddLandlordCardProps } from "./types";
-
 // Imports
-import Button from "../../Form/Button/button";
+import Button from "../Form/Button/button";
 
-const AddLandlordCard: React.FC<AddLandlordCardProps> = ({
+interface AddLandlordOrTenantCardProps {
+  desc: string;
+  title: string;
+  buttonText: string;
+  onClick?: () => void;
+}
+
+const AddLandlordOrTenantCard: React.FC<AddLandlordOrTenantCardProps> = ({
   desc,
   title,
   onClick,
@@ -23,4 +25,4 @@ const AddLandlordCard: React.FC<AddLandlordCardProps> = ({
   );
 };
 
-export default AddLandlordCard;
+export default AddLandlordOrTenantCard;
