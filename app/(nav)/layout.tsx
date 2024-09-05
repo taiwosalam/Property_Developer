@@ -1,17 +1,21 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 
 // Images
 import Mail from "@/public/icons/mail.svg";
 import Bell from "@/public/icons/bell.svg";
 import Moon from "@/public/icons/moon.svg";
+import Logout from "@/public/icons/logout.svg";
+import Search from "@/public/icons/search-icon.svg";
 
 import Avatar from "@/public/empty/avatar.png";
 
 // Imports
+import clsx from "clsx";
 import gsap from "gsap";
 import SVG from "@/components/SVG/svg";
 import { Color } from "@/types/global";
@@ -19,7 +23,15 @@ import Sidenav from "@/components/Nav/sidenav";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import { useThemeStoreSelectors } from "@/store/themeStore";
-import clsx from "clsx";
+import Picture from "@/components/Picture/picture";
+
+import {
+  Dropdown,
+  DropdownContent,
+  DropdownTrigger,
+} from "@/components/Dropdown/dropdown";
+import { SectionSeparator } from "@/components/Section/section-components";
+import { profile_links } from "./notifications/data";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
@@ -52,56 +64,79 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               <Input
                 id="date"
                 placeholder="--- ---"
-                className="flex-1 max-w-[200px]"
+                className="flex-1 max-w-[240px] font-semibold"
+                style={{ backgroundColor: "#F1F1F1", border: "none" }}
               />
               <Input
                 id="search"
+                leftIcon={Search}
                 placeholder="Search"
-                className="flex-1 max-w-[200px]"
+                className="flex-1 max-w-[240px] font-semibold"
+                style={{ backgroundColor: "#F1F1F1", border: "none" }}
               />
               <Button size="mid">+ Create New</Button>
             </div>
           </div>
           <div className="flex items-center gap-6">
             <div className="flex gap-4">
-              <Image
-                src={Mail}
-                alt="messages"
-                width={32}
-                height={32}
-                className="w-8 h-8"
-              />
-              <Image
-                src={Bell}
-                alt="notifications"
-                width={32}
-                height={32}
-                className="w-8 h-8"
-              />
-              <Image
-                src={Moon}
-                alt="theme"
-                width={32}
-                height={32}
-                className="w-8 h-8"
-              />
+              <Link href={"/messages"}>
+                <Picture src={Mail} alt="messages" size={32} />
+              </Link>
+              <Link href={"/notifications"}>
+                <Picture src={Bell} alt="notifications" size={32} />
+              </Link>
+              <Picture src={Moon} alt="theme" size={32} />
             </div>
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Image
-                  src={Avatar}
-                  alt="profile picture"
-                  width={100}
-                  height={100}
-                  className="w-[60px] h-[60px] rounded-full"
-                />
-                <div className="w-4 h-4 rounded-full bg-status-success-primary absolute bottom-0 right-0"></div>
-              </div>
-              <div className="custom-flex-col text-text-secondary capitalize">
-                <p className="text-xs font-normal">Good Morning,</p>
-                <p className="text-base font-medium">Mr Taiwo Salam</p>
-              </div>
-            </div>
+            <Dropdown className="flex items-center">
+              <DropdownTrigger>
+                <div className="flex items-center gap-4">
+                  <Picture
+                    src={Avatar}
+                    alt="profile picture"
+                    size={60}
+                    status
+                  />
+                  <div className="custom-flex-col text-text-secondary capitalize">
+                    <p className="text-xs font-normal">Good Morning,</p>
+                    <p className="text-base font-medium">Mr Taiwo Salam</p>
+                  </div>
+                </div>
+              </DropdownTrigger>
+              <DropdownContent className="custom-flex-col gap-4 pb-[10px] min-w-[350px] text-base font-normal capitalize">
+                <div className="custom-flex-col">
+                  <div className="flex items-center gap-4 p-4">
+                    <Picture
+                      src={Avatar}
+                      alt="profile picture"
+                      size={60}
+                      status
+                    />
+                    <div className="custom-flex-col text-text-secondary font-medium">
+                      <p className="text-xs font-normal">Good Morning,</p>
+                      <p>Mr Taiwo Salam</p>
+                      <p>ID: 1234567890096</p>
+                    </div>
+                  </div>
+                  <SectionSeparator />
+                </div>
+                {profile_links.map((link, index) => (
+                  <Link
+                    className="py-3 px-[30px] text-text-primary hover:bg-neutral-2"
+                    key={index}
+                    href={""}
+                  >
+                    {link}
+                  </Link>
+                ))}
+                <Link
+                  className="flex gap-2 py-3 px-[30px] text-status-error-primary hover:bg-neutral-2"
+                  href={""}
+                >
+                  <Picture src={Logout} alt="logout" size={24} />
+                  logout
+                </Link>
+              </DropdownContent>
+            </Dropdown>
           </div>
         </div>
       </div>
@@ -120,12 +155,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         >
           <Sidenav />
         </div>
-        <div
-          className="custom-flex-col flex-1 bg-neutral-2"
-          // style={{
-          //   maxWidth: `calc(100vw - ${sidenavIsOpen ? sidenav_width : 0}px)`,
-          // }}
-        >
+        <div className="custom-flex-col flex-1 bg-neutral-2">
           <div className="custom-flex-col sticky top-[99px] bg-white z-[2]">
             <div
               className="h-[1px]"

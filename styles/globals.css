@@ -14,8 +14,7 @@
 
 /* Root styles */
 :root {
-  --color: 49, 94, 231;
-  /* --color: 233, 33, 46; */
+  --color: 0, 51, 196;
   --primary-color: rgb(var(--color));
   --secondary-color: rgba(var(--color), 0.7);
 }
