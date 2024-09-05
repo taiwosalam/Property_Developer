@@ -16,18 +16,23 @@ const BranchCard: React.FC<BranchCardProps> = ({
   return (
     <div className="relative mt-[2.9rem]">
       <div
-        className="w-[83px] h-[88px] rounded-full absolute top-[-2.9rem] left-[50%] translate-x-[-50%] overflow-hidden"
+        className="w-[93px] h-[98px] rounded-full absolute top-[-2.9rem] left-[50%] translate-x-[-50%] overflow-hidden"
         style={{
           background: "linear-gradient(180deg, #38bdf8 52%, #ffffff00 40%)",
         }}
       ></div>
-      <div className="absolute left-[50%] translate-x-[-50%] top-[-2.8rem] bg-white rounded-full w-[80px] h-[80px] overflow-hidden border-[3px] border-white">
-        <Image
+      <div className="absolute left-[50%] translate-x-[-50%] top-[-2.8rem] bg-white rounded-full w-[90px] h-[90px] overflow-hidden border-[3px] border-white">
+        {/* <Image
           src={avatar || DefaultBranchPicture}
           alt={branch_title || ""}
-          width={94}
-          height={94}
-          className="w-[94px] h-[94px] rounded-full object-cover"
+          fill
+          className="rounded-full object-cover"
+        /> */}
+        <Image
+          src={DefaultBranchPicture}
+          alt={branch_title || ""}
+          fill
+          className="rounded-full object-cover"
         />
       </div>
       <div className="rounded-2xl bg-white px-[20px] pt-[55px] pb-[20px] items-center text-center flex flex-col border border-support-1 border-solid">

@@ -13,6 +13,7 @@ import SearchInput from "@/components/SearchInput/search-input";
 import Pagination from "@/components/Pagination/pagination";
 import UserTag from "@/components/Tags/user-tag";
 import AddTenantModal from "@/components/Management/Tenants/add-tenant-modal";
+import { BadgeCheckIcon } from "@/public/icons/icons";
 
 const Tenants = () => {
   const initialState = {
@@ -45,7 +46,14 @@ const Tenants = () => {
 
   const transformedTenants = tenants.map((t) => ({
     ...t,
-    full_name: `${t.first_name} ${t.last_name}`,
+    full_name: (
+      <p className="flex items-center gap-2">
+        {`${t.first_name} ${t.last_name}`}
+        <span className="text-green-700">
+          <BadgeCheckIcon />
+        </span>
+      </p>
+    ),
     user_tag: <UserTag type={t.user_tag} />,
     "manage/chat": (
       <div className="flex gap-x-[4%] items-center w-full text-white [&>button]:rounded-[4px] [&>button]:capitalize">
@@ -188,7 +196,6 @@ const Tenants = () => {
             fields={fields}
             data={transformedTenants.slice(0, 20)}
             tableBodyCellSx={{
-              fontSize: "16px",
               border: "none",
               textAlign: "left",
             }}

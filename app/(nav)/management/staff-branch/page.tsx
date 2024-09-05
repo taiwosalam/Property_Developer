@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { GridIcon, ListIcon } from "@/public/icons/icons";
 import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
 import CustomTable from "@/components/Table/table";
 import { branches } from "./data";
@@ -12,35 +13,61 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import SearchInput from "@/components/SearchInput/search-input";
+import type { StaffAndBranchState } from "./types";
 
 const StaffAndBranches = () => {
-  const [gridView, setGridView] = useState(true);
-  const [selectedState, setSelectedState] = useState("");
-  const [localGovernments, setLocalGovernments] = useState<string[]>([]);
-  const [selectedLGA, setSelectedLGA] = useState("");
+  const initialState = {
+    gridView: true,
+    total_pages: 50,
+    current_page: 1,
+    selectedState: "",
+    selectedLGA: "",
+    localGovernments: [],
+  };
+  const [state, setState] = useState<StaffAndBranchState>(initialState);
 
-  function toggleGridView() {
-    setGridView(true);
-  }
+  const setGridView = () => {
+    setState((state) => ({ ...state, gridView: true }));
+  };
+  const setListView = () => {
+    setState((state) => ({ ...state, gridView: false }));
+  };
+  const handlePageChange = (page: number) => {
+    setState((state) => ({ ...state, current_page: page }));
+  };
 
-  function toggleListView() {
-    setGridView(false);
-  }
+  const setLocalGovernments = (array: string[]) => {
+    setState((state) => ({ ...state, localGovernments: array }));
+  };
+  const setSelectedState = (selectedState: string) => {
+    setState((state) => ({ ...state, selectedState }));
+  };
 
-  const states = getAllStates() || [];
+  const allStates = getAllStates() || [];
 
-  // Handle the selected state and update local governments
-  useEffect(() => {
-    if (selectedState) {
-      const lgas = getLocalGovernments(selectedState);
-      setLocalGovernments(lgas || []);
-    }
-  }, [selectedState]);
+  const StaffAndBranchFilters = [
+    { label: "Alphabetically", value: "alphabetically" },
+    { label: "Registration Date", value: "registration_date" },
+  ];
+
+  const handleFilterApply = (filters: any) => {
+    console.log("Filter applied:", filters);
+    // Add filtering logic here for branches
+  };
+
+  const {
+    gridView,
+    total_pages,
+    current_page,
+    selectedState,
+    selectedLGA,
+    localGovernments,
+  } = state;
 
   const StaffAndBranchFiltersWithOptions = [
     {
       label: "State",
-      value: states.map((state) => ({
+      value: allStates.map((state) => ({
         label: state,
         value: state,
       })),
@@ -56,17 +83,7 @@ const StaffAndBranches = () => {
     },
   ];
 
-  const StaffAndBranchFilters = [
-    { label: "Alphabetically", value: "alphabetically" },
-    { label: "Registration Date", value: "registration_date" },
-  ];
-
-  const handleFilterApply = (filters: any) => {
-    console.log("Filter applied:", filters);
-    // Add filtering logic here for branches
-  };
-
-  const fields: Field[] = [
+  const tableFields: Field[] = [
     { id: "1", label: "S/N", accessor: "S/N" },
     { id: "2", label: "", accessor: "avatar", isImage: true },
     { id: "3", label: "Branch Name", accessor: "branch_title" },
@@ -84,6 +101,7 @@ const StaffAndBranches = () => {
         display: "grid",
         placeItems: "center",
         width: "32px",
+        margin: "auto",
       },
     },
     {
@@ -98,6 +116,7 @@ const StaffAndBranches = () => {
         display: "grid",
         placeItems: "center",
         width: "32px",
+        margin: "auto",
       },
     },
     {
@@ -112,10 +131,19 @@ const StaffAndBranches = () => {
         display: "grid",
         placeItems: "center",
         width: "32px",
+        margin: "auto",
       },
     },
     { id: "9", label: "", accessor: "action" },
   ];
+
+  // Handle the selected state and update local governments
+  useEffect(() => {
+    if (selectedState) {
+      const lgas = getLocalGovernments(selectedState);
+      setLocalGovernments(lgas || []);
+    }
+  }, [selectedState]);
 
   return (
     <div className="space-y-9">
@@ -147,23 +175,31 @@ const StaffAndBranches = () => {
             textInputClassName={`text-xs md:text-sm text-neutral-8 font-normal`}
             searchIconColor="#1E3A8A"
           />
-          <div className="flex items-center space-x-3">
-            <Image
-              src="/icons/list-view.svg"
-              alt="list view"
-              width={20}
-              height={20}
-              className="cursor-pointer"
-              onClick={toggleListView}
-            />
-            <Image
-              src="/icons/grid-view.svg"
-              alt="grid view"
-              width={20}
-              height={20}
-              className="cursor-pointer"
-              onClick={toggleGridView}
-            />
+          <div className="flex items-center gap-x-3">
+            <button
+              type="button"
+              aria-label="list-view"
+              className={`${
+                !gridView ? "bg-black" : "bg-transparent"
+              } p-[4px] rounded-md`}
+              onClick={setListView}
+            >
+              <div className={!gridView ? "text-white" : "text-[unset]"}>
+                <ListIcon />
+              </div>
+            </button>
+            <button
+              type="button"
+              aria-label="grid-view"
+              className={`${
+                gridView ? "bg-black" : "bg-transparent"
+              } p-[4px] rounded-md`}
+              onClick={setGridView}
+            >
+              <div className={gridView ? "text-white" : "text-[unset]"}>
+                <GridIcon />
+              </div>
+            </button>
           </div>
           <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
             <Modal>
@@ -194,14 +230,19 @@ const StaffAndBranches = () => {
 
       <section className="capitalize">
         {gridView ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div
+            className="grid gap-4"
+            style={{
+              gridTemplateColumns: "repeat(auto-fit, minmax(284px, 1fr))",
+            }}
+          >
             {branches.slice(0, 30).map((b) => (
               <BranchCard key={b.id} {...b} />
             ))}
           </div>
         ) : (
           <CustomTable
-            fields={fields}
+            fields={tableFields}
             data={branches.slice(0, 20)}
             tableHeadClassName="bg-brand-5"
             tableHeadStyle={{
@@ -210,12 +251,10 @@ const StaffAndBranches = () => {
             tableHeadCellSx={{
               color: "#fff",
               fontWeight: 500,
-              fontSize: "16px",
               border: "none",
             }}
             tableBodyCellSx={{
               fontWeight: 500,
-              fontSize: "16px",
               color: "#050901",
               border: "none",
               textAlign: "center",
