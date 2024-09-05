@@ -73,7 +73,7 @@ const AuthSlider: React.FC<AuthSliderProps> = ({ content = [] }) => {
         undefined,
         "+=3" // Delay the call by 3 seconds to match the duration of the animation
       );
-  }, [activeIndex]); // Re-run effect when activeIndex changes
+  }, [activeIndex, primaryColor, secondaryColor]); // Re-run effect when activeIndex changes
 
   // Check if content is available
   if (!content.length) {
