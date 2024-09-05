@@ -7,16 +7,18 @@ import { NavButton } from "./nav-components";
 const Sidenav = () => {
   return (
     <div className="custom-flex-col">
-      <NavButton type="buildings">dashboard</NavButton>
+      <NavButton href="/dashboard" type="buildings">
+        dashboard
+      </NavButton>
       <NavDropdown
         type="people"
         content={[
-          "landlord & landlady",
-          "tenants & occupants",
-          "staff & branches",
-          "inventory",
-          "properties",
-          "rent & unit",
+          { label: "landlord & landlady", href: "/landlord" },
+          { label: "tenants & occupants", href: "/tenants" },
+          { label: "staff & branches", href: "/staff-branch" },
+          { label: "inventory", href: "/inventory" },
+          { label: "properties", href: "/properties" },
+          { label: "rent & unit", href: "/rent" },
         ]}
       >
         management
@@ -24,37 +26,41 @@ const Sidenav = () => {
       <NavDropdown
         type="briefcase_timer"
         content={[
-          "complaints",
-          "inspections",
-          "examine",
-          "maintenance",
-          "service providers",
-          "calendars",
-          "announcements",
-          "call back request",
-          "visitors request",
-          "property request",
-          "deposits request",
-          "vehicles record",
+          { label: "complaints", href: "/complaints" },
+          { label: "inspections", href: "/inspections" },
+          { label: "examine", href: "/examine" },
+          { label: "maintenance", href: "/maintenance" },
+          { label: "service providers", href: "/service" },
+          { label: "calendars", href: "/calendars" },
+          { label: "announcements", href: "/announcements" },
+          { label: "call back request", href: "/call" },
+          { label: "visitors request", href: "/visitors" },
+          { label: "property request", href: "/property" },
+          { label: "deposits request", href: "/deposits" },
+          { label: "vehicles record", href: "/vehicles" },
         ]}
       >
         tasks
       </NavDropdown>
       <NavDropdown
         type="briefcase_timer"
-        content={["units", "statistics", "property"]}
+        content={[
+          { label: "units", href: "/units" },
+          { label: "statistics", href: "/statistics" },
+          { label: "property", href: "/property" },
+        ]}
       >
         listing
       </NavDropdown>
       <NavDropdown
         type="briefcase_timer"
         content={[
-          "invoice",
-          "recepits",
-          "expenses",
-          "disbursement",
-          "statement",
-          "VAT",
+          { label: "invoice", href: "/invoice" },
+          { label: "receipts", href: "/receipts" },
+          { label: "expenses", href: "/expenses" },
+          { label: "disbursement", href: "/disbursement" },
+          { label: "statement", href: "/statement" },
+          { label: "VAT", href: "/vat" },
         ]}
       >
         accounting
@@ -62,27 +68,35 @@ const Sidenav = () => {
       <NavDropdown
         type="briefcase_timer"
         content={[
-          "tenants / occupants",
-          "landlord / landlady",
-          "properties",
-          "units",
-          "rent roll",
-          "listings",
-          "email",
-          "SMS",
-          "tracking",
-          "call request",
-          "visitors request",
-          "undo",
-          "vehicles record",
+          { label: "tenants / occupants", href: "/tenants" },
+          { label: "landlord / landlady", href: "/landlord" },
+          { label: "properties", href: "/properties" },
+          { label: "units", href: "/units" },
+          { label: "rent roll", href: "/rent" },
+          { label: "listings", href: "/listings" },
+          { label: "email", href: "/email" },
+          { label: "SMS", href: "/sms" },
+          { label: "tracking", href: "/tracking" },
+          { label: "call request", href: "/call" },
+          { label: "visitors request", href: "/visitors" },
+          { label: "undo", href: "/undo" },
+          { label: "vehicles record", href: "/vehicles" },
         ]}
       >
         reports
       </NavDropdown>
-      <NavButton type="buildings">wallet</NavButton>
-      <NavButton type="buildings">applications</NavButton>
-      <NavButton type="buildings">documents</NavButton>
-      <NavButton type="buildings">settings</NavButton>
+      <NavButton href="/wallet" type="buildings">
+        wallet
+      </NavButton>
+      <NavButton href="/applications" type="buildings">
+        applications
+      </NavButton>
+      <NavButton href="/documents" type="buildings">
+        documents
+      </NavButton>
+      <NavButton href="/settings" type="buildings">
+        settings
+      </NavButton>
     </div>
   );
 };
