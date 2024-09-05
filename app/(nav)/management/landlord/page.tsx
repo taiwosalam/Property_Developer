@@ -16,7 +16,8 @@ import SearchInput from "@/components/SearchInput/search-input";
 import UserTag from "@/components/Tags/user-tag";
 import Pagination from "@/components/Pagination/pagination";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
-import { getAllStates } from "@/utils/states";
+import { getAllStates, getLocalGovernments } from "@/utils/states";
+import { BadgeCheckIcon } from "@/public/icons/icons";
 
 const Landlord = () => {
   const initialState = {
@@ -48,6 +49,23 @@ const Landlord = () => {
 
   const states = getAllStates();
 
+  const onStateSelect = (selectedState: string) => {
+    const localGovernments = getLocalGovernments(selectedState);
+
+    const updatedFilters = landlordFiltersWithOptions.map((filter) => {
+      if (filter.label === "Local Government") {
+        return {
+          ...filter,
+          value: localGovernments.map((lg) => ({
+            label: lg,
+            value: lg.toLowerCase(),
+          })),
+        };
+      }
+      return filter;
+    });
+  };
+
   const landlordFiltersWithOptions = [
     {
       label: "Branch",
@@ -72,6 +90,9 @@ const Landlord = () => {
         value: state.toLowerCase(),
       })),
     },
+  ];
+
+  const landlordFiltersRadio = [
     {
       label: "Landlord Type",
       value: [
@@ -94,7 +115,14 @@ const Landlord = () => {
 
   const transformedLandlords = landlords.map((l) => ({
     ...l,
-    full_name: `${l.first_name} ${l.last_name}`,
+    full_name: (
+      <p className="flex items-center gap-2">
+        {`${l.first_name} ${l.last_name}`}
+        <span className="text-green-700">
+          <BadgeCheckIcon />
+        </span>
+      </p>
+    ),
     user_tag: <UserTag type={l.user_tag} />,
     "manage/chat": (
       <div className="flex gap-x-[4%] items-center w-full text-white [&>button]:rounded-[4px] [&>button]:capitalize">
@@ -217,7 +245,9 @@ const Landlord = () => {
                 <FilterModal
                   filterOptionsWithDropdown={landlordFiltersWithOptions}
                   filterOptions={landlordFilters}
+                  filterOptionsWithRadio={landlordFiltersRadio}
                   onApply={handleFilterApply}
+                  onStateSelect={onStateSelect} // Pass the state selection handler
                 />
               </ModalContent>
             </Modal>
@@ -242,7 +272,7 @@ const Landlord = () => {
             fields={fields}
             data={transformedLandlords.slice(0, 20)}
             tableBodyCellSx={{
-              fontSize: "16px",
+              // fontSize: "16px",
               border: "none",
               textAlign: "left",
             }}

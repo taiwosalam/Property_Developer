@@ -1,28 +1,45 @@
 "use client";
 
-import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 
 // Images
 import Mail from "@/public/icons/mail.svg";
 import Bell from "@/public/icons/bell.svg";
 import Moon from "@/public/icons/moon.svg";
+import Search from "@/public/icons/search-icon.svg";
+import PlusBold from "@/public/icons/plus-bold.svg";
+import DropdownList from "@/public/icons/dropdown-list.svg";
+import SearchIconBold from "@/public/icons/search-icon-bold.svg";
 
 import Avatar from "@/public/empty/avatar.png";
 
 // Imports
+import clsx from "clsx";
 import gsap from "gsap";
 import SVG from "@/components/SVG/svg";
 import { Color } from "@/types/global";
 import Sidenav from "@/components/Nav/sidenav";
 import Input from "@/components/Form/Input/input";
+import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import { useThemeStoreSelectors } from "@/store/themeStore";
-import clsx from "clsx";
+
+import {
+  Dropdown,
+  DropdownContent,
+  DropdownTrigger,
+} from "@/components/Dropdown/dropdown";
+
+import useWindowWidth from "@/hooks/useWindowWidth";
+import { NavIcon } from "@/components/Nav/nav-components";
+import NavProfileDropdown from "@/components/Nav/nav-profile-dropdown";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
+
+  const { isCustom, isSmallTablet } = useWindowWidth(1024);
 
   const sidenav_width = 250;
 
@@ -33,9 +50,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const timeline = gsap.timeline();
-
-    timeline.to(containerRef.current, {
+    gsap.to(containerRef.current, {
       width: sidenavIsOpen ? sidenav_width : 110,
       duration: 0.5,
       ease: "expo.out",
@@ -44,94 +59,105 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <>
-      <div className="sticky top-0 z-[2] w-full h-[100px] px-10 flex items-center border-b border-solid border-neutral-2 bg-white">
-        <div className="flex w-full gap-6 justify-between">
+      <div className="sticky top-0 z-[2] w-full h-[100px] px-3 sm:px-10 flex items-center border-b border-solid border-neutral-2 bg-white">
+        <div className="flex w-full gap-2 lg:gap-6 justify-between">
           <div className="flex flex-1 gap-6 items-center">
-            <div className="w-[200px] h-full bg-brand-3 rounded-lg"></div>
+            <div className="hidden md:block w-[200px] h-full bg-brand-3 rounded-lg"></div>
             <div className="flex flex-1 gap-2">
-              <Input
-                id="date"
-                placeholder="--- ---"
-                className="flex-1 max-w-[200px]"
-              />
-              <Input
-                id="search"
-                placeholder="Search"
-                className="flex-1 max-w-[200px]"
-              />
-              <Button size="mid">+ Create New</Button>
+              {isCustom ? (
+                <>
+                  <NavIcon src={DropdownList} alt="dropdown list" />
+                  <NavIcon src={SearchIconBold} alt="search" />
+                  <NavIcon src={PlusBold} alt="create new" />
+                </>
+              ) : (
+                <>
+                  <Input
+                    id="date"
+                    placeholder="--- ---"
+                    className="flex-1 max-w-[240px] font-semibold"
+                    style={{ backgroundColor: "#F1F1F1", border: "none" }}
+                  />
+                  <Input
+                    id="search"
+                    leftIcon={Search}
+                    placeholder="Search"
+                    className="flex-1 max-w-[240px] font-semibold"
+                    style={{ backgroundColor: "#F1F1F1", border: "none" }}
+                  />
+                  <Button size="mid">+ Create New</Button>
+                </>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-6">
-            <div className="flex gap-4">
-              <Image
-                src={Mail}
-                alt="messages"
-                width={32}
-                height={32}
-                className="w-8 h-8"
-              />
-              <Image
-                src={Bell}
-                alt="notifications"
-                width={32}
-                height={32}
-                className="w-8 h-8"
-              />
-              <Image
-                src={Moon}
-                alt="theme"
-                width={32}
-                height={32}
-                className="w-8 h-8"
-              />
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Image
-                  src={Avatar}
-                  alt="profile picture"
-                  width={100}
-                  height={100}
-                  className="w-[60px] h-[60px] rounded-full"
-                />
-                <div className="w-4 h-4 rounded-full bg-status-success-primary absolute bottom-0 right-0"></div>
+            {isCustom ? (
+              <div className="flex gap-2">
+                <NavIcon src={Mail} alt="messages" href="/messages" />
+                <NavIcon src={Bell} alt="notifications" href="/notifications" />
+                <NavIcon src={Moon} alt="create new" />
               </div>
-              <div className="custom-flex-col text-text-secondary capitalize">
-                <p className="text-xs font-normal">Good Morning,</p>
-                <p className="text-base font-medium">Mr Taiwo Salam</p>
+            ) : (
+              <div className="flex gap-4">
+                <Link href={"/messages"}>
+                  <Picture src={Mail} alt="messages" size={32} />
+                </Link>
+                <Link href={"/notifications"}>
+                  <Picture src={Bell} alt="notifications" size={32} />
+                </Link>
+                <Picture src={Moon} alt="theme" size={32} />
               </div>
-            </div>
+            )}
+            <Dropdown className="flex items-center">
+              <DropdownTrigger>
+                <div className="flex items-center gap-4">
+                  <Picture
+                    src={Avatar}
+                    alt="profile picture"
+                    size={isCustom ? 45 : 60}
+                    status
+                  />
+                  <div className="custom-flex-col text-text-secondary capitalize">
+                    <p className="text-[10px] md:text-xs font-normal">
+                      Good Morning,
+                    </p>
+                    <p className="text-xs md:text-base font-medium">
+                      Mr Taiwo Salam
+                    </p>
+                  </div>
+                </div>
+              </DropdownTrigger>
+              <DropdownContent className="custom-flex-col gap-4 pb-[10px] min-w-[350px] text-base font-normal capitalize">
+                <NavProfileDropdown />
+              </DropdownContent>
+            </Dropdown>
           </div>
         </div>
       </div>
       <div className="w-full flex relative z-[1]">
-        <div
-          ref={containerRef}
-          style={{
-            height: "calc(100vh - 100px)",
-          }}
-          className={clsx(
-            "sticky top-[100px] overflow-x-hidden overflow-y-auto no-scrollbar bg-white",
-            {
-              "sidenav-collapsed": !sidenavIsOpen,
-            }
-          )}
-        >
-          <Sidenav />
-        </div>
-        <div
-          className="custom-flex-col flex-1 bg-neutral-2"
-          // style={{
-          //   maxWidth: `calc(100vw - ${sidenavIsOpen ? sidenav_width : 0}px)`,
-          // }}
-        >
+        {!isSmallTablet && (
+          <div
+            ref={containerRef}
+            style={{
+              height: "calc(100vh - 100px)",
+            }}
+            className={clsx(
+              "sticky top-[100px] overflow-x-hidden overflow-y-auto no-scrollbar bg-white",
+              {
+                "sidenav-collapsed": !sidenavIsOpen,
+              }
+            )}
+          >
+            <Sidenav />
+          </div>
+        )}
+        <div className="custom-flex-col flex-1 bg-neutral-2">
           <div className="custom-flex-col sticky top-[99px] bg-white z-[2]">
             <div
               className="h-[1px]"
               style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
             ></div>
-            <div className="h-[50px] pl-3 pr-10 flex items-center justify-between bg-white ">
+            <div className="h-[50px] px-3 sm:pr-10 flex items-center justify-between bg-white ">
               <button onClick={() => setSidenavIsOpen((prev) => !prev)}>
                 <SVG
                   type="sidebar"

@@ -14,11 +14,14 @@ import EyeShow from "@/public/icons/eye-show.svg";
 import clsx from "clsx";
 import Label from "../Label/label";
 import { checkValidatonError } from "@/utils/validation";
+import Picture from "@/components/Picture/picture";
 
 const Input: React.FC<InputProps> = ({
   id,
   label,
+  style,
   value,
+  leftIcon,
   required,
   className,
   placeholder,
@@ -68,6 +71,11 @@ const Input: React.FC<InputProps> = ({
         </Label>
       )}
       <div className="relative flex items-center">
+        {leftIcon && (
+          <div className="absolute left-3">
+            <Picture src={leftIcon} alt="icon" size={24} />
+          </div>
+        )}
         <input
           id={id}
           name={id}
@@ -85,10 +93,11 @@ const Input: React.FC<InputProps> = ({
             "p-3 rounded-[4px] w-full custom-primary-outline border border-solid bg-neutral-2",
             {
               "pr-11": type === "password", // Add padding-right if the input type is password (for icon)
+              "pl-11": leftIcon, // Add padding-left if leftIcon is provided
             },
             inputClassName
           )}
-          style={{ borderColor: "rgba(186, 199, 213, 0.50)" }} // Add custom border color
+          style={{ borderColor: "rgba(186, 199, 213, 0.50)", ...style }} // Add custom border color
         />
         {/* Toggle button for showing/hiding password */}
         {type === "password" && (
