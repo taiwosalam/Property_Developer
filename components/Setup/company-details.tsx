@@ -71,6 +71,7 @@ const CompanyDetails = () => {
 
         <Select
           id="industry"
+          name="industry"
           label="industry"
           options={industryOptions}
           inputTextStyles={`text-xs md:text-sm font-normal`}

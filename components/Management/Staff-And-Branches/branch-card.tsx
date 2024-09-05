@@ -30,7 +30,7 @@ const BranchCard: React.FC<BranchCardProps> = ({
           className="w-[94px] h-[94px] rounded-full object-cover"
         />
       </div>
-      <div className="rounded-2xl bg-white px-[25px] pt-[55px] pb-[20px] items-center text-center flex flex-col border border-support-1 border-solid">
+      <div className="rounded-2xl bg-white px-[20px] pt-[55px] pb-[20px] items-center text-center flex flex-col border border-support-1 border-solid">
         <p className="font-bold text-base text-black leading-5 mb-[5px]">
           {branch_title}
         </p>
@@ -46,21 +46,21 @@ const BranchCard: React.FC<BranchCardProps> = ({
           </div>
           <p className="text-black font-medium text-sm">{manager_name}</p>
         </div>
-        <div className="flex gap-5 [&>div]:flex [&>div]:flex-col [&>div]:items-center overflow-x-auto max-w-[100%]">
+        <div className="flex gap-5 [&>div]:flex [&>div]:flex-col [&>div]:gap-2 [&>div]:items-center overflow-x-auto max-w-[100%]">
           <div>
-            <p className="bg-support-3 text-white font-medium text-base p-1 rounded-lg w-8 mb-2">
+            <p className="bg-support-3 text-white font-medium text-base p-1 rounded-lg w-8">
               {staff_count}
             </p>
             <p className="text-text-label text-base font-medium">Staffs</p>
           </div>
           <div>
-            <p className="bg-support-2 text-white font-medium text-base p-1 rounded-lg w-8 mb-2">
+            <p className="bg-support-2 text-white font-medium text-base p-1 rounded-lg w-8">
               {property_count}
             </p>
             <p className="text-text-label text-base font-medium">Properties</p>
           </div>
           <div>
-            <p className="bg-support-1 text-white font-medium text-base p-1 rounded-lg w-8 mb-2">
+            <p className="bg-support-1 text-white font-medium text-base p-1 rounded-lg w-8">
               {unit_count}
             </p>
             <p className="text-text-label text-base font-medium">Units</p>

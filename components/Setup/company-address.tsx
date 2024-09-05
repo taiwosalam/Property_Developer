@@ -72,6 +72,7 @@ const CompanyAddress = () => {
         <Select
           options={getAllStates()}
           id="state"
+          name="state"
           label="state"
           inputTextStyles={`text-xs md:text-sm font-normal`}
           value={selectedState ? selectedState : undefined}
@@ -83,6 +84,7 @@ const CompanyAddress = () => {
         <Select
           options={localGovernments}
           id="local_government"
+          name="local_government"
           label="local government"
           inputTextStyles={`text-xs md:text-sm font-normal`}
           hiddenInputClassName="setup-f"
@@ -92,6 +94,7 @@ const CompanyAddress = () => {
 
         {/* City Selector */}
         <Select
+          name="city"
           options={cities}
           id="city"
           label="City / Area"

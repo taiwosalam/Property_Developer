@@ -19,7 +19,7 @@ import ProfilePicture from "@/components/Setup/profile-picture";
 import ProfileInformation from "@/components/Setup/profile-information";
 import { signupCompany } from "./data";
 import { useFormDataStore } from "@/store/formdatastore";
-import { AuthForm } from "@/components/Auth/auth-components";
+import { AuthForm, formDataToString } from "@/components/Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
 
 const Setup = () => {
@@ -32,14 +32,13 @@ const Setup = () => {
   const updateFormData = useFormDataStore((state) => state.updateFormData);
 
   // remove later
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: FormData) => {
     // if (!canSubmit) return;
     // Add user_id to the data object
-    const user_id = "123456"; // Replace this with your logic for getting the user_id
-    const payload = {
-      ...data,
-      user_id, // Append user_id to data
-    };
+    const user_id = "80"; // Replace this with your logic for getting the user_id
+    const payload = formDataToString(data);
+
+    data.set("user_id", user_id);
 
     // Update the director_experience field to include "years"
     if (payload.director_experience) {
@@ -56,10 +55,10 @@ const Setup = () => {
       payload.director_about = payload.director_about.replace(/<\/?p>/g, "");
     }
 
-    console.log(payload); // Debug log to see the modified data
-    updateFormData(payload);
+    console.log(data); // Debug log to see the modified data
+    // updateFormData(payload);
     try {
-      await signupCompany();
+      await signupCompany(data);
       // console.log("Company successfully signed up!");
     } catch (error) {
       console.error("Error signing up company:", error);
@@ -90,7 +89,11 @@ const Setup = () => {
       inputClassName="setup-f"
       requiredFields={requiredFields}
     >
-      <AuthForm onFormSubmit={handleSubmit} setValidationErrors={setErrorMsgs}>
+      <AuthForm
+        returnType="form-data"
+        onFormSubmit={handleSubmit}
+        setValidationErrors={setErrorMsgs}
+      >
         <SetupHeader />
         <div className="relative z-[1] custom-flex-col gap-6 pt-6 pb-20 px-10">
           <CompanyType />

@@ -17,7 +17,7 @@ export interface AddLandlordOptionsProps {
   showForm: React.Dispatch<React.SetStateAction<AddLandlordModalOptions>>;
 }
 
-export interface LandlordCardProps {
+export interface LandlordProps {
   id: string | number;
   first_name: string;
   last_name: string;

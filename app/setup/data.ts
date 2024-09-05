@@ -1,10 +1,20 @@
 // Signup Company function
-import { postRequest } from "@/services/api";
+import { toast } from "sonner";
 
-export const signupCompany = async () => {
+export const signupCompany = async (formData: any) => {
   try {
-    const result = await postRequest("/register_stage_2", {});
-    // console.log(result);
+    const response = await fetch(
+      "https://staging.ourproperty.ng/api/register_stage_2",
+      {
+        method: "POST",
+        body: formData,
+      }
+    ).then((res) => res.json());
+    console.log(response);
+
+    if (response.verification) {
+      toast(response.verification);
+    }
   } catch (error) {
     console.error("Error Signing Up Company:", error);
   }

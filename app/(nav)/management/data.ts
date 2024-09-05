@@ -1,5 +1,5 @@
-import type { LandlordCardProps } from "@/components/Management/Landlord/types";
-export const landlords: LandlordCardProps[] = [
+import type { LandlordProps } from "@/components/Management/Landlord/types";
+export const landlords: LandlordProps[] = [
   {
     id: 1,
     first_name: "Allys",

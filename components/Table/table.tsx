@@ -87,7 +87,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
   return (
     <TableContainer
       component={Paper}
-      className={clsx("max-h-[650px] overflow-y-auto mb-4", className)}
+      className={className} 
       sx={{ boxShadow: "none" }}
     >
       <Table sx={{ boxShadow: "none" }}>
@@ -118,7 +118,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
               onClick={handleSelect ? () => handleSelect(x) : undefined}
               className={clsx(handleSelect && "cursor-pointer")}
               sx={{
-                backgroundColor: index % 2 === 0 ? evenRowColor : oddRowColor,
+                backgroundColor: index % 2 === 0 ? oddRowColor : evenRowColor,
               }}
             >
               {fields.map((field) => (
@@ -126,7 +126,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                   key={field.id}
                   sx={{
                     ...tableBodyCellSx,
-                    // ...field.cellStyle, //avoiding TypeScript error
+                    ...field.cellStyle,
                   }}
                 >
                   {renderValue(x, field, index, actionButtonIcon)}

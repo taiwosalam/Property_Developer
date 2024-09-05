@@ -71,7 +71,7 @@ const StaffAndBranches = () => {
     { id: "9", label: "", accessor: "action" },
   ];
   return (
-    <main className="space-y-9">
+    <div className="space-y-9">
       <div className="flex justify-between items-center mb-5">
         <div className="grid grid-cols-3 gap-4">
           <ManagementStatistcsCard />
@@ -92,6 +92,7 @@ const StaffAndBranches = () => {
               id="search"
               placeholder="Search for landlords"
               className="flex-1 max-w-[200px]"
+              inputClassName={`text-xs md:text-sm`}
             />
           </div>
           <div className="flex items-center space-x-3">
@@ -133,7 +134,7 @@ const StaffAndBranches = () => {
         ) : (
           <CustomTable
             fields={fields}
-            data={branches.slice(0, 30)}
+            data={branches.slice(0, 20)}
             tableHeadClassName="bg-brand-5"
             tableHeadStyle={{
               borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
@@ -156,7 +157,7 @@ const StaffAndBranches = () => {
           />
         )}
       </section>
-    </main>
+    </div>
   );
 };
 
