@@ -42,7 +42,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
         >
           <SVG
             type="arrow_down"
-            color={isOpen ? "#fff" : (primaryColor as Color)}
+            color={isOpen || highlight ? "#fff" : (primaryColor as Color)}
           />
         </div>
       </div>
