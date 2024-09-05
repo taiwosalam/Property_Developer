@@ -21,9 +21,10 @@ function Calendar({
       className={cn("p-3", className)}
       classNames={{
         // Styling for the months container
-        months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+        months:
+          "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full",
         // Styling for each month
-        month: "space-y-4",
+        month: "space-y-4 w-full",
         // Styling for the caption container
         caption: "flex justify-start pt-1 relative items-center",
         // Styling for the caption label
@@ -42,12 +43,12 @@ function Calendar({
         // Styling for the table container
         table: "w-full border-collapse space-y-1",
         // Styling for the table head row
-        head_row: "flex",
+        head_row: "flex w-full justify-between",
         // Styling for the table head cell
         head_cell:
           "text-slate-500 rounded-md w-9 font-normal text-[0.8rem] dark:text-slate-400",
         // Styling for each table row
-        row: "flex w-full mt-2",
+        row: "flex w-full mt-2 w-full justify-between",
         // Styling for each table cell
         cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-slate-100/50 [&:has([aria-selected])]:bg-slate-100 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20 dark:[&:has([aria-selected].day-outside)]:bg-slate-800/50 dark:[&:has([aria-selected])]:bg-slate-800",
         // Styling for each day

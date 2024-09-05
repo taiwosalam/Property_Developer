@@ -24,7 +24,7 @@ const Dashboard = () => {
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full md:flex gap-x-10">
-        <div className="w-full flex-2 h-full space-y-8">
+        <div className="w-full flex-1 h-full space-y-8">
           <div className="w-full h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {dashboardCardData.map((card, index) => (
               <Card
@@ -44,7 +44,7 @@ const Dashboard = () => {
             <DashboardChart />
           </div>
         </div>
-        <div className="w-full flex-1 h-full space-y-7">
+        <div className="w-full lg:w-[30%] h-full space-y-7">
           <WalletBalanceCard
             mainBalance={walletBalanceCardData.mainBalance}
             cautionDeposit={walletBalanceCardData.cautionDeposit}
