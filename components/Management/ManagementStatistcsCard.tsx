@@ -58,25 +58,33 @@ const ManagementStatistcsCard = () => {
   const totalLandlords = existingLandlords + newLandlords;
 
   return (
-    <Card className="w-full">
+    <Card
+      className="w-full"
+      style={{ boxShadow: "-2px 2px 10px rgba(21, 21, 21, 0.10)" }}
+    >
       <CardContent className="py-5">
-        <div className="flex justify-between space-x-5 items-center">
-          <div className="space-y-6">
-            <CardTitle className="text-sm font-bold text-brand-primary">
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col gap-y-3">
+            <CardTitle className="text-base font-bold text-brand-10">
               Total Landlords
             </CardTitle>
-            <p className="text-2xl font-bold text-text-label">
+            <p className="text-[32px] font-bold text-text-label">
               {totalLandlords}
             </p>
           </div>
-          <DonutChart
-            oldValue={existingLandlords}
-            newValue={newLandlords}
-            oldColor="#0033C4"
-            newColor="#01BA4C"
-          />
+
+          <div className="flex flex-col gap-y-3">
+            <DonutChart
+              oldValue={existingLandlords}
+              newValue={newLandlords}
+              oldColor="#0033C4"
+              newColor="#01BA4C"
+            />
+            <p className="font-normal text-xs text-neutral-6 text-right">
+              this month
+            </p>
+          </div>
         </div>
-        <div className="text-xs text-neutral-4 text-right mt-1">this month</div>
       </CardContent>
     </Card>
   );

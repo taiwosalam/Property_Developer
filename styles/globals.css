@@ -15,6 +15,7 @@
 /* Root styles */
 :root {
   --color: 0, 51, 196;
+  /* --color: 233, 33, 46; */
   --primary-color: rgb(var(--color));
   --secondary-color: rgba(var(--color), 0.7);
 }
@@ -31,7 +32,7 @@ body {
   pointer-events: none;
 }
 
-#portal > * {
+#portal>* {
   position: absolute;
   pointer-events: all;
 }
@@ -66,7 +67,7 @@ h1 {
   flex-direction: column;
 }
 
-.custom-flex-col > * {
+.custom-flex-col>* {
   width: 100%;
 }
 
@@ -87,6 +88,7 @@ h1 {
     grid-area: 2/1 / span 1 / span 2;
   }
 }
+
 .specific-grid {
   @media (min-width: 1024px) and (max-width: 1165px) {
     width: 85%;
@@ -98,7 +100,7 @@ h1 {
 }
 
 .custom-round-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #f5f5f5;
+  background-color: #d2d3d5;
   border-radius: 5px;
 }
 
@@ -107,7 +109,7 @@ h1 {
 }
 
 .custom-round-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #e3e5e7;
+  background-color: #c1c1c1;
 }
 
 /* -------------------------------------------------------------- */
@@ -149,17 +151,22 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   top: 0;
   width: auto;
 }
+
 /* input[type="date"] {
   -moz-appearance: none;
   appearance: none;
 } */
 
 .quill-editor {
-  height: 160px; /* Adjust the height as needed */
-  @apply rounded-t-lg; /* Rounded corners */
-  border: 1px solid #dcdcdc; /* Optional: Add a border */
+  height: 160px;
+  /* Adjust the height as needed */
+  @apply rounded-t-lg;
+  /* Rounded corners */
+  border: 1px solid #dcdcdc;
+  /* Optional: Add a border */
   border-bottom: none;
-  padding: 0.5rem; /* Optional: Add padding inside the editor */
+  padding: 0.5rem;
+  /* Optional: Add padding inside the editor */
 }
 
 .quill-toolbar {
@@ -168,6 +175,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   /* border-top: 1px solid #ddd; */
   padding: 5px;
 }
+
 .quill-toolbar.ql-snow {
   @apply rounded-b-lg;
   border: none !important;
@@ -232,5 +240,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* ------------------------ */
 .page-header-button {
-  @apply rounded-[4px] capitalize py-2 px-3 text-sm md:py-[10px] md:text-base lg:px-10 xl:px-12 lg:text-lg bg-brand-9 text-white;
+  @apply rounded-[8px] capitalize px-3 text-sm py-[12px] lg:px-10 xl:px-12 bg-brand-9 text-white;
+}
+
+.page-header-container {
+  @apply flex items-center justify-between gap-4;
+}
+
+.page-title-container {
+  @apply flex items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4;
+}
+
+.page-title {
+  @apply text-base md:text-lg lg:text-xl font-bold text-black relative;
+  &::after {
+    content: "!";
+    @apply bg-black text-white flex items-center justify-center w-4 h-4 rounded-full absolute pt-[0.2rem] right-[-1.5rem] top-[27%] text-[0.8rem];
+  }
 }
