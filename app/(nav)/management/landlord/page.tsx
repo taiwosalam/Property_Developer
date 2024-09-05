@@ -16,7 +16,7 @@ import SearchInput from "@/components/SearchInput/search-input";
 import UserTag from "@/components/Tags/user-tag";
 import Pagination from "@/components/Pagination/pagination";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
-import { getAllStates } from "@/utils/states";
+import { getAllStates, getLocalGovernments } from "@/utils/states";
 
 const Landlord = () => {
   const initialState = {
@@ -48,6 +48,23 @@ const Landlord = () => {
 
   const states = getAllStates();
 
+  const onStateSelect = (selectedState: string) => {
+    const localGovernments = getLocalGovernments(selectedState);
+
+    const updatedFilters = landlordFiltersWithOptions.map((filter) => {
+      if (filter.label === "Local Government") {
+        return {
+          ...filter,
+          value: localGovernments.map((lg) => ({
+            label: lg,
+            value: lg.toLowerCase(),
+          })),
+        };
+      }
+      return filter;
+    });
+  };
+
   const landlordFiltersWithOptions = [
     {
       label: "Branch",
@@ -72,6 +89,9 @@ const Landlord = () => {
         value: state.toLowerCase(),
       })),
     },
+  ];
+
+  const landlordFiltersRadio = [
     {
       label: "Landlord Type",
       value: [
@@ -217,7 +237,9 @@ const Landlord = () => {
                 <FilterModal
                   filterOptionsWithDropdown={landlordFiltersWithOptions}
                   filterOptions={landlordFilters}
+                  filterOptionsWithRadio={landlordFiltersRadio}
                   onApply={handleFilterApply}
+                  onStateSelect={onStateSelect} // Pass the state selection handler
                 />
               </ModalContent>
             </Modal>
