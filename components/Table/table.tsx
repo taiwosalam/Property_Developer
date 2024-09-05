@@ -120,7 +120,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
                   sx={{
                     fontFamily: "unset",
                     textAlign: "center",
-                    height: "76px",
+                    paddingTop: "8px",
+                    paddingBottom: "8px",
+                    maxHeight: "76px",
                     ...tableHeadCellSx,
                   }}
                 >
@@ -138,10 +140,10 @@ const CustomTable: React.FC<CustomTableProps> = ({
               className="cursor-pointer"
               sx={{
                 backgroundColor: index % 2 === 0 ? oddRowColor : evenRowColor,
-                height: "76px",
+                maxHeight: "76px",
                 transition: "background-color 0.3s ease",
                 "&:hover": {
-                  backgroundColor: "#201b2421", // Light grey on hover
+                  backgroundColor: "#dbe6f3",
                 },
               }}
             >
@@ -150,8 +152,8 @@ const CustomTable: React.FC<CustomTableProps> = ({
                   key={field.id}
                   sx={{
                     fontFamily: "unset",
-                    paddingTop:'8px',
-                    paddingBottom:'8px',
+                    paddingTop: "8px",
+                    paddingBottom: "8px",
                     ...tableBodyCellSx,
                     ...field.cellStyle,
                   }}

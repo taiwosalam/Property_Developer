@@ -272,7 +272,6 @@ const Landlord = () => {
             fields={fields}
             data={transformedLandlords.slice(0, 20)}
             tableBodyCellSx={{
-              // fontSize: "16px",
               border: "none",
               textAlign: "left",
             }}
