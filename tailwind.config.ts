@@ -12,7 +12,10 @@ const config = {
   theme: {
     extend: {
       colors: {
-        background: "#FBFBFB",
+        background: {
+          1: "#FBFBFB",
+          2: "#EAEFFD",
+        },
 
         brand: {
           1: "#EFF6FF",
