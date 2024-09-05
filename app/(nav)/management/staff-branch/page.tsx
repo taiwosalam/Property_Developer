@@ -7,7 +7,9 @@ import type { Field } from "@/components/Table/types";
 import Input from "@/components/Form/Input/input";
 import Image from "next/image";
 import { useState } from "react";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+import FilterModal from "@/components/Management/Landlord/filters-modal";
 
 const StaffAndBranches = () => {
   const [gridView, setGridView] = useState(true);
@@ -19,6 +21,36 @@ const StaffAndBranches = () => {
   function toggleListView() {
     setGridView(false);
   }
+
+  const StaffAndranchFiltersWithOptions = [
+    {
+      label: "State",
+      value: [
+        { label: "State1 1", value: "state1" },
+        { label: "State1 2", value: "state2" },
+        { label: "State1 3", value: "state3" },
+      ],
+    },
+    {
+      label: "Local Government",
+      value: [
+        { label: "Local Government 1", value: "local_government1" },
+        { label: "Local Government 2", value: "local_government2" },
+        { label: "Local Government 3", value: "local_government3" },
+      ],
+    },
+  ];
+
+  const StaffAndBranchFilters = [
+    { label: "State", value: "state" },
+    { label: "Alphabetically", value: "alphabetically" },
+    { label: "Registration Date", value: "registration_date" },
+  ];
+
+  const handleFilterApply = (filters: any) => {
+    console.log("Filter applied:", filters);
+    // Add  logic here to filter landlords
+  };
 
   const fields: Field[] = [
     { id: "1", label: "S/N", accessor: "S/N" },
@@ -82,9 +114,7 @@ const StaffAndBranches = () => {
       </div>
       <section className="w-full flex items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4">
         <div>
-          <h1 className="text-2xl font-bold text-black">
-            Landlords/Landladies (Owners)
-          </h1>
+          <h1 className="text-2xl font-bold text-black">Staff & Branch</h1>
         </div>
         <div className="flex items-center space-x-4">
           <div>
@@ -114,13 +144,26 @@ const StaffAndBranches = () => {
             />
           </div>
           <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-            <Image
-              src="/icons/sliders.svg"
-              alt="filter"
-              width={20}
-              height={20}
-            />
-            <p>Filters</p>
+            <Modal>
+              <ModalTrigger asChild>
+                <div className="flex items-center gap-2 cursor-pointer">
+                  <Image
+                    src="/icons/sliders.svg"
+                    alt="filter"
+                    width={20}
+                    height={20}
+                  />
+                  <p>Filters</p>
+                </div>
+              </ModalTrigger>
+              <ModalContent>
+                <FilterModal
+                  filterOptionsWithDropdown={StaffAndranchFiltersWithOptions}
+                  filterOptions={StaffAndBranchFilters}
+                  onApply={handleFilterApply}
+                />
+              </ModalContent>
+            </Modal>
           </div>
         </div>
       </section>

@@ -3,7 +3,6 @@
 // Imports
 import { useState } from "react";
 import Image from "next/image";
-import Button from "@/components/Form/Button/button";
 import AddLandlordModal from "@/components/Management/Landlord/add-landlord-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordCard from "@/components/Management/Landlord/landlord-card";
@@ -45,9 +44,26 @@ const Landlord = () => {
     // Add your logic here to chat with the landlord
   };
 
+  const landlordFiltersWithOptions = [
+    {
+      label: "Branch",
+      value: [
+        { label: "Branch 1", value: "branch1" },
+        { label: "Branch 2", value: "branch2" },
+        { label: "Branch 3", value: "branch3" },
+      ],
+    },
+    {
+      label: "Account Officer",
+      value: [
+        { label: "Account Officer 1", value: "account_officer1" },
+        { label: "Account Officer 2", value: "account_officer2" },
+        { label: "Account Officer 3", value: "account_officer3" },
+      ],
+    },
+  ];
+
   const landlordFilters = [
-    { label: "Branch", value: "branch" },
-    { label: "Account Officer", value: "Account Officer" },
     { label: "State", value: "state" },
     { label: "Alphabetically", value: "alphabetically" },
     { label: "Mobile Landlord", value: "mobile_landlord" },
@@ -181,6 +197,7 @@ const Landlord = () => {
               </ModalTrigger>
               <ModalContent>
                 <FilterModal
+                  filterOptionsWithDropdown={landlordFiltersWithOptions}
                   filterOptions={landlordFilters}
                   onApply={handleFilterApply}
                 />
