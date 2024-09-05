@@ -17,6 +17,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
   children,
   minimized,
   highlight,
+  minimized_highlight,
 }) => {
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
 
@@ -27,6 +28,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
       className={clsx("w-full py-3 pl-10 pr-5 flex items-center gap-4", {
         "nav-button": !minimized,
         "hover:bg-brand-3": minimized,
+        "bg-brand-3": minimized_highlight,
         "custom-primary-bg": highlight,
       })}
       style={style}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 
 // Types
 import type { NavDropdownProps } from "./types";
@@ -16,7 +17,10 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
   type,
   content,
   children,
+  highlight,
 }) => {
+  const pathname = usePathname();
+
   const [isOpen, setIsOpen] = useState(false);
 
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
@@ -27,7 +31,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
         onClick={() => setIsOpen((prev) => !prev)}
         className="relative flex items-center nav-button"
       >
-        <NavButton type={type} highlight={isOpen}>
+        <NavButton type={type} highlight={isOpen || highlight}>
           {children}
         </NavButton>
         <div
@@ -45,9 +49,9 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
       {isOpen && (
         <div className="h-full">
           <div className="custom-flex-col">
-            {}
             {content.map(({ href, label }, index) => (
               <NavButton
+                minimized_highlight={href ? pathname.includes(href) : false}
                 href={href && `/${children}${href}`}
                 key={index}
                 minimized

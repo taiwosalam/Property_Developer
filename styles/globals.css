@@ -180,6 +180,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* -------------------------------------------------------------- */
 
+.sidenav-collapsed p {
+  display: none;
+}
+
 .nav-button:hover {
   background-color: var(--primary-color);
 }
