@@ -25,3 +25,9 @@ export type NavItemsProps = {
   href?: string;
   content?: { label: string; href: string }[];
 }[];
+
+export interface NavIconProps {
+  alt?: string;
+  href?: string;
+  src: string | StaticImageData;
+}

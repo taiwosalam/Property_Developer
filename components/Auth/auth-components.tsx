@@ -125,7 +125,7 @@ export const AuthPinField: React.FC<AuthPinFieldProps> = ({ onChange }) => {
         inputMode="numeric" // Ensure that the input is numeric
         onChange={onChange} // Handle input changes
         validate={/^[0-9]$/} // Regex to allow only numeric characters
-        className="w-[35px] h-10 text-center custom-primary-color rounded-[4px] border border-solid custom-primary-outline bg-background"
+        className="w-[35px] h-10 text-center custom-primary-color rounded-[4px] border border-solid custom-primary-outline bg-background-1"
         style={{ borderColor: "rgba(186, 199, 213, 0.50)" }} // Inline style for border color
       />
     </div>

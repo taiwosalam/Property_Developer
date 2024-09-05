@@ -1,14 +1,15 @@
 import React from "react";
+import Link from "next/link";
 
 // Types
 import type { Color } from "@/types/global";
-import type { NavButtonProps } from "./types";
+import type { NavButtonProps, NavIconProps } from "./types";
 
 // Imports
 import clsx from "clsx";
 import SVG from "../SVG/svg";
+import Picture from "../Picture/picture";
 import { useThemeStoreSelectors } from "@/store/themeStore";
-import Link from "next/link";
 
 export const NavButton: React.FC<NavButtonProps> = ({
   type,
@@ -59,5 +60,16 @@ export const NavButton: React.FC<NavButtonProps> = ({
     </Link>
   ) : (
     <button className="w-full">{content}</button>
+  );
+};
+
+export const NavIcon: React.FC<NavIconProps> = ({ src, alt, href }) => {
+  const class_styles = "p-2 rounded-lg bg-background-2";
+  const content = <Picture src={src} alt={alt} size={20} />;
+
+  return href ? (
+    <Link href={href} className={class_styles}>{content}</Link>
+  ) : (
+    <button className={class_styles}>{content}</button>
   );
 };
