@@ -15,6 +15,7 @@ import { landlords } from "../data";
 import Input from "@/components/Form/Input/input";
 import UserTag from "@/components/Tags/user-tag";
 import Pagination from "@/components/Pagination/pagination";
+import FilterModal from "@/components/Management/Landlord/filters-modal";
 
 const Landlord = () => {
   const initialState = {
@@ -42,6 +43,21 @@ const Landlord = () => {
   const onClickChat = (landlord: LandlordProps) => {
     console.log("Chat clicked for:", landlord);
     // Add your logic here to chat with the landlord
+  };
+
+  const landlordFilters = [
+    { label: "Branch", value: "branch" },
+    { label: "Account Officer", value: "Account Officer" },
+    { label: "State", value: "state" },
+    { label: "Alphabetically", value: "alphabetically" },
+    { label: "Mobile Landlord", value: "mobile_landlord" },
+    { label: "Web Landlord", value: "web_landlord" },
+    { label: "Registration Date", value: "registration_date" },
+  ];
+
+  const handleFilterApply = (filters: any) => {
+    console.log("Filter applied:", filters);
+    // Add  logic here to filter landlords
   };
 
   const transformedLandlords = landlords.map((l) => ({
@@ -164,7 +180,10 @@ const Landlord = () => {
                 </div>
               </ModalTrigger>
               <ModalContent>
-                <AddLandlordModal />
+                <FilterModal
+                  filterOptions={landlordFilters}
+                  onApply={handleFilterApply}
+                />
               </ModalContent>
             </Modal>
           </div>
