@@ -1,10 +1,10 @@
-import clsx from "clsx";
-import type { LandlordProps } from "./types";
+import type { LandlordProps } from "./Landlord/types";
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
+import SampleLandlord from "@/public/empty/SampleLandlord.jpeg";
 import UserTag from "@/components/Tags/user-tag";
 import Image from "next/image";
 
-const LandlordCard: React.FC<LandlordProps> = ({
+const LandlordAndTenantCard: React.FC<LandlordProps> = ({
   first_name,
   last_name,
   email,
@@ -15,23 +15,29 @@ const LandlordCard: React.FC<LandlordProps> = ({
   return (
     <a
       href=""
-      className="border border-brand-tertiary bg-[#F9F9F9] p-2 rounded-lg flex gap-[3%]"
+      className="border border-brand-tertiaryy bg-[#F9F9F9] p-[3%] rounded-lg flex gap-[3%] min-w-[284px]"
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
     >
-      <div className="rounded-lg relative w-[30%] overflow-hidden">
-        <Image
+      <div className="rounded-lg relative w-[30%] overflow-hidden aspect-[0.9]">
+        {/* <Image
           src={picture_url || DefaultLandlordAvatar}
           alt={first_name}
           fill
           sizes="auto"
           className="w-full h-full object-cover"
+        /> */}
+        <Image
+          src={SampleLandlord}
+          alt={first_name}
+          // sizes="auto"
+          className="w-full h-full object-cover"
         />
       </div>
-      <div className="flex-1 flex flex-col items-start gap-y-[5px]">
+      <div className="flex-1 flex flex-col items-start">
         <p className="font-bold text-black text-sm capitalize">
           {`${first_name} ${last_name}`}
         </p>
-        <p className="font-normal text-black text-xs">{email}</p>
+        <p className="font-normal text-black text-xs mb-1">{email}</p>
         <UserTag type={user_tag} className="mb-2" />
         <p className="font-semibold text-xs text-[#8D8D8D]">{phone_number}</p>
       </div>
@@ -39,4 +45,4 @@ const LandlordCard: React.FC<LandlordProps> = ({
   );
 };
 
-export default LandlordCard;
+export default LandlordAndTenantCard;

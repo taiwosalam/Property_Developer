@@ -20,6 +20,7 @@ const config = {
           3: "#BFDBFE",
           5: "#60A5FA",
           9: "#0033C4",
+          10: "#1E3A8A",
 
           primary: "#315EE7",
           secondary: "#6083ED",
@@ -44,6 +45,8 @@ const config = {
         neutral: {
           2: "#FAFAFA",
           4: "#C1C2C3",
+          6: "#CBD5E0",
+          8: "#718096",
         },
 
         status: {

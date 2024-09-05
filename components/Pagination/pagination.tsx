@@ -9,7 +9,7 @@ const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
 }) => {
   const buttonClasses =
-    "grid place-items-center border border-brand-9 rounded-[4px] w-[25px] md:w-[30px] aspect-square";
+    "grid place-items-center border border-brand-9 rounded-[4px] w-[30px] h-[33px]";
 
   const generatePageButtons = () => {
     const pages = [];
@@ -97,7 +97,7 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={currentPage === 1}
           onClick={() => onPageChange(currentPage - 1)}
         >
-          <ChevronLeft />
+          <ChevronLeft opacity={currentPage === 1 ? "0.2" : 1} />
         </button>
         {generatePageButtons()}
         <button
@@ -107,7 +107,7 @@ const Pagination: React.FC<PaginationProps> = ({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
-          <ChevronRight />
+          <ChevronRight opacity={currentPage === totalPages ? "0.2" : 1} />
         </button>
       </div>
       <p className={clsx(currentPage === totalPages && "opacity-50")}>

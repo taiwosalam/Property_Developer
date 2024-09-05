@@ -2,17 +2,17 @@
 
 // Imports
 import { useState } from "react";
+import { GridIcon, ListIcon } from "@/public/icons/icons";
 import Image from "next/image";
-import Button from "@/components/Form/Button/button";
 import AddLandlordModal from "@/components/Management/Landlord/add-landlord-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import LandlordCard from "@/components/Management/Landlord/landlord-card";
+import LandlordCard from "@/components/Management/landlord-and-tenant-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import CustomTable from "@/components/Table/table";
 import type { LandlordProps } from "@/components/Management/Landlord/types";
 import type { Field } from "@/components/Table/types";
 import { landlords } from "../data";
-import Input from "@/components/Form/Input/input";
+import SearchInput from "@/components/SearchInput/search-input";
 import UserTag from "@/components/Tags/user-tag";
 import Pagination from "@/components/Pagination/pagination";
 
@@ -52,14 +52,14 @@ const Landlord = () => {
       <div className="flex gap-x-[4%] items-center w-full text-white [&>button]:rounded-[4px] [&>button]:capitalize">
         <button
           type="button"
-          className="py-[10px] px-2 lg:px-3 text-sm lg:text-base font-medium bg-brand-9"
+          className="py-[8px] px-[32px] text-sm font-medium bg-brand-9"
           onClick={() => onClickManage(l)}
         >
           Manage
         </button>
         <button
           type="button"
-          className="py-[10px] px-2 lg:px-3 text-sm lg:text-base font-medium bg-brand-tertiary"
+          className="py-[8px] px-[32px] text-sm font-medium bg-brand-tertiary"
           onClick={() => onClickChat(l)}
         >
           Chat
@@ -98,13 +98,13 @@ const Landlord = () => {
 
   return (
     <div className="space-y-9">
-      <section className="w-full h-fit flex items-center justify-between gap-4">
+      <section className="page-header-container">
         <div className="hidden lg:grid lg:grid-cols-3 lg:gap-4">
           <ManagementStatistcsCard />
           <ManagementStatistcsCard />
           <ManagementStatistcsCard />
         </div>
-        <div className="lg:ml-auto">
+        <div className="ml-auto">
           <Modal>
             <ModalTrigger asChild>
               <button type="button" className="page-header-button">
@@ -117,38 +117,40 @@ const Landlord = () => {
           </Modal>
         </div>
       </section>
-      <div className="w-full flex items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4">
-        <div>
-          <h1 className="text-md md:text-lg lg:text-xl xl:text-2xl font-bold text-black">
-            Landlords/Landladies (Owners)
-          </h1>
-        </div>
-        <div className="flex items-center space-x-4">
-          <div>
-            <Input
-              id="search"
-              placeholder="Search for landlords"
-              className="flex-1 max-w-[200px]"
-              inputClassName={`text-xs md:text-sm`}
-            />
-          </div>
-          <div className="flex items-center space-x-3">
-            <Image
-              src="/icons/list-view.svg"
-              alt="filter"
-              width={20}
-              height={20}
-              className="cursor-pointer"
+      <div className="page-title-container">
+        <h1 className="page-title">Landlords/Landladies (Owners)</h1>
+        <div className="flex items-center gap-x-4">
+          <SearchInput
+            placeholder="Search for Landlords"
+            className="bg-[#F1F2F4] w-[270px]"
+            textInputClassName={`text-xs md:text-sm text-neutral-8 font-normal`}
+            searchIconColor="#1E3A8A"
+          />
+          <div className="flex items-center gap-x-3">
+            <button
+              type="button"
+              aria-label="list-view"
+              className={`${
+                !gridView ? "bg-black" : "bg-transparent"
+              } p-[4px] rounded-md`}
               onClick={setListView}
-            />
-            <Image
-              src="/icons/grid-view.svg"
-              alt="filter"
-              width={20}
-              height={20}
-              className="cursor-pointer"
+            >
+              <div className={!gridView ? "text-white" : "text-[unset]"}>
+                <ListIcon />
+              </div>
+            </button>
+            <button
+              type="button"
+              aria-label="grid-view"
+              className={`${
+                gridView ? "bg-black" : "bg-transparent"
+              } p-[4px] rounded-md`}
               onClick={setGridView}
-            />
+            >
+              <div className={gridView ? "text-white" : "text-[unset]"}>
+                <GridIcon />
+              </div>
+            </button>
           </div>
           <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
             <Modal>
@@ -172,7 +174,12 @@ const Landlord = () => {
       </div>
       <section>
         {gridView ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 auto-rows-fr">
+          <div
+            className="grid gap-4"
+            style={{
+              gridTemplateColumns: "repeat(auto-fit, minmax(284px, 1fr))",
+            }}
+          >
             {landlords.slice(0, 30).map((l) => (
               <LandlordCard key={l.id} {...l} />
             ))}
@@ -195,7 +202,7 @@ const Landlord = () => {
           totalPages={total_pages}
           currentPage={current_page}
           onPageChange={handlePageChange}
-          className="mt-8 text-xs font-semibold"
+          className="mt-8 text-xs font-medium"
         />
       </section>
     </div>
