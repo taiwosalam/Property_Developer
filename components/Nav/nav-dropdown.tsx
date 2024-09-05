@@ -48,7 +48,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
             {}
             {content.map(({ href, label }, index) => (
               <NavButton
-                href={href && `/${children}/${href}`}
+                href={href && `/${children}${href}`}
                 key={index}
                 minimized
                 type="horizontal_line"
