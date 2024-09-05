@@ -20,7 +20,7 @@ import { getAllStates } from "@/utils/states";
 
 const Landlord = () => {
   const initialState = {
-    gridView: false,
+    gridView: true,
     total_pages: 50,
     current_page: 1,
   };

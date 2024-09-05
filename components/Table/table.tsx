@@ -1,5 +1,6 @@
 import type { CustomTableProps, DataItem, Field } from "./types";
 import clsx from "clsx";
+import SampleLandlord from "@/public/empty/SampleLandlord.jpeg";
 import { VerticalEllipsis } from "@/public/icons/icons";
 import {
   Table,
@@ -38,8 +39,14 @@ const renderValue = (
         />
       </div>
     ) : (
+      // <Avatar
+      //   src={value}
+      //   className="mx-auto"
+      //   alt="avatar"
+      //   sx={{ width: 60, height: 60 }}
+      // />
       <Avatar
-        src={value}
+        src={SampleLandlord.src}
         className="mx-auto"
         alt="avatar"
         sx={{ width: 60, height: 60 }}
@@ -97,7 +104,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
   return (
     <TableContainer
       component={Paper}
-      className={className} 
+      className={className}
       sx={{ boxShadow: "none" }}
     >
       <Table sx={{ boxShadow: "none" }}>
@@ -126,9 +133,13 @@ const CustomTable: React.FC<CustomTableProps> = ({
             <TableRow
               key={getUniqueKey(x)}
               onClick={handleSelect ? () => handleSelect(x) : undefined}
-              className={clsx(handleSelect && "cursor-pointer")}
+              className="cursor-pointer"
               sx={{
                 backgroundColor: index % 2 === 0 ? oddRowColor : evenRowColor,
+                transition: "background-color 0.3s ease",
+                "&:hover": {
+                  backgroundColor: "#f5f5f5", // Light grey on hover
+                },
               }}
             >
               {fields.map((field) => (
