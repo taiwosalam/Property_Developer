@@ -21,7 +21,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
 }) => {
   const pathname = usePathname();
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(highlight);
 
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
 
