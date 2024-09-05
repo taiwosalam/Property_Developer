@@ -11,6 +11,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
+import SearchInput from "@/components/SearchInput/search-input";
 
 const StaffAndBranches = () => {
   const [gridView, setGridView] = useState(true);
@@ -118,27 +119,34 @@ const StaffAndBranches = () => {
 
   return (
     <div className="space-y-9">
-      <div className="flex justify-between items-center mb-5">
-        <div className="grid grid-cols-3 gap-4">
+      <section className="page-header-container">
+        <div className="hidden lg:grid lg:grid-cols-3 lg:gap-4">
           <ManagementStatistcsCard />
           <ManagementStatistcsCard />
           <ManagementStatistcsCard />
         </div>
-        <button>Create Branch Button</button>
-      </div>
-      <section className="w-full flex items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4">
-        <div>
-          <h1 className="text-2xl font-bold text-black">Staff & Branch</h1>
+        <div className="ml-auto">
+          <Modal>
+            <ModalTrigger asChild>
+              <button type="button" className="page-header-button">
+                + create branch
+              </button>
+            </ModalTrigger>
+            <ModalContent>
+              <div>Hello</div>
+            </ModalContent>
+          </Modal>
         </div>
+      </section>
+      <div className="page-title-container">
+        <h1 className="page-title">Staff & Branch</h1>
         <div className="flex items-center space-x-4">
-          <div>
-            <Input
-              id="search"
-              placeholder="Search for branches"
-              className="flex-1 max-w-[200px]"
-              inputClassName="text-xs md:text-sm"
-            />
-          </div>
+          <SearchInput
+            placeholder="Search for Staff and Branch"
+            className="bg-[#F1F2F4] w-[270px]"
+            textInputClassName={`text-xs md:text-sm text-neutral-8 font-normal`}
+            searchIconColor="#1E3A8A"
+          />
           <div className="flex items-center space-x-3">
             <Image
               src="/icons/list-view.svg"
@@ -182,7 +190,7 @@ const StaffAndBranches = () => {
             </Modal>
           </div>
         </div>
-      </section>
+      </div>
 
       <section className="capitalize">
         {gridView ? (

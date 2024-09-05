@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 
 // Types
@@ -38,7 +38,9 @@ const AddLandlordModal = () => {
     },
     "add-landlord": {
       heading: "Add landlord/landlady Profile",
-      content: <AddLandLordOrTenantForm />,
+      content: (
+        <AddLandLordOrTenantForm type="landlord" submitAction={() => {}} />
+      ),
     },
     "add-multiple-owners": {
       heading: "Import bulk landlord/landlady list.",
@@ -61,7 +63,11 @@ const AddLandlordModal = () => {
   return (
     <div className="w-[900px] rounded-[20px] bg-white p-[30px] custom-flex-col gap-10">
       <div className="flex items-center justify-between border-b border-solid border-[#B8B8B8]">
-        <button onClick={handleBack} className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={handleBack}
+          className="flex items-center gap-2"
+        >
           {activeStep !== "options" && (
             <Image
               src={ChevronLeft}

@@ -17,10 +17,11 @@ import UserTag from "@/components/Tags/user-tag";
 import Pagination from "@/components/Pagination/pagination";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
+import { BadgeCheckIcon } from "@/public/icons/icons";
 
 const Landlord = () => {
   const initialState = {
-    gridView: false,
+    gridView: true,
     total_pages: 50,
     current_page: 1,
   };
@@ -114,7 +115,14 @@ const Landlord = () => {
 
   const transformedLandlords = landlords.map((l) => ({
     ...l,
-    full_name: `${l.first_name} ${l.last_name}`,
+    full_name: (
+      <p className="flex items-center gap-2">
+        {`${l.first_name} ${l.last_name}`}
+        <span className="text-green-700">
+          <BadgeCheckIcon />
+        </span>
+      </p>
+    ),
     user_tag: <UserTag type={l.user_tag} />,
     "manage/chat": (
       <div className="flex gap-x-[4%] items-center w-full text-white [&>button]:rounded-[4px] [&>button]:capitalize">
@@ -264,7 +272,7 @@ const Landlord = () => {
             fields={fields}
             data={transformedLandlords.slice(0, 20)}
             tableBodyCellSx={{
-              fontSize: "16px",
+              // fontSize: "16px",
               border: "none",
               textAlign: "left",
             }}

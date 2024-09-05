@@ -16,7 +16,7 @@ import AddTenantModal from "@/components/Management/Tenants/add-tenant-modal";
 
 const Tenants = () => {
   const initialState = {
-    gridView: false,
+    gridView: true,
     total_pages: 50,
     current_page: 1,
   };
