@@ -175,22 +175,38 @@ const Landlord = () => {
   return (
     <div className="space-y-9">
       <section className="page-header-container">
-        <div className="hidden lg:grid lg:grid-cols-3 lg:gap-4">
-          <ManagementStatistcsCard />
-          <ManagementStatistcsCard />
-          <ManagementStatistcsCard />
-        </div>
-        <div className="ml-auto">
-          <Modal>
-            <ModalTrigger asChild>
-              <button type="button" className="page-header-button">
-                + create new landlord
-              </button>
-            </ModalTrigger>
-            <ModalContent>
-              <AddLandlordModal />
-            </ModalContent>
-          </Modal>
+        <div className="w-full flex items-center justify-center lg:justify-between">
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <ManagementStatistcsCard />
+            <ManagementStatistcsCard />
+            <ManagementStatistcsCard />
+            <div className="hidden md:block lg:hidden">
+              <div className="flex items-center justify-center w-full h-full">
+                <Modal>
+                  <ModalTrigger asChild>
+                    <button type="button" className="page-header-button">
+                      + create new landlord
+                    </button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <AddLandlordModal />
+                  </ModalContent>
+                </Modal>
+              </div>
+            </div>
+          </div>
+          <div className="md:hidden lg:flex lg:ml-4">
+            <Modal>
+              <ModalTrigger asChild>
+                <button type="button" className="page-header-button">
+                  + create new landlord
+                </button>
+              </ModalTrigger>
+              <ModalContent>
+                <AddLandlordModal />
+              </ModalContent>
+            </Modal>
+          </div>
         </div>
       </section>
       <div className="page-title-container">
