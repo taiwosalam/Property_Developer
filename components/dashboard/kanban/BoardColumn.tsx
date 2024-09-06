@@ -56,7 +56,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
   };
 
   const variants = cva(
-    "h-[500px] max-h-[500px] w-[32%] bg-primary-foreground flex flex-col flex-shrink-0 snap-center",
+    "h-[500px] max-h-[500px] min-w-[350px] lg:min-w-[45%] xl:min-w-[32%] border-2 border-dashed rounded-lg overflow-y-scroll no-scrollbar",
     {
       variants: {
         dragging: {
@@ -69,7 +69,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
   );
 
   return (
-    <Card
+    <div
       ref={setNodeRef}
       style={style}
       className={variants({
@@ -98,7 +98,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
           </SortableContext>
         </CardContent>
       </ScrollArea>
-    </Card>
+    </div>
   );
 }
 
@@ -120,7 +120,7 @@ export function BoardContainer({ children }: { children: React.ReactNode }) {
         dragging: dndContext.active ? "active" : "default",
       })}
     >
-      <div className="flex gap-4 items-center flex-row justify-between">
+      <div className="flex gap-4 items-center flex-row justify-between md:w-[400px] lg:w-full">
         {children}
       </div>
       <ScrollBar orientation="horizontal" />
