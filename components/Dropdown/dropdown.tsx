@@ -9,8 +9,8 @@ import type {
 
 // Imports
 import clsx from "clsx";
-import { DropdownContext, useDropdownContext } from "./dropdown-context";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
+import { DropdownContext, useDropdownContext } from "./dropdown-context";
 
 export const Dropdown: React.FC<DropdownProps> = ({
   style,
