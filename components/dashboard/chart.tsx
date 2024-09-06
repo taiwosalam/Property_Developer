@@ -65,20 +65,20 @@ export function DashboardChart() {
 
   return (
     <Card className="">
-      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
-        <div className="custom-flex-col gap-6">
+      <CardHeader className="flex w-full items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+        <div className="custom-flex-col w-full justify-between">
           <CardTitle>Chart Title</CardTitle>
-          <div className="flex justify-between gap-6 flex-wrap">
-            <div className="flex space-x-1">
-              <span className="flex items-center space-x-1">
+          <div className="w-full flex items-center justify-between flex-wrap lg:flex-nowrap my-2 space-y-4 lg:my-0 lg:space-y-0">
+            <div className="w-full flex space-x-0.5">
+              <span className="flex items-center space-x-0.5">
                 <Switch id="sales" />
                 <Label htmlFor="sales">Sales</Label>
               </span>
-              <span className="flex items-center space-x-1">
+              <span className="flex items-center space-x-0.5">
                 <Switch id="profit" />
                 <Label htmlFor="profit">Profits</Label>
               </span>
-              <span className="flex items-center space-x-1">
+              <span className="flex items-center space-x-0.5">
                 <Switch id="expense" />
                 <Label htmlFor="expense">Expenses</Label>
               </span>
