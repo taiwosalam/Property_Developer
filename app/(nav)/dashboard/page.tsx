@@ -25,6 +25,7 @@ import useWindowWidth from "@/hooks/useWindowWidth";
 
 const Dashboard = () => {
   const { isMobile } = useWindowWidth();
+
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full xl:flex gap-x-10">
@@ -41,7 +42,7 @@ const Dashboard = () => {
               />
             ))}
           </div>
-          {!isMobile && (
+          {isMobile && (
             <>
               <div className="w-full h-fit">
                 <DashboardChart />
@@ -52,7 +53,7 @@ const Dashboard = () => {
             </>
           )}
         </div>
-        <div className="w-full xl:w-[30%] max-w-[345px] h-full space-y-7 mt-4 lg:mt-0">
+        <div className="w-full xl:w-[30%] xl:max-w-[345px] h-full space-y-7 mt-4 lg:mt-0">
           <WalletBalanceCard
             mainBalance={walletBalanceCardData.mainBalance}
             cautionDeposit={walletBalanceCardData.cautionDeposit}

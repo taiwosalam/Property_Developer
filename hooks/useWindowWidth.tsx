@@ -14,9 +14,7 @@ const useWindowWidth = (customWidth?: number) => {
    * to avoid SSR issues with `window` not being defined.
    * @type {number | undefined}
    */
-  const [windowWidth, setWindowWidth] = useState<number | undefined>(
-    typeof window !== "undefined" ? window.innerWidth : undefined
-  );
+  const [windowWidth, setWindowWidth] = useState<number | undefined>(undefined);
 
   /**
    * Effect to update the window width on resize. This runs only on the client side.
@@ -37,7 +35,6 @@ const useWindowWidth = (customWidth?: number) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Breakpoints for various device sizes
   // Breakpoints for various device sizes
   const breakpoints = {
     /** Checks if the window width is less than 768px (Mobile). */
@@ -60,10 +57,10 @@ const useWindowWidth = (customWidth?: number) => {
       : false,
 
     /** Checks if the window width is less than or equal to 768px (Small Tablet). */
-    isSmallTablet: windowWidth !== undefined && windowWidth < 768,
+    isSmallTablet: windowWidth !== undefined && windowWidth <= 768,
 
     /** Checks if the window width is less than or equal to 1024px (Small Laptop). */
-    isSmallLaptop: windowWidth !== undefined && windowWidth < 1024,
+    isSmallLaptop: windowWidth !== undefined && windowWidth <= 1024,
   };
 
   /**
