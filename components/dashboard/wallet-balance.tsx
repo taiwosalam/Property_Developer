@@ -1,3 +1,5 @@
+"use client";
+
 // Types
 import type { walletBalanceCardProps } from "./types";
 
@@ -5,8 +7,9 @@ import type { walletBalanceCardProps } from "./types";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import SVG from "../SVG/svg";
+import { Eye, EyeOff } from "lucide-react";
 
 const options = [
   {
@@ -32,6 +35,12 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   className,
   ...props
 }) => {
+  const [hideBalance, setHideBalance] = useState(false);
+
+  const hideWalletBalance = () => {
+    setHideBalance(!hideBalance);
+  };
+
   return (
     <div className={clsx("space-y-2", className)}>
       <div className="w-full flex items-center justify-between font-normal">
@@ -42,15 +51,26 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
         </Link>
       </div>
       <div className="p-5 custom-primary-bg space-y-3 rounded-lg">
-        <div className="flex items-center text-white opacity-95 font-normal text-sm">
+        <div className="flex items-center gap-1 text-white opacity-95 font-normal text-sm">
           <p>My balance</p>
-
-          <SVG type="eye" color="#FFFFFF" className="ml-2" />
+          <button onClick={hideWalletBalance}>
+            {hideBalance ? (
+              <span className="text-white">
+                <Eye size={14} />
+              </span>
+            ) : (
+              <span className="text-white">
+                <EyeOff size={14} />
+              </span>
+            )}
+          </button>
         </div>
-        <p className="font-medium text-xl text-white">₦{mainBalance}</p>
+        <p className="font-medium text-xl text-white">
+          {hideBalance ? "₦" + mainBalance : "*******"}
+        </p>
         <div className="text-white text-xs font-medium capitalize flex space-x-1">
           <p className="text-text-quaternary ">caution deposit</p>
-          <span className="text-white ml-2"></span>₦{cautionDeposit}{" "}
+          <span className="text-white ml-2">₦{cautionDeposit}</span>
           <Image src="/icons/caution.svg" alt="info" width={12} height={12} />
         </div>
         <div className="w-full flex justify-between">
