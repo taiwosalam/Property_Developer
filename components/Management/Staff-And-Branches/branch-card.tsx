@@ -14,14 +14,14 @@ const BranchCard: React.FC<BranchCardProps> = ({
   unit_count,
 }) => {
   return (
-    <div className="relative mt-[2.9rem]">
+    <div className="relative mt-[3rem]">
       <div
-        className="w-[93px] h-[98px] rounded-full absolute top-[-2.9rem] left-[50%] translate-x-[-50%] overflow-hidden"
+        className="w-[99px] h-[104px] rounded-full absolute top-[-2.92rem] left-[50%] translate-x-[-50%] overflow-hidden"
         style={{
-          background: "linear-gradient(180deg, #38bdf8 52%, #ffffff00 40%)",
+          background: "linear-gradient(180deg, #38bdf8 46%, #ffffff00 0%)",
         }}
       ></div>
-      <div className="absolute left-[50%] translate-x-[-50%] top-[-2.8rem] bg-white rounded-full w-[90px] h-[90px] overflow-hidden border-[3px] border-white">
+      <div className="absolute left-[50%] translate-x-[-50%] top-[-2.8rem] bg-white rounded-full w-[95px] h-[95px] overflow-hidden border-[3px] border-white">
         {/* <Image
           src={avatar || DefaultBranchPicture}
           alt={branch_title || ""}
@@ -35,7 +35,7 @@ const BranchCard: React.FC<BranchCardProps> = ({
           className="rounded-full object-cover"
         />
       </div>
-      <div className="rounded-2xl bg-white px-[20px] pt-[55px] pb-[20px] items-center text-center flex flex-col border border-support-1 border-solid">
+      <div className="rounded-2xl bg-white px-[20px] pt-[60px] pb-[20px] items-center text-center flex flex-col border-2 border-support-1 border-solid h-full">
         <p className="font-bold text-base text-black leading-5 mb-[5px]">
           {branch_title}
         </p>

@@ -44,7 +44,7 @@ const Dashboard = () => {
             <DashboardChart />
           </div>
         </div>
-        <div className="w-full xl:w-[30%] h-full space-y-7 mt-4 lg:mt-0">
+        <div className="w-full xl:w-[30%] max-w-[345px] h-full space-y-7 mt-4 lg:mt-0">
           <WalletBalanceCard
             mainBalance={walletBalanceCardData.mainBalance}
             cautionDeposit={walletBalanceCardData.cautionDeposit}
