@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 
@@ -19,8 +21,10 @@ import { DashboardChart } from "@/components/dashboard/chart";
 import DashboarddCalendar from "@/components/dashboard/calendar";
 import { SectionContainer } from "@/components/Section/section-components";
 import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 const Dashboard = () => {
+  const { isMobile } = useWindowWidth();
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full xl:flex gap-x-10">
@@ -37,12 +41,16 @@ const Dashboard = () => {
               />
             ))}
           </div>
-          <div className="w-full h-fit">
-            <DashboardChart />
-          </div>
-          <div className="w-full h-fit">
-            <DashboardChart />
-          </div>
+          {!isMobile && (
+            <>
+              <div className="w-full h-fit">
+                <DashboardChart />
+              </div>
+              <div className="w-full h-fit">
+                <DashboardChart />
+              </div>
+            </>
+          )}
         </div>
         <div className="w-full xl:w-[30%] max-w-[345px] h-full space-y-7 mt-4 lg:mt-0">
           <WalletBalanceCard
@@ -113,9 +121,11 @@ const Dashboard = () => {
           </table>
         </div>
       </SectionContainer>
-      <SectionContainer heading="To do list">
-        <KanbanBoard />
-      </SectionContainer>
+      {!isMobile && (
+        <SectionContainer heading="To do list">
+          <KanbanBoard />
+        </SectionContainer>
+      )}
     </section>
   );
 };
