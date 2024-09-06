@@ -71,26 +71,25 @@ const AddLandlordModal = () => {
   };
 
   return (
-    <div className="w-[900px] rounded-[20px] bg-white p-[30px] custom-flex-col gap-10">
+    <div className="w-[900px] max-w-[80%] max-h-[85%] rounded-[20px] bg-white p-[30px]">
+      {/* Header */}
       <div className="flex items-center justify-between border-b border-solid border-[#B8B8B8]">
-        <button
-          type="button"
-          onClick={handleBack}
-          className="flex items-center gap-2"
-        >
+        <div className="flex items-center gap-2">
           {activeStep !== "options" && (
-            <Image
-              src={ChevronLeft}
-              alt="back"
-              width={24}
-              height={24}
-              className="w-6 h-6"
-            />
+            <button type="button" onClick={handleBack}>
+              <Image
+                src={ChevronLeft}
+                alt="back"
+                width={24}
+                height={24}
+                className="w-6 h-6"
+              />
+            </button>
           )}
           <p className="text-primary-navy text-xl font-bold capitalize">
             {modal_states[activeStep].heading}
           </p>
-        </button>
+        </div>
         <ModalTrigger close className="p-2">
           <Image
             src={CloseCircle}
@@ -101,7 +100,10 @@ const AddLandlordModal = () => {
           />
         </ModalTrigger>
       </div>
-      {modal_states[activeStep].content}
+      {/* body */}
+      <div className="pt-10 pb-2">
+        {modal_states[activeStep].content}
+      </div>
     </div>
   );
 };

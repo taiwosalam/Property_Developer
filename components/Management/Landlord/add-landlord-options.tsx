@@ -8,7 +8,7 @@ const AddLandlordOptions: React.FC<AddLandlordOptionsProps> = ({
 }) => {
   return (
     <>
-      <div className="flex justify-center gap-14">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-7 md:gap-14">
         <AddLandlordOrTenantCard
           buttonText="create"
           title="Add Landlord/Landlady"
@@ -22,7 +22,7 @@ const AddLandlordOptions: React.FC<AddLandlordOptionsProps> = ({
           desc="You can add multiple landlords/Landladies at a time  by following the XLS format and utilizing your available records."
         />
       </div>
-      <div className="flex gap-2 justify-center">
+      <div className="mt-10 flex flex-col md:flex-row gap-2 justify-center">
         <Button
           size="base_medium"
           className="py-2 px-8"
