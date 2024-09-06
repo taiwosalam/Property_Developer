@@ -6,7 +6,7 @@ import "@/styles/globals.css";
 
 // Imports
 import { Toaster } from "sonner";
-import { dmSans } from "@/utils/fonts";
+import { primaryFont } from "@/utils/fonts";
 import ThemeProvider from "./theme-provider";
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${dmSans.className} antialiased`}
+        className={`${primaryFont.className} antialiased`}
         suppressHydrationWarning
       >
         <ThemeProvider />
@@ -30,7 +30,7 @@ export default function RootLayout({
           {children}
           <Toaster
             richColors
-            className={`${dmSans.className} antialiased`}
+            className={`${primaryFont.className} antialiased`}
             position="top-right"
             duration={5000}
           />
