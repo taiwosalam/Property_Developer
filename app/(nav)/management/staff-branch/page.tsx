@@ -6,7 +6,6 @@ import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
 import CustomTable from "@/components/Table/table";
 import { branches } from "./data";
 import type { Field } from "@/components/Table/types";
-import Input from "@/components/Form/Input/input";
 import Image from "next/image";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
@@ -148,22 +147,38 @@ const StaffAndBranches = () => {
   return (
     <div className="space-y-9">
       <section className="page-header-container">
-        <div className="hidden lg:grid lg:grid-cols-3 lg:gap-4">
-          <ManagementStatistcsCard />
-          <ManagementStatistcsCard />
-          <ManagementStatistcsCard />
-        </div>
-        <div className="ml-auto">
-          <Modal>
-            <ModalTrigger asChild>
-              <button type="button" className="page-header-button">
-                + create branch
-              </button>
-            </ModalTrigger>
-            <ModalContent>
-              <div>Hello</div>
-            </ModalContent>
-          </Modal>
+        <div className="w-full flex items-center justify-center lg:justify-between">
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <ManagementStatistcsCard />
+            <ManagementStatistcsCard />
+            <ManagementStatistcsCard />
+            <div className="hidden md:block lg:hidden">
+              <div className="flex items-center justify-center w-full h-full">
+                <Modal>
+                  <ModalTrigger asChild>
+                    <button type="button" className="page-header-button">
+                      + create branch
+                    </button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <div>Hello</div>
+                  </ModalContent>
+                </Modal>
+              </div>
+            </div>
+          </div>
+          <div className="md:hidden lg:flex lg:ml-4">
+            <Modal>
+              <ModalTrigger asChild>
+                <button type="button" className="page-header-button">
+                  + create new landlord
+                </button>
+              </ModalTrigger>
+              <ModalContent>
+                <div>Hello</div>
+              </ModalContent>
+            </Modal>
+          </div>
         </div>
       </section>
       <div className="page-title-container">
