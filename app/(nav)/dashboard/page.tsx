@@ -23,9 +23,9 @@ import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 const Dashboard = () => {
   return (
     <section className="custom-flex-col gap-10">
-      <div className="w-full h-full md:flex gap-x-10">
-        <div className="w-full flex-1 h-full space-y-8">
-          <div className="w-full h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="w-full h-full xl:flex gap-x-10">
+        <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-10">
+          <div className="w-full h-fit grid grid-cols-1 lg:grid-cols-3 gap-3">
             {dashboardCardData.map((card, index) => (
               <Card
                 key={index}
@@ -44,7 +44,7 @@ const Dashboard = () => {
             <DashboardChart />
           </div>
         </div>
-        <div className="w-full lg:w-[30%] h-full space-y-7">
+        <div className="w-full xl:w-[30%] h-full space-y-7 mt-4 lg:mt-0">
           <WalletBalanceCard
             mainBalance={walletBalanceCardData.mainBalance}
             cautionDeposit={walletBalanceCardData.cautionDeposit}
