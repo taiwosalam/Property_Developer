@@ -198,7 +198,7 @@ const Landlord = () => {
         <div className="flex items-center gap-x-4">
           <SearchInput
             placeholder="Search for Landlords"
-            className="bg-[#F1F2F4] w-[270px]"
+            className="bg-[#F1F2F4]"
             textInputClassName={`text-xs md:text-sm text-neutral-8 font-normal`}
             searchIconColor="#1E3A8A"
           />
@@ -208,7 +208,7 @@ const Landlord = () => {
               aria-label="list-view"
               className={`${
                 !gridView ? "bg-black" : "bg-transparent"
-              } p-[4px] rounded-md`}
+              } p-1 rounded-md`}
               onClick={setListView}
             >
               <div className={!gridView ? "text-white" : "text-[unset]"}>
@@ -220,7 +220,7 @@ const Landlord = () => {
               aria-label="grid-view"
               className={`${
                 gridView ? "bg-black" : "bg-transparent"
-              } p-[4px] rounded-md`}
+              } p-1 rounded-md`}
               onClick={setGridView}
             >
               <div className={gridView ? "text-white" : "text-[unset]"}>
