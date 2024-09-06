@@ -42,7 +42,7 @@ const Dashboard = () => {
               />
             ))}
           </div>
-          {isMobile && (
+          {!isMobile && (
             <>
               <div className="w-full h-fit">
                 <DashboardChart />
