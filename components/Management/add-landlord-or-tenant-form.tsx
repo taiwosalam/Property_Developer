@@ -1,6 +1,8 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import CameraCircle from "@/public/icons/camera-circle.svg";
+import Select from "../Form/Select/select";
+import { getAllStates, getLocalGovernments } from "@/utils/states";
 import Input from "../Form/Input/input";
 import Button from "../Form/Button/button";
 
@@ -13,32 +15,100 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   type,
   submitAction,
 }) => {
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedLGA, setSelectedLGA] = useState("");
+  const [localGovernments, setLocalGovernments] = useState<string[]>([]);
+
+  const handleStateChange = (value: string) => {
+    setSelectedState(value);
+  };
+
+  const handleLGAChange = (value: string) => {
+    setSelectedLGA(value);
+  };
+  // Update local governments when state changes
+  useEffect(() => {
+    if (selectedState) {
+      const lgas = getLocalGovernments(selectedState);
+      setLocalGovernments(lgas);
+    } else {
+      setLocalGovernments([]);
+    }
+    setSelectedLGA("");
+  }, [selectedState]);
+
   return (
     <form className="custom-flex-col gap-5" onSubmit={submitAction}>
       <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        <Input id="first-name" label="first name" required className="flex-1" />
-        <Input id="last-name" label="last name" required className="flex-1" />
+        <Input
+          id="first-name"
+          label="first name"
+          required
+          inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
+        />
+        <Input
+          id="last-name"
+          label="last name"
+          required
+          inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
+        />
         <Input
           id="email"
           label="email"
           type="email"
           required
-          className="flex-1"
+          inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
         />
-        <Input id="phone-number" label="phone number" className="flex-1" />
-        <Input id="state" label="state" className="flex-1" />
         <Input
-          id="local-government"
+          id="phone-number"
+          label="phone number"
+          inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
+        />
+        <Select
+          options={getAllStates()}
+          id="state"
+          name="state"
+          label="state"
+          placeholder="Select options"
+          inputTextStyles="text-xs md:text-sm font-normal"
+          inputContainerClassName="bg-neutral-2 rounded-[8px]"
+          value={selectedState ? selectedState : undefined}
+          onChange={handleStateChange} // Update handler
+        />
+        <Select
+          options={localGovernments}
+          id="local_government"
+          name="local_government"
           label="local government"
-          className="flex-1"
+          placeholder="Select options"
+          inputTextStyles="text-xs md:text-sm font-normal"
+          inputContainerClassName="bg-neutral-2 rounded-[8px]"
+          onChange={handleLGAChange} // Update handler
+          value={selectedLGA ? selectedLGA : undefined} // Controlled value
         />
-        <Input id="address" label="address" className="flex-1" />
         <Input
-          id="owner-type"
-          label="landlord/tenant/occupant type"
-          className="flex-1"
+          id="address"
+          label="address"
+          inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
         />
-        <Input id="gender" label="gender" className="flex-1" />
+        <Select
+          options={["Individual", "Couples", "Widow"]}
+          id={`${type === "landlord" ? "owner" : "tenant"}_type`}
+          name={`${type === "landlord" ? "owner" : "tenant"}_type`}
+          label={`${type === "landlord" ? "owner" : "Tenant/Occupant"} Type`}
+          inputTextStyles="text-xs md:text-sm font-normal"
+          inputContainerClassName="bg-neutral-2 rounded-[8px]"
+        />
+        <Select
+          options={["male", "female"]}
+          id="gender"
+          name="gender"
+          label="Gender"
+          isSearchable={false}
+          placeholder="Select options"
+          inputTextStyles="text-xs md:text-sm font-normal"
+          inputContainerClassName="bg-neutral-2 rounded-[8px]"
+        />
       </div>
       <div className="flex justify-between">
         <div className="custom-flex-col gap-3">

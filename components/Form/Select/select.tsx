@@ -21,7 +21,9 @@ const Select: React.FC<SelectProps> = ({
   inputTextStyles,
   placeholder = "Select",
   allowCustom = false,
+  isSearchable = true,
   hiddenInputClassName,
+  inputContainerClassName,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -71,8 +73,8 @@ const Select: React.FC<SelectProps> = ({
   }, [propValue]);
 
   useEffect(() => {
-    handleInputChange();
-  }, [selectedValue, handleInputChange, onChange]);
+    handleInputChange && handleInputChange();
+  }, [selectedValue, handleInputChange]);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
@@ -92,25 +94,28 @@ const Select: React.FC<SelectProps> = ({
         {/* Trigger for the custom dropdown with embedded search field */}
         <div
           className={clsx(
-            "flex items-center border border-solid py-3 pl-10 pr-3 rounded-[4px]",
-            { "bg-neutral-2": selectedValue },
-            { "cursor-pointer": !selectedValue }
+            "flex items-center border border-solid py-3 pr-3 rounded-[4px]",
+            selectedValue ? "bg-neutral-2" : "cursor-pointer",
+            isSearchable ? "pl-10" : "pl-4",
+            inputContainerClassName
           )}
           onClick={() => {
-            if (!selectedValue) setIsOpen(true);
+            if (!selectedValue) setIsOpen((x) => !x);
           }}
         >
-          {/* Search icon positioned absolutely */}
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-            <Image
-              src={SearchIcon}
-              alt="Search Icon"
-              height={18}
-              width={18}
-              className="w-[18px] h-[18px]"
-            />
-          </div>
-          {/* Conditionally render input or selected value */}
+          {/* Conditionally render the search icon */}
+          {isSearchable && (
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+              <Image
+                src={SearchIcon}
+                alt="Search Icon"
+                height={18}
+                width={18}
+                className="w-[18px] h-[18px]"
+              />
+            </div>
+          )}
+          {/* Conditionally render input or selected value based on `isSearchable` */}
           {selectedValue && !isOpen ? (
             <span
               className={clsx(
@@ -120,7 +125,7 @@ const Select: React.FC<SelectProps> = ({
             >
               {selectedValue}
             </span>
-          ) : (
+          ) : isSearchable ? (
             <input
               ref={inputRef}
               type="text"
@@ -140,8 +145,14 @@ const Select: React.FC<SelectProps> = ({
               }}
               autoFocus={isOpen} // Autofocus when opened
             />
+          ) : (
+            <span
+              className={clsx("flex-1 text-text-disabled", inputTextStyles)}
+            >
+              {placeholder}
+            </span>
           )}
-          <div className="ml-2 flex items-center justify-center">
+          <div className="ml-auto flex items-center justify-center">
             {!selectedValue ? (
               <Image
                 src={isOpen ? ArrowUpIcon : ArrowDownIcon}

@@ -32,7 +32,7 @@ body {
   pointer-events: none;
 }
 
-#portal>* {
+#portal > * {
   position: absolute;
   pointer-events: all;
 }
@@ -67,7 +67,7 @@ h1 {
   flex-direction: column;
 }
 
-.custom-flex-col>* {
+.custom-flex-col > * {
   width: 100%;
 }
 

@@ -44,19 +44,23 @@ const AddTenantModal = () => {
     },
     "add-multiple-users": {
       heading: "Import bulk Tenants/Occupants list",
-      content: <AddMultipleLandlordsOrTenants />,
+      content: (
+        <AddMultipleLandlordsOrTenants type="tenant" submitAction={() => {}} />
+      ),
     },
     "invite-multiple-users": {
       heading: "Invite Multiple Tenants/Occupants with Email",
-      content: <AddMultipleLandlordsOrTenants />,
+      content: (
+        <AddMultipleLandlordsOrTenants type="tenant" submitAction={() => {}} />
+      ),
     },
     "invite-single-user": {
       heading: "Invite Tenant/Occupant with Email",
-      content: <InvitationForm />,
+      content: <InvitationForm method="email" submitAction={() => {}} />,
     },
     "add-user-with-id": {
       heading: "Add Landlord/Landlady with ID",
-      content: <InvitationForm />,
+      content: <InvitationForm method="id" submitAction={() => {}} />,
     },
   };
 
