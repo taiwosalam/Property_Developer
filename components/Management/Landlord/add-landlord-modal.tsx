@@ -44,19 +44,29 @@ const AddLandlordModal = () => {
     },
     "add-multiple-owners": {
       heading: "Import bulk landlord/landlady list.",
-      content: <AddMultipleLandlordsOrTenants />,
+      content: (
+        <AddMultipleLandlordsOrTenants
+          type="landlord"
+          submitAction={() => {}}
+        />
+      ),
     },
     "invite-multiple-owners": {
       heading: "Invite Multiple Landlords/Landladies with Email",
-      content: <AddMultipleLandlordsOrTenants />,
+      content: (
+        <AddMultipleLandlordsOrTenants
+          type="landlord"
+          submitAction={() => {}}
+        />
+      ),
     },
     "invite-owner": {
       heading: "Invite Landlord/Landlady with Email",
-      content: <InvitationForm />,
+      content: <InvitationForm method="email" submitAction={() => {}} />,
     },
     "add-landlord-with-id": {
       heading: "Add Landlord/Landlady with ID",
-      content: <InvitationForm />,
+      content: <InvitationForm method="id" submitAction={() => {}} />,
     },
   };
 

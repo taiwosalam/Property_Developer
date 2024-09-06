@@ -181,7 +181,7 @@ const StaffAndBranches = () => {
               aria-label="list-view"
               className={`${
                 !gridView ? "bg-black" : "bg-transparent"
-              } p-[4px] rounded-md`}
+              } p-1 rounded-md`}
               onClick={setListView}
             >
               <div className={!gridView ? "text-white" : "text-[unset]"}>
@@ -193,7 +193,7 @@ const StaffAndBranches = () => {
               aria-label="grid-view"
               className={`${
                 gridView ? "bg-black" : "bg-transparent"
-              } p-[4px] rounded-md`}
+              } p-1 rounded-md`}
               onClick={setGridView}
             >
               <div className={gridView ? "text-white" : "text-[unset]"}>

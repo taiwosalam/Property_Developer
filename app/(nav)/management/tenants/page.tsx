@@ -138,7 +138,7 @@ const Tenants = () => {
               aria-label="list-view"
               className={`${
                 !gridView ? "bg-black text-white" : "bg-transparent text-black"
-              } p-[4px] rounded-[4px]`}
+              } p-1 rounded-[4px]`}
               onClick={setListView}
             >
               <div className={!gridView ? "text-white" : "text-[unset]"}>
@@ -150,7 +150,7 @@ const Tenants = () => {
               aria-label="grid-view"
               className={`${
                 gridView ? "bg-black text-white" : "bg-transparent text-black"
-              } p-[4px] rounded-[4px]`}
+              } p-1 rounded-[4px]`}
               onClick={setGridView}
             >
               <div className={gridView ? "text-white" : "text-[unset]"}>

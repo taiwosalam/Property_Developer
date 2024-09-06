@@ -10,5 +10,7 @@ export interface SelectProps {
   onChange?: (data: string) => void;
   inputTextStyles?: string;
   allowCustom?: booleab;
+  isSearchable?: boolean;
   hiddenInputClassName?: string;
+  inputContainerClassName?: string;
 }

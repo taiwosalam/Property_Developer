@@ -4,7 +4,14 @@ import Image from "next/image";
 import Button from "../Form/Button/button";
 import ImportCircle from "@/public/icons/import-circle.svg";
 
-const AddMultipleLandlordsOrTenants = () => {
+interface AddMultipleLandlordsOrTenantsProps {
+  type: "landlord" | "tenant";
+  submitAction: () => void;
+}
+
+const AddMultipleLandlordsOrTenants: React.FC<
+  AddMultipleLandlordsOrTenantsProps
+> = ({ type, submitAction }) => {
   return (
     <>
       <div className="flex justify-center">
@@ -25,10 +32,15 @@ const AddMultipleLandlordsOrTenants = () => {
         <p className="text-sm font-normal">
           How it works:{" "}
           <span className="text-brand-9 font-bold">Download the Template</span>,
-          enter list of your landlord/landlady/tenants/users details, and then upload it to
-          proceed.
+          enter list of your {type === "landlord" ? "landlords/landladies" : "tenants/occupants"}{" "}
+          details, and then upload it to proceed.
         </p>
-        <Button size="base_medium" className="py-2 px-8">
+        <Button
+          type="button"
+          onClick={submitAction}
+          size="base_medium"
+          className="py-2 px-8"
+        >
           choose
         </Button>
       </div>
