@@ -123,6 +123,11 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             ></div>
           </div>
           <main
+            style={{
+              maxWidth: `calc(100vw - ${
+                isSmallTablet ? 0 : sidenavIsOpen ? sidenav_width : 110
+              }px)`,
+            }}
             className={clsx("p-6 relative z-[1]", {
               "opacity-50": fixedSidenavIsOpen,
             })}
