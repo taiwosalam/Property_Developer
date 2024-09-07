@@ -119,7 +119,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
               height={25}
               className="w-[25px] h-[25px] mb-2"
             />
-            <span className="text-text-secondary text-xs md:text-sm font-normal">
+            <span className="text-text-secondary text-xs font-normal">
               Upload Profile Picture
             </span>
           </button>

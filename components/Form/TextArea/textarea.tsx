@@ -17,9 +17,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   className,
   placeholder,
   onChange,
-  textAreaStyles,
 }) => {
-  const [editorClass, setEditorClass] = useState<string>("");
   const [mounted, setMounted] = useState(false);
 
   const handleChange = (content: string) => {
@@ -42,11 +40,10 @@ const TextArea: React.FC<TextAreaProps> = ({
       <div className="flex flex-col">
         {mounted && (
           <ReactQuill
-            id={id}
             value={value}
             onChange={handleChange}
             placeholder={placeholder}
-            className={clsx("quill-editor", textAreaStyles, editorClass)}
+            className={clsx("quill-editor")}
             modules={{
               toolbar: {
                 container: "#toolbar",

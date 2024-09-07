@@ -40,9 +40,13 @@ const DateInput: React.FC<DateInputProps> = ({
           {label}
         </Label>
       )}
-      <DatePicker  onChange={handleDateChange} value={value} />
+      <DatePicker
+        onChange={handleDateChange}
+        value={value}
+        containerClassName="text-xs md:text-sm font-normal"
+      />
     </div>
   );
 };
-
+// F3F6F9
 export default DateInput;

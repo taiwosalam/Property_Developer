@@ -55,7 +55,8 @@ const ProfileInformation = () => {
           id="director_phone"
           label="phone number"
           placeholder="800 0000 000"
-          inputTextStyles={`text-xs md:text-sm font-normal setup-f`}
+          // inputClassName="setup-f"
+          // inputContainerClassName="text-xs md:text-sm font-normal"
         />
       </div>
       <div>

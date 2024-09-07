@@ -55,7 +55,6 @@ const CompanyDetails = () => {
           sizeUnit="MB"
           hiddenInputClassName="setup-f required"
           textStyles={`text-xs md:text-sm font-normal`}
-          // onChange={handleInputChange}
         />
 
         <Select
@@ -65,7 +64,6 @@ const CompanyDetails = () => {
           options={industryOptions}
           inputTextStyles={`text-xs md:text-sm font-normal`}
           hiddenInputClassName="setup-f"
-          // onChange={handleInputChange}
         />
 
         <Input
@@ -84,8 +82,7 @@ const CompanyDetails = () => {
           placeholder="certificate"
           buttonName="Document"
           hiddenInputClassName="setup-f"
-          textStyles={`text-xs md:text-sm font-normal`}
-          // onChange={handleInputChange}
+          textStyles="text-xs md:text-sm font-normal"
         />
       </div>
     </div>

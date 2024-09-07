@@ -3,10 +3,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
 import { CalendarIcon } from "@/public/icons/icons";
-import { styled } from "@mui/system";
+import { styled, width } from "@mui/system";
 
 // Override MUI styles using styled
 const CustomStyledDatePicker = styled(DatePicker)(({ theme }) => ({
+  "& .MuiFormControl-root.MuiTextField-root": {
+    width: "100%",
+  },
   "& .MuiInputBase-root": {
     borderRadius: "8px",
     font: "inherit",
@@ -23,26 +26,30 @@ const CustomStyledDatePicker = styled(DatePicker)(({ theme }) => ({
 interface CustomDatePickerProps {
   value?: Dayjs | null;
   onChange?: (date: Dayjs | null) => void;
+  containerClassName?: string;
 }
 
 export default function CustomDatePicker({
   value,
   onChange,
+  containerClassName,
 }: CustomDatePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <CustomStyledDatePicker
-        disableFuture
-        openTo="year"
-        views={["year", "month", "day"]}
-        value={value}
-        onChange={(date) => {
-          onChange?.(date);
-        }}
-        slots={{
-          openPickerIcon: CalendarIcon,
-        }}
-      />
+      <div className={containerClassName}>
+        <CustomStyledDatePicker
+          disableFuture
+          openTo="year"
+          views={["year", "month", "day"]}
+          value={value}
+          onChange={(date) => {
+            onChange?.(date);
+          }}
+          slots={{
+            openPickerIcon: CalendarIcon,
+          }}
+        />
+      </div>
     </LocalizationProvider>
   );
 }
