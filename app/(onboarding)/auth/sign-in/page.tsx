@@ -13,7 +13,7 @@ import {
   AuthHeading,
 } from "@/components/Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
-import { login } from "@/app/auth/data";
+import { login } from "@/app/(onboarding)/auth/data";
 import { useFormDataStore } from "@/store/formdatastore";
 
 const SignIn = () => {

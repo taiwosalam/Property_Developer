@@ -187,6 +187,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* -------------------------------------------------------------- */
 
+.can-touch,
+.can-touch * {
+  pointer-events: all !important;
+}
+
+.cant-touch-at-all {
+  pointer-events: none !important;
+}
+
+.cant-touch-at-all * {
+  pointer-events: none;
+}
+
 .sidenav-collapsed p {
   display: none;
 }
