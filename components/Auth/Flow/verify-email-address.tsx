@@ -12,7 +12,7 @@ import type { VerifyEmailAddressProps } from "./types";
 import ReloadBlue from "@/public/icons/reload-blue.svg";
 
 // Imports
-import { verifyEmail } from "@/app/auth/data";
+import { verifyEmail } from "@/app/(onboarding)/auth/data";
 import Button from "@/components/Form/Button/button";
 import { objectLength } from "@/utils/object-length";
 import { useFormDataStore } from "@/store/formdatastore";
