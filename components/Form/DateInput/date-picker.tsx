@@ -9,22 +9,14 @@ import { styled } from "@mui/system";
 const CustomStyledDatePicker = styled(DatePicker)(({ theme }) => ({
   "& .MuiInputBase-root": {
     borderRadius: "8px",
-    // fontFamily: "unset",
-    // fontWeight: "unset",
-    // fontSize: "unset",
-    // color: "unset",
+    font: "inherit",
+    color: "inherit",
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#00000099",
+    },
   },
   "& .MuiOutlinedInput-notchedOutline": {
-    // borderColor: "unset", // Customize the border color if needed
-  },
-  "& .MuiInputLabel-root": {
-    // fontFamily: "unset",
-    // fontWeight: "unset",
-    // fontSize: "unset",
-    // color: "unset",
-  },
-  "& .MuiSvgIcon-root": {
-    // color: "unset", // Customize the color of the icons if needed
+    border: "1px solid #C1C2C366",
   },
 }));
 
