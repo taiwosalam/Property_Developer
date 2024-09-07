@@ -15,7 +15,6 @@
 /* Root styles */
 :root {
   --color: 0, 51, 196;
-  /* --color: 233, 33, 46; */
   --primary-color: rgb(var(--color));
   --secondary-color: rgba(var(--color), 0.7);
 }
@@ -32,7 +31,7 @@ body {
   pointer-events: none;
 }
 
-#portal>* {
+#portal > * {
   position: absolute;
   pointer-events: all;
 }
@@ -58,8 +57,9 @@ h1 {
   color: var(--secondary-color);
 }
 
-.custom-primary-outline:focus {
+.custom-primary-outline:focus-within {
   outline-color: var(--primary-color);
+  outline-style: auto;
 }
 
 .custom-flex-col {
@@ -67,7 +67,7 @@ h1 {
   flex-direction: column;
 }
 
-.custom-flex-col>* {
+.custom-flex-col > * {
   width: 100%;
 }
 
@@ -138,31 +138,28 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 
-/* Hide default calendat icon */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  background: transparent;
-  bottom: 0;
-  color: transparent;
-  cursor: pointer;
-  height: auto;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: auto;
+.react-tel-input {
+  font-family: inherit !important;
+  /* font-size: inherit !important; */
 }
 
-/* input[type="date"] {
-  -moz-appearance: none;
-  appearance: none;
-} */
+.react-tel-input .form-control {
+  font-size: inherit !important;
+}
 
+.react-tel-input .selected-flag {
+  border-radius: 8px 0 0 8px !important;
+}
+.react-tel-input .flag-dropdown.open .selected-flag {
+  background: inherit !important;
+  border-radius: inherit !important;
+}
 .quill-editor {
   height: 160px;
   /* Adjust the height as needed */
   @apply rounded-t-lg;
   /* Rounded corners */
-  border: 1px solid #dcdcdc;
+  border: 1px solid #c1c2c366;
   /* Optional: Add a border */
   border-bottom: none;
   padding: 0.5rem;

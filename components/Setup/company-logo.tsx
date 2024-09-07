@@ -27,9 +27,9 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ hiddenInputClassName }) => {
   ) => {
     const file = event.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
-      // Check image size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert("The image size should not exceed 5 MB.");
+      // Check image size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        alert("The image size should not exceed 2 MB.");
         return;
       }
 
@@ -61,7 +61,7 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ hiddenInputClassName }) => {
     <div className="custom-flex-col gap-5">
       <SectionHeading required title="company logo">
         Ensure that your company logo has a white background, with a maximum
-        size of 5MB. The picture must be between 250 to 600 pixels wide, or
+        size of 2MB. The picture must be between 250 to 600 pixels wide, or
         ideally 160px x 450px.
       </SectionHeading>
       <div className="flex gap-2">

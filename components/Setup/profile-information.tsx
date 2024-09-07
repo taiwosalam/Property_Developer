@@ -23,7 +23,7 @@ const ProfileInformation = () => {
           id="director_name"
           label="full name"
           placeholder="Write here"
-          inputClassName={`text-xs md:text-sm font-normal setup-f`}
+          inputClassName={`text-xs md:text-sm font-normal rounded-[8px] setup-f`}
           className="lg:col-span-2"
         />
         <Select
@@ -49,13 +49,14 @@ const ProfileInformation = () => {
           label="alternative email"
           type="email"
           placeholder="example@mail.com"
-          inputClassName={`text-xs md:text-sm font-normal setup-f`}
+          inputClassName={`text-xs md:text-sm font-normal rounded-[8px] setup-f`}
         />
         <PhoneNumberInput
           id="director_phone"
           label="phone number"
           placeholder="800 0000 000"
-          inputTextStyles={`text-xs md:text-sm font-normal setup-f`}
+          // inputClassName="setup-f"
+          // inputContainerClassName="text-xs md:text-sm font-normal"
         />
       </div>
       <div>

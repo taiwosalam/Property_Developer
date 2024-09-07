@@ -6,5 +6,4 @@ export interface TextAreaProps {
   required?: boolean;
   placeholder?: string;
   onChange?: (data: string) => void;
-  textAreaStyles?: string;
 }

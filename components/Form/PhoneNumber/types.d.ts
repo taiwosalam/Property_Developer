@@ -6,5 +6,6 @@ export interface PhoneNumberProps {
   required?: boolean;
   placeholder: string;
   onChange?: (data: string) => void;
-  inputTextStyles?: string;
+  inputClassName?: string;
+  inputContainerClassName?: string;
 }

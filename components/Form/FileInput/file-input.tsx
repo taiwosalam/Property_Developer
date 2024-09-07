@@ -121,12 +121,9 @@ const FileInput: React.FC<FileInputProps> = ({
           aria-label="upload"
           onClick={handleClick}
           className={clsx(
-            "p-3 rounded-[4px] w-full custom-primary-outline border border-solid text-text-disabled text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between",
+            "p-3 rounded-[8px] w-full border border-solid border-[#C1C2C366] text-text-disabled text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099]",
             fileName ? "bg-neutral-2" : "bg-none"
           )}
-          style={{
-            borderColor: "rgba(186, 199, 213, 0.50)",
-          }}
         >
           <span
             className={clsx(
@@ -159,7 +156,6 @@ const FileInput: React.FC<FileInputProps> = ({
                   handleDeleteFile();
                   e.stopPropagation();
                 }}
-                className="p-1"
               >
                 <Image
                   src={deleteIcon}

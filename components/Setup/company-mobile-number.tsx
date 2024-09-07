@@ -2,7 +2,6 @@
 import PhoneNumberInput from "../Form/PhoneNumber/phone-number";
 import {
   SectionHeading,
-  SectionSeparator,
 } from "../Section/section-components";
 
 const CompanyMobileNumber = () => {
@@ -19,7 +18,8 @@ const CompanyMobileNumber = () => {
             key={index}
             id={`company_phone${index === 0 ? "" : `${index + 1}`}`}
             placeholder="800 0000 000"
-            inputTextStyles={`text-xs md:text-sm font-normal setup-f`}
+            inputClassName="setup-f"
+            // inputContainerClassName="text-xs md:text-sm font-normal"
           />
         ))}
       </div>

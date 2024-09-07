@@ -1,72 +1,55 @@
-"use client";
-
-import * as React from "react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers";
+import { Dayjs } from "dayjs";
 import { CalendarIcon } from "@/public/icons/icons";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { styled, width } from "@mui/system";
 
-interface DatePickerProps {
-  className?: string;
-  textStyles?: string;
-  dateValueProp?: Date;
-  onDateChange?: (date: Date | undefined) => void;
+// Override MUI styles using styled
+const CustomStyledDatePicker = styled(DatePicker)(({ theme }) => ({
+  "& .MuiFormControl-root.MuiTextField-root": {
+    width: "100%",
+  },
+  "& .MuiInputBase-root": {
+    borderRadius: "8px",
+    font: "inherit",
+    color: "inherit",
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#00000099",
+    },
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    border: "1px solid #C1C2C366",
+  },
+}));
+
+interface CustomDatePickerProps {
+  value?: Dayjs | null;
+  onChange?: (date: Dayjs | null) => void;
+  containerClassName?: string;
 }
 
-const DatePicker: React.FC<DatePickerProps> = ({
-  className,
-  textStyles,
-  dateValueProp,
-  onDateChange,
-}) => {
-  const [date, setDate] = React.useState<Date>();
-
-  React.useEffect(() => {
-    if (dateValueProp !== undefined) {
-      setDate(dateValueProp);
-    }
-  }, [dateValueProp]);
-
-  const handleDateSelect = (selectedDate: Date | undefined) => {
-    setDate(selectedDate);
-    if (onDateChange) {
-      onDateChange(selectedDate);
-    }
-  };
-
+export default function CustomDatePicker({
+  value,
+  onChange,
+  containerClassName,
+}: CustomDatePickerProps) {
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant={"outline"}
-          className={cn(
-            "w-[280px] justify-between",
-            date ? "bg-[#FAFAFA]" : "text-muted-foreground",
-            className
-          )}
-        >
-          <p className={textStyles}>
-            {date ? format(date, "MM/dd/yyyy") : <span>mm/dd/yyyy</span>}
-          </p>
-          <CalendarIcon/>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={handleDateSelect}
-          initialFocus
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <div className={containerClassName}>
+        <CustomStyledDatePicker
+          disableFuture
+          openTo="year"
+          views={["year", "month", "day"]}
+          value={value}
+          onChange={(date) => {
+            onChange?.(date);
+          }}
+          slots={{
+            openPickerIcon: CalendarIcon,
+          }}
         />
-      </PopoverContent>
-    </Popover>
+      </div>
+    </LocalizationProvider>
   );
-};
-
-export default DatePicker;
+}

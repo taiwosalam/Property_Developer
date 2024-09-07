@@ -95,13 +95,13 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
 
       <div className="flex items-center justify-between">
         {/* Resend code button */}
-        <button className="flex gap-1 custom-secondary-color text-base font-medium">
+        <button type="button" className="flex gap-1 custom-secondary-color text-base font-medium">
           <Image src={ReloadBlue} alt="resend" height={20} />
           <p className="opacity-50">Resend code</p>
           <p>(40s)</p>
         </button>
         {/* Button to go back and change the email */}
-        <button
+        <button type="button"
           onClick={() => changeStep("prev")}
           className="custom-secondary-color text-base font-medium"
         >

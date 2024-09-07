@@ -36,6 +36,13 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     // Update the filter condition to account for Quill empty values
     const filledInputs = inputs.filter((input) => {
       const value = input.value.trim();
+
+      // Handle PhoneInput by checking if the value contains only the country code (e.g., "+234")
+      if (input.type === "tel") {
+        // Adjust this condition based on your country code logic
+        return value.length > 4; // Exclude inputs that only have the country code (e.g., +234)
+      }
+
       return value && value !== "<p><br></p>" && value !== "<p></p>";
     });
     progress.current = filledInputs.length * stepValue;

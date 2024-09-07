@@ -7,6 +7,7 @@ import type { DateInputProps } from "./types";
 import clsx from "clsx";
 import Label from "../Label/label";
 import DatePicker from "./date-picker";
+import { Dayjs } from "dayjs";
 // import { checkValidatonError } from "@/utils/validation";
 
 const DateInput: React.FC<DateInputProps> = ({
@@ -15,33 +16,23 @@ const DateInput: React.FC<DateInputProps> = ({
   value,
   required,
   className,
-  textStyles,
   hiddenInputClassName,
-  //   validationErrors = {},
   onChange,
 }) => {
-  // State to store validation error message
-  //   const [validationError, setValidationError] = useState<string | null>(null);
-
-  const handleDateChange = (date: Date | undefined) => {
+  const handleDateChange = (date?: Dayjs | null) => {
     if (onChange) {
       onChange(date);
     }
   };
-
-  // Check and set validation error for this input when validationErrors or id changes
-  //   useEffect(() => {
-  //     setValidationError(
-  //       checkValidatonError({ errors: validationErrors, key: id })
-  //     );
-  //   }, [validationErrors, id]);
-
+ const formattedValue = value ? value.format("MM/DD/YYYY") : "";
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
       <input
         type="hidden"
         className={hiddenInputClassName}
-        // value={selectedValue}
+        name={id}
+        id={id}
+        value={formattedValue}
       />
       {/* Render the label if provided */}
       {label && (
@@ -50,15 +41,12 @@ const DateInput: React.FC<DateInputProps> = ({
         </Label>
       )}
       <DatePicker
-        className="p-4 h-[50px]"
-        textStyles={clsx("text-text-disabled", textStyles)}
-        // label="outside"
-        // maxValue={today(getLocalTimeZone())}
-        dateValueProp={value}
-        onDateChange={handleDateChange}
+        onChange={handleDateChange}
+        value={value}
+        containerClassName="text-xs md:text-sm font-normal"
       />
     </div>
   );
 };
-
+// F3F6F9
 export default DateInput;

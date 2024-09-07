@@ -90,14 +90,15 @@ const Input: React.FC<InputProps> = ({
           type={type === "password" && isPasswordVisible ? "text" : type}
           // Input styles
           className={clsx(
-            "p-3 rounded-[4px] w-full custom-primary-outline border border-solid bg-neutral-2",
+            "p-3 rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 hover:border-[#00000099]",
             {
               "pr-11": type === "password", // Add padding-right if the input type is password (for icon)
               "pl-11": leftIcon, // Add padding-left if leftIcon is provided
             },
+
             inputClassName
           )}
-          style={{ borderColor: "rgba(186, 199, 213, 0.50)", ...style }} // Add custom border color
+          style={style} // Add custom border color
         />
         {/* Toggle button for showing/hiding password */}
         {type === "password" && (

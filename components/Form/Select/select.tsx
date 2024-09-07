@@ -5,7 +5,6 @@ import { useEffect, useRef, useState, useContext } from "react";
 import type { SelectProps } from "./types";
 import SearchIcon from "@/public/icons/search-icon.svg";
 import ArrowDownIcon from "@/public/icons/arrow-down.svg";
-import ArrowUpIcon from "@/public/icons/arrow-up.svg";
 import deleteIcon from "@/public/icons/delete-icon.svg";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 
@@ -94,7 +93,7 @@ const Select: React.FC<SelectProps> = ({
         {/* Trigger for the custom dropdown with embedded search field */}
         <div
           className={clsx(
-            "flex items-center border border-solid py-3 pr-3 rounded-[4px]",
+            "flex items-center border border-solid border-[#C1C2C366] hover:border-[#00000099] py-[11px] pr-3 rounded-[8px] custom-primary-outline",
             selectedValue ? "bg-neutral-2" : "cursor-pointer",
             isSearchable ? "pl-10" : "pl-4",
             inputContainerClassName
@@ -155,8 +154,12 @@ const Select: React.FC<SelectProps> = ({
           <div className="ml-auto flex items-center justify-center">
             {!selectedValue ? (
               <Image
-                src={isOpen ? ArrowUpIcon : ArrowDownIcon}
+                src={ArrowDownIcon}
                 alt="Toggle Arrow"
+                className={clsx(
+                  "transition-transform duration-300",
+                  isOpen && "rotate-180"
+                )}
               />
             ) : (
               <button
@@ -183,7 +186,7 @@ const Select: React.FC<SelectProps> = ({
         {isOpen && (
           <div
             className={clsx(
-              "absolute z-10 mt-2 w-full bg-white border border-solid rounded-[4px] shadow-lg",
+              "absolute z-10 mt-2 w-full bg-white border border-solid rounded-[8px] shadow-lg",
               {
                 "border-[0] mt-0 shadow-[none]":
                   !searchTerm && filteredOptions.length === 0,
