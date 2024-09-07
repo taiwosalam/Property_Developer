@@ -184,6 +184,19 @@ input[type="number"]::-webkit-inner-spin-button {
 
 /* -------------------------------------------------------------- */
 
+.can-touch,
+.can-touch * {
+  pointer-events: all !important;
+}
+
+.cant-touch-at-all {
+  pointer-events: none !important;
+}
+
+.cant-touch-at-all * {
+  pointer-events: none;
+}
+
 .sidenav-collapsed p {
   display: none;
 }

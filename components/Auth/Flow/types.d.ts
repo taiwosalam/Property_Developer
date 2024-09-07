@@ -1,5 +1,5 @@
 // Import
-import type { FormSteps } from "@/app/auth/types";
+import type { FormSteps } from "@/app/(onboarding)/auth/types";
 
 export interface FlowComponentProps {
   changeStep: (step: FormSteps) => void;

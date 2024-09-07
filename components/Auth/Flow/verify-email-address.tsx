@@ -12,7 +12,7 @@ import type { VerifyEmailAddressProps } from "./types";
 import ReloadBlue from "@/public/icons/reload-blue.svg";
 
 // Imports
-import { verifyEmail } from "@/app/auth/data";
+import { verifyEmail } from "@/app/(onboarding)/auth/data";
 import Button from "@/components/Form/Button/button";
 import { objectLength } from "@/utils/object-length";
 import { useFormDataStore } from "@/store/formdatastore";
@@ -95,13 +95,13 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
 
       <div className="flex items-center justify-between">
         {/* Resend code button */}
-        <button className="flex gap-1 custom-secondary-color text-base font-medium">
+        <button type="button" className="flex gap-1 custom-secondary-color text-base font-medium">
           <Image src={ReloadBlue} alt="resend" height={20} />
           <p className="opacity-50">Resend code</p>
           <p>(40s)</p>
         </button>
         {/* Button to go back and change the email */}
-        <button
+        <button type="button"
           onClick={() => changeStep("prev")}
           className="custom-secondary-color text-base font-medium"
         >

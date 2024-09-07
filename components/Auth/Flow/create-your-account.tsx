@@ -13,7 +13,7 @@ import {
 } from "@/components/Auth/auth-components";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
-import { signup } from "@/app/auth/data";
+import { signup } from "@/app/(onboarding)/auth/data";
 import { useFormDataStore } from "@/store/formdatastore";
 
 const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
