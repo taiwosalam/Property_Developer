@@ -51,10 +51,6 @@ const Setup = () => {
       }
     }
 
-    if (payload.director_about) {
-      payload.director_about = payload.director_about.replace(/<\/?p>/g, "");
-    }
-
     console.log(data); // Debug log to see the modified data
     // updateFormData(payload);
     try {

@@ -28,9 +28,9 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
   ) => {
     const file = event.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
-      // Check image size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert("The image size should not exceed 5 MB.");
+      // Check image size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        alert("The image size should not exceed 2 MB.");
         return;
       }
 
@@ -63,7 +63,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
     <div className="custom-flex-col gap-5">
       <SectionHeading title="profile picture">
         The profile photo size should be 100 x 100 pixels with a maximum file
-        size of 5MB.
+        size of 2MB.
       </SectionHeading>
 
       <div className="flex gap-2">
@@ -126,7 +126,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
         )}
         {image && (
           <div className="flex items-end">
-            <Button variant="change" size="sm" onClick={handleButtonClick}>
+            <Button type="button" variant="change" size="sm" onClick={handleButtonClick}>
               Change Picture
             </Button>
           </div>

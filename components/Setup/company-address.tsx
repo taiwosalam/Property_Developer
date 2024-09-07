@@ -110,7 +110,7 @@ const CompanyAddress = () => {
           id="address"
           placeholder="Write here"
           className="lg:col-span-2"
-          inputClassName={`text-xs md:text-sm font-normal setup-f`}
+          inputClassName={`text-xs md:text-sm font-normal rounded-[8px] setup-f`}
         />
 
         <FileInput

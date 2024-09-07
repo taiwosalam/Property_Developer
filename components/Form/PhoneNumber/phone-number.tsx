@@ -46,7 +46,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
         </Label>
       )}
       <div className="relative flex items-center">
-        <div className="bg-[#F3F6F9] p-3 text-center text-text-disabled rounded-l-[4px] border border-solid border-r-0 text-xs md:text-sm font-normal grid place-items-center">
+        <div className="bg-[#F3F6F9] p-3 text-center text-text-disabled rounded-l-[8px] border border-solid border-r-0 text-xs md:text-sm font-normal grid place-items-center">
           +234
         </div>
         <input
@@ -59,7 +59,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
           onChange={handleInputChange}
           // Input styles
           className={clsx(
-            "p-3 w-full custom-primary-outline border border-solid rounded-r-[4px] border-l-0",
+            "p-3 w-full custom-primary-outline border border-solid rounded-r-[8px] border-l-0",
             inputTextStyles
           )}
           style={{ borderColor: "rgba(186, 199, 213, 0.50)" }} // Add custom border color

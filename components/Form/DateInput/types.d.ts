@@ -1,14 +1,10 @@
-// Types
-// import type { ValidationErrors } from "@/utils/types";
-
+import { Dayjs } from "dayjs";
 export interface DateInputProps {
   id: string;
-  value?: Date;
   label?: string;
+  required?: boolean;
   className?: string;
   hiddenInputClassName?: string;
-  required?: boolean;
-  //   validationErrors?: ValidationErrors;
-  onChange?: (date: Date | undefined) => void;
-  textStyles?: string;
+  value?: Dayjs | null;
+  onChange?: (date?: Dayjs | null) => void;
 }
