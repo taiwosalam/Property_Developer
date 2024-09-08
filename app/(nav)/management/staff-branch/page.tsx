@@ -13,6 +13,8 @@ import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import SearchInput from "@/components/SearchInput/search-input";
 import type { StaffAndBranchState } from "./types";
+import DateInput from "@/components/Form/DateInput/date-input";
+import { Dayjs } from "dayjs";
 
 const StaffAndBranches = () => {
   const initialState = {
@@ -45,8 +47,8 @@ const StaffAndBranches = () => {
   const allStates = getAllStates() || [];
 
   const StaffAndBranchFilters = [
-    { label: "Alphabetically", value: "alphabetically" },
     { label: "Registration Date", value: "registration_date" },
+    { label: "Alphabetically", value: "alphabetically" },
   ];
 
   const handleFilterApply = (filters: any) => {
@@ -62,6 +64,10 @@ const StaffAndBranches = () => {
     selectedLGA,
     localGovernments,
   } = state;
+
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null | undefined>(
+    null
+  );
 
   const StaffAndBranchFiltersWithOptions = [
     {
@@ -79,6 +85,23 @@ const StaffAndBranches = () => {
             value: lga,
           }))
         : [],
+    },
+  ];
+
+  const StaffAndBranchFiltersWithDate = [
+    {
+      label: "Date",
+      value: (
+        <DateInput
+          required
+          id="date"
+          onChange={(date) => {
+            setSelectedDate(date);
+          }}
+          value={selectedDate}
+          hiddenInputClassName="setup-f"
+        />
+      ),
     },
   ];
 
@@ -148,16 +171,31 @@ const StaffAndBranches = () => {
     <div className="space-y-9">
       <section className="page-header-container">
         <div className="w-full flex items-center justify-center lg:justify-between">
-          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <ManagementStatistcsCard />
-            <ManagementStatistcsCard />
-            <ManagementStatistcsCard />
-            <div className="hidden md:block lg:hidden">
+          <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <ManagementStatistcsCard
+              title="Total Branches"
+              old={100}
+              newData={200}
+              total={300}
+            />
+            <ManagementStatistcsCard
+              title="Total Properties"
+              old={100}
+              newData={200}
+              total={300}
+            />
+            <ManagementStatistcsCard
+              title="Total Staff"
+              old={100}
+              newData={200}
+              total={300}
+            />
+            <div className="hidden md:block xl:hidden">
               <div className="flex items-center justify-center w-full h-full">
                 <Modal>
                   <ModalTrigger asChild>
                     <button type="button" className="page-header-button">
-                      + create branch
+                      + create new landlord
                     </button>
                   </ModalTrigger>
                   <ModalContent>
@@ -167,7 +205,7 @@ const StaffAndBranches = () => {
               </div>
             </div>
           </div>
-          <div className="md:hidden lg:flex lg:ml-4">
+          <div className="md:hidden xl:flex lg:ml-4">
             <Modal>
               <ModalTrigger asChild>
                 <button type="button" className="page-header-button">

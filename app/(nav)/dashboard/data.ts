@@ -21,7 +21,7 @@ function getBackgroundColor(title: string): string {
       backgroundColor = "#1A96F0";
       break;
     case "tenants & occupants":
-      backgroundColor = "#C7E12C";
+      backgroundColor = "#181670";
       break;
     case "invoices":
       backgroundColor = "#C7E12C";
