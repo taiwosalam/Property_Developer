@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { addDays, format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
@@ -26,28 +26,28 @@ export function DatePickerWithRange({
     <div className={cn(className)}>
       <Popover>
         <PopoverTrigger asChild>
-          <Button
+          <button
             id="date"
-            variant={"outline"}
             className={cn(
-              "w-fit justify-start text-left font-normal",
+              "inline-flex items-center whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50 h-10 px-1 py-2 w-full justify-start text-left font-normal",
               !date && "text-muted-foreground"
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} -{" "}
+                  {format(date.from, "LLL dd, y")}{" "}
+                  <ChevronDown className="ml-1 h-4 w-4" />-{" "}
                   {format(date.to, "LLL dd, y")}
                 </>
               ) : (
-                format(date.from, "LLL dd, y")
+                <>{format(date.from, "LLL dd, y")}</>
               )
             ) : (
-              <span>Pick a date</span>
+              <span className="ml-2">Pick a date</span>
             )}
-          </Button>
+            <ChevronDown className="ml-1 h-4 w-4" />
+          </button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar

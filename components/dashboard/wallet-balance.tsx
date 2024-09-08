@@ -41,6 +41,10 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
     setHideBalance(!hideBalance);
   };
 
+  const formatNumber = (number: number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   return (
     <div className={clsx("space-y-2", className)}>
       <div className="w-full flex items-center justify-between font-normal">
@@ -52,27 +56,29 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
       </div>
       <div className="p-5 custom-primary-bg space-y-3 rounded-lg">
         <div className="flex items-center gap-1 text-white opacity-95 font-normal text-sm">
-          <p>My balance</p>
+          <p className="text-text-white-secondary text-sm font-medium">
+            Balance
+          </p>
           <button onClick={hideWalletBalance}>
             {hideBalance ? (
               <span className="text-white">
-                <Eye size={14} />
+                <Eye size={12} />
               </span>
             ) : (
               <span className="text-white">
-                <EyeOff size={14} />
+                <EyeOff size={12} />
               </span>
             )}
           </button>
         </div>
         <p className="font-medium text-xl text-white">
-          {hideBalance ? "₦" + mainBalance : "*******"}
+          {hideBalance ? "₦ " + formatNumber(mainBalance) : "*******"}
         </p>
         <div className="text-white text-xs font-medium capitalize flex space-x-1">
-          <p style={{ color: "rgba(255, 255, 255, 0.65)" }}>
-            caution deposit
-          </p>
-          <span className="text-white ml-2">₦{cautionDeposit}</span>
+          <p className="text-text-white-secondary ">caution deposit</p>
+          <span className="text-white ml-2">
+            ₦ {formatNumber(cautionDeposit)}
+          </span>
           <Image src="/icons/caution.svg" alt="info" width={12} height={12} />
         </div>
         <div className="w-full flex justify-between">

@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { notificationCardProps } from "./types";
 import messagesIcon from "@/public/icons/message.svg";
 import complaintsIcon from "@/public/icons/complaints.svg";
+import verified from "@/public/icons/verified.svg";
 
 const NotificationCard: React.FC<notificationCardProps> = ({
   sectionHeader,
@@ -68,8 +69,19 @@ const NotificationCard: React.FC<notificationCardProps> = ({
             </Avatar>
             <div className="w-full gap-1">
               <div className="w-full flex items-center justify-between">
-                <p className="text-sm font-medium text-text-primary">
+                <p className="text-sm font-medium text-text-primary flex items-center">
                   {notification.name}
+                  <Image
+                    src={verified}
+                    alt="badge"
+                    width={14}
+                    height={14}
+                    style={{
+                      width: "14px",
+                      height: "14px",
+                    }}
+                    className="ml-1"
+                  />
                 </p>
                 <p className="text-[10px] text-text-disabled">
                   {notification.time}

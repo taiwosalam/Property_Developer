@@ -52,33 +52,46 @@ const DonutChart: React.FC<DonutChartProps> = ({
   );
 };
 
-const ManagementStatistcsCard = () => {
-  const existingLandlords = 457;
-  const newLandlords = 200;
-  const totalLandlords = existingLandlords + newLandlords;
-
+const ManagementStatistcsCard = ({
+  title,
+  old,
+  newData,
+  total,
+}: {
+  title: string;
+  old: number;
+  newData: number;
+  total: number;
+}) => {
   return (
     <Card
       className="w-full"
       style={{ boxShadow: "-2px 2px 10px rgba(21, 21, 21, 0.10)" }}
     >
       <CardContent className="py-5">
-        <div className="flex justify-between items-start">
+        <div className="flex justify-between items-center">
           <div className="flex flex-col gap-y-3">
             <CardTitle className="text-base font-bold text-brand-10">
-              Total Landlords
+              {title}
             </CardTitle>
-            <p className="text-[32px] font-bold text-text-label">
-              {totalLandlords}
-            </p>
+            <p className="text-[32px] font-bold text-text-label">{total}</p>
           </div>
-
-          <div className="flex flex-col gap-y-3">
+          <div className="flex flex-col gap-y-3 ml-5">
             <DonutChart
-              oldValue={existingLandlords}
-              newValue={newLandlords}
+              oldValue={old || 0}
+              newValue={newData || 0}
+              newColor={
+                title === "Web Landlords" ||
+                title === "Total Properties" ||
+                title === "Web Tenants"
+                  ? "#8C62FF"
+                  : title === "Mobile Landlords" ||
+                    title === "Total Staff" ||
+                    title === "Mobile Tenants"
+                  ? "#E15B0F"
+                  : "#01BA4C"
+              }
               oldColor="#0033C4"
-              newColor="#01BA4C"
             />
             <p className="font-normal text-xs text-neutral-6 text-right">
               this month
