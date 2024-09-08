@@ -100,7 +100,7 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
       value={{ handleInputChange, canSubmit: canSubmit }}
     >
       <div ref={containerRef} className={className}>
-        <div className="flex gap-[10px]" style={style}>
+        <div className="flex gap-[10px] bg-white" style={style}>
           {Array(steps)
             .fill(null)
             .map((_, index) => (

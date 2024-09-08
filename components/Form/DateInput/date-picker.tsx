@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -42,7 +43,9 @@ export default function CustomDatePicker({
 }: CustomDatePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div className={containerClassName}>
+      <div
+        className={clsx("text-xs md:text-sm font-normal", containerClassName)}
+      >
         <CustomStyledDatePicker
           disableFuture
           openTo="year"

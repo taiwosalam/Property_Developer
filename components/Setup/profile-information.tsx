@@ -23,7 +23,7 @@ const ProfileInformation = () => {
           id="director_name"
           label="full name"
           placeholder="Write here"
-          inputClassName={`text-xs md:text-sm font-normal rounded-[8px] setup-f`}
+          inputClassName="rounded-[8px] setup-f"
           className="lg:col-span-2"
         />
         <Select
@@ -31,7 +31,6 @@ const ProfileInformation = () => {
           id="director_title"
           label="personal title / qualification"
           options={titles}
-          inputTextStyles={`text-xs md:text-sm font-normal`}
           hiddenInputClassName="setup-f"
         />
 
@@ -40,7 +39,6 @@ const ProfileInformation = () => {
           id="director_experience"
           label="years in business"
           placeholder="Write here"
-          inputTextStyles={`text-xs md:text-sm font-normal`}
           options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
           hiddenInputClassName="setup-f"
         />
@@ -49,14 +47,13 @@ const ProfileInformation = () => {
           label="alternative email"
           type="email"
           placeholder="example@mail.com"
-          inputClassName={`text-xs md:text-sm font-normal rounded-[8px] setup-f`}
+          inputClassName="rounded-[8px] setup-f"
         />
         <PhoneNumberInput
           id="director_phone"
           label="phone number"
           placeholder="800 0000 000"
-          inputClassName="setup-f custom-phone-input"
-          inputContainerClassName="font-normal rounded-[8px] hover:outline outline-1 outline-auto outline-[#00000099] focus-within:outline focus-within:outline-[#0033c4] focus-within:outline-2"
+          inputClassName="setup-f"
         />
       </div>
       <div>

@@ -92,7 +92,10 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </div>
         )}
         <div className="custom-flex-col flex-1 bg-neutral-2">
-          <div className="custom-flex-col sticky top-[99px] bg-white z-[2]">
+          <div
+            style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
+            className="custom-flex-col sticky top-[99px] bg-white z-[2]"
+          >
             <div
               className="h-[1px]"
               style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}

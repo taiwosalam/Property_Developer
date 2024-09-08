@@ -38,7 +38,6 @@ const DateInput: React.FC<DateInputProps> = ({
         inputClassName={inputClassName}
         onChange={handleDateChange}
         value={value}
-        containerClassName="text-xs md:text-sm font-normal"
       />
     </div>
   );

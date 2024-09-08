@@ -15,8 +15,7 @@ const CompanyMobileNumber = () => {
             key={index}
             id={`company_phone${index === 0 ? "" : `${index + 1}`}`}
             placeholder="800 0000 000"
-            inputClassName="setup-f custom-phone-input"
-            inputContainerClassName="font-normal rounded-[8px] hover:outline outline-1 outline-auto outline-[#00000099] focus-within:outline focus-within:outline-[#0033c4] focus-within:outline-2 !text-xs md:!text-sm font-normal"
+            inputClassName="setup-f"
           />
         ))}
       </div>
