@@ -225,12 +225,7 @@ const Tenants = () => {
       <div className="page-title-container">
         <PageTitle title="Tenants/Occupants (Users)" />
         <div className="flex items-center gap-x-4">
-          <SearchInput
-            placeholder="Search for Tenants & Occupants"
-            className="bg-[#F1F2F4] w-[270px]"
-            textInputClassName={`text-xs md:text-sm text-neutral-8 font-normal`}
-            searchIconColor="#1E3A8A"
-          />
+          <SearchInput placeholder="Search for Tenants & Occupants" />
           <div className="flex items-center gap-x-3">
             <button
               type="button"

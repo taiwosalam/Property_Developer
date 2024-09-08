@@ -295,5 +295,5 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .search-input-placeholder-color::placeholder {
-  @apply text-neutral-8;
+  /* @apply text-neutral-8; */
 }

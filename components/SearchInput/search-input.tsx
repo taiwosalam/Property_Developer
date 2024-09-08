@@ -6,22 +6,18 @@ const SearchInput: React.FC<SearchInputProps> = ({
   textInputClassName,
   className,
   placeholder,
-  searchIconColor,
+  searchIconColor = "#1E3A8A",
 }) => {
   return (
     <div
       className={clsx(
-        "relative flex items-center border py-3 pl-10 pr-3 rounded-[8px] border-none",
+        "relative flex items-center border py-3 pl-10 pr-3 rounded-[8px] border-none bg-[#F1F2F4]",
         className
       )}
     >
       {/* Search icon positioned absolutely */}
       <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-        <Search
-          color={searchIconColor || "#fff"}
-          strokeWidth={"0.5"}
-          size={20}
-        />
+        <Search color={searchIconColor} strokeWidth={"0.5"} size={20} />
       </div>
       <input
         type="text"

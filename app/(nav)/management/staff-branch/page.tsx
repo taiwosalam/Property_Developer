@@ -220,12 +220,7 @@ const StaffAndBranches = () => {
       <div className="page-title-container">
         <PageTitle title="Staff & Branch" />
         <div className="flex items-center space-x-4">
-          <SearchInput
-            placeholder="Search for Staff and Branch"
-            className="bg-[#F1F2F4] w-[270px]"
-            textInputClassName={`text-xs md:text-sm text-neutral-8 font-normal`}
-            searchIconColor="#1E3A8A"
-          />
+          <SearchInput placeholder="Search for Staff and Branch" />
           <div className="flex items-center gap-x-3">
             <button
               type="button"

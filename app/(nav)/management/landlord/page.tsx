@@ -225,11 +225,7 @@ const Landlord = () => {
       <div className="page-title-container">
         <PageTitle title="Landlords/Landladies (Owners)" />
         <div className="flex items-center gap-x-4">
-          <SearchInput
-            placeholder="Search for Landlords"
-            className="bg-[#F1F2F4]"
-            searchIconColor="#1E3A8A"
-          />
+          <SearchInput placeholder="Search for Landlords" />
           <div className="flex items-center gap-x-3">
             <button
               type="button"
