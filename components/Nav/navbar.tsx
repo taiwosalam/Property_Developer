@@ -23,6 +23,7 @@ import {
   DropdownTrigger,
 } from "@/components/Dropdown/dropdown";
 
+import { getGreeting } from "./data";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { NavIcon } from "@/components/Nav/nav-components";
 import NavProfileDropdown from "@/components/Nav/nav-profile-dropdown";
@@ -89,9 +90,9 @@ const Navbar = () => {
                   size={isCustom ? 45 : 60}
                   status
                 />
-                <div className="custom-flex-col text-text-secondary capitalize">
+                <div className="hidden sm:flex flex-col text-text-secondary capitalize">
                   <p className="text-[10px] md:text-xs font-normal">
-                    Good Morning,
+                    {getGreeting()},
                   </p>
                   <p className="text-xs md:text-base font-medium">
                     Mr Taiwo Salam
@@ -99,7 +100,7 @@ const Navbar = () => {
                 </div>
               </div>
             </DropdownTrigger>
-            <DropdownContent className="custom-flex-col gap-4 pb-[10px] min-w-[350px] text-base font-normal capitalize">
+            <DropdownContent className="custom-flex-col gap-4 pb-[10px] min-w-[300px] sm:min-w-[350px] text-sm sm:text-base font-normal capitalize">
               <NavProfileDropdown />
             </DropdownContent>
           </Dropdown>
