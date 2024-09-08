@@ -41,7 +41,7 @@ const OnboardingPopup = () => {
   }, [isOpen]);
 
   return (
-    <div className="absolute w-[326px] bottom-20 right-20 custom-flex-col gap-3 cant-touch-at-all">
+    <div className="absolute w-[326px] bottom-10 right-10 lg:bottom-20 lg:right-20 custom-flex-col gap-3 cant-touch-at-all">
       {isOpen && (
         <div ref={containerRef} className="custom-flex-col opacity-0 can-touch">
           <div className="h-[340px] px-2 py-4 rounded-lg bg-brand-primary custom-flex-col justify-end gap-6">

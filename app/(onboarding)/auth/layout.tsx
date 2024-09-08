@@ -25,7 +25,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
       </div>
       <div className="relative h-full flex gap-10 p-[20px] sm:p-[60px]">
         <div className="flex-1 flex items-center justify-start">
-          <div className="w-full max-w-[580px] py-6 px-10 rounded-2xl bg-white max-h-full overflow-x-hidden overflow-y-auto no-scrollbar">
+          <div className="w-full max-w-[580px] pb-6 px-10 rounded-2xl bg-white max-h-full overflow-x-hidden overflow-y-auto no-scrollbar">
             {children}
           </div>
         </div>

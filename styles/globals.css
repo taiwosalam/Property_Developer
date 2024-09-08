@@ -49,6 +49,10 @@ h1 {
   background-color: var(--primary-color);
 }
 
+.custom-secondary-bg {
+  background-color: var(--secondary-color);
+}
+
 .custom-primary-color {
   color: var(--primary-color);
 }
@@ -60,6 +64,21 @@ h1 {
 .custom-primary-outline:focus-within {
   outline-color: var(--primary-color);
   outline-style: auto;
+}
+
+.custom-default-button {
+  border: 2px solid transparent;
+  background-color: var(--primary-color);
+}
+
+.custom-default-button:hover {
+  background-color: var(--secondary-color);
+}
+
+.custom-default-button:active {
+  color: var(--primary-color);
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
 }
 
 .custom-flex-col {

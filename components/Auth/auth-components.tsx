@@ -91,7 +91,7 @@ export const AuthAction: React.FC<AuthActionProps> = ({
   linkText,
 }) => (
   // Render a paragraph with children content and a link
-  <p className="text-text-black text-base font-normal">
+  <p className="text-text-black text-sm md:text-base font-normal">
     {children}{" "}
     <Link href={href} className="custom-primary-color font-medium capitalize">
       {/* Render link text or a default value if not provided */}
