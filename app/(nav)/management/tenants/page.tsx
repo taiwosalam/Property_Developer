@@ -14,12 +14,82 @@ import Pagination from "@/components/Pagination/pagination";
 import UserTag from "@/components/Tags/user-tag";
 import AddTenantModal from "@/components/Management/Tenants/add-tenant-modal";
 import { BadgeCheckIcon } from "@/public/icons/icons";
+import FilterModal from "@/components/Management/Landlord/filters-modal";
+import { getAllStates, getLocalGovernments } from "@/utils/states";
 
 const Tenants = () => {
   const initialState = {
     gridView: true,
     total_pages: 50,
     current_page: 1,
+  };
+
+  const states = getAllStates();
+
+  const onStateSelect = (selectedState: string) => {
+    const localGovernments = getLocalGovernments(selectedState);
+
+    const updatedFilters = tenantFiltersWithOptions.map((filter) => {
+      if (filter.label === "Local Government") {
+        return {
+          ...filter,
+          value: localGovernments.map((lg) => ({
+            label: lg,
+            value: lg.toLowerCase(),
+          })),
+        };
+      }
+      return filter;
+    });
+  };
+
+  const tenantFilters = [
+    { label: "Registration Date", value: "registration_date" },
+    { label: "Alphabetically", value: "alphabetically" },
+    { label: "Tenants", value: "tenants" },
+    { label: "Occupants", value: "occupants" },
+  ];
+
+  const tenantFiltersWithOptions = [
+    {
+      label: "Branch",
+      value: [
+        { label: "Branch 1", value: "branch1" },
+        { label: "Branch 2", value: "branch2" },
+        { label: "Branch 3", value: "branch3" },
+      ],
+    },
+    {
+      label: "Account Officer",
+      value: [
+        { label: "Account Officer 1", value: "account_officer1" },
+        { label: "Account Officer 2", value: "account_officer2" },
+        { label: "Account Officer 3", value: "account_officer3" },
+      ],
+    },
+    {
+      label: "State",
+      value: states.map((state) => ({
+        label: state,
+        value: state.toLowerCase(),
+      })),
+    },
+  ];
+
+  const tenantFiltersRadio = [
+    {
+      label: "Tenant Type",
+      value: [
+        { label: "Mobile Tenant", value: "mobile_tenant" },
+        { label: "Web Tenant", value: "web_tenant" },
+        { label: "All Tenant", value: "all_tenants" },
+      ],
+    },
+  ];
+
+  const handleFilterApply = (filters: any) => {
+    console.log("Filter applied:", filters);
+    // Add  logic here to filter tenant
   };
 
   const [state, setState] = useState(initialState);
@@ -106,34 +176,49 @@ const Tenants = () => {
     <div className="space-y-9">
       <section className="page-header-container">
         <div className="w-full flex items-center justify-center lg:justify-between">
-          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <ManagementStatistcsCard />
-            <ManagementStatistcsCard />
-            <ManagementStatistcsCard />
-            <div className="hidden md:block lg:hidden">
+          <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <ManagementStatistcsCard
+              title="Total Users"
+              old={100}
+              newData={200}
+              total={300}
+            />
+            <ManagementStatistcsCard
+              title="Web Tenants"
+              old={100}
+              newData={200}
+              total={300}
+            />
+            <ManagementStatistcsCard
+              title="Mobile Tenants"
+              old={100}
+              newData={200}
+              total={300}
+            />
+            <div className="hidden md:block xl:hidden">
               <div className="flex items-center justify-center w-full h-full">
                 <Modal>
                   <ModalTrigger asChild>
                     <button type="button" className="page-header-button">
-                      + create new user
+                      + create new tenant
                     </button>
                   </ModalTrigger>
                   <ModalContent>
-                    <AddTenantModal />
+                    <div>Hello</div>
                   </ModalContent>
                 </Modal>
               </div>
             </div>
           </div>
-          <div className="md:hidden lg:flex lg:ml-4">
+          <div className="md:hidden xl:flex lg:ml-4">
             <Modal>
               <ModalTrigger asChild>
                 <button type="button" className="page-header-button">
-                  + create new landlord
+                  + create new tenant
                 </button>
               </ModalTrigger>
               <ModalContent>
-                <AddTenantModal />
+                <div>Hello</div>
               </ModalContent>
             </Modal>
           </div>
@@ -188,7 +273,13 @@ const Tenants = () => {
                 </div>
               </ModalTrigger>
               <ModalContent>
-                <AddTenantModal />
+                <FilterModal
+                  filterOptions={tenantFilters}
+                  filterOptionsWithRadio={tenantFiltersRadio}
+                  filterOptionsWithDropdown={tenantFiltersWithOptions}
+                  onApply={handleFilterApply}
+                  onStateSelect={onStateSelect}
+                />
               </ModalContent>
             </Modal>
           </div>

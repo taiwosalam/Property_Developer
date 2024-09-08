@@ -29,8 +29,8 @@ const Dashboard = () => {
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full xl:flex gap-x-10">
-        <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-10">
-          <div className="w-full h-fit grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-8">
+          <div className="w-full flex flex-row overflow-x-scroll md:overflow-auto py-2 md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
             {dashboardCardData.map((card, index) => (
               <Card
                 key={index}
@@ -53,7 +53,7 @@ const Dashboard = () => {
             </>
           )}
         </div>
-        <div className="w-full xl:w-[30%] xl:max-w-[345px] h-full space-y-7 mt-4 lg:mt-0">
+        <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full space-y-6 mt-6 xl:mt-0">
           <WalletBalanceCard
             mainBalance={walletBalanceCardData.mainBalance}
             cautionDeposit={walletBalanceCardData.cautionDeposit}
@@ -74,7 +74,7 @@ const Dashboard = () => {
         </div>
       </div>
       <SectionContainer heading="Recent invoice" href="/">
-        <div className="rounded-lg overflow-hidden">
+        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
           <table className="dash-table">
             <colgroup>
               <col className="w-[72px]" />
@@ -123,7 +123,7 @@ const Dashboard = () => {
         </div>
       </SectionContainer>
       {!isMobile && (
-        <SectionContainer heading="To do list">
+        <SectionContainer heading="To do list" href="/">
           <KanbanBoard />
         </SectionContainer>
       )}
