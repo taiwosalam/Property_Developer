@@ -2,6 +2,7 @@ import type { LandlordProps } from "./Landlord/types";
 import SampleLandlord from "@/public/empty/SampleLandlord.jpeg";
 import UserTag from "@/components/Tags/user-tag";
 import Image from "next/image";
+import BadgeIcon from "../BadgeIcon/badge-icon";
 
 const LandlordAndTenantCard: React.FC<LandlordProps> = ({
   first_name,
@@ -14,7 +15,7 @@ const LandlordAndTenantCard: React.FC<LandlordProps> = ({
   return (
     <a
       href=""
-      className="border border-brand-tertiaryy bg-[#F9F9F9] p-[3%] rounded-lg flex gap-[3%] min-w-[284px]"
+      className="border border-brand-tertiaryy bg-[#F9F9F9] p-[3%] rounded-lg flex gap-[3%] border-brand-tertiary"
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="rounded-lg relative w-[30%] overflow-hidden aspect-[0.9]">
@@ -33,8 +34,9 @@ const LandlordAndTenantCard: React.FC<LandlordProps> = ({
         />
       </div>
       <div className="flex-1 flex flex-col items-start">
-        <p className="font-bold text-black text-sm capitalize">
+        <p className="flex items-center font-bold text-black text-sm capitalize">
           {`${first_name} ${last_name}`}
+          <BadgeIcon color="red" />
         </p>
         <p className="font-normal text-black text-xs mb-1">{email}</p>
         <UserTag type={user_tag} className="mb-2" />

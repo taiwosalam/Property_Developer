@@ -13,9 +13,10 @@ import SearchInput from "@/components/SearchInput/search-input";
 import Pagination from "@/components/Pagination/pagination";
 import UserTag from "@/components/Tags/user-tag";
 import AddTenantModal from "@/components/Management/Tenants/add-tenant-modal";
-import { BadgeCheckIcon } from "@/public/icons/icons";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
+import PageTitle from "@/components/PageTitle/page-title";
 
 const Tenants = () => {
   const initialState = {
@@ -117,11 +118,9 @@ const Tenants = () => {
   const transformedTenants = tenants.map((t) => ({
     ...t,
     full_name: (
-      <p className="flex items-center gap-2">
+      <p className="flex items-center">
         {`${t.first_name} ${t.last_name}`}
-        <span className="text-green-700">
-          <BadgeCheckIcon />
-        </span>
+        <BadgeIcon color="yellow" />
       </p>
     ),
     user_tag: <UserTag type={t.user_tag} />,
@@ -174,58 +173,57 @@ const Tenants = () => {
   const { gridView, total_pages, current_page } = state;
   return (
     <div className="space-y-9">
-      <section className="page-header-container">
-        <div className="w-full flex items-center justify-center lg:justify-between">
-          <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-            <ManagementStatistcsCard
-              title="Total Users"
-              old={100}
-              newData={200}
-              total={300}
-            />
-            <ManagementStatistcsCard
-              title="Web Tenants"
-              old={100}
-              newData={200}
-              total={300}
-            />
-            <ManagementStatistcsCard
-              title="Mobile Tenants"
-              old={100}
-              newData={200}
-              total={300}
-            />
-            <div className="hidden md:block xl:hidden">
-              <div className="flex items-center justify-center w-full h-full">
-                <Modal>
-                  <ModalTrigger asChild>
-                    <button type="button" className="page-header-button">
-                      + create new tenant
-                    </button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <div>Hello</div>
-                  </ModalContent>
-                </Modal>
-              </div>
+      <div className="page-header-container">
+        <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <ManagementStatistcsCard
+            title="Total Users"
+            old={100}
+            newData={200}
+            total={300}
+          />
+          <ManagementStatistcsCard
+            title="Web Tenants"
+            old={100}
+            newData={200}
+            total={300}
+          />
+          <ManagementStatistcsCard
+            title="Mobile Tenants"
+            old={100}
+            newData={200}
+            total={300}
+          />
+          <div className="hidden md:block xl:hidden">
+            <div className="flex items-center justify-center w-full h-full">
+              <Modal>
+                <ModalTrigger asChild>
+                  <button type="button" className="page-header-button">
+                    + create new tenant
+                  </button>
+                </ModalTrigger>
+                <ModalContent>
+                  <div>Hello</div>
+                </ModalContent>
+              </Modal>
             </div>
           </div>
-          <div className="md:hidden xl:flex lg:ml-4">
-            <Modal>
-              <ModalTrigger asChild>
-                <button type="button" className="page-header-button">
-                  + create new tenant
-                </button>
-              </ModalTrigger>
-              <ModalContent>
-                <div>Hello</div>
-              </ModalContent>
-            </Modal>
-          </div>
         </div>
-      </section>
+        <div className="md:hidden xl:flex lg:ml-4">
+          <Modal>
+            <ModalTrigger asChild>
+              <button type="button" className="page-header-button">
+                + create new tenant
+              </button>
+            </ModalTrigger>
+            <ModalContent>
+              <div>Hello</div>
+            </ModalContent>
+          </Modal>
+        </div>
+      </div>
+
       <div className="page-title-container">
-        <h1 className="page-title">Tenants/Occupants (Users)</h1>
+        <PageTitle title="Tenants/Occupants (Users)" />
         <div className="flex items-center gap-x-4">
           <SearchInput
             placeholder="Search for Tenants & Occupants"

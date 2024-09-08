@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import { Search } from "lucide-react";
 import { SearchInputProps } from "./types";
-// import { useRef } from "react";
 
 const SearchInput: React.FC<SearchInputProps> = ({
   textInputClassName,
@@ -9,7 +8,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
   placeholder,
   searchIconColor,
 }) => {
-  //   const dropdownRef = useRef<HTMLDivElement>(null);
   return (
     <div
       className={clsx(
@@ -19,12 +17,16 @@ const SearchInput: React.FC<SearchInputProps> = ({
     >
       {/* Search icon positioned absolutely */}
       <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-        <Search color={searchIconColor || "#fff"} strokeWidth={1} size={20} />
+        <Search
+          color={searchIconColor || "#fff"}
+          strokeWidth={"0.5"}
+          size={20}
+        />
       </div>
       <input
         type="text"
         className={clsx(
-          "flex-1 bg-transparent outline-none",
+          "flex-1 bg-transparent outline-none text-xs md:text-sm font-normal search-input-placeholder-color",
           textInputClassName
         )}
         placeholder={placeholder || "Search"}

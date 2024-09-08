@@ -15,6 +15,7 @@ import SearchInput from "@/components/SearchInput/search-input";
 import type { StaffAndBranchState } from "./types";
 import DateInput from "@/components/Form/DateInput/date-input";
 import { Dayjs } from "dayjs";
+import PageTitle from "@/components/PageTitle/page-title";
 
 const StaffAndBranches = () => {
   const initialState = {
@@ -99,7 +100,6 @@ const StaffAndBranches = () => {
             setSelectedDate(date);
           }}
           value={selectedDate}
-          hiddenInputClassName="setup-f"
         />
       ),
     },
@@ -156,7 +156,6 @@ const StaffAndBranches = () => {
         margin: "auto",
       },
     },
-    { id: "9", label: "", accessor: "action" },
   ];
 
   // Handle the selected state and update local governments
@@ -169,58 +168,57 @@ const StaffAndBranches = () => {
 
   return (
     <div className="space-y-9">
-      <section className="page-header-container">
-        <div className="w-full flex items-center justify-center lg:justify-between">
-          <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-            <ManagementStatistcsCard
-              title="Total Branches"
-              old={100}
-              newData={200}
-              total={300}
-            />
-            <ManagementStatistcsCard
-              title="Total Properties"
-              old={100}
-              newData={200}
-              total={300}
-            />
-            <ManagementStatistcsCard
-              title="Total Staff"
-              old={100}
-              newData={200}
-              total={300}
-            />
-            <div className="hidden md:block xl:hidden">
-              <div className="flex items-center justify-center w-full h-full">
-                <Modal>
-                  <ModalTrigger asChild>
-                    <button type="button" className="page-header-button">
-                      + create new landlord
-                    </button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <div>Hello</div>
-                  </ModalContent>
-                </Modal>
-              </div>
+      <div className="page-header-container">
+        <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <ManagementStatistcsCard
+            title="Total Branches"
+            old={100}
+            newData={200}
+            total={300}
+          />
+          <ManagementStatistcsCard
+            title="Total Properties"
+            old={100}
+            newData={200}
+            total={300}
+          />
+          <ManagementStatistcsCard
+            title="Total Staff"
+            old={100}
+            newData={200}
+            total={300}
+          />
+          <div className="hidden md:block xl:hidden">
+            <div className="flex items-center justify-center w-full h-full">
+              <Modal>
+                <ModalTrigger asChild>
+                  <button type="button" className="page-header-button">
+                    + create new landlord
+                  </button>
+                </ModalTrigger>
+                <ModalContent>
+                  <div>Hello</div>
+                </ModalContent>
+              </Modal>
             </div>
           </div>
-          <div className="md:hidden xl:flex lg:ml-4">
-            <Modal>
-              <ModalTrigger asChild>
-                <button type="button" className="page-header-button">
-                  + create new landlord
-                </button>
-              </ModalTrigger>
-              <ModalContent>
-                <div>Hello</div>
-              </ModalContent>
-            </Modal>
-          </div>
         </div>
-      </section>
+        <div className="md:hidden xl:flex lg:ml-4">
+          <Modal>
+            <ModalTrigger asChild>
+              <button type="button" className="page-header-button">
+                + create new landlord
+              </button>
+            </ModalTrigger>
+            <ModalContent>
+              <div>Hello</div>
+            </ModalContent>
+          </Modal>
+        </div>
+      </div>
+
       <div className="page-title-container">
-        <h1 className="page-title">Staff & Branch</h1>
+        <PageTitle title="Staff & Branch" />
         <div className="flex items-center space-x-4">
           <SearchInput
             placeholder="Search for Staff and Branch"
@@ -305,12 +303,14 @@ const StaffAndBranches = () => {
               color: "#fff",
               fontWeight: 500,
               border: "none",
+              textAlign: "left",
             }}
             tableBodyCellSx={{
               fontWeight: 500,
+              // fontSize: "16px",
               color: "#050901",
               border: "none",
-              textAlign: "center",
+              textAlign: "left",
             }}
             evenRowColor="#fff"
             oddRowColor="#EFF6FF"

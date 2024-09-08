@@ -17,7 +17,8 @@ import UserTag from "@/components/Tags/user-tag";
 import Pagination from "@/components/Pagination/pagination";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
-import { BadgeCheckIcon } from "@/public/icons/icons";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import PageTitle from "@/components/PageTitle/page-title";
 
 const Landlord = () => {
   const initialState = {
@@ -116,11 +117,9 @@ const Landlord = () => {
   const transformedLandlords = landlords.map((l) => ({
     ...l,
     full_name: (
-      <p className="flex items-center gap-2">
+      <p className="flex items-center">
         {`${l.first_name} ${l.last_name}`}
-        <span className="text-green-700">
-          <BadgeCheckIcon />
-        </span>
+        <BadgeIcon color="red" />
       </p>
     ),
     user_tag: <UserTag type={l.user_tag} />,
@@ -174,63 +173,61 @@ const Landlord = () => {
 
   return (
     <div className="space-y-9">
-      <section className="page-header-container">
-        <div className="w-full flex items-center justify-center lg:justify-between">
-          <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-            <ManagementStatistcsCard
-              title="Total Landlords"
-              old={100}
-              newData={200}
-              total={300}
-            />
-            <ManagementStatistcsCard
-              title="Web Landlords"
-              old={100}
-              newData={200}
-              total={300}
-            />
-            <ManagementStatistcsCard
-              title="Mobile Landlords"
-              old={100}
-              newData={200}
-              total={300}
-            />
-            <div className="hidden md:block xl:hidden">
-              <div className="flex items-center justify-center w-full h-full">
-                <Modal>
-                  <ModalTrigger asChild>
-                    <button type="button" className="page-header-button">
-                      + create new landlord
-                    </button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <AddLandlordModal />
-                  </ModalContent>
-                </Modal>
-              </div>
+      <div className="page-header-container">
+        <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <ManagementStatistcsCard
+            title="Total Landlords"
+            old={100}
+            newData={200}
+            total={300}
+          />
+          <ManagementStatistcsCard
+            title="Web Landlords"
+            old={100}
+            newData={200}
+            total={300}
+          />
+          <ManagementStatistcsCard
+            title="Mobile Landlords"
+            old={100}
+            newData={200}
+            total={300}
+          />
+          <div className="hidden md:block xl:hidden">
+            <div className="flex items-center justify-center w-full h-full">
+              <Modal>
+                <ModalTrigger asChild>
+                  <button type="button" className="page-header-button">
+                    + create new landlord
+                  </button>
+                </ModalTrigger>
+                <ModalContent>
+                  <AddLandlordModal />
+                </ModalContent>
+              </Modal>
             </div>
           </div>
-          <div className="md:hidden xl:flex lg:ml-4">
-            <Modal>
-              <ModalTrigger asChild>
-                <button type="button" className="page-header-button">
-                  + create new landlord
-                </button>
-              </ModalTrigger>
-              <ModalContent>
-                <AddLandlordModal />
-              </ModalContent>
-            </Modal>
-          </div>
         </div>
-      </section>
+        <div className="md:hidden xl:flex lg:ml-4">
+          <Modal>
+            <ModalTrigger asChild>
+              <button type="button" className="page-header-button">
+                + create new landlord
+              </button>
+            </ModalTrigger>
+            <ModalContent>
+              <AddLandlordModal />
+            </ModalContent>
+          </Modal>
+        </div>
+      </div>
+
       <div className="page-title-container">
-        <h1 className="page-title">Landlords/Landladies (Owners)</h1>
+        <PageTitle title="Landlords/Landladies (Owners)" />
         <div className="flex items-center gap-x-4">
           <SearchInput
             placeholder="Search for Landlords"
             className="bg-[#F1F2F4]"
-            textInputClassName={`text-xs md:text-sm text-neutral-8 font-normal`}
             searchIconColor="#1E3A8A"
           />
           <div className="flex items-center gap-x-3">

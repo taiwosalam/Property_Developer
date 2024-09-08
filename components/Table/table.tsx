@@ -21,13 +21,13 @@ const renderValue = (
   actionButtonIcon: ReactNode
 ) => {
   let value = data[field.accessor];
-  if (field.accessor === "S/N") {
-    return field.contentStyle ? (
-      <div style={field.contentStyle}>{index + 1}</div>
-    ) : (
-      index + 1
-    );
-  }
+ if (field.accessor === "S/N") {
+   return field.contentStyle ? (
+     <div style={field.contentStyle}>{String(index + 1).padStart(2, "0")}</div>
+   ) : (
+     String(index + 1).padStart(2, "0")
+   );
+ }
   if (field.isImage) {
     return field.contentStyle ? (
       <div style={field.contentStyle}>
@@ -120,8 +120,8 @@ const CustomTable: React.FC<CustomTableProps> = ({
                   sx={{
                     fontFamily: "unset",
                     textAlign: "center",
-                    paddingTop: "8px",
-                    paddingBottom: "8px",
+                    paddingTop: "14px",
+                    paddingBottom: "14px",
                     maxHeight: "76px",
                     ...tableHeadCellSx,
                   }}
