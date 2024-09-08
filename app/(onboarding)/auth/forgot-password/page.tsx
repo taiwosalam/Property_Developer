@@ -35,7 +35,8 @@ const ForgotPasswordFlow = () => {
     <FlowProgress
       steps={last_step + 1}
       activeStep={activeStep}
-      className="custom-flex-col gap-4"
+      className="custom-flex-col"
+      style={{ position: "sticky", top: 0, padding: "24px 0" }}
     >
       {activeStep === 0 ? (
         <ForgotPassword changeStep={handleStepChange} />

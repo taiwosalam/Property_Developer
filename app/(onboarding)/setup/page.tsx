@@ -101,14 +101,14 @@ const Setup = () => {
                   id="company_name"
                   label="company name"
                   placeholder="Write here"
-                  inputClassName={`text-xs md:text-sm font-normal setup-f`}
+                  inputClassName={`setup-f`}
                   className="lg:col-span-2"
                 />
                 <Input
                   id="referral_id"
                   label="Referral ID (Optional)"
                   placeholder="Enter your Referral ID"
-                  inputClassName={`text-xs md:text-sm font-normal setup-f`}
+                  inputClassName={`setup-f`}
                 />
               </div>
               <CompanyDetails />
