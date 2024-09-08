@@ -1,7 +1,7 @@
 // Imports
 import { useState, useContext, useEffect } from "react";
 import Input from "../Form/Input/input";
-import PhoneNumberInput from "../Form/PhoneNumber/phone-number";
+import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
 import Select from "../Form/Select/select";
 import TextArea from "../Form/TextArea/textarea";
 import { titles } from "@/data";
@@ -55,8 +55,8 @@ const ProfileInformation = () => {
           id="director_phone"
           label="phone number"
           placeholder="800 0000 000"
-          // inputClassName="setup-f"
-          // inputContainerClassName="text-xs md:text-sm font-normal"
+          inputClassName="setup-f custom-phone-input"
+          inputContainerClassName="font-normal rounded-[8px] hover:outline outline-1 outline-auto outline-[#00000099] focus-within:outline focus-within:outline-[#0033c4] focus-within:outline-2"
         />
       </div>
       <div>

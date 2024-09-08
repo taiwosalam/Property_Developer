@@ -43,16 +43,17 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
           placeholder: placeholder,
         }}
         searchNotFound="No match found"
-        inputClass={(clsx( "!pt-[9px] !pb-[9px] !h-[unset]",inputClassName))}
-        inputStyle={{ border: "1px solid #C1C2C366", borderRadius: "8px" }}
+        inputClass={inputClassName}
+        inputStyle={{ width: "100%" }}
         buttonStyle={{
           border: "1px solid #C1C2C366",
           borderRadius: "8px 0 0 8px",
         }}
-        containerClass="!text-xs !md:text-sm font-normal"
+        containerClass={inputContainerClassName}
       />
     </div>
   );
 };
+//!pt-[9px] !pb-[9px] !h-[unset]
 
 export default PhoneNumberInput;

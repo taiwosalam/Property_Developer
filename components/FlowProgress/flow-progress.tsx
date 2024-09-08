@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, createContext, useCallback, useState } from "react";
+import { z } from "zod";
 
 // Types
 import type { FlowProgressProps } from "./types";
@@ -25,26 +26,37 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [canSubmit, setCanSubmit] = useState(false);
 
+  // Helper function to check if an input is filled
+  const isInputFilled = (input: HTMLInputElement | HTMLTextAreaElement) => {
+    let value = input.value.trim();
+
+    if (input.type === "tel") {
+      value = value.replace(/\s+/g, "");
+      return value.length > 4;
+    }
+
+    if (input.type === "text" && input.classList.contains("date-input")) {
+      const datePattern = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
+      return datePattern.test(value);
+    }
+
+    // Handle email input using Zod for validation
+    if (input.type === "email") {
+      const emailSchema = z.string().email();
+      return emailSchema.safeParse(value).success;
+    }
+
+    return value && value !== "<p><br></p>" && value !== "<p></p>";
+  };
+
   const handleInputChange = useCallback(() => {
-    // console.log("as");
     const selector = inputClassName ? `.${inputClassName}` : "input";
     const inputs = Array.from(
       containerRef.current?.querySelectorAll(selector) || []
     ) as (HTMLInputElement | HTMLTextAreaElement)[];
 
     const stepValue = 100 / inputs.length;
-    // Update the filter condition to account for Quill empty values
-    const filledInputs = inputs.filter((input) => {
-      const value = input.value.trim();
-
-      // Handle PhoneInput by checking if the value contains only the country code (e.g., "+234")
-      if (input.type === "tel") {
-        // Adjust this condition based on your country code logic
-        return value.length > 4; // Exclude inputs that only have the country code (e.g., +234)
-      }
-
-      return value && value !== "<p><br></p>" && value !== "<p></p>";
-    });
+    const filledInputs = inputs.filter(isInputFilled);
     progress.current = filledInputs.length * stepValue;
     gsap.to(barRef.current, {
       width: `${progress.current}%`,
@@ -53,17 +65,12 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
 
     // Check if all required fields are filled
     const allRequired = inputs.filter((input) => {
-      // Select inputs that either have the 'required' class or match a name in requiredFields
       return (
         input.classList.contains("required") ||
         (requiredFields && requiredFields.includes(input.name))
       );
     });
-
-    const allRequiredFilled = allRequired.every(
-      (input) => input.value.trim() !== ""
-    );
-
+    const allRequiredFilled = allRequired.every(isInputFilled);
     setCanSubmit(allRequiredFilled);
     // console.log("Setting canSubmit to: ", allRequiredFilled);
   }, [inputClassName, requiredFields]);

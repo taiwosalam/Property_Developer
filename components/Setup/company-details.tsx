@@ -11,14 +11,7 @@ import { Dayjs } from "dayjs";
 
 const CompanyDetails = () => {
   const { handleInputChange } = useContext(FlowProgressContext);
-  const [registrationDate, setRegistrationDate] = useState<
-    Dayjs | null | undefined
-  >(null);
 
-  // To trigger Flow Progress
-  useEffect(() => {
-    handleInputChange();
-  }, [handleInputChange, registrationDate]);
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading title="company details">
@@ -30,11 +23,8 @@ const CompanyDetails = () => {
           required
           id="cac_date"
           label="date of registration"
-          onChange={(date) => {
-            setRegistrationDate(date);
-          }}
-          value={registrationDate}
-          hiddenInputClassName="setup-f"
+          onChange={handleInputChange}
+          inputClassName="setup-f"
         />
         <Input
           required
