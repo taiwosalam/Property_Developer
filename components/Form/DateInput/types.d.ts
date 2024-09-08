@@ -4,7 +4,7 @@ export interface DateInputProps {
   label?: string;
   required?: boolean;
   className?: string;
-  hiddenInputClassName?: string;
+  inputClassName?: string;
   value?: Dayjs | null;
   onChange?: (date?: Dayjs | null) => void;
 }

@@ -1,5 +1,5 @@
 // Imports
-import { useState, useContext, useEffect } from "react";
+import { useContext } from "react";
 import Input from "../Form/Input/input";
 import Select from "../Form/Select/select";
 import DateInput from "../Form/DateInput/date-input";
@@ -7,18 +7,10 @@ import FileInput from "../Form/FileInput/file-input";
 import { SectionHeading } from "../Section/section-components";
 import { FlowProgressContext } from "../FlowProgress/flow-progress";
 import { industryOptions } from "@/data";
-import { Dayjs } from "dayjs";
 
 const CompanyDetails = () => {
   const { handleInputChange } = useContext(FlowProgressContext);
-  const [registrationDate, setRegistrationDate] = useState<
-    Dayjs | null | undefined
-  >(null);
 
-  // To trigger Flow Progress
-  useEffect(() => {
-    handleInputChange();
-  }, [handleInputChange, registrationDate]);
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading title="company details">
@@ -30,18 +22,15 @@ const CompanyDetails = () => {
           required
           id="cac_date"
           label="date of registration"
-          onChange={(date) => {
-            setRegistrationDate(date);
-          }}
-          value={registrationDate}
-          hiddenInputClassName="setup-f"
+          onChange={handleInputChange}
+          inputClassName="setup-f"
         />
         <Input
           required
           label="CAC Registration Number"
           id="cac_number"
           placeholder="Write here"
-          inputClassName={`text-xs md:text-sm font-normal rounded-[8px] setup-f`}
+          inputClassName="rounded-[8px] setup-f"
         />
 
         <FileInput
@@ -54,7 +43,6 @@ const CompanyDetails = () => {
           size={2}
           sizeUnit="MB"
           hiddenInputClassName="setup-f required"
-          textStyles={`text-xs md:text-sm font-normal`}
         />
 
         <Select
@@ -62,7 +50,6 @@ const CompanyDetails = () => {
           name="industry"
           label="industry"
           options={industryOptions}
-          inputTextStyles={`text-xs md:text-sm font-normal`}
           hiddenInputClassName="setup-f"
         />
 
@@ -70,7 +57,7 @@ const CompanyDetails = () => {
           label="Membership Number"
           id="membership_number"
           placeholder="Write here"
-          inputClassName={`text-xs md:text-sm font-normal rounded-[8px] setup-f`}
+          inputClassName="rounded-[8px] setup-f"
         />
 
         <FileInput
@@ -82,7 +69,6 @@ const CompanyDetails = () => {
           placeholder="certificate"
           buttonName="Document"
           hiddenInputClassName="setup-f"
-          textStyles="text-xs md:text-sm font-normal"
         />
       </div>
     </div>

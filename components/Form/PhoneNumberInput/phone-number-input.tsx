@@ -43,16 +43,20 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
           placeholder: placeholder,
         }}
         searchNotFound="No match found"
-        inputClass={(clsx( "!pt-[9px] !pb-[9px] !h-[unset]",inputClassName))}
-        inputStyle={{ border: "1px solid #C1C2C366", borderRadius: "8px" }}
+        inputClass={clsx("custom-phone-input", inputClassName)}
+        inputStyle={{ width: "100%" }}
         buttonStyle={{
           border: "1px solid #C1C2C366",
           borderRadius: "8px 0 0 8px",
         }}
-        containerClass="!text-xs !md:text-sm font-normal"
+        containerClass={clsx(
+          "font-normal rounded-[8px] hover:outline outline-1 outline-auto outline-[#00000099] focus-within:outline focus-within:outline-[#0033c4] focus-within:outline-2 !text-xs md:!text-sm font-normal",
+          inputContainerClassName
+        )}
       />
     </div>
   );
 };
+//!pt-[9px] !pb-[9px] !h-[unset]
 
 export default PhoneNumberInput;

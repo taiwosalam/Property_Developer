@@ -90,7 +90,7 @@ const FileInput: React.FC<FileInputProps> = ({
       setFileName("");
       onChange && onChange(null);
     }
-    handleInputChange();
+    handleInputChange && handleInputChange();
   }, [file, handleInputChange, onChange]);
 
   return (
@@ -121,14 +121,14 @@ const FileInput: React.FC<FileInputProps> = ({
           aria-label="upload"
           onClick={handleClick}
           className={clsx(
-            "p-3 rounded-[8px] w-full border border-solid border-[#C1C2C366] text-text-disabled text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099]",
+            "p-3 rounded-[8px] w-full border border-solid border-[#C1C2C366] text-text-disabled text-xs md:text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099] transition-colors duration-300 ease-in-out",
+            textStyles,
             fileName ? "bg-neutral-2" : "bg-none"
           )}
         >
           <span
             className={clsx(
-              "flex-1 overflow-hidden text-ellipsis whitespace-nowrap",
-              textStyles
+              "flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
             )}
           >
             {fileName

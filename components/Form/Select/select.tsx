@@ -17,7 +17,7 @@ const Select: React.FC<SelectProps> = ({
   className,
   options,
   onChange,
-  inputTextStyles,
+  inputTextClassName,
   placeholder = "Select",
   allowCustom = false,
   isSearchable = true,
@@ -93,7 +93,7 @@ const Select: React.FC<SelectProps> = ({
         {/* Trigger for the custom dropdown with embedded search field */}
         <div
           className={clsx(
-            "flex items-center border border-solid border-[#C1C2C366] hover:border-[#00000099] py-[11px] pr-3 rounded-[8px] custom-primary-outline",
+            "flex items-center border border-solid border-[#C1C2C366] hover:border-[#00000099] py-[11px] pr-3 rounded-[8px] custom-primary-outline transition-colors duration-300 ease-in-out",
             selectedValue ? "bg-neutral-2" : "cursor-pointer",
             isSearchable ? "pl-10" : "pl-4",
             inputContainerClassName
@@ -118,8 +118,8 @@ const Select: React.FC<SelectProps> = ({
           {selectedValue && !isOpen ? (
             <span
               className={clsx(
-                "flex-1 capitalize text-text-disabled",
-                inputTextStyles
+                "flex-1 capitalize text-text-disabled text-xs md:text-sm font-normal",
+                inputTextClassName
               )}
             >
               {selectedValue}
@@ -129,8 +129,8 @@ const Select: React.FC<SelectProps> = ({
               ref={inputRef}
               type="text"
               className={clsx(
-                "flex-1 bg-transparent outline-none text-sm",
-                inputTextStyles
+                "flex-1 bg-transparent outline-none text-xs md:text-sm font-normal",
+                inputTextClassName
               )}
               placeholder={placeholder}
               value={searchTerm}
@@ -146,7 +146,10 @@ const Select: React.FC<SelectProps> = ({
             />
           ) : (
             <span
-              className={clsx("flex-1 text-text-disabled", inputTextStyles)}
+              className={clsx(
+                "flex-1 text-text-disabled text-xs md:text-sm font-normal",
+                inputTextClassName
+              )}
             >
               {placeholder}
             </span>

@@ -16,7 +16,7 @@ const DateInput: React.FC<DateInputProps> = ({
   value,
   required,
   className,
-  hiddenInputClassName,
+  inputClassName,
   onChange,
 }) => {
   const handleDateChange = (date?: Dayjs | null) => {
@@ -24,16 +24,9 @@ const DateInput: React.FC<DateInputProps> = ({
       onChange(date);
     }
   };
- const formattedValue = value ? value.format("MM/DD/YYYY") : "";
+
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
-      <input
-        type="hidden"
-        className={hiddenInputClassName}
-        name={id}
-        id={id}
-        value={formattedValue}
-      />
       {/* Render the label if provided */}
       {label && (
         <Label id={id} required={required}>
@@ -41,9 +34,10 @@ const DateInput: React.FC<DateInputProps> = ({
         </Label>
       )}
       <DatePicker
+        inputId={id}
+        inputClassName={inputClassName}
         onChange={handleDateChange}
         value={value}
-        containerClassName="text-xs md:text-sm font-normal"
       />
     </div>
   );

@@ -74,7 +74,6 @@ const CompanyAddress = () => {
           id="state"
           name="state"
           label="state"
-          inputTextStyles={`text-xs md:text-sm font-normal`}
           value={selectedState ? selectedState : undefined}
           hiddenInputClassName="setup-f"
           onChange={handleStateChange} // Update handler
@@ -86,7 +85,6 @@ const CompanyAddress = () => {
           id="local_government"
           name="local_government"
           label="local government"
-          inputTextStyles={`text-xs md:text-sm font-normal`}
           hiddenInputClassName="setup-f"
           onChange={handleLGAChange} // Update handler
           value={selectedLGA ? selectedLGA : undefined} // Controlled value
@@ -98,7 +96,6 @@ const CompanyAddress = () => {
           options={cities}
           id="city"
           label="City / Area"
-          inputTextStyles={`text-xs md:text-sm font-normal`}
           allowCustom={true}
           hiddenInputClassName="setup-f"
           onChange={handleCityChange} // Update handler
@@ -110,7 +107,7 @@ const CompanyAddress = () => {
           id="address"
           placeholder="Write here"
           className="lg:col-span-2"
-          inputClassName={`text-xs md:text-sm font-normal rounded-[8px] setup-f`}
+          inputClassName="rounded-[8px] setup-f"
         />
 
         <FileInput
@@ -121,9 +118,7 @@ const CompanyAddress = () => {
           sizeUnit="MB"
           placeholder="utility"
           buttonName="Document"
-          // onChange={handleInputChange}
           hiddenInputClassName="setup-f"
-          textStyles={`text-xs md:text-sm font-normal`}
           className="md:col-span-2 lg:col-span-1"
         />
       </div>
