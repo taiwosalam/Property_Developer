@@ -41,7 +41,7 @@ export function DatePickerWithRange({
                   {format(date.to, "LLL dd, y")}
                 </>
               ) : (
-                <>format(date.from, "LLL dd, y")</>
+                <>{format(date.from, "LLL dd, y")}</>
               )
             ) : (
               <span className="ml-2">Pick a date</span>
