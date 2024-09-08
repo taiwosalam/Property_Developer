@@ -283,22 +283,17 @@ input[type="number"]::-webkit-inner-spin-button {
   @apply rounded-[8px] capitalize px-3 py-2 text-sm bg-brand-9 text-white font-normal;
 }
 .page-header-button {
-  @apply button-base py-[12px] lg:px-10 xl:px-12;
+  @apply button-base lg:px-10 xl:px-12 !py-[12px];
 }
 
 .page-header-container {
-  @apply flex items-center justify-between gap-4;
+  @apply w-full flex items-center justify-center lg:justify-between;
 }
 
 .page-title-container {
   @apply flex flex-wrap space-y-4 lg:space-y-0 items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4;
 }
 
-.page-title {
-  @apply text-base md:text-lg lg:text-xl font-bold text-black relative;
-
-  &::after {
-    content: "!";
-    @apply bg-black text-white flex items-center justify-center w-4 h-4 rounded-full absolute pt-[0.2rem] right-[-1.5rem] top-[27%] text-[0.8rem];
-  }
+.search-input-placeholder-color::placeholder {
+  /* @apply text-neutral-8; */
 }

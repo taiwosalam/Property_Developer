@@ -44,25 +44,25 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
           id="first-name"
           label="first name"
           required
-          inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
+          inputClassName="rounded-[8px]"
         />
         <Input
           id="last-name"
           label="last name"
           required
-          inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
+          inputClassName="rounded-[8px]"
         />
         <Input
           id="email"
           label="email"
           type="email"
           required
-          inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
+          inputClassName="rounded-[8px]"
         />
         <Input
           id="phone-number"
           label="phone number"
-          inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
+          inputClassName="rounded-[8px]"
         />
         <Select
           options={getAllStates()}
@@ -70,7 +70,6 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
           name="state"
           label="state"
           placeholder="Select options"
-          inputTextStyles="text-xs md:text-sm font-normal"
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
           value={selectedState ? selectedState : undefined}
           onChange={handleStateChange} // Update handler
@@ -81,22 +80,16 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
           name="local_government"
           label="local government"
           placeholder="Select options"
-          inputTextStyles="text-xs md:text-sm font-normal"
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
           onChange={handleLGAChange} // Update handler
           value={selectedLGA ? selectedLGA : undefined} // Controlled value
         />
-        <Input
-          id="address"
-          label="address"
-          inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
-        />
+        <Input id="address" label="address" inputClassName="rounded-[8px]" />
         <Select
           options={["Individual", "Couples", "Widow"]}
           id={`${type === "landlord" ? "owner" : "tenant"}_type`}
           name={`${type === "landlord" ? "owner" : "tenant"}_type`}
           label={`${type === "landlord" ? "owner" : "Tenant/Occupant"} Type`}
-          inputTextStyles="text-xs md:text-sm font-normal"
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
         />
         <Select
@@ -106,7 +99,6 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
           label="Gender"
           isSearchable={false}
           placeholder="Select options"
-          inputTextStyles="text-xs md:text-sm font-normal"
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
         />
       </div>
