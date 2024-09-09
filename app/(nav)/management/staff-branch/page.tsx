@@ -88,22 +88,6 @@ const StaffAndBranches = () => {
     },
   ];
 
-  const StaffAndBranchFiltersWithDate = [
-    {
-      label: "Date",
-      value: (
-        <DateInput
-          required
-          id="date"
-          onChange={(date) => {
-            setSelectedDate(date);
-          }}
-          value={selectedDate}
-        />
-      ),
-    },
-  ];
-
   const tableFields: Field[] = [
     { id: "1", label: "S/N", accessor: "S/N" },
     { id: "2", label: "", accessor: "avatar", isImage: true },

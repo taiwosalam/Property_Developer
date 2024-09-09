@@ -65,6 +65,7 @@ const config = {
         },
         success: {
           1: "#E6FAEE",
+          2: "#01BA4C",
           3: "#005623",
         },
         support: {

@@ -81,13 +81,16 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                       height: "14px",
                     }}
                     className="ml-1"
+                    hidden={notification.title == "Staffs"}
                   />
                 </p>
                 <p className="text-[10px] text-text-disabled">
-                  {notification.time}
+                  {notification.title === "Staffs"
+                    ? "Message"
+                    : notification.time}
                 </p>
               </div>
-              {notification.title && (
+              {notification.title != "Staffs" && (
                 <p className="text-xs text-text-secondary capitalize">
                   {notification.title}
                 </p>
