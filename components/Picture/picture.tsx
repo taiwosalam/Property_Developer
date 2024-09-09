@@ -11,11 +11,20 @@ import { empty } from "@/app/config";
 const Picture: React.FC<PictureProps> = ({
   src = empty,
   alt = "profile picture",
+
   size = 60,
+  width,
+  height,
+
+  style,
   status,
   rounded,
   className,
+  resolutionMultiplier = 2,
 }) => {
+  const imageWidth = width ?? size;
+  const imageHeight = height ?? size;
+
   const status_wh = Math.min(12, Math.floor(size / 3));
 
   return (
@@ -23,19 +32,20 @@ const Picture: React.FC<PictureProps> = ({
       <Image
         src={src}
         alt={alt}
-        width={size * 2}
-        height={size * 2}
+        width={imageWidth * resolutionMultiplier}
+        height={imageHeight * resolutionMultiplier}
         className={clsx("object-cover", {
           "rounded-full": rounded,
           className,
         })}
         style={{
-          width: size,
-          height: size,
-          minWidth: size,
-          minHeight: size,
-          maxWidth: size,
-          maxHeight: size,
+          width: imageWidth,
+          height: imageHeight,
+          minWidth: imageWidth,
+          minHeight: imageHeight,
+          maxWidth: imageWidth,
+          maxHeight: imageHeight,
+          ...style,
         }}
       />
       {status && (

@@ -31,7 +31,7 @@ body {
   pointer-events: none;
 }
 
-#portal>* {
+#portal > * {
   position: absolute;
   pointer-events: all;
 }
@@ -86,7 +86,7 @@ h1 {
   flex-direction: column;
 }
 
-.custom-flex-col>* {
+.custom-flex-col > * {
   width: 100%;
 }
 
@@ -228,6 +228,10 @@ input[type="number"]::-webkit-inner-spin-button {
   pointer-events: none;
 }
 
+.landlord-tenant-edit-section .custom-flex-col.gap-2 {
+  width: 40%;
+}
+
 .sidenav-collapsed p {
   display: none;
 }
@@ -259,6 +263,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .dash-table th {
   white-space: nowrap;
+  font-weight: 500;
 }
 
 .dash-table th,
