@@ -48,7 +48,6 @@ const StaffAndBranches = () => {
   const allStates = getAllStates() || [];
 
   const StaffAndBranchFilters = [
-    { label: "Registration Date", value: "registration_date" },
     { label: "Alphabetically", value: "alphabetically" },
   ];
 
@@ -265,7 +264,7 @@ const StaffAndBranches = () => {
                   filterOptionsWithDropdown={StaffAndBranchFiltersWithOptions}
                   filterOptions={StaffAndBranchFilters}
                   onApply={handleFilterApply}
-                  // Set the selected state in the parent component
+                  date
                   onStateSelect={(state: string) => setSelectedState(state)}
                 />
               </ModalContent>
