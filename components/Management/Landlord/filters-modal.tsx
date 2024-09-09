@@ -62,6 +62,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   const handleRadioChange = (value: string) => {
     setSelectedRadioOption(value);
+    setSearchQuery(""); // Reset search query
   };
 
   // Handle changes to dropdown sub-options
@@ -84,6 +85,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
         [dropdownLabel]: updatedSelections,
       };
     });
+    setSearchQuery(""); // Reset search query
   };
 
   // Apply filters and close modal

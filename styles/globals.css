@@ -31,7 +31,7 @@ body {
   pointer-events: none;
 }
 
-#portal > * {
+#portal>* {
   position: absolute;
   pointer-events: all;
 }
@@ -86,7 +86,7 @@ h1 {
   flex-direction: column;
 }
 
-.custom-flex-col > * {
+.custom-flex-col>* {
   width: 100%;
 }
 
@@ -170,6 +170,7 @@ input[type="number"]::-webkit-inner-spin-button {
   width: 40px !important;
   border-radius: 8px 0 0 8px !important;
 }
+
 .react-tel-input .flag-dropdown.open .selected-flag {
   background: inherit !important;
   border-radius: inherit !important;
@@ -245,7 +246,6 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .dash-table {
   width: 100%;
-  table-layout: fixed;
   border-collapse: collapse;
 }
 
@@ -282,6 +282,7 @@ input[type="number"]::-webkit-inner-spin-button {
 .button-base {
   @apply rounded-[8px] capitalize px-3 py-2 text-sm bg-brand-9 text-white font-normal;
 }
+
 .page-header-button {
   @apply button-base lg:px-10 xl:px-12 !py-[12px];
 }
