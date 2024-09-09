@@ -45,7 +45,6 @@ const Tenants = () => {
   };
 
   const tenantFilters = [
-    { label: "Registration Date", value: "registration_date" },
     { label: "Alphabetically", value: "alphabetically" },
     { label: "Tenants", value: "tenants" },
     { label: "Occupants", value: "occupants" },
@@ -272,6 +271,7 @@ const Tenants = () => {
                   filterOptionsWithDropdown={tenantFiltersWithOptions}
                   onApply={handleFilterApply}
                   onStateSelect={onStateSelect}
+                  date={true}
                 />
               </ModalContent>
             </Modal>
