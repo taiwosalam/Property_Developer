@@ -54,7 +54,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function DashboardChart() {
+export function DashboardChart({ visibleRange }: { visibleRange: boolean }) {
   const [salesEnabled, setSalesEnabled] = React.useState(true);
   const [profitsEnabled, setProfitsEnabled] = React.useState(true);
   const [expensesEnabled, setExpensesEnabled] = React.useState(true);
@@ -183,7 +183,11 @@ export function DashboardChart() {
                 </Label>
               </span>
             </div>
-            <div className="flex bg-[#F5F5F5] rounded-md items-center justify-center">
+            <div
+              className={`flex bg-[#F5F5F5] rounded-md items-center justify-center ${
+                !visibleRange && "hidden"
+              }`}
+            >
               <DatePickerWithRange
                 selectedRange={selectedDateRange}
                 onDateChange={handleDateChange}
