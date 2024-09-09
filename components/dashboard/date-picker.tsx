@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 import { ChevronDown } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
@@ -16,11 +16,25 @@ import {
 
 export function DatePickerWithRange({
   className,
-}: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(),
-    to: new Date(),
-  });
+  selectedRange,
+  onDateChange,
+}: React.HTMLAttributes<HTMLDivElement> & {
+  selectedRange: DateRange | undefined;
+  onDateChange: (range: DateRange | undefined) => void;
+}) {
+  // Use the selectedRange prop to set the initial state
+  const [date, setDate] = React.useState<DateRange | undefined>(selectedRange);
+
+  // Update local state and notify parent whenever the date changes
+  const handleDateChange = (newRange: DateRange | undefined) => {
+    setDate(newRange);
+    onDateChange(newRange); // Notify parent of the change
+  };
+
+  // Sync the local state with the selectedRange prop if it changes externally
+  React.useEffect(() => {
+    setDate(selectedRange);
+  }, [selectedRange]);
 
   return (
     <div className={cn(className)}>
@@ -29,7 +43,7 @@ export function DatePickerWithRange({
           <button
             id="date"
             className={cn(
-              "inline-flex items-center whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50 h-10 px-1 py-2 w-full justify-start text-left font-normal",
+              "inline-flex items-center whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50 h-10 px-3 py-2 w-full justify-start text-left font-normal",
               !date && "text-muted-foreground"
             )}
           >
@@ -55,7 +69,7 @@ export function DatePickerWithRange({
             mode="range"
             defaultMonth={date?.from}
             selected={date}
-            onSelect={setDate}
+            onSelect={handleDateChange}
             numberOfMonths={2}
           />
         </PopoverContent>
