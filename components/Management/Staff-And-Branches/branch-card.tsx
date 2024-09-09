@@ -15,7 +15,8 @@ const BranchCard: React.FC<BranchCardProps> = ({
 }) => {
   return (
     <div className="relative mt-[3rem]">
-      <div className="w-[110px] h-[110px] absolute top-[-2rem] left-[50%] translate-x-[-50%] p-[6px] bg-white rounded-full border border-solid border-red-600">
+      <div className="w-[110px] h-[110px] absolute top-[-3rem] left-[50%] translate-x-[-50%] p-[6px] bg-white rounded-full border border-solid border-red-600 z-[-1]"></div>
+      <div className="w-[110px] h-[110px] absolute top-[-3rem] left-[50%] translate-x-[-50%] p-[6px] bg-white rounded-full">
         <div className="w-full h-full rounded-full overflow-hidden m-auto relative">
           <Image
             src={DefaultBranchPicture}

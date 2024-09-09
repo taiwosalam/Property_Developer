@@ -30,7 +30,7 @@ const Landlord = () => {
     current_page: 1,
   };
   const [state, setState] = useState(initialState);
-
+  const { gridView, total_pages, current_page } = state;
   const setGridView = () => {
     setState((state) => ({ ...state, gridView: true }));
   };
@@ -171,8 +171,6 @@ const Landlord = () => {
     { id: "5", accessor: "user_tag" },
     { id: "6", accessor: "manage/chat" },
   ];
-
-  const { gridView, total_pages, current_page } = state;
 
   return (
     <div className="space-y-9">
