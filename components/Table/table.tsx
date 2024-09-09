@@ -12,7 +12,8 @@ import {
   Paper,
   Avatar,
 } from "@mui/material";
-import { ReactNode } from "react";
+
+import { useState, useRef, useEffect, ReactNode } from "react";
 
 const renderValue = (
   data: DataItem,
@@ -21,13 +22,13 @@ const renderValue = (
   actionButtonIcon: ReactNode
 ) => {
   let value = data[field.accessor];
- if (field.accessor === "S/N") {
-   return field.contentStyle ? (
-     <div style={field.contentStyle}>{String(index + 1).padStart(2, "0")}</div>
-   ) : (
-     String(index + 1).padStart(2, "0")
-   );
- }
+  if (field.accessor === "S/N") {
+    return field.contentStyle ? (
+      <div style={field.contentStyle}>{String(index + 1).padStart(2, "0")}</div>
+    ) : (
+      String(index + 1).padStart(2, "0")
+    );
+  }
   if (field.isImage) {
     return field.contentStyle ? (
       <div style={field.contentStyle}>
@@ -101,17 +102,20 @@ const CustomTable: React.FC<CustomTableProps> = ({
   evenRowColor = "#fff",
   oddRowColor = "#fff",
 }) => {
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+
   return (
     <TableContainer
       component={Paper}
-      className={className}
+      className={clsx("relative h-[650px] custom-round-scrollbar", className)}
       sx={{ boxShadow: "none" }}
+      ref={tableContainerRef}
     >
       <Table sx={{ boxShadow: "none" }}>
         {displayTableHead && (
           <TableHead
             className={clsx("sticky top-0 z-[2]", tableHeadClassName)}
-            style={tableHeadStyle} // Apply custom inline styles
+            style={tableHeadStyle}
           >
             <TableRow>
               {fields.map((field) => (

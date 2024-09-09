@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
+import clsx from "clsx";
 import Image from "next/image";
+import Button from "@/components/Form/Button/button";
 import { GridIcon, ListIcon } from "@/public/icons/icons";
 import TenantCard from "@/components/Management/landlord-and-tenant-card";
 import type { TenantProps } from "@/components/Management/Tenants/types";
@@ -197,9 +199,9 @@ const Tenants = () => {
             <div className="flex items-center justify-center w-full h-full">
               <Modal>
                 <ModalTrigger asChild>
-                  <button type="button" className="page-header-button">
+                  <Button type="button" className="page-header-button">
                     + create new tenant
-                  </button>
+                  </Button>
                 </ModalTrigger>
                 <ModalContent>
                   <div>Hello</div>
@@ -211,9 +213,9 @@ const Tenants = () => {
         <div className="md:hidden xl:flex lg:ml-4">
           <Modal>
             <ModalTrigger asChild>
-              <button type="button" className="page-header-button">
+              <Button type="button" className="page-header-button">
                 + create new tenant
-              </button>
+              </Button>
             </ModalTrigger>
             <ModalContent>
               <div>Hello</div>
@@ -230,26 +232,26 @@ const Tenants = () => {
             <button
               type="button"
               aria-label="list-view"
-              className={`${
-                !gridView ? "bg-black text-white" : "bg-transparent text-black"
-              } p-1 rounded-[4px]`}
+              className={clsx(
+                "p-1 rounded-md",
+                !gridView
+                  ? "bg-black text-white"
+                  : "bg-transparent text-[unset]"
+              )}
               onClick={setListView}
             >
-              <div className={!gridView ? "text-white" : "text-[unset]"}>
-                <ListIcon />
-              </div>
+              <ListIcon />
             </button>
             <button
               type="button"
               aria-label="grid-view"
-              className={`${
-                gridView ? "bg-black text-white" : "bg-transparent text-black"
-              } p-1 rounded-[4px]`}
+              className={clsx(
+                "p-1 rounded-md",
+                gridView ? "bg-black text-white" : "bg-transparent text-[unset]"
+              )}
               onClick={setGridView}
             >
-              <div className={gridView ? "text-white" : "text-[unset]"}>
-                <GridIcon />
-              </div>
+              <GridIcon />
             </button>
           </div>
           <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
@@ -307,7 +309,6 @@ const Tenants = () => {
           totalPages={total_pages}
           currentPage={current_page}
           onPageChange={handlePageChange}
-          className="mt-8 text-xs font-medium"
         />
       </section>
     </div>

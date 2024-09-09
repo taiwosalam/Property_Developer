@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import clsx from "clsx";
 import { GridIcon, ListIcon } from "@/public/icons/icons";
+import Button from "@/components/Form/Button/button";
 import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
 import CustomTable from "@/components/Table/table";
 import { branches } from "./data";
@@ -16,6 +18,7 @@ import type { StaffAndBranchState } from "./types";
 import DateInput from "@/components/Form/DateInput/date-input";
 import { Dayjs } from "dayjs";
 import PageTitle from "@/components/PageTitle/page-title";
+import Pagination from "@/components/Pagination/pagination";
 
 const StaffAndBranches = () => {
   const initialState = {
@@ -192,9 +195,9 @@ const StaffAndBranches = () => {
             <div className="flex items-center justify-center w-full h-full">
               <Modal>
                 <ModalTrigger asChild>
-                  <button type="button" className="page-header-button">
-                    + create new landlord
-                  </button>
+                  <Button type="button" className="page-header-button">
+                    + create branch
+                  </Button>
                 </ModalTrigger>
                 <ModalContent>
                   <div>Hello</div>
@@ -207,7 +210,7 @@ const StaffAndBranches = () => {
           <Modal>
             <ModalTrigger asChild>
               <button type="button" className="page-header-button">
-                + create new landlord
+                + create branch
               </button>
             </ModalTrigger>
             <ModalContent>
@@ -225,26 +228,26 @@ const StaffAndBranches = () => {
             <button
               type="button"
               aria-label="list-view"
-              className={`${
-                !gridView ? "bg-black" : "bg-transparent"
-              } p-1 rounded-md`}
+              className={clsx(
+                "p-1 rounded-md",
+                !gridView
+                  ? "bg-black text-white"
+                  : "bg-transparent text-[unset]"
+              )}
               onClick={setListView}
             >
-              <div className={!gridView ? "text-white" : "text-[unset]"}>
-                <ListIcon />
-              </div>
+              <ListIcon />
             </button>
             <button
               type="button"
               aria-label="grid-view"
-              className={`${
-                gridView ? "bg-black" : "bg-transparent"
-              } p-1 rounded-md`}
+              className={clsx(
+                "p-1 rounded-md",
+                gridView ? "bg-black text-white" : "bg-transparent text-[unset]"
+              )}
               onClick={setGridView}
             >
-              <div className={gridView ? "text-white" : "text-[unset]"}>
-                <GridIcon />
-              </div>
+              <GridIcon />
             </button>
           </div>
           <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
@@ -311,6 +314,11 @@ const StaffAndBranches = () => {
             oddRowColor="#EFF6FF"
           />
         )}
+        <Pagination
+          totalPages={total_pages}
+          currentPage={current_page}
+          onPageChange={handlePageChange}
+        />
       </section>
     </div>
   );

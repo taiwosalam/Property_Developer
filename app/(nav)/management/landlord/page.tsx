@@ -2,6 +2,7 @@
 
 // Imports
 import { useState } from "react";
+import clsx from "clsx";
 import { GridIcon, ListIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import AddLandlordModal from "@/components/Management/Landlord/add-landlord-modal";
@@ -19,6 +20,8 @@ import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import PageTitle from "@/components/PageTitle/page-title";
+import AboutPage from "@/components/AboutPage/about-page";
+import Button from "@/components/Form/Button/button";
 
 const Landlord = () => {
   const initialState = {
@@ -197,9 +200,9 @@ const Landlord = () => {
             <div className="flex items-center justify-center w-full h-full">
               <Modal>
                 <ModalTrigger asChild>
-                  <button type="button" className="page-header-button">
+                  <Button type="button" className="page-header-button">
                     + create new landlord
-                  </button>
+                  </Button>
                 </ModalTrigger>
                 <ModalContent>
                   <AddLandlordModal />
@@ -211,9 +214,9 @@ const Landlord = () => {
         <div className="md:hidden xl:flex lg:ml-4">
           <Modal>
             <ModalTrigger asChild>
-              <button type="button" className="page-header-button">
+              <Button type="button" className="page-header-button">
                 + create new landlord
-              </button>
+              </Button>
             </ModalTrigger>
             <ModalContent>
               <AddLandlordModal />
@@ -223,33 +226,41 @@ const Landlord = () => {
       </div>
 
       <div className="page-title-container">
-        <PageTitle title="Landlords/Landladies (Owners)" />
+        <PageTitle
+          title="Landlords/Landladies (Owners)"
+          aboutPageModal={
+            <AboutPage
+              title="Landlords"
+              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer rhoncus nunc interdum turpis bibendum, quis molestie sapien convallis. Vivamus porta elementum nibh, vel placerat mauris vehicula non. Ut maximus vehicula tortor, nec pretium lacus venenatis id. Morbi pretium aliquet nisi, nec vestibulum nibh blandit in. "
+            />
+          }
+        />
         <div className="flex items-center gap-x-4">
           <SearchInput placeholder="Search for Landlords" />
           <div className="flex items-center gap-x-3">
             <button
               type="button"
               aria-label="list-view"
-              className={`${
-                !gridView ? "bg-black" : "bg-transparent"
-              } p-1 rounded-md`}
+              className={clsx(
+                "p-1 rounded-md",
+                !gridView
+                  ? "bg-black text-white"
+                  : "bg-transparent text-[unset]"
+              )}
               onClick={setListView}
             >
-              <div className={!gridView ? "text-white" : "text-[unset]"}>
-                <ListIcon />
-              </div>
+              <ListIcon />
             </button>
             <button
               type="button"
               aria-label="grid-view"
-              className={`${
-                gridView ? "bg-black" : "bg-transparent"
-              } p-1 rounded-md`}
+              className={clsx(
+                "p-1 rounded-md",
+                gridView ? "bg-black text-white" : "bg-transparent text-[unset]"
+              )}
               onClick={setGridView}
             >
-              <div className={gridView ? "text-white" : "text-[unset]"}>
-                <GridIcon />
-              </div>
+              <GridIcon />
             </button>
           </div>
           <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
@@ -307,7 +318,6 @@ const Landlord = () => {
           totalPages={total_pages}
           currentPage={current_page}
           onPageChange={handlePageChange}
-          className="mt-8 text-xs font-medium"
         />
       </section>
     </div>
