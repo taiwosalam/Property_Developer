@@ -192,9 +192,9 @@ const StaffAndBranches = () => {
         <div className="md:hidden xl:flex lg:ml-4">
           <Modal>
             <ModalTrigger asChild>
-              <button type="button" className="page-header-button">
+              <Button type="button" className="page-header-button">
                 + create branch
-              </button>
+              </Button>
             </ModalTrigger>
             <ModalContent>
               <div>Hello</div>
