@@ -97,7 +97,7 @@ const Dashboard = () => {
   };
 
   return (
-    <section className="custom-flex-col gap-5">
+    <div className="custom-flex-col gap-5">
       <div className="w-full flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-black">Branch Name</h1>
@@ -136,53 +136,51 @@ const Dashboard = () => {
       <div className="w-full h-full xl:flex gap-x-10">
         <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-7">
           <>
-            <div className="flex justify-end">
-              <div className="flex w-[390px] px-4 bg-[#F5F5F5] rounded-md items-center justify-end">
-                <DatePickerWithRange
-                  selectedRange={
-                    {
-                      startDate: new Date(),
-                      endDate: new Date(),
-                      key: "selection",
-                    } as any
-                  }
-                  onDateChange={
-                    (range: any) => console.log(range)
-                    // Add date range logic here
-                  }
-                />
-                <Select
-                  value={"90d"}
-                  onValueChange={
-                    (value: string) => console.log(value)
-                    // Add date range logic here
-                  }
+            <div className="ml-auto flex w-[390px] px-4 bg-[#F5F5F5] rounded-md items-center justify-end">
+              <DatePickerWithRange
+                selectedRange={
+                  {
+                    startDate: new Date(),
+                    endDate: new Date(),
+                    key: "selection",
+                  } as any
+                }
+                onDateChange={
+                  (range: any) => console.log(range)
+                  // Add date range logic here
+                }
+              />
+              <Select
+                value={"90d"}
+                onValueChange={
+                  (value: string) => console.log(value)
+                  // Add date range logic here
+                }
+              >
+                <SelectTrigger
+                  className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto"
+                  aria-label="Select a value"
                 >
-                  <SelectTrigger
-                    className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto"
-                    aria-label="Select a value"
-                  >
-                    <SelectValue placeholder="Last 3 months" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    <SelectItem value="90d" className="rounded-lg">
-                      Last 3 months
-                    </SelectItem>
-                    <SelectItem value="30d" className="rounded-lg">
-                      Last 30 days
-                    </SelectItem>
-                    <SelectItem value="7d" className="rounded-lg">
-                      Last 7 days
-                    </SelectItem>
-                    <SelectItem value="1d" className="rounded-lg">
-                      Yesterday
-                    </SelectItem>
-                    <SelectItem value="custom" className="rounded-lg">
-                      Custom
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                  <SelectValue placeholder="Last 3 months" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl">
+                  <SelectItem value="90d" className="rounded-lg">
+                    Last 3 months
+                  </SelectItem>
+                  <SelectItem value="30d" className="rounded-lg">
+                    Last 30 days
+                  </SelectItem>
+                  <SelectItem value="7d" className="rounded-lg">
+                    Last 7 days
+                  </SelectItem>
+                  <SelectItem value="1d" className="rounded-lg">
+                    Yesterday
+                  </SelectItem>
+                  <SelectItem value="custom" className="rounded-lg">
+                    Custom
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="w-full h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               <BranchStatCard
@@ -317,8 +315,7 @@ const Dashboard = () => {
           className="mt-8 text-xs font-medium"
         />
       </section>
-      {/*  */}
-    </section>
+    </div>
   );
 };
 

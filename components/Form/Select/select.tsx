@@ -79,6 +79,7 @@ const Select: React.FC<SelectProps> = ({
       {/* input for flow progress */}
       <input
         name={id}
+        id={id}
         type="hidden"
         className={hiddenInputClassName}
         value={selectedValue || ""}
