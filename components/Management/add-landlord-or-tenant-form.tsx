@@ -67,7 +67,6 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         <Select
           options={getAllStates()}
           id="state"
-          name="state"
           label="state"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
@@ -77,7 +76,6 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         <Select
           options={localGovernments}
           id="local_government"
-          name="local_government"
           label="local government"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
@@ -88,27 +86,29 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         <Select
           options={["Individual", "Couples", "Widow"]}
           id={`${type === "landlord" ? "owner" : "tenant"}_type`}
-          name={`${type === "landlord" ? "owner" : "tenant"}_type`}
           label={`${type === "landlord" ? "owner" : "Tenant/Occupant"} Type`}
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
         />
         <Select
           options={["male", "female"]}
           id="gender"
-          name="gender"
           label="Gender"
           isSearchable={false}
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
         />
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <div className="custom-flex-col gap-3">
           <p className="text-black text-base font-medium">
             Upload picture or select an avatar.
           </p>
           <div className="flex items-end gap-3">
-            <div className="w-[70px] h-[70px]">
+            <button
+              type="button"
+              aria-label="Upload Picture"
+              className="w-[50px] h-[50px] md:w-[70px] md:h-[70px]"
+            >
               <Image
                 src={CameraCircle}
                 alt="camera"
@@ -116,7 +116,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
                 height={70}
                 className="rounded-full object-cover"
               />
-            </div>
+            </button>
             <div className="flex gap-2">
               {Array(4)
                 .fill(null)
@@ -127,18 +127,16 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
                       alt="avatar"
                       width={40}
                       height={40}
-                      className="w-10 h-10 rounded-full object-cover"
+                      className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
                     />
                   </button>
                 ))}
             </div>
           </div>
         </div>
-        <div className="flex items-center">
-          <Button type="submit" size="base_medium" className="py-2 px-8">
-            create
-          </Button>
-        </div>
+        <Button type="submit" size="base_medium" className="py-2 px-8">
+          create
+        </Button>
       </div>
     </form>
   );

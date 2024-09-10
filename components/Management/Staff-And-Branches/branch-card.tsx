@@ -1,10 +1,10 @@
-import type { BranchCardProps } from "./types";
+import type { BranchProps } from "./types";
 import DefaultBranchPicture from "@/public/empty/branch.png";
 import DefaultBranchManagerAvatar from "@/public/icons/contact.svg";
 import Image from "next/image";
 import Link from "next/link";
 
-const BranchCard: React.FC<BranchCardProps> = ({
+const BranchCard: React.FC<BranchProps> = ({
   branch_title,
   branch_full_address,
   avatar,
