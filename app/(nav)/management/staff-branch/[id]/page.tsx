@@ -18,10 +18,8 @@ import {
   recentMessagesData,
   walletBalanceCardData,
 } from "@/app/(nav)/dashboard/data";
-import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
-import DashboarddCalendar from "@/components/dashboard/calendar";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import SearchInput from "@/components/SearchInput/search-input";
 import { GridIcon, ListIcon } from "@/public/icons/icons";
@@ -29,10 +27,10 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { StaffAndBranchState } from "../types";
 import Pagination from "@/components/Pagination/pagination";
-import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign } from "lucide-react";
-import BranchStatCard from "@/components/Management/Staff-And-Branches/Branch/BranchStatCard";
+import BranchStatCard from "@/components/Management/Staff-And-Branches/Branch/branchStatCard";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
+import BranchActivitiesCard from "@/components/Management/Staff-And-Branches/Branch/branch-activity-card";
+import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch/branch-balance-card";
 
 const Dashboard = () => {
   const initialState = {
@@ -132,7 +130,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="w-full h-full xl:flex gap-x-10">
-        <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-9">
+        <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-7">
           <>
             <div className="flex justify-end">
               <div className="flex w-[390px] px-4 bg-[#F5F5F5] rounded-md items-center justify-end">
@@ -194,7 +192,7 @@ const Dashboard = () => {
                 upvalue={54}
               />
               <BranchStatCard
-                title="Total Receipts"
+                title="Total Balance"
                 balance={1234535}
                 upvalue={54}
               />
@@ -219,11 +217,11 @@ const Dashboard = () => {
           )}
         </div>
         <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full space-y-6 mt-6 xl:mt-0">
-          <WalletBalanceCard
+          <BranchBalanceCard
             mainBalance={walletBalanceCardData.mainBalance}
             cautionDeposit={walletBalanceCardData.cautionDeposit}
           />
-          <DashboarddCalendar />
+          <BranchActivitiesCard />
           <NotificationCard
             sectionHeader="Staffs"
             notifications={recentMessagesData}

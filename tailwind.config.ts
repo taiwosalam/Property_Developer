@@ -59,6 +59,8 @@ const config = {
           },
           error: {
             primary: "#E9212E",
+            1: "#FDE9EA",
+            2: "#E9212E",
           },
           caution: {
             3: "#FFF8EE",
