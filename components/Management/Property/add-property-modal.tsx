@@ -3,22 +3,22 @@
 import { useState } from "react";
 import Image from "next/image";
 // Types
-import type { AddPropertiesModalViews } from "./types";
+import type { AddPropertyModalViews } from "./types";
 import { ModalTrigger } from "@/components/Modal/modal";
 // Images
 import CloseCircle from "@/public/icons/close-circle.svg";
 import ChevronLeft from "@/public/icons/chevron-left.svg";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
-import AddPropertiesOptionsView from "./add-property-options";
+import AddPropertyOptionsView from "./add-property-options";
 
 const AddPropertyModal = () => {
-  const [view, setView] = useState<AddPropertiesModalViews>("options");
+  const [view, setView] = useState<AddPropertyModalViews>("options");
   const handleBack = () => {
     setView("options");
   };
   const modal_states: Record<
-    AddPropertiesModalViews,
+    AddPropertyModalViews,
     {
       heading: string;
       content: React.ReactNode;
@@ -26,7 +26,7 @@ const AddPropertyModal = () => {
   > = {
     options: {
       heading: "Add Property",
-      content: <AddPropertiesOptionsView setModalView={setView} />,
+      content: <AddPropertyOptionsView setModalView={setView} />,
     },
     "add-property-with-id": {
       heading: "Add Property with ID",
