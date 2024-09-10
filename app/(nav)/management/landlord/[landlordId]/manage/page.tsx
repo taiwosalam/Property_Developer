@@ -64,7 +64,7 @@ const ManageLandlord = () => {
                 </Button>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Button>edit</Button>
+                <Button href="/management/landlord/1/manage/edit">edit</Button>
                 <Button>update with ID</Button>
               </div>
             </div>
