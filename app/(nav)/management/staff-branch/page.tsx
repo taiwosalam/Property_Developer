@@ -51,7 +51,6 @@ const StaffAndBranches = () => {
   const allStates = getAllStates() || [];
 
   const StaffAndBranchFilters = [
-    { label: "Registration Date", value: "registration_date" },
     { label: "Alphabetically", value: "alphabetically" },
   ];
 
@@ -89,22 +88,6 @@ const StaffAndBranches = () => {
             value: lga,
           }))
         : [],
-    },
-  ];
-
-  const StaffAndBranchFiltersWithDate = [
-    {
-      label: "Date",
-      value: (
-        <DateInput
-          required
-          id="date"
-          onChange={(date) => {
-            setSelectedDate(date);
-          }}
-          value={selectedDate}
-        />
-      ),
     },
   ];
 
@@ -268,7 +251,7 @@ const StaffAndBranches = () => {
                   filterOptionsWithDropdown={StaffAndBranchFiltersWithOptions}
                   filterOptions={StaffAndBranchFilters}
                   onApply={handleFilterApply}
-                  // Set the selected state in the parent component
+                  date
                   onStateSelect={(state: string) => setSelectedState(state)}
                 />
               </ModalContent>
@@ -293,7 +276,7 @@ const StaffAndBranches = () => {
           <CustomTable
             fields={tableFields}
             data={branches.slice(0, 20)}
-            tableHeadClassName="bg-brand-5"
+            tableHeadClassName="bg-brand-5 h-[76px]"
             tableHeadStyle={{
               borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
             }}

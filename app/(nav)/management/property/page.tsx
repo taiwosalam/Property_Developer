@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import PropertyCard from "@/components/Management/Properties/property-card";
+import PropertyCard from "@/components/Management/Property/property-card";
 import { properties } from "./data";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { ModalContent, ModalTrigger, Modal } from "@/components/Modal/modal";
@@ -12,13 +12,15 @@ import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
 import { ListIcon, GridIcon } from "@/public/icons/icons";
 import AboutPage from "@/components/AboutPage/about-page";
-import PropertyListItem from "@/components/Management/Properties/property-list-item";
+import PropertyListItem from "@/components/Management/Property/property-list-item";
+import AddPropertyModal from "@/components/Management/Property/add-property-modal";
 
-const page = () => {
+const Property = () => {
   const initialState = {
     gridView: true,
     total_pages: 50,
     current_page: 1,
+    isModalOpen: false,
   };
   const [state, setState] = useState(initialState);
   const { gridView, total_pages, current_page } = state;
@@ -64,7 +66,7 @@ const page = () => {
                   </Button>
                 </ModalTrigger>
                 <ModalContent>
-                  <div>Hi</div>
+                  <AddPropertyModal />
                 </ModalContent>
               </Modal>
             </div>
@@ -78,7 +80,7 @@ const page = () => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <div>Hi</div>
+              <AddPropertyModal />
             </ModalContent>
           </Modal>
         </div>
@@ -87,7 +89,7 @@ const page = () => {
       {/* Page Title with search */}
       <div className="page-title-container">
         <PageTitle
-          title="Landlords/Landladies (Owners)"
+          title="Properties"
           aboutPageModal={
             <AboutPage
               title="Properties"
@@ -147,7 +149,12 @@ const page = () => {
       {/* Card / List View */}
       <section>
         {gridView ? (
-          <div className="flex flex-wrap gap-4">
+          <div
+            className="grid gap-x-[30px] gap-y-5 justify-items-center grid-cols-3"
+            // style={{
+            //   gridTemplateColumns: "repeat(auto-fit, minmax(370px, 1fr))",
+            // }}
+          >
             {properties.slice(0, 30).map((p) => (
               <PropertyCard key={p.id} {...p} />
             ))}
@@ -164,4 +171,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Property;

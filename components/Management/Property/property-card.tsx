@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { PropertyProps } from "./types";
 import clsx from "clsx";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Button from "@/components/Form/Button/button";
 import { motion, useAnimation } from "framer-motion";
 import Sample from "@/public/empty/SampleProperty.jpeg";
@@ -29,6 +29,7 @@ const PropertyCard: React.FC<PropertyProps> = ({
   type,
 }) => {
   const controls = useAnimation();
+  const modalRef = useRef<HTMLDivElement>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isModalActive, setIsModalActive] = useState(false);
   const handleNextClick = () => {
@@ -43,7 +44,7 @@ const PropertyCard: React.FC<PropertyProps> = ({
     }
   };
 
-  const handleDragEnd = (event, info) => {
+  const handleDragEnd = (event: any, info: any) => {
     if (info.offset.x > 100 && currentImageIndex > 0) {
       handlePreviousClick();
     } else if (info.offset.x < -100 && currentImageIndex < images.length - 1) {
@@ -51,9 +52,29 @@ const PropertyCard: React.FC<PropertyProps> = ({
     }
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      setIsModalActive(false);
+    }
+  };
+  useEffect(() => {
+    if (isModalActive) {
+      document.addEventListener("click", handleClickOutside);
+    } else {
+      document.removeEventListener("click", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isModalActive]);
+
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   return (
-    <div className="rounded-xl min-w-[370px]">
+    <div
+      className="rounded-xl max-w-[100%] aspect-[0.961] relative"
+      style={{ boxShadow: "4px 4px 10px 0px rgba(0, 0, 0, 0.05)" }}
+    >
       <div className="relative h-[200px] w-full overflow-hidden rounded-t-xl">
         <button
           type="button"
@@ -111,8 +132,9 @@ const PropertyCard: React.FC<PropertyProps> = ({
           />
           {isModalActive && (
             <div
-              className="absolute z-[10] inset-0 flex items-center justify-between px-10"
+              className="absolute z-[2] inset-0 flex items-center justify-between px-10"
               style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+              ref={modalRef}
             >
               <Button
                 type="button"
@@ -133,75 +155,71 @@ const PropertyCard: React.FC<PropertyProps> = ({
         </motion.div>
       </div>
       <div
-        className="p-4 bg-white rounded-b-xl cursor-pointer"
+        className="relative cursor-pointer bg-white rounded-b-xl p-4"
         role="button"
-        onClick={() => setIsModalActive((x) => !x)}
+        onClick={() => setIsModalActive(true)}
       >
-        {!isModalActive ? (
-          <div>
-            <p className="text-brand-5 text-sm font-bold">ID: {propertyId}</p>
-            <p className="text-[#374151] text-2xl font-bold">
-              {name} <br />({units} Units)
+        <p className="text-brand-5 text-sm font-bold">ID: {propertyId}</p>
+        <p className="text-[#374151] text-2xl font-bold">
+          {name} <br />({units} Units)
+        </p>
+        <p className="flex items-center gap-1 text-brand-tertiary text-sm font-normal">
+          <LocationIcon /> {address}
+        </p>
+        <div className="flex justify-between items-end mt-1">
+          <p
+            className={clsx(
+              "px-4 py-1 text-[10px] font-normal rounded-lg",
+              type === "rent"
+                ? "text-success-3 bg-success-1"
+                : "text-brand-9 bg-brand-3"
+            )}
+          >
+            {type === "rent" ? "Rental Property" : "Gated Estate"}
+          </p>
+          <div className="text-right">
+            <p className="text-brand-primary text-xl font-bold">{price}</p>
+            <p className="text-[#606060] font-normal text-xs">Annual Returns</p>
+            <p className="text-text-disabled font-medium text-sm">
+              <span className="text-highlight">₦700,000</span> / Annual Income
             </p>
-            <p className="flex items-center gap-1 text-brand-tertiary text-sm font-normal">
-              <LocationIcon /> {address}
-            </p>
-            <div className="flex justify-between items-end mt-1">
-              <p
-                className={clsx(
-                  "px-4 py-1 text-[10px] font-normal rounded-lg",
-                  type === "rent"
-                    ? "text-success-3 bg-success-1"
-                    : "text-brand-9 bg-brand-3"
-                )}
-              >
-                {type === "rent" ? "Rental Property" : "Gated Estate"}
-              </p>
-              <div className="text-right">
-                <p className="text-brand-primary text-xl font-bold">{price}</p>
-                <p className="text-[#606060] font-normal text-xs">
-                  Annual Returns
-                </p>
-                <p className="text-text-disabled font-medium text-sm">
-                  <span className="text-highlight">₦700,000</span> / Annual
-                  Income
-                </p>
-              </div>
-            </div>
           </div>
-        ) : (
-          <div className="text-xs grid grid-cols-3 gap-x-4 gap-y-2">
-            <div>
-              <p className="text-label font-normal">Branch</p>
-              <p className="text-brand-9 font-bold">Joke Plaza Bodija</p>
-            </div>
-            <div>
-              <p className="text-label font-normal">Total Unit</p>
-              <p className="text-brand-9 font-bold">12</p>
-            </div>
-            <div>
-              <p className="text-label font-normal">Available Units</p>
-              <p className="text-brand-9 font-bold">5</p>
-            </div>
-            <div>
-              <p className="text-label font-normal">Account Officer</p>
-              <p className="text-brand-9 font-bold">Anikulapo Jesus</p>
-            </div>
-            <div>
-              <p className="text-label font-normal">Mobile Tenants</p>
-              <p>12</p>
-            </div>
-            <div>
-              <p className="text-label font-normal">Web Tenants</p>
-              <p className="text-brand-9 font-bold">5</p>
-            </div>
-            <div>
-              <p className="text-label font-normal">Last Updated</p>
-              <p className="text-brand-9 font-bold">5 hours ago</p>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
+      {isModalActive && (
+        <div className="bg-white px-8 pt-4 pb-10 text-xs grid grid-cols-3 gap-x-4 gap-y-2 absolute bottom-0 w-full rounded-b-xl h-[55%] z-[3] cursor-default">
+          <div>
+            <p className="text-label font-normal">Branch</p>
+            <p className="text-brand-9 font-bold">Joke Plaza Bodija</p>
+          </div>
+          <div>
+            <p className="text-label font-normal">Total Unit</p>
+            <p className="text-brand-9 font-bold">12</p>
+          </div>
+          <div>
+            <p className="text-label font-normal">
+              {type === "rent" ? "Available" : "Owing"} Units
+            </p>
+            <p className="text-brand-9 font-bold">5</p>
+          </div>
+          <div>
+            <p className="text-label font-normal">Account Officer</p>
+            <p className="text-brand-9 font-bold">Anikulapo Jesus</p>
+          </div>
+          <div>
+            <p className="text-label font-normal">Mobile Tenants</p>
+            <p className="text-brand-9 font-bold">12</p>
+          </div>
+          <div>
+            <p className="text-label font-normal">Web Tenants</p>
+            <p className="text-brand-9 font-bold">5</p>
+          </div>
+          <div>
+            <p className="text-label font-normal">Last Updated</p>
+            <p className="text-brand-9 font-bold">5 hours ago</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

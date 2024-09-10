@@ -1,9 +1,9 @@
-"use client";
-
 import React, { useState } from "react";
 import Image from "next/image";
 import { ModalTrigger } from "@/components/Modal/modal";
-import { ChevronRight, Check, ChevronLeft } from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
+import DateInput from "@/components/Form/DateInput/date-input";
+import { Dayjs } from "dayjs";
 
 // Types
 type FilterOption = {
@@ -28,6 +28,7 @@ type FilterModalProps = {
   onApply: (selectedFilters: string[]) => void;
   title?: string;
   onStateSelect?: (state: string) => void;
+  date?: boolean; // New prop to determine if date picker should be shown
 };
 
 const FilterModal: React.FC<FilterModalProps> = ({
@@ -37,6 +38,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   onApply,
   onStateSelect,
   title = "Filters by",
+  date,
 }) => {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [activeDropdownOption, setActiveDropdownOption] =
@@ -49,7 +51,21 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const [selectedRadioOption, setSelectedRadioOption] = useState<string | null>(
     null
   );
+  const [selectedDateOption, setSelectedDateOption] = useState<string | null>(
+    null
+  );
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+
+  const handleDateChange = (date?: Dayjs | null) => {
+    setSelectedDate(date ? date.toISOString() : null);
+    setSelectedDateOption(date ? date.format("DD/MM/YYYY") : null);
+  };
+
+  const toggleDatePicker = () => {
+    setShowDatePicker((prev) => !prev);
+  };
 
   // Handle changes to the main filter options (regular options)
   const handleCheckboxChange = (value: string) => {
@@ -62,6 +78,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   const handleRadioChange = (value: string) => {
     setSelectedRadioOption(value);
+    setSearchQuery(""); // Reset search query
   };
 
   // Handle changes to dropdown sub-options
@@ -84,16 +101,17 @@ const FilterModal: React.FC<FilterModalProps> = ({
         [dropdownLabel]: updatedSelections,
       };
     });
+    setSearchQuery(""); // Reset search query
   };
 
   // Apply filters and close modal
   const handleApplyFilter = () => {
     const selectedDropdownValues = Object.values(dropdownSelections).flat();
-    console.log(selectedDropdownValues);
     const filtersToApply = [
       ...selectedFilters,
       ...selectedDropdownValues,
       ...(selectedRadioOption ? [selectedRadioOption] : []),
+      ...(selectedDate ? [`date:${selectedDate}`] : []),
     ];
     onApply(filtersToApply);
   };
@@ -260,6 +278,47 @@ const FilterModal: React.FC<FilterModalProps> = ({
     );
   };
 
+  // Content for the date options
+  const renderDateOptions = () => {
+    return (
+      <>
+        <div className="flex items-center justify-between border-b border-solid border-gray-300">
+          <div
+            onClick={() => setShowDatePicker(false)}
+            className="flex items-center cursor-pointer"
+          >
+            <span className="text-sm capitalize">
+              <ChevronLeft />
+            </span>
+            <h2 className="text-lg font-bold text-primary-navy">Date</h2>
+          </div>
+          <button className="p-2" onClick={() => setShowDatePicker(false)}>
+            <Image
+              src="/icons/cancel.svg"
+              alt="close"
+              width={34}
+              height={34}
+              className="min-w-[34px] min-h-[34px]"
+            />
+          </button>
+        </div>
+        <div className="py-2 px-4 my-2 bg-[#F5F5F5]">
+          <DateInput
+            id="registration_date"
+            onChange={handleDateChange}
+            inputClassName="setup-f"
+          />
+        </div>
+        <button
+          className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg"
+          onClick={() => setShowDatePicker(false)}
+        >
+          OK
+        </button>
+      </>
+    );
+  };
+
   // Content for the main modal options
   const renderMainOptions = () => (
     <>
@@ -275,6 +334,34 @@ const FilterModal: React.FC<FilterModalProps> = ({
           />
         </ModalTrigger>
       </div>
+
+      <div
+        className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] cursor-pointer"
+        onClick={toggleDatePicker}
+      >
+        <label className="text-sm capitalize">Date</label>
+        {selectedDateOption ? (
+          <Image
+            src="/icons/checkbox-checked.svg"
+            alt="check"
+            width={20}
+            height={20}
+            className="min-w-[20px] min-h-[20px]"
+          />
+        ) : (
+          <ChevronRight />
+        )}
+      </div>
+
+      {showDatePicker && (
+        <div className="py-2 px-4 my-2 bg-[#F5F5F5]">
+          <DateInput
+            id="registration_date"
+            onChange={handleDateChange}
+            inputClassName="setup-f"
+          />
+        </div>
+      )}
 
       {/* Dropdown filter options */}
       {filterOptionsWithDropdown?.map((option) => (
@@ -351,10 +438,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   return (
     <div className="w-[400px] rounded-[20px] bg-white p-[20px] custom-flex-col">
-      {activeDropdownOption || activeRadioOption
-        ? activeDropdownOption
-          ? renderDropdownOptions()
-          : renderRadioOptions()
+      {activeDropdownOption
+        ? renderDropdownOptions()
+        : activeRadioOption
+        ? renderRadioOptions()
+        : showDatePicker
+        ? renderDateOptions()
         : renderMainOptions()}
     </div>
   );

@@ -1,9 +1,10 @@
-import type { BranchCardProps } from "./types";
+import type { BranchProps } from "./types";
 import DefaultBranchPicture from "@/public/empty/branch.png";
 import DefaultBranchManagerAvatar from "@/public/icons/contact.svg";
 import Image from "next/image";
+import Link from "next/link";
 
-const BranchCard: React.FC<BranchCardProps> = ({
+const BranchCard: React.FC<BranchProps> = ({
   branch_title,
   branch_full_address,
   avatar,
@@ -12,12 +13,24 @@ const BranchCard: React.FC<BranchCardProps> = ({
   staff_count,
   property_count,
   unit_count,
+  id,
 }) => {
   return (
     <div className="relative mt-[3rem]">
-      <div className="w-[110px] h-[110px] absolute top-[-3rem] left-[50%] translate-x-[-50%] p-[6px] bg-white rounded-full border border-solid border-red-600 z-[-1]"></div>
-      <div className="w-[110px] h-[110px] absolute top-[-3rem] left-[50%] translate-x-[-50%] p-[6px] bg-white rounded-full">
-        <div className="w-full h-full rounded-full overflow-hidden m-auto relative">
+      <Link href={`/management/staff-branch/${id}`}>
+        <div
+          className="w-[99px] h-[104px] rounded-full absolute top-[-2.92rem] left-[50%] translate-x-[-50%] overflow-hidden"
+          style={{
+            background: "linear-gradient(180deg, #38bdf8 46%, #ffffff00 0%)",
+          }}
+        ></div>
+        <div className="absolute left-[50%] translate-x-[-50%] top-[-2.8rem] bg-white rounded-full w-[95px] h-[95px] overflow-hidden border-[3px] border-white">
+          {/* <Image
+          src={avatar || DefaultBranchPicture}
+          alt={branch_title || ""}
+          fill
+          className="rounded-full object-cover"
+        /> */}
           <Image
             src={DefaultBranchPicture}
             alt={branch_title || ""}
@@ -25,45 +38,46 @@ const BranchCard: React.FC<BranchCardProps> = ({
             className="rounded-full object-cover"
           />
         </div>
-      </div>
-
-      <div className="rounded-2xl bg-white px-[20px] pt-[60px] pb-[20px] items-center text-center flex flex-col border-2 border-support-1 border-solid h-full">
-        <p className="font-bold text-base text-black leading-5 mb-[5px]">
-          {branch_title}
-        </p>
-        <p className="text-xs text-text-tertiary font-normal mb-[6.5px]">
-          {branch_full_address}
-        </p>
-        <div className="flex items-center gap-2 justify-center mb-5">
-          <div className="bg-brand-1 rounded-full w-5 h-5 grid place-items-center">
-            <Image
-              alt={manager_name || ""}
-              src={manager_avatar || DefaultBranchManagerAvatar}
-            />
+        <div className="rounded-2xl bg-white px-[20px] pt-[60px] pb-[20px] items-center text-center flex flex-col border-2 border-support-1 border-solid h-full">
+          <p className="font-bold text-base text-black leading-5 mb-[5px]">
+            {branch_title}
+          </p>
+          <p className="text-xs text-text-tertiary font-normal mb-[6.5px]">
+            {branch_full_address}
+          </p>
+          <div className="flex items-center gap-2 justify-center mb-5">
+            <div className="bg-brand-1 rounded-full w-5 h-5 grid place-items-center">
+              <Image
+                alt={manager_name || ""}
+                src={manager_avatar || DefaultBranchManagerAvatar}
+              />
+            </div>
+            <p className="text-black font-medium text-sm">{manager_name}</p>
           </div>
-          <p className="text-black font-medium text-sm">{manager_name}</p>
+          <div className="flex gap-5 [&>div]:flex [&>div]:flex-col [&>div]:gap-2 [&>div]:items-center overflow-x-auto max-w-[100%]">
+            <div>
+              <p className="bg-support-3 text-white font-medium text-base p-1 rounded-lg w-8">
+                {staff_count}
+              </p>
+              <p className="text-text-label text-base font-medium">Staffs</p>
+            </div>
+            <div>
+              <p className="bg-support-2 text-white font-medium text-base p-1 rounded-lg w-8">
+                {property_count}
+              </p>
+              <p className="text-text-label text-base font-medium">
+                Properties
+              </p>
+            </div>
+            <div>
+              <p className="bg-support-1 text-white font-medium text-base p-1 rounded-lg w-8">
+                {unit_count}
+              </p>
+              <p className="text-text-label text-base font-medium">Units</p>
+            </div>
+          </div>
         </div>
-        <div className="flex gap-5 [&>div]:flex [&>div]:flex-col [&>div]:gap-2 [&>div]:items-center overflow-x-auto max-w-[100%]">
-          <div>
-            <p className="bg-support-3 text-white font-medium text-base p-1 rounded-lg w-8">
-              {staff_count}
-            </p>
-            <p className="text-text-label text-base font-medium">Staffs</p>
-          </div>
-          <div>
-            <p className="bg-support-2 text-white font-medium text-base p-1 rounded-lg w-8">
-              {property_count}
-            </p>
-            <p className="text-text-label text-base font-medium">Properties</p>
-          </div>
-          <div>
-            <p className="bg-support-1 text-white font-medium text-base p-1 rounded-lg w-8">
-              {unit_count}
-            </p>
-            <p className="text-text-label text-base font-medium">Units</p>
-          </div>
-        </div>
-      </div>
+      </Link>
     </div>
   );
 };

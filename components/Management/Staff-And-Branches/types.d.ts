@@ -1,10 +1,10 @@
 import { ReactNode, CSSProperties } from "react";
 import { SxProps, Theme } from "@mui/system";
 
-export interface BranchCardProps {
+export interface BranchProps {
   id: string | number;
-  branch_title?: string;
-  branch_full_address?: string;
+  branch_title: string;
+  branch_full_address: string;
   avatar?: string | null;
   manager_name?: string;
   manager_avatar?: string | null;

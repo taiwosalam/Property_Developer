@@ -26,6 +26,7 @@ import {
 import { DatePickerWithRange } from "./date-picker";
 import { Switch } from "../ui/switch";
 import { Label } from "../ui/label";
+import { DateRange } from "react-day-picker";
 
 const chartData = [
   { date: "2024-08-01", profits: 50, sales: 70, expenses: 30 },
@@ -53,28 +54,59 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function DashboardChart() {
-  const [timeRange, setTimeRange] = React.useState("90d");
-
-  // State for toggling the switches
+export function DashboardChart({ visibleRange }: { visibleRange?: boolean }) {
   const [salesEnabled, setSalesEnabled] = React.useState(true);
   const [profitsEnabled, setProfitsEnabled] = React.useState(true);
   const [expensesEnabled, setExpensesEnabled] = React.useState(true);
+  const [timeRange, setTimeRange] = React.useState("90d");
+  const [selectedDateRange, setSelectedDateRange] = React.useState<
+    DateRange | undefined
+  >();
 
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date);
-    const now = new Date();
-    let daysToSubtract = 90;
-    if (timeRange === "30d") {
-      daysToSubtract = 30;
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7;
-    } else if (timeRange === "1d") {
-      daysToSubtract = 1;
+  const handleDateChange = (range: DateRange | undefined) => {
+    setSelectedDateRange(range);
+    // If the user selects a custom range, set the timeRange to "custom"
+    if (range?.from && range?.to) {
+      setTimeRange("custom");
     }
-    now.setDate(now.getDate() - daysToSubtract);
-    return date >= now;
-  });
+  };
+
+  const calculateDateRange = (days: number) => {
+    const now = new Date();
+    const fromDate = new Date();
+    fromDate.setDate(now.getDate() - days);
+    return { from: fromDate, to: now };
+  };
+
+  const handleSelectChange = (value: string) => {
+    setTimeRange(value);
+    if (value !== "custom") {
+      const days =
+        value === "90d" ? 90 : value === "30d" ? 30 : value === "7d" ? 7 : 1;
+      setSelectedDateRange(calculateDateRange(days));
+    }
+  };
+
+  const filteredData = chartData
+    .filter((item) => {
+      const date = new Date(item.date);
+      if (selectedDateRange?.from && selectedDateRange?.to) {
+        return date >= selectedDateRange.from && date <= selectedDateRange.to;
+      }
+
+      const now = new Date();
+      let daysToSubtract = 90;
+      if (timeRange === "30d") {
+        daysToSubtract = 30;
+      } else if (timeRange === "7d") {
+        daysToSubtract = 7;
+      } else if (timeRange === "1d") {
+        daysToSubtract = 1;
+      }
+      now.setDate(now.getDate() - daysToSubtract);
+      return date >= now;
+    })
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   return (
     <Card className="shadow-none">
@@ -151,9 +183,16 @@ export function DashboardChart() {
                 </Label>
               </span>
             </div>
-            <div className="flex bg-[#F5F5F5] rounded-md items-center justify-center">
-              <DatePickerWithRange />
-              <Select value={timeRange} onValueChange={setTimeRange}>
+            <div
+              className={`flex bg-[#F5F5F5] rounded-md items-center justify-center ${
+                !visibleRange && "hidden"
+              }`}
+            >
+              <DatePickerWithRange
+                selectedRange={selectedDateRange}
+                onDateChange={handleDateChange}
+              />
+              <Select value={timeRange} onValueChange={handleSelectChange}>
                 <SelectTrigger
                   className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto"
                   aria-label="Select a value"
@@ -172,6 +211,9 @@ export function DashboardChart() {
                   </SelectItem>
                   <SelectItem value="1d" className="rounded-lg">
                     Yesterday
+                  </SelectItem>
+                  <SelectItem value="custom" className="rounded-lg">
+                    Custom
                   </SelectItem>
                 </SelectContent>
               </Select>

@@ -108,7 +108,6 @@ const Landlord = () => {
   ];
 
   const landlordFilters = [
-    { label: "Registration Date", value: "registration_date" },
     { label: "Alphabetically", value: "alphabetically" },
   ];
 
@@ -280,7 +279,8 @@ const Landlord = () => {
                   filterOptions={landlordFilters}
                   filterOptionsWithRadio={landlordFiltersRadio}
                   onApply={handleFilterApply}
-                  onStateSelect={onStateSelect} // Pass the state selection handler
+                  onStateSelect={onStateSelect}
+                  date={true}
                 />
               </ModalContent>
             </Modal>

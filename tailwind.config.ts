@@ -50,6 +50,7 @@ const config = {
           4: "#C1C2C3",
           6: "#CBD5E0",
           8: "#718096",
+          800: "#262626",
         },
 
         status: {
@@ -65,6 +66,7 @@ const config = {
         },
         success: {
           1: "#E6FAEE",
+          2: "#01BA4C",
           3: "#005623",
         },
         support: {
