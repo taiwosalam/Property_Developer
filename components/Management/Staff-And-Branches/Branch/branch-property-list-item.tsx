@@ -45,44 +45,28 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
       </div>
       <div className="flex-grow text-base grid grid-cols-2 gap-x-2 gap-y-4 [&>div]:grid [&>div]:gap-x-2 [&>div]:grid-cols-[40%,1fr]">
         <div>
-          <p className="text-[#747474]">Last Updated</p>
-          <p className="text-black">23/04/2023</p>
+          <p className="text-[#747474]">Unit Details Units</p>
+          <p className="text-black">Moniya Apartmenr</p>
+        </div>
+        <div>
+          <p className="text-[#747474]">Property ID</p>
+          <p className="text-black">12345667890</p>
+        </div>
+        <div>
+          <p className="text-[#747474]">Number of Units</p>
+          <p className="text-black">14 Units</p>
         </div>
         <div>
           <p className="text-[#747474]">Annual Returns</p>
           <p className="text-brand-primary font-bold">₦1,950,000</p>
         </div>
         <div>
-          <p className="text-[#747474]">Total Units</p>
-          <p className="text-black">14 Units</p>
+          <p className="text-[#747474]">Address</p>
+          <p className="text-black">Newly Built 5 Bedroom Detached Duplex</p>
         </div>
         <div>
           <p className="text-[#747474]">Annual Income</p>
           <p className="text-highlight font-bold">₦700,000</p>
-        </div>
-        <div>
-          <p className="text-[#747474]">Available Units</p>
-          <p className="text-black">Abiola Moniya</p>
-        </div>
-        <div>
-          <p className="text-[#747474]">Branch</p>
-          <p>Moniya Appartment</p>
-        </div>
-        <div>
-          <p className="text-[#747474]">Mobile Tenants</p>
-          <p className="text-black">12</p>
-        </div>
-        <div>
-          <p className="text-[#747474]">Account Officer</p>
-          <p className="text-black">Anikulapo Jesus</p>
-        </div>
-        <div>
-          <p className="text-[#747474]">Web Tenants</p>
-          <p className="text-black">5</p>
-        </div>
-        <div>
-          <p className="text-[#747474]">Address</p>
-          <p className="text-black">Newly Built 5 Bedroom Detached Duplex</p>
         </div>
       </div>
     </div>
