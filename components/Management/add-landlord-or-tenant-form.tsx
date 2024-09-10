@@ -67,7 +67,6 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         <Select
           options={getAllStates()}
           id="state"
-          name="state"
           label="state"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
@@ -77,7 +76,6 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         <Select
           options={localGovernments}
           id="local_government"
-          name="local_government"
           label="local government"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
@@ -88,14 +86,12 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         <Select
           options={["Individual", "Couples", "Widow"]}
           id={`${type === "landlord" ? "owner" : "tenant"}_type`}
-          name={`${type === "landlord" ? "owner" : "tenant"}_type`}
           label={`${type === "landlord" ? "owner" : "Tenant/Occupant"} Type`}
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
         />
         <Select
           options={["male", "female"]}
           id="gender"
-          name="gender"
           label="Gender"
           isSearchable={false}
           placeholder="Select options"
