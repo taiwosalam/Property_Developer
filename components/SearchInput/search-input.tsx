@@ -22,7 +22,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
       <input
         type="text"
         className={clsx(
-          "flex-1 bg-transparent outline-none text-xs md:text-sm font-normal search-input-placeholder-color",
+          "flex-1 bg-transparent outline-none text-xs md:text-sm font-normal search-input-placeholder-color w-[270px]",
           textInputClassName
         )}
         placeholder={placeholder || "Search"}

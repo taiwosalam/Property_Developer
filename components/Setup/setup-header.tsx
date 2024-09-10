@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { FlowProgressContext } from "../FlowProgress/flow-progress";
+import Button from "../Form/Button/button";
 const SetupHeader = () => {
   const { canSubmit } = useContext(FlowProgressContext);
 
@@ -14,14 +15,13 @@ const SetupHeader = () => {
           account and company profile.
         </p>
       </div>
-      <button
+      <Button
         type="submit"
-        className="button-base md:py-[10px] lg:px-12 md:text-base lg:text-lg md:font-medium lg:font-bold"
         disabled={!canSubmit}
         style={{ opacity: canSubmit ? 1 : "0.5" }}
       >
         Submit
-      </button>
+      </Button>
     </div>
   );
 };

@@ -71,23 +71,22 @@ const NotificationCard: React.FC<notificationCardProps> = ({
               <div className="w-full flex items-center justify-between">
                 <p className="text-sm font-medium text-text-primary flex items-center">
                   {notification.name}
-                  <Image
-                    src={verified}
-                    alt="badge"
-                    width={14}
-                    height={14}
-                    style={{
-                      width: "14px",
-                      height: "14px",
-                    }}
-                    className="ml-1"
-                    hidden={notification.title == "Staffs"}
-                  />
+                  {sectionHeader !== "Staffs" && (
+                    <Image
+                      src={verified}
+                      alt="badge"
+                      width={14}
+                      height={14}
+                      style={{
+                        width: "14px",
+                        height: "14px",
+                      }}
+                      className="ml-1"
+                    />
+                  )}
                 </p>
                 <p className="text-[10px] text-text-disabled">
-                  {notification.title === "Staffs"
-                    ? "Message"
-                    : notification.time}
+                  {sectionHeader === "Staffs" ? "Message" : notification.time}
                 </p>
               </div>
               {notification.title != "Staffs" && (

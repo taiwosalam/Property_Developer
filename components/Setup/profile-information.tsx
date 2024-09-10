@@ -27,7 +27,6 @@ const ProfileInformation = () => {
           className="lg:col-span-2"
         />
         <Select
-          name="director_title"
           id="director_title"
           label="personal title / qualification"
           options={titles}
@@ -35,7 +34,6 @@ const ProfileInformation = () => {
         />
 
         <Select
-          name="director_experience"
           id="director_experience"
           label="years in business"
           placeholder="Write here"

@@ -47,7 +47,6 @@ const CompanyDetails = () => {
 
         <Select
           id="industry"
-          name="industry"
           label="industry"
           options={industryOptions}
           hiddenInputClassName="setup-f"

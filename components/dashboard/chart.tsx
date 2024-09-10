@@ -54,7 +54,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function DashboardChart({ visibleRange }: { visibleRange: boolean }) {
+export function DashboardChart({ visibleRange }: { visibleRange?: boolean }) {
   const [salesEnabled, setSalesEnabled] = React.useState(true);
   const [profitsEnabled, setProfitsEnabled] = React.useState(true);
   const [expensesEnabled, setExpensesEnabled] = React.useState(true);

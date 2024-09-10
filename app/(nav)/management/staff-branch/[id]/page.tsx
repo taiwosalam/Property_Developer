@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 
 // Imports
 import Card from "@/components/dashboard/card";
+import Button from "@/components/Form/Button/button";
 import {
   Select,
   SelectContent,
@@ -18,10 +19,8 @@ import {
   recentMessagesData,
   walletBalanceCardData,
 } from "@/app/(nav)/dashboard/data";
-import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
-import DashboarddCalendar from "@/components/dashboard/calendar";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import SearchInput from "@/components/SearchInput/search-input";
 import { GridIcon, ListIcon } from "@/public/icons/icons";
@@ -29,10 +28,13 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { StaffAndBranchState } from "../types";
 import Pagination from "@/components/Pagination/pagination";
-import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign } from "lucide-react";
-import BranchStatCard from "@/components/Management/Staff-And-Branches/Branch/BranchStatCard";
+import BranchStatCard from "@/components/Management/Staff-And-Branches/Branch/branchStatCard";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
+import BranchActivitiesCard from "@/components/Management/Staff-And-Branches/Branch/branch-activity-card";
+import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch/branch-balance-card";
+import { properties } from "../../property/data";
+import PropertyCard from "@/components/Management/Property/property-card";
+import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
 
 const Dashboard = () => {
   const initialState = {
@@ -44,6 +46,15 @@ const Dashboard = () => {
     localGovernments: [],
   };
   const [state, setState] = useState<StaffAndBranchState>(initialState);
+
+  const {
+    gridView,
+    total_pages,
+    current_page,
+    selectedState,
+    selectedLGA,
+    localGovernments,
+  } = state;
 
   const { isMobile } = useWindowWidth();
   const setGridView = () => {
@@ -58,15 +69,6 @@ const Dashboard = () => {
   const setSelectedState = (selectedState: string) => {
     setState((state) => ({ ...state, selectedState }));
   };
-
-  const {
-    gridView,
-    total_pages,
-    current_page,
-    selectedState,
-    selectedLGA,
-    localGovernments,
-  } = state;
 
   const BranchFilters = [{ label: "Alphabetically", value: "alphabetically" }];
 
@@ -118,21 +120,21 @@ const Dashboard = () => {
         <div className="flex items-center justify-between space-x-2">
           <Modal>
             <ModalTrigger asChild>
-              <button type="button" className="page-header-button">
+              <Button type="button" className="page-header-button">
                 + create staff
-              </button>
+              </Button>
             </ModalTrigger>
             <ModalContent>
               <div>Hello</div>
             </ModalContent>
           </Modal>
-          <button type="button" className="page-header-button">
+          <Button type="button" className="page-header-button">
             Edit Branch
-          </button>
+          </Button>
         </div>
       </div>
       <div className="w-full h-full xl:flex gap-x-10">
-        <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-9">
+        <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-7">
           <>
             <div className="flex justify-end">
               <div className="flex w-[390px] px-4 bg-[#F5F5F5] rounded-md items-center justify-end">
@@ -194,7 +196,7 @@ const Dashboard = () => {
                 upvalue={54}
               />
               <BranchStatCard
-                title="Total Receipts"
+                title="Total Balance"
                 balance={1234535}
                 upvalue={54}
               />
@@ -219,11 +221,11 @@ const Dashboard = () => {
           )}
         </div>
         <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full space-y-6 mt-6 xl:mt-0">
-          <WalletBalanceCard
+          <BranchBalanceCard
             mainBalance={walletBalanceCardData.mainBalance}
             cautionDeposit={walletBalanceCardData.cautionDeposit}
           />
-          <DashboarddCalendar />
+          <BranchActivitiesCard />
           <NotificationCard
             sectionHeader="Staffs"
             notifications={recentMessagesData}
@@ -287,13 +289,35 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
       {/* Property cards */}
-      <Pagination
-        totalPages={total_pages}
-        currentPage={current_page}
-        onPageChange={handlePageChange}
-        className="mt-8 text-xs font-medium"
-      />
+      <section>
+        {gridView ? (
+          <div
+            className="grid gap-x-[30px] gap-y-5 justify-items-center grid-cols-3"
+            // style={{
+            //   gridTemplateColumns: "repeat(auto-fit, minmax(370px, 1fr))",
+            // }}
+          >
+            {properties.slice(0, 30).map((p) => (
+              <PropertyCard key={p.id} {...p} />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {properties.slice(0, 30).map((p) => (
+              <BranchPropertyListItem key={p.id} {...p} />
+            ))}
+          </div>
+        )}
+        <Pagination
+          totalPages={total_pages}
+          currentPage={current_page}
+          onPageChange={handlePageChange}
+          className="mt-8 text-xs font-medium"
+        />
+      </section>
+      {/*  */}
     </section>
   );
 };

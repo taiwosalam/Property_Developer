@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 // Images
 import Avatar from "@/public/empty/avatar-1.svg";
 import OrangeCloseCircle from "@/public/icons/orange-close-circle.svg";
@@ -58,14 +56,12 @@ const EditLandlord = () => {
               />
               <Select
                 id="state"
-                name="state"
                 label="state"
                 options={states}
                 placeholder="Select options"
               />
               <Select
                 id="local-government"
-                name="local-government"
                 label="local government"
                 placeholder="Select options"
                 options={["local government 1", "local government 2"]}
@@ -74,7 +70,6 @@ const EditLandlord = () => {
               <Input id="address" label="address" placeholder="Placeholder" />
               <Select
                 id="owner-type"
-                name="owner-type"
                 label="owner type"
                 isSearchable={false}
                 placeholder="Select options"
@@ -82,7 +77,6 @@ const EditLandlord = () => {
               />
               <Select
                 id="gender"
-                name="gender"
                 label="gender"
                 isSearchable={false}
                 placeholder="Select options"
@@ -116,7 +110,6 @@ const EditLandlord = () => {
               />
               <Select
                 id="relationship"
-                name="relationship"
                 label="relationship"
                 placeholder="Select options"
                 options={["single", "married"]}
@@ -131,7 +124,6 @@ const EditLandlord = () => {
             <LandlordTenantInfoEditGrid>
               <Select
                 id="document-type"
-                name="document-type"
                 label="document type"
                 placeholder="Select options"
                 options={["single", "married"]}
