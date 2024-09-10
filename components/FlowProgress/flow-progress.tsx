@@ -67,9 +67,12 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     const allRequired = inputs.filter((input) => {
       return (
         input.classList.contains("required") ||
-        (requiredFields && requiredFields.includes(input.name))
+        (requiredFields &&
+          (requiredFields.includes(input.name) ||
+            requiredFields.includes(input.id)))
       );
     });
+
     const allRequiredFilled = allRequired.every(isInputFilled);
     setCanSubmit(allRequiredFilled);
     // console.log("Setting canSubmit to: ", allRequiredFilled);

@@ -46,7 +46,7 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
       <div className="flex-grow text-base grid grid-cols-2 gap-x-2 gap-y-4 [&>div]:grid [&>div]:gap-x-2 [&>div]:grid-cols-[40%,1fr]">
         <div>
           <p className="text-[#747474]">Unit Details Units</p>
-          <p className="text-black">Moniya Apartmenr</p>
+          <p className="text-black">Moniya Apartment</p>
         </div>
         <div>
           <p className="text-[#747474]">Property ID</p>
