@@ -1,5 +1,5 @@
-import type { BranchCardProps } from "@/components/Management/Staff-And-Branches/types";
-export const branches: BranchCardProps[] = [
+import type { BranchProps } from "@/components/Management/Staff-And-Branches/types";
+export const branches: BranchProps[] = [
   {
     id: 1,
     branch_title: "Valeant Pharmaceuticals North America LLC",
