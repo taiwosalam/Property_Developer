@@ -1,3 +1,4 @@
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface DonutChartProps {
@@ -21,19 +22,19 @@ const DonutChart: React.FC<DonutChartProps> = ({
       <circle
         cx="30"
         cy="30"
-        r="27"
+        r="25"
         fill="none"
         stroke={oldColor}
-        strokeWidth="6"
+        strokeWidth="5"
       />
       <circle
         cx="30"
         cy="30"
-        r="27"
+        r="25"
         fill="none"
         stroke={newColor}
-        strokeWidth="6"
-        strokeDasharray={`${newPercentage * 1.696} 170`}
+        strokeWidth="5"
+        strokeDasharray={`${newPercentage * 1.57} 157`}
         strokeLinecap="round"
         transform="rotate(-90 30 30)"
       />
@@ -42,7 +43,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
         y="30"
         textAnchor="middle"
         dy=".3em"
-        fontSize="14"
+        fontSize="12"
         fontWeight="bold"
         fill="#000"
       >
@@ -52,17 +53,18 @@ const DonutChart: React.FC<DonutChartProps> = ({
   );
 };
 
-const ManagementStatistcsCard = ({
-  title,
-  old,
-  newData,
-  total,
-}: {
-  title: string;
-  old: number;
-  newData: number;
+interface ManagementStatistcsCardProps {
   total: number;
+  title: string;
+  newData: number;
+}
+
+const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
+  title,
+  total,
+  newData,
 }) => {
+  const old = total - newData;
   return (
     <Card
       className="w-full"

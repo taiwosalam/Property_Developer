@@ -15,7 +15,7 @@ export const LandlordTenantInfoBox: React.FC<{
 
 export const LandlordTenantInfo: React.FC<{
   heading?: string;
-  info: Record<string, string>;
+  info: Record<string, string | null>;
 }> = ({ info, heading }) => (
   <LandlordTenantInfoBox>
     <div className="custom-flex-col gap-4">
@@ -33,7 +33,7 @@ export const LandlordTenantInfo: React.FC<{
         <div className="custom-flex-col gap-4">
           {Object.values(info).map((value, idx) => (
             <p key={idx} className="text-black">
-              {value}
+              {value ?? "N/A"}
             </p>
           ))}
         </div>

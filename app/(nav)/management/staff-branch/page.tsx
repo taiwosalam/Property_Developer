@@ -20,6 +20,31 @@ import { Dayjs } from "dayjs";
 import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
 
+type Branch = {
+  id: number;
+  branch_title: string;
+  branch_full_address: string;
+  avatar: string | null;
+  manager_name: string | null;
+  manager_avatar: string | null;
+  staff_count: number;
+  property_count: number;
+  unit_count: number;
+};
+
+type BranchesResponse = {
+  message: string;
+  data: {
+    total_branches: number;
+    new_branches_count: number;
+    total_properties: number;
+    new_properties_count: number;
+    total_staffs: number;
+    new_staffs_count: number;
+    branches: Branch[];
+  };
+};
+
 const StaffAndBranches = () => {
   const initialState = {
     gridView: true,
@@ -158,19 +183,16 @@ const StaffAndBranches = () => {
         <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
           <ManagementStatistcsCard
             title="Total Branches"
-            old={100}
             newData={200}
             total={300}
           />
           <ManagementStatistcsCard
             title="Total Properties"
-            old={100}
             newData={200}
             total={300}
           />
           <ManagementStatistcsCard
             title="Total Staff"
-            old={100}
             newData={200}
             total={300}
           />

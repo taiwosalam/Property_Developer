@@ -188,3 +188,17 @@ export const complaintsData = [
     title: "Door complain",
   },
 ];
+
+export const getDashboardData = () => {
+  fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${"67|l7JYt39G6mTmZkpyDoo397TqErQA4cue6ZEmmSBOb3664e14"}`,
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+    });
+};
