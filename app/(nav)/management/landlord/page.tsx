@@ -1,7 +1,7 @@
 "use client";
 
 // Imports
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { GridIcon, ListIcon } from "@/public/icons/icons";
 import Image from "next/image";
@@ -12,7 +12,6 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import CustomTable from "@/components/Table/table";
 import type { LandlordProps } from "@/components/Management/Landlord/types";
 import type { Field } from "@/components/Table/types";
-import { landlords } from "../data";
 import SearchInput from "@/components/SearchInput/search-input";
 import UserTag from "@/components/Tags/user-tag";
 import Pagination from "@/components/Pagination/pagination";
@@ -20,17 +19,72 @@ import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import PageTitle from "@/components/PageTitle/page-title";
+
 import AboutPage from "@/components/AboutPage/about-page";
 import Button from "@/components/Form/Button/button";
+import { getAllLandlords } from "./data";
 
+type LandlordsPageData = {
+  total_landlords: number;
+  new_landlords_this_month: number;
+  mobile_landlords: number;
+  new_mobile_landlords_this_month: number;
+  web_landlords: number;
+  new_web_landlords_this_month: number;
+  landlords: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    user_tag: string;
+    phone_number: string;
+    picture: string;
+    avatar: string | null;
+    picture_url: string;
+  }[];
+};
 const Landlord = () => {
   const initialState = {
     gridView: true,
     total_pages: 50,
     current_page: 1,
   };
+  const [landlords, setLandlords] = useState<LandlordProps[]>([]);
+  const [LandlordsPageData, setLandlordsPageData] = useState<LandlordsPageData>(
+    {
+      total_landlords: 0,
+      new_landlords_this_month: 0,
+      mobile_landlords: 0,
+      new_mobile_landlords_this_month: 0,
+      web_landlords: 0,
+      new_web_landlords_this_month: 0,
+      landlords: [],
+    }
+  );
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
   const [state, setState] = useState(initialState);
   const { gridView, total_pages, current_page } = state;
+
+  useEffect(() => {
+    // Fetch the landlords when the component mounts
+    const fetchLandlords = async () => {
+      try {
+        const data = await getAllLandlords();
+        setLandlordsPageData(data);
+        setLandlords(data.landlords);
+      } catch (error) {
+        setError(error as Error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLandlords();
+  }, []);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   const setGridView = () => {
     setState((state) => ({ ...state, gridView: true }));
   };
@@ -177,21 +231,18 @@ const Landlord = () => {
         <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
           <ManagementStatistcsCard
             title="Total Landlords"
-            old={100}
-            newData={200}
-            total={300}
+            newData={LandlordsPageData.new_landlords_this_month}
+            total={LandlordsPageData.total_landlords}
           />
           <ManagementStatistcsCard
             title="Web Landlords"
-            old={100}
-            newData={200}
-            total={300}
+            newData={LandlordsPageData.new_web_landlords_this_month}
+            total={LandlordsPageData.web_landlords}
           />
           <ManagementStatistcsCard
             title="Mobile Landlords"
-            old={100}
-            newData={200}
-            total={300}
+            newData={LandlordsPageData.new_mobile_landlords_this_month}
+            total={LandlordsPageData.mobile_landlords}
           />
           <div className="hidden md:block xl:hidden">
             <div className="flex items-center justify-center w-full h-full">
@@ -296,7 +347,11 @@ const Landlord = () => {
             }}
           >
             {landlords.slice(0, 30).map((l) => (
-              <LandlordCard key={l.id} {...l} />
+              <LandlordCard
+                key={l.id}
+                {...l}
+                href={`/management/landlord/${l.id}/manage`}
+              />
             ))}
           </div>
         ) : (

@@ -1,5 +1,7 @@
 "use client";
-import { useState } from "react";
+
+// Imports
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import Image from "next/image";
 import Button from "@/components/Form/Button/button";
@@ -10,7 +12,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import type { Field } from "@/components/Table/types";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import CustomTable from "@/components/Table/table";
-import { landlords as tenants } from "../data";
+import { getAllTenants } from "../data";
 import SearchInput from "@/components/SearchInput/search-input";
 import Pagination from "@/components/Pagination/pagination";
 import UserTag from "@/components/Tags/user-tag";
@@ -20,12 +22,64 @@ import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import PageTitle from "@/components/PageTitle/page-title";
 
+type TenantsPageData = {
+  total_tenants: number;
+  new_tenants_this_month: number;
+  mobile_tenants: number;
+  new_mobile_tenants_this_month: number;
+  web_tenants: number;
+  new_web_tenants_this_month: number;
+  tenants: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    user_tag: string;
+    phone_number: string;
+    picture: string;
+    avatar: string | null;
+    picture_url: string;
+  }[];
+};
 const Tenants = () => {
   const initialState = {
     gridView: true,
     total_pages: 50,
     current_page: 1,
   };
+
+  const [tenants, setTenants] = useState<TenantProps[]>([]);
+  const [TenantsPageData, setTenantsPagedata] = useState<TenantsPageData>({
+    total_tenants: 0,
+    new_tenants_this_month: 0,
+    mobile_tenants: 0,
+    new_mobile_tenants_this_month: 0,
+    web_tenants: 0,
+    new_web_tenants_this_month: 0,
+    tenants: [],
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [state, setState] = useState(initialState);
+
+  useEffect(() => {
+    // Fetch the landlords when the component mounts
+    const fetchLandlords = async () => {
+      try {
+        const data = await getAllTenants();
+        setTenantsPagedata(data);
+        setTenants(data.tenants);
+      } catch (error) {
+        setError(error as Error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLandlords();
+  }, []);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   const states = getAllStates();
 
@@ -94,7 +148,7 @@ const Tenants = () => {
     // Add  logic here to filter tenant
   };
 
-  const [state, setState] = useState(initialState);
+  const { gridView, total_pages, current_page } = state;
 
   const setGridView = () => {
     setState((state) => ({ ...state, gridView: true }));
@@ -171,28 +225,24 @@ const Tenants = () => {
     { id: "6", accessor: "manage/chat" },
   ];
 
-  const { gridView, total_pages, current_page } = state;
   return (
     <div className="space-y-9">
       <div className="page-header-container">
         <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
           <ManagementStatistcsCard
             title="Total Users"
-            old={100}
-            newData={200}
-            total={300}
+            newData={TenantsPageData.new_tenants_this_month}
+            total={TenantsPageData.total_tenants}
           />
           <ManagementStatistcsCard
             title="Web Tenants"
-            old={100}
-            newData={200}
-            total={300}
+            newData={TenantsPageData.new_web_tenants_this_month}
+            total={TenantsPageData.web_tenants}
           />
           <ManagementStatistcsCard
             title="Mobile Tenants"
-            old={100}
-            newData={200}
-            total={300}
+            newData={TenantsPageData.mobile_tenants}
+            total={TenantsPageData.total_tenants}
           />
           <div className="hidden md:block xl:hidden">
             <div className="flex items-center justify-center w-full h-full">
@@ -289,7 +339,11 @@ const Tenants = () => {
             }}
           >
             {tenants.slice(0, 30).map((t) => (
-              <TenantCard key={t.id} {...t} />
+              <TenantCard
+                key={t.id}
+                {...t}
+                href={`/management/tenant/${t.id}/manage`}
+              />
             ))}
           </div>
         ) : (

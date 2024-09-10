@@ -3,20 +3,33 @@ import Image from "next/image";
 
 // Images
 import ShieldTick from "@/public/icons/shield-tick.svg";
+import Warning from "@/public/icons/warning.svg";
 
 // Imports
 import { ModalPresetProps } from "./types";
 import { modal_presets } from "./data";
+import clsx from "clsx";
 
-const ModalPreset: React.FC<ModalPresetProps> = ({ type, children }) => {
+const ModalPreset: React.FC<ModalPresetProps> = ({
+  type,
+  style,
+  children,
+  className,
+}) => {
   return (
-    <div className="p-8 custom-flex-col gap-4 rounded-[40px] bg-white overflow-hidden text-center">
+    <div
+      style={style}
+      className={clsx(
+        "p-8 custom-flex-col gap-4 rounded-[40px] bg-white overflow-hidden text-center",
+        className
+      )}
+    >
       <div className="flex justify-center">
         <div
           style={{ backgroundColor: modal_presets[type] }}
           className="w-28 h-28 flex items-center justify-center rounded-full"
         >
-          <Image src={ShieldTick} alt="icon" />
+          <Image src={type === "warning" ? Warning : ShieldTick} alt="icon" />
         </div>
       </div>
       <p className="text-text-primary text-xl font-bold capitalize">{type}</p>

@@ -3,6 +3,7 @@ import { button_variants } from "./data";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  href?: string;
   size?: ButtonSize;
   variant?: ButtonVariant;
 }

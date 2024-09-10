@@ -24,7 +24,9 @@ const EditLandlord = () => {
 
   return (
     <div className="custom-flex-col gap-10">
-      <h2 className="text-black text-xl font-medium">Edit Landlord</h2>
+      <h2 className="text-black text-xl font-medium">
+        Edit Tenants & Occupant
+      </h2>
       <div className="flex gap-8">
         <div className="custom-flex-col gap-5 flex-1">
           <LandlordTenantInfoEditSection title="profile">
@@ -120,6 +122,51 @@ const EditLandlord = () => {
               </div>
             </LandlordTenantInfoEditGrid>
           </LandlordTenantInfoEditSection>
+          <LandlordTenantInfoEditSection title="Others">
+            <LandlordTenantInfoEditGrid>
+              <Input
+                id="employment"
+                label="employment"
+                placeholder="Placeholder"
+              />
+              <Input
+                id="employment-type"
+                label="employment type"
+                placeholder="Placeholder"
+              />
+              <Input
+                id="family-type"
+                label="family type"
+                placeholder="Placeholder"
+              />
+              <div className="flex items-end">
+                <Button>update</Button>
+              </div>
+            </LandlordTenantInfoEditGrid>
+          </LandlordTenantInfoEditSection>
+          <LandlordTenantInfoEditSection title="Bank Details">
+            <LandlordTenantInfoEditGrid>
+              <Input
+                id="bank-name"
+                label="bank name"
+                placeholder="Placeholder"
+              />
+              <Input
+                id="account-name"
+                label="account name"
+                placeholder="Placeholder"
+              />
+              <Input
+                id="account-number"
+                label="account number"
+                placeholder="Placeholder"
+              />
+              <div className="flex items-end">
+                <Button>update</Button>
+              </div>
+            </LandlordTenantInfoEditGrid>
+          </LandlordTenantInfoEditSection>
+
           <LandlordTenantInfoEditSection title="attachment">
             <LandlordTenantInfoEditGrid>
               <Select
@@ -189,7 +236,7 @@ const EditLandlord = () => {
         </Modal>
         <div className="flex gap-6">
           <Button
-            href="/management/landlord/1/manage"
+            href="/management/tenants/1/manage"
             style={{ color: "#0033C4", backgroundColor: "#EFF6FF" }}
           >
             exit

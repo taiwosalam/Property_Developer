@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 // Types
 import type { ButtonProps } from "./types";
 
@@ -7,13 +9,28 @@ import clsx from "clsx";
 import { button_variants } from "./data";
 
 const Button: React.FC<ButtonProps> = ({
+  href,
+  style,
   children,
   className,
   size = "default",
   variant = "default",
   ...props
 }) => {
-  return (
+  return href ? (
+    <Link
+      href={href}
+      className={clsx(
+        "rounded-[4px] capitalize",
+        button_variants.size[size],
+        button_variants.variant[variant],
+        className
+      )}
+      style={style}
+    >
+      {children}
+    </Link>
+  ) : (
     <button
       className={clsx(
         "rounded-[4px] capitalize",
@@ -21,6 +38,7 @@ const Button: React.FC<ButtonProps> = ({
         button_variants.variant[variant],
         className
       )}
+      style={style}
       {...props}
     >
       {children}
