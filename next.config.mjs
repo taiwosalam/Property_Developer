@@ -10,7 +10,16 @@ const nextConfig = {
     ];
   },
   images: {
-    domains: ['dummyimage.com'],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "dummyimage.com",
+      },
+      {
+        protocol: "https",
+        hostname: "assets.ourproperty.ng",
+      },
+    ],
   },
 };
 

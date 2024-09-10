@@ -111,9 +111,9 @@ export function DashboardChart({ visibleRange }: { visibleRange?: boolean }) {
   return (
     <Card className="shadow-none">
       <CardHeader className="flex w-full items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
-        <div className="custom-flex-col w-full justify-between">
+        <div className="flex w-full py-2 justify-between">
           <CardTitle>Chart Title</CardTitle>
-          <div className="w-full flex items-center justify-between flex-wrap lg:flex-nowrap my-2 space-y-4 lg:my-0 lg:space-y-0">
+          <div className="flex items-center justify-between flex-wrap lg:flex-nowrap my-2 space-y-4 lg:my-0 lg:space-y-0">
             <div className="w-full flex space-x-0.5">
               {/* Sales Switch */}
               <span className="flex items-center space-x-0.5">

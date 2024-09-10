@@ -4,7 +4,7 @@
 import clsx from "clsx";
 import Image from "next/image";
 import React, { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { ChevronRight, Eye, EyeOff } from "lucide-react";
 
 const options = [
   {
@@ -37,15 +37,22 @@ const BranchBalanceCard = ({
     <div className={clsx("space-y-2", className)}>
       <div className="p-5 custom-primary-bg space-y-3 rounded-lg">
         {/* Header Section */}
-        <div className="flex items-center gap-1 text-white opacity-95 font-normal text-sm">
-          <p className="text-text-invert text-sm font-medium">Branch Balance</p>
-          <button onClick={toggleBalanceVisibility} className="ml-2">
-            {hideBalance ? (
-              <Eye size={14} className="text-text-invert" />
-            ) : (
-              <EyeOff size={14} className="text-text-invert" />
-            )}
-          </button>
+        <div className="flex items-center justify-between ">
+          <div className="flex items-center space-x-2">
+            <p className="text-text-invert text-sm font-medium">
+              Branch Balance
+            </p>
+            <button onClick={toggleBalanceVisibility} className="">
+              {hideBalance ? (
+                <Eye size={14} className="text-text-invert" />
+              ) : (
+                <EyeOff size={14} className="text-text-invert" />
+              )}
+            </button>
+          </div>
+          <p className="flex items-center text-[10px] text-white">
+            Transaction History <ChevronRight className="text-sm" />
+          </p>
         </div>
 
         {/* Main Balance */}

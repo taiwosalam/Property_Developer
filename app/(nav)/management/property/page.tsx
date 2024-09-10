@@ -41,19 +41,16 @@ const Property = () => {
         <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
           <ManagementStatistcsCard
             title="Total Properties"
-            old={100}
             newData={200}
             total={657}
           />
           <ManagementStatistcsCard
             title="Rental Properties"
-            old={100}
             newData={200}
             total={657}
           />
           <ManagementStatistcsCard
             title="Gated Estate"
-            old={100}
             newData={200}
             total={657}
           />

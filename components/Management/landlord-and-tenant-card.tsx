@@ -10,11 +10,13 @@ const LandlordAndTenantCard: React.FC<LandlordProps> = ({
   email,
   user_tag,
   phone_number,
+  id,
   picture_url,
+  href,
 }) => {
   return (
     <a
-      href=""
+      href={href}
       className="border border-brand-tertiaryy bg-[#F9F9F9] p-[3%] rounded-lg flex gap-[3%] border-brand-tertiary"
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
     >
