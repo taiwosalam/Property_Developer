@@ -16,6 +16,9 @@ import {
   LandlordTenantInfoEditSection,
 } from "@/components/Management/landlord-tenant-info-components";
 
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import DeleteAccountModal from "@/components/Management/delete-account-modal";
+
 const EditLandlord = () => {
   const states = getAllStates();
 
@@ -174,9 +177,23 @@ const EditLandlord = () => {
         </div>
       </div>
       <div className="sticky bottom-0 right-0 w-full bg-white py-5 px-[60px] flex justify-between">
-        <Button>delete account</Button>
+        <Modal>
+          <ModalTrigger asChild>
+            <Button style={{ color: "#E9212E", backgroundColor: "#FDE9EA" }}>
+              delete account
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <DeleteAccountModal />
+          </ModalContent>
+        </Modal>
         <div className="flex gap-6">
-          <Button>exit</Button>
+          <Button
+            href="/management/landlord/1/manage"
+            style={{ color: "#0033C4", backgroundColor: "#EFF6FF" }}
+          >
+            exit
+          </Button>
           <Button>save</Button>
         </div>
       </div>

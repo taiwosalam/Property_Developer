@@ -41,6 +41,8 @@ export interface ModalContentProps
 export type ModalPresetType = keyof typeof modal_presets;
 
 export interface ModalPresetProps {
+  className?: string;
   type: ModalPresetType;
   children: React.ReactNode;
+  style?: React.CSSProperties;
 }
