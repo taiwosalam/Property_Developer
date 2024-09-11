@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { PropertyProps } from "../../Property/types";
+import { PropertyProps } from "../../Properties/types";
 import { VideoIcon, CameraIcon } from "@/public/icons/icons";
 import Sample from "@/public/empty/SampleProperty.jpeg";
 

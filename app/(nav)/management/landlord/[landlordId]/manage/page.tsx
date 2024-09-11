@@ -19,7 +19,7 @@ import {
   LandlordTenantInfoDocument,
 } from "@/components/Management/landlord-tenant-info-components";
 import { getOneLandlord } from "../../data";
-import PropertyCard from "@/components/Management/Property/property-card";
+import PropertyCard from "@/components/Management/Properties/property-card";
 
 type LandlordPageData = {
   avatar: string;

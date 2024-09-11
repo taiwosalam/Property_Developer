@@ -231,7 +231,7 @@ const Tenants = () => {
                   </Button>
                 </ModalTrigger>
                 <ModalContent>
-                  <div>Hello</div>
+                  <AddTenantModal />
                 </ModalContent>
               </Modal>
             </div>
@@ -245,7 +245,7 @@ const Tenants = () => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <div>Hello</div>
+              <AddTenantModal />
             </ModalContent>
           </Modal>
         </div>

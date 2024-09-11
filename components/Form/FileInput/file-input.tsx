@@ -95,7 +95,7 @@ const FileInput: React.FC<FileInputProps> = ({
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
-      {/* input for flow progress */}
+      {/* input for flow progress dont give it name or ID*/}
       <input
         type="hidden"
         className={hiddenInputClassName}
