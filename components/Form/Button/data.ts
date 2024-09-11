@@ -2,6 +2,7 @@ export const button_variants = {
   variant: {
     change: "bg-neutral-2 text-brand-9",
     sky_blue: "bg-brand-1 text-brand-9",
+    border: "custom-border-button",
     default: "custom-default-button text-white",
   },
   size: {
