@@ -2,60 +2,63 @@
 
 import { useEffect, useState } from "react";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 import { GridIcon, ListIcon } from "@/public/icons/icons";
 import Button from "@/components/Form/Button/button";
 import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
 import CustomTable from "@/components/Table/table";
-import { branches, getAllBranches } from "./data";
-import type { Field } from "@/components/Table/types";
+import type { Field, DataItem } from "@/components/Table/types";
 import Image from "next/image";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import SearchInput from "@/components/SearchInput/search-input";
-import type { StaffAndBranchState } from "./types";
-import DateInput from "@/components/Form/DateInput/date-input";
-import { Dayjs } from "dayjs";
+import { type StaffAndBranchPageState, getAllBranches } from "./data";
 import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
-import { BranchProps } from "@/components/Management/Staff-And-Branches/types";
-
-type Branch = {
-  id: number;
-  branch_title: string;
-  branch_full_address: string;
-  avatar: string | null;
-  manager_name: string | null;
-  manager_avatar: string | null;
-  staff_count: number;
-  property_count: number;
-  unit_count: number;
-};
-
-type BranchesResponse = {
-  message: string;
-  data: {
-    total_branches: number;
-    new_branches_count: number;
-    total_properties: number;
-    new_properties_count: number;
-    total_staffs: number;
-    new_staffs_count: number;
-    branches: Branch[];
-  };
-};
 
 const StaffAndBranches = () => {
-  const initialState = {
+  const router = useRouter();
+  const initialState: StaffAndBranchPageState = {
     gridView: true,
     total_pages: 50,
     current_page: 1,
     selectedState: "",
     selectedLGA: "",
     localGovernments: [],
+    loading: true,
+    error: null,
+    branchesPageData: {
+      total_branches: 0,
+      new_branches_count: 0,
+      total_properties: 0,
+      new_properties_count: 0,
+      total_staffs: 0,
+      new_staffs_count: 0,
+      branches: [],
+    },
   };
-  const [state, setState] = useState<StaffAndBranchState>(initialState);
+  const [state, setState] = useState<StaffAndBranchPageState>(initialState);
+  const {
+    gridView,
+    total_pages,
+    current_page,
+    selectedState,
+    selectedLGA,
+    localGovernments,
+    loading,
+    error,
+    branchesPageData: {
+      total_branches,
+      new_branches_count,
+      total_properties,
+      new_properties_count,
+      total_staffs,
+      new_staffs_count,
+      branches,
+    },
+  } = state;
 
   const setGridView = () => {
     setState((state) => ({ ...state, gridView: true }));
@@ -84,19 +87,6 @@ const StaffAndBranches = () => {
     console.log("Filter applied:", filters);
     // Add filtering logic here for branches
   };
-
-  const {
-    gridView,
-    total_pages,
-    current_page,
-    selectedState,
-    selectedLGA,
-    localGovernments,
-  } = state;
-
-  const [selectedDate, setSelectedDate] = useState<Dayjs | null | undefined>(
-    null
-  );
 
   const StaffAndBranchFiltersWithOptions = [
     {
@@ -170,21 +160,21 @@ const StaffAndBranches = () => {
     },
   ];
 
-  const [branches, setBranches] = useState<BranchProps[]>([]);
-  const [branchesPageData, setBranchesPageData] = useState<BranchesResponse>({
-    message: "",
-    data: {
-      total_branches: 0,
-      new_branches_count: 0,
-      total_properties: 0,
-      new_properties_count: 0,
-      total_staffs: 0,
-      new_staffs_count: 0,
-      branches: [],
-    },
-  });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const handleSelectTableItem = (item: DataItem) => {
+    // Navigate to the desired route using the item id
+    router.push(`/management/staff-branch/${item.id}`);
+  };
+
+  const fetchLandlords = async () => {
+    try {
+      const data = await getAllBranches();
+      setState((x) => ({ ...x, branchesPageData: data }));
+    } catch (error) {
+      setState((x) => ({ ...x, error: error as Error }));
+    } finally {
+      setState((x) => ({ ...x, loading: false }));
+    }
+  };
 
   // Handle the selected state and update local governments
   useEffect(() => {
@@ -196,20 +186,9 @@ const StaffAndBranches = () => {
 
   useEffect(() => {
     // Fetch the landlords when the component mounts
-    const fetchLandlords = async () => {
-      try {
-        const data = await getAllBranches();
-        setBranchesPageData(data);
-        setBranches(data.data.branches);
-      } catch (error) {
-        setError(error as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchLandlords();
   }, []);
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
@@ -219,18 +198,18 @@ const StaffAndBranches = () => {
         <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
           <ManagementStatistcsCard
             title="Total Branches"
-            newData={branchesPageData.data.new_branches_count}
-            total={branchesPageData.data.total_branches}
+            newData={new_branches_count}
+            total={total_branches}
           />
           <ManagementStatistcsCard
             title="Total Properties"
-            newData={branchesPageData.data.new_properties_count}
-            total={branchesPageData.data.total_properties}
+            newData={new_properties_count}
+            total={total_properties}
           />
           <ManagementStatistcsCard
             title="Total Staff"
-            newData={branchesPageData.data.new_staffs_count}
-            total={branchesPageData.data.total_staffs}
+            newData={new_staffs_count}
+            total={total_staffs}
           />
           <div className="hidden md:block xl:hidden">
             <div className="flex items-center justify-center w-full h-full">
@@ -326,18 +305,19 @@ const StaffAndBranches = () => {
               gridTemplateColumns: "repeat(auto-fit, minmax(284px, 1fr))",
             }}
           >
-            {branches.slice(0, 30).map((b) => (
+            {branches.map((b) => (
               <BranchCard key={b.id} {...b} />
             ))}
           </div>
         ) : (
           <CustomTable
             fields={tableFields}
-            data={branches.slice(0, 20)}
+            data={branches}
             tableHeadClassName="bg-brand-5 h-[76px]"
             tableHeadStyle={{
               borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
             }}
+            handleSelect={handleSelectTableItem}
             tableHeadCellSx={{
               color: "#fff",
               fontWeight: 500,

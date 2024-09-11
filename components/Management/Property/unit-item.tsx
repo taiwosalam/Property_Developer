@@ -25,35 +25,38 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
         ></div>
       </div>
       <hr className="my-4" />
-      <div className="flex items-center gap-2">
-        <div className="text-base grid grid-cols-2 gap-x-2 gap-y-4 flex-grow [&>div]:grid [&>div]:gap-x-2 [&>div]:grid-cols-[40%,1fr]">
-          <div>
-            <p className="text-[#747474]">Unit Details</p>
-            <p className="text-black">Newly Built 5 Bedroom Detached Duplex</p>
-          </div>
-          <div>
-            <p className="text-[#747474]">Rent</p>
-            <p className="text-black">₦300,000</p>
-          </div>
-          <div>
-            <p className="text-[#747474]">Unit No/Name</p>
-            <p className="text-black">Flat 4</p>
-          </div>
-          <div>
-            <p className="text-[#747474]">Caution Deposit</p>
-            <p className="text-black">₦300,000</p>
-          </div>
-          <div>
-            <p className="text-[#747474]">Unit Description</p>
-            <p className="text-black">Abiola Moniya</p>
-          </div>
-          <div>
-            <p className="text-[#747474]">Service Charge</p>
-            <p>₦300,000</p>
+      <div className="flex flex-col md:flex-row md:items-center gap-2 md:justify-between">
+        <div className="overflow-x-auto max-w-full flex-grow">
+          <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
+            <div>
+              <p className="text-[#747474]">Unit Details</p>
+              <p className="text-black">
+                Newly Built 5 Bedroom Detached Duplex
+              </p>
+            </div>
+            <div>
+              <p className="text-[#747474]">Rent</p>
+              <p className="text-black">₦300,000</p>
+            </div>
+            <div>
+              <p className="text-[#747474]">Unit No/Name</p>
+              <p className="text-black">Flat 4</p>
+            </div>
+            <div>
+              <p className="text-[#747474]">Caution Deposit</p>
+              <p className="text-black">₦300,000</p>
+            </div>
+            <div>
+              <p className="text-[#747474]">Unit Description</p>
+              <p className="text-black">Abiola Moniya</p>
+            </div>
+            <div>
+              <p className="text-[#747474]">Service Charge</p>
+              <p>₦300,000</p>
+            </div>
           </div>
         </div>
         <div className="w-[168px] h-[168px] rounded-2xl relative overflow-hidden cursor-pointer">
-          {/* Top Icon */}
           <div className="absolute z-[1] left-[70%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />
             <p className="text-black font-medium text-[10px]">+23</p>
@@ -68,6 +71,7 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
           />
         </div>
       </div>
+
       <hr className="my-4" />
       <p
         className={clsx(

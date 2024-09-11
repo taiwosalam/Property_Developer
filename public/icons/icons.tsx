@@ -1,4 +1,3 @@
-import { CSSProperties } from "react";
 export const CalendarIcon = () => {
   return (
     <svg
@@ -207,18 +206,18 @@ export const PlayIconButton = () => {
         fillRule="evenodd"
         clipRule="evenodd"
         d="M20 38.75C22.4623 38.75 24.9005 38.265 27.1753 37.3227C29.4502 36.3805 31.5172 34.9993 33.2583 33.2583C34.9993 31.5172 36.3805 29.4502 37.3227 27.1753C38.265 24.9005 38.75 22.4623 38.75 20C38.75 17.5377 38.265 15.0995 37.3227 12.8247C36.3805 10.5498 34.9993 8.48285 33.2583 6.74175C31.5172 5.00065 29.4502 3.61953 27.1753 2.67726C24.9005 1.73498 22.4623 1.25 20 1.25C15.0272 1.25 10.2581 3.22544 6.74175 6.74175C3.22544 10.2581 1.25 15.0272 1.25 20C1.25 24.9728 3.22544 29.7419 6.74175 33.2583C10.2581 36.7746 15.0272 38.75 20 38.75ZM15.2854 11.3917L28.7729 18.1375C29.119 18.3105 29.4102 18.5765 29.6136 18.9056C29.8171 19.2348 29.9249 19.6141 29.9249 20.001C29.9249 20.388 29.8171 20.7673 29.6136 21.0965C29.4102 21.4256 29.119 21.6916 28.7729 21.8646L15.2854 28.6083C14.9041 28.7991 14.4804 28.8892 14.0544 28.8701C13.6285 28.851 13.2146 28.7232 12.8519 28.499C12.4893 28.2748 12.19 27.9615 11.9826 27.589C11.7751 27.2165 11.6664 26.7972 11.6667 26.3708V13.6312C11.6664 13.2049 11.7751 12.7855 11.9826 12.413C12.19 12.0406 12.4893 11.7273 12.8519 11.5031C13.2146 11.2789 13.6285 11.1511 14.0544 11.132C14.4804 11.1128 14.9041 11.2009 15.2854 11.3917Z"
-        fill="black"
+        fill="currentColor"
         fillOpacity="0.24"
       />
       <path
         d="M28.7732 18.1376L15.2857 11.3917C14.9045 11.2009 14.4807 11.1108 14.0548 11.13C13.6288 11.1491 13.2149 11.2769 12.8522 11.5011C12.4896 11.7253 12.1903 12.0385 11.9829 12.411C11.7754 12.7835 11.6667 13.2029 11.667 13.6292V26.3709C11.6667 26.7973 11.7754 27.2166 11.9829 27.5891C12.1903 27.9616 12.4896 28.2748 12.8522 28.4991C13.2149 28.7233 13.6288 28.851 14.0548 28.8702C14.4807 28.8893 14.9045 28.7992 15.2857 28.6084L28.7732 21.8626C29.1188 21.6894 29.4094 21.4234 29.6125 21.0945C29.8156 20.7656 29.9231 20.3866 29.9231 20.0001C29.9231 19.6135 29.8156 19.2346 29.6125 18.9056C29.4094 18.5767 29.1188 18.3108 28.7732 18.1376Z"
-        stroke="#3F4247"
+        stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M20 38.75C30.3553 38.75 38.75 30.3553 38.75 20C38.75 9.64466 30.3553 1.25 20 1.25C9.64466 1.25 1.25 9.64466 1.25 20C1.25 30.3553 9.64466 38.75 20 38.75Z"
-        stroke="#3F4247"
+        stroke="currentColor"
       />
     </svg>
   );
@@ -337,7 +336,7 @@ export const VideoIcon = () => {
   );
 };
 
-export const ChevronLeft =()=>{
+export const ChevronLeft = () => {
   return (
     <svg
       width="24"
@@ -355,4 +354,80 @@ export const ChevronLeft =()=>{
       />
     </svg>
   );
-}
+};
+
+export const FilterIcon = () => {
+  return (
+    <svg
+      width="20"
+      height="21"
+      viewBox="0 0 20 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M3.33325 18.0001V12.1667"
+        stroke="#3F4247"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3.33325 8.83333V3"
+        stroke="#3F4247"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 18V10.5"
+        stroke="#3F4247"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 7.16667V3"
+        stroke="#3F4247"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16.6665 17.9999V13.8333"
+        stroke="#3F4247"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16.6665 10.5V3"
+        stroke="#3F4247"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M0.833252 12.1667H5.83325"
+        stroke="#3F4247"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.5 7.16675H12.5"
+        stroke="#3F4247"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14.1667 13.8333H19.1667"
+        stroke="#3F4247"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

@@ -1,5 +1,4 @@
 import { BadgeCheckIcon } from "@/public/icons/icons";
-import React from "react";
 
 // Define the colors
 export const badgeIconColors = {

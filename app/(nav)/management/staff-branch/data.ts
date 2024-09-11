@@ -1,5 +1,73 @@
 import type { BranchProps } from "@/components/Management/Staff-And-Branches/types";
-export const branches: BranchProps[] = [
+
+export interface BranchesPageData {
+  total_branches: number;
+  new_branches_count: number;
+  total_properties: number;
+  new_properties_count: number;
+  total_staffs: number;
+  new_staffs_count: number;
+  branches: BranchProps[];
+}
+
+export interface StaffAndBranchPageState {
+  gridView: boolean;
+  total_pages: number;
+  current_page: number;
+  selectedState: string;
+  selectedLGA: string;
+  localGovernments: string[];
+  loading: boolean;
+  error: Error | null;
+  branchesPageData: BranchesPageData;
+}
+
+export const getAllBranches = async (): Promise<BranchesPageData> => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/branches`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
+      },
+    });
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status}`);
+    }
+    const data = await res.json();
+    // console.log(data);
+    return data.data;
+  } catch (error) {
+    console.error("Error fetching tenants", error);
+    throw new Error(`Error: ${error}`);
+  }
+};
+
+export const getOneBranch = async (branchId: string) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/branches/${branchId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
+        },
+      }
+    );
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status}`);
+    }
+    const data = await res.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching tenants", error);
+    throw new Error(`Error: ${error}`);
+  }
+};
+
+export const testBranches: BranchProps[] = [
   {
     id: 1,
     branch_title: "Valeant Pharmaceuticals North America LLC",
@@ -2202,46 +2270,3 @@ export const branches: BranchProps[] = [
     unit_count: 2,
   },
 ];
-
-export const getAllBranches = async () => {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/branches`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
-      },
-    });
-    if (!res.ok) {
-      throw new Error(`Error: ${res.status}`);
-    }
-    const data = await res.json();
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error("Error fetching tenants", error);
-  }
-};
-
-export const getOneBranch = async (branchId: string) => {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/branches/${branchId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
-        },
-      }
-    );
-    if (!res.ok) {
-      throw new Error(`Error: ${res.status}`);
-    }
-    const data = await res.json();
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error("Error fetching tenants", error);
-  }
-};

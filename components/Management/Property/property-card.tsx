@@ -4,7 +4,7 @@ import { PropertyProps } from "./types";
 import clsx from "clsx";
 import { useState, useRef, useEffect } from "react";
 import Button from "@/components/Form/Button/button";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import Sample from "@/public/empty/SampleProperty.jpeg";
 import Sample2 from "@/public/empty/SampleProperty2.jpeg";
 import Sample3 from "@/public/empty/SampleProperty3.jpeg";
@@ -28,7 +28,6 @@ const PropertyCard: React.FC<PropertyProps> = ({
   price,
   type,
 }) => {
-  const controls = useAnimation();
   const modalRef = useRef<HTMLDivElement>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isModalActive, setIsModalActive] = useState(false);
@@ -72,7 +71,7 @@ const PropertyCard: React.FC<PropertyProps> = ({
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   return (
     <div
-      className="rounded-xl max-w-[100%] aspect-[0.961] relative"
+      className="rounded-xl max-w-[370px] mx-auto aspect-[0.961] relative"
       style={{ boxShadow: "4px 4px 10px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="relative h-[200px] w-full overflow-hidden rounded-t-xl">
@@ -102,6 +101,7 @@ const PropertyCard: React.FC<PropertyProps> = ({
         >
           <NextIcon />
         </button>
+
         <div className="flex items-stretch gap-[10px] absolute z-[1] right-2 bottom-2">
           <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />
@@ -132,7 +132,7 @@ const PropertyCard: React.FC<PropertyProps> = ({
           />
           {isModalActive && (
             <div
-              className="absolute z-[2] inset-0 flex items-center justify-between px-10"
+              className="absolute z-[2] inset-0 flex items-center justify-between px-[10%] gap-x-4"
               style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
               ref={modalRef}
             >

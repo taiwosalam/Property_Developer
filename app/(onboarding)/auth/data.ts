@@ -2,6 +2,7 @@
 import type { AuthSliderContent } from "@/components/Auth/AuthSlider/types";
 import { postRequest } from "@/services/api";
 import { useAuthStoreSelectors } from "@/store/authstrore";
+import { toast } from "sonner";
 
 export const auth_slider_content: AuthSliderContent = [
   {
@@ -37,16 +38,20 @@ export const login = async (
     }
 
     const { company_id, accessToken, user_id } = response;
-
-    if (company_id === null) {
-      window.location.href = "/setup";
-      return;
-    }
-
+    localStorage.setItem("user_id", user_id);
     // Update Zustand state and localStorage
     useAuthStoreSelectors
       .getState()
       .setAuthState(true, accessToken, user_id, company_id);
+
+    if (user_id === null) {
+      window.location.href = "/setup";
+      return;
+    } else if (company_id === null) {
+      // window.location.href = "/verify/setup";
+      window.location.href = "/setup";
+      return;
+    }
 
     window.location.href = "/dashboard";
   } catch (error) {
@@ -63,7 +68,6 @@ export const signup = async () => {
     if (result?.access_token) {
       const { access_token, user_id, company_id } = result;
 
-      // Update Zustand state and localStorage
       useAuthStoreSelectors
         .getState()
         .setAuthState(true, access_token, user_id, company_id);
