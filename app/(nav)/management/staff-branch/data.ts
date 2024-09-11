@@ -2209,7 +2209,7 @@ export const getAllBranches = async () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${"347|JRkC0VQXb5qSbfRaBbrxaJrFHSt8XBfOzARuRAvj1c16ae78"}`,
+        Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
       },
     });
     if (!res.ok) {
@@ -2231,7 +2231,7 @@ export const getOneBranch = async (branchId: string) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${"347|JRkC0VQXb5qSbfRaBbrxaJrFHSt8XBfOzARuRAvj1c16ae78"}`,
+          Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
         },
       }
     );

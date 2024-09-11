@@ -6,7 +6,7 @@ import { GridIcon, ListIcon } from "@/public/icons/icons";
 import Button from "@/components/Form/Button/button";
 import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
 import CustomTable from "@/components/Table/table";
-import { branches } from "./data";
+import { branches, getAllBranches } from "./data";
 import type { Field } from "@/components/Table/types";
 import Image from "next/image";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -19,6 +19,7 @@ import DateInput from "@/components/Form/DateInput/date-input";
 import { Dayjs } from "dayjs";
 import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
+import { BranchProps } from "@/components/Management/Staff-And-Branches/types";
 
 type Branch = {
   id: number;
@@ -169,6 +170,22 @@ const StaffAndBranches = () => {
     },
   ];
 
+  const [branches, setBranches] = useState<BranchProps[]>([]);
+  const [branchesPageData, setBranchesPageData] = useState<BranchesResponse>({
+    message: "",
+    data: {
+      total_branches: 0,
+      new_branches_count: 0,
+      total_properties: 0,
+      new_properties_count: 0,
+      total_staffs: 0,
+      new_staffs_count: 0,
+      branches: [],
+    },
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
   // Handle the selected state and update local governments
   useEffect(() => {
     if (selectedState) {
@@ -177,24 +194,43 @@ const StaffAndBranches = () => {
     }
   }, [selectedState]);
 
+  useEffect(() => {
+    // Fetch the landlords when the component mounts
+    const fetchLandlords = async () => {
+      try {
+        const data = await getAllBranches();
+        setBranchesPageData(data);
+        setBranches(data.data.branches);
+      } catch (error) {
+        setError(error as Error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLandlords();
+  }, []);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
     <div className="space-y-9">
       <div className="page-header-container">
         <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
           <ManagementStatistcsCard
             title="Total Branches"
-            newData={200}
-            total={300}
+            newData={branchesPageData.data.new_branches_count}
+            total={branchesPageData.data.total_branches}
           />
           <ManagementStatistcsCard
             title="Total Properties"
-            newData={200}
-            total={300}
+            newData={branchesPageData.data.new_properties_count}
+            total={branchesPageData.data.total_properties}
           />
           <ManagementStatistcsCard
             title="Total Staff"
-            newData={200}
-            total={300}
+            newData={branchesPageData.data.new_staffs_count}
+            total={branchesPageData.data.total_staffs}
           />
           <div className="hidden md:block xl:hidden">
             <div className="flex items-center justify-center w-full h-full">

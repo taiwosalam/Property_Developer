@@ -46,10 +46,12 @@ const BranchCard: React.FC<BranchProps> = ({
             {branch_full_address}
           </p>
           <div className="flex items-center gap-2 justify-center mb-5">
-            <div className="bg-brand-1 rounded-full w-5 h-5 grid place-items-center">
+            <div className="bg-brand-1 rounded-full w-5 h-5 grid place-items-center relative">
               <Image
                 alt={manager_name || ""}
-                src={manager_avatar || DefaultBranchManagerAvatar}
+                src={"/" + manager_avatar || DefaultBranchManagerAvatar}
+                fill
+                sizes="auto"
               />
             </div>
             <p className="text-black font-medium text-sm">{manager_name}</p>

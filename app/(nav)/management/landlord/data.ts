@@ -47,7 +47,7 @@ export const getAllLandlords = async (): Promise<LandlordsPageData> => {
     return data;
   } catch (error) {
     console.error("Error fetching landlords:", error);
-    // return defaultLandlordPageData;
+    throw new Error(`Error: ${error}`);
   }
 };
 
@@ -67,10 +67,10 @@ export const getOneLandlord = async (landlordId: string) => {
     if (!res.ok) {
       throw new Error(`Error: ${res.status}`);
     }
-
     const data = await res.json();
     return data;
   } catch (error) {
     console.error("Error fetching landlord:", error);
+    throw new Error(`Error: ${error}`);
   }
 };

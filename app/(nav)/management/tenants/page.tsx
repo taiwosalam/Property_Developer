@@ -20,11 +20,7 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import PageTitle from "@/components/PageTitle/page-title";
-import {
-  defaultTenantPageData,
-  getAllTenants,
-  TenantPageState,
-} from "./data";
+import { defaultTenantPageData, getAllTenants, TenantPageState } from "./data";
 
 const Tenants = () => {
   const initialState: TenantPageState = {
@@ -57,7 +53,6 @@ const Tenants = () => {
     try {
       const data = await getAllTenants();
       setState((x) => ({ ...x, tenantsPageData: data }));
-      // setTenants(data.tenants);
     } catch (error) {
       setState((x) => ({ ...x, error: error as Error }));
     } finally {

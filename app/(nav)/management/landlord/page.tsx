@@ -295,10 +295,7 @@ const Landlord = () => {
           <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
             <Modal>
               <ModalTrigger asChild>
-                <button
-                  type="button"
-                  className="flex items-center gap-2"
-                >
+                <button type="button" className="flex items-center gap-2">
                   <FilterIcon />
                   <span>Filters</span>
                 </button>

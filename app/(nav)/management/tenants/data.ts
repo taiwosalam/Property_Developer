@@ -46,7 +46,7 @@ export const getAllTenants = async (): Promise<TenantPageData> => {
     return data;
   } catch (error) {
     console.error("Error fetching tenants", error);
-    return defaultTenantPageData;
+    throw new Error(`Error: ${error}`);
   }
 };
 
@@ -70,5 +70,6 @@ export const getOneTenant = async (tenantId: string) => {
     return data;
   } catch (error) {
     console.error("Error fetching tenant", error);
+    throw new Error(`Error: ${error}`);
   }
 };
