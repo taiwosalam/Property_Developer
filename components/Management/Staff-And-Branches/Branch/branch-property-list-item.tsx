@@ -23,7 +23,7 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
           style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
         >
           {/* Group of icons down */}
-          <div className="flex items-stretch gap-[10px] absolute z-[1] left-[35%] bottom-4">
+          <div className="flex items-stretch gap-[10px] absolute z-[1] left-[50%] translate-x-[-50%] bottom-4">
             <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
               <CameraIcon />
               <p className="text-black font-medium text-[10px]">+23</p>
@@ -43,7 +43,7 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
           className="object-cover"
         />
       </div>
-      <div className="flex-grow text-base grid grid-cols-2 gap-x-2 gap-y-4 [&>div]:grid [&>div]:gap-x-2 [&>div]:grid-cols-[40%,1fr]">
+      <div className="flex-grow text-base grid grid-cols-2 gap-x-2 gap-y-4 [&>div]:grid [&>div]:gap-x-2 [&>div]:grid-cols-[35%,1fr]">
         <div>
           <p className="text-[#747474]">Unit Details Units</p>
           <p className="text-black">Moniya Apartment</p>

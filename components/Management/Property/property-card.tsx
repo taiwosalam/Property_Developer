@@ -4,7 +4,7 @@ import { PropertyProps } from "./types";
 import clsx from "clsx";
 import { useState, useRef, useEffect } from "react";
 import Button from "@/components/Form/Button/button";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import Sample from "@/public/empty/SampleProperty.jpeg";
 import Sample2 from "@/public/empty/SampleProperty2.jpeg";
 import Sample3 from "@/public/empty/SampleProperty3.jpeg";
@@ -28,7 +28,6 @@ const PropertyCard: React.FC<PropertyProps> = ({
   price,
   type,
 }) => {
-  const controls = useAnimation();
   const modalRef = useRef<HTMLDivElement>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isModalActive, setIsModalActive] = useState(false);
@@ -102,6 +101,7 @@ const PropertyCard: React.FC<PropertyProps> = ({
         >
           <NextIcon />
         </button>
+
         <div className="flex items-stretch gap-[10px] absolute z-[1] right-2 bottom-2">
           <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />
