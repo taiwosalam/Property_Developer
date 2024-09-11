@@ -56,6 +56,8 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
             </div>
           </div>
         </div>
+
+        {/* Image */}
         <div className="w-[168px] h-[168px] rounded-2xl relative overflow-hidden cursor-pointer">
           <div className="absolute z-[1] left-[70%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />

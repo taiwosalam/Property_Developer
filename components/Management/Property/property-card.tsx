@@ -19,7 +19,14 @@ import {
   CameraIcon,
 } from "@/public/icons/icons";
 
-const PropertyCard: React.FC<PropertyProps> = ({
+interface PropertyCardProps extends PropertyProps {
+  isClickable?: boolean;
+  handleClickPreview?: (id: string | number) => void;
+  handleClickManage?: (id: string | number) => void;
+}
+
+const PropertyCard: React.FC<PropertyCardProps> = ({
+  id,
   images,
   propertyId,
   name,
@@ -27,6 +34,9 @@ const PropertyCard: React.FC<PropertyProps> = ({
   address,
   price,
   type,
+  isClickable = true,
+  handleClickPreview,
+  handleClickManage,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -56,8 +66,9 @@ const PropertyCard: React.FC<PropertyProps> = ({
       setIsModalActive(false);
     }
   };
+
   useEffect(() => {
-    if (isModalActive) {
+    if (isModalActive && isClickable) {
       document.addEventListener("click", handleClickOutside);
     } else {
       document.removeEventListener("click", handleClickOutside);
@@ -130,7 +141,7 @@ const PropertyCard: React.FC<PropertyProps> = ({
             objectFit="cover"
             className="object-cover"
           />
-          {isModalActive && (
+          {isModalActive && isClickable && (
             <div
               className="absolute z-[2] inset-0 flex items-center justify-between px-[10%] gap-x-4"
               style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
@@ -140,6 +151,7 @@ const PropertyCard: React.FC<PropertyProps> = ({
                 type="button"
                 size="mid"
                 className="!py-[8px] !px-8 !font-bold"
+                onClick={() => handleClickManage?.(id)}
               >
                 Manage
               </Button>
@@ -147,6 +159,7 @@ const PropertyCard: React.FC<PropertyProps> = ({
                 type="button"
                 size="mid"
                 className="py-[8px] !px-8 !font-bold"
+                onClick={() => handleClickPreview?.(id)}
               >
                 Preview
               </Button>
@@ -186,7 +199,7 @@ const PropertyCard: React.FC<PropertyProps> = ({
           </div>
         </div>
       </div>
-      {isModalActive && (
+      {isModalActive && isClickable && (
         <div className="bg-white px-8 pt-4 pb-10 text-xs grid grid-cols-3 gap-x-4 gap-y-2 absolute bottom-0 w-full rounded-b-xl h-[55%] z-[3] cursor-default">
           <div>
             <p className="text-label font-normal">Branch</p>

@@ -5,7 +5,6 @@ import { properties } from "./data";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { ModalContent, ModalTrigger, Modal } from "@/components/Modal/modal";
 import clsx from "clsx";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import Image from "next/image";
@@ -162,9 +161,12 @@ const Property = () => {
             }}
           >
             {properties.slice(0, 30).map((p) => (
-              <Link href={`/management/property/${p.id}`} key={p.id}>
-                <PropertyCard {...p} />
-              </Link>
+              <PropertyCard
+                {...p}
+                key={p.id}
+                handleClickPreview={handleClickPreview}
+                handleClickManage={handleClickManage}
+              />
             ))}
           </div>
         ) : (
