@@ -25,12 +25,6 @@ const BranchCard: React.FC<BranchProps> = ({
           }}
         ></div>
         <div className="absolute left-[50%] translate-x-[-50%] top-[-2.8rem] bg-white rounded-full w-[95px] h-[95px] overflow-hidden border-[3px] border-white">
-          {/* <Image
-          src={avatar || DefaultBranchPicture}
-          alt={branch_title || ""}
-          fill
-          className="rounded-full object-cover"
-        /> */}
           <Image
             src={DefaultBranchPicture}
             alt={branch_title || ""}
@@ -48,10 +42,9 @@ const BranchCard: React.FC<BranchProps> = ({
           <div className="flex items-center gap-2 justify-center mb-5">
             <div className="bg-brand-1 rounded-full w-5 h-5 grid place-items-center relative">
               <Image
-                alt={manager_name || ""}
-                src={"/" + manager_avatar || DefaultBranchManagerAvatar}
-                fill
-                sizes="auto"
+                alt={`${manager_name} avatar`}
+                src={DefaultBranchManagerAvatar}
+                className="w-[10px] h-[10px]"
               />
             </div>
             <p className="text-black font-medium text-sm">{manager_name}</p>

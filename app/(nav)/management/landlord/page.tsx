@@ -20,11 +20,7 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import PageTitle from "@/components/PageTitle/page-title";
 import AboutPage from "@/components/AboutPage/about-page";
 import Button from "@/components/Form/Button/button";
-import {
-  getAllLandlords,
-  LandlordPageState,
-  defaultLandlordPageData,
-} from "./data";
+import { getAllLandlords, LandlordPageState } from "./data";
 
 const Landlord = () => {
   const initialState: LandlordPageState = {
@@ -33,7 +29,15 @@ const Landlord = () => {
     current_page: 1,
     loading: true,
     error: null,
-    landlordsPageData: defaultLandlordPageData,
+    landlordsPageData: {
+      total_landlords: 0,
+      new_landlords_this_month: 0,
+      mobile_landlords: 0,
+      new_mobile_landlords_this_month: 0,
+      web_landlords: 0,
+      new_web_landlords_this_month: 0,
+      landlords: [],
+    },
   };
   const [state, setState] = useState<LandlordPageState>(initialState);
   const {

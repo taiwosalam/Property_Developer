@@ -3,7 +3,6 @@
 // Imports
 import { useEffect, useState } from "react";
 import clsx from "clsx";
-import Image from "next/image";
 import Button from "@/components/Form/Button/button";
 import { GridIcon, ListIcon, FilterIcon } from "@/public/icons/icons";
 import TenantCard from "@/components/Management/landlord-and-tenant-card";

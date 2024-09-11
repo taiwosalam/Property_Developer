@@ -22,7 +22,7 @@ export interface CustomTableProps {
   fields: Field[];
   displayTableHead?: boolean;
   className?: string;
-  handleSelect?: (item?: DataItem) => void;
+  handleSelect?: (item: DataItem) => void;
   actionButtonIcon?: ReactNode;
   tableHeadClassName?: string;
   tableHeadStyle?: CSSProperties; // For custom TableHead inline style

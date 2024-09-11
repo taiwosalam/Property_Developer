@@ -14,7 +14,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  complaintsData,
   dashboardCardData,
   recentMessagesData,
   walletBalanceCardData,
@@ -26,7 +25,7 @@ import SearchInput from "@/components/SearchInput/search-input";
 import { GridIcon, ListIcon } from "@/public/icons/icons";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
-import { StaffAndBranchState } from "../types";
+import { PageState } from "./data";
 import Pagination from "@/components/Pagination/pagination";
 import BranchStatCard from "@/components/Management/Staff-And-Branches/Branch/branchStatCard";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
@@ -41,22 +40,13 @@ const Dashboard = () => {
     gridView: true,
     total_pages: 50,
     current_page: 1,
-    selectedState: "",
-    selectedLGA: "",
-    localGovernments: [],
   };
-  const [state, setState] = useState<StaffAndBranchState>(initialState);
+  const [state, setState] = useState<PageState>(initialState);
 
-  const {
-    gridView,
-    total_pages,
-    current_page,
-    selectedState,
-    selectedLGA,
-    localGovernments,
-  } = state;
+  const { gridView, total_pages, current_page } = state;
 
   const { isMobile } = useWindowWidth();
+
   const setGridView = () => {
     setState((state) => ({ ...state, gridView: true }));
   };
@@ -292,10 +282,10 @@ const Dashboard = () => {
       <section>
         {gridView ? (
           <div
-            className="grid gap-x-[30px] gap-y-5 justify-items-center grid-cols-3"
-            // style={{
-            //   gridTemplateColumns: "repeat(auto-fit, minmax(370px, 1fr))",
-            // }}
+            className="grid gap-x-[30px] gap-y-5"
+            style={{
+              gridTemplateColumns: "repeat(auto-fill, minmax(370px, 1fr))",
+            }}
           >
             {properties.slice(0, 30).map((p) => (
               <PropertyCard key={p.id} {...p} />

@@ -19,7 +19,13 @@ import {
   CameraIcon,
 } from "@/public/icons/icons";
 
-const PropertyListItem: React.FC<PropertyProps> = ({
+const PropertyListItem: React.FC<
+  PropertyProps & {
+    handleClickPreview: (id: string | number) => void;
+    handleClickManage: (id: string | number) => void;
+  }
+> = ({
+  id,
   images,
   propertyId,
   name,
@@ -27,6 +33,8 @@ const PropertyListItem: React.FC<PropertyProps> = ({
   address,
   price,
   type,
+  handleClickManage,
+  handleClickPreview,
 }) => {
   return (
     <div
@@ -128,6 +136,7 @@ const PropertyListItem: React.FC<PropertyProps> = ({
             type="button"
             size="mid"
             className="!py-[8px] !px-8 !font-bold !bg-white !border-2 !border-brand-9 !text-brand-9 hover:opacity-70"
+            onClick={() => handleClickManage(id)}
           >
             Manage
           </Button>
@@ -135,6 +144,7 @@ const PropertyListItem: React.FC<PropertyProps> = ({
             type="button"
             size="mid"
             className="py-[8px] !px-8 !font-bold"
+            onClick={() => handleClickPreview(id)}
           >
             Preview
           </Button>

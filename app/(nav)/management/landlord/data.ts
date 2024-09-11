@@ -1,16 +1,6 @@
 // data.ts
 import { LandlordProps } from "@/components/Management/Landlord/types";
 
-export const defaultLandlordPageData: LandlordsPageData = {
-  total_landlords: 0,
-  new_landlords_this_month: 0,
-  mobile_landlords: 0,
-  new_mobile_landlords_this_month: 0,
-  web_landlords: 0,
-  new_web_landlords_this_month: 0,
-  landlords: [],
-};
-
 export interface LandlordsPageData {
   total_landlords: number;
   new_landlords_this_month: number;

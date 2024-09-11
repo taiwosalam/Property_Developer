@@ -20,7 +20,7 @@ const PropertyPreview = () => {
   return (
     <div>
       {/* Back Button & Preview Title */}
-      <div className="flex items-center gap-1 mb-6 lg:mb-11">
+      <div className="flex items-center gap-1 mb-6 lg:mb-9">
         <button
           type="button"
           aria-label="Go Back"

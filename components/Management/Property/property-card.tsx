@@ -72,7 +72,7 @@ const PropertyCard: React.FC<PropertyProps> = ({
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   return (
     <div
-      className="rounded-xl max-w-[100%] aspect-[0.961] relative"
+      className="rounded-xl max-w-[370px] mx-auto aspect-[0.961] relative"
       style={{ boxShadow: "4px 4px 10px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="relative h-[200px] w-full overflow-hidden rounded-t-xl">
@@ -132,7 +132,7 @@ const PropertyCard: React.FC<PropertyProps> = ({
           />
           {isModalActive && (
             <div
-              className="absolute z-[2] inset-0 flex items-center justify-between px-10"
+              className="absolute z-[2] inset-0 flex items-center justify-between px-[10%] gap-x-4"
               style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
               ref={modalRef}
             >
