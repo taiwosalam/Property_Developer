@@ -1,6 +1,7 @@
 // Types
 import type { AuthSliderContent } from "@/components/Auth/AuthSlider/types";
 import { postRequest } from "@/services/api";
+import { useAuthStoreSelectors } from "@/store/authstrore";
 
 export const auth_slider_content: AuthSliderContent = [
   {
@@ -32,15 +33,22 @@ export const login = async (
     }
 
     if (response.error) {
-      return { error: response.error }; // Return the error message from the response
+      return { error: response.error };
     }
 
-    if (response.company_id === null) {
-      window.location.href = "/setup"; // Redirects to the setup page.
-      return; // Stop further execution
+    const { company_id, accessToken, user_id } = response;
+
+    if (company_id === null) {
+      window.location.href = "/setup";
+      return;
     }
 
-    window.location.href = "/dashboard"; // Redirects to the dashboard.
+    // Update Zustand state and localStorage
+    useAuthStoreSelectors
+      .getState()
+      .setAuthState(true, accessToken, user_id, company_id);
+
+    window.location.href = "/dashboard";
   } catch (error) {
     console.error("Error during sign-in:", error);
     return { error: "An unexpected error occurred during sign-in." };
@@ -50,38 +58,76 @@ export const login = async (
 // Signup function
 export const signup = async () => {
   try {
-    const result = await postRequest("/initiate", {}); // Make the API call
-    console.log(result);
+    const result = await postRequest("/initiate", {});
 
-    // Check if the response contains an access_token to determine success
     if (result?.access_token) {
-      return true; // Return true if signup was successful
+      const { access_token, user_id, company_id } = result;
+
+      // Update Zustand state and localStorage
+      useAuthStoreSelectors
+        .getState()
+        .setAuthState(true, access_token, user_id, company_id);
+
+      return true;
     } else {
       console.error("Signup failed, access_token missing.");
-      return false; // Return false if signup was not successful
+      return false;
     }
   } catch (error) {
     console.error("Error fetching result:", error);
-    return false; // Return false if there was an error in the API call
+    return false;
   }
 };
 
 export const verifyEmail = async (otp: string) => {
   try {
-    const result = await postRequest("/verify", { otp }); // Send the OTP to the backend
-    console.log(result);
+    const result = await postRequest("/verify", { otp });
 
-    // Check if the response contains a user_id or another success indicator
     if (result?.user_id) {
-      return true; // Return true if email verification was successful
+      const { access_token, user_id, company_id } = result;
+
+      // Update Zustand state and localStorage
+      useAuthStoreSelectors
+        .getState()
+        .setAuthState(true, access_token, user_id, company_id);
+
+      return true;
     } else {
       console.error(
         "Email verification failed, user_id missing or invalid response."
       );
-      return false; // Return false if verification was not successful
+      return false;
     }
   } catch (error) {
     console.error("Error verifying email:", error);
-    return false; // Return false if there was an error in the API call
+    return false;
+  }
+};
+
+export const resendOtp = async (email: string) => {
+  try {
+    const result = await postRequest("/resendOtp", {});
+
+    if (result?.success) {
+      return true;
+    } else {
+      console.error("Resend OTP failed, success missing or invalid response.");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error resending OTP:", error);
+    return false;
+  }
+};
+
+export const initializeAuthState = () => {
+  const accessToken = localStorage.getItem("accessToken");
+  const userId = localStorage.getItem("userId");
+  const companyId = localStorage.getItem("companyId");
+
+  if (accessToken && userId) {
+    useAuthStoreSelectors
+      .getState()
+      .setAuthState(true, accessToken, userId, companyId);
   }
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
 // Imports
@@ -14,6 +14,8 @@ import { useThemeStoreSelectors } from "@/store/themeStore";
 import Navbar from "@/components/Nav/navbar";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { trackOutsideClick } from "@/utils/track-outside-click";
+import { useAuthStoreSelectors } from "@/store/authstrore";
+import { getToken } from "@/utils/cookies";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
@@ -59,6 +61,20 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       trackOutsideClick(fixedContainerRef, () => setFixedSidenavIsOpen(false));
     }
   }, [fixedSidenavIsOpen]);
+
+  const router = useRouter();
+  const { isAuthenticated } = useAuthStoreSelectors.getState();
+
+  useEffect(() => {
+    // Function to handle redirect based on authentication state
+    const handleRedirect = async () => {
+      if (isAuthenticated) {
+        router.push("/dashboard"); // Redirect to dashboard if both are valid
+      }
+    };
+
+    handleRedirect(); // Call the function on component mount
+  }, [isAuthenticated, router]); // Re-run this logic if isAuthenticated or companyId changes
 
   return (
     <>

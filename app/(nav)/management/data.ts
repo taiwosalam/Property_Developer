@@ -2212,7 +2212,7 @@ export const getAllTenants = async () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${"347|JRkC0VQXb5qSbfRaBbrxaJrFHSt8XBfOzARuRAvj1c16ae78"}`,
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
     if (!res.ok) {
@@ -2234,7 +2234,7 @@ export const getOneTenant = async (tenantId: string) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${"347|JRkC0VQXb5qSbfRaBbrxaJrFHSt8XBfOzARuRAvj1c16ae78"}`,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       }
     );

@@ -33,15 +33,15 @@ instance.interceptors.response.use(
   },
   (error) => {
     // Handle response errors
-    if (error?.response?.status! === 401) {
-      const updateAuthenticationState =
-        useAuthStoreSelectors.getState().updateAuthenticationState;
-      updateAuthenticationState(false); // Updates authentication state to false (logged out).
+    if (error?.response?.status === 401) {
+      const setAuthState = useAuthStoreSelectors.getState().setAuthState;
+      setAuthState(false, null, null, null); // Set authentication state to false (logged out).
+
       if (window.location.pathname !== "/auth/sign-in") {
-        window.location.href = "/auth/sign-in"; // Redirects to the login page.      }
+        window.location.href = "/auth/sign-in"; // Redirects to the login page.
       }
-      // throw error; // Propagates the error for further handling.
     }
+    return Promise.reject(error); // Ensure the error is properly propagated
   }
 );
 
