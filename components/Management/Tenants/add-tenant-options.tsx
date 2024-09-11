@@ -6,7 +6,7 @@ import { AddTenantOptionsProps } from "./types";
 const AddTenantOptions: React.FC<AddTenantOptionsProps> = ({ showForm }) => {
   return (
     <>
-      <div className="flex justify-center gap-14">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-7 md:gap-14">
         <AddLandlordOrTenantCard
           buttonText="create"
           title="Add Tenant/Occupant"
@@ -15,14 +15,14 @@ const AddTenantOptions: React.FC<AddTenantOptionsProps> = ({ showForm }) => {
         />
         <AddLandlordOrTenantCard
           buttonText="choose"
-          title="Upload Multiple Owners"
+          title="Upload Multiple Users"
           onClick={() => showForm("add-multiple-users")}
           desc="You can add multiple users at a time 
         by following the XLS format and utilizing
          the available records."
         />
       </div>
-      <div className="flex gap-2 justify-center">
+      <div className="mt-10 flex flex-col md:flex-row gap-2 justify-center">
         <Button
           size="base_medium"
           className="py-2 px-8"

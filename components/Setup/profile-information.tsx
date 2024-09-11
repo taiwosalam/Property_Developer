@@ -5,16 +5,16 @@ import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
 import Select from "../Form/Select/select";
 import TextArea from "../Form/TextArea/textarea";
 import { titles } from "@/data";
-import { FlowProgressContext } from "../FlowProgress/flow-progress";
+// import { FlowProgressContext } from "../FlowProgress/flow-progress";
 
 const ProfileInformation = () => {
-  const { handleInputChange } = useContext(FlowProgressContext);
-  const [aboutDirector, setAboutDirector] = useState("");
+  // const { handleInputChange } = useContext(FlowProgressContext);
+  // const [aboutDirector, setAboutDirector] = useState("");
 
   // To trigger Flow Progress
-  useEffect(() => {
-    handleInputChange();
-  }, [aboutDirector, handleInputChange]);
+  // useEffect(() => {
+  //   handleInputChange();
+  // }, [aboutDirector, handleInputChange]);
   return (
     <div className="custom-flex-col gap-6 max-w-[940px]">
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -54,21 +54,12 @@ const ProfileInformation = () => {
           inputClassName="setup-f"
         />
       </div>
-      <div>
-        <input
-          type="hidden"
-          name="director_about"
-          value={aboutDirector}
-          className="setup-f"
-        />
-        <TextArea
-          id="director_about"
-          label="About Director"
-          placeholder="Write about the director"
-          value={aboutDirector}
-          onChange={setAboutDirector}
-        />
-      </div>
+      <TextArea
+        id="director_about"
+        label="About Director"
+        placeholder="Write about the director"
+        hiddenInputClassName="setup-f"
+      />
     </div>
   );
 };

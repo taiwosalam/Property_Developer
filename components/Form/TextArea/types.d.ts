@@ -4,6 +4,8 @@ export interface TextAreaProps {
   label?: string;
   className?: string;
   required?: boolean;
+  hiddenInputClassName?: string;
   placeholder?: string;
+  inputSpaceClassName?: string;
   onChange?: (data: string) => void;
 }

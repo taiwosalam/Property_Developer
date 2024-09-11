@@ -32,8 +32,8 @@ import BranchStatCard from "@/components/Management/Staff-And-Branches/Branch/br
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
 import BranchActivitiesCard from "@/components/Management/Staff-And-Branches/Branch/branch-activity-card";
 import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch/branch-balance-card";
-import { properties } from "../../property/data";
-import PropertyCard from "@/components/Management/Property/property-card";
+import { properties } from "../../properties/data";
+import PropertyCard from "@/components/Management/Properties/property-card";
 import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
 
 const Dashboard = () => {

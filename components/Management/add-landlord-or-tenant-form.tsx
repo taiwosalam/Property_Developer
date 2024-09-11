@@ -69,7 +69,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
           id="state"
           label="state"
           placeholder="Select options"
-          inputContainerClassName="bg-neutral-2 rounded-[8px]"
+          inputContainerClassName="bg-neutral-2"
           value={selectedState ? selectedState : undefined}
           onChange={handleStateChange} // Update handler
         />
@@ -78,7 +78,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
           id="local_government"
           label="local government"
           placeholder="Select options"
-          inputContainerClassName="bg-neutral-2 rounded-[8px]"
+          inputContainerClassName="bg-neutral-2"
           onChange={handleLGAChange} // Update handler
           value={selectedLGA ? selectedLGA : undefined} // Controlled value
         />

@@ -431,3 +431,20 @@ export const FilterIcon = () => {
     </svg>
   );
 };
+
+export const PlusIcon = () => {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7.7027 10.2703H0V7.7027H7.7027V0H10.2703V7.7027H17.973V10.2703H10.2703V17.973H7.7027V10.2703Z"
+        fill="white"
+      />
+    </svg>
+  );
+};
