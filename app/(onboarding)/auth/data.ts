@@ -38,21 +38,20 @@ export const login = async (
     }
 
     const { company_id, accessToken, user_id } = response;
-    // alert(JSON.stringify(response));
-    // if (user_id) {
-    //   toast.success("Login successful");
-    if (user_id === null) {
-      window.location.href = "/setup";
-      return;
-    } else if (company_id === null) {
-      window.location.href = "/verify/setup";
-      return;
-    }
-
+    localStorage.setItem("user_id", user_id);
     // Update Zustand state and localStorage
     useAuthStoreSelectors
       .getState()
       .setAuthState(true, accessToken, user_id, company_id);
+
+    if (user_id === null) {
+      window.location.href = "/setup";
+      return;
+    } else if (company_id === null) {
+      // window.location.href = "/verify/setup";
+      window.location.href = "/setup";
+      return;
+    }
 
     window.location.href = "/dashboard";
   } catch (error) {
@@ -69,7 +68,6 @@ export const signup = async () => {
     if (result?.access_token) {
       const { access_token, user_id, company_id } = result;
 
-      // Update Zustand state and localStorage
       useAuthStoreSelectors
         .getState()
         .setAuthState(true, access_token, user_id, company_id);
