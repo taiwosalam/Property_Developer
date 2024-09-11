@@ -5,6 +5,8 @@ import { properties } from "./data";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { ModalContent, ModalTrigger, Modal } from "@/components/Modal/modal";
 import clsx from "clsx";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import Image from "next/image";
 import SearchInput from "@/components/SearchInput/search-input";
@@ -16,6 +18,7 @@ import PropertyListItem from "@/components/Management/Property/property-list-ite
 import AddPropertyModal from "@/components/Management/Property/add-property-modal";
 
 const Property = () => {
+  const router = useRouter();
   const initialState = {
     gridView: true,
     total_pages: 50,
@@ -32,6 +35,12 @@ const Property = () => {
   };
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
+  };
+  const handleClickPreview = (id: string | number) => {
+    router.push(`/management/property/${id}`);
+  };
+  const handleClickManage = (id: string | number) => {
+    // router.push(`/management/property/${id}`);
   };
 
   return (
@@ -147,22 +156,35 @@ const Property = () => {
       <section>
         {gridView ? (
           <div
-            className="grid gap-x-[30px] gap-y-5 justify-items-center grid-cols-3"
-            // style={{
-            //   gridTemplateColumns: "repeat(auto-fit, minmax(370px, 1fr))",
-            // }}
+            className="grid gap-x-[30px] gap-y-5"
+            style={{
+              gridTemplateColumns: "repeat(auto-fit, minmax(370px, 1fr))",
+            }}
           >
             {properties.slice(0, 30).map((p) => (
-              <PropertyCard key={p.id} {...p} />
+              <Link href={`/management/property/${p.id}`} key={p.id}>
+                <PropertyCard {...p} />
+              </Link>
             ))}
           </div>
         ) : (
           <div className="space-y-4">
             {properties.slice(0, 30).map((p) => (
-              <PropertyListItem key={p.id} {...p} />
+              <PropertyListItem
+                key={p.id}
+                {...p}
+                handleClickPreview={handleClickPreview}
+                handleClickManage={handleClickManage}
+              />
             ))}
           </div>
         )}
+        <Pagination
+          totalPages={total_pages}
+          currentPage={current_page}
+          onPageChange={handlePageChange}
+          className="mt-8 text-xs font-medium"
+        />
       </section>
     </div>
   );

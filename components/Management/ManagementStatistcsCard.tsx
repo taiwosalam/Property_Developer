@@ -96,7 +96,7 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
               oldColor="#0033C4"
             />
             <p className="font-normal text-xs text-neutral-6 text-right">
-              this month
+              This month
             </p>
           </div>
         </div>

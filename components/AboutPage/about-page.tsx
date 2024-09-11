@@ -18,7 +18,8 @@ const AboutPage: React.FC<AboutPageProps> = ({
         <div className="rounded-[4px] border-4 bg-text-tertiary overflow-hidden">
           <button
             type="button"
-            className="absolute inset-0 flex items-center justify-center"
+            aria-label="Play Video"
+            className="absolute inset-0 flex items-center justify-center text-black"
           >
             <PlayIconButton />
           </button>

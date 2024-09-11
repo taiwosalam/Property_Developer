@@ -1,15 +1,25 @@
 "use client";
 import Image from "next/image";
-import Sample from "@/public/empty/SampleProperty.jpeg";
-import { ChevronLeft, LocationIcon } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
+import clsx from "clsx";
+import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import Sample from "@/public/empty/SampleProperty.jpeg";
+import {
+  ChevronLeft,
+  LocationIcon,
+  PlayIconButton,
+  PreviousIcon,
+  NextIcon,
+} from "@/public/icons/icons";
 import UnitItem from "./unit-item";
+import Sample2 from "@/public/empty/SampleProperty2.jpeg";
+import Sample3 from "@/public/empty/SampleProperty3.jpeg";
+import Sample4 from "@/public/empty/SampleProperty4.png";
+import Sample5 from "@/public/empty/SampleProperty5.jpg";
 
 const PropertyPreview = () => {
   const router = useRouter();
-  const goBack = () => {
-    router.back();
-  };
   const colors = {
     vacant: "#FFBB53",
     occupied: "#01BA4C",
@@ -17,10 +27,39 @@ const PropertyPreview = () => {
     expired: "#E9212E",
     relocate: "#620E13",
   };
+
+  const goBack = () => {
+    router.back();
+  };
+  const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const handleNextClick = () => {
+    if (currentImageIndex < sampleImages.length - 1) {
+      setCurrentImageIndex(currentImageIndex + 1);
+    }
+  };
+
+  const handlePreviousClick = () => {
+    if (currentImageIndex > 0) {
+      setCurrentImageIndex(currentImageIndex - 1);
+    }
+  };
+
+  const handleDragEnd = (event: any, info: any) => {
+    if (info.offset.x > 100 && currentImageIndex > 0) {
+      handlePreviousClick();
+    } else if (
+      info.offset.x < -100 &&
+      currentImageIndex < sampleImages.length - 1
+    ) {
+      handleNextClick();
+    }
+  };
+
   return (
     <div>
       {/* Back Button & Preview Title */}
-      <div className="flex items-center gap-1 mb-6 lg:mb-11">
+      <div className="flex items-center gap-1 mb-6 lg:mb-9">
         <button
           type="button"
           aria-label="Go Back"
@@ -48,14 +87,51 @@ const PropertyPreview = () => {
         <div className="lg:w-[60%]">
           {/* Main Image */}
           <div className="relative aspect-[1.4] overflow-hidden rounded-lg">
-            <Image
-              src={Sample}
-              alt={""}
-              fill
-              objectFit="cover"
-              objectPosition="center"
-              className="object-cover"
-            />
+            <button
+              type="button"
+              aria-label="previous"
+              className={clsx(
+                "w-6 h-6 rounded-full grid place-items-center absolute z-[1] left-2 top-1/2 transform -translate-y-1/2",
+                currentImageIndex === 0 && "opacity-80"
+              )}
+              style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
+              onClick={handlePreviousClick}
+              disabled={currentImageIndex === 0}
+            >
+              <PreviousIcon />
+            </button>
+            <button
+              type="button"
+              aria-label="next"
+              className={clsx(
+                "w-6 h-6 rounded-full grid place-items-center absolute z-[1] right-2 top-1/2 transform -translate-y-1/2",
+                currentImageIndex === sampleImages.length - 1 && "opacity-80"
+              )}
+              style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
+              onClick={handleNextClick}
+              disabled={currentImageIndex === sampleImages.length - 1}
+            >
+              <NextIcon />
+            </button>
+
+            <motion.div
+              key={currentImageIndex}
+              animate={{ opacity: 1 }}
+              initial={{ opacity: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              onDragEnd={handleDragEnd}
+              className="absolute inset-0"
+            >
+              <Image
+                src={sampleImages[currentImageIndex]}
+                alt={`${name} ${currentImageIndex + 1}`}
+                fill
+                className="object-cover object-center"
+              />
+            </motion.div>
           </div>
 
           {/* Videos */}
@@ -64,6 +140,17 @@ const PropertyPreview = () => {
               Videos
             </p>
             <div className="relative aspect-[1.85] overflow-hidden rounded-xl max-w-[330px] max-h-[180px]">
+              <div
+                className="absolute inset-0 bg-black opacity-50 z-[1]"
+                aria-hidden="true"
+              ></div>
+              <button
+                type="button"
+                aria-label="Play Video"
+                className="absolute inset-0 flex items-center justify-center z-[2] text-white"
+              >
+                <PlayIconButton />
+              </button>
               <Image
                 src={Sample}
                 alt={""}
