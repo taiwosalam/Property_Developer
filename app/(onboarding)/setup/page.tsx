@@ -21,6 +21,7 @@ import { signupCompany } from "./data";
 import { useFormDataStore } from "@/store/formdatastore";
 import { AuthForm, formDataToString } from "@/components/Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
+import { useAuthStore } from "@/store/authstrore";
 
 const Setup = () => {
   // Define the index of the last step in the flow
@@ -35,10 +36,14 @@ const Setup = () => {
   const handleSubmit = async (data: FormData) => {
     // if (!canSubmit) return;
     // Add user_id to the data object
-    const user_id = "80"; // Replace this with your logic for getting the user_id
+    // const user_id = useAuthStore.getState().userId;
+    const user_id = localStorage.getItem("user_id");
+    console.log(user_id);
     const payload = formDataToString(data);
 
-    data.set("user_id", user_id);
+    if (user_id) {
+      data.set("user_id", user_id);
+    }
 
     // Update the director_experience field to include "years"
     if (payload.director_experience) {

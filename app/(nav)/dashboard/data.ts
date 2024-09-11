@@ -194,7 +194,7 @@ export const getDashboardData = () => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${"67|l7JYt39G6mTmZkpyDoo397TqErQA4cue6ZEmmSBOb3664e14"}`,
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
   })
     .then((res) => res.json())

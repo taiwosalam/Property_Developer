@@ -26,7 +26,7 @@ export const getAllLandlords = async (): Promise<LandlordsPageData> => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${"347|JRkC0VQXb5qSbfRaBbrxaJrFHSt8XBfOzARuRAvj1c16ae78"}`,
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
 
@@ -49,7 +49,7 @@ export const getOneLandlord = async (landlordId: string) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${"347|JRkC0VQXb5qSbfRaBbrxaJrFHSt8XBfOzARuRAvj1c16ae78"}`,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       }
     );

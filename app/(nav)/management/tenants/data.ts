@@ -35,14 +35,14 @@ export const getAllTenants = async (): Promise<TenantPageData> => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${"347|JRkC0VQXb5qSbfRaBbrxaJrFHSt8XBfOzARuRAvj1c16ae78"}`,
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
     if (!res.ok) {
       throw new Error(`Error: ${res.status}`);
     }
     const data = await res.json();
-    // console.log(data);
+    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching tenants", error);
@@ -58,7 +58,7 @@ export const getOneTenant = async (tenantId: string) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${"347|JRkC0VQXb5qSbfRaBbrxaJrFHSt8XBfOzARuRAvj1c16ae78"}`,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       }
     );
