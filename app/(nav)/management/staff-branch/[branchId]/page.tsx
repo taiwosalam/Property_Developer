@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-
+import Link from "next/link";
+import { useParams } from "next/navigation";
 // Imports
 import Card from "@/components/dashboard/card";
 import Button from "@/components/Form/Button/button";
@@ -44,7 +45,7 @@ const Dashboard = () => {
   const [state, setState] = useState<PageState>(initialState);
 
   const { gridView, total_pages, current_page } = state;
-
+  const { branchId } = useParams();
   const { isMobile } = useWindowWidth();
 
   const setGridView = () => {
@@ -288,13 +289,24 @@ const Dashboard = () => {
             }}
           >
             {properties.slice(0, 30).map((p) => (
-              <PropertyCard key={p.id} {...p} />
+              <Link
+                href={`/management/staff-branch/${branchId}/property/${p.id}`}
+                key={p.id}
+              >
+                <PropertyCard {...p} isClickable={false} />
+              </Link>
             ))}
           </div>
         ) : (
           <div className="space-y-4">
             {properties.slice(0, 30).map((p) => (
-              <BranchPropertyListItem key={p.id} {...p} />
+              <Link
+                href={`/management/staff-branch/${branchId}/property/${p.id}`}
+                key={p.id}
+                className="block"
+              >
+                <BranchPropertyListItem {...p} />
+              </Link>
             ))}
           </div>
         )}
