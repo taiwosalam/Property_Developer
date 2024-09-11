@@ -5,14 +5,13 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import Image from "next/image";
 import Button from "@/components/Form/Button/button";
-import { GridIcon, ListIcon } from "@/public/icons/icons";
+import { GridIcon, ListIcon, FilterIcon } from "@/public/icons/icons";
 import TenantCard from "@/components/Management/landlord-and-tenant-card";
 import type { TenantProps } from "@/components/Management/Tenants/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import type { Field } from "@/components/Table/types";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import CustomTable from "@/components/Table/table";
-import { getAllTenants } from "../data";
 import SearchInput from "@/components/SearchInput/search-input";
 import Pagination from "@/components/Pagination/pagination";
 import UserTag from "@/components/Tags/user-tag";
@@ -21,63 +20,56 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import PageTitle from "@/components/PageTitle/page-title";
+import {
+  defaultTenantPageData,
+  getAllTenants,
+  TenantPageState,
+} from "./data";
 
-type TenantsPageData = {
-  total_tenants: number;
-  new_tenants_this_month: number;
-  mobile_tenants: number;
-  new_mobile_tenants_this_month: number;
-  web_tenants: number;
-  new_web_tenants_this_month: number;
-  tenants: {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    user_tag: string;
-    phone_number: string;
-    picture: string;
-    avatar: string | null;
-    picture_url: string;
-  }[];
-};
 const Tenants = () => {
-  const initialState = {
+  const initialState: TenantPageState = {
     gridView: true,
     total_pages: 50,
     current_page: 1,
+    loading: true,
+    error: null,
+    tenantsPageData: defaultTenantPageData,
   };
+  const [state, setState] = useState<TenantPageState>(initialState);
+  const {
+    gridView,
+    total_pages,
+    current_page,
+    loading,
+    error,
+    tenantsPageData: {
+      total_tenants,
+      new_tenants_this_month,
+      mobile_tenants,
+      new_mobile_tenants_this_month,
+      web_tenants,
+      new_web_tenants_this_month,
+      tenants,
+    },
+  } = state;
 
-  const [tenants, setTenants] = useState<TenantProps[]>([]);
-  const [TenantsPageData, setTenantsPagedata] = useState<TenantsPageData>({
-    total_tenants: 0,
-    new_tenants_this_month: 0,
-    mobile_tenants: 0,
-    new_mobile_tenants_this_month: 0,
-    web_tenants: 0,
-    new_web_tenants_this_month: 0,
-    tenants: [],
-  });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [state, setState] = useState(initialState);
+  const fetchLandlords = async () => {
+    try {
+      const data = await getAllTenants();
+      setState((x) => ({ ...x, tenantsPageData: data }));
+      // setTenants(data.tenants);
+    } catch (error) {
+      setState((x) => ({ ...x, error: error as Error }));
+    } finally {
+      setState((x) => ({ ...x, loading: false }));
+    }
+  };
 
   useEffect(() => {
     // Fetch the landlords when the component mounts
-    const fetchLandlords = async () => {
-      try {
-        const data = await getAllTenants();
-        setTenantsPagedata(data);
-        setTenants(data.tenants);
-      } catch (error) {
-        setError(error as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchLandlords();
   }, []);
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
@@ -148,8 +140,6 @@ const Tenants = () => {
     // Add  logic here to filter tenant
   };
 
-  const { gridView, total_pages, current_page } = state;
-
   const setGridView = () => {
     setState((state) => ({ ...state, gridView: true }));
   };
@@ -158,11 +148,6 @@ const Tenants = () => {
   };
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
-  };
-
-  const onClickManage = (tenant: TenantProps) => {
-    console.log("Manage clicked for:", tenant);
-    // Add your logic here to manage the landlord
   };
 
   const onClickChat = (tenant: TenantProps) => {
@@ -180,14 +165,13 @@ const Tenants = () => {
     ),
     user_tag: <UserTag type={t.user_tag} />,
     "manage/chat": (
-      <div className="flex gap-x-[4%] items-center w-full text-white [&>button]:rounded-[4px] [&>button]:capitalize">
-        <button
-          type="button"
+      <div className="flex gap-x-[4%] items-center w-full text-white [&>*]:rounded-[4px] [&>*]:capitalize">
+        <a
+          href={`/management/tenant/${t.id}/manage`}
           className="py-[8px] px-[32px] text-sm font-medium bg-brand-9"
-          onClick={() => onClickManage(t)}
         >
           Manage
-        </button>
+        </a>
         <button
           type="button"
           className="py-[8px] px-[32px] text-sm font-medium bg-brand-tertiary"
@@ -202,7 +186,7 @@ const Tenants = () => {
   const fields: Field[] = [
     {
       id: "1",
-      accessor: "avatar",
+      accessor: "picture_url",
       isImage: true,
       cellStyle: { paddingRight: "4px" },
     },
@@ -231,18 +215,18 @@ const Tenants = () => {
         <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
           <ManagementStatistcsCard
             title="Total Users"
-            newData={TenantsPageData.new_tenants_this_month}
-            total={TenantsPageData.total_tenants}
+            newData={new_tenants_this_month}
+            total={total_tenants}
           />
           <ManagementStatistcsCard
             title="Web Tenants"
-            newData={TenantsPageData.new_web_tenants_this_month}
-            total={TenantsPageData.web_tenants}
+            newData={new_web_tenants_this_month}
+            total={web_tenants}
           />
           <ManagementStatistcsCard
             title="Mobile Tenants"
-            newData={TenantsPageData.mobile_tenants}
-            total={TenantsPageData.total_tenants}
+            newData={new_mobile_tenants_this_month}
+            total={mobile_tenants}
           />
           <div className="hidden md:block xl:hidden">
             <div className="flex items-center justify-center w-full h-full">
@@ -306,15 +290,13 @@ const Tenants = () => {
           <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
             <Modal>
               <ModalTrigger asChild>
-                <div className="flex items-center gap-2 cursor-pointer">
-                  <Image
-                    src="/icons/sliders.svg"
-                    alt="filter"
-                    width={20}
-                    height={20}
-                  />
-                  <p>Filters</p>
-                </div>
+                <button
+                  type="button"
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <FilterIcon />
+                  <span>Filters</span>
+                </button>
               </ModalTrigger>
               <ModalContent>
                 <FilterModal
@@ -335,10 +317,10 @@ const Tenants = () => {
           <div
             className="grid gap-4"
             style={{
-              gridTemplateColumns: "repeat(auto-fit, minmax(284px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(284px, 1fr))",
             }}
           >
-            {tenants.slice(0, 30).map((t) => (
+            {tenants.map((t) => (
               <TenantCard
                 key={t.id}
                 {...t}
@@ -350,7 +332,7 @@ const Tenants = () => {
           <CustomTable
             displayTableHead={false}
             fields={fields}
-            data={transformedTenants.slice(0, 20)}
+            data={transformedTenants}
             tableBodyCellSx={{
               border: "none",
               textAlign: "left",

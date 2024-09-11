@@ -46,7 +46,7 @@ type BranchesResponse = {
 };
 
 const StaffAndBranches = () => {
-  const initialState = {
+  const initialState: StaffAndBranchState = {
     gridView: true,
     total_pages: 50,
     current_page: 1,

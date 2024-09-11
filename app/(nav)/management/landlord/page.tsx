@@ -3,8 +3,7 @@
 // Imports
 import { useEffect, useState } from "react";
 import clsx from "clsx";
-import { GridIcon, ListIcon } from "@/public/icons/icons";
-import Image from "next/image";
+import { GridIcon, ListIcon, FilterIcon } from "@/public/icons/icons";
 import AddLandlordModal from "@/components/Management/Landlord/add-landlord-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordCard from "@/components/Management/landlord-and-tenant-card";
@@ -19,69 +18,57 @@ import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import PageTitle from "@/components/PageTitle/page-title";
-
 import AboutPage from "@/components/AboutPage/about-page";
 import Button from "@/components/Form/Button/button";
-import { getAllLandlords } from "./data";
+import {
+  getAllLandlords,
+  LandlordPageState,
+  defaultLandlordPageData,
+} from "./data";
 
-type LandlordsPageData = {
-  total_landlords: number;
-  new_landlords_this_month: number;
-  mobile_landlords: number;
-  new_mobile_landlords_this_month: number;
-  web_landlords: number;
-  new_web_landlords_this_month: number;
-  landlords: {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    user_tag: string;
-    phone_number: string;
-    picture: string;
-    avatar: string | null;
-    picture_url: string;
-  }[];
-};
 const Landlord = () => {
-  const initialState = {
-    gridView: true,
+  const initialState: LandlordPageState = {
+    gridView: false,
     total_pages: 50,
     current_page: 1,
+    loading: true,
+    error: null,
+    landlordsPageData: defaultLandlordPageData,
   };
-  const [landlords, setLandlords] = useState<LandlordProps[]>([]);
-  const [LandlordsPageData, setLandlordsPageData] = useState<LandlordsPageData>(
-    {
-      total_landlords: 0,
-      new_landlords_this_month: 0,
-      mobile_landlords: 0,
-      new_mobile_landlords_this_month: 0,
-      web_landlords: 0,
-      new_web_landlords_this_month: 0,
-      landlords: [],
+  const [state, setState] = useState<LandlordPageState>(initialState);
+  const {
+    gridView,
+    total_pages,
+    current_page,
+    loading,
+    error,
+    landlordsPageData: {
+      total_landlords,
+      new_landlords_this_month,
+      mobile_landlords,
+      new_mobile_landlords_this_month,
+      web_landlords,
+      new_web_landlords_this_month,
+      landlords,
+    },
+  } = state;
+
+  // Fetch the landlords when the component mounts
+  const fetchLandlords = async () => {
+    try {
+      const data = await getAllLandlords();
+      setState((x) => ({ ...x, landlordsPageData: data }));
+    } catch (error) {
+      setState((x) => ({ ...x, error: error as Error }));
+    } finally {
+      setState((x) => ({ ...x, loading: false }));
     }
-  );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [state, setState] = useState(initialState);
-  const { gridView, total_pages, current_page } = state;
+  };
 
   useEffect(() => {
-    // Fetch the landlords when the component mounts
-    const fetchLandlords = async () => {
-      try {
-        const data = await getAllLandlords();
-        setLandlordsPageData(data);
-        setLandlords(data.landlords);
-      } catch (error) {
-        setError(error as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchLandlords();
   }, []);
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
@@ -93,11 +80,6 @@ const Landlord = () => {
   };
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
-  };
-
-  const onClickManage = (landlord: LandlordProps) => {
-    console.log("Manage clicked for:", landlord);
-    // Add your logic here to manage the landlord
   };
 
   const onClickChat = (landlord: LandlordProps) => {
@@ -180,17 +162,16 @@ const Landlord = () => {
     ),
     user_tag: <UserTag type={l.user_tag} />,
     "manage/chat": (
-      <div className="flex gap-x-[4%] items-center w-full text-white [&>button]:rounded-[4px] [&>button]:capitalize">
-        <button
-          type="button"
-          className="py-[8px] px-[32px] text-sm font-medium bg-brand-9"
-          onClick={() => onClickManage(l)}
+      <div className="flex gap-x-[4%] items-center w-full text-white [&>*]:rounded-[4px] [&>*]:capitalize">
+        <a
+          href={`/management/landlord/${l.id}/manage`}
+          className="border-2 border-transparent py-[8px] px-[32px] text-sm font-medium bg-brand-9 hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9"
         >
           Manage
-        </button>
+        </a>
         <button
           type="button"
-          className="py-[8px] px-[32px] text-sm font-medium bg-brand-tertiary"
+          className="border-2 border-transparent py-[8px] px-[32px] text-sm font-medium bg-brand-tertiary hover:bg-[#4892e5] active:bg-transparent active:border-brand-tertiary"
           onClick={() => onClickChat(l)}
         >
           Chat
@@ -202,7 +183,7 @@ const Landlord = () => {
   const fields: Field[] = [
     {
       id: "1",
-      accessor: "avatar",
+      accessor: "picture_url",
       isImage: true,
       cellStyle: { paddingRight: "4px" },
     },
@@ -231,18 +212,18 @@ const Landlord = () => {
         <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
           <ManagementStatistcsCard
             title="Total Landlords"
-            newData={LandlordsPageData.new_landlords_this_month}
-            total={LandlordsPageData.total_landlords}
+            newData={new_landlords_this_month}
+            total={total_landlords}
           />
           <ManagementStatistcsCard
             title="Web Landlords"
-            newData={LandlordsPageData.new_web_landlords_this_month}
-            total={LandlordsPageData.web_landlords}
+            newData={new_web_landlords_this_month}
+            total={web_landlords}
           />
           <ManagementStatistcsCard
             title="Mobile Landlords"
-            newData={LandlordsPageData.new_mobile_landlords_this_month}
-            total={LandlordsPageData.mobile_landlords}
+            newData={new_mobile_landlords_this_month}
+            total={mobile_landlords}
           />
           <div className="hidden md:block xl:hidden">
             <div className="flex items-center justify-center w-full h-full">
@@ -314,15 +295,13 @@ const Landlord = () => {
           <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
             <Modal>
               <ModalTrigger asChild>
-                <div className="flex items-center gap-2 cursor-pointer">
-                  <Image
-                    src="/icons/sliders.svg"
-                    alt="filter"
-                    width={20}
-                    height={20}
-                  />
-                  <p>Filters</p>
-                </div>
+                <button
+                  type="button"
+                  className="flex items-center gap-2"
+                >
+                  <FilterIcon />
+                  <span>Filters</span>
+                </button>
               </ModalTrigger>
               <ModalContent>
                 <FilterModal
@@ -343,10 +322,10 @@ const Landlord = () => {
           <div
             className="grid gap-4"
             style={{
-              gridTemplateColumns: "repeat(auto-fit, minmax(284px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(284px, 1fr))",
             }}
           >
-            {landlords.slice(0, 30).map((l) => (
+            {landlords.map((l) => (
               <LandlordCard
                 key={l.id}
                 {...l}
@@ -358,7 +337,7 @@ const Landlord = () => {
           <CustomTable
             displayTableHead={false}
             fields={fields}
-            data={transformedLandlords.slice(0, 20)}
+            data={transformedLandlords}
             tableBodyCellSx={{
               border: "none",
               textAlign: "left",

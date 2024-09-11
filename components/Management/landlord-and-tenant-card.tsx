@@ -1,5 +1,5 @@
 import type { LandlordProps } from "./Landlord/types";
-import SampleLandlord from "@/public/empty/SampleLandlord.jpeg";
+import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import UserTag from "@/components/Tags/user-tag";
 import Image from "next/image";
 import BadgeIcon from "../BadgeIcon/badge-icon";
@@ -21,17 +21,11 @@ const LandlordAndTenantCard: React.FC<LandlordProps> = ({
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="rounded-lg relative w-[30%] overflow-hidden aspect-[0.9]">
-        {/* <Image
-          src={picture_url || DefaultLandlordAvatar}
+        <Image
+          src={picture_url || ""}
           alt={first_name}
           fill
           sizes="auto"
-          className="w-full h-full object-cover"
-        /> */}
-        <Image
-          src={SampleLandlord}
-          alt={first_name}
-          // sizes="auto"
           className="w-full h-full object-cover"
         />
       </div>

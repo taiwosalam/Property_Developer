@@ -13,7 +13,7 @@ import {
   Avatar,
 } from "@mui/material";
 
-import { useState, useRef, useEffect, ReactNode } from "react";
+import { ReactNode } from "react";
 
 const renderValue = (
   data: DataItem,
@@ -33,21 +33,15 @@ const renderValue = (
     return field.contentStyle ? (
       <div style={field.contentStyle}>
         <Avatar
-          src={value}
+          src={value || SampleLandlord.src}
           className="mx-auto"
           alt="avatar"
           sx={{ width: 60, height: 60 }}
         />
       </div>
     ) : (
-      // <Avatar
-      //   src={value}
-      //   className="mx-auto"
-      //   alt="avatar"
-      //   sx={{ width: 60, height: 60 }}
-      // />
       <Avatar
-        src={SampleLandlord.src}
+        src={value}
         className="mx-auto"
         alt="avatar"
         sx={{ width: 60, height: 60 }}
@@ -102,14 +96,14 @@ const CustomTable: React.FC<CustomTableProps> = ({
   evenRowColor = "#fff",
   oddRowColor = "#fff",
 }) => {
-  const tableContainerRef = useRef<HTMLDivElement>(null);
-
   return (
     <TableContainer
       component={Paper}
-      className={clsx("relative h-[650px] custom-round-scrollbar", className)}
+      className={clsx(
+        "relative max-h-[650px] custom-round-scrollbar",
+        className
+      )}
       sx={{ boxShadow: "none" }}
-      ref={tableContainerRef}
     >
       <Table sx={{ boxShadow: "none" }}>
         {displayTableHead && (
