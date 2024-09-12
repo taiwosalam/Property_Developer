@@ -2,9 +2,14 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
-import Sample from "@/public/empty/SampleProperty.jpeg";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  variants,
+  swipeConfidenceThreshold,
+  wrap,
+  swipePower,
+} from "@/utils/slider";
 import {
   ChevronLeft,
   LocationIcon,
@@ -12,13 +17,17 @@ import {
   PreviousIcon,
   NextIcon,
 } from "@/public/icons/icons";
+import { PropertyPreviewProps } from "./types";
+import Sample from "@/public/empty/SampleProperty.jpeg";
 import UnitItem from "./unit-item";
 import Sample2 from "@/public/empty/SampleProperty2.jpeg";
 import Sample3 from "@/public/empty/SampleProperty3.jpeg";
 import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
 
-const PropertyPreview = () => {
+const PropertyPreview: React.FC<PropertyPreviewProps> = ({
+  images = [Sample, Sample2, Sample3, Sample4, Sample5],
+}) => {
   const router = useRouter();
   const colors = {
     vacant: "#FFBB53",
@@ -31,30 +40,12 @@ const PropertyPreview = () => {
   const goBack = () => {
     router.back();
   };
-  const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const handleNextClick = () => {
-    if (currentImageIndex < sampleImages.length - 1) {
-      setCurrentImageIndex(currentImageIndex + 1);
-    }
+  const [[page, direction], setPage] = useState([0, 0]);
+  const paginate = (newDirection: number) => {
+    setPage([page + newDirection, newDirection]);
   };
 
-  const handlePreviousClick = () => {
-    if (currentImageIndex > 0) {
-      setCurrentImageIndex(currentImageIndex - 1);
-    }
-  };
-
-  const handleDragEnd = (event: any, info: any) => {
-    if (info.offset.x > 100 && currentImageIndex > 0) {
-      handlePreviousClick();
-    } else if (
-      info.offset.x < -100 &&
-      currentImageIndex < sampleImages.length - 1
-    ) {
-      handleNextClick();
-    }
-  };
+  const imageIndex = wrap(0, images.length, page);
 
   return (
     <div>
@@ -91,12 +82,10 @@ const PropertyPreview = () => {
               type="button"
               aria-label="previous"
               className={clsx(
-                "w-6 h-6 rounded-full grid place-items-center absolute z-[1] left-2 top-1/2 transform -translate-y-1/2",
-                currentImageIndex === 0 && "opacity-80"
+                "w-6 h-6 rounded-full grid place-items-center absolute z-[2] left-2 top-1/2 transform -translate-y-1/2"
               )}
               style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
-              onClick={handlePreviousClick}
-              disabled={currentImageIndex === 0}
+              onClick={() => paginate(-1)}
             >
               <PreviousIcon />
             </button>
@@ -104,34 +93,41 @@ const PropertyPreview = () => {
               type="button"
               aria-label="next"
               className={clsx(
-                "w-6 h-6 rounded-full grid place-items-center absolute z-[1] right-2 top-1/2 transform -translate-y-1/2",
-                currentImageIndex === sampleImages.length - 1 && "opacity-80"
+                "w-6 h-6 rounded-full grid place-items-center absolute z-[2] right-2 top-1/2 transform -translate-y-1/2"
               )}
               style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
-              onClick={handleNextClick}
-              disabled={currentImageIndex === sampleImages.length - 1}
+              onClick={() => paginate(1)}
             >
               <NextIcon />
             </button>
-
-            <motion.div
-              key={currentImageIndex}
-              animate={{ opacity: 1 }}
-              initial={{ opacity: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              onDragEnd={handleDragEnd}
-              className="absolute inset-0"
-            >
-              <Image
-                src={sampleImages[currentImageIndex]}
-                alt={`${name} ${currentImageIndex + 1}`}
-                fill
-                className="object-cover object-center"
+            <AnimatePresence initial={false} custom={direction}>
+              <motion.img
+                key={page}
+                src={images[imageIndex].src}
+                alt={`${"property name prop"} ${imageIndex + 1}`}
+                custom={direction}
+                variants={variants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { type: "spring", stiffness: 300, damping: 30 },
+                  opacity: { duration: 0.2 },
+                }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={1}
+                onDragEnd={(e, { offset, velocity }) => {
+                  const swipe = swipePower(offset.x, velocity.x);
+                  if (swipe < -swipeConfidenceThreshold) {
+                    paginate(1);
+                  } else if (swipe > swipeConfidenceThreshold) {
+                    paginate(-1);
+                  }
+                }}
+                className="absolute inset-0"
               />
-            </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* Videos */}

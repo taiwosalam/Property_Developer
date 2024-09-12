@@ -36,7 +36,7 @@ const Property = () => {
     setState((state) => ({ ...state, current_page: page }));
   };
   const handleClickPreview = (id: string | number) => {
-    router.push(`/management/property/${id}`);
+    router.push(`/management/properties/${id}`);
   };
   const handleClickManage = (id: string | number) => {
     // router.push(`/management/property/${id}`);

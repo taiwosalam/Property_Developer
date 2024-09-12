@@ -1,10 +1,10 @@
 "use client";
-import Image from "next/image";
 import { PropertyProps } from "./types";
 import clsx from "clsx";
 import { useState, useRef, useEffect } from "react";
 import Button from "@/components/Form/Button/button";
-import { motion } from "framer-motion";
+import { variants, swipeConfidenceThreshold, wrap, swipePower } from "@/utils/slider";
+import { motion, AnimatePresence } from "framer-motion";
 import Sample from "@/public/empty/SampleProperty.jpeg";
 import Sample2 from "@/public/empty/SampleProperty2.jpeg";
 import Sample3 from "@/public/empty/SampleProperty3.jpeg";
@@ -25,6 +25,7 @@ interface PropertyCardProps extends PropertyProps {
   handleClickManage?: (id: string | number) => void;
 }
 
+
 const PropertyCard: React.FC<PropertyCardProps> = ({
   id,
   images,
@@ -38,28 +39,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   handleClickPreview,
   handleClickManage,
 }) => {
+  const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   const modalRef = useRef<HTMLDivElement>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [[page, direction], setPage] = useState([0, 0]);
   const [isModalActive, setIsModalActive] = useState(false);
-  const handleNextClick = () => {
-    if (currentImageIndex < images.length - 1) {
-      setCurrentImageIndex(currentImageIndex + 1);
-    }
+
+  const paginate = (newDirection: number) => {
+    setPage([page + newDirection, newDirection]);
   };
 
-  const handlePreviousClick = () => {
-    if (currentImageIndex > 0) {
-      setCurrentImageIndex(currentImageIndex - 1);
-    }
-  };
-
-  const handleDragEnd = (event: any, info: any) => {
-    if (info.offset.x > 100 && currentImageIndex > 0) {
-      handlePreviousClick();
-    } else if (info.offset.x < -100 && currentImageIndex < images.length - 1) {
-      handleNextClick();
-    }
-  };
+  const imageIndex = wrap(0, images.length, page);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -77,9 +66,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [isModalActive]);
+  }, [isClickable, isModalActive]);
 
-  const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   return (
     <div
       className="rounded-xl max-w-[370px] mx-auto aspect-[0.961] relative"
@@ -90,12 +78,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           type="button"
           aria-label="previous"
           className={clsx(
-            "w-6 h-6 rounded-full grid place-items-center absolute z-[1] left-2 top-1/2 transform -translate-y-1/2",
-            currentImageIndex === 0 && "opacity-80"
+            "w-6 h-6 rounded-full grid place-items-center absolute z-[2] left-2 top-1/2 transform -translate-y-1/2"
           )}
           style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
-          onClick={handlePreviousClick}
-          disabled={currentImageIndex === 0}
+          onClick={() => paginate(-1)}
         >
           <PreviousIcon />
         </button>
@@ -103,17 +89,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           type="button"
           aria-label="next"
           className={clsx(
-            "w-6 h-6 rounded-full grid place-items-center absolute z-[1] right-2 top-1/2 transform -translate-y-1/2",
-            currentImageIndex === images.length - 1 && "opacity-80"
+            "w-6 h-6 rounded-full grid place-items-center absolute z-[2] right-2 top-1/2 transform -translate-y-1/2"
           )}
           style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
-          onClick={handleNextClick}
-          disabled={currentImageIndex === images.length - 1}
+          onClick={() => paginate(1)}
         >
           <NextIcon />
         </button>
 
-        <div className="flex items-stretch gap-[10px] absolute z-[1] right-2 bottom-2">
+        <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
           <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />
             <p className="text-black font-medium text-[10px]">+23</p>
@@ -123,49 +107,58 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           </div>
         </div>
 
-        <motion.div
-          key={currentImageIndex}
-          animate={{ opacity: 1 }}
-          initial={{ opacity: 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          onDragEnd={handleDragEnd}
-          className="absolute inset-0"
-        >
-          <Image
-            src={sampleImages[currentImageIndex]}
-            alt={`${name} ${currentImageIndex + 1}`}
-            fill
-            objectFit="cover"
-            className="object-cover"
+        <AnimatePresence initial={false} custom={direction}>
+          <motion.img
+            key={page}
+            src={sampleImages[imageIndex].src}
+            alt={`${name} ${imageIndex + 1}`}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 },
+            }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={1}
+            onDragEnd={(e, { offset, velocity }) => {
+              const swipe = swipePower(offset.x, velocity.x);
+              if (swipe < -swipeConfidenceThreshold) {
+                paginate(1);
+              } else if (swipe > swipeConfidenceThreshold) {
+                paginate(-1);
+              }
+            }}
+            className="absolute inset-0"
           />
-          {isModalActive && isClickable && (
-            <div
-              className="absolute z-[2] inset-0 flex items-center justify-between px-[10%] gap-x-4"
-              style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
-              ref={modalRef}
+        </AnimatePresence>
+        {isModalActive && isClickable && (
+          <div
+            className="absolute z-[3] inset-0 flex items-center justify-between px-[10%] gap-x-4"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+            ref={modalRef}
+          >
+            <Button
+              type="button"
+              size="mid"
+              className="!py-[8px] !px-8 !font-bold"
+              onClick={() => handleClickManage?.(id)}
             >
-              <Button
-                type="button"
-                size="mid"
-                className="!py-[8px] !px-8 !font-bold"
-                onClick={() => handleClickManage?.(id)}
-              >
-                Manage
-              </Button>
-              <Button
-                type="button"
-                size="mid"
-                className="py-[8px] !px-8 !font-bold"
-                onClick={() => handleClickPreview?.(id)}
-              >
-                Preview
-              </Button>
-            </div>
-          )}
-        </motion.div>
+              Manage
+            </Button>
+            <Button
+              type="button"
+              size="mid"
+              className="py-[8px] !px-8 !font-bold"
+              onClick={() => handleClickPreview?.(id)}
+            >
+              Preview
+            </Button>
+          </div>
+        )}
       </div>
       <div
         className="relative cursor-pointer bg-white rounded-b-xl p-4"

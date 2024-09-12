@@ -14,3 +14,7 @@ export type AddPropertyModalViews = "options" | "add-property-with-id";
 export interface AddPropertyOptionsViewProps {
   setModalView: React.Dispatch<React.SetStateAction<AddPropertyModalViews>>;
 }
+
+export interface PropertyPreviewProps {
+  images?: any[];
+}
