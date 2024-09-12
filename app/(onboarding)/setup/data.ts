@@ -12,6 +12,7 @@ export const signupCompany = async (formData: any) => {
     ).then((res) => res.json());
     console.log(response);
 
+    response.error && toast(response.error);
     if (response.verification) {
       toast(response.verification);
     }

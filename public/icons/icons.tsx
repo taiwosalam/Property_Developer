@@ -302,11 +302,17 @@ export const NextIcon = () => {
   );
 };
 
-export const CameraIcon = () => {
+export const CameraIcon = ({
+  width,
+  height,
+}: {
+  width?: number;
+  height?: number;
+}) => {
   return (
     <svg
-      width="12"
-      height="9"
+      width={width || "12"}
+      height={height || "9"}
       viewBox="0 0 12 9"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -336,7 +342,7 @@ export const VideoIcon = () => {
   );
 };
 
-export const ChevronLeft = () => {
+export const ChevronLeft = ({ fill }: { fill?: string }) => {
   return (
     <svg
       width="24"
@@ -347,7 +353,7 @@ export const ChevronLeft = () => {
     >
       <path
         d="M15 18.5L9 12.5L15 6.5"
-        stroke="#010A23"
+        stroke={fill || "#010A23"}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"

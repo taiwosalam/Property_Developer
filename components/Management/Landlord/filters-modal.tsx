@@ -290,7 +290,9 @@ const FilterModal: React.FC<FilterModalProps> = ({
             <span className="text-sm capitalize">
               <ChevronLeft />
             </span>
-            <h2 className="text-lg font-bold text-primary-navy">Date</h2>
+            <h2 className="text-lg font-bold text-primary-navy">
+              Registration Date
+            </h2>
           </div>
           <button className="p-2" onClick={() => setShowDatePicker(false)}>
             <Image
@@ -339,7 +341,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
         className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] cursor-pointer"
         onClick={toggleDatePicker}
       >
-        <label className="text-sm capitalize">Date</label>
+        <label className="text-sm capitalize">Registration Date</label>
         {selectedDateOption ? (
           <Image
             src="/icons/checkbox-checked.svg"

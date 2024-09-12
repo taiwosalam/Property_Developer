@@ -3,7 +3,12 @@ import { PropertyProps } from "./types";
 import clsx from "clsx";
 import { useState, useRef, useEffect } from "react";
 import Button from "@/components/Form/Button/button";
-import { variants, swipeConfidenceThreshold, wrap, swipePower } from "@/utils/slider";
+import {
+  variants,
+  swipeConfidenceThreshold,
+  wrap,
+  swipePower,
+} from "@/utils/slider";
 import { motion, AnimatePresence } from "framer-motion";
 import Sample from "@/public/empty/SampleProperty.jpeg";
 import Sample2 from "@/public/empty/SampleProperty2.jpeg";
@@ -24,7 +29,6 @@ interface PropertyCardProps extends PropertyProps {
   handleClickPreview?: (id: string | number) => void;
   handleClickManage?: (id: string | number) => void;
 }
-
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
   id,
