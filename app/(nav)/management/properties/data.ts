@@ -1,4 +1,4 @@
-import type { PropertyProps } from "@/components/Management/Property/types";
+import type { PropertyProps } from "@/components/Management/Properties/types";
 
 export const properties: PropertyProps[] = [
   {

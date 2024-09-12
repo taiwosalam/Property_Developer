@@ -17,6 +17,7 @@ import SearchInput from "@/components/SearchInput/search-input";
 import { type StaffAndBranchPageState, getAllBranches } from "./data";
 import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
+import CreateBranchModal from "@/components/Management/Staff-And-Branches/create-branch-modal";
 
 const StaffAndBranches = () => {
   const router = useRouter();
@@ -220,7 +221,7 @@ const StaffAndBranches = () => {
                   </Button>
                 </ModalTrigger>
                 <ModalContent>
-                  <div>Hello</div>
+                  <CreateBranchModal />
                 </ModalContent>
               </Modal>
             </div>
@@ -234,7 +235,7 @@ const StaffAndBranches = () => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <div>Hello</div>
+              <CreateBranchModal />
             </ModalContent>
           </Modal>
         </div>

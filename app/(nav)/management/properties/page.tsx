@@ -1,11 +1,10 @@
 "use client";
 import { useState } from "react";
-import PropertyCard from "@/components/Management/Property/property-card";
+import PropertyCard from "@/components/Management/Properties/property-card";
 import { properties } from "./data";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { ModalContent, ModalTrigger, Modal } from "@/components/Modal/modal";
 import clsx from "clsx";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import Image from "next/image";
@@ -14,8 +13,8 @@ import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
 import { ListIcon, GridIcon } from "@/public/icons/icons";
 import AboutPage from "@/components/AboutPage/about-page";
-import PropertyListItem from "@/components/Management/Property/property-list-item";
-import AddPropertyModal from "@/components/Management/Property/add-property-modal";
+import PropertyListItem from "@/components/Management/Properties/property-list-item";
+import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
 
 const Property = () => {
   const router = useRouter();
@@ -162,9 +161,12 @@ const Property = () => {
             }}
           >
             {properties.slice(0, 30).map((p) => (
-              <Link href={`/management/property/${p.id}`} key={p.id}>
-                <PropertyCard {...p} />
-              </Link>
+              <PropertyCard
+                {...p}
+                key={p.id}
+                handleClickPreview={handleClickPreview}
+                handleClickManage={handleClickManage}
+              />
             ))}
           </div>
         ) : (
