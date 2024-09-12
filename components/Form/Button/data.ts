@@ -4,6 +4,7 @@ export const button_variants = {
     sky_blue: "bg-brand-1 text-brand-9",
     border: "custom-border-button",
     default: "custom-default-button text-white",
+    blank: "border-2 border-solid border-transparent",
   },
   size: {
     sm: "py-2 px-3 text-sm font-normal",

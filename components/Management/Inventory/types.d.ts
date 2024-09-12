@@ -14,5 +14,6 @@ export interface InventoryCardProps {
 export interface InventoryListProps extends InventoryCardProps {}
 
 export interface InventoryListInfoProps {
+  chunkSize?: number;
   data: Partial<InventoryCardDataProps>;
 }

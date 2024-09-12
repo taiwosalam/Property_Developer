@@ -18,9 +18,10 @@ const chunkArray = <T,>(array: T[], chunkSize: number): T[][] => {
 // Component
 export const InventoryListInfo: React.FC<InventoryListInfoProps> = ({
   data = {},
+  chunkSize = 3,
 }) => {
   const keys = Object.keys(inventory_data_props);
-  const chunkedKeys = chunkArray(keys, 3); // Split keys into chunks of 3
+  const chunkedKeys = chunkArray(keys, chunkSize); // Split keys into chunks of 3
 
   return (
     <>

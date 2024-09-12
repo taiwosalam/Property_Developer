@@ -1,15 +1,7 @@
-import { useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
-const Inventory = () => {
-  const router = useRouter();
-  const { landlordId } = useParams();
-
-  useEffect(() => {
-    router.replace(`/management/inventory/${landlordId}/manage`);
-  }, [router, landlordId]);
-
-  return null;
+const Inventory = ({ params }: { params: { inventoryId: string } }) => {
+  redirect(`/management/inventory/${params.inventoryId}/preview`);
 };
 
 export default Inventory;
