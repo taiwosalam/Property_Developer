@@ -3,7 +3,12 @@ import { PropertyProps } from "./types";
 import clsx from "clsx";
 import { useState, useRef, useEffect } from "react";
 import Button from "@/components/Form/Button/button";
-import { variants, swipeConfidenceThreshold, wrap, swipePower } from "@/utils/slider";
+import {
+  variants,
+  swipeConfidenceThreshold,
+  wrap,
+  swipePower,
+} from "@/utils/slider";
 import { motion, AnimatePresence } from "framer-motion";
 import Sample from "@/public/empty/SampleProperty.jpeg";
 import Sample2 from "@/public/empty/SampleProperty2.jpeg";
@@ -25,7 +30,6 @@ interface PropertyCardProps extends PropertyProps {
   handleClickManage?: (id: string | number) => void;
 }
 
-
 const PropertyCard: React.FC<PropertyCardProps> = ({
   id,
   images,
@@ -44,7 +48,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   const [[page, direction], setPage] = useState([0, 0]);
   const [isModalActive, setIsModalActive] = useState(false);
 
-  const paginate = (newDirection: number) => {
+  const paginate = (e: any, newDirection: number) => {
+    e.preventDefault();
     setPage([page + newDirection, newDirection]);
   };
 
@@ -81,7 +86,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             "w-6 h-6 rounded-full grid place-items-center absolute z-[2] left-2 top-1/2 transform -translate-y-1/2"
           )}
           style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
-          onClick={() => paginate(-1)}
+          onClick={(e) => paginate(e, -1)}
         >
           <PreviousIcon />
         </button>
@@ -92,7 +97,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             "w-6 h-6 rounded-full grid place-items-center absolute z-[2] right-2 top-1/2 transform -translate-y-1/2"
           )}
           style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
-          onClick={() => paginate(1)}
+          onClick={(e) => paginate(e, 1)}
         >
           <NextIcon />
         </button>
@@ -125,11 +130,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={1}
             onDragEnd={(e, { offset, velocity }) => {
+              e.preventDefault();
               const swipe = swipePower(offset.x, velocity.x);
               if (swipe < -swipeConfidenceThreshold) {
-                paginate(1);
+                paginate(e, 1);
               } else if (swipe > swipeConfidenceThreshold) {
-                paginate(-1);
+                paginate(e, -1);
               }
             }}
             className="absolute inset-0"
@@ -163,7 +169,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       <div
         className="relative cursor-pointer bg-white rounded-b-xl p-4"
         role="button"
-        onClick={() => setIsModalActive(true)}
+        onClick={isClickable ? () => setIsModalActive(true) : undefined}
       >
         <p className="text-brand-5 text-sm font-bold">ID: {propertyId}</p>
         <p className="text-[#374151] text-2xl font-bold">

@@ -124,6 +124,7 @@ const CreateBranchModal = () => {
               id="city"
               options={cities}
               onChange={handleCityChange}
+              allowCustom={true}
               inputContainerClassName="bg-neutral-2"
             />
             <Input
@@ -150,7 +151,7 @@ const CreateBranchModal = () => {
                 <button
                   aria-label="Upload Picture"
                   type="button"
-                  className="w-8 h-8 md:w-10 md:h-10 border border-neutral-4 bg-[#D9D9D9] rounded-md grid place-items-center"
+                  className="w-8 h-8 md:w-10 md:h-10 border border-neutral-4 bg-[#D9D9D9] rounded-md grid place-items-center text-white"
                 >
                   <PlusIcon />
                 </button>

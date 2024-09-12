@@ -222,7 +222,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="page-title-container" style={{ justifyContent: "end" }}>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 flex-wrap">
           <SearchInput placeholder="Search for Branch properties" />
           <div className="flex items-center gap-x-3">
             <button

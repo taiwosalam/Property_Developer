@@ -17,7 +17,7 @@ const Select: React.FC<SelectProps> = ({
   options,
   onChange,
   inputTextClassName,
-  placeholder = "Select",
+  placeholder = "Select options",
   allowCustom = false,
   isSearchable = true,
   hiddenInputClassName,
