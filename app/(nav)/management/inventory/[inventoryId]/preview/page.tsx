@@ -1,6 +1,7 @@
 import React from "react";
 
 // Imports
+import InventoryItem from "@/components/Management/Inventory/inventory-item";
 import { InventoryListInfo } from "@/components/Management/Inventory/inventory-components";
 
 const PreviewInventory = () => {
@@ -25,7 +26,10 @@ const PreviewInventory = () => {
       </div>
       <div className="custom-flex-col gap-4">
         <h2 className="text-black text-xl font-medium">Added Inventory</h2>
-        <div className="flex gap-8"></div>
+        <div className="grid grid-cols-2 gap-8">
+          <InventoryItem />
+          <InventoryItem />
+        </div>
       </div>
     </div>
   );

@@ -3,22 +3,25 @@
 import Image from "next/image";
 import React, { CSSProperties } from "react";
 
+// Types
+import type { InventoryItemProps } from "./types";
+
 // Images
 import ImageBlue from "@/public/icons/image-blue.svg";
 import SampleProperty6 from "@/public/empty/SampleProperty6.jpg";
 
 // Imports
+import { inventory_conditions } from "./data";
 import Input from "@/components/Form/Input/input";
-import Select from "@/components/Form/Select/select";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
+import Select from "@/components/Form/Select/select";
+import { InventoryField } from "./inventory-components";
 
-const InventoryItem = () => {
+const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
   const input_styles: CSSProperties = {
     backgroundColor: "white",
   };
-
-  const conditions = ["good", "fair", "bad"];
 
   return (
     <div
@@ -29,47 +32,66 @@ const InventoryItem = () => {
       }}
     >
       <div className="custom-flex-col gap-6 flex-1 py-2">
-        <div className="custom-flex-col gap-2">
-          <Input
-            id="inventory-name"
-            label="Inventory name"
-            className="flex-1"
-            style={input_styles}
-          />
+        <div className="custom-flex-col gap-2 flex-1">
+          {edit ? (
+            <Input
+              id="inventory-name"
+              label="Inventory name"
+              className="flex-1"
+              style={input_styles}
+            />
+          ) : (
+            <InventoryField>{data?.name}</InventoryField>
+          )}
         </div>
         <div className="flex gap-4">
-          <Input
-            id="inventory-quantity"
-            placeholder="Quantity"
-            type="number"
-            className="flex-1"
-            style={input_styles}
-          />
-          <Select
-            id="inventory-condition"
-            placeholder="Condition"
-            options={conditions}
-            className="flex-1"
-            isSearchable={false}
-          />
+          {edit ? (
+            <>
+              <Input
+                id="inventory-quantity"
+                placeholder="Quantity"
+                type="number"
+                className="flex-1"
+                style={input_styles}
+              />
+              <Select
+                id="inventory-condition"
+                placeholder="Condition"
+                options={inventory_conditions}
+                className="flex-1"
+                isSearchable={false}
+              />
+            </>
+          ) : (
+            <>
+              <InventoryField>{data?.quantity}</InventoryField>
+              <InventoryField>{data?.condition}</InventoryField>
+            </>
+          )}
         </div>
       </div>
-      <div className="relative h-full aspect-square rounded-2xl overflow-hidden">
-        <Image src={SampleProperty6} alt="property" fill sizes="200px" />
-        <div
-          className="absolute inset-0 flex items-center justify-center"
-          style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
-        >
-          <div className="custom-flex-col gap-6">
-            <div className="flex flex-col items-center gap-2">
-              <Picture src={ImageBlue} size={40} />
-              <p className="text-brand-9 text-sm font-semibold">Set picture</p>
+      <div className="relative h-full min-h-[165px] aspect-square rounded-2xl overflow-hidden">
+        {data?.image && (
+          <Image src={data.image} alt="property" fill sizes="200px" />
+        )}
+        {edit && (
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+          >
+            <div className="custom-flex-col gap-6">
+              <div className="flex flex-col items-center gap-2">
+                <Picture src={ImageBlue} size={40} />
+                <p className="text-brand-9 text-sm font-semibold">
+                  Set picture
+                </p>
+              </div>
+              <Button size="base_medium" className="py-1 px-6">
+                select
+              </Button>
             </div>
-            <Button size="base_medium" className="py-1 px-6">
-              select
-            </Button>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
