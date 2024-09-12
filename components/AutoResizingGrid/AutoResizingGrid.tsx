@@ -7,6 +7,7 @@ import type { AutoResizingGridProps } from "./types";
 
 // Imports
 import { debounce } from "@/utils/debounce";
+import clsx from "clsx";
 
 /**
  * AutoResizingGrid component that adjusts its grid layout based on the container's width.
@@ -21,8 +22,9 @@ const AutoResizingGrid: React.FC<AutoResizingGridProps> = ({
   gap = 20,
   children,
 }) => {
-  const [columns, setColumns] = useState(0); // State to track the number of columns
+  const [columns, setColumns] = useState(1); // State to track the number of columns
   const gridRef = useRef<HTMLDivElement>(null); // Ref for the grid container
+  const [hasCalculated, setHasCalculated] = useState(false); // State to track if columns have been calculated
 
   useEffect(() => {
     const observer = gridRef.current;
@@ -33,7 +35,8 @@ const AutoResizingGrid: React.FC<AutoResizingGridProps> = ({
         Math.floor((entry.contentRect.width + gap) / (minWidth + gap)),
         1
       ); // Ensure at least 1 column
-      
+
+      setHasCalculated(true); // Set state to true after calculating columns
       setColumns((prev) => (prev !== newColumns ? newColumns : prev));
     };
 
@@ -57,7 +60,9 @@ const AutoResizingGrid: React.FC<AutoResizingGridProps> = ({
     // The grid container with dynamic column count and custom gap
     <div
       ref={gridRef}
-      className="grid"
+      className={clsx("grid duration-300", {
+        "opacity-0": !hasCalculated, // Hide grid while columns are being calculated
+      })}
       style={{
         gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
         gap: `${gap}px`, // Allow users to pass custom gap

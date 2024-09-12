@@ -1,4 +1,3 @@
-
 import React, { CSSProperties } from "react";
 
 // Imports
@@ -24,7 +23,7 @@ const ManageInventory = () => {
         <div className="custom-flex-col gap-6">
           <div className="flex gap-8">
             <Input
-              id="inventory-name"
+              id="inventory-title"
               value="Olalomi Cottage"
               className="flex-1"
               style={input_styles}
@@ -50,9 +49,9 @@ const ManageInventory = () => {
           </div>
         </div>
       </div>
-      <div className="flex gap-8">
-        <InventoryItem />
-        <InventoryItem />
+      <div className="grid grid-cols-2 gap-8">
+        <InventoryItem edit />
+        <InventoryItem edit />
       </div>
       <div className="sticky bottom-0 right-0 w-full bg-white py-5 px-[60px] flex justify-between">
         <Modal>

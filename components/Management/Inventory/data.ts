@@ -9,3 +9,5 @@ export const inventory_data_props: InventoryCardDataProps = {
   branch_name: "",
   account_officer: "",
 };
+
+export const inventory_conditions = ["new", "good", "fair", "bad"];

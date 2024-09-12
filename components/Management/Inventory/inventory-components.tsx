@@ -1,7 +1,11 @@
 import React from "react";
 
 // Types
-import type { InventoryListInfoProps, InventoryCardDataProps } from "./types";
+import type {
+  InventoryListInfoProps,
+  InventoryCardDataProps,
+  InventoryFieldProps,
+} from "./types";
 
 // Imports
 import { inventory_data_props } from "./data";
@@ -49,3 +53,9 @@ export const InventoryListInfo: React.FC<InventoryListInfoProps> = ({
     </>
   );
 };
+
+export const InventoryField: React.FC<InventoryFieldProps> = ({ children }) => (
+  <div className="flex-1 p-3 rounded-[4px] border border-solid border-[#C1C2C366] bg-white">
+    <p className="text-xs md:text-sm font-normal">{children || "---"}</p>
+  </div>
+);

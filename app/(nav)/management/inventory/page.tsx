@@ -32,7 +32,12 @@ const Inventory = () => {
             total={100}
           />
         </div>
-        <Button className="page-header-button">+ create new</Button>
+        <Button
+          href="/management/inventory/create-inventory"
+          className="page-header-button"
+        >
+          + create new
+        </Button>
       </div>
       <div className="page-title-container">
         <PageTitle title="Inventory" />
