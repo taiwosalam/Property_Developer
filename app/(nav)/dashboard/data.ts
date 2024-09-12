@@ -5,23 +5,23 @@ function getBackgroundColor(title: string): string {
     case "properties":
       backgroundColor = "#702AC8";
       break;
+    case "landlords":
+      backgroundColor = "#EBA3C2";
+      break;
+    case "tenants & occupants":
+      backgroundColor = "#181670";
+      break;
     case "vacant unit":
       backgroundColor = "#E74833";
       break;
     case "inquiries":
       backgroundColor = "#C25589";
       break;
-    case "landlords":
-      backgroundColor = "#EBA3C2";
-      break;
     case "expired":
       backgroundColor = "#00BCD3";
       break;
     case "complaints":
       backgroundColor = "#1A96F0";
-      break;
-    case "tenants & occupants":
-      backgroundColor = "#181670";
       break;
     case "invoices":
       backgroundColor = "#C7E12C";
