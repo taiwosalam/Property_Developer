@@ -16,7 +16,8 @@ import {
 import { useState } from "react";
 import StatusIndicator from "@/components/Management/status-indicator";
 import Pagination from "@/components/Pagination/pagination";
-import RentalPropertyCard from "@/components/Management/Rent And Unit/retal-property-card";
+import RentalPropertyCard from "@/components/Management/Rent And Unit/rental-property-card";
+import RentalPropertyListCard from "@/components/Management/Rent And Unit/rental-property-list";
 
 const RentAndUnit = () => {
   const [state, setState] = useState<RentAndUnitState>({
@@ -139,7 +140,11 @@ const RentAndUnit = () => {
             <RentalPropertyCard />
           </div>
         ) : (
-          <div>list</div>
+          <div className="space-y-4">
+            <RentalPropertyListCard />
+            <RentalPropertyListCard />
+            <RentalPropertyListCard />
+          </div>
         )}
       </section>
       <Pagination
