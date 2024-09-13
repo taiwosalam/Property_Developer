@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
-
-import { actions, activeStatuses, getBackgroundColor } from "./data";
 import Sample from "@/public/empty/SampleProperty.jpeg";
 import Sample2 from "@/public/empty/SampleProperty2.jpeg";
 import Sample3 from "@/public/empty/SampleProperty3.jpeg";
@@ -15,6 +13,7 @@ import {
   PropertyDetailsProps,
   PropertyImageSliderProps,
 } from "./types";
+import { actions, activeStatuses, getBackgroundColor } from "./data";
 
 const CURRENCY = "₦";
 const NUMBER_FORMAT_LOCALE = "en-NG";
@@ -33,16 +32,12 @@ const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
     loop: true,
     mode: "snap",
-    renderMode: "performance",
-    defaultAnimation: {
-      duration: 500,
-      easing: (t: number) => t,
+    slides: { perView: 1 },
+    created() {
+      setLoaded(true);
     },
     slideChanged(slider) {
       setCurrentSlide(slider.track.details.rel);
-    },
-    created() {
-      setLoaded(true);
     },
   });
 
@@ -54,6 +49,7 @@ const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
             src={image}
             alt={`Property image ${index + 1}`}
             fill
+            sizes="auto"
             priority={index === 0}
             className="object-cover object-center"
           />
@@ -162,6 +158,9 @@ const RentalPropertyCard: React.FC = () => {
         className="p-2 pb-4 border-b border-[#C0C2C8] space-y-3 cursor-pointer transition-all duration-500"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={() =>
+          window.location.assign("/management/rent-unit/1234567867")
+        }
       >
         <div className="relative">
           <div className="flex items-center justify-between">
