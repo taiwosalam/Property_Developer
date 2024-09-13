@@ -66,7 +66,7 @@ const PropertyDetails = () => {
         </div>
       </div>
       <div className="lg:flex">
-        <p className="text-[#747474] w-[35%]">Property Description</p>
+        <p className="text-[#747474] w-[35%]">Description</p>
         <p className="text-text-quaternary flex-1 custom-truncated-2">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis,
           earum qui, modi aspernatur autem iste voluptate tenetur maiores

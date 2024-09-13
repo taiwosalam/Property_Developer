@@ -151,7 +151,7 @@ const CreateProperty = () => {
           Create Rental Property
         </p>
       </div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="max-w-[970px]">
         <input name="property_tag" type="hidden" value="rental" readOnly />
         {/* Backend is Looking for it */}
         <div className="mb-5 lg:mb-8">
@@ -186,7 +186,7 @@ const CreateProperty = () => {
                 className="w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
               >
                 <PlusIcon />
-                <span className="text-text-secondary text-base font-normal">
+                <span className="text-black text-base font-normal mt-2">
                   Upload Profile Picture
                 </span>
                 <input
@@ -206,16 +206,17 @@ const CreateProperty = () => {
             id="video_link"
             label="Video Link"
             className="mb-5"
+            placeholder="https://www.youtube.com/video "
             inputClassName="bg-white rounded-[8px] md:col-span-1"
           />
         </div>
         {/* Property Details */}
         <div className="flex gap-[2px] text-xs md:text-sm lg:text-base font-medium mb-4">
           <span className="text-status-error-primary">*</span>
-          <p className="text-primary-navy">Property Details</p>
+          <p className="text-primary-navy font-bold">Property Details</p>
         </div>
         <hr className="my-4" />
-        <div className="mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 max-w-[970px]">
+        <div className="mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
           <Input
             id="property_title"
             label="Property Title"
@@ -320,10 +321,10 @@ const CreateProperty = () => {
         {/* Property Settings */}
         <div className="flex gap-[2px] text-xs md:text-sm lg:text-base font-medium mb-4">
           <span className="text-status-error-primary">*</span>
-          <p className="text-primary-navy">Property Settings</p>
+          <p className="text-primary-navy font-bold">Property Settings</p>
         </div>
         <hr className="my-4" />
-        <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 max-w-[970px]">
+        <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
           <Select
             id="agency_fee"
             label="Agency Fee"
@@ -406,7 +407,7 @@ const CreateProperty = () => {
             inputClassName="bg-white rounded-[8px]"
           />
         </div>
-        <div className="fixed h-[80px] bottom-0 py-5 px-[60px] bg-white w-[(calc(100%+24px))] flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-bold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
+        <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-bold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
           <button
             type="reset"
             className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"

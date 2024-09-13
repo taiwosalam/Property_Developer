@@ -100,7 +100,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             style={{
               height: sidenav_height,
             }}
-            className={clsx("sticky", sidenav_class_styles, {
+            className={clsx("sticky z-[2]", sidenav_class_styles, {
               "sidenav-collapsed": !sidenavIsOpen,
             })}
           >
@@ -116,8 +116,9 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               className="h-[1px]"
               style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
             ></div>
-            <div className="h-[50px] px-3 sm:pr-10 flex items-center justify-between bg-white ">
+            <div className="h-[50px] px-3 sm:pr-10 flex flex-wrap items-center justify-between bg-white">
               <button
+                type="button"
                 onClick={() => {
                   if (isSmallTablet) {
                     setFixedSidenavIsOpen(true);
