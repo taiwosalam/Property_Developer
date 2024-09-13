@@ -53,7 +53,7 @@ const ManageInventory = () => {
         <InventoryItem edit />
         <InventoryItem edit />
       </div>
-      <div className="sticky bottom-0 right-0 w-full bg-white py-5 px-[60px] flex justify-between">
+      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
         <Modal>
           <ModalTrigger asChild>
             <Button
