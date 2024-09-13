@@ -8,9 +8,19 @@ import { ChevronRight, Eye, EyeOff } from "lucide-react";
 
 const options = [
   {
+    name: "Add Funds",
+    icon: "/icons/dashboard-cards/blue-plus.svg",
+    link: "/dashboard/add-funds",
+  },
+  {
     name: "Withdraw",
     icon: "/icons/dashboard-cards/blue-building.svg",
     link: "/dashboard/withdraw-funds",
+  },
+  {
+    name: "Hold Wallet",
+    icon: "/icons/dashboard-cards/blue-lock.svg",
+    link: "/dashboard/lock-funds",
   },
 ];
 
@@ -64,7 +74,7 @@ const BranchBalanceCard = ({
         <div className="text-white text-xs font-medium capitalize flex items-center space-x-2">
           <p className="text-text-white-secondary">Caution Deposit</p>
           <span>
-            {hideBalance ? "₦ " + formatNumber(cautionDeposit) : "*******"}
+            {!hideBalance ? "₦ " + formatNumber(cautionDeposit) : "*******"}
           </span>
           <Image src="/icons/caution.svg" alt="info" width={12} height={12} />
         </div>
