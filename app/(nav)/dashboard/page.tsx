@@ -34,7 +34,7 @@ const Dashboard = () => {
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full xl:flex gap-x-10">
         <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-10">
-          <div className="w-full flex flex-row overflow-x-scroll md:overflow-auto py-1.5 md:grid md:grid-cols-2 xl:py-7 lg:grid-cols-3 gap-3 no-scrollbar">
+          <div className="w-full flex flex-row overflow-x-scroll md:overflow-auto py-1.5 md:grid md:flex-row-reverse xl:py-7 lg:grid-cols-3 gap-3 no-scrollbar">
             {dashboardCardData.map((card, index) => (
               <Card
                 key={index}

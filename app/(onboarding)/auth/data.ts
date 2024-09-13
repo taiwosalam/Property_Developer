@@ -88,12 +88,10 @@ export const verifyEmail = async (otp: string) => {
     const result = await postRequest("/verify", { otp });
 
     if (result?.user_id) {
-      const { access_token, user_id, company_id } = result;
+      const { user_id } = result;
 
       // Update Zustand state and localStorage
-      useAuthStoreSelectors
-        .getState()
-        .setAuthState(true, access_token, user_id, company_id);
+      useAuthStoreSelectors.getState().setAuthState(true, null, user_id, null);
 
       return true;
     } else {

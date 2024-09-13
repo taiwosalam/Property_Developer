@@ -77,7 +77,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
         <div className="text-white text-xs font-medium capitalize flex space-x-1">
           <p className="text-text-white-secondary ">caution deposit</p>
           <span className="text-white ml-2">
-            ₦ {formatNumber(cautionDeposit)}
+            {hideBalance ? "₦ " + formatNumber(cautionDeposit) : "*******"}
           </span>
           <Image src="/icons/caution.svg" alt="info" width={12} height={12} />
         </div>

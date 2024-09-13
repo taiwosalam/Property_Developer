@@ -223,7 +223,7 @@ export const PlayIconButton = () => {
   );
 };
 
-export const LocationIcon = () => {
+export const LocationIcon = ({ color }: { color?: string }) => {
   return (
     <svg
       width="13"
@@ -235,14 +235,14 @@ export const LocationIcon = () => {
       <g clipPath="url(#clip0_12889_127002)">
         <path
           d="M6.26078 9.5079C7.41338 9.5079 8.34774 8.57354 8.34774 7.42094C8.34774 6.26835 7.41338 5.33398 6.26078 5.33398C5.10819 5.33398 4.17383 6.26835 4.17383 7.42094C4.17383 8.57354 5.10819 9.5079 6.26078 9.5079Z"
-          stroke="currentColor"
+          stroke={color || "currentColor"}
           strokeWidth="1.3"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <path
           d="M6.26053 1.85547C4.78454 1.85547 3.36901 2.4418 2.32533 3.48548C1.28165 4.52916 0.695313 5.9447 0.695312 7.42069C0.695313 8.73686 0.974965 9.59808 1.73879 10.5511L6.26053 15.7685L10.7823 10.5511C11.5461 9.59808 11.8257 8.73686 11.8257 7.42069C11.8257 5.9447 11.2394 4.52916 10.1957 3.48548C9.15205 2.4418 7.73652 1.85547 6.26053 1.85547Z"
-          stroke="currentColor"
+          stroke={color || "currentColor"}
           strokeWidth="1.3"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -302,11 +302,17 @@ export const NextIcon = () => {
   );
 };
 
-export const CameraIcon = () => {
+export const CameraIcon = ({
+  width,
+  height,
+}: {
+  width?: number;
+  height?: number;
+}) => {
   return (
     <svg
-      width="12"
-      height="9"
+      width={width || "12"}
+      height={height || "9"}
       viewBox="0 0 12 9"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -336,7 +342,7 @@ export const VideoIcon = () => {
   );
 };
 
-export const ChevronLeft = () => {
+export const ChevronLeft = ({ fill }: { fill?: string }) => {
   return (
     <svg
       width="24"
@@ -347,7 +353,7 @@ export const ChevronLeft = () => {
     >
       <path
         d="M15 18.5L9 12.5L15 6.5"
-        stroke="#010A23"
+        stroke={fill || "#010A23"}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"

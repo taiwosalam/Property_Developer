@@ -63,7 +63,9 @@ const BranchBalanceCard = ({
         {/* Caution Deposit Section */}
         <div className="text-white text-xs font-medium capitalize flex items-center space-x-2">
           <p className="text-text-white-secondary">Caution Deposit</p>
-          <span>₦ {formatNumber(cautionDeposit)}</span>
+          <span>
+            {hideBalance ? "₦ " + formatNumber(cautionDeposit) : "*******"}
+          </span>
           <Image src="/icons/caution.svg" alt="info" width={12} height={12} />
         </div>
 

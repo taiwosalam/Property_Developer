@@ -16,7 +16,7 @@ export const nav_items: NavItemsProps = [
       { label: "staff & branches", href: "/staff-branch" },
       { label: "inventory", href: "/inventory" },
       { label: "properties", href: "/properties" },
-      { label: "rent & unit", href: "/rent" },
+      { label: "rent & unit", href: "/rent-unit" },
     ],
   },
   {
