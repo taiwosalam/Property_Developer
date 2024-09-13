@@ -102,7 +102,7 @@ const Property = () => {
             />
           }
         />
-        <div className="flex items-center gap-x-4">
+        <div className="flex items-center gap-x-4 flex-wrap">
           <SearchInput placeholder="Search for Properties" />
           <div className="flex items-center gap-x-3">
             <button

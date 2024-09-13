@@ -159,16 +159,16 @@ const Tenants = () => {
     ),
     user_tag: <UserTag type={t.user_tag} />,
     "manage/chat": (
-      <div className="flex gap-x-[4%] items-center w-full text-white [&>*]:rounded-[4px] [&>*]:capitalize">
+      <div className="flex gap-x-[4%] items-center w-full text-white text-sm font-medium [&>*]:rounded-[4px] [&>*]:capitalize [&>*]:py-[8px] [&>*]:px-[32px] [&>*]:border-2 [&>*]:border-transparent">
         <a
           href={`/management/tenant/${t.id}/manage`}
-          className="py-[8px] px-[32px] text-sm font-medium bg-brand-9"
+          className="bg-brand-9 hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9"
         >
           Manage
         </a>
         <button
           type="button"
-          className="py-[8px] px-[32px] text-sm font-medium bg-brand-tertiary"
+          className="bg-brand-tertiary hover:bg-[#4892e5] active:bg-transparent active:text-brand-9 active:border-brand-tertiary"
           onClick={() => onClickChat(t)}
         >
           Chat
@@ -253,7 +253,7 @@ const Tenants = () => {
 
       <div className="page-title-container">
         <PageTitle title="Tenants/Occupants (Users)" />
-        <div className="flex items-center gap-x-4">
+        <div className="flex items-center gap-x-4 flex-wrap">
           <SearchInput placeholder="Search for Tenants & Occupants" />
           <div className="flex items-center gap-x-3">
             <button

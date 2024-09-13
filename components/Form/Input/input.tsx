@@ -81,6 +81,7 @@ const Input: React.FC<InputProps> = ({
           name={id}
           value={value}
           ref={inputRef}
+          required={required}
           placeholder={placeholder}
           // Reset validation error when the user interacts with the input
           onInput={() => setValidationError(null)}

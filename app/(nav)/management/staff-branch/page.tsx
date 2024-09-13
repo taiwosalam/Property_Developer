@@ -243,7 +243,7 @@ const StaffAndBranches = () => {
 
       <div className="page-title-container">
         <PageTitle title="Staff & Branch" />
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 flex-wrap">
           <SearchInput placeholder="Search for Staff and Branch" />
           <div className="flex items-center gap-x-3">
             <button

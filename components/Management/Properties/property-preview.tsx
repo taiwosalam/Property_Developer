@@ -50,7 +50,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
   return (
     <div>
       {/* Back Button & Preview Title */}
-      <div className="flex items-center gap-1 mb-6 lg:mb-9">
+      <div className="flex items-center gap-1 mb-5 lg:mb-8">
         <button
           type="button"
           aria-label="Go Back"

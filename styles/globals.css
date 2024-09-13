@@ -96,7 +96,8 @@ h1 {
   width: 100%;
 }
 
-.custom-truncated {
+.custom-truncated,
+.custom-truncated-2 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -106,6 +107,11 @@ h1 {
 .custom-truncated {
   line-clamp: 1;
   -webkit-line-clamp: 1;
+}
+
+.custom-truncated-2 {
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
 }
 
 .custom-grid-area {
