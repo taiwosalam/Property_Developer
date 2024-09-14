@@ -47,10 +47,19 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data }) => {
             })}
           </div>
           <div className="flex gap-2 justify-end">
-            <Button variant="border" size="xs_medium" className="py-2 px-7">
+            <Button
+              href={"/management/inventory/1/manage"}
+              variant="border"
+              size="xs_medium"
+              className="py-2 px-7"
+            >
               manage
             </Button>
-            <Button size="xs_medium" className="py-2 px-7">
+            <Button
+              href={"/management/inventory/1/preview"}
+              size="xs_medium"
+              className="py-2 px-7"
+            >
               preview
             </Button>
           </div>
