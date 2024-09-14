@@ -19,6 +19,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   placeholder,
   inputSpaceClassName,
   onChange,
+  resetKey,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [mounted, setMounted] = useState(false);
@@ -41,6 +42,10 @@ const TextArea: React.FC<TextAreaProps> = ({
   useEffect(() => {
     handleInputChange && handleInputChange();
   }, [handleInputChange, editorValue]);
+
+  useEffect(() => {
+    setEditorValue(value || "");
+  }, [resetKey]);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>

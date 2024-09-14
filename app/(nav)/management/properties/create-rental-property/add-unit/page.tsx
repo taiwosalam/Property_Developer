@@ -37,7 +37,7 @@ const AddUnit = () => {
           <UnitFeatures />
           <UnitBreakdownNewTenant />
           <UnitBreakdownRenewalTenant />
-          <div className="fixed h-[80px] bottom-0 py-5 px-[60px] bg-white w-[(calc(100%+24px))] flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-bold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
+          <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-bold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
             <button
               type="reset"
               className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"

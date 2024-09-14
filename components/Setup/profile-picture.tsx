@@ -3,8 +3,7 @@ import { useState, useRef, useEffect, useContext } from "react";
 // Import
 import { SectionHeading } from "../Section/section-components";
 import Button from "../Form/Button/button";
-import UploadIcon from "/public/icons/upload-image.svg";
-import DeleteIcon from "@/public/icons/delete-icon-orange.svg";
+import { DeleteIconOrange, UploadImageIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "../FlowProgress/flow-progress";
 interface ProfilePictureProps {
   hiddenInputClassName?: string;
@@ -90,13 +89,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
               className="absolute top-[-15px] right-[-25px] z-10"
               aria-label="Delete"
             >
-              <Image
-                src={DeleteIcon}
-                alt="Delete Icon"
-                width={40}
-                height={40}
-                className="w-[40px] h-[40px]"
-              />
+              <DeleteIconOrange />
             </button>
             <Image
               src={image}
@@ -112,13 +105,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
             onClick={handleButtonClick}
             className="w-[100px] h-[100px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
           >
-            <Image
-              src={UploadIcon}
-              alt="Upload Icon"
-              width={25}
-              height={25}
-              className="w-[25px] h-[25px] mb-2"
-            />
+            <UploadImageIcon />
             <span className="text-text-secondary text-xs font-normal">
               Upload Profile Picture
             </span>
@@ -126,7 +113,12 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
         )}
         {image && (
           <div className="flex items-end">
-            <Button type="button" variant="change" size="sm" onClick={handleButtonClick}>
+            <Button
+              type="button"
+              variant="change"
+              size="sm"
+              onClick={handleButtonClick}
+            >
               Change Picture
             </Button>
           </div>

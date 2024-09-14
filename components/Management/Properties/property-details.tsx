@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Sample from "@/public/empty/SampleProperty.jpeg";
 import { CameraIcon } from "@/public/icons/icons";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
 const PropertyDetails = () => {
   return (
     <div
@@ -13,7 +14,7 @@ const PropertyDetails = () => {
       <hr className="my-2.5" />
       <div className="mb-4 md:mb-2.5 flex flex-col md:flex-row md:items-center gap-2 md:justify-between">
         <div className="overflow-x-auto max-w-full flex-grow">
-          <div className="min-w-[400px] text-sm md:text-base grid grid-cols-3 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
+          <div className="min-w-[400px] text-sm md:text-base grid grid-cols-3 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[40%,1fr]">
             <div>
               <p className="text-[#747474]">Property Title</p>
               <p className="text-black">Golden Estate</p>
@@ -65,10 +66,12 @@ const PropertyDetails = () => {
           />
         </div>
       </div>
-      <div className="lg:flex">
-        <p className="text-[#747474] w-[35%]">Description</p>
-        <p className="text-text-quaternary flex-1 custom-truncated-2">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis,
+      <div className="lg:flex gap-4">
+        <p className="text-[#747474] w-[10%]">Description</p>
+        <TruncatedText
+          className="text-text-quaternary flex-1"
+          lines={2}
+          text="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis,
           earum qui, modi aspernatur autem iste voluptate tenetur maiores
           inventore eum veniam perspiciatis quasi. Explicabo officiis quisquam
           quam, obcaecati neque deserunt. Nemo totam laudantium tempore ipsa
@@ -84,8 +87,8 @@ const PropertyDetails = () => {
           tenetur maxime eum sit quisquam quod. Quae, illo earum. Asperiores
           quidem sequi quas. Id quibusdam voluptas officiis excepturi officia
           cum voluptates eaque quas? Enim nostrum consectetur voluptates aliquid
-          nulla aliquam tempore expedita iste eos? Obcaecati, ex! Velit
-        </p>
+          nulla aliquam tempore expedita iste eos? Obcaecati, ex! Velit"
+        />
       </div>
     </div>
   );

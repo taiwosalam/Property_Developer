@@ -12,4 +12,5 @@ export interface SelectProps {
   isSearchable?: boolean;
   hiddenInputClassName?: string;
   inputContainerClassName?: string;
+  resetKey?: number;
 }

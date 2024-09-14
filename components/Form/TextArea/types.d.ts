@@ -8,4 +8,5 @@ export interface TextAreaProps {
   placeholder?: string;
   inputSpaceClassName?: string;
   onChange?: (data: string) => void;
+  resetKey?: number;
 }
