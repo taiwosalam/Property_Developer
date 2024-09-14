@@ -4,27 +4,22 @@ import Input from "@/components/Form/Input/input";
 import { useRouter } from "next/navigation";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
-import { ChevronLeft, PlusIcon, DeleteIconX } from "@/public/icons/icons";
+import {
+  ChevronLeft,
+  PlusIcon,
+  DeleteIconX,
+  DeleteIconOrange,
+} from "@/public/icons/icons";
 import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import Image from "next/image";
-import DeleteIconOrange from "@/public/icons/delete-icon-orange.svg";
-
-interface State {
-  selectedState: string;
-  selectedLGA: string;
-  selectedCity: string;
-  localGovernments: string[];
-  cities: string[];
-  staff: { id: string; label: string }[];
-  images: File[];
-}
+import { type StateType } from "./data";
 
 const CreateProperty = () => {
   const router = useRouter();
   const goBack = () => {
     router.back();
   };
-  const [state, setState] = useState<State>({
+  const [state, setState] = useState<StateType>({
     selectedState: "",
     selectedLGA: "",
     selectedCity: "",
@@ -32,6 +27,11 @@ const CreateProperty = () => {
     cities: [],
     staff: [],
     images: [],
+    branchOptions: [],
+    inventoryOptions: [],
+    landlordOptions: [],
+    accountOfficerOptions: [],
+    resetKey: 0,
   });
   const {
     selectedState,
@@ -41,6 +41,11 @@ const CreateProperty = () => {
     cities,
     staff,
     images,
+    branchOptions,
+    inventoryOptions,
+    landlordOptions,
+    accountOfficerOptions,
+    resetKey,
   } = state;
 
   const handleStateChange = (value: string) => {
@@ -57,8 +62,21 @@ const CreateProperty = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
-    const newImages = [...images, ...selectedFiles].slice(0, 2); // Limit to 2 images
-    setState((x) => ({ ...x, images: newImages }));
+
+    const newImages = selectedFiles.filter((file) => {
+      if (file.size > 2 * 1024 * 1024) {
+        // 2 MB in bytes
+        alert(`${file.name} exceeds the 2MB size limit.`);
+        return false;
+      }
+      return true;
+    });
+
+    const finalImages = [...images, ...newImages].slice(0, 2); // Limit to 2 images
+    setState((x) => ({ ...x, images: finalImages }));
+
+    // Reset input value to allow re-uploading the same file
+    e.target.value = "";
   };
 
   const removeImage = (index: number) => {
@@ -129,10 +147,31 @@ const CreateProperty = () => {
     }
   }, [selectedLGA, selectedState]);
 
+  useEffect(() => {
+    // fetch options for branch, inventory, landlord, account officer
+    // update state values
+  }, []);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Post data to API new Formdata(form)
+    // Post data to API
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    // formData.append("image", images); append d images from d state
+
     router.push("/management/properties/create-rental-property/add-unit");
+  };
+
+  // Function to reset the state
+  const handleReset = () => {
+    setState((x) => ({
+      ...x,
+      resetKey: x.resetKey + 1,
+      selectedState: "",
+      images: [],
+      staff: [],
+    }));
   };
 
   return (
@@ -158,7 +197,7 @@ const CreateProperty = () => {
           <p className="mb-5">
             Set property pictures for easy recognition (maximum of 2 images).
           </p>
-          <div className="flex gap-4">
+          <div className="flex gap-4 overflow-x-auto">
             {images.map((image, index) => (
               <div
                 key={index}
@@ -167,16 +206,16 @@ const CreateProperty = () => {
                 <Image
                   src={URL.createObjectURL(image)}
                   alt={`Property Image ${index + 1}`}
-                  className="object-cover w-full h-full"
+                  className="object-cover object-center w-full h-full"
                   fill
                 />
                 <button
                   type="button"
                   aria-label="Remove Image"
                   onClick={() => removeImage(index)}
-                  className="absolute top-1 right-1 w-[20px] h-[20px]"
+                  className="absolute top-1 right-1"
                 >
-                  <DeleteIconOrange />
+                  <DeleteIconOrange size={20} />
                 </button>
               </div>
             ))}
@@ -187,7 +226,7 @@ const CreateProperty = () => {
               >
                 <PlusIcon />
                 <span className="text-black text-base font-normal mt-2">
-                  Upload Profile Picture
+                  Add Pictures
                 </span>
                 <input
                   id="upload"
@@ -205,6 +244,7 @@ const CreateProperty = () => {
           <Input
             id="video_link"
             label="Video Link"
+            type="url"
             className="mb-5"
             placeholder="https://www.youtube.com/video "
             inputClassName="bg-white rounded-[8px] md:col-span-1"
@@ -259,30 +299,35 @@ const CreateProperty = () => {
             label="Category"
             isSearchable={false}
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Select
-            options={["a", "b", "c"]}
-            id="inventory"
-            label="Inventory"
-            inputContainerClassName="bg-white"
-          />
-          <Select
-            options={["a", "b", "c"]}
-            id="branch"
+            options={branchOptions}
+            id="branch_id"
             label="Branch"
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Select
-            options={["a", "b", "c"]}
-            id="landlord"
+            options={inventoryOptions}
+            id="inventory_id"
+            label="Inventory"
+            inputContainerClassName="bg-white"
+            resetKey={resetKey}
+          />
+          <Select
+            options={landlordOptions}
+            id="landlord_id"
             label="Landlord"
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Select
-            options={["a", "b", "c"]}
-            id="account_officer"
+            options={accountOfficerOptions}
+            id="account_officer_id"
             label="Account Officer"
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           {staff.map(({ id, label }) => (
             <div key={id} className="relative">
@@ -298,7 +343,7 @@ const CreateProperty = () => {
                 onClick={() => removeStaff(id)}
                 className="absolute top-0 right-0 w-[18px] h-[18px]"
               >
-                <DeleteIconX />
+                <DeleteIconX size={20} />
               </button>
             </div>
           ))}
@@ -316,6 +361,8 @@ const CreateProperty = () => {
             label="Property Description"
             inputSpaceClassName="bg-white"
             className="md:col-span-2 lg:col-span-3"
+            placeholder="Write here"
+            resetKey={resetKey}
           />
         </div>
         {/* Property Settings */}
@@ -328,29 +375,59 @@ const CreateProperty = () => {
           <Select
             id="agency_fee"
             label="Agency Fee"
-            options={[]}
+            options={[
+              "1%",
+              "2%",
+              "2.5%",
+              "3%",
+              "3.5%",
+              "5%",
+              "6%",
+              "7%",
+              "7.5%",
+              "8%",
+              "9%",
+              "10%",
+            ]}
             isSearchable={false}
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Select
             id="who_to_charge"
-            options={[]}
+            options={["landlord", "tenants", "both", "none"]}
             label="Who to Charge"
             isSearchable={false}
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Select
             id="fee_period"
             label="Fee Periods"
-            options={[]}
+            options={[
+              "daily",
+              "weekly",
+              "monthly",
+              "quarterly",
+              "bi-annually",
+              "yearly",
+            ]}
             isSearchable={false}
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Select
-            options={[]}
+            options={[
+              "keep with landlord",
+              "keep with manager",
+              "escrow it",
+              "none",
+            ]}
+            isSearchable={false}
             id="caution_deposit"
             label="Caution Deposit"
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Select
             id="group_chat"
@@ -358,6 +435,7 @@ const CreateProperty = () => {
             options={["yes", "no"]}
             isSearchable={false}
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Select
             options={["yes", "no"]}
@@ -365,6 +443,7 @@ const CreateProperty = () => {
             label="Rent Penalty"
             isSearchable={false}
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Select
             options={["yes", "no"]}
@@ -372,6 +451,7 @@ const CreateProperty = () => {
             label="Request Call Back"
             isSearchable={false}
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Select
             options={["yes", "no"]}
@@ -379,6 +459,7 @@ const CreateProperty = () => {
             label="Book Visitors"
             isSearchable={false}
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Select
             options={["yes", "no"]}
@@ -386,6 +467,7 @@ const CreateProperty = () => {
             label="Vehicle Records"
             isSearchable={false}
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Select
             options={["yes", "no"]}
@@ -393,13 +475,15 @@ const CreateProperty = () => {
             label="Activate 7.5% VAT"
             isSearchable={false}
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Select
-            options={["NAIRA", "USD", "POUNDS"]}
+            options={["₦ NAIRA", "$ USD", "£ POUNDS"]}
             id="currency"
             label="Currency"
             isSearchable={false}
             inputContainerClassName="bg-white"
+            resetKey={resetKey}
           />
           <Input
             id="coordinate"
@@ -407,12 +491,13 @@ const CreateProperty = () => {
             inputClassName="bg-white rounded-[8px]"
           />
         </div>
-        <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-bold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
+        <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
           <button
             type="reset"
             className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
+            onClick={handleReset}
           >
-            Clear Field
+            Clear Fields
           </button>
           <button
             type="submit"

@@ -1,11 +1,8 @@
 import clsx from "clsx";
-import Image from "next/image";
 import Label from "../Label/label";
 import { useEffect, useRef, useState, useContext } from "react";
 import type { SelectProps } from "./types";
-import SearchIcon from "@/public/icons/search-icon.svg";
-import ArrowDownIcon from "@/public/icons/arrow-down.svg";
-import deleteIcon from "@/public/icons/delete-icon.svg";
+import { DeleteIconX, ArrowDownIcon, SearchIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 
 const Select: React.FC<SelectProps> = ({
@@ -22,19 +19,27 @@ const Select: React.FC<SelectProps> = ({
   isSearchable = true,
   hiddenInputClassName,
   inputContainerClassName,
+  resetKey, // <-- New prop for external reset control
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredOptions, setFilteredOptions] = useState(options);
-  const [selectedValue, setSelectedValue] = useState("");
+  const initialState = {
+    isOpen: false,
+    searchTerm: "",
+    filteredOptions: options,
+    selectedValue: "",
+  };
+  const [state, setState] = useState(initialState);
+  const { isOpen, searchTerm, filteredOptions, selectedValue } = state;
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleSelection = (option: string) => {
-    setSelectedValue(option); // Update selected value
-    setSearchTerm(""); // Clear search term
-    setIsOpen(false); // Close dropdown
+    setState((x) => ({
+      ...x,
+      selectedValue: option,
+      searchTerm: "",
+      isOpen: false,
+    }));
     onChange && onChange(option); // Call the onChange prop if provided
   };
 
@@ -46,10 +51,14 @@ const Select: React.FC<SelectProps> = ({
 
   // Filter options based on the search term
   useEffect(() => {
-    setFilteredOptions(
-      options.filter((o) => o.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    setState((x) => ({
+      ...x,
+      filteredOptions: options.filter((o) =>
+        o.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    }));
   }, [searchTerm, options]);
+
   // Close the dropdown when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -57,8 +66,7 @@ const Select: React.FC<SelectProps> = ({
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false);
-        setSearchTerm("");
+        setState((x) => ({ ...x, isOpen: false, searchTerm: "" }));
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -67,8 +75,8 @@ const Select: React.FC<SelectProps> = ({
 
   // Initialize
   useEffect(() => {
-    setSelectedValue(propValue);
-  }, [propValue]);
+    setState((x) => ({ ...x, selectedValue: propValue }));
+  }, [propValue, resetKey]);
 
   useEffect(() => {
     handleInputChange && handleInputChange();
@@ -99,19 +107,13 @@ const Select: React.FC<SelectProps> = ({
             inputContainerClassName
           )}
           onClick={() => {
-            if (!selectedValue) setIsOpen((x) => !x);
+            if (!selectedValue) setState((x) => ({ ...x, isOpen: !x.isOpen }));
           }}
         >
           {/* Conditionally render the search icon */}
           {isSearchable && (
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <Image
-                src={SearchIcon}
-                alt="Search Icon"
-                height={18}
-                width={18}
-                className="w-[18px] h-[18px]"
-              />
+              <SearchIcon />
             </div>
           )}
           {/* Conditionally render input or selected value based on `isSearchable` */}
@@ -135,11 +137,15 @@ const Select: React.FC<SelectProps> = ({
               placeholder={placeholder}
               value={searchTerm}
               onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setIsOpen(true); // Open dropdown when typing
+                setState((x) => ({
+                  ...x,
+                  searchTerm: e.target.value,
+                  isOpen: true,
+                }));
               }}
               onClick={(e) => {
-                setIsOpen(true); // Open dropdown when clicking input
+                setState((x) => ({ ...x, isOpen: true }));
+
                 e.stopPropagation(); // Prevent dropdown from toggling
               }}
               autoFocus={isOpen} // Autofocus when opened
@@ -156,14 +162,14 @@ const Select: React.FC<SelectProps> = ({
           )}
           <div className="ml-auto flex items-center justify-center">
             {!selectedValue ? (
-              <Image
-                src={ArrowDownIcon}
-                alt="Toggle Arrow"
+              <div
                 className={clsx(
                   "transition-transform duration-300",
                   isOpen && "rotate-180"
                 )}
-              />
+              >
+                <ArrowDownIcon />
+              </div>
             ) : (
               <button
                 type="button"
@@ -173,13 +179,7 @@ const Select: React.FC<SelectProps> = ({
                   e.stopPropagation();
                 }}
               >
-                <Image
-                  src={deleteIcon}
-                  alt="Clear"
-                  width={18}
-                  height={18}
-                  className="w-[18px] h-[18px]"
-                />
+                <DeleteIconX />
               </button>
             )}
           </div>

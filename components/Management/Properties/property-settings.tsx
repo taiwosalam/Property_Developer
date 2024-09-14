@@ -10,7 +10,7 @@ const PropertySettings = () => {
       <hr className="my-2.5" />
 
       <div className="overflow-x-auto max-w-full flex-grow">
-        <div className="min-w-[400px] text-sm md:text-base grid grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
+        <div className="min-w-[400px] text-sm md:text-base grid grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-3 lg:[&>div]:grid-cols-[50%,1fr]">
           <div>
             <p className="text-[#747474]">Agency Fee</p>
             <p className="text-black">10%</p>

@@ -2,6 +2,7 @@ import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 
 const UnitDetails = () => {
+  
   return (
     <div>
       <h4 className="text-primary-navy text-lg md:text-xl font-bold">

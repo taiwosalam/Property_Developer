@@ -6,7 +6,7 @@ import useWindowDimensions from "@/hooks/useWindowDimensions";
 import clsx from "clsx";
 import Label from "../Label/label";
 import Button from "../Button/button";
-import deleteIcon from "@/public/icons/delete-icon.svg";
+import { DeleteIconX } from "@/public/icons/icons";
 import eyeShowIcon from "@/public/icons/eye-show.svg";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 
@@ -157,13 +157,7 @@ const FileInput: React.FC<FileInputProps> = ({
                   e.stopPropagation();
                 }}
               >
-                <Image
-                  src={deleteIcon}
-                  alt="Delete File"
-                  width={18}
-                  height={18}
-                  className="w-[18px] h-[18px]"
-                />
+                <DeleteIconX />
               </button>
             </div>
           )}

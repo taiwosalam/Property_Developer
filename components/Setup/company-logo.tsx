@@ -4,8 +4,7 @@ import Button from "../Form/Button/button";
 import { useState, useRef, useEffect, useContext } from "react";
 import Image from "next/image";
 import { FlowProgressContext } from "../FlowProgress/flow-progress";
-import UploadIcon from "@/public/icons/upload-image.svg";
-import DeleteIcon from "@/public/icons/delete-icon-orange.svg";
+import { DeleteIconOrange, UploadImageIcon } from "@/public/icons/icons";
 
 interface CompanyLogoProps {
   hiddenInputClassName?: string;
@@ -88,12 +87,7 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ hiddenInputClassName }) => {
               className="absolute top-[-15px] right-[-25px] z-10"
               aria-label="Delete"
             >
-              <Image
-                src={DeleteIcon}
-                alt="Delete Icon"
-                width={40}
-                height={40}
-              />
+              <DeleteIconOrange />
             </button>
             <div className="relative w-full h-full rounded-md overflow-hidden">
               <Image
@@ -111,14 +105,8 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ hiddenInputClassName }) => {
             onClick={handleButtonClick}
             className="w-[375px] h-[150px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
           >
-            <Image
-              src={UploadIcon}
-              alt="Upload Icon"
-              width={40}
-              height={40}
-              className="mb-2"
-            />
-            <span className="text-text-secondary text-sm font-normal">
+            <UploadImageIcon />
+            <span className="text-text-secondary text-sm font-normal mt-2">
               Upload logo here
             </span>
           </button>
