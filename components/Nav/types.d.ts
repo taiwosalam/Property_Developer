@@ -41,3 +41,9 @@ export type CreateNewItemsProps = {
 export interface NavCreateNewColumnProps {
   data: CreateNewItemsProps;
 }
+
+export interface NavSearchTabProps {
+  count: number;
+  active?: boolean;
+  children: React.ReactNode;
+}

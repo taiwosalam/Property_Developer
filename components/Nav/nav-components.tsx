@@ -7,6 +7,7 @@ import type {
   NavButtonProps,
   NavCreateNewColumnProps,
   NavIconProps,
+  NavSearchTabProps,
 } from "./types";
 
 // Imports
@@ -116,3 +117,35 @@ export const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
     </div>
   );
 };
+
+export const NavSearchTab: React.FC<NavSearchTabProps> = ({
+  count,
+  active,
+  children,
+}) => (
+  <div className="flex items-center gap-2 text-base font-medium capitalize">
+    <p
+      className={clsx({
+        "text-text-label": !active,
+        "text-brand-9": active,
+      })}
+    >
+      {children}
+    </p>
+    <div
+      className={clsx("w-6 h-6 flex items-center justify-center rounded-full", {
+        "bg-neutral-3": !active,
+        "bg-brand-9": active,
+      })}
+    >
+      <p
+        className={clsx({
+          "text-neutral-4": !active,
+          "text-white": active,
+        })}
+      >
+        {count}
+      </p>
+    </div>
+  </div>
+);
