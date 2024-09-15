@@ -31,3 +31,19 @@ export interface NavIconProps {
   href?: string;
   src: string | StaticImageData;
 }
+
+export type CreateNewItemsProps = {
+  type: SVGType;
+  label: string;
+  content: { label: string }[];
+}[];
+
+export interface NavCreateNewColumnProps {
+  data: CreateNewItemsProps;
+}
+
+export interface NavSearchTabProps {
+  count: number;
+  active?: boolean;
+  children: React.ReactNode;
+}

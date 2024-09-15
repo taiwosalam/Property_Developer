@@ -47,6 +47,7 @@ const config = {
 
         neutral: {
           2: "#FAFAFA",
+          3: "#F5F5F5",
           4: "#C1C2C3",
           6: "#CBD5E0",
           8: "#718096",
