@@ -8,8 +8,9 @@ import CloseCircle from "@/public/icons/close-circle.svg";
 import Input from "../Form/Input/input";
 import Picture from "../Picture/picture";
 import { ModalTrigger } from "../Modal/modal";
-import { SectionSeparator } from "../Section/section-components";
 import { NavSearchTab } from "./nav-components";
+import NavGlobalSearchItem from "./nav-global-search-item";
+import { SectionSeparator } from "../Section/section-components";
 
 const NavGlobalSearch = () => {
   const tabs = [
@@ -26,7 +27,7 @@ const NavGlobalSearch = () => {
   return (
     <div
       style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.05)" }}
-      className="custom-flex-col gap-3 bg-white rounded-2xl border border-solid border-neutral-4 overflow-hidden"
+      className="custom-flex-col gap-3 bg-white rounded-2xl border border-solid border-neutral-4 overflow-hidden max-h-[80vh]"
     >
       <div className="custom-flex-col gap-6 pt-8 pb-4 px-8 bg-neutral-2 border-b border-solid border-neutral-4">
         <div className="custom-flex-col gap-3">
@@ -51,7 +52,7 @@ const NavGlobalSearch = () => {
             <Input
               id="search"
               placeholder="Search"
-              className="h-full flex-1 text-sm"
+              className="h-full flex-1 text-sm bg-neutral-3"
             />
             <button className="bg-brand-9 h-full aspect-square flex justify-center items-center rounded-md">
               <Picture src={PlaneBlue} alt="send" size={24} />
@@ -66,17 +67,18 @@ const NavGlobalSearch = () => {
           ))}
         </div>
       </div>
-      <div className="py-3 px-8">
-        <div className="custom-flex-col gap-2">
-          <div className="flex justify-between text-text-tertiary text-base font-normal capitalize">
+      <div className="pb-3 px-8 flex-1 overflow-x-hidden overflow-y-auto">
+        <div className="custom-flex-col">
+          <div className="sticky top-0 z-[2] flex justify-between pt-3 pb-2 pr-16 bg-white text-text-tertiary text-base font-normal capitalize">
             <p>management</p>
             <p>type</p>
           </div>
-          <div className="custom-flex-col gap-3">
-            <div
-              className="py-2 px-4 rounded-md flex justify-between"
-              style={{ boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.03)" }}
-            ></div>
+          <div className="relative z-[1] custom-flex-col gap-3">
+            {Array(10)
+              .fill(null)
+              .map((_, idx) => (
+                <NavGlobalSearchItem key={idx} />
+              ))}
           </div>
         </div>
       </div>
