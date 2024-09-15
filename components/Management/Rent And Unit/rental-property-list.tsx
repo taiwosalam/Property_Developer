@@ -3,6 +3,7 @@ import { actions, activeStatuses, getBackgroundColor } from "./data";
 import Image from "next/image";
 import { ActionButtonProps } from "./types";
 import { CameraIcon } from "lucide-react";
+import { DetailItem } from "../detail-item";
 
 const RentalPropertyListCard = () => {
   return (
@@ -71,23 +72,6 @@ const RentalPropertyListCard = () => {
 };
 
 export default RentalPropertyListCard;
-
-const DetailItem = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number | React.ReactNode;
-}) => (
-  <div className="flex items-center">
-    <div className="font-normal text-gray-500 w-[120px]">
-      <span className="text-left">{label}</span>
-    </div>
-    <div className="font-normal text-gray-700">
-      <span className="text-left">{value}</span>
-    </div>
-  </div>
-);
 
 const ActionButton: React.FC<ActionButtonProps> = ({ label, color }) => (
   <button
