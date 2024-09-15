@@ -27,6 +27,9 @@ import { getGreeting } from "./data";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { NavIcon } from "@/components/Nav/nav-components";
 import NavProfileDropdown from "@/components/Nav/nav-profile-dropdown";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import NavCreateNew from "./nav-create-new";
+import NavGlobalSearch from "./nav-global-search";
 
 const Navbar = () => {
   const { isCustom } = useWindowWidth(1024);
@@ -58,7 +61,22 @@ const Navbar = () => {
                   className="flex-1 max-w-[240px] font-semibold"
                   style={{ backgroundColor: "#F1F1F1", border: "none" }}
                 />
-                <Button size="mid">+ Create New</Button>
+                <Modal>
+                  <ModalTrigger asChild>
+                    <Button size="mid">Search</Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <NavGlobalSearch />
+                  </ModalContent>
+                </Modal>
+                <Modal>
+                  <ModalTrigger asChild>
+                    <Button size="mid">+ Create New</Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <NavCreateNew />
+                  </ModalContent>
+                </Modal>
               </>
             )}
           </div>
@@ -68,7 +86,7 @@ const Navbar = () => {
             <div className="flex gap-2">
               <NavIcon src={Mail} alt="messages" href="/messages" />
               <NavIcon src={Bell} alt="notifications" href="/notifications" />
-              <NavIcon src={Moon} alt="create new" />
+              <NavIcon src={Moon} alt="theme" />
             </div>
           ) : (
             <div className="flex gap-4">

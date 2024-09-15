@@ -1,5 +1,5 @@
 // Types
-import type { NavItemsProps } from "./types";
+import type { CreateNewItemsProps, NavItemsProps } from "./types";
 
 export const nav_items: NavItemsProps = [
   {
@@ -38,7 +38,7 @@ export const nav_items: NavItemsProps = [
     ],
   },
   {
-    type: "briefcase_timer",
+    type: "chart",
     label: "listing",
     content: [
       { label: "units", href: "/units" },
@@ -47,7 +47,7 @@ export const nav_items: NavItemsProps = [
     ],
   },
   {
-    type: "briefcase_timer",
+    type: "menu_board",
     label: "accounting",
     content: [
       { label: "invoice", href: "/invoice" },
@@ -59,7 +59,7 @@ export const nav_items: NavItemsProps = [
     ],
   },
   {
-    type: "briefcase_timer",
+    type: "status_up",
     label: "reports",
     content: [
       { label: "tenants / occupants", href: "/tenants" },
@@ -77,18 +77,60 @@ export const nav_items: NavItemsProps = [
       { label: "vehicles record", href: "/vehicles" },
     ],
   },
-  { type: "buildings", label: "wallet", href: "/wallet" },
+  { type: "empty_wallet", label: "wallet", href: "/wallet" },
   {
-    type: "buildings",
+    type: "task",
     label: "applications",
     href: "/applications",
   },
   {
-    type: "buildings",
+    type: "folder",
     label: "documents",
     href: "/documents",
   },
-  { type: "buildings", label: "settings", href: "/settings" },
+  { type: "settings", label: "settings", href: "/settings" },
+];
+
+export const create_new_items: CreateNewItemsProps = [
+  {
+    type: "people",
+    label: "management",
+    content: [
+      { label: "landlord / landlady" },
+      { label: "tenants / occupants" },
+      { label: "branch" },
+      { label: "staff" },
+      { label: "inventory" },
+      { label: "property" },
+    ],
+  },
+  {
+    type: "briefcase_timer",
+    label: "tasks",
+    content: [
+      { label: "examine" },
+      { label: "maintenance" },
+      { label: "service provider" },
+      { label: "event" },
+      { label: "task" },
+      { label: "reminder" },
+      { label: "announcement" },
+    ],
+  },
+  {
+    type: "menu_board",
+    label: "accounting",
+    content: [
+      { label: "invoice" },
+      { label: "expenses" },
+      { label: "disbursement" },
+    ],
+  },
+  {
+    type: "folder",
+    label: "documents",
+    content: [{ label: "tenancy agreement" }],
+  },
 ];
 
 export const getGreeting = () => {
