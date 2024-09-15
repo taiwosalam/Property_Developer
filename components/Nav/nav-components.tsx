@@ -123,7 +123,7 @@ export const NavSearchTab: React.FC<NavSearchTabProps> = ({
   active,
   children,
 }) => (
-  <div className="flex items-center gap-2 text-base font-medium capitalize">
+  <button className="flex items-center gap-2 text-base font-medium capitalize">
     <p
       className={clsx({
         "text-text-label": !active,
@@ -147,5 +147,5 @@ export const NavSearchTab: React.FC<NavSearchTabProps> = ({
         {count}
       </p>
     </div>
-  </div>
+  </button>
 );
