@@ -26,10 +26,10 @@ const MoveOutModal = () => {
       {/* body */}
       <div className="px-[30px] pt-6 pb-[30px]">
         <p className="text-sm mb-6">
-          "Your actions indicate that the tenants have already moved out from
-          the current unit of the property, and the said unit is now available
-          for listing to other potential tenants. If you proceed, you will lose
-          unit data, and the tenants will await caution deposit approval."
+          Your actions indicate that the tenants have already moved out from the
+          current unit of the property, and the said unit is now available for
+          listing to other potential tenants. If you proceed, you will lose unit
+          data, and the tenants will await caution deposit approval.
         </p>
         <div>
           <h3 className="font-semibold mb-4">Caution Deposit Requirement</h3>

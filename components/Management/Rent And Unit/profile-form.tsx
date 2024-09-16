@@ -59,8 +59,9 @@ export const ProfileForm: React.FC<{ occupant: Occupant; title?: boolean }> = ({
             "Email Alert",
           ].map((option) => (
             <label key={option} className="inline-flex items-center">
-              <Checkbox checked={false} onChange={() => {}} children />
-              <span>{option}</span>
+              <Checkbox checked={false} onChange={() => {}}>
+                <span>{option}</span>
+              </Checkbox>
             </label>
           ))}
         </div>
