@@ -262,11 +262,11 @@ export const LocationIcon = ({ color }: { color?: string }) => {
   );
 };
 
-export const PreviousIcon = () => {
+export const PreviousIcon = ({ width = 9, height = 14 }) => {
   return (
     <svg
-      width="9"
-      height="14"
+      width={width}
+      height={height}
       viewBox="0 0 9 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -282,11 +282,11 @@ export const PreviousIcon = () => {
   );
 };
 
-export const NextIcon = () => {
+export const NextIcon = ({ width = 9, height = 14 }) => {
   return (
     <svg
-      width="9"
-      height="14"
+      width={width}
+      height={height}
       viewBox="0 0 9 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -302,17 +302,11 @@ export const NextIcon = () => {
   );
 };
 
-export const CameraIcon = ({
-  width,
-  height,
-}: {
-  width?: number;
-  height?: number;
-}) => {
+export const CameraIcon = ({ width = 12, height = 9 }) => {
   return (
     <svg
-      width={width || "12"}
-      height={height || "9"}
+      width={width}
+      height={height}
       viewBox="0 0 12 9"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

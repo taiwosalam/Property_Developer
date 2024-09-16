@@ -8,44 +8,46 @@ const PropertyDetails = () => {
       className="py-6 px-4 rounded-lg bg-white"
       style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
     >
-      <h4 className="text-primary-navy text-lg md:text-xl font-bold">
+      <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
         Property Details
       </h4>
       <hr className="my-2.5" />
       <div className="mb-4 md:mb-2.5 flex flex-col md:flex-row md:items-center gap-2 md:justify-between">
         <div className="overflow-x-auto max-w-full flex-grow">
-          <div className="min-w-[400px] text-sm md:text-base grid grid-cols-3 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[40%,1fr]">
+          <div className="min-w-[400px] text-sm md:text-base grid grid-cols-[1fr,26%,1fr] gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[50%,1fr]">
             <div>
               <p className="text-[#747474]">Property Title</p>
-              <p className="text-black">Golden Estate</p>
+              <p className="text-black font-medium">Golden Estate</p>
             </div>
             <div>
               <p className="text-[#747474]">State</p>
-              <p className="text-black">Oyo State</p>
+              <p className="text-black font-medium">Oyo State</p>
             </div>
             <div>
               <p className="text-[#747474]">Local Government</p>
-              <p className="text-black">Akinyele</p>
+              <p className="text-black font-medium">Akinyele</p>
             </div>
             <div>
               <p className="text-[#747474]">Full Address</p>
-              <p className="text-black">56, Abiola way area Moniya ibadan</p>
+              <p className="text-black font-medium">
+                56, Abiola way area Moniya ibadan
+              </p>
             </div>
             <div>
               <p className="text-[#747474]">Branch</p>
-              <p className="text-black">Abiola Moniya</p>
+              <p className="text-black font-medium">Abiola Moniya</p>
             </div>
             <div>
               <p className="text-[#747474]">Account Officer</p>
-              <p>Ajadi David</p>
+              <p className="text-black font-medium">Ajadi David</p>
             </div>
             <div>
               <p className="text-[#747474]">Manager</p>
-              <p>David James</p>
+              <p className="text-black font-medium">David James</p>
             </div>
             <div>
               <p className="text-[#747474]">Categories</p>
-              <p>Residential</p>
+              <p className="text-black font-medium">Residential</p>
             </div>
           </div>
         </div>
@@ -67,7 +69,7 @@ const PropertyDetails = () => {
         </div>
       </div>
       <div className="lg:flex gap-4">
-        <p className="text-[#747474] w-[10%]">Description</p>
+        <p className="text-[#747474] w-[13.5%]">Description</p>
         <TruncatedText
           className="text-text-quaternary flex-1"
           lines={2}

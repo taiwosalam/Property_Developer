@@ -57,7 +57,11 @@ const TruncatedText: React.FC<TruncatedTextProps> = ({
         </button>
       )}
       {showFullText && (
-        <button onClick={handleToggle} className="text-highlight mt-1">
+        <button
+          type="button"
+          onClick={handleToggle}
+          className="text-highlight mt-1"
+        >
           show less
         </button>
       )}

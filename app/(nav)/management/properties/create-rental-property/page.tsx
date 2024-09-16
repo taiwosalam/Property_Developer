@@ -253,7 +253,9 @@ const CreateProperty = () => {
         {/* Property Details */}
         <div className="flex gap-[2px] text-xs md:text-sm lg:text-base font-medium mb-4">
           <span className="text-status-error-primary">*</span>
-          <p className="text-primary-navy font-bold">Property Details</p>
+          <p className="text-primary-navy font-bold text-lg lg:text-xl">
+            Property Details
+          </p>
         </div>
         <hr className="my-4" />
         <div className="mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -353,7 +355,7 @@ const CreateProperty = () => {
               onClick={addStaff}
               className="text-brand-9 text-xs md:text-sm font-normal md:self-end md:justify-self-start"
             >
-              Add Staff
+              {`${staff.length > 0 ? "Add more staff" : "Add Staff"}`}
             </button>
           )}
           <TextArea
@@ -368,7 +370,9 @@ const CreateProperty = () => {
         {/* Property Settings */}
         <div className="flex gap-[2px] text-xs md:text-sm lg:text-base font-medium mb-4">
           <span className="text-status-error-primary">*</span>
-          <p className="text-primary-navy font-bold">Property Settings</p>
+          <p className="text-primary-navy font-bold text-lg lg:text-xl">
+            Property Settings
+          </p>
         </div>
         <hr className="my-4" />
         <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -478,7 +482,7 @@ const CreateProperty = () => {
             resetKey={resetKey}
           />
           <Select
-            options={["₦ NAIRA", "$ USD", "£ POUNDS"]}
+            options={["(₦) NAIRA", "($) USD", "(£) POUNDS"]}
             id="currency"
             label="Currency"
             isSearchable={false}

@@ -61,7 +61,7 @@ const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
       {loaded && instanceRef.current && (
         <>
           <div className="absolute w-full flex items-center justify-between top-5 px-5">
-            <div className="bg-[#EFF6FF] rounded py-1 px-[6px] flex items-center space-x-1">
+            <div className="bg-brand-1 rounded py-1 px-[6px] flex items-center space-x-1">
               <CameraIcon width={16} height={16} />
               <span className="text-sm font-medium">
                 {currentSlide + 1 + "/" + images.length}
@@ -150,7 +150,7 @@ const RentalPropertyCard: React.FC = () => {
   ];
 
   return (
-    <main className="bg-white rounded-2xl overflow-hidden shadow-lg">
+    <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
       <div className="h-[200px] relative">
         <PropertyImageSlider images={sampleImages} showOverlay={isHovered} />
       </div>
@@ -220,7 +220,7 @@ const RentalPropertyCard: React.FC = () => {
           <ActionButton key={action.label} {...action} />
         ))}
       </div>
-    </main>
+    </div>
   );
 };
 
