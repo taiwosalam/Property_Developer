@@ -9,6 +9,7 @@ import { ChevronLeft, LocationIcon, CameraIcon } from "@/public/icons/icons";
 import { PropertyImageSliderProps } from "@/components/Management/Rent And Unit/types";
 import { useState } from "react";
 import { unitDetails } from "@/components/Management/Rent And Unit/data";
+import TenancyRecord from "@/components/Management/Rent And Unit/tenancy-record";
 
 const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
   images,
@@ -190,6 +191,18 @@ const UnitPreviewPage = () => {
                 </div>
               </section>
             </div>
+          </div>
+        </div>
+        <div className="w-full h-fit">
+          <h6 className="font-bold text-lg text-[#092C4C] mb-6">
+            Previously Assigned Tenants Records
+          </h6>
+          <div className="w-full h-fit space-y-4">
+            <TenancyRecord />
+            <TenancyRecord />
+            <TenancyRecord />
+            <TenancyRecord />
+            <TenancyRecord />
           </div>
         </div>
       </section>

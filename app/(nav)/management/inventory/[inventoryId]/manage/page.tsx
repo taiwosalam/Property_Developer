@@ -15,7 +15,7 @@ const ManageInventory = () => {
   };
 
   return (
-    <div className="custom-flex-col gap-10">
+    <div className="custom-flex-col gap-10 min-h-[80vh]">
       <div className="custom-flex-col gap-4">
         <h1 className="text-black text-2xl font-medium capitalize">
           Manage Inventory
