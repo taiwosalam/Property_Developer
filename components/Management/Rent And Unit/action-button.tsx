@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ActionButtonProps } from "./types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import MoveOutModal from "./move-out-modal";
+import RelocateModal from "./reloate-modal";
 
 export const ActionButton: React.FC<ActionButtonProps> = ({
   label,
@@ -35,11 +37,11 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
         </ModalTrigger>
         {modal === "Relocate" ? (
           <ModalContent title="Relocate Unit">
-            <div>Relocate Unit</div>
+            <RelocateModal />
           </ModalContent>
         ) : (
           <ModalContent title="Move Out Unit">
-            <div>Move Out Unit</div>
+            <MoveOutModal />
           </ModalContent>
         )}
       </Modal>
