@@ -26,10 +26,27 @@ export const activeStatuses = [
 ];
 
 export const actions = [
-  { color: "#FF9800", label: "Start Rent" },
-  { color: "#4CAF50", label: "Renew Rent" },
-  { color: "#60A5FA ", label: "Edit" },
-  { color: "#E9212E", label: "Move Out" },
+  {
+    color: "#FF9800",
+    label: "Start Counting",
+    route: "/management/rent-unit/start-counting",
+  },
+  {
+    color: "#FF9800",
+    label: "Start Rent",
+    route: "/management/rent-unit/start-rent",
+  },
+  {
+    color: "#4CAF50",
+    label: "Renew Rent",
+    route: "/management/rent-unit/renew-rent",
+  },
+  { color: "#60A5FA", label: "Edit", route: "/management/rent-unit/edit" },
+  {
+    color: "#E9212E",
+    label: "Move Out",
+    route: "/management/rent-unit/move-out",
+  },
 ];
 
 // This would typically come from an API or props
@@ -57,3 +74,21 @@ export const unitDetails: UnitDetails = {
     "/empty/SampleProperty5.jpg",
   ],
 };
+
+export const estateData = [
+  { label: "Property Title", value: "Golden Estate" },
+  { label: "State", value: "Oyo State" },
+  { label: "Local Government", value: "Akinyele" },
+  { label: "Full Address", value: "56, Abiola way area Moniya ibadan" },
+  { label: "Branch", value: "Moniya Branch" },
+  { label: "Account Officer", value: "Ajadi David" },
+  { label: "Description", value: "Lorem ipsum dolor sit amet, consecte....." },
+  { label: "Categories", value: "Residential" },
+];
+
+export const estateSettingsDta = [
+  { label: "Management Fee", value: "10%" },
+  { label: "Period", value: "Annually" },
+  { label: "Fee Penalty", value: "Yes" },
+  { label: "Group Chat", value: "Yes" },
+];
