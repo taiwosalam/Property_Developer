@@ -3,7 +3,9 @@ import { EstateDetailItem } from "./detail-item";
 import { MatchedProfile } from "./matched-profile";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 
-export const RenewalRentDetails = () => {
+export const RenewalRentDetails = (
+  { title }: { title?: string } = { title: "Renewal Fee" }
+) => {
   return (
     <main>
       <div className="flex space-x-8 items-center">
@@ -32,7 +34,7 @@ export const RenewalRentDetails = () => {
               Renewal Fee
             </h6>
             <div className="w-full bg-white shadow p-6 space-y-3 rounded-sm">
-              <p className="text-[16px] text-brand-10">Renewal Fee </p>
+              <p className="text-[16px] text-brand-10">{title}</p>
               <div className="w-full h-[2px] bg-[#C0C2C8]"></div>
               <div className="grid grid-cols-2 gap-4">
                 {detailItems.map((item, index) => (
@@ -42,6 +44,23 @@ export const RenewalRentDetails = () => {
                     value={item.value}
                   />
                 ))}
+              </div>
+              <div className="w-full flex items-center justify-between">
+                <div>
+                  <h3 className="text-[#747474] text-[16px] font-normal">
+                    Total Package
+                  </h3>
+                  <p className="text-xl font-bold text-brand-primary">
+                    ₦1,950,000
+                  </p>
+                </div>
+                <button
+                  type="submit"
+                  className="bg-brand-9 text-white hover:bg-[#0033c4b3] active:text-brand-9 py-2 px-6 rounded active:bg-transparent active:border-brand-9"
+                  //   onClick={() => {}}
+                >
+                  Edit
+                </button>
               </div>
             </div>
           </div>

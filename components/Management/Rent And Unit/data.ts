@@ -41,16 +41,16 @@ export const actions = [
     label: "Renew Rent",
     route: "/management/rent-unit/renew-rent",
   },
-  { color: "#60A5FA", label: "Edit", route: "/management/rent-unit/edit" },
+  { color: "#60A5FA", label: "Edit", route: "/management/rent-unit/edit-rent" },
   {
     color: "#E9212E",
     label: "Move Out",
-    route: "/management/rent-unit/move-out",
+    modal: "Move Out",
   },
   {
     color: "#620E13",
     label: "Relocate",
-    route: "/management-rent-unit/relocate",
+    modal: "Relocate",
   },
 ];
 

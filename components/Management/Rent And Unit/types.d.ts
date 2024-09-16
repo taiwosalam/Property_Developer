@@ -9,7 +9,8 @@ export interface PropertyDetailsProps {
 export interface ActionButtonProps {
   label: string;
   color: string;
-  route: string;
+  route?: string;
+  modal?: string;
 }
 
 interface PropertyImageSliderProps {
