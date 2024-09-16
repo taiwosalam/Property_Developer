@@ -47,6 +47,11 @@ export const actions = [
     label: "Move Out",
     route: "/management/rent-unit/move-out",
   },
+  {
+    color: "#620E13",
+    label: "Relocate",
+    route: "/management-rent-unit/relocate",
+  },
 ];
 
 // This would typically come from an API or props
