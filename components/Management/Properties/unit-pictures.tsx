@@ -39,10 +39,10 @@ const UnitPictures = () => {
 
   return (
     <div>
-      <h4 className="text-primary-navy text-lg md:text-xl font-bold">
+      <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
         Unit Pictures
       </h4>
-      <hr className="my-4" />
+      <hr className="my-4 border-none bg-borders-dark h-[2px]" />
       <p className="text-text-secondary mb-5">
         Unit pictures are what will be shown to potential clients on the mobile
         app and your default website (maximum of 14 images).

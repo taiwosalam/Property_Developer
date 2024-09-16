@@ -91,7 +91,7 @@ export const propertyCategories = {
   "gated estate/facility": ["gated estate", "facility"],
 };
 
-export const propertyTypes = {
+export const unitTypes = {
   residential: ["apartment", "flat", "house", "land"],
   "mixed use": ["apartment", "flat", "house", "land"],
   commercial: ["land", "industry & factory"],
@@ -99,7 +99,7 @@ export const propertyTypes = {
   facility: [],
 };
 
-export const propertySubtypes = {
+export const unitSubtypes = {
   apartment: [
     "room & parlor",
     "single room",
@@ -176,7 +176,7 @@ export const propertySubtypes = {
   ],
 };
 
-export const propertyPreferences = {
+export const unitPreferences = {
   buildings: {
     residential: [
       "newly built",
@@ -244,7 +244,7 @@ export const propertyFeatures = {
   ],
 };
 
-export const facilities = {
+export const unitFacilities = {
   buildings: [
     "swimming pool",
     "restaurant nearby",
@@ -277,10 +277,19 @@ export const facilities = {
 export const rentPeriod = [
   "daily",
   "weekly",
+  "quarterly",
+  "binary",
   "monthly",
   "yearly",
-  "quarterly",
-  "ni-annually",
+  "biennially",
+  "triennially",
+  "quadrennial",
+  "quinquennial",
+  "sexennial",
+  "septennial",
+  "octennial",
+  "nonennial",
+  "decennial",
 ];
 
 export const states: State[] = [

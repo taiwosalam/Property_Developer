@@ -15,6 +15,7 @@ import { ListIcon, GridIcon } from "@/public/icons/icons";
 import AboutPage from "@/components/AboutPage/about-page";
 import PropertyListItem from "@/components/Management/Properties/property-list-item";
 import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const Property = () => {
   const router = useRouter();
@@ -154,13 +155,8 @@ const Property = () => {
       {/* Card / List View */}
       <section>
         {gridView ? (
-          <div
-            className="grid gap-x-[30px] gap-y-5"
-            style={{
-              gridTemplateColumns: "repeat(auto-fit, minmax(370px, 1fr))",
-            }}
-          >
-            {properties.slice(0, 30).map((p) => (
+          <AutoResizingGrid minWidth={310}>
+            {properties.slice(0, 10).map((p) => (
               <PropertyCard
                 {...p}
                 key={p.id}
@@ -168,7 +164,7 @@ const Property = () => {
                 handleClickManage={handleClickManage}
               />
             ))}
-          </div>
+          </AutoResizingGrid>
         ) : (
           <div className="space-y-4">
             {properties.slice(0, 30).map((p) => (

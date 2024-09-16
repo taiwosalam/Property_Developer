@@ -10,6 +10,7 @@ import {
   swipePower,
 } from "@/utils/slider";
 import { motion, AnimatePresence } from "framer-motion";
+import ImageModal from "@/components/ImageModal/image-modal";
 import Sample from "@/public/empty/SampleProperty.jpeg";
 import Sample2 from "@/public/empty/SampleProperty2.jpeg";
 import Sample3 from "@/public/empty/SampleProperty3.jpeg";
@@ -30,6 +31,13 @@ interface PropertyCardProps extends PropertyProps {
   handleClickManage?: (id: string | number) => void;
 }
 
+const CURRENCY_SYMBOL = "₦";
+const NUMBER_FORMAT_LOCALE = "en-NG";
+
+const formatPrice = (price: number) => {
+  return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE).format(price);
+};
+
 const PropertyCard: React.FC<PropertyCardProps> = ({
   id,
   images,
@@ -47,6 +55,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const [[page, direction], setPage] = useState([0, 0]);
   const [isModalActive, setIsModalActive] = useState(false);
+  const [screenModal, setScreenModal] = useState(false);
 
   const paginate = (e: any, newDirection: number) => {
     e.preventDefault();
@@ -75,16 +84,23 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
   return (
     <div
-      className="rounded-xl max-w-[370px] mx-auto aspect-[0.961] relative"
+      className="rounded-2xl relative overflow-hidden"
       style={{ boxShadow: "4px 4px 10px 0px rgba(0, 0, 0, 0.05)" }}
     >
-      <div className="relative h-[200px] w-full overflow-hidden rounded-t-xl">
+      {/* Image Modal */}
+
+      <ImageModal
+        isOpen={screenModal}
+        onClose={() => setScreenModal(false)}
+        images={sampleImages.map((image) => image.src)}
+        currentIndex={imageIndex}
+      />
+
+      <div className="relative h-[200px] w-full overflow-hidden rounded-t-2xl group">
         <button
           type="button"
           aria-label="previous"
-          className={clsx(
-            "w-6 h-6 rounded-full grid place-items-center absolute z-[2] left-2 top-1/2 transform -translate-y-1/2"
-          )}
+          className="w-6 h-6 rounded-full grid place-items-center absolute z-[2] left-2 top-1/2 transform -translate-y-1/2"
           style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
           onClick={(e) => paginate(e, -1)}
         >
@@ -93,15 +109,22 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         <button
           type="button"
           aria-label="next"
-          className={clsx(
-            "w-6 h-6 rounded-full grid place-items-center absolute z-[2] right-2 top-1/2 transform -translate-y-1/2"
-          )}
+          className="w-6 h-6 rounded-full grid place-items-center absolute z-[2] right-2 top-1/2 transform -translate-y-1/2"
           style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
           onClick={(e) => paginate(e, 1)}
         >
           <NextIcon />
         </button>
 
+        {/* Top left corner */}
+        <div className="absolute z-[2] top-2 left-2 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <CameraIcon width={16} height={16} />
+          <span className="text-sm font-medium">
+            {`${imageIndex + 1}/${images.length}`}
+          </span>
+        </div>
+
+        {/* Bottom right corner */}
         <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
           <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />
@@ -114,6 +137,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
         <AnimatePresence initial={false} custom={direction}>
           <motion.img
+            onClick={() => setScreenModal(true)}
             key={page}
             src={sampleImages[imageIndex].src}
             alt={`${name} ${imageIndex + 1}`}
@@ -124,7 +148,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             exit="exit"
             transition={{
               x: { type: "spring", stiffness: 300, damping: 30 },
-              opacity: { duration: 0.2 },
             }}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
@@ -138,36 +161,43 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 paginate(e, -1);
               }
             }}
-            className="absolute inset-0"
+            className="absolute inset-0 cursor-pointer"
           />
         </AnimatePresence>
-        {isModalActive && isClickable && (
-          <div
-            className="absolute z-[3] inset-0 flex items-center justify-between px-[10%] gap-x-4"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
-            ref={modalRef}
-          >
-            <Button
-              type="button"
-              size="mid"
-              className="!py-[8px] !px-8 !font-bold"
-              onClick={() => handleClickManage?.(id)}
+        <AnimatePresence>
+          {isModalActive && isClickable && (
+            <motion.div
+              key="modal-buttons"
+              initial={{ y: "-100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "-100%" }}
+              transition={{ stiffness: 100, duration: 0.3 }}
+              className="absolute z-[3] inset-0 flex items-center justify-between px-[10%] gap-x-4"
+              style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+              ref={modalRef}
             >
-              Manage
-            </Button>
-            <Button
-              type="button"
-              size="mid"
-              className="py-[8px] !px-8 !font-bold"
-              onClick={() => handleClickPreview?.(id)}
-            >
-              Preview
-            </Button>
-          </div>
-        )}
+              <Button
+                type="button"
+                size="mid"
+                className="!py-[8px] !px-8 !font-bold"
+                onClick={() => handleClickManage?.(id)}
+              >
+                Manage
+              </Button>
+              <Button
+                type="button"
+                size="mid"
+                className="py-[8px] !px-8 !font-bold"
+                onClick={() => handleClickPreview?.(id)}
+              >
+                Preview
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
       <div
-        className="relative cursor-pointer bg-white rounded-b-xl p-4"
+        className="relative cursor-pointer bg-white rounded-b-2xl p-4"
         role="button"
         onClick={isClickable ? () => setIsModalActive(true) : undefined}
       >
@@ -190,48 +220,62 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             {type === "rent" ? "Rental Property" : "Gated Estate"}
           </p>
           <div className="text-right">
-            <p className="text-brand-primary text-xl font-bold">{price}</p>
+            <p className="text-brand-primary text-xl font-bold">{`${CURRENCY_SYMBOL}${formatPrice(
+              price
+            )}`}</p>
             <p className="text-[#606060] font-normal text-xs">Annual Returns</p>
             <p className="text-text-disabled font-medium text-sm">
-              <span className="text-highlight">₦700,000</span> / Annual Income
+              <span className="text-highlight">{`${CURRENCY_SYMBOL}${formatPrice(
+                700000
+              )}`}</span>{" "}
+              / Annual Income
             </p>
           </div>
         </div>
       </div>
-      {isModalActive && isClickable && (
-        <div className="bg-white px-8 pt-4 pb-10 text-xs grid grid-cols-3 gap-x-4 gap-y-2 absolute bottom-0 w-full rounded-b-xl h-[55%] z-[3] cursor-default">
-          <div>
-            <p className="text-label font-normal">Branch</p>
-            <p className="text-brand-9 font-bold">Joke Plaza Bodija</p>
-          </div>
-          <div>
-            <p className="text-label font-normal">Total Unit</p>
-            <p className="text-brand-9 font-bold">12</p>
-          </div>
-          <div>
-            <p className="text-label font-normal">
-              {type === "rent" ? "Available" : "Owing"} Units
-            </p>
-            <p className="text-brand-9 font-bold">5</p>
-          </div>
-          <div>
-            <p className="text-label font-normal">Account Officer</p>
-            <p className="text-brand-9 font-bold">Anikulapo Jesus</p>
-          </div>
-          <div>
-            <p className="text-label font-normal">Mobile Tenants</p>
-            <p className="text-brand-9 font-bold">12</p>
-          </div>
-          <div>
-            <p className="text-label font-normal">Web Tenants</p>
-            <p className="text-brand-9 font-bold">5</p>
-          </div>
-          <div>
-            <p className="text-label font-normal">Last Updated</p>
-            <p className="text-brand-9 font-bold">5 hours ago</p>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isModalActive && isClickable && (
+          <motion.div
+            key="Extra Info"
+            transition={{ stiffness: 100, duration: 0.3 }}
+            initial={{ y: "100%" }}
+            animate={{ y: "0" }}
+            exit={{ y: "100%" }}
+            className="bg-white px-8 pt-4 pb-10 text-xs grid grid-cols-3 gap-x-4 gap-y-2 absolute bottom-0 w-full rounded-b-2xl z-[3] cursor-default h-[55%]"
+          >
+            <div>
+              <p className="text-label font-normal">Branch</p>
+              <p className="text-brand-9 font-bold">Joke Plaza Bodija</p>
+            </div>
+            <div>
+              <p className="text-label font-normal">Total Unit</p>
+              <p className="text-brand-9 font-bold">12</p>
+            </div>
+            <div>
+              <p className="text-label font-normal">
+                {type === "rent" ? "Available" : "Owing"} Units
+              </p>
+              <p className="text-brand-9 font-bold">5</p>
+            </div>
+            <div>
+              <p className="text-label font-normal">Account Officer</p>
+              <p className="text-brand-9 font-bold">Anikulapo Jesus</p>
+            </div>
+            <div>
+              <p className="text-label font-normal">Mobile Tenants</p>
+              <p className="text-brand-9 font-bold">12</p>
+            </div>
+            <div>
+              <p className="text-label font-normal">Web Tenants</p>
+              <p className="text-brand-9 font-bold">5</p>
+            </div>
+            <div>
+              <p className="text-label font-normal">Last Updated</p>
+              <p className="text-brand-9 font-bold">5 hours ago</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

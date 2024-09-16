@@ -1,7 +1,10 @@
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
+import { unitTypes, unitSubtypes } from "@/data";
 
 const UnitDetails = () => {
+  const category = "residential"; // Data will be coming from API
+
   
   return (
     <div>
