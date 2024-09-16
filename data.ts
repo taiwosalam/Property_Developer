@@ -88,16 +88,20 @@ export interface State {
 
 export const propertyCategories = {
   "rental property": ["residential", "mixed use", "commercial"],
-  "gated estate/facility": ["gated estate", "facility"],
+  "gated estate/facility": ["estate", "facility"],
 };
+
+export type PropertyCreation = keyof typeof propertyCategories;
 
 export const unitTypes = {
   residential: ["apartment", "flat", "house", "land"],
   "mixed use": ["apartment", "flat", "house", "land"],
   commercial: ["land", "industry & factory"],
-  "gated estate": ["apartment"],
-  facility: [],
+  estate: ["apartment", "flat", "house", "land"],
+  facility: ["land", "industry & factory"],
 };
+
+export type Categories = keyof typeof unitTypes;
 
 export const unitSubtypes = {
   apartment: [
@@ -126,7 +130,7 @@ export const unitSubtypes = {
     "other",
   ],
   land: {
-    "residential & mixed use": ["sqm", "half plot", "plot", "acre", "hectare"],
+    residential: ["sqm", "half plot", "plot", "acre", "hectare"],
     commercial: [
       "joint venture",
       "agriculture land",
@@ -175,6 +179,8 @@ export const unitSubtypes = {
     "others",
   ],
 };
+
+export type UnitTypeKey = keyof typeof unitSubtypes;
 
 export const unitPreferences = {
   buildings: {
@@ -229,7 +235,7 @@ export const unitPreferences = {
   },
 };
 
-export const propertyFeatures = {
+export const unitFeatures = {
   lands: ["sqm", "half plot", "plot", "acre", "hectare"],
   buildings: [
     "bedroom",
@@ -274,7 +280,7 @@ export const unitFacilities = {
   ],
 };
 
-export const rentPeriod = [
+export const rentPeriods = [
   "daily",
   "weekly",
   "quarterly",

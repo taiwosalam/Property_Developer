@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { ChevronLeft } from "@/public/icons/icons";
 import PropertyDetails from "@/components/Management/Properties/property-details";
 import PropertySettings from "@/components/Management/Properties/property-settings";
@@ -14,6 +15,8 @@ const AddUnit = () => {
   const goBack = () => {
     router.back();
   };
+  //   useeffect to fetch property info from API with the Property ID.Change True/False Values to Yes/No. Set Unit Store Values.
+  useEffect(() => {}, []);
   return (
     <div>
       {/* Back Button & Page Title */}

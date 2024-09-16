@@ -19,6 +19,7 @@ const Select: React.FC<SelectProps> = ({
   isSearchable = true,
   hiddenInputClassName,
   inputContainerClassName,
+  dropdownRefClassName,
   resetKey, // <-- New prop for external reset control
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
@@ -97,7 +98,7 @@ const Select: React.FC<SelectProps> = ({
           {label}
         </Label>
       )}
-      <div className="relative" ref={dropdownRef}>
+      <div className={clsx("relative", dropdownRefClassName)} ref={dropdownRef}>
         {/* Trigger for the custom dropdown with embedded search field */}
         <div
           className={clsx(
@@ -184,7 +185,6 @@ const Select: React.FC<SelectProps> = ({
             )}
           </div>
         </div>
-
         {/* Options dropdown */}
         {isOpen && (
           <div

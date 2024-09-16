@@ -30,6 +30,9 @@ const Input: React.FC<InputProps> = ({
   validationErrors = {},
   onChange,
   inputClassName,
+  CURRENCY_SYMBOL,
+  readOnly,
+  disabled,
 }) => {
   // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -63,7 +66,13 @@ const Input: React.FC<InputProps> = ({
   }, [validationErrors, id]);
 
   return (
-    <div className={clsx("custom-flex-col gap-2", className)}>
+    <div
+      className={clsx(
+        "custom-flex-col gap-2",
+        disabled && "opacity-50",
+        className
+      )}
+    >
       {/* Render the label if provided */}
       {label && (
         <Label id={id} required={required}>
@@ -76,6 +85,12 @@ const Input: React.FC<InputProps> = ({
             <Picture src={leftIcon} alt="icon" size={24} />
           </div>
         )}
+        {CURRENCY_SYMBOL && (
+          <p className="absolute left-3 text-xs md:text-sm font-medium opacity-50">
+            {CURRENCY_SYMBOL}
+          </p>
+        )}
+
         <input
           id={id}
           name={id}
@@ -83,6 +98,8 @@ const Input: React.FC<InputProps> = ({
           ref={inputRef}
           required={required}
           placeholder={placeholder}
+          readOnly={readOnly}
+          disabled={disabled}
           // Reset validation error when the user interacts with the input
           onInput={() => setValidationError(null)}
           // Call onChange prop if provided when input value changes
@@ -95,6 +112,8 @@ const Input: React.FC<InputProps> = ({
             {
               "pr-11": type === "password", // Add padding-right if the input type is password (for icon)
               "pl-11": leftIcon, // Add padding-left if leftIcon is provided
+              "pl-10": CURRENCY_SYMBOL,
+              "cursor-not-allowed": disabled,
             },
 
             inputClassName

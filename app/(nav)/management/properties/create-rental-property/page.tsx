@@ -12,6 +12,7 @@ import {
 } from "@/public/icons/icons";
 import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import Image from "next/image";
+import { rentPeriods, propertyCategories } from "@/data";
 import { type StateType } from "./data";
 
 const CreateProperty = () => {
@@ -296,7 +297,7 @@ const CreateProperty = () => {
             inputClassName="bg-white rounded-[8px]"
           />
           <Select
-            options={["residential", "mixed use", "commercial"]}
+            options={propertyCategories["rental property"]}
             id="category"
             label="Category"
             isSearchable={false}
@@ -355,7 +356,7 @@ const CreateProperty = () => {
               onClick={addStaff}
               className="text-brand-9 text-xs md:text-sm font-normal md:self-end md:justify-self-start"
             >
-              {`${staff.length > 0 ? "Add more staff" : "Add Staff"}`}
+              {`${staff.length > 0 ? "Add More Staff" : "Add Staff"}`}
             </button>
           )}
           <TextArea
@@ -408,14 +409,7 @@ const CreateProperty = () => {
           <Select
             id="fee_period"
             label="Fee Periods"
-            options={[
-              "daily",
-              "weekly",
-              "monthly",
-              "quarterly",
-              "bi-annually",
-              "yearly",
-            ]}
+            options={rentPeriods}
             isSearchable={false}
             inputContainerClassName="bg-white"
             resetKey={resetKey}

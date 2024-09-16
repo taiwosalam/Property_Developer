@@ -18,4 +18,7 @@ export interface InputProps {
   validationErrors?: ValidationErrors;
   onChange?: (data: string) => void;
   inputClassName?: string;
+  CURRENCY_SYMBOL?: string;
+  readOnly?: boolean;
+  disabled?: boolean;
 }
