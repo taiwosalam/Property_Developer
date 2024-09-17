@@ -1,5 +1,6 @@
 "use client";
 
+import { estateSettingsDta } from "@/components/Management/Rent And Unit/data";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
 import { OccupantProfile } from "@/components/Management/Rent And Unit/occupant-profile";
@@ -12,7 +13,10 @@ const StartRent = () => {
       </div>
       <section className="space-y-6 pb-16">
         <EstateDetails title="Unit Details" />
-        <EstateSettings title="Property Settings" />
+        <EstateSettings
+          title="Property Settings"
+          estateSettingsDta={estateSettingsDta}
+        />
         <OccupantProfile
           title="Tenant"
           title1="Commission & Fees"
