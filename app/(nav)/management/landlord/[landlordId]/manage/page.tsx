@@ -20,6 +20,7 @@ import {
 } from "@/components/Management/landlord-tenant-info-components";
 import { getOneLandlord } from "../../data";
 import PropertyCard from "@/components/Management/Properties/property-card";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 type LandlordPageData = {
   avatar: string;
@@ -91,9 +92,9 @@ const ManageLandlord = () => {
   if (error) return <div>Error: {error.message}</div>;
   return (
     <div className="custom-flex-col gap-10">
-      <div className="grid grid-cols-2 gap-y-5 gap-x-8">
+      <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
         <LandlordTenantInfoBox style={{ padding: "24px 40px" }}>
-          <div className="flex gap-5">
+          <div className="flex flex-col xl:flex-row gap-5">
             <div className="flex items-start">
               <Picture
                 src={LandlordPageData?.avatar}
@@ -132,16 +133,28 @@ const ManageLandlord = () => {
                 </div>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Button>message</Button>
+                <Button size="base_medium" className="py-2 px-8">
+                  message
+                </Button>
                 <Button
-                  style={{ color: "#01BA4C", backgroundColor: "#E6FAEE" }}
+                  variant="light_green"
+                  size="base_medium"
+                  className="py-2 px-8"
                 >
                   unflag
                 </Button>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Button href="/management/landlord/1/manage/edit">edit</Button>
-                <Button>update with ID</Button>
+                <Button
+                  href="/management/tenants/1/manage/edit"
+                  size="base_medium"
+                  className="py-2 px-8"
+                >
+                  edit
+                </Button>
+                <Button size="base_medium" className="py-2 px-8">
+                  update with ID
+                </Button>
               </div>
             </div>
           </div>
@@ -206,7 +219,7 @@ const ManageLandlord = () => {
         />
       </div>
       <LandlordTenantInfoSection title="Property Managed">
-        <div className="flex gap-8 flex-wrap">
+        <AutoResizingGrid minWidth={250}>
           {LandlordPageData?.properties_managed.map((property) => (
             <PropertyCard
               key={property.id}
@@ -223,7 +236,7 @@ const ManageLandlord = () => {
               }}
             />
           ))}
-        </div>
+        </AutoResizingGrid>
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="statement">
         <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">

@@ -24,6 +24,7 @@ import {
   VideoIcon,
   CameraIcon,
 } from "@/public/icons/icons";
+import { empty } from "@/app/config";
 
 interface PropertyCardProps extends PropertyProps {
   isClickable?: boolean;
@@ -139,7 +140,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <motion.img
             onClick={() => setScreenModal(true)}
             key={page}
-            src={sampleImages[imageIndex].src}
+            src={sampleImages[imageIndex]?.src || empty}
             alt={`${name} ${imageIndex + 1}`}
             custom={direction}
             variants={variants}

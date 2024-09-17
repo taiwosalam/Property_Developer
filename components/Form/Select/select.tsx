@@ -131,7 +131,7 @@ const Select: React.FC<SelectProps> = ({
               ref={inputRef}
               type="text"
               className={clsx(
-                "flex-1 bg-transparent outline-none text-xs md:text-sm font-normal",
+                "w-full flex-1 bg-transparent outline-none text-xs md:text-sm font-normal",
                 inputTextClassName
               )}
               placeholder={placeholder}
