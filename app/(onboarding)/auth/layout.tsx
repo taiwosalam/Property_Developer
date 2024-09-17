@@ -20,7 +20,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
           alt="background"
           fill
           sizes="100vw"
-          className="object-cover"
+          className="object-cover opacity-30"
         />
       </div>
       <div className="relative h-full flex gap-10 p-[20px] sm:p-[60px]">
