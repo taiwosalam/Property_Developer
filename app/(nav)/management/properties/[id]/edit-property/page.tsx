@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft } from "@/public/icons/icons";
 
 // Imports
-import CreateProperty from "../../create-rental-property/page";
 import UnitCard from "@/components/Management/Properties/unit-card";
+import CreatePropertyForm from "@/components/Management/Properties/create-property-form";
 
 const EditProperty = () => {
   const router = useRouter();
@@ -26,7 +26,7 @@ const EditProperty = () => {
         </button>
         <p className="text-black font-bold text-lg lg:text-xl">Edit Property</p>
       </div>
-      <CreateProperty editMode />
+      <CreatePropertyForm editMode />
       <div className="custom-flex-col gap-10">
         {Array(3)
           .fill(null)

@@ -1,24 +1,41 @@
 "use client";
-import { useState, useEffect } from "react";
-import Input from "@/components/Form/Input/input";
+
+import React from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Select from "@/components/Form/Select/select";
-import TextArea from "@/components/Form/TextArea/textarea";
+import { useState, useEffect } from "react";
+
+// Types
+import type { CreatePropertyFormProps } from "./types";
+import type { StateType } from "@/app/(nav)/management/properties/create-rental-property/data";
+
+// Images
 import {
-  ChevronLeft,
   PlusIcon,
+  ChevronLeft,
   DeleteIconX,
   DeleteIconOrange,
 } from "@/public/icons/icons";
-import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
-import Image from "next/image";
-import { type StateType } from "./data";
 
-const CreateProperty = () => {
+// Imports
+import clsx from "clsx";
+import Input from "@/components/Form/Input/input";
+import Select from "@/components/Form/Select/select";
+import Button from "@/components/Form/Button/button";
+import TextArea from "@/components/Form/TextArea/textarea";
+import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import DeletePropertyModal from "@/components/Management/Properties/delete-property-modal";
+
+const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
+  editMode,
+}) => {
   const router = useRouter();
+
   const goBack = () => {
     router.back();
   };
+
   const [state, setState] = useState<StateType>({
     selectedState: "",
     selectedLGA: "",
@@ -33,6 +50,7 @@ const CreateProperty = () => {
     accountOfficerOptions: [],
     resetKey: 0,
   });
+
   const {
     selectedState,
     selectedLGA,
@@ -175,21 +193,37 @@ const CreateProperty = () => {
   };
 
   return (
-    <div className="pb-[80px]">
+    <div
+      className={clsx({
+        "pb-[80px]": !editMode,
+      })}
+    >
       {/* Back Button & Page Title */}
-      <div className="flex items-center gap-1 mb-5 lg:mb-8">
-        <button
-          type="button"
-          aria-label="Go Back"
-          onClick={goBack}
-          className="p-2"
-        >
-          <ChevronLeft />
-        </button>
-        <p className="text-black font-bold text-lg lg:text-xl">
-          Create Rental Property
-        </p>
-      </div>
+      {editMode ? (
+        <>
+          <div className="flex gap-[2px] text-xs md:text-sm lg:text-base font-medium mb-4">
+            <span className="text-status-error-primary">*</span>
+            <p className="text-primary-navy font-bold text-lg lg:text-xl">
+              Property Details
+            </p>
+          </div>
+          <hr className="my-4" />
+        </>
+      ) : (
+        <div className="flex items-center gap-1 mb-5 lg:mb-8">
+          <button
+            type="button"
+            aria-label="Go Back"
+            onClick={goBack}
+            className="p-2"
+          >
+            <ChevronLeft />
+          </button>
+          <p className="text-black font-bold text-lg lg:text-xl">
+            Create Rental Property
+          </p>
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="max-w-[970px]">
         <input name="property_tag" type="hidden" value="rental" readOnly />
         {/* Backend is Looking for it */}
@@ -495,25 +529,57 @@ const CreateProperty = () => {
             inputClassName="bg-white rounded-[8px]"
           />
         </div>
-        <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
-          <button
-            type="reset"
-            className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
-            onClick={handleReset}
-          >
-            Clear Fields
-          </button>
-          <button
-            type="submit"
-            className="bg-brand-9 text-white hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9"
-            onClick={() => {}}
-          >
-            Add Unit
-          </button>
+        <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
+          {editMode ? (
+            <>
+              <Modal>
+                <ModalTrigger asChild>
+                  <Button
+                    size="sm_medium"
+                    variant="light_red"
+                    className="py-2 px-7"
+                  >
+                    delete property
+                  </Button>
+                </ModalTrigger>
+                <ModalContent>
+                  <DeletePropertyModal />
+                </ModalContent>
+              </Modal>
+              <Button
+                type="button"
+                size="sm_medium"
+                variant="sky_blue"
+                className="py-2 px-7"
+              >
+                Add more unit
+              </Button>
+              <Button type="button" size="sm_medium" className="py-2 px-7">
+                update
+              </Button>
+            </>
+          ) : (
+            <>
+              <button
+                type="reset"
+                className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
+                onClick={handleReset}
+              >
+                Clear Fields
+              </button>
+              <button
+                type="submit"
+                className="bg-brand-9 text-white hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9"
+                onClick={() => {}}
+              >
+                Add Unit
+              </button>
+            </>
+          )}
         </div>
       </form>
     </div>
   );
 };
 
-export default CreateProperty;
+export default CreatePropertyForm;

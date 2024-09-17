@@ -40,7 +40,7 @@ const Property = () => {
     router.push(`/management/properties/${id}`);
   };
   const handleClickManage = (id: string | number) => {
-    // router.push(`/management/property/${id}`);
+    router.push(`/management/properties/${id}/edit-property`);
   };
 
   return (
