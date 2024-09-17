@@ -46,7 +46,7 @@ const Dashboard = () => {
 
   const { gridView, total_pages, current_page } = state;
   const { branchId } = useParams();
-  const { isMobile } = useWindowWidth();
+  const { isMobile, isTablet } = useWindowWidth();
 
   const setGridView = () => {
     setState((state) => ({ ...state, gridView: true }));
@@ -60,6 +60,8 @@ const Dashboard = () => {
   const setSelectedState = (selectedState: string) => {
     setState((state) => ({ ...state, selectedState }));
   };
+
+  const itemsPerColumn = Math.ceil(dashboardCardData.length / 3);
 
   const BranchFilters = [{ label: "Alphabetically", value: "alphabetically" }];
 
@@ -126,7 +128,7 @@ const Dashboard = () => {
       </div>
       <div className="w-full h-full xl:flex gap-x-10">
         <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-7">
-          <>
+          <div className="bg-white p-6 space-y-4">
             <div className="ml-auto flex w-[390px] px-4 bg-[#F5F5F5] rounded-md items-center justify-end">
               <DatePickerWithRange
                 selectedRange={
@@ -190,19 +192,43 @@ const Dashboard = () => {
                 upvalue={54}
               />
             </div>
-          </>
-          <div className="w-full flex flex-row overflow-x-scroll md:overflow-auto py-1.5 md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
-            {dashboardCardData.map((card, index) => (
-              <Card
-                key={index}
-                title={card.title}
-                icon={card.icon}
-                value={card.value}
-                subvalue={card.subValue}
-                bg={card.bg}
-              />
-            ))}
           </div>
+          {isMobile || isTablet ? (
+            <div className="w-full flex flex-row py-1.5 xl:py-7 overflow-x-scroll md:overflow-hidden md:grid md:grid-cols-2 gap-3 no-scrollbar">
+              {dashboardCardData.map((card, index) => (
+                <Card
+                  key={index}
+                  title={card.title}
+                  icon={card.icon}
+                  value={card.value}
+                  subvalue={card.subValue}
+                  bg={card.bg}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="w-full grid lg:grid-cols-3 gap-3">
+              {[0, 1, 2].map((columnIndex) => (
+                <div key={columnIndex} className="flex flex-col gap-3">
+                  {dashboardCardData
+                    .slice(
+                      columnIndex * itemsPerColumn,
+                      (columnIndex + 1) * itemsPerColumn
+                    )
+                    .map((card, index) => (
+                      <Card
+                        key={index}
+                        title={card.title}
+                        icon={card.icon}
+                        value={card.value}
+                        subvalue={card.subValue}
+                        bg={card.bg}
+                      />
+                    ))}
+                </div>
+              ))}
+            </div>
+          )}
           {!isMobile && (
             <div className="w-full h-fit">
               <DashboardChart visibleRange={false} />

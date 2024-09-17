@@ -56,7 +56,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
   };
 
   const variants = cva(
-    "h-[500px] max-h-[500px] min-w-[350px] lg:min-w-[45%] xl:min-w-[32%] border-2 border-dashed rounded-lg overflow-y-scroll no-scrollbar",
+    "h-[500px] max-h-[500px] min-w-[350px] lg:min-w-[45%] xl:min-w-[32%] border-2 border-dashed rounded-lg overflow-y-scroll no-scrollbar bg-white",
     {
       variants: {
         dragging: {
@@ -76,7 +76,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
         dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
       })}
     >
-      <CardHeader className="px-4 font-semibold text-left flex flex-row space-between items-center">
+      <CardHeader className="px-4 py-2 font-semibold text-left flex flex-row space-between items-center">
         <Button
           variant={"ghost"}
           {...attributes}
