@@ -79,10 +79,20 @@ export const LandlordTenantInfoDocument: React.FC<{}> = () => (
 
 export const LandlordTenantInfoEditSection: React.FC<{
   title: string;
+  style?: CSSProperties;
+  headingStyle?: CSSProperties;
   children: React.ReactNode;
-}> = ({ title, children }) => (
-  <div className="p-10 pt-5 rounded-[20px] bg-white custom-flex-col gap-10">
-    <h2 className="text-primary-navy text-xl font-bold capitalize">{title}</h2>
+}> = ({ title, style, children, headingStyle }) => (
+  <div
+    className="p-6 xl:p-10 pt-5 rounded-[20px] bg-white custom-flex-col gap-10"
+    style={style}
+  >
+    <h2
+      className="text-primary-navy text-xl font-bold capitalize"
+      style={headingStyle}
+    >
+      {title}
+    </h2>
     {children}
   </div>
 );
@@ -90,7 +100,7 @@ export const LandlordTenantInfoEditSection: React.FC<{
 export const LandlordTenantInfoEditGrid: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => (
-  <div className="landlord-tenant-edit-section flex flex-wrap gap-y-5 gap-x-[60px]">
+  <div className="grid grid-cols-2 gap-y-5 gap-x-6 xl:gap-x-[60px]">
     {children}
   </div>
 );

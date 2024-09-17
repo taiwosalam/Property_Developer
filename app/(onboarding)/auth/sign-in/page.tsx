@@ -40,7 +40,7 @@ const SignIn = () => {
     <AuthForm
       onFormSubmit={handleSignIn}
       setValidationErrors={setErrorMsgs}
-      className="custom-flex-col gap-10"
+      className="custom-flex-col gap-10 pt-6"
     >
       <AuthHeading title="welcome!">
         Enter your registered email and password to log in to your account.

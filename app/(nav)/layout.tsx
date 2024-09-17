@@ -3,6 +3,9 @@
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
+// Images
+import SidenavArrow from "@/public/icons/sidenav-arrow.svg";
+
 // Imports
 import clsx from "clsx";
 import gsap from "gsap";
@@ -16,6 +19,7 @@ import useWindowWidth from "@/hooks/useWindowWidth";
 import { trackOutsideClick } from "@/utils/track-outside-click";
 import { useAuthStoreSelectors } from "@/store/authstrore";
 import { getToken } from "@/utils/cookies";
+import Picture from "@/components/Picture/picture";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
@@ -127,11 +131,15 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   }
                 }}
               >
-                <SVG
-                  type="sidebar"
-                  color={primaryColor as Color}
-                  className="w-8 h-8"
-                />
+                {sidenavIsOpen ? (
+                  <SVG
+                    type="sidebar"
+                    color={primaryColor as Color}
+                    className="w-8 h-8"
+                  />
+                ) : (
+                  <Picture src={SidenavArrow} size={32} />
+                )}
               </button>
               <p className="capitalize text-text-primary text-sm font-medium">
                 {pathname.split("/").slice(1).join(" > ")}

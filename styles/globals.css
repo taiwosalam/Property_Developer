@@ -234,10 +234,6 @@ input[type="number"]::-webkit-inner-spin-button {
   pointer-events: none;
 }
 
-.landlord-tenant-edit-section .custom-flex-col.gap-2 {
-  width: 40%;
-}
-
 .sidenav-collapsed p {
   display: none;
 }

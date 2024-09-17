@@ -24,6 +24,7 @@ import {
   VideoIcon,
   CameraIcon,
 } from "@/public/icons/icons";
+import { empty } from "@/app/config";
 
 interface PropertyCardProps extends PropertyProps {
   isClickable?: boolean;
@@ -84,7 +85,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
   return (
     <div
-      className="rounded-2xl relative overflow-hidden"
+      className="rounded-2xl relative overflow-hidden bg-white"
       style={{ boxShadow: "4px 4px 10px 0px rgba(0, 0, 0, 0.05)" }}
     >
       {/* Image Modal */}
@@ -139,7 +140,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <motion.img
             onClick={() => setScreenModal(true)}
             key={page}
-            src={sampleImages[imageIndex].src}
+            src={sampleImages[imageIndex]?.src || empty}
             alt={`${name} ${imageIndex + 1}`}
             custom={direction}
             variants={variants}
@@ -197,7 +198,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         </AnimatePresence>
       </div>
       <div
-        className="relative cursor-pointer bg-white rounded-b-2xl p-4"
+        className="relative cursor- rounded-b-2xl p-4"
         role="button"
         onClick={isClickable ? () => setIsModalActive(true) : undefined}
       >

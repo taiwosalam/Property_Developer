@@ -23,9 +23,9 @@ const EditLandlord = () => {
   const states = getAllStates();
 
   return (
-    <div className="custom-flex-col gap-10">
+    <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
       <h2 className="text-black text-xl font-medium">Edit Landlord</h2>
-      <div className="flex gap-8">
+      <div className="flex flex-col lg:flex-row gap-8">
         <div className="custom-flex-col gap-5 flex-1">
           <LandlordTenantInfoEditSection title="profile">
             <LandlordTenantInfoEditGrid>
@@ -135,7 +135,7 @@ const EditLandlord = () => {
             </LandlordTenantInfoEditGrid>
           </LandlordTenantInfoEditSection>
         </div>
-        <div className="w-[334px] custom-flex-col gap-5">
+        <div className="w-full lg:w-[334px] custom-flex-col gap-5">
           <LandlordTenantInfoEditSection title="edit avatar">
             <div className="flex">
               <div className="relative">

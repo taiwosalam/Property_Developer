@@ -16,13 +16,14 @@ import {
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
 } from "@/components/Management/landlord-tenant-info-components";
+import UnitItem from "@/components/Management/Properties/unit-item";
 
 const ManageTenant = () => {
   return (
     <div className="custom-flex-col gap-10">
-      <div className="grid grid-cols-2 gap-y-5 gap-x-8">
+      <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
         <LandlordTenantInfoBox style={{ padding: "24px 40px" }}>
-          <div className="flex gap-5">
+          <div className="flex flex-col xl:flex-row gap-5">
             <div className="flex items-start">
               <Picture src={Avatar} alt="profile picture" size={120} rounded />
             </div>
@@ -56,16 +57,28 @@ const ManageTenant = () => {
                 </div>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Button>message</Button>
+                <Button size="base_medium" className="py-2 px-8">
+                  message
+                </Button>
                 <Button
-                  style={{ color: "#01BA4C", backgroundColor: "#E6FAEE" }}
+                  variant="light_green"
+                  size="base_medium"
+                  className="py-2 px-8"
                 >
                   unflag
                 </Button>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Button href="/management/tenants/1/manage/edit">edit</Button>
-                <Button>update with ID</Button>
+                <Button
+                  href="/management/tenants/1/manage/edit"
+                  size="base_medium"
+                  className="py-2 px-8"
+                >
+                  edit
+                </Button>
+                <Button size="base_medium" className="py-2 px-8">
+                  update with ID
+                </Button>
               </div>
             </div>
           </div>
@@ -98,8 +111,11 @@ const ManageTenant = () => {
           }}
         />
       </div>
+      <LandlordTenantInfoSection title="current rent">
+        <UnitItem />
+      </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="Property">
-        <div className="flex gap-8"></div>
+        <UnitItem />
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="statement">
         <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
@@ -109,12 +125,13 @@ const ManageTenant = () => {
             </colgroup>
             <thead>
               <tr>
-                <th>S/N</th>
-                <th>payment date</th>
-                <th>amount paid</th>
+                <th></th>
+                <th>name</th>
+                <th>payment ID</th>
                 <th>details</th>
-                <th>start date</th>
-                <th>due date</th>
+                <th>credit</th>
+                <th>debit</th>
+                <th>date</th>
               </tr>
             </thead>
             <tbody>
@@ -123,19 +140,27 @@ const ManageTenant = () => {
                 .map((_, idx) => (
                   <tr key={idx}>
                     <td>
-                      <p>{idx + 1}</p>
+                      <Picture
+                        src={Avatar}
+                        alt="profile picture"
+                        size={40}
+                        rounded
+                      />
                     </td>
                     <td>
-                      <p>12/01/2023</p>
+                      <p>Abimbola Adedeji</p>
                     </td>
                     <td>
-                      <p>₦ 100,000</p>
+                      <p>22132876554444</p>
                     </td>
                     <td>
                       <p>Rent cost: Start date: Sept 22, 2020</p>
                     </td>
                     <td>
-                      <p>12/01/2023</p>
+                      <p className="text-success-3">₦ 100,000</p>
+                    </td>
+                    <td>
+                      <p className="text-status-error-primary">--- ---</p>
                     </td>
                     <td>
                       <p>12/12/12</p>
@@ -147,10 +172,14 @@ const ManageTenant = () => {
         </div>
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="previous rent">
-        <div></div>
+        <div className="opacity-40">
+          <UnitItem />
+        </div>
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="previous property">
-        <div></div>
+        <div className="opacity-40">
+          <UnitItem />
+        </div>
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="shared documents">
         <LandlordTenantInfoSection minimized title="invoice">

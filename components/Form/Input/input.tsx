@@ -106,7 +106,7 @@ const Input: React.FC<InputProps> = ({
           <button
             type="button"
             onClick={handleInputTypeChange}
-            className="absolute p-1 bg-neutral-2 right-3"
+            className="absolute p-1 right-3"
             aria-label="Toggle password visibility"
           >
             <Image

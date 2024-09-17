@@ -31,7 +31,7 @@ const NavSwitchUserSwitch = () => {
         onClick={handleSwitch}
         className="w-full h-full p-4 flex items-center justify-between gap-2 rounded-lg bg-[#F1F1F1]"
       >
-        <p className="text-[#0a132ea6] text-base font-semibold capitalize">
+        <p className="text-[#0a132ea6] text-base font-semibold capitalize custom-truncated">
           {active}
         </p>
         <ChevronDown size={20} color="#0a132ea6" />

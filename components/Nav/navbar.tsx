@@ -118,7 +118,7 @@ const Navbar = () => {
                 </div>
               </div>
             </DropdownTrigger>
-            <DropdownContent className="custom-flex-col gap-4 pb-[10px] min-w-[300px] sm:min-w-[350px] text-sm sm:text-base font-normal capitalize">
+            <DropdownContent className="custom-flex-col gap-2 pb-[10px] min-w-[300px] sm:min-w-[350px] text-sm sm:text-base font-normal capitalize">
               <NavProfileDropdown />
             </DropdownContent>
           </Dropdown>
