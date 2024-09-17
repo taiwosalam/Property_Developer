@@ -48,7 +48,7 @@ const CreateNewPassword = () => {
         />
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex gap-2 items-center justify-between">
         {/* Link to Terms & Conditions */}
         <AuthAction href="" linkText="Terms & Condition">
           By creating an account, you are consenting to our

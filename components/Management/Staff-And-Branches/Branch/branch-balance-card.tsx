@@ -50,7 +50,7 @@ const BranchBalanceCard = ({
     <div className={clsx("space-y-2", className)}>
       <div className="p-5 relative custom-primary-bg rounded-lg">
         <div className="absolute inset-0">
-          <Image src={WalletBG} alt="wallet background" fill sizes="400px" />
+          <Image src={WalletBG} alt="wallet background" fill sizes="400px" className="object-cover" />
         </div>
         <div className="relative space-y-3">
           {/* Header Section */}
