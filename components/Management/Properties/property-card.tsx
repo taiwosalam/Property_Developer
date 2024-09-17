@@ -16,7 +16,7 @@ import Sample2 from "@/public/empty/SampleProperty2.jpeg";
 import Sample3 from "@/public/empty/SampleProperty3.jpeg";
 import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
-
+import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import {
   LocationIcon,
   NextIcon,
@@ -30,13 +30,6 @@ interface PropertyCardProps extends PropertyProps {
   handleClickPreview?: (id: string | number) => void;
   handleClickManage?: (id: string | number) => void;
 }
-
-const CURRENCY_SYMBOL = "₦";
-const NUMBER_FORMAT_LOCALE = "en-NG";
-
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE).format(price);
-};
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
   id,
@@ -220,14 +213,14 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             {type === "rent" ? "Rental Property" : "Gated Estate"}
           </p>
           <div className="text-right">
-            <p className="text-brand-primary text-xl font-bold">{`${CURRENCY_SYMBOL}${formatPrice(
-              price
-            )}`}</p>
+            <p className="text-brand-primary text-xl font-bold">{`${
+              currencySymbols["NAIRA"]
+            }${formatNumber(price)}`}</p>
             <p className="text-[#606060] font-normal text-xs">Annual Returns</p>
             <p className="text-text-disabled font-medium text-sm">
-              <span className="text-highlight">{`${CURRENCY_SYMBOL}${formatPrice(
-                700000
-              )}`}</span>{" "}
+              <span className="text-highlight">{`$${
+                currencySymbols["NAIRA"]
+              }${formatNumber(700000)}`}</span>{" "}
               / Annual Income
             </p>
           </div>

@@ -24,7 +24,6 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const optionsRef = useRef<HTMLDivElement>(null);
 
   const handleToggleDropdown = () => {
     setIsOpen((prev) => !prev);
@@ -66,6 +65,8 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
           {label}
         </Label>
       )}
+      {/* Hidden input to hold the selected values */}
+      <input type="hidden" name={id} value={selectedItems.join(",") || ""} />
 
       <div className="relative" ref={dropdownRef}>
         <div
@@ -74,7 +75,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
         >
           <span
             className={clsx(
-              "flex-1 capitalize text-text-disabled text-xs md:text-sm font-normal",
+              "flex-1 capitalize text-xs md:text-sm font-normal",
               inputTextClassName
             )}
           >

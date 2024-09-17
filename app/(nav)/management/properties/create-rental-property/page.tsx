@@ -73,7 +73,7 @@ const CreateProperty = () => {
       return true;
     });
 
-    const finalImages = [...images, ...newImages].slice(0, 2); // Limit to 2 images
+    const finalImages = [...images, ...newImages].slice(0, 6); // Limit to 2 images
     setState((x) => ({ ...x, images: finalImages }));
 
     // Reset input value to allow re-uploading the same file
@@ -196,13 +196,13 @@ const CreateProperty = () => {
         {/* Backend is Looking for it */}
         <div className="mb-5 lg:mb-8">
           <p className="mb-5">
-            Set property pictures for easy recognition (maximum of 2 images).
+            Set property pictures for easy recognition (maximum of 6 images).
           </p>
           <div className="flex gap-4 overflow-x-auto">
             {images.map((image, index) => (
               <div
                 key={index}
-                className="relative w-[285px] h-[155px] rounded-lg overflow-hidden border border-gray-300"
+                className="flex-shrink-0 relative w-[285px] h-[155px] rounded-lg overflow-hidden border border-gray-300"
               >
                 <Image
                   src={URL.createObjectURL(image)}
@@ -220,7 +220,7 @@ const CreateProperty = () => {
                 </button>
               </div>
             ))}
-            {images.length < 2 && (
+            {images.length < 6 && (
               <label
                 htmlFor="upload"
                 className="w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"

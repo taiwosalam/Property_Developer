@@ -4,27 +4,28 @@ import { rentPeriods } from "@/data";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { useState, useEffect } from "react";
 import { DeleteIconX } from "@/public/icons/icons";
+import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 
-const NUMBER_FORMAT_LOCALE = "en-NG";
-const currencyFormatter = new Intl.NumberFormat(NUMBER_FORMAT_LOCALE);
+const emptyStateValues = {
+  rentAmount: 0,
+  agencyFee: 0,
+  legalFee: 0,
+  serviceCharge: 0,
+  cautionFee: 0,
+  inspectionFee: 0,
+  otherCharges: 0,
+  totalPackage: 0,
+};
 
 const UnitBreakdownNewTenant = () => {
+  const formResetKey = useAddUnitStore((s) => s.formResetKey);
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const agencyFeePercentageString = propertySettings?.agency_fee || "10%";
   const agencyFeePercentage = parseFloat(agencyFeePercentageString || "0"); // Convert '5%' to 5
-  const CURRENCY_SYMBOL = "₦"; // Should be gotten from store from API
+  const CURRENCY_SYMBOL = currencySymbols["NAIRA"]; // Should be gotten from store from API
   const [otherChargesLabel, setOtherChargesLabel] = useState("");
 
-  const [formValues, setFormValues] = useState({
-    rentAmount: 0,
-    agencyFee: 0,
-    legalFee: 0,
-    serviceCharge: 0,
-    cautionFee: 0,
-    inspectionFee: 0,
-    otherCharges: 0,
-    totalPackage: 0,
-  });
+  const [formValues, setFormValues] = useState(emptyStateValues);
   const {
     rentAmount,
     agencyFee,
@@ -92,6 +93,12 @@ const UnitBreakdownNewTenant = () => {
     otherCharges,
   ]);
 
+  // reset form
+  useEffect(() => {
+    setOtherChargesLabel("");
+    setFormValues(emptyStateValues);
+  }, [formResetKey]);
+
   return (
     <div>
       <h4 className="text-primary-navy text-lg md:text-xl font-bold">
@@ -105,6 +112,7 @@ const UnitBreakdownNewTenant = () => {
           options={rentPeriods}
           label="Rent Period"
           inputContainerClassName="bg-white"
+          resetKey={formResetKey}
         />
         <Input
           id="rent_amount"
@@ -112,7 +120,7 @@ const UnitBreakdownNewTenant = () => {
           required
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={currencyFormatter.format(rentAmount)}
+          value={formatNumber(rentAmount)}
           onChange={(value) => handleInputChange("rentAmount", value)}
           type="text"
         />
@@ -121,7 +129,7 @@ const UnitBreakdownNewTenant = () => {
           label="Service Charge"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={currencyFormatter.format(serviceCharge)}
+          value={formatNumber(serviceCharge)}
           onChange={(value) => handleInputChange("serviceCharge", value)}
           type="text"
         />
@@ -130,7 +138,7 @@ const UnitBreakdownNewTenant = () => {
           label="Agency Fee"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={currencyFormatter.format(agencyFee)}
+          value={formatNumber(agencyFee)}
           readOnly
           disabled
           type="text"
@@ -140,7 +148,7 @@ const UnitBreakdownNewTenant = () => {
           label="Legal Fee"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={currencyFormatter.format(legalFee)}
+          value={formatNumber(legalFee)}
           onChange={(value) => handleInputChange("legalFee", value)}
           type="text"
         />
@@ -149,7 +157,7 @@ const UnitBreakdownNewTenant = () => {
           label="Caution Fee"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={currencyFormatter.format(cautionFee)}
+          value={formatNumber(cautionFee)}
           onChange={(value) => handleInputChange("cautionFee", value)}
           type="text"
         />
@@ -158,7 +166,7 @@ const UnitBreakdownNewTenant = () => {
           label="Inspection Fee"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={currencyFormatter.format(inspectionFee)}
+          value={formatNumber(inspectionFee)}
           onChange={(value) => handleInputChange("inspectionFee", value)}
           type="text"
         />
@@ -169,7 +177,7 @@ const UnitBreakdownNewTenant = () => {
               label={otherChargesLabel}
               inputClassName="bg-white"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-              value={currencyFormatter.format(otherCharges)}
+              value={formatNumber(otherCharges)}
               onChange={(value) => handleInputChange("otherCharges", value)}
               type="text"
             />
@@ -199,7 +207,8 @@ const UnitBreakdownNewTenant = () => {
           id="open_to_negotiation"
           label="Are you open to negotiation?"
           inputContainerClassName="bg-white"
-          dropdownRefClassName="max-w-[160px]"
+          dropdownRefClassName="!w-[160px]"
+          resetKey={formResetKey}
         />
         <Input
           required
@@ -207,7 +216,7 @@ const UnitBreakdownNewTenant = () => {
           label="Total Package"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={currencyFormatter.format(totalPackage)}
+          value={formatNumber(totalPackage)}
           readOnly
           disabled
           type="text"

@@ -69,7 +69,7 @@ const Input: React.FC<InputProps> = ({
     <div
       className={clsx(
         "custom-flex-col gap-2",
-        disabled && "opacity-50",
+        disabled && "opacity-60",
         className
       )}
     >
