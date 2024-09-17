@@ -2,7 +2,23 @@ import Image from "next/image";
 import Sample from "@/public/empty/SampleProperty.jpeg";
 import { CameraIcon } from "@/public/icons/icons";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
+import { useAddUnitStore } from "@/store/add-unit-store";
+
 const PropertyDetails = () => {
+  const propertyDetails = useAddUnitStore((state) => state.propertyDetails);
+  // if (!propertyDetails) return null;
+  // const {
+  //   property_title,
+  //   state,
+  //   local_govt,
+  //   full_address,
+  //   branch,
+  //   account_officer,
+  //   manager,
+  //   category,
+  //   desciption,
+  // } = propertyDetails;
+
   return (
     <div
       className="py-6 px-4 rounded-lg bg-white"
@@ -46,7 +62,7 @@ const PropertyDetails = () => {
               <p className="text-black font-medium">David James</p>
             </div>
             <div>
-              <p className="text-[#747474]">Categories</p>
+              <p className="text-[#747474]">Category</p>
               <p className="text-black font-medium">Residential</p>
             </div>
           </div>

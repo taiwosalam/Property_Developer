@@ -25,6 +25,8 @@ export type UnitCardDataProps = keyof typeof unit_card_data_props;
 
 export interface UnitCardProps {
   data: Partial<Record<UnitCardDataProps, string>>;
+  handleEdit?: () => void;
+  handleRemove?: () => void;
 }
 
 export interface CreatePropertyFormProps {

@@ -1,4 +1,20 @@
+import { useAddUnitStore } from "@/store/add-unit-store";
+
 const PropertySettings = () => {
+  const propertySettings = useAddUnitStore((state) => state.propertySettings);
+  // if (!propertySettings) return null;
+  // const {
+  //   agency_fee,
+  //   period,
+  //   charge,
+  //   book_visitors,
+  //   VAT,
+  //   caution_deposit,
+  //   group_chat,
+  //   rent_penalty,
+  //   request_callback,
+  //   currency,
+  // } = propertySettings;
   return (
     <div
       className="py-6 px-4 rounded-lg bg-white"
