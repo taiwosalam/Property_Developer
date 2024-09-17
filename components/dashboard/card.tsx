@@ -29,8 +29,8 @@ const Card: React.FC<cardProps> = ({ className, ...props }) => {
       <div>
         <p className="text-text-secondary text-sm font-medium">
           {props.subvalue}
-          <span className="text-text-label text-xs font-normal capitaliz ml-2">
-            this month
+          <span className="text-text-label text-xs font-normal capitalize ml-2">
+            This month
           </span>
         </p>
       </div>

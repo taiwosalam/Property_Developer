@@ -1,13 +1,37 @@
 "use client";
 
 import React from "react";
-import { ChevronLeft, Calendar } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
 import DateInput from "@/components/Form/DateInput/date-input";
 import Button from "@/components/Form/Button/button";
 import Input from "@/components/Form/Input/input";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+
+const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
+  <div className="flex items-center">
+    <p className="text-[#747474] w-[140px]">{label}</p>
+    <p>{value}</p>
+  </div>
+);
+
+const SectionContainer = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) => (
+  <div
+    className="bg-white p-6 rounded-lg"
+    style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
+  >
+    <h2 className="font-bold text-[#092C4C] text-xl">{title}</h2>
+    <div className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20 my-4"></div>
+    {children}
+  </div>
+);
 
 const EditRent = () => {
   return (
@@ -37,66 +61,20 @@ const EditRent = () => {
           </h6>
           <div className="grid grid-cols-5 gap-6">
             <div className="col-span-3 space-y-6">
-              <div
-                className="p-6 rounded-lg bg-white"
-                style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
-              >
-                <h2 className="text-[16px] text-brand-9 font-medium mb-4">
-                  Rent Fee
-                </h2>
-                <div className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20 my-2"></div>
+              <SectionContainer title="Rent Fee">
                 <div className="grid grid-cols-2 gap-4 mt-4 text-[16px] font-normal">
-                  <div className="flex items-center">
-                    <p className="text-[#747474] w-[140px]">Rent</p>
-                    <p>12/1/2023</p>
-                  </div>
-                  <div className="flex items-center">
-                    <p className="text-[#747474] w-[140px]">Annual Rent</p>
-                    <p>₦300,000</p>
-                  </div>
-                  <div className="flex items-center">
-                    <p className="text-[#747474] w-[140px]">Service Charge</p>
-                    <p>₦300,000</p>
-                  </div>
-                  <div className="flex items-center">
-                    <p className="text-[#747474] w-[140px]">Other Charges</p>
-                    <p>₦200,000</p>
-                  </div>
+                  <RentFeeDetails label="Rent" value="12/1/2023" />
+                  <RentFeeDetails label="Annual Rent" value="₦300,000" />
+                  <RentFeeDetails label="Service Charge" value="₦300,000" />
+                  <RentFeeDetails label="Other Charges" value="₦200,000" />
                 </div>
-              </div>
+              </SectionContainer>
 
-              <h2 className="font-bold text-[#092C4C] text-xl my-6">
-                Renewal Fee
-              </h2>
-              <div
-                className="p-6 bg-white"
-                style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
-              >
-                <div>
-                  <p className="text-[16px] text-brand-9 font-medium">
-                    Annual Rent
-                  </p>
-                  <div>
-                    <div className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20 my-2"></div>
-                    <div className="grid grid-cols-2 gap-4 my-4">
-                      <div className="flex items-center">
-                        <p className="text-[#747474] w-[140px]">Rent</p>
-                        <p>₦300,000</p>
-                      </div>
-                      <div className="flex items-center">
-                        <p className="text-[#747474] w-[140px]">
-                          Service Charge
-                        </p>
-                        <p>₦200,000</p>
-                      </div>
-                      <div className="flex items-center">
-                        <p className="text-[#747474] w-[140px]">
-                          Other Charges
-                        </p>
-                        <p>₦200,000</p>
-                      </div>
-                    </div>
-                  </div>
+              <SectionContainer title="Renewal Fee">
+                <div className="grid grid-cols-2 gap-4 my-4">
+                  <RentFeeDetails label="Rent" value="₦300,000" />
+                  <RentFeeDetails label="Service Charge" value="₦200,000" />
+                  <RentFeeDetails label="Other Charges" value="₦200,000" />
                 </div>
                 <div className="flex justify-between items-center">
                   <div>
@@ -118,7 +96,7 @@ const EditRent = () => {
                     <ModalContent>
                       <div className="bg-white py-10 absolute bottom-0 left-0 right-0">
                         <p className="text-center font-semibold my-4 text-brand-9">
-                          This action will navigagte you away from the Rent and
+                          This action will navigate you away from the Rent and
                           Unit menu to another menu. You can choose to continue
                           or exit from the process
                         </p>
@@ -146,20 +124,13 @@ const EditRent = () => {
                     </ModalContent>
                   </Modal>
                 </div>
-              </div>
+              </SectionContainer>
 
-              <div
-                className="bg-white p-6 rounded-lg"
-                style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
-              >
-                <h2 className="font-bold text-[#092C4C] text-xl">
-                  Edit Current Rent
-                </h2>
-                <div className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20 my-4"></div>
+              <SectionContainer title="Edit Current Rent">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-gray-600 mb-2">Payment date</p>
-                    <DateInput id="paymeny_date" />
+                    <DateInput id="payment_date" />
                   </div>
                   <div>
                     <p className="text-gray-600 mb-2">Amount Paid</p>
@@ -179,20 +150,14 @@ const EditRent = () => {
                     Update
                   </Button>
                 </div>
-              </div>
+              </SectionContainer>
 
-              <div
-                className="bg-white p-6 rounded-lg"
-                style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
-              >
-                <h2 className="font-bold text-[#092C4C] text-xl">
-                  Add Part Payment
-                </h2>
-                <div className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20 my-4"></div>
+              <SectionContainer title="Add Part Payment">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-gray-600 mb-2">Amount</p>
-                    <input
+                    <Input
+                      id="amount"
                       type="text"
                       className="w-full border rounded-md p-2"
                       placeholder="₦"
@@ -225,17 +190,11 @@ const EditRent = () => {
                   However, if you intend to receive the payment, you can click
                   &lsquo;create invoice&rsquo; for tenants to make the payment.
                 </p>
-              </div>
+              </SectionContainer>
             </div>
 
             <div className="col-span-2 space-y-8">
-              <div
-                className="bg-white p-6 rounded-lg"
-                style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
-              >
-                <h2 className="text-[16px] font-normal mb-2 text-brand-9">
-                  User Profile
-                </h2>
+              <SectionContainer title="User Profile">
                 <div className="flex items-center justify-center">
                   <div>
                     <img
@@ -263,78 +222,27 @@ const EditRent = () => {
                   About
                 </h1>
                 <div className="space-y-4">
-                  <div className="w-full flex items-center">
-                    <span className="w-[140px] text-[#747474] font-normal">
-                      Gender:
-                    </span>{" "}
-                    Male
-                  </div>
-                  <div className="w-full flex items-center">
-                    <span className="w-[140px] text-[#747474] font-normal">
-                      Birthday:
-                    </span>{" "}
-                    12/12/12
-                  </div>
-                  <div className="w-full flex items-center">
-                    <span className="w-[140px] text-[#747474] font-normal">
-                      Religion:
-                    </span>
-                    Christianity
-                  </div>
-                  <div className="w-full flex items-center">
-                    <span className="w-[140px] text-[#747474] font-normal">
-                      Phone:
-                    </span>{" "}
-                    +2348132087958
-                  </div>
-                  <div className="w-full flex items-center">
-                    <span className="w-[140px] text-[#747474] font-normal">
-                      Marital Status:
-                    </span>
-                    Single
-                  </div>
+                  <RentFeeDetails label="Gender" value="Male" />
+                  <RentFeeDetails label="Birthday" value="12/12/12" />
+                  <RentFeeDetails label="Religion" value="Christianity" />
+                  <RentFeeDetails label="Phone" value="+2348132087958" />
+                  <RentFeeDetails label="Marital Status" value="Single" />
                 </div>
                 <h1 className="text-brand-9 text-[16px] font-medium my-6">
                   Contact Address
                 </h1>
                 <div className="space-y-4">
-                  <div className="w-full flex items-center">
-                    <span className="w-[140px] text-[#747474] font-normal">
-                      Address:
-                    </span>
-                  </div>
-                  <div className="w-full flex items-center">
-                    U4 Joke Plaza Bodija Ibadan
-                  </div>
-                  <div className="w-full flex items-center">
-                    <span className="w-[140px] text-[#747474] font-normal">
-                      City:
-                    </span>{" "}
-                    Ibadan
-                  </div>
-                  <div className="w-full flex items-center">
-                    <span className="w-[140px] text-[#747474] font-normal">
-                      State:
-                    </span>{" "}
-                    Oyo State
-                  </div>
-                  <div className="w-full flex items-center">
-                    <span className="w-[140px] text-[#747474] font-normal">
-                      LG:
-                    </span>{" "}
-                    Ibadan North Central
-                  </div>
+                  <RentFeeDetails
+                    label="Address"
+                    value="U4 Joke Plaza Bodija Ibadan"
+                  />
+                  <RentFeeDetails label="City" value="Ibadan" />
+                  <RentFeeDetails label="State" value="Oyo State" />
+                  <RentFeeDetails label="LG" value="Ibadan North Central" />
                 </div>
-              </div>
+              </SectionContainer>
 
-              <div
-                className="bg-white p-6 rounded-lg"
-                style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
-              >
-                <h2 className="text-xl font-bold text-primary-navy mb-4">
-                  Transfer Tenants
-                </h2>
-                <div className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20 my-4"></div>
+              <SectionContainer title="Transfer Tenants">
                 <p className="text-sm text-text-secondary mb-4">
                   Transfer tenants to another unit within the same property with
                   the option to calculate and deduct outstanding amounts from
@@ -365,15 +273,11 @@ const EditRent = () => {
                     Switch Unit
                   </Button>
                 </div>
-              </div>
+              </SectionContainer>
             </div>
           </div>
         </div>
-        <div
-          className="bg-white p-6 rounded-lg"
-          style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
-        >
-          <h2 className="text-lg font-semibold mb-4">Previous Rent Records</h2>
+        <SectionContainer title="Previous Rent Records">
           <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
             <table className="dash-table">
               <colgroup>
@@ -417,7 +321,7 @@ const EditRent = () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </SectionContainer>
       </section>
 
       <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
