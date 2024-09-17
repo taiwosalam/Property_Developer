@@ -13,9 +13,11 @@ import { useAddUnitStore } from "@/store/add-unit-store";
 import { getFormData } from "@/utils/getFormData";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import FooterModal from "./footer-modal";
+import UnitCard from "@/components/Management/Properties/unit-card";
 
 const AddUnit = () => {
   const addUnit = useAddUnitStore((s) => s.addUnit);
+  const removeUnit = useAddUnitStore((s) => s.removeUnit);
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
@@ -23,32 +25,21 @@ const AddUnit = () => {
     router.back();
   };
 
-  const [showUnitCountPopup, setShowUnitCountPopup] = useState(false);
-  const [unitCount, setUnitCount] = useState(2); // Default unit count
-
   // Handle "No" click in the first popup
   const handleNoClick = () => {
     const form = formRef.current;
     if (form) {
       const unitData = getFormData(form);
       addUnit(unitData); // Add unit to the Zustand store
-
       form.reset();
-      //   resetUnitForm(); // If you have any additional form state in Zustand, reset it here
     }
-  };
-
-  // Handle "Yes" click in the first popup
-  const handleYesClick = () => {
-    console.log("first");
-    setShowUnitCountPopup(true); // Show the second popup for unit count
   };
 
   // Handle add units from second popup
   const handleAddUnits = () => {
-    setShowUnitCountPopup(false);
-    console.log(`Adding ${unitCount} more units...`);
-    // Perform logic to add the specified number of units
+    // setShowUnitCountPopup(false);
+    // console.log(`Adding ${unitCount} more units...`);
+    // // Perform logic to add the specified number of units
   };
 
   //   useeffect to fetch property info from API with the Property ID.Change True/False Values to Yes/No. Set Unit Store Values.
@@ -70,6 +61,14 @@ const AddUnit = () => {
       <div className="space-y-6 lg:space-y-8">
         <PropertyDetails />
         <PropertySettings />
+        {addedUnits.length > 0 &&
+          addedUnits.map((unit, index) => (
+            <UnitCard
+              key={index}
+              data={{ caution_deposit: "500kdols" }}
+              handleRemove={() => removeUnit(index)}
+            />
+          ))}
         <form
           ref={formRef}
           className="space-y-6 lg:space-y-8 max-w-[970px] relative pb-[70px] lg:pb-[80px]"
@@ -90,10 +89,7 @@ const AddUnit = () => {
                 </button>
               </ModalTrigger>
               <ModalContent>
-                <FooterModal
-                  handleNoClick={handleNoClick}
-                  handleYesClick={handleYesClick}
-                />
+                <FooterModal handleNoClick={handleNoClick} />
               </ModalContent>
             </Modal>
             <button
@@ -105,23 +101,6 @@ const AddUnit = () => {
           </div>
         </form>
       </div>
-      {/* First Popup: Yes/No Confirmation */}
-      {/* {showPopup && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white py-7 px-6 shadow-lg text-center z-50">
-          <p className="text-brand-10 text-base font-medium mb-5">
-            Does the new unit you want to add have similar details, breakdown,
-            and features to the one you added last?
-          </p>
-          <div className="flex justify-center items-center gap-10 [&>button]:py-2 [&>button]:px-8">
-            <Button onClick={handleYesClick} size="base_medium">
-              Yes
-            </Button>
-            <Button onClick={handleNoClick} size="base_medium">
-              No
-            </Button>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 };

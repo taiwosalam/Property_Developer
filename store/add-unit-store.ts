@@ -38,6 +38,7 @@ interface AddUnitStore {
   setUnitType: (unitType: UnitTypeKey) => void;
   addedUnits: { [key: string]: FormDataEntryValue | File[] }[];
   addUnit: (unitData: { [key: string]: FormDataEntryValue }) => void;
+  removeUnit: (index: number) => void;
   formResetKey: number;
 }
 
@@ -78,6 +79,10 @@ export const useAddUnitStore = create<AddUnitStore>()(
         };
       });
     },
+    removeUnit: (index: number) =>
+      set((state) => ({
+        addedUnits: state.addedUnits.filter((_, i) => i !== index),
+      })),
   }))
 );
 
