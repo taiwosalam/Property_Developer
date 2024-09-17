@@ -59,7 +59,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
       </div>
       <div className="p-5 relative custom-primary-bg rounded-lg">
         <div className="absolute inset-0">
-          <Image src={WalletBG} alt="wallet background" fill sizes="400px" />
+          <Image src={WalletBG} alt="wallet background" fill sizes="400px" className="object-cover" />
         </div>
         <div className="relative space-y-3">
           <div className="flex items-center gap-1 text-white opacity-95 font-normal text-sm">

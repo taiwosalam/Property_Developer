@@ -15,11 +15,11 @@ const FlowProgressBar = React.forwardRef<HTMLDivElement, FlowProgressBarProps>(
       >
         <div
           ref={ref}
-          className={clsx("h-full rounded-full", {
-            "w-0": !complete,
-            "w-full": complete,
-          })}
-          style={{ backgroundColor: bar_color }}
+          className="h-full rounded-full"
+          style={{
+            backgroundColor: bar_color,
+            width: complete ? "100%" : "0%",
+          }}
         ></div>
       </div>
     );
