@@ -2,6 +2,8 @@ import clsx from "clsx";
 import { CameraIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import Sample from "@/public/empty/SampleProperty.jpeg";
+import { SectionSeparator } from "@/components/Section/section-components";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 const UnitItem = ({ type = "rent" }: { type?: string }) => {
   const colors = {
     vacant: "#FFBB53",
@@ -19,12 +21,19 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
         <h4 className="text-brand-10 text-base font-bold">
           Unit ID: 123456776342
         </h4>
-        <div
-          className="w-5 h-5 rounded-full"
-          style={{ backgroundColor: colors["vacant"] }}
-        ></div>
+        <div className="flex items-center justify-between gap-2">
+          <div
+            className="w-5 h-5 rounded-full"
+            style={{ backgroundColor: colors["vacant"] }}
+          ></div>
+          <div
+            className="w-5 h-5 rounded-full"
+            style={{ backgroundColor: colors["occupied"] }}
+          ></div>
+        </div>
       </div>
-      <hr className="my-4" />
+      {/* <hr className="my-4 " /> */}
+      <SectionSeparator className="my-4 " />
       <div className="flex flex-col md:flex-row md:items-center gap-2 md:justify-between">
         <div className="overflow-x-auto max-w-full flex-grow">
           <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
@@ -54,6 +63,14 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
               <p className="text-[#747474]">Service Charge</p>
               <p>₦300,000</p>
             </div>
+            <div>
+              <p className="text-[#747474]">Tenants Name</p>
+              <p className="underline underline-offset-4">David Ajala</p>
+            </div>
+            <div>
+              <p className="text-[#747474]">Due Date</p>
+              <p>12/12/2024</p>
+            </div>
           </div>
         </div>
 
@@ -74,7 +91,7 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
         </div>
       </div>
 
-      <hr className="my-4" />
+      <SectionSeparator className="my-4 " />
       <p
         className={clsx(
           "px-4 py-1 text-[10px] font-normal rounded-lg w-fit",

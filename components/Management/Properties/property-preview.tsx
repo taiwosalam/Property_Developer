@@ -24,6 +24,7 @@ import Sample2 from "@/public/empty/SampleProperty2.jpeg";
 import Sample3 from "@/public/empty/SampleProperty3.jpeg";
 import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 
 const PropertyPreview: React.FC<PropertyPreviewProps> = ({
   images = [Sample, Sample2, Sample3, Sample4, Sample5],
@@ -243,15 +244,11 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
                 <p className="text-brand-9 font-bold">Joke Plaza Bodija</p>
               </div>
               <div>
-                <p className="text-label font-normal">Total Unit</p>
+                <p className="text-label font-normal">Total Units</p>
                 <p className="text-brand-9 font-bold">12</p>
               </div>
               <div>
-                <p className="text-label font-normal">Available Units</p>
-                <p className="text-brand-9 font-bold">5</p>
-              </div>
-              <div>
-                <p className="text-label font-normal">Account Officer</p>
+                <p className="text-label font-normal">Branch Manager</p>
                 <p className="text-brand-9 font-bold">Anikulapo Jesus</p>
               </div>
               <div>
@@ -265,6 +262,26 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
               <div>
                 <p className="text-label font-normal">Last Updated</p>
                 <p className="text-brand-9 font-bold">5 hours ago</p>
+              </div>
+              <div>
+                <p className="text-label font-normal">Available Units</p>
+                <p className="text-brand-9 font-bold">5</p>
+              </div>
+              <div>
+                <p className="text-brand-primary text-xl font-bold">
+                  {currencySymbols["NAIRA"]}
+                  {formatNumber(700000)}
+                </p>
+                <p className="text-[#606060] font-normal text-xs">
+                  Annual Returns
+                </p>
+                <p className="text-text-disabled font-medium text-sm">
+                  <span className="text-highlight">
+                    {currencySymbols["NAIRA"]}
+                    {formatNumber(700000)}
+                  </span>{" "}
+                  / Annual Income
+                </p>
               </div>
             </div>
           </div>

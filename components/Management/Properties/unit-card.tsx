@@ -1,7 +1,5 @@
-import React from "react";
-
 // Images
-import { VideoIcon, CameraIcon } from "@/public/icons/icons";
+import { CameraIcon } from "@/public/icons/icons";
 import SampleProperty6 from "@/public/empty/SampleProperty6.jpg";
 
 // Imports
@@ -12,7 +10,11 @@ import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { SectionSeparator } from "@/components/Section/section-components";
 
-const UnitCard: React.FC<UnitCardProps> = ({ data }) => {
+const UnitCard: React.FC<UnitCardProps> = ({
+  data,
+  handleEdit,
+  handleRemove,
+}) => {
   return (
     <div
       className="w-full p-6 rounded-2xl bg-white custom-flex-col gap-4"
@@ -23,10 +25,15 @@ const UnitCard: React.FC<UnitCardProps> = ({ data }) => {
           Unit ID: 123456776342
         </p>
         <div className="flex gap-8">
-          <Button size="base_medium" className="py-2 px-8">
+          <Button size="base_medium" className="py-2 px-8" onClick={handleEdit}>
             edit
           </Button>
-          <Button size="base_medium" variant="light_red" className="py-2 px-8">
+          <Button
+            size="base_medium"
+            variant="light_red"
+            className="py-2 px-8"
+            onClick={handleRemove}
+          >
             remove
           </Button>
         </div>

@@ -155,8 +155,8 @@ const Property = () => {
       {/* Card / List View */}
       <section>
         {gridView ? (
-          <AutoResizingGrid minWidth={310}>
-            {properties.slice(0, 10).map((p) => (
+          <AutoResizingGrid minWidth={315}>
+            {properties.slice(0, 1).map((p) => (
               <PropertyCard
                 {...p}
                 key={p.id}
