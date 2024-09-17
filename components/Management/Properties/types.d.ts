@@ -1,3 +1,5 @@
+import { unit_card_data_props } from "./data";
+
 export interface PropertyProps {
   images: any[];
   id: string | number;
@@ -17,4 +19,14 @@ export interface AddPropertyOptionsViewProps {
 
 export interface PropertyPreviewProps {
   images?: any[];
+}
+
+export type UnitCardDataProps = keyof typeof unit_card_data_props;
+
+export interface UnitCardProps {
+  data: Partial<Record<UnitCardDataProps, string>>;
+}
+
+export interface CreatePropertyFormProps {
+  editMode?: boolean;
 }
