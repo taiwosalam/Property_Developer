@@ -109,7 +109,7 @@ export function DashboardChart({ visibleRange }: { visibleRange?: boolean }) {
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   return (
-    <Card className="shadow-none">
+    <Card className="shadow-sm border-none">
       <CardHeader className="flex w-full items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="flex w-full py-2 justify-between">
           <CardTitle>Chart Title</CardTitle>

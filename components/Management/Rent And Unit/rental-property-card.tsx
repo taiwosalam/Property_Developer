@@ -8,12 +8,9 @@ import Sample3 from "@/public/empty/SampleProperty3.jpeg";
 import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import { CameraIcon, ChevronLeft } from "@/public/icons/icons";
-import {
-  ActionButtonProps,
-  PropertyDetailsProps,
-  PropertyImageSliderProps,
-} from "./types";
+import { PropertyDetailsProps, PropertyImageSliderProps } from "./types";
 import { actions, activeStatuses, getBackgroundColor } from "./data";
+import { ActionButton } from "./action-button";
 
 const CURRENCY = "₦";
 const NUMBER_FORMAT_LOCALE = "en-NG";
@@ -129,15 +126,6 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
     </div>
   );
 };
-
-const ActionButton: React.FC<ActionButtonProps> = ({ label, color }) => (
-  <button
-    className="py-2 px-4 rounded-[20px] text-white text-xs font-medium"
-    style={{ backgroundColor: color }}
-  >
-    {label}
-  </button>
-);
 
 const RentalPropertyCard: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
