@@ -76,10 +76,10 @@ const Dashboard = () => {
           {!isMobile && (
             <>
               <div className="w-full h-fit">
-                <DashboardChart />
+                <DashboardChart visibleRange />
               </div>
               <div className="w-full h-fit">
-                <DashboardChart />
+                <DashboardChart visibleRange />
               </div>
             </>
           )}

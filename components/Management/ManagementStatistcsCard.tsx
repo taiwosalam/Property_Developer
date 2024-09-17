@@ -26,6 +26,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
         fill="none"
         stroke={oldColor}
         strokeWidth="5"
+        strokeLinejoin="round"
       />
       <circle
         cx="30"
@@ -34,7 +35,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
         fill="none"
         stroke={newColor}
         strokeWidth="5"
-        strokeDasharray={`${newPercentage * 1.57} 157`}
+        strokeDasharray={`${(newPercentage * (2 * Math.PI * 25)) / 100} 157`} // Correct formula
         strokeLinecap="round"
         transform="rotate(-90 30 30)"
       />
@@ -42,8 +43,8 @@ const DonutChart: React.FC<DonutChartProps> = ({
         x="30"
         y="30"
         textAnchor="middle"
-        dy=".3em"
-        fontSize="12"
+        dy=".35em"
+        fontSize="14"
         fontWeight="bold"
         fill="#000"
       >
