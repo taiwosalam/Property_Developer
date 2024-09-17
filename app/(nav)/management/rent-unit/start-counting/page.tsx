@@ -1,5 +1,6 @@
 "use client";
 
+import { estateSettingsDta } from "@/components/Management/Rent And Unit/data";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
 import { OccupantProfile } from "@/components/Management/Rent And Unit/occupant-profile";
@@ -12,7 +13,7 @@ const StartCounting = () => {
       </div>
       <section className="space-y-6 pb-16">
         <EstateDetails />
-        <EstateSettings />
+        <EstateSettings estateSettingsDta={estateSettingsDta} />
         <OccupantProfile
           occupant={{
             name: "Abimbola Adedeji",

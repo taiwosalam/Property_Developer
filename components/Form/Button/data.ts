@@ -20,5 +20,6 @@ export const button_variants = {
     xs_medium: "font-medium text-xs",
     sm_medium: "font-medium text-sm",
     base_medium: "font-medium text-base",
+    "16_bold": "text-[16px] font-bold",
   },
 };
