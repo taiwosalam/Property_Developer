@@ -1,15 +1,32 @@
-import { estateSettingsDta } from "./data";
+"use client";
+import Button from "@/components/Form/Button/button";
 import { EstateDetailItem } from "./detail-item";
+import { Modal, ModalTrigger } from "@/components/Modal/modal";
 
-const EstateSettings = ({ title }: { title?: string }) => {
+const EstateSettings = ({
+  title,
+  estateSettingsDta,
+  gridThree,
+}: {
+  title?: string;
+  estateSettingsDta: { label: string; value: string }[];
+  gridThree?: boolean;
+}) => {
   return (
-    <div className="py-6 px-6 bg-white shadow-lg rounded-md space-y-4">
+    <div
+      className="py-6 px-6 bg-white rounded-md space-y-4"
+      style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
+    >
       <h6 className="font-bold text-[#092C4C] text-xl">
         {!title ? "Estate Settings" : title}
       </h6>
-      <div className="w-full h-[1px] bg-[#C0C2C8]"></div>
+      <div className="w-5/6 h-[1px] bg-[#C0C2C8] bg-opacity-20"></div>
       <div className="w-full flex items-center justify-between">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 w-3/4">
+        <div
+          className={`grid grid-cols-1 ${
+            gridThree ? "md:grid-cols-3" : "md:grid-cols-2"
+          } gap-y-4 w-5/6`}
+        >
           {estateSettingsDta.map((item, index) => (
             <EstateDetailItem
               key={index}
@@ -20,13 +37,13 @@ const EstateSettings = ({ title }: { title?: string }) => {
           ))}
         </div>
         <div>
-          <button
-            type="submit"
-            className="bg-brand-9 text-white hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9 py-2 px-8 rounded"
-            //   onClick={() => {}}
-          >
-            Edit
-          </button>
+          <Modal>
+            <ModalTrigger asChild>
+              <Button type="submit" className="py-2 px-8" onClick={() => {}}>
+                Edit
+              </Button>
+            </ModalTrigger>
+          </Modal>
         </div>
       </div>
     </div>
