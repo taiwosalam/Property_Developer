@@ -200,7 +200,7 @@ export function DashboardChart({
         <>
           <CardHeader className="flex w-full items-center gap-2 space-y-0 py-3 sm:flex-row">
             <div className="flex w-full py-2 justify-between">
-              <CardTitle>Chart Title</CardTitle>
+              <CardTitle>{chartTitle || "Chart Title"}</CardTitle>
               <div className="w-fit flex bg-[#F5F5F5] rounded-md items-center justify-center">
                 <DatePickerWithRange
                   selectedRange={selectedDateRange}
