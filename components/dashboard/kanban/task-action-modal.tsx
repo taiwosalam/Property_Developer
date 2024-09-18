@@ -1,0 +1,112 @@
+import React from "react";
+import { ModalTrigger } from "@/components/Modal/modal";
+import Button from "@/components/Form/Button/button";
+import TextArea from "@/components/Form/TextArea/textarea";
+import { ChevronLeft } from "@/public/icons/icons";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+
+interface ComplaintData {
+  senderName: string;
+  senderVerified: boolean;
+  complaintTitle: string;
+  propertyName: string;
+  propertyAddress: string;
+  accountOfficer: string;
+  branch: string;
+  brief: string;
+}
+
+const TaskModal = ({ complaintData }: { complaintData: ComplaintData }) => {
+  const {
+    senderName,
+    senderVerified,
+    complaintTitle,
+    propertyName,
+    propertyAddress,
+    accountOfficer,
+    branch,
+    brief,
+  } = complaintData;
+
+  return (
+    <div className="bg-white rounded-lg shadow-lg w-full xl:max-w-5xl px-9 max-w-[90%] max-h-[500px] overflow-y-scroll no-scrollbar">
+      <div className="flex flex-col md:flex-row md:gap-6">
+        {/* Left side - Complaint details */}
+        <div className="md:w-1/2 my-10">
+          <ModalTrigger asChild close>
+            <ChevronLeft />
+          </ModalTrigger>
+          <div className="my-4 w-full space-y-2 text-sm text-text-secondary">
+            <div className="flex justify-between items-center">
+              <p className="text-text-tertiary w-[150px]">
+                Complaints sent by:
+              </p>
+              <div className="flex items-center space-x-1">
+                <span>{senderName}</span>
+                {senderVerified && <BadgeIcon color="green" />}
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="text-text-tertiary text-sm w-[140px]">
+                Complaint Title:
+              </p>
+              <span>{complaintTitle}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="text-text-tertiary w-[140px]">Property Name:</p>
+              <span>{propertyName}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="text-text-tertiary w-[140px]">Property Address:</p>
+              <span>{propertyName}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="text-text-tertiary w-[140px]">Account Officer:</p>
+              <span>{accountOfficer}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="text-text-tertiary w-[140px]">Branch:</p>
+              <span>{branch}</span>
+            </div>
+            <div>
+              <p className="text-text-tertiary w-[140px]">Brief:</p>
+              <span> {brief}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right side - Action section */}
+        <div className="md:w-1/2 md:pl-6 my-6">
+          <p className="font-medium text-[16px] text-center">
+            Kindly approve or reject this complaint
+          </p>
+          <p className="font-medium text-text-secondary my-3">Attach note:</p>
+          <div className="mt-4">
+            <TextArea id="note" placeholder="Type Here"></TextArea>
+          </div>
+          <div className="mt-4 space-y-2">
+            <Button
+              size="16_bold"
+              className="py-2 px-6 w-full"
+              //   className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+              onClick={() => {}} // Empty onClick for Approve
+            >
+              Approve Complaint
+            </Button>
+            <Button
+              size="16_bold"
+              variant="light_red"
+              className="py-2 px-6 w-full"
+              //   className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
+              onClick={() => {}} // Empty onClick for Reject
+            >
+              Reject Complaint
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TaskModal;
