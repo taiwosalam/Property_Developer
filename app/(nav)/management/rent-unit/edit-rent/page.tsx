@@ -8,6 +8,9 @@ import DateInput from "@/components/Form/DateInput/date-input";
 import Button from "@/components/Form/Button/button";
 import Input from "@/components/Form/Input/input";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { estateData } from "@/components/Management/Rent And Unit/data";
+import { EstateDetailItem } from "@/components/Management/Rent And Unit/detail-item";
+import Link from "next/link";
 
 const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
   <div className="flex items-center">
@@ -19,9 +22,11 @@ const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
 const SectionContainer = ({
   title,
   children,
+  style,
 }: {
   title: string;
   children: React.ReactNode;
+  style?: React.CSSProperties;
 }) => (
   <div
     className="bg-white p-6 rounded-lg"
@@ -36,12 +41,32 @@ const SectionContainer = ({
 const EditRent = () => {
   return (
     <main className="space-y-6 p-4">
-      <div className="flex items-center space-x-3">
+      <Link
+        href={"/management/rent-unit"}
+        className="flex items-center space-x-3 w-fit"
+      >
         <ChevronLeft />
         <h6 className="text-2xl font-medium">Edit Rent</h6>
-      </div>
+      </Link>
       <section className="space-y-6 pb-16">
-        <EstateDetails title="Unit Details" />
+        <div
+          className="py-6 px-6 bg-white shadow rounded-md space-y-4"
+          style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
+        >
+          <h6 className="font-bold text-[#092C4C] text-xl">Unit Details</h6>
+          <div className="w-5/6 h-[1px] bg-[#C0C2C8] bg-opacity-20"></div>
+          <div className="w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-4">
+              {estateData.map((item, index) => (
+                <EstateDetailItem
+                  key={index}
+                  label={item.label}
+                  value={item.value}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
         <EstateSettings
           gridThree
           title="Property Settings"
@@ -152,16 +177,15 @@ const EditRent = () => {
                 </div>
               </SectionContainer>
 
-              <SectionContainer title="Add Part Payment">
+              <div className="p-6">
+                <h1 className="font-bold text-[#092C4C] text-xl">
+                  Add Part Payment
+                </h1>
+                <div className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20 my-4"></div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-gray-600 mb-2">Amount</p>
-                    <Input
-                      id="amount"
-                      type="text"
-                      className="w-full border rounded-md p-2"
-                      placeholder="₦"
-                    />
+                    <Input id="amount" type="text" placeholder="₦" />
                   </div>
                   <div>
                     <p className="text-gray-600 mb-2">Date</p>
@@ -190,7 +214,7 @@ const EditRent = () => {
                   However, if you intend to receive the payment, you can click
                   &lsquo;create invoice&rsquo; for tenants to make the payment.
                 </p>
-              </SectionContainer>
+              </div>
             </div>
 
             <div className="col-span-2 space-y-8">

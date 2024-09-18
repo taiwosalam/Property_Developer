@@ -35,7 +35,7 @@ const Dashboard = () => {
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full xl:flex gap-x-10">
-        <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-10">
+        <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-6">
           {isMobile || isTablet ? (
             <div className="w-full flex flex-row py-1.5 xl:py-7 overflow-x-scroll md:overflow-hidden md:grid md:grid-cols-2 gap-3 no-scrollbar">
               {dashboardCardData.map((card, index) => (
