@@ -23,6 +23,7 @@ import DashboarddCalendar from "@/components/dashboard/calendar";
 import { SectionContainer } from "@/components/Section/section-components";
 import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 import useWindowWidth from "@/hooks/useWindowWidth";
+import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
 
 const Dashboard = () => {
   useEffect(() => {
@@ -153,11 +154,40 @@ const Dashboard = () => {
           </table>
         </div>
       </SectionContainer>
-      {!isMobile && (
-        <SectionContainer heading="Recent Complains" href="/tasks/complaints">
-          <KanbanBoard />
-        </SectionContainer>
-      )}
+      <SectionContainer heading="Recent Complains" href="/tasks/complaints">
+        <div className="bg-white p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array(6)
+            .fill(null)
+            .map((_, index) => (
+              <TaskCard
+                noDrag
+                key={index}
+                task={{
+                  id: "task9",
+                  columnId: "approved",
+                  content: {
+                    messageCount: 2,
+                    linkCount: 1,
+                    userAvatars: [
+                      "/empty/avatar.png",
+                      "/empty/avatar.png",
+                      "/empty/avatar.png",
+                    ],
+                    date: "25 Jan 2024",
+                    status: "approved",
+                    progress: 50,
+                  },
+                  name: "John Doe",
+                  title: "Project Manager",
+                  message:
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                  avatarSrc: "/empty/avatar.png",
+                }}
+              />
+            ))}
+        </div>
+        {/* {!isMobile && <KanbanBoard />} */}
+      </SectionContainer>
     </section>
   );
 };
