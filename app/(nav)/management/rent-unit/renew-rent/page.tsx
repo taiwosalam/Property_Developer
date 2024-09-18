@@ -4,14 +4,18 @@ import EstateDetails from "@/components/Management/Rent And Unit/estate-details"
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
 import { RenewalRentDetails } from "@/components/Management/Rent And Unit/renewal-rent-detals";
 import { ChevronLeft } from "@/public/icons/icons";
+import Link from "next/link";
 
 const RenewRent = () => {
   return (
     <main className="space-y-6 p-4">
-      <div className="flex items-center space-x-3">
+      <Link
+        href={"/management/rent-unit"}
+        className="flex items-center space-x-3 w-fit"
+      >
         <ChevronLeft />
         <h6 className="text-2xl font-medium">Renew Rent</h6>
-      </div>
+      </Link>
       <section className="space-y-6 pb-16">
         <EstateDetails title="Unit Details" />
         <EstateSettings

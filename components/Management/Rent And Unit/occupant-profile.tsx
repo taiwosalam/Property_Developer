@@ -17,10 +17,10 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
       <h6 className="font-bold text-[#092C4C] text-xl">
         {title || "Occupant"} Profile
       </h6>
-      <div className="w-full h-[1px] bg-[#C0C2C8] mb-4"></div>
-      <div className="flex space-x-8 items-center">
+      <div className="flex space-x-8">
         {/* Left Column */}
-        <div className="w-3/5">
+        <div className="w-3/5 space-y-5">
+          <div className="w-full h-[2px] bg-[#C0C2C8] mb-4 opacity-20"></div>
           <ProfileForm occupant={occupant} title={title === "Tenant"} />
           <FeeBreakdown
             feeDetails={feeDetails}

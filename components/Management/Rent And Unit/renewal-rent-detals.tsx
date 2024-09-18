@@ -10,14 +10,14 @@ export const RenewalRentDetails = (
     <main>
       <div className="flex space-x-8 items-center">
         {/* Left Column */}
-        <div className="w-3/5 space-y-6">
+        <div className="w-3/5 space-y-6 py-10">
           <div>
             <h6 className="text-[#092C4C] text-xl font-bold mb-2">
               Renewal Rent Details
             </h6>
             <div className="w-full bg-white shadow p-6 space-y-3 rounded-sm">
               <p className="text-[16px] text-brand-10">Rent Fee </p>
-              <div className="w-full h-[2px] bg-[#C0C2C8]"></div>
+              <div className="w-full h-[2px] bg-[#C0C2C8] opacity-20"></div>
               <div className="grid grid-cols-2 gap-4">
                 {detailItems.map((item, index) => (
                   <EstateDetailItem
@@ -64,7 +64,7 @@ export const RenewalRentDetails = (
               </div>
             </div>
           </div>
-          <div>
+          <div className="space-y-7">
             <h6 className="font-bold text-[#092C4C] text-xl mb-2">
               Renew Rent
             </h6>
@@ -101,8 +101,8 @@ export const RenewalRentDetails = (
               However, if you intend to receive the payment, you can click
               &apos;create invoice&apos; for tenants to make the payment.
             </p>
-            <h6 className="font-bold text-[#092C4C] text-xl my-2">
-              Renew Rent
+            <h6 className="font-bold text-[#092C4C] text-xl">
+              Previous Rent Records
             </h6>
             <div className="w-full h-[1px] bg-[#C0C2C8] mb-4"></div>
           </div>
