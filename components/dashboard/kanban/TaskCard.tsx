@@ -18,6 +18,7 @@ import List from "@/public/icons/list.svg";
 import Drag from "@/public/icons/drag.svg";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import TaskModal from "./task-action-modal";
+import { useRouter } from "next/navigation";
 
 export interface Task {
   id: UniqueIdentifier;
@@ -52,6 +53,7 @@ export interface TaskDragData {
 export function TaskCard({ task, isOverlay, noDrag }: TaskCardProps) {
   const [isModalOpen, setModalOpen] = useState(false);
   const wasRecentlyDragged = useRef(false);
+  const router = useRouter();
 
   const {
     setNodeRef,
@@ -93,23 +95,26 @@ export function TaskCard({ task, isOverlay, noDrag }: TaskCardProps) {
       ? "#01BA4C"
       : "#E9212E";
 
-  // Updated effect to handle drag end more accurately
   useEffect(() => {
     if (isDragging) {
       wasRecentlyDragged.current = true;
     } else if (wasRecentlyDragged.current) {
       // Set a small delay to ensure the drag operation is fully complete
       const timer = setTimeout(() => {
-        setModalOpen(true);
+        if (!noDrag) {
+          setModalOpen(true);
+        }
         wasRecentlyDragged.current = false;
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [isDragging]);
+  }, [isDragging, noDrag]);
 
   const handleCardClick = () => {
-    if (!isDragging && !wasRecentlyDragged.current) {
+    if (!isDragging && !wasRecentlyDragged.current && noDrag) {
       setModalOpen(true);
+    } else {
+      router.push("/tasks/complaints/1/manage-complain/");
     }
   };
 
