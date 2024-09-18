@@ -4,7 +4,6 @@ import React from "react";
 import { CameraIcon } from "@/public/icons/icons";
 import SampleProperty6 from "@/public/empty/SampleProperty6.jpg";
 
-import Sponsor from "@/public/icons/sponsor.svg";
 import PreviewEye from "@/public/icons/preview-eye.svg";
 import StatsChart from "@/public/icons/stats-chart.svg";
 import EditPencil from "@/public/icons/edit-pencil.svg";
@@ -19,6 +18,7 @@ import { SectionSeparator } from "@/components/Section/section-components";
 import { unit_card_data_props } from "@/components/Management/Properties/data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Link from "next/link";
+import UnitSponsorPopover from "./unit-sponsor-popover";
 
 const VacantUnitCard = () => {
   return (
@@ -85,10 +85,7 @@ const VacantUnitCard = () => {
           <Picture src={StatsChart} size={24} />
           <p>stats</p>
         </Link>
-        <div className="flex gap-2">
-          <Picture src={Sponsor} size={24} />
-          <p>sponsor</p>
-        </div>
+        <UnitSponsorPopover />
         <Link
           href={"/management/properties/1/edit-property"}
           className="flex gap-2"
