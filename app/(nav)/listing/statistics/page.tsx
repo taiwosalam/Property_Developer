@@ -16,6 +16,7 @@ import { statistics_data_types } from "@/components/Listing/Statistics/data";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import StatisticsMessageCard from "@/components/Listing/Statistics/statistics-message-card";
+import { DashboardChart } from "@/components/dashboard/chart";
 
 const Statistics = () => {
   const router = useRouter();
@@ -71,30 +72,34 @@ const Statistics = () => {
         )}
       </div>
       <div className="flex gap-10">
-        <div className="flex-1"></div>
-        <div className="w-[334px] py-6 px-3 custom-flex-col gap-6 bg-white">
-          <div className="p-2 flex justify-between">
-            <h2 className="text-text-label text-sm font-medium capitalize">
-              {statistics_data_types[activeStatIndex]}
-            </h2>
-            <div className="flex gap-3">
-              <button onClick={handlePrev}>
-                <ArrowLeft size={18} color="#696B70" />
-              </button>
-              <button onClick={handleNext}>
-                <ArrowRight size={18} color="#696B70" />
-              </button>
+        <div className="flex-1">
+          <DashboardChart visibleRange chartTitle="Performance" />
+        </div>
+        <div className="w-[334px]">
+          <div className="w-full py-6 px-3 custom-flex-col gap-6 bg-white">
+            <div className="p-2 flex justify-between">
+              <h2 className="text-text-label text-sm font-medium capitalize">
+                {statistics_data_types[activeStatIndex]}
+              </h2>
+              <div className="flex gap-3">
+                <button onClick={handlePrev}>
+                  <ArrowLeft size={18} color="#696B70" />
+                </button>
+                <button onClick={handleNext}>
+                  <ArrowRight size={18} color="#696B70" />
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="custom-flex-col gap-5">
-            {Array(5)
-              .fill(null)
-              .map((_, index) => (
-                <StatisticsMessageCard
-                  key={index}
-                  type={statistics_data_types[activeStatIndex]}
-                />
-              ))}
+            <div className="custom-flex-col gap-5">
+              {Array(5)
+                .fill(null)
+                .map((_, index) => (
+                  <StatisticsMessageCard
+                    key={index}
+                    type={statistics_data_types[activeStatIndex]}
+                  />
+                ))}
+            </div>
           </div>
         </div>
       </div>
