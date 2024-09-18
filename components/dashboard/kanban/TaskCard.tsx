@@ -100,8 +100,7 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
           </Avatar>
           <div className="space-x-1">
             <p className="text-sm font-medium text-text-primary">{task.name}</p>
-
-            <p className="text-xs text-text-secondary capitalize">
+            <p className="text-xs text-[#0033C4] font-medium capitalize">
               {task.title}
             </p>
             <p className="text-xs text-text-tertiary font-normal">
@@ -132,7 +131,7 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
             </p>
           </div>
           <div className="py-2">
-            <Progress value={task.content.progress} bg={bg} fillColor="#fff" />
+            <Progress value={task.content.progress} fillColor={bg} />
           </div>
         </div>
         <div className="flex space-x-5">

@@ -304,12 +304,33 @@ const FilterModal: React.FC<FilterModalProps> = ({
             />
           </button>
         </div>
-        <div className="py-2 px-4 my-2 bg-[#F5F5F5]">
-          <DateInput
-            id="registration_date"
-            onChange={handleDateChange}
-            inputClassName="setup-f"
-          />
+        <div className="py-2 space-y-3 px-4 my-2 bg-[#F5F5F5]">
+          <div>
+            <label
+              htmlFor="registration_date_from"
+              className="text-xs text-black"
+            >
+              From
+            </label>
+            <DateInput
+              id="registration_date_from"
+              onChange={handleDateChange}
+              inputClassName="setup-f"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="registration_date_to"
+              className="text-xs text-black"
+            >
+              to
+            </label>
+            <DateInput
+              id="registration_date_to"
+              onChange={handleDateChange}
+              inputClassName="setup-f"
+            />
+          </div>
         </div>
         <button
           className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg"
@@ -354,16 +375,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
           <ChevronRight />
         )}
       </div>
-
-      {showDatePicker && (
-        <div className="py-2 px-4 my-2 bg-[#F5F5F5]">
-          <DateInput
-            id="registration_date"
-            onChange={handleDateChange}
-            inputClassName="setup-f"
-          />
-        </div>
-      )}
 
       {/* Dropdown filter options */}
       {filterOptionsWithDropdown?.map((option) => (

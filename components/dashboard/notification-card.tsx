@@ -41,7 +41,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
   const emptyState = getEmptyState();
 
   return (
-    <Card className="w-full">
+    <Card className="w-full border-none shadow">
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-[16px]">
           <p className="font-medium">{sectionHeader}</p>

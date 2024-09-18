@@ -28,31 +28,58 @@ const Dashboard = () => {
   useEffect(() => {
     getDashboardData(), [];
   });
-  const { isMobile } = useWindowWidth();
+  const { isMobile, isTablet } = useWindowWidth();
+
+  const itemsPerColumn = Math.ceil(dashboardCardData.length / 3);
 
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full xl:flex gap-x-10">
-        <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-10">
-          <div className="w-full flex flex-row overflow-x-scroll md:overflow-auto py-1.5 md:grid md:flex-row-reverse xl:py-7 lg:grid-cols-3 gap-3 no-scrollbar">
-            {dashboardCardData.map((card, index) => (
-              <Card
-                key={index}
-                title={card.title}
-                icon={card.icon}
-                value={card.value}
-                subvalue={card.subValue}
-                bg={card.bg}
-              />
-            ))}
-          </div>
+        <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-6">
+          {isMobile || isTablet ? (
+            <div className="w-full flex flex-row py-1.5 xl:py-7 overflow-x-scroll md:overflow-hidden md:grid md:grid-cols-2 gap-3 no-scrollbar">
+              {dashboardCardData.map((card, index) => (
+                <Card
+                  key={index}
+                  title={card.title}
+                  icon={card.icon}
+                  value={card.value}
+                  subvalue={card.subValue}
+                  bg={card.bg}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="w-full grid lg:grid-cols-3 gap-3 py-1.5 xl:py-7">
+              {[0, 1, 2].map((columnIndex) => (
+                <div key={columnIndex} className="flex flex-col gap-3">
+                  {dashboardCardData
+                    .slice(
+                      columnIndex * itemsPerColumn,
+                      (columnIndex + 1) * itemsPerColumn
+                    )
+                    .map((card, index) => (
+                      <Card
+                        key={index}
+                        title={card.title}
+                        icon={card.icon}
+                        value={card.value}
+                        subvalue={card.subValue}
+                        bg={card.bg}
+                      />
+                    ))}
+                </div>
+              ))}
+            </div>
+          )}
+
           {!isMobile && (
             <>
               <div className="w-full h-fit">
-                <DashboardChart />
+                <DashboardChart visibleRange />
               </div>
               <div className="w-full h-fit">
-                <DashboardChart />
+                <DashboardChart visibleRange />
               </div>
             </>
           )}
