@@ -11,30 +11,12 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { estateData } from "@/components/Management/Rent And Unit/data";
 import { EstateDetailItem } from "@/components/Management/Rent And Unit/detail-item";
 import Link from "next/link";
+import { RentSectionContainer } from "@/components/Management/Rent And Unit/rent-section-container";
 
 const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
   <div className="flex items-center">
     <p className="text-[#747474] w-[140px]">{label}</p>
     <p>{value}</p>
-  </div>
-);
-
-const SectionContainer = ({
-  title,
-  children,
-  style,
-}: {
-  title: string;
-  children: React.ReactNode;
-  style?: React.CSSProperties;
-}) => (
-  <div
-    className="bg-white p-6 rounded-lg"
-    style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
-  >
-    <h2 className="font-bold text-[#092C4C] text-xl">{title}</h2>
-    <div className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20 my-4"></div>
-    {children}
   </div>
 );
 
@@ -86,16 +68,16 @@ const EditRent = () => {
           </h6>
           <div className="grid grid-cols-5 gap-6">
             <div className="col-span-3 space-y-6">
-              <SectionContainer title="Rent Fee">
+              <RentSectionContainer title="Rent Fee">
                 <div className="grid grid-cols-2 gap-4 mt-4 text-[16px] font-normal">
                   <RentFeeDetails label="Rent" value="12/1/2023" />
                   <RentFeeDetails label="Annual Rent" value="₦300,000" />
                   <RentFeeDetails label="Service Charge" value="₦300,000" />
                   <RentFeeDetails label="Other Charges" value="₦200,000" />
                 </div>
-              </SectionContainer>
+              </RentSectionContainer>
 
-              <SectionContainer title="Renewal Fee">
+              <RentSectionContainer title="Renewal Fee">
                 <div className="grid grid-cols-2 gap-4 my-4">
                   <RentFeeDetails label="Rent" value="₦300,000" />
                   <RentFeeDetails label="Service Charge" value="₦200,000" />
@@ -149,9 +131,9 @@ const EditRent = () => {
                     </ModalContent>
                   </Modal>
                 </div>
-              </SectionContainer>
+              </RentSectionContainer>
 
-              <SectionContainer title="Edit Current Rent">
+              <RentSectionContainer title="Edit Current Rent">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-gray-600 mb-2">Payment date</p>
@@ -175,7 +157,7 @@ const EditRent = () => {
                     Update
                   </Button>
                 </div>
-              </SectionContainer>
+              </RentSectionContainer>
 
               <div className="p-6">
                 <h1 className="font-bold text-[#092C4C] text-xl">
@@ -218,7 +200,7 @@ const EditRent = () => {
             </div>
 
             <div className="col-span-2 space-y-8">
-              <SectionContainer title="User Profile">
+              <RentSectionContainer title="User Profile">
                 <div className="flex items-center justify-center">
                   <div>
                     <img
@@ -264,9 +246,9 @@ const EditRent = () => {
                   <RentFeeDetails label="State" value="Oyo State" />
                   <RentFeeDetails label="LG" value="Ibadan North Central" />
                 </div>
-              </SectionContainer>
+              </RentSectionContainer>
 
-              <SectionContainer title="Transfer Tenants">
+              <RentSectionContainer title="Transfer Tenants">
                 <p className="text-sm text-text-secondary mb-4">
                   Transfer tenants to another unit within the same property with
                   the option to calculate and deduct outstanding amounts from
@@ -297,11 +279,11 @@ const EditRent = () => {
                     Switch Unit
                   </Button>
                 </div>
-              </SectionContainer>
+              </RentSectionContainer>
             </div>
           </div>
         </div>
-        <SectionContainer title="Previous Rent Records">
+        <RentSectionContainer title="Previous Rent Records">
           <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
             <table className="dash-table">
               <colgroup>
@@ -345,7 +327,7 @@ const EditRent = () => {
               </tbody>
             </table>
           </div>
-        </SectionContainer>
+        </RentSectionContainer>
       </section>
 
       <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
