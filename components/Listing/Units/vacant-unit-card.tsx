@@ -19,6 +19,7 @@ import { unit_card_data_props } from "@/components/Management/Properties/data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Link from "next/link";
 import UnitSponsorPopover from "./unit-sponsor-popover";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
 
 const VacantUnitCard = () => {
   return (
@@ -35,8 +36,10 @@ const VacantUnitCard = () => {
           </div>
           <div className="flex items-start gap-[75px] text-base font-normal">
             <p className="text-[#747474]">Description</p>
-            <p className="text-text-quaternary custom-truncated-3">
-              A multi-family home, also know as a duplex, triplex, or multi-unit
+            <TruncatedText
+              lines={3}
+              className="text-text-quaternary"
+              text="A multi-family home, also know as a duplex, triplex, or multi-unit
               building, is a residential property that living read more. They
               want to work with their budget in booking an appointment. They
               wants to ease themselves of the stress of having to que, and also
@@ -45,8 +48,8 @@ const VacantUnitCard = () => {
               something new.for something new. A multi-family home, also know as
               a duplex, triplex, or multi-unit building, is a residential
               property that living read more. They want to work with their
-              budget in booking an appointment. ime spent searching
-            </p>
+              budget in booking an appointment. ime spent searching"
+            />
           </div>
         </div>
         <div className="relative rounded-2xl overflow-hidden">
