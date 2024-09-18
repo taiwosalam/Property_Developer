@@ -56,7 +56,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
   };
 
   const variants = cva(
-    "h-[500px] max-h-[500px] min-w-[350px] lg:min-w-[45%] xl:min-w-[32%] border-2 border-dashed rounded-lg overflow-y-scroll no-scrollbar bg-white",
+    "h-[500px] max-h-[500px] min-w-[350px] lg:min-w-[45%] xl:min-w-[32%] border-2 border-dashed rounded-lg bg-white flex flex-col",
     {
       variants: {
         dragging: {
@@ -76,28 +76,23 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
         dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
       })}
     >
-      <CardHeader className="px-4 py-2 font-semibold text-left flex flex-row space-between items-center">
-        <Button
-          variant={"ghost"}
-          {...attributes}
-          {...listeners}
-          className="p-1 -ml-2 h-auto cursor-grab relative"
-        >
-          <span className="sr-only">{`Column Title: ${column.title}`}</span>
-        </Button>
+      <CardHeader className="px-4 py-4 font-semibold text-left flex flex-row space-between items-center">
         <span className="text-text-label">
           {column.title + ` (${tasks.length})`}
         </span>
       </CardHeader>
-      <ScrollArea>
-        <CardContent className="flex flex-grow flex-col gap-2 px-2">
-          <SortableContext items={tasksIds}>
-            {tasks.map((task) => (
-              <TaskCard key={task.id} task={task} />
-            ))}
-          </SortableContext>
-        </CardContent>
-      </ScrollArea>
+      {/* Ensure only the task content scrolls */}
+      <div className="flex-grow overflow-y-auto no-scrollbar">
+        <ScrollArea>
+          <CardContent className="flex flex-grow flex-col gap-2 px-2">
+            <SortableContext items={tasksIds}>
+              {tasks.map((task) => (
+                <TaskCard key={task.id} task={task} />
+              ))}
+            </SortableContext>
+          </CardContent>
+        </ScrollArea>
+      </div>
     </div>
   );
 }
