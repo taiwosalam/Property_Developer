@@ -1,26 +1,38 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
+import React, { useState } from "react";
+
+// Types
+import type { PropertyListingType } from "@/components/Listing/Property/types";
 
 // Imports
 import Button from "@/components/Form/Button/button";
 import PageTitle from "@/components/PageTitle/page-title";
 import SearchInput from "@/components/SearchInput/search-input";
 import PropertyListingCard from "@/components/Listing/Property/property-listing-card";
+import { property_listing_types } from "@/components/Listing/Property/data";
 
 const Property = () => {
+  const [activeProperty, setActiveProperty] = useState<PropertyListingType>(
+    "moderating property"
+  );
+
   return (
     <div className="custom-flex-col gap-9">
       <div className="page-header-container">
         <div></div>
         <div className="flex gap-3">
-          <Button size="sm_medium" variant="border" className="py-2 px-8">
-            moderating property
-          </Button>
-          <Button size="sm_medium" variant="border" className="py-2 px-8">
-            drafted property
-          </Button>
+          {property_listing_types.map((type, index) => (
+            <Button
+              key={index}
+              size="sm_medium"
+              variant={activeProperty === type ? "default" : "border"}
+              className="py-2 px-8"
+            >
+              {type}
+            </Button>
+          ))}
         </div>
       </div>
       <div className="page-title-container">

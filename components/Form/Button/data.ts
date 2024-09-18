@@ -12,6 +12,7 @@ export const button_variants = {
     light_green: `${default_border} bg-success-1 text-status-success-primary active:border-success-1 ${default_interaction}`,
 
     blank: `${default_border}`,
+    custom: "",
   },
   size: {
     sm: "py-2 px-3 text-sm font-normal",
@@ -22,5 +23,9 @@ export const button_variants = {
     sm_medium: "font-medium text-sm",
     base_medium: "font-medium text-base",
     "16_bold": "text-[16px] font-bold",
+
+    xs_bold: "font-bold text-xs",
+
+    custom: "",
   },
 };
