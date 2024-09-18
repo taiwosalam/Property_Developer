@@ -11,7 +11,7 @@ export const FeeBreakdown: React.FC<{
     .toLocaleString();
 
   return (
-    <div className="">
+    <div className="space-y-8">
       <h6 className="my-4 font-bold text-[#092C4C] text-xl">
         {title1 || "Estate Fee"}
       </h6>
@@ -21,10 +21,10 @@ export const FeeBreakdown: React.FC<{
         </h6>
         <div className="w-full h-[1px] bg-[#C0C2C8] mb-4"></div>
         <div className="grid grid-cols-2 text-text-label">
-          {feeDetails.map((fee) => (
+          {feeDetails.map((fee, index) => (
             <div
-              key={fee.name}
-              className="w-2/3 flex justify-between space-y-2"
+              key={index}
+              className="w-2/3 flex items-center justify-between space-y-2"
             >
               <span>{fee.name}</span>
               <span className="text-black">₦{fee.amount.toLocaleString()}</span>

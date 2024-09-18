@@ -154,7 +154,7 @@ const Dashboard = () => {
         </div>
       </SectionContainer>
       {!isMobile && (
-        <SectionContainer heading="To do list" href="/">
+        <SectionContainer heading="Recent Complains" href="/tasks/complaints">
           <KanbanBoard />
         </SectionContainer>
       )}

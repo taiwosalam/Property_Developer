@@ -1,82 +1,58 @@
 import Image from "next/image";
 import { DetailItem } from "../detail-item";
 import { Occupant } from "./types";
+import { RentSectionContainer } from "./rent-section-container";
 
 export const MatchedProfile: React.FC<{ occupant: Occupant }> = ({
   occupant,
 }) => {
   return (
-    <div className="bg-white rounded-md p-6">
-      <h6 className="font-bold text-[#092C4C] text-xl mb-4">Matched Profile</h6>
-      <div className="w-full flex flex-col items-center justify-center">
-        <div className="mb-4 flex flex-col items-center">
-          <Image
-            src={occupant.avatar}
-            alt="Profile Avatar"
-            width={60}
-            height={60}
-            className="rounded-full"
-            style={{ width: "60px", height: "60px" }}
+    <RentSectionContainer title="Matched Profile" hidebar>
+      <div className="flex items-center justify-center">
+        <div>
+          <img
+            src="/empty/avatar-2.svg"
+            alt="Profile"
+            className="w-16 h-16 rounded-full mb-4 mx-auto"
           />
-          <div className="text-center mt-2">
-            <h4 className="text-lg font-bold">{occupant.name}</h4>
-            <span className="text-sm text-gray-600">{occupant.email}</span>
+          <div className="w-full text-center">
+            <p className="font-bold text-xl">Abimbola Adedeji</p>
+            <p className="text-xs text-text-label mb-4">abimbola@gmail.com</p>
+            <div className="space-y-2 mb-8">
+              <p className="bg-success-1 text-success-3 font-normal text-xs rounded-lg w-[70px] mx-auto">
+                Mobile
+              </p>
+              <p className="text-neutral-800 text-[16px] font-semibold">
+                ID: 2212587645444
+              </p>
+            </div>
           </div>
         </div>
       </div>
-      <div className="space-y-2">
-        <h6 className="font-bold text-[#092C4C] text-xl">About</h6>
-        <div className="space-y-3">
-          <DetailItem
-            style={{ width: "120px" }}
-            label="Gender"
-            value={occupant.gender}
-          />
-          <DetailItem
-            style={{ width: "120px" }}
-            label="Birthday"
-            value={occupant.birthday}
-          />
-          <DetailItem
-            style={{ width: "120px" }}
-            label="Religion"
-            value={occupant.religion}
-          />
-          <DetailItem
-            style={{ width: "120px" }}
-            label="Phone"
-            value={occupant.phone}
-          />
-          <DetailItem
-            style={{ width: "120px" }}
-            label="Marital Status"
-            value={occupant.maritalStatus}
-          />
-        </div>
-        <h6 className="font-bold text-[#092C4C] text-xl">Contact Address</h6>
-        <div className="space-y-3">
-          <DetailItem
-            style={{ width: "120px" }}
-            label="Address"
-            value={occupant.address}
-          />
-          <DetailItem
-            style={{ width: "120px" }}
-            label="City"
-            value={occupant.city}
-          />
-          <DetailItem
-            style={{ width: "120px" }}
-            label="State"
-            value={occupant.state}
-          />
-          <DetailItem
-            style={{ width: "120px" }}
-            label="L.G"
-            value={occupant.lg}
-          />
-        </div>
+      <h1 className="text-brand-9 text-[16px] font-medium mb-2">About</h1>
+      <div className="space-y-4">
+        <RentFeeDetails label="Gender" value="Male" />
+        <RentFeeDetails label="Birthday" value="12/12/12" />
+        <RentFeeDetails label="Religion" value="Christianity" />
+        <RentFeeDetails label="Phone" value="+2348132087958" />
+        <RentFeeDetails label="Marital Status" value="Single" />
       </div>
-    </div>
+      <h1 className="text-brand-9 text-[16px] font-medium my-6">
+        Contact Address
+      </h1>
+      <div className="space-y-4">
+        <RentFeeDetails label="Address" value="U4 Joke Plaza Bodija Ibadan" />
+        <RentFeeDetails label="City" value="Ibadan" />
+        <RentFeeDetails label="State" value="Oyo State" />
+        <RentFeeDetails label="LG" value="Ibadan North Central" />
+      </div>
+    </RentSectionContainer>
   );
 };
+
+const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
+  <div className="flex items-center">
+    <p className="text-[#747474] w-[140px]">{label}</p>
+    <p>{value}</p>
+  </div>
+);

@@ -10,21 +10,22 @@ export const ProfileForm: React.FC<{ occupant: Occupant; title?: boolean }> = ({
   title,
 }) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="block">
-        <div className="flex w-3/4 items-center justify-between gap-2 pb-4">
+        <div className="flex w-3/4 items-center justify-between gap-3 pb-4">
           <Select
             id="sadsfs"
             label="Choose Available Occupant"
             placeholder={occupant.name}
             options={[occupant.name]}
             hiddenInputClassName="setup-f"
+            className="w-2/3"
           />
           <Modal>
             <ModalTrigger asChild>
               <button
                 type="submit"
-                className="bg-brand-9 flex-1 text-white active:text-brand-9 active:bg-transparent active:border-brand-9 py-2 px-8 rounded mt-8"
+                className="bg-brand-9 flex-1 text-white active:text-brand-9 active:bg-transparent active:border-brand-9 py-3 px-4 rounded mt-8"
               >
                 Change ID
               </button>
@@ -51,7 +52,7 @@ export const ProfileForm: React.FC<{ occupant: Occupant; title?: boolean }> = ({
       </div>
 
       <div className="flex items-center justify-end">
-        <div className="space-y-2 space-x-2">
+        <div className="space-y-5 space-x-2">
           {[
             "Create Invoice",
             "Mobile Notification",
