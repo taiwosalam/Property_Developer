@@ -10,3 +10,5 @@ export const property_listing_data = {
   local_government: "",
   total_unit: "",
 };
+
+export const property_listing_types = ["moderating property", "drafted property"] as const;
