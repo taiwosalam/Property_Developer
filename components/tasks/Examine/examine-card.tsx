@@ -1,0 +1,53 @@
+import React from "react";
+
+// Images
+import ExamineIcon from "@/public/icons/examine-icon.svg";
+
+// Imports
+import Picture from "@/components/Picture/picture";
+import Button from "@/components/Form/Button/button";
+
+const ExamineCard = () => {
+  return (
+    <div
+      className="custom-flex-col gap-4 pb-[18px] rounded-lg overflow-hidden bg-white"
+      style={{
+        boxShadow:
+          "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
+      }}
+    >
+      <div
+        className="h-[174px] flex items-center justify-center"
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
+      >
+        <Picture src={ExamineIcon} alt="examine" size={100} />
+      </div>
+      <div className="custom-flex-col gap-[22px] px-[18px]">
+        <div className="custom-flex-col gap-2">
+          <div className="cusotm-flex-col gap-1 font-medium">
+            <p className="text-black text-base">Examine (House inspection)</p>
+            <p className="text-text-tertiary text-sm">
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industry&apos;s standard dummy
+              text ever since the 1500s, and
+            </p>
+          </div>
+          <div className="flex justify-between text-sm font-medium">
+            <p className="text-text-label">ID: 123568765</p>
+            <p className="text-neutral-4">12/01/24</p>
+          </div>
+        </div>
+        <div className="flex gap-2 justify-end">
+          <Button size="xs_normal" variant="border" className="py-2 px-6">
+            manage
+          </Button>
+          <Button size="xs_normal" className="py-2 px-6">
+            report
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ExamineCard;
