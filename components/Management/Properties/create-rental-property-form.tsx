@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -26,8 +25,10 @@ import TextArea from "@/components/Form/TextArea/textarea";
 import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeletePropertyModal from "@/components/Management/Properties/delete-property-modal";
+import { rentPeriods } from "@/data";
+// import feeperiods
 
-const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
+const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   editMode,
 }) => {
   const router = useRouter();
@@ -442,14 +443,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           <Select
             id="fee_period"
             label="Fee Periods"
-            options={[
-              "daily",
-              "weekly",
-              "monthly",
-              "quarterly",
-              "bi-annually",
-              "yearly",
-            ]}
+            options={rentPeriods}
             isSearchable={false}
             inputContainerClassName="bg-white"
             resetKey={resetKey}
@@ -582,4 +576,4 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   );
 };
 
-export default CreatePropertyForm;
+export default CreateRentalPropertyForm;

@@ -21,4 +21,6 @@ export interface InputProps {
   CURRENCY_SYMBOL?: string;
   readOnly?: boolean;
   disabled?: boolean;
+  min?: number
+  max?: number
 }

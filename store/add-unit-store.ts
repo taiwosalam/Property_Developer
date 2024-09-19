@@ -30,59 +30,50 @@ interface AddUnitStore {
   // propertyCreation: PropertyCreation;
   propertyDetails: null | PropertyDetails;
   propertySettings: null | PropertySettings;
-  // formResetKey:
-  images: File[];
-  addImages: (newImages: File[]) => void;
-  removeImage: (index: number) => void;
-  unitType: "" | UnitTypeKey;
-  setUnitType: (unitType: UnitTypeKey) => void;
+
   addedUnits: { [key: string]: FormDataEntryValue | File[] }[];
-  addUnit: (unitData: { [key: string]: FormDataEntryValue }) => void;
+  addUnit: (unitData: { [key: string]: FormDataEntryValue | File[] }) => void;
+  editUnit: (
+    index: number,
+    unitData: { [key: string]: FormDataEntryValue | File[] }
+  ) => void;
   removeUnit: (index: number) => void;
-  formResetKey: number;
 }
 
 export const useAddUnitStore = create<AddUnitStore>()(
   devtools((set) => ({
     // propertyCreation: "rental property",
-    formResetKey: 0,
     propertyDetails: null,
     propertySettings: null,
-    images: [],
-    addImages: (newImages) =>
-      set((state) => {
-        // Limit the number of images to a maximum of 14
-        const totalImages = state.images.length + newImages.length;
-        if (totalImages > 14) {
-          const allowedImages = newImages.slice(0, 14 - state.images.length);
-          return { images: [...state.images, ...allowedImages] };
-        }
-        return { images: [...state.images, ...newImages] };
-      }),
-    removeImage: (index) =>
-      set((state) => ({
-        images: state.images.filter((_, i) => i !== index),
-      })),
-    unitType: "",
-    setUnitType: (unitType: UnitTypeKey) => set(() => ({ unitType })),
+
     addedUnits: [],
     addUnit: (unitData) => {
       set((state) => {
-        const unitDataWithImages = { images: state.images, ...unitData };
-        const updatedUnits = [...state.addedUnits, unitDataWithImages];
+        // perform post request and send unitDataWithImages along. ur response should come with the unit data u just added and use that to set d state of addedUnits
+        const updatedUnits = [...state.addedUnits, unitData];
         console.log("Updated addedUnits:", updatedUnits);
         return {
           addedUnits: updatedUnits,
-          images: [],
-          unitType: "",
-          formResetKey: state.formResetKey + 1,
         };
       });
     },
-    removeUnit: (index: number) =>
+    removeUnit: (index) =>
       set((state) => ({
+        // communicate with API and remove d unit
         addedUnits: state.addedUnits.filter((_, i) => i !== index),
       })),
+    editUnit: (index, unitData) => {
+      set((state) => {
+        // communicate with API and edit d unit
+        const updatedUnits = state.addedUnits.map((unit, i) =>
+          i === index ? { ...unit, ...unitData } : unit
+        );
+        console.log("Updated addedUnits:", updatedUnits);
+        return {
+          addedUnits: updatedUnits,
+        };
+      });
+    },
   }))
 );
 

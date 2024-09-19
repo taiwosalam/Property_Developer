@@ -45,7 +45,7 @@ const TextArea: React.FC<TextAreaProps> = ({
 
   useEffect(() => {
     setEditorValue(value || "");
-  }, [resetKey]);
+  }, [resetKey, value]);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>

@@ -5,6 +5,7 @@ import { useAddUnitStore } from "@/store/add-unit-store";
 import { useState, useEffect } from "react";
 import { DeleteIconX } from "@/public/icons/icons";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
+import { useUnitForm } from "./unit-form-context";
 
 const emptyStateValues = {
   rentAmount: 0,
@@ -18,12 +19,12 @@ const emptyStateValues = {
 };
 
 const UnitBreakdownNewTenant = () => {
-  const formResetKey = useAddUnitStore((s) => s.formResetKey);
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const agencyFeePercentageString = propertySettings?.agency_fee || "10%";
   const agencyFeePercentage = parseFloat(agencyFeePercentageString || "0"); // Convert '5%' to 5
+  const { formResetKey } = useUnitForm();
   const CURRENCY_SYMBOL = currencySymbols["NAIRA"]; // Should be gotten from store from API
-  const [otherChargesLabel, setOtherChargesLabel] = useState("");
+  const [otherChargesInput, setOtherChargesInput] = useState(false);
 
   const [formValues, setFormValues] = useState(emptyStateValues);
   const {
@@ -48,12 +49,11 @@ const UnitBreakdownNewTenant = () => {
     }));
   };
   const addOtherCharges = () => {
-    const label = prompt("Enter the name of the charge:", "Other Charges");
-    setOtherChargesLabel(label || "Other Charges");
+    setOtherChargesInput(true);
   };
 
   const handleRemoveOtherCharges = () => {
-    setOtherChargesLabel("");
+    setOtherChargesInput(false);
     setFormValues((prevValues) => ({
       ...prevValues,
       otherCharges: 0,
@@ -95,7 +95,7 @@ const UnitBreakdownNewTenant = () => {
 
   // reset form
   useEffect(() => {
-    setOtherChargesLabel("");
+    setOtherChargesInput(false);
     setFormValues(emptyStateValues);
   }, [formResetKey]);
 
@@ -170,11 +170,11 @@ const UnitBreakdownNewTenant = () => {
           onChange={(value) => handleInputChange("inspectionFee", value)}
           type="text"
         />
-        {otherChargesLabel && (
+        {otherChargesInput && (
           <div className="relative">
             <Input
               id="other_charges"
-              label={otherChargesLabel}
+              label="Other Charges"
               inputClassName="bg-white"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
               value={formatNumber(otherCharges)}
@@ -191,7 +191,7 @@ const UnitBreakdownNewTenant = () => {
             </button>
           </div>
         )}
-        {!otherChargesLabel && (
+        {!otherChargesInput && (
           <button
             type="button"
             onClick={addOtherCharges}

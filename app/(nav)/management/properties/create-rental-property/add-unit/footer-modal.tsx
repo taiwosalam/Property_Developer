@@ -1,36 +1,39 @@
 import Button from "@/components/Form/Button/button";
-import Select from "@/components/Form/Select/select";
+import Input from "@/components/Form/Input/input";
 import { useModal } from "@/components/Modal/modal";
 import { useState } from "react";
-interface FooterModalProps {
-  handleNoClick: () => void;
-  // handleYesClick: () => void;
-}
 
-const FooterModal: React.FC<FooterModalProps> = ({
-  handleNoClick,
-  // handleYesClick,
-}) => {
+const FooterModal = ({ setSaved }: { setSaved: (a: boolean) => void }) => {
   const { setIsOpen } = useModal();
-  const [countModal, setCountModal] = useState(false);
+  const [countPopup, setCountPopup] = useState(false);
+  const [count, setCount] = useState(2);
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white py-7 px-6 shadow-lg text-center z-50">
-      {countModal && (
-        <div className="absolute top-[-90%] left-[50%] translate-x-[-50%] bg-white p-4">
+      {countPopup && (
+        <div className="absolute top-[-85%] left-[50%] translate-x-[-50%] bg-neutral-2 p-4">
           <div className="flex  items-center gap-4">
             <div>
               <p className="text-base text-text-secondary mb-2">
                 How many units more?
               </p>
-              <Select
+              <Input
                 id=""
+                type="number"
                 placeholder="Select"
-                isSearchable={false}
-                options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
+                inputClassName="keep-spinner"
+                min={1}
+                max={20}
+                // value={count}
+                // onChange={setCount}
               />
             </div>
-            <Button type="button" size="base_medium" className="py-2 px-8">
+            <Button
+              form="add-unit-form"
+              type="submit"
+              size="base_medium"
+              className="py-2 px-8"
+            >
               Add
             </Button>
           </div>
@@ -44,15 +47,16 @@ const FooterModal: React.FC<FooterModalProps> = ({
         <Button
           type="button"
           size="base_medium"
-          onClick={() => setCountModal(true)}
+          onClick={() => setCountPopup(true)}
         >
           Yes
         </Button>
         <Button
           type="button"
-          onClick={() => {
-            handleNoClick();
+          form="add-unit-form"
+          onClick={(e) => {
             setIsOpen(false);
+            e.currentTarget.form?.requestSubmit();
           }}
           size="base_medium"
         >

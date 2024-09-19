@@ -156,12 +156,15 @@ input[type="password"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-/* Remove spin buttons */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
+
+/* Hide Spinner except specific class */
+input[type="number"]:not(.keep-spinner)::-webkit-outer-spin-button,
+input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+
 
 .react-tel-input {
   font-family: inherit !important;

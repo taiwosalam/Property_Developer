@@ -1,26 +1,41 @@
 "use client";
-import { useState, useEffect } from "react";
-import Input from "@/components/Form/Input/input";
+
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Select from "@/components/Form/Select/select";
-import TextArea from "@/components/Form/TextArea/textarea";
+import { useState, useEffect } from "react";
+
+// Types
+import type { CreatePropertyFormProps } from "./types";
+import type { StateType } from "@/app/(nav)/management/properties/create-rental-property/data";
+
+// Images
 import {
-  ChevronLeft,
   PlusIcon,
+  ChevronLeft,
   DeleteIconX,
   DeleteIconOrange,
 } from "@/public/icons/icons";
-import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
-import Image from "next/image";
-import { rentPeriods, propertyCategories } from "@/data";
-import { type StateType } from "./data";
-import CreatePropertyForm from "@/components/Management/Properties/create-rental-property-form";
 
-const CreateProperty = () => {
+// Imports
+import clsx from "clsx";
+import Input from "@/components/Form/Input/input";
+import Select from "@/components/Form/Select/select";
+import Button from "@/components/Form/Button/button";
+import TextArea from "@/components/Form/TextArea/textarea";
+import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import DeletePropertyModal from "@/components/Management/Properties/delete-property-modal";
+import { rentPeriods } from "@/data";
+
+const CreateGatedEstateForm: React.FC<CreatePropertyFormProps> = ({
+  editMode,
+}) => {
   const router = useRouter();
+
   const goBack = () => {
     router.back();
   };
+
   const [state, setState] = useState<StateType>({
     selectedState: "",
     selectedLGA: "",
@@ -35,6 +50,7 @@ const CreateProperty = () => {
     accountOfficerOptions: [],
     resetKey: 0,
   });
+
   const {
     selectedState,
     selectedLGA,
@@ -74,7 +90,7 @@ const CreateProperty = () => {
       return true;
     });
 
-    const finalImages = [...images, ...newImages].slice(0, 6); // Limit to 2 images
+    const finalImages = [...images, ...newImages].slice(0, 2); // Limit to 2 images
     setState((x) => ({ ...x, images: finalImages }));
 
     // Reset input value to allow re-uploading the same file
@@ -162,7 +178,7 @@ const CreateProperty = () => {
 
     // formData.append("image", images); append d images from d state
 
-    router.push("/management/properties/create-rental-property/add-unit");
+    router.push("/management/properties/create-gated-estate-property/add-unit");
   };
 
   // Function to reset the state
@@ -177,33 +193,50 @@ const CreateProperty = () => {
   };
 
   return (
-    <div className="pb-[80px]">
+    <div
+      className={clsx({
+        "pb-[80px]": !editMode,
+      })}
+    >
       {/* Back Button & Page Title */}
-      <div className="flex items-center gap-1 mb-5 lg:mb-8">
-        <button
-          type="button"
-          aria-label="Go Back"
-          onClick={goBack}
-          className="p-2"
-        >
-          <ChevronLeft />
-        </button>
-        <p className="text-black font-bold text-lg lg:text-xl">
-          Create Rental Property
-        </p>
-      </div>
+      {editMode ? (
+        <>
+          <div className="flex gap-[2px] text-xs md:text-sm lg:text-base font-medium mb-4">
+            <span className="text-status-error-primary">*</span>
+            <p className="text-primary-navy font-bold text-lg lg:text-xl">
+              Property Details
+            </p>
+          </div>
+          <hr className="my-4" />
+        </>
+      ) : (
+        <div className="flex items-center gap-1 mb-5 lg:mb-8">
+          <button
+            type="button"
+            aria-label="Go Back"
+            onClick={goBack}
+            className="p-2"
+          >
+            <ChevronLeft />
+          </button>
+          <p className="text-black font-bold text-lg lg:text-xl">
+            Create Gated Estate Property
+          </p>
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="max-w-[970px]">
-        <input name="property_tag" type="hidden" value="rental" readOnly />
+        <input name="property_tag" type="hidden" value="estate" readOnly />
         {/* Backend is Looking for it */}
         <div className="mb-5 lg:mb-8">
           <p className="mb-5">
-            Set property pictures for easy recognition (maximum of 6 images).
+            Set Estate/Facility pictures for easy recognition (maximum of 2
+            images).
           </p>
           <div className="flex gap-4 overflow-x-auto">
             {images.map((image, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 relative w-[285px] h-[155px] rounded-lg overflow-hidden border border-gray-300"
+                className="relative w-[285px] h-[155px] rounded-lg overflow-hidden border border-gray-300"
               >
                 <Image
                   src={URL.createObjectURL(image)}
@@ -221,7 +254,7 @@ const CreateProperty = () => {
                 </button>
               </div>
             ))}
-            {images.length < 6 && (
+            {images.length < 2 && (
               <label
                 htmlFor="upload"
                 className="w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
@@ -256,7 +289,7 @@ const CreateProperty = () => {
         <div className="flex gap-[2px] text-xs md:text-sm lg:text-base font-medium mb-4">
           <span className="text-status-error-primary">*</span>
           <p className="text-primary-navy font-bold text-lg lg:text-xl">
-            Property Details
+            Estate/Facility Details
           </p>
         </div>
         <hr className="my-4" />
@@ -298,7 +331,7 @@ const CreateProperty = () => {
             inputClassName="bg-white rounded-[8px]"
           />
           <Select
-            options={propertyCategories["rental property"]}
+            options={["residential", "mixed use", "commercial"]}
             id="category"
             label="Category"
             isSearchable={false}
@@ -357,12 +390,12 @@ const CreateProperty = () => {
               onClick={addStaff}
               className="text-brand-9 text-xs md:text-sm font-normal md:self-end md:justify-self-start"
             >
-              {`${staff.length > 0 ? "Add More Staff" : "Add Staff"}`}
+              {`${staff.length > 0 ? "Add more staff" : "Add Staff"}`}
             </button>
           )}
           <TextArea
             id="property_description"
-            label="Property Description"
+            label="Estate/facility Description"
             inputSpaceClassName="bg-white"
             className="md:col-span-2 lg:col-span-3"
             placeholder="Write here"
@@ -373,14 +406,14 @@ const CreateProperty = () => {
         <div className="flex gap-[2px] text-xs md:text-sm lg:text-base font-medium mb-4">
           <span className="text-status-error-primary">*</span>
           <p className="text-primary-navy font-bold text-lg lg:text-xl">
-            Property Settings
+            Estate/Facility Setting
           </p>
         </div>
         <hr className="my-4" />
         <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
           <Select
-            id="agency_fee"
-            label="Agency Fee"
+            id="management_fee"
+            label="management Fee"
             options={[
               "1%",
               "2%",
@@ -394,17 +427,7 @@ const CreateProperty = () => {
               "8%",
               "9%",
               "10%",
-              "15%",
-              "20%",
             ]}
-            isSearchable={false}
-            inputContainerClassName="bg-white"
-            resetKey={resetKey}
-          />
-          <Select
-            id="who_to_charge"
-            options={["landlord", "tenants", "both", "none"]}
-            label="Who to Charge"
             isSearchable={false}
             inputContainerClassName="bg-white"
             resetKey={resetKey}
@@ -414,19 +437,6 @@ const CreateProperty = () => {
             label="Fee Periods"
             options={rentPeriods}
             isSearchable={false}
-            inputContainerClassName="bg-white"
-            resetKey={resetKey}
-          />
-          <Select
-            options={[
-              "keep with landlord",
-              "keep with manager",
-              "escrow it",
-              "none",
-            ]}
-            isSearchable={false}
-            id="caution_deposit"
-            label="Caution Deposit"
             inputContainerClassName="bg-white"
             resetKey={resetKey}
           />
@@ -486,31 +496,63 @@ const CreateProperty = () => {
             inputContainerClassName="bg-white"
             resetKey={resetKey}
           />
-          <Input
+          {/* <Input
             id="coordinate"
             label="Cordinates"
             inputClassName="bg-white rounded-[8px]"
-          />
+          /> */}
         </div>
-        <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
-          <button
-            type="reset"
-            className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
-            onClick={handleReset}
-          >
-            Clear Fields
-          </button>
-          <button
-            type="submit"
-            className="bg-brand-9 text-white hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9"
-            onClick={() => {}}
-          >
-            Add Unit
-          </button>
+        <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
+          {editMode ? (
+            <>
+              <Modal>
+                <ModalTrigger asChild>
+                  <Button
+                    size="sm_medium"
+                    variant="light_red"
+                    className="py-2 px-7"
+                  >
+                    delete property
+                  </Button>
+                </ModalTrigger>
+                <ModalContent>
+                  <DeletePropertyModal />
+                </ModalContent>
+              </Modal>
+              <Button
+                type="button"
+                size="sm_medium"
+                variant="sky_blue"
+                className="py-2 px-7"
+              >
+                Add more unit
+              </Button>
+              <Button type="button" size="sm_medium" className="py-2 px-7">
+                update
+              </Button>
+            </>
+          ) : (
+            <>
+              <button
+                type="reset"
+                className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
+                onClick={handleReset}
+              >
+                Clear Fields
+              </button>
+              <button
+                type="submit"
+                className="bg-brand-9 text-white hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9"
+                onClick={() => {}}
+              >
+                Add Unit
+              </button>
+            </>
+          )}
         </div>
       </form>
     </div>
   );
 };
 
-export default CreateProperty;
+export default CreateGatedEstateForm;

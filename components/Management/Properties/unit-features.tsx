@@ -1,14 +1,13 @@
+import { useEffect, useState } from "react";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import MultiSelect from "@/components/Form/MultiSelect/multiselect";
 import { unitFacilities } from "@/data";
-import { useAddUnitStore } from "@/store/add-unit-store";
-import { useEffect, useState } from "react";
+import { useUnitForm } from "./unit-form-context";
 
 const UnitFeatures = () => {
-  const unitType = useAddUnitStore((s) => s.unitType);
+  const { unitType, formResetKey } = useUnitForm();
   // const unitType = "apartment";
-  const formResetKey = useAddUnitStore((s) => s.formResetKey);
 
   const [selectedAreaUnit, setSelectedAreaUnit] = useState("");
 
@@ -35,10 +34,10 @@ const UnitFeatures = () => {
         <>
           {/* Select for choosing area unit */}
           <Select
-            id="area_unit"
+            id="measurement" // Confirm ID with backend
             required
             options={areaUnits}
-            label="Area Unit"
+            label="measurement"
             value={selectedAreaUnit}
             onChange={handleAreaUnitChange}
             inputContainerClassName="bg-white"
@@ -50,9 +49,10 @@ const UnitFeatures = () => {
               <Input
                 required
                 id="area_sqm" //confirm ID with backend
-                label="Measurement Area (Sqm)"
+                label="Total Area (Sqm)"
                 inputClassName="bg-white"
                 type="number"
+                min={1}
               />
               {/* Show second input only if selected unit is not "sqm" or "half plot" */}
               {selectedAreaUnit !== "sqm" &&
@@ -63,6 +63,7 @@ const UnitFeatures = () => {
                     label={`Number of ${selectedAreaUnit}s`}
                     inputClassName="bg-white"
                     type="number"
+                    min={1}
                   />
                 )}
             </>
@@ -76,22 +77,28 @@ const UnitFeatures = () => {
               id="bedroom"
               required
               label="Bedroom"
-              inputClassName="bg-white"
+              inputClassName="bg-white keep-spinner"
               type="number"
+              min={0}
+              max={50}
             />
             <Input
               required
               id="bathroom"
               label="Bathroom"
-              inputClassName="bg-white"
+              inputClassName="bg-white keep-spinner"
               type="number"
+              min={0}
+              max={50}
             />
             <Input
               required
               id="toilet"
               label="Toilet"
-              inputClassName="bg-white"
+              inputClassName="bg-white keep-spinner"
               type="number"
+              min={0}
+              max={50}
             />
             <MultiSelect
               options={facilitiesOptions}
