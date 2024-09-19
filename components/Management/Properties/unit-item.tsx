@@ -33,7 +33,7 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
         </div>
       </div>
       {/* <hr className="my-4 " /> */}
-      <SectionSeparator className="my-4 " />
+      <SectionSeparator className="my-4 h-[2px]" />
       <div className="flex flex-col md:flex-row md:items-center gap-2 md:justify-between">
         <div className="overflow-x-auto max-w-full flex-grow">
           <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
@@ -45,31 +45,33 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
             </div>
             <div>
               <p className="text-[#747474]">Rent</p>
-              <p className="text-black">₦300,000</p>
+              <p className="text-black font-medium">₦300,000</p>
             </div>
             <div>
               <p className="text-[#747474]">Unit No/Name</p>
-              <p className="text-black">Flat 4</p>
+              <p className="text-black font-medium">Flat 4</p>
             </div>
             <div>
               <p className="text-[#747474]">Caution Deposit</p>
-              <p className="text-black">₦300,000</p>
+              <p className="text-black font-medium">₦300,000</p>
             </div>
             <div>
               <p className="text-[#747474]">Unit Description</p>
-              <p className="text-black">Abiola Moniya</p>
+              <p className="text-black font-medium">Abiola Moniya</p>
             </div>
             <div>
               <p className="text-[#747474]">Service Charge</p>
-              <p>₦300,000</p>
+              <p className="text-black font-medium">₦300,000</p>
             </div>
             <div>
               <p className="text-[#747474]">Tenants Name</p>
-              <p className="underline underline-offset-4">David Ajala</p>
+              <p className="text-black font-medium underline underline-offset-4 flex items-center">
+                David Ajala <BadgeIcon color="red" />
+              </p>
             </div>
             <div>
               <p className="text-[#747474]">Due Date</p>
-              <p>12/12/2024</p>
+              <p className="text-black font-medium">12/12/2024</p>
             </div>
           </div>
         </div>
@@ -91,7 +93,7 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
         </div>
       </div>
 
-      <SectionSeparator className="my-4 " />
+      <SectionSeparator className="my-4 h-[2px]" />
       <p
         className={clsx(
           "px-4 py-1 text-[10px] font-normal rounded-lg w-fit",

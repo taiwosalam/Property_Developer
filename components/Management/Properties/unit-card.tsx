@@ -12,14 +12,15 @@ import { SectionSeparator } from "@/components/Section/section-components";
 
 const UnitCard: React.FC<UnitCardProps> = ({
   data,
-  handleEdit,
   handleRemove,
+  setIsEditing,
 }) => {
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
   return (
-    <div
-      className="w-full p-6 rounded-2xl bg-white custom-flex-col gap-4"
-      style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
-    >
+    <>
       <div className="flex items-center justify-between">
         <p className="text-brand-10 text-base font-bold">
           Unit ID: 123456776342
@@ -63,7 +64,7 @@ const UnitCard: React.FC<UnitCardProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

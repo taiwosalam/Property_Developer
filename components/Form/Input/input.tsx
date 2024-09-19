@@ -33,6 +33,8 @@ const Input: React.FC<InputProps> = ({
   CURRENCY_SYMBOL,
   readOnly,
   disabled,
+  min,
+  max
 }) => {
   // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -100,6 +102,9 @@ const Input: React.FC<InputProps> = ({
           placeholder={placeholder}
           readOnly={readOnly}
           disabled={disabled}
+          // Add min and max attributes for number type
+          min={type === "number" ? min : undefined}
+          max={type === "number" ? max : undefined}
           // Reset validation error when the user interacts with the input
           onInput={() => setValidationError(null)}
           // Call onChange prop if provided when input value changes

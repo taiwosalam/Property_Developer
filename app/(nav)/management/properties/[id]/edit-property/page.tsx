@@ -1,14 +1,14 @@
 "use client";
 
-import React from "react";
 import { useRouter } from "next/navigation";
 
 // Images
 import { ChevronLeft } from "@/public/icons/icons";
 
 // Imports
-import UnitCard from "@/components/Management/Properties/unit-card";
-import CreatePropertyForm from "@/components/Management/Properties/create-property-form";
+import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-card";
+import CreateRentalPropertyForm from "@/components/Management/Properties/create-rental-property-form";
+import CreateGatedEstateForm from "@/components/Management/Properties/create-gated-estate-form";
 
 const EditProperty = () => {
   const router = useRouter();
@@ -26,12 +26,15 @@ const EditProperty = () => {
         </button>
         <p className="text-black font-bold text-lg lg:text-xl">Edit Property</p>
       </div>
-      <CreatePropertyForm editMode />
+      {/* Check for type of Property in your fetched property info choose which form to render... Also set the property info in unit store (zustand)*/}
+      <CreateRentalPropertyForm editMode />
+
+      {/* <CreateGatedEstateForm editMode /> */}
       <div className="custom-flex-col gap-10">
         {Array(3)
           .fill(null)
           .map((_, index) => (
-            <UnitCard key={index} data={{}} />
+            <AddUnitFormCard key={index} data={{}} index={index} />
           ))}
       </div>
     </div>

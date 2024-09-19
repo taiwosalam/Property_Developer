@@ -9,14 +9,16 @@ import {
 } from "@/data";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { useEffect, useState } from "react";
+import { useUnitForm } from "./unit-form-context";
 
 const UnitDetails = () => {
   // const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
   const propertyDetails: { category: Categories } = {
     category: "residential", // for testing. remove this line and uncomment d line above
   };
-  const selectedUnitType = useAddUnitStore((s) => s.unitType);
-  const setSelectedUnitType = useAddUnitStore((s) => s.setUnitType);
+
+  const { unitType: selectedUnitType, setUnitType: setSelectedUnitType } =
+    useUnitForm();
 
   const [unitTypeOptions, setUnitTypeOptions] = useState<string[]>([]);
   const [unitSubtypeOptions, setUnitSubtypeOptions] = useState<string[]>([]);
@@ -108,14 +110,16 @@ const UnitDetails = () => {
           value={selectedUnitType}
           onChange={handleUnitTypeChange}
         />
-        <Select
-          options={unitSubtypeOptions}
-          id="unit_sub_type"
-          label="Unit Sub Type"
-          inputContainerClassName="bg-white"
-          value={selectedSubtype}
-          onChange={handleSubtypeChange}
-        />
+        {selectedUnitType !== "land" && (
+          <Select
+            options={unitSubtypeOptions}
+            id="unit_sub_type"
+            label="Unit Sub Type"
+            inputContainerClassName="bg-white"
+            value={selectedSubtype}
+            onChange={handleSubtypeChange}
+          />
+        )}
         <Select
           id="unit_preference"
           label="Unit Preference"

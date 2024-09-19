@@ -536,3 +536,17 @@ export const SearchIcon = () => {
     </svg>
   );
 };
+
+export const Pointer =()=>{
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="11"
+      viewBox="0 0 18 11"
+      fill="none"
+    >
+      <path d="M0 0L9 11L18 0H0Z" fill="currentColor" />
+    </svg>
+  );
+}

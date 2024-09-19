@@ -1,13 +1,12 @@
 import { PlusIcon, DeleteIconOrange } from "@/public/icons/icons";
 import Image from "next/image";
-import { useAddUnitStore } from "@/store/add-unit-store";
+import { useUnitForm } from "./unit-form-context";
+import clsx from "clsx";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 
 const UnitPictures = () => {
-  const images = useAddUnitStore((state) => state.images);
-  const addImages = useAddUnitStore((state) => state.addImages);
-  const removeImage = useAddUnitStore((state) => state.removeImage);
+  const { images, addImages, removeImage, isEditing } = useUnitForm();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -38,11 +37,16 @@ const UnitPictures = () => {
   };
 
   return (
-    <div>
+    <div className={clsx(isEditing && "!mt-0")}>
       <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
         Unit Pictures
       </h4>
-      <hr className="my-4 border-none bg-borders-dark h-[2px]" />
+      <hr
+        className={clsx(
+          "my-4 border-none bg-borders-dark",
+          isEditing ? "h-[1px]" : "h-[2px]"
+        )}
+      />
       <p className="text-text-secondary mb-5">
         Unit pictures are what will be shown to potential clients on the mobile
         app and your default website (maximum of 14 images).
