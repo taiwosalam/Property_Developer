@@ -4,6 +4,7 @@ import Button from "@/components/Form/Button/button";
 import TextArea from "@/components/Form/TextArea/textarea";
 import { ChevronLeft } from "@/public/icons/icons";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { usePathname } from "next/navigation";
 
 interface ComplaintData {
   senderName: string;
@@ -17,6 +18,7 @@ interface ComplaintData {
 }
 
 const TaskModal = ({ complaintData }: { complaintData: ComplaintData }) => {
+  const pathname = usePathname();
   const {
     senderName,
     senderVerified,
@@ -33,7 +35,7 @@ const TaskModal = ({ complaintData }: { complaintData: ComplaintData }) => {
       <div className="flex flex-col md:flex-row md:gap-6">
         {/* Left side - Complaint details */}
         <div className="md:w-1/2 my-10">
-          <ModalTrigger asChild close>
+          <ModalTrigger close className="cursor-pointer">
             <ChevronLeft />
           </ModalTrigger>
           <div className="my-4 w-full space-y-2 text-sm text-text-secondary">
@@ -78,30 +80,45 @@ const TaskModal = ({ complaintData }: { complaintData: ComplaintData }) => {
         {/* Right side - Action section */}
         <div className="md:w-1/2 md:pl-6 my-6">
           <p className="font-medium text-[16px] text-center">
-            Kindly approve or reject this complaint
+            {pathname != "/dashboard"
+              ? "Kindly approve or reject this complaint"
+              : "Change the status of this complaint"}
           </p>
           <p className="font-medium text-text-secondary my-3">Attach note:</p>
           <div className="mt-4">
             <TextArea id="note" placeholder="Type Here"></TextArea>
           </div>
-          <div className="mt-4 space-y-2">
-            <Button
-              size="16_bold"
-              className="py-2 px-6 w-full"
-              //   className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
-              onClick={() => {}} // Empty onClick for Approve
-            >
-              Approve Complaint
-            </Button>
-            <Button
-              size="16_bold"
-              variant="light_red"
-              className="py-2 px-6 w-full"
-              //   className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
-              onClick={() => {}} // Empty onClick for Reject
-            >
-              Reject Complaint
-            </Button>
+          <div className="mt-4">
+            {pathname === "/dashboard" ? (
+              <div className="space-y-2">
+                <Button
+                  size="16_bold"
+                  className="py-2 px-6 w-full"
+                  //   className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+                  onClick={() => {}} // Empty onClick for Approve
+                >
+                  Approve Complaint
+                </Button>
+                <Button
+                  size="16_bold"
+                  variant="light_red"
+                  className="py-2 px-6 w-full"
+                  //   className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
+                  onClick={() => {}} // Empty onClick for Reject
+                >
+                  Reject Complaint
+                </Button>
+              </div>
+            ) : (
+              <Button
+                size="16_bold"
+                className="py-2 px-6 w-full"
+                //   className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+                onClick={() => {}} // Empty onClick for Approve
+              >
+                Change Status
+              </Button>
+            )}
           </div>
         </div>
       </div>

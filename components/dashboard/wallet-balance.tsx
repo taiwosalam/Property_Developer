@@ -10,7 +10,7 @@ import WalletBG from "@/public/global/wallet-bg.svg";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SVG from "../SVG/svg";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -40,8 +40,19 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
 }) => {
   const [hideBalance, setHideBalance] = useState(false);
 
+  useEffect(() => {
+    const storedHideBalance = localStorage.getItem("hideBalance");
+    if (storedHideBalance !== null) {
+      setHideBalance(JSON.parse(storedHideBalance));
+    }
+  }, []);
+
   const hideWalletBalance = () => {
-    setHideBalance(!hideBalance);
+    setHideBalance((prevHideBalance) => {
+      const newHideBalance = !prevHideBalance;
+      localStorage.setItem("hideBalance", JSON.stringify(newHideBalance));
+      return newHideBalance;
+    });
   };
 
   const formatNumber = (number: number) => {
@@ -59,7 +70,13 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
       </div>
       <div className="p-5 relative custom-primary-bg rounded-lg">
         <div className="absolute inset-0">
-          <Image src={WalletBG} alt="wallet background" fill sizes="400px" className="object-cover" />
+          <Image
+            src={WalletBG}
+            alt="wallet background"
+            fill
+            sizes="400px"
+            className="object-cover"
+          />
         </div>
         <div className="relative space-y-3">
           <div className="flex items-center gap-1 text-white opacity-95 font-normal text-sm">
@@ -79,12 +96,12 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
             </button>
           </div>
           <p className="font-medium text-xl text-white">
-            {hideBalance ? "₦ " + formatNumber(mainBalance) : "*******"}
+            {hideBalance ? "*******" : "₦ " + formatNumber(mainBalance)}
           </p>
           <div className="text-white text-xs font-medium capitalize flex space-x-1">
             <p className="text-text-white-secondary ">caution deposit</p>
             <span className="text-white ml-2">
-              {hideBalance ? "₦ " + formatNumber(cautionDeposit) : "*******"}
+              {hideBalance ? "*******" : "₦ " + formatNumber(cautionDeposit)}
             </span>
             <Image src="/icons/caution.svg" alt="info" width={12} height={12} />
           </div>
