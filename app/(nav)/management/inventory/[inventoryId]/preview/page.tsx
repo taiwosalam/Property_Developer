@@ -1,6 +1,7 @@
 import React from "react";
 
 // Imports
+import Button from "@/components/Form/Button/button";
 import InventoryItem from "@/components/Management/Inventory/inventory-item";
 import { InventoryListInfo } from "@/components/Management/Inventory/inventory-components";
 
@@ -30,6 +31,15 @@ const PreviewInventory = () => {
           <InventoryItem />
           <InventoryItem />
         </div>
+      </div>
+      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
+        <Button
+          href={"/management/inventory/1/manage"}
+          size="sm_medium"
+          className="py-2 px-7"
+        >
+          Manage inventory
+        </Button>
       </div>
     </div>
   );

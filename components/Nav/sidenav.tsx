@@ -14,7 +14,9 @@ const Sidenav = () => {
       {nav_items.map((item, idx) =>
         item.content ? (
           <NavDropdown
-            highlight={item.content.some((i) => pathname.includes(i.href))}
+            highlight={item.content.some((i) =>
+              pathname.includes(`${item.label}${i.href}`)
+            )}
             key={idx}
             type={item.type}
             content={item.content}

@@ -27,6 +27,7 @@ const Property = () => {
             <Button
               key={index}
               size="sm_medium"
+              onClick={() => setActiveProperty(type)}
               variant={activeProperty === type ? "default" : "border"}
               className="py-2 px-8"
             >
