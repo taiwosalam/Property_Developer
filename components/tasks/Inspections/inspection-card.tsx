@@ -48,7 +48,7 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ type }) => {
           <InspectionCardDetail desc="Inspection Date" title="25/01/2024" />
           <InspectionCardDetail desc="Inspection Time" title="12:30pm" />
         </div>
-        <div className="flex gap-4 justify-end">
+        <div className="flex items-center gap-4 justify-end">
           <Picture src={ChatIcon} alt="chat" size={24} />
           <Modal>
             <ModalTrigger asChild>

@@ -20,18 +20,18 @@ const InspectionPage = () => {
         <AutoResizingGrid minWidth={280}>
           <ManagementStatistcsCard
             title="Total Inspections"
-            newData={23}
-            total={232}
+            newData={34}
+            total={657}
           />
           <ManagementStatistcsCard
             title="Physical Inspections"
-            newData={23}
-            total={34}
+            newData={34}
+            total={657}
           />
           <ManagementStatistcsCard
             title="Virtual Inspections"
-            newData={32}
-            total={453}
+            newData={34}
+            total={657}
           />
         </AutoResizingGrid>
       )}
