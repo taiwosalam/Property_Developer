@@ -6,9 +6,9 @@ import React, { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { trackOutsideClick } from "@/utils/track-outside-click";
 
-const NavSwitchUserSwitch = () => {
+const NavSwitchUserSwitch = ({ userType }: { userType: string }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [active, setActive] = useState("property manager");
+  const [active, setActive] = useState(userType);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -32,7 +32,7 @@ const NavSwitchUserSwitch = () => {
         className="w-full h-full p-4 flex items-center justify-between gap-2 rounded-lg bg-[#F1F1F1]"
       >
         <p className="text-[#0a132ea6] text-base font-semibold capitalize custom-truncated">
-          {active}
+          {userType}
         </p>
         <ChevronDown size={20} color="#0a132ea6" />
       </button>

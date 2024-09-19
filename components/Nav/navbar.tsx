@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 // Images
@@ -32,16 +32,86 @@ import NavSwitchUserSwitch from "./nav-switch-user-switch";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import NavProfileDropdown from "@/components/Nav/nav-profile-dropdown";
 import Image from "next/image";
+import { useAuthStore } from "@/store/authstrore";
+import { getDashboardData } from "@/app/(nav)/dashboard/data";
+
+interface UserData {
+  user_id: number;
+  email: string;
+  stage: number;
+  role: string;
+  company_name: string;
+  company_type: string;
+  company_industry: string | null;
+  cac_certificate: string;
+  membership_certificate: string;
+  cac_date: string;
+  company_phone: string;
+  logo: string;
+  profile_pic: string;
+  director_name: string;
+  director_title: string;
+  director_experience: string;
+  director_email: string;
+  director_about: string;
+  director_phone: string;
+  verification: string;
+}
 
 const Navbar = () => {
   const { isCustom } = useWindowWidth(1024);
+  const [dashboardData, setDashboardData] = useState<UserData>({
+    user_id: 0,
+    email: "",
+    stage: 0,
+    role: "",
+    company_name: "",
+    company_type: "",
+    company_industry: null,
+    cac_certificate: "",
+    membership_certificate: "",
+    cac_date: "",
+    company_phone: "",
+    logo: "",
+    profile_pic: "",
+    director_name: "",
+    director_title: "",
+    director_experience: "",
+    director_email: "",
+    director_about: "",
+    director_phone: "",
+    verification: "",
+  });
+
+  const accessToken = useAuthStore((state) => state.access_token);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDashboardData(accessToken);
+        console.log(data);
+        setDashboardData(data);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchData();
+  }, [accessToken]);
 
   return (
     <div className="sticky top-0 z-[2] w-full h-[100px] px-3 sm:px-10 flex items-center border-b border-solid border-neutral-2 bg-white">
       <div className="flex w-full gap-2 lg:gap-6 justify-between">
         <div className="flex flex-1 gap-6 items-center">
-          <div className="hidden md:block w-[200px] h-full rounded-lg">
-            <Image src={LogoPlacholder} alt="logo" className="h-full" />
+          <div className="hidden md:block w-[200px] h-full rounded-lg relative">
+            <Image
+              src={dashboardData.logo || LogoPlacholder}
+              alt="logo"
+              fill
+              priority
+              sizes="auto"
+              className="h-full"
+            />
           </div>
           <div className="flex flex-1 gap-2">
             {isCustom ? (
@@ -52,7 +122,7 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <NavSwitchUserSwitch />
+                <NavSwitchUserSwitch userType={dashboardData.company_type} />
                 <Modal>
                   <ModalTrigger className="p-4 flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1]">
                     <Picture src={Search} alt="search" size={24} />
@@ -113,13 +183,16 @@ const Navbar = () => {
                     {getGreeting()},
                   </p>
                   <p className="text-xs md:text-base font-medium">
-                    Mr Taiwo Salam
+                    {dashboardData.director_name}
                   </p>
                 </div>
               </div>
             </DropdownTrigger>
             <DropdownContent className="custom-flex-col gap-2 pb-[10px] min-w-[300px] sm:min-w-[350px] text-sm sm:text-base font-normal capitalize">
-              <NavProfileDropdown />
+              <NavProfileDropdown
+                name={dashboardData.director_name}
+                userId={dashboardData.user_id}
+              />
             </DropdownContent>
           </Dropdown>
         </div>
