@@ -1,6 +1,7 @@
 "use client";
 
 import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
+import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -33,6 +34,39 @@ const ComplaintsPage = () => {
           total={453}
         />
       </div>
+      <SectionContainer heading="Recent Complains">
+        <div className="bg-white p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array(3)
+            .fill(null)
+            .map((_, index) => (
+              <TaskCard
+                noDrag
+                key={index}
+                task={{
+                  id: "task9",
+                  columnId: "approved",
+                  content: {
+                    messageCount: 2,
+                    linkCount: 1,
+                    userAvatars: [
+                      "/empty/avatar.png",
+                      "/empty/avatar.png",
+                      "/empty/avatar.png",
+                    ],
+                    date: "25 Jan 2024",
+                    status: "approved",
+                    progress: 50,
+                  },
+                  name: "John Doe",
+                  title: "Project Manager",
+                  message:
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                  avatarSrc: "/empty/avatar.png",
+                }}
+              />
+            ))}
+        </div>
+      </SectionContainer>
       <div className="page-title-container">
         <PageTitle title="Complains" />
         <div className="flex items-center space-x-4 flex-wrap">

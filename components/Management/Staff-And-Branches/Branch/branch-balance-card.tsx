@@ -6,7 +6,7 @@ import WalletBG from "@/public/global/wallet-bg.svg";
 // Imports
 import clsx from "clsx";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronRight, Eye, EyeOff } from "lucide-react";
 
 const options = [
@@ -38,8 +38,19 @@ const BranchBalanceCard = ({
 }) => {
   const [hideBalance, setHideBalance] = useState(false);
 
+  useEffect(() => {
+    const storedHideBalance = localStorage.getItem("hideBalance");
+    if (storedHideBalance !== null) {
+      setHideBalance(JSON.parse(storedHideBalance));
+    }
+  }, []);
+
   const toggleBalanceVisibility = () => {
-    setHideBalance((prev) => !prev);
+    setHideBalance((prev) => {
+      const newHideBalance = !prev;
+      localStorage.setItem("hideBalance", JSON.stringify(newHideBalance));
+      return newHideBalance;
+    });
   };
 
   const formatNumber = (number: number) => {
@@ -50,7 +61,13 @@ const BranchBalanceCard = ({
     <div className={clsx("space-y-2", className)}>
       <div className="p-5 relative custom-primary-bg rounded-lg">
         <div className="absolute inset-0">
-          <Image src={WalletBG} alt="wallet background" fill sizes="400px" className="object-cover" />
+          <Image
+            src={WalletBG}
+            alt="wallet background"
+            fill
+            sizes="400px"
+            className="object-cover"
+          />
         </div>
         <div className="relative space-y-3">
           {/* Header Section */}

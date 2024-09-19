@@ -186,7 +186,6 @@ const Dashboard = () => {
               />
             ))}
         </div>
-        {/* {!isMobile && <KanbanBoard />} */}
       </SectionContainer>
     </section>
   );

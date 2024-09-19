@@ -105,7 +105,7 @@ export function TaskCard({ task, isOverlay, noDrag }: TaskCardProps) {
           setModalOpen(true);
         }
         wasRecentlyDragged.current = false;
-      }, 100);
+      }, 1000);
       return () => clearTimeout(timer);
     }
   }, [isDragging, noDrag]);
@@ -119,7 +119,7 @@ export function TaskCard({ task, isOverlay, noDrag }: TaskCardProps) {
   };
 
   return (
-    <>
+    <div className="group">
       <Card
         ref={setNodeRef}
         style={style}
@@ -130,8 +130,12 @@ export function TaskCard({ task, isOverlay, noDrag }: TaskCardProps) {
       >
         <CardHeader className="px-3 py-3 space-between flex flex-row border-secondary relative">
           <div className="w-full flex items-center space-x-2">
-            <Avatar className="hidden h-9 w-9 rounded-full sm:flex">
-              <AvatarImage src={task.avatarSrc} alt="Avatar" />
+            <Avatar className="hidden h-9 w-9 rounded-full sm:flex overflow-hidden">
+              <AvatarImage
+                src={task.avatarSrc}
+                alt="Avatar"
+                className="group-hover:scale-125 transition-all duration-700 ease-in-out"
+              />
               <AvatarFallback>{task.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="space-x-1">
@@ -216,7 +220,7 @@ export function TaskCard({ task, isOverlay, noDrag }: TaskCardProps) {
           <TaskModal complaintData={complaintData} />
         </ModalContent>
       </Modal>
-    </>
+    </div>
   );
 }
 
