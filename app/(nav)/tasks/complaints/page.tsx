@@ -5,13 +5,14 @@ import FilterModal from "@/components/Management/Landlord/filters-modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import PageTitle from "@/components/PageTitle/page-title";
+import Pagination from "@/components/Pagination/pagination";
 import SearchInput from "@/components/SearchInput/search-input";
 import { SectionContainer } from "@/components/Section/section-components";
-import useWindowDimensions from "@/hooks/useWindowDimensions";
+import useWindowWidth from "@/hooks/useWindowWidth";
 import Image from "next/image";
 
 const ComplaintsPage = () => {
-  const isMobile = useWindowDimensions();
+  const { isMobile } = useWindowWidth();
 
   return (
     <main className="space-y-7">
@@ -64,11 +65,19 @@ const ComplaintsPage = () => {
         </div>
       </div>
 
-      <div className="px-2">
-        <SectionContainer heading="All Complaints" href="/">
-          {!isMobile && <KanbanBoard />}
+      {!isMobile && (
+        <SectionContainer heading="Recent Complains" href="/tasks/complaints">
+          <KanbanBoard />
         </SectionContainer>
-      </div>
+      )}
+
+      <Pagination
+        totalPages={0}
+        currentPage={0}
+        onPageChange={function (page: number): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
     </main>
   );
 };

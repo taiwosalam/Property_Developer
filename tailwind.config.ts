@@ -28,6 +28,8 @@ const config = {
           primary: "#315EE7",
           secondary: "#6083ED",
           tertiary: "#93C5FD",
+
+          disabled: "#F7F9FE",
         },
 
         text: {
