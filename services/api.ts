@@ -26,8 +26,8 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   (response) => {
-    if (response?.data?.data?.accessToken) {
-      storeToken(response.data?.data?.accessToken); // Stores the new token if the response contains one.
+    if (response?.data?.data?.access_token) {
+      storeToken(response.data?.data?.access_token); // Stores the new token if the response contains one.
     }
     return response;
   },
@@ -83,12 +83,11 @@ export const postRequest = async (
 ) => {
   try {
     const formData = useFormDataStore.getState().formData; // Access form data from the store
-    console.log(formData);
     const response = await instance.post(url, { ...data, ...formData }); // Include form data in the request
 
     if (response?.status === 200) {
-      if (response?.data?.data?.accessToken) {
-        storeToken(response.data.data.accessToken, rememberMe); // Store token with "Remember Me" option
+      if (response?.data?.data?.access_token) {
+        storeToken(response.data.data.access_token, rememberMe); // Store token with "Remember Me" option
       }
       toast.success("Action successful"); // Displays a success message
     }

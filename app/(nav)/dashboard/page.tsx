@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useEffect } from "react";
 import Image from "next/image";
 
 // Images
@@ -12,7 +11,6 @@ import Card from "@/components/dashboard/card";
 import {
   complaintsData,
   dashboardCardData,
-  getDashboardData,
   recentMessagesData,
   walletBalanceCardData,
 } from "./data";
@@ -21,14 +19,10 @@ import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
 import DashboarddCalendar from "@/components/dashboard/calendar";
 import { SectionContainer } from "@/components/Section/section-components";
-import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
 
 const Dashboard = () => {
-  useEffect(() => {
-    getDashboardData(), [];
-  });
   const { isMobile, isTablet } = useWindowWidth();
 
   const itemsPerColumn = Math.ceil(dashboardCardData.length / 3);

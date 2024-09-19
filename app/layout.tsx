@@ -19,22 +19,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const router = useRouter();
-  const { isAuthenticated } = useAuthStoreSelectors.getState();
+  const { isAuthenticated, setAuthState } = useAuthStoreSelectors.getState(); // Added setAuthState
 
   useEffect(() => {
-    // Function to handle redirect based on authentication state
     const handleRedirect = async () => {
-      const accessToken = await getToken(); // Retrieve token from cookies/localStorage
+      const access_token = await getToken(); // Retrieve token from cookies/localStorage
 
-      if (isAuthenticated) {
-        router.push("/dashboard"); // Redirect to dashboard if authenticated
-      } else if (accessToken) {
-        return; // Do nothing if token is present but not authenticated
+      if (!isAuthenticated && access_token) {
+        // If access_token exists but not authenticated, sync Zustand state
+        setAuthState(true, access_token, null, null);
+      } else if (isAuthenticated) {
+        router.push("/dashboard"); // Redirect to dashboard if already authenticated
+      } else {
+        router.push("/auth/sign-in"); // Redirect to login if not authenticated
       }
     };
 
     handleRedirect(); // Call the function on component mount
-  }, [isAuthenticated, router]); // Re-run this logic if isAuthenticated changes
+  }, [isAuthenticated, router, setAuthState]); // Added setAuthState to the dependencies
 
   return (
     <html lang="en" suppressHydrationWarning>

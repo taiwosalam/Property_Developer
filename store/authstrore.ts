@@ -1,9 +1,9 @@
-// store/authstore.ts
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface AuthState {
   isAuthenticated: boolean;
-  accessToken: string | null;
+  access_token: string | null;
   userId: string | null;
   companyId: string | null;
   setAuthState: (
@@ -15,47 +15,43 @@ interface AuthState {
   clearAuthState: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  isAuthenticated: false,
-  accessToken: null,
-  userId: null,
-  companyId: null,
-
-  setAuthState: (
-    state: boolean,
-    token: string | null,
-    userId: string | null,
-    companyId: string | null
-  ) => {
-    set({
-      isAuthenticated: state,
-      accessToken: token,
-      userId: userId,
-      companyId: companyId,
-    });
-
-    // Persist to localStorage
-    if (state) {
-      localStorage.setItem("accessToken", token || "");
-      localStorage.setItem("userId", userId || "");
-      localStorage.setItem("companyId", companyId || "");
-    }
-  },
-
-  clearAuthState: () => {
-    set({
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
       isAuthenticated: false,
-      accessToken: null,
+      access_token: null,
       userId: null,
       companyId: null,
-    });
 
-    // Remove from localStorage
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("companyId");
-  },
-}));
+      setAuthState: (
+        state: boolean,
+        token: string | null,
+        userId: string | null,
+        companyId: string | null
+      ) => {
+        set({
+          isAuthenticated: state,
+          access_token: token,
+          userId: userId,
+          companyId: companyId,
+        });
+      },
+
+      clearAuthState: () => {
+        set({
+          isAuthenticated: false,
+          access_token: null,
+          userId: null,
+          companyId: null,
+        });
+      },
+    }),
+    {
+      name: "auth-storage", // Key for localStorage
+      getStorage: () => localStorage, // Default storage is localStorage
+    }
+  )
+);
 
 export const useAuthStoreSelectors = {
   getState: useAuthStore.getState,
