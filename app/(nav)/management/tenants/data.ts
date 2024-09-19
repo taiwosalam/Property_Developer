@@ -35,7 +35,7 @@ export const getAllTenants = async (): Promise<TenantPageData> => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },
     });
     if (!res.ok) {
@@ -58,7 +58,7 @@ export const getOneTenant = async (tenantId: string) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       }
     );

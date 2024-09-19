@@ -1,3 +1,5 @@
+import { useAuthStore } from "@/store/authstrore";
+
 function getBackgroundColor(title: string): string {
   let backgroundColor: string;
 
@@ -189,16 +191,27 @@ export const complaintsData = [
   },
 ];
 
-export const getDashboardData = () => {
-  fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log(data);
-    });
+export const getDashboardData = async (access_token: string | null) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error fetching dashboard data: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    return null;
+  }
 };

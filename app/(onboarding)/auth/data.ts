@@ -28,32 +28,24 @@ export const login = async (
   try {
     const data = { email, password };
     const response = await postRequest("/login", data, rememberMe);
+    console.log(response);
 
-    if (!response) {
-      return { error: "Invalid Credentials" };
+    if (!response || response.error) {
+      return { error: response?.error || "Invalid Credentials" };
     }
 
-    if (response.error) {
-      return { error: response.error };
-    }
+    const { company_id, access_token, user_id } = response;
 
-    const { company_id, accessToken, user_id } = response;
-    localStorage.setItem("user_id", user_id);
-    // Update Zustand state and localStorage
+    // Update Zustand state
     useAuthStoreSelectors
       .getState()
-      .setAuthState(true, accessToken, user_id, company_id);
+      .setAuthState(true, access_token, user_id, company_id);
 
-    if (user_id === null) {
+    if (!company_id || !user_id) {
       window.location.href = "/setup";
-      return;
-    } else if (company_id === null) {
-      // window.location.href = "/verify/setup";
-      window.location.href = "/setup";
-      return;
+    } else {
+      window.location.href = "/dashboard";
     }
-
-    window.location.href = "/dashboard";
   } catch (error) {
     console.error("Error during sign-in:", error);
     return { error: "An unexpected error occurred during sign-in." };
@@ -90,7 +82,6 @@ export const verifyEmail = async (otp: string) => {
     if (result?.user_id) {
       const { user_id } = result;
 
-      // Update Zustand state and localStorage
       useAuthStoreSelectors.getState().setAuthState(true, null, user_id, null);
 
       return true;
@@ -108,7 +99,7 @@ export const verifyEmail = async (otp: string) => {
 
 export const resendOtp = async (email: string) => {
   try {
-    const result = await postRequest("/resendOtp", {});
+    const result = await postRequest("/resendOtp", { email });
 
     if (result?.success) {
       return true;
@@ -122,14 +113,21 @@ export const resendOtp = async (email: string) => {
   }
 };
 
-export const initializeAuthState = () => {
-  const accessToken = localStorage.getItem("accessToken");
-  const userId = localStorage.getItem("userId");
-  const companyId = localStorage.getItem("companyId");
+export const logout = async () => {
+  await useAuthStoreSelectors.getState().clearAuthState();
+  await toast.success("Logged out successfully.");
+  window.location.href = "/";
+};
 
-  if (accessToken && userId) {
+// Initialize auth state from localStorage
+export const initializeAuthState = () => {
+  // Zustand's persist middleware handles localStorage, so this may be redundant
+  // However, this can be useful to explicitly check and set initial state on app load
+  const { access_token, userId, companyId } = useAuthStoreSelectors.getState();
+
+  if (access_token && userId && companyId) {
     useAuthStoreSelectors
       .getState()
-      .setAuthState(true, accessToken, userId, companyId);
+      .setAuthState(true, access_token, userId, companyId);
   }
 };

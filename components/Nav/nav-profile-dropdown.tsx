@@ -12,8 +12,15 @@ import Picture from "../Picture/picture";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { profile_links } from "@/app/(nav)/notifications/data";
 import { SectionSeparator } from "../Section/section-components";
+import { logout } from "@/app/(onboarding)/auth/data";
 
-const NavProfileDropdown = () => {
+const NavProfileDropdown = ({
+  name,
+  userId,
+}: {
+  name: string;
+  userId: number;
+}) => {
   const { isMobile } = useWindowWidth();
 
   return (
@@ -28,8 +35,8 @@ const NavProfileDropdown = () => {
           />
           <div className="custom-flex-col text-text-secondary font-medium">
             <p className="text-xs font-normal">{getGreeting()},</p>
-            <p>Mr Taiwo Salam</p>
-            <p>ID: 1234567890096</p>
+            <p>{name}</p>
+            <p>ID: {userId}</p>
           </div>
         </div>
         <SectionSeparator />
@@ -43,13 +50,15 @@ const NavProfileDropdown = () => {
           {link}
         </Link>
       ))}
-      <Link
+      <button
         className="flex gap-2 py-2 px-5 sm:py-3 sm:px-[30px] text-status-error-primary hover:bg-neutral-2"
-        href={""}
+        onClick={() => {
+          logout();
+        }}
       >
         <Picture src={Logout} alt="logout" size={24} />
         logout
-      </Link>
+      </button>
     </>
   );
 };
