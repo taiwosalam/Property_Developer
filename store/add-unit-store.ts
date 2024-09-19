@@ -32,7 +32,10 @@ interface AddUnitStore {
   propertySettings: null | PropertySettings;
 
   addedUnits: { [key: string]: FormDataEntryValue | File[] }[];
-  addUnit: (unitData: { [key: string]: FormDataEntryValue | File[] }) => void;
+  addUnit: (
+    unitData: { [key: string]: FormDataEntryValue | File[] },
+    duplicateCount?: number
+  ) => void;
   editUnit: (
     index: number,
     unitData: { [key: string]: FormDataEntryValue | File[] }
@@ -47,13 +50,15 @@ export const useAddUnitStore = create<AddUnitStore>()(
     propertySettings: null,
 
     addedUnits: [],
-    addUnit: (unitData) => {
+    addUnit: (unitData, duplicateCount = 0) => {
       set((state) => {
         // perform post request and send unitDataWithImages along. ur response should come with the unit data u just added and use that to set d state of addedUnits
         const updatedUnits = [...state.addedUnits, unitData];
-        console.log("Updated addedUnits:", updatedUnits);
+        // Step 3: Replicate the added unit if `duplicateCount` > 0.
+        const replicatedUnits = Array(duplicateCount).fill(unitData);
+
         return {
-          addedUnits: updatedUnits,
+          addedUnits: [...updatedUnits, ...replicatedUnits],
         };
       });
     },

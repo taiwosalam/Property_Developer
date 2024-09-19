@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { useState, useRef } from "react";
 import UnitPictures from "./unit-pictures";
 import UnitDetails from "./unit-details";
@@ -25,6 +24,8 @@ interface UnitFormProps {
   isEditing?: boolean;
   setIsEditing?: (a: boolean) => void;
   setSaved?: (a: boolean) => void;
+  duplicate?: { val: boolean; count: number };
+  setDuplicate?: (a: { val: boolean; count: number }) => void;
 }
 
 const UnitForm: React.FC<UnitFormProps> = ({
@@ -34,6 +35,8 @@ const UnitForm: React.FC<UnitFormProps> = ({
   setIsEditing,
   isEditing,
   setSaved,
+  duplicate,
+  setDuplicate,
 }) => {
   const addUnit = useAddUnitStore((s) => s.addUnit);
   const editUnit = useAddUnitStore((s) => s.editUnit);
@@ -62,13 +65,24 @@ const UnitForm: React.FC<UnitFormProps> = ({
     setState((x) => ({ ...x, formResetKey: x.formResetKey + 1 }));
 
   const emptySubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // console.log("hello");
     e.preventDefault();
     const form = formRef.current;
     if (form) {
       let unitData = getFormData(form);
       unitData = { images: state.images, ...unitData };
-      addUnit(unitData); // Add unit to the Zustand store
+      if (duplicate?.val) {
+        addUnit(unitData, duplicate.count); // Pass duplicate count
+        console.log("addunit duplicate");
+      } else {
+        addUnit(unitData);
+      }
+      if (setDuplicate && duplicate?.val) {
+        setDuplicate({
+          val: false,
+          count: duplicate?.count ?? 0, // Use existing count or default to 0
+        });
+        console.log("reset val");
+      }
       form.reset();
       resetForm();
     }
@@ -120,7 +134,7 @@ const UnitForm: React.FC<UnitFormProps> = ({
               className="py-1 px-8"
               onClick={handleCancel}
             >
-              Update
+              Cancel
             </Button>
             <Button type="submit" size="sm_medium" className="py-1 px-8">
               Update

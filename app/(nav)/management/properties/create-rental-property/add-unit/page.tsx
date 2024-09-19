@@ -12,13 +12,14 @@ import UnitForm from "@/components/Management/Properties/unit-form";
 
 const AddUnit = () => {
   const [saved, setSaved] = useState(false);
-  // const formRef = useRef<HTMLFormElement>(null);
+
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
 
   const router = useRouter();
   const goBack = () => {
     router.back();
   };
+  const [duplicate, setDuplicate] = useState({ val: false, count: 2 });
 
   //   useeffect to fetch property info from API with the Property ID.Change True/False Values to Yes/No. Set Unit Store Values.
   useEffect(() => {}, []);
@@ -58,7 +59,7 @@ const AddUnit = () => {
 
         {!saved && (
           <>
-            <UnitForm empty={true} data={{}} />
+            <UnitForm empty={true} data={{}} duplicate={duplicate} />
             <div className="fixed w-screen left-0 h-[70px] lg:h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-bold text-sm lg:text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
               <Modal>
                 <ModalTrigger asChild>
@@ -70,7 +71,11 @@ const AddUnit = () => {
                   </button>
                 </ModalTrigger>
                 <ModalContent>
-                  <FooterModal setSaved={setSaved} />
+                  <FooterModal
+                    setSaved={setSaved}
+                    duplicate={duplicate}
+                    setDuplicate={setDuplicate}
+                  />
                 </ModalContent>
               </Modal>
               <button
