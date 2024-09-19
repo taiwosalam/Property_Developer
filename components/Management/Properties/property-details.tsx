@@ -86,10 +86,8 @@ const PropertyDetails = () => {
       </div>
       <div className="lg:flex gap-4">
         <p className="text-[#747474] w-[13.5%]">Description</p>
-        <TruncatedText
-          className="text-text-quaternary flex-1"
-          lines={2}
-          text="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis,
+        <TruncatedText className="text-text-quaternary flex-1" lines={2}>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis,
           earum qui, modi aspernatur autem iste voluptate tenetur maiores
           inventore eum veniam perspiciatis quasi. Explicabo officiis quisquam
           quam, obcaecati neque deserunt. Nemo totam laudantium tempore ipsa
@@ -105,8 +103,8 @@ const PropertyDetails = () => {
           tenetur maxime eum sit quisquam quod. Quae, illo earum. Asperiores
           quidem sequi quas. Id quibusdam voluptas officiis excepturi officia
           cum voluptates eaque quas? Enim nostrum consectetur voluptates aliquid
-          nulla aliquam tempore expedita iste eos? Obcaecati, ex! Velit"
-        />
+          nulla aliquam tempore expedita iste eos? Obcaecati, ex! Velit
+        </TruncatedText>
       </div>
     </div>
   );
