@@ -17,10 +17,14 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 
 const Inventory = () => {
-  const [state, setState] = useState<any>("");
+  const [state, setState] = useState<"grid" | "list">("grid");
 
-  const setGridView = () => {};
-  const setListView = () => {};
+  const setGridView = () => {
+    setState("grid");
+  };
+  const setListView = () => {
+    setState("list");
+  };
 
   return (
     <div className="custom-flex-col gap-9">
@@ -49,7 +53,9 @@ const Inventory = () => {
               aria-label="list-view"
               className={clsx(
                 "p-1 rounded-md",
-                !true ? "bg-black text-white" : "bg-transparent text-[unset]"
+                state === "list"
+                  ? "bg-black text-white"
+                  : "bg-transparent text-[unset]"
               )}
               onClick={setListView}
             >
@@ -60,7 +66,9 @@ const Inventory = () => {
               aria-label="grid-view"
               className={clsx(
                 "p-1 rounded-md",
-                true ? "bg-black text-white" : "bg-transparent text-[unset]"
+                state === "grid"
+                  ? "bg-black text-white"
+                  : "bg-transparent text-[unset]"
               )}
               onClick={setGridView}
             >
@@ -82,20 +90,23 @@ const Inventory = () => {
           </div>
         </div>
       </div>
-      <AutoResizingGrid gap={28} minWidth={330}>
-        {Array(6)
-          .fill(null)
-          .map((_, idx) => (
-            <InventoryCard key={idx} data={{}} />
-          ))}
-      </AutoResizingGrid>
-      <div className="custom-flex-col gap-[18px]">
-        {Array(6)
-          .fill(null)
-          .map((_, idx) => (
-            <InventoryList key={idx} data={{}} />
-          ))}
-      </div>
+      {state === "grid" ? (
+        <AutoResizingGrid gap={28} minWidth={330}>
+          {Array(6)
+            .fill(null)
+            .map((_, idx) => (
+              <InventoryCard key={idx} data={{}} />
+            ))}
+        </AutoResizingGrid>
+      ) : (
+        <div className="custom-flex-col gap-[18px]">
+          {Array(6)
+            .fill(null)
+            .map((_, idx) => (
+              <InventoryList key={idx} data={{}} />
+            ))}
+        </div>
+      )}
     </div>
   );
 };
