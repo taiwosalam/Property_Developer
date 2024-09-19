@@ -72,14 +72,14 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
       style={{ boxShadow: "-2px 2px 10px rgba(21, 21, 21, 0.10)" }}
     >
       <CardContent className="py-5">
-        <div className="flex justify-between items-center">
+        <div className="flex gap-4 justify-between items-center">
           <div className="flex flex-col gap-y-3">
             <CardTitle className="text-base font-bold text-brand-10">
               {title}
             </CardTitle>
             <p className="text-[32px] font-bold text-text-label">{total}</p>
           </div>
-          <div className="flex flex-col gap-y-3 ml-5">
+          <div className="flex flex-col gap-y-3">
             <DonutChart
               oldValue={old || 0}
               newValue={newData || 0}

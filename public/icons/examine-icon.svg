@@ -1,0 +1,20 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon-park-twotone:inspection">
+<g id="Mask group">
+<mask id="mask0_13994_33942" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="8" y="8" width="84" height="84">
+<g id="Group">
+<g id="Group_2">
+<path id="Vector" d="M89.5846 68.7487V39.582H10.418V85.4154C10.418 86.5204 10.857 87.5802 11.6384 88.3616C12.4198 89.143 13.4796 89.582 14.5846 89.582H50.0013" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_2" d="M10.418 20.8327C10.418 19.7276 10.857 18.6678 11.6384 17.8864C12.4198 17.105 13.4796 16.666 14.5846 16.666H85.418C86.523 16.666 87.5829 17.105 88.3643 17.8864C89.1457 18.6678 89.5846 19.7276 89.5846 20.8327V39.5827H10.418V20.8327Z" stroke="white" stroke-width="4" stroke-linejoin="round"/>
+<path id="Vector_3" d="M33.3359 10.416V27.0827M66.6693 10.416V27.0827" stroke="white" stroke-width="4" stroke-linecap="round"/>
+<path id="Vector_4" d="M62.5013 81.2487C70.5555 81.2487 77.0846 74.7195 77.0846 66.6654C77.0846 58.6112 70.5555 52.082 62.5013 52.082C54.4471 52.082 47.918 58.6112 47.918 66.6654C47.918 74.7195 54.4471 81.2487 62.5013 81.2487Z" fill="#555555" stroke="white" stroke-width="4"/>
+<path id="Vector_5" d="M75 77.082L87.5 87.4987" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</mask>
+<g mask="url(#mask0_13994_33942)">
+<path id="Vector_6" d="M0 0H100V100H0V0Z" fill="black"/>
+</g>
+</g>
+</g>
+</svg>

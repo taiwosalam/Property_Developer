@@ -22,6 +22,7 @@ const config = {
           2: "#DBEAFE",
           3: "#BFDBFE",
           5: "#60A5FA",
+          7: "#2563EB",
           9: "#0033C4",
           10: "#1E3A8A",
 
