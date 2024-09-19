@@ -1,33 +1,40 @@
 "use client";
 
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
 import SearchInput from "@/components/SearchInput/search-input";
+import InspectionCard from "@/components/tasks/Inspections/inspection-card";
+import useWindowWidth from "@/hooks/useWindowWidth";
 import Image from "next/image";
 
 const InspectionPage = () => {
+  const { isSmallTablet } = useWindowWidth();
+
   return (
     <main className="space-y-7">
-      <div className="hidden md:w-3/4 md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-        <ManagementStatistcsCard
-          title="Total Inspections"
-          newData={23}
-          total={232}
-        />
-        <ManagementStatistcsCard
-          title="Physical Inspections"
-          newData={23}
-          total={34}
-        />
-        <ManagementStatistcsCard
-          title="Virtual Inspections"
-          newData={32}
-          total={453}
-        />
-      </div>
+      {!isSmallTablet && (
+        <AutoResizingGrid minWidth={280}>
+          <ManagementStatistcsCard
+            title="Total Inspections"
+            newData={34}
+            total={657}
+          />
+          <ManagementStatistcsCard
+            title="Physical Inspections"
+            newData={34}
+            total={657}
+          />
+          <ManagementStatistcsCard
+            title="Virtual Inspections"
+            newData={34}
+            total={657}
+          />
+        </AutoResizingGrid>
+      )}
       <div className="page-title-container">
         <PageTitle title="Inspection" />
         <div className="flex items-center space-x-4 flex-wrap">
@@ -59,11 +66,10 @@ const InspectionPage = () => {
           </div>
         </div>
       </div>
-      <div className="w-full grid lg:grid-cols-2 gap-8">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <div key={index}>Inspection {index + 1}</div>
-        ))}
-      </div>
+      <AutoResizingGrid minWidth={560} gap={32}>
+        <InspectionCard type="physical" />
+        <InspectionCard type="virtual" />
+      </AutoResizingGrid>
       <Pagination
         totalPages={5}
         currentPage={1}
