@@ -73,7 +73,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     // Function to handle redirect based on authentication state
     const handleRedirect = async () => {
       if (isAuthenticated) {
-        router.push("/dashboard"); // Redirect to dashboard if both are valid
+        // router.push("/dashboard"); // Redirect to dashboard if both are valid
       }
     };
 

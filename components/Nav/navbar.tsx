@@ -34,6 +34,8 @@ import NavProfileDropdown from "@/components/Nav/nav-profile-dropdown";
 import Image from "next/image";
 import { useAuthStore } from "@/store/authstrore";
 import { getDashboardData } from "@/app/(nav)/dashboard/data";
+import clsx from "clsx";
+import { empty } from "@/app/config";
 
 interface UserData {
   user_id: number;
@@ -60,6 +62,9 @@ interface UserData {
 
 const Navbar = () => {
   const { isCustom } = useWindowWidth(1024);
+
+  const [loading, setLoading] = useState(true);
+
   const [dashboardData, setDashboardData] = useState<UserData>({
     user_id: 0,
     email: "",
@@ -89,10 +94,12 @@ const Navbar = () => {
     const fetchData = async () => {
       try {
         const data = await getDashboardData(accessToken);
-        console.log(data);
+
         setDashboardData(data);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -100,17 +107,31 @@ const Navbar = () => {
   }, [accessToken]);
 
   return (
-    <div className="sticky top-0 z-[2] w-full h-[100px] px-3 sm:px-10 flex items-center border-b border-solid border-neutral-2 bg-white">
+    <div
+      className={clsx(
+        "sticky top-0 z-[2] w-full h-[100px] px-3 sm:px-10 flex items-center border-b border-solid border-neutral-2 bg-white",
+        {
+          skeleton: loading,
+        }
+      )}
+    >
       <div className="flex w-full gap-2 lg:gap-6 justify-between">
         <div className="flex flex-1 gap-6 items-center">
-          <div className="hidden md:block w-[200px] h-full rounded-lg relative">
+          <div
+            className={clsx(
+              "hidden md:block w-[200px] h-full rounded-lg relative",
+              {
+                "skeleton-elem": loading,
+              }
+            )}
+          >
             <Image
-              src={dashboardData.logo || LogoPlacholder}
+              src={dashboardData.logo || empty}
               alt="logo"
               fill
               priority
               sizes="auto"
-              className="h-full"
+              className="h-full object-cover"
             />
           </div>
           <div className="flex flex-1 gap-2">

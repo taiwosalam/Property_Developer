@@ -62,8 +62,8 @@ const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
           validationErrors={errorMsgs}
         />
         <p className="text-text-label text-base font-normal">
-          Passwords must contain an UPPERCASE letter, a lowercase letter, a
-          number, and a special character.
+          Passwords must contain an UPPERCASE letter, lowercase letter, number,
+          and a special character.
         </p>
         <div className="custom-flex-col gap-4">
           {/* Component to handle password input and strength validation */}
