@@ -73,7 +73,6 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           setValidationErrors(validation.invalidKeys);
         }
       }}
-      // action={"https://api.services.hodessy.com/webhook/oup12"}
       className={className}
     >
       {children}
