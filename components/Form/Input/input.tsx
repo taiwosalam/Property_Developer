@@ -103,7 +103,7 @@ const Input: React.FC<InputProps> = ({
           readOnly={readOnly}
           disabled={disabled}
           placeholder={placeholder}
-          defaultValue={defaultValue}
+          defaultValue={defaultValue ? defaultValue : undefined}
           // Add min and max attributes for number type
           min={type === "number" ? min : undefined}
           max={type === "number" ? max : undefined}
