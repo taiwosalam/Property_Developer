@@ -18,6 +18,7 @@ import { type StaffAndBranchPageState, getAllBranches } from "./data";
 import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
 import CreateBranchModal from "@/components/Management/Staff-And-Branches/create-branch-modal";
+import { useAuthStore } from "@/store/authstrore";
 
 const StaffAndBranches = () => {
   const router = useRouter();
@@ -166,9 +167,11 @@ const StaffAndBranches = () => {
     router.push(`/management/staff-branch/${item.id}`);
   };
 
+  const accessToken = useAuthStore((state) => state.access_token);
+
   const fetchLandlords = async () => {
     try {
-      const data = await getAllBranches();
+      const data = await getAllBranches(accessToken);
       setState((x) => ({ ...x, branchesPageData: data }));
     } catch (error) {
       setState((x) => ({ ...x, error: error as Error }));

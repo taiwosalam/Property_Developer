@@ -21,8 +21,10 @@ import PageTitle from "@/components/PageTitle/page-title";
 import AboutPage from "@/components/AboutPage/about-page";
 import Button from "@/components/Form/Button/button";
 import { getAllLandlords, LandlordPageState } from "./data";
+import { useAuthStore } from "@/store/authstrore";
 
 const Landlord = () => {
+  const accessToken = useAuthStore((state) => state.access_token);
   const initialState: LandlordPageState = {
     gridView: false,
     total_pages: 50,
@@ -60,7 +62,7 @@ const Landlord = () => {
   // Fetch the landlords when the component mounts
   const fetchLandlords = async () => {
     try {
-      const data = await getAllLandlords();
+      const data = await getAllLandlords(accessToken);
       setState((x) => ({ ...x, landlordsPageData: data }));
     } catch (error) {
       setState((x) => ({ ...x, error: error as Error }));

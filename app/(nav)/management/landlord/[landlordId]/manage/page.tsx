@@ -21,6 +21,8 @@ import {
 import { getOneLandlord } from "../../data";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import { useAuthStore } from "@/store/authstrore";
+import { useParams } from "next/navigation";
 
 type LandlordPageData = {
   avatar: string;
@@ -65,7 +67,9 @@ type LandlordPageData = {
 };
 
 const ManageLandlord = () => {
-  const id = "12";
+  const accessToken = useAuthStore((state) => state.access_token);
+  const { landlordId } = useParams();
+  const id = Number(landlordId);
   const [LandlordPageData, setLandlordPageData] =
     useState<LandlordPageData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -75,7 +79,7 @@ const ManageLandlord = () => {
     // Fetch the landlord when the component mounts
     const fetchLandlords = async () => {
       try {
-        const data = await getOneLandlord(id);
+        const data = await getOneLandlord(id.toString());
         console.log(data, "data");
         setLandlordPageData(data);
       } catch (error) {

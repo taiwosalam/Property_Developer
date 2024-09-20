@@ -22,13 +22,15 @@ export interface StaffAndBranchPageState {
   branchesPageData: BranchesPageData;
 }
 
-export const getAllBranches = async (): Promise<BranchesPageData> => {
+export const getAllBranches = async (
+  access_token: string | null
+): Promise<BranchesPageData> => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/branches`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
+        Authorization: `Bearer ${access_token}`,
       },
     });
     if (!res.ok) {
