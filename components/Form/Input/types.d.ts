@@ -13,6 +13,7 @@ export interface InputProps {
   required?: boolean;
   placeholder?: string;
   initialValue?: string;
+  defaultValue?: string | null;
   style?: CSSProperties;
   type?: React.HTMLInputTypeAttribute;
   validationErrors?: ValidationErrors;
@@ -21,6 +22,6 @@ export interface InputProps {
   CURRENCY_SYMBOL?: string;
   readOnly?: boolean;
   disabled?: boolean;
-  min?: number
-  max?: number
+  min?: number;
+  max?: number;
 }
