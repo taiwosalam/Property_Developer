@@ -38,7 +38,7 @@ export interface TenantData {
   picture: string;
   name: string;
   email: string;
-  user_tag: string;
+  user_tag: "web" | "mobile";
   phone_number: string;
   gender: string;
   birthdate: string;
