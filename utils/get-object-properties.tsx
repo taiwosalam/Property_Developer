@@ -1,6 +1,6 @@
 // Function to filter properties that are objects
-const getObjectProperties = (obj: Record<string, string>) => {
-  const result: Record<string, string> = {};
+export const getObjectProperties = (obj: any) => {
+  const result: any = {};
 
   for (const key in obj) {
     if (typeof obj[key] === "object" && obj[key] !== null) {

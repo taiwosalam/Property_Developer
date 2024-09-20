@@ -22,12 +22,16 @@ import {
   LandlordTenantInfoBox,
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
+  LandlordTenantUserTag,
 } from "@/components/Management/landlord-tenant-info-components";
 
 import { getOneTenant } from "../../data";
 import { useAuthStore } from "@/store/authstrore";
 import UnitItem from "@/components/Management/Properties/unit-item";
 import { ASSET_URL } from "@/app/config";
+import { getObjectProperties } from "@/utils/get-object-properties";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import UpdateTenantProfile from "@/components/Management/Tenants/update-tenant-profile";
 
 const ManageTenant = () => {
   const router = useRouter();
@@ -54,6 +58,8 @@ const ManageTenant = () => {
   }, [accessToken, tenantId, router]);
 
   if (!tenant) return null;
+
+  const otherData = getObjectProperties(tenant);
 
   return (
     <div className="custom-flex-col gap-10">
@@ -90,11 +96,7 @@ const ManageTenant = () => {
                 </div>
                 <div className="custom-flex-col gap-2">
                   <div className="flex">
-                    <div className="py-1 px-4 rounded-lg bg-success-1">
-                      <p className="capitalize text-success-3 text-[10px] font-normal">
-                        mobile
-                      </p>
-                    </div>
+                    <LandlordTenantUserTag type={tenant.user_tag} />
                   </div>
                   <p className="text-neutral-800 text-base font-medium">
                     ID: 22132876554444
@@ -102,59 +104,57 @@ const ManageTenant = () => {
                 </div>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Button size="base_medium" className="py-2 px-8">
-                  message
-                </Button>
-                <Button
-                  variant="light_green"
-                  size="base_medium"
-                  className="py-2 px-8"
-                >
-                  unflag
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                <Button
-                  href="/management/tenants/1/manage/edit"
-                  size="base_medium"
-                  className="py-2 px-8"
-                >
-                  edit
-                </Button>
-                <Button size="base_medium" className="py-2 px-8">
-                  update with ID
-                </Button>
+                {tenant.user_tag === "web" ? (
+                  <>
+                    <Button
+                      href={`/management/tenants/${tenantId}/manage/edit`}
+                      size="base_medium"
+                      className="py-2 px-8"
+                    >
+                      edit
+                    </Button>
+                    <Modal>
+                      <ModalTrigger>
+                        <Button size="base_medium" className="py-2 px-8">
+                          update with ID
+                        </Button>
+                      </ModalTrigger>
+                      <ModalContent>
+                        <UpdateTenantProfile />
+                      </ModalContent>
+                    </Modal>
+                  </>
+                ) : (
+                  <>
+                    <Button size="base_medium" className="py-2 px-8">
+                      message
+                    </Button>
+                    <Button
+                      variant="light_green"
+                      size="base_medium"
+                      className="py-2 px-8"
+                    >
+                      unflag
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </LandlordTenantInfoBox>
         <LandlordTenantInfo
           info={{
-            gender: "male",
-            birthday: "12/12/12",
-            religion: "christian",
-            phone: "08012345678",
-            "marital status": "single",
+            gender: tenant.gender,
+            birthday: tenant.birthdate,
+            religion: tenant.religion,
+            phone: tenant.phone_number,
+            "marital status": tenant.marital_status,
           }}
         />
-        <LandlordTenantInfo
-          heading="bank details"
-          info={{
-            "bank name": "access bank",
-            "account name": "Abimbola Adedeji Q",
-            "bank account no": "0694695153",
-            "wallet ID": "8132086958",
-          }}
-        />
-        <LandlordTenantInfo
-          heading="contact address"
-          info={{
-            address: "U4 Joke Plaza Bodija Ibadan",
-            city: "ibadan",
-            state: "oyo state",
-            "L.G": "Ibadan North Central",
-          }}
-        />
+
+        {Object.keys(otherData).map((key, idx) => (
+          <LandlordTenantInfo key={idx} heading={key} info={otherData[key]} />
+        ))}
       </div>
       <LandlordTenantInfoSection title="current rent">
         <UnitItem />
