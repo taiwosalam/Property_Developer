@@ -79,10 +79,7 @@ const ManageLandlord = () => {
     // Fetch the landlord when the component mounts
     const fetchLandlords = async () => {
       try {
-        const data = await getOneLandlord({
-          landlordId: id,
-          access_token: accessToken,
-        });
+        const data = await getOneLandlord(id.toString());
         console.log(data, "data");
         setLandlordPageData(data);
       } catch (error) {

@@ -20,13 +20,15 @@ export interface LandlordPageState {
   landlordsPageData: LandlordsPageData;
 }
 
-export const getAllLandlords = async (): Promise<LandlordsPageData> => {
+export const getAllLandlords = async (
+  access_token: string | null
+): Promise<LandlordsPageData> => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/landlords`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        Authorization: `Bearer ${access_token}`,
       },
     });
 
