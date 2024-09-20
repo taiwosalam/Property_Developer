@@ -11,12 +11,13 @@ export const signupCompany = async (formData: any) => {
       }
     ).then((res) => res.json());
     console.log(response);
-
-    response.error && toast(response.error);
+    response.errors && toast(response.errors.toString());
     if (response.verification) {
       toast(response.verification);
     }
+    return response;
   } catch (error) {
     console.error("Error Signing Up Company:", error);
+    return error;
   }
 };
