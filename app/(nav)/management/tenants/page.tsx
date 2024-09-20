@@ -23,7 +23,7 @@ import { defaultTenantPageData, getAllTenants, TenantPageState } from "./data";
 import { useAuthStore } from "@/store/authstrore";
 
 const Tenants = () => {
-  const accessToken = useAuthStore((state) => state.access_token);
+  const accessToken = useAuthStore((state) => state.access_token);  
 
   const initialState: TenantPageState = {
     gridView: true,
@@ -321,7 +321,7 @@ const Tenants = () => {
               <TenantCard
                 key={t.id}
                 {...t}
-                href={`/management/tenant/${t.id}/manage`}
+                href={`/management/tenants/${t.id}/manage`}
               />
             ))}
           </div>

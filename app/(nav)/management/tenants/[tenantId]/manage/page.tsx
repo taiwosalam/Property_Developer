@@ -1,8 +1,14 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 // Images
 import Avatar from "@/public/empty/avatar-1.svg";
 import Verified from "@/public/icons/verified.svg";
+
+// Types
+import type { TenantData } from "../../types";
 
 // Fonts
 import { secondaryFont } from "@/utils/fonts";
@@ -10,29 +16,68 @@ import { secondaryFont } from "@/utils/fonts";
 // Imports
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
+
 import {
   LandlordTenantInfo,
   LandlordTenantInfoBox,
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
 } from "@/components/Management/landlord-tenant-info-components";
+
+import { getOneTenant } from "../../data";
+import { useAuthStore } from "@/store/authstrore";
 import UnitItem from "@/components/Management/Properties/unit-item";
+import { ASSET_URL } from "@/app/config";
 
 const ManageTenant = () => {
+  const router = useRouter();
+
+  const { tenantId } = useParams();
+
+  const accessToken = useAuthStore((state) => state.access_token);
+
+  const [tenant, setTenant] = useState<TenantData | null>(null);
+
+  useEffect(() => {
+    const fetchTenant = async () => {
+      const data = await getOneTenant(
+        tenantId as string,
+        accessToken as string
+      );
+
+      if (!data) return router.push("/management/tenants");
+
+      setTenant(data);
+    };
+
+    fetchTenant();
+  }, [accessToken, tenantId, router]);
+
+  if (!tenant) return null;
+
   return (
     <div className="custom-flex-col gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
         <LandlordTenantInfoBox style={{ padding: "24px 40px" }}>
           <div className="flex flex-col xl:flex-row gap-5">
             <div className="flex items-start">
-              <Picture src={Avatar} alt="profile picture" size={120} rounded />
+              <Picture
+                src={
+                  tenant.picture
+                    ? `${ASSET_URL}${tenant.picture}`
+                    : tenant.avatar
+                }
+                alt="profile picture"
+                size={120}
+                rounded
+              />
             </div>
             <div className="custom-flex-col gap-8">
               <div className="custom-flex-col gap-4">
                 <div className="custom-flex-col">
                   <div className="flex items-center gap-2">
                     <p className="text-black text-xl font-bold capitalize">
-                      Abimbola Adedeji
+                      {tenant.name}
                     </p>
                     <Picture src={Verified} alt="verified" size={16} />
                   </div>
@@ -40,7 +85,7 @@ const ManageTenant = () => {
                     style={{ color: "rgba(21, 21, 21, 0.70)" }}
                     className={`${secondaryFont.className} text-sm font-normal`}
                   >
-                    abimbola@gmail.com
+                    {tenant.email}
                   </p>
                 </div>
                 <div className="custom-flex-col gap-2">

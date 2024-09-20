@@ -52,7 +52,7 @@ export const getAllTenants = async (
   }
 };
 
-export const getOneTenant = async (tenantId: string) => {
+export const getOneTenant = async (tenantId: string, accessToken: string) => {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/tenants/${tenantId}`,
@@ -60,7 +60,7 @@ export const getOneTenant = async (tenantId: string) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );
@@ -72,6 +72,6 @@ export const getOneTenant = async (tenantId: string) => {
     return data;
   } catch (error) {
     console.error("Error fetching tenant", error);
-    throw new Error(`Error: ${error}`);
+    return null;
   }
 };
