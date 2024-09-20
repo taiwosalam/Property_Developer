@@ -20,8 +20,11 @@ import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import PageTitle from "@/components/PageTitle/page-title";
 import { defaultTenantPageData, getAllTenants, TenantPageState } from "./data";
+import { useAuthStore } from "@/store/authstrore";
 
 const Tenants = () => {
+  const accessToken = useAuthStore((state) => state.access_token);  
+
   const initialState: TenantPageState = {
     gridView: true,
     total_pages: 50,
@@ -50,7 +53,7 @@ const Tenants = () => {
 
   const fetchLandlords = async () => {
     try {
-      const data = await getAllTenants();
+      const data = await getAllTenants(accessToken);
       setState((x) => ({ ...x, tenantsPageData: data }));
     } catch (error) {
       setState((x) => ({ ...x, error: error as Error }));
@@ -318,7 +321,7 @@ const Tenants = () => {
               <TenantCard
                 key={t.id}
                 {...t}
-                href={`/management/tenant/${t.id}/manage`}
+                href={`/management/tenants/${t.id}/manage`}
               />
             ))}
           </div>

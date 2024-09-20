@@ -44,28 +44,28 @@ export const validateData = (data: ValidateDataProps) => {
   const schema = z.object(validation_schemas).partial();
   const result = schema.safeParse(data);
 
-  // Handle Zod validation errors
+  // Handle Zod validation errors for known fields
   if (!result.success) {
     Object.entries(result.error.formErrors.fieldErrors).forEach(
       ([key, errors]) => {
         output.invalidKeys[key] = errors.join(", ") + ".";
-        // output.invalidKeys[key] = errors[0] + ".";
       }
     );
   }
 
-  // Identify unknown keys that aren't defined in validationSchemas
+  // Identify unknown keys and check for emptiness
   Object.keys(data).forEach((key) => {
     if (!(key in validation_schemas)) {
-      output.unknownKeys.push(key);
+      output.unknownKeys.push(key); // Add to unknownKeys
+      if (!data[key]) {
+        output.invalidKeys[key] = "This field cannot be empty."; // Check if empty
+      }
     }
   });
 
   // Check exceptions only if there are no existing errors
   //----------------------------------
-  // Check exception if confirm-password doesn't already have a message
   if (!output.invalidKeys["confirm-password"]) {
-    // Ensure both "confirm-password" and "new-password" are present in the data
     if (
       data["confirm-password"] !== undefined &&
       data["new-password"] !== undefined

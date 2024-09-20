@@ -16,6 +16,7 @@ import AddTenantOptions from "./add-tenant-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
 import InvitationForm from "../invitation-form";
+import { addTenant } from "./data";
 
 const AddTenantModal = () => {
   const [activeStep, setActiveStep] =
@@ -23,6 +24,10 @@ const AddTenantModal = () => {
 
   const handleBack = () => {
     setActiveStep("options");
+  };
+
+  const handleAddTenant = async (data: FormData) => {
+    const response = await addTenant(data);
   };
 
   const modal_states: Record<
@@ -39,7 +44,7 @@ const AddTenantModal = () => {
     "add-tenant": {
       heading: "Add Tenant/Occupant Profile",
       content: (
-        <AddLandLordOrTenantForm type="tenant" submitAction={() => {}} />
+        <AddLandLordOrTenantForm type="tenant" submitAction={handleAddTenant} />
       ),
     },
     "add-multiple-users": {

@@ -25,7 +25,7 @@ const LandlordAndTenantCard: React.FC<LandlordProps> = ({
           src={picture_url || ""}
           alt={first_name}
           fill
-          sizes="auto"
+          sizes="300px"
           className="w-full h-full object-cover"
         />
       </div>
