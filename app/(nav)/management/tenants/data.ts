@@ -29,13 +29,15 @@ export interface TenantPageState {
   tenantsPageData: TenantPageData;
 }
 
-export const getAllTenants = async (): Promise<TenantPageData> => {
+export const getAllTenants = async (
+  accessToken: string | null
+): Promise<TenantPageData> => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/tenants`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     if (!res.ok) {

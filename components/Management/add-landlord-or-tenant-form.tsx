@@ -5,6 +5,7 @@ import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import Input from "../Form/Input/input";
 import Button from "../Form/Button/button";
+import { useImageUploader } from "@/hooks/useImageUploader";
 
 interface AddLandLordOrTenantFormProps {
   type: "landlord" | "tenant";
@@ -15,6 +16,10 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   type,
   submitAction,
 }) => {
+  const { preview, handleImageChange } = useImageUploader({
+    placeholder: CameraCircle,
+  });
+
   const [selectedState, setSelectedState] = useState("");
   const [selectedLGA, setSelectedLGA] = useState("");
   const [localGovernments, setLocalGovernments] = useState<string[]>([]);
@@ -104,19 +109,25 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
             Upload picture or select an avatar.
           </p>
           <div className="flex items-end gap-3">
-            <button
-              type="button"
-              aria-label="Upload Picture"
-              className="w-[50px] h-[50px] md:w-[70px] md:h-[70px]"
+            <label
+              htmlFor="profile-picture"
+              className="relative w-[50px] h-[50px] md:w-[70px] md:h-[70px] cursor-pointer"
             >
               <Image
-                src={CameraCircle}
+                src={preview}
                 alt="camera"
-                width={70}
-                height={70}
+                fill
+                sizes="70px"
                 className="rounded-full object-cover"
               />
-            </button>
+              <input
+                type="file"
+                name="profile-picture"
+                id="profile-picture"
+                className="hidden pointer-events-none"
+                onChange={handleImageChange}
+              />
+            </label>
             <div className="flex gap-2">
               {Array(4)
                 .fill(null)
