@@ -212,6 +212,6 @@ export const getDashboardData = async (access_token: string | null) => {
     return data;
   } catch (error) {
     console.error("Error fetching dashboard data:", error);
-    return null;
+    return {};
   }
 };

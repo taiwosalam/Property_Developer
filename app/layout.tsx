@@ -29,7 +29,7 @@ export default function RootLayout({
         // If access_token exists but not authenticated, sync Zustand state
         setAuthState(true, access_token, null, null);
       } else if (isAuthenticated) {
-        router.push("/dashboard"); // Redirect to dashboard if already authenticated
+        // router.push("/dashboard"); // Redirect to dashboard if already authenticated
       } else {
         router.push("/auth/sign-in"); // Redirect to login if not authenticated
       }

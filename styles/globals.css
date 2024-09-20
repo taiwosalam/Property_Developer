@@ -162,7 +162,6 @@ input[type="password"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-
 /* Hide Spinner except specific class */
 input[type="number"]:not(.keep-spinner)::-webkit-outer-spin-button,
 input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
@@ -170,7 +169,27 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
   margin: 0;
 }
 
+.skeleton {
+  cursor: default;
 
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+
+  -webkit-user-drag: none;
+}
+
+.skeleton h1,
+.skeleton p {
+  color: #ebeef0 !important;
+  background-color: #ebeef0;
+  @apply animate-pulse;
+}
+
+.skeleton-elem {
+  background-color: #ebeef0;
+  @apply animate-pulse;
+}
 
 .react-tel-input {
   font-family: inherit !important;
