@@ -19,8 +19,8 @@ const ManageComplain = () => {
     <section className="w-full lg:flex lg:items-start lg:gap-x-10">
       <div className="w-full lg:w-3/5 lg:h-full space-y-10">
         <AboutTaskCard />
-        <div className="h-[430px] bg-red-50"></div>
-        <div className="h-[430px] bg-red-50"></div>
+        <div className="h-[420px] bg-red-50"></div>
+        <div className="h-[420px] bg-red-50"></div>
         <TaskStatusProgress />
       </div>
       <div className="w-full lg:w-2/5 lg:h-full">

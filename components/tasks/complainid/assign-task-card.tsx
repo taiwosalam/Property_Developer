@@ -2,32 +2,65 @@
 import { useState } from "react";
 import Button from "@/components/Form/Button/button";
 import clsx from "clsx";
-import { ArrowDownIcon, RadioCheckCircle } from "@/public/icons/icons";
-import MenuItem from "@mui/material/MenuItem";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-const AssignTaskCard = () => {
-  const dropDownClasses =
-    "border border-[rgba(120,122,126,0.20)] rounded-[4px] py-3 px-[18px]";
-  const [assignedTo, setAssignedTo] = useState<string | null>(null);
-  const [selectedLandlord, setSelectedLandlord] = useState(false);
+import { RadioCheckCircle } from "@/public/icons/icons";
+import Select from "@/components/Form/Select/select";
 
-  // Handle changes for staff or service provider
-  const handleSelectChange = (
-    event: SelectChangeEvent,
-    type: "staff" | "serviceProvider"
-  ) => {
-    const value = event.target.value;
-    // setAssignedTo({ [type]: value });
-    setSelectedLandlord(false); // Reset landlord selection if any dropdown is selected
+interface StateType {
+  assignedTo: string | { staff?: string; provider?: string } | null;
+  selectedLandlord: boolean;
+  selectedStaff: string;
+  selectedProvider: string;
+}
+
+const AssignTaskCard = () => {
+  const myClasses =
+    "border border-[#C1C2C366] rounded-lg py-[11px] px-[18px] text-xs md:text-sm font-medium hover:border-[#00000099] transition-colors duration-300 ease-in-out";
+
+  const [state, setState] = useState<StateType>({
+    assignedTo: null,
+    selectedLandlord: false,
+    selectedStaff: "",
+    selectedProvider: "",
+  });
+  const { assignedTo, selectedLandlord, selectedStaff, selectedProvider } =
+    state;
+
+  // Handle staff selection
+  const handleStaffSelection = (staff: string) => {
+    setState((x) => ({
+      ...x,
+      selectedStaff: staff,
+      assignedTo: staff ? { staff } : "",
+      selectedProvider: "",
+      selectedLandlord: false,
+    }));
+  };
+
+  // Handle provider selection
+  const handleProviderSelection = (provider: string) => {
+    setState((x) => ({
+      ...x,
+      selectedProvider: provider,
+      assignedTo: provider ? { provider } : null,
+      selectedStaff: "",
+      selectedLandlord: false,
+    }));
   };
 
   // Handle landlord selection
   const handleLandlordClick = () => {
-    setAssignedTo("landlord");
-    setSelectedLandlord(true); // Mark landlord as selected
+    setState((x) => ({
+      ...x,
+      selectedLandlord: true,
+      assignedTo: "landlord",
+      selectedProvider: "",
+      selectedStaff: "",
+    }));
   };
 
-  const handleChange = (event: SelectChangeEvent) => {};
+  // Determine if the Proceed button should be enabled
+  const isProceedDisabled = !assignedTo;
+
   return (
     <div
       className="rounded-lg border border-[rgba(193,194,195,0.40)]"
@@ -44,35 +77,26 @@ const AssignTaskCard = () => {
       </div>
 
       <div className="bg-white rounded-b-lg font-medium text-text-secondary px-4 py-6 custom-flex-col gap-2">
-        <div className={clsx(dropDownClasses)}>Assign Task to Staff</div>
-        <div className={clsx(dropDownClasses)}>
-          Assign Task to Service Provider
-        </div>
-        {/* <Select
-          id="assign-to-staff"
-          value={assignedTo?.staff || ""}
-          onChange={(e) => handleSelectChange(e, "staff")}
-          displayEmpty
-          className={clsx(dropDownClasses, "w-full")}
-        >
-          <MenuItem value="Mr Ayobami">Mr Ayobami</MenuItem>
-          <MenuItem value="Mr Oladapo">Mr Oladapo</MenuItem>
-          <MenuItem value="Mr Tolu">Mr Tolu</MenuItem>
-        </Select> */}
-        {/* <Select
-          id="assign-to-service-provider"
-          placeholder="GA"
-          value={assignedTo?.serviceProvider || ""}
-          onChange={(e) => handleSelectChange(e, "serviceProvider")}
-          displayEmpty
-          className={clsx(dropDownClasses, "w-full")}
-        >
-          <MenuItem value="Provider 1">Provider 1</MenuItem>
-          <MenuItem value="Provider 2">Provider 2</MenuItem>
-          <MenuItem value="Provider 3">Provider 3</MenuItem>
-        </Select> */}
+        <Select
+          id="staff-select"
+          isSearchable={false}
+          options={["Mr Ayobami", "Mr Oladapo", "Mr Tolu"]}
+          placeholder="Assign Task to Staff"
+          inputTextClassName="!font-medium text-text-secondary"
+          value={selectedStaff}
+          onChange={(staff) => handleStaffSelection(staff)}
+        />
+        <Select
+          id="provider-select"
+          isSearchable={false}
+          options={["Provider 1", "Provider 2", "Provider 3"]}
+          placeholder="Assign Task to Service Provider"
+          inputTextClassName="!font-medium text-text-secondary"
+          value={selectedProvider}
+          onChange={(provider) => handleProviderSelection(provider)}
+        />
         <button
-          className={clsx(dropDownClasses, "flex justify-between")}
+          className={clsx(myClasses, "flex justify-between")}
           onClick={handleLandlordClick}
         >
           Assign Task to Landlord
@@ -82,12 +106,13 @@ const AssignTaskCard = () => {
             <RadioCheckCircle />
           </span>
         </button>
+
         <Button
           size="sm_medium"
           className={clsx(
             "mt-10 py-2 px-8",
-            assignedTo ? "opacity-100" : "opacity-50",
-            !assignedTo && "pointer-events-none"
+            !isProceedDisabled ? "opacity-100" : "opacity-50",
+            isProceedDisabled && "pointer-events-none"
           )}
         >
           Proceed
