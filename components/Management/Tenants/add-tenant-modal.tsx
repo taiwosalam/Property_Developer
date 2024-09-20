@@ -16,6 +16,7 @@ import AddTenantOptions from "./add-tenant-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
 import InvitationForm from "../invitation-form";
+import { addTenant } from "./data";
 
 const AddTenantModal = () => {
   const [activeStep, setActiveStep] =
@@ -25,7 +26,9 @@ const AddTenantModal = () => {
     setActiveStep("options");
   };
 
-  const handleAddTenant = async (data: any) => {};
+  const handleAddTenant = async (data: FormData) => {
+    const response = await addTenant(data);
+  };
 
   const modal_states: Record<
     AddTenantModalOptions,
