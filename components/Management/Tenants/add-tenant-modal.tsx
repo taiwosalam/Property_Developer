@@ -25,6 +25,8 @@ const AddTenantModal = () => {
     setActiveStep("options");
   };
 
+  const handleAddTenant = async (data: any) => {};
+
   const modal_states: Record<
     AddTenantModalOptions,
     {
@@ -39,7 +41,7 @@ const AddTenantModal = () => {
     "add-tenant": {
       heading: "Add Tenant/Occupant Profile",
       content: (
-        <AddLandLordOrTenantForm type="tenant" submitAction={() => {}} />
+        <AddLandLordOrTenantForm type="tenant" submitAction={handleAddTenant} />
       ),
     },
     "add-multiple-users": {
