@@ -26,6 +26,7 @@ const Input: React.FC<InputProps> = ({
   className,
   placeholder,
   initialValue,
+  defaultValue,
   type = "text",
   validationErrors = {},
   onChange,
@@ -34,7 +35,7 @@ const Input: React.FC<InputProps> = ({
   readOnly,
   disabled,
   min,
-  max
+  max,
 }) => {
   // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -99,9 +100,10 @@ const Input: React.FC<InputProps> = ({
           value={value}
           ref={inputRef}
           required={required}
-          placeholder={placeholder}
           readOnly={readOnly}
           disabled={disabled}
+          placeholder={placeholder}
+          defaultValue={defaultValue}
           // Add min and max attributes for number type
           min={type === "number" ? min : undefined}
           max={type === "number" ? max : undefined}
