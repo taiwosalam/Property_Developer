@@ -1,4 +1,5 @@
 import type { LandlordProps } from "./Landlord/types";
+import Link from "next/link";
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import UserTag from "@/components/Tags/user-tag";
 import Image from "next/image";
@@ -15,8 +16,8 @@ const LandlordAndTenantCard: React.FC<LandlordProps> = ({
   href,
 }) => {
   return (
-    <a
-      href={href}
+    <Link
+      href={href || ""}
       className="border border-brand-tertiaryy bg-[#F9F9F9] p-[3%] rounded-lg flex gap-[3%] border-brand-tertiary"
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
     >
@@ -38,7 +39,7 @@ const LandlordAndTenantCard: React.FC<LandlordProps> = ({
         <UserTag type={user_tag} className="mb-2" />
         <p className="font-semibold text-xs text-[#8D8D8D]">{phone_number}</p>
       </div>
-    </a>
+    </Link>
   );
 };
 

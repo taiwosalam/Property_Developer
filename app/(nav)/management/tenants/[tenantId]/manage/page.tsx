@@ -1,14 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import React from "react";
 
 // Images
 import Avatar from "@/public/empty/avatar-1.svg";
 import Verified from "@/public/icons/verified.svg";
-
-// Types
-import type { TenantData } from "../../types";
 
 // Fonts
 import { secondaryFont } from "@/utils/fonts";
@@ -20,42 +16,20 @@ import Button from "@/components/Form/Button/button";
 import {
   LandlordTenantInfo,
   LandlordTenantInfoBox,
+  LandlordTenantUserTag,
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
-  LandlordTenantUserTag,
 } from "@/components/Management/landlord-tenant-info-components";
 
-import { getOneTenant } from "../../data";
-import { useAuthStore } from "@/store/authstrore";
+import { ASSET_URL, empty } from "@/app/config";
+import useTenantData from "@/hooks/useTenantData";
 import UnitItem from "@/components/Management/Properties/unit-item";
-import { ASSET_URL } from "@/app/config";
 import { getObjectProperties } from "@/utils/get-object-properties";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import UpdateTenantProfile from "@/components/Management/Tenants/update-tenant-profile";
 
 const ManageTenant = () => {
-  const router = useRouter();
-
-  const { tenantId } = useParams();
-
-  const accessToken = useAuthStore((state) => state.access_token);
-
-  const [tenant, setTenant] = useState<TenantData | null>(null);
-
-  useEffect(() => {
-    const fetchTenant = async () => {
-      const data = await getOneTenant(
-        tenantId as string,
-        accessToken as string
-      );
-
-      if (!data) return router.push("/management/tenants");
-
-      setTenant(data);
-    };
-
-    fetchTenant();
-  }, [accessToken, tenantId, router]);
+  const { tenant, tenantId } = useTenantData();
 
   if (!tenant) return null;
 
@@ -68,11 +42,7 @@ const ManageTenant = () => {
           <div className="flex flex-col xl:flex-row gap-5">
             <div className="flex items-start">
               <Picture
-                src={
-                  tenant.picture
-                    ? `${ASSET_URL}${tenant.picture}`
-                    : tenant.avatar
-                }
+                src={tenant.picture ? `${ASSET_URL}${tenant.picture}` : empty}
                 alt="profile picture"
                 size={120}
                 rounded

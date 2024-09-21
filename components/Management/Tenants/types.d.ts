@@ -1,3 +1,6 @@
+// Types
+import type { TenantData } from "@/app/(nav)/management/tenants/types";
+
 export type AddTenantModalOptions =
   | "options"
   | "add-tenant"
@@ -20,4 +23,8 @@ export interface TenantProps {
   picture?: string;
   avatar?: string;
   picture_url: string;
+}
+
+export interface TenantEditContextProps {
+  data: TenantData | null;
 }
