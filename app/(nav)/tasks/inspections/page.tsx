@@ -9,7 +9,7 @@ import Pagination from "@/components/Pagination/pagination";
 import SearchInput from "@/components/SearchInput/search-input";
 import InspectionCard from "@/components/tasks/Inspections/inspection-card";
 import useWindowWidth from "@/hooks/useWindowWidth";
-import Image from "next/image";
+import FilterButton from "@/components/FilterButton/filter-button";
 
 const InspectionPage = () => {
   const { isSmallTablet } = useWindowWidth();
@@ -37,33 +37,22 @@ const InspectionPage = () => {
       )}
       <div className="page-title-container">
         <PageTitle title="Inspection" />
-        <div className="flex items-center space-x-4 flex-wrap">
+        <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for Inspection" />
-
-          <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-            <Modal>
-              <ModalTrigger asChild>
-                <div className="flex items-center gap-2 cursor-pointer">
-                  <Image
-                    src="/icons/sliders.svg"
-                    alt="filters"
-                    width={20}
-                    height={20}
-                  />
-                  <p>Filters</p>
-                </div>
-              </ModalTrigger>
-              <ModalContent>
-                <FilterModal
-                  filterOptionsWithDropdown={[]}
-                  filterOptions={[]}
-                  onApply={() => {}}
-                  date
-                  //   onStateSelect={(state: string) => setSelectedState(state)}
-                />
-              </ModalContent>
-            </Modal>
-          </div>
+          <Modal>
+            <ModalTrigger asChild>
+              <FilterButton />
+            </ModalTrigger>
+            <ModalContent>
+              <FilterModal
+                filterOptionsWithDropdown={[]}
+                filterOptions={[]}
+                onApply={() => {}}
+                date
+                //   onStateSelect={(state: string) => setSelectedState(state)}
+              />
+            </ModalContent>
+          </Modal>
         </div>
       </div>
       <AutoResizingGrid minWidth={560} gap={32}>

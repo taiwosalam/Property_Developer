@@ -89,7 +89,86 @@ export const CalendarIcon = () => {
   );
 };
 
-export const VerticalEllipsis = () => {
+export const EyeHideIcon = () => {
+  return (
+    <svg
+      width="21"
+      height="21"
+      viewBox="0 0 21 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M8.54082 12.5707C8.0377 12.0685 7.73145 11.386 7.73145 10.6203C7.73145 9.08647 8.96695 7.8501 10.4999 7.8501C11.2586 7.8501 11.9568 8.15722 12.4512 8.65947"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M13.2169 11.1113C13.0139 12.2401 12.1249 13.1308 10.9971 13.3356"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5.82312 15.2882C4.4345 14.198 3.2585 12.6055 2.40625 10.6201C3.26725 8.62598 4.45113 7.02473 5.8485 5.92573C7.23713 4.82673 8.83925 4.22998 10.5 4.22998C12.1704 4.22998 13.7716 4.83548 15.169 5.94236"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M17.0167 7.8667C17.6187 8.66645 18.1481 9.58957 18.5934 10.6194C16.8723 14.6068 13.8308 17.0087 10.4997 17.0087C9.74455 17.0087 8.99993 16.8862 8.28418 16.6473"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M17.4019 3.71826L3.59961 17.5205"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const EyeShowIcon = () => {
+  return (
+    <svg
+      width="21"
+      height="21"
+      viewBox="0 0 21 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M13.266 10.5465C13.266 12.0743 12.027 13.3124 10.4993 13.3124C8.97152 13.3124 7.7334 12.0743 7.7334 10.5465C7.7334 9.01791 8.97152 7.77979 10.4993 7.77979C12.027 7.77979 13.266 9.01791 13.266 10.5465Z"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10.4983 16.9357C13.8303 16.9357 16.8779 14.54 18.5938 10.5465C16.8779 6.55298 13.8303 4.15723 10.4983 4.15723H10.5017C7.16975 4.15723 4.12212 6.55298 2.40625 10.5465C4.12212 14.54 7.16975 16.9357 10.5017 16.9357H10.4983Z"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const VerticalEllipsisIcon = () => {
   return (
     <svg
       width="6"
@@ -565,7 +644,7 @@ export const RadioCheckCircle = () => {
         cy="10"
         r="9.5"
         stroke="currentColor"
-       strokeOpacity="0.4"
+        strokeOpacity="0.4"
       />
       <circle cx="10" cy="10" r="6" fill="currentColor" />
     </svg>
