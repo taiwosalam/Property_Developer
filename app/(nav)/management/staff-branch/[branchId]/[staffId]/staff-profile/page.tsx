@@ -1,9 +1,11 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 
 // Images
+import { ChevronRight } from "lucide-react";
 import LocationIcon from "@/public/icons/location.svg";
 
 import Avatar from "@/public/empty/avatar-1.svg";
@@ -21,6 +23,8 @@ import {
 import { secondaryFont } from "@/utils/fonts";
 import Button from "@/components/Form/Button/button";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import StaffProfilePortfolio from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/staff-profile-portfolio";
+import { placeholder_portfolio_data } from "./data";
 
 const StaffProfile = () => {
   const { branchId, staffId } = useParams();
@@ -83,7 +87,7 @@ const StaffProfile = () => {
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <Button
-                    href={`/management/staff-branch/${branchId}/${staffId}/staff-profile`}
+                    href={`/management/staff-branch/${branchId}/${staffId}/staff-profile/edit`}
                     size="base_medium"
                     className="py-2 px-8"
                   >
@@ -136,7 +140,78 @@ const StaffProfile = () => {
         </div>
       </div>
       <div className="custom-flex-col gap-[18px]">
-        
+        <div className="flex justify-between">
+          <h1 className="text-2xl font-bold text-black">
+            Barrister Abimbola Adedeji Activities
+          </h1>
+          <Link href={""} className="flex items-center gap-1">
+            <p>See all</p>
+            <ChevronRight size={16} color="#5A5D61" />
+          </Link>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="dash-table">
+            <thead>
+              <tr>
+                <th>S/N</th>
+                <th>username</th>
+                <th>page vists</th>
+                <th>action taken</th>
+                <th>IP address</th>
+                <th>location</th>
+                <th>date</th>
+                <th>time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array(6)
+                .fill(null)
+                .map((_, idx) => (
+                  <tr key={idx}>
+                    <td>
+                      <p>0{idx + 1}</p>
+                    </td>
+                    <td>
+                      <p>Olalomi@gmail.com</p>
+                    </td>
+                    <td>
+                      <p>Landlord login page</p>
+                    </td>
+                    <td>
+                      <p>Login success</p>
+                    </td>
+                    <td>
+                      <p>105.113.18.186</p>
+                    </td>
+                    <td>
+                      <p>6.537216,3.3488896</p>
+                    </td>
+                    <td>
+                      <p>12/12/12</p>
+                    </td>
+                    <td>
+                      <p>3:20pm</p>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div className="custom-flex-col gap-[18px]">
+        <h1 className="text-2xl font-bold text-black">
+          Barrister Abimbola Adedeji Chat
+        </h1>
+      </div>
+      <div className="custom-flex-col gap-[18px]">
+        <h1 className="text-2xl font-bold text-black">
+          Barrister Abimbola Adedeji Portfolios
+        </h1>
+        <div className="custom-flex-col gap-8">
+          {placeholder_portfolio_data.map(({ title, items }, index) => (
+            <StaffProfilePortfolio key={index} title={title} items={items} />
+          ))}
+        </div>
       </div>
     </div>
   );
