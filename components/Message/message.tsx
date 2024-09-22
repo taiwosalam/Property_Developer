@@ -18,7 +18,7 @@ const Message: React.FC<MessageProps> = ({
       <div
         className={clsx("py-2 px-4 flex gap-4 rounded-2xl max-w-[70%]", {
           "bg-brand-primary rounded-tr-none": type === "from user",
-          "bg-status-caution-3 rounded-tl-none": type === "to user",
+          "bg-status-caution-1 rounded-tl-none": type === "to user",
         })}
       >
         <p

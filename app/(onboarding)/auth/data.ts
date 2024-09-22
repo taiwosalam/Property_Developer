@@ -57,20 +57,18 @@ export const signup = async () => {
   try {
     const result = await postRequest("/initiate", {});
 
-    if (result?.access_token) {
-      const { access_token, user_id, company_id } = result;
-
-      useAuthStoreSelectors
-        .getState()
-        .setAuthState(true, access_token, user_id, company_id);
+    if (result?.user_id) {
+      const { user_id } = result;
+      // Update Zustand state with only the user_id
+      useAuthStoreSelectors.getState().setAuthState(false, null, user_id, null);
 
       return true;
     } else {
-      console.error("Signup failed, access_token missing.");
-      return false;
+      console.error("Signup failed, user_id missing.");
+      return true;
     }
   } catch (error) {
-    console.error("Error fetching result:", error);
+    console.error("Error during signup:", error);
     return false;
   }
 };

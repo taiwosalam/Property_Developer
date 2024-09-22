@@ -14,6 +14,7 @@ const PageProgressBar: React.FC<PageProgressBarProps> = ({
 }) => {
   const height = 5;
   const active_color = "#FFBB53";
+  const complete_color = "#01BA4C";
   const disabled_color = "#C1C2C3";
 
   const points = sanitizeBreakpoints(breakpoints);
@@ -24,7 +25,11 @@ const PageProgressBar: React.FC<PageProgressBarProps> = ({
         <div style={{ height, backgroundColor: disabled_color }}>
           <div
             className="h-full rounded-tr-full rounded-br-full"
-            style={{ width: `${percentage}%`, backgroundColor: active_color }}
+            style={{
+              width: `${percentage}%`,
+              backgroundColor:
+                percentage === 100 ? complete_color : active_color,
+            }}
           ></div>
         </div>
         <div className="absolute top-0 left-0 w-full">

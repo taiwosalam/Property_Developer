@@ -12,7 +12,7 @@ const DeleteAccountModal = () => {
   const { activeStep, changeStep } = useStep(2);
 
   return activeStep === 1 ? (
-    <ModalPreset type="warning" className="max-w-[326px]">
+    <ModalPreset type="warning">
       <p className="text-text-disabled text-sm font-normal">
         Are you certain you want to proceed with deleting this profile?
       </p>
@@ -27,7 +27,7 @@ const DeleteAccountModal = () => {
       </div>
     </ModalPreset>
   ) : (
-    <ModalPreset type="success" className="max-w-[326px]">
+    <ModalPreset type="success">
       <p className="text-text-disabled text-sm font-normal">
         Payment has been successfully added to the receipt.
       </p>

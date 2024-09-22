@@ -1,10 +1,10 @@
 "use client";
 
 // Imports
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import clsx from "clsx";
 import Button from "@/components/Form/Button/button";
-import { GridIcon, ListIcon, FilterIcon } from "@/public/icons/icons";
+import { GridIcon, ListIcon } from "@/public/icons/icons";
 import TenantCard from "@/components/Management/landlord-and-tenant-card";
 import type { TenantProps } from "@/components/Management/Tenants/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -20,8 +20,12 @@ import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import PageTitle from "@/components/PageTitle/page-title";
 import { defaultTenantPageData, getAllTenants, TenantPageState } from "./data";
+import { useAuthStore } from "@/store/authstrore";
+import FilterButton from "@/components/FilterButton/filter-button";
 
 const Tenants = () => {
+  const accessToken = useAuthStore((state) => state.access_token);
+
   const initialState: TenantPageState = {
     gridView: true,
     total_pages: 50,
@@ -48,21 +52,21 @@ const Tenants = () => {
     },
   } = state;
 
-  const fetchLandlords = async () => {
+  const fetchLandlords = useCallback(async () => {
     try {
-      const data = await getAllTenants();
+      const data = await getAllTenants(accessToken);
       setState((x) => ({ ...x, tenantsPageData: data }));
     } catch (error) {
       setState((x) => ({ ...x, error: error as Error }));
     } finally {
       setState((x) => ({ ...x, loading: false }));
     }
-  };
+  }, [accessToken]);
 
   useEffect(() => {
     // Fetch the landlords when the component mounts
     fetchLandlords();
-  }, []);
+  }, [fetchLandlords]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -253,9 +257,9 @@ const Tenants = () => {
 
       <div className="page-title-container">
         <PageTitle title="Tenants/Occupants (Users)" />
-        <div className="flex items-center gap-x-4 flex-wrap">
+        <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for Tenants & Occupants" />
-          <div className="flex items-center gap-x-3">
+          <div className="flex items-center gap-3">
             <button
               type="button"
               aria-label="list-view"
@@ -281,29 +285,21 @@ const Tenants = () => {
               <GridIcon />
             </button>
           </div>
-          <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-            <Modal>
-              <ModalTrigger asChild>
-                <button
-                  type="button"
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  <FilterIcon />
-                  <span>Filters</span>
-                </button>
-              </ModalTrigger>
-              <ModalContent>
-                <FilterModal
-                  filterOptions={tenantFilters}
-                  filterOptionsWithRadio={tenantFiltersRadio}
-                  filterOptionsWithDropdown={tenantFiltersWithOptions}
-                  onApply={handleFilterApply}
-                  onStateSelect={onStateSelect}
-                  date={true}
-                />
-              </ModalContent>
-            </Modal>
-          </div>
+          <Modal>
+            <ModalTrigger asChild>
+              <FilterButton />
+            </ModalTrigger>
+            <ModalContent>
+              <FilterModal
+                filterOptions={tenantFilters}
+                filterOptionsWithRadio={tenantFiltersRadio}
+                filterOptionsWithDropdown={tenantFiltersWithOptions}
+                onApply={handleFilterApply}
+                onStateSelect={onStateSelect}
+                date={true}
+              />
+            </ModalContent>
+          </Modal>
         </div>
       </div>
       <section>
@@ -318,7 +314,7 @@ const Tenants = () => {
               <TenantCard
                 key={t.id}
                 {...t}
-                href={`/management/tenant/${t.id}/manage`}
+                href={`/management/tenants/${t.id}/manage`}
               />
             ))}
           </div>

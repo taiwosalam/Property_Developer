@@ -19,6 +19,7 @@ import Drag from "@/public/icons/drag.svg";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import TaskModal from "./task-action-modal";
 import { useRouter } from "next/navigation";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 export interface Task {
   id: UniqueIdentifier;
@@ -41,6 +42,7 @@ interface TaskCardProps {
   task: Task;
   noDrag?: boolean;
   isOverlay?: boolean;
+  isNew?: boolean;
 }
 
 export type TaskType = "Task";
@@ -50,7 +52,7 @@ export interface TaskDragData {
   task: Task;
 }
 
-export function TaskCard({ task, isOverlay, noDrag }: TaskCardProps) {
+export function TaskCard({ task, isOverlay, noDrag, isNew }: TaskCardProps) {
   const [isModalOpen, setModalOpen] = useState(false);
   const wasRecentlyDragged = useRef(false);
   const router = useRouter();
@@ -139,8 +141,9 @@ export function TaskCard({ task, isOverlay, noDrag }: TaskCardProps) {
               <AvatarFallback>{task.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="space-x-1">
-              <p className="text-sm font-medium text-text-primary">
+              <p className="text-sm font-medium text-text-primary flex items-center space-x-0.5">
                 {task.name}
+                <BadgeIcon color="green" />
               </p>
               <p className="text-xs text-[#0033C4] font-medium capitalize">
                 {task.title}
@@ -170,12 +173,15 @@ export function TaskCard({ task, isOverlay, noDrag }: TaskCardProps) {
                   {task.content.status}
                 </p>
               </div>
-              <p className="text-text-tertiary font-normal">
+              <p className="text-text-tertiary font-normal" hidden={isNew}>
                 {task.content.progress}/100%
               </p>
             </div>
             <div className="py-2">
-              <Progress value={task.content.progress} fillColor={bg} />
+              <Progress
+                value={task.content.progress}
+                fillColor={isNew ? "" : bg}
+              />
             </div>
           </div>
           <div className="flex space-x-5">

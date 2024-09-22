@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useContext } from "react";
 import type { SelectProps } from "./types";
 import { DeleteIconX, ArrowDownIcon, SearchIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
+import { checkValidatonError } from "@/utils/validation";
 
 const Select: React.FC<SelectProps> = ({
   id,
@@ -14,6 +15,7 @@ const Select: React.FC<SelectProps> = ({
   options,
   onChange,
   inputTextClassName,
+  validationErrors = {},
   placeholder = "Select options",
   allowCustom = false,
   isSearchable = true,
@@ -33,6 +35,9 @@ const Select: React.FC<SelectProps> = ({
   const [state, setState] = useState(initialState);
   const { isOpen, searchTerm, filteredOptions, selectedValue } = state;
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // State to store validation error message
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const handleSelection = (option: string) => {
     setState((x) => ({
@@ -80,8 +85,16 @@ const Select: React.FC<SelectProps> = ({
   }, [propValue, resetKey]);
 
   useEffect(() => {
+    setValidationError(null);
     handleInputChange && handleInputChange();
   }, [selectedValue, handleInputChange]);
+
+  // Check and set validation error for this input when validationErrors or id changes
+  useEffect(() => {
+    setValidationError(
+      checkValidatonError({ errors: validationErrors, key: id })
+    );
+  }, [validationErrors, id]);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
@@ -137,6 +150,7 @@ const Select: React.FC<SelectProps> = ({
               )}
               placeholder={placeholder}
               value={searchTerm}
+              onInput={() => setValidationError(null)}
               onChange={(e) => {
                 setState((x) => ({
                   ...x,
@@ -228,6 +242,10 @@ const Select: React.FC<SelectProps> = ({
           </div>
         )}
       </div>
+      {/* Render validation error message if present */}
+      {validationError && (
+        <p className="text-sm text-red-500 font-medium">{validationError}</p>
+      )}
     </div>
   );
 };

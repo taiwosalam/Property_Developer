@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const RenewRent = () => {
   return (
-    <main className="space-y-6 p-4">
+    <div className="space-y-6 p-4">
       <Link
         href={"/management/rent-unit"}
         className="flex items-center space-x-3 w-fit"
@@ -40,7 +40,7 @@ const RenewRent = () => {
           Renew Rent
         </button>
       </div>
-    </main>
+    </div>
   );
 };
 

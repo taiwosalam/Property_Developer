@@ -7,6 +7,7 @@ export interface SelectProps {
   required?: boolean;
   placeholder?: string;
   onChange?: (data: string) => void;
+  validationErrors?: ValidationErrors;
   inputTextClassName?: string;
   allowCustom?: booleab;
   isSearchable?: boolean;

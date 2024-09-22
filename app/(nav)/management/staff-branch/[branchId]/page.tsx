@@ -35,6 +35,7 @@ import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch
 import { properties } from "../../properties/data";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
+import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-staff-modal";
 
 const Dashboard = () => {
   const initialState = {
@@ -113,15 +114,23 @@ const Dashboard = () => {
         <div className="flex items-center justify-between space-x-2">
           <Modal>
             <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
+              <Button
+                type="button"
+                variant="border"
+                className="page-header-button"
+              >
                 + create staff
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <div>Hello</div>
+              <CreateStaffModal />
             </ModalContent>
           </Modal>
-          <Button type="button" className="page-header-button">
+          <Button
+            type="button"
+            className="page-header-button"
+            href={`/management/staff-branch/${branchId}/edit-branch`}
+          >
             Edit Branch
           </Button>
         </div>
@@ -231,15 +240,21 @@ const Dashboard = () => {
           )}
           {!isMobile && (
             <div className="w-full h-fit">
-              <DashboardChart visibleRange={false} />
+              <DashboardChart chartTitle="Reports" visibleRange={false} />
             </div>
           )}
         </div>
         <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full space-y-6 mt-6 xl:mt-0">
-          <BranchBalanceCard
-            mainBalance={walletBalanceCardData.mainBalance}
-            cautionDeposit={walletBalanceCardData.cautionDeposit}
-          />
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-[14px] font-medium">Branch Wallet</h1>
+              <p className="text-xs text-text-label">ID: 2324354678</p>
+            </div>
+            <BranchBalanceCard
+              mainBalance={walletBalanceCardData.mainBalance}
+              cautionDeposit={walletBalanceCardData.cautionDeposit}
+            />
+          </div>
           <BranchActivitiesCard />
           <NotificationCard
             sectionHeader="Staffs"

@@ -7,7 +7,7 @@ import PageTitle from "@/components/PageTitle/page-title";
 import SearchInput from "@/components/SearchInput/search-input";
 import { GridIcon, ListIcon } from "@/public/icons/icons";
 import clsx from "clsx";
-import Image from "next/image";
+import FilterButton from "@/components/FilterButton/filter-button";
 import {
   RentAndUnitFilters,
   RentAndUnitFiltersWithOptions,
@@ -43,7 +43,7 @@ const RentAndUnit = () => {
     // Add filtering logic here for branches
   };
   return (
-    <main className="space-y-9">
+    <div className="space-y-9">
       <section className="page-header-container">
         <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-4 gap-4">
           <ManagementStatistcsCard
@@ -70,9 +70,9 @@ const RentAndUnit = () => {
       </section>
       <div className="page-title-container">
         <PageTitle title="Rent & Unit" />
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for Rent and Unit" />
-          <div className="flex items-center gap-x-3">
+          <div className="flex items-center gap-3">
             <button
               type="button"
               aria-label="list-view"
@@ -98,29 +98,20 @@ const RentAndUnit = () => {
               <GridIcon />
             </button>
           </div>
-          <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-            <Modal>
-              <ModalTrigger asChild>
-                <div className="flex items-center gap-2 cursor-pointer">
-                  <Image
-                    src="/icons/sliders.svg"
-                    alt="filters"
-                    width={20}
-                    height={20}
-                  />
-                  <p>Filters</p>
-                </div>
-              </ModalTrigger>
-              <ModalContent>
-                <FilterModal
-                  filterOptionsWithDropdown={RentAndUnitFiltersWithOptions}
-                  filterOptions={RentAndUnitFilters}
-                  onApply={handleFilterApply}
-                  date
-                />
-              </ModalContent>
-            </Modal>
-          </div>
+
+          <Modal>
+            <ModalTrigger asChild>
+              <FilterButton />
+            </ModalTrigger>
+            <ModalContent>
+              <FilterModal
+                filterOptionsWithDropdown={RentAndUnitFiltersWithOptions}
+                filterOptions={RentAndUnitFilters}
+                onApply={handleFilterApply}
+                date
+              />
+            </ModalContent>
+          </Modal>
         </div>
       </div>
       <section className="capitalize space-y-4 px-4 w-full">
@@ -152,7 +143,7 @@ const RentAndUnit = () => {
         currentPage={current_page}
         onPageChange={handlePageChange}
       />
-    </main>
+    </div>
   );
 };
 

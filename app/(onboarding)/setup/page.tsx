@@ -29,16 +29,12 @@ const Setup = () => {
 
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
-  // Access the store's update function
+  // Access the store's update function and userId
   const updateFormData = useFormDataStore((state) => state.updateFormData);
+  const user_id = useAuthStore((state) => state.userId);
 
   // remove later
   const handleSubmit = async (data: FormData) => {
-    // if (!canSubmit) return;
-    // Add user_id to the data object
-    // const user_id = useAuthStore.getState().userId;
-    const user_id = localStorage.getItem("user_id");
-    console.log(user_id);
     const payload = formDataToString(data);
 
     if (user_id) {
@@ -57,10 +53,12 @@ const Setup = () => {
     }
 
     console.log(data); // Debug log to see the modified data
-    // updateFormData(payload);
     try {
-      await signupCompany(data);
-      // console.log("Company successfully signed up!");
+      const response = await signupCompany(data);
+      if (response.error) {
+        console.log(response);
+        // setErrorMsgs(response.error);
+      }
     } catch (error) {
       console.error("Error signing up company:", error);
     }

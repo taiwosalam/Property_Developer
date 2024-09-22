@@ -2,22 +2,15 @@
 import Image from "next/image";
 import { PropertyProps } from "./types";
 import clsx from "clsx";
-// import { useState } from "react";
 import Button from "@/components/Form/Button/button";
-// import { motion, useAnimation } from "framer-motion";
 import Sample from "@/public/empty/SampleProperty.jpeg";
-// import Sample2 from "@/public/empty/SampleProperty2.jpeg";
-// import Sample3 from "@/public/empty/SampleProperty3.jpeg";
-// import Sample4 from "@/public/empty/SampleProperty4.png";
-// import Sample5 from "@/public/empty/SampleProperty5.jpg";
-
-import {
-  LocationIcon,
-  NextIcon,
-  PreviousIcon,
-  VideoIcon,
-  CameraIcon,
-} from "@/public/icons/icons";
+import Sample2 from "@/public/empty/SampleProperty2.jpeg";
+import Sample3 from "@/public/empty/SampleProperty3.jpeg";
+import Sample4 from "@/public/empty/SampleProperty4.png";
+import Sample5 from "@/public/empty/SampleProperty5.jpg";
+import ImageModal from "@/components/ImageModal/image-modal";
+import { useState } from "react";
+import { VideoIcon, CameraIcon } from "@/public/icons/icons";
 
 const PropertyListItem: React.FC<
   PropertyProps & {
@@ -36,11 +29,20 @@ const PropertyListItem: React.FC<
   handleClickManage,
   handleClickPreview,
 }) => {
+  const [screenModal, setScreenModal] = useState(false);
+  const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   return (
     <div
       className="p-6 rounded-2xl bg-white"
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
+      {/* Image Modal */}
+      <ImageModal
+        isOpen={screenModal}
+        onClose={() => setScreenModal(false)}
+        images={sampleImages.map((image) => image.src)}
+        currentIndex={0}
+      />
       <div className="flex flex-col md:flex-row md:items-center gap-2 md:justify-between">
         <div className="overflow-x-auto max-w-full flex-grow">
           <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[40%,1fr]">
@@ -92,6 +94,7 @@ const PropertyListItem: React.FC<
           <div
             className="absolute z-[10] inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+            onClick={() => setScreenModal(true)}
           >
             {/* Gropu of icons down */}
             <div className="flex items-stretch gap-[10px] absolute z-[1] left-[35%] bottom-4">
@@ -102,11 +105,6 @@ const PropertyListItem: React.FC<
               <div className="bg-brand-1 rounded py-1 px-1.5 grid place-items-center">
                 <VideoIcon />
               </div>
-            </div>
-            {/* Top Icon */}
-            <div className="absolute z-[1] left-[70%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
-              <CameraIcon />
-              <p className="text-black font-medium text-[10px]">+23</p>
             </div>
           </div>
 
