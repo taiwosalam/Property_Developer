@@ -22,71 +22,30 @@ import { getOneLandlord } from "../../data";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { useAuthStore } from "@/store/authstrore";
-import { useParams } from "next/navigation";
-
-type LandlordPageData = {
-  avatar: string;
-  picture: string;
-  name: string;
-  email: string;
-  phone_number: string;
-  user_tag: string;
-  id: number;
-  contact_address: {
-    address: string;
-    city: string | null;
-    state: string;
-    local_govt: string;
-  };
-  guarantor: {
-    name: string | null;
-    relationship: string | null;
-    email: string | null;
-    phone_number: string | null;
-    address: string | null;
-    note: string | null;
-  };
-  bank_details: {
-    bank_name: string | null;
-    account_name: string | null;
-    account_number: string | null;
-    wallet_id: string | null;
-  };
-  attachment: string | null;
-  properties_managed: {
-    id: number;
-    property_name: string;
-    address: string;
-    property_tag: string;
-    units: number;
-    rental_value: number;
-    annual_returns: number | null;
-    account_officer: string;
-    image: string | null;
-  }[];
-};
+import { useParams, useRouter } from "next/navigation";
+import { LandlordPageData } from "../../types";
 
 const ManageLandlord = () => {
   const accessToken = useAuthStore((state) => state.access_token);
   const { landlordId } = useParams();
-  const id = Number(landlordId);
   const [LandlordPageData, setLandlordPageData] =
     useState<LandlordPageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     // Fetch the landlord when the component mounts
     const fetchLandlords = async () => {
-      try {
-        const data = await getOneLandlord(id.toString());
-        console.log(data, "data");
-        setLandlordPageData(data);
-      } catch (error) {
-        setError(error as Error);
-      } finally {
-        setLoading(false);
-      }
+      const data = await getOneLandlord(
+        landlordId as string,
+        accessToken as string
+      );
+
+      console.log(data, "data");
+      setLoading(false);
+      if (!data) return router.push("/management/landlord");
+      setLandlordPageData(data);
     };
 
     fetchLandlords();
@@ -94,6 +53,7 @@ const ManageLandlord = () => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
+  if (!LandlordPageData) return null;
   return (
     <div className="custom-flex-col gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
@@ -150,7 +110,7 @@ const ManageLandlord = () => {
               </div>
               <div className="flex flex-wrap gap-4">
                 <Button
-                  href="/management/tenants/1/manage/edit"
+                  href={`/management/landlord/${LandlordPageData?.id}/manage/edit`}
                   size="base_medium"
                   className="py-2 px-8"
                 >
@@ -224,7 +184,7 @@ const ManageLandlord = () => {
       </div>
       <LandlordTenantInfoSection title="Property Managed">
         <AutoResizingGrid minWidth={250}>
-          {LandlordPageData?.properties_managed.map((property) => (
+          {LandlordPageData?.properties_managed?.map((property) => (
             <PropertyCard
               key={property.id}
               images={[]}

@@ -16,6 +16,8 @@ import AddLandlordOptions from "./add-landlord-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
 import InvitationForm from "../invitation-form";
+import { addLandlord } from "./data";
+import { useAuthStore } from "@/store/authstrore";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 
 const AddLandlordModal = () => {
@@ -24,6 +26,14 @@ const AddLandlordModal = () => {
 
   const handleBack = () => {
     setActiveStep("options");
+  };
+
+  const accessToken = useAuthStore((state) => state.access_token);
+
+  const handleAddLandlord = async (data: FormData) => {
+    console.log("clicked");
+    const response = await addLandlord(data, accessToken);
+    console.log(response);
   };
 
   const modal_states: Record<
@@ -40,7 +50,10 @@ const AddLandlordModal = () => {
     "add-landlord": {
       heading: "Add landlord/landlady Profile",
       content: (
-        <AddLandLordOrTenantForm type="landlord" submitAction={() => {}} />
+        <AddLandLordOrTenantForm
+          type="landlord"
+          submitAction={handleAddLandlord}
+        />
       ),
     },
     "add-multiple-owners": {
