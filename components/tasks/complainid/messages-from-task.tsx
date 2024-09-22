@@ -1,5 +1,5 @@
 import Input from "@/components/Form/Input/input";
-import { VerticalEllipsis, SendMessageIcon } from "@/public/icons/icons";
+import { SendMessageIcon, VerticalEllipsisIcon } from "@/public/icons/icons";
 import Message from "./message";
 
 const MessagesFromTask = () => {
@@ -14,7 +14,7 @@ const MessagesFromTask = () => {
       <div className="p-4 flex justify-between bg-brand-1 rounded-t-lg">
         <h6 className="text-black text-base font-medium">Messages from Task</h6>
         <span className="text-borders-normal">
-          <VerticalEllipsis />
+          <VerticalEllipsisIcon />
         </span>
       </div>
 
@@ -164,6 +164,5 @@ const messages = [
     time: "Today, 8:35am",
   },
 ];
-
 
 export default MessagesFromTask;
