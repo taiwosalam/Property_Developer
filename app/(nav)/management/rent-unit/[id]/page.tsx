@@ -106,7 +106,7 @@ const UnitPreviewPage = () => {
   );
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8">
       <section className="space-y-6">
         <Link
           href="/management/rent-unit"
@@ -206,7 +206,7 @@ const UnitPreviewPage = () => {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

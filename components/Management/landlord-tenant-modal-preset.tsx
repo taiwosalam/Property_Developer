@@ -1,15 +1,8 @@
-import React from "react";
-
 // Types
 import type { LandlordTenantModalPresetProps } from "./types";
 
-// Images
-import CloseCircle from "@/public/icons/close-circle.svg";
-import ChevronLeft from "@/public/icons/chevron-left.svg";
-
-// Imports
-import Picture from "../Picture/picture";
 import { ModalTrigger } from "../Modal/modal";
+import { DeleteIconX, ChevronLeft } from "@/public/icons/icons";
 
 const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   star,
@@ -23,8 +16,8 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
       <div className="flex items-center justify-between border-b border-solid border-[#B8B8B8] sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[30px] bg-white">
         <div className="flex items-center gap-2">
           {back && (
-            <button type="button" onClick={back.handleBack}>
-              <Picture src={ChevronLeft} alt="back" size={24} />
+            <button type="button" onClick={back.handleBack} aria-label="back">
+              <ChevronLeft />
             </button>
           )}
           <p className="text-primary-navy text-base md:text-lg lg:text-xl font-bold capitalize">
@@ -32,8 +25,8 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
             {heading}
           </p>
         </div>
-        <ModalTrigger close className="p-2" type="button">
-          <Picture src={CloseCircle} alt="close" size={34} />
+        <ModalTrigger close className="p-2" type="button" aria-label="close">
+          <DeleteIconX />
         </ModalTrigger>
       </div>
       {/* body */}

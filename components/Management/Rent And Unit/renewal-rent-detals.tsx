@@ -7,7 +7,7 @@ export const RenewalRentDetails = (
   { title }: { title?: string } = { title: "Renewal Fee" }
 ) => {
   return (
-    <main>
+    <div>
       <div className="flex space-x-8 items-center">
         {/* Left Column */}
         <div className="w-3/5 space-y-6 py-10">
@@ -171,7 +171,7 @@ export const RenewalRentDetails = (
           </tbody>
         </table>
       </div>
-    </main>
+    </div>
   );
 };
 

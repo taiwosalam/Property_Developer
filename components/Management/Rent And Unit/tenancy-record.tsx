@@ -14,7 +14,7 @@ const TenancyRecord = () => {
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
 
   return (
-    <main className="bg-white shadow p-6 space-y-4">
+    <div className="bg-white shadow p-6 space-y-4">
       <div className="w-full flex items-center justify-between h-[25px]">
         <h6 className="text-[16px] font-bold text-[#1E3A8A]">Tenancy Record</h6>
         {!isCollapsibleOpen && (
@@ -186,7 +186,7 @@ const TenancyRecord = () => {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 

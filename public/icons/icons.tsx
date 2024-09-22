@@ -336,7 +336,7 @@ export const VideoIcon = () => {
   );
 };
 
-export const ChevronLeft = ({ fill }: { fill?: string }) => {
+export const ChevronLeft = ({ fill = "#010A23" }) => {
   return (
     <svg
       width="24"
@@ -347,7 +347,7 @@ export const ChevronLeft = ({ fill }: { fill?: string }) => {
     >
       <path
         d="M15 18.5L9 12.5L15 6.5"
-        stroke={fill || "#010A23"}
+        stroke={fill}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -565,7 +565,7 @@ export const RadioCheckCircle = () => {
         cy="10"
         r="9.5"
         stroke="currentColor"
-        stroke-opacity="0.4"
+       strokeOpacity="0.4"
       />
       <circle cx="10" cy="10" r="6" fill="currentColor" />
     </svg>
@@ -582,8 +582,8 @@ export const SendMessageIcon = () => {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M1.29064 0.309093C1.15208 0.250848 0.999223 0.235577 0.851882 0.26526C0.70454 0.294944 0.569516 0.368212 0.464319 0.475564C0.359123 0.582916 0.288608 0.719399 0.261919 0.867312C0.23523 1.01523 0.253599 1.16775 0.314642 1.30509L3.40764 8.25009H10.9996C11.1986 8.25009 11.3893 8.32911 11.53 8.46976C11.6706 8.61042 11.7496 8.80118 11.7496 9.00009C11.7496 9.19901 11.6706 9.38977 11.53 9.53042C11.3893 9.67108 11.1986 9.75009 10.9996 9.75009H3.40764L0.314642 16.6951C0.253599 16.8324 0.23523 16.985 0.261919 17.1329C0.288608 17.2808 0.359123 17.4173 0.464319 17.5246C0.569516 17.632 0.70454 17.7052 0.851882 17.7349C0.999223 17.7646 1.15208 17.7493 1.29064 17.6911L20.2906 9.69109C20.4265 9.63375 20.5425 9.53762 20.624 9.41471C20.7056 9.29181 20.7491 9.14759 20.7491 9.00009C20.7491 8.8526 20.7056 8.70838 20.624 8.58548C20.5425 8.46257 20.4265 8.36644 20.2906 8.30909L1.29064 0.309093Z"
         fill="currentColor"
       />

@@ -1,8 +1,5 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
-
 // Imports
 import useWindowWidth from "@/hooks/useWindowWidth";
 import Button from "@/components/Form/Button/button";
@@ -11,6 +8,8 @@ import SearchInput from "@/components/SearchInput/search-input";
 import ExamineCard from "@/components/tasks/Examine/examine-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+import FilterButton from "@/components/FilterButton/filter-button";
+import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 
 const Examine = () => {
   const { isSmallTablet } = useWindowWidth();
@@ -35,21 +34,14 @@ const Examine = () => {
       </div>
       <div className="page-title-container">
         <PageTitle title="Examine" />
-        <div className="flex items-center gap-4">
-          <SearchInput placeholder="Search for Staff and Branch" />
-          <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-            <button>
-              <div className="flex items-center gap-2 cursor-pointer">
-                <Image
-                  src="/icons/sliders.svg"
-                  alt="filters"
-                  width={20}
-                  height={20}
-                />
-                <p className="text-[#344054] text-base font-medium">Filters</p>
-              </div>
-            </button>
-          </div>
+        <div className="flex items-center gap-4 flex-wrap">
+          <SearchInput placeholder="Search" />
+          <Modal>
+            <ModalTrigger asChild>
+              <FilterButton />
+            </ModalTrigger>
+            <ModalContent>Hi</ModalContent>
+          </Modal>
         </div>
       </div>
       <AutoResizingGrid minWidth={350} gap={32}>

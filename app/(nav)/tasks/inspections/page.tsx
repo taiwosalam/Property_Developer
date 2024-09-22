@@ -15,7 +15,7 @@ const InspectionPage = () => {
   const { isSmallTablet } = useWindowWidth();
 
   return (
-    <main className="space-y-7">
+    <div className="space-y-7">
       {!isSmallTablet && (
         <AutoResizingGrid minWidth={280}>
           <ManagementStatistcsCard
@@ -77,7 +77,7 @@ const InspectionPage = () => {
           throw new Error("Function not implemented.");
         }}
       />
-    </main>
+    </div>
   );
 };
 

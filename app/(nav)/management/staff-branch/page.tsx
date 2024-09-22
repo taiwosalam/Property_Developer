@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { GridIcon, ListIcon } from "@/public/icons/icons";
@@ -8,7 +8,7 @@ import Button from "@/components/Form/Button/button";
 import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
 import CustomTable from "@/components/Table/table";
 import type { Field, DataItem } from "@/components/Table/types";
-import Image from "next/image";
+import FilterButton from "@/components/FilterButton/filter-button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
@@ -169,7 +169,7 @@ const StaffAndBranches = () => {
 
   const accessToken = useAuthStore((state) => state.access_token);
 
-  const fetchLandlords = async () => {
+  const fetchLandlords = useCallback(async () => {
     try {
       const data = await getAllBranches(accessToken);
       setState((x) => ({ ...x, branchesPageData: data }));
@@ -178,7 +178,7 @@ const StaffAndBranches = () => {
     } finally {
       setState((x) => ({ ...x, loading: false }));
     }
-  };
+  }, [accessToken]);
 
   // Handle the selected state and update local governments
   useEffect(() => {
@@ -191,7 +191,7 @@ const StaffAndBranches = () => {
   useEffect(() => {
     // Fetch the landlords when the component mounts
     fetchLandlords();
-  }, []);
+  }, [fetchLandlords]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -246,7 +246,7 @@ const StaffAndBranches = () => {
 
       <div className="page-title-container">
         <PageTitle title="Staff & Branch" />
-        <div className="flex items-center space-x-4 flex-wrap">
+        <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for Staff and Branch" />
           <div className="flex items-center gap-x-3">
             <button
@@ -274,30 +274,20 @@ const StaffAndBranches = () => {
               <GridIcon />
             </button>
           </div>
-          <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-            <Modal>
-              <ModalTrigger asChild>
-                <div className="flex items-center gap-2 cursor-pointer">
-                  <Image
-                    src="/icons/sliders.svg"
-                    alt="filters"
-                    width={20}
-                    height={20}
-                  />
-                  <p>Filters</p>
-                </div>
-              </ModalTrigger>
-              <ModalContent>
-                <FilterModal
-                  filterOptionsWithDropdown={StaffAndBranchFiltersWithOptions}
-                  filterOptions={StaffAndBranchFilters}
-                  onApply={handleFilterApply}
-                  date
-                  onStateSelect={(state: string) => setSelectedState(state)}
-                />
-              </ModalContent>
-            </Modal>
-          </div>
+          <Modal>
+            <ModalTrigger asChild>
+              <FilterButton />
+            </ModalTrigger>
+            <ModalContent>
+              <FilterModal
+                filterOptionsWithDropdown={StaffAndBranchFiltersWithOptions}
+                filterOptions={StaffAndBranchFilters}
+                onApply={handleFilterApply}
+                date
+                onStateSelect={(state: string) => setSelectedState(state)}
+              />
+            </ModalContent>
+          </Modal>
         </div>
       </div>
 
