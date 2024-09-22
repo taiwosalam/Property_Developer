@@ -8,6 +8,8 @@ import Button from "../Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "../Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
+import { getAvatarByUseCase } from "@/data";
+import { useAuthStore } from "@/store/authstrore";
 
 interface AddLandLordOrTenantFormProps {
   type: "landlord" | "tenant";
@@ -26,6 +28,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   const [selectedState, setSelectedState] = useState("");
   const [localGovernments, setLocalGovernments] = useState<string[]>([]);
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
+  const [avatarArray, setAvatarArray] = useState<string[]>([]);
 
   const handleStateChange = (value: string) => {
     setSelectedState(value);
@@ -35,15 +38,32 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
     setSelectedLGA(value);
   };
   // Update local governments when state changes
+
+  const accessToken = useAuthStore((state) => state.access_token);
   useEffect(() => {
-    if (selectedState) {
-      const lgas = getLocalGovernments(selectedState);
-      setLocalGovernments(lgas);
-    } else {
-      setLocalGovernments([]);
-    }
-    setSelectedLGA("");
-  }, [selectedState]);
+    const fetchData = async () => {
+      try {
+        // Fetch the avatars
+        const data = await getAvatarByUseCase(accessToken, "avatars");
+        setAvatarArray(data); // Set the avatarArray with the fetched data
+
+        console.log(data, "Fetched avatars");
+      } catch (error) {
+        console.error("Error fetching avatars:", error);
+      }
+
+      // Update local governments based on selectedState
+      if (selectedState) {
+        const lgas = getLocalGovernments(selectedState);
+        setLocalGovernments(lgas);
+      } else {
+        setLocalGovernments([]);
+      }
+      setSelectedLGA("");
+    };
+
+    fetchData(); // Call the async function to fetch data
+  }, [selectedState, accessToken]); // Run effect when selectedState or accessToken changes
 
   return (
     <AuthForm
@@ -151,19 +171,17 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
               />
             </label>
             <div className="flex gap-2">
-              {Array(4)
-                .fill(null)
-                .map((_, idx) => (
-                  <button type="button" key={idx}>
-                    <Image
-                      src={`/empty/avatar-${idx + 1}.svg`}
-                      alt="avatar"
-                      width={40}
-                      height={40}
-                      className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
-                    />
-                  </button>
-                ))}
+              {avatarArray.map((value, idx) => (
+                <button type="button" key={idx}>
+                  <Image
+                    src={value}
+                    alt="avatar"
+                    width={40}
+                    height={40}
+                    className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
+                  />
+                </button>
+              ))}
             </div>
           </div>
         </div>

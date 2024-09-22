@@ -240,15 +240,21 @@ const Dashboard = () => {
           )}
           {!isMobile && (
             <div className="w-full h-fit">
-              <DashboardChart visibleRange={false} />
+              <DashboardChart chartTitle="Reports" visibleRange={false} />
             </div>
           )}
         </div>
         <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full space-y-6 mt-6 xl:mt-0">
-          <BranchBalanceCard
-            mainBalance={walletBalanceCardData.mainBalance}
-            cautionDeposit={walletBalanceCardData.cautionDeposit}
-          />
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-[14px] font-medium">Branch Wallet</h1>
+              <p className="text-xs text-text-label">ID: 2324354678</p>
+            </div>
+            <BranchBalanceCard
+              mainBalance={walletBalanceCardData.mainBalance}
+              cautionDeposit={walletBalanceCardData.cautionDeposit}
+            />
+          </div>
           <BranchActivitiesCard />
           <NotificationCard
             sectionHeader="Staffs"

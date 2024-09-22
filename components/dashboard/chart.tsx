@@ -116,197 +116,119 @@ export function DashboardChart({
 
   return (
     <Card className="shadow-sm border-none">
-      {!visibleRange && (
-        <CardHeader className="flex w-full items-center gap-2 space-y-0 py-5 sm:flex-row">
+      <>
+        <CardHeader className="flex w-full items-center gap-2 space-y-0 py-3 sm:flex-row">
           <div className="flex w-full py-2 justify-between">
-            <CardTitle className="text-xl">
+            <CardTitle className="text-sm">
               {chartTitle || "Chart Title"}
             </CardTitle>
-            <div className="flex items-center justify-between flex-wrap lg:flex-nowrap my-2 space-y-4 lg:my-0 lg:space-y-0">
-              <div className="w-full flex space-x-0.5">
-                {/* Sales Switch */}
-                <span className="flex items-center space-x-0.5">
-                  <Switch
-                    id="sales"
-                    checked={salesEnabled}
-                    onCheckedChange={(checked) => setSalesEnabled(checked)}
-                    style={{
-                      backgroundColor: salesEnabled
-                        ? chartConfig.sales.color
-                        : undefined,
-                    }}
-                  />
-                  <Label
-                    htmlFor="sales"
-                    style={{
-                      color: salesEnabled ? chartConfig.sales.color : undefined,
-                    }}
-                  >
-                    Sales
-                  </Label>
-                </span>
-                {/* Profits Switch */}
-                <span className="flex items-center space-x-0.5">
-                  <Switch
-                    id="profits"
-                    checked={profitsEnabled}
-                    onCheckedChange={(checked) => setProfitsEnabled(checked)}
-                    style={{
-                      backgroundColor: profitsEnabled
-                        ? chartConfig.profits.color
-                        : undefined,
-                    }}
-                  />
-                  <Label
-                    htmlFor="profits"
-                    style={{
-                      color: profitsEnabled
-                        ? chartConfig.profits.color
-                        : undefined,
-                    }}
-                  >
-                    Profits
-                  </Label>
-                </span>
-                {/* Expenses Switch */}
-                <span className="flex items-center space-x-0.5">
-                  <Switch
-                    id="expenses"
-                    checked={expensesEnabled}
-                    onCheckedChange={(checked) => setExpensesEnabled(checked)}
-                    style={{
-                      backgroundColor: expensesEnabled
-                        ? chartConfig.expenses.color
-                        : undefined,
-                    }}
-                  />
-                  <Label
-                    htmlFor="expenses"
-                    style={{
-                      color: expensesEnabled
-                        ? chartConfig.expenses.color
-                        : undefined,
-                    }}
-                  >
-                    Expenses
-                  </Label>
-                </span>
-              </div>
+            <div
+              className={`w-fit ${
+                visibleRange ? "flex" : "hidden"
+              } bg-[#F5F5F5] rounded-md items-center justify-center`}
+            >
+              <DatePickerWithRange
+                selectedRange={selectedDateRange}
+                onDateChange={handleDateChange}
+              />
+              <Select value={timeRange} onValueChange={handleSelectChange}>
+                <SelectTrigger
+                  className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto"
+                  aria-label="Select a value"
+                >
+                  <SelectValue placeholder="Last 3 months" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl">
+                  <SelectItem value="90d" className="rounded-lg">
+                    Last 3 months
+                  </SelectItem>
+                  <SelectItem value="30d" className="rounded-lg">
+                    Last 30 days
+                  </SelectItem>
+                  <SelectItem value="7d" className="rounded-lg">
+                    Last 7 days
+                  </SelectItem>
+                  <SelectItem value="1d" className="rounded-lg">
+                    Yesterday
+                  </SelectItem>
+                  <SelectItem value="custom" className="rounded-lg">
+                    Custom
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </CardHeader>
-      )}
-      {visibleRange && (
-        <>
-          <CardHeader className="flex w-full items-center gap-2 space-y-0 py-3 sm:flex-row">
-            <div className="flex w-full py-2 justify-between">
-              <CardTitle>{chartTitle || "Chart Title"}</CardTitle>
-              <div className="w-fit flex bg-[#F5F5F5] rounded-md items-center justify-center">
-                <DatePickerWithRange
-                  selectedRange={selectedDateRange}
-                  onDateChange={handleDateChange}
-                />
-                <Select value={timeRange} onValueChange={handleSelectChange}>
-                  <SelectTrigger
-                    className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto"
-                    aria-label="Select a value"
-                  >
-                    <SelectValue placeholder="Last 3 months" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    <SelectItem value="90d" className="rounded-lg">
-                      Last 3 months
-                    </SelectItem>
-                    <SelectItem value="30d" className="rounded-lg">
-                      Last 30 days
-                    </SelectItem>
-                    <SelectItem value="7d" className="rounded-lg">
-                      Last 7 days
-                    </SelectItem>
-                    <SelectItem value="1d" className="rounded-lg">
-                      Yesterday
-                    </SelectItem>
-                    <SelectItem value="custom" className="rounded-lg">
-                      Custom
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardHeader>
-          <div className="flex items-center justify-between flex-wrap lg:flex-nowrap my-2 space-y-4 lg:my-0 lg:space-y-0 px-6">
-            <div className="w-full flex space-x-0.5">
-              {/* Sales Switch */}
-              <span className="flex items-center space-x-0.5">
-                <Switch
-                  id="sales"
-                  checked={salesEnabled}
-                  onCheckedChange={(checked) => setSalesEnabled(checked)}
-                  style={{
-                    backgroundColor: salesEnabled
-                      ? chartConfig.sales.color
-                      : undefined,
-                  }}
-                />
-                <Label
-                  htmlFor="sales"
-                  style={{
-                    color: salesEnabled ? chartConfig.sales.color : undefined,
-                  }}
-                >
-                  Sales
-                </Label>
-              </span>
-              {/* Profits Switch */}
-              <span className="flex items-center space-x-0.5">
-                <Switch
-                  id="profits"
-                  checked={profitsEnabled}
-                  onCheckedChange={(checked) => setProfitsEnabled(checked)}
-                  style={{
-                    backgroundColor: profitsEnabled
-                      ? chartConfig.profits.color
-                      : undefined,
-                  }}
-                />
-                <Label
-                  htmlFor="profits"
-                  style={{
-                    color: profitsEnabled
-                      ? chartConfig.profits.color
-                      : undefined,
-                  }}
-                >
-                  Profits
-                </Label>
-              </span>
-              {/* Expenses Switch */}
-              <span className="flex items-center space-x-0.5">
-                <Switch
-                  id="expenses"
-                  checked={expensesEnabled}
-                  onCheckedChange={(checked) => setExpensesEnabled(checked)}
-                  style={{
-                    backgroundColor: expensesEnabled
-                      ? chartConfig.expenses.color
-                      : undefined,
-                  }}
-                />
-                <Label
-                  htmlFor="expenses"
-                  style={{
-                    color: expensesEnabled
-                      ? chartConfig.expenses.color
-                      : undefined,
-                  }}
-                >
-                  Expenses
-                </Label>
-              </span>
-            </div>
+        <div className="flex items-center justify-between flex-wrap lg:flex-nowrap my-2 space-y-4 lg:my-0 lg:space-y-0 px-6">
+          <div className="w-full flex space-x-0.5">
+            {/* Sales Switch */}
+            <span className="flex items-center space-x-0.5">
+              <Switch
+                id="sales"
+                checked={salesEnabled}
+                onCheckedChange={(checked) => setSalesEnabled(checked)}
+                style={{
+                  backgroundColor: salesEnabled
+                    ? chartConfig.sales.color
+                    : undefined,
+                }}
+              />
+              <Label
+                htmlFor="sales"
+                style={{
+                  color: salesEnabled ? chartConfig.sales.color : undefined,
+                }}
+              >
+                Sales
+              </Label>
+            </span>
+            {/* Profits Switch */}
+            <span className="flex items-center space-x-0.5">
+              <Switch
+                id="profits"
+                checked={profitsEnabled}
+                onCheckedChange={(checked) => setProfitsEnabled(checked)}
+                style={{
+                  backgroundColor: profitsEnabled
+                    ? chartConfig.profits.color
+                    : undefined,
+                }}
+              />
+              <Label
+                htmlFor="profits"
+                style={{
+                  color: profitsEnabled ? chartConfig.profits.color : undefined,
+                }}
+              >
+                Profits
+              </Label>
+            </span>
+            {/* Expenses Switch */}
+            <span className="flex items-center space-x-0.5">
+              <Switch
+                id="expenses"
+                checked={expensesEnabled}
+                onCheckedChange={(checked) => setExpensesEnabled(checked)}
+                style={{
+                  backgroundColor: expensesEnabled
+                    ? chartConfig.expenses.color
+                    : undefined,
+                }}
+              />
+              <Label
+                htmlFor="expenses"
+                style={{
+                  color: expensesEnabled
+                    ? chartConfig.expenses.color
+                    : undefined,
+                }}
+              >
+                Expenses
+              </Label>
+            </span>
           </div>
-        </>
-      )}
+        </div>
+      </>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           config={chartConfig}

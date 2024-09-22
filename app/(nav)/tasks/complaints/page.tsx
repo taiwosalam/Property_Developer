@@ -34,13 +34,14 @@ const ComplaintsPage = () => {
           total={453}
         />
       </div>
-      <SectionContainer heading="Recent Complains">
+      <SectionContainer heading="Recent Complains" href="/donottouch">
         <div className="bg-white p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array(3)
             .fill(null)
             .map((_, index) => (
               <TaskCard
                 noDrag
+                isNew
                 key={index}
                 task={{
                   id: "task9",
