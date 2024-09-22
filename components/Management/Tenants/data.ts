@@ -1,8 +1,15 @@
-export const addTenant = async (formData: any) => {
+export const addTenant = async (formData: any, accessToken: string | null) => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/tenants`,
-      { method: "POST", body: formData }
+      {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
     ).then((res) => res.json());
 
     console.log(response);
