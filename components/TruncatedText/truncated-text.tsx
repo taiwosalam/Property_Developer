@@ -1,14 +1,15 @@
-import { useState, useRef, useEffect } from "react";
+'use client'
+import { useState, useRef, useEffect, ReactNode } from "react";
 import clsx from "clsx";
 
 interface TruncatedTextProps {
-  text: string;
+  children: ReactNode;
   lines?: number;
   className?: string;
 }
 
 const TruncatedText: React.FC<TruncatedTextProps> = ({
-  text,
+  children,
   lines = 2,
   className,
 }) => {
@@ -28,7 +29,7 @@ const TruncatedText: React.FC<TruncatedTextProps> = ({
     checkIfTruncated();
     window.addEventListener("resize", checkIfTruncated);
     return () => window.removeEventListener("resize", checkIfTruncated);
-  }, [text]);
+  }, []);
 
   const handleToggle = () => {
     setShowFullText(!showFullText);
@@ -49,7 +50,7 @@ const TruncatedText: React.FC<TruncatedTextProps> = ({
           textOverflow: "ellipsis",
         }}
       >
-        {text}
+        {children}
       </p>
       {isTruncated && !showFullText && (
         <button onClick={handleToggle} className="text-highlight mt-1">
