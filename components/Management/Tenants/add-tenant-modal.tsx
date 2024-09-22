@@ -1,34 +1,31 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 
 // Types
 import type { AddTenantModalOptions } from "./types";
 
-// Images
-import CloseCircle from "@/public/icons/close-circle.svg";
-import ChevronLeft from "@/public/icons/chevron-left.svg";
-
 // Imports
-import { ModalTrigger } from "@/components/Modal/modal";
+import { addTenant } from "./data";
+import InvitationForm from "../invitation-form";
+import { useAuthStore } from "@/store/authstrore";
 import AddTenantOptions from "./add-tenant-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
-import InvitationForm from "../invitation-form";
-import { addTenant } from "./data";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 
 const AddTenantModal = () => {
   const [activeStep, setActiveStep] =
     useState<AddTenantModalOptions>("options");
 
+  const accessToken = useAuthStore((state) => state.access_token);
+
   const handleBack = () => {
     setActiveStep("options");
   };
 
   const handleAddTenant = async (data: FormData) => {
-    const response = await addTenant(data);
+    const response = await addTenant(data, accessToken);
   };
 
   const modal_states: Record<

@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 
 // Imports
@@ -8,13 +6,15 @@ import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 
-const DeleteAccountModal = () => {
+const DeleteBranchModal = () => {
   const { activeStep, changeStep } = useStep(2);
 
   return activeStep === 1 ? (
     <ModalPreset type="warning">
       <p className="text-text-disabled text-sm font-normal">
-        Are you certain you want to proceed with deleting this profile?
+        Are you certain you want to delete this branch?{" "}
+        <span className="text-status-error-primary">*</span>Please note that you can only delete
+        an empty branch.
       </p>
       <div className="flex flex-col items-center gap-4">
         <Button onClick={() => changeStep("next")}>proceed</Button>
@@ -29,7 +29,7 @@ const DeleteAccountModal = () => {
   ) : (
     <ModalPreset type="success">
       <p className="text-text-disabled text-sm font-normal">
-        Payment has been successfully added to the receipt.
+        Branch has been successfully deleted.
       </p>
       <div className="flex justify-center">
         <ModalTrigger close asChild>
@@ -40,4 +40,4 @@ const DeleteAccountModal = () => {
   );
 };
 
-export default DeleteAccountModal;
+export default DeleteBranchModal;
