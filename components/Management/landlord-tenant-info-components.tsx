@@ -15,14 +15,18 @@ export const LandlordTenantInfoBox: React.FC<{
 
 export const LandlordTenantInfo: React.FC<{
   heading?: string;
+  separator?: boolean;
   info: Record<string, string | null>;
-}> = ({ info, heading }) => (
+}> = ({ info, heading, separator }) => (
   <LandlordTenantInfoBox>
     <div className="custom-flex-col gap-4">
       {heading && (
         <p className="text-black text-xl font-bold capitalize">
           {heading.split("_").join(" ")}
         </p>
+      )}
+      {separator && (
+        <div className="w-full border border-dashed border-brand-9 opacity-40"></div>
       )}
       <div className="flex gap-10 text-base font-normal capitalize">
         <div className="custom-flex-col gap-4">
@@ -107,19 +111,21 @@ export const LandlordTenantInfoEditGrid: React.FC<{
   </div>
 );
 
-export const LandlordTenantUserTag: React.FC<{ type: "web" | "mobile" }> = ({
-  type,
-}) => (
+export const LandlordTenantUserTag: React.FC<{
+  type: "web" | "mobile" | "branch manager";
+}> = ({ type }) => (
   <div
     className={clsx("py-1 px-4 rounded-lg", {
       "bg-status-caution-1": type === "web",
       "bg-success-1": type === "mobile",
+      "bg-status-error-2": type === "branch manager",
     })}
   >
     <p
       className={clsx("capitalize text-[10px] font-normal", {
         "text-status-caution-3 ": type === "web",
         "text-success-3 ": type === "mobile",
+        "text-white": type === "branch manager",
       })}
     >
       {type}

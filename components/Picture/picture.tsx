@@ -34,10 +34,13 @@ const Picture: React.FC<PictureProps> = ({
         alt={alt}
         width={imageWidth * resolutionMultiplier}
         height={imageHeight * resolutionMultiplier}
-        className={clsx("object-cover", {
-          "rounded-full": rounded,
-          className,
-        })}
+        className={clsx(
+          "object-cover",
+          {
+            "rounded-full": rounded,
+          },
+          className
+        )}
         style={{
           width: imageWidth,
           height: imageHeight,

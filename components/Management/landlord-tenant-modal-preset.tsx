@@ -12,6 +12,7 @@ import Picture from "../Picture/picture";
 import { ModalTrigger } from "../Modal/modal";
 
 const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
+  star,
   back,
   heading,
   children,
@@ -27,6 +28,7 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
             </button>
           )}
           <p className="text-primary-navy text-base md:text-lg lg:text-xl font-bold capitalize">
+            {star && <span className="text-status-error-primary">*</span>}
             {heading}
           </p>
         </div>

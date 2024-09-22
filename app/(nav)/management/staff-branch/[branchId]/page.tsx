@@ -35,6 +35,7 @@ import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch
 import { properties } from "../../properties/data";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
+import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-staff-modal";
 
 const Dashboard = () => {
   const initialState = {
@@ -113,15 +114,23 @@ const Dashboard = () => {
         <div className="flex items-center justify-between space-x-2">
           <Modal>
             <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
+              <Button
+                type="button"
+                variant="border"
+                className="page-header-button"
+              >
                 + create staff
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <div>Hello</div>
+              <CreateStaffModal />
             </ModalContent>
           </Modal>
-          <Button type="button" className="page-header-button">
+          <Button
+            type="button"
+            className="page-header-button"
+            href={`/management/staff-branch/${branchId}/edit-branch`}
+          >
             Edit Branch
           </Button>
         </div>
