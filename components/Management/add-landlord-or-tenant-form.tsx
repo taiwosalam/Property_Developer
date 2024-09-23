@@ -10,6 +10,7 @@ import { AuthForm } from "../Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
 import { getAvatarByUseCase } from "@/data";
 import { useAuthStore } from "@/store/authstrore";
+import Picture from "../Picture/picture";
 
 interface AddLandLordOrTenantFormProps {
   type: "landlord" | "tenant";
@@ -173,12 +174,12 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
             <div className="flex gap-2">
               {avatarArray.map((value, idx) => (
                 <button type="button" key={idx}>
-                  <Image
+                  <Picture
                     src={value}
                     alt="avatar"
-                    width={40}
-                    height={40}
-                    className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
+                    size={40}
+                    rounded
+                    resolutionMultiplier={3}
                   />
                 </button>
               ))}

@@ -51,16 +51,15 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ThemeProvider />
-        <div className="w-full relative z-[1]">
-          {children}
+        <div className="w-full relative z-[1]">{children}</div>
+        <div id="portal" className="z-[2]">
           <Toaster
             richColors
-            className={`${primaryFont.className} antialiased`}
+            className={`${primaryFont.className} antialiased z-[1000]`}
             position="top-right"
             duration={5000}
           />
         </div>
-        <div id="portal" className="z-[2]"></div>
       </body>
     </html>
   );

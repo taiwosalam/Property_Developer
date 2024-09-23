@@ -1,5 +1,5 @@
 import CloseCircle from "@/public/icons/close-circle.svg";
-import { ModalTrigger } from "@/components/Modal/modal";
+import { ModalTrigger, useModal } from "@/components/Modal/modal";
 import { PlusIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import Input from "@/components/Form/Input/input";
@@ -22,6 +22,8 @@ interface State {
 }
 
 const CreateBranchModal = () => {
+  const { setIsOpen } = useModal();
+
   const [state, setState] = useState<State>({
     selectedState: "",
     selectedLGA: "",
@@ -86,13 +88,11 @@ const CreateBranchModal = () => {
   const accessToken = useAuthStore((state) => state.access_token);
 
   const handleSubmit = async (data: any) => {
-    console.log(data);
     const res = await createNewBranch(data, accessToken);
-    if (res.error) {
-      console.log(res);
-      return;
+
+    if (res) {
+      setIsOpen(false);
     }
-    console.log(res);
   };
 
   return (

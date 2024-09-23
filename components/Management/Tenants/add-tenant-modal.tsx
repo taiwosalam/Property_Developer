@@ -13,8 +13,11 @@ import AddTenantOptions from "./add-tenant-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
+import { useModal } from "@/components/Modal/modal";
 
 const AddTenantModal = () => {
+  const { setIsOpen } = useModal();
+
   const [activeStep, setActiveStep] =
     useState<AddTenantModalOptions>("options");
 
@@ -26,6 +29,10 @@ const AddTenantModal = () => {
 
   const handleAddTenant = async (data: FormData) => {
     const response = await addTenant(data, accessToken);
+
+    if (response) {
+      setIsOpen(false);
+    }
   };
 
   const modal_states: Record<
