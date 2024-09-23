@@ -26,6 +26,7 @@ const Input: React.FC<InputProps> = ({
   defaultValue,
   type = "text",
   validationErrors = {},
+  labelclassName,
   onChange,
   inputClassName,
   CURRENCY_SYMBOL,
@@ -75,7 +76,7 @@ const Input: React.FC<InputProps> = ({
     >
       {/* Render the label if provided */}
       {label && (
-        <Label id={id} required={required}>
+        <Label id={id} required={required} labelclassName={labelclassName}>
           {label}
         </Label>
       )}
@@ -107,7 +108,11 @@ const Input: React.FC<InputProps> = ({
           // Reset validation error when the user interacts with the input
           onInput={() => setValidationError(null)}
           // Call onChange prop if provided when input value changes
-          onChange={({ target }) => onChange && onChange(target.value)}
+          onChange={({ target }) => {
+            console.log(typeof target.value, target.value);
+
+            onChange && onChange(target.value);
+          }}
           // Conditionally change the input type based on password visibility state
           type={type === "password" && isPasswordVisible ? "text" : type}
           // Input styles

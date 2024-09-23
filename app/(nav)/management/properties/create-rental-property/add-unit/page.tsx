@@ -60,7 +60,10 @@ const AddUnit = () => {
         {!saved && (
           <>
             <UnitForm empty={true} data={{}} duplicate={duplicate} />
-            <div className="fixed w-screen left-0 h-[70px] lg:h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-bold text-sm lg:text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
+            <div
+              className="fixed w-screen left-0 h-[70px] lg:h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-bold text-sm lg:text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent"
+              style={{ boxShadow: "0px -2px 10px 0px rgba(0, 0, 0, 0.05)" }}
+            >
               <Modal>
                 <ModalTrigger asChild>
                   <button

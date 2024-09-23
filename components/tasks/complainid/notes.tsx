@@ -1,6 +1,6 @@
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import Button from "@/components/Form/Button/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeftIcon, ArrowRightIcon } from "@/public/icons/icons";
 const Notes = () => {
   return (
     <div
@@ -31,10 +31,10 @@ const Notes = () => {
         </Button>
         <div className="flex gap-3 text-text-tertiary">
           <button type="button" aria-label="Previous">
-            <ArrowLeft color="#696B70" size={20} strokeWidth={1} />
+            <ArrowLeftIcon />
           </button>
           <button type="button" aria-label="Next">
-            <ArrowRight color="#696B70" size={20} strokeWidth={1} />
+            <ArrowRightIcon />
           </button>
         </div>
       </div>

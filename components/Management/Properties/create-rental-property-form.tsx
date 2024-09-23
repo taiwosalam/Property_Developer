@@ -26,7 +26,6 @@ import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeletePropertyModal from "@/components/Management/Properties/delete-property-modal";
 import { rentPeriods } from "@/data";
-// import feeperiods
 
 const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   editMode,
@@ -523,7 +522,10 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
             inputClassName="bg-white rounded-[8px]"
           />
         </div>
-        <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
+        <div
+          className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent"
+          style={{ boxShadow: "0px -2px 10px 0px rgba(0, 0, 0, 0.05)" }}
+        >
           {editMode ? (
             <>
               <Modal>
