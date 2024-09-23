@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 // Imports
@@ -37,6 +38,9 @@ import PropertyCard from "@/components/Management/Properties/property-card";
 import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
 import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-staff-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import { getOneBranch } from "../data";
+import { Branch } from "./types";
+import { useAuthStore } from "@/store/authstrore";
 
 const Dashboard = () => {
   const initialState = {
@@ -45,6 +49,7 @@ const Dashboard = () => {
     current_page: 1,
   };
   const [state, setState] = useState<PageState>(initialState);
+  const [fetchedBranchData, setFetchedBranchData] = useState<Branch | null>();
 
   const { gridView, total_pages, current_page } = state;
   const { branchId } = useParams();
@@ -91,15 +96,33 @@ const Dashboard = () => {
     // Add filtering logic here for branches
   };
 
+  const accessToken = useAuthStore((state) => state.access_token);
+
+  useEffect(() => {
+    const fetchBranchData = async () => {
+      if (typeof branchId === "string") {
+        const data = await getOneBranch(branchId, accessToken);
+        setFetchedBranchData(data);
+        console.log(data);
+      } else {
+        console.error("Invalid branchId:", branchId);
+      }
+    };
+
+    fetchBranchData();
+  }, [accessToken, branchId]);
+
   return (
     <div className="custom-flex-col gap-5">
       <div className="w-full flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-black">Branch Name</h1>
+          <h1 className="text-2xl font-bold text-black">
+            {fetchedBranchData?.branch_title || "Null"}
+          </h1>
           <div className="text-text-disabled flex items-center space-x-1">
             <LocationIcon />
             <p className="text-sm font-medium">
-              Street 23, All Avenue, Nigeria
+              {fetchedBranchData?.branch_full_address || "Null"}
             </p>
           </div>
         </div>

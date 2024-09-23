@@ -1,3 +1,4 @@
+"use client";
 import clsx from "clsx";
 import Label from "../Label/label";
 import { useEffect, useRef, useState, useContext } from "react";

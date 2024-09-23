@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // Images
 import Avatar from "@/public/empty/avatar-1.svg";
@@ -49,7 +49,7 @@ const ManageLandlord = () => {
     };
 
     fetchLandlords();
-  }, []);
+  }, [accessToken, landlordId, router]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;

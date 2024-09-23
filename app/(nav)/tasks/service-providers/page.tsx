@@ -24,8 +24,8 @@ const ServiceProviders = () => {
 
   return (
     <div className="space-y-9">
-      <section className="page-header-container">
-        <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="page-header-container">
+        <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
           <ManagementStatistcsCard
             title="Total Users"
             newData={30}
@@ -41,7 +41,22 @@ const ServiceProviders = () => {
             newData={40}
             total={40}
           />
+          <div className="hidden md:block xl:hidden">
+            <div className="flex items-center justify-center w-full h-full">
+              <Modal>
+                <ModalTrigger asChild>
+                  <Button type="button" className="page-header-button">
+                    + Create New Service Provider
+                  </Button>
+                </ModalTrigger>
+                <ModalContent>
+                  <AddServiceProviderModal />
+                </ModalContent>
+              </Modal>
+            </div>
+          </div>
         </div>
+
         <div className="md:hidden xl:flex lg:ml-4">
           <Modal>
             <ModalTrigger asChild>
@@ -54,7 +69,7 @@ const ServiceProviders = () => {
             </ModalContent>
           </Modal>
         </div>
-      </section>
+      </div>
       <div className="page-title-container">
         <PageTitle title="Service Provider" />
         <div className="flex items-center gap-4 flex-wrap">

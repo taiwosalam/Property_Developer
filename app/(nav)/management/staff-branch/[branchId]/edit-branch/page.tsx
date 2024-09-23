@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // Images
 import { GridIcon, ListIcon } from "@/public/icons/icons";
@@ -20,9 +20,15 @@ import EditBranchForm from "@/components/Management/Staff-And-Branches/Branch/ed
 import DeleteBranchModal from "@/components/Management/Staff-And-Branches/Branch/delete-branch-modal";
 import UpdateBranchModal from "@/components/Management/Staff-And-Branches/Branch/update-branch-modal";
 import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
+import { useAuthStore } from "@/store/authstrore";
+import { getOneBranch } from "../../data";
+import { Branch } from "../types";
+import { useParams } from "next/navigation";
 
 const EditBranch = () => {
   const [state, setState] = useState<"grid" | "list">("grid");
+  const [fetchedBranchData, setFetchedBranchData] = useState<Branch | null>();
+  const { branchId } = useParams();
 
   const setGridView = () => {
     setState("grid");
@@ -30,6 +36,22 @@ const EditBranch = () => {
   const setListView = () => {
     setState("list");
   };
+
+  const accessToken = useAuthStore((state) => state.access_token);
+
+  useEffect(() => {
+    const fetchBranchData = async () => {
+      if (typeof branchId === "string") {
+        const data = await getOneBranch(branchId, accessToken);
+        setFetchedBranchData(data);
+        console.log(data);
+      } else {
+        console.error("Invalid branchId:", branchId);
+      }
+    };
+
+    fetchBranchData();
+  }, []);
 
   return (
     <div className="custom-flex-col gap-10">
