@@ -109,8 +109,6 @@ const Input: React.FC<InputProps> = ({
           onInput={() => setValidationError(null)}
           // Call onChange prop if provided when input value changes
           onChange={({ target }) => {
-            console.log(typeof target.value, target.value);
-
             onChange && onChange(target.value);
           }}
           // Conditionally change the input type based on password visibility state

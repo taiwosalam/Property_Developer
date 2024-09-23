@@ -1,8 +1,12 @@
 import { toast } from "sonner";
 
-export const addTenant = async (formData: any, accessToken: string | null) => {
+export const addTenant = async (
+  formData: FormData,
+  accessToken: string | null
+): Promise<boolean> => {
+  let isSuccess = false;
+
   try {
-    const errors: string[] = [];
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/tenants`,
       {
@@ -17,19 +21,21 @@ export const addTenant = async (formData: any, accessToken: string | null) => {
     const data = await response.json();
 
     if (!response.ok) {
-      Object.values(data.errors).forEach((error, index) => {
-        errors.push(error as string);
-      });
+      const errors = data.errors
+        ? Object.values(data.errors).join(" ")
+        : "An unexpected error occurred";
 
-      console.log(errors);
-
-      toast.error(errors.join(", "));
+      toast.error(errors);
+      return isSuccess;
     }
 
-    console.log(response, data);
+    isSuccess = true;
   } catch (error) {
     console.error("Error adding tenant:", error);
+    toast.error("Failed to add tenant. Please try again.");
   }
+
+  return isSuccess;
 };
 
 export const addMultipleTenants = async (formData: any) => {
