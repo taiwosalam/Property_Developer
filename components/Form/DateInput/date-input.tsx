@@ -8,7 +8,6 @@ import clsx from "clsx";
 import Label from "../Label/label";
 import DatePicker from "./date-picker";
 import { Dayjs } from "dayjs";
-// import { checkValidatonError } from "@/utils/validation";
 
 const DateInput: React.FC<DateInputProps> = ({
   id,
@@ -18,6 +17,10 @@ const DateInput: React.FC<DateInputProps> = ({
   className,
   inputClassName,
   onChange,
+  minDate,
+  maxDate,
+  disableFuture,
+  disablePast,
 }) => {
   const handleDateChange = (date?: Dayjs | null) => {
     if (onChange) {
@@ -38,6 +41,10 @@ const DateInput: React.FC<DateInputProps> = ({
         inputClassName={inputClassName}
         onChange={handleDateChange}
         value={value}
+        minDate={minDate}
+        maxDate={maxDate}
+        disableFuture={disableFuture}
+        disablePast={disablePast}
       />
     </div>
   );

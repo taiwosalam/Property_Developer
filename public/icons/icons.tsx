@@ -89,6 +89,56 @@ export const CalendarIcon = () => {
   );
 };
 
+export const ArrowLeftIcon = () => {
+  return (
+    <svg
+      width="13"
+      height="11"
+      viewBox="0 0 13 11"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1.1875 5.70569L12.4375 5.70569"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5.72656 10.224L1.18906 5.70601L5.72656 1.18726"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const ArrowRightIcon = () => {
+  return (
+    <svg
+      width="13"
+      height="11"
+      viewBox="0 0 13 11"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M11.8125 5.29431L0.5625 5.29431"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.27344 0.775994L11.8109 5.29399L7.27344 9.81274"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
 export const EyeHideIcon = () => {
   return (
     <svg
