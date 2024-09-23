@@ -89,7 +89,136 @@ export const CalendarIcon = () => {
   );
 };
 
-export const VerticalEllipsis = () => {
+export const ArrowLeftIcon = () => {
+  return (
+    <svg
+      width="13"
+      height="11"
+      viewBox="0 0 13 11"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1.1875 5.70569L12.4375 5.70569"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5.72656 10.224L1.18906 5.70601L5.72656 1.18726"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const ArrowRightIcon = () => {
+  return (
+    <svg
+      width="13"
+      height="11"
+      viewBox="0 0 13 11"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M11.8125 5.29431L0.5625 5.29431"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.27344 0.775994L11.8109 5.29399L7.27344 9.81274"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const EyeHideIcon = () => {
+  return (
+    <svg
+      width="21"
+      height="21"
+      viewBox="0 0 21 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M8.54082 12.5707C8.0377 12.0685 7.73145 11.386 7.73145 10.6203C7.73145 9.08647 8.96695 7.8501 10.4999 7.8501C11.2586 7.8501 11.9568 8.15722 12.4512 8.65947"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M13.2169 11.1113C13.0139 12.2401 12.1249 13.1308 10.9971 13.3356"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5.82312 15.2882C4.4345 14.198 3.2585 12.6055 2.40625 10.6201C3.26725 8.62598 4.45113 7.02473 5.8485 5.92573C7.23713 4.82673 8.83925 4.22998 10.5 4.22998C12.1704 4.22998 13.7716 4.83548 15.169 5.94236"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M17.0167 7.8667C17.6187 8.66645 18.1481 9.58957 18.5934 10.6194C16.8723 14.6068 13.8308 17.0087 10.4997 17.0087C9.74455 17.0087 8.99993 16.8862 8.28418 16.6473"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M17.4019 3.71826L3.59961 17.5205"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const EyeShowIcon = () => {
+  return (
+    <svg
+      width="21"
+      height="21"
+      viewBox="0 0 21 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M13.266 10.5465C13.266 12.0743 12.027 13.3124 10.4993 13.3124C8.97152 13.3124 7.7334 12.0743 7.7334 10.5465C7.7334 9.01791 8.97152 7.77979 10.4993 7.77979C12.027 7.77979 13.266 9.01791 13.266 10.5465Z"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10.4983 16.9357C13.8303 16.9357 16.8779 14.54 18.5938 10.5465C16.8779 6.55298 13.8303 4.15723 10.4983 4.15723H10.5017C7.16975 4.15723 4.12212 6.55298 2.40625 10.5465C4.12212 14.54 7.16975 16.9357 10.5017 16.9357H10.4983Z"
+        stroke="#5A5D61"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const VerticalEllipsisIcon = () => {
   return (
     <svg
       width="6"
@@ -100,7 +229,7 @@ export const VerticalEllipsis = () => {
     >
       <path
         d="M5.25 17.5C5.25 18.0967 5.01295 18.669 4.59099 19.091C4.16903 19.5129 3.59674 19.75 3 19.75C2.40326 19.75 1.83097 19.5129 1.40901 19.091C0.987053 18.669 0.75 18.0967 0.75 17.5C0.75 16.9033 0.987053 16.331 1.40901 15.909C1.83097 15.4871 2.40326 15.25 3 15.25C3.59674 15.25 4.16903 15.4871 4.59099 15.909C5.01295 16.331 5.25 16.9033 5.25 17.5ZM5.25 10C5.25 10.5967 5.01295 11.169 4.59099 11.591C4.16903 12.0129 3.59674 12.25 3 12.25C2.40326 12.25 1.83097 12.0129 1.40901 11.591C0.987053 11.169 0.75 10.5967 0.75 10C0.75 9.40326 0.987053 8.83097 1.40901 8.40901C1.83097 7.98705 2.40326 7.75 3 7.75C3.59674 7.75 4.16903 7.98705 4.59099 8.40901C5.01295 8.83097 5.25 9.40326 5.25 10ZM5.25 2.5C5.25 3.09674 5.01295 3.66903 4.59099 4.09099C4.16903 4.51295 3.59674 4.75 3 4.75C2.40326 4.75 1.83097 4.51295 1.40901 4.09099C0.987053 3.66903 0.75 3.09674 0.75 2.5C0.75 1.90326 0.987053 1.33097 1.40901 0.90901C1.83097 0.487053 2.40326 0.25 3 0.25C3.59674 0.25 4.16903 0.487053 4.59099 0.90901C5.01295 1.33097 5.25 1.90326 5.25 2.5Z"
-        fill="#1E3A8A"
+        fill="currentColor"
       />
     </svg>
   );
@@ -336,7 +465,7 @@ export const VideoIcon = () => {
   );
 };
 
-export const ChevronLeft = ({ fill }: { fill?: string }) => {
+export const ChevronLeft = ({ fill = "#010A23" }) => {
   return (
     <svg
       width="24"
@@ -347,7 +476,7 @@ export const ChevronLeft = ({ fill }: { fill?: string }) => {
     >
       <path
         d="M15 18.5L9 12.5L15 6.5"
-        stroke={fill || "#010A23"}
+        stroke={fill}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -537,7 +666,7 @@ export const SearchIcon = () => {
   );
 };
 
-export const Pointer =()=>{
+export const Pointer = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -549,4 +678,65 @@ export const Pointer =()=>{
       <path d="M0 0L9 11L18 0H0Z" fill="currentColor" />
     </svg>
   );
-}
+};
+
+export const RadioCheckCircle = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+    >
+      <circle
+        cx="10"
+        cy="10"
+        r="9.5"
+        stroke="currentColor"
+        strokeOpacity="0.4"
+      />
+      <circle cx="10" cy="10" r="6" fill="currentColor" />
+    </svg>
+  );
+};
+
+export const SendMessageIcon = () => {
+  return (
+    <svg
+      width="21"
+      height="18"
+      viewBox="0 0 21 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M1.29064 0.309093C1.15208 0.250848 0.999223 0.235577 0.851882 0.26526C0.70454 0.294944 0.569516 0.368212 0.464319 0.475564C0.359123 0.582916 0.288608 0.719399 0.261919 0.867312C0.23523 1.01523 0.253599 1.16775 0.314642 1.30509L3.40764 8.25009H10.9996C11.1986 8.25009 11.3893 8.32911 11.53 8.46976C11.6706 8.61042 11.7496 8.80118 11.7496 9.00009C11.7496 9.19901 11.6706 9.38977 11.53 9.53042C11.3893 9.67108 11.1986 9.75009 10.9996 9.75009H3.40764L0.314642 16.6951C0.253599 16.8324 0.23523 16.985 0.261919 17.1329C0.288608 17.2808 0.359123 17.4173 0.464319 17.5246C0.569516 17.632 0.70454 17.7052 0.851882 17.7349C0.999223 17.7646 1.15208 17.7493 1.29064 17.6911L20.2906 9.69109C20.4265 9.63375 20.5425 9.53762 20.624 9.41471C20.7056 9.29181 20.7491 9.14759 20.7491 9.00009C20.7491 8.8526 20.7056 8.70838 20.624 8.58548C20.5425 8.46257 20.4265 8.36644 20.2906 8.30909L1.29064 0.309093Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export const XIcon = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M16.7716 8.28724L8.2863 16.7725C7.99639 17.0624 7.51556 17.0624 7.22564 16.7725C6.93573 16.4826 6.93573 16.0018 7.22564 15.7119L15.7109 7.22658C16.0008 6.93666 16.4817 6.93666 16.7716 7.22658C17.0615 7.51649 17.0615 7.99732 16.7716 8.28724Z"
+        fill="#010A23"
+      />
+      <path
+        d="M16.7716 16.7734C16.4817 17.0633 16.0008 17.0633 15.7109 16.7734L7.22564 8.28814C6.93573 7.99823 6.93573 7.5174 7.22564 7.22748C7.51556 6.93757 7.99639 6.93757 8.2863 7.22748L16.7716 15.7128C17.0615 16.0027 17.0615 16.4835 16.7716 16.7734Z"
+        fill="#010A23"
+      />
+    </svg>
+  );
+};

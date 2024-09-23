@@ -1,9 +1,9 @@
 "use client";
 
 // Imports
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import clsx from "clsx";
-import { GridIcon, ListIcon, FilterIcon } from "@/public/icons/icons";
+import { GridIcon, ListIcon } from "@/public/icons/icons";
 import AddLandlordModal from "@/components/Management/Landlord/add-landlord-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordCard from "@/components/Management/landlord-and-tenant-card";
@@ -22,6 +22,7 @@ import AboutPage from "@/components/AboutPage/about-page";
 import Button from "@/components/Form/Button/button";
 import { getAllLandlords, LandlordPageState } from "./data";
 import { useAuthStore } from "@/store/authstrore";
+import FilterButton from "@/components/FilterButton/filter-button";
 
 const Landlord = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -60,7 +61,7 @@ const Landlord = () => {
   } = state;
 
   // Fetch the landlords when the component mounts
-  const fetchLandlords = async () => {
+  const fetchLandlords = useCallback(async () => {
     try {
       const data = await getAllLandlords(accessToken);
       setState((x) => ({ ...x, landlordsPageData: data }));
@@ -69,11 +70,11 @@ const Landlord = () => {
     } finally {
       setState((x) => ({ ...x, loading: false }));
     }
-  };
+  }, [accessToken]);
 
   useEffect(() => {
     fetchLandlords();
-  }, []);
+  }, [fetchLandlords]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -270,9 +271,9 @@ const Landlord = () => {
             />
           }
         />
-        <div className="flex items-center gap-x-4 flex-wrap">
+        <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for Landlords" />
-          <div className="flex items-center gap-x-3">
+          <div className="flex items-center gap-3">
             <button
               type="button"
               aria-label="list-view"
@@ -298,26 +299,21 @@ const Landlord = () => {
               <GridIcon />
             </button>
           </div>
-          <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-            <Modal>
-              <ModalTrigger asChild>
-                <button type="button" className="flex items-center gap-2">
-                  <FilterIcon />
-                  <span>Filters</span>
-                </button>
-              </ModalTrigger>
-              <ModalContent>
-                <FilterModal
-                  filterOptionsWithDropdown={landlordFiltersWithOptions}
-                  filterOptions={landlordFilters}
-                  filterOptionsWithRadio={landlordFiltersRadio}
-                  onApply={handleFilterApply}
-                  onStateSelect={onStateSelect}
-                  date={true}
-                />
-              </ModalContent>
-            </Modal>
-          </div>
+          <Modal>
+            <ModalTrigger asChild>
+              <FilterButton />
+            </ModalTrigger>
+            <ModalContent>
+              <FilterModal
+                filterOptionsWithDropdown={landlordFiltersWithOptions}
+                filterOptions={landlordFilters}
+                filterOptionsWithRadio={landlordFiltersRadio}
+                onApply={handleFilterApply}
+                onStateSelect={onStateSelect}
+                date={true}
+              />
+            </ModalContent>
+          </Modal>
         </div>
       </div>
       <section>

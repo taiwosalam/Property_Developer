@@ -1,14 +1,11 @@
 "use client";
 
-import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Types
 import type { InputProps } from "./types";
 
-// Images
-import EyeHide from "@/public/icons/eye-hide.svg";
-import EyeShow from "@/public/icons/eye-show.svg";
+import { EyeHideIcon, EyeShowIcon } from "@/public/icons/icons";
 
 // Imports
 import clsx from "clsx";
@@ -29,6 +26,7 @@ const Input: React.FC<InputProps> = ({
   defaultValue,
   type = "text",
   validationErrors = {},
+  labelclassName,
   onChange,
   inputClassName,
   CURRENCY_SYMBOL,
@@ -78,7 +76,7 @@ const Input: React.FC<InputProps> = ({
     >
       {/* Render the label if provided */}
       {label && (
-        <Label id={id} required={required}>
+        <Label id={id} required={required} labelclassName={labelclassName}>
           {label}
         </Label>
       )}
@@ -110,7 +108,11 @@ const Input: React.FC<InputProps> = ({
           // Reset validation error when the user interacts with the input
           onInput={() => setValidationError(null)}
           // Call onChange prop if provided when input value changes
-          onChange={({ target }) => onChange && onChange(target.value)}
+          onChange={({ target }) => {
+            console.log(typeof target.value, target.value);
+
+            onChange && onChange(target.value);
+          }}
           // Conditionally change the input type based on password visibility state
           type={type === "password" && isPasswordVisible ? "text" : type}
           // Input styles
@@ -135,11 +137,7 @@ const Input: React.FC<InputProps> = ({
             className="absolute p-1 right-3"
             aria-label="Toggle password visibility"
           >
-            <Image
-              src={isPasswordVisible ? EyeHide : EyeShow}
-              alt="Toggle visibility"
-              height={21}
-            />
+            {isPasswordVisible ? <EyeShowIcon /> : <EyeHideIcon />}
           </button>
         )}
       </div>

@@ -63,7 +63,7 @@ const BranchActivitiesCard = () => {
   ];
 
   return (
-    <div className="bg-brand-1 rounded-md shadow-md w-full">
+    <div className="bg-brand-1 rounded-lg shadow-md w-full">
       <div className="flex justify-between items-center p-4">
         <div>
           <h2 className="font-medium text-sm">Branch Activities</h2>
@@ -77,7 +77,7 @@ const BranchActivitiesCard = () => {
         </div>
       </div>
 
-      <div className="bg-white py-4 px-2 text-text-primary">
+      <div className="bg-white py-4 px-2 text-text-primary rounded-b-lg">
         {activities.map((activity, index) => (
           <ActivityItem
             key={index}

@@ -18,7 +18,7 @@ const BranchStatCard = ({
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
   return (
-    <Card>
+    <Card className="border-none shadow-none rounded-[8px] bg-[#FAFAFA]">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         <div
@@ -31,10 +31,10 @@ const BranchStatCard = ({
           } w-[40px] h-[40px] flex items-center justify-center rounded-full`}
         >
           {title === "Total Expenses" ? (
-            <Send className="h-4 w-4 rotate-180 text-status-error-2" />
+            <Image src={"/icons/send.svg"} alt="send" width={16} height={16} />
           ) : title === "Total Balance" ? (
             <Image
-              src={"/icons/wallet-blue.svg"}
+              src={"/icons/blue-wallet.svg"}
               alt="icon"
               width={16}
               height={16}
@@ -44,10 +44,11 @@ const BranchStatCard = ({
               }}
             />
           ) : (
-            <Send
-              className={`h-4 w-4 ${
-                title === "Total Expenses" ? "rotate-180 text-success-3" : ""
-              }`}
+            <Image
+              src={"/icons/receive.svg"}
+              alt="receive"
+              width={16}
+              height={16}
             />
           )}
         </div>

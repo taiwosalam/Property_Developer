@@ -10,7 +10,6 @@ import {
   swipePower,
 } from "@/utils/slider";
 import { motion, AnimatePresence } from "framer-motion";
-import ImageModal from "@/components/ImageModal/image-modal";
 import Sample from "@/public/empty/SampleProperty.jpeg";
 import Sample2 from "@/public/empty/SampleProperty2.jpeg";
 import Sample3 from "@/public/empty/SampleProperty3.jpeg";
@@ -49,7 +48,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const [[page, direction], setPage] = useState([0, 0]);
   const [isModalActive, setIsModalActive] = useState(false);
-  const [screenModal, setScreenModal] = useState(false);
 
   const paginate = (e: any, newDirection: number) => {
     e.preventDefault();
@@ -81,15 +79,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       className="rounded-2xl relative overflow-hidden bg-white"
       style={{ boxShadow: "4px 4px 10px 0px rgba(0, 0, 0, 0.05)" }}
     >
-      {/* Image Modal */}
-
-      <ImageModal
-        isOpen={screenModal}
-        onClose={() => setScreenModal(false)}
-        images={sampleImages.map((image) => image.src)}
-        currentIndex={imageIndex}
-      />
-
       <div className="relative h-[200px] w-full overflow-hidden rounded-t-2xl group">
         <button
           type="button"
@@ -131,7 +120,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
         <AnimatePresence initial={false} custom={direction}>
           <motion.img
-            onClick={() => setScreenModal(true)}
             key={page}
             src={sampleImages[imageIndex]?.src || empty}
             alt={`${name} ${imageIndex + 1}`}

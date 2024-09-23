@@ -18,9 +18,39 @@ import {
 
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
+import { useEffect, useState } from "react";
+import { getOneLandlord } from "../../../data";
+import { useAuthStore } from "@/store/authstrore";
+import { useParams, useRouter } from "next/navigation";
+import { LandlordPageData } from "../../../types";
 
 const EditLandlord = () => {
   const states = getAllStates();
+  const accessToken = useAuthStore((state) => state.access_token);
+  const { landlordId } = useParams();
+  const [LandlordPageData, setLandlordPageData] =
+    useState<LandlordPageData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Fetch the landlord when the component mounts
+    const fetchLandlords = async () => {
+      const data = await getOneLandlord(
+        landlordId as string,
+        accessToken as string
+      );
+
+      console.log(data, "data");
+      setLoading(false);
+      if (!data) return router.push("/management/landlord");
+      setLandlordPageData(data);
+    };
+
+    fetchLandlords();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">

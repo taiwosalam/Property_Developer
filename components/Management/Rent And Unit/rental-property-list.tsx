@@ -7,7 +7,7 @@ import { DetailItem } from "../detail-item";
 
 const RentalPropertyListCard = () => {
   return (
-    <main className="p-6 bg-white rounded-2xl shadow-md text-[16px]">
+    <div className="p-6 bg-white rounded-2xl shadow-md text-[16px]">
       <div className="flex items-center justify-between mb-4">
         <span className="text-sm font-bold text-[#1E3A8A]">
           Unit ID: 123456776342
@@ -67,7 +67,7 @@ const RentalPropertyListCard = () => {
           ))}
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 

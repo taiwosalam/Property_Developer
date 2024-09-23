@@ -1,9 +1,10 @@
 // Types
 import type { LabelProps } from "./types";
+import clsx from "clsx";
 
-const Label: React.FC<LabelProps> = ({ id, required, children }) => {
+const Label: React.FC<LabelProps> = ({ id, required, children, labelclassName }) => {
   return (
-    <label htmlFor={id} className="flex gap-[2px] text-xs md:text-sm lg:text-base font-medium">
+    <label htmlFor={id} className={clsx("flex gap-[2px] text-xs md:text-sm lg:text-base font-medium", labelclassName)} >
       {required && <span className="text-status-error-primary">*</span>}
       <p className="text-text-label capitalize">{children}</p>
     </label>

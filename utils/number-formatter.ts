@@ -6,4 +6,7 @@ export const formatNumber = (price: number) => {
 
 export const currencySymbols = {
   NAIRA: "₦",
+  DOLLAR: "$",
+  EURO: "€",
+  POUND: "£",
 };

@@ -32,6 +32,10 @@ interface CustomDatePickerProps {
   value?: Dayjs | null;
   onChange?: (date: Dayjs | null) => void;
   containerClassName?: string;
+  disableFuture?: boolean;
+  disablePast?: boolean;
+  minDate?: Dayjs;
+  maxDate?: Dayjs;
 }
 
 export default function CustomDatePicker({
@@ -40,6 +44,10 @@ export default function CustomDatePicker({
   inputClassName,
   inputId,
   containerClassName,
+  disableFuture,
+  disablePast,
+  minDate,
+  maxDate,
 }: CustomDatePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -47,7 +55,10 @@ export default function CustomDatePicker({
         className={clsx("text-xs md:text-sm font-normal", containerClassName)}
       >
         <CustomStyledDatePicker
-          disableFuture
+          disableFuture={disableFuture}
+          disablePast={disablePast}
+          minDate={minDate}
+          maxDate={maxDate}
           openTo="year"
           views={["year", "month", "day"]}
           value={value}

@@ -492,7 +492,10 @@ const CreateProperty = () => {
             inputClassName="bg-white rounded-[8px]"
           />
         </div>
-        <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
+        <div
+          className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent"
+          style={{ boxShadow: "0px -2px 10px 0px rgba(0, 0, 0, 0.05)" }}
+        >
           <button
             type="reset"
             className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"

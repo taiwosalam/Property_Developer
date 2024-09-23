@@ -16,6 +16,7 @@ import AboutPage from "@/components/AboutPage/about-page";
 import PropertyListItem from "@/components/Management/Properties/property-list-item";
 import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import FilterButton from "@/components/FilterButton/filter-button";
 
 const Property = () => {
   const router = useRouter();
@@ -103,7 +104,7 @@ const Property = () => {
             />
           }
         />
-        <div className="flex items-center gap-x-4 flex-wrap">
+        <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for Properties" />
           <div className="flex items-center gap-x-3">
             <button
@@ -131,24 +132,15 @@ const Property = () => {
               <GridIcon />
             </button>
           </div>
-          <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-            <Modal>
-              <ModalTrigger asChild>
-                <div className="flex items-center gap-2 cursor-pointer">
-                  <Image
-                    src="/icons/sliders.svg"
-                    alt="filter"
-                    width={20}
-                    height={20}
-                  />
-                  <p>Filters</p>
-                </div>
-              </ModalTrigger>
-              <ModalContent>
-                <div>Hi</div>
-              </ModalContent>
-            </Modal>
-          </div>
+
+          <Modal>
+            <ModalTrigger asChild>
+              <FilterButton />
+            </ModalTrigger>
+            <ModalContent>
+              <div>Hi</div>
+            </ModalContent>
+          </Modal>
         </div>
       </div>
 

@@ -9,7 +9,7 @@ import Link from "next/link";
 
 const StartRent = () => {
   return (
-    <main className="space-y-6 p-4">
+    <div className="space-y-6 p-4">
       <Link
         href={"/management/rent-unit"}
         className="flex items-center space-x-3 w-fit"
@@ -70,7 +70,7 @@ const StartRent = () => {
           Save
         </button>
       </div>
-    </main>
+    </div>
   );
 };
 

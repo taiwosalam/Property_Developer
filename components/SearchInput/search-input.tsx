@@ -17,7 +17,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
     >
       {/* Search icon positioned absolutely */}
       <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-        <Search color={searchIconColor} strokeWidth={"0.5"} size={20} />
+        <Search color={searchIconColor} strokeWidth={"1"} size={20} />
       </div>
       <input
         type="text"

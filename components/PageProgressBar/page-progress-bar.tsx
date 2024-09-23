@@ -1,4 +1,4 @@
-import React from "react";
+import clsx from "clsx";
 
 // Types
 import type { PageProgressBarProps } from "./types";
@@ -10,6 +10,7 @@ import PageProgressBarBreakpoint from "./page-progress-bar-breakpoint";
 const PageProgressBar: React.FC<PageProgressBarProps> = ({
   percentage = 0,
   breakpoints = [],
+  className
 }) => {
   const height = 5;
   const active_color = "#FFBB53";
@@ -19,7 +20,7 @@ const PageProgressBar: React.FC<PageProgressBarProps> = ({
   const points = sanitizeBreakpoints(breakpoints);
 
   return (
-    <div className="px-2">
+    <div className={clsx("px-2", className)}>
       <div className="relative w-full">
         <div style={{ height, backgroundColor: disabled_color }}>
           <div

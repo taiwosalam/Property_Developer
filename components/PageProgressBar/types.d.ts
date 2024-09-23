@@ -10,6 +10,7 @@ export interface PageProgressBarProps {
    */
   breakpoints?: number[];
   percentage: number;
+  className?: string;
 }
 
 export interface PageProgressBarBreakpointProps {

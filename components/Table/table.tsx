@@ -1,7 +1,6 @@
 import type { CustomTableProps, DataItem, Field } from "./types";
 import clsx from "clsx";
 import SampleLandlord from "@/public/empty/SampleLandlord.jpeg";
-import { VerticalEllipsis } from "@/public/icons/icons";
 import {
   Table,
   TableBody,
@@ -14,6 +13,7 @@ import {
 } from "@mui/material";
 
 import { ReactNode } from "react";
+import { VerticalEllipsisIcon } from "@/public/icons/icons";
 
 const renderValue = (
   data: DataItem,
@@ -57,7 +57,7 @@ const renderValue = (
             aria-label="action"
             className="grid place-items-center mx-auto"
           >
-            {actionButtonIcon || <VerticalEllipsis />}
+            {actionButtonIcon || <VerticalEllipsisIcon />}
           </button>
         </div>
       ) : (
@@ -66,7 +66,7 @@ const renderValue = (
           aria-label="action"
           className="grid place-items-center mx-auto"
         >
-          {actionButtonIcon || <VerticalEllipsis />}
+          {actionButtonIcon || <VerticalEllipsisIcon />}
         </button>
       );
     default:

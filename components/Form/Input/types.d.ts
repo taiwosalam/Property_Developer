@@ -6,7 +6,7 @@ import type { ValidationErrors } from "@/utils/types";
 
 export interface InputProps {
   id: string;
-  value?: string;
+  value?: string | number | readonly string[] | undefined;
   label?: string;
   leftIcon?: string | StaticImageData;
   className?: string;
@@ -24,4 +24,5 @@ export interface InputProps {
   disabled?: boolean;
   min?: number;
   max?: number;
+  labelclassName?: string;
 }

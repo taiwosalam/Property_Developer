@@ -8,7 +8,6 @@ import clsx from "clsx";
 import Label from "../Label/label";
 import DatePicker from "./date-picker";
 import { Dayjs } from "dayjs";
-// import { checkValidatonError } from "@/utils/validation";
 
 const DateInput: React.FC<DateInputProps> = ({
   id,
@@ -18,6 +17,12 @@ const DateInput: React.FC<DateInputProps> = ({
   className,
   inputClassName,
   onChange,
+  minDate,
+  maxDate,
+  disableFuture,
+  disablePast,
+  containerClassName,
+  labelclassName,
 }) => {
   const handleDateChange = (date?: Dayjs | null) => {
     if (onChange) {
@@ -29,7 +34,7 @@ const DateInput: React.FC<DateInputProps> = ({
     <div className={clsx("custom-flex-col gap-2", className)}>
       {/* Render the label if provided */}
       {label && (
-        <Label id={id} required={required}>
+        <Label id={id} required={required} labelclassName={labelclassName}>
           {label}
         </Label>
       )}
@@ -38,6 +43,11 @@ const DateInput: React.FC<DateInputProps> = ({
         inputClassName={inputClassName}
         onChange={handleDateChange}
         value={value}
+        minDate={minDate}
+        maxDate={maxDate}
+        disableFuture={disableFuture}
+        disablePast={disablePast}
+        containerClassName={containerClassName}
       />
     </div>
   );

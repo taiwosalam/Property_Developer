@@ -68,6 +68,7 @@ const config = {
           },
           caution: {
             1: "#FFF8EE",
+            2: "#FFBB53",
             3: "#6B4F23",
           },
         },

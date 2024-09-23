@@ -8,6 +8,10 @@ import TextArea from "@/components/Form/TextArea/textarea";
 import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
 import { useState, useEffect } from "react";
 import Button from "@/components/Form/Button/button";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { useFormDataStore } from "@/store/formdatastore";
+import { useAuthStore } from "@/store/authstrore";
+import { createNewBranch } from "./Branch/data";
 
 interface State {
   selectedState: string;
@@ -79,6 +83,18 @@ const CreateBranchModal = () => {
     }
   }, [selectedLGA, selectedState]);
 
+  const accessToken = useAuthStore((state) => state.access_token);
+
+  const handleSubmit = async (data: any) => {
+    console.log(data);
+    const res = await createNewBranch(data, accessToken);
+    if (res.error) {
+      console.log(res);
+      return;
+    }
+    console.log(res);
+  };
+
   return (
     <div className="w-[900px] max-w-[80%] max-h-[85%] rounded-[20px] bg-white overflow-x-auto custom-round-scrollbar">
       {/* Header */}
@@ -98,7 +114,12 @@ const CreateBranchModal = () => {
       </div>
       {/* body */}
       <div className="px-[30px] pt-10 pb-[24px] md:pb-[36px]">
-        <form onSubmit={() => {}}>
+        <AuthForm
+          // returnType="form-data"
+          className="custom-flex-col gap-5"
+          onFormSubmit={handleSubmit}
+          setValidationErrors={() => {}}
+        >
           <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             <Input
               label="Branch Name/Title"
@@ -158,27 +179,28 @@ const CreateBranchModal = () => {
                 {Array(4)
                   .fill(null)
                   .map((_, idx) => (
-                    <button key={idx}>
-                      <Image
-                        src={`/empty/avatar-${idx + 1}.svg`}
-                        alt="avatar"
-                        width={40}
-                        height={40}
-                        className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
-                      />
-                    </button>
+                    <Image
+                      key={idx}
+                      src={`/empty/avatar-${idx + 1}.svg`}
+                      alt="avatar"
+                      width={40}
+                      height={40}
+                      className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
+                    />
                   ))}
               </div>
             </div>
           </div>
-          <Button
-            type="submit"
-            size="base_medium"
-            className="py-2 px-8 ml-auto block"
-          >
-            create
-          </Button>
-        </form>
+          <div>
+            <Button
+              type="submit"
+              size="base_medium"
+              className="py-2 px-8 ml-auto block w-fit"
+            >
+              create
+            </Button>
+          </div>
+        </AuthForm>
       </div>
     </div>
   );

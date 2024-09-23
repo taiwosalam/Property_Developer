@@ -4,4 +4,5 @@ export interface LabelProps {
   children: React.ReactNode;
   important?: boolean;
   className?: string;
+  labelclassName?: string;
 }

@@ -9,7 +9,7 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
   return (
     <div className="space-y-4">
       <div className="w-full flex items-center justify-between">
-        <h1 className="text-[16px] font-medium">Attached Images</h1>
+        <h2 className="text-[16px] font-medium">Attached Images</h2>
         <div className="flex items-center space-x-2 text-text-label text-sm font-medium">
           <p>Hide Images</p>
           <div className="-rotate-90">
