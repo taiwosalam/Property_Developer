@@ -11,4 +11,6 @@ export interface DateInputProps {
   maxDate?: Dayjs;
   disableFuture?: boolean;
   disablePast?: boolean;
+  containerClassName?: string;
+  labelclassName?: string;
 }

@@ -1,5 +1,7 @@
 import clsx from "clsx";
 import Button from "@/components/Form/Button/button";
+import ManageMaintenanceModal from "./manage-maintenance-modal";
+import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 
 interface MaintenanceCardProps {
   maintenanceId: string;
@@ -88,9 +90,16 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
           <p className="text-text-secondary text-sm">{serviceType}</p>
         </div>
       </div>
-      <Button size="xs_normal" className="px-6 py-2 block ml-auto">
-        Manage
-      </Button>
+      <Modal>
+        <ModalTrigger asChild>
+          <Button size="xs_normal" className="px-6 py-2 block ml-auto">
+            Manage
+          </Button>
+        </ModalTrigger>
+        <ModalContent>
+          <ManageMaintenanceModal />
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

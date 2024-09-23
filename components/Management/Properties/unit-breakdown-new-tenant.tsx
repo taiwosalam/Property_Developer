@@ -8,14 +8,14 @@ import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import { useUnitForm } from "./unit-form-context";
 
 const emptyStateValues = {
-  rentAmount: 0,
-  agencyFee: 0,
-  legalFee: 0,
-  serviceCharge: 0,
-  cautionFee: 0,
-  inspectionFee: 0,
-  otherCharges: 0,
-  totalPackage: 0,
+  rentAmount: "0",
+  agencyFee: "0",
+  legalFee: "0 ",
+  serviceCharge: "0",
+  cautionFee: "0",
+  inspectionFee: "0",
+  otherCharges: "0",
+  totalPackage: "0",
 };
 
 const UnitBreakdownNewTenant = () => {
@@ -41,13 +41,30 @@ const UnitBreakdownNewTenant = () => {
   type FormField = keyof typeof formValues;
   // Update formValues based on input changes
   const handleInputChange = (field: FormField, value: string) => {
-    // Remove commas from the formatted value and convert to a number
-    const unformattedValue = parseFloat(value.replace(/,/g, "")) || 0;
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [field]: unformattedValue,
-    }));
+    const sanitizedValue = value.replace(/[^0-9.]/g, "");
+    const unformattedValue = sanitizedValue.replace(/,/g, "");
+    if (unformattedValue.endsWith(".")) {
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        [field]: unformattedValue,
+      }));
+    } else {
+      const numericValue = parseFloat(unformattedValue);
+      if (!isNaN(numericValue)) {
+        const formattedValue = numericValue.toFixed(2);
+        setFormValues((prevValues) => ({
+          ...prevValues,
+          [field]: formatNumber(parseFloat(formattedValue)),
+        }));
+      } else {
+        setFormValues((prevValues) => ({
+          ...prevValues,
+          [field]: "0",
+        }));
+      }
+    }
   };
+
   const addOtherCharges = () => {
     setOtherChargesInput(true);
   };
@@ -56,32 +73,35 @@ const UnitBreakdownNewTenant = () => {
     setOtherChargesInput(false);
     setFormValues((prevValues) => ({
       ...prevValues,
-      otherCharges: 0,
+      otherCharges: "0",
     }));
   };
 
   useEffect(() => {
+    const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
+    const agencyFeeValue = (rentAmountValue * agencyFeePercentage) / 100;
+
     setFormValues((prevValues) => ({
       ...prevValues,
-      agencyFee: (prevValues.rentAmount * agencyFeePercentage) / 100,
-      legalFee: (prevValues.rentAmount * agencyFeePercentage) / 100,
+      agencyFee: formatNumber(parseFloat(agencyFeeValue.toFixed(2))),
+      legalFee: formatNumber(parseFloat(agencyFeeValue.toFixed(2))),
     }));
   }, [rentAmount, agencyFeePercentage]);
 
   // Calculate the total package
   useEffect(() => {
     const total =
-      rentAmount +
-      agencyFee +
-      legalFee +
-      serviceCharge +
-      cautionFee +
-      inspectionFee +
-      otherCharges;
+      (parseFloat(rentAmount.replace(/,/g, "")) || 0) +
+      (parseFloat(agencyFee.replace(/,/g, "")) || 0) +
+      (parseFloat(legalFee.replace(/,/g, "")) || 0) +
+      (parseFloat(serviceCharge.replace(/,/g, "")) || 0) +
+      (parseFloat(cautionFee.replace(/,/g, "")) || 0) +
+      (parseFloat(inspectionFee.replace(/,/g, "")) || 0) +
+      (parseFloat(otherCharges.replace(/,/g, "")) || 0);
 
     setFormValues((prevValues) => ({
       ...prevValues,
-      totalPackage: total,
+      totalPackage: formatNumber(parseFloat(total.toFixed(2))),
     }));
   }, [
     rentAmount,
@@ -120,7 +140,7 @@ const UnitBreakdownNewTenant = () => {
           required
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={formatNumber(rentAmount)}
+          value={rentAmount}
           onChange={(value) => handleInputChange("rentAmount", value)}
           type="text"
         />
@@ -129,7 +149,7 @@ const UnitBreakdownNewTenant = () => {
           label="Service Charge"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={formatNumber(serviceCharge)}
+          value={serviceCharge}
           onChange={(value) => handleInputChange("serviceCharge", value)}
           type="text"
         />
@@ -138,7 +158,7 @@ const UnitBreakdownNewTenant = () => {
           label="Agency Fee"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={formatNumber(agencyFee)}
+          value={agencyFee}
           readOnly
           disabled
           type="text"
@@ -148,7 +168,7 @@ const UnitBreakdownNewTenant = () => {
           label="Legal Fee"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={formatNumber(legalFee)}
+          value={legalFee}
           onChange={(value) => handleInputChange("legalFee", value)}
           type="text"
         />
@@ -157,7 +177,7 @@ const UnitBreakdownNewTenant = () => {
           label="Caution Fee"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={formatNumber(cautionFee)}
+          value={cautionFee}
           onChange={(value) => handleInputChange("cautionFee", value)}
           type="text"
         />
@@ -166,7 +186,7 @@ const UnitBreakdownNewTenant = () => {
           label="Inspection Fee"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={formatNumber(inspectionFee)}
+          value={inspectionFee}
           onChange={(value) => handleInputChange("inspectionFee", value)}
           type="text"
         />
@@ -177,7 +197,7 @@ const UnitBreakdownNewTenant = () => {
               label="Other Charges"
               inputClassName="bg-white"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-              value={formatNumber(otherCharges)}
+              value={otherCharges}
               onChange={(value) => handleInputChange("otherCharges", value)}
               type="text"
             />
@@ -216,7 +236,7 @@ const UnitBreakdownNewTenant = () => {
           label="Total Package"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={formatNumber(totalPackage)}
+          value={totalPackage}
           readOnly
           disabled
           type="text"

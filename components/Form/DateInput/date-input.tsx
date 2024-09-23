@@ -21,6 +21,8 @@ const DateInput: React.FC<DateInputProps> = ({
   maxDate,
   disableFuture,
   disablePast,
+  containerClassName,
+  labelclassName,
 }) => {
   const handleDateChange = (date?: Dayjs | null) => {
     if (onChange) {
@@ -32,7 +34,7 @@ const DateInput: React.FC<DateInputProps> = ({
     <div className={clsx("custom-flex-col gap-2", className)}>
       {/* Render the label if provided */}
       {label && (
-        <Label id={id} required={required}>
+        <Label id={id} required={required} labelclassName={labelclassName}>
           {label}
         </Label>
       )}
@@ -45,6 +47,7 @@ const DateInput: React.FC<DateInputProps> = ({
         maxDate={maxDate}
         disableFuture={disableFuture}
         disablePast={disablePast}
+        containerClassName={containerClassName}
       />
     </div>
   );

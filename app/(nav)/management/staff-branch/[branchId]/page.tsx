@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 // Imports
 import Card from "@/components/dashboard/card";
 import Button from "@/components/Form/Button/button";
+import FilterButton from "@/components/FilterButton/filter-button";
 import {
   Select,
   SelectContent,
@@ -23,7 +24,7 @@ import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import SearchInput from "@/components/SearchInput/search-input";
-import { GridIcon, ListIcon } from "@/public/icons/icons";
+import { GridIcon, ListIcon, LocationIcon } from "@/public/icons/icons";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { PageState } from "./data";
@@ -95,18 +96,9 @@ const Dashboard = () => {
       <div className="w-full flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-black">Branch Name</h1>
-          <div className="flex items-center space-x-1">
-            <Image
-              src={"/icons/location.svg"}
-              alt="location"
-              width={14}
-              height={14}
-              style={{
-                width: "14px",
-                height: "14px",
-              }}
-            />
-            <p className="text-text-disabled text-sm font-medium">
+          <div className="text-text-disabled flex items-center space-x-1">
+            <LocationIcon />
+            <p className="text-sm font-medium">
               Street 23, All Avenue, Nigeria
             </p>
           </div>
@@ -137,7 +129,7 @@ const Dashboard = () => {
       </div>
       <div className="w-full h-full xl:flex gap-x-10">
         <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-7">
-          <div className="bg-white p-6 space-y-4">
+          <div className="bg-white p-6 space-y-4 rounded-lg">
             <div className="ml-auto flex w-[390px] px-4 bg-[#F5F5F5] rounded-md items-center justify-end">
               <DatePickerWithRange
                 selectedRange={
@@ -263,9 +255,9 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="page-title-container" style={{ justifyContent: "end" }}>
-        <div className="flex items-center space-x-4 flex-wrap">
+        <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for Branch properties" />
-          <div className="flex items-center gap-x-3">
+          <div className="flex items-center gap-3">
             <button
               type="button"
               aria-label="list-view"
@@ -291,32 +283,20 @@ const Dashboard = () => {
               </div>
             </button>
           </div>
-          <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-            <Modal>
-              <ModalContent>
-                <ModalTrigger asChild>
-                  <div className="flex items-center gap-2 cursor-pointer">
-                    <Image
-                      src="/icons/sliders.svg"
-                      alt="filters"
-                      width={20}
-                      height={20}
-                    />
-                    <p>Filters</p>
-                  </div>
-                </ModalTrigger>
-                <ModalContent>
-                  <FilterModal
-                    filterOptions={BranchFilters}
-                    filterOptionsWithDropdown={branchFiltersWithOptions}
-                    onApply={handleFilterApply}
-                    date
-                    onStateSelect={(state: string) => setSelectedState(state)}
-                  />
-                </ModalContent>
-              </ModalContent>
-            </Modal>
-          </div>
+          <Modal>
+            <ModalTrigger asChild>
+              <FilterButton />
+            </ModalTrigger>
+            <ModalContent>
+              <FilterModal
+                filterOptions={BranchFilters}
+                filterOptionsWithDropdown={branchFiltersWithOptions}
+                onApply={handleFilterApply}
+                date
+                onStateSelect={(state: string) => setSelectedState(state)}
+              />
+            </ModalContent>
+          </Modal>
         </div>
       </div>
 
