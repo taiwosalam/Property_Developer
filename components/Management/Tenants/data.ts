@@ -29,6 +29,7 @@ export const addTenant = async (
       return isSuccess;
     }
 
+    toast.success(data.message);
     isSuccess = true;
   } catch (error) {
     console.error("Error adding tenant:", error);
