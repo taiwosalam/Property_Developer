@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 export const createNewBranch = async (
   data: any,
   access_token: string | null
@@ -14,6 +16,9 @@ export const createNewBranch = async (
         },
       }
     ).then((res) => res.json());
+    if (!response.error) {
+      await toast.success(response.message);
+    }
     console.log(response);
     return response;
   } catch (error) {
