@@ -2,7 +2,8 @@
 import type { LandlordTenantModalPresetProps } from "./types";
 
 import { ModalTrigger } from "../Modal/modal";
-import { DeleteIconX, ChevronLeft } from "@/public/icons/icons";
+import { ChevronLeft } from "@/public/icons/icons";
+import { DeleteIconX } from "@/public/icons/icons";
 
 const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   star,
@@ -26,7 +27,7 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
           </p>
         </div>
         <ModalTrigger close className="p-2" type="button" aria-label="close">
-          <DeleteIconX  size={30}/>
+          <DeleteIconX size={30} />
         </ModalTrigger>
       </div>
       {/* body */}

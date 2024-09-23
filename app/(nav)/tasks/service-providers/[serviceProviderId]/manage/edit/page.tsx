@@ -7,7 +7,9 @@ import {
   LandlordTenantInfoEditSection as InfoEditSection,
 } from "@/components/Management/landlord-tenant-info-components";
 import Select from "@/components/Form/Select/select";
-import { getAllStates } from "@/utils/states";
+import { getAllStates } from "@/utils/states";   <div className="flex items-end">
+  <Button>update</Button>
+</div>;
 import Picture from "@/components/Picture/picture";
 import Avatar from "@/public/empty/avatar.png";
 import OrangeCloseCircle from "@/public/icons/orange-close-circle.svg";
