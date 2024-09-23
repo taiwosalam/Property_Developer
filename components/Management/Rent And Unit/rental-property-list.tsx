@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { actions, activeStatuses, getBackgroundColor } from "./data";
 import Image from "next/image";
 import { ActionButtonProps } from "./types";
 import { CameraIcon } from "lucide-react";
 import { DetailItem } from "../detail-item";
+import PopupImageModal from "@/components/PopupSlider/PopupSlider";
+import { images } from "@/components/PopupSlider/data";
 
 const RentalPropertyListCard = () => {
+  const [isOpened, setIsOpened] = useState(false);
   return (
     <div className="p-6 bg-white rounded-2xl shadow-md text-[16px]">
       <div className="flex items-center justify-between mb-4">
@@ -43,13 +46,22 @@ const RentalPropertyListCard = () => {
           />
           <DetailItem label="Due Date" value="12/12/2024" />
         </div>
-        <div className="flex justify-end items-center relative w-[200px] h-[200px]">
+        <div
+          className="flex justify-end items-center relative w-[200px] h-[200px] cursor-pointer"
+          onClick={() => setIsOpened(true)}
+        >
           <Image
             src="/empty/SampleProperty3.jpeg"
             alt="Property"
             fill
             sizes="auto"
             className="rounded-lg"
+          />
+          <PopupImageModal
+            images={images}
+            isOpen={isOpened}
+            onClose={() => setIsOpened(false)}
+            currentIndex={0}
           />
           <div className="absolute top-7 right-7 bg-blue-50 rounded py-2 px-3 flex items-center space-x-2">
             <CameraIcon width={14} height={14} />
