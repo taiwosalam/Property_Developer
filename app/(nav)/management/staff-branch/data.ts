@@ -45,7 +45,10 @@ export const getAllBranches = async (
   }
 };
 
-export const getOneBranch = async (branchId: string) => {
+export const getOneBranch = async (
+  branchId: string,
+  access_token: string | null
+) => {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/branches/${branchId}`,
@@ -53,6 +56,7 @@ export const getOneBranch = async (branchId: string) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          // Authorization: `Bearer ${access_token}`,
           Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
         },
       }
@@ -69,6 +73,22 @@ export const getOneBranch = async (branchId: string) => {
   }
 };
 
+export const editBranch = async (branchId: string, data: any) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/branches/${branchId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${access_token}`,
+          Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+  } catch (error) {}
+};
 export const testBranches: BranchProps[] = [
   {
     id: 1,
