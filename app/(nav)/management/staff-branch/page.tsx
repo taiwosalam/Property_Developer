@@ -19,6 +19,7 @@ import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
 import CreateBranchModal from "@/components/Management/Staff-And-Branches/create-branch-modal";
 import { useAuthStore } from "@/store/authstrore";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const StaffAndBranches = () => {
   const router = useRouter();
@@ -293,16 +294,11 @@ const StaffAndBranches = () => {
 
       <section className="capitalize">
         {gridView ? (
-          <div
-            className="grid gap-4"
-            style={{
-              gridTemplateColumns: "repeat(auto-fit, minmax(284px, 1fr))",
-            }}
-          >
+          <AutoResizingGrid minWidth={284}>
             {branches.map((b) => (
               <BranchCard key={b.id} {...b} />
             ))}
-          </div>
+          </AutoResizingGrid>
         ) : (
           <CustomTable
             fields={tableFields}

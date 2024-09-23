@@ -8,6 +8,7 @@ import AddLandlordModal from "@/components/Management/Landlord/add-landlord-moda
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordCard from "@/components/Management/landlord-and-tenant-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+import Link from "next/link";
 import CustomTable from "@/components/Table/table";
 import type { LandlordProps } from "@/components/Management/Landlord/types";
 import type { Field } from "@/components/Table/types";
@@ -325,11 +326,9 @@ const Landlord = () => {
             }}
           >
             {landlords.map((l) => (
-              <LandlordCard
-                key={l.id}
-                {...l}
-                href={`/management/landlord/${l.id}/manage`}
-              />
+              <Link href={`/management/landlord/${l.id}/manage`} key={l.id}>
+                <LandlordCard {...l} />
+              </Link>
             ))}
           </div>
         ) : (

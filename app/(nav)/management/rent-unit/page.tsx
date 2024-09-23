@@ -1,5 +1,5 @@
 "use client";
-
+import { useState } from "react";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -13,7 +13,6 @@ import {
   RentAndUnitFiltersWithOptions,
   RentAndUnitState,
 } from "./data";
-import { useState } from "react";
 import StatusIndicator from "@/components/Management/status-indicator";
 import Pagination from "@/components/Pagination/pagination";
 import RentalPropertyCard from "@/components/Management/Rent And Unit/rental-property-card";
@@ -98,7 +97,6 @@ const RentAndUnit = () => {
               <GridIcon />
             </button>
           </div>
-
           <Modal>
             <ModalTrigger asChild>
               <FilterButton />

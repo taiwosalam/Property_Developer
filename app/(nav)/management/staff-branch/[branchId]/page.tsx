@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 // Imports
@@ -37,6 +36,7 @@ import { properties } from "../../properties/data";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
 import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-staff-modal";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const Dashboard = () => {
   const initialState = {
@@ -303,12 +303,7 @@ const Dashboard = () => {
       {/* Property cards */}
       <section>
         {gridView ? (
-          <div
-            className="grid gap-x-[30px] gap-y-5"
-            style={{
-              gridTemplateColumns: "repeat(auto-fill, minmax(370px, 1fr))",
-            }}
-          >
+          <AutoResizingGrid minWidth={315}>
             {properties.slice(0, 30).map((p) => (
               <Link
                 href={`/management/staff-branch/${branchId}/property/${p.id}`}
@@ -317,7 +312,7 @@ const Dashboard = () => {
                 <PropertyCard {...p} isClickable={false} />
               </Link>
             ))}
-          </div>
+          </AutoResizingGrid>
         ) : (
           <div className="space-y-4">
             {properties.slice(0, 30).map((p) => (

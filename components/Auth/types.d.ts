@@ -12,7 +12,9 @@ export interface AuthFormProps {
   children: React.ReactNode;
   onFormSubmit: (data: any) => void;
   returnType?: "form-data" | "string";
-  setValidationErrors: React.Dispatch<React.SetStateAction<ValidationErrors>>;
+  setValidationErrors:
+    | React.Dispatch<React.SetStateAction<ValidationErrors>>
+    | ((errors: ValidationErrors) => void);
 }
 
 export interface AuthActionProps {

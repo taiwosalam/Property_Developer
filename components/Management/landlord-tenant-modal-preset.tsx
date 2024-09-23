@@ -26,7 +26,7 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
           </p>
         </div>
         <ModalTrigger close className="p-2" type="button" aria-label="close">
-          <DeleteIconX />
+          <DeleteIconX  size={30}/>
         </ModalTrigger>
       </div>
       {/* body */}

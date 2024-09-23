@@ -1,24 +1,18 @@
-import { useState, useEffect } from "react";
 import Image from "next/image";
-import CameraCircle from "@/public/icons/camera-circle.svg";
-import Select from "../Form/Select/select";
+import { useState } from "react";
+import { AuthForm } from "@/components/Auth/auth-components";
+import Input from "@/components/Form/Input/input";
+import Select from "@/components/Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
-import Input from "../Form/Input/input";
-import Button from "../Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
-import { AuthForm } from "../Auth/auth-components";
+import CameraCircle from "@/public/icons/camera-circle.svg";
+import Button from "@/components/Form/Button/button";
 import { ValidationErrors } from "@/utils/types";
-import { getAvatarByUseCase } from "@/data";
-import { useAuthStore } from "@/store/authstrore";
 
-interface AddLandLordOrTenantFormProps {
-  type: "landlord" | "tenant";
-  submitAction: (data: any) => void;
-}
-
-const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
-  type,
+const AddServiceProviderForm = ({
   submitAction,
+}: {
+  submitAction: (data: any) => void;
 }) => {
   const { preview, handleImageChange } = useImageUploader({
     placeholder: CameraCircle,
@@ -34,8 +28,8 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
     selectedState,
     selectedLGA,
     localGovernments,
-    errorMsgs,
     avatarArray,
+    errorMsgs,
   } = state;
 
   const handleStateChange = (value: string) => {
@@ -45,56 +39,28 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   const handleLGAChange = (value: string) => {
     setState((prev) => ({ ...prev, selectedLGA: value }));
   };
-
-  const accessToken = useAuthStore((state) => state.access_token);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch the avatars
-        const data = await getAvatarByUseCase(accessToken, "avatars");
-        setState((prev) => ({ ...prev, avatarArray: data })); // Set the avatarArray with the fetched data
-
-        console.log(data, "Fetched avatars");
-      } catch (error) {
-        console.error("Error fetching avatars:", error);
-      }
-
-      // Update local governments based on selectedState
-      if (selectedState) {
-        const lgas = getLocalGovernments(selectedState);
-        setState((prev) => ({ ...prev, localGovernments: lgas }));
-      } else {
-        setState((prev) => ({ ...prev, localGovernments: [] }));
-      }
-      setState((prev) => ({ ...prev, selectedLGA: "" }));
-    };
-
-    fetchData(); // Call the async function to fetch data
-  }, [selectedState, accessToken]); // Run effect when selectedState or accessToken changes
-
   return (
     <AuthForm
-      returnType="form-data"
       className="custom-flex-col gap-5"
       onFormSubmit={submitAction}
       setValidationErrors={(errors: ValidationErrors) =>
         setState((prev) => ({ ...prev, errorMsgs: errors }))
       }
     >
-      <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Input
           required
-          id="first_name"
-          label="first name"
+          id="full_name"
+          label="full name"
           inputClassName="rounded-[8px]"
-          validationErrors={errorMsgs}
+          //   validationErrors={errorMsgs}
         />
         <Input
           required
-          id="last_name"
-          label="last name"
+          id="company_name"
+          label="company name"
           inputClassName="rounded-[8px]"
-          validationErrors={errorMsgs}
+          //   validationErrors={errorMsgs}
         />
         <Input
           required
@@ -102,55 +68,51 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
           label="email"
           type="email"
           inputClassName="rounded-[8px]"
-          validationErrors={errorMsgs}
+          //   validationErrors={errorMsgs}
         />
         <Input
-          id="phone_number"
-          label="phone number"
+          id="services_rendered"
+          label="Services Rendered"
           inputClassName="rounded-[8px]"
-          validationErrors={errorMsgs}
+          //   validationErrors={errorMsgs}
+        />
+        <Input
+          id="company_phone"
+          label="Company Phone"
+          inputClassName="rounded-[8px]"
+          //   validationErrors={errorMsgs}
+        />
+        <Input
+          id="personal_phone"
+          label="Personal Phone"
+          inputClassName="rounded-[8px]"
+          //   validationErrors={errorMsgs}
+        />
+        <Input
+          id="company_address"
+          label="Company Address"
+          inputClassName="rounded-[8px]"
+          //   validationErrors={errorMsgs}
         />
         <Select
-          validationErrors={errorMsgs}
+          //   validationErrors={errorMsgs}
           options={getAllStates()}
           id="state"
           label="state"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
-          value={selectedState ? selectedState : undefined}
-          onChange={handleStateChange} // Update handler
+          value={selectedState}
+          onChange={handleStateChange}
         />
         <Select
-          validationErrors={errorMsgs}
+          //   validationErrors={errorMsgs}
           options={localGovernments}
           id="local_government"
           label="local government"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
-          onChange={handleLGAChange} // Update handler
-          value={selectedLGA ? selectedLGA : undefined} // Controlled value
-        />
-        <Input
-          validationErrors={errorMsgs}
-          id="address"
-          label="address"
-          inputClassName="rounded-[8px]"
-        />
-        <Select
-          validationErrors={errorMsgs}
-          options={["Individual", "Couples", "Widow"]}
-          id={`${type === "landlord" ? "owner" : "tenant"}_type`}
-          label={`${type === "landlord" ? "owner" : "Tenant/Occupant"} Type`}
-          inputContainerClassName="bg-neutral-2 rounded-[8px]"
-        />
-        <Select
-          validationErrors={errorMsgs}
-          options={["male", "female"]}
-          id="gender"
-          label="Gender"
-          isSearchable={false}
-          placeholder="Select options"
-          inputContainerClassName="bg-neutral-2 rounded-[8px]"
+          onChange={handleLGAChange}
+          value={selectedLGA}
         />
       </div>
       <div className="flex justify-between items-center">
@@ -202,4 +164,4 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   );
 };
 
-export default AddLandLordOrTenantForm;
+export default AddServiceProviderForm;

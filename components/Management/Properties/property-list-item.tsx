@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import { PropertyProps } from "./types";
 import clsx from "clsx";
@@ -9,15 +10,9 @@ import Sample3 from "@/public/empty/SampleProperty3.jpeg";
 import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import ImageModal from "@/components/ImageModal/image-modal";
-import { useState } from "react";
 import { VideoIcon, CameraIcon } from "@/public/icons/icons";
 
-const PropertyListItem: React.FC<
-  PropertyProps & {
-    handleClickPreview: (id: string | number) => void;
-    handleClickManage: (id: string | number) => void;
-  }
-> = ({
+const PropertyListItem: React.FC<PropertyProps> = ({
   id,
   images,
   propertyId,
@@ -26,8 +21,6 @@ const PropertyListItem: React.FC<
   address,
   price,
   type,
-  handleClickManage,
-  handleClickPreview,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
@@ -92,6 +85,7 @@ const PropertyListItem: React.FC<
         </div>
         <div className="w-[220px] h-[220px] rounded-2xl relative overflow-hidden group cursor-pointer">
           <div
+            role="button"
             className="absolute z-[10] inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
             onClick={() => setScreenModal(true)}
@@ -140,7 +134,7 @@ const PropertyListItem: React.FC<
             type="button"
             size="mid"
             className="!py-[5px] !px-5 md:!py-[8px] md:!px-8 !font-bold !bg-white !border-2 !border-brand-9 !text-brand-9 hover:opacity-70"
-            onClick={() => handleClickManage(id)}
+            href={`/management/properties/${id}/edit-property`}
           >
             Manage
           </Button>
@@ -148,7 +142,7 @@ const PropertyListItem: React.FC<
             type="button"
             size="mid"
             className="!py-[5px] !px-5 md:!py-[8px] md:!px-8 !font-bold"
-            onClick={() => handleClickPreview(id)}
+            href={`/management/properties/${id}`}
           >
             Preview
           </Button>
