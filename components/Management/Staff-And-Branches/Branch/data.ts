@@ -4,11 +4,14 @@ export const createNewBranch = async (
 ) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/branch/create`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/branches`,
       {
         method: "POST",
         body: JSON.stringify(data),
-        headers: { Authorization: `Bearer ${access_token}` },
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
       }
     ).then((res) => res.json());
     console.log(response);

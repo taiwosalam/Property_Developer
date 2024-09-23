@@ -115,7 +115,7 @@ const CreateBranchModal = () => {
       {/* body */}
       <div className="px-[30px] pt-10 pb-[24px] md:pb-[36px]">
         <AuthForm
-          returnType="form-data"
+          // returnType="form-data"
           className="custom-flex-col gap-5"
           onFormSubmit={handleSubmit}
           setValidationErrors={() => {}}
