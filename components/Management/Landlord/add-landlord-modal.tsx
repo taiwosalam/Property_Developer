@@ -26,7 +26,6 @@ const AddLandlordModal = () => {
   const accessToken = useAuthStore((state) => state.access_token);
 
   const handleAddLandlord = async (data: FormData) => {
-    console.log("clicked");
     const response = await addLandlord(data, accessToken);
     console.log(response);
   };

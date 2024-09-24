@@ -13652,27 +13652,3 @@ export const states: State[] = [
     },
   },
 ];
-
-export const getAvatarByUseCase = async (
-  access_token: string | null,
-  useCase: string
-) => {
-  try {
-    console.log("The use case is", useCase);
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/files-list`,
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${access_token}` },
-      }
-    ).then((res) => res.json());
-
-    // Dynamically filter the response based on useCase
-    const result = response[useCase]; // Assuming 'useCase' corresponds to the key in response
-    console.log(result, "THE RESULT");
-    return result; // Return the filtered result
-  } catch (error) {
-    console.log(error, "AN ERROR OCCUREDDDDDDDDD");
-    return null; // Optionally return null or handle the error in a different way
-  }
-};

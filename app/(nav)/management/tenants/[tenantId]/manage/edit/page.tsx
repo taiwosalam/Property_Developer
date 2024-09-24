@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 // Images
 import Avatar from "@/public/empty/avatar-1.svg";
 import OrangeCloseCircle from "@/public/icons/orange-close-circle.svg";
@@ -9,8 +11,12 @@ import useTenantData from "@/hooks/useTenantData";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 
+import { ASSET_URL, empty } from "@/app/config";
+import Avatars from "@/components/Avatars/avatars";
+import { useImageUploader } from "@/hooks/useImageUploader";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
+import { TenantEditContext } from "@/components/Management/Tenants/Edit/tenant-edit-context";
 import { LandlordTenantInfoEditSection } from "@/components/Management/landlord-tenant-info-components";
 
 import {
@@ -22,10 +28,29 @@ import {
   TenantEditGuarantorInfoSection,
 } from "@/components/Management/Tenants/Edit/tenant-edit-info-sectios";
 
-import { TenantEditContext } from "@/components/Management/Tenants/Edit/tenant-edit-context";
-
 const EditTenant = () => {
   const { tenant } = useTenantData();
+
+  const { preview, setPreview, inputFileRef, handleImageChange } =
+    useImageUploader();
+
+  const [activeAvatar, setActiveAvatar] = useState<string>("");
+
+  const handleAvatarChange = (avatar: string) => {
+    setPreview(avatar);
+    setActiveAvatar(avatar);
+    inputFileRef.current?.value && (inputFileRef.current.value = "");
+  };
+
+  const handleChangeButton = () => {
+    if (inputFileRef.current) {
+      inputFileRef.current.click();
+    }
+  };
+
+  useEffect(() => {
+    setPreview(`${ASSET_URL}${tenant?.picture}` || tenant?.avatar || empty);
+  }, [tenant, setPreview]);
 
   return (
     <TenantEditContext.Provider value={{ data: tenant }}>
@@ -45,12 +70,17 @@ const EditTenant = () => {
             <LandlordTenantInfoEditSection title="edit avatar">
               <div className="flex">
                 <div className="relative">
-                  <Picture
-                    src={Avatar}
-                    alt="profile picture"
-                    size={90}
-                    rounded
+                  <Picture src={preview} alt="camera" size={90} rounded />
+                  <input
+                    type="file"
+                    id="picture"
+                    name="picture"
+                    accept="image/*"
+                    className="hidden pointer-events-none"
+                    onChange={handleImageChange}
+                    ref={inputFileRef}
                   />
+                  <input type="hidden" name="avatar" value={activeAvatar} />
                   <button className="absolute top-0 right-0 translate-x-[5px] -translate-y-[5px]">
                     <Picture
                       src={OrangeCloseCircle}
@@ -65,21 +95,13 @@ const EditTenant = () => {
                 <p className="text-black text-base font-medium">
                   Choose Avatar
                 </p>
-                <div className="flex gap-3">
-                  {Array(4)
-                    .fill(null)
-                    .map((_, idx) => (
-                      <Picture
-                        key={idx}
-                        src={Avatar}
-                        alt="profile picture"
-                        size={40}
-                        rounded
-                      />
-                    ))}
-                </div>
+                <Avatars type="avatars" onClick={handleAvatarChange} />
               </div>
-              <Button size="base_medium" className="py-2 px-6">
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                onClick={handleChangeButton}
+              >
                 change photo
               </Button>
             </LandlordTenantInfoEditSection>
