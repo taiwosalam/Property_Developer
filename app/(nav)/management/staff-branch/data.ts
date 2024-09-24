@@ -51,13 +51,13 @@ export const getOneBranch = async (
 ) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/branches/${branchId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/branches/details/${branchId}`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${access_token}`,
-          Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
+          Authorization: `Bearer ${access_token}`,
+          // Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
         },
       }
     );
@@ -73,7 +73,11 @@ export const getOneBranch = async (
   }
 };
 
-export const editBranch = async (branchId: string, data: any) => {
+export const editBranch = async (
+  branchId: string,
+  data: any,
+  access_token: string | null
+) => {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/branches/${branchId}`,
@@ -81,14 +85,43 @@ export const editBranch = async (branchId: string, data: any) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${access_token}`,
-          Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
+          Authorization: `Bearer ${access_token}`,
         },
         body: JSON.stringify(data),
       }
     );
   } catch (error) {}
 };
+
+export const deleteBranch = async (
+  branchId: string,
+  access_token: string | null
+) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/branches/${branchId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to delete branch");
+    }
+
+    return { res: data, success: true };
+  } catch (error: any) {
+    console.error("Error deleting branch:", error);
+    return { success: false, message: error.message || "Something went wrong" };
+  }
+};
+
 export const testBranches: BranchProps[] = [
   {
     id: 1,

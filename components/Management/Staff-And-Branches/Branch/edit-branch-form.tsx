@@ -14,13 +14,16 @@ import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { SectionSeparator } from "@/components/Section/section-components";
+import { ResponseType } from "@/app/(nav)/management/staff-branch/[branchId]/types";
 
-const EditBranchForm = () => {
+const EditBranchForm = ({ somedata }: { somedata: ResponseType }) => {
   const states = getAllStates();
 
   const { preview, handleImageChange } = useImageUploader({
     placeholder: PlusAvatar,
   });
+
+  console.log(somedata);
 
   return (
     <div className="custom-flex-col w-full max-w-[968px] gap-8">
@@ -34,6 +37,7 @@ const EditBranchForm = () => {
               label="branch title"
               placeholder="Moniya Branch"
               inputClassName="bg-white"
+              defaultValue={somedata?.branch?.branch_title}
             />
             <Select
               id="state"
@@ -41,6 +45,7 @@ const EditBranchForm = () => {
               label="state"
               options={states}
               inputContainerClassName="bg-white"
+              defaultValue={somedata?.branch?.state}
             />
             <Select
               id="local-government"
@@ -48,29 +53,37 @@ const EditBranchForm = () => {
               label="local government"
               options={[]}
               inputContainerClassName="bg-white"
+              defaultValue={somedata?.branch?.local_government}
             />
             <Input
               id="city"
               label="city"
               placeholder="Ibadan"
               inputClassName="bg-white"
+              defaultValue={somedata?.branch?.city}
             />
             <Input
               id="full-address"
               label="full address"
               placeholder="U4 Joke Plaza, Bodija ibadan"
               inputClassName="bg-white"
+              defaultValue={somedata?.branch?.branch_full_address}
             />
             <Select
               id="branch-wallet"
               label="branch wallet"
               options={["yes", "no"]}
               inputContainerClassName="bg-white"
+              defaultValue={somedata?.branch?.branch_wallet}
             />
           </div>
           <div className="custom-flex-col gap-2">
             <Label id="branch-description">branch description</Label>
-            <TextArea className="bg-white" id="branch-description" />
+            <TextArea
+              className="bg-white"
+              id="branch-description"
+              defaultValue={somedata?.branch?.branch_description}
+            />
           </div>
         </div>
       </div>
@@ -81,7 +94,7 @@ const EditBranchForm = () => {
         <div className="flex gap-3 items-center">
           <label htmlFor="picture" className="cursor-pointer">
             <Picture
-              src={preview}
+              src={somedata?.branch?.branch_image || preview}
               alt="plus"
               size={40}
               className="rounded-[4px] bg-[#D9D9D9] border border-solid border-neutral-4"

@@ -33,14 +33,13 @@ import BranchStatCard from "@/components/Management/Staff-And-Branches/Branch/br
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
 import BranchActivitiesCard from "@/components/Management/Staff-And-Branches/Branch/branch-activity-card";
 import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch/branch-balance-card";
-import { properties } from "../../properties/data";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
 import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-staff-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { getOneBranch } from "../data";
-import { Branch } from "./types";
 import { useAuthStore } from "@/store/authstrore";
+import { ResponseType } from "./types";
 
 const Dashboard = () => {
   const initialState = {
@@ -49,7 +48,8 @@ const Dashboard = () => {
     current_page: 1,
   };
   const [state, setState] = useState<PageState>(initialState);
-  const [fetchedBranchData, setFetchedBranchData] = useState<Branch | null>();
+  const [fetchedBranchData, setFetchedBranchData] =
+    useState<ResponseType | null>();
 
   const { gridView, total_pages, current_page } = state;
   const { branchId } = useParams();
@@ -67,6 +67,8 @@ const Dashboard = () => {
   const setSelectedState = (selectedState: string) => {
     setState((state) => ({ ...state, selectedState }));
   };
+
+  const properties = fetchedBranchData?.property_list || [];
 
   const itemsPerColumn = Math.ceil(dashboardCardData.length / 3);
 
@@ -117,12 +119,12 @@ const Dashboard = () => {
       <div className="w-full flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-black">
-            {fetchedBranchData?.branch_title || "Null"}
+            {fetchedBranchData?.branch?.branch_title || "Null"}
           </h1>
           <div className="text-text-disabled flex items-center space-x-1">
             <LocationIcon />
             <p className="text-sm font-medium">
-              {fetchedBranchData?.branch_full_address || "Null"}
+              {fetchedBranchData?.branch?.branch_full_address || "Null"}
             </p>
           </div>
         </div>

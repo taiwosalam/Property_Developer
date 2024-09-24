@@ -1,7 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
+// Types
+import type { ValidationErrors } from "@/utils/types";
+
 // Images
-import Avatar from "@/public/empty/avatar-1.svg";
 import OrangeCloseCircle from "@/public/icons/orange-close-circle.svg";
 
 // Imports
@@ -9,8 +13,15 @@ import useTenantData from "@/hooks/useTenantData";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 
+import { updateTenant } from "./data";
+import { ASSET_URL, empty } from "@/app/config";
+import { useAuthStore } from "@/store/authstrore";
+import Avatars from "@/components/Avatars/avatars";
+import { useImageUploader } from "@/hooks/useImageUploader";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
+import { AuthForm, formDataToString } from "@/components/Auth/auth-components";
+import { TenantEditContext } from "@/components/Management/Tenants/Edit/tenant-edit-context";
 import { LandlordTenantInfoEditSection } from "@/components/Management/landlord-tenant-info-components";
 
 import {
@@ -22,14 +33,53 @@ import {
   TenantEditGuarantorInfoSection,
 } from "@/components/Management/Tenants/Edit/tenant-edit-info-sectios";
 
-import { TenantEditContext } from "@/components/Management/Tenants/Edit/tenant-edit-context";
-
 const EditTenant = () => {
-  const { tenant } = useTenantData();
+  const { tenant, tenantId } = useTenantData();
+
+  const { preview, setPreview, inputFileRef, handleImageChange } =
+    useImageUploader();
+
+  const [activeAvatar, setActiveAvatar] = useState<string>("");
+  const [errorMsgs, setErrorMsgs] = useState<ValidationErrors | null>(null);
+
+  const accessToken = useAuthStore((state) => state.access_token);
+
+  const handleAvatarChange = (avatar: string) => {
+    setPreview(avatar);
+    setActiveAvatar(avatar);
+    inputFileRef.current?.value && (inputFileRef.current.value = "");
+  };
+
+  const handleChangeButton = () => {
+    if (inputFileRef.current) {
+      inputFileRef.current.click();
+    }
+  };
+
+  const handleUpdateTenant = async (formData: FormData) => {
+    console.log("formData: ", formDataToString(formData));
+
+    const response = await updateTenant({
+      id: tenantId as string,
+      formData,
+      accessToken,
+    });
+
+    console.log(response);
+  };
+
+  useEffect(() => {
+    setPreview(`${ASSET_URL}${tenant?.picture}` || tenant?.avatar || empty);
+  }, [tenant, setPreview]);
 
   return (
     <TenantEditContext.Provider value={{ data: tenant }}>
-      <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
+      <AuthForm
+        returnType="form-data"
+        onFormSubmit={handleUpdateTenant}
+        setValidationErrors={setErrorMsgs}
+        className="custom-flex-col gap-6 lg:gap-10 pb-[100px]"
+      >
         <h2 className="text-black text-xl font-medium">
           Edit Tenants & Occupant
         </h2>
@@ -45,13 +95,21 @@ const EditTenant = () => {
             <LandlordTenantInfoEditSection title="edit avatar">
               <div className="flex">
                 <div className="relative">
-                  <Picture
-                    src={Avatar}
-                    alt="profile picture"
-                    size={90}
-                    rounded
+                  <Picture src={preview} alt="camera" size={90} rounded />
+                  <input
+                    type="file"
+                    id="picture"
+                    name="picture"
+                    accept="image/*"
+                    className="hidden pointer-events-none"
+                    onChange={handleImageChange}
+                    ref={inputFileRef}
                   />
-                  <button className="absolute top-0 right-0 translate-x-[5px] -translate-y-[5px]">
+                  <input type="hidden" name="avatar" value={activeAvatar} />
+                  <button
+                    type="button"
+                    className="absolute top-0 right-0 translate-x-[5px] -translate-y-[5px]"
+                  >
                     <Picture
                       src={OrangeCloseCircle}
                       alt="close"
@@ -65,21 +123,14 @@ const EditTenant = () => {
                 <p className="text-black text-base font-medium">
                   Choose Avatar
                 </p>
-                <div className="flex gap-3">
-                  {Array(4)
-                    .fill(null)
-                    .map((_, idx) => (
-                      <Picture
-                        key={idx}
-                        src={Avatar}
-                        alt="profile picture"
-                        size={40}
-                        rounded
-                      />
-                    ))}
-                </div>
+                <Avatars type="avatars" onClick={handleAvatarChange} />
               </div>
-              <Button size="base_medium" className="py-2 px-6">
+              <Button
+                type="button"
+                size="base_medium"
+                className="py-2 px-6"
+                onClick={handleChangeButton}
+              >
                 change photo
               </Button>
             </LandlordTenantInfoEditSection>
@@ -90,6 +141,7 @@ const EditTenant = () => {
           <Modal>
             <ModalTrigger asChild>
               <Button
+                type="button"
                 variant="light_red"
                 size="base_medium"
                 className="py-2 px-6"
@@ -103,6 +155,7 @@ const EditTenant = () => {
           </Modal>
           <div className="flex gap-6">
             <Button
+              type="button"
               href="/management/tenants/1/manage"
               variant="sky_blue"
               size="base_medium"
@@ -110,12 +163,12 @@ const EditTenant = () => {
             >
               exit
             </Button>
-            <Button size="base_medium" className="py-2 px-6">
+            <Button type="submit" size="base_medium" className="py-2 px-6">
               save
             </Button>
           </div>
         </div>
-      </div>
+      </AuthForm>
     </TenantEditContext.Provider>
   );
 };

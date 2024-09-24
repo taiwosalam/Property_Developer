@@ -5,6 +5,7 @@ import type { TenantProps } from "./Tenants/types";
 import UserTag from "@/components/Tags/user-tag";
 import Image from "next/image";
 import BadgeIcon from "../BadgeIcon/badge-icon";
+import { empty } from "@/app/config";
 
 export type UserCardProps = LandlordProps | TenantProps | ServiceProviderProps;
 
@@ -25,7 +26,7 @@ const UserCard: React.FC<UserCardProps> = ({
     >
       <div className="rounded-lg relative w-[30%] overflow-hidden aspect-[0.9]">
         <Image
-          src={picture_url || ""}
+          src={picture_url || empty}
           alt={first_name}
           fill
           sizes="300px"

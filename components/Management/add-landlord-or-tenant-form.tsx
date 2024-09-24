@@ -8,9 +8,9 @@ import Button from "../Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "../Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
-import { getAvatarByUseCase } from "@/data";
 import { useAuthStore } from "@/store/authstrore";
 import Picture from "../Picture/picture";
+import Avatars from "../Avatars/avatars";
 
 interface AddLandLordOrTenantFormProps {
   type: "landlord" | "tenant";
@@ -21,53 +21,43 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   type,
   submitAction,
 }) => {
-  const { preview, handleImageChange } = useImageUploader({
-    placeholder: CameraCircle,
-  });
-  const [state, setState] = useState({
-    selectedState: "",
-    selectedLGA: "",
-    localGovernments: [] as string[],
-    errorMsgs: {} as ValidationErrors,
-    avatarArray: [] as string[],
-  });
-  const {
-    selectedState,
-    selectedLGA,
-    localGovernments,
-    errorMsgs,
-    avatarArray,
-  } = state;
+  const { preview, setPreview, inputFileRef, handleImageChange } =
+    useImageUploader({
+      placeholder: CameraCircle,
+    });
+
+  const [selectedLGA, setSelectedLGA] = useState("");
+  const [selectedState, setSelectedState] = useState("");
+  const [activeAvatar, setActiveAvatar] = useState<string>("");
+  const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
+  const [localGovernments, setLocalGovernments] = useState<string[]>([]);
+
+  const accessToken = useAuthStore((state) => state.access_token);
 
   const handleStateChange = (value: string) => {
-    setState((prev) => ({ ...prev, selectedState: value }));
+    setSelectedState(value);
   };
 
   const handleLGAChange = (value: string) => {
-    setState((prev) => ({ ...prev, selectedLGA: value }));
+    setSelectedLGA(value);
   };
 
-  const accessToken = useAuthStore((state) => state.access_token);
+  const handleAvatarChange = (avatar: string) => {
+    setPreview(avatar);
+    setActiveAvatar(avatar);
+    inputFileRef.current?.value && (inputFileRef.current.value = "");
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        // Fetch the avatars
-        const data = await getAvatarByUseCase(accessToken, "avatars");
-        setState((prev) => ({ ...prev, avatarArray: data })); // Set the avatarArray with the fetched data
-
-        console.log(data, "Fetched avatars");
-      } catch (error) {
-        console.error("Error fetching avatars:", error);
-      }
-
       // Update local governments based on selectedState
       if (selectedState) {
         const lgas = getLocalGovernments(selectedState);
-        setState((prev) => ({ ...prev, localGovernments: lgas }));
+        setLocalGovernments(lgas);
       } else {
-        setState((prev) => ({ ...prev, localGovernments: [] }));
+        setLocalGovernments([]);
       }
-      setState((prev) => ({ ...prev, selectedLGA: "" }));
+      setSelectedLGA("");
     };
 
     fetchData(); // Call the async function to fetch data
@@ -78,9 +68,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
       returnType="form-data"
       className="custom-flex-col gap-5"
       onFormSubmit={submitAction}
-      setValidationErrors={(errors: ValidationErrors) =>
-        setState((prev) => ({ ...prev, errorMsgs: errors }))
-      }
+      setValidationErrors={setErrorMsgs}
     >
       <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <Input
@@ -160,17 +148,8 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
             Upload picture or select an avatar.
           </p>
           <div className="flex items-end gap-3">
-            <label
-              htmlFor="picture"
-              className="relative w-[50px] h-[50px] md:w-[70px] md:h-[70px] cursor-pointer"
-            >
-              <Image
-                src={preview}
-                alt="camera"
-                fill
-                sizes="70px"
-                className="rounded-full object-cover"
-              />
+            <label htmlFor="picture" className="relative cursor-pointer">
+              <Picture src={preview} alt="camera" size={70} rounded />
               <input
                 type="file"
                 id="picture"
@@ -178,21 +157,11 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
                 accept="image/*"
                 className="hidden pointer-events-none"
                 onChange={handleImageChange}
+                ref={inputFileRef}
               />
+              <input type="hidden" name="avatar" value={activeAvatar} />
             </label>
-            <div className="flex gap-2">
-              {avatarArray.map((value, idx) => (
-                <button type="button" key={idx}>
-                  <Picture
-                    src={value}
-                    alt="avatar"
-                    size={40}
-                    rounded
-                    resolutionMultiplier={3}
-                  />
-                </button>
-              ))}
-            </div>
+            <Avatars type="avatars" onClick={handleAvatarChange} />
           </div>
         </div>
         <Button type="submit" size="base_medium" className="py-2 px-8">

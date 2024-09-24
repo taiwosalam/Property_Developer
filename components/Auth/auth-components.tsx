@@ -62,6 +62,8 @@ export const AuthForm: React.FC<AuthFormProps> = ({
       onSubmit={(e) => {
         e.preventDefault();
 
+        const errors: string[] = [];
+
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
         const data = formDataToString(formData);
@@ -70,6 +72,13 @@ export const AuthForm: React.FC<AuthFormProps> = ({
         if (!objectLength(validation.invalidKeys)) {
           onFormSubmit(returnType === "form-data" ? formData : data);
         } else {
+          Object.entries(validation.invalidKeys).forEach(([key, messge]) => {
+            errors.push(`${key}: ${messge}`);
+          });
+
+          if (errors.length > 0)
+            console.warn("Validation errors:\n•", errors.join(`\n• `));
+
           setValidationErrors(validation.invalidKeys);
         }
       }}
