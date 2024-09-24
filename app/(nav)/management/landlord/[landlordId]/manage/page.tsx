@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 
 // Images
 import Avatar from "@/public/empty/avatar-1.svg";
-import Verified from "@/public/icons/verified.svg";
 
 // Fonts
 import { secondaryFont } from "@/utils/fonts";
@@ -12,6 +11,7 @@ import { secondaryFont } from "@/utils/fonts";
 // Imports
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import {
   LandlordTenantInfo,
   LandlordTenantInfoBox,
@@ -70,11 +70,11 @@ const ManageLandlord = () => {
             <div className="custom-flex-col gap-8">
               <div className="custom-flex-col gap-4">
                 <div className="custom-flex-col">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center">
                     <p className="text-black text-xl font-bold capitalize">
                       {LandlordPageData?.name}
                     </p>
-                    <Picture src={Verified} alt="verified" size={16} />
+                    <BadgeIcon color="blue"/>
                   </div>
                   <p
                     style={{ color: "rgba(21, 21, 21, 0.70)" }}

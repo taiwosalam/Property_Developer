@@ -2,8 +2,7 @@
 import type { LandlordTenantModalPresetProps } from "./types";
 
 import { ModalTrigger } from "../Modal/modal";
-import { ChevronLeft } from "@/public/icons/icons";
-import { DeleteIconX } from "@/public/icons/icons";
+import { ChevronLeft, DeleteIconX } from "@/public/icons/icons";
 
 const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   star,
@@ -12,7 +11,7 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   children,
 }) => {
   return (
-    <div className="w-[900px] max-w-[80%] max-h-[85%] rounded-[20px] bg-white overflow-x-auto custom-round-scrollbar">
+    <div className="w-[900px] max-w-[80%] max-h-[90vh] rounded-[20px] bg-white overflow-y-auto custom-round-scrollbar">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-solid border-[#B8B8B8] sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[30px] bg-white">
         <div className="flex items-center gap-2">
@@ -27,7 +26,7 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
           </p>
         </div>
         <ModalTrigger close className="p-2" type="button" aria-label="close">
-          <DeleteIconX size={30} />
+          <DeleteIconX size={34} />
         </ModalTrigger>
       </div>
       {/* body */}

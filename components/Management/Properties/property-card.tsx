@@ -139,7 +139,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 paginate(e, -1);
               }
             }}
-            className="absolute inset-0 cursor-pointer"
+            className="absolute inset-0"
           />
         </AnimatePresence>
         <AnimatePresence>

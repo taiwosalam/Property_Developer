@@ -7,9 +7,7 @@ import {
   LandlordTenantInfoEditSection as InfoEditSection,
 } from "@/components/Management/landlord-tenant-info-components";
 import Select from "@/components/Form/Select/select";
-import { getAllStates } from "@/utils/states";   <div className="flex items-end">
-  <Button>update</Button>
-</div>;
+import { getAllStates } from "@/utils/states";
 import Picture from "@/components/Picture/picture";
 import Avatar from "@/public/empty/avatar.png";
 import OrangeCloseCircle from "@/public/icons/orange-close-circle.svg";
@@ -25,23 +23,25 @@ const EditServiceProvider = () => {
           <InfoEditSection title="Details">
             <InfoEditGrid>
               <Input id="full_name" label="full name" required />
-              <Input id="company_name" label="company name" required />
               <Input id="email" type="email" label="email" required />
               <Input id="service_rendered" label="service rendered" required />
+              <Input id="personal_number" label="personal number" required />
+              <Input id="address" label="address" required />
               <Select
                 id="state"
                 label="state"
                 options={states}
                 placeholder="Select options"
+                inputContainerClassName="bg-neutral-2"
               />
               <Select
                 id="local-government"
                 label="local government"
                 placeholder="Select options"
                 options={["local government 1", "local government 2"]}
+                inputContainerClassName="bg-neutral-2"
               />
-
-              <div className="flex items-end">
+              <div className="flex items-end justify-end">
                 <Button>update</Button>
               </div>
             </InfoEditGrid>
@@ -51,9 +51,8 @@ const EditServiceProvider = () => {
               <Input id="name" label="name" required />
               <Input id="email" type="email" label="email" required />
               <Input id="phone_number" label="phone number" required />
-
               <Input id="address" label="address" />
-              <div className="flex items-end">
+              <div className="flex items-end justify-end md:col-span-2">
                 <Button>update</Button>
               </div>
             </InfoEditGrid>
@@ -64,7 +63,7 @@ const EditServiceProvider = () => {
               <Input id="account_name" label="account name" required />
               <Input id="account_number" label="account number" required />
 
-              <div className="flex items-end">
+              <div className="flex items-end justify-end">
                 <Button>update</Button>
               </div>
             </InfoEditGrid>

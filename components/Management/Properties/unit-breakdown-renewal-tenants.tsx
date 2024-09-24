@@ -4,7 +4,11 @@ import { rentPeriods } from "@/data";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { useState, useEffect } from "react";
 import { DeleteIconX } from "@/public/icons/icons";
-import { formatNumber, currencySymbols } from "@/utils/number-formatter";
+import {
+  formatCostInputValue,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
 import { useUnitForm } from "./unit-form-context";
 
 const emptyStateValues = {
@@ -26,28 +30,10 @@ const UnitBreakdownRenewalTenant = () => {
   type FormField = keyof typeof formValues;
   // Update formValues based on input changes
   const handleInputChange = (field: FormField, value: string) => {
-    const sanitizedValue = value.replace(/[^0-9.]/g, "");
-    const unformattedValue = sanitizedValue.replace(/,/g, "");
-    if (unformattedValue.endsWith(".")) {
-      setFormValues((prevValues) => ({
-        ...prevValues,
-        [field]: unformattedValue,
-      }));
-    } else {
-      const numericValue = parseFloat(unformattedValue);
-      if (!isNaN(numericValue)) {
-        const formattedValue = numericValue.toFixed(2);
-        setFormValues((prevValues) => ({
-          ...prevValues,
-          [field]: formatNumber(parseFloat(formattedValue)),
-        }));
-      } else {
-        setFormValues((prevValues) => ({
-          ...prevValues,
-          [field]: "0",
-        }));
-      }
-    }
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [field]: formatCostInputValue(value),
+    }));
   };
 
   const addOtherCharges = () => {

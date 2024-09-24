@@ -16,8 +16,6 @@ import Navbar from "@/components/Nav/navbar";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { trackOutsideClick } from "@/utils/track-outside-click";
 import { useAuthStoreSelectors } from "@/store/authstrore";
-import { getToken } from "@/utils/cookies";
-import Picture from "@/components/Picture/picture";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
