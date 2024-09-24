@@ -103,23 +103,36 @@ export const TenantEditProfileInfoSection = () => {
 export const TenantEditGuarantorInfoSection = () => {
   const { data } = useTenantEditContext();
 
-  const guarantor = data?.guarantor || {};
+  const guarantor = data?.guarantor || {
+    name: "",
+    email: "",
+    address: "",
+    phone_number: "",
+  };
 
   return (
     <LandlordTenantInfoEditSection title="Guarantor">
       <LandlordTenantInfoEditGrid>
-        <Input id="name" label="full name" placeholder="Placeholder" required />
+        <Input
+          id="name"
+          label="full name"
+          placeholder="Placeholder"
+          defaultValue={guarantor.name}
+          required
+        />
         <Input
           id="email"
           type="email"
           label="email"
           placeholder="Placeholder"
+          defaultValue={guarantor.email}
           required
         />
         <Input
           id="phone-number"
           label="phone number"
           placeholder="Placeholder"
+          defaultValue={guarantor.phone_number}
           required
         />
         <Select
@@ -128,7 +141,12 @@ export const TenantEditGuarantorInfoSection = () => {
           placeholder="Select options"
           options={["single", "married"]}
         />
-        <Input id="address" label="address" placeholder="Placeholder" />
+        <Input
+          id="address"
+          label="address"
+          placeholder="Placeholder"
+          defaultValue={guarantor.address}
+        />
         <div className="flex items-end">
           <Button size="base_medium" className="py-2 px-6">
             update
@@ -140,16 +158,36 @@ export const TenantEditGuarantorInfoSection = () => {
 };
 
 export const TenantEditOthersInfoSection = () => {
+  const { data } = useTenantEditContext();
+
+  const others = data?.others || {
+    type: "",
+    note: "",
+    occupation: "",
+    family_type: "",
+  };
+
   return (
     <LandlordTenantInfoEditSection title="Others">
       <LandlordTenantInfoEditGrid>
-        <Input id="employment" label="employment" placeholder="Placeholder" />
+        <Input
+          id="employment"
+          label="employment"
+          placeholder="Placeholder"
+          defaultValue={others.occupation}
+        />
         <Input
           id="employment-type"
           label="employment type"
           placeholder="Placeholder"
+          defaultValue={others.type}
         />
-        <Input id="family-type" label="family type" placeholder="Placeholder" />
+        <Input
+          id="family-type"
+          label="family type"
+          placeholder="Placeholder"
+          defaultValue={others.family_type}
+        />
         <div className="flex items-end">
           <Button size="base_medium" className="py-2 px-6">
             update
@@ -161,19 +199,35 @@ export const TenantEditOthersInfoSection = () => {
 };
 
 export const TenantEditBankDetailsSection = () => {
+  const { data } = useTenantEditContext();
+
+  const bank_details = data?.bank_details || {
+    bank_name: "",
+    wallet_id: "",
+    account_name: "",
+    account_number: "",
+  };
+
   return (
     <LandlordTenantInfoEditSection title="Bank Details">
       <LandlordTenantInfoEditGrid>
-        <Input id="bank-name" label="bank name" placeholder="Placeholder" />
+        <Input
+          id="bank-name"
+          label="bank name"
+          placeholder="Placeholder"
+          defaultValue={bank_details.bank_name}
+        />
         <Input
           id="account-name"
           label="account name"
           placeholder="Placeholder"
+          defaultValue={bank_details.account_name}
         />
         <Input
           id="account-number"
           label="account number"
           placeholder="Placeholder"
+          defaultValue={bank_details.account_number}
         />
         <div className="flex items-end">
           <Button size="base_medium" className="py-2 px-6">
