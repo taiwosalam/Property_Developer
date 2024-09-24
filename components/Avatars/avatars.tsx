@@ -11,10 +11,12 @@ import { getAvatarsList } from "./data";
 import Picture from "../Picture/picture";
 import { useAuthStore } from "@/store/authstrore";
 
-const Avatars: React.FC<AvatarsProps> = ({ type, onClick }) => {
-  const size = 40;
-  const max_size = 5;
-
+const Avatars: React.FC<AvatarsProps> = ({
+  type,
+  onClick,
+  size = 40,
+  maxSize = 5,
+}) => {
   const accessToken = useAuthStore((state) => state.access_token);
 
   const [avatars, setAvatars] = useState<string[] | null>(null);
@@ -32,7 +34,7 @@ const Avatars: React.FC<AvatarsProps> = ({ type, onClick }) => {
   return (
     <div className="flex gap-2">
       {avatars
-        ? avatars.slice(0, max_size).map((avatar, idx) => (
+        ? avatars.slice(0, maxSize).map((avatar, idx) => (
             <button
               type="button"
               key={idx}
@@ -49,7 +51,7 @@ const Avatars: React.FC<AvatarsProps> = ({ type, onClick }) => {
               />
             </button>
           ))
-        : Array(5)
+        : Array(maxSize)
             .fill(null)
             .map((_, idx) => (
               <Picture
