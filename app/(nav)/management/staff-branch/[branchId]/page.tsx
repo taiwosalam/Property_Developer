@@ -119,12 +119,12 @@ const Dashboard = () => {
       <div className="w-full flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-black">
-            {fetchedBranchData?.branch.branch_title || "Null"}
+            {fetchedBranchData?.branch?.branch_title || "Null"}
           </h1>
           <div className="text-text-disabled flex items-center space-x-1">
             <LocationIcon />
             <p className="text-sm font-medium">
-              {fetchedBranchData?.branch.branch_full_address || "Null"}
+              {fetchedBranchData?.branch?.branch_full_address || "Null"}
             </p>
           </div>
         </div>
