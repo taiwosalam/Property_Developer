@@ -74,7 +74,7 @@ const EditServiceProvider = () => {
                 id="document-type"
                 label="document type"
                 placeholder="Select options"
-                options={["single", "married"]}
+                options={[]}
               />
               <Input id="browse" type="file" label="browse" />
               <div className="flex items-end">

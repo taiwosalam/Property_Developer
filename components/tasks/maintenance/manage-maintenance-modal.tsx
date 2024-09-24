@@ -21,7 +21,14 @@ const ManageMaintenanceModal = () => {
     setMaintenanceCost(formatCostInputValue(value));
   };
   return (
-    <div className="font-medium rounded-lg border border-[rgba(193,194,195,0.40)] min-w-[600px] max-h-[90vh] overflow-y-auto custom-round-scrollbar">
+    <div
+      className="font-medium rounded-lg border border-[rgba(193,194,195,0.40)] min-w-[600px] max-h-[90vh] overflow-y-auto custom-round-scrollbar"
+      style={{
+        boxShadow:
+          "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
+      }}
+    >
+      {/* Header */}
       <div className="text-center text-text-secondary text-base pt-10 pb-4 rounded-t-lg bg-brand-1 sticky z-[1] top-0">
         Manage Maintenance
         <ModalTrigger asChild close>
@@ -30,6 +37,7 @@ const ManageMaintenanceModal = () => {
           </button>
         </ModalTrigger>
       </div>
+      {/* Body */}
       <div className="px-6 pt-3 pb-8 bg-white rounded-b-lg">
         <div
           className="grid grid-cols-3 gap-x-4 gap-y-[18px] [&>div]:flex [&>div]:flex-col [&>div]:gap-2 px-4 py-6 rounded-lg"

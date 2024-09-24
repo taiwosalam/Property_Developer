@@ -15,7 +15,7 @@ const Examine = () => {
   const { isSmallTablet } = useWindowWidth();
 
   return (
-    <div className="custom-flex-col gap-8">
+    <div className="space-y-9">
       <div className="page-header-container gap-6">
         {!isSmallTablet && (
           <AutoResizingGrid minWidth={280}>

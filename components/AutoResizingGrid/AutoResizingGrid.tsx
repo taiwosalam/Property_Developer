@@ -21,6 +21,7 @@ const AutoResizingGrid: React.FC<AutoResizingGridProps> = ({
   minWidth = 250,
   gap = 20,
   children,
+  containerClassName,
 }) => {
   const [columns, setColumns] = useState(1); // State to track the number of columns
   const gridRef = useRef<HTMLDivElement>(null); // Ref for the grid container
@@ -60,9 +61,13 @@ const AutoResizingGrid: React.FC<AutoResizingGridProps> = ({
     // The grid container with dynamic column count and custom gap
     <div
       ref={gridRef}
-      className={clsx("grid duration-300", {
-        "opacity-0": !hasCalculated, // Hide grid while columns are being calculated
-      })}
+      className={clsx(
+        "grid duration-300",
+        {
+          "opacity-0": !hasCalculated, // Hide grid while columns are being calculated
+        },
+        containerClassName
+      )}
       style={{
         gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
         gap: `${gap}px`, // Allow users to pass custom gap
