@@ -318,7 +318,6 @@ const StaffAndBranches = () => {
             }}
             tableBodyCellSx={{
               fontWeight: 500,
-              // fontSize: "16px",
               color: "#050901",
               border: "none",
               textAlign: "left",

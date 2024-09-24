@@ -5,7 +5,7 @@ import { SearchInputProps } from "./types";
 const SearchInput: React.FC<SearchInputProps> = ({
   textInputClassName,
   className,
-  placeholder,
+  placeholder = "Search",
   searchIconColor = "#1E3A8A",
 }) => {
   return (
@@ -25,7 +25,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           "flex-1 bg-transparent outline-none text-xs md:text-sm font-normal search-input-placeholder-color w-[270px]",
           textInputClassName
         )}
-        placeholder={placeholder || "Search"}
+        placeholder={placeholder}
       />
     </div>
   );

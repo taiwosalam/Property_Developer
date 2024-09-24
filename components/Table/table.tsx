@@ -1,3 +1,4 @@
+"use client";
 import type { CustomTableProps, DataItem, Field } from "./types";
 import clsx from "clsx";
 import SampleLandlord from "@/public/empty/SampleLandlord.jpeg";
@@ -108,7 +109,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
       <Table sx={{ boxShadow: "none" }}>
         {displayTableHead && (
           <TableHead
-            className={clsx("sticky top-0 z-[2]", tableHeadClassName)}
+            className={clsx("sticky top-0 z-[2] capitalize", tableHeadClassName)}
             style={tableHeadStyle}
           >
             <TableRow>

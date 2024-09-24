@@ -26,7 +26,10 @@ const Maintenance = () => {
           </AutoResizingGrid>
         )}
         <div className="flex items-center">
-          <Button href="/tasks/maintenance/create-new" className="page-header-button">
+          <Button
+            href="/tasks/maintenance/create-new"
+            className="page-header-button"
+          >
             + create maintenance
           </Button>
         </div>
