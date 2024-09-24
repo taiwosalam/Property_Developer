@@ -10,6 +10,7 @@ import { checkValidatonError } from "@/utils/validation";
 const Select: React.FC<SelectProps> = ({
   id,
   label,
+  defaultValue,
   value: propValue = "",
   required,
   className,

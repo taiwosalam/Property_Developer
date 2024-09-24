@@ -51,13 +51,13 @@ export const getOneBranch = async (
 ) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/branches/${branchId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/branches/details/${branchId}`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${access_token}`,
-          Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
+          Authorization: `Bearer ${access_token}`,
+          // Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
         },
       }
     );
