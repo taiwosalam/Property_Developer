@@ -101,15 +101,7 @@ const PropertyListItem: React.FC<PropertyProps> = ({
               </div>
             </div>
           </div>
-
-          <Image
-            src={Sample}
-            alt={name}
-            fill
-            objectFit="cover"
-            objectPosition="center"
-            className="object-cover"
-          />
+          <Image src={Sample} alt={name} fill className="object-cover" />
         </div>
       </div>
       <hr className="my-4" />
