@@ -1,5 +1,6 @@
 export interface SelectProps {
   id: string;
+  defaultValue?: string;
   options: string[];
   value?: string;
   label?: string;
