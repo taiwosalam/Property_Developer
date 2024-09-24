@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 
 export const createNewBranch = async (
-  data: any,
+  data: FormData,
   access_token: string | null
 ) => {
   let isSuccess = false;
@@ -11,10 +11,10 @@ export const createNewBranch = async (
       `${process.env.NEXT_PUBLIC_BASE_URL}/branches`,
       {
         method: "POST",
-        body: JSON.stringify(data),
+        body: data,
         headers: {
           Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
+          // "Content-Type": "application/json",
         },
       }
     );

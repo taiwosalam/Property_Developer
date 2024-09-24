@@ -1,5 +1,5 @@
 import { ModalTrigger, useModal } from "@/components/Modal/modal";
-import { PlusIcon, DeleteIconX } from "@/public/icons/icons";
+import { DeleteIconX } from "@/public/icons/icons";
 import Image from "next/image";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
@@ -11,6 +11,10 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { useFormDataStore } from "@/store/formdatastore";
 import { useAuthStore } from "@/store/authstrore";
 import { createNewBranch } from "./Branch/data";
+import Avatars from "@/components/Avatars/avatars";
+import { useImageUploader } from "@/hooks/useImageUploader";
+import Picture from "@/components/Picture/picture";
+import PlusIcon from "@/public/icons/plus-bold.svg";
 
 interface State {
   selectedState: string;
@@ -22,6 +26,19 @@ interface State {
 
 const CreateBranchModal = () => {
   const { setIsOpen } = useModal();
+
+  const { preview, setPreview, inputFileRef, handleImageChange } =
+    useImageUploader({
+      placeholder: PlusIcon,
+    });
+
+  const [activeAvatar, setActiveAvatar] = useState<string>("");
+
+  const handleAvatarChange = (avatar: string) => {
+    setPreview(avatar);
+    setActiveAvatar(avatar);
+    inputFileRef.current?.value && (inputFileRef.current.value = "");
+  };
 
   const [state, setState] = useState<State>({
     selectedState: "",
@@ -86,7 +103,7 @@ const CreateBranchModal = () => {
 
   const accessToken = useAuthStore((state) => state.access_token);
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: FormData) => {
     const res = await createNewBranch(data, accessToken);
 
     if (res) {
@@ -108,7 +125,7 @@ const CreateBranchModal = () => {
       {/* body */}
       <div className="px-[30px] pt-10 pb-[24px] md:pb-[36px]">
         <AuthForm
-          // returnType="form-data"
+          returnType="form-data"
           className="custom-flex-col gap-5"
           onFormSubmit={handleSubmit}
           setValidationErrors={() => {}}
@@ -165,25 +182,28 @@ const CreateBranchModal = () => {
             <div className="self-center">
               <p className="mb-4">Upload Branch picture or choose an avatar.</p>
               <div className="flex gap-2">
-                <button
-                  aria-label="Upload Picture"
-                  type="button"
-                  className="w-8 h-8 md:w-10 md:h-10 border border-neutral-4 bg-[#D9D9D9] rounded-md grid place-items-center text-white"
+                <label
+                  htmlFor="picture"
+                  className="relative cursor-pointer w-8 h-8 md:w-10 md:h-10 border border-neutral-4 bg-[#D9D9D9] rounded-md grid place-items-center text-white"
                 >
-                  <PlusIcon />
-                </button>
-                {Array(4)
-                  .fill(null)
-                  .map((_, idx) => (
-                    <Image
-                      key={idx}
-                      src={`/empty/avatar-${idx + 1}.svg`}
-                      alt="avatar"
-                      width={40}
-                      height={40}
-                      className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
-                    />
-                  ))}
+                  <Picture src={PlusIcon} alt="camera" size={32} rounded />
+                  <input
+                    type="file"
+                    id="picture"
+                    name="picture"
+                    accept="image/*"
+                    className="hidden pointer-events-none"
+                    onChange={handleImageChange}
+                    ref={inputFileRef}
+                  />
+                  <input type="hidden" name="avatar" value={activeAvatar} />
+                </label>
+                <Avatars
+                  type="branchAvatar"
+                  maxSize={4}
+                  onClick={handleAvatarChange}
+                />
+                <Picture src={preview} alt="camera" size={40} rounded />
               </div>
             </div>
           </div>

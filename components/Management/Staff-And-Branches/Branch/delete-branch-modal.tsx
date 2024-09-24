@@ -5,19 +5,39 @@ import useStep from "@/hooks/useStep";
 import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
+import { useParams } from "next/navigation";
+import { deleteBranch } from "@/app/(nav)/management/staff-branch/data";
+import { useAuthStore } from "@/store/authstrore";
+import { toast } from "sonner";
 
 const DeleteBranchModal = () => {
+  const branchId = useParams().branchId as string;
+  const AccessToken = useAuthStore((state) => state.access_token);
   const { activeStep, changeStep } = useStep(2);
+
+  const handleConfirmDelete = async () => {
+    const { res, success, message } = await deleteBranch(branchId, AccessToken);
+
+    if (success) {
+      // If the delete operation was successful, show success toast
+      toast.success(res?.message || "Branch deleted successfully");
+      // Proceed to the next step in your process
+      changeStep("next");
+    } else {
+      // If the delete operation failed, show an error toast
+      toast.error(message || "Failed to delete branch");
+    }
+  };
 
   return activeStep === 1 ? (
     <ModalPreset type="warning">
       <p className="text-text-disabled text-sm font-normal">
         Are you certain you want to delete this branch?{" "}
-        <span className="text-status-error-primary">*</span>Please note that you can only delete
-        an empty branch.
+        <span className="text-status-error-primary">*</span>Please note that you
+        can only delete an empty branch.
       </p>
       <div className="flex flex-col items-center gap-4">
-        <Button onClick={() => changeStep("next")}>proceed</Button>
+        <Button onClick={handleConfirmDelete}>proceed</Button>
         <ModalTrigger
           close
           className="text-brand-primary text-sm font-medium px-3"
