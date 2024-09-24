@@ -1,16 +1,20 @@
+"use client";
 import { useState, useEffect } from "react";
-import Image from "next/image";
+
+// Images
 import CameraCircle from "@/public/icons/camera-circle.svg";
-import Select from "../Form/Select/select";
-import { getAllStates, getLocalGovernments } from "@/utils/states";
+
+// Imports
 import Input from "../Form/Input/input";
-import Button from "../Form/Button/button";
-import { useImageUploader } from "@/hooks/useImageUploader";
-import { AuthForm } from "../Auth/auth-components";
-import { ValidationErrors } from "@/utils/types";
-import { useAuthStore } from "@/store/authstrore";
 import Picture from "../Picture/picture";
 import Avatars from "../Avatars/avatars";
+import Button from "../Form/Button/button";
+import Select from "../Form/Select/select";
+import { ValidationErrors } from "@/utils/types";
+import { useAuthStore } from "@/store/authstrore";
+import { AuthForm } from "../Auth/auth-components";
+import { useImageUploader } from "@/hooks/useImageUploader";
+import { getAllStates, getLocalGovernments } from "@/utils/states";
 
 interface AddLandLordOrTenantFormProps {
   type: "landlord" | "tenant";
