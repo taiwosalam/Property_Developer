@@ -114,26 +114,23 @@ export const TenantEditGuarantorInfoSection = () => {
     <LandlordTenantInfoEditSection title="Guarantor">
       <LandlordTenantInfoEditGrid>
         <Input
-          id="name"
+          id="guarantor_full_name"
           label="full name"
           placeholder="Placeholder"
           defaultValue={guarantor.name}
-          required
         />
         <Input
-          id="email"
+          id="guarantor_email"
           type="email"
           label="email"
           placeholder="Placeholder"
           defaultValue={guarantor.email}
-          required
         />
         <Input
-          id="phone-number"
+          id="guarantor_phone_number"
           label="phone number"
           placeholder="Placeholder"
           defaultValue={guarantor.phone_number}
-          required
         />
         <Select
           id="relationship"
@@ -142,7 +139,7 @@ export const TenantEditGuarantorInfoSection = () => {
           options={["single", "married"]}
         />
         <Input
-          id="address"
+          id="guarantor_address"
           label="address"
           placeholder="Placeholder"
           defaultValue={guarantor.address}
@@ -177,13 +174,13 @@ export const TenantEditOthersInfoSection = () => {
           defaultValue={others.occupation}
         />
         <Input
-          id="employment-type"
+          id="employment_type"
           label="employment type"
           placeholder="Placeholder"
           defaultValue={others.type}
         />
         <Input
-          id="family-type"
+          id="family_type"
           label="family type"
           placeholder="Placeholder"
           defaultValue={others.family_type}
@@ -212,19 +209,19 @@ export const TenantEditBankDetailsSection = () => {
     <LandlordTenantInfoEditSection title="Bank Details">
       <LandlordTenantInfoEditGrid>
         <Input
-          id="bank-name"
+          id="bank_name"
           label="bank name"
           placeholder="Placeholder"
           defaultValue={bank_details.bank_name}
         />
         <Input
-          id="account-name"
+          id="account_name"
           label="account name"
           placeholder="Placeholder"
           defaultValue={bank_details.account_name}
         />
         <Input
-          id="account-number"
+          id="account_number"
           label="account number"
           placeholder="Placeholder"
           defaultValue={bank_details.account_number}
@@ -244,12 +241,12 @@ export const TenantEditAttachmentSection = () => {
     <LandlordTenantInfoEditSection title="attachment">
       <LandlordTenantInfoEditGrid>
         <Select
-          id="document-type"
+          id="document_type"
           label="document type"
           placeholder="Select options"
           options={["single", "married"]}
         />
-        <Input id="browse" type="file" label="browse" />
+        <Input id="upload_attachment" type="file" label="browse" />
         <div className="flex items-end">
           <Button size="base_medium" className="py-2 px-6">
             add document
@@ -267,7 +264,7 @@ export const TenantEditNoteSection = () => {
       style={{ padding: "40px 16px", gap: "20px" }}
       headingStyle={{ padding: "0 24px" }}
     >
-      <TextArea id="note" />
+      <TextArea id="add_note" />
     </LandlordTenantInfoEditSection>
   );
 };
