@@ -4,9 +4,10 @@ import { CSSProperties } from "react";
 export const LandlordTenantInfoBox: React.FC<{
   style?: CSSProperties;
   children: React.ReactNode;
-}> = ({ style, children }) => (
+  className?: string;
+}> = ({ style, children, className }) => (
   <div
-    className="p-4 bg-white rounded-2xl overflow-hidden"
+    className={clsx("p-4 bg-white rounded-2xl overflow-hidden", className)}
     style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)", ...style }}
   >
     {children}
@@ -21,14 +22,14 @@ export const LandlordTenantInfo: React.FC<{
   <LandlordTenantInfoBox>
     <div className="custom-flex-col gap-4">
       {heading && (
-        <p className="text-black text-xl font-bold capitalize">
+        <h3 className="text-black text-lg lg:text-xl font-bold capitalize">
           {heading.split("_").join(" ")}
-        </p>
+        </h3>
       )}
       {separator && (
         <div className="w-full border border-dashed border-brand-9 opacity-40"></div>
       )}
-      <div className="flex gap-10 text-base font-normal capitalize">
+      <div className="flex gap-10 text-sm lg:text-base font-normal capitalize">
         <div className="custom-flex-col gap-4">
           {Object.keys(info).map((key, idx) => (
             <p key={idx} className="text-[#747474]">
@@ -56,17 +57,17 @@ export const LandlordTenantInfoSection: React.FC<{
   <div
     className={clsx("custom-flex-col", {
       "gap-2": minimized,
-      "gap-6": !minimized,
+      "gap-5": !minimized,
     })}
   >
-    <p
+    <h2
       className={clsx("capitalize", {
-        "text-black text-2xl font-bold": !minimized,
-        "text-text-quaternary text-xl font-medium": minimized,
+        "text-black text-xl lg:text-2xl font-bold": !minimized,
+        "text-text-quaternary text-lg lg:text-xl font-medium": minimized,
       })}
     >
       {title}
-    </p>
+    </h2>
     {children}
   </div>
 );
@@ -74,7 +75,7 @@ export const LandlordTenantInfoSection: React.FC<{
 export const LandlordTenantInfoDocument: React.FC<{}> = () => (
   <div className="w-[160px] h-[168px] rounded-2xl overflow-hidden bg-text-disabled custom-flex-col">
     <div className="flex-1"></div>
-    <div className="p-4 bg-brand-primary text-white text-base font-medium">
+    <div className="p-4 bg-brand-primary text-white text-sm lg:text-base font-medium">
       <p className="w-full whitespace-nowrap overflow-hidden text-ellipsis">
         Name of document
       </p>
@@ -94,7 +95,7 @@ export const LandlordTenantInfoEditSection: React.FC<{
     style={style}
   >
     <h2
-      className="text-primary-navy text-xl font-bold capitalize"
+      className="text-primary-navy text-lg lg:text-xl font-bold capitalize"
       style={headingStyle}
     >
       {title}
@@ -106,7 +107,7 @@ export const LandlordTenantInfoEditSection: React.FC<{
 export const LandlordTenantInfoEditGrid: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => (
-  <div className="grid grid-cols-2 gap-y-5 gap-x-6 xl:gap-x-[60px]">
+  <div className="grid md:grid-cols-2 gap-y-5 gap-x-6 xl:gap-x-[60px]">
     {children}
   </div>
 );

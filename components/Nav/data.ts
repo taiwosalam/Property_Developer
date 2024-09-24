@@ -27,7 +27,7 @@ export const nav_items: NavItemsProps = [
       { label: "inspections", href: "/inspections" },
       { label: "examine", href: "/examine" },
       { label: "maintenance", href: "/maintenance" },
-      { label: "service providers", href: "/service" },
+      { label: "service providers", href: "/service-providers" },
       { label: "calendars", href: "/calendars" },
       { label: "announcements", href: "/announcements" },
       { label: "call back request", href: "/call" },

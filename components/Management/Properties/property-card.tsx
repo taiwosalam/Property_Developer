@@ -27,8 +27,6 @@ import { empty } from "@/app/config";
 
 interface PropertyCardProps extends PropertyProps {
   isClickable?: boolean;
-  handleClickPreview?: (id: string | number) => void;
-  handleClickManage?: (id: string | number) => void;
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
@@ -41,8 +39,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   price,
   type,
   isClickable = true,
-  handleClickPreview,
-  handleClickManage,
 }) => {
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   const modalRef = useRef<HTMLDivElement>(null);
@@ -143,7 +139,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 paginate(e, -1);
               }
             }}
-            className="absolute inset-0 cursor-pointer"
+            className="absolute inset-0"
           />
         </AnimatePresence>
         <AnimatePresence>
@@ -162,7 +158,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 type="button"
                 size="mid"
                 className="!py-[8px] !px-8 !font-bold"
-                onClick={() => handleClickManage?.(id)}
+                href={`/management/properties/${id}/edit-property`}
               >
                 Manage
               </Button>
@@ -170,7 +166,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 type="button"
                 size="mid"
                 className="py-[8px] !px-8 !font-bold"
-                onClick={() => handleClickPreview?.(id)}
+                href={`/management/properties/${id}`}
               >
                 Preview
               </Button>
@@ -183,12 +179,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         role="button"
         onClick={isClickable ? () => setIsModalActive(true) : undefined}
       >
-        <p className="text-brand-5 text-sm font-bold">ID: {propertyId}</p>
-        <p className="text-[#374151] text-2xl font-bold">
+        <p className="text-brand-5 text-xs lg:text-sm font-bold">
+          ID: {propertyId}
+        </p>
+        <p className="text-[#374151] text-xl lg:text-2xl font-bold">
           {name} <br />({units} Units)
         </p>
-        <p className="flex items-center gap-1 text-brand-tertiary text-sm font-normal">
-          <LocationIcon /> {address}
+        <p className="flex items-center gap-1 text-brand-tertiary text-xs lg:text-sm font-normal">
+          <LocationIcon />
+          {address}
         </p>
         <div className="flex justify-between items-end mt-1">
           <p
@@ -202,12 +201,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             {type === "rent" ? "Rental Property" : "Gated Estate"}
           </p>
           <div className="text-right">
-            <p className="text-brand-primary text-xl font-bold">{`${
+            <p className="text-brand-primary text-lg lg:text-xl font-bold">{`${
               currencySymbols["NAIRA"]
             }${formatNumber(price)}`}</p>
             <p className="text-[#606060] font-normal text-xs">Annual Returns</p>
             <p className="text-text-disabled font-medium text-sm">
-              <span className="text-highlight">{`$${
+              <span className="text-highlight">{`${
                 currencySymbols["NAIRA"]
               }${formatNumber(700000)}`}</span>{" "}
               / Annual Income

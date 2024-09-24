@@ -24,21 +24,28 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   const { preview, handleImageChange } = useImageUploader({
     placeholder: CameraCircle,
   });
-
-  const [selectedLGA, setSelectedLGA] = useState("");
-  const [selectedState, setSelectedState] = useState("");
-  const [localGovernments, setLocalGovernments] = useState<string[]>([]);
-  const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
-  const [avatarArray, setAvatarArray] = useState<string[]>([]);
+  const [state, setState] = useState({
+    selectedState: "",
+    selectedLGA: "",
+    localGovernments: [] as string[],
+    errorMsgs: {} as ValidationErrors,
+    avatarArray: [] as string[],
+  });
+  const {
+    selectedState,
+    selectedLGA,
+    localGovernments,
+    errorMsgs,
+    avatarArray,
+  } = state;
 
   const handleStateChange = (value: string) => {
-    setSelectedState(value);
+    setState((prev) => ({ ...prev, selectedState: value }));
   };
 
   const handleLGAChange = (value: string) => {
-    setSelectedLGA(value);
+    setState((prev) => ({ ...prev, selectedLGA: value }));
   };
-  // Update local governments when state changes
 
   const accessToken = useAuthStore((state) => state.access_token);
   useEffect(() => {
@@ -46,7 +53,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
       try {
         // Fetch the avatars
         const data = await getAvatarByUseCase(accessToken, "avatars");
-        setAvatarArray(data); // Set the avatarArray with the fetched data
+        setState((prev) => ({ ...prev, avatarArray: data })); // Set the avatarArray with the fetched data
 
         console.log(data, "Fetched avatars");
       } catch (error) {
@@ -56,11 +63,11 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
       // Update local governments based on selectedState
       if (selectedState) {
         const lgas = getLocalGovernments(selectedState);
-        setLocalGovernments(lgas);
+        setState((prev) => ({ ...prev, localGovernments: lgas }));
       } else {
-        setLocalGovernments([]);
+        setState((prev) => ({ ...prev, localGovernments: [] }));
       }
-      setSelectedLGA("");
+      setState((prev) => ({ ...prev, selectedLGA: "" }));
     };
 
     fetchData(); // Call the async function to fetch data
@@ -71,7 +78,9 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
       returnType="form-data"
       className="custom-flex-col gap-5"
       onFormSubmit={submitAction}
-      setValidationErrors={setErrorMsgs}
+      setValidationErrors={(errors: ValidationErrors) =>
+        setState((prev) => ({ ...prev, errorMsgs: errors }))
+      }
     >
       <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <Input

@@ -13,4 +13,5 @@ export interface PictureProps {
   className?: string;
   style?: CSSProperties;
   resolutionMultiplier?: number;
+  containerClassName?: string;
 }

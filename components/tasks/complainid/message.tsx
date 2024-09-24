@@ -8,6 +8,8 @@ interface MessageProps {
   user: string;
   isOwnMessage: boolean;
   avatar: string;
+  isLastInSequence: boolean;
+  isConsecutive: boolean;
 }
 
 const Message: React.FC<MessageProps> = ({
@@ -16,9 +18,18 @@ const Message: React.FC<MessageProps> = ({
   isOwnMessage,
   time,
   avatar,
+  isLastInSequence,
+  isConsecutive,
 }) => {
+  // Use system's locale format for time
+  const formattedTime = new Intl.DateTimeFormat(undefined, {
+    timeStyle: "short",
+  }).format(new Date(time));
+
   return (
-    <div className={clsx("flex text-xs", { "justify-end": isOwnMessage })}>
+    <div
+      className={clsx("w-full flex text-xs", { "justify-end": isOwnMessage })}
+    >
       <div
         className={clsx(
           !isOwnMessage && "flex items-end gap-1",
@@ -26,22 +37,45 @@ const Message: React.FC<MessageProps> = ({
         )}
       >
         {!isOwnMessage && (
-          <div className="rounded-full overflow-hidden w-[30px] h-[30px] relative flex-shrink-0">
-            <Image src={SamplePic} alt={user} fill className="object-cover" />
-          </div>
+          <>
+            {isLastInSequence ? (
+              <div className="rounded-full overflow-hidden w-[30px] h-[30px] relative flex-shrink-0">
+                <Image
+                  src={SamplePic}
+                  alt={user}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div className="w-[30px] flex-shrink-0"></div>
+            )}
+          </>
         )}
         <div
           className={clsx(
             "py-2 px-3 rounded-t-lg flex flex-col",
             !isOwnMessage
-              ? "bg-neutral-2 rounded-br-lg"
-              : "bg-status-caution-3 rounded-bl-lg"
+              ? clsx(
+                  "bg-neutral-2",
+                  isLastInSequence
+                    ? "rounded-t-lg rounded-br-lg" // Last in sequence, remove bottom left corner radius
+                    : "rounded-lg" // For consecutive messages not last in sequence, full border-radius
+                )
+              : clsx(
+                  "bg-status-caution-1",
+                  isLastInSequence
+                    ? "rounded-t-lg rounded-bl-lg" // Last in sequence for own messages, remove bottom right corner radius
+                    : "rounded-lg" // For consecutive own messages not last in sequence, full border-radius
+                )
           )}
         >
-          {!isOwnMessage && <p className="text-brand-10 mb-1">{user}</p>}
+          {!isOwnMessage && !isConsecutive && (
+            <p className="text-brand-10 mb-1">{user}</p>
+          )}
           <p className="text-text-quaternary">{text}</p>
           <time className="mt-1 font-normal text-[10px] text-text-disabled self-end">
-            {time}
+            {formattedTime}
           </time>
         </div>
       </div>

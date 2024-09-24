@@ -1,7 +1,13 @@
 import Image from "next/image";
 import { PropertyProps } from "../../Properties/types";
+import { useState } from "react";
 import { VideoIcon, CameraIcon } from "@/public/icons/icons";
 import Sample from "@/public/empty/SampleProperty.jpeg";
+import Sample2 from "@/public/empty/SampleProperty2.jpeg";
+import Sample3 from "@/public/empty/SampleProperty3.jpeg";
+import Sample4 from "@/public/empty/SampleProperty4.png";
+import Sample5 from "@/public/empty/SampleProperty5.jpg";
+import ImageModal from "@/components/ImageModal/image-modal";
 
 const BranchPropertyListItem: React.FC<PropertyProps> = ({
   images,
@@ -12,17 +18,28 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
   price,
   type,
 }) => {
+  const [screenModal, setScreenModal] = useState(false);
+  const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   return (
     <div
       className="px-6 py-4 rounded-2xl bg-white flex items-center gap-8"
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
+      {/* Image Modal */}
+      <ImageModal
+        isOpen={screenModal}
+        onClose={() => setScreenModal(false)}
+        images={sampleImages.map((image) => image.src)}
+        currentIndex={0}
+      />
       <div className="flex flex-col-reverse md:flex-row md:items-center gap-4 md:justify-between">
         {/* Image */}
         <div className="w-[125px] h-[125px] rounded-lg relative overflow-hidden group cursor-pointer">
           <div
+            role="button"
             className="absolute z-[10] inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+            onClick={() => setScreenModal(true)}
           >
             {/* Group of icons down */}
             <div className="flex items-stretch gap-[10px] absolute z-[1] left-[50%] translate-x-[-50%] bottom-4">

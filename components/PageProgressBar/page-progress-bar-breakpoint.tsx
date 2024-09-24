@@ -10,6 +10,8 @@ const PageProgressBarBreakpoint: React.FC<PageProgressBarBreakpointProps> = ({
   percentage,
   activeColor,
   disabledColor,
+  completeColor,
+  allComplete,
 }) => {
   const active_text_color = "#0033C4";
 
@@ -23,7 +25,11 @@ const PageProgressBarBreakpoint: React.FC<PageProgressBarBreakpointProps> = ({
           style={{
             width: width / 1.3,
             height,
-            backgroundColor: complete ? activeColor : disabledColor,
+            backgroundColor: allComplete
+              ? completeColor
+              : complete
+              ? activeColor
+              : disabledColor,
           }}
         ></div>
       </div>

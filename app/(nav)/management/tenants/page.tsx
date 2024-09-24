@@ -22,6 +22,7 @@ import PageTitle from "@/components/PageTitle/page-title";
 import { defaultTenantPageData, getAllTenants, TenantPageState } from "./data";
 import { useAuthStore } from "@/store/authstrore";
 import FilterButton from "@/components/FilterButton/filter-button";
+import Link from "next/link";
 
 const Tenants = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -311,11 +312,9 @@ const Tenants = () => {
             }}
           >
             {tenants.map((t) => (
-              <TenantCard
-                key={t.id}
-                {...t}
-                href={`/management/tenants/${t.id}/manage`}
-              />
+              <Link href={`/management/tenants/${t.id}/manage`} key={t.id}>
+                <TenantCard key={t.id} {...t} />
+              </Link>
             ))}
           </div>
         ) : (

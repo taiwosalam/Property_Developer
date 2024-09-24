@@ -1,7 +1,10 @@
 import { XIcon } from "@/public/icons/icons";
 import Input from "@/components/Form/Input/input";
 import DateInput from "@/components/Form/DateInput/date-input";
-import { formatNumber, currencySymbols } from "@/utils/number-formatter";
+import {
+  currencySymbols,
+  formatCostInputValue,
+} from "@/utils/number-formatter";
 import { useState } from "react";
 import { Dayjs } from "dayjs";
 import Button from "@/components/Form/Button/button";
@@ -13,27 +16,13 @@ const ManageMaintenanceModal = () => {
   const handleStartDateChange = (date?: Dayjs | null) => {
     setStartDate(date || null);
   };
-  const [maintenanceCost, setMaintenanceCost] = useState("");
+  const [maintenanceCost, setMaintenanceCost] = useState("0");
   const handleMaintenanceCostChange = (value: string) => {
-    const sanitizedValue = value.replace(/[^0-9.]/g, "");
-    const unformattedValue = sanitizedValue.replace(/,/g, "");
-    if (unformattedValue.endsWith(".")) {
-      setMaintenanceCost(unformattedValue);
-    } else {
-      // Convert to a number and format
-      const numericValue = parseFloat(unformattedValue);
-      if (!isNaN(numericValue)) {
-        // Ensure no more than 2 decimal places
-        const formattedValue = numericValue.toFixed(2);
-        setMaintenanceCost(formatNumber(parseFloat(formattedValue)));
-      } else {
-        setMaintenanceCost("0");
-      }
-    }
+    setMaintenanceCost(formatCostInputValue(value));
   };
   return (
-    <div className="font-medium rounded-lg border border-[rgba(193,194,195,0.40)]">
-      <div className="text-center text-text-secondary text-base pt-10 pb-4 relative rounded-t-lg bg-brand-1">
+    <div className="font-medium rounded-lg border border-[rgba(193,194,195,0.40)] min-w-[600px] max-h-[90vh] overflow-y-auto custom-round-scrollbar">
+      <div className="text-center text-text-secondary text-base pt-10 pb-4 rounded-t-lg bg-brand-1 sticky z-[1] top-0">
         Manage Maintenance
         <ModalTrigger asChild close>
           <button className="absolute top-2 right-4" aria-label="Close">
@@ -45,8 +34,7 @@ const ManageMaintenanceModal = () => {
         <div
           className="grid grid-cols-3 gap-x-4 gap-y-[18px] [&>div]:flex [&>div]:flex-col [&>div]:gap-2 px-4 py-6 rounded-lg"
           style={{
-            boxShadow:
-              "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
+            boxShadow: "0px 1px 2px 0px rgba(21, 30, 43, 0.08)",
           }}
         >
           <div>

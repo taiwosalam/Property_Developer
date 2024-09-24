@@ -21,6 +21,7 @@ const Picture: React.FC<PictureProps> = ({
   rounded,
   className,
   resolutionMultiplier = 2,
+  containerClassName,
 }) => {
   const imageWidth = width ?? size;
   const imageHeight = height ?? size;
@@ -28,7 +29,7 @@ const Picture: React.FC<PictureProps> = ({
   const status_wh = Math.min(12, Math.floor(size / 3));
 
   return (
-    <div className="relative">
+    <div className={clsx("relative", containerClassName)}>
       <Image
         src={src}
         alt={alt}

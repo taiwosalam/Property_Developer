@@ -1,10 +1,8 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-
-// Images
-import SidenavArrow from "@/public/icons/sidenav-arrow.svg";
+import { useEffect, useRef, useState } from "react";
+import { SidenavArrow } from "@/public/icons/icons";
 
 // Imports
 import clsx from "clsx";
@@ -18,8 +16,6 @@ import Navbar from "@/components/Nav/navbar";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { trackOutsideClick } from "@/utils/track-outside-click";
 import { useAuthStoreSelectors } from "@/store/authstrore";
-import { getToken } from "@/utils/cookies";
-import Picture from "@/components/Picture/picture";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
@@ -120,7 +116,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               className="h-[1px]"
               style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
             ></div>
-            <div className="h-[50px] px-3 sm:pr-10 flex flex-wrap items-center justify-between bg-white">
+            <div className="h-[50px] px-3 sm:pr-10 flex flex-wrap items-center justify-between bg-white max-w-full">
               <button
                 type="button"
                 onClick={() => {
@@ -138,7 +134,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     className="w-8 h-8"
                   />
                 ) : (
-                  <Picture src={SidenavArrow} size={32} />
+                  <SidenavArrow />
                 )}
               </button>
               <p className="capitalize text-text-primary text-sm font-medium">

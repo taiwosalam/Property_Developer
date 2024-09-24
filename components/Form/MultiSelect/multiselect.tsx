@@ -70,7 +70,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
       <div className="relative" ref={dropdownRef}>
         <div
-          className="border border-solid border-[#C1C2C366] p-2 bg-white cursor-pointer rounded-lg"
+          className="border border-solid border-[#C1C2C366] p-2 bg-white cursor-pointer rounded-lg max-h-[70px] overflow-auto line-clamp-2"
           onClick={handleToggleDropdown}
         >
           <span
@@ -87,11 +87,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
         </div>
         {/* Dropdown */}
         {isOpen && (
-          <div
-            className="absolute z-10 w-full border bg-white mt-2 max-h-60 overflow-y-auto rounded-lg"
-            //   ref={}
-            //   onClick={(e) => e.stopPropagation()}
-          >
+          <div className="absolute z-10 w-full border bg-white mt-2 max-h-60 overflow-y-auto rounded-lg">
             {options.map((option) => (
               <div
                 key={option}

@@ -20,4 +20,6 @@ export interface PageProgressBarBreakpointProps {
   complete?: boolean;
   activeColor: Color;
   disabledColor: Color;
+  completeColor: Color;
+  allComplete: boolean;
 }
