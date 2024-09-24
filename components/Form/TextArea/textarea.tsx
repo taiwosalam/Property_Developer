@@ -16,6 +16,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   value,
   required,
   className,
+  defaultValue,
   placeholder,
   inputSpaceClassName,
   onChange,

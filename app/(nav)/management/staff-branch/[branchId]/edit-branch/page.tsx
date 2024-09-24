@@ -9,7 +9,6 @@ import { GridIcon, ListIcon } from "@/public/icons/icons";
 import clsx from "clsx";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
-import { properties } from "../../../properties/data";
 import PageTitle from "@/components/PageTitle/page-title";
 import BackButton from "@/components/BackButton/back-button";
 import SearchInput from "@/components/SearchInput/search-input";
@@ -22,12 +21,13 @@ import UpdateBranchModal from "@/components/Management/Staff-And-Branches/Branch
 import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
 import { useAuthStore } from "@/store/authstrore";
 import { getOneBranch } from "../../data";
-import { Branch } from "../types";
+import { ResponseType } from "../types";
 import { useParams } from "next/navigation";
 
 const EditBranch = () => {
   const [state, setState] = useState<"grid" | "list">("grid");
-  const [fetchedBranchData, setFetchedBranchData] = useState<Branch | null>();
+  const [fetchedBranchData, setFetchedBranchData] =
+    useState<ResponseType | null>();
   const { branchId } = useParams();
 
   const setGridView = () => {
@@ -36,6 +36,8 @@ const EditBranch = () => {
   const setListView = () => {
     setState("list");
   };
+
+  const properties = fetchedBranchData?.property_list || [];
 
   const accessToken = useAuthStore((state) => state.access_token);
 
@@ -86,7 +88,7 @@ const EditBranch = () => {
             </Modal>
           </div>
         </div>
-        <EditBranchForm />
+        {fetchedBranchData && <EditBranchForm somedata={fetchedBranchData} />}
       </div>
       <div className="custom-flex-col gap-8">
         <div className="page-title-container">
