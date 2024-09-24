@@ -4,6 +4,7 @@ import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import UserTag from "@/components/Tags/user-tag";
 import Image from "next/image";
 import BadgeIcon from "../BadgeIcon/badge-icon";
+import { empty } from "@/app/config";
 
 const LandlordAndTenantCard: React.FC<LandlordProps> = ({
   first_name,
@@ -23,7 +24,7 @@ const LandlordAndTenantCard: React.FC<LandlordProps> = ({
     >
       <div className="rounded-lg relative w-[30%] overflow-hidden aspect-[0.9]">
         <Image
-          src={picture_url || ""}
+          src={picture_url || empty}
           alt={first_name}
           fill
           sizes="300px"
