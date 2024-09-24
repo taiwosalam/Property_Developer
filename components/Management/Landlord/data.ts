@@ -1,15 +1,41 @@
+// Imports
+import { toast } from "sonner";
+
 export const addLandlord = async (
-  formData: any,
-  acces_token: string | null
-) => {
+  formData: FormData,
+  accessToken: string | null
+): Promise<boolean> => {
+  let isSuccess = false;
+
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/landlord/create`,
-      { method: "POST", body: formData }
-    ).then((res) => res.json());
+      `${process.env.NEXT_PUBLIC_BASE_URL}/landlords`,
+      {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
 
-    console.log(response);
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errors = data.errors
+        ? Object.values(data.errors).join(" ")
+        : "An unexpected error occurred";
+
+      toast.error(errors);
+      return isSuccess;
+    }
+
+    toast.success(data.message);
+    isSuccess = true;
   } catch (error) {
     console.error("Error adding landlord:", error);
+    toast.error("Failed to add landlord. Please try again.");
   }
+
+  return isSuccess;
 };

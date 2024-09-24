@@ -57,9 +57,9 @@ export const validateData = (data: ValidateDataProps) => {
   Object.keys(data).forEach((key) => {
     if (!(key in validation_schemas)) {
       output.unknownKeys.push(key); // Add to unknownKeys
-      if (!data[key]) {
-        output.invalidKeys[key] = "This field cannot be empty."; // Check if empty
-      }
+      // if (!data[key]) {
+      //   output.invalidKeys[key] = "This field cannot be empty."; // Check if empty
+      // }
     }
   });
 

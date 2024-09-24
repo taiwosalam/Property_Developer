@@ -8,9 +8,9 @@ import Button from "../Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "../Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
-import { getAvatarByUseCase } from "@/data";
 import { useAuthStore } from "@/store/authstrore";
 import Picture from "../Picture/picture";
+import Avatars from "../Avatars/avatars";
 
 interface AddLandLordOrTenantFormProps {
   type: "landlord" | "tenant";
@@ -21,15 +21,18 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   type,
   submitAction,
 }) => {
-  const { preview, handleImageChange } = useImageUploader({
-    placeholder: CameraCircle,
-  });
+  const { preview, setPreview, inputFileRef, handleImageChange } =
+    useImageUploader({
+      placeholder: CameraCircle,
+    });
 
   const [selectedLGA, setSelectedLGA] = useState("");
   const [selectedState, setSelectedState] = useState("");
-  const [localGovernments, setLocalGovernments] = useState<string[]>([]);
+  const [activeAvatar, setActiveAvatar] = useState<string>("");
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
-  const [avatarArray, setAvatarArray] = useState<string[]>([]);
+  const [localGovernments, setLocalGovernments] = useState<string[]>([]);
+
+  const accessToken = useAuthStore((state) => state.access_token);
 
   const handleStateChange = (value: string) => {
     setSelectedState(value);
@@ -38,21 +41,15 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   const handleLGAChange = (value: string) => {
     setSelectedLGA(value);
   };
-  // Update local governments when state changes
 
-  const accessToken = useAuthStore((state) => state.access_token);
+  const handleAvatarChange = (avatar: string) => {
+    setPreview(avatar);
+    setActiveAvatar(avatar);
+    inputFileRef.current?.value && (inputFileRef.current.value = "");
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        // Fetch the avatars
-        const data = await getAvatarByUseCase(accessToken, "avatars");
-        setAvatarArray(data); // Set the avatarArray with the fetched data
-
-        console.log(data, "Fetched avatars");
-      } catch (error) {
-        console.error("Error fetching avatars:", error);
-      }
-
       // Update local governments based on selectedState
       if (selectedState) {
         const lgas = getLocalGovernments(selectedState);
@@ -151,17 +148,8 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
             Upload picture or select an avatar.
           </p>
           <div className="flex items-end gap-3">
-            <label
-              htmlFor="picture"
-              className="relative w-[50px] h-[50px] md:w-[70px] md:h-[70px] cursor-pointer"
-            >
-              <Image
-                src={preview}
-                alt="camera"
-                fill
-                sizes="70px"
-                className="rounded-full object-cover"
-              />
+            <label htmlFor="picture" className="relative cursor-pointer">
+              <Picture src={preview} alt="camera" size={70} rounded />
               <input
                 type="file"
                 id="picture"
@@ -169,21 +157,11 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
                 accept="image/*"
                 className="hidden pointer-events-none"
                 onChange={handleImageChange}
+                ref={inputFileRef}
               />
+              <input type="hidden" name="avatar" value={activeAvatar} />
             </label>
-            <div className="flex gap-2">
-              {avatarArray.map((value, idx) => (
-                <button type="button" key={idx}>
-                  <Picture
-                    src={value}
-                    alt="avatar"
-                    size={40}
-                    rounded
-                    resolutionMultiplier={3}
-                  />
-                </button>
-              ))}
-            </div>
+            <Avatars type="avatars" onClick={handleAvatarChange} />
           </div>
         </div>
         <Button type="submit" size="base_medium" className="py-2 px-8">
