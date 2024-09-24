@@ -1,20 +1,16 @@
-"use client";
 import { useState, useEffect } from "react";
-
-// Images
+import Image from "next/image";
 import CameraCircle from "@/public/icons/camera-circle.svg";
-
-// Imports
-import Input from "../Form/Input/input";
-import Picture from "../Picture/picture";
-import Avatars from "../Avatars/avatars";
-import Button from "../Form/Button/button";
 import Select from "../Form/Select/select";
+import { getAllStates, getLocalGovernments } from "@/utils/states";
+import Input from "../Form/Input/input";
+import Button from "../Form/Button/button";
+import { useImageUploader } from "@/hooks/useImageUploader";
+import { AuthForm } from "../Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
 import { useAuthStore } from "@/store/authstrore";
-import { AuthForm } from "../Auth/auth-components";
-import { useImageUploader } from "@/hooks/useImageUploader";
-import { getAllStates, getLocalGovernments } from "@/utils/states";
+import Picture from "../Picture/picture";
+import Avatars from "../Avatars/avatars";
 
 interface AddLandLordOrTenantFormProps {
   type: "landlord" | "tenant";
@@ -39,11 +35,11 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   const accessToken = useAuthStore((state) => state.access_token);
 
   const handleStateChange = (value: string) => {
-    setState((prev) => ({ ...prev, selectedState: value }));
+    setSelectedState(value);
   };
 
   const handleLGAChange = (value: string) => {
-    setState((prev) => ({ ...prev, selectedLGA: value }));
+    setSelectedLGA(value);
   };
 
   const handleAvatarChange = (avatar: string) => {
@@ -57,11 +53,11 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
       // Update local governments based on selectedState
       if (selectedState) {
         const lgas = getLocalGovernments(selectedState);
-        setState((prev) => ({ ...prev, localGovernments: lgas }));
+        setLocalGovernments(lgas);
       } else {
-        setState((prev) => ({ ...prev, localGovernments: [] }));
+        setLocalGovernments([]);
       }
-      setState((prev) => ({ ...prev, selectedLGA: "" }));
+      setSelectedLGA("");
     };
 
     fetchData(); // Call the async function to fetch data
@@ -72,9 +68,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
       returnType="form-data"
       className="custom-flex-col gap-5"
       onFormSubmit={submitAction}
-      setValidationErrors={(errors: ValidationErrors) =>
-        setState((prev) => ({ ...prev, errorMsgs: errors }))
-      }
+      setValidationErrors={setErrorMsgs}
     >
       <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <Input
