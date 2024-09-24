@@ -47,14 +47,14 @@ const EditLandlord = () => {
       setLandlordPageData(data);
     };
 
-    fetchLandlords();
-  }, []);
+    // fetchLandlords();
+  }, [accessToken, landlordId, router]);
 
-  if (loading) return <div>Loading...</div>;
+  // if (loading) return <div>Loading...</div>;
 
   return (
     <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
-      <h2 className="text-black text-xl font-medium">Edit Landlord</h2>
+      <h2 className="text-black text-lg lg:text-xl font-medium">Edit Landlord</h2>
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="custom-flex-col gap-5 flex-1">
           <LandlordTenantInfoEditSection title="profile">

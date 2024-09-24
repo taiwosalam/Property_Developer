@@ -1,6 +1,5 @@
-import CloseCircle from "@/public/icons/close-circle.svg";
 import { ModalTrigger, useModal } from "@/components/Modal/modal";
-import { PlusIcon } from "@/public/icons/icons";
+import { PlusIcon, DeleteIconX } from "@/public/icons/icons";
 import Image from "next/image";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
@@ -96,20 +95,14 @@ const CreateBranchModal = () => {
   };
 
   return (
-    <div className="w-[900px] max-w-[80%] max-h-[85%] rounded-[20px] bg-white overflow-x-auto custom-round-scrollbar">
+    <div className="w-[900px] max-w-[80%] max-h-[90vh] rounded-[20px] bg-white overflow-y-auto custom-round-scrollbar">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-solid border-[#B8B8B8] sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[30px] bg-white">
         <p className="text-primary-navy text-base md:text-lg lg:text-xl font-bold capitalize">
           <span className="text-status-error-primary">*</span>Create New Branch
         </p>
-        <ModalTrigger close className="p-2" type="button">
-          <Image
-            src={CloseCircle}
-            alt="close"
-            width={34}
-            height={34}
-            className="min-w-[34px] min-h-[34px]"
-          />
+        <ModalTrigger close className="p-2" type="button" aria-label="close">
+          <DeleteIconX size={34} />
         </ModalTrigger>
       </div>
       {/* body */}
@@ -130,6 +123,7 @@ const CreateBranchModal = () => {
               label="state"
               id="state"
               options={getAllStates()}
+              value={selectedState}
               onChange={handleStateChange}
               inputContainerClassName="bg-neutral-2"
             />
@@ -137,6 +131,7 @@ const CreateBranchModal = () => {
               label="Local Government"
               id="local_government"
               options={localGovernments}
+              value={selectedLGA}
               onChange={handleLGAChange}
               inputContainerClassName="bg-neutral-2"
             />
@@ -144,6 +139,7 @@ const CreateBranchModal = () => {
               label="city"
               id="city"
               options={cities}
+              value={selectedCity}
               onChange={handleCityChange}
               allowCustom={true}
               inputContainerClassName="bg-neutral-2"

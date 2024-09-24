@@ -39,11 +39,11 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   const accessToken = useAuthStore((state) => state.access_token);
 
   const handleStateChange = (value: string) => {
-    setSelectedState(value);
+    setState((prev) => ({ ...prev, selectedState: value }));
   };
 
   const handleLGAChange = (value: string) => {
-    setSelectedLGA(value);
+    setState((prev) => ({ ...prev, selectedLGA: value }));
   };
 
   const handleAvatarChange = (avatar: string) => {
@@ -57,11 +57,11 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
       // Update local governments based on selectedState
       if (selectedState) {
         const lgas = getLocalGovernments(selectedState);
-        setLocalGovernments(lgas);
+        setState((prev) => ({ ...prev, localGovernments: lgas }));
       } else {
-        setLocalGovernments([]);
+        setState((prev) => ({ ...prev, localGovernments: [] }));
       }
-      setSelectedLGA("");
+      setState((prev) => ({ ...prev, selectedLGA: "" }));
     };
 
     fetchData(); // Call the async function to fetch data
@@ -72,7 +72,9 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
       returnType="form-data"
       className="custom-flex-col gap-5"
       onFormSubmit={submitAction}
-      setValidationErrors={setErrorMsgs}
+      setValidationErrors={(errors: ValidationErrors) =>
+        setState((prev) => ({ ...prev, errorMsgs: errors }))
+      }
     >
       <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <Input

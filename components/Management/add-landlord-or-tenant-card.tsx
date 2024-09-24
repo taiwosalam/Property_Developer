@@ -2,7 +2,7 @@
 import Button from "../Form/Button/button";
 
 interface AddLandlordOrTenantCardProps {
-  desc: string;
+  desc?: string;
   title: string;
   buttonText: string;
   onClick?: () => void;
@@ -19,7 +19,9 @@ const AddLandlordOrTenantCard: React.FC<AddLandlordOrTenantCardProps> = ({
       <p className="text-brand-9 text-xl font-medium capitalize mb-4">
         {title}
       </p>
-      <p className="text-[#606060] text-xs font-normal mb-8">{desc}</p>
+      {desc && (
+        <p className="text-[#606060] text-xs font-normal mb-8">{desc}</p>
+      )}
       <Button
         type="button"
         onClick={onClick}

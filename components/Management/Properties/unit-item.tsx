@@ -1,9 +1,16 @@
+"use client";
+import { useState } from "react";
 import clsx from "clsx";
 import { CameraIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import Sample from "@/public/empty/SampleProperty.jpeg";
 import { SectionSeparator } from "@/components/Section/section-components";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import Sample2 from "@/public/empty/SampleProperty2.jpeg";
+import Sample3 from "@/public/empty/SampleProperty3.jpeg";
+import Sample4 from "@/public/empty/SampleProperty4.png";
+import Sample5 from "@/public/empty/SampleProperty5.jpg";
+import ImageModal from "@/components/ImageModal/image-modal";
 const UnitItem = ({ type = "rent" }: { type?: string }) => {
   const colors = {
     vacant: "#FFBB53",
@@ -12,11 +19,20 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
     expired: "#E9212E",
     relocate: "#620E13",
   };
+  const [screenModal, setScreenModal] = useState(false);
+  const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   return (
     <div
       className="p-6 rounded-2xl bg-white"
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
+      {/* Image Modal */}
+      <ImageModal
+        isOpen={screenModal}
+        onClose={() => setScreenModal(false)}
+        images={sampleImages.map((image) => image.src)}
+        currentIndex={0}
+      />
       <div className="flex items-center justify-between">
         <h4 className="text-brand-10 text-base font-bold">
           Unit ID: 123456776342
@@ -77,8 +93,12 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
         </div>
 
         {/* Image */}
-        <div className="w-[168px] h-[168px] rounded-2xl relative overflow-hidden cursor-pointer">
-          <div className="absolute z-[1] left-[70%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+        <div
+          role="button"
+          className="w-[168px] h-[168px] rounded-2xl relative overflow-hidden cursor-pointer"
+          onClick={() => setScreenModal(true)}
+        >
+          <div className="absolute z-[1] left-[50%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />
             <p className="text-black font-medium text-[10px]">+23</p>
           </div>
@@ -86,9 +106,7 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
             src={Sample}
             alt={""}
             fill
-            objectFit="cover"
-            objectPosition="center"
-            className="object-cover"
+            className="object-cover object-center"
           />
         </div>
       </div>

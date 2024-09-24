@@ -1,17 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 
 // Types
 import type { AddLandlordModalOptions } from "./types";
 
-// Images
-import CloseCircle from "@/public/icons/close-circle.svg";
-import ChevronLeft from "@/public/icons/chevron-left.svg";
-
 // Imports
-import { ModalTrigger } from "@/components/Modal/modal";
+
 import AddLandlordOptions from "./add-landlord-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";

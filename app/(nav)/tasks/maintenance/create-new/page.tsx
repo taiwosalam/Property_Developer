@@ -8,7 +8,10 @@ import Input from "@/components/Form/Input/input";
 import DateInput from "@/components/Form/DateInput/date-input";
 import { useState } from "react";
 import InputTextarea from "@/components/Form/InputTextarea/inputTextarea";
-import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+import {
+  currencySymbols,
+  formatCostInputValue,
+} from "@/utils/number-formatter";
 import Button from "@/components/Form/Button/button";
 
 const CreateMaintenace = () => {
@@ -17,12 +20,10 @@ const CreateMaintenace = () => {
   const handleStartDateChange = (date?: Dayjs | null) => {
     setStartDate(date || null);
   };
-  const [maintenanceCost, setMaintenanceCost] = useState(0);
+  const [maintenanceCost, setMaintenanceCost] = useState("0");
   const currencySymbol = currencySymbols["NAIRA"]; // TODO: Make this dynamic
   const handleMaintenanceCostChange = (value: string) => {
-    // Remove commas from the formatted value and convert to a number
-    const unformattedValue = parseFloat(value.replace(/,/g, "")) || 0;
-    setMaintenanceCost(unformattedValue);
+    setMaintenanceCost(formatCostInputValue(value));
   };
 
   return (
@@ -36,7 +37,7 @@ const CreateMaintenace = () => {
         </h1>
       </div>
       <form className="space-y-5 pb-[80px]">
-        <h2 className="text-sm md:text-base text-brand-10">Schedule Details</h2>
+        <h2 className="text-sm md:text-base text-brand-10">Details</h2>
         <SectionSeparator className="!mt-4 !mb-6" />
         <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
           <Select
@@ -67,12 +68,6 @@ const CreateMaintenace = () => {
           <Select
             id="requested_by"
             label="Requested By"
-            options={[]}
-            inputContainerClassName="bg-white"
-          />
-          <Select
-            id=""
-            label="."
             options={[]}
             inputContainerClassName="bg-white"
           />
@@ -108,12 +103,10 @@ const CreateMaintenace = () => {
           <Input
             id="maintenance_cost"
             label="Maintenance Cost"
-            // type="number"
-            // min={0}
             CURRENCY_SYMBOL={currencySymbol}
             inputClassName="bg-white rounded-[8px]"
             onChange={handleMaintenanceCostChange}
-            value={formatNumber(maintenanceCost)}
+            value={maintenanceCost}
           />
           <InputTextarea
             id="maintenance_quotation"

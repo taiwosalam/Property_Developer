@@ -10,7 +10,7 @@ import PageProgressBarBreakpoint from "./page-progress-bar-breakpoint";
 const PageProgressBar: React.FC<PageProgressBarProps> = ({
   percentage = 0,
   breakpoints = [],
-  className
+  className,
 }) => {
   const height = 5;
   const active_color = "#FFBB53";
@@ -40,7 +40,9 @@ const PageProgressBar: React.FC<PageProgressBarProps> = ({
               percentage={point}
               activeColor={active_color}
               disabledColor={disabled_color}
+              completeColor={complete_color}
               complete={point <= percentage && percentage !== 0}
+              allComplete={percentage === 100}
             />
           ))}
         </div>

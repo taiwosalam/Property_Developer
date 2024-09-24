@@ -18,7 +18,7 @@ import AddPropertyModal from "@/components/Management/Properties/add-property-mo
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterButton from "@/components/FilterButton/filter-button";
 
-const Property = () => {
+const Properties = () => {
   const router = useRouter();
   const initialState = {
     gridView: true,
@@ -36,12 +36,6 @@ const Property = () => {
   };
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
-  };
-  const handleClickPreview = (id: string | number) => {
-    router.push(`/management/properties/${id}`);
-  };
-  const handleClickManage = (id: string | number) => {
-    router.push(`/management/properties/${id}/edit-property`);
   };
 
   return (
@@ -149,23 +143,13 @@ const Property = () => {
         {gridView ? (
           <AutoResizingGrid minWidth={315}>
             {properties.slice(0, 20).map((p) => (
-              <PropertyCard
-                {...p}
-                key={p.id}
-                handleClickPreview={handleClickPreview}
-                handleClickManage={handleClickManage}
-              />
+              <PropertyCard {...p} key={p.id} />
             ))}
           </AutoResizingGrid>
         ) : (
           <div className="space-y-4">
             {properties.slice(0, 30).map((p) => (
-              <PropertyListItem
-                key={p.id}
-                {...p}
-                handleClickPreview={handleClickPreview}
-                handleClickManage={handleClickManage}
-              />
+              <PropertyListItem key={p.id} {...p} />
             ))}
           </div>
         )}
@@ -180,4 +164,4 @@ const Property = () => {
   );
 };
 
-export default Property;
+export default Properties;
