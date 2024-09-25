@@ -15,18 +15,36 @@ import TextArea from "@/components/Form/TextArea/textarea";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { ResponseType } from "@/app/(nav)/management/staff-branch/[branchId]/types";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { ValidationErrors } from "@/utils/types";
 
-const EditBranchForm = ({ somedata }: { somedata: ResponseType }) => {
+const EditBranchForm = ({
+  somedata,
+  handleSubmit,
+}: {
+  somedata: ResponseType;
+  handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+}) => {
   const states = getAllStates();
 
   const { preview, handleImageChange } = useImageUploader({
     placeholder: PlusAvatar,
   });
 
+  const setValidationErrors = (errors: ValidationErrors) => {
+    // Handle validation errors
+    console.error(errors);
+  };
+
   console.log(somedata);
 
   return (
-    <div className="custom-flex-col w-full max-w-[968px] gap-8">
+    <AuthForm
+      className="custom-flex-col w-full max-w-[968px] gap-8"
+      id="edit-branch-form"
+      onFormSubmit={handleSubmit}
+      setValidationErrors={setValidationErrors}
+    >
       <div className="custom-flex-col gap-4">
         <h2 className="text-brand-10 text-base font-bold">Branch Details</h2>
         <SectionSeparator />
@@ -122,7 +140,7 @@ const EditBranchForm = ({ somedata }: { somedata: ResponseType }) => {
             ))}
         </div>
       </div>
-    </div>
+    </AuthForm>
   );
 };
 

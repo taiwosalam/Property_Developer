@@ -10,6 +10,7 @@ export interface AuthHeadingProps {
 export interface AuthFormProps {
   className?: string;
   children: React.ReactNode;
+  id?: string;
   onFormSubmit: (data: any) => void;
   returnType?: "form-data" | "string";
   setValidationErrors:
