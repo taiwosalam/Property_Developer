@@ -1,11 +1,14 @@
-import React from 'react'
+import React from "react";
 
-const Calendar = () => {
+// Imports
+import Calendar from "@/components/Calendar/calendar";
+
+const CalendarPage = () => {
   return (
-    <div>
-      
+    <div className="w-full h-[60vh] flex items-center justify-center">
+      <Calendar />
     </div>
-  )
-}
+  );
+};
 
-export default Calendar
+export default CalendarPage;
