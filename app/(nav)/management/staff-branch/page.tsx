@@ -20,8 +20,10 @@ import Pagination from "@/components/Pagination/pagination";
 import CreateBranchModal from "@/components/Management/Staff-And-Branches/create-branch-modal";
 import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 const StaffAndBranches = () => {
+  const { isSmallTablet } = useWindowWidth();
   const router = useRouter();
   const initialState: StaffAndBranchPageState = {
     gridView: true,
@@ -194,7 +196,7 @@ const StaffAndBranches = () => {
     fetchLandlords();
   }, [fetchLandlords]);
 
-  console.log(branches);
+  // console.log(branches);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -202,49 +204,35 @@ const StaffAndBranches = () => {
   return (
     <div className="space-y-9">
       <div className="page-header-container">
-        <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <ManagementStatistcsCard
-            title="Total Branches"
-            newData={new_branches_count}
-            total={total_branches}
-          />
-          <ManagementStatistcsCard
-            title="Total Properties"
-            newData={new_properties_count}
-            total={total_properties}
-          />
-          <ManagementStatistcsCard
-            title="Total Staff"
-            newData={new_staffs_count}
-            total={total_staffs}
-          />
-          <div className="hidden md:block xl:hidden">
-            <div className="flex items-center justify-center w-full h-full">
-              <Modal>
-                <ModalTrigger asChild>
-                  <Button type="button" className="page-header-button">
-                    + create branch
-                  </Button>
-                </ModalTrigger>
-                <ModalContent>
-                  <CreateBranchModal />
-                </ModalContent>
-              </Modal>
-            </div>
-          </div>
-        </div>
-        <div className="md:hidden xl:flex lg:ml-4">
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
-                + create branch
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <CreateBranchModal />
-            </ModalContent>
-          </Modal>
-        </div>
+        {!isSmallTablet && (
+          <AutoResizingGrid containerClassName="w-full">
+            <ManagementStatistcsCard
+              title="Total Branches"
+              newData={new_branches_count}
+              total={total_branches}
+            />
+            <ManagementStatistcsCard
+              title="Total Properties"
+              newData={new_properties_count}
+              total={total_properties}
+            />
+            <ManagementStatistcsCard
+              title="Total Staff"
+              newData={new_staffs_count}
+              total={total_staffs}
+            />
+          </AutoResizingGrid>
+        )}
+        <Modal>
+          <ModalTrigger asChild>
+            <Button type="button" className="page-header-button">
+              + create branch
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <CreateBranchModal />
+          </ModalContent>
+        </Modal>
       </div>
 
       <div className="page-title-container">

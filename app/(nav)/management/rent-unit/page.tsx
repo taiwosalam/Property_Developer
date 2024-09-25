@@ -17,8 +17,11 @@ import StatusIndicator from "@/components/Management/status-indicator";
 import Pagination from "@/components/Pagination/pagination";
 import RentalPropertyCard from "@/components/Management/Rent And Unit/rental-property-card";
 import RentalPropertyListCard from "@/components/Management/Rent And Unit/rental-property-list";
+import useWindowWidth from "@/hooks/useWindowWidth";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const RentAndUnit = () => {
+  const { isSmallTablet } = useWindowWidth();
   const [state, setState] = useState<RentAndUnitState>({
     gridView: true,
     total_pages: 5,
@@ -43,8 +46,8 @@ const RentAndUnit = () => {
   };
   return (
     <div className="space-y-9">
-      <section className="page-header-container">
-        <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+      {!isSmallTablet && (
+        <AutoResizingGrid>
           <ManagementStatistcsCard
             title="Total Units"
             newData={30}
@@ -65,8 +68,9 @@ const RentAndUnit = () => {
             newData={40}
             total={40}
           />
-        </div>
-      </section>
+        </AutoResizingGrid>
+      )}
+
       <div className="page-title-container">
         <PageTitle title="Rent & Unit" />
         <div className="flex items-center gap-4 flex-wrap">
@@ -112,6 +116,7 @@ const RentAndUnit = () => {
           </Modal>
         </div>
       </div>
+
       <section className="capitalize space-y-4 px-4 w-full">
         <div className="w-full flex items-center justify-end">
           <div className="flex gap-4 flex-wrap">

@@ -14,7 +14,10 @@ const AnnouncementPage = () => {
     <div className="space-y-9">
       <div className="page-header-container">
         {!isSmallTablet && (
-          <AutoResizingGrid minWidth={210} containerClassName="md:min-w-[60%]">
+          <AutoResizingGrid
+            minWidth={210}
+            containerClassName="lg:min-w-[750px]"
+          >
             <ManagementStatistcsCard
               title="Announcement"
               newData={40}

@@ -5,9 +5,7 @@ import { properties } from "./data";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { ModalContent, ModalTrigger, Modal } from "@/components/Modal/modal";
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
 import Button from "@/components/Form/Button/button";
-import Image from "next/image";
 import SearchInput from "@/components/SearchInput/search-input";
 import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
@@ -17,9 +15,10 @@ import PropertyListItem from "@/components/Management/Properties/property-list-i
 import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterButton from "@/components/FilterButton/filter-button";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 const Properties = () => {
-  const router = useRouter();
+  const { isSmallTablet } = useWindowWidth();
   const initialState = {
     gridView: true,
     total_pages: 50,
@@ -42,51 +41,37 @@ const Properties = () => {
     <div className="space-y-9">
       {/* Header with statistics cards */}
       <div className="page-header-container">
-        <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <ManagementStatistcsCard
-            title="Total Properties"
-            newData={200}
-            total={657}
-          />
-          <ManagementStatistcsCard
-            title="Rental Properties"
-            newData={200}
-            total={657}
-          />
-          <ManagementStatistcsCard
-            title="Gated Estate"
-            newData={200}
-            total={657}
-          />
-          <div className="hidden md:block xl:hidden">
-            <div className="flex items-center justify-center w-full h-full">
-              <Modal>
-                <ModalTrigger asChild>
-                  <Button type="button" className="page-header-button">
-                    + create property
-                  </Button>
-                </ModalTrigger>
-                <ModalContent>
-                  <AddPropertyModal />
-                </ModalContent>
-              </Modal>
-            </div>
-          </div>
-        </div>
-        <div className="md:hidden xl:flex lg:ml-4">
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
-                + create property
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <AddPropertyModal />
-            </ModalContent>
-          </Modal>
-        </div>
+        {!isSmallTablet && (
+          <AutoResizingGrid containerClassName="w-full">
+            <ManagementStatistcsCard
+              title="Total Properties"
+              newData={200}
+              total={657}
+            />
+            <ManagementStatistcsCard
+              title="Rental Properties"
+              newData={200}
+              total={657}
+            />
+            <ManagementStatistcsCard
+              title="Gated Estate"
+              newData={200}
+              total={657}
+            />
+          </AutoResizingGrid>
+        )}
+        <Modal>
+          <ModalTrigger asChild>
+            <Button type="button" className="page-header-button">
+              + create property
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <AddPropertyModal />
+          </ModalContent>
+        </Modal>
       </div>
-      {/*  */}
+
       {/* Page Title with search */}
       <div className="page-title-container">
         <PageTitle

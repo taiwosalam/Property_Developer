@@ -323,7 +323,7 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
 }
 
 .page-header-container {
-  @apply w-full flex items-center justify-center lg:justify-between;
+  @apply w-full flex items-center justify-center md:justify-between gap-4;
 }
 
 .page-title-container {

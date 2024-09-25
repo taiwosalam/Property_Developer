@@ -11,29 +11,32 @@ import Pagination from "@/components/Pagination/pagination";
 import SearchInput from "@/components/SearchInput/search-input";
 import { SectionContainer } from "@/components/Section/section-components";
 import useWindowWidth from "@/hooks/useWindowWidth";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const ComplaintsPage = () => {
-  const { isMobile } = useWindowWidth();
+  const { isMobile, isSmallTablet } = useWindowWidth();
 
   return (
     <div className="space-y-7">
-      <div className="hidden md:w-3/4 md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-        <ManagementStatistcsCard
-          title="Total Complaints"
-          newData={23}
-          total={232}
-        />
-        <ManagementStatistcsCard
-          title="Total Completed"
-          newData={23}
-          total={34}
-        />
-        <ManagementStatistcsCard
-          title="Total Rejected"
-          newData={32}
-          total={453}
-        />
-      </div>
+      {!isSmallTablet && (
+        <AutoResizingGrid>
+          <ManagementStatistcsCard
+            title="Total Complaints"
+            newData={23}
+            total={232}
+          />
+          <ManagementStatistcsCard
+            title="Total Completed"
+            newData={23}
+            total={34}
+          />
+          <ManagementStatistcsCard
+            title="Total Rejected"
+            newData={32}
+            total={453}
+          />
+        </AutoResizingGrid>
+      )}
       <SectionContainer heading="Recent Complains" href="/donottouch">
         <div className="bg-white p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array(3)
@@ -95,13 +98,7 @@ const ComplaintsPage = () => {
         </SectionContainer>
       )}
 
-      <Pagination
-        totalPages={0}
-        currentPage={0}
-        onPageChange={function (page: number): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
+      <Pagination totalPages={0} currentPage={0} onPageChange={() => {}} />
     </div>
   );
 };

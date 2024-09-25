@@ -17,7 +17,7 @@ const InspectionPage = () => {
   return (
     <div className="space-y-7">
       {!isSmallTablet && (
-        <AutoResizingGrid minWidth={280}>
+        <AutoResizingGrid>
           <ManagementStatistcsCard
             title="Total Inspections"
             newData={34}
@@ -59,13 +59,7 @@ const InspectionPage = () => {
         <InspectionCard type="physical" />
         <InspectionCard type="virtual" />
       </AutoResizingGrid>
-      <Pagination
-        totalPages={5}
-        currentPage={1}
-        onPageChange={function (page: number): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
+      <Pagination totalPages={5} currentPage={1} onPageChange={() => {}} />
     </div>
   );
 };
