@@ -75,7 +75,7 @@ export const getOneBranch = async (
 
 export const editBranch = async (
   branchId: string,
-  data: any,
+  data: FormData,
   access_token: string | null
 ) => {
   try {
@@ -84,13 +84,21 @@ export const editBranch = async (
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${access_token}`,
         },
-        body: JSON.stringify(data),
+        body: data,
       }
     );
-  } catch (error) {}
+
+    if (!res.ok) {
+      throw new Error(`Error: ${res.statusText}`);
+    }
+
+    return await res.json(); // Return parsed JSON data
+  } catch (error) {
+    console.error("Failed to update branch:", error);
+    return { error: error as Error };
+  }
 };
 
 export const deleteBranch = async (

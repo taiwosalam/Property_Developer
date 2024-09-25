@@ -28,7 +28,10 @@ export const createNewBranch = async (
       return isSuccess;
     }
 
-    toast.success(result.message);
+    await toast.success(result.message);
+    setTimeout(() => {
+      window.location.reload();
+    }, 3000);
 
     isSuccess = true;
   } catch (error) {

@@ -51,6 +51,7 @@ export const formDataToString = (formData: any) => {
 export const AuthForm: React.FC<AuthFormProps> = ({
   children,
   className,
+  id,
   onFormSubmit,
   setValidationErrors,
   returnType = "string",
@@ -59,6 +60,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     <form
       method="post"
       encType="multipart/form-data"
+      id={id}
       onSubmit={(e) => {
         e.preventDefault();
 

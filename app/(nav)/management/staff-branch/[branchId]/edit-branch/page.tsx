@@ -13,22 +13,29 @@ import PageTitle from "@/components/PageTitle/page-title";
 import BackButton from "@/components/BackButton/back-button";
 import SearchInput from "@/components/SearchInput/search-input";
 import PropertyCard from "@/components/Management/Properties/property-card";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import {
+  Modal,
+  ModalContent,
+  ModalTrigger,
+  useModal,
+} from "@/components/Modal/modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import EditBranchForm from "@/components/Management/Staff-And-Branches/Branch/edit-branch-form";
 import DeleteBranchModal from "@/components/Management/Staff-And-Branches/Branch/delete-branch-modal";
 import UpdateBranchModal from "@/components/Management/Staff-And-Branches/Branch/update-branch-modal";
 import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
 import { useAuthStore } from "@/store/authstrore";
-import { getOneBranch } from "../../data";
+import { editBranch, getOneBranch } from "../../data";
 import { ResponseType } from "../types";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 const EditBranch = () => {
   const [state, setState] = useState<"grid" | "list">("grid");
   const [fetchedBranchData, setFetchedBranchData] =
     useState<ResponseType | null>();
-  const { branchId } = useParams();
+  const [isOpen, setOpen] = useState(false);
+  const { branchId } = useParams() as { branchId: string };
 
   const setGridView = () => {
     setState("grid");
@@ -55,6 +62,22 @@ const EditBranch = () => {
     fetchBranchData();
   }, []);
 
+  const handleUpdateBranch = async (data: FormData) => {
+    try {
+      const res = await editBranch(branchId, data, accessToken);
+
+      if (!res.error) {
+        setOpen(true); // Open your success modal/trigger here
+        toast.success("Branch updated successfully");
+      } else {
+        toast.error("An error occurred while updating branch: " + res.error);
+      }
+    } catch (error) {
+      console.error("Error in handleUpdateBranch:", error);
+      toast.error("An unexpected error occurred.");
+    }
+  };
+
   return (
     <div className="custom-flex-col gap-10">
       <div className="flex flex-col gap-8">
@@ -76,19 +99,32 @@ const EditBranch = () => {
                 <DeleteBranchModal />
               </ModalContent>
             </Modal>
-            <Modal>
-              <ModalTrigger asChild>
-                <Button type="button" size="base_medium" className="py-2 px-8">
-                  update
-                </Button>
-              </ModalTrigger>
+            <Modal
+              state={{
+                isOpen: isOpen,
+                setIsOpen: setOpen,
+              }}
+            >
+              <Button
+                type="submit"
+                size="base_medium"
+                className="py-2 px-8"
+                form="edit-branch-form"
+              >
+                update
+              </Button>
               <ModalContent>
                 <UpdateBranchModal />
               </ModalContent>
             </Modal>
           </div>
         </div>
-        {fetchedBranchData && <EditBranchForm somedata={fetchedBranchData} />}
+        {fetchedBranchData && (
+          <EditBranchForm
+            somedata={fetchedBranchData}
+            handleSubmit={() => {}}
+          />
+        )}
       </div>
       <div className="custom-flex-col gap-8">
         <div className="page-title-container">
