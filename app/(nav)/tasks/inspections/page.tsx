@@ -55,7 +55,7 @@ const InspectionPage = () => {
           </Modal>
         </div>
       </div>
-      <AutoResizingGrid minWidth={560} gap={32}>
+      <AutoResizingGrid minWidth={505} gap={32}>
         <InspectionCard type="physical" />
         <InspectionCard type="virtual" />
       </AutoResizingGrid>

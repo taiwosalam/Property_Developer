@@ -326,6 +326,11 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
   @apply w-full flex items-center justify-center md:justify-between gap-4;
 }
 
+/* for the blue buttons */
+.page-header-container > :last-child {
+  @apply flex-shrink-0;
+}
+
 .page-title-container {
   @apply flex flex-wrap gap-4 items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4;
 }

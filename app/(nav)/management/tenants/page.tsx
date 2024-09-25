@@ -214,7 +214,7 @@ const Tenants = () => {
     <div className="space-y-9">
       <div className="page-header-container">
         {!isSmallTablet && (
-          <AutoResizingGrid containerClassName="w-full">
+          <AutoResizingGrid minWidth={245} containerClassName="w-full">
             <ManagementStatistcsCard
               title="Total Users"
               newData={new_tenants_this_month}

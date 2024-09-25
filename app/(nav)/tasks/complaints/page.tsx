@@ -19,7 +19,7 @@ const ComplaintsPage = () => {
   return (
     <div className="space-y-7">
       {!isSmallTablet && (
-        <AutoResizingGrid>
+        <AutoResizingGrid minWidth={245}>
           <ManagementStatistcsCard
             title="Total Complaints"
             newData={23}

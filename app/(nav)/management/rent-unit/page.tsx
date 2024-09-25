@@ -47,7 +47,7 @@ const RentAndUnit = () => {
   return (
     <div className="space-y-9">
       {!isSmallTablet && (
-        <AutoResizingGrid>
+        <AutoResizingGrid minWidth={240}>
           <ManagementStatistcsCard
             title="Total Units"
             newData={30}

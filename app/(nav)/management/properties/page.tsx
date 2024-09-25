@@ -42,7 +42,7 @@ const Properties = () => {
       {/* Header with statistics cards */}
       <div className="page-header-container">
         {!isSmallTablet && (
-          <AutoResizingGrid containerClassName="w-full">
+          <AutoResizingGrid minWidth={245} containerClassName="w-full">
             <ManagementStatistcsCard
               title="Total Properties"
               newData={200}

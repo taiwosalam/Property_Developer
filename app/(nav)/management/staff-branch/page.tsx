@@ -205,7 +205,7 @@ const StaffAndBranches = () => {
     <div className="space-y-9">
       <div className="page-header-container">
         {!isSmallTablet && (
-          <AutoResizingGrid containerClassName="w-full">
+          <AutoResizingGrid minWidth={245} containerClassName="w-full">
             <ManagementStatistcsCard
               title="Total Branches"
               newData={new_branches_count}

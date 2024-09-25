@@ -33,13 +33,13 @@ const Inventory = () => {
     <div className="custom-flex-col gap-9">
       <div className="page-header-container">
         {!isSmallTablet && (
-          <AutoResizingGrid containerClassName="w-full">
+          <div className="w-fit">
             <ManagementStatistcsCard
               title="Total Records"
               newData={20}
               total={100}
             />
-          </AutoResizingGrid>
+          </div>
         )}
         <Button
           href="/management/inventory/create-inventory"
