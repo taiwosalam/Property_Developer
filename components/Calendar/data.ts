@@ -1,9 +1,6 @@
 // Types
-import type {
-  CalendarDayProps,
-  CalendarClassData,
-  CalendarEventTagProps,
-} from "./types";
+import { calendar_events } from "./events";
+import type { CalendarDayProps, CalendarClassData } from "./types";
 
 // Imports
 import {
@@ -13,6 +10,7 @@ import {
   isToday,
   subDays,
   getMonth,
+  isSameDay,
   endOfMonth,
   isSameMonth,
   startOfMonth,
@@ -29,14 +27,14 @@ export const calendar_week_days = [
   "sat",
 ];
 
-export const calendar_events: CalendarEventTagProps[] = [
-  { title: "new rent" },
-  { color: "#01BA4C", title: "inspections" },
-  { color: "#2DD4BF", title: "complaints" },
-  { color: "#8C62FF", title: "due rent" },
-  { color: "#0033C4", title: "maintenance" },
-  { color: "#E9212E", title: "multiple event", rounded: true },
-];
+export const calendar_event_tags = {
+  "new rent": "#FFBB53",
+  inspections: "#01BA4C",
+  complaints: "#2DD4BF",
+  "due rent": "#8C62FF",
+  maintenance: "#0033C4",
+  "multiple event": "#E9212E",
+} as const;
 
 export class Calendar implements CalendarClassData {
   month: number;
@@ -105,11 +103,21 @@ export class Calendar implements CalendarClassData {
   }
 
   // Get detailed information for each date
-  getDayDetails(date: Date) {
+  getDayDetails(date: Date): CalendarDayProps {
+    const events = calendar_events.filter((event) =>
+      isSameDay(event.date, date)
+    );
+
     return {
       date,
       isToday: isToday(date),
       isCurrentMonth: isSameMonth(date, this.targetDate),
+
+      // Check if the date has any events
+      eventCount: events.length,
+      hasEvent: events.length > 0,
+      color:
+        events.length > 0 ? calendar_event_tags[events[0].type] : undefined,
     };
   }
 }

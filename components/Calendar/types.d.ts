@@ -1,6 +1,11 @@
 // Types
 import type { Color } from "@/types/global";
 
+// IMports
+import { calendar_event_tags } from "./data";
+
+// Calendar class and context
+// --------------------------------------------------
 export interface CalendarClassData {
   month: number;
   year: number;
@@ -13,8 +18,25 @@ export interface CalendarContextProps extends CalendarClassData {
   nextMonth: () => void;
   prevMonth: () => void;
 }
+// --------------------------------------------------
 
-export interface CalendarEventTagProps {
+// Calendar events
+// --------------------------------------------------
+export interface CalendarEventProps {
+  date: Date;
+  desc: string;
+  title: string;
+  type: keyof typeof calendar_event_tags;
+}
+// --------------------------------------------------
+
+// Calendar components
+// --------------------------------------------------
+export interface CalendarEventTagsProps {
+  events: Record<string, Color>;
+}
+
+export interface CalendarEventTagItemProps {
   title: string;
   color?: Color;
   rounded?: boolean;
@@ -22,10 +44,10 @@ export interface CalendarEventTagProps {
 
 export interface CalendarDayProps {
   date: Date;
+  color?: Color;
   isToday: boolean;
+  hasEvent?: boolean;
+  eventCount: number;
   isCurrentMonth: boolean;
 }
-
-export interface CalendarEventsProps {
-  events: CalendarEventTagProps[];
-}
+// --------------------------------------------------

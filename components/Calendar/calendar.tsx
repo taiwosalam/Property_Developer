@@ -2,11 +2,11 @@
 
 import React, { useState } from "react";
 import {
-  addMonths,
-  getMonth,
   getYear,
-  startOfMonth,
+  getMonth,
   subMonths,
+  addMonths,
+  startOfMonth,
 } from "date-fns";
 
 // Imports
@@ -16,12 +16,12 @@ import { SectionSeparator } from "../Section/section-components";
 
 import {
   CalendarDay,
-  CalendarEvents,
   CalendarWeekDays,
+  CalendarEventsTags,
 } from "./calendar-components";
 
 import CalendarHeader from "./calendar-header";
-import { Calendar, calendar_events } from "./data";
+import { Calendar, calendar_event_tags } from "./data";
 
 const CalendarComponent = () => {
   const [currentDate, setCurrentDate] = useState(startOfMonth(new Date()));
@@ -55,7 +55,7 @@ const CalendarComponent = () => {
       >
         <div className="p-[18px] bg-[#eff6ff81] custom-flex-col gap-2">
           <CalendarHeader />
-          <CalendarEvents events={calendar_events} />
+          <CalendarEventsTags events={calendar_event_tags} />
         </div>
         <div className="custom-flex-col gap-4 p-[18px]">
           <div className="custom-flex-col gap-4">

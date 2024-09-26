@@ -4,14 +4,14 @@ import { calendar_week_days } from "./data";
 // Imports
 import type {
   CalendarDayProps,
-  CalendarEventsProps,
-  CalendarEventTagProps,
+  CalendarEventTagsProps,
+  CalendarEventTagItemProps,
 } from "./types";
 
 // Imports
 import clsx from "clsx";
 
-export const CalendarEventTag: React.FC<CalendarEventTagProps> = ({
+export const CalendarEventTagItem: React.FC<CalendarEventTagItemProps> = ({
   title,
   rounded,
   color = "#adafb0",
@@ -28,22 +28,37 @@ export const CalendarEventTag: React.FC<CalendarEventTagProps> = ({
 export const CalendarDay: React.FC<CalendarDayProps> = ({
   date,
   isToday,
+  hasEvent,
+  eventCount,
   isCurrentMonth,
+  color = "#f5f5f5",
 }) => (
   <div
     className={clsx(
-      "w-8 h-8 m-auto rounded-sm flex items-center justify-center",
+      "relative w-8 h-8 m-auto rounded-sm flex items-center justify-center",
       {
         "bg-white": isToday,
-        "bg-neutral-3": !isToday && isCurrentMonth,
         "opacity-50": !isCurrentMonth,
       }
     )}
     style={{
+      backgroundColor: !isToday && isCurrentMonth ? color : undefined,
       boxShadow: isToday ? " 0px 0px 5px 0px rgba(0, 0, 0, 0.25)" : undefined,
     }}
   >
-    <p className="text-text-tertiary text-base font-normal">{date.getDate()}</p>
+    <p
+      className={clsx("text-base font-normal", {
+        "text-white": hasEvent && !isToday,
+        "text-text-tertiary": !hasEvent,
+      })}
+    >
+      {date.getDate()}
+    </p>
+    {eventCount > 1 && (
+      <div className="absolute top-0 right-0 translate-x-[35%] -translate-y-[35%] w-4 h-4 rounded-full bg-[#FF1616] flex items-center justify-center">
+        <p className="text-white text-[10px] font-medium">{eventCount}</p>
+      </div>
+    )}
   </div>
 );
 
@@ -60,10 +75,12 @@ export const CalendarWeekDays = () => (
   </div>
 );
 
-export const CalendarEvents: React.FC<CalendarEventsProps> = ({ events }) => (
+export const CalendarEventsTags: React.FC<CalendarEventTagsProps> = ({
+  events,
+}) => (
   <div className="flex gap-2">
-    {events.map((event, index) => (
-      <CalendarEventTag key={index} {...event} />
+    {Object.entries(events).map(([title, color], index) => (
+      <CalendarEventTagItem key={index} title={title} color={color} />
     ))}
   </div>
 );
