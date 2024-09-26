@@ -26,9 +26,9 @@ const CreateGatedEstate = () => {
         >
           <ChevronLeft />
         </button>
-        <p className="text-black font-bold text-lg lg:text-xl">
+        <h1 className="text-black font-bold text-lg lg:text-xl">
           Create Gated Estate Property
-        </p>
+        </h1>
       </div>
       <PageProgressBar
         breakpoints={[25, 50, 75]}

@@ -30,14 +30,14 @@ interface AddUnitStore {
   propertyDetails: null | PropertyDetails;
   propertySettings: null | PropertySettings;
 
-  addedUnits: { [key: string]: FormDataEntryValue | File[] }[];
+  addedUnits: { [key: string]: FormDataEntryValue | FormDataEntryValue[] }[];
   addUnit: (
-    unitData: { [key: string]: FormDataEntryValue | File[] },
+    unitData: { [key: string]: FormDataEntryValue | FormDataEntryValue[] },
     duplicateCount?: number
   ) => void;
   editUnit: (
     index: number,
-    unitData: { [key: string]: FormDataEntryValue | File[] }
+    unitData: { [key: string]: FormDataEntryValue | FormDataEntryValue[] }
   ) => void;
   removeUnit: (index: number) => void;
 }

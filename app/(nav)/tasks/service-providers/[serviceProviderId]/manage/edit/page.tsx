@@ -142,7 +142,9 @@ const EditServiceProvider = () => {
           >
             exit
           </Button>
-          <Button>save</Button>
+          <Button size="16_bold" className="py-2 px-8">
+            save
+          </Button>
         </div>
       </div>
     </div>

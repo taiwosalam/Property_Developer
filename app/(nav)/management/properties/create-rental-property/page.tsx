@@ -29,9 +29,9 @@ const CreateProperty = () => {
         >
           <ChevronLeft />
         </button>
-        <p className="text-black font-bold text-lg lg:text-xl">
+        <h1 className="text-black font-bold text-lg lg:text-xl">
           Create Rental Property
-        </p>
+        </h1>
       </div>
       <PageProgressBar
         breakpoints={[25, 50, 75]}

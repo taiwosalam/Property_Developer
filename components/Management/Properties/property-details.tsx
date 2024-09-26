@@ -25,9 +25,9 @@ const PropertyDetails = () => {
       className="py-6 px-4 rounded-lg bg-white"
       style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
     >
-      <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
-        Property Details
-      </h4>
+      <h2 className="text-primary-navy text-lg lg:text-xl font-bold">
+        Property Details 
+      </h2>
       <SectionSeparator className="!my-2.5" />
       <div className="mb-4 md:mb-2.5 flex flex-col md:flex-row md:items-center gap-2 md:justify-between">
         <div className="overflow-x-auto max-w-full flex-grow">
@@ -79,9 +79,8 @@ const PropertyDetails = () => {
             src={Sample}
             alt={""}
             fill
-            objectFit="cover"
-            objectPosition="center"
-            className="object-cover"
+            sizes="auto"
+            className="object-cover object-center"
           />
         </div>
       </div>

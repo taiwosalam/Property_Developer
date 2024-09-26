@@ -20,9 +20,9 @@ const PropertySettings = () => {
       className="py-6 px-4 rounded-lg bg-white"
       style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
     >
-      <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
+      <h2 className="text-primary-navy text-lg lg:text-xl font-bold">
         Property Settings
-      </h4>
+      </h2>
       <hr className="my-2.5" />
 
       <div className="overflow-x-auto max-w-full flex-grow">

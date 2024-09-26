@@ -10,12 +10,12 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
     <div className="space-y-4">
       <div className="w-full flex items-center justify-between">
         <h2 className="text-[16px] font-medium">Attached Images</h2>
-        <div className="flex items-center space-x-2 text-text-label text-sm font-medium">
+        <button type="button" className="flex items-center space-x-2 text-text-label text-sm font-medium">
           <p>Hide Images</p>
           <div className="-rotate-90">
             <ChevronLeft fill="#5A5D61" />
           </div>
-        </div>
+        </button>
       </div>
       <div className="grid grid-cols-2 gap-4">
         {images.slice(0, 3).map((src, index) => (
