@@ -2,7 +2,7 @@ import clsx from "clsx";
 import Button from "@/components/Form/Button/button";
 import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
 
-const TaskStatusProgress = ({ percentage = 100 }) => {
+const TaskStatusProgress = ({ percentage = 20 }) => {
   return (
     <div
       className="border border-[rgba(193,194,195,0.40)] rounded-lg bg-white px-4 pt-4 pb-6"

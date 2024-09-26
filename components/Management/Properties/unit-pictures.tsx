@@ -2,11 +2,83 @@ import { PlusIcon, DeleteIconOrange } from "@/public/icons/icons";
 import Image from "next/image";
 import { useUnitForm } from "./unit-form-context";
 import clsx from "clsx";
+import {
+  DndContext,
+  closestCenter,
+  type DragEndEvent,
+  type UniqueIdentifier,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
-const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
+const MAX_FILE_SIZE_MB = 15; // Maximum file size in MB
+
+interface SortableImageProps {
+  id: UniqueIdentifier;
+  image: File;
+  index: number;
+  removeImage: (index: number) => void;
+}
+
+// SortableImage component
+const SortableImage: React.FC<SortableImageProps> = ({
+  id,
+  image,
+  index,
+  removeImage,
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id,
+    });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="flex-shrink-0 relative w-[285px] h-[155px] rounded-lg overflow-hidden border border-gray-300"
+    >
+      <Image
+        src={URL.createObjectURL(image)} // Adjust based on how you store images
+        alt={`Property Image ${index + 1}`}
+        className="object-cover object-center w-full h-full"
+        fill
+      />
+      <button
+        type="button"
+        aria-label="Remove Image"
+        onClick={(e) => {
+          e.stopPropagation();
+          removeImage(index);
+        }}
+        className="absolute top-1 right-1"
+      >
+        <DeleteIconOrange size={20} />
+      </button>
+    </div>
+  );
+};
 
 const UnitPictures = () => {
-  const { images, addImages, removeImage, isEditing } = useUnitForm();
+  const { images, setImages, removeImage, isEditing } = useUnitForm();
+
+  const sortableImages = images.map((image, index) => ({
+    id: index,
+    index,
+    image,
+  }));
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -30,10 +102,29 @@ const UnitPictures = () => {
       }
 
       if (validImages.length > 0) {
-        addImages(validImages);
+        setImages(validImages);
       }
     }
     e.target.value = ""; // Reset input value to allow re-uploading the same file
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+    const activeId = active.id;
+    const overId = over.id;
+    if (activeId === overId) return;
+
+    if (activeId !== overId) {
+      const oldIndex = sortableImages.findIndex(
+        (image) => image.id === active.id
+      );
+      const newIndex = sortableImages.findIndex(
+        (image) => image.id === over.id
+      );
+      const newImages = arrayMove(images, oldIndex, newIndex);
+      setImages(newImages, { append: false });
+    }
   };
 
   return (
@@ -49,50 +140,47 @@ const UnitPictures = () => {
       />
       <p className="text-text-secondary mb-5">
         Unit pictures are what will be shown to potential clients on the mobile
-        app and your default website (maximum of 14 images).
+        app and your default website (maximum of 14 images). Please drag your
+        preferred image and place it in the first position to make it the
+        primary display.
       </p>
-      <div className="flex gap-4 overflow-x-auto">
-        {images.map((image, index) => (
-          <div
-            key={index}
-            className="flex-shrink-0 relative w-[285px] h-[155px] rounded-lg overflow-hidden border border-gray-300"
-          >
-            <Image
-              src={URL.createObjectURL(image)}
-              alt={`Property Image ${index + 1}`}
-              className="object-cover object-center w-full h-full"
-              fill
-            />
-            <button
-              type="button"
-              aria-label="Remove Image"
-              onClick={() => removeImage(index)}
-              className="absolute top-1 right-1"
-            >
-              <DeleteIconOrange size={20} />
-            </button>
+      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext
+          items={sortableImages.map((i) => i.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="flex gap-4 overflow-x-auto overflow-y-hidden">
+            {sortableImages.map((s) => (
+              <SortableImage
+                key={s.id}
+                id={s.id}
+                image={s.image}
+                index={s.index}
+                removeImage={removeImage}
+              />
+            ))}
+            {images.length < 14 && (
+              <label
+                htmlFor="upload"
+                className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
+              >
+                <PlusIcon />
+                <span className="text-black text-base font-normal mt-2">
+                  Add Pictures
+                </span>
+                <input
+                  id="upload"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
+            )}
           </div>
-        ))}
-        {images.length < 14 && (
-          <label
-            htmlFor="upload"
-            className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
-          >
-            <PlusIcon />
-            <span className="text-black text-base font-normal mt-2">
-              Add Pictures
-            </span>
-            <input
-              id="upload"
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleFileChange}
-              className="hidden"
-            />
-          </label>
-        )}
-      </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 };

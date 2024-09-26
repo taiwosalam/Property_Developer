@@ -25,4 +25,5 @@ export interface InputProps {
   min?: number;
   max?: number;
   labelclassName?: string;
+  maxLength?: number;
 }

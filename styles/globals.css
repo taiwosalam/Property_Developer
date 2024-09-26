@@ -338,3 +338,7 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
 .search-input-placeholder-color::placeholder {
   @apply text-neutral-8;
 }
+
+.undo-text-transform {
+  text-transform: unset !important;
+}

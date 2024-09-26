@@ -49,7 +49,8 @@ const UnitFeatures = () => {
               <Input
                 required
                 id="area_sqm" //confirm ID with backend
-                label="Total Area (Sqm)"
+                label="Total Area (m²)"
+                labelclassName="undo-text-transform"
                 inputClassName="bg-white"
                 type="number"
                 min={1}
@@ -80,7 +81,8 @@ const UnitFeatures = () => {
               inputClassName="bg-white keep-spinner"
               type="number"
               min={0}
-              max={50}
+              max={99}
+              maxLength={2}
             />
             <Input
               required
@@ -89,7 +91,8 @@ const UnitFeatures = () => {
               inputClassName="bg-white keep-spinner"
               type="number"
               min={0}
-              max={50}
+              max={99}
+              maxLength={2}
             />
             <Input
               required
@@ -98,7 +101,8 @@ const UnitFeatures = () => {
               inputClassName="bg-white keep-spinner"
               type="number"
               min={0}
-              max={50}
+              max={99}
+              maxLength={2}
             />
             <MultiSelect
               options={facilitiesOptions}
