@@ -63,6 +63,7 @@ const SortableImage: React.FC<SortableImageProps> = ({
           e.stopPropagation();
           removeImage(index);
         }}
+        onMouseDown={(e) => e.stopPropagation()} // Prevent drag events
         className="absolute top-1 right-1"
       >
         <DeleteIconOrange size={20} />

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+
 import { useState, useEffect } from "react";
 
 // Types
@@ -153,11 +153,6 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
       }));
     }
   }, [selectedLGA, selectedState]);
-
-  useEffect(() => {
-    // fetch options for branch, inventory, landlord, account officer
-    // update state values
-  }, []);
 
   // Function to reset the state
   const handleReset = () => {
