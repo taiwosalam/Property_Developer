@@ -14,13 +14,12 @@ const AnnouncementPage = () => {
     <div className="space-y-9">
       <div className="page-header-container">
         {!isSmallTablet && (
-          <AutoResizingGrid minWidth={210} containerClassName="md:min-w-[60%]">
+          <AutoResizingGrid minWidth={220} containerClassName="w-full">
             <ManagementStatistcsCard
               title="Announcement"
               newData={40}
               total={657}
             />
-            <ManagementStatistcsCard title="Examine" newData={657} total={40} />
             <ManagementStatistcsCard title="Examine" newData={657} total={40} />
           </AutoResizingGrid>
         )}

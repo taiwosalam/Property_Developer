@@ -12,14 +12,14 @@ import {
 import { useUnitForm } from "./unit-form-context";
 
 const emptyStateValues = {
-  rentAmount: "0",
-  agencyFee: "0",
-  legalFee: "0 ",
-  serviceCharge: "0",
-  cautionFee: "0",
-  inspectionFee: "0",
-  otherCharges: "0",
-  totalPackage: "0",
+  rentAmount: "",
+  agencyFee: "",
+  legalFee: "",
+  serviceCharge: "",
+  cautionFee: "",
+  inspectionFee: "",
+  otherCharges: "",
+  totalPackage: "",
 };
 
 const UnitBreakdownNewTenant = () => {

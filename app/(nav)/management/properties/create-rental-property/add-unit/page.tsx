@@ -9,6 +9,7 @@ import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import FooterModal from "./footer-modal";
 import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-card";
 import UnitForm from "@/components/Management/Properties/unit-form";
+import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
 
 const AddUnit = () => {
   const [saved, setSaved] = useState(false);
@@ -16,9 +17,7 @@ const AddUnit = () => {
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
 
   const router = useRouter();
-  const goBack = () => {
-    router.back();
-  };
+
   const [duplicate, setDuplicate] = useState({ val: false, count: 2 });
 
   //   useeffect to fetch property info from API with the Property ID.Change True/False Values to Yes/No. Set Unit Store Values.
@@ -26,17 +25,22 @@ const AddUnit = () => {
   return (
     <div className="pb-[70px] lg:pb-[80px]">
       {/* Back Button & Page Title */}
-      <div className="flex items-center gap-1 mb-5 lg:mb-8">
+      <div className="flex items-center gap-1 mb-1">
         <button
           type="button"
           aria-label="Go Back"
-          onClick={goBack}
+          onClick={() => router.back()}
           className="p-2"
         >
           <ChevronLeft />
         </button>
         <p className="text-black font-bold text-lg lg:text-xl">Add Units</p>
       </div>
+      <PageProgressBar
+        breakpoints={[25, 50, 75]}
+        percentage={37}
+        className="mb-[52px]"
+      />
       <div className="space-y-6 lg:space-y-8">
         <PropertyDetails />
         <PropertySettings />

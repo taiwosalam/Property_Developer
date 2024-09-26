@@ -23,10 +23,12 @@ import { defaultTenantPageData, getAllTenants, TenantPageState } from "./data";
 import { useAuthStore } from "@/store/authstrore";
 import FilterButton from "@/components/FilterButton/filter-button";
 import Link from "next/link";
+import useWindowWidth from "@/hooks/useWindowWidth";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const Tenants = () => {
   const accessToken = useAuthStore((state) => state.access_token);
-
+  const { isSmallTablet } = useWindowWidth();
   const initialState: TenantPageState = {
     gridView: true,
     total_pages: 50,
@@ -68,9 +70,6 @@ const Tenants = () => {
     // Fetch the landlords when the component mounts
     fetchLandlords();
   }, [fetchLandlords]);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
 
   const states = getAllStates();
 
@@ -208,52 +207,41 @@ const Tenants = () => {
     { id: "6", accessor: "manage/chat" },
   ];
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
     <div className="space-y-9">
       <div className="page-header-container">
-        <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <ManagementStatistcsCard
-            title="Total Users"
-            newData={new_tenants_this_month}
-            total={total_tenants}
-          />
-          <ManagementStatistcsCard
-            title="Web Tenants"
-            newData={new_web_tenants_this_month}
-            total={web_tenants}
-          />
-          <ManagementStatistcsCard
-            title="Mobile Tenants"
-            newData={new_mobile_tenants_this_month}
-            total={mobile_tenants}
-          />
-          <div className="hidden md:block xl:hidden">
-            <div className="flex items-center justify-center w-full h-full">
-              <Modal>
-                <ModalTrigger asChild>
-                  <Button type="button" className="page-header-button">
-                    + create new tenant
-                  </Button>
-                </ModalTrigger>
-                <ModalContent>
-                  <AddTenantModal />
-                </ModalContent>
-              </Modal>
-            </div>
-          </div>
-        </div>
-        <div className="md:hidden xl:flex lg:ml-4">
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
-                + create new tenant
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <AddTenantModal />
-            </ModalContent>
-          </Modal>
-        </div>
+        {!isSmallTablet && (
+          <AutoResizingGrid minWidth={245} containerClassName="w-full">
+            <ManagementStatistcsCard
+              title="Total Users"
+              newData={new_tenants_this_month}
+              total={total_tenants}
+            />
+            <ManagementStatistcsCard
+              title="Web Tenants"
+              newData={new_web_tenants_this_month}
+              total={web_tenants}
+            />
+            <ManagementStatistcsCard
+              title="Mobile Tenants"
+              newData={new_mobile_tenants_this_month}
+              total={mobile_tenants}
+            />
+          </AutoResizingGrid>
+        )}
+        <Modal>
+          <ModalTrigger asChild>
+            <Button type="button" className="page-header-button">
+              + create new tenant
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <AddTenantModal />
+          </ModalContent>
+        </Modal>
       </div>
 
       <div className="page-title-container">
@@ -305,18 +293,13 @@ const Tenants = () => {
       </div>
       <section>
         {gridView ? (
-          <div
-            className="grid gap-4"
-            style={{
-              gridTemplateColumns: "repeat(auto-fill, minmax(284px, 1fr))",
-            }}
-          >
+          <AutoResizingGrid minWidth={284} gap={16}>
             {tenants.map((t) => (
               <Link href={`/management/tenants/${t.id}/manage`} key={t.id}>
                 <TenantCard key={t.id} {...t} />
               </Link>
             ))}
-          </div>
+          </AutoResizingGrid>
         ) : (
           <CustomTable
             displayTableHead={false}

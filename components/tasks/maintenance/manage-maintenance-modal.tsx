@@ -16,7 +16,7 @@ const ManageMaintenanceModal = () => {
   const handleStartDateChange = (date?: Dayjs | null) => {
     setStartDate(date || null);
   };
-  const [maintenanceCost, setMaintenanceCost] = useState("0");
+  const [maintenanceCost, setMaintenanceCost] = useState("");
   const handleMaintenanceCostChange = (value: string) => {
     setMaintenanceCost(formatCostInputValue(value));
   };

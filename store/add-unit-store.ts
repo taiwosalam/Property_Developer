@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import type { Categories, PropertyCreation, UnitTypeKey } from "@/data";
-import { devtools } from "zustand/middleware";
+import type { Categories } from "@/data";
 
 interface PropertyDetails {
   property_title: string;
@@ -43,44 +42,42 @@ interface AddUnitStore {
   removeUnit: (index: number) => void;
 }
 
-export const useAddUnitStore = create<AddUnitStore>()(
-  devtools((set) => ({
-    // propertyCreation: "rental property",
-    propertyDetails: null,
-    propertySettings: null,
+export const useAddUnitStore = create<AddUnitStore>((set) => ({
+  // propertyCreation: "rental property",
+  propertyDetails: null,
+  propertySettings: null,
 
-    addedUnits: [],
-    addUnit: (unitData, duplicateCount = 0) => {
-      set((state) => {
-        // perform post request and send unitDataWithImages along. ur response should come with the unit data u just added and use that to set d state of addedUnits
-        const updatedUnits = [...state.addedUnits, unitData];
-        // Step 3: Replicate the added unit if `duplicateCount` > 0.
-        const replicatedUnits = Array(duplicateCount).fill(unitData);
+  addedUnits: [],
+  addUnit: (unitData, duplicateCount = 0) => {
+    set((state) => {
+      // perform post request and send unitDataWithImages along. ur response should come with the unit data u just added and use that to set d state of addedUnits
+      const updatedUnits = [...state.addedUnits, unitData];
+      // Step 3: Replicate the added unit if `duplicateCount` > 0.
+      const replicatedUnits = Array(duplicateCount).fill(unitData);
 
-        return {
-          addedUnits: [...updatedUnits, ...replicatedUnits],
-        };
-      });
-    },
-    removeUnit: (index) =>
-      set((state) => ({
-        // communicate with API and remove d unit
-        addedUnits: state.addedUnits.filter((_, i) => i !== index),
-      })),
-    editUnit: (index, unitData) => {
-      set((state) => {
-        // communicate with API and edit d unit
-        const updatedUnits = state.addedUnits.map((unit, i) =>
-          i === index ? { ...unit, ...unitData } : unit
-        );
-        console.log("Updated addedUnits:", updatedUnits);
-        return {
-          addedUnits: updatedUnits,
-        };
-      });
-    },
-  }))
-);
+      return {
+        addedUnits: [...updatedUnits, ...replicatedUnits],
+      };
+    });
+  },
+  removeUnit: (index) =>
+    set((state) => ({
+      // communicate with API and remove d unit
+      addedUnits: state.addedUnits.filter((_, i) => i !== index),
+    })),
+  editUnit: (index, unitData) => {
+    set((state) => {
+      // communicate with API and edit d unit
+      const updatedUnits = state.addedUnits.map((unit, i) =>
+        i === index ? { ...unit, ...unitData } : unit
+      );
+      // console.log("Updated addedUnits:", updatedUnits);
+      return {
+        addedUnits: updatedUnits,
+      };
+    });
+  },
+}));
 
 // export const useAddUnitStoreSelectors = {
 //   getState: useAddUnitStore.getState,

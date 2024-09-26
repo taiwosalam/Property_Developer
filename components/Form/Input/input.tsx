@@ -34,6 +34,7 @@ const Input: React.FC<InputProps> = ({
   disabled,
   min,
   max,
+  maxLength,
 }) => {
   // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -105,11 +106,16 @@ const Input: React.FC<InputProps> = ({
           // Add min and max attributes for number type
           min={type === "number" ? min : undefined}
           max={type === "number" ? max : undefined}
+          maxLength={maxLength}
           // Reset validation error when the user interacts with the input
           onInput={() => setValidationError(null)}
           // Call onChange prop if provided when input value changes
-          onChange={({ target }) => {
-            onChange && onChange(target.value);
+          onChange={(event) => {
+            const { value } = event.target;
+            if (type === "number" && maxLength && value.length > maxLength) {
+              event.target.value = value.slice(0, maxLength);
+            }
+            onChange && onChange(event.target.value);
           }}
           // Conditionally change the input type based on password visibility state
           type={type === "password" && isPasswordVisible ? "text" : type}
