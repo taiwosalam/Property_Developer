@@ -24,7 +24,7 @@ const AnnouncementPage = () => {
           </AutoResizingGrid>
         )}
 
-        <Button type="button" className="page-header-button">
+        <Button href="/tasks/announcements/create-announcement" className="page-header-button">
           + Create Announcement
         </Button>
       </div>

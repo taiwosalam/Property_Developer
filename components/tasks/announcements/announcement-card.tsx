@@ -2,7 +2,7 @@
 import { empty } from "@/app/config";
 import Image from "next/image";
 import {
-  EyeShowIcon,
+  BlueEyeShowIcon,
   LikeIcon,
   DislikeIcon,
   CameraIcon,
@@ -44,9 +44,9 @@ const AnnouncementCard = () => {
           Announcement Title (Rent Increase)
         </p>
         <p className="mb-2 text-xs text-text-tertiary line-clamp-3 text-ellipsis">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
+          Lorem Ipsum is simply dummy text of the printing and typesetting
           industry. Lorem Ipsum has been the industrys standard dummy text ever
-          since the 1500s, and Lorem Ipsum is simply dummy text of the printing
+          since the 1500s, and Lorem Ipsum is simply dummy text of the printing
           and typesetting industry. Lorem Ipsum has been the industrys standard
           dummy text ever since the 1500s, and
         </p>
@@ -56,7 +56,7 @@ const AnnouncementCard = () => {
         </div>
         <div className="mb-3 flex items-center gap-2">
           <p className="flex items-center gap-1 text-brand-9">
-            <EyeShowIcon />
+            <BlueEyeShowIcon />
             <span className="text-sm">31 (+3 today)</span>
           </p>
           <p className="flex items-center gap-1 text-text-disabled">
@@ -68,7 +68,12 @@ const AnnouncementCard = () => {
             <span className="text-xs font-normal">0</span>
           </p>
         </div>
-        <Button size="xs_normal" className="block ml-auto py-2 px-4">
+        {/* Change to announcementId */}
+        <Button
+          href="/tasks/announcements/1/preview"
+          size="xs_normal"
+          className="w-fit ml-auto py-2 px-4"
+        >
           Preview
         </Button>
       </div>

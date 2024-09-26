@@ -34,7 +34,7 @@ const AddUnit = () => {
         >
           <ChevronLeft />
         </button>
-        <p className="text-black font-bold text-lg lg:text-xl">Add Units</p>
+        <h1 className="text-black font-bold text-lg lg:text-xl">Add Units</h1>
       </div>
       <PageProgressBar
         breakpoints={[25, 50, 75]}
