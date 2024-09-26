@@ -60,7 +60,7 @@ const EditBranch = () => {
     };
 
     fetchBranchData();
-  }, []);
+  }, [accessToken, branchId]);
 
   const handleUpdateBranch = async (data: FormData) => {
     try {
