@@ -25,7 +25,7 @@ interface SortableImageProps {
   removeImage: (index: number) => void;
 }
 
-// SortableImage component
+
 const SortableImage: React.FC<SortableImageProps> = ({
   id,
   image,
