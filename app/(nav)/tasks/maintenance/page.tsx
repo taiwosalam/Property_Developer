@@ -17,13 +17,13 @@ const Maintenance = () => {
     <div className="custom-flex-col gap-8">
       <div className="page-header-container gap-6">
         {!isSmallTablet && (
-          <AutoResizingGrid minWidth={280}>
+          <div className="w-fit">
             <ManagementStatistcsCard
               title="Total Maintenance"
               newData={34}
               total={657}
             />
-          </AutoResizingGrid>
+          </div>
         )}
         <div className="flex items-center">
           <Button

@@ -24,11 +24,14 @@ import Button from "@/components/Form/Button/button";
 import { getAllLandlords, LandlordPageState } from "./data";
 import { useAuthStore } from "@/store/authstrore";
 import FilterButton from "@/components/FilterButton/filter-button";
+import useWindowWidth from "@/hooks/useWindowWidth";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const Landlord = () => {
+  const { isSmallTablet } = useWindowWidth();
   const accessToken = useAuthStore((state) => state.access_token);
   const initialState: LandlordPageState = {
-    gridView: false,
+    gridView: true,
     total_pages: 50,
     current_page: 1,
     loading: true,
@@ -76,9 +79,6 @@ const Landlord = () => {
   useEffect(() => {
     fetchLandlords();
   }, [fetchLandlords]);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
 
   const setGridView = () => {
     setState((state) => ({ ...state, gridView: true }));
@@ -214,52 +214,41 @@ const Landlord = () => {
     { id: "6", accessor: "manage/chat" },
   ];
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
     <div className="space-y-9">
       <div className="page-header-container">
-        <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <ManagementStatistcsCard
-            title="Total Landlords"
-            newData={new_landlords_this_month}
-            total={total_landlords}
-          />
-          <ManagementStatistcsCard
-            title="Web Landlords"
-            newData={new_web_landlords_this_month}
-            total={web_landlords}
-          />
-          <ManagementStatistcsCard
-            title="Mobile Landlords"
-            newData={new_mobile_landlords_this_month}
-            total={mobile_landlords}
-          />
-          <div className="hidden md:block xl:hidden">
-            <div className="flex items-center justify-center w-full h-full">
-              <Modal>
-                <ModalTrigger asChild>
-                  <Button type="button" className="page-header-button">
-                    + create new landlord
-                  </Button>
-                </ModalTrigger>
-                <ModalContent>
-                  <AddLandlordModal />
-                </ModalContent>
-              </Modal>
-            </div>
-          </div>
-        </div>
-        <div className="md:hidden xl:flex lg:ml-4">
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
-                + create new landlord
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <AddLandlordModal />
-            </ModalContent>
-          </Modal>
-        </div>
+        {!isSmallTablet && (
+          <AutoResizingGrid minWidth={245} containerClassName="w-full">
+            <ManagementStatistcsCard
+              title="Total Landlords"
+              newData={new_landlords_this_month}
+              total={total_landlords}
+            />
+            <ManagementStatistcsCard
+              title="Web Landlords"
+              newData={new_web_landlords_this_month}
+              total={web_landlords}
+            />
+            <ManagementStatistcsCard
+              title="Mobile Landlords"
+              newData={new_mobile_landlords_this_month}
+              total={mobile_landlords}
+            />
+          </AutoResizingGrid>
+        )}
+        <Modal>
+          <ModalTrigger asChild>
+            <Button type="button" className="page-header-button">
+              + create new landlord
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <AddLandlordModal />
+          </ModalContent>
+        </Modal>
       </div>
 
       <div className="page-title-container">
@@ -319,18 +308,13 @@ const Landlord = () => {
       </div>
       <section>
         {gridView ? (
-          <div
-            className="grid gap-4"
-            style={{
-              gridTemplateColumns: "repeat(auto-fill, minmax(284px, 1fr))",
-            }}
-          >
+          <AutoResizingGrid minWidth={284} gap={16}>
             {landlords.map((l) => (
               <Link href={`/management/landlord/${l.id}/manage`} key={l.id}>
                 <LandlordCard {...l} />
               </Link>
             ))}
-          </div>
+          </AutoResizingGrid>
         ) : (
           <CustomTable
             displayTableHead={false}

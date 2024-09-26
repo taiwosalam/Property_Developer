@@ -30,5 +30,6 @@ export interface UnitCardProps {
 }
 
 export interface CreatePropertyFormProps {
+  handleSubmit: (a?: any) => void;
   editMode?: boolean;
 }

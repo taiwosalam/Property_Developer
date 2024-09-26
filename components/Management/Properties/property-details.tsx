@@ -3,6 +3,7 @@ import Sample from "@/public/empty/SampleProperty.jpeg";
 import { CameraIcon } from "@/public/icons/icons";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import { useAddUnitStore } from "@/store/add-unit-store";
+import { SectionSeparator } from "@/components/Section/section-components";
 
 const PropertyDetails = () => {
   const propertyDetails = useAddUnitStore((state) => state.propertyDetails);
@@ -27,7 +28,7 @@ const PropertyDetails = () => {
       <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
         Property Details
       </h4>
-      <hr className="my-2.5" />
+      <SectionSeparator className="!my-2.5" />
       <div className="mb-4 md:mb-2.5 flex flex-col md:flex-row md:items-center gap-2 md:justify-between">
         <div className="overflow-x-auto max-w-full flex-grow">
           <div className="min-w-[400px] text-sm md:text-base grid grid-cols-[1fr,26%,1fr] gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[50%,1fr]">

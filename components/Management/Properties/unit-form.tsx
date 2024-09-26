@@ -47,15 +47,20 @@ const UnitForm: React.FC<UnitFormProps> = ({
     unitType: empty ? "" : data.unitType,
     formResetKey: 0,
   });
-  const addImages = (newImages: File[]) =>
+  const setImages = (newImages: File[], options?: { append: boolean }) =>
     setState((x) => {
-      const totalImages = x.images.length + newImages.length;
-      if (totalImages > 14) {
-        // max of 14 images
-        const allowedImages = newImages.slice(0, 14 - x.images.length);
-        return { ...x, images: [...x.images, ...allowedImages] };
+      const append = options?.append ?? true;
+      if (append) {
+        const totalImages = x.images.length + newImages.length;
+        if (totalImages > 14) {
+          // max of 14 images
+          const allowedImages = newImages.slice(0, 14 - x.images.length);
+          return { ...x, images: [...x.images, ...allowedImages] };
+        }
+        return { ...x, images: [...x.images, ...newImages] };
+      } else {
+        return { ...x, images: newImages.slice(0, 14) };
       }
-      return { ...x, images: [...x.images, ...newImages] };
     });
   const removeImage = (index: number) =>
     setState((x) => ({ ...x, images: x.images.filter((_, i) => i !== index) }));
@@ -72,7 +77,7 @@ const UnitForm: React.FC<UnitFormProps> = ({
       unitData = { images: state.images, ...unitData };
       if (duplicate?.val) {
         addUnit(unitData, duplicate.count); // Pass duplicate count
-        console.log("addunit duplicate");
+        // console.log("addunit duplicate");
       } else {
         addUnit(unitData);
       }
@@ -81,7 +86,7 @@ const UnitForm: React.FC<UnitFormProps> = ({
           val: false,
           count: duplicate?.count ?? 0, // Use existing count or default to 0
         });
-        console.log("reset val");
+        // console.log("reset val");
       }
       form.reset();
       resetForm();
@@ -106,7 +111,7 @@ const UnitForm: React.FC<UnitFormProps> = ({
 
   return (
     <UnitFormContext.Provider
-      value={{ ...state, addImages, removeImage, setUnitType }}
+      value={{ ...state, setImages, removeImage, setUnitType }}
     >
       <form
         id={empty ? "add-unit-form" : "edit-unit-form"}

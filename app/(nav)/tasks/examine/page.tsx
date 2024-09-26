@@ -16,21 +16,19 @@ const Examine = () => {
 
   return (
     <div className="space-y-9">
-      <div className="page-header-container gap-6">
+      <div className="page-header-container">
         {!isSmallTablet && (
-          <AutoResizingGrid minWidth={280}>
+          <div className="w-fit">
             <ManagementStatistcsCard
               title="Total Examine"
               newData={34}
               total={657}
             />
-          </AutoResizingGrid>
+          </div>
         )}
-        <div className="flex items-center">
-          <Button href="" className="page-header-button">
-            + create new
-          </Button>
-        </div>
+        <Button href="" className="page-header-button">
+          + create new
+        </Button>
       </div>
       <div className="page-title-container">
         <PageTitle title="Examine" />

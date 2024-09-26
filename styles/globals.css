@@ -323,7 +323,12 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
 }
 
 .page-header-container {
-  @apply w-full flex items-center justify-center lg:justify-between;
+  @apply w-full flex items-center justify-center md:justify-between gap-4;
+}
+
+/* for the blue buttons */
+.page-header-container > :last-child {
+  @apply flex-shrink-0;
 }
 
 .page-title-container {
@@ -332,4 +337,8 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
 
 .search-input-placeholder-color::placeholder {
   @apply text-neutral-8;
+}
+
+.undo-text-transform {
+  text-transform: unset !important;
 }

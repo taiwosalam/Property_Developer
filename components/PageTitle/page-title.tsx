@@ -11,7 +11,7 @@ const PageTitle: React.FC<PageTitleProps> = ({ title, aboutPageModal }) => {
   const handleCloseModal = () => setIsModalOpen(false);
   return (
     <div className="flex items-center gap-1">
-      <h1 className="text-base md:text-lg lg:text-xl font-medium text-[#101828] capitalize">
+      <h1 className="text-lg lg:text-xl font-medium text-[#101828] capitalize">
         {title}
       </h1>
       <button

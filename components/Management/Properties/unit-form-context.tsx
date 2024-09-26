@@ -4,7 +4,7 @@ import { UnitTypeKey } from "@/data";
 import { UnitFormState } from "./unit-form";
 
 interface UnitFormContextType extends UnitFormState {
-  addImages: (newImages: File[]) => void;
+  setImages: (newImages: File[], options?: { append: boolean }) => void;
   removeImage: (index: number) => void;
   setUnitType: (unitType: "" | UnitTypeKey) => void;
 }

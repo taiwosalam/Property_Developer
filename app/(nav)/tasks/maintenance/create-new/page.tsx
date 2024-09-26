@@ -20,7 +20,7 @@ const CreateMaintenace = () => {
   const handleStartDateChange = (date?: Dayjs | null) => {
     setStartDate(date || null);
   };
-  const [maintenanceCost, setMaintenanceCost] = useState("0");
+  const [maintenanceCost, setMaintenanceCost] = useState("");
   const currencySymbol = currencySymbols["NAIRA"]; // TODO: Make this dynamic
   const handleMaintenanceCostChange = (value: string) => {
     setMaintenanceCost(formatCostInputValue(value));

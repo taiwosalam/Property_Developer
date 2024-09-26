@@ -12,10 +12,10 @@ import {
 import { useUnitForm } from "./unit-form-context";
 
 const emptyStateValues = {
-  rentAmount: "0",
-  otherCharges: "0",
-  serviceCharge: "0",
-  totalPackage: "0",
+  rentAmount: "",
+  otherCharges: "",
+  serviceCharge: "",
+  totalPackage: "",
 };
 
 const UnitBreakdownRenewalTenant = () => {

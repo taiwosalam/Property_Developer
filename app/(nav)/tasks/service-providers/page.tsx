@@ -11,8 +11,11 @@ import Button from "@/components/Form/Button/button";
 import ServiceProviderCard from "@/components/Management/landlord-and-tenant-card";
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import AddServiceProviderModal from "@/components/tasks/service-providers/add-service-provider-modal";
+import useWindowWidth from "@/hooks/useWindowWidth";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const ServiceProviders = () => {
+  const { isSmallTablet } = useWindowWidth();
   const [state, setState] = useState({
     total_pages: 5,
     current_page: 1,
@@ -25,51 +28,37 @@ const ServiceProviders = () => {
   return (
     <div className="space-y-9">
       <div className="page-header-container">
-        <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <ManagementStatistcsCard
-            title="Total Users"
-            newData={30}
-            total={40}
-          />
-          <ManagementStatistcsCard
-            title="Mobile Users"
-            newData={40}
-            total={40}
-          />
-          <ManagementStatistcsCard
-            title="Vacannt Units"
-            newData={40}
-            total={40}
-          />
-          <div className="hidden md:block xl:hidden">
-            <div className="flex items-center justify-center w-full h-full">
-              <Modal>
-                <ModalTrigger asChild>
-                  <Button type="button" className="page-header-button">
-                    + Create New Service Provider
-                  </Button>
-                </ModalTrigger>
-                <ModalContent>
-                  <AddServiceProviderModal />
-                </ModalContent>
-              </Modal>
-            </div>
-          </div>
-        </div>
-
-        <div className="md:hidden xl:flex lg:ml-4">
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
-                + Create New Service Provider
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <AddServiceProviderModal />
-            </ModalContent>
-          </Modal>
-        </div>
+        {!isSmallTablet && (
+          <AutoResizingGrid minWidth={220} containerClassName="w-full">
+            <ManagementStatistcsCard
+              title="Total Users"
+              newData={30}
+              total={40}
+            />
+            <ManagementStatistcsCard
+              title="Mobile Users"
+              newData={40}
+              total={40}
+            />
+            <ManagementStatistcsCard
+              title="Vacant Units"
+              newData={40}
+              total={40}
+            />
+          </AutoResizingGrid>
+        )}
+        <Modal>
+          <ModalTrigger asChild>
+            <Button type="button" className="page-header-button">
+              + Create New Service Provider
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <AddServiceProviderModal />
+          </ModalContent>
+        </Modal>
       </div>
+
       <div className="page-title-container">
         <PageTitle title="Service Provider" />
         <div className="flex items-center gap-4 flex-wrap">
