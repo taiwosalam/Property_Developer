@@ -20,11 +20,10 @@ const MAX_FILE_SIZE_MB = 15; // Maximum file size in MB
 
 interface SortableImageProps {
   id: UniqueIdentifier;
-  image: File;
+  image: string;
   index: number;
   removeImage: (index: number) => void;
 }
-
 
 const SortableImage: React.FC<SortableImageProps> = ({
   id,
@@ -51,7 +50,7 @@ const SortableImage: React.FC<SortableImageProps> = ({
       className="flex-shrink-0 relative w-[285px] h-[155px] rounded-lg overflow-hidden border border-gray-300"
     >
       <Image
-        src={URL.createObjectURL(image)} // Adjust based on how you store images
+        src={image}
         alt={`Property Image ${index + 1}`}
         className="object-cover object-center w-full h-full"
         fill
@@ -59,11 +58,15 @@ const SortableImage: React.FC<SortableImageProps> = ({
       <button
         type="button"
         aria-label="Remove Image"
-        onClick={(e) => {
-          e.stopPropagation();
+        // onClick={(e) => {
+        //   console.log("clicked remove");
+        //   e.stopPropagation();
+        //   removeImage(index);
+        // }}
+        onMouseDown={(e) => {
           removeImage(index);
-        }}
-        onMouseDown={(e) => e.stopPropagation()} // Prevent drag events
+          e.stopPropagation();
+        }} // Prevent drag events
         className="absolute top-1 right-1"
       >
         <DeleteIconOrange size={20} />
@@ -82,29 +85,37 @@ const UnitPictures = () => {
   }));
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files);
-
-      const validImages: File[] = [];
-      const invalidFiles: File[] = [];
-
-      filesArray.forEach((file) => {
-        if (file.size <= MAX_FILE_SIZE_MB * 1024 * 1024) {
-          validImages.push(file);
-        } else {
-          invalidFiles.push(file);
-        }
-      });
-
-      if (invalidFiles.length > 0) {
-        alert(
-          `Some files exceed the ${MAX_FILE_SIZE_MB} MB size limit and will not be uploaded.`
-        );
+    const files = Array.from(e.target.files || []);
+    const validImages: string[] = [];
+    const oversizeImages: string[] = [];
+    for (const file of files) {
+      if (!file.type.startsWith("image/")) {
+        alert("Upload only image files.");
+        return;
       }
-
-      if (validImages.length > 0) {
-        setImages(validImages);
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        oversizeImages.push(file.name);
+        continue;
       }
+      try {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          validImages.push(reader.result as string);
+          if (validImages.length + oversizeImages.length === files.length) {
+            setImages(validImages, { append: true });
+          }
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error processing image:", error);
+        alert("There was an error processing your image. Please try again.");
+      }
+    }
+
+    if (oversizeImages.length > 0) {
+      alert(
+        `Some files were not uploaded due to exceeding the maximum size: ${MAX_FILE_SIZE_MB} MB`
+      );
     }
     e.target.value = ""; // Reset input value to allow re-uploading the same file
   };
@@ -162,7 +173,7 @@ const UnitPictures = () => {
             ))}
             {images.length < 14 && (
               <label
-                htmlFor="upload"
+                htmlFor="unit_pictures"
                 className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
               >
                 <PlusIcon />
@@ -170,7 +181,7 @@ const UnitPictures = () => {
                   Add Pictures
                 </span>
                 <input
-                  id="upload"
+                  id="unit_pictures"
                   type="file"
                   accept="image/*"
                   multiple

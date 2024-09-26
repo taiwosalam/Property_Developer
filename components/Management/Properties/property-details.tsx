@@ -79,9 +79,8 @@ const PropertyDetails = () => {
             src={Sample}
             alt={""}
             fill
-            objectFit="cover"
-            objectPosition="center"
-            className="object-cover"
+            sizes="auto"
+            className="object-cover object-center"
           />
         </div>
       </div>

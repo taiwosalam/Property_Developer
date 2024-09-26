@@ -12,7 +12,7 @@ import { UnitTypeKey } from "@/data";
 
 export interface UnitFormState {
   isEditing?: boolean;
-  images: File[];
+  images: string[];
   unitType: "" | UnitTypeKey;
   formResetKey: number;
 }
@@ -47,7 +47,7 @@ const UnitForm: React.FC<UnitFormProps> = ({
     unitType: empty ? "" : data.unitType,
     formResetKey: 0,
   });
-  const setImages = (newImages: File[], options?: { append: boolean }) =>
+  const setImages = (newImages: string[], options?: { append: boolean }) =>
     setState((x) => {
       const append = options?.append ?? true;
       if (append) {
@@ -74,7 +74,8 @@ const UnitForm: React.FC<UnitFormProps> = ({
     const form = formRef.current;
     if (form) {
       let unitData = getFormData(form);
-      unitData = { images: state.images, ...unitData };
+      unitData.images = state.images;
+      console.log(unitData);
       if (duplicate?.val) {
         addUnit(unitData, duplicate.count); // Pass duplicate count
         // console.log("addunit duplicate");
