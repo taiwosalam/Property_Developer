@@ -1,5 +1,6 @@
 "use client";
 
+import CreateInvoiceModal from "@/components/Accounting/invoice/CreateInvoiceModal";
 import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
@@ -81,7 +82,7 @@ const AccountingInvoicePage = () => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <h1>hoooooos</h1>
+              <CreateInvoiceModal />
             </ModalContent>
           </Modal>
         </div>
