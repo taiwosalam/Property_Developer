@@ -19,15 +19,15 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
   resolvedDateTime,
 }) => {
   return (
-    <div className="w-[600px] max-w-[80%] max-h-[85%] h-fit rounded-[9px] bg-white overflow-x-auto custom-round-scrollbar">
+    <div className="w-[600px] max-w-[80%] max-h-[85%] h-fit rounded-lg bg-white overflow-x-auto custom-round-scrollbar">
       {/* Header */}
-      <div className="h-20 bg-[#EFF6FF] flex items-center justify-center relative">
+      <div className="h-20 bg-brand-1 flex items-center justify-center sticky top-0 z-[2]">
         <span className="font-medium text-[16px] text-text-secondary">
           Request for Call
         </span>
         <ModalTrigger
           close
-          className="absolute top-4 right-6 cursor-pointer w-fit h-fit"
+          className="absolute top-4 right-6"
         >
           <XIcon size="30" />
         </ModalTrigger>
@@ -53,7 +53,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
             </div>
           </div>
         </div>
-        <div className="border-t border-[#2563EB] mb-6 border-dashed" />
+        <div className="border-t border-brand-7 mb-6 border-dashed" />
         <div className="m-6 mb-12 space-y-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
