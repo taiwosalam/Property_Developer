@@ -1,8 +1,10 @@
 // Types
+import { property_listing_status } from "./data";
 import type {
   PropertyListingRedProps,
   PropertyListingLabelIDProps,
   PropertyListingTitleDescProps,
+  PropertyListingStatusItemProps,
 } from "./types";
 
 // Imports
@@ -40,3 +42,21 @@ export const PropertyListingTitleDesc: React.FC<
 export const PropertyListingRed: React.FC<PropertyListingRedProps> = ({
   children,
 }) => <p className="text-status-error-2 text-sm font-normal">{children}</p>;
+
+export const PropertyListingParagraph: React.FC<PropertyListingRedProps> = ({
+  children,
+}) => <p className="text-text-secondary text-base font-medium">{children}</p>;
+
+export const PropertyListingStatusItem: React.FC<
+  PropertyListingStatusItemProps
+> = ({ text, color }) => {
+  return (
+    <div className="flex gap-2 items-center">
+      <div
+        className="w-5 h-5 rounded-full"
+        style={{ backgroundColor: color }}
+      ></div>
+      <p className="text-[#6C6D6D] text-xs font-medium capitalize">{text}</p>
+    </div>
+  );
+};
