@@ -27,7 +27,13 @@ const CreateInvoiceModal = () => {
             className="min-w-[300px]"
           />
           <div className="w-full flex items-center justify-center">
-            <Button>Add</Button>
+            <Button
+              onClick={() =>
+                (window.location.href = "/accounting/invoice/create-invoice")
+              }
+            >
+              Add
+            </Button>
           </div>
         </div>
       </div>
