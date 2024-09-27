@@ -1,5 +1,6 @@
 "use client";
 
+import CreateInvoiceModal from "@/components/Accounting/invoice/CreateInvoiceModal";
 import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
@@ -7,6 +8,7 @@ import FilterButton from "@/components/FilterButton/filter-button";
 import Button from "@/components/Form/Button/button";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import Pagination from "@/components/Pagination/pagination";
 import Picture from "@/components/Picture/picture";
 import SearchInput from "@/components/SearchInput/search-input";
 import {
@@ -16,7 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ExclamationMark } from "@/public/icons/icons";
+import { ExclamationMark, VerticalEllipsisIcon } from "@/public/icons/icons";
+import Image from "next/image";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 
@@ -79,7 +82,7 @@ const AccountingInvoicePage = () => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <h1>hoooooos</h1>
+              <CreateInvoiceModal />
             </ModalContent>
           </Modal>
         </div>
@@ -151,12 +154,83 @@ const AccountingInvoicePage = () => {
             </div>
           </div>
           <AutoResizingGrid gap={6} minWidth={340}>
-            <InvoiceStatCards />
-            <InvoiceStatCards />
-            <InvoiceStatCards />
+            <InvoiceStatCards
+              title="Total Receipts Created"
+              balance={12345432}
+              upvalue={53}
+            />
+            <InvoiceStatCards
+              title="Total Paid Receipts"
+              balance={12345432}
+              downValue={53}
+            />
+            <InvoiceStatCards
+              title="Total Pending Receipts"
+              balance={12345432}
+              downValue={53}
+            />
           </AutoResizingGrid>
         </div>
       </div>
+      <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
+        <table className="dash-table">
+          <colgroup>
+            <col className="w-[72px]" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th></th>
+              <th>client name</th>
+              <th>invoive ID</th>
+              <th>payment reason</th>
+              <th>total amount</th>
+              <th>date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array(10)
+              .fill(null)
+              .map((_, index) => (
+                <tr key={index}>
+                  <td>
+                    <Picture
+                      src={"/empty/avatar-1.svg"}
+                      alt="profile picture"
+                      rounded
+                      size={40}
+                    />
+                  </td>
+                  <td>
+                    <p>Amori Ademakinwa</p>
+                  </td>
+                  <td>
+                    <p>1234563456</p>
+                  </td>
+                  <td>
+                    <p>Rent cost: Start date: Sept 22, 2023 - Expiry date:</p>
+                  </td>
+                  <td>
+                    <p>₦35,000.00</p>
+                  </td>
+                  <td>
+                    <p>02/03/2024</p>
+                  </td>
+                  <td>
+                    <VerticalEllipsisIcon />
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+      <Pagination
+        totalPages={5}
+        currentPage={1}
+        onPageChange={function (page: number): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
     </section>
   );
 };
