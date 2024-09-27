@@ -13,6 +13,24 @@ import {
 import Pagination from "@/components/Pagination/pagination";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import RequestCallBackCard from "@/components/tasks/CallBack/RequestCallBackCard";
+import type { CallRequestCardProps } from "@/components/tasks/CallBack/types";
+import { type RequestCallBackCardDataType } from "./data";
+
+const transformToCallBackRequestCardProps = (
+  data: RequestCallBackCardDataType
+): CallRequestCardProps => {
+  return {
+    cardType: "callback",
+    cardViewDetails: [
+      { label: "Phone Number", accessor: "phoneNumber" },
+      { label: "Branch", accessor: "branch" },
+      { label: "Property Name", accessor: "propertyName" },
+      { label: "Account Officer", accessor: "accountOfficer" },
+      { label: "Property Address", accessor: "propertyAddress" },
+    ],
+    ...data,
+  };
+};
 
 const Inquires = () => {
   return (
@@ -54,23 +72,11 @@ const Inquires = () => {
           </Modal>
         </div>
       </div>
-      <AutoResizingGrid gap={28} minWidth={510}>
+      <AutoResizingGrid gap={28} minWidth={450}>
         {RequestCallBackCardData.map((userDetails, index) => (
           <RequestCallBackCard
-            userDetails={userDetails.userDetails}
             key={index}
-            userName={userDetails.userName}
-            requestDate={userDetails.requestDate}
-            requestId={userDetails.requestId}
-            status={userDetails.status}
-            pictureSrc={userDetails.pictureSrc}
-            phoneNumber={userDetails.phoneNumber}
-            propertyName={userDetails.propertyName}
-            propertyAddress={userDetails.propertyAddress}
-            branch={userDetails.branch}
-            accountOfficer={userDetails.accountOfficer}
-            resolvedBy={userDetails.resolvedBy}
-            resolvedDateTime={userDetails.resolvedDateTime}
+            {...transformToCallBackRequestCardProps(userDetails)}
           />
         ))}
       </AutoResizingGrid>

@@ -1,4 +1,17 @@
-import { RequestCallBackCardProps } from "@/components/tasks/CallBack/types";
+export interface RequestCallBackCardDataType {
+  userName: string;
+  requestDate: string;
+  requestId: string;
+  status: "completed" | "pending";
+  pictureSrc: string;
+  phoneNumber: string;
+  propertyName: string;
+  propertyAddress: string;
+  branch: string;
+  accountOfficer: string;
+  resolvedBy: string;
+  resolvedDateTime: string;
+} //check with API
 
 export const inquiriesFilterOptionsWithDropdown = [
   {
@@ -19,15 +32,9 @@ export const inquiriesFilterOptionsWithDropdown = [
     ],
   },
 ];
-export const RequestCallBackCardData: RequestCallBackCardProps[] = [
+
+export const RequestCallBackCardData: RequestCallBackCardDataType[] = [
   {
-    userDetails: [
-      { label: "Phone Number", value: "08012345678" },
-      { label: "Branch", value: "Main Branch" },
-      { label: "Property Name", value: "Sunset Villa" },
-      { label: "Account Officer", value: "John Doe" },
-      { label: "Property Address", value: "123 Main St" },
-    ],
     userName: "Salam AIshat",
     requestDate: "12/01/2024",
     requestId: "56566346467",
@@ -42,17 +49,10 @@ export const RequestCallBackCardData: RequestCallBackCardProps[] = [
     resolvedDateTime: "12/02/2024 10:00 AM",
   },
   {
-    userDetails: [
-      { label: "Phone Number", value: "08098765432" },
-      { label: "Branch", value: "Downtown Branch" },
-      { label: "Property Name", value: "Ocean View" },
-      { label: "Account Officer", value: "Jane Smith" },
-      { label: "Property Address", value: "456 Ocean Ave" },
-    ],
     userName: "Alice Johnson",
     requestDate: "2023-10-01",
     requestId: "REQ123456",
-    status: "Pending",
+    status: "pending",
     pictureSrc: "/empty/SampleLandlord.jpeg",
     phoneNumber: "08098765432",
     propertyName: "Ocean View",
@@ -63,17 +63,10 @@ export const RequestCallBackCardData: RequestCallBackCardProps[] = [
     resolvedDateTime: "12/12/12 - (12:00pm)",
   },
   {
-    userDetails: [
-      { label: "Phone Number", value: "08011223344" },
-      { label: "Branch", value: "Uptown Branch" },
-      { label: "Property Name", value: "Mountain Retreat" },
-      { label: "Account Officer", value: "Bob Brown" },
-      { label: "Property Address", value: "789 Mountain Rd" },
-    ],
     userName: "Charlie Davis",
     requestDate: "2023-09-15",
     requestId: "REQ654321",
-    status: "Completed",
+    status: "completed",
     pictureSrc: "/empty/SampleLandlord.jpeg",
     phoneNumber: "08011223344",
     propertyName: "Mountain Retreat",
@@ -84,17 +77,10 @@ export const RequestCallBackCardData: RequestCallBackCardProps[] = [
     resolvedDateTime: "2023-09-16 11:00 AM",
   },
   {
-    userDetails: [
-      { label: "Phone Number", value: "08022334455" },
-      { label: "Branch", value: "Eastside Branch" },
-      { label: "Property Name", value: "Lakeside Cottage" },
-      { label: "Account Officer", value: "Alice Green" },
-      { label: "Property Address", value: "101 Lakeview Dr" },
-    ],
     userName: "David Smith",
     requestDate: "2023-11-20",
     requestId: "REQ789012",
-    status: "Pending",
+    status: "pending",
     pictureSrc: "/empty/SampleLandlord.jpeg",
     phoneNumber: "08022334455",
     propertyName: "Lakeside Cottage",
@@ -105,17 +91,10 @@ export const RequestCallBackCardData: RequestCallBackCardProps[] = [
     resolvedDateTime: "2023-09-16 11:00 AM",
   },
   {
-    userDetails: [
-      { label: "Phone Number", value: "08033445566" },
-      { label: "Branch", value: "Westside Branch" },
-      { label: "Property Name", value: "Forest Cabin" },
-      { label: "Account Officer", value: "Chris White" },
-      { label: "Property Address", value: "202 Forest Ln" },
-    ],
     userName: "Eve Black",
     requestDate: "2023-12-05",
     requestId: "REQ345678",
-    status: "Completed",
+    status: "completed",
     pictureSrc: "/empty/SampleLandlord.jpeg",
     phoneNumber: "08033445566",
     propertyName: "Forest Cabin",
@@ -126,17 +105,10 @@ export const RequestCallBackCardData: RequestCallBackCardProps[] = [
     resolvedDateTime: "2023-09-16 11:00 AM",
   },
   {
-    userDetails: [
-      { label: "Phone Number", value: "08044556677" },
-      { label: "Branch", value: "Northside Branch" },
-      { label: "Property Name", value: "City Apartment" },
-      { label: "Account Officer", value: "David Blue" },
-      { label: "Property Address", value: "303 City St" },
-    ],
     userName: "Frank White",
     requestDate: "2023-08-30",
     requestId: "REQ901234",
-    status: "Completed",
+    status: "completed",
     pictureSrc: "/empty/SampleLandlord.jpeg",
     phoneNumber: "08044556677",
     propertyName: "City Apartment",
