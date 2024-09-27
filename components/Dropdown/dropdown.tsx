@@ -25,7 +25,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   return (
     <DropdownContext.Provider value={{ isOpen, setIsOpen }}>
       <div
-        className={clsx("relative z-10", className)}
+        className={clsx("relative", className)}
         ref={dropdownRef}
         style={style}
       >
@@ -65,7 +65,7 @@ export const DropdownContent: React.FC<DropdownContentProps> = ({
   return (
     <div
       className={clsx(
-        "absolute top-[110%] bg-white border border-solid border-neutral-4 rounded-lg overflow-hidden",
+        "absolute z-10 top-[110%] bg-white border border-solid border-neutral-4 rounded-lg overflow-hidden",
         {
           "opacity-100 pointer-events-auto visible": isOpen,
           "opacity-0 pointer-events-none invisible": !isOpen,
