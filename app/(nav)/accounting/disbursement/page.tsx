@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 
 // Images
 import PdfIcon from "@/public/icons/pdf-icon.svg";
@@ -58,14 +59,20 @@ const Disbursement = () => {
                 </div>
               </button>
             </div>
-            <button className="flex items-center gap-2 py-[10px] px-4 rounded-lg border border-solid border-[#D0D5DD] bg-white">
+            <Link
+              href={"/accounting/disbursement/export"}
+              className="flex items-center gap-2 py-[10px] px-4 rounded-lg border border-solid border-[#D0D5DD] bg-white"
+            >
               <Picture src={PdfIcon} alt="pdf icon" size={20} />
               <p className="text-[#344054] text-base font-medium">Export</p>
-            </button>
-            <button className="flex items-center gap-2 py-[10px] px-4 rounded-lg border border-solid border-[#D0D5DD] bg-white">
+            </Link>
+            <Link
+              href={"/accounting/disbursement/export"}
+              className="flex items-center gap-2 py-[10px] px-4 rounded-lg border border-solid border-[#D0D5DD] bg-white"
+            >
               <Picture src={ExcelIcon} alt="excel icon" size={20} />
               <p className="text-[#344054] text-base font-medium">Export</p>
-            </button>
+            </Link>
           </div>
         </div>
         <div className="rounded-lg w-full pb-[120px] overflow-x-scroll no-scrollbar">
