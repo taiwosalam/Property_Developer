@@ -1,5 +1,5 @@
 import Picture from "@/components/Picture/picture";
-import { InvoiceStatCardsProps } from "../types";
+import { InvoiceStatCardsProps } from "./types";
 
 const InvoiceStatCards: React.FC<InvoiceStatCardsProps> = ({
   title,
@@ -17,19 +17,51 @@ const InvoiceStatCards: React.FC<InvoiceStatCardsProps> = ({
       <div className="w-full flex justify-between">
         <div className="space-y-2">
           <p className="font-medium text-[16px] text-text-tertiary">{title}</p>
-          <p className="font-bold text-[28px] text-[#202224]">₦56,689</p>
+          <p className="font-bold text-[28px] text-[#202224]">
+            {new Intl.NumberFormat("en-NG", {
+              style: "currency",
+              currency: "NGN",
+            })
+              .format(balance)
+              .split(".")}
+          </p>
         </div>
-        <div className="bg-[#8280FF] w-[60px] h-[60px] rounded-[23px] flex items-center justify-center">
-          {}
-          <Picture src="/icons/pdf-icon.svg" alt="invoice" size={30} />
+        <div
+          className={`w-[60px] h-[60px] rounded-[23px] flex items-center justify-center ${
+            title === "Total Receipts Created"
+              ? "bg-[#E6FAEE]"
+              : title === "Total Paid Receipts"
+              ? "bg-brand-2"
+              : "bg-status-error-1"
+          } `}
+        >
+          {title === "Total Receipts Created" && (
+            <Picture src={"/icons/receive.svg"} alt="invoice" size={30} />
+          )}
+          {title === "Total Paid Receipts" && (
+            <Picture src={"/icons/blue-wallet.svg"} alt="invoice" size={30} />
+          )}
+          {title === "Total Pending Receipts" && (
+            <Picture src={"/icons/send.svg"} alt="invoice" size={30} />
+          )}
         </div>
       </div>
-      <div className="flex items-center gap-2">
-        <Picture src={"/icons/trending-down.svg"} size={24} />
-        <p className="text-text-label font-normal text-[16px]">
-          <span className="text-success-2">4.3%</span> Down from last week
-        </p>
-      </div>
+      {upvalue && (
+        <div className="flex items-center gap-2">
+          <Picture src={"/icons/trending-up.svg"} size={24} />
+          <p className="text-text-label font-normal text-[16px]">
+            <span className="text-success-2">4.3%</span> Up from last week
+          </p>
+        </div>
+      )}
+      {downValue && (
+        <div className="flex items-center gap-2">
+          <Picture src={"/icons/trending-down.svg"} size={24} />
+          <p className="text-text-label font-normal text-[16px]">
+            <span className="text-success-2">4.3%</span> Down from last week
+          </p>
+        </div>
+      )}
     </div>
   );
 };
