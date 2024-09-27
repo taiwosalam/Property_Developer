@@ -4,51 +4,49 @@ import React from "react";
 
 // Types
 import type { PropertyListingCardProps } from "./types";
+import type { ButtonProps } from "@/components/Form/Button/types";
 
 // Images
 import { CameraIcon, VideoIcon } from "@/public/icons/icons";
 import SampleProperty6 from "@/public/empty/SampleProperty6.jpg";
 
 // Imports
-import { property_listing_data } from "./data";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
+import { property_listing_data, property_listing_status } from "./data";
 import { SectionSeparator } from "@/components/Section/section-components";
+
 import {
-  PropertyListingLabelID,
   PropertyListingRed,
+  PropertyListingLabelID,
+  PropertyListingParagraph,
   PropertyListingTitleDesc,
 } from "./property-listing-component";
 
-const PropertyListingCard: React.FC<PropertyListingCardProps> = ({ data }) => {
+const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
+  data,
+  status,
+  propertyType,
+}) => {
+  const button_props: ButtonProps = {
+    size: "sm_medium",
+    className: "py-2 px-8",
+  };
+
+  const color = property_listing_status[status];
+
   return (
     <div
       className="p-6 rounded-2xl bg-white custom-flex-col gap-4"
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
-      <div className="flex gap-6 justify-between">
-        <div className="custom-flex-col gap-2">
-          <PropertyListingLabelID id="123456776342" type="gated property" />
-          <PropertyListingTitleDesc
-            title="Taiwo Salam & Co. Properties Ltd"
-            desc="Requests permission to add and manage this property in their portfolio."
-          />
-          <p className="text-text-secondary text-base font-medium">
-            Created By : Ajadi David -- Moniya Branch
-          </p>
-        </div>
-        <div className="flex gap-3 items-center">
-          <Button size="base_medium" className="py-2 px-8">
-            continue
-          </Button>
-          <Button size="base_medium" className="py-2 px-8">
-            Action
-          </Button>
-          <Button size="base_medium" variant="border" className="py-2 px-8">
-            Preview
-          </Button>
-        </div>
+      <div className="flex items-center gap-6 justify-between">
+        <PropertyListingLabelID id="123456776342" type={propertyType} />
+        <div
+          className="w-5 h-5 rounded-full"
+          style={{ backgroundColor: color || "#ebeef0" }}
+        ></div>
       </div>
       <SectionSeparator />
       <div className="flex items-center gap-6 justify-between">
@@ -89,22 +87,50 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({ data }) => {
         </div>
       </div>
       <SectionSeparator />
-      <div className="flex gap-[10%] justify-between">
-        <div className="custom-flex-col gap-2">
-          <PropertyListingLabelID id="123456776342" type="rental property" />
-          <PropertyListingRed>
-            The posted picture does not correspond to the listed property and
-            unit. Please review and update accordingly, including adjusting the
-            descriptions to accurately reflect the property.
-          </PropertyListingRed>
+      <div className="flex items-center gap-[10%] justify-between">
+        <div className="custom-flex-col flex-1">
+          {status === "draft" ? (
+            <PropertyListingParagraph>
+              Property creation is not yet complete.
+            </PropertyListingParagraph>
+          ) : status === "awaiting" || status === "unpublished" ? (
+            <PropertyListingParagraph>
+              Created By : Ajadi David -- Moniya Branch
+            </PropertyListingParagraph>
+          ) : status === "moderation" ? (
+            <PropertyListingRed>
+              Please review the property settings and replace the picture, as it
+              appears to have been mistakenly used for another property.
+            </PropertyListingRed>
+          ) : status === "request" ? (
+            <PropertyListingTitleDesc
+              title="Taiwo Salam & Co. Properties Ltd"
+              desc="Requests permission to add and manage this property in their portfolio."
+            />
+          ) : null}
         </div>
         <div className="flex gap-3 items-center">
-          <Button size="base_medium" variant="border" className="py-2 px-8">
-            manage
-          </Button>
-          <Button size="base_medium" className="py-2 px-8">
-            approve
-          </Button>
+          {status === "draft" || status === "awaiting" ? (
+            <Button {...button_props}>continue</Button>
+          ) : status === "unpublished" ? (
+            <>
+              <Button variant="border" {...button_props}>
+                manage
+              </Button>
+              <Button {...button_props}>publish</Button>
+            </>
+          ) : status === "moderation" ? (
+            <Button variant="border" {...button_props}>
+              manage
+            </Button>
+          ) : status === "request" ? (
+            <>
+              <Button {...button_props}>action</Button>
+              <Button variant="border" {...button_props}>
+                preview
+              </Button>
+            </>
+          ) : null}
         </div>
       </div>
     </div>

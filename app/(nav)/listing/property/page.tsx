@@ -1,41 +1,34 @@
 "use client";
 
+import React from "react";
 import Image from "next/image";
-import React, { useState } from "react";
-
-// Types
-import type { PropertyListingType } from "@/components/Listing/Property/types";
 
 // Imports
-import Button from "@/components/Form/Button/button";
 import PageTitle from "@/components/PageTitle/page-title";
 import SearchInput from "@/components/SearchInput/search-input";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import PropertyListingCard from "@/components/Listing/Property/property-listing-card";
-import { property_listing_types } from "@/components/Listing/Property/data";
+import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+import { property_listing_status } from "@/components/Listing/Property/data";
+import { PropertyListingStatusItem } from "@/components/Listing/Property/property-listing-component";
 
 const Property = () => {
-  const [activeProperty, setActiveProperty] = useState<PropertyListingType>(
-    "moderating property"
-  );
-
   return (
     <div className="custom-flex-col gap-9">
-      <div className="page-header-container">
-        <div></div>
-        <div className="flex gap-3">
-          {property_listing_types.map((type, index) => (
-            <Button
-              key={index}
-              size="sm_medium"
-              onClick={() => setActiveProperty(type)}
-              variant={activeProperty === type ? "default" : "border"}
-              className="py-2 px-8"
-            >
-              {type}
-            </Button>
-          ))}
-        </div>
-      </div>
+      <AutoResizingGrid minWidth={230}>
+        <ManagementStatistcsCard
+          title="Total Property"
+          newData={34}
+          total={657}
+        />
+        <ManagementStatistcsCard title="Drafted" newData={34} total={657} />
+        <ManagementStatistcsCard
+          title="Under Moderation"
+          newData={34}
+          total={657}
+        />
+        <ManagementStatistcsCard title="Unpublished" newData={34} total={657} />
+      </AutoResizingGrid>
       <div className="page-title-container">
         <PageTitle title="Moderating property" />
         <div className="flex items-center gap-4">
@@ -56,7 +49,40 @@ const Property = () => {
         </div>
       </div>
       <div className="custom-flex-col gap-8">
-        <PropertyListingCard data={{}} />
+        <div className="flex gap-4 justify-end">
+          {Object.entries(property_listing_status).map(([key, value], idx) => (
+            <PropertyListingStatusItem
+              key={`${key}(${idx})`}
+              text={key}
+              color={value}
+            />
+          ))}
+        </div>
+        <PropertyListingCard
+          data={{}}
+          status="draft"
+          propertyType="rental property"
+        />
+        <PropertyListingCard
+          data={{}}
+          status="request"
+          propertyType="gated property"
+        />
+        <PropertyListingCard
+          data={{}}
+          status="awaiting"
+          propertyType="rental property"
+        />
+        <PropertyListingCard
+          data={{}}
+          status="moderation"
+          propertyType="gated property"
+        />
+        <PropertyListingCard
+          data={{}}
+          status="unpublished"
+          propertyType="rental property"
+        />
       </div>
     </div>
   );

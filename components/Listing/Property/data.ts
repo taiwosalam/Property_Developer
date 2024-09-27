@@ -11,4 +11,10 @@ export const property_listing_data = {
   total_unit: "",
 };
 
-export const property_listing_types = ["moderating property", "drafted property"] as const;
+export const property_listing_status = {
+  draft: "#FFBB53",
+  request: "#01BA4C",
+  awaiting: "#0033C4",
+  moderation: "#E9212E",
+  unpublished: "#620E13",
+} as const;
