@@ -13,11 +13,17 @@ export type BadgeIconColors = keyof typeof badgeIconColors;
 
 interface BadgeIconProps {
   color: BadgeIconColors;
+  noMargin?: boolean;
 }
 
-const BadgeIcon: React.FC<BadgeIconProps> = ({ color }) => {
+const BadgeIcon: React.FC<BadgeIconProps> = ({ color, noMargin }) => {
   return (
-    <span style={{ color: badgeIconColors[color], marginLeft: "8px" }}>
+    <span
+      style={{
+        color: badgeIconColors[color],
+        marginLeft: noMargin ? undefined : "8px",
+      }}
+    >
       <BadgeCheckIcon />
     </span>
   );
