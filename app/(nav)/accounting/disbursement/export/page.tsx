@@ -1,71 +1,117 @@
 import React from "react";
+import Image from "next/image";
 
 // Images
-import { LocationIcon } from "@/public/icons/icons";
+import Signature from "@/public/accounting/signature.svg";
+
+import Avatar from "@/public/empty/avatar.png";
 
 // Imports
 import Picture from "@/components/Picture/picture";
+import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
+import AccountingLogoContactHeader from "@/components/Accounting/accounting-logo-contact-header";
 
 const ExportDisbursement = () => {
   return (
-    <div className="custom-flex-col gap-10">
+    <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
-        <div
-          className="p-7 rounded-lg bg-white flex justify-between items-center"
-          style={{
-            boxShadow:
-              "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
-          }}
-        >
-          <div
-            className="rounded-lg"
-            style={{
-              boxShadow:
-                "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 4px 6px 0px rgba(13, 23, 33, 0.08)",
-            }}
-          >
-            <Picture
-              src={"/empty/logo placeholder.svg"}
-              width={300}
-              height={100}
-            />
-          </div>
-          <div className="w-fit text-left custom-flex-col gap-2">
-            <p className="text-text-secondary text-sm font-medium">Contacts</p>
-            <div className="text-text-secondary text-sm font-normal custom-flex-col gap-2">
-              <div className="flex items-center gap-1">
-                <LocationIcon color="#0033C4" />
-                <span>States and Local Govt.</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Picture src={"/icons/global-search.svg"} size={16} />
-                <span>https://www.hprealestate.co.in1</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Picture src={"/icons/phone.svg"} size={16} />
-                <span>08132086958 || 09123435487 || 9848848488</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Picture src={"/icons/mail2.svg"} size={16} />
-                <span>Email@gmail.com</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <AccountingLogoContactHeader />
         <div className="rounded-lg bg-white p-8 flex">
           <KeyValueList
             data={{}}
             chunkSize={2}
+            direction="column"
             referenceObject={{
-              "transaction id": "",
-              "landlord / landlady name": "",
+              "payment id": "",
+              "customer name": "",
               "property name": "",
-              date: "",
+              "start date": "",
               "account officer": "",
-              "disbursement mode": "",
+              "end date": "",
             }}
           />
+        </div>
+      </div>
+      <div className="custom-flex-col gap-6">
+        <h1 className="text-black text-2xl font-medium text-center">Summary</h1>
+        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
+          <table className="dash-table">
+            <colgroup>
+              <col className="w-[72px]" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th></th>
+                <th>date</th>
+                <th>landlord / landlady</th>
+                <th>payment ID</th>
+                <th>amount</th>
+                <th>description</th>
+                <th>mode</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array(5)
+                .fill(null)
+                .map((_, index) => (
+                  <tr key={index}>
+                    <td>
+                      <Picture
+                        src={Avatar}
+                        alt="profile picture"
+                        size={40}
+                        rounded
+                      />
+                    </td>
+                    <td>
+                      <p>02/03/2024</p>
+                    </td>
+                    <td>
+                      <p>Amori Ademakinwa</p>
+                    </td>
+                    <td>
+                      <p>1234567878</p>
+                    </td>
+                    <td>
+                      <p>₦115,000.00</p>
+                    </td>
+                    <td>
+                      <p>Property Rent for moniya house</p>
+                    </td>
+                    <td>
+                      <p>Bank Transfer</p>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="flex justify-end">
+          <div className="custom-flex-col gap-2 text-text-quaternary text-base font-medium">
+            <p>Authorized Signature </p>
+            <div className="flex">
+              <Image src={Signature} alt="signature" height={60} />
+            </div>
+            <p>
+              ESQ Taiwo Salam
+              <br />
+              Legal Practitioner
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
+        <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
+          exit
+        </Button>
+        <div className="flex gap-6">
+          <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
+            download
+          </Button>
+          <Button size="base_bold" className="py-2 px-8">
+            print
+          </Button>
         </div>
       </div>
     </div>

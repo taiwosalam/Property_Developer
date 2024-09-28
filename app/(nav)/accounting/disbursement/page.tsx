@@ -135,11 +135,23 @@ const Disbursement = () => {
                           />
                         </DropdownTrigger>
                         <DropdownContent>
-                          <div className="w-[250px] bg-white custom-flex-col py-2 gap-2 text-text-secondary text-base font-bold capitalize">
-                            <button className="p-4">Manage Disbursement</button>
-                            <button className="p-4">
+                          <div className="w-[250px] bg-white custom-flex-col py-2 gap-2 text-text-secondary text-base font-bold capitalize text-center">
+                            <Link
+                              href={
+                                "/accounting/disbursement/1/manage-disbursement"
+                              }
+                              className="p-4"
+                            >
+                              Manage Disbursement
+                            </Link>
+                            <Link
+                              href={
+                                "/accounting/disbursement/1/preview-disbursement"
+                              }
+                              className="p-4"
+                            >
                               Preview Disbursement
-                            </button>
+                            </Link>
                           </div>
                         </DropdownContent>
                       </Dropdown>

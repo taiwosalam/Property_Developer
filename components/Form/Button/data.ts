@@ -20,14 +20,16 @@ export const button_variants = {
     default: "py-2 px-3 md:py-[10px] md:px-12 text-sm lg:text-lg font-bold",
 
     xs_medium: "font-medium text-xs",
-
     xs_normal: "font-normal text-xs",
+    xs_bold: "font-bold text-xs",
+
     sm_medium: "font-medium text-sm",
     sm_bold: "font-bold text-sm",
-    base_medium: "font-medium text-base",
-    "16_bold": "text-[16px] font-bold",
 
-    xs_bold: "font-bold text-xs",
+    base_medium: "font-medium text-base",
+    base_bold: "font-bold text-base",
+
+    "16_bold": "text-[16px] font-bold",
 
     custom: "",
   },

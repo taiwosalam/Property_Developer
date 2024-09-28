@@ -1,17 +1,7 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
-
-const Landlord = () => {
-  const router = useRouter();
-  const { landlordId } = useParams();
-
-  useEffect(() => {
-    router.replace(`/management/landlord/${landlordId}/manage`);
-  }, [router, landlordId]);
-
-  return null;
+const Landlord = ({ params }: { params: { landlordId: string } }) => {
+  redirect(`/management/landlord/${params.landlordId}/manage`);
 };
 
 export default Landlord;
