@@ -9,7 +9,7 @@ const FlaggedApplicantAccountModal = () => {
   return (
     <LandlordTenantModalPreset
       heading="Applicant Account Is Flagged"
-      style={{ maxWidth: "700px" }}
+      style={{ maxWidth: "714px" }}
     >
       <div className="custom-flex-col gap-6">
         <div className="custom-flex-col gap-8">
