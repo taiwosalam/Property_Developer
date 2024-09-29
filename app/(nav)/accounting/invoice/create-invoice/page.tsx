@@ -1,3 +1,4 @@
+import Details from "@/components/Accounting/invoice/create-invoice/Details";
 import Picture from "@/components/Picture/picture";
 import { LocationIcon } from "@/public/icons/icons";
 
@@ -47,7 +48,7 @@ const CreateInvoicePage = () => {
         </div>
       </div>
       <div className="space-y-4">
-        <div>{/* details */}</div>
+        <Details />
         <div>{/* dropdown beow it */}</div>
       </div>
       <div>{/* add payment */}</div>
