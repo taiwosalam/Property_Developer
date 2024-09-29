@@ -5,9 +5,8 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import PageTitle from "@/components/PageTitle/page-title";
 import FilterButton from "@/components/FilterButton/filter-button";
 import SearchInput from "@/components/SearchInput/search-input";
-import VisitorRequestCard from "@/components/tasks/CallBack/RequestCallBackCard";
-import { VisitorRequestData } from "./data";
-import { type VisitorRequestDataDataType } from "./data";
+import VisitorRequestCard from "@/components/tasks/CallBack/RequestCard";
+import { VisitorRequestData, type VisitorRequestDataDataType } from "./data";
 import { type VisitorRequestCardProps } from "@/components/tasks/CallBack/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 
@@ -52,7 +51,7 @@ const BookVisitorsPage = () => {
           </Modal>
         </div>
       </div>
-      <AutoResizingGrid gap={28} minWidth={450}>
+      <AutoResizingGrid gap={28} minWidth={400}>
         {VisitorRequestData.map((details, index) => (
           <VisitorRequestCard
             key={index}
