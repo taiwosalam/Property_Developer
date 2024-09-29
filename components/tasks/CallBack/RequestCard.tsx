@@ -1,14 +1,10 @@
 import clsx from "clsx";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Button from "@/components/Form/Button/button";
+import { ReplyIcon2 } from "@/public/icons/icons";
 import Picture from "@/components/Picture/picture";
 import samplePicture from "@/public/empty/SampleLandlord.jpeg";
-import {
-  CardProps,
-  UserDetailItemsProp,
-  // CallRequestCardProps,
-  // VisitorRequestCardProps,
-} from "./types";
+import { RequestCardProps, UserDetailItemsProp } from "./types";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import { useState } from "react";
 import CallRequestModal from "./CallRequestModal";
@@ -23,29 +19,14 @@ const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   </div>
 );
 
-// const isCallBackRequestProps = (
-//   props: CardProps
-// ): props is CallRequestCardProps => {
-//   return props.cardType === "callback";
-// };
-
-// const isVisitorRequestProps = (
-//   props: CardProps
-// ): props is VisitorRequestCardProps => {
-//   return props.cardType === "visitor";
-// };
-
-const RequestCallBackCard: React.FC<CardProps> = (props) => {
+const RequestCard: React.FC<RequestCardProps> = (props) => {
   const {
     cardType,
     userName,
     requestDate,
     requestId,
-    status,
     pictureSrc,
     cardViewDetails,
-    branch,
-    propertyName,
   } = props;
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -60,7 +41,7 @@ const RequestCallBackCard: React.FC<CardProps> = (props) => {
 
   const handleButtonClick = () => {
     if (cardType === "callback") {
-      status === "completed" ? handleViewDetails() : handleResolve();
+      props.status === "completed" ? handleViewDetails() : handleResolve();
     } else if (cardType === "visitor") {
       handleViewDetails();
     }
@@ -70,7 +51,11 @@ const RequestCallBackCard: React.FC<CardProps> = (props) => {
     if (cardType === "visitor") {
       return "Details";
     } else if (cardType === "callback") {
-      return status === "completed" ? "Details" : "Resolve";
+      return props.status === "completed" ? "Details" : "Resolve";
+    } else if (cardType === "property") {
+      return "More Details";
+    } else if (cardType === "deposit") {
+      return "More Details";
     } else return "nothing";
   };
 
@@ -98,43 +83,97 @@ const RequestCallBackCard: React.FC<CardProps> = (props) => {
             </div>
           </div>
         </div>
-        <p
-          className={clsx(
-            "p-2 font-normal text-xs border capitalize",
-            status === "completed"
-              ? "bg-success-1 border-success-1 text-success-2"
-              : "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
-          )}
-        >
-          {status}
-        </p>
+        {/* I noticed that the property request card has no status */}
+        {cardType !== "property" && props.status && (
+          <p
+            className={clsx(
+              "p-2 font-normal text-xs border capitalize",
+              props.status === "completed"
+                ? "bg-success-1 border-success-1 text-success-2"
+                : "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
+            )}
+          >
+            {props.status}
+          </p>
+        )}
       </div>
       <div
         className={clsx(
-          "py-2 px-[18px] flex items-center justify-between",
+          "py-2 px-[18px] flex items-center justify-between text-base font-medium",
           cardType === "callback"
             ? "bg-brand-7 text-brand-1"
-            : "bg-status-caution-2 text-text-secondary"
+            : cardType === "visitor"
+            ? "bg-status-caution-2 text-text-secondary"
+            : cardType === "property"
+            ? "bg-brand-1 text-text-secondary bg-opacity-60"
+            : cardType === "deposit"
+            ? "bg-success-1 text-text-secondary"
+            : ""
         )}
       >
         <p>
           {cardType === "callback"
             ? "Request For Call Back"
-            : "Book For Visitors"}
+            : cardType === "visitor"
+            ? "Book For Visitors"
+            : cardType === "property"
+            ? "Property Request"
+            : cardType === "deposit"
+            ? "Caution Deposit Request"
+            : ""}
         </p>
-        <p>ID: {requestId}</p>
+        {/* Property card has no ID on display */}
+        {cardType !== "property" && <p>ID: {requestId}</p>}
       </div>
       <div className="px-[18px] grid grid-cols-3 gap-x-5 gap-y-4">
-        {cardViewDetails.map(({ label, accessor }, index) => {
-          const value =
-            cardType === "visitor" &&
-            (accessor === "secretQuestion" || accessor === "purpose")
-              ? "attached"
-              : String(props[accessor as keyof CardProps]);
-          return <UserDetailItems key={index} label={label} value={value} />;
-        })}
+        {cardType === "callback"
+          ? cardViewDetails.map(({ label, accessor }, index) => {
+              return (
+                <UserDetailItems
+                  key={index}
+                  label={label}
+                  value={String(props[accessor])}
+                />
+              );
+            })
+          : cardType === "visitor"
+          ? cardViewDetails.map(({ label, accessor }, index) => {
+              const value =
+                accessor === "secretQuestion" || accessor === "purpose"
+                  ? "attached"
+                  : String(props[accessor]);
+              return (
+                <UserDetailItems key={index} label={label} value={value} />
+              );
+            })
+          : cardType === "property"
+          ? cardViewDetails.map(({ label, accessor }, index) => {
+              return (
+                <UserDetailItems
+                  key={index}
+                  label={label}
+                  value={String(props[accessor])}
+                />
+              );
+            })
+          : cardType === "deposit"
+          ? cardViewDetails.map(({ label, accessor }, index) => {
+              return (
+                <UserDetailItems
+                  key={index}
+                  label={label}
+                  value={String(props[accessor])}
+                />
+              );
+            })
+          : null}
       </div>
       <div className="flex justify-end px-[18px]">
+        {(cardType === "property" || cardType === "deposit") && (
+          <button type="button" aria-label="Message" className="mr-4">
+            <ReplyIcon2 />
+          </button>
+        )}
         <Button
           size="sm_medium"
           className="py-2 px-8"
@@ -152,12 +191,12 @@ const RequestCallBackCard: React.FC<CardProps> = (props) => {
         <ModalContent>
           {cardType === "callback" ? (
             <CallRequestModal
-              branch={branch}
+              branch={props.branch}
               requesterName={userName}
               requesterPicture={pictureSrc || samplePicture}
               requestDate={requestDate}
               phoneNumber={props.phoneNumber}
-              propertyName={propertyName}
+              propertyName={props.propertyName}
               propertyAddress={props.propertyAddress}
               accountOfficer={props.accountOfficer}
               resolvedBy={props.resolvedBy}
@@ -165,7 +204,7 @@ const RequestCallBackCard: React.FC<CardProps> = (props) => {
             />
           ) : cardType === "visitor" ? (
             <VisitorRequestModal
-              status={status}
+              status={props.status}
               pictureSrc={pictureSrc}
               id={requestId}
               userName={userName}
@@ -182,4 +221,4 @@ const RequestCallBackCard: React.FC<CardProps> = (props) => {
   );
 };
 
-export default RequestCallBackCard;
+export default RequestCard;

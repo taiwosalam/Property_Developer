@@ -9,12 +9,12 @@ import SearchInput from "@/components/SearchInput/search-input";
 import {
   inquiriesFilterOptionsWithDropdown,
   RequestCallBackCardData,
+  type RequestCallBackCardDataType,
 } from "./data";
 import Pagination from "@/components/Pagination/pagination";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import RequestCallBackCard from "@/components/tasks/CallBack/RequestCallBackCard";
+import RequestCallBackCard from "@/components/tasks/CallBack/RequestCard";
 import type { CallRequestCardProps } from "@/components/tasks/CallBack/types";
-import { type RequestCallBackCardDataType } from "./data";
 
 const transformToCallBackRequestCardProps = (
   data: RequestCallBackCardDataType
@@ -72,7 +72,7 @@ const Inquires = () => {
           </Modal>
         </div>
       </div>
-      <AutoResizingGrid gap={28} minWidth={450}>
+      <AutoResizingGrid gap={28} minWidth={400}>
         {RequestCallBackCardData.map((userDetails, index) => (
           <RequestCallBackCard
             key={index}
