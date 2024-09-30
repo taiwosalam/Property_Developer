@@ -1,0 +1,136 @@
+import React from "react";
+import Image from "next/image";
+
+// Types
+import type { ApplicationCardProps } from "./types";
+
+// Images
+import LocationIcon from "@/public/icons/location.svg";
+import PhoneFilled from "@/public/icons/phone-filled.svg";
+import CalendarFilled from "@/public/icons/calendar-filled.svg";
+import ThreeDotsVertical from "@/public/icons/three-dots-vertical.svg";
+
+import SampleProperty4 from "@/public/empty/SampleProperty4.png";
+import Avatar from "@/public/empty/avatar.png";
+
+// Imports
+import Picture from "../Picture/picture";
+import { secondaryFont } from "@/utils/fonts";
+import BadgeIcon from "../BadgeIcon/badge-icon";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import FlaggedApplicantAccountModal from "./flagged-applicant-account-modal";
+import clsx from "clsx";
+
+const ApplicationCard: React.FC<ApplicationCardProps> = ({
+  type = "staff",
+}) => {
+  return (
+    <div
+      style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.03)" }}
+      className={clsx(
+        "custom-flex-col gap-4 pb-4 rounded-2xl overflow-hidden border border-solid bg-white",
+        {
+          "border-support-2": type == "staff",
+          "border-support-3": type == "guest",
+        }
+      )}
+    >
+      <div className="w-full h-[180px] relative">
+        <Image
+          src={SampleProperty4}
+          alt="preview"
+          fill
+          sizes="500px"
+          className="object-cover"
+        />
+        {type == "staff" && (
+          <Modal>
+            <ModalTrigger className="absolute top-[18px] right-[18px] rounded-[4px] bg-brand-1 w-8 h-8 flex items-center justify-center">
+              <Picture
+                src={ThreeDotsVertical}
+                alt="three dots vertical"
+                size={16}
+              />
+            </ModalTrigger>
+            <ModalContent>
+              <FlaggedApplicantAccountModal />
+            </ModalContent>
+          </Modal>
+        )}
+      </div>
+      <div className="custom-flex-col gap-3 px-2">
+        <div className="flex gap-2 items-center">
+          <Picture src={Avatar} alt="avatar" size={50} rounded />
+          <div className="custom-flex-col">
+            <div className="flex items-center gap-2">
+              <p className="text-black text-sm font-bold">David Ajala</p>
+              {type == "staff" ? (
+                <BadgeIcon color="blue" noMargin />
+              ) : (
+                <p className="text-support-3 text-xs font-bold italic">Guest</p>
+              )}
+            </div>
+            {type == "staff" ? (
+              <p
+                className={`text-black text-xs font-normal ${secondaryFont.className}`}
+              >
+                User ID: 12345678909
+              </p>
+            ) : (
+              <p
+                className={`text-black text-xs font-normal ${secondaryFont.className}`}
+              >
+                ajaladavid75@gmail.com
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="custom-flex-col gap-4">
+          <div className="custom-flex-col gap-1">
+            <p
+              className={`text-text-quaternary text-base font-bold ${secondaryFont.className}`}
+            >
+              Semi-Furnished 2 Bedroom Self-contain
+            </p>
+            <div className="flex items-center gap-1">
+              <Picture
+                src={LocationIcon}
+                alt="location"
+                width={12}
+                height={16}
+              />
+              <p className="text-text-disabled text-xs font-normal">
+                Street 23, All Avenue, Nigeria
+              </p>
+            </div>
+          </div>
+          <div className="pr-4 flex items-center gap-4 justify-between">
+            <div className="custom-flex-col gap-2 text-borders-normal text-xs font-medium">
+              <div className="flex items-center gap-2">
+                <Picture src={PhoneFilled} alt="phone number" size={16} />
+                <p>+2348132086958</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Picture src={CalendarFilled} alt="date" size={16} />
+                <p>12/12/2024</p>
+              </div>
+            </div>
+            <div className={`custom-flex-col ${secondaryFont.className}`}>
+              <p className="text-brand-primary text-2xl font-bold">
+                ₦1,950,000
+              </p>
+              <p className="text-text-label text-xs font-semibold">
+                Total Package
+              </p>
+              <p className="text-text-disabled text-base font-medium">
+                <span className="text-highlight">₦700,000</span> / Yearly
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ApplicationCard;
