@@ -52,6 +52,10 @@ export interface PropertyRequestCardProps extends RequestCardBaseProps {
   category: string;
   minBudget: string;
   maxBudget: string;
+  subType: string;
+  requestType: string;
+  description: string;
+  phoneNumber: string;
   cardViewDetails: {
     label: string;
     accessor: keyof PropertyRequestCardProps;

@@ -162,9 +162,11 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               </Button>
             </div>
           ) : (
-            <div className="space-y-2">
-              <p className="text-text-label text-base font-bold">Check Out</p>
-              <div className="flex items-center justify-between text-sm">
+            <div className="text-sm">
+              <p className="mb-2 text-text-label text-base font-bold">
+                Check Out
+              </p>
+              <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <p className="text-text-label font-normal">By</p>
                   <p className="text-text-primary font-medium">David Aladiye</p>
@@ -180,6 +182,13 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                   </p>
                 </div>
               </div>
+              <p className="text-text-label font-normal mb-1">Inventory</p>
+              <TruncatedText lines={2}>
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                Voluptatem cum dolorum ex, dolore deleniti veniam eum quam
+                cumque, fugiat asperiores temporibus neque recusandae sunt qui
+                modi unde. Optio, ratione repellendus.
+              </TruncatedText>
             </div>
           )}
         </div>

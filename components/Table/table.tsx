@@ -1,7 +1,7 @@
 "use client";
 import type { CustomTableProps, DataItem, Field } from "./types";
 import clsx from "clsx";
-import SampleLandlord from "@/public/empty/SampleLandlord.jpeg";
+import { empty } from "@/app/config";
 import {
   Table,
   TableBody,
@@ -34,10 +34,10 @@ const renderValue = (
     return field.contentStyle ? (
       <div style={field.contentStyle}>
         <Avatar
-          src={value || SampleLandlord.src}
+          src={value || empty}
           className="mx-auto"
           alt="avatar"
-          sx={{ width: 60, height: 60 }}
+          sx={{ width: field.picSize || 60, height: field.picSize || 60 }}
         />
       </div>
     ) : (
@@ -45,7 +45,7 @@ const renderValue = (
         src={value}
         className="mx-auto"
         alt="avatar"
-        sx={{ width: 60, height: 60 }}
+        sx={{ width: field.picSize || 60, height: field.picSize || 60 }}
       />
     );
   }
@@ -109,7 +109,10 @@ const CustomTable: React.FC<CustomTableProps> = ({
       <Table sx={{ boxShadow: "none" }}>
         {displayTableHead && (
           <TableHead
-            className={clsx("sticky top-0 z-[2] capitalize", tableHeadClassName)}
+            className={clsx(
+              "sticky top-0 z-[2] capitalize",
+              tableHeadClassName
+            )}
             style={tableHeadStyle}
           >
             <TableRow>
@@ -131,7 +134,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
             </TableRow>
           </TableHead>
         )}
-        <TableBody>
+        <TableBody className="capitalize">
           {data.map((x, index) => (
             <TableRow
               key={getUniqueKey(x)}
