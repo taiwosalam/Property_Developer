@@ -10,10 +10,10 @@ import Select from "@/components/Form/Select/select";
 import Picture from "@/components/Picture/picture";
 import { LocationIcon } from "@/public/icons/icons";
 
-const CreateInvoicePage = () => {
+const CreateExpensePage = () => {
   return (
     <section className="space-y-7 pb-20">
-      <h1 className="font-medium text-2xl">Create New Invoice</h1>
+      <h1 className="font-medium text-2xl">Create New Expense</h1>
       <div
         className="bg-white rounded-[8px] p-6 flex items-center justify-between flex-wrap"
         style={{
@@ -132,4 +132,4 @@ const CreateInvoicePage = () => {
   );
 };
 
-export default CreateInvoicePage;
+export default CreateExpensePage;
