@@ -181,7 +181,7 @@ const AccountingExpensesPage = () => {
           </AutoResizingGrid>
         </div>
       </div>
-      <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
+      <div className="rounded-lg w-full pb-[120px] overflow-x-scroll no-scrollbar">
         <table className="dash-table">
           <colgroup>
             <col className="w-[72px]" />
@@ -241,13 +241,13 @@ const AccountingExpensesPage = () => {
                       <DropdownContent>
                         <div className="w-[250px] bg-white custom-flex-col py-2 gap-2 text-text-secondary text-base font-bold capitalize text-center">
                           <Link
-                            href={"/accounting/disbursement/1/manage-receipt"}
+                            href={"/accounting/expenses/1/manage-expenses"}
                             className="p-4"
                           >
                             Manage Receipt
                           </Link>
                           <Link
-                            href={"/accounting/disbursement/1/preview-receipt"}
+                            href={"/accounting/expenses/1/preview-expenses"}
                             className="p-4"
                           >
                             Preview Receipt
