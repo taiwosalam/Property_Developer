@@ -164,7 +164,7 @@ const Landlord = () => {
     ...l,
     full_name: (
       <p className="flex items-center">
-        {`${l.first_name} ${l.last_name}`}
+        <span className="text-ellipsis line-clamp-1">{`${l.first_name} ${l.last_name}`}</span>
         <BadgeIcon color="red" />
       </p>
     ),

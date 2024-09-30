@@ -9,6 +9,8 @@ import { Modal, ModalContent } from "@/components/Modal/modal";
 import { useState } from "react";
 import CallRequestModal from "./CallRequestModal";
 import VisitorRequestModal from "../visitors-requests/visitor-request-modal";
+import PropertyRequestModal from "../property-requests/property-request-modal";
+import DepositRequestModal from "../deposit-requests/deposit-request-modal";
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   <div className="w-[170px]">
@@ -43,6 +45,10 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     if (cardType === "callback") {
       props.status === "completed" ? handleViewDetails() : handleResolve();
     } else if (cardType === "visitor") {
+      handleViewDetails();
+    } else if (cardType === "property") {
+      handleViewDetails();
+    } else if (cardType === "deposit") {
       handleViewDetails();
     }
   };
@@ -213,6 +219,29 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               secretQuestion={props.secretQuestion}
               requestDate={requestDate}
               secretAnswer={props.secretAnswer}
+            />
+          ) : cardType === "property" ? (
+            <PropertyRequestModal
+              state={props.state}
+              lga={props.lga}
+              propertyType={props.propertyType}
+              category={props.category}
+              minBudget={props.minBudget}
+              maxBudget={props.maxBudget}
+              subType={props.subType}
+              requestType={props.requestType}
+              userName={userName}
+              phoneNumber={props.phoneNumber}
+              description={props.description}
+            />
+          ) : cardType === "deposit" ? (
+            <DepositRequestModal
+              requestId={requestId}
+              propertyName={props.propertyName}
+              state={props.state}
+              unitDetails={props.unitDetails}
+              branch={props.branch}
+              amount={props.amount}
             />
           ) : null}
         </ModalContent>

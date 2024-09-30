@@ -6,8 +6,10 @@ export interface Field {
   label?: string;
   accessor: string;
   isImage?: boolean;
+  picSize?: number;
   cellStyle?: SxProps; // For styling the cell
   contentStyle?: CSSProperties; // For styling the content inside the cell
+  width?: string | number;
 }
 
 // Define the type for the data items in the table

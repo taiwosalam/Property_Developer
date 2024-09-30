@@ -5,7 +5,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import FilterButton from "@/components/FilterButton/filter-button";
 import CustomTable from "@/components/Table/table";
 import Pagination from "@/components/Pagination/pagination";
-import { Field } from "@/components/Table/types";
+import type { Field } from "@/components/Table/types";
 
 const CalendarPage = () => {
   const fields: Field[] = [

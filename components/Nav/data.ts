@@ -34,7 +34,7 @@ export const nav_items: NavItemsProps = [
       { label: "visitors request", href: "/visitors" },
       { label: "property request", href: "/property-request" },
       { label: "deposits request", href: "/deposits" },
-      { label: "vehicles record", href: "/vehicles" },
+      { label: "vehicles record", href: "/vehicles-record" },
     ],
   },
   {

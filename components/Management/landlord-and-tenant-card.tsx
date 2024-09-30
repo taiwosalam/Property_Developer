@@ -37,7 +37,7 @@ const UserCard: React.FC<UserCardProps> = ({
           <span className="text-ellipsis line-clamp-1">{`${first_name} ${last_name}`}</span>
           <BadgeIcon color="red" />
         </p>
-        <p className="font-normal text-black text-xs mb-1 text-ellipsis line-clamp-2">
+        <p className="font-normal text-black text-xs mb-1 text-ellipsis line-clamp-2 break-all">
           {email}
         </p>
         <UserTag type={user_tag} className="mb-2" />
