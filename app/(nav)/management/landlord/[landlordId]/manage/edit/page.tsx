@@ -206,7 +206,7 @@ const EditLandlord = () => {
           </LandlordTenantInfoEditSection>
         </div>
       </div>
-      <div className="sticky bottom-0 right-0 w-full bg-white py-5 px-[60px] flex justify-between">
+      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex justify-between">
         <Modal>
           <ModalTrigger asChild>
             <Button style={{ color: "#E9212E", backgroundColor: "#FDE9EA" }}>
