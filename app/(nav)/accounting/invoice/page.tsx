@@ -18,10 +18,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ExclamationMark, VerticalEllipsisIcon } from "@/public/icons/icons";
-import Image from "next/image";
+import { ExclamationMark } from "@/public/icons/icons";
+import Link from "next/link";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
+import ThreeDotsVertical from "@/public/icons/three-dots-vertical.svg";
+import {
+  Dropdown,
+  DropdownContent,
+  DropdownTrigger,
+} from "@/components/Dropdown/dropdown";
 
 const AccountingInvoicePage = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -138,18 +144,24 @@ const AccountingInvoicePage = () => {
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <div className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]">
+                <Link
+                  href="/accounting/invoice/export"
+                  className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
+                >
                   <Picture src={"/icons/pdf-icon.svg"} size={20} alt="pdf" />
                   <span>Export</span>
-                </div>
-                <div className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]">
+                </Link>
+                <Link
+                  href="/accounting/invoice/export"
+                  className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
+                >
                   <Picture
                     src={"/icons/excel-icon.svg"}
                     size={20}
                     alt="excep"
                   />
                   <span>Export</span>
-                </div>
+                </Link>
               </div>
             </div>
           </div>
@@ -172,7 +184,7 @@ const AccountingInvoicePage = () => {
           </AutoResizingGrid>
         </div>
       </div>
-      <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
+      <div className="rounded-lg w-full overflow-x-scroll no-scrollbar pb-[200px]">
         <table className="dash-table">
           <colgroup>
             <col className="w-[72px]" />
@@ -217,7 +229,37 @@ const AccountingInvoicePage = () => {
                     <p>02/03/2024</p>
                   </td>
                   <td>
-                    <VerticalEllipsisIcon />
+                    <Dropdown>
+                      <DropdownTrigger className="flex items-center justify-center">
+                        <Picture
+                          src={ThreeDotsVertical}
+                          alt="three dots vertical"
+                          size={24}
+                        />
+                      </DropdownTrigger>
+                      <DropdownContent>
+                        <div className="w-[250px] bg-white custom-flex-col py-2 gap-2 text-text-secondary text-base font-bold capitalize text-center">
+                          <Link
+                            href={"/accounting/invoice/1/manage"}
+                            className="p-4"
+                          >
+                            Manage
+                          </Link>
+                          <Link
+                            href={"/accounting/invoice/1/add-payment"}
+                            className="p-4"
+                          >
+                            Add Payment
+                          </Link>
+                          <Link
+                            href={"/accounting/invoice/1/print-invoice"}
+                            className="p-4"
+                          >
+                            Print Invoice
+                          </Link>
+                        </div>
+                      </DropdownContent>
+                    </Dropdown>
                   </td>
                 </tr>
               ))}
