@@ -5,7 +5,7 @@ const Breakdown = () => {
     <section className="bg-white p-8 space-y-4">
       <div className="flex">
         <KeyValueList
-          chunkSize={1}
+          chunkSize={2}
           data={{}}
           referenceObject={{
             "annual fee": "",

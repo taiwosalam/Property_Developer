@@ -2,6 +2,7 @@
 
 import Breakdown from "@/components/Accounting/invoice/create-invoice/Breakdown";
 import Details from "@/components/Accounting/invoice/create-invoice/Details";
+import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 import Button from "@/components/Form/Button/button";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import Input from "@/components/Form/Input/input";
@@ -106,9 +107,9 @@ const CreateInvoicePage = () => {
       <div className="space-y-2 space-x-2 text-[#3F4247] text-sm">
         {["Notification", "SMS Alert", "Email Alert"].map((option) => (
           <label key={option} className="inline-flex items-center">
-            <Checkbox checked={false} onChange={() => {}}>
-              <span>{option}</span>
-            </Checkbox>
+            <DocumentCheckbox>
+              <span className="text-[#3F4247]">{option}</span>
+            </DocumentCheckbox>
           </label>
         ))}
         <p>Fee will reflect upon making payment for the generated invoice</p>
