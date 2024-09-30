@@ -1,11 +1,10 @@
 "use client";
 
-import CreateInvoiceModal from "@/components/Accounting/invoice/CreateInvoiceModal";
 import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
 import FilterButton from "@/components/FilterButton/filter-button";
-import Button from "@/components/Form/Button/button";
+import ThreeDotsVertical from "@/public/icons/three-dots-vertical.svg";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Pagination from "@/components/Pagination/pagination";
@@ -18,10 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ExclamationMark, VerticalEllipsisIcon } from "@/public/icons/icons";
-import Image from "next/image";
+import { ExclamationMark } from "@/public/icons/icons";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
+import Link from "next/link";
 
 const AccountingReceiptsPage = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -128,10 +127,13 @@ const AccountingReceiptsPage = () => {
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <div className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]">
+                <Link
+                  href="/accounting/receipts/1/export"
+                  className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
+                >
                   <Picture src={"/icons/pdf-icon.svg"} size={20} alt="pdf" />
                   <span>Export</span>
-                </div>
+                </Link>
                 <div className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]">
                   <Picture
                     src={"/icons/excel-icon.svg"}
@@ -206,8 +208,17 @@ const AccountingReceiptsPage = () => {
                   <td>
                     <p>02/03/2024</p>
                   </td>
-                  <td>
-                    <VerticalEllipsisIcon />
+                  <td
+                    className="cursor-pointer w-fit"
+                    onClick={() =>
+                      (window.location.href = "/accounting/receipts/1/preview")
+                    }
+                  >
+                    <Picture
+                      src={ThreeDotsVertical}
+                      alt="three dots vertical"
+                      size={24}
+                    />
                   </td>
                 </tr>
               ))}

@@ -28,20 +28,20 @@ const InvoiceStatCards: React.FC<InvoiceStatCardsProps> = ({
         </div>
         <div
           className={`w-[60px] h-[60px] rounded-[23px] flex items-center justify-center ${
-            title === "Total Receipts Created"
+            title === "Total Receipts Created" || title === "Total Credit"
               ? "bg-[#E6FAEE]"
-              : title === "Total Paid Receipts"
+              : title === "Total Paid Receipts" || title === "Total Amount"
               ? "bg-brand-2"
               : "bg-status-error-1"
           } `}
         >
-          {title === "Total Receipts Created" && (
+          {(title === "Total Receipts Created" || title === "Total Credit") && (
             <Picture src={"/icons/receive.svg"} alt="invoice" size={30} />
           )}
-          {title === "Total Paid Receipts" && (
+          {(title === "Total Paid Receipts" || title === "Total Amount") && (
             <Picture src={"/icons/blue-wallet.svg"} alt="invoice" size={30} />
           )}
-          {title === "Total Pending Receipts" && (
+          {(title === "Total Pending Receipts" || title === "Total Debit") && (
             <Picture src={"/icons/send.svg"} alt="invoice" size={30} />
           )}
         </div>
