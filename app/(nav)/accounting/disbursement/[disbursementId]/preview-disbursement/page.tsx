@@ -47,14 +47,19 @@ const PreviewDisbursement = () => {
         </AccountingTitleSection>
       </div>
       <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
-        <Button variant="sky_blue" size="base_medium" className="py-2 px-8">
+        <Button
+          variant="sky_blue"
+          size="base_bold"
+          className="py-2 px-8"
+          href="/accounting/disbursement"
+        >
           exit
         </Button>
         <div className="flex gap-6">
-          <Button variant="sky_blue" size="base_medium" className="py-2 px-8">
+          <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
             download
           </Button>
-          <Button size="base_medium" className="py-2 px-8">
+          <Button size="base_bold" className="py-2 px-8">
             print
           </Button>
         </div>
