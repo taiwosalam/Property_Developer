@@ -1,9 +1,17 @@
+"use client";
+
+import Breakdown from "@/components/Accounting/invoice/create-invoice/Breakdown";
+import Details from "@/components/Accounting/invoice/create-invoice/Details";
+import Button from "@/components/Form/Button/button";
+import Checkbox from "@/components/Form/Checkbox/checkbox";
+import Input from "@/components/Form/Input/input";
+import Select from "@/components/Form/Select/select";
 import Picture from "@/components/Picture/picture";
 import { LocationIcon } from "@/public/icons/icons";
 
 const CreateInvoicePage = () => {
   return (
-    <section className="space-y-7">
+    <section className="space-y-7 pb-20">
       <h1 className="font-medium text-2xl">Create New Invoice</h1>
       <div
         className="bg-white rounded-[8px] p-6 flex items-center justify-between flex-wrap"
@@ -47,12 +55,78 @@ const CreateInvoicePage = () => {
         </div>
       </div>
       <div className="space-y-4">
-        <div>{/* details */}</div>
-        <div>{/* dropdown beow it */}</div>
+        <Details />
+        <div className="flex items-center justify-between w-3/5 gap-4">
+          <Select
+            id="client_name"
+            options={["Client Name", "Client Name 2"]}
+            label="Client Name"
+            className="w-1/2"
+          />
+          <Input id="unit_id" label="Unit ID" className="w-1/2" />
+        </div>
       </div>
-      <div>{/* add payment */}</div>
-      <div>{/* breakdown */}</div>
-      <div>{/* checkboxes */}</div>
+      <div className="space-y-6">
+        <h1 className="text-[#092C4C] font-bold text-xl">Add Payment</h1>
+        <div className="bg-white rounded-[8px] space-y-4 p-6">
+          <div className="flex items-center justify-between w-3/5 gap-4">
+            <Input
+              type="text"
+              id="payment_title"
+              label="Payment Title"
+              className="w-1/2"
+            />
+            <div className="w-1/2 relative">
+              <Input
+                type="text"
+                id="amount"
+                label="Amount"
+                className="w-full"
+                CURRENCY_SYMBOL={"₦"}
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-end">
+            <Button
+              type="button"
+              style={{
+                padding: "8px 32px",
+              }}
+              size="base_medium"
+            >
+              Add
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div className="space-y-6">
+        <h1 className="text-[#092C4C] font-bold text-xl">Breakdown</h1>
+        <Breakdown />
+      </div>
+      <div className="space-y-2 space-x-2 text-[#3F4247] text-sm">
+        {["Notification", "SMS Alert", "Email Alert"].map((option) => (
+          <label key={option} className="inline-flex items-center">
+            <Checkbox checked={false} onChange={() => {}}>
+              <span>{option}</span>
+            </Checkbox>
+          </label>
+        ))}
+        <p>Fee will reflect upon making payment for the generated invoice</p>
+      </div>
+      <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
+        <button
+          type="reset"
+          className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2 py-2 px-8"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="bg-brand-9 text-white hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9 py-2 px-8"
+        >
+          Create
+        </button>
+      </div>
     </section>
   );
 };
