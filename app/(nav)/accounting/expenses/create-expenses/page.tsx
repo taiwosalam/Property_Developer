@@ -1,10 +1,8 @@
 "use client";
 
-import Breakdown from "@/components/Accounting/invoice/create-invoice/Breakdown";
+import Breakdown from "@/components/Accounting/expenses/create-expense/Breakdown";
 import Details from "@/components/Accounting/invoice/create-invoice/Details";
-import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 import Button from "@/components/Form/Button/button";
-import Checkbox from "@/components/Form/Checkbox/checkbox";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import Picture from "@/components/Picture/picture";
@@ -103,16 +101,6 @@ const CreateExpensePage = () => {
       <div className="space-y-6">
         <h1 className="text-[#092C4C] font-bold text-xl">Breakdown</h1>
         <Breakdown />
-      </div>
-      <div className="space-y-2 space-x-2 text-[#3F4247] text-sm">
-        {["Notification", "SMS Alert", "Email Alert"].map((option) => (
-          <label key={option} className="inline-flex items-center">
-            <DocumentCheckbox>
-              <span className="text-[#3F4247]">{option}</span>
-            </DocumentCheckbox>
-          </label>
-        ))}
-        <p>Fee will reflect upon making payment for the generated invoice</p>
       </div>
       <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
         <button

@@ -144,10 +144,13 @@ const AccountingExpensesPage = () => {
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <div className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]">
+                <Link
+                  href={"/accounting/expenses/export"}
+                  className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
+                >
                   <Picture src={"/icons/pdf-icon.svg"} size={20} alt="pdf" />
                   <span>Export</span>
-                </div>
+                </Link>
                 <div className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]">
                   <Picture
                     src={"/icons/excel-icon.svg"}
@@ -238,17 +241,13 @@ const AccountingExpensesPage = () => {
                       <DropdownContent>
                         <div className="w-[250px] bg-white custom-flex-col py-2 gap-2 text-text-secondary text-base font-bold capitalize text-center">
                           <Link
-                            href={
-                              "/accounting/disbursement/1/manage-disbursement"
-                            }
+                            href={"/accounting/disbursement/1/manage-receipt"}
                             className="p-4"
                           >
                             Manage Receipt
                           </Link>
                           <Link
-                            href={
-                              "/accounting/disbursement/1/preview-disbursement"
-                            }
+                            href={"/accounting/disbursement/1/preview-receipt"}
                             className="p-4"
                           >
                             Preview Receipt
