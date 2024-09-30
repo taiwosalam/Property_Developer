@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";

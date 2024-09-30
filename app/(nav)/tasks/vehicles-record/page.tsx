@@ -1,5 +1,5 @@
 "use client";
-
+// import { useState } from "react";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import PageTitle from "@/components/PageTitle/page-title";
@@ -10,9 +10,13 @@ import Button from "@/components/Form/Button/button";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
 import Pagination from "@/components/Pagination/pagination";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+// import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-record-modal";
+import CreateRecordModal from "@/components/tasks/vehicles-record/create-record-modal";
 
 const VehiclesRecordPage = () => {
   const { isSmallTablet } = useWindowWidth();
+
   const fields: Field[] = [
     { id: "1", accessor: "avatar", isImage: true, picSize: 40 },
     { id: "2", label: "Name", accessor: "full_name" },
@@ -54,14 +58,21 @@ const VehiclesRecordPage = () => {
             <ManagementStatistcsCard title="Pending" newData={657} total={34} />
           </AutoResizingGrid>
         )}
-        <Button type="button" className="page-header-button">
-          + Create New Record
-        </Button>
+        <Modal>
+          <ModalTrigger asChild>
+            <Button type="button" className="page-header-button">
+              + Create New Record
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <CreateRecordModal />
+          </ModalContent>
+        </Modal>
       </div>
       <div className="page-title-container">
         <PageTitle title="Vehicles Record" />
         <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search" />
+          <SearchInput placeholder="Search for vehicle record" />
           <FilterButton />
         </div>
       </div>
@@ -87,6 +98,7 @@ const VehiclesRecordPage = () => {
           padding: "18px 16px",
         }}
       />
+
       <Pagination
         totalPages={3}
         currentPage={1}
