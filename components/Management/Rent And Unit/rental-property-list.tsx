@@ -70,7 +70,7 @@ const RentalPropertyListCard = () => {
         </div>
       </div>
       <div className="flex items-center justify-between mt-5 gap-2 px-2 flex-wrap">
-        <div className="bg-success-1 rounded-lg py-1 px-4 text-sm font-medium text-success-3">
+        <div className="bg-status-success-1 rounded-lg py-1 px-4 text-sm font-medium text-status-success-3">
           <p>Gated Property</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">

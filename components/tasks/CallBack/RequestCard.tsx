@@ -95,7 +95,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             className={clsx(
               "p-2 font-normal text-xs border capitalize",
               props.status === "completed"
-                ? "bg-success-1 border-success-1 text-success-2"
+                ? "bg-status-success-1 border-success-1 text-status-success-2"
                 : "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
             )}
           >
@@ -113,7 +113,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             : cardType === "property"
             ? "bg-brand-1 text-text-secondary bg-opacity-60"
             : cardType === "deposit"
-            ? "bg-success-1 text-text-secondary"
+            ? "bg-status-success-1 text-text-secondary"
             : ""
         )}
       >

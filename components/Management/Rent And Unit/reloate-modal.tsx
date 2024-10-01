@@ -7,7 +7,7 @@ const RelocateModal = () => {
   return (
     <div className="w-[500px] max-w-[90%] rounded-[10px] bg-white overflow-hidden">
       {/* Header */}
-      <div className="bg-success-1 px-4 py-3">
+      <div className="bg-status-success-1 px-4 py-3">
         <div className="flex items-center justify-between">
           <span></span>
           <ModalTrigger close className="p-1" type="button">

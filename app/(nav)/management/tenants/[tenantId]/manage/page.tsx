@@ -172,7 +172,7 @@ const ManageTenant = () => {
                       <p>Rent cost: Start date: Sept 22, 2020</p>
                     </td>
                     <td>
-                      <p className="text-success-3">₦ 100,000</p>
+                      <p className="text-status-success-3">₦ 100,000</p>
                     </td>
                     <td>
                       <p className="text-status-error-primary">--- ---</p>

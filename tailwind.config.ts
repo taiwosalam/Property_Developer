@@ -60,6 +60,9 @@ const config = {
         status: {
           success: {
             primary: "#01BA4C",
+            1: "#E6FAEE",
+            2: "#01BA4C",
+            3: "#005623",
           },
           error: {
             primary: "#E9212E",
@@ -71,11 +74,6 @@ const config = {
             2: "#FFBB53",
             3: "#6B4F23",
           },
-        },
-        success: {
-          1: "#E6FAEE",
-          2: "#01BA4C",
-          3: "#005623",
         },
         support: {
           1: "#38BDF8",

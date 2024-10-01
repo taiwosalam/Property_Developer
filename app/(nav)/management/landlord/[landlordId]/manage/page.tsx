@@ -85,8 +85,8 @@ const ManageLandlord = () => {
                 </div>
                 <div className="custom-flex-col gap-2">
                   <div className="flex">
-                    <div className="py-1 px-4 rounded-lg bg-success-1">
-                      <p className="capitalize text-success-3 text-[10px] font-normal">
+                    <div className="py-1 px-4 rounded-lg bg-status-success-1">
+                      <p className="capitalize text-status-success-3 text-[10px] font-normal">
                         {LandlordPageData?.user_tag}
                       </p>
                     </div>
@@ -242,7 +242,7 @@ const ManageLandlord = () => {
                       <p>Rent cost: Start date: Sept 22, 2020</p>
                     </td>
                     <td>
-                      <p className="text-success-3">₦ 100,000</p>
+                      <p className="text-status-success-3">₦ 100,000</p>
                     </td>
                     <td>
                       <p className="text-status-error-primary">--- ---</p>
