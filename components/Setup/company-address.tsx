@@ -73,7 +73,7 @@ const CompanyAddress = () => {
           options={getAllStates()}
           id="state"
           label="state"
-          value={selectedState ? selectedState : undefined}
+          value={selectedState}
           hiddenInputClassName="setup-f"
           onChange={handleStateChange} // Update handler
         />
@@ -85,7 +85,7 @@ const CompanyAddress = () => {
           label="local government"
           hiddenInputClassName="setup-f"
           onChange={handleLGAChange} // Update handler
-          value={selectedLGA ? selectedLGA : undefined} // Controlled value
+          value={selectedLGA} // Controlled value
         />
 
         {/* City Selector */}
@@ -96,7 +96,7 @@ const CompanyAddress = () => {
           allowCustom={true}
           hiddenInputClassName="setup-f"
           onChange={handleCityChange} // Update handler
-          value={selectedCity ? selectedCity : undefined} // Controlled value
+          value={selectedCity} // Controlled value
         />
 
         <Input
@@ -104,7 +104,7 @@ const CompanyAddress = () => {
           id="address"
           placeholder="Write here"
           className="lg:col-span-2"
-          inputClassName="rounded-[8px] setup-f"
+          inputClassName="rounded-[8px] setup-f bg-white"
         />
 
         <FileInput

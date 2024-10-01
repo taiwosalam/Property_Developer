@@ -46,7 +46,11 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
       return emailSchema.safeParse(value).success;
     }
 
-    return value && value !== "<p><br></p>" && value !== "<p></p>";
+    if (input.classList.contains("react-quill-hidden-input")) {
+      return value !== "<p><br></p>" && value !== "<p></p>";
+    }
+
+    return value;
   };
 
   const handleInputChange = useCallback(() => {

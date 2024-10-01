@@ -1,5 +1,5 @@
 "use client";
-// import { useState } from "react";
+import { useState } from "react";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import PageTitle from "@/components/PageTitle/page-title";
@@ -11,11 +11,12 @@ import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
 import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-// import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-record-modal";
+import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-record-modal";
 import CreateRecordModal from "@/components/tasks/vehicles-record/create-record-modal";
 
 const VehiclesRecordPage = () => {
   const { isSmallTablet } = useWindowWidth();
+  const [modalOpen, setModalOpen] = useState(false);
 
   const fields: Field[] = [
     { id: "1", accessor: "avatar", isImage: true, picSize: 40 },
@@ -98,7 +99,16 @@ const VehiclesRecordPage = () => {
           padding: "18px 16px",
         }}
       />
-
+      <Modal
+        state={{
+          isOpen: modalOpen,
+          setIsOpen: setModalOpen,
+        }}
+      >
+        <ModalContent>
+          <VehicleRecordModal />
+        </ModalContent>
+      </Modal>
       <Pagination
         totalPages={3}
         currentPage={1}
