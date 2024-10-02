@@ -1,79 +1,16 @@
-import { PlusIcon, DeleteIconOrange } from "@/public/icons/icons";
-import Image from "next/image";
+import { PlusIcon } from "@/public/icons/icons";
+import SortableImage from "./sortable-image";
 import { useUnitForm } from "./unit-form-context";
 import clsx from "clsx";
-import {
-  DndContext,
-  closestCenter,
-  type DragEndEvent,
-  type UniqueIdentifier,
-} from "@dnd-kit/core";
+import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 
-const MAX_FILE_SIZE_MB = 15; // Maximum file size in MB
-
-interface SortableImageProps {
-  id: UniqueIdentifier;
-  image: string;
-  index: number;
-  removeImage: (index: number) => void;
-}
-
-const SortableImage: React.FC<SortableImageProps> = ({
-  id,
-  image,
-  index,
-  removeImage,
-}) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id,
-    });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      className="flex-shrink-0 relative w-[285px] h-[155px] rounded-lg overflow-hidden border border-gray-300"
-    >
-      <Image
-        src={image}
-        alt={`Property Image ${index + 1}`}
-        className="object-cover object-center w-full h-full"
-        fill
-      />
-      <button
-        type="button"
-        aria-label="Remove Image"
-        // onClick={(e) => {
-        //   console.log("clicked remove");
-        //   e.stopPropagation();
-        //   removeImage(index);
-        // }}
-        onMouseDown={(e) => {
-          removeImage(index);
-          e.stopPropagation();
-        }} // Prevent drag events
-        className="absolute top-1 right-1"
-      >
-        <DeleteIconOrange size={20} />
-      </button>
-    </div>
-  );
-};
+const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 
 const UnitPictures = () => {
   const { images, setImages, removeImage, isEditing } = useUnitForm();

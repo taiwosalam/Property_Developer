@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 
 // Types
 import type { CreatePropertyFormProps } from "./types";
@@ -20,6 +20,8 @@ import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeletePropertyModal from "@/components/Management/Properties/delete-property-modal";
 import { rentPeriods } from "@/data";
+
+const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 
 const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   editMode,
@@ -68,22 +70,39 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = Array.from(e.target.files || []);
-
-    const newImages = selectedFiles.filter((file) => {
-      if (file.size > 2 * 1024 * 1024) {
-        // 2 MB in bytes
-        alert(`${file.name} exceeds the 2MB size limit.`);
-        return false;
+    const files = Array.from(e.target.files || []);
+    const validImages: string[] = [];
+    const oversizeImages: string[] = [];
+    for (const file of files) {
+      if (!file.type.startsWith("image/")) {
+        alert("Upload only image files.");
+        return;
       }
-      return true;
-    });
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        oversizeImages.push(file.name);
+        continue;
+      }
+      try {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          validImages.push(reader.result as string);
+          if (validImages.length + oversizeImages.length === files.length) {
+            setState((x) => ({ ...x, images: validImages }));
+          }
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error processing image:", error);
+        alert("There was an error processing your image. Please try again.");
+      }
+    }
 
-    const finalImages = [...images, ...newImages].slice(0, 6); // Limit to 6 images
-    setState((x) => ({ ...x, images: finalImages }));
-
-    // Reset input value to allow re-uploading the same file
-    e.target.value = "";
+    if (oversizeImages.length > 0) {
+      alert(
+        `Some files were not uploaded due to exceeding the maximum size: ${MAX_FILE_SIZE_MB} MB`
+      );
+    }
+    e.target.value = ""; // Reset input value to allow re-uploading the same file
   };
 
   const removeImage = (index: number) => {
@@ -180,7 +199,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
               className="flex-shrink-0 relative w-[285px] h-[155px] rounded-lg overflow-hidden border border-gray-300"
             >
               <Image
-                src={URL.createObjectURL(image)}
+                src={image}
                 alt={`Property Image ${index + 1}`}
                 className="object-cover object-center w-full h-full"
                 fill
@@ -469,7 +488,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
         style={{ boxShadow: "0px -2px 10px 0px rgba(0, 0, 0, 0.05)" }}
       >
         {editMode ? (
-          <>
+          <Fragment>
             <Modal>
               <ModalTrigger asChild>
                 <Button
@@ -495,9 +514,9 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
             <Button type="button" size="sm_medium" className="py-2 px-7">
               update
             </Button>
-          </>
+          </Fragment>
         ) : (
-          <>
+          <Fragment>
             <button
               type="reset"
               className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
@@ -512,7 +531,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
             >
               Add Unit
             </button>
-          </>
+          </Fragment>
         )}
       </div>
     </form>
