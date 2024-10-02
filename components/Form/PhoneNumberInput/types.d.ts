@@ -4,7 +4,7 @@ export interface PhoneNumberProps {
   label?: string;
   className?: string;
   required?: boolean;
-  placeholder: string;
+  placeholder?: string;
   onChange?: (data: string) => void;
   inputClassName?: string;
   inputContainerClassName?: string;

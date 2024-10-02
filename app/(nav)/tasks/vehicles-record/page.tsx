@@ -1,5 +1,5 @@
 "use client";
-
+import { useState } from "react";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import PageTitle from "@/components/PageTitle/page-title";
@@ -8,33 +8,35 @@ import SearchInput from "@/components/SearchInput/search-input";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Button from "@/components/Form/Button/button";
 import CustomTable from "@/components/Table/table";
-import type { Field } from "@/components/Table/types";
+import type { Field, DataItem } from "@/components/Table/types";
 import Pagination from "@/components/Pagination/pagination";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-record-modal";
+import CreateRecordModal from "@/components/tasks/vehicles-record/create-record-modal";
+import type { VehicleRecord } from "@/components/tasks/vehicles-record/types";
+import { VehicleRecordData } from "./data";
 
 const VehiclesRecordPage = () => {
   const { isSmallTablet } = useWindowWidth();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<VehicleRecord | null>(
+    null
+  );
+
   const fields: Field[] = [
-    { id: "1", accessor: "avatar", isImage: true, picSize: 40 },
-    { id: "2", label: "Name", accessor: "full_name" },
+    { id: "1", accessor: "pictureSrc", isImage: true, picSize: 40 },
+    { id: "2", label: "Name", accessor: "name" },
     { id: "3", label: "Plate Number", accessor: "plate_number" },
-    { id: "4", label: "Guest / Visitor", accessor: "guest_visitor" },
+    { id: "4", label: "Guest / Visitor", accessor: "category" },
     { id: "5", label: "Last Update", accessor: "last_update" },
     { id: "6", label: "Status", accessor: "status" },
     { id: "7", accessor: "action" },
   ];
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      id: (index + 1).toString(),
-      avatar: "/empty/SampleLandlord.jpeg",
-      full_name: `Name ${index + 1}`,
-      plate_number: `Plate Number ${index + 1}`,
-      guest_visitor: `${index % 2 === 0 ? "Guest" : "Visitor"}`,
-      last_update: `02/03/2024  ${index + 3}:30 PM`,
-      status: `${index % 2 === 0 ? "Pending" : "Completed"}`,
-    }));
-  };
 
-  const tableData = generateTableData(10);
+  const handleActionClick = (record: DataItem) => {
+    setSelectedRecord(record as VehicleRecord);
+    setModalOpen(true);
+  };
 
   return (
     <div className="space-y-9">
@@ -54,20 +56,27 @@ const VehiclesRecordPage = () => {
             <ManagementStatistcsCard title="Pending" newData={657} total={34} />
           </AutoResizingGrid>
         )}
-        <Button type="button" className="page-header-button">
-          + Create New Record
-        </Button>
+        <Modal>
+          <ModalTrigger asChild>
+            <Button type="button" className="page-header-button">
+              + Create New Record
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <CreateRecordModal />
+          </ModalContent>
+        </Modal>
       </div>
       <div className="page-title-container">
         <PageTitle title="Vehicles Record" />
         <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search" />
+          <SearchInput placeholder="Search for vehicle record" />
           <FilterButton />
         </div>
       </div>
       <CustomTable
         fields={fields}
-        data={tableData}
+        data={VehicleRecordData}
         evenRowColor="#fff"
         oddRowColor="#EFF6FF"
         tableHeadClassName="bg-brand-5 h-[76px]"
@@ -86,7 +95,18 @@ const VehiclesRecordPage = () => {
           textAlign: "left",
           padding: "18px 16px",
         }}
+        onActionClick={handleActionClick}
       />
+      <Modal
+        state={{
+          isOpen: modalOpen,
+          setIsOpen: setModalOpen,
+        }}
+      >
+        <ModalContent>
+          <VehicleRecordModal {...(selectedRecord as VehicleRecord)} />
+        </ModalContent>
+      </Modal>
       <Pagination
         totalPages={3}
         currentPage={1}

@@ -15,6 +15,7 @@ const CheckInOutForm: React.FC<{
 }> = ({ type, handleBack, pictureSrc, userName, id }) => {
   return (
     <div className="w-[900px] max-w-[80%] max-h-[85vh] rounded-lg bg-white overflow-y-auto custom-round-scrollbar">
+      {/* Header */}
       <div className="flex items-center justify-between border-b border-solid border-[#B8B8B8] sticky z-[1] top-0 px-[30px] pt-[20px] bg-white">
         <div className="flex items-center gap-2">
           <button type="button" aria-label="back" onClick={handleBack}>
@@ -28,6 +29,8 @@ const CheckInOutForm: React.FC<{
           <DeleteIconX size={34} />
         </ModalTrigger>
       </div>
+
+      {/* Body */}
       <div className="pt-5 px-[40px] pb-[50px] flex gap-[10%]">
         <div className="w-[37%]">
           <div className="mb-[10px] flex items-center gap-4">

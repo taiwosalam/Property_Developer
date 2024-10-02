@@ -1,5 +1,5 @@
 "use client";
-
+import { Fragment } from "react";
 import Select from "@/components/Form/Select/select";
 import Input from "@/components/Form/Input/input";
 import TextArea from "@/components/Form/TextArea/textarea";
@@ -22,7 +22,7 @@ const CreateAnnouncementForm: React.FC<{
     >
       <div className="grid gap-x-4 gap-y-5 md:grid-cols-2 lg:w-[63%]">
         {!editMode && (
-          <>
+          <Fragment>
             <Select
               id="branch"
               label="Branch"
@@ -37,7 +37,7 @@ const CreateAnnouncementForm: React.FC<{
               options={[]}
               inputContainerClassName="bg-white"
             />
-          </>
+          </Fragment>
         )}
         <Input
           id="title"
