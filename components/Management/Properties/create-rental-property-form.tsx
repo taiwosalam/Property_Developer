@@ -20,6 +20,7 @@ import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeletePropertyModal from "@/components/Management/Properties/delete-property-modal";
 import { rentPeriods } from "@/data";
+import { AuthForm } from "@/components/Auth/auth-components";
 
 const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   editMode,
@@ -166,7 +167,12 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-[970px] pb-[80px]">
+    <AuthForm
+      onFormSubmit={handleSubmit}
+      returnType="string" //change to formdata after integrating with backend
+      setValidationErrors={() => {}}
+      className="max-w-[970px] pb-[80px]"
+    >
       <input name="property_tag" type="hidden" value="rental" readOnly />
       {/* Backend is Looking for it */}
       <div className="mb-5 lg:mb-8">
@@ -515,7 +521,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           </>
         )}
       </div>
-    </form>
+    </AuthForm>
   );
 };
 

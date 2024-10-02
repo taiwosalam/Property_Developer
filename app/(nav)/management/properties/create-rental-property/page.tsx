@@ -10,11 +10,12 @@ import CreateRentalPropertyForm from "@/components/Management/Properties/create-
 const CreateProperty = () => {
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = (data: any) => {
+    //change to formdata after integrating with backend
+    // e.preventDefault();
+    console.log(data);
     // Post data to API
-
-    router.push("/management/properties/create-rental-property/add-unit");
+    // router.push("/management/properties/create-rental-property/add-unit");
   };
 
   return (
