@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import PageTitle from "@/components/PageTitle/page-title";
 import SearchInput from "@/components/SearchInput/search-input";
@@ -13,9 +13,12 @@ import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import AddServiceProviderModal from "@/components/tasks/service-providers/add-service-provider-modal";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import { useAuthStore } from "@/store/authstrore";
+import { getAllServiceProviders } from "./data";
 
 const ServiceProviders = () => {
   const { isSmallTablet } = useWindowWidth();
+  const accessToken = useAuthStore((state) => state.access_token);
   const [state, setState] = useState({
     total_pages: 5,
     current_page: 1,
@@ -24,6 +27,12 @@ const ServiceProviders = () => {
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
   };
+
+  useEffect(() => {
+    getAllServiceProviders(accessToken).then((response) => {
+      console.log(response);
+    });
+  }, [accessToken]);
 
   return (
     <div className="space-y-9">

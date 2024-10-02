@@ -13,8 +13,12 @@ import {
   formatCostInputValue,
 } from "@/utils/number-formatter";
 import Button from "@/components/Form/Button/button";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { createMaintenance } from "../data";
+import { useAuthStore } from "@/store/authstrore";
 
 const CreateMaintenace = () => {
+  const accessToken = useAuthStore((state) => state.access_token);
   const router = useRouter();
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const handleStartDateChange = (date?: Dayjs | null) => {
@@ -24,6 +28,13 @@ const CreateMaintenace = () => {
   const currencySymbol = currencySymbols["NAIRA"]; // TODO: Make this dynamic
   const handleMaintenanceCostChange = (value: string) => {
     setMaintenanceCost(formatCostInputValue(value));
+  };
+
+  const handleSubmit = (data: any) => {
+    console.log(data);
+    createMaintenance(accessToken, data).then((res) => {
+      console.log(res);
+    });
   };
 
   return (
@@ -36,52 +47,57 @@ const CreateMaintenace = () => {
           New Maintenance Schedule
         </h1>
       </div>
-      <form className="space-y-5 pb-[80px]">
+      <AuthForm
+        returnType="string"
+        onFormSubmit={handleSubmit}
+        setValidationErrors={() => {}}
+        className="space-y-5 pb-[80px]"
+      >
         <h2 className="text-sm md:text-base text-brand-10">Details</h2>
         <SectionSeparator className="!mt-4 !mb-6" />
         <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
           <Select
             id="branch"
             label="Branch"
-            options={[]}
+            options={["sadf", "sdf", "sdf"]}
             inputContainerClassName="bg-white"
           />
           <Select
             id="property"
             label="Property"
-            options={[]}
+            options={["sadf", "sdf", "sdf"]}
             inputContainerClassName="bg-white"
           />
           <Select
             id="affected_units"
             label="Affected Units"
-            options={[]}
+            options={["sadf", "sdf", "sdf"]}
             inputContainerClassName="bg-white"
           />
           <Select
             id="priority"
             label="Priority"
-            options={[]}
+            options={["sadf", "sdf", "sdf"]}
             isSearchable={false}
             inputContainerClassName="bg-white"
           />
           <Select
             id="requested_by"
             label="Requested By"
-            options={[]}
+            options={["sadf", "sdf", "sdf"]}
             inputContainerClassName="bg-white"
           />
           <Select
             id="maintenance_type"
             label="Maintenance Type"
-            options={[]}
+            options={["sadf", "sdf", "sdf"]}
             isSearchable={false}
             inputContainerClassName="bg-white"
           />
           <Select
             id="service_provider"
             label="Service Provider"
-            options={[]}
+            options={["sadf", "sdf", "sdf"]}
             inputContainerClassName="bg-white"
           />
         </div>
@@ -139,7 +155,7 @@ const CreateMaintenace = () => {
             Create Maintenance
           </Button>
         </div>
-      </form>
+      </AuthForm>
     </div>
   );
 };
