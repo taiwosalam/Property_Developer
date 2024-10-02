@@ -35,7 +35,7 @@ const DocumentCard = () => {
           />
         </div>
         <div className="flex justify-end">
-          <Button size="xs_normal" className="py-2 px-7">
+          <Button href="/documents/manage-tenancy-agreement" size="xs_normal" className="py-2 px-7">
             manage
           </Button>
         </div>
