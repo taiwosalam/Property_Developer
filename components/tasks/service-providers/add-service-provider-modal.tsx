@@ -10,7 +10,10 @@ import AddServiceProviderOptions from "./add-service-provider-options";
 import AddServiceProviderForm from "./add-service-provider-form";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
+import { createServiceProvider } from "@/app/(nav)/tasks/service-providers/data";
+import { useAuthStore } from "@/store/authstrore";
 const AddServiceProviderModal = () => {
+  const accessToken = useAuthStore((state) => state.access_token);
   const [activeStep, setActiveStep] =
     useState<AddServiceProviderModalOptions>("options");
 
@@ -31,7 +34,14 @@ const AddServiceProviderModal = () => {
     },
     "add-service-provider": {
       heading: "Add Service Provider",
-      content: <AddServiceProviderForm submitAction={() => {}} />,
+      content: (
+        <AddServiceProviderForm
+          submitAction={(data: any) => {
+            console.log(data);
+            createServiceProvider(accessToken, data);
+          }}
+        />
+      ),
     },
     "invite-service-provider": {
       heading: "Invite Service Provider",

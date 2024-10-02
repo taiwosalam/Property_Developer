@@ -5,7 +5,20 @@ import { useState, useEffect } from "react";
 
 // Types
 import type { CreatePropertyFormProps } from "./types";
-import type { StateType } from "@/app/(nav)/management/properties/create-rental-property/data";
+type StateType = {
+  selectedState: string;
+  selectedLGA: string;
+  selectedCity: string;
+  localGovernments: string[];
+  cities: string[];
+  staff: { id: string; label: string }[];
+  images: (string | File)[];
+  branchOptions: string[];
+  inventoryOptions: string[];
+  landlordOptions: string[];
+  accountOfficerOptions: string[];
+  resetKey: number;
+};
 
 // Images
 import { PlusIcon, DeleteIconX, DeleteIconOrange } from "@/public/icons/icons";
@@ -180,7 +193,9 @@ const CreateGatedEstateForm: React.FC<CreatePropertyFormProps> = ({
               className="relative w-[285px] h-[155px] rounded-lg overflow-hidden border border-gray-300"
             >
               <Image
-                src={URL.createObjectURL(image)}
+                src={
+                  typeof image === "string" ? image : URL.createObjectURL(image)
+                }
                 alt={`Property Image ${index + 1}`}
                 className="object-cover object-center w-full h-full"
                 fill
