@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 
 // Images
 import { ChevronRight } from "lucide-react";
@@ -7,13 +9,19 @@ import ReceiveIcon from "@/public/icons/receive.svg";
 import { ExclamationMark } from "@/public/icons/icons";
 
 // Imports
+import Picture from "@/components/Picture/picture";
 import { DashboardChart } from "@/components/dashboard/chart";
+import { Modal, ModalContent } from "@/components/Modal/modal";
 import WalletAnalytics from "@/components/Wallet/wallet-analytics";
 import WalletBenefiary from "@/components/Wallet/wallet-benefiary";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
-import Picture from "@/components/Picture/picture";
+import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
+import SendFundsModal from "@/components/Wallet/SendFunds/send-funds-modal";
+import WithdrawFundsModal from "@/components/Wallet/Withdraw/withdraw-funds-modal";
 
 const Wallet = () => {
+  const [isOpen, setIsOpen] = useState(true);
+
   return (
     <div className="custom-flex-col gap-10">
       <div className="flex gap-1">
@@ -143,6 +151,13 @@ const Wallet = () => {
           </table>
         </div>
       </div>
+      <Modal state={{ isOpen, setIsOpen }}>
+        <ModalContent>
+          {/* <AddFundsModal /> */}
+          {/* <WithdrawFundsModal /> */}
+          <SendFundsModal />
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
