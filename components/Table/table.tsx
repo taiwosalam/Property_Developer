@@ -20,7 +20,8 @@ const renderValue = (
   data: DataItem,
   field: Field,
   index: number,
-  actionButtonIcon: ReactNode
+  actionButtonIcon: ReactNode,
+  onActionClick?: (data: DataItem) => void
 ) => {
   let value = data[field.accessor];
   if (field.accessor === "S/N") {
@@ -56,7 +57,8 @@ const renderValue = (
           <button
             type="button"
             aria-label="action"
-            className="grid place-items-center mx-auto"
+            className="p-2 grid place-items-center mx-auto text-brand-10"
+            onClick={onActionClick ? () => onActionClick(data) : undefined}
           >
             {actionButtonIcon || <VerticalEllipsisIcon />}
           </button>
@@ -65,7 +67,8 @@ const renderValue = (
         <button
           type="button"
           aria-label="action"
-          className="grid place-items-center mx-auto"
+          className="p-2 grid place-items-center mx-auto text-brand-10"
+          onClick={onActionClick ? () => onActionClick(data) : undefined}
         >
           {actionButtonIcon || <VerticalEllipsisIcon />}
         </button>
@@ -96,6 +99,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
   tableBodyCellSx,
   evenRowColor = "#fff",
   oddRowColor = "#fff",
+  onActionClick,
 }) => {
   return (
     <TableContainer
@@ -160,7 +164,13 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     ...field.cellStyle,
                   }}
                 >
-                  {renderValue(x, field, index, actionButtonIcon)}
+                  {renderValue(
+                    x,
+                    field,
+                    index,
+                    actionButtonIcon,
+                    onActionClick
+                  )}
                 </TableCell>
               ))}
             </TableRow>

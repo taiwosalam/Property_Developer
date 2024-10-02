@@ -55,14 +55,14 @@ const CreateRecordModal = () => {
         <DownArrow color="rgba(0,0,0,0.2)" />
         <div className="flex items-center justify-around gap-2">
           <Button
-            href="/tasks/vehicles-record/record?type=manual"
+            href="/tasks/vehicles-record/create?type=manual"
             size="sm_medium"
             className="py-2 px-4 rounded-lg"
           >
             Create Manully
           </Button>
           <Button
-            href="/tasks/vehicles-record/record?type=id"
+            href="/tasks/vehicles-record/create?type=id"
             size="sm_medium"
             className="py-2 px-4 rounded-lg"
           >

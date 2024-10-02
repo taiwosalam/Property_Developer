@@ -1,4 +1,11 @@
-import { useEffect, useState, useContext, useRef, RefObject } from "react";
+import {
+  useEffect,
+  useState,
+  useContext,
+  useRef,
+  RefObject,
+  Fragment,
+} from "react";
 import dynamic from "next/dynamic";
 import type { TextAreaProps } from "./types";
 import clsx from "clsx";
@@ -88,7 +95,7 @@ const TextArea: React.FC<TextAreaProps> = ({
       )}
       <div className="flex flex-col">
         {mounted && (
-          <>
+          <Fragment>
             <DynamicReactQuill
               forwardedRef={quillRef}
               value={editorValue}
@@ -115,66 +122,67 @@ const TextArea: React.FC<TextAreaProps> = ({
               className={clsx("react-quill-hidden-input", hiddenInputClassName)}
             />
             {/* Hidden input field */}
-          </>
+
+            <div id="toolbar" className="quill-toolbar bg-[#F3F6F9]">
+              <select className="ql-header">
+                <option value="" selected>
+                  Paragraph
+                </option>
+                <option value="1">Header 1</option>
+                <option value="2">Header 2</option>
+              </select>
+              <button type="button" className="ql-bold">
+                Bold
+              </button>
+              <button type="button" className="ql-italic">
+                Italic
+              </button>
+              <button type="button" className="ql-underline">
+                Underline
+              </button>
+              <button type="button" className="ql-list" value="ordered">
+                Ordered List
+              </button>
+              <button type="button" className="ql-list" value="bullet">
+                Bullet List
+              </button>
+              <button type="button" className="ql-align" value="">
+                Align Left
+              </button>
+              <button type="button" className="ql-align" value="center">
+                Align Center
+              </button>
+              <button type="button" className="ql-align" value="right">
+                Align Right
+              </button>
+              <button type="button" className="ql-link">
+                Link
+              </button>
+              <button type="button" className="ql-blockquote">
+                Blockquote
+              </button>
+              <button type="button" className="ql-code-block">
+                Code Block
+              </button>
+              <button
+                type="button"
+                className="hover:text-[#06c]"
+                onClick={handleUndo}
+                aria-label="Undo"
+              >
+                <UndoIcon />
+              </button>
+              <button
+                type="button"
+                className="hover:text-[#06c]"
+                onClick={handleRedo}
+                aria-label="Redo"
+              >
+                <RedoIcon />
+              </button>
+            </div>
+          </Fragment>
         )}
-        <div id="toolbar" className="quill-toolbar bg-[#F3F6F9]">
-          <select className="ql-header">
-            <option value="" selected>
-              Paragraph
-            </option>
-            <option value="1">Header 1</option>
-            <option value="2">Header 2</option>
-          </select>
-          <button type="button" className="ql-bold">
-            Bold
-          </button>
-          <button type="button" className="ql-italic">
-            Italic
-          </button>
-          <button type="button" className="ql-underline">
-            Underline
-          </button>
-          <button type="button" className="ql-list" value="ordered">
-            Ordered List
-          </button>
-          <button type="button" className="ql-list" value="bullet">
-            Bullet List
-          </button>
-          <button type="button" className="ql-align" value="">
-            Align Left
-          </button>
-          <button type="button" className="ql-align" value="center">
-            Align Center
-          </button>
-          <button type="button" className="ql-align" value="right">
-            Align Right
-          </button>
-          <button type="button" className="ql-link">
-            Link
-          </button>
-          <button type="button" className="ql-blockquote">
-            Blockquote
-          </button>
-          <button type="button" className="ql-code-block">
-            Code Block
-          </button>
-          <button
-            type="button"
-            className="hover:text-[#06c]"
-            onClick={handleUndo}
-            aria-label="Undo"
-          >
-            <UndoIcon />
-          </button>
-          <button
-            type="button"
-            className="hover:text-[#06c]"
-            onClick={handleRedo}
-            aria-label="Redo"
-          >
-            <RedoIcon />
-          </button>
-        </div>
       </div>
     </div>
   );

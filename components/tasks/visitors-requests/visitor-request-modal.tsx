@@ -6,8 +6,8 @@ import { VisitorRequestModalProps } from "./types";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import Button from "@/components/Form/Button/button";
 import { useState } from "react";
-// import ModalPreset from "@/components/Modal/modal-preset";
 import CheckInOutForm from "./check-in-out-form";
+// import ModalPreset from "@/components/Modal/modal-preset";
 
 const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
   status,
