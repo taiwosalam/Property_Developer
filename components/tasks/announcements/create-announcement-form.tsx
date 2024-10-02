@@ -18,7 +18,7 @@ const CreateAnnouncementForm: React.FC<{
       returnType="string"
       onFormSubmit={handleSubmit}
       setValidationErrors={() => {}}
-      className="flex flex-col gap-y-5 gap-x-[4%] lg:flex-row lg:items-start pb-[80px]"
+      className="flex flex-col gap-y-5 gap-x-[4%] lg:flex-row lg:items-start pb-[200px]"
     >
       <div className="grid gap-x-4 gap-y-5 md:grid-cols-2 lg:w-[63%]">
         {!editMode && (
