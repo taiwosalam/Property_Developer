@@ -42,7 +42,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
         </div>
         {/* Body */}
         <div className="bg-white p-6">
-          <div className="flex items-center justify-between font-medium">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-2 font-medium">
             <div className="flex items-center gap-2">
               <Picture size={50} src={pictureSrc} rounded />
               <div className="text-base text-text-primary space-y-1">
@@ -76,13 +76,17 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
           </div>
           <div className="border-t border-borders-dark my-5 -mx-6 border-dashed" />
           <div className="mb-5 space-y-2 gap-5">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-1.5">
               <p className="text-text-tertiary text-base">Secret Question</p>
-              <p className="text-text-primary text-sm">{secretQuestion}</p>
+              <p className="text-text-primary text-sm text-right">
+                {secretQuestion}
+              </p>
             </div>
             <div className="flex items-center justify-between">
               <p className="text-text-tertiary text-base">Answer</p>
-              <p className="text-text-primary text-sm">{secretAnswer}</p>
+              <p className="text-text-primary text-sm text-right">
+                {secretAnswer}
+              </p>
             </div>
             <div className="flex flex-col gap-1">
               <p className="text-text-tertiary text-base">Description:</p>
@@ -95,7 +99,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
           </div>
           <div className="mb-9 text-sm">
             <p className="mb-2 text-text-label text-base font-bold">Check In</p>
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-1.5">
               <div className="flex items-center gap-4">
                 <p className="text-text-label font-normal">By</p>
                 <p className="text-text-primary font-medium">
@@ -166,7 +170,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               <p className="mb-2 text-text-label text-base font-bold">
                 Check Out
               </p>
-              <div className="mb-4 flex items-center justify-between">
+              <div className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-1.5">
                 <div className="flex items-center gap-4">
                   <p className="text-text-label font-normal">By</p>
                   <p className="text-text-primary font-medium">David Aladiye</p>
@@ -199,10 +203,12 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
     return (
       <CheckInOutForm
         type="check-in"
+        useCase="visitor"
         handleBack={handleBack}
         pictureSrc={pictureSrc}
         userName={userName}
         id={id}
+        requestDate={requestDate}
       />
     );
   }
@@ -210,10 +216,12 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
     return (
       <CheckInOutForm
         type="check-out"
+        useCase="visitor"
         handleBack={handleBack}
         pictureSrc={pictureSrc}
         userName={userName}
         id={id}
+        requestDate={requestDate}
       />
     );
   }

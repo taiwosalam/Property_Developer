@@ -123,7 +123,10 @@ const TextArea: React.FC<TextAreaProps> = ({
             />
             {/* Hidden input field */}
 
-            <div id="toolbar" className="quill-toolbar bg-[#F3F6F9]">
+            <div
+              id="toolbar"
+              className="quill-toolbar bg-[#F3F6F9] overflow-x-auto max-w-full"
+            >
               <select className="ql-header">
                 <option value="" selected>
                   Paragraph
@@ -160,9 +163,6 @@ const TextArea: React.FC<TextAreaProps> = ({
               </button>
               <button type="button" className="ql-blockquote">
                 Blockquote
-              </button>
-              <button type="button" className="ql-code-block">
-                Code Block
               </button>
               <button
                 type="button"

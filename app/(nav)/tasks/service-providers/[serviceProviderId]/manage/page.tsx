@@ -29,22 +29,18 @@ const ManageServiceProvider = () => {
   const router = useRouter();
   const [serviceProviderData, setServiceProviderData] =
     useState<ServiceProviderData | null>({
-      user_tag: "mobile",
+      user_tag: "web",
     });
   if (!serviceProviderData) return null;
   const { user_tag } = serviceProviderData;
 
   return (
     <div className="space-y-5">
+      <button aria-label="back" className="block" onClick={() => router.back()}>
+        <ChevronLeft />
+      </button>
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
-        <InfoBox style={{ padding: "24px 40px" }} className="relative">
-          <button
-            aria-label="back"
-            className="absolute top-2 left-2"
-            onClick={() => router.back()}
-          >
-            <ChevronLeft />
-          </button>
+        <InfoBox style={{ padding: "24px 40px" }}>
           <div className="flex flex-col xl:flex-row gap-5">
             <div className="flex items-start">
               <Picture
@@ -101,6 +97,7 @@ const ManageServiceProvider = () => {
 
         {user_tag === "web" ? (
           <ContactInfo
+            containerClassName="flex flex-col justify-center"
             info={{
               "Company Name": "Abmbola Services",
               "Full name": "Abimbola Adedeji",

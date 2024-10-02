@@ -12,7 +12,7 @@ export const VehicleRecordData: VehicleRecord[] = [
     last_update: "02/03/2024 3:30PM",
     checkIn: {
       name: "John Doe",
-      passenger: "Jane Doe",
+      passenger: "3",
       date: "01/01/2024",
       inventory:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
@@ -29,14 +29,14 @@ export const VehicleRecordData: VehicleRecord[] = [
     last_update: "02/03/2024 3:30PM",
     checkIn: {
       name: "John Doe",
-      passenger: "Jane Doe",
+      passenger: "4",
       date: "01/01/2024",
       inventory:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
     },
     checkOut: {
       name: "John Doe",
-      passenger: "Jane Doe",
+      passenger: "2",
       date: "01/01/2024",
       inventory:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",

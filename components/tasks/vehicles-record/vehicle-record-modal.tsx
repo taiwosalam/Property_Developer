@@ -10,7 +10,11 @@ import TruncatedText from "@/components/TruncatedText/truncated-text";
 import CheckInOutForm from "../visitors-requests/check-in-out-form";
 // import ModalPreset from "@/components/Modal/modal-preset";
 
-const VehicleRecordModal: React.FC<VehicleRecord> = ({
+const VehicleRecordModal: React.FC<
+  VehicleRecord & {
+    showOpenRecordsButton?: boolean;
+  }
+> = ({
   status,
   pictureSrc,
   name,
@@ -19,6 +23,7 @@ const VehicleRecordModal: React.FC<VehicleRecord> = ({
   registrationDate,
   checkIn,
   checkOut,
+  showOpenRecordsButton = true,
 }) => {
   const [activeStep, setActiveStep] = useState<
     "default" | "check-out" | "success-action"
@@ -57,17 +62,17 @@ const VehicleRecordModal: React.FC<VehicleRecord> = ({
             </div>
             <div className="flex-1 space-y-2 text-sm">
               <div className="flex items-center gap-4">
-                <p className="text-text-tertiary min-w-[120px]">Category</p>
+                <p className="text-text-tertiary min-w-[100px]">Category</p>
                 <p className="text-text-primary capitalize">{category}</p>
               </div>
               <div className="flex items-center gap-4">
-                <p className="text-text-tertiary min-w-[120px]">Registration</p>
+                <p className="text-text-tertiary min-w-[100px]">Registration</p>
                 <p className="text-text-primary">{registrationDate}</p>
               </div>
             </div>
           </div>
-          <div className="border-t border-borders-dark my-5 -mx-6 border-dashed" />
-          <div className="mb-9 text-sm space-y-8">
+          <div className="border-t border-borders-dark my-5 -mx-[40px] border-dashed" />
+          <div className="mb-9 text-sm   space-y-8">
             {/* Check In */}
             <div>
               <p className="mb-2 text-text-label text-base font-bold">
@@ -130,13 +135,15 @@ const VehicleRecordModal: React.FC<VehicleRecord> = ({
                 Check Out
               </Button>
             )}
-            <Button
-              size="sm_bold"
-              className="py-[10px] px-6 rounded-lg"
-              href={`/tasks/vehicles-record/${id}/record`}
-            >
-              Open Records
-            </Button>
+            {showOpenRecordsButton && (
+              <Button
+                size="sm_bold"
+                className="py-[10px] px-6 rounded-lg"
+                href={`/tasks/vehicles-record/${id}/record`}
+              >
+                Open Records
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -146,10 +153,13 @@ const VehicleRecordModal: React.FC<VehicleRecord> = ({
     return (
       <CheckInOutForm
         type="check-out"
+        useCase="vehicle"
         handleBack={handleBack}
         pictureSrc={pictureSrc}
-        userName={"userName"}
-        id={"id"}
+        userName={name}
+        id={id}
+        category={category}
+        registrationDate={registrationDate}
       />
     );
   }

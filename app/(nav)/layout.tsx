@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Fragment } from "react";
 import { SidenavArrow } from "@/public/icons/icons";
 
 // Imports
@@ -77,7 +77,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }, [isAuthenticated, router]); // Re-run this logic if isAuthenticated or companyId changes
 
   return (
-    <>
+    <Fragment>
       <Navbar />
       <div className="w-full flex relative z-[1]">
         {isSmallTablet ? (
@@ -116,9 +116,10 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               className="h-[1px]"
               style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
             ></div>
-            <div className="h-[50px] px-3 sm:pr-10 flex flex-wrap items-center justify-between bg-white max-w-full">
+            <div className="h-[50px] px-3 sm:pr-10 flex flex-wrap items-center justify-between gap-2 bg-white max-w-full overflow-hidden">
               <button
                 type="button"
+                aria-label="toggle sidenav"
                 onClick={() => {
                   if (isSmallTablet) {
                     setFixedSidenavIsOpen(true);
@@ -137,7 +138,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   <SidenavArrow />
                 )}
               </button>
-              <p className="capitalize text-text-primary text-sm font-medium">
+              <p className="capitalize text-text-primary text-sm font-medium truncate">
                 {pathname.split("/").slice(1).join(" > ")}
               </p>
             </div>
@@ -160,7 +161,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </main>
         </div>
       </div>
-    </>
+    </Fragment>
   );
 };
 

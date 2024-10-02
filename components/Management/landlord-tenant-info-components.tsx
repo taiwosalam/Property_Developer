@@ -18,8 +18,9 @@ export const LandlordTenantInfo: React.FC<{
   heading?: string;
   separator?: boolean;
   info: Record<string, string | null>;
-}> = ({ info, heading, separator }) => (
-  <LandlordTenantInfoBox>
+  containerClassName?: string;
+}> = ({ info, heading, separator, containerClassName }) => (
+  <LandlordTenantInfoBox className={containerClassName}>
     <div className="custom-flex-col gap-4">
       {heading && (
         <h3 className="text-black text-lg lg:text-xl font-bold capitalize">
