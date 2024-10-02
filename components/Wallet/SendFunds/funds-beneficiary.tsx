@@ -1,5 +1,8 @@
 import React from "react";
 
+// Types
+import { FundsBeneficiaryProps } from "../types";
+
 // Images
 import { ChevronRight } from "lucide-react";
 import Avatar4 from "@/public/empty/avatar-4.svg";
@@ -8,10 +11,13 @@ import Avatar4 from "@/public/empty/avatar-4.svg";
 import Picture from "@/components/Picture/picture";
 import { SectionSeparator } from "@/components/Section/section-components";
 
-const FundsBeneficiary = () => {
+const FundsBeneficiary: React.FC<FundsBeneficiaryProps> = ({ seeMore }) => {
   return (
     <div className="custom-flex-col gap-2">
-      <div className="flex justify-between px-[18px]">
+      <button
+        onClick={seeMore}
+        className="text-start flex justify-between px-[18px]"
+      >
         <div className="flex items-center gap-2">
           <Picture src={Avatar4} alt="profile picture" size={33} rounded />
           <div className="custom-flex-col font-medium">
@@ -22,7 +28,7 @@ const FundsBeneficiary = () => {
         <button className="flex items-center">
           <ChevronRight size={20} color="#151515A6" />
         </button>
-      </div>
+      </button>
       <SectionSeparator />
     </div>
   );

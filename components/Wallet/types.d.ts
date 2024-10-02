@@ -15,6 +15,8 @@ export type WalletAddFundsOptions =
   | "bank transfer"
   | "online funding";
 
+export type WalletSendFundsOptions = "send funds" | "send fund to beneficiary";
+
 export interface WalletModalPresetProps {
   title: string;
   back?: () => void;
@@ -43,6 +45,13 @@ export interface FundingCardProps {
   type: "paystack" | "flutterwave" | "bank transfer" | "sterling";
 }
 
-export interface WalletModalDefaultProps {
-  changeStep: React.Dispatch<React.SetStateAction<WalletAddFundsOptions>>;
+// Generic Interface for Modals
+export interface WalletModalDefaultProps<
+  T extends WalletAddFundsOptions | WalletSendFundsOptions
+> {
+  changeStep: React.Dispatch<React.SetStateAction<T>>;
+}
+
+export interface FundsBeneficiaryProps {
+  seeMore: () => void;
 }

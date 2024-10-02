@@ -1,39 +1,40 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
+
+// Types
+import type { WalletSendFundsOptions } from "../types";
 
 // Imports
-import Input from "@/components/Form/Input/input";
-import FundsBeneficiary from "./funds-beneficiary";
-import Button from "@/components/Form/Button/button";
+import SendFunds from "./send-funds";
 import WalletModalPreset from "../wallet-modal-preset";
+import SendFundBeneficiary from "./send-fund-beneficiary";
 
 const SendFundsModal = () => {
+  const [activeStep, setActiveStep] =
+    useState<WalletSendFundsOptions>("send funds");
+
+  const flow: Record<WalletSendFundsOptions, { content: React.ReactNode }> = {
+    "send funds": {
+      content: <SendFunds changeStep={setActiveStep} />,
+    },
+    "send fund to beneficiary": {
+      content: <SendFundBeneficiary />,
+    },
+  };
+
   return (
-    <WalletModalPreset title="Send Funds">
-      <div className="custom-flex-col gap-16">
-        <div className="custom-flex-col gap-6">
-          <Input
-            id="wallet-id"
-            placeholder="Description"
-            label="Recipient Wallet ID"
-            style={{ backgroundColor: "white" }}
-          />
-          <div className="custom-flex-col gap-4 py-[18px] rounded-2xl bg-neutral-2">
-            <p className="pl-[18px] text-[#010A23] text-base font-medium">
-              Beneficiaries
-            </p>
-            <div className="custom-flex-col gap-2 sections">
-              {Array(3)
-                .fill(null)
-                .map((_, idx) => (
-                  <FundsBeneficiary key={idx} />
-                ))}
-            </div>
-          </div>
-        </div>
-        <Button size="sm_medium" className="py-2 px-8">
-          continue
-        </Button>
-      </div>
+    <WalletModalPreset
+      title="Send Funds"
+      back={
+        activeStep !== "send funds"
+          ? () => {
+              setActiveStep("send funds");
+            }
+          : undefined
+      }
+    >
+      {flow[activeStep].content}
     </WalletModalPreset>
   );
 };

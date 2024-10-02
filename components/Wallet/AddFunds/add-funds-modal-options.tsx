@@ -1,15 +1,15 @@
 import React from "react";
 
 // Types
-import type { WalletModalDefaultProps } from "../types";
+import type { WalletAddFundsOptions, WalletModalDefaultProps } from "../types";
 
 // Imports
 import WalletBankTransferCard from "../wallet-bank-transfer-card";
 import WalletOnlineFundingCard from "../wallet-online-funding-card";
 
-const AddFundsModalOptions: React.FC<WalletModalDefaultProps> = ({
-  changeStep,
-}) => {
+const AddFundsModalOptions: React.FC<
+  WalletModalDefaultProps<WalletAddFundsOptions>
+> = ({ changeStep }) => {
   const handleBankTransfer = () => {
     changeStep("bank transfer");
   };
