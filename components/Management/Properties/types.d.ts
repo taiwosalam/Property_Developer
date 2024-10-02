@@ -1,7 +1,7 @@
 import { unit_card_data_props } from "./data";
 
 export interface PropertyProps {
-  images: any[];
+  images: string[];
   id: string | number;
   propertyId: string | number;
   name: string;

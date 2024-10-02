@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
+import { Fragment } from "react";
 import { ChevronLeft } from "@/public/icons/icons";
 
 import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
@@ -10,15 +10,16 @@ import CreateRentalPropertyForm from "@/components/Management/Properties/create-
 const CreateProperty = () => {
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = (data: any) => {
+    //change to formdata after integrating with backend
+    // e.preventDefault();
+    console.log(data);
     // Post data to API
-
-    router.push("/management/properties/create-rental-property/add-unit");
+    // router.push("/management/properties/create-rental-property/add-unit");
   };
 
   return (
-    <>
+    <Fragment>
       {/* Back Button & Page Title */}
       <div className="flex items-center gap-1 mb-1">
         <button
@@ -39,7 +40,7 @@ const CreateProperty = () => {
         className="mb-[52px]"
       />
       <CreateRentalPropertyForm handleSubmit={handleSubmit} />
-    </>
+    </Fragment>
   );
 };
 

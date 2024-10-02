@@ -1,20 +1,11 @@
 // Imports
-import { useState, useContext, useEffect } from "react";
 import Input from "../Form/Input/input";
 import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
 import Select from "../Form/Select/select";
 import TextArea from "../Form/TextArea/textarea";
 import { titles } from "@/data";
-// import { FlowProgressContext } from "../FlowProgress/flow-progress";
 
 const ProfileInformation = () => {
-  // const { handleInputChange } = useContext(FlowProgressContext);
-  // const [aboutDirector, setAboutDirector] = useState("");
-
-  // To trigger Flow Progress
-  // useEffect(() => {
-  //   handleInputChange();
-  // }, [aboutDirector, handleInputChange]);
   return (
     <div className="custom-flex-col gap-6 max-w-[940px]">
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -23,7 +14,7 @@ const ProfileInformation = () => {
           id="director_name"
           label="full name"
           placeholder="Write here"
-          inputClassName="rounded-[8px] setup-f"
+          inputClassName="rounded-[8px] setup-f bg-white"
           className="lg:col-span-2"
         />
         <Select
@@ -45,7 +36,7 @@ const ProfileInformation = () => {
           label="alternative email"
           type="email"
           placeholder="example@mail.com"
-          inputClassName="rounded-[8px] setup-f"
+          inputClassName="rounded-[8px] setup-f bg-white"
         />
         <PhoneNumberInput
           id="director_phone"

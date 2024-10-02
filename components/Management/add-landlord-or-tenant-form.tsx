@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import Input from "../Form/Input/input";
+import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
 import Button from "../Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "../Auth/auth-components";
@@ -93,11 +93,10 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
           inputClassName="rounded-[8px]"
           validationErrors={errorMsgs}
         />
-        <Input
+        <PhoneNumberInput
           id="phone_number"
           label="phone number"
-          inputClassName="rounded-[8px]"
-          validationErrors={errorMsgs}
+          // validationErrors={errorMsgs} validation errors left to you Teni
         />
         <Select
           validationErrors={errorMsgs}

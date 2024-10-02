@@ -198,12 +198,18 @@ const Landlord = () => {
     {
       id: "2",
       accessor: "full_name",
-      cellStyle: { paddingLeft: "4px", fontWeight: 700 },
+      cellStyle: { paddingLeft: "4px", fontWeight: 700, minWidth: 150 },
     },
     {
       id: "3",
       accessor: "email",
-      cellStyle: { fontWeight: 500, color: "#3F4247" },
+      cellStyle: {
+        fontWeight: 500,
+        color: "#3F4247",
+        maxWidth: 200,
+        textOverflow: "ellipsis",
+        wordBreak: "break-all",
+      },
     },
     {
       id: "4",

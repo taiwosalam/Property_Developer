@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 
 // Types
 import type { CreatePropertyFormProps } from "./types";
@@ -19,7 +19,17 @@ import TextArea from "@/components/Form/TextArea/textarea";
 import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeletePropertyModal from "@/components/Management/Properties/delete-property-modal";
+import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import SortableImage from "./sortable-image";
 import { rentPeriods } from "@/data";
+import { AuthForm } from "@/components/Auth/auth-components";
+
+const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 
 const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   editMode,
@@ -55,6 +65,12 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
     resetKey,
   } = state;
 
+  const sortableImages = images.map((image, index) => ({
+    id: index,
+    index,
+    image,
+  }));
+
   const handleStateChange = (value: string) => {
     setState((x) => ({ ...x, selectedState: value }));
   };
@@ -68,22 +84,58 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = Array.from(e.target.files || []);
-
-    const newImages = selectedFiles.filter((file) => {
-      if (file.size > 2 * 1024 * 1024) {
-        // 2 MB in bytes
-        alert(`${file.name} exceeds the 2MB size limit.`);
-        return false;
+    const files = Array.from(e.target.files || []);
+    const validImages: string[] = [];
+    const oversizeImages: string[] = [];
+    for (const file of files) {
+      if (!file.type.startsWith("image/")) {
+        alert("Upload only image files.");
+        return;
       }
-      return true;
-    });
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        oversizeImages.push(file.name);
+        continue;
+      }
+      try {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          validImages.push(reader.result as string);
+          if (validImages.length + oversizeImages.length === files.length) {
+            setState((x) => ({ ...x, images: [...x.images, ...validImages] }));
+          }
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error processing image:", error);
+        alert("There was an error processing your image. Please try again.");
+      }
+    }
 
-    const finalImages = [...images, ...newImages].slice(0, 6); // Limit to 6 images
-    setState((x) => ({ ...x, images: finalImages }));
+    if (oversizeImages.length > 0) {
+      alert(
+        `Some files were not uploaded due to exceeding the maximum size: ${MAX_FILE_SIZE_MB} MB`
+      );
+    }
+    e.target.value = ""; // Reset input value to allow re-uploading the same file
+  };
 
-    // Reset input value to allow re-uploading the same file
-    e.target.value = "";
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+    const activeId = active.id;
+    const overId = over.id;
+    if (activeId === overId) return;
+
+    if (activeId !== overId) {
+      const oldIndex = sortableImages.findIndex(
+        (image) => image.id === active.id
+      );
+      const newIndex = sortableImages.findIndex(
+        (image) => image.id === over.id
+      );
+      const newImages = arrayMove(images, oldIndex, newIndex);
+      setState((x) => ({ ...x, images: newImages }));
+    }
   };
 
   const removeImage = (index: number) => {
@@ -166,55 +218,58 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-[970px] pb-[80px]">
+    <AuthForm
+      onFormSubmit={handleSubmit}
+      returnType="string" //change to formdata after integrating with backend
+      setValidationErrors={() => {}}
+      className="max-w-[970px] pb-[80px]"
+    >
       <input name="property_tag" type="hidden" value="rental" readOnly />
       {/* Backend is Looking for it */}
       <div className="mb-5 lg:mb-8">
         <p className="mb-5 text-text-secondary text-base font-normal">
           Set property pictures for easy recognition (maximum of 6 images).
         </p>
-        <div className="flex gap-4 overflow-x-auto">
-          {images.map((image, index) => (
-            <div
-              key={index}
-              className="flex-shrink-0 relative w-[285px] h-[155px] rounded-lg overflow-hidden border border-gray-300"
-            >
-              <Image
-                src={URL.createObjectURL(image)}
-                alt={`Property Image ${index + 1}`}
-                className="object-cover object-center w-full h-full"
-                fill
-              />
-              <button
-                type="button"
-                aria-label="Remove Image"
-                onClick={() => removeImage(index)}
-                className="absolute top-1 right-1"
-              >
-                <DeleteIconOrange size={20} />
-              </button>
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={sortableImages.map((i) => i.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="flex gap-4 overflow-x-auto overflow-y-hidden">
+              {sortableImages.map((s) => (
+                <SortableImage
+                  key={s.id}
+                  id={s.id}
+                  image={s.image}
+                  index={s.index}
+                  removeImage={removeImage}
+                />
+              ))}
+              {images.length < 6 && (
+                <label
+                  htmlFor="upload"
+                  className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
+                >
+                  <PlusIcon />
+                  <span className="text-black text-base font-normal mt-2">
+                    Add Pictures
+                  </span>
+                  <input
+                    id="upload"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                </label>
+              )}
             </div>
-          ))}
-          {images.length < 6 && (
-            <label
-              htmlFor="upload"
-              className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
-            >
-              <PlusIcon />
-              <span className="text-black text-base font-normal mt-2">
-                Add Pictures
-              </span>
-              <input
-                id="upload"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleFileChange}
-                className="hidden"
-              />
-            </label>
-          )}
-        </div>
+          </SortableContext>
+        </DndContext>
       </div>
       <div className="md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Input
@@ -469,7 +524,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
         style={{ boxShadow: "0px -2px 10px 0px rgba(0, 0, 0, 0.05)" }}
       >
         {editMode ? (
-          <>
+          <Fragment>
             <Modal>
               <ModalTrigger asChild>
                 <Button
@@ -495,9 +550,9 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
             <Button type="button" size="sm_medium" className="py-2 px-7">
               update
             </Button>
-          </>
+          </Fragment>
         ) : (
-          <>
+          <Fragment>
             <button
               type="reset"
               className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
@@ -512,10 +567,10 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
             >
               Add Unit
             </button>
-          </>
+          </Fragment>
         )}
       </div>
-    </form>
+    </AuthForm>
   );
 };
 

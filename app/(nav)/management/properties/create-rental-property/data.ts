@@ -5,7 +5,7 @@ export interface StateType {
   localGovernments: string[];
   cities: string[];
   staff: { id: string; label: string }[];
-  images: File[];
+  images: string[];
   branchOptions: string[];
   inventoryOptions: string[];
   landlordOptions: string[];

@@ -1,7 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropertyCard from "@/components/Management/Properties/property-card";
-import { properties } from "./data";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { ModalContent, ModalTrigger, Modal } from "@/components/Modal/modal";
 import clsx from "clsx";
@@ -16,8 +15,12 @@ import AddPropertyModal from "@/components/Management/Properties/add-property-mo
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterButton from "@/components/FilterButton/filter-button";
 import useWindowWidth from "@/hooks/useWindowWidth";
+import { PropertyProps } from "@/components/Management/Properties/types";
+import { useAuthStore } from "@/store/authstrore";
+import { getAllProperties } from "./data";
 
 const Properties = () => {
+  const acessToken = useAuthStore((state) => state.access_token);
   const { isSmallTablet } = useWindowWidth();
   const initialState = {
     gridView: true,
@@ -36,6 +39,14 @@ const Properties = () => {
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
   };
+
+  const [properties, setProperties] = useState<PropertyProps[]>([]);
+
+  useEffect(() => {
+    getAllProperties(acessToken).then((data) => {
+      setProperties(data);
+    });
+  }, [acessToken]);
 
   return (
     <div className="space-y-9">
@@ -127,15 +138,17 @@ const Properties = () => {
       <section>
         {gridView ? (
           <AutoResizingGrid minWidth={315}>
-            {properties.slice(0, 20).map((p) => (
-              <PropertyCard {...p} key={p.id} />
-            ))}
+            {properties.length >= 1 &&
+              properties
+                .slice(0, 20)
+                .map((p) => <PropertyCard {...p} key={p.id} />)}
           </AutoResizingGrid>
         ) : (
           <div className="space-y-4">
-            {properties.slice(0, 30).map((p) => (
-              <PropertyListItem key={p.id} {...p} />
-            ))}
+            {properties.length >= 1 &&
+              properties
+                .slice(0, 30)
+                .map((p) => <PropertyListItem key={p.id} {...p} />)}
           </div>
         )}
         <Pagination

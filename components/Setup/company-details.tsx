@@ -31,7 +31,7 @@ const CompanyDetails = () => {
           label="CAC Registration Number"
           id="cac_number"
           placeholder="Write here"
-          inputClassName="rounded-[8px] setup-f"
+          inputClassName="rounded-[8px] setup-f bg-white"
         />
 
         <FileInput
@@ -57,7 +57,7 @@ const CompanyDetails = () => {
           label="Membership Number"
           id="membership_number"
           placeholder="Write here"
-          inputClassName="rounded-[8px] setup-f"
+          inputClassName="rounded-[8px] setup-f bg-white"
         />
 
         <FileInput

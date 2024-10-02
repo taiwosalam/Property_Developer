@@ -1,5 +1,5 @@
 import { SxProps } from "@mui/material";
-import { CSSProperties } from "react";
+import { CSSProperties, ReactNode } from "react";
 // Define the type for Fields
 export interface Field {
   id: string;
@@ -9,22 +9,22 @@ export interface Field {
   picSize?: number;
   cellStyle?: SxProps; // For styling the cell
   contentStyle?: CSSProperties; // For styling the content inside the cell
-  width?: string | number;
 }
 
 // Define the type for the data items in the table
 export interface DataItem {
   id: string | number;
-  [key: string]: any; // Allow any additional fields
+  [key: string]: any;
 }
 
 // Define the props for the CustomTable component
 export interface CustomTableProps {
-  data: DataItem[];
+  data: any[];
   fields: Field[];
   displayTableHead?: boolean;
   className?: string;
   handleSelect?: (item: DataItem) => void;
+  onActionClick?: (item: DataItem) => void;
   actionButtonIcon?: ReactNode;
   tableHeadClassName?: string;
   tableHeadStyle?: CSSProperties; // For custom TableHead inline style

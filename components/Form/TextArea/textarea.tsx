@@ -1,13 +1,38 @@
-import { useEffect, useState, useContext } from "react";
+import {
+  useEffect,
+  useState,
+  useContext,
+  useRef,
+  RefObject,
+  Fragment,
+} from "react";
 import dynamic from "next/dynamic";
 import type { TextAreaProps } from "./types";
 import clsx from "clsx";
 import Label from "../Label/label";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
+import ReactQuill, { type ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { UndoIcon, RedoIcon } from "@/public/icons/icons";
 
 // Dynamically import ReactQuill with SSR option set to false
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+const DynamicReactQuill = dynamic(
+  async () => {
+    const { default: RQ } = await import("react-quill");
+    const Component = ({
+      forwardedRef,
+      ...props
+    }: { forwardedRef: RefObject<ReactQuill> } & ReactQuillProps) => (
+      <RQ ref={forwardedRef} {...props} />
+    );
+
+    Component.displayName = "ReactQuillComponent";
+    return Component;
+  },
+  {
+    ssr: false,
+  }
+);
 
 const TextArea: React.FC<TextAreaProps> = ({
   id,
@@ -24,14 +49,27 @@ const TextArea: React.FC<TextAreaProps> = ({
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [mounted, setMounted] = useState(false);
-
+  const quillRef = useRef<ReactQuill>(null);
   const [editorValue, setEditorValue] = useState(value || "");
 
   const handleChange = (content: string) => {
-    const trimmedContent = content.trim();
-    setEditorValue(trimmedContent); // Update editorValue state
+    setEditorValue(content); // Update editorValue state
     if (onChange) {
-      onChange(trimmedContent);
+      onChange(content);
+    }
+  };
+  // Handle undo and red
+  const handleUndo = () => {
+    const editor = quillRef.current?.getEditor();
+    if (editor) {
+      editor.history.undo();
+    }
+  };
+
+  const handleRedo = () => {
+    const editor = quillRef.current?.getEditor();
+    if (editor) {
+      editor.history.redo();
     }
   };
 
@@ -57,15 +95,22 @@ const TextArea: React.FC<TextAreaProps> = ({
       )}
       <div className="flex flex-col">
         {mounted && (
-          <>
-            <ReactQuill
+          <Fragment>
+            <DynamicReactQuill
+              forwardedRef={quillRef}
               value={editorValue}
+              defaultValue={defaultValue}
               onChange={handleChange}
               placeholder={placeholder}
               className={clsx("quill-editor", inputSpaceClassName)}
               modules={{
                 toolbar: {
                   container: "#toolbar",
+                },
+                history: {
+                  delay: 2000,
+                  maxStack: 500,
+                  userOnly: true,
                 },
               }}
             />
@@ -74,32 +119,70 @@ const TextArea: React.FC<TextAreaProps> = ({
               name={id}
               id={id}
               value={editorValue || ""}
-              className={hiddenInputClassName}
+              className={clsx("react-quill-hidden-input", hiddenInputClassName)}
             />
             {/* Hidden input field */}
-          </>
+
+            <div id="toolbar" className="quill-toolbar bg-[#F3F6F9]">
+              <select className="ql-header">
+                <option value="" selected>
+                  Paragraph
+                </option>
+                <option value="1">Header 1</option>
+                <option value="2">Header 2</option>
+              </select>
+              <button type="button" className="ql-bold">
+                Bold
+              </button>
+              <button type="button" className="ql-italic">
+                Italic
+              </button>
+              <button type="button" className="ql-underline">
+                Underline
+              </button>
+              <button type="button" className="ql-list" value="ordered">
+                Ordered List
+              </button>
+              <button type="button" className="ql-list" value="bullet">
+                Bullet List
+              </button>
+              <button type="button" className="ql-align" value="">
+                Align Left
+              </button>
+              <button type="button" className="ql-align" value="center">
+                Align Center
+              </button>
+              <button type="button" className="ql-align" value="right">
+                Align Right
+              </button>
+              <button type="button" className="ql-link">
+                Link
+              </button>
+              <button type="button" className="ql-blockquote">
+                Blockquote
+              </button>
+              <button type="button" className="ql-code-block">
+                Code Block
+              </button>
+              <button
+                type="button"
+                className="hover:text-[#06c]"
+                onClick={handleUndo}
+                aria-label="Undo"
+              >
+                <UndoIcon />
+              </button>
+              <button
+                type="button"
+                className="hover:text-[#06c]"
+                onClick={handleRedo}
+                aria-label="Redo"
+              >
+                <RedoIcon />
+              </button>
+            </div>
+          </Fragment>
         )}
-        <div id="toolbar" className="quill-toolbar bg-[#F3F6F9]">
-          <button className="ql-bold">Bold</button>
-          <button className="ql-italic">Italic</button>
-          <button className="ql-underline">Underline</button>
-          <button className="ql-list" value="ordered">
-            Ordered List
-          </button>
-          <button className="ql-list" value="bullet">
-            Bullet List
-          </button>
-          <button className="ql-align" value="">
-            Align Left
-          </button>
-          <button className="ql-align" value="center">
-            Align Center
-          </button>
-          <button className="ql-align" value="right">
-            Align Right
-          </button>
-          <button className="ql-link">Link</button>
-        </div>
       </div>
     </div>
   );

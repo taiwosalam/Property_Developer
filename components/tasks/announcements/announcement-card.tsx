@@ -10,7 +10,33 @@ import {
 } from "@/public/icons/icons";
 import Button from "@/components/Form/Button/button";
 
-const AnnouncementCard = () => {
+interface AnnouncementCardProps {
+  title: string;
+  description: string;
+  id: string;
+  date: string;
+  views: number;
+  newViews: number;
+  likes?: number;
+  dislikes: number;
+  imageUrls: string[];
+  mediaCount: number;
+  announcementId: string;
+}
+
+const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
+  title,
+  description,
+  id,
+  date,
+  views,
+  newViews,
+  likes,
+  dislikes,
+  imageUrls,
+  mediaCount,
+  announcementId,
+}) => {
   return (
     <div
       className="bg-white rounded-lg"
@@ -20,57 +46,56 @@ const AnnouncementCard = () => {
       }}
     >
       <div className="relative rounded-t-lg w-full h-[170px] overflow-hidden">
-        <Image
-          src={empty}
-          alt="sample"
-          fill
-          sizes="auto"
-          className="object-cover object-center"
-        />
-        {/* Bottom right corner */}
+        {imageUrls &&
+          imageUrls.map((url, index) => (
+            <Image
+              key={index}
+              src={url || empty}
+              alt="sample"
+              fill
+              sizes="auto"
+              priority={index === 0}
+              className="object-cover object-center"
+            />
+          ))}
         <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
           <div className="bg-brand-1 rounded py-1 px-1.5 grid place-items-center">
             <VideoIcon />
           </div>
           <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />
-            <p className="text-black font-medium text-[10px]">+23</p>
+            <p className="text-black font-medium text-[10px]">+{mediaCount}</p>
           </div>
         </div>
       </div>
 
       <div className="p-4 font-medium">
-        <p className="mb-1 text-black text-base">
-          Announcement Title (Rent Increase)
-        </p>
+        <p className="mb-1 text-black text-base">{title}</p>
         <p className="mb-2 text-xs text-text-tertiary line-clamp-3 text-ellipsis">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industrys standard dummy text ever
-          since the 1500s, and Lorem Ipsum is simply dummy text of the printing
-          and typesetting industry. Lorem Ipsum has been the industrys standard
-          dummy text ever since the 1500s, and
+          {description}
         </p>
         <div className="mb-2 flex items-center justify-between text-sm">
-          <p className="text-text-label">ID: 123568765</p>
-          <p className="text-neutral-4">12/01/24</p>
+          <p className="text-text-label">ID: {id}</p>
+          <p className="text-neutral-4">{date}</p>
         </div>
         <div className="mb-3 flex items-center gap-2">
           <p className="flex items-center gap-1 text-brand-9">
             <BlueEyeShowIcon />
-            <span className="text-sm">31 (+3 today)</span>
+            <span className="text-sm">
+              {views} (+{newViews} today)
+            </span>
           </p>
           <p className="flex items-center gap-1 text-text-disabled">
             <LikeIcon />
-            <span className="text-xs font-normal">0</span>
+            <span className="text-xs font-normal">{likes}</span>
           </p>
           <p className="flex items-center gap-1 text-text-disabled">
             <DislikeIcon />
-            <span className="text-xs font-normal">0</span>
+            <span className="text-xs font-normal">{dislikes}</span>
           </p>
         </div>
-        {/* Change to announcementId */}
         <Button
-          href="/tasks/announcements/1/preview"
+          href={`/tasks/announcements/${announcementId}/preview`}
           size="xs_normal"
           className="w-fit ml-auto py-2 px-4"
         >
