@@ -1,7 +1,7 @@
 // Capitalize
 export interface CapitalizeProps {
   input: string;
-  mode: "word" | "sentence";
+  mode?: "word" | "sentence";
 }
 
 // Validation

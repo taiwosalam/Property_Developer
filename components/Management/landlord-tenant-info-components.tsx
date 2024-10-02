@@ -118,14 +118,14 @@ export const LandlordTenantUserTag: React.FC<{
   <div
     className={clsx("py-1 px-4 rounded-lg", {
       "bg-status-caution-1": type === "web",
-      "bg-success-1": type === "mobile",
+      "bg-status-success-1": type === "mobile",
       "bg-status-error-2": type === "branch manager",
     })}
   >
     <p
       className={clsx("capitalize text-[10px] font-normal", {
         "text-status-caution-3 ": type === "web",
-        "text-success-3 ": type === "mobile",
+        "text-status-success-3 ": type === "mobile",
         "text-white": type === "branch manager",
       })}
     >

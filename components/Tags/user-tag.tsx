@@ -5,7 +5,7 @@ const UserTag: React.FC<UserTagProps> = ({ className, type }) => {
   // Determine background and text color based on user_tag
   const tagClasses =
     type === "mobile"
-      ? "bg-success-1 text-success-3"
+      ? "bg-status-success-1 text-status-success-3"
       : "bg-brand-3 text-brand-9";
   return (
     <p

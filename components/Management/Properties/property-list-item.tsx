@@ -111,7 +111,7 @@ const PropertyListItem: React.FC<PropertyProps> = ({
             className={clsx(
               "px-4 py-1 text-[10px] font-normal rounded-lg",
               type === "rent"
-                ? "text-success-3 bg-success-1"
+                ? "text-status-success-3 bg-status-success-1"
                 : "text-brand-9 bg-brand-3"
             )}
           >

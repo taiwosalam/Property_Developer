@@ -36,6 +36,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   mainBalance,
   cautionDeposit,
   className,
+  noHeader,
   ...props
 }) => {
   const [hideBalance, setHideBalance] = useState(false);
@@ -61,13 +62,15 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
 
   return (
     <div className={clsx("space-y-2", className)}>
-      <div className="w-full flex items-center justify-between font-normal">
-        <p className="text-[#262626] text-sm">Wallet</p>
-        <Link href="" className="text-[#4F5E71] text-xs flex items-center">
-          <p>Transaction History</p>
-          <SVG type="right_arrow" className="ml-2" />
-        </Link>
-      </div>
+      {!noHeader && (
+        <div className="w-full flex items-center justify-between font-normal">
+          <p className="text-[#262626] text-sm">Wallet</p>
+          <Link href="" className="text-[#4F5E71] text-xs flex items-center">
+            <p>Transaction History</p>
+            <SVG type="right_arrow" className="ml-2" />
+          </Link>
+        </div>
+      )}
       <div className="p-5 relative custom-primary-bg rounded-lg">
         <div className="absolute inset-0">
           <Image

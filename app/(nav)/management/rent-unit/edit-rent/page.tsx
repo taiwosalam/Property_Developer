@@ -214,7 +214,7 @@ const EditRent = () => {
                         abimbola@gmail.com
                       </p>
                       <div className="space-y-2 mb-8">
-                        <p className="bg-success-1 text-success-3 font-normal text-xs rounded-lg w-[70px] mx-auto">
+                        <p className="bg-status-success-1 text-status-success-3 font-normal text-xs rounded-lg w-[70px] mx-auto">
                           Mobile
                         </p>
                         <p className="text-neutral-800 text-[16px] font-semibold">

@@ -221,7 +221,7 @@ const AccountingExpensesPage = () => {
                     <p>Water Plumbing</p>
                   </td>
                   <td>
-                    <p className="text-success-3">₦35,000.00</p>
+                    <p className="text-status-success-3">₦35,000.00</p>
                   </td>
                   <td>
                     <p className="text-status-error-2">₦35,000.00</p>

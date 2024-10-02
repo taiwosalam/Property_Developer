@@ -45,7 +45,7 @@ const Applications = () => {
             </div>
           </div>
         </div>
-        <AutoResizingGrid minWidth={370}>
+        <AutoResizingGrid minWidth={350} gap={32}>
           <ApplicationCard />
           <ApplicationCard type="guest" />
         </AutoResizingGrid>

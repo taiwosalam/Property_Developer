@@ -64,7 +64,7 @@ const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
                 {currentSlide + 1 + "/" + images.length}
               </span>
             </div>
-            <div className="bg-success-1 rounded-lg py-1 px-4 text-sm font-medium text-success-3">
+            <div className="bg-status-success-1 rounded-lg py-1 px-4 text-sm font-medium text-status-success-3">
               <p>Gated Property</p>
             </div>
           </div>

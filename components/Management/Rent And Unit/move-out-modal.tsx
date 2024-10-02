@@ -7,7 +7,7 @@ const MoveOutModal = () => {
   return (
     <div className="w-[600px] max-w-[80%] max-h-[85%] rounded-[20px] bg-white overflow-x-auto custom-round-scrollbar">
       {/* Header */}
-      <div className="bg-success-1">
+      <div className="bg-status-success-1">
         <div className="flex items-center justify-between sticky px-[30px] pt-[12px]">
           <span></span>
           <ModalTrigger close className="p-2" type="button">
