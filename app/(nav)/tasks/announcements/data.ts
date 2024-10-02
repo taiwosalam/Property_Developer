@@ -14,3 +14,28 @@ export const getAllAnnouncements = async (accessToken: string | null) => {
     return [];
   }
 };
+
+export const createAnnouncement = async (
+  accessToken: string | null,
+  data: FormData
+) => {
+  try {
+    console.log(accessToken);
+    const response = await fetch(`${baseURL}/announcements`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+      body: data,
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error creating announcement:", error);
+    throw error;
+  }
+};

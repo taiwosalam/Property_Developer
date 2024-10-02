@@ -3,10 +3,17 @@
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "@/public/icons/icons";
 import CreateAnnouncementForm from "@/components/tasks/announcements/create-announcement-form";
+import { createAnnouncement } from "../data";
+import { useAuthStore } from "@/store/authstrore";
 
 const CreateAnnouncement = () => {
+  const accessToken = useAuthStore((state) => state.access_token);
   const router = useRouter();
-  const handleSubmit = () => {};
+
+  const handleSubmit = (data: any) => {
+    console.log(data);
+    createAnnouncement(accessToken, data);
+  };
 
   return (
     <div className="space-y-7">

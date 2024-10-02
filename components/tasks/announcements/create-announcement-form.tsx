@@ -7,15 +7,18 @@ import { empty } from "@/app/config";
 import Button from "@/components/Form/Button/button";
 import Image from "next/image";
 import { PlusIcon, DeleteIconOrange } from "@/public/icons/icons";
+import { AuthForm } from "@/components/Auth/auth-components";
 
 const CreateAnnouncementForm: React.FC<{
   handleSubmit: (data: any) => void;
   editMode?: boolean;
 }> = ({ handleSubmit, editMode = false }) => {
   return (
-    <form
+    <AuthForm
+      returnType="string"
+      onFormSubmit={handleSubmit}
+      setValidationErrors={() => {}}
       className="flex flex-col gap-y-5 gap-x-[4%] lg:flex-row lg:items-start pb-[80px]"
-      onSubmit={handleSubmit}
     >
       <div className="grid gap-x-4 gap-y-5 md:grid-cols-2 lg:w-[63%]">
         {!editMode && (
@@ -43,7 +46,7 @@ const CreateAnnouncementForm: React.FC<{
           className="col-span-2"
           inputClassName="bg-white"
         />
-        <TextArea id="" className="col-span-2" />
+        <TextArea id="content" className="col-span-2" />
       </div>
       <div className="grid gap-4 md:grid-cols-2 flex-1">
         {Array(3)
@@ -96,7 +99,7 @@ const CreateAnnouncementForm: React.FC<{
           {editMode ? "Update Announcement" : "Create Announcement"}
         </Button>
       </div>
-    </form>
+    </AuthForm>
   );
 };
 
