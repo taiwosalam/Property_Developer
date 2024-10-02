@@ -55,21 +55,30 @@ const AnnouncementPage = () => {
         </div>
       </div>
       <AutoResizingGrid minWidth={315} gap={32}>
-        {announcements.map((announcement, index) => (
-          <AnnouncementCard
-            title={announcement.title}
-            date={announcement.created_at}
-            key={index}
-            description={announcement.body}
-            id={announcement.company_id}
-            views={0}
-            newViews={0}
-            dislikes={0}
-            imageUrls={announcement.image_urls}
-            mediaCount={announcement.image_urls.length}
-            announcementId={announcement.id}
-          />
-        ))}
+        {announcements.map((announcement, index) => {
+          const formattedDate = new Date(
+            announcement.created_at
+          ).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+          return (
+            <AnnouncementCard
+              title={announcement.title}
+              date={formattedDate}
+              key={index}
+              description={announcement.body}
+              id={announcement.company_id}
+              views={0}
+              newViews={0}
+              dislikes={0}
+              imageUrls={announcement.image_urls}
+              mediaCount={announcement.image_urls.length}
+              announcementId={announcement.id}
+            />
+          );
+        })}
       </AutoResizingGrid>
     </div>
   );

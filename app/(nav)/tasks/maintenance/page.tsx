@@ -10,8 +10,22 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import FilterButton from "@/components/FilterButton/filter-button";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import MaintenanceCard from "@/components/tasks/maintenance/maintenance-card";
+import { useAuthStore } from "@/store/authstrore";
+import { useEffect, useState } from "react";
+import { getALLMaintenance } from "./data";
 const Maintenance = () => {
+  const accessToken = useAuthStore((state) => state.access_token);
   const { isSmallTablet } = useWindowWidth();
+  const [maintenanceData, setMaintenanceData] = useState([]);
+
+  useEffect(() => {
+    const fetchMaintenanceData = async () => {
+      const response = await getALLMaintenance(accessToken).then((res) => res);
+      console.log(response);
+    };
+
+    fetchMaintenanceData();
+  }, [accessToken]);
 
   return (
     <div className="custom-flex-col gap-8">

@@ -5,12 +5,19 @@ import {
   currencySymbols,
   formatCostInputValue,
 } from "@/utils/number-formatter";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dayjs } from "dayjs";
 import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
+import { useAuthStore } from "@/store/authstrore";
+import {
+  deleteMaintenance,
+  getMaintenanceById,
+  updateMaintenance,
+} from "@/app/(nav)/tasks/maintenance/data";
 
 const ManageMaintenanceModal = () => {
+  const accessToken = useAuthStore((state) => state.access_token);
   const CURRENCY_SYMBOL = currencySymbols["NAIRA"]; // Make this dynamic
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const handleStartDateChange = (date?: Dayjs | null) => {
@@ -20,6 +27,40 @@ const ManageMaintenanceModal = () => {
   const handleMaintenanceCostChange = (value: string) => {
     setMaintenanceCost(formatCostInputValue(value));
   };
+  const [ManageMaintenanceModalData, setManageMaintenanceModalData] = useState(
+    []
+  );
+
+  const handleUpdateMaintenance = ({
+    id,
+    data,
+  }: {
+    id: string;
+    data: any; //change to formdata later
+  }) => {
+    console.log(data);
+    updateMaintenance(accessToken, "2", data).then((res) => {
+      console.log(res);
+    });
+  };
+
+  const handleDeleteMaintenance = (id: string) => {
+    deleteMaintenance(accessToken, id).then((res) => {
+      console.log(res);
+    });
+  };
+
+  useEffect(() => {
+    const fetchManageMaintenanceModalData = async () => {
+      const response = await getMaintenanceById(accessToken, "2").then(
+        (res) => res
+      );
+      console.log(response);
+    };
+
+    fetchManageMaintenanceModalData();
+  }, [accessToken]);
+
   return (
     <div
       className="font-medium rounded-lg border border-[rgba(193,194,195,0.40)] min-w-[600px] max-h-[90vh] overflow-y-auto custom-round-scrollbar"
@@ -109,10 +150,30 @@ const ManageMaintenanceModal = () => {
             inputClassName="bg-white"
           />
           <div className="flex items-center gap-3 self-end justify-end">
-            <Button variant="light_red" size="xs_normal" className="py-2 px-6">
+            <Button
+              variant="light_red"
+              size="xs_normal"
+              className="py-2 px-6"
+              onClick={() => handleDeleteMaintenance("2")}
+            >
               Delete
             </Button>
-            <Button size="xs_normal" className="py-2 px-8">
+            <Button
+              size="xs_normal"
+              className="py-2 px-8"
+              onClick={() =>
+                handleUpdateMaintenance({
+                  id: "2",
+                  data: {
+                    details: "details",
+                    maintenance_quotation: "maintenance_quotation",
+                    start_date: startDate,
+                    end_date: startDate,
+                    maintenance_cost: maintenanceCost,
+                  },
+                })
+              }
+            >
               Update
             </Button>
           </div>
