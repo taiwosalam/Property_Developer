@@ -34,7 +34,7 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
           <DeleteIconX size={34} />
         </ModalTrigger>
       </div>
-      <SectionSeparator className="bg-[#B8B8B8] w-[calc(100%-60px)] mx-auto" />
+      <SectionSeparator className="bg-[#B8B8B8] !w-[calc(100%-60px)] mx-auto !h-[2px]" />
 
       {/* body */}
       <div className="px-[30px] pt-10 pb-[24px] md:pb-[36px]">{children}</div>
