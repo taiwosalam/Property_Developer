@@ -27,6 +27,7 @@ import {
 } from "@dnd-kit/sortable";
 import SortableImage from "./sortable-image";
 import { rentPeriods } from "@/data";
+import { AuthForm } from "@/components/Auth/auth-components";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 
@@ -217,7 +218,12 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-[970px] pb-[80px]">
+    <AuthForm
+      onFormSubmit={handleSubmit}
+      returnType="string" //change to formdata after integrating with backend
+      setValidationErrors={() => {}}
+      className="max-w-[970px] pb-[80px]"
+    >
       <input name="property_tag" type="hidden" value="rental" readOnly />
       {/* Backend is Looking for it */}
       <div className="mb-5 lg:mb-8">
@@ -564,7 +570,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           </Fragment>
         )}
       </div>
-    </form>
+    </AuthForm>
   );
 };
 
