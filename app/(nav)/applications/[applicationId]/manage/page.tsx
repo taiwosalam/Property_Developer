@@ -145,7 +145,12 @@ const ManageApplication = () => {
           reject application
         </Button>
         <div className="flex gap-6">
-          <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
+          <Button
+            size="base_bold"
+            variant="sky_blue"
+            href="/applications"
+            className="py-2 px-8"
+          >
             exit
           </Button>
           <Button size="base_bold" className="py-2 px-8">

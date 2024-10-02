@@ -6,8 +6,12 @@ import FilterButton from "@/components/FilterButton/filter-button";
 import CustomTable from "@/components/Table/table";
 import Pagination from "@/components/Pagination/pagination";
 import type { Field } from "@/components/Table/types";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "@/store/authstrore";
+import { getAllEventsOnCalendar } from "./data";
 
 const CalendarPage = () => {
+  const access_token = useAuthStore((state) => state.access_token);
   const fields: Field[] = [
     { id: "1", label: "Date & Time", accessor: "date" },
     { id: "2", label: "Event", accessor: "event" },
@@ -16,6 +20,8 @@ const CalendarPage = () => {
     { id: "5", label: "branch", accessor: "branch" },
     { id: "6", label: "account officer", accessor: "account_officer" },
   ];
+
+  const [fetchedTabelData, setFetchedTableData] = useState([]);
 
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
@@ -30,6 +36,15 @@ const CalendarPage = () => {
   };
 
   const tableData = generateTableData(10);
+
+  useEffect(() => {
+    getAllEventsOnCalendar(access_token).then((response) => {
+      if (response.success) {
+        setFetchedTableData(response.data);
+        console.log(response.data, "fetched data");
+      }
+    });
+  }, [access_token]);
 
   return (
     <div className="space-y-9">

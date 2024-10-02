@@ -28,7 +28,7 @@ const StatisticsMessageCard: React.FC<StatisticsMessageCardProps> = ({
           </div>
           {isOffers && (
             <p className="font-normal">
-              Offering - <span className="text-success-2">#300,000</span>
+              Offering - <span className="text-status-success-2">#300,000</span>
             </p>
           )}
           <p

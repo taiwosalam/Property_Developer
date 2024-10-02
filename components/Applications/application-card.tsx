@@ -20,6 +20,7 @@ import BadgeIcon from "../BadgeIcon/badge-icon";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import FlaggedApplicantAccountModal from "./flagged-applicant-account-modal";
 import clsx from "clsx";
+import Link from "next/link";
 
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   type = "staff",
@@ -58,7 +59,10 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           </Modal>
         )}
       </div>
-      <div className="custom-flex-col gap-3 px-2">
+      <Link
+        href={"/applications/1/manage"}
+        className="custom-flex-col gap-3 px-2"
+      >
         <div className="flex gap-2 items-center">
           <Picture src={Avatar} alt="avatar" size={50} rounded />
           <div className="custom-flex-col">
@@ -128,7 +132,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
             </div>
           </div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 };
