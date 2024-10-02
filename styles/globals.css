@@ -246,6 +246,7 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
 .quill-toolbar.ql-snow {
   @apply rounded-b-lg;
   border: none !important;
+  font-family: inherit !important;
 }
 
 .ql-container.ql-snow {

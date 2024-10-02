@@ -40,7 +40,7 @@ const BookVisitorsPage = () => {
         <ManagementStatistcsCard total={12} title="Pending" newData={12} />
       </div>
       <div className="page-title-container">
-        <PageTitle title="Boof for Visitation" />
+        <PageTitle title="Book for Visitation" />
         <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search " />
           <Modal>
