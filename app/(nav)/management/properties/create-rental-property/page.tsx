@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
+import { Fragment } from "react";
 import { ChevronLeft } from "@/public/icons/icons";
 
 import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
@@ -19,7 +19,7 @@ const CreateProperty = () => {
   };
 
   return (
-    <>
+    <Fragment>
       {/* Back Button & Page Title */}
       <div className="flex items-center gap-1 mb-1">
         <button
@@ -40,7 +40,7 @@ const CreateProperty = () => {
         className="mb-[52px]"
       />
       <CreateRentalPropertyForm handleSubmit={handleSubmit} />
-    </>
+    </Fragment>
   );
 };
 

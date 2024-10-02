@@ -58,7 +58,7 @@ const VehicleRecordModal: React.FC<VehicleRecord> = ({
             <div className="flex-1 space-y-2 text-sm">
               <div className="flex items-center gap-4">
                 <p className="text-text-tertiary min-w-[120px]">Category</p>
-                <p className="text-text-primary">{category}</p>
+                <p className="text-text-primary capitalize">{category}</p>
               </div>
               <div className="flex items-center gap-4">
                 <p className="text-text-tertiary min-w-[120px]">Registration</p>
