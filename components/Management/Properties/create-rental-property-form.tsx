@@ -19,6 +19,13 @@ import TextArea from "@/components/Form/TextArea/textarea";
 import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeletePropertyModal from "@/components/Management/Properties/delete-property-modal";
+import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import SortableImage from "./sortable-image";
 import { rentPeriods } from "@/data";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
@@ -57,6 +64,12 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
     resetKey,
   } = state;
 
+  const sortableImages = images.map((image, index) => ({
+    id: index,
+    index,
+    image,
+  }));
+
   const handleStateChange = (value: string) => {
     setState((x) => ({ ...x, selectedState: value }));
   };
@@ -87,7 +100,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
         reader.onloadend = () => {
           validImages.push(reader.result as string);
           if (validImages.length + oversizeImages.length === files.length) {
-            setState((x) => ({ ...x, images: validImages }));
+            setState((x) => ({ ...x, images: [...x.images, ...validImages] }));
           }
         };
         reader.readAsDataURL(file);
@@ -103,6 +116,25 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
       );
     }
     e.target.value = ""; // Reset input value to allow re-uploading the same file
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+    const activeId = active.id;
+    const overId = over.id;
+    if (activeId === overId) return;
+
+    if (activeId !== overId) {
+      const oldIndex = sortableImages.findIndex(
+        (image) => image.id === active.id
+      );
+      const newIndex = sortableImages.findIndex(
+        (image) => image.id === over.id
+      );
+      const newImages = arrayMove(images, oldIndex, newIndex);
+      setState((x) => ({ ...x, images: newImages }));
+    }
   };
 
   const removeImage = (index: number) => {
@@ -192,48 +224,46 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
         <p className="mb-5 text-text-secondary text-base font-normal">
           Set property pictures for easy recognition (maximum of 6 images).
         </p>
-        <div className="flex gap-4 overflow-x-auto">
-          {images.map((image, index) => (
-            <div
-              key={index}
-              className="flex-shrink-0 relative w-[285px] h-[155px] rounded-lg overflow-hidden border border-gray-300"
-            >
-              <Image
-                src={image}
-                alt={`Property Image ${index + 1}`}
-                className="object-cover object-center w-full h-full"
-                fill
-              />
-              <button
-                type="button"
-                aria-label="Remove Image"
-                onClick={() => removeImage(index)}
-                className="absolute top-1 right-1"
-              >
-                <DeleteIconOrange size={20} />
-              </button>
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={sortableImages.map((i) => i.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="flex gap-4 overflow-x-auto overflow-y-hidden">
+              {sortableImages.map((s) => (
+                <SortableImage
+                  key={s.id}
+                  id={s.id}
+                  image={s.image}
+                  index={s.index}
+                  removeImage={removeImage}
+                />
+              ))}
+              {images.length < 6 && (
+                <label
+                  htmlFor="upload"
+                  className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
+                >
+                  <PlusIcon />
+                  <span className="text-black text-base font-normal mt-2">
+                    Add Pictures
+                  </span>
+                  <input
+                    id="upload"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                </label>
+              )}
             </div>
-          ))}
-          {images.length < 6 && (
-            <label
-              htmlFor="upload"
-              className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
-            >
-              <PlusIcon />
-              <span className="text-black text-base font-normal mt-2">
-                Add Pictures
-              </span>
-              <input
-                id="upload"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleFileChange}
-                className="hidden"
-              />
-            </label>
-          )}
-        </div>
+          </SortableContext>
+        </DndContext>
       </div>
       <div className="md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Input
