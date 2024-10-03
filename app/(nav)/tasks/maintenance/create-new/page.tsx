@@ -132,7 +132,7 @@ const CreateMaintenace = () => {
           <InputTextarea id="work_details" label="Work Details" rows={4} />
         </div>
         <div
-          className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10"
+          className="sticky h-[80px] bottom-0 py-5 px-[25px] lg:px-[60px] bg-white flex items-center justify-between gap-10"
           style={{ boxShadow: "0px -2px 10px 0px rgba(0, 0, 0, 0.05)" }}
         >
           <div className="flex items-center gap-2 text-sm text-text-secondary">
@@ -151,7 +151,11 @@ const CreateMaintenace = () => {
               <span>Create announcement</span>
             </label>
           </div>
-          <Button type="submit" size="16_bold" className="px-8 py-2">
+          <Button
+            type="submit"
+            size="custom"
+            className="px-8 py-2 font-bold text-sm lg:text-base"
+          >
             Create Maintenance
           </Button>
         </div>

@@ -115,7 +115,7 @@ const AddServiceProviderForm = ({
           value={selectedLGA}
         />
       </div>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-end">
         <div className="custom-flex-col gap-3">
           <p className="text-black text-base font-medium">
             Upload picture or select an avatar.

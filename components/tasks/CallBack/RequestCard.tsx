@@ -73,7 +73,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="px-[18px] flex items-center justify-between">
+      <div className="px-[18px] flex items-center justify-between flex-wrap gap-2">
         <div className="flex gap-2">
           <Picture size={50} src={pictureSrc || samplePicture} rounded />
           <div className="space-y-1">
@@ -93,9 +93,9 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
         {cardType !== "property" && props.status && (
           <p
             className={clsx(
-              "p-2 font-normal text-xs border capitalize",
+              "p-2 font-normal text-xs border capitalize ml-auto",
               props.status === "completed"
-                ? "bg-status-success-1 border-success-1 text-status-success-2"
+                ? "bg-status-success-1 border-status-success-1 text-status-success-2"
                 : "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
             )}
           >
@@ -131,7 +131,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
         {/* Property card has no ID on display */}
         {cardType !== "property" && <p>ID: {requestId}</p>}
       </div>
-      <div className="px-[18px] grid grid-cols-3 gap-x-5 gap-y-4">
+      <div className="px-[18px] grid grid-cols-2 sm:grid-cols-3 gap-x-5 gap-y-4">
         {cardType === "callback"
           ? cardViewDetails.map(({ label, accessor }, index) => {
               return (

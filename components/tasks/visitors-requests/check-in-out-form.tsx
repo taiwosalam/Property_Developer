@@ -1,12 +1,9 @@
-import { ChevronLeft, DeleteIconX } from "@/public/icons/icons";
-import { ModalTrigger } from "@/components/Modal/modal";
 import Picture from "@/components/Picture/picture";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Select from "@/components/Form/Select/select";
-import InputTextarea from "@/components/Form/InputTextarea/inputTextarea";
 import Button from "@/components/Form/Button/button";
-import { SectionSeparator } from "@/components/Section/section-components";
 import TextArea from "@/components/Form/TextArea/textarea";
+import ModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 
 interface BaseProps {
   type: "check-in" | "check-out";
@@ -31,28 +28,12 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
 ) => {
   const { type, handleBack, pictureSrc, userName, id, useCase } = props;
   return (
-    <div className="w-[900px] max-w-[80%] max-h-[85vh] rounded-lg bg-white overflow-y-auto custom-round-scrollbar">
-      {/* Header */}
-      <div className="flex items-center justify-between sticky z-[1] top-0 px-[30px] pt-[20px] bg-white">
-        <div className="flex items-center gap-2">
-          {handleBack && (
-            <button type="button" aria-label="back" onClick={handleBack}>
-              <ChevronLeft />
-            </button>
-          )}
-          <p className="text-primary-navy text-base md:text-lg lg:text-xl font-bold capitalize">
-            {type === "check-in" ? "Check In" : "Check Out"}
-          </p>
-        </div>
-        <ModalTrigger close className="p-2" type="button" aria-label="close">
-          <DeleteIconX size={34} />
-        </ModalTrigger>
-      </div>
-      <SectionSeparator className="bg-[#B8B8B8] !w-[calc(100%-60px)] mx-auto !h-[2px]" />
-
-      {/* Body */}
-      <div className="pt-5 px-[40px] pb-[50px] flex flex-col md:flex-row gap-x-[8%] gap-y-5">
-        <div className="w-full md:w-[43%]">
+    <ModalPreset
+      heading={type === "check-in" ? "Check In" : "Check Out"}
+      back={handleBack ? { handleBack } : undefined}
+    >
+      <div className="flex flex-col md:flex-row gap-x-20 gap-y-5">
+        <div>
           <div className="mb-[10px] flex items-center gap-4">
             <Picture src={pictureSrc} alt="empty" size={80} rounded />
             <div className="flex flex-col">
@@ -97,7 +78,7 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
             options={[]}
           />
         </div>
-        <div className="md:flex-1">
+        <div>
           <p className="mb-[14px] text-black text-lg lg:text-xl font-medium">
             Inventory
           </p>
@@ -117,7 +98,7 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
           </Button>
         </div>
       </div>
-    </div>
+    </ModalPreset>
   );
 };
 
