@@ -4,9 +4,9 @@ import type { PropertyRequestModalProps, LabelValuePairProps } from "./types";
 
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between">
       <p className="text-text-tertiary text-base">{label}</p>
-      <p className="text-text-secondary text-sm">{value}</p>
+      <p className="text-text-secondary text-sm text-right">{value}</p>
     </div>
   );
 };

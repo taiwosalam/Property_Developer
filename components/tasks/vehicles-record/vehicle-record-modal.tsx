@@ -36,7 +36,7 @@ const VehicleRecordModal: React.FC<
     return (
       <div className="w-[600px] max-w-[80%] max-h-[85%] rounded-lg overflow-x-auto custom-round-scrollbar">
         {/* Header */}
-        <div className="bg-brand-1 text-base text-text-primary py-4 text-center sticky top-0 z-[2]">
+        <div className="bg-brand-1 text-base text-text-primary py-4 text-center sticky top-0 z-[2] font-medium">
           Vehicle Record
           <ModalTrigger
             close
@@ -47,8 +47,8 @@ const VehicleRecordModal: React.FC<
         </div>
         {/* Body */}
         <div className="bg-white py-6 px-[40px]">
-          <div className="flex items-center justify-between font-medium gap-[7%]">
-            <div className="w-[40%] flex items-center gap-2">
+          <div className="flex flex-col md:flex-row items-center justify-between font-medium gap-2">
+            <div className="flex items-center gap-2">
               <Picture size={80} src={pictureSrc} rounded />
               <div className="text-base text-text-primary space-y-1">
                 <p className="flex items-center">
@@ -60,7 +60,7 @@ const VehicleRecordModal: React.FC<
                 </p>
               </div>
             </div>
-            <div className="flex-1 space-y-2 text-sm">
+            <div className="space-y-2 text-sm">
               <div className="flex items-center gap-4">
                 <p className="text-text-tertiary min-w-[100px]">Category</p>
                 <p className="text-text-primary capitalize">{category}</p>
@@ -78,20 +78,30 @@ const VehicleRecordModal: React.FC<
               <p className="mb-2 text-text-label text-base font-bold">
                 Check In
               </p>
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <p className="text-text-label font-normal">By</p>
+              <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-1.5">
+                <div className="flex gap-4">
+                  <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                    By
+                  </p>
                   <p className="text-text-primary font-medium">
                     {checkIn.name}
                   </p>
                 </div>
-                <div className="flex items-center gap-4">
-                  <p className="text-text-label font-normal">Passengers</p>
-                  <p>{checkIn.passenger}</p>
+                <div className="flex gap-4">
+                  <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                    Passengers
+                  </p>
+                  <p className="text-text-primary font-medium">
+                    {checkIn.passenger}
+                  </p>
                 </div>
-                <div className="flex items-center gap-4">
-                  <p className="text-text-label font-normal">Date - Time</p>
-                  <p>{checkIn.date}</p>
+                <div className="flex gap-4">
+                  <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                    Date - Time
+                  </p>
+                  <p className="text-text-primary font-medium">
+                    {checkIn.date}
+                  </p>
                 </div>
               </div>
               <p className="text-text-label font-normal mb-1">Inventory</p>

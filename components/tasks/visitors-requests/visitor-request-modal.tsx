@@ -31,7 +31,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
     return (
       <div className="w-[600px] max-w-[80%] max-h-[85%] rounded-lg overflow-x-auto custom-round-scrollbar">
         {/* Header */}
-        <div className="bg-brand-1 text-base text-text-primary py-4 text-center sticky top-0 z-[2]">
+        <div className="bg-brand-1 text-base text-text-primary py-4 text-center sticky top-0 z-[2] font-medium">
           Visitation Details
           <ModalTrigger
             close
@@ -46,7 +46,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
             <div className="flex items-center gap-2">
               <Picture size={50} src={pictureSrc} rounded />
               <div className="text-base text-text-primary space-y-1">
-                <p className="flex items-center">
+                <p className="flex">
                   <span>{userName}</span>
                   <BadgeIcon color="blue" />
                 </p>
@@ -56,17 +56,17 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               </div>
             </div>
             <div className="space-y-2 text-sm">
-              <div className="flex items-center gap-4">
+              <div className="flex items-start gap-4">
                 <p className="text-text-tertiary min-w-[120px]">
                   Name of Visitor
                 </p>
                 <p className="text-text-primary">{visitorName}</p>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-start gap-4">
                 <p className="text-text-tertiary min-w-[120px]">Request Date</p>
                 <p className="text-text-primary">{requestDate}</p>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-start gap-4">
                 <p className="text-text-tertiary min-w-[120px]">
                   Visitor&apos;s Phone
                 </p>
@@ -76,13 +76,13 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
           </div>
           <div className="border-t border-borders-dark my-5 -mx-6 border-dashed" />
           <div className="mb-5 space-y-2 gap-5">
-            <div className="flex items-center justify-between gap-1.5">
+            <div className="flex items-start justify-between gap-1.5">
               <p className="text-text-tertiary text-base">Secret Question</p>
               <p className="text-text-primary text-sm text-right">
                 {secretQuestion}
               </p>
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-start justify-between gap-1.5">
               <p className="text-text-tertiary text-base">Answer</p>
               <p className="text-text-primary text-sm text-right">
                 {secretAnswer}
@@ -100,19 +100,29 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
           <div className="mb-9 text-sm">
             <p className="mb-2 text-text-label text-base font-bold">Check In</p>
             <div className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-1.5">
-              <div className="flex items-center gap-4">
-                <p className="text-text-label font-normal">By</p>
+              <div className="flex gap-4">
+                <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                  By
+                </p>
                 <p className="text-text-primary font-medium">
                   {status === "pending" ? "---" : "David Aladiye"}
                 </p>
               </div>
-              <div className="flex items-center gap-4">
-                <p className="text-text-label font-normal">Companion</p>
-                <p>{status === "pending" ? "---" : "5 People"}</p>
+              <div className="flex gap-4">
+                <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                  Companion
+                </p>
+                <p className="text-text-primary font-medium">
+                  {status === "pending" ? "---" : "5 People"}
+                </p>
               </div>
-              <div className="flex items-center gap-4">
-                <p className="text-text-label font-normal">Date - Time</p>
-                <p>{status === "pending" ? "---" : "12/12/12 - 12:00 PM"}</p>
+              <div className="flex gap-4">
+                <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                  Date - Time
+                </p>
+                <p className="text-text-primary font-medium">
+                  {status === "pending" ? "---" : "12/12/12 - 12:00 PM"}
+                </p>
               </div>
             </div>
             <p className="text-text-label font-normal mb-1">Inventory</p>
@@ -171,16 +181,22 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                 Check Out
               </p>
               <div className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-1.5">
-                <div className="flex items-center gap-4">
-                  <p className="text-text-label font-normal">By</p>
+                <div className="flex items-start gap-4">
+                  <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                    By
+                  </p>
                   <p className="text-text-primary font-medium">David Aladiye</p>
                 </div>
-                <div className="flex items-center gap-4">
-                  <p className="text-text-label font-normal">Companion</p>
+                <div className="flex items-start gap-4">
+                  <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                    Companion
+                  </p>
                   <p className="text-text-primary font-medium">5 People</p>
                 </div>
-                <div className="flex items-center gap-4">
-                  <p className="text-text-label font-normal">Date - Time</p>
+                <div className="flex items-start gap-4">
+                  <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                    Date - Time
+                  </p>
                   <p className="text-text-primary font-medium">
                     12/12/12 - 12:00 PM
                   </p>

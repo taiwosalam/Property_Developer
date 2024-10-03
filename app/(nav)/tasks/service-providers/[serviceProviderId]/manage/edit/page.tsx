@@ -124,10 +124,14 @@ const EditServiceProvider = () => {
           </InfoEditSection>
         </div>
       </div>
-      <div className="sticky bottom-0 right-0 w-full bg-white py-5 px-[60px] flex justify-between">
+      <div className="sticky z-[3] bottom-0 right-0 w-full bg-white py-5 px-[25px] lg:px-[60px] flex justify-between">
         <Modal>
           <ModalTrigger asChild>
-            <Button style={{ color: "#E9212E", backgroundColor: "#FDE9EA" }}>
+            <Button
+              size="custom"
+              variant="light_red"
+              className="py-2 px-8 font-bold text-sm lg:text-base"
+            >
               delete account
             </Button>
           </ModalTrigger>
@@ -137,12 +141,17 @@ const EditServiceProvider = () => {
         </Modal>
         <div className="flex gap-6">
           <Button
+            size="custom"
+            className="py-2 px-8 font-bold text-sm lg:text-base"
             href="/management/landlord/1/manage"
             style={{ color: "#0033C4", backgroundColor: "#EFF6FF" }}
           >
             exit
           </Button>
-          <Button size="16_bold" className="py-2 px-8">
+          <Button
+            size="custom"
+            className="py-2 px-8 font-bold text-sm lg:text-base"
+          >
             save
           </Button>
         </div>

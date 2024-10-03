@@ -21,13 +21,13 @@ const PlateNumber: React.FC<{
 
 const CreateRecordModal = () => {
   return (
-    <div className="w-[600px] max-w-[80%] h-[420px] max-h-[85%] rounded-2xl overflow-x-auto custom-round-scrollbar font-medium bg-white flex items-stretch">
-      <div className="w-[37.5%] h-full overflow-x-auto no-scrollbar p-4 flex flex-col gap-2">
+    <div className="w-[600px] max-w-[80%] h-[420px] max-h-[85%] rounded-2xl overflow-x-auto custom-round-scrollbar font-medium bg-white flex flex-col md:flex-row md:items-stretch">
+      <div className="w-full md:w-[37.5%] h-full overflow-x-auto py-4 pl-4 pr-2 flex flex-col gap-2">
         <div className="bg-white sticky top-0 z-[1]">
           <p className="text-base text-text-tertiary mb-4">Create / Search</p>
           <Select options={[]} id="" />
         </div>
-        <div className="flex-1 overflow-y-auto space-y-1 custom-round-scrollbar pr-[2px]">
+        <div className="flex-1 overflow-y-auto space-y-1 custom-round-scrollbar pr-2">
           <PlateNumber number="OS1036DR" state="Lagos" name="Anikulapo Kuti" />
           <PlateNumber number="OS1036DR" state="Lagos" name="Anikulapo Kuti" />
           <PlateNumber number="OS1036DR" state="Lagos" name="Anikulapo Kuti" />
@@ -38,7 +38,7 @@ const CreateRecordModal = () => {
         </div>
       </div>
       <SectionSeparator direction="y" className="h-auto w-[4px]" />
-      <div className="flex-1 flex flex-col items-center justify-between gap-7 h-full p-4 pb-8">
+      <div className="md:flex-1 flex flex-col items-center justify-between gap-7 h-full p-4 pb-8">
         <ModalTrigger
           close
           type="button"

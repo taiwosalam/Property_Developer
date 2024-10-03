@@ -17,6 +17,7 @@ import { VehicleRecordData } from "@/app/(nav)/tasks/vehicles-record/data";
 import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import CheckInOutForm from "@/components/tasks/visitors-requests/check-in-out-form";
+import VehicleDetailsFormModal from "@/components/tasks/vehicles-record/vehicle-details-form-modal";
 
 interface UserData {
   user_tag: "web" | "mobile";
@@ -169,9 +170,28 @@ const RecordPage = () => {
               <p>Black</p>
             </div>
           </div>
-          <Button size="base_medium" className="py-2 px-8 ml-auto self-end">
-            Edit
-          </Button>
+          <Modal>
+            <ModalTrigger asChild>
+              <Button size="base_medium" className="py-2 px-8 ml-auto self-end">
+                Edit
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <VehicleDetailsFormModal
+                editMode={true}
+                data={{
+                  brand_name: "Toyota",
+                  plate_number: "OS102DR",
+                  state: "Lagos",
+                  model: "Corolla",
+                  vehicle_type: "",
+                  color: "Black",
+                  manufacturer_year: "2002",
+                  visitor_category: "Guest",
+                }}
+              />
+            </ModalContent>
+          </Modal>
         </div>
       </InfoBox>
 

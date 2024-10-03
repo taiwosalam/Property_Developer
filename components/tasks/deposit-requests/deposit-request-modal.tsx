@@ -10,9 +10,9 @@ import { formatCostInputValue } from "@/utils/number-formatter";
 
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between">
       <p className="text-text-tertiary text-base">{label}</p>
-      <p className="text-text-secondary text-sm">{value}</p>
+      <p className="text-text-secondary text-sm text-right">{value}</p>
     </div>
   );
 };
@@ -83,7 +83,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
                 Request from OurProperty Administrator Escrow
               </span>
             </label>
-            <div className="flex items-end gap-4 justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:justify-between">
               <Input
                 id="refund_amount"
                 label="Amount to be Refunded"

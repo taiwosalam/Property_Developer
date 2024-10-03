@@ -16,7 +16,7 @@ const PreviousRecord: React.FC<VehicleRecord> = (record) => {
           className={clsx(
             "p-2 font-normal text-xs border capitalize",
             status === "completed"
-              ? "bg-success-1 border-success-1 text-success-2"
+              ? "bg-status-success-1 border-status-success-1 text-status-success-2"
               : "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
           )}
         >
