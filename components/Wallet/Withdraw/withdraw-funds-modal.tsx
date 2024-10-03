@@ -1,58 +1,48 @@
-import React from "react";
+"use client";
 
-// Images
-import InfoWarningIcon from "@/public/icons/info-warning-circle.svg";
+import React, { useState } from "react";
+
+// Types
+import type { WalletWithdrawFundsOptions } from "../types";
 
 // Imports
-import Input from "@/components/Form/Input/input";
-import Picture from "@/components/Picture/picture";
-import FundingCard from "../AddFunds/funding-card";
-import Button from "@/components/Form/Button/button";
+import InputPin from "./input-pin";
+import Withdrawal from "./withdrawal";
 import WalletModalPreset from "../wallet-modal-preset";
 
 const WithdrawFundsModal = () => {
+  const [activeStep, setActiveStep] =
+    useState<WalletWithdrawFundsOptions>("withdrawal");
+
+  const flow: Record<
+    WalletWithdrawFundsOptions,
+    {
+      heading: string;
+      content: React.ReactNode;
+    }
+  > = {
+    withdrawal: {
+      heading: "Withdrawal",
+      content: <Withdrawal changeStep={setActiveStep} />,
+    },
+    "input pin": {
+      heading: "Input Pin",
+      content: <InputPin />,
+    },
+  };
+
   return (
-    <WalletModalPreset title="Withdrawal">
-      <div className="custom-flex-col gap-8">
-        <div className="custom-flex-col gap-[18px]">
-          <FundingCard
-            type="sterling"
-            title="0068190063"
-            desc="David Ajala"
-            cta="Sterling Bank"
-            notRounded
-          />
-          <div className="custom-flex-col gap-4">
-            <Input
-              id="amount"
-              label="amount"
-              placeholder="₦"
-              style={{ backgroundColor: "white" }}
-            />
-            <Input
-              id="description"
-              label="description"
-              placeholder="Description"
-              style={{ backgroundColor: "white" }}
-            />
-          </div>
-        </div>
-        <div className="custom-flex-col gap-3">
-          <Button size="sm_medium" className="py-2 px-8">
-            continue
-          </Button>
-          <div className="py-3 px-4 flex gap-2 rounded-[4px] bg-status-caution-1">
-            <div className="flex items-start">
-              <Picture src={InfoWarningIcon} alt="warning" size={26} />
-            </div>
-            <p className="text-[#606060] text-sm font-normal">
-              For security purposes, you can only withdraw money from your
-              wallet to a verified account details. You can modify these details
-              only from your profile.
-            </p>
-          </div>
-        </div>
-      </div>
+    <WalletModalPreset
+      title={flow[activeStep].heading}
+      back={
+        activeStep !== "withdrawal"
+          ? () => {
+              setActiveStep("withdrawal");
+            }
+          : undefined
+      }
+    >
+      {flow[activeStep].content}
     </WalletModalPreset>
   );
 };

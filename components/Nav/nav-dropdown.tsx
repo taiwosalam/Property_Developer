@@ -18,6 +18,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
   content,
   children,
   highlight,
+  onContentClick,
 }) => {
   const pathname = usePathname();
 
@@ -51,6 +52,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
           <div className="custom-flex-col">
             {content.map(({ href, label }, index) => (
               <NavButton
+                onClick={onContentClick}
                 minimized_highlight={
                   href ? pathname.includes(`${children}${href}`) : false
                 }

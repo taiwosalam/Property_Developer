@@ -1,0 +1,42 @@
+"use client";
+
+import React, { useEffect, useRef } from "react";
+
+// Imports
+import PinField from "react-pin-field";
+import Button from "@/components/Form/Button/button";
+
+const InputPin = () => {
+  const pinFieldRef = useRef<HTMLInputElement[] | null>(null);
+
+  useEffect(() => {
+    if (pinFieldRef.current && pinFieldRef.current.length > 0) {
+      pinFieldRef.current[0].focus();
+    }
+  }, []);
+
+  return (
+    <div className="custom-flex-col gap-20">
+      <div className="custom-flex-col gap-10">
+        <p className="text-text-tertiary text-center text-sm font-medium">
+          We partner with a third party for payment transfers, and they charge
+          ₦50 max for every withdrawal transaction. Please authenticate the
+          transaction to proceed with the process.
+        </p>
+        <div className="flex gap-6 justify-center">
+          <PinField
+            length={4}
+            ref={pinFieldRef}
+            validate={/^[0-9]$/}
+            className="w-10 h-10 text-center border border-solid border-[#2B2B2B] rounded-lg custom-primary-outline"
+          />
+        </div>
+      </div>
+      <Button size="sm_medium" className="py-2 px-8">
+        withdraw
+      </Button>
+    </div>
+  );
+};
+
+export default InputPin;

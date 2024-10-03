@@ -17,6 +17,8 @@ export type WalletAddFundsOptions =
 
 export type WalletSendFundsOptions = "send funds" | "send fund to beneficiary";
 
+export type WalletWithdrawFundsOptions = "withdrawal" | "input pin";
+
 export interface WalletModalPresetProps {
   title: string;
   back?: () => void;
@@ -47,11 +49,15 @@ export interface FundingCardProps {
 
 // Generic Interface for Modals
 export interface WalletModalDefaultProps<
-  T extends WalletAddFundsOptions | WalletSendFundsOptions
+  T extends
+    | WalletAddFundsOptions
+    | WalletSendFundsOptions
+    | WalletWithdrawFundsOptions
 > {
   changeStep: React.Dispatch<React.SetStateAction<T>>;
 }
 
 export interface FundsBeneficiaryProps {
-  seeMore: () => void;
+  remove?: () => void;
+  seeMore?: () => void;
 }

@@ -2,15 +2,45 @@ import React from "react";
 
 // Types
 import type { SVGProps } from "./types";
+import type { Color } from "@/types/global";
 
 // Imports
 import { svgs } from "./svgs";
 
+// Exception
+const ChartSVG: React.FC<{ color: Color }> = ({ color }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="30"
+    height="30"
+    viewBox="0 0 30 30"
+    fill="none"
+  >
+    <path
+      d="M18.75 28.4375H11.25C4.4625 28.4375 1.5625 25.5375 1.5625 18.75V11.25C1.5625 4.4625 4.4625 1.5625 11.25 1.5625H18.75C25.5375 1.5625 28.4375 4.4625 28.4375 11.25V18.75C28.4375 25.5375 25.5375 28.4375 18.75 28.4375ZM11.25 3.4375C5.4875 3.4375 3.4375 5.4875 3.4375 11.25V18.75C3.4375 24.5125 5.4875 26.5625 11.25 26.5625H18.75C24.5125 26.5625 26.5625 24.5125 26.5625 18.75V11.25C26.5625 5.4875 24.5125 3.4375 18.75 3.4375H11.25Z"
+      fill={color}
+    />
+    <path
+      d="M19.375 24.0625C17.475 24.0625 15.9375 22.525 15.9375 20.625V9.375C15.9375 7.475 17.475 5.9375 19.375 5.9375C21.275 5.9375 22.8125 7.475 22.8125 9.375V20.625C22.8125 22.525 21.275 24.0625 19.375 24.0625ZM19.375 7.8125C18.5125 7.8125 17.8125 8.5125 17.8125 9.375V20.625C17.8125 21.4875 18.5125 22.1875 19.375 22.1875C20.2375 22.1875 20.9375 21.4875 20.9375 20.625V9.375C20.9375 8.5125 20.2375 7.8125 19.375 7.8125Z"
+      fill={color}
+    />
+    <path
+      d="M10.625 24.0625C8.725 24.0625 7.1875 22.525 7.1875 20.625V16.25C7.1875 14.35 8.725 12.8125 10.625 12.8125C12.525 12.8125 14.0625 14.35 14.0625 16.25V20.625C14.0625 22.525 12.525 24.0625 10.625 24.0625ZM10.625 14.6875C9.7625 14.6875 9.0625 15.3875 9.0625 16.25V20.625C9.0625 21.4875 9.7625 22.1875 10.625 22.1875C11.4875 22.1875 12.1875 21.4875 12.1875 20.625V16.25C12.1875 15.3875 11.4875 14.6875 10.625 14.6875Z"
+      fill={color}
+    />
+  </svg>
+);
+
 const SVG: React.FC<SVGProps> = ({ type, color = "#000", className }) => {
-  // Clone the selected SVG element and apply the color to it
-  const selectedSVG = React.cloneElement(svgs[type], {
-    stroke: color,
-  });
+  const selectedSVG =
+    type === "chart" ? (
+      <ChartSVG color={color} />
+    ) : (
+      // Clone the selected SVG element and apply the color to it
+      React.cloneElement(svgs[type], {
+        stroke: color,
+      })
+    );
 
   return <div className={className}>{selectedSVG}</div>;
 };

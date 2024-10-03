@@ -13,9 +13,11 @@ export interface NavButtonProps {
   minimized_highlight?: boolean;
   style?: CSSProperties;
   children: React.ReactNode;
+  onClick?: () => void;
 }
 
 export interface NavDropdownProps extends NavButtonProps {
+  onContentClick?: () => void;
   content: { label: string; href: string }[];
 }
 
@@ -46,4 +48,9 @@ export interface NavSearchTabProps {
   count: number;
   active?: boolean;
   children: React.ReactNode;
+}
+
+export interface SidenavProps {
+  showLogo?: boolean;
+  closeSidenav?: () => void;
 }
