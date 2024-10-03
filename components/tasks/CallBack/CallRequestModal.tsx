@@ -21,7 +21,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
   return (
     <div className="w-[600px] max-w-[80%] max-h-[85%] h-fit rounded-lg bg-white overflow-x-auto custom-round-scrollbar">
       {/* Header */}
-      <div className="h-20 bg-brand-1 flex items-center justify-center sticky top-0 z-[2]">
+      <div className="py-5 bg-brand-1 flex items-center justify-center sticky top-0 z-[2]">
         <span className="font-medium text-[16px] text-text-secondary">
           Request for Call
         </span>
@@ -60,7 +60,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
               <p className="text-text-tertiary font-medium text-[16px]">
                 Phone Number
               </p>
-              <p className="text-text-secondary font-medium text-[14px]">
+              <p className="text-text-secondary font-medium text-[14px] text-right">
                 {phoneNumber}
               </p>
             </div>
@@ -68,7 +68,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
               <p className="text-text-tertiary font-medium text-[16px]">
                 Property Name
               </p>
-              <p className="text-text-secondary font-medium text-[14px]">
+              <p className="text-text-secondary font-medium text-[14px] text-right">
                 {propertyName}
               </p>
             </div>
@@ -76,7 +76,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
               <p className="text-text-tertiary font-medium text-[16px]">
                 Property Address
               </p>
-              <p className="text-text-secondary font-medium text-[14px]">
+              <p className="text-text-secondary font-medium text-[14px] text-right">
                 {propertyAddress}
               </p>
             </div>
@@ -84,7 +84,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
               <p className="text-text-tertiary font-medium text-[16px]">
                 Branch
               </p>
-              <p className="text-text-secondary font-medium text-[14px]">
+              <p className="text-text-secondary font-medium text-[14px] text-right">
                 {branch}
               </p>
             </div>
@@ -92,7 +92,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
               <p className="text-text-tertiary font-medium text-[16px]">
                 Account Officer
               </p>
-              <p className="text-text-secondary font-medium text-[14px]">
+              <p className="text-text-secondary font-medium text-[14px] text-right">
                 {accountOfficer}
               </p>
             </div>
@@ -111,7 +111,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
               <p className="text-text-secondary font-medium text-[14px]">
                 {resolvedBy}
               </p>
-              <p className="text-text-secondary font-medium text-[14px]">
+              <p className="text-text-secondary font-medium text-[14px] text-right">
                 {resolvedDateTime}
               </p>
             </div>

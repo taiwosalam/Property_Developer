@@ -63,14 +63,14 @@ const ManageMaintenanceModal = () => {
 
   return (
     <div
-      className="font-medium rounded-lg border border-[rgba(193,194,195,0.40)] min-w-[600px] max-h-[90vh] overflow-y-auto custom-round-scrollbar"
+      className="font-medium rounded-lg border border-[rgba(193,194,195,0.40)] w-[600px] max-w-[80%] max-h-[90vh] overflow-y-auto custom-round-scrollbar"
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
       {/* Header */}
-      <div className="text-center text-text-secondary text-base pt-10 pb-4 rounded-t-lg bg-brand-1 sticky z-[1] top-0">
+      <div className="text-center text-text-secondary text-base pt-5 lg:pt-10 pb-4 rounded-t-lg bg-brand-1 sticky z-[1] top-0">
         Manage Maintenance
         <ModalTrigger asChild close>
           <button className="absolute top-2 right-4" aria-label="Close">
@@ -81,7 +81,7 @@ const ManageMaintenanceModal = () => {
       {/* Body */}
       <div className="px-6 pt-3 pb-8 bg-white rounded-b-lg">
         <div
-          className="grid grid-cols-3 gap-x-4 gap-y-[18px] [&>div]:flex [&>div]:flex-col [&>div]:gap-2 px-4 py-6 rounded-lg"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-[18px] [&>div]:flex [&>div]:flex-col [&>div]:gap-2 px-4 py-6 rounded-lg"
           style={{
             boxShadow: "0px 1px 2px 0px rgba(21, 30, 43, 0.08)",
           }}
@@ -113,7 +113,7 @@ const ManageMaintenanceModal = () => {
         </div>
         <hr className="my-4 border-t border-dashed border-brand-7 opacity-50" />
         <p className="text-text-tertiary text-base mb-3">Work Details</p>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             id="details"
             label="Details"
