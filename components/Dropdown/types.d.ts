@@ -14,5 +14,6 @@ export interface DropdownTriggerProps
 
 export interface DropdownContentProps
   extends React.HTMLAttributes<HTMLDivElement> {
+  direction?: "up" | "down";
   position?: "left" | "right";
 }
