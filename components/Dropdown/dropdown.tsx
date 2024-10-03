@@ -58,6 +58,7 @@ export const DropdownTrigger: React.FC<DropdownTriggerProps> = ({
 export const DropdownContent: React.FC<DropdownContentProps> = ({
   children,
   className,
+  direction = "down",
   position = "right",
 }) => {
   const { isOpen } = useDropdownContext();
@@ -65,10 +66,12 @@ export const DropdownContent: React.FC<DropdownContentProps> = ({
   return (
     <div
       className={clsx(
-        "absolute z-10 top-[110%] bg-white border border-solid border-neutral-4 rounded-lg overflow-hidden",
+        "absolute z-10 bg-white border border-solid border-neutral-4 rounded-lg overflow-hidden",
         {
           "opacity-100 pointer-events-auto visible": isOpen,
           "opacity-0 pointer-events-none invisible": !isOpen,
+          "top-[110%]": direction === "down",
+          "bottom-[110%]": direction === "up",
           "left-0": position === "left",
           "right-0": position === "right",
         },
