@@ -40,7 +40,7 @@ export interface WalletOnlineFundingCardProps {
 }
 
 export interface FundingCardProps {
-  cta: string;
+  cta?: string;
   desc?: string;
   title?: string;
   notRounded?: boolean;
