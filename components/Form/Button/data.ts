@@ -23,6 +23,7 @@ export const button_variants = {
     xs_normal: "font-normal text-xs",
     xs_bold: "font-bold text-xs",
 
+    sm_normal: "font-normal text-sm",
     sm_medium: "font-medium text-sm",
     sm_bold: "font-bold text-sm",
 

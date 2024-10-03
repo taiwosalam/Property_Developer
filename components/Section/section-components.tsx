@@ -46,7 +46,7 @@ export const SectionSeparator: React.FC<{
   <div
     style={style}
     className={clsx(
-      "bg-[rgba(192,194,200,0.2)]",
+      "bg-[rgba(192,194,200,0.2)] separator",
       {
         "h-[1px] w-full": direction === "x",
         "w-[1px] h-full": direction === "y",

@@ -7,11 +7,11 @@ import ReceiveIcon from "@/public/icons/receive.svg";
 import { ExclamationMark } from "@/public/icons/icons";
 
 // Imports
+import Picture from "@/components/Picture/picture";
 import { DashboardChart } from "@/components/dashboard/chart";
 import WalletAnalytics from "@/components/Wallet/wallet-analytics";
 import WalletBenefiary from "@/components/Wallet/wallet-benefiary";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
-import Picture from "@/components/Picture/picture";
 
 const Wallet = () => {
   return (
