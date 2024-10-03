@@ -58,5 +58,6 @@ export interface WalletModalDefaultProps<
 }
 
 export interface FundsBeneficiaryProps {
-  seeMore: () => void;
+  remove?: () => void;
+  seeMore?: () => void;
 }

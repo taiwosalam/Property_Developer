@@ -25,7 +25,7 @@ const WalletAnalytics: React.FC<WalletAnalyticsProps> = ({
   return (
     <div
       className={clsx(
-        "py-[18px] px-3 rounded-lg overflow-hidden custom-flex-col gap-6 flex-1",
+        "py-[18px] px-5 rounded-lg overflow-hidden custom-flex-col gap-6 flex-1",
         {
           "bg-brand-1": title === "funds",
           "bg-status-error-1": title === "debit",

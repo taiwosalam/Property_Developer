@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 // Images
 import { ChevronRight } from "lucide-react";
@@ -11,7 +12,9 @@ import Picture from "@/components/Picture/picture";
 import { DashboardChart } from "@/components/dashboard/chart";
 import WalletAnalytics from "@/components/Wallet/wallet-analytics";
 import WalletBenefiary from "@/components/Wallet/wallet-benefiary";
+import BeneficiaryList from "@/components/Wallet/beneficiary-list";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 
 const Wallet = () => {
   return (
@@ -64,10 +67,15 @@ const Wallet = () => {
           <div className="custom-flex-col gap-4 p-4 rounded-lg bg-white">
             <div className="flex items-center justify-between text-base font-medium">
               <p className="text-black">Beneficiary</p>
-              <div className="flex items-center gap-1">
-                <p className="text-text-label">See all</p>
-                <ChevronRight color="#5A5D61" size={16} />
-              </div>
+              <Modal>
+                <ModalTrigger className="flex items-center gap-1">
+                  <p className="text-text-label">See all</p>
+                  <ChevronRight color="#5A5D61" size={16} />
+                </ModalTrigger>
+                <ModalContent>
+                  <BeneficiaryList />
+                </ModalContent>
+              </Modal>
             </div>
             <div className="custom-flex-col gap-2">
               {Array(6)
@@ -84,10 +92,13 @@ const Wallet = () => {
           <h2 className="text-text-primary text-xl font-medium">
             Recent Transaction
           </h2>
-          <div className="flex items-center gap-1">
+          <Link
+            href={"/wallet/transaction-history"}
+            className="flex items-center gap-1"
+          >
             <p className="text-text-label">See all</p>
             <ChevronRight color="#5A5D61" size={16} />
-          </div>
+          </Link>
         </div>
         <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
           <table className="dash-table">

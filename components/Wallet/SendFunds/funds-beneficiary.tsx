@@ -8,15 +8,22 @@ import { ChevronRight } from "lucide-react";
 import Avatar4 from "@/public/empty/avatar-4.svg";
 
 // Imports
+import clsx from "clsx";
 import Picture from "@/components/Picture/picture";
+import Button from "@/components/Form/Button/button";
 import { SectionSeparator } from "@/components/Section/section-components";
 
-const FundsBeneficiary: React.FC<FundsBeneficiaryProps> = ({ seeMore }) => {
+const FundsBeneficiary: React.FC<FundsBeneficiaryProps> = ({
+  seeMore,
+  remove,
+}) => {
   return (
     <div className="custom-flex-col gap-2">
       <button
         onClick={seeMore}
-        className="text-start flex justify-between px-[18px]"
+        className={clsx("text-start flex justify-between px-[18px]", {
+          "cursor-default": !seeMore,
+        })}
       >
         <div className="flex items-center gap-2">
           <Picture src={Avatar4} alt="profile picture" size={33} rounded />
@@ -25,9 +32,14 @@ const FundsBeneficiary: React.FC<FundsBeneficiaryProps> = ({ seeMore }) => {
             <p className="text-[#606060] text-xs">Wallet ID: 1234567890</p>
           </div>
         </div>
-        <button className="flex items-center">
-          <ChevronRight size={20} color="#151515A6" />
-        </button>
+        <div className="flex items-center">
+          {remove && (
+            <Button size="xs_medium" className="py-1 px-2">
+              remove
+            </Button>
+          )}
+          {seeMore && <ChevronRight size={20} color="#151515A6" />}
+        </div>
       </button>
       <SectionSeparator />
     </div>

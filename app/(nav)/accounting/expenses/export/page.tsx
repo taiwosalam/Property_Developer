@@ -1,14 +1,12 @@
 import React from "react";
-import Image from "next/image";
 
 // Images
-import Signature from "@/public/accounting/signature.svg";
-
 import Avatar from "@/public/empty/avatar.png";
 
 // Imports
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
+import Signature from "@/components/Signature/signature";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import AccountingLogoContactHeader from "@/components/Accounting/accounting-logo-contact-header";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
@@ -103,17 +101,7 @@ const Exportexpense = () => {
           </table>
         </div>
         <div className="flex justify-end">
-          <div className="custom-flex-col gap-2 text-text-quaternary text-base font-medium">
-            <p>Authorized Signature </p>
-            <div className="flex">
-              <Image src={Signature} alt="signature" height={60} />
-            </div>
-            <p>
-              ESQ Taiwo Salam
-              <br />
-              Legal Practitioner
-            </p>
-          </div>
+          <Signature />
         </div>
       </div>
       <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
