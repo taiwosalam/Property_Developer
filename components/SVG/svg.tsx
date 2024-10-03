@@ -32,8 +32,6 @@ const ChartSVG: React.FC<{ color: Color }> = ({ color }) => (
 );
 
 const SVG: React.FC<SVGProps> = ({ type, color = "#000", className }) => {
-  console.log("Color: ", color);
-
   const selectedSVG =
     type === "chart" ? (
       <ChartSVG color={color} />
