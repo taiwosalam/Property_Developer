@@ -1,12 +1,17 @@
+"use client";
+
 import React from "react";
 import { usePathname } from "next/navigation";
+
+// Types
+import type { SidenavProps } from "./types";
 
 // Imports
 import { nav_items } from "./data";
 import NavDropdown from "./nav-dropdown";
 import { NavButton } from "./nav-components";
 
-const Sidenav = () => {
+const Sidenav: React.FC<SidenavProps> = ({ closeSidenav }) => {
   const pathname = usePathname();
 
   return (
@@ -14,6 +19,7 @@ const Sidenav = () => {
       {nav_items.map((item, idx) =>
         item.content ? (
           <NavDropdown
+            onContentClick={closeSidenav}
             highlight={item.content.some((i) =>
               pathname.includes(`${item.label}${i.href}`)
             )}
@@ -29,6 +35,7 @@ const Sidenav = () => {
             key={idx}
             href={item.href}
             type={item.type}
+            onClick={closeSidenav}
           >
             {item.label}
           </NavButton>

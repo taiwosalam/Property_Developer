@@ -284,6 +284,10 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
   stroke: white;
 }
 
+.nav-button:hover .path-fill path {
+  fill: white;
+}
+
 .dash-table {
   width: 100%;
   border-collapse: collapse;

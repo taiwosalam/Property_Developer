@@ -92,7 +92,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               }
             )}
           >
-            <Sidenav />
+            <Sidenav closeSidenav={() => setFixedSidenavIsOpen(false)} />
           </div>
         ) : (
           <div
