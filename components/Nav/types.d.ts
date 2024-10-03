@@ -51,5 +51,6 @@ export interface NavSearchTabProps {
 }
 
 export interface SidenavProps {
+  showLogo?: boolean;
   closeSidenav?: () => void;
 }

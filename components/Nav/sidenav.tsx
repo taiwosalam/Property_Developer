@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 // Types
@@ -8,14 +9,24 @@ import type { SidenavProps } from "./types";
 
 // Imports
 import { nav_items } from "./data";
+import { empty } from "@/app/config";
 import NavDropdown from "./nav-dropdown";
 import { NavButton } from "./nav-components";
 
-const Sidenav: React.FC<SidenavProps> = ({ closeSidenav }) => {
+const Sidenav: React.FC<SidenavProps> = ({ showLogo, closeSidenav }) => {
   const pathname = usePathname();
 
   return (
-    <div className="custom-flex-col w-[250px] min-w-[250px]">
+    <div className="custom-flex-col w-[250px] m pb-3in-w-[250px]">
+      {showLogo && (
+        <div className="flex justify-center p-3 pt-0">
+          <Image
+            src={empty}
+            alt="logo"
+            className="w-full h-[55px] object-cover"
+          />
+        </div>
+      )}
       {nav_items.map((item, idx) =>
         item.content ? (
           <NavDropdown
