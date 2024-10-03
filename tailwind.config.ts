@@ -102,6 +102,10 @@ const config = {
           navy: "#092C4C",
         },
 
+        general: {
+          low: "#303030",
+        },
+
         highlight: "#E15B0F",
       },
       container: {

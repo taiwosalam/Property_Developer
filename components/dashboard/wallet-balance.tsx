@@ -13,22 +13,29 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import SVG from "../SVG/svg";
 import { Eye, EyeOff } from "lucide-react";
+import AddFundsModal from "../Wallet/AddFunds/add-funds-modal";
+import SendFundsModal from "../Wallet/SendFunds/send-funds-modal";
+import WithdrawFundsModal from "../Wallet/Withdraw/withdraw-funds-modal";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 
 const options = [
   {
     name: "Add Funds",
     icon: "/icons/dashboard-cards/blue-plus.svg",
-    link: "/dashboard/add-funds",
+    // link: "/dashboard/add-funds",
+    action: <AddFundsModal />,
   },
   {
     name: "Send Funds",
     icon: "/icons/dashboard-cards/blue-send.svg",
-    link: "/dashboard/send-funds",
+    // link: "/dashboard/send-funds",
+    action: <SendFundsModal />,
   },
   {
     name: "Withdraw",
     icon: "/icons/dashboard-cards/blue-building.svg",
-    link: "/dashboard/withdraw-funds",
+    // link: "/dashboard/withdraw-funds",
+    action: <WithdrawFundsModal />,
   },
 ];
 
@@ -110,20 +117,23 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
           </div>
           <div className="w-full flex justify-between">
             {options.map((option, index) => (
-              <div key={index} className="space-y-2">
-                <div className="bg-white w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
-                  <Image
-                    src={option.icon}
-                    alt="icon"
-                    width={12}
-                    height={12}
-                    className="w-[14px] h-[14px]"
-                  />
-                </div>
-                <p className="capitalize text-white text-xs font-normal">
-                  {option.name}
-                </p>
-              </div>
+              <Modal key={index}>
+                <ModalTrigger className="space-y-2">
+                  <div className="bg-white w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
+                    <Image
+                      src={option.icon}
+                      alt="icon"
+                      width={12}
+                      height={12}
+                      className="w-[14px] h-[14px]"
+                    />
+                  </div>
+                  <p className="capitalize text-white text-xs font-normal">
+                    {option.name}
+                  </p>
+                </ModalTrigger>
+                <ModalContent>{option.action}</ModalContent>
+              </Modal>
             ))}
           </div>
         </div>

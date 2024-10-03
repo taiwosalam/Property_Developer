@@ -149,6 +149,10 @@ h1 {
 /* Overwriting default behaviour */
 /* -------------------------------------------------------------- */
 
+.sections > *:last-child .separator {
+  display: none;
+}
+
 /* Hide the default eye icon in password fields */
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
