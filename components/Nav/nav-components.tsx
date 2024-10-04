@@ -20,6 +20,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
   type,
   href,
   style,
+  onClick,
   children,
   minimized,
   highlight,
@@ -43,7 +44,9 @@ export const NavButton: React.FC<NavButtonProps> = ({
         <SVG
           type={type}
           color={color}
-          className="w-[30px] flex justify-center"
+          className={clsx("w-[30px] flex justify-center", {
+            "path-fill": type === "chart"
+          })}
         />
       )}
       <p
@@ -60,7 +63,12 @@ export const NavButton: React.FC<NavButtonProps> = ({
   );
 
   return href ? (
-    <Link className="w-full" href={href}>
+    <Link
+      title={minimized ? String(children) : undefined}
+      className="w-full"
+      href={href}
+      onClick={onClick ? () => onClick() : undefined}
+    >
       {content}
     </Link>
   ) : (

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
 // Images
 import Mail from "@/public/icons/mail.svg";
@@ -23,19 +24,18 @@ import {
   DropdownTrigger,
 } from "@/components/Dropdown/dropdown";
 
+import clsx from "clsx";
+import { empty } from "@/app/config";
 import { getGreeting } from "./data";
 import NavCreateNew from "./nav-create-new";
+import { useAuthStore } from "@/store/authstrore";
 import NavGlobalSearch from "./nav-global-search";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { NavIcon } from "@/components/Nav/nav-components";
 import NavSwitchUserSwitch from "./nav-switch-user-switch";
+import { getDashboardData } from "@/app/(nav)/dashboard/data";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import NavProfileDropdown from "@/components/Nav/nav-profile-dropdown";
-import Image from "next/image";
-import { useAuthStore } from "@/store/authstrore";
-import { getDashboardData } from "@/app/(nav)/dashboard/data";
-import clsx from "clsx";
-import { empty } from "@/app/config";
 
 interface UserData {
   user_id: number;
