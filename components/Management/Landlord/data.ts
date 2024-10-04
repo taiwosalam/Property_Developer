@@ -9,7 +9,7 @@ export const addLandlord = async (
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/landlords`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/landlords/store`,
       {
         method: "POST",
         body: formData,
