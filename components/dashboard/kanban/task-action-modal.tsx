@@ -17,7 +17,7 @@ interface ComplaintData {
   brief: string;
 }
 
-const TaskModal = ({ complaintData }: { complaintData: ComplaintData }) => {
+const TaskModal = ({ complaintData, statusChanger }: { complaintData: ComplaintData, statusChanger: boolean }) => {
   const pathname = usePathname();
   const {
     senderName,
@@ -80,7 +80,7 @@ const TaskModal = ({ complaintData }: { complaintData: ComplaintData }) => {
         {/* Right side - Action section */}
         <div className="md:w-1/2 md:pl-6 my-6">
           <p className="font-medium text-[16px] text-center">
-            {pathname != "/dashboard"
+            {!statusChanger
               ? "Kindly approve or reject this complaint"
               : "Change the status of this complaint"}
           </p>
@@ -89,13 +89,13 @@ const TaskModal = ({ complaintData }: { complaintData: ComplaintData }) => {
             <TextArea id="note" placeholder="Type Here"></TextArea>
           </div>
           <div className="mt-4">
-            {pathname === "/dashboard" ? (
+            {!statusChanger ? (
               <div className="space-y-2">
                 <Button
                   size="16_bold"
                   className="py-2 px-6 w-full"
                   //   className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
-                  onClick={() => {}} // Empty onClick for Approve
+                  onClick={() => { }} // Empty onClick for Approve
                 >
                   Approve Complaint
                 </Button>
@@ -104,7 +104,7 @@ const TaskModal = ({ complaintData }: { complaintData: ComplaintData }) => {
                   variant="light_red"
                   className="py-2 px-6 w-full"
                   //   className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
-                  onClick={() => {}} // Empty onClick for Reject
+                  onClick={() => { }} // Empty onClick for Reject
                 >
                   Reject Complaint
                 </Button>
@@ -114,7 +114,7 @@ const TaskModal = ({ complaintData }: { complaintData: ComplaintData }) => {
                 size="16_bold"
                 className="py-2 px-6 w-full"
                 //   className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
-                onClick={() => {}} // Empty onClick for Approve
+                onClick={() => { }} // Empty onClick for Approve
               >
                 Change Status
               </Button>

@@ -154,6 +154,7 @@ const Dashboard = () => {
             .fill(null)
             .map((_, index) => (
               <TaskCard
+                statusChanger
                 noDrag
                 key={index}
                 task={{

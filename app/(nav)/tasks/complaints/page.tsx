@@ -43,6 +43,7 @@ const ComplaintsPage = () => {
             .fill(null)
             .map((_, index) => (
               <TaskCard
+                statusChanger={true}
                 noDrag
                 isNew
                 key={index}
@@ -83,9 +84,9 @@ const ComplaintsPage = () => {
               <FilterModal
                 filterOptionsWithDropdown={[]}
                 filterOptions={[]}
-                onApply={() => {}}
+                onApply={() => { }}
                 date
-                //   onStateSelect={(state: string) => setSelectedState(state)}
+              //   onStateSelect={(state: string) => setSelectedState(state)}
               />
             </ModalContent>
           </Modal>
@@ -98,7 +99,7 @@ const ComplaintsPage = () => {
         </SectionContainer>
       )}
 
-      <Pagination totalPages={0} currentPage={0} onPageChange={() => {}} />
+      <Pagination totalPages={0} currentPage={0} onPageChange={() => { }} />
     </div>
   );
 };
