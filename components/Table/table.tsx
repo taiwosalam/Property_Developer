@@ -162,6 +162,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     paddingBottom: "8px",
                     ...tableBodyCellSx,
                     ...field.cellStyle,
+                    ...(field.accessor === "email"
+                      ? { textTransform: "lowercase" }
+                      : {}), // Apply unset for email only
                   }}
                 >
                   {renderValue(
