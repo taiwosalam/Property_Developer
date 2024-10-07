@@ -1,0 +1,85 @@
+"use client";
+import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import PageTitle from "@/components/PageTitle/page-title";
+import SearchInput from "@/components/SearchInput/search-input";
+import FilterButton from "@/components/FilterButton/filter-button";
+import ExportButton from "@/components/reports/export-button";
+import Pagination from "@/components/Pagination/pagination";
+import CustomTable from "@/components/Table/table";
+import type { Field } from "@/components/Table/types";
+
+const PropertiesReport = () => {
+  const fields: Field[] = [
+    { id: "0", label: "S/N", accessor: "S/N" },
+    { id: "1", label: "ID", accessor: "id" },
+    {
+      id: "2",
+      label: "Property",
+      accessor: "property",
+    },
+    { id: "3", label: "Branch", accessor: "branch" },
+    {
+      id: "5",
+      label: "Account Officer",
+      accessor: "account_officer",
+      cellStyle: { textTransform: "uppercase" },
+    },
+    { id: "6", label: "landlord / landlady", accessor: "landlord" },
+    { id: "7", label: "Date Created", accessor: "date_created" },
+  ];
+
+  const generateTableData = (numItems: number) => {
+    return Array.from({ length: numItems }, (_, index) => ({
+      id: (index + 1).toString(),
+      property: `Property ${index + 1}`,
+      branch: `branch ${index + 1}`,
+      account_officer: `Officer ${index + 1}`,
+      landlord: `Landlord ${index + 1}`,
+      date_created: `12/12/12`,
+    }));
+  };
+
+  const tableData = generateTableData(10);
+
+  return (
+    <div className="space-y-9">
+      <div className="hidden md:flex gap-5 flex-wrap">
+        <ManagementStatistcsCard title="Total" newData={23} total={200} />
+      </div>
+      <div className="page-title-container">
+        <PageTitle title="Properties Report" />
+        <div className="flex items-center gap-4 flex-wrap">
+          <SearchInput placeholder="Search for Property Report" />
+          <FilterButton />
+          <ExportButton type="pdf" />
+          <ExportButton type="csv" />
+        </div>
+      </div>
+      <CustomTable
+        fields={fields}
+        data={tableData}
+        tableHeadClassName="bg-brand-9 h-[45px]"
+        tableHeadCellSx={{
+          color: "#EFF6FF",
+          fontWeight: 500,
+          border: "none",
+          textAlign: "left",
+          fontSize: "14px",
+        }}
+        tableBodyCellSx={{
+          border: "none",
+          textAlign: "left",
+          fontWeight: 500,
+          color: "#050901",
+          fontSize: "14px",
+        }}
+        evenRowColor="#fff"
+        oddRowColor="#FAFAFA"
+      />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+    </div>
+  );
+};
+
+export default PropertiesReport;
