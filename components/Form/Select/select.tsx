@@ -2,7 +2,7 @@
 import clsx from "clsx";
 import Label from "../Label/label";
 import { useEffect, useRef, useState, useContext } from "react";
-import type { SelectProps } from "./types";
+import type { SelectOptionObject, SelectProps } from "./types";
 import { DeleteIconX, ArrowDownIcon, SearchIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { checkValidatonError } from "@/utils/validation";
@@ -51,6 +51,13 @@ const Select: React.FC<SelectProps> = ({
     onChange && onChange(option); // Call the onChange prop if provided
   };
 
+  // Type guard to check if the options array is an array of objects
+  const isOptionObjectArray = (
+    options: string[] | SelectOptionObject[]
+  ): options is SelectOptionObject[] => {
+    return typeof options[0] === "object";
+  };
+
   useEffect(() => {
     if (isOpen && inputRef.current) {
       inputRef.current.focus();
@@ -59,12 +66,18 @@ const Select: React.FC<SelectProps> = ({
 
   // Filter options based on the search term
   useEffect(() => {
-    setState((x) => ({
-      ...x,
-      filteredOptions: options.filter((o) =>
-        o.toLowerCase().includes(searchTerm.toLowerCase())
-      ),
-    }));
+    setState((x) => {
+      const filteredOptions =
+        typeof options[0] === "string"
+          ? (options as string[]).filter((o) =>
+              o.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+          : (options as SelectOptionObject[]).filter((o) =>
+              o.label.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+      return { ...x, filteredOptions };
+    });
   }, [searchTerm, options]);
 
   // Close the dropdown when clicking outside of it
@@ -140,7 +153,9 @@ const Select: React.FC<SelectProps> = ({
                 inputTextClassName
               )}
             >
-              {selectedValue}
+              {isOptionObjectArray(options)
+                ? options.find((o) => o.value === selectedValue)?.label
+                : selectedValue}
             </span>
           ) : isSearchable ? (
             <input
@@ -214,15 +229,22 @@ const Select: React.FC<SelectProps> = ({
           >
             <div className="max-h-60 overflow-y-auto">
               {filteredOptions.length > 0 ? (
-                filteredOptions.map((option) => (
-                  <div
-                    key={option}
-                    className="p-2 cursor-pointer hover:bg-gray-100 capitalize"
-                    onClick={() => handleSelection(option)}
-                  >
-                    {option}
-                  </div>
-                ))
+                filteredOptions.map((option) => {
+                  const optionLabel =
+                    typeof option === "string" ? option : option.label;
+                  const optionValue =
+                    typeof option === "string" ? option : option.value;
+
+                  return (
+                    <div
+                      key={optionValue}
+                      className="p-2 cursor-pointer hover:bg-gray-100 capitalize"
+                      onClick={() => handleSelection(optionValue)}
+                    >
+                      {optionLabel}
+                    </div>
+                  );
+                })
               ) : searchTerm ? ( // Show "No match" only if there's a search term
                 <div className="p-2 text-gray-500">
                   <p>No match</p>

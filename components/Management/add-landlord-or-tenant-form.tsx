@@ -66,8 +66,8 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   return (
     <AuthForm
       returnType="form-data"
-      className="custom-flex-col gap-5"
       onFormSubmit={submitAction}
+      className="custom-flex-col gap-5"
       setValidationErrors={setErrorMsgs}
     >
       <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
