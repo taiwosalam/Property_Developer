@@ -24,6 +24,7 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { useAuthStore } from "@/store/authstrore";
 import { useParams, useRouter } from "next/navigation";
 import { LandlordPageData } from "../../types";
+import { ASSET_URL, empty } from "@/app/config";
 
 const ManageLandlord = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -61,7 +62,11 @@ const ManageLandlord = () => {
           <div className="flex flex-col xl:flex-row gap-5">
             <div className="flex items-start">
               <Picture
-                src={LandlordPageData?.avatar}
+                src={
+                  LandlordPageData.picture
+                    ? `${ASSET_URL}${LandlordPageData.picture}`
+                    : empty
+                }
                 alt="profile picture"
                 size={120}
                 rounded
@@ -74,7 +79,7 @@ const ManageLandlord = () => {
                     <p className="text-black text-xl font-bold capitalize">
                       {LandlordPageData?.name}
                     </p>
-                    <BadgeIcon color="blue"/>
+                    <BadgeIcon color="blue" />
                   </div>
                   <p
                     style={{ color: "rgba(21, 21, 21, 0.70)" }}

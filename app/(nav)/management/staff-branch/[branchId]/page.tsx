@@ -140,7 +140,7 @@ const Dashboard = () => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <CreateStaffModal />
+              <CreateStaffModal branchId={branchId as string} />
             </ModalContent>
           </Modal>
           <Button

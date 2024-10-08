@@ -12,3 +12,7 @@ export interface BranchProps {
   property_count: number;
   unit_count: number;
 }
+
+export interface CreateStaffModalProps {
+  branchId: string;
+}

@@ -7,35 +7,36 @@ import FilterButton from "@/components/FilterButton/filter-button";
 import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
-`import type { Field } from "@/components/Table/types";`
+import type { Field } from "@/components/Table/types";
 
-const UnitsReport = () => {
+const Undo = () => {
   const fields: Field[] = [
     { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "Unit ID", accessor: "unit_id" },
+    { id: "1", label: "Event Deleted", accessor: "event_deleted" },
     {
       id: "2",
-      label: "Property Name",
-      accessor: "property_name",
+      label: "Category",
+      accessor: "category",
     },
-    { id: "3", label: "Unit Name", accessor: "unit_name" },
+    { id: "3", label: "Branch", accessor: "branch" },
     {
       id: "5",
-      label: "Unit Description",
-      accessor: "unit_description",
+      label: "Deleted By",
+      accessor: "deleted_by",
     },
-    { id: "6", label: "status", accessor: "status" },
-    { id: "7", label: "Annual Rent", accessor: "annual_rent" },
+    { id: "6", label: "Date Deleted", accessor: "date_deleted" },
+    { id: "7", label: "Time", accessor: "time" },
+    { id: "8", accessor: "action" },
   ];
 
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
-      unit_id: (index + 1).toString(),
-      property_name: `Property ${index + 1}`,
-      unit_name: `unit ${index + 1}`,
-      unit_description: `unit desc ${index + 1}`,
-      status: index % 2 === 0 ? "vacant" : "occupied",
-      annual_rent: `2,600,800`,
+      event_deleted: 'Landlord/Landlady Profile',
+      category: index < 5 ? "management" : "Task",
+      branch: 'Akinyele Branch',
+      deleted_by: 'Ajadi David',
+      date_deleted: '12/02/2024',
+      time: '03:30am',
     }));
   };
 
@@ -44,15 +45,13 @@ const UnitsReport = () => {
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard title="Total Units" newData={23} total={200} />
+        <ManagementStatistcsCard title="Total" newData={34} total={657} />
       </div>
       <div className="page-title-container">
-        <PageTitle title="Units" />
+        <PageTitle title="Undo" />
         <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for units" />
+          <SearchInput placeholder="Search for Undo" />
           <FilterButton />
-          <ExportButton type="pdf" />
-          <ExportButton type="csv" />
         </div>
       </div>
       <CustomTable
@@ -81,4 +80,4 @@ const UnitsReport = () => {
   );
 };
 
-export default UnitsReport;
+export default Undo;

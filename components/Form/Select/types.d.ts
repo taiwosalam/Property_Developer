@@ -1,13 +1,18 @@
+export interface SelectOptionObject {
+  value: string | number;
+  label: string;
+}
+
 export interface SelectProps {
   id: string;
   defaultValue?: string;
-  options: string[];
+  options: string[] | SelectOptionObject[];
   value?: string;
   label?: string;
   className?: string;
   required?: boolean;
   placeholder?: string;
-  onChange?: (data: string) => void;
+  onChange?: (data: string | number) => void;
   validationErrors?: ValidationErrors;
   inputTextClassName?: string;
   allowCustom?: booleab;
