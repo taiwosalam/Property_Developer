@@ -14,14 +14,13 @@ import PropertyListItem from "@/components/Management/Properties/property-list-i
 import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterButton from "@/components/FilterButton/filter-button";
-import useWindowWidth from "@/hooks/useWindowWidth";
 import { PropertyProps } from "@/components/Management/Properties/types";
 import { useAuthStore } from "@/store/authstrore";
 import { getAllProperties } from "./data";
 
 const Properties = () => {
   const acessToken = useAuthStore((state) => state.access_token);
-  const { isSmallTablet } = useWindowWidth();
+
   const initialState = {
     gridView: true,
     total_pages: 50,
@@ -52,25 +51,23 @@ const Properties = () => {
     <div className="space-y-9">
       {/* Header with statistics cards */}
       <div className="page-header-container">
-        {!isSmallTablet && (
-          <AutoResizingGrid minWidth={245} containerClassName="w-full">
-            <ManagementStatistcsCard
-              title="Total Properties"
-              newData={200}
-              total={657}
-            />
-            <ManagementStatistcsCard
-              title="Rental Properties"
-              newData={200}
-              total={657}
-            />
-            <ManagementStatistcsCard
-              title="Gated Estate"
-              newData={200}
-              total={657}
-            />
-          </AutoResizingGrid>
-        )}
+        <div className="hidden md:flex gap-5 flex-wrap">
+          <ManagementStatistcsCard
+            title="Total Properties"
+            newData={200}
+            total={657}
+          />
+          <ManagementStatistcsCard
+            title="Rental Properties"
+            newData={200}
+            total={657}
+          />
+          <ManagementStatistcsCard
+            title="Gated Estate"
+            newData={200}
+            total={657}
+          />
+        </div>
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">

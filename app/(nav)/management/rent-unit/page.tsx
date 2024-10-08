@@ -17,11 +17,8 @@ import StatusIndicator from "@/components/Management/status-indicator";
 import Pagination from "@/components/Pagination/pagination";
 import RentalPropertyCard from "@/components/Management/Rent And Unit/rental-property-card";
 import RentalPropertyListCard from "@/components/Management/Rent And Unit/rental-property-list";
-import useWindowWidth from "@/hooks/useWindowWidth";
-import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const RentAndUnit = () => {
-  const { isSmallTablet } = useWindowWidth();
   const [state, setState] = useState<RentAndUnitState>({
     gridView: true,
     total_pages: 5,
@@ -46,31 +43,32 @@ const RentAndUnit = () => {
   };
   return (
     <div className="space-y-9">
-      {!isSmallTablet && (
-        <AutoResizingGrid minWidth={240}>
-          <ManagementStatistcsCard
-            title="Total Units"
-            newData={30}
-            total={40}
-          />
-          <ManagementStatistcsCard
-            title="Occupied Units"
-            newData={40}
-            total={40}
-          />
-          <ManagementStatistcsCard
-            title="Vacannt Units"
-            newData={40}
-            total={40}
-          />
-          <ManagementStatistcsCard
-            title="Expired Units"
-            newData={40}
-            total={40}
-          />
-        </AutoResizingGrid>
-      )}
-
+      <div className="hidden md:flex gap-5 flex-wrap">
+        <ManagementStatistcsCard
+          title="Total Units"
+          newData={30}
+          total={40}
+          className="w-[240px]"
+        />
+        <ManagementStatistcsCard
+          title="Occupied Units"
+          newData={40}
+          total={40}
+          className="w-[240px]"
+        />
+        <ManagementStatistcsCard
+          title="Vacannt Units"
+          newData={40}
+          total={40}
+          className="w-[240px]"
+        />
+        <ManagementStatistcsCard
+          title="Expired Units"
+          newData={40}
+          total={40}
+          className="w-[240px]"
+        />
+      </div>
       <div className="page-title-container">
         <PageTitle title="Rent & Unit" />
         <div className="flex items-center gap-4 flex-wrap">

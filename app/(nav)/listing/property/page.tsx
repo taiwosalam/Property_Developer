@@ -15,20 +15,32 @@ import { PropertyListingStatusItem } from "@/components/Listing/Property/propert
 const Property = () => {
   return (
     <div className="custom-flex-col gap-9">
-      <AutoResizingGrid minWidth={230}>
+      <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total Property"
           newData={34}
           total={657}
+          className="w-[240px]"
         />
-        <ManagementStatistcsCard title="Drafted" newData={34} total={657} />
+        <ManagementStatistcsCard
+          title="Drafted"
+          newData={34}
+          total={657}
+          className="w-[240px]"
+        />
         <ManagementStatistcsCard
           title="Under Moderation"
           newData={34}
           total={657}
+          className="w-[240px]"
         />
-        <ManagementStatistcsCard title="Unpublished" newData={34} total={657} />
-      </AutoResizingGrid>
+        <ManagementStatistcsCard
+          title="Unpublished"
+          newData={34}
+          total={657}
+          className="w-[240px]"
+        />
+      </div>
       <div className="page-title-container">
         <PageTitle title="Moderating property" />
         <div className="flex items-center gap-4">

@@ -24,11 +24,9 @@ import Button from "@/components/Form/Button/button";
 import { getAllLandlords, LandlordPageState } from "./data";
 import { useAuthStore } from "@/store/authstrore";
 import FilterButton from "@/components/FilterButton/filter-button";
-import useWindowWidth from "@/hooks/useWindowWidth";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const Landlord = () => {
-  const { isSmallTablet } = useWindowWidth();
   const accessToken = useAuthStore((state) => state.access_token);
   const initialState: LandlordPageState = {
     gridView: true,
@@ -226,25 +224,27 @@ const Landlord = () => {
   return (
     <div className="space-y-9">
       <div className="page-header-container">
-        {!isSmallTablet && (
-          <AutoResizingGrid minWidth={245} containerClassName="w-full">
-            <ManagementStatistcsCard
-              title="Total Landlords"
-              newData={new_landlords_this_month}
-              total={total_landlords}
-            />
-            <ManagementStatistcsCard
-              title="Web Landlords"
-              newData={new_web_landlords_this_month}
-              total={web_landlords}
-            />
-            <ManagementStatistcsCard
-              title="Mobile Landlords"
-              newData={new_mobile_landlords_this_month}
-              total={mobile_landlords}
-            />
-          </AutoResizingGrid>
-        )}
+        <div className="hidden md:flex flex-wrap gap-5">
+          <ManagementStatistcsCard
+            title="Total Landlords"
+            newData={new_landlords_this_month}
+            total={total_landlords}
+            className="w-[unset]"
+          />
+          <ManagementStatistcsCard
+            title="Web Landlords"
+            newData={new_web_landlords_this_month}
+            total={web_landlords}
+            className="w-[unset]"
+          />
+          <ManagementStatistcsCard
+            title="Mobile Landlords"
+            newData={new_mobile_landlords_this_month}
+            total={mobile_landlords}
+            className="w-[unset]"
+          />
+        </div>
+
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">

@@ -17,7 +17,6 @@ import type { VehicleRecord } from "@/components/tasks/vehicles-record/types";
 import { VehicleRecordData } from "./data";
 
 const VehiclesRecordPage = () => {
-  const { isSmallTablet } = useWindowWidth();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<VehicleRecord | null>(
     null
@@ -41,21 +40,11 @@ const VehiclesRecordPage = () => {
   return (
     <div className="space-y-9">
       <div className="page-header-container">
-        {!isSmallTablet && (
-          <AutoResizingGrid minWidth={245} containerClassName="w-full">
-            <ManagementStatistcsCard
-              title="Check In"
-              newData={657}
-              total={34}
-            />
-            <ManagementStatistcsCard
-              title="Check Out"
-              newData={657}
-              total={34}
-            />
-            <ManagementStatistcsCard title="Pending" newData={657} total={34} />
-          </AutoResizingGrid>
-        )}
+        <div className="hidden md:flex gap-5 flex-wrap">
+          <ManagementStatistcsCard title="Check In" newData={657} total={34} />
+          <ManagementStatistcsCard title="Check Out" newData={657} total={34} />
+          <ManagementStatistcsCard title="Pending" newData={657} total={34} />
+        </div>
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">

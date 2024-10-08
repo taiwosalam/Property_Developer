@@ -12,24 +12,22 @@ import VacantUnitCard from "@/components/Listing/Units/vacant-unit-card";
 const Units = () => {
   return (
     <div className="custom-flex-col gap-9">
-      <div className="page-header-container">
-        <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <ManagementStatistcsCard
-            title="Total Vacant Units"
-            newData={34}
-            total={657}
-          />
-          <ManagementStatistcsCard
-            title="Published Units"
-            newData={34}
-            total={657}
-          />
-          <ManagementStatistcsCard
-            title="Unpublished Units"
-            newData={34}
-            total={657}
-          />
-        </div>
+      <div className="hidden md:flex gap-5 flex-wrap">
+        <ManagementStatistcsCard
+          title="Total Vacant Units"
+          newData={34}
+          total={657}
+        />
+        <ManagementStatistcsCard
+          title="Published Units"
+          newData={34}
+          total={657}
+        />
+        <ManagementStatistcsCard
+          title="Unpublished Units"
+          newData={34}
+          total={657}
+        />
       </div>
       <div className="page-title-container">
         <PageTitle title="Vacant Units" />
