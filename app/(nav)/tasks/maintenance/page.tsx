@@ -1,7 +1,6 @@
 "use client";
 
 // Imports
-import useWindowWidth from "@/hooks/useWindowWidth";
 import Button from "@/components/Form/Button/button";
 import PageTitle from "@/components/PageTitle/page-title";
 import SearchInput from "@/components/SearchInput/search-input";
@@ -15,7 +14,6 @@ import { useEffect, useState } from "react";
 import { getALLMaintenance } from "./data";
 const Maintenance = () => {
   const accessToken = useAuthStore((state) => state.access_token);
-  const { isSmallTablet } = useWindowWidth();
   const [maintenanceData, setMaintenanceData] = useState([]);
 
   useEffect(() => {
@@ -29,16 +27,14 @@ const Maintenance = () => {
 
   return (
     <div className="custom-flex-col gap-8">
-      <div className="page-header-container gap-6">
-        {!isSmallTablet && (
-          <div className="w-fit">
-            <ManagementStatistcsCard
-              title="Total Maintenance"
-              newData={34}
-              total={657}
-            />
-          </div>
-        )}
+      <div className="page-header-container">
+        <div className="hidden md:flex gap-5 flex-wrap">
+          <ManagementStatistcsCard
+            title="Total Maintenance"
+            newData={34}
+            total={657}
+          />
+        </div>
         <div className="flex items-center">
           <Button
             href="/tasks/maintenance/create-new"

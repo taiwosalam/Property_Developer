@@ -8,33 +8,28 @@ import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
 import SearchInput from "@/components/SearchInput/search-input";
 import InspectionCard from "@/components/tasks/Inspections/inspection-card";
-import useWindowWidth from "@/hooks/useWindowWidth";
 import FilterButton from "@/components/FilterButton/filter-button";
 
 const InspectionPage = () => {
-  const { isSmallTablet } = useWindowWidth();
-
   return (
     <div className="space-y-7">
-      {!isSmallTablet && (
-        <AutoResizingGrid>
-          <ManagementStatistcsCard
-            title="Total Inspections"
-            newData={34}
-            total={657}
-          />
-          <ManagementStatistcsCard
-            title="Physical Inspections"
-            newData={34}
-            total={657}
-          />
-          <ManagementStatistcsCard
-            title="Virtual Inspections"
-            newData={34}
-            total={657}
-          />
-        </AutoResizingGrid>
-      )}
+      <div className="hidden md:flex gap-5 flex-wrap">
+        <ManagementStatistcsCard
+          title="Total Inspections"
+          newData={34}
+          total={657}
+        />
+        <ManagementStatistcsCard
+          title="Physical Inspections"
+          newData={34}
+          total={657}
+        />
+        <ManagementStatistcsCard
+          title="Virtual Inspections"
+          newData={34}
+          total={657}
+        />
+      </div>
       <div className="page-title-container">
         <PageTitle title="Inspection" />
         <div className="flex items-center gap-4 flex-wrap">

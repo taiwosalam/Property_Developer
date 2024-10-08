@@ -15,11 +15,9 @@ import InventoryList from "@/components/Management/Inventory/inventory-list";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import FilterButton from "@/components/FilterButton/filter-button";
-import useWindowWidth from "@/hooks/useWindowWidth";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 
 const Inventory = () => {
-  const { isSmallTablet } = useWindowWidth();
   const [state, setState] = useState<"grid" | "list">("grid");
 
   const setGridView = () => {
@@ -32,15 +30,14 @@ const Inventory = () => {
   return (
     <div className="custom-flex-col gap-9">
       <div className="page-header-container">
-        {!isSmallTablet && (
-          <div className="w-fit">
-            <ManagementStatistcsCard
-              title="Total Records"
-              newData={20}
-              total={100}
-            />
-          </div>
-        )}
+        <div className="hidden md:flex gap-5 flex-wrap">
+          <ManagementStatistcsCard
+            title="Total Records"
+            newData={20}
+            total={100}
+          />
+        </div>
+
         <Button
           href="/management/inventory/create-inventory"
           className="page-header-button"

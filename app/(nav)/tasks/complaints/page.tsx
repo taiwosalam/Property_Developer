@@ -11,32 +11,29 @@ import Pagination from "@/components/Pagination/pagination";
 import SearchInput from "@/components/SearchInput/search-input";
 import { SectionContainer } from "@/components/Section/section-components";
 import useWindowWidth from "@/hooks/useWindowWidth";
-import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const ComplaintsPage = () => {
-  const { isMobile, isSmallTablet } = useWindowWidth();
-
+  const { isMobile } = useWindowWidth();
   return (
     <div className="space-y-7">
-      {!isSmallTablet && (
-        <AutoResizingGrid minWidth={245}>
-          <ManagementStatistcsCard
-            title="Total Complaints"
-            newData={23}
-            total={232}
-          />
-          <ManagementStatistcsCard
-            title="Total Completed"
-            newData={23}
-            total={34}
-          />
-          <ManagementStatistcsCard
-            title="Total Rejected"
-            newData={32}
-            total={453}
-          />
-        </AutoResizingGrid>
-      )}
+      <div className="hidden md:flex gap-5 flex-wrap">
+        <ManagementStatistcsCard
+          title="Total Complaints"
+          newData={23}
+          total={232}
+        />
+        <ManagementStatistcsCard
+          title="Total Completed"
+          newData={23}
+          total={34}
+        />
+        <ManagementStatistcsCard
+          title="Total Rejected"
+          newData={32}
+          total={453}
+        />
+      </div>
+
       <SectionContainer heading="Recent Complains" href="/donottouch">
         <div className="bg-white p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array(3)
@@ -84,9 +81,9 @@ const ComplaintsPage = () => {
               <FilterModal
                 filterOptionsWithDropdown={[]}
                 filterOptions={[]}
-                onApply={() => { }}
+                onApply={() => {}}
                 date
-              //   onStateSelect={(state: string) => setSelectedState(state)}
+                //   onStateSelect={(state: string) => setSelectedState(state)}
               />
             </ModalContent>
           </Modal>
@@ -99,7 +96,7 @@ const ComplaintsPage = () => {
         </SectionContainer>
       )}
 
-      <Pagination totalPages={0} currentPage={0} onPageChange={() => { }} />
+      <Pagination totalPages={0} currentPage={0} onPageChange={() => {}} />
     </div>
   );
 };

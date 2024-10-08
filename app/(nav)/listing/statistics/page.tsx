@@ -11,17 +11,13 @@ import { ChevronLeft } from "@/public/icons/icons";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 // Imports
-import useWindowWidth from "@/hooks/useWindowWidth";
 import { statistics_data_types } from "@/components/Listing/Statistics/data";
-import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import StatisticsMessageCard from "@/components/Listing/Statistics/statistics-message-card";
 import { DashboardChart } from "@/components/dashboard/chart";
 
 const Statistics = () => {
   const router = useRouter();
-
-  const { isSmallTablet } = useWindowWidth();
 
   const [activeStatIndex, setActiveStatIndex] = useState(0);
   const [statsType, setStatsType] = useState<StatisticsDataTypes>("enquires");
@@ -54,22 +50,32 @@ const Statistics = () => {
           </button>
           <p className="text-black font-bold text-lg lg:text-xl">Statistics</p>
         </div>
-        {!isSmallTablet && (
-          <AutoResizingGrid minWidth={230}>
-            <ManagementStatistcsCard
-              title="Enquires"
-              newData={34}
-              total={657}
-            />
-            <ManagementStatistcsCard title="Views" newData={34} total={657} />
-            <ManagementStatistcsCard title="Offers" newData={34} total={657} />
-            <ManagementStatistcsCard
-              title="Bookmarked"
-              newData={34}
-              total={657}
-            />
-          </AutoResizingGrid>
-        )}
+        <div className="hidden md:flex gap-5 flex-wrap">
+          <ManagementStatistcsCard
+            title="Enquires"
+            newData={34}
+            total={657}
+            className="w-[240px]"
+          />
+          <ManagementStatistcsCard
+            title="Views"
+            newData={34}
+            total={657}
+            className="w-[240px]"
+          />
+          <ManagementStatistcsCard
+            title="Offers"
+            newData={34}
+            total={657}
+            className="w-[240px]"
+          />
+          <ManagementStatistcsCard
+            title="Bookmarked"
+            newData={34}
+            total={657}
+            className="w-[240px]"
+          />
+        </div>
       </div>
       <div className="flex gap-10">
         <div className="flex-1">
