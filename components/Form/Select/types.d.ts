@@ -1,7 +1,12 @@
+export interface SelectOptionObject {
+  value: string;
+  label: string;
+}
+
 export interface SelectProps {
   id: string;
   defaultValue?: string;
-  options: string[];
+  options: string[] | SelectOptionObject[];
   value?: string;
   label?: string;
   className?: string;
