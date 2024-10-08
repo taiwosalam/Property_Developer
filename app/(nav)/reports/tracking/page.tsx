@@ -1,5 +1,4 @@
 "use client";
-import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 // import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import PageTitle from "@/components/PageTitle/page-title";
 import SearchInput from "@/components/SearchInput/search-input";
@@ -9,28 +8,35 @@ import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
 
-const LandlordsReport = () => {
+const TrackingReport = () => {
   const fields: Field[] = [
     { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "Landlord / Landlady ID", accessor: "id" },
+    { id: "1", label: "Username", accessor: "username" },
     {
       id: "2",
-      label: "Name",
-      accessor: "name",
-      cellStyle: { textTransform: "uppercase" },
+      label: "Page Visited",
+      accessor: "page_visited",
     },
-    { id: "3", label: "Contact Address", accessor: "address" },
-    { id: "5", label: "Telephone", accessor: "telephone" },
-    { id: "6", label: "email", accessor: "email" },
+    { id: "3", label: "Action Taken", accessor: "action_taken" },
+    {
+      id: "5",
+      label: "IP Address",
+      accessor: "ip_address",
+    },
+    { id: "6", label: "Location", accessor: "location" },
+    { id: "7", label: "Date", accessor: "date" },
+    { id: "8", label: "Time", accessor: "time" },
   ];
 
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
-      id: (index + 1).toString(),
-      name: `name ${index + 1}`,
-      address: `ADDRESS ${index + 1}`,
-      telephone: `TELEPHONE ${index + 1}`,
-      email: `${index + 1}@email.com`,
+      username: `User ${index + 1}`,
+      page_visited: `Landlord Page ${index + 1}`,
+      action_taken: `Login successful ${index + 1}`,
+      ip_address: `IP ${index + 1}`,
+      location: `Location ${index + 1}`,
+      date: "12/12/12",
+      time: "3:20pm",
     }));
   };
 
@@ -38,15 +44,12 @@ const LandlordsReport = () => {
 
   return (
     <div className="space-y-9">
-      <div className="hidden md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard title="Total" newData={23} total={200} />
-      </div>
       <div className="page-title-container">
-        <PageTitle title="Landlord/Landlady" />
+        <PageTitle title="Tracking" />
         <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Landlord & Landlady" />
+          <SearchInput placeholder="Search for audit trail" />
           <FilterButton />
-          <ExportButton type="pdf" href="/reports/landlord/export" />
+          <ExportButton type="pdf" />
           <ExportButton type="csv" />
         </div>
       </div>
@@ -76,4 +79,4 @@ const LandlordsReport = () => {
   );
 };
 
-export default LandlordsReport;
+export default TrackingReport;

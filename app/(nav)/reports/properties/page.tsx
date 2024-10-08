@@ -52,7 +52,7 @@ const PropertiesReport = () => {
         <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for Property Report" />
           <FilterButton />
-          <ExportButton type="pdf" />
+          <ExportButton type="pdf" href="/reports/properties/export" />
           <ExportButton type="csv" />
         </div>
       </div>

@@ -40,16 +40,19 @@ const ServiceProviders = () => {
             title="Total Users"
             newData={30}
             total={40}
+            className="w-[230px]"
           />
           <ManagementStatistcsCard
             title="Mobile Users"
             newData={40}
             total={40}
+            className="w-[230px]"
           />
           <ManagementStatistcsCard
             title="Vacant Units"
             newData={40}
             total={40}
+            className="w-[230px]"
           />
         </div>
         <Modal>
