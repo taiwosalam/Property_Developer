@@ -6,7 +6,11 @@ import { useState, useEffect, Fragment } from "react";
 
 // Types
 import type { CreatePropertyFormProps } from "./types";
-import type { StateType } from "@/app/(nav)/management/properties/create-rental-property/data";
+import type { PropertyStateDataKeys } from "@/app/(nav)/management/properties/create-rental-property/types";
+import {
+  proerty_state_data,
+  type StateType,
+} from "@/app/(nav)/management/properties/create-rental-property/data";
 
 // Images
 import { PlusIcon, DeleteIconX, DeleteIconOrange } from "@/public/icons/icons";
@@ -28,6 +32,10 @@ import {
 import SortableImage from "./sortable-image";
 import { rentPeriods } from "@/data";
 import { AuthForm } from "@/components/Auth/auth-components";
+import { getAllBranches } from "@/app/(nav)/management/staff-branch/data";
+import { useAuthStore } from "@/store/authstrore";
+import { getAllLandlords } from "@/app/(nav)/management/landlord/data";
+import { getAllStaffsByBranch } from "./data";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 
@@ -35,28 +43,19 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   editMode,
   handleSubmit,
 }) => {
-  const [state, setState] = useState<StateType>({
-    selectedState: "",
-    selectedLGA: "",
-    selectedCity: "",
-    localGovernments: [],
-    cities: [],
-    staff: [],
-    images: [],
-    branchOptions: [],
-    inventoryOptions: [],
-    landlordOptions: [],
-    accountOfficerOptions: [],
-    resetKey: 0,
-  });
+  const [state, setState] = useState<StateType>(proerty_state_data);
+
+  const accessToken = useAuthStore((state) => state.access_token);
 
   const {
     selectedState,
     selectedLGA,
     selectedCity,
+    selectedBranch,
     localGovernments,
     cities,
     staff,
+    staffOptions,
     images,
     branchOptions,
     inventoryOptions,
@@ -71,20 +70,14 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
     image,
   }));
 
-  const handleStateChange = (value: string) => {
-    setState((x) => ({ ...x, selectedState: value }));
-  };
-
-  const handleLGAChange = (value: string) => {
-    setState((x) => ({ ...x, selectedLGA: value }));
-  };
-
-  const handleCityChange = (selectedCity: string) => {
-    setState((x) => ({ ...x, selectedCity }));
+  const setPropertyState = (
+    changes: Partial<Record<PropertyStateDataKeys, any>>
+  ) => {
+    setState((x) => ({ ...x, ...changes }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
+    const files = Array.from(e.target.files || []).slice(0, 6 - images.length);
     const validImages: string[] = [];
     const oversizeImages: string[] = [];
     for (const file of files) {
@@ -101,7 +94,10 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
         reader.onloadend = () => {
           validImages.push(reader.result as string);
           if (validImages.length + oversizeImages.length === files.length) {
-            setState((x) => ({ ...x, images: [...x.images, ...validImages] }));
+            setState((x) => ({
+              ...x,
+              images: [...x.images, ...validImages].slice(0, 6),
+            }));
           }
         };
         reader.readAsDataURL(file);
@@ -150,7 +146,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
         staff: [
           ...x.staff,
           {
-            id: `staff${x.staff.length + 1}`,
+            id: `staff${x.staff.length + 1}_id`,
             label: `Staff ${x.staff.length + 1}`,
           },
         ],
@@ -166,6 +162,45 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
     });
     setState((x) => ({ ...x, staff: updatedStaff }));
   };
+
+  // Get primary data from the backend
+  useEffect(() => {
+    const fetchData = async () => {
+      const [branches, landlords] = await Promise.all([
+        getAllBranches(accessToken),
+        getAllLandlords(accessToken),
+      ]);
+
+      setPropertyState({
+        branchOptions: branches.branches.map((branch) => ({
+          value: branch.id,
+          label: branch.branch_title,
+        })),
+        landlordOptions: landlords.landlords.map((landlord) => ({
+          value: landlord.id,
+          label: `${landlord.first_name} ${landlord.last_name}`,
+        })),
+      });
+    };
+
+    fetchData();
+  }, [accessToken]);
+
+  // Gets staffs by branch
+  useEffect(() => {
+    const fetchStaff = async () => {
+      const staff = await getAllStaffsByBranch(selectedBranch, accessToken);
+
+      setPropertyState({
+        staffOptions: staff.map((staff) => ({
+          value: staff.id,
+          label: staff.full_name,
+        })),
+      });
+    };
+
+    if (selectedBranch) fetchStaff();
+  }, [accessToken, selectedBranch]);
 
   useEffect(() => {
     if (selectedState) {
@@ -219,8 +254,8 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
 
   return (
     <AuthForm
+      returnType="form-data"
       onFormSubmit={handleSubmit}
-      returnType="string" //change to formdata after integrating with backend
       setValidationErrors={() => {}}
       className="max-w-[970px] pb-[80px]"
     >
@@ -301,28 +336,28 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           options={getAllStates()}
           label="State"
           value={selectedState}
-          onChange={handleStateChange}
           inputContainerClassName="bg-white"
+          onChange={(selectedState) => setPropertyState({ selectedState })}
         />
         <Select
           options={localGovernments}
           id="local_govt"
           label="local government"
-          onChange={handleLGAChange}
           value={selectedLGA}
           inputContainerClassName="bg-white"
+          onChange={(selectedLGA) => setPropertyState({ selectedLGA })}
         />
         <Select
           options={cities}
           id="city"
           label="City / Area"
           allowCustom={true}
-          onChange={handleCityChange}
           value={selectedCity}
           inputContainerClassName="bg-white"
+          onChange={(selectedCity) => setPropertyState({ selectedCity })}
         />
         <Input
-          id="address"
+          id="full_address"
           label="Full Address"
           inputClassName="bg-white rounded-[8px]"
         />
@@ -335,11 +370,12 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           resetKey={resetKey}
         />
         <Select
-          options={branchOptions}
           id="branch_id"
           label="Branch"
-          inputContainerClassName="bg-white"
           resetKey={resetKey}
+          options={branchOptions}
+          inputContainerClassName="bg-white"
+          onChange={(selectedBranch) => setPropertyState({ selectedBranch })}
         />
         <Select
           options={inventoryOptions}
@@ -365,7 +401,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
         {staff.map(({ id, label }) => (
           <div key={id} className="relative">
             <Select
-              options={[]}
+              options={staffOptions}
               id={id}
               label={label}
               inputContainerClassName="bg-white"
