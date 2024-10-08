@@ -17,7 +17,7 @@ interface ComplaintData {
   brief: string;
 }
 
-const TaskModal = ({ complaintData, statusChanger }: { complaintData: ComplaintData, statusChanger: boolean }) => {
+const TaskModal = ({ complaintData, statusChanger }: { complaintData: ComplaintData, statusChanger?: boolean }) => {
   const pathname = usePathname();
   const {
     senderName,
