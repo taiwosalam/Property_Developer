@@ -30,7 +30,7 @@ export const addLandlord = async (
       return isSuccess;
     }
 
-    toast.success(data.message);
+    toast.success(data.message ?? "Landlord added successfully");
     isSuccess = true;
   } catch (error) {
     console.error("Error adding landlord:", error);

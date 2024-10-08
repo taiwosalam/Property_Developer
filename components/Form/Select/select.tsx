@@ -28,7 +28,12 @@ const Select: React.FC<SelectProps> = ({
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const inputRef = useRef<HTMLInputElement>(null);
-  const initialState = {
+  const initialState: {
+    isOpen: boolean;
+    searchTerm: string;
+    filteredOptions: string[] | SelectOptionObject[];
+    selectedValue: string | number;
+  } = {
     isOpen: false,
     searchTerm: "",
     filteredOptions: options,
@@ -41,7 +46,7 @@ const Select: React.FC<SelectProps> = ({
   // State to store validation error message
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  const handleSelection = (option: string) => {
+  const handleSelection = (option: string | number) => {
     setState((x) => ({
       ...x,
       selectedValue: option,

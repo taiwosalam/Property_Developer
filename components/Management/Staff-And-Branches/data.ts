@@ -21,7 +21,7 @@ export const addStaff = async (
     if (!response.ok) {
       const errors =
         Object.keys(data).length > 0
-          ? `${data.error} ${data.details}`
+          ? `${data.error ?? ""} ${data.details ?? ""}`
           : "An unexpected error occurred";
 
       toast.error(errors);

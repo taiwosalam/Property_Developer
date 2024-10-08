@@ -33,3 +33,23 @@ export interface CreatePropertyFormProps {
   handleSubmit: (a?: any) => void;
   editMode?: boolean;
 }
+
+export interface StaffData {
+  id: number;
+  user_id: number;
+  company_id: number;
+  branch_id: number;
+  account_officer: string | null;
+  personal_title: string;
+  real_estate_title: string;
+  full_name: string;
+  position: string;
+  gender: "male" | "female"; // If you have a defined set of genders, you can use a union type
+  phone_number: string;
+  avatar: string | null;
+  picture: string | null;
+  user_tag: string;
+  created_at: string; // Could be `Date` if you're converting it into a date object
+  updated_at: string; // Could be `Date` if you're converting it into a date object
+  picture_url: string | null;
+}
