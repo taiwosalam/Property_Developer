@@ -68,7 +68,7 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
   const old = total - newData;
   return (
     <Card
-      className="min-w-[250px] custom-flex-col justify-center"
+      className="w-full custom-flex-col justify-center"
       style={{ boxShadow: "-2px 2px 10px rgba(21, 21, 21, 0.10)" }}
     >
       <CardContent className="py-5">

@@ -30,11 +30,10 @@ const CreateMaintenace = () => {
     setMaintenanceCost(formatCostInputValue(value));
   };
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = async (data: any) => {
     console.log(data);
-    createMaintenance(accessToken, data).then((res) => {
-      console.log(res);
-    });
+    // BACKEND ERROR: METHOD NOT ALLOWED
+    const response = await createMaintenance(accessToken, data);
   };
 
   return (
@@ -59,45 +58,45 @@ const CreateMaintenace = () => {
           <Select
             id="branch"
             label="Branch"
-            options={["sadf", "sdf", "sdf"]}
+            options={["branch 1", "branch 2"]}
             inputContainerClassName="bg-white"
           />
           <Select
             id="property"
             label="Property"
-            options={["sadf", "sdf", "sdf"]}
+            options={["property 1", "property 2"]}
             inputContainerClassName="bg-white"
           />
           <Select
             id="affected_units"
             label="Affected Units"
-            options={["sadf", "sdf", "sdf"]}
+            options={["unit 1", "unit 2"]}
             inputContainerClassName="bg-white"
           />
           <Select
             id="priority"
             label="Priority"
-            options={["sadf", "sdf", "sdf"]}
+            options={["low", "medium", "high"]}
             isSearchable={false}
             inputContainerClassName="bg-white"
           />
           <Select
             id="requested_by"
             label="Requested By"
-            options={["sadf", "sdf", "sdf"]}
+            options={["user 1", "user 2"]}
             inputContainerClassName="bg-white"
           />
           <Select
-            id="maintenance_type"
+            id="maintenance_service_type"
             label="Maintenance Type"
-            options={["sadf", "sdf", "sdf"]}
+            options={["tailoring", "lawyer"]}
             isSearchable={false}
             inputContainerClassName="bg-white"
           />
           <Select
             id="service_provider"
             label="Service Provider"
-            options={["sadf", "sdf", "sdf"]}
+            options={["tailor", "lawyer"]}
             inputContainerClassName="bg-white"
           />
         </div>

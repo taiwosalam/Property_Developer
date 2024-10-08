@@ -14,6 +14,8 @@ import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { useModal } from "@/components/Modal/modal";
+import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
+import { toast } from "sonner";
 
 const AddTenantModal = () => {
   const { setIsOpen } = useModal();
@@ -28,9 +30,15 @@ const AddTenantModal = () => {
   };
 
   const handleAddTenant = async (data: FormData) => {
-    const response = await addTenant(data, accessToken);
+    // If neither picture nor avatar is valid, show a warning
+    if (!checkFormDataForImageOrAvatar(data)) {
+      toast.warning("Please upload a picture or select an avatar.");
+      return;
+    }
 
-    if (response) {
+    const success = await addTenant(data, accessToken);
+
+    if (success) {
       setIsOpen(false);
     }
   };
