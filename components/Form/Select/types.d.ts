@@ -1,5 +1,5 @@
 export interface SelectOptionObject {
-  value: string;
+  value: string | number;
   label: string;
 }
 
@@ -12,7 +12,7 @@ export interface SelectProps {
   className?: string;
   required?: boolean;
   placeholder?: string;
-  onChange?: (data: string) => void;
+  onChange?: (data: string | number) => void;
   validationErrors?: ValidationErrors;
   inputTextClassName?: string;
   allowCustom?: booleab;

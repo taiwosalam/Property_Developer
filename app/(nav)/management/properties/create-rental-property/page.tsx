@@ -15,9 +15,13 @@ const CreateProperty = () => {
 
   const accessToken = useAuthStore((state) => state.access_token);
 
-  const handleSubmit = async (data: any) => {
-    //change to formdata after integrating with backend
-    // e.preventDefault();
+  const handleSubmit = async (data: FormData) => {
+    // Add additional fields to the FormData
+    data.append("annual_rent", "5000"); // Replace "5000" with the actual value
+    data.append("service_charge", "1000"); // Replace "1000" with the actual value
+    data.append("legal", "300"); // Replace with actual value
+    data.append("other_charges", "200"); // Replace with actual value
+
     console.log(formDataToString(data));
 
     const isSuccess = await addProperty(data, accessToken);

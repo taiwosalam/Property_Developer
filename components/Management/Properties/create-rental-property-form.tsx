@@ -381,6 +381,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           options={inventoryOptions}
           id="inventory_id"
           label="Inventory"
+          value="1" // NOTE: Remove this later
           inputContainerClassName="bg-white"
           resetKey={resetKey}
         />
@@ -395,6 +396,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           options={accountOfficerOptions}
           id="account_officer_id"
           label="Account Officer"
+          value="10" // NOTE: Remove this later
           inputContainerClassName="bg-white"
           resetKey={resetKey}
         />
@@ -447,18 +449,18 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           id="agency_fee"
           label="Agency Fee"
           options={[
-            "1%",
-            "2%",
-            "2.5%",
-            "3%",
-            "3.5%",
-            "5%",
-            "6%",
-            "7%",
-            "7.5%",
-            "8%",
-            "9%",
-            "10%",
+            { value: 1, label: "1%" },
+            { value: 2, label: "2%" },
+            { value: 2.5, label: "2.5%" },
+            { value: 3, label: "3%" },
+            { value: 3.5, label: "3.5%" },
+            { value: 5, label: "5%" },
+            { value: 6, label: "6%" },
+            { value: 7, label: "7%" },
+            { value: 7.5, label: "7.5%" },
+            { value: 8, label: "8%" },
+            { value: 9, label: "9%" },
+            { value: 10, label: "10%" },
           ]}
           isSearchable={false}
           inputContainerClassName="bg-white"
@@ -481,12 +483,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           resetKey={resetKey}
         />
         <Select
-          options={[
-            "keep with landlord",
-            "keep with manager",
-            "escrow it",
-            "none",
-          ]}
+          options={[{ value: 1, label: "No Fee" }]}
           isSearchable={false}
           id="caution_deposit"
           label="Caution Deposit"
@@ -496,13 +493,13 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
         <Select
           id="group_chat"
           label="Group Chat"
-          options={["yes", "no"]}
+          options={["Yes", "No"]}
           isSearchable={false}
           inputContainerClassName="bg-white"
           resetKey={resetKey}
         />
         <Select
-          options={["yes", "no"]}
+          options={["Yes", "No"]}
           id="fee_penalty"
           label="Rent Penalty"
           isSearchable={false}
@@ -510,7 +507,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           resetKey={resetKey}
         />
         <Select
-          options={["yes", "no"]}
+          options={["Yes", "No"]}
           id="request_callback"
           label="Request Call Back"
           isSearchable={false}
@@ -518,7 +515,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           resetKey={resetKey}
         />
         <Select
-          options={["yes", "no"]}
+          options={["Yes", "No"]}
           id="book_visitors"
           label="Book Visitors"
           isSearchable={false}
@@ -526,7 +523,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           resetKey={resetKey}
         />
         <Select
-          options={["yes", "no"]}
+          options={["Yes", "No"]}
           id="vehicle_records"
           label="Vehicle Records"
           isSearchable={false}
@@ -534,7 +531,10 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           resetKey={resetKey}
         />
         <Select
-          options={["yes", "no"]}
+          options={[
+            { value: "true", label: "Yes" },
+            { value: "false", label: "No" },
+          ]}
           id="activate_vat"
           label="Activate 7.5% VAT"
           isSearchable={false}
