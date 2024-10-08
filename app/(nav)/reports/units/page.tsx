@@ -44,7 +44,7 @@ const UnitsReport = () => {
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard title="Total" newData={23} total={200} />
+        <ManagementStatistcsCard title="Total Units" newData={23} total={200} />
       </div>
       <div className="page-title-container">
         <PageTitle title="Units" />

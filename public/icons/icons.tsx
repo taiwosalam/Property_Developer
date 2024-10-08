@@ -1104,3 +1104,102 @@ export const ExcelIcon = () => {
     </svg>
   );
 };
+
+export const WebIcon = () => {
+  return (
+    <svg
+      width="18"
+      height="19"
+      viewBox="0 0 18 19"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M16.5 9.375C16.5 5.235 13.14 1.875 9 1.875C4.86 1.875 1.5 5.235 1.5 9.375C1.5 13.515 4.86 16.875 9 16.875"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5.99995 2.625H6.74995C5.28745 7.005 5.28745 11.745 6.74995 16.125H5.99995"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M11.25 2.625C11.9775 4.815 12.345 7.095 12.345 9.375"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M2.25 12.375V11.625C4.44 12.3525 6.72 12.72 9 12.72"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M2.25 7.12422C6.63 5.66172 11.37 5.66172 15.75 7.12422"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M13.65 16.425C14.9755 16.425 16.05 15.3505 16.05 14.025C16.05 12.6995 14.9755 11.625 13.65 11.625C12.3245 11.625 11.25 12.6995 11.25 14.025C11.25 15.3505 12.3245 16.425 13.65 16.425Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16.5 16.875L15.75 16.125"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const TelephoneIcon = () => {
+  return (
+    <svg
+      width="19"
+      height="20"
+      viewBox="0 0 19 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M3 1.46484H7L9 6.47774L6.5 7.9816C7.57096 10.1587 9.32847 11.9208 11.5 12.9945L13 10.488L18 12.4932V16.5035C18 17.0353 17.7893 17.5453 17.4142 17.9214C17.0391 18.2974 16.5304 18.5087 16 18.5087C12.0993 18.271 8.42015 16.6103 5.65683 13.8398C2.8935 11.0694 1.23705 7.38079 1 3.47C1 2.9382 1.21071 2.42818 1.58579 2.05214C1.96086 1.6761 2.46957 1.46484 3 1.46484Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const EmailIcon = () => {
+  return (
+    <svg
+      width="17"
+      height="13"
+      viewBox="0 0 17 13"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1.87023 0.671875H15.1202C16.3702 0.671875 17.0002 1.2634 17.0002 2.46649V10.9082C17.0002 12.1013 16.3702 12.7028 15.1202 12.7028H1.87023C0.620234 12.7028 -0.00976562 12.1013 -0.00976562 10.9082V2.46649C-0.00976562 1.2634 0.620234 0.671875 1.87023 0.671875ZM8.49023 9.29405L15.2302 3.74979C15.4702 3.54927 15.6602 3.08809 15.3602 2.67703C15.0702 2.26597 14.5402 2.25595 14.1902 2.50659L8.49023 6.37654L2.80023 2.50659C2.45023 2.25595 1.92023 2.26597 1.63023 2.67703C1.33023 3.08809 1.52023 3.54927 1.76023 3.74979L8.49023 9.29405Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};

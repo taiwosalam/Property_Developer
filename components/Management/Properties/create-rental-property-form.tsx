@@ -84,7 +84,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
+    const files = Array.from(e.target.files || []).slice(0, 6 - images.length); // Limit to 6 images;
     const validImages: string[] = [];
     const oversizeImages: string[] = [];
     for (const file of files) {
@@ -101,7 +101,10 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
         reader.onloadend = () => {
           validImages.push(reader.result as string);
           if (validImages.length + oversizeImages.length === files.length) {
-            setState((x) => ({ ...x, images: [...x.images, ...validImages] }));
+            setState((x) => ({
+              ...x,
+              images: [...x.images, ...validImages].slice(0, 6),
+            }));
           }
         };
         reader.readAsDataURL(file);

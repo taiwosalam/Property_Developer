@@ -57,7 +57,7 @@ const TenantsReport = () => {
         <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for Tenants & Occupants" />
           <FilterButton />
-          <ExportButton type="pdf" />
+          <ExportButton type="pdf" href="/reports/tenants/export" />
           <ExportButton type="csv" />
         </div>
       </div>

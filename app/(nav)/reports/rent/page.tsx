@@ -9,28 +9,36 @@ import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
 
-const LandlordsReport = () => {
+const RentReport = () => {
   const fields: Field[] = [
     { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "Landlord / Landlady ID", accessor: "id" },
+    { id: "1", label: "Unit ID", accessor: "unit_id" },
     {
       id: "2",
-      label: "Name",
-      accessor: "name",
-      cellStyle: { textTransform: "uppercase" },
+      label: "Property Name",
+      accessor: "property_name",
     },
-    { id: "3", label: "Contact Address", accessor: "address" },
-    { id: "5", label: "Telephone", accessor: "telephone" },
-    { id: "6", label: "email", accessor: "email" },
+    { id: "3", label: "Tenant / Occupant", accessor: "tenant_name" },
+    {
+      id: "5",
+      label: "Start Date",
+      accessor: "start_date",
+    },
+    { id: "6", label: "End Date", accessor: "end_date" },
+    { id: "7", label: "Status", accessor: "status" },
+    { id: "8", label: "First Deposit", accessor: "first_deposit" },
   ];
 
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
-      id: (index + 1).toString(),
-      name: `name ${index + 1}`,
-      address: `ADDRESS ${index + 1}`,
-      telephone: `TELEPHONE ${index + 1}`,
-      email: `${index + 1}@email.com`,
+      unit_id: (index + 1).toString(),
+      property_name: `Property ${index + 1}`,
+      tenant_name: `Tenant ${index + 1}`,
+      unit_description: `unit desc ${index + 1}`,
+      start_date: "12/12/12",
+      end_date: "12/12/12",
+      status: index % 2 === 0 ? "vacant" : "occupied",
+      first_deposit: `2,600,800`,
     }));
   };
 
@@ -39,14 +47,14 @@ const LandlordsReport = () => {
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard title="Total" newData={23} total={200} />
+        <ManagementStatistcsCard title="Total Rent / Due" newData={23} total={200} />
       </div>
       <div className="page-title-container">
-        <PageTitle title="Landlord/Landlady" />
+        <PageTitle title="Rent / Due Roll" />
         <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Landlord & Landlady" />
+          <SearchInput placeholder="Search for Rent Roll" />
           <FilterButton />
-          <ExportButton type="pdf" href="/reports/landlord/export" />
+          <ExportButton type="pdf" />
           <ExportButton type="csv" />
         </div>
       </div>
@@ -76,4 +84,4 @@ const LandlordsReport = () => {
   );
 };
 
-export default LandlordsReport;
+export default RentReport;

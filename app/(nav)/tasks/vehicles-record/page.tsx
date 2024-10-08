@@ -1,7 +1,5 @@
 "use client";
 import { useState } from "react";
-import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import useWindowWidth from "@/hooks/useWindowWidth";
 import PageTitle from "@/components/PageTitle/page-title";
 import FilterButton from "@/components/FilterButton/filter-button";
 import SearchInput from "@/components/SearchInput/search-input";

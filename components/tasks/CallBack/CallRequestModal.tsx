@@ -25,10 +25,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
         <span className="font-medium text-[16px] text-text-secondary">
           Request for Call
         </span>
-        <ModalTrigger
-          close
-          className="absolute top-4 right-6"
-        >
+        <ModalTrigger close className="absolute top-4 right-6">
           <XIcon size="30" />
         </ModalTrigger>
       </div>
