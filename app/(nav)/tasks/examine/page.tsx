@@ -1,7 +1,6 @@
 "use client";
 
 // Imports
-import useWindowWidth from "@/hooks/useWindowWidth";
 import Button from "@/components/Form/Button/button";
 import PageTitle from "@/components/PageTitle/page-title";
 import SearchInput from "@/components/SearchInput/search-input";
@@ -12,20 +11,16 @@ import FilterButton from "@/components/FilterButton/filter-button";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 
 const Examine = () => {
-  const { isSmallTablet } = useWindowWidth();
-
   return (
     <div className="space-y-9">
       <div className="page-header-container">
-        {!isSmallTablet && (
-          <div className="w-fit">
-            <ManagementStatistcsCard
-              title="Total Examine"
-              newData={34}
-              total={657}
-            />
-          </div>
-        )}
+        <div className="hidden md:flex gap-5 flex-wrap">
+          <ManagementStatistcsCard
+            title="Total Examine"
+            newData={34}
+            total={657}
+          />
+        </div>
         <Button href="" className="page-header-button">
           + create new
         </Button>

@@ -1,5 +1,6 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import clsx from "clsx";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 
 interface DonutChartProps {
   oldValue: number;
@@ -58,17 +59,19 @@ interface ManagementStatistcsCardProps {
   total: number;
   title: string;
   newData: number;
+  className?: string;
 }
 
 const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
   title,
   total,
   newData,
+  className,
 }) => {
   const old = total - newData;
   return (
     <Card
-      className="w-full custom-flex-col justify-center"
+      className={clsx("w-[250px] custom-flex-col justify-center", className)}
       style={{ boxShadow: "-2px 2px 10px rgba(21, 21, 21, 0.10)" }}
     >
       <CardContent className="py-5">

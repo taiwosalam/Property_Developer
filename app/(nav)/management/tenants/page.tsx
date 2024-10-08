@@ -23,12 +23,10 @@ import { defaultTenantPageData, getAllTenants, TenantPageState } from "./data";
 import { useAuthStore } from "@/store/authstrore";
 import FilterButton from "@/components/FilterButton/filter-button";
 import Link from "next/link";
-import useWindowWidth from "@/hooks/useWindowWidth";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const Tenants = () => {
   const accessToken = useAuthStore((state) => state.access_token);
-  const { isSmallTablet } = useWindowWidth();
   const initialState: TenantPageState = {
     gridView: true,
     total_pages: 50,
@@ -223,25 +221,23 @@ const Tenants = () => {
   return (
     <div className="space-y-9">
       <div className="page-header-container">
-        {!isSmallTablet && (
-          <AutoResizingGrid minWidth={245} containerClassName="w-full">
-            <ManagementStatistcsCard
-              title="Total Users"
-              newData={new_tenants_this_month}
-              total={total_tenants}
-            />
-            <ManagementStatistcsCard
-              title="Web Tenants"
-              newData={new_web_tenants_this_month}
-              total={web_tenants}
-            />
-            <ManagementStatistcsCard
-              title="Mobile Tenants"
-              newData={new_mobile_tenants_this_month}
-              total={mobile_tenants}
-            />
-          </AutoResizingGrid>
-        )}
+        <div className="hidden md:flex gap-5 flex-wrap">
+          <ManagementStatistcsCard
+            title="Total Users"
+            newData={new_tenants_this_month}
+            total={total_tenants}
+          />
+          <ManagementStatistcsCard
+            title="Web Tenants"
+            newData={new_web_tenants_this_month}
+            total={web_tenants}
+          />
+          <ManagementStatistcsCard
+            title="Mobile Tenants"
+            newData={new_mobile_tenants_this_month}
+            total={mobile_tenants}
+          />
+        </div>
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">

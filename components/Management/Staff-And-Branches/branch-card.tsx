@@ -1,5 +1,5 @@
 import type { BranchProps } from "./types";
-import DefaultBranchPicture from "@/public/empty/branch.png";
+import { empty } from "@/app/config";
 import DefaultBranchManagerAvatar from "@/public/icons/contact.svg";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,7 +26,7 @@ const BranchCard: React.FC<BranchProps> = ({
         ></div>
         <div className="absolute left-[50%] translate-x-[-50%] top-[-2.8rem] bg-white rounded-full w-[95px] h-[95px] overflow-hidden border-[3px] border-white">
           <Image
-            src={DefaultBranchPicture}
+            src={avatar || empty}
             alt={branch_title || ""}
             fill
             className="rounded-full object-cover"
@@ -43,7 +43,7 @@ const BranchCard: React.FC<BranchProps> = ({
             <div className="bg-brand-1 rounded-full w-5 h-5 grid place-items-center relative">
               <Image
                 alt={`${manager_name} avatar`}
-                src={DefaultBranchManagerAvatar}
+                src={manager_avatar || DefaultBranchManagerAvatar}
                 className="w-[10px] h-[10px]"
               />
             </div>

@@ -8,13 +8,11 @@ import FilterButton from "@/components/FilterButton/filter-button";
 import Button from "@/components/Form/Button/button";
 import AnnouncementCard from "@/components/tasks/announcements/announcement-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import useWindowWidth from "@/hooks/useWindowWidth";
 import { useAuthStore } from "@/store/authstrore";
 import { getAllAnnouncements } from "./data";
 import { Announcement } from "./types";
 
 const AnnouncementPage = () => {
-  const { isSmallTablet } = useWindowWidth();
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const { access_token } = useAuthStore();
 
@@ -29,17 +27,14 @@ const AnnouncementPage = () => {
   return (
     <div className="space-y-9">
       <div className="page-header-container">
-        {!isSmallTablet && (
-          <AutoResizingGrid minWidth={220} containerClassName="w-full">
-            <ManagementStatistcsCard
-              title="Announcement"
-              newData={40}
-              total={657}
-            />
-            <ManagementStatistcsCard title="Examine" newData={657} total={40} />
-          </AutoResizingGrid>
-        )}
-
+        <div className="hidden md:flex gap-5 flex-wrap">
+          <ManagementStatistcsCard
+            title="Announcement"
+            newData={40}
+            total={657}
+          />
+          <ManagementStatistcsCard title="Examine" newData={657} total={40} />
+        </div>
         <Button
           href="/tasks/announcements/create-announcement"
           className="page-header-button"

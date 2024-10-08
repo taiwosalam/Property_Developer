@@ -1,7 +1,6 @@
 "use client";
 
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import useWindowWidth from "@/hooks/useWindowWidth";
 import PageTitle from "@/components/PageTitle/page-title";
 import FilterButton from "@/components/FilterButton/filter-button";
 import SearchInput from "@/components/SearchInput/search-input";
@@ -27,20 +26,17 @@ const transformToDepositRequestCardProps = (
 };
 
 const DepositRequest = () => {
-  const { isSmallTablet } = useWindowWidth();
   return (
     <div className="space-y-9">
-      {!isSmallTablet && (
-        <AutoResizingGrid minWidth={245} containerClassName="w-full">
-          <ManagementStatistcsCard
-            title="Total Requests"
-            newData={657}
-            total={34}
-          />
-          <ManagementStatistcsCard title="Completed" newData={657} total={34} />
-          <ManagementStatistcsCard title="Pending" newData={657} total={34} />
-        </AutoResizingGrid>
-      )}
+      <div className="hidden md:flex gap-5 flex-wrap">
+        <ManagementStatistcsCard
+          title="Total Requests"
+          newData={657}
+          total={34}
+        />
+        <ManagementStatistcsCard title="Completed" newData={657} total={34} />
+        <ManagementStatistcsCard title="Pending" newData={657} total={34} />
+      </div>
       <div className="page-title-container">
         <PageTitle title="Caution Deposits Request" />
         <div className="flex items-center gap-4 flex-wrap">

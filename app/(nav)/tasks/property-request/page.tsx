@@ -1,6 +1,5 @@
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import useWindowWidth from "@/hooks/useWindowWidth";
 import PageTitle from "@/components/PageTitle/page-title";
 import FilterButton from "@/components/FilterButton/filter-button";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
@@ -28,19 +27,16 @@ const transformToPropertyRequestCardProps = (
 };
 
 const PropertyRequest = () => {
-  const { isSmallTablet } = useWindowWidth();
-
   return (
     <div className="space-y-9">
-      {!isSmallTablet && (
-        <div className="w-fit">
-          <ManagementStatistcsCard
-            title="Property Request"
-            newData={34}
-            total={657}
-          />
-        </div>
-      )}
+      <div className="hidden md:flex gap-5 flex-wrap">
+        <ManagementStatistcsCard
+          title="Property Request"
+          newData={34}
+          total={657}
+          className="w-[unset]"
+        />
+      </div>
       <div className="page-title-container">
         <PageTitle title="Request" />
         <div className="flex items-center gap-4 flex-wrap">

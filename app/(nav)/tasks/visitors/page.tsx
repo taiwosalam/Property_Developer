@@ -30,7 +30,7 @@ const transformToVisitorRequestCardProps = (
 const BookVisitorsPage = () => {
   return (
     <section className="space-y-9">
-      <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-4 max-w-4xl">
+      <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           total={12}
           title="Total Visitors"

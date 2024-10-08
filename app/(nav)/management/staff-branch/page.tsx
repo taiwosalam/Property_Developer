@@ -20,10 +20,8 @@ import Pagination from "@/components/Pagination/pagination";
 import CreateBranchModal from "@/components/Management/Staff-And-Branches/create-branch-modal";
 import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import useWindowWidth from "@/hooks/useWindowWidth";
 
 const StaffAndBranches = () => {
-  const { isSmallTablet } = useWindowWidth();
   const router = useRouter();
   const initialState: StaffAndBranchPageState = {
     gridView: true,
@@ -204,25 +202,23 @@ const StaffAndBranches = () => {
   return (
     <div className="space-y-9">
       <div className="page-header-container">
-        {!isSmallTablet && (
-          <AutoResizingGrid minWidth={245} containerClassName="w-full">
-            <ManagementStatistcsCard
-              title="Total Branches"
-              newData={new_branches_count}
-              total={total_branches}
-            />
-            <ManagementStatistcsCard
-              title="Total Properties"
-              newData={new_properties_count}
-              total={total_properties}
-            />
-            <ManagementStatistcsCard
-              title="Total Staff"
-              newData={new_staffs_count}
-              total={total_staffs}
-            />
-          </AutoResizingGrid>
-        )}
+        <div className="hidden md:flex gap-5 flex-wrap">
+          <ManagementStatistcsCard
+            title="Total Branches"
+            newData={new_branches_count}
+            total={total_branches}
+          />
+          <ManagementStatistcsCard
+            title="Total Properties"
+            newData={new_properties_count}
+            total={total_properties}
+          />
+          <ManagementStatistcsCard
+            title="Total Staff"
+            newData={new_staffs_count}
+            total={total_staffs}
+          />
+        </div>
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">

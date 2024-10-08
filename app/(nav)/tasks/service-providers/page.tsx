@@ -11,13 +11,11 @@ import Button from "@/components/Form/Button/button";
 import ServiceProviderCard from "@/components/Management/landlord-and-tenant-card";
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import AddServiceProviderModal from "@/components/tasks/service-providers/add-service-provider-modal";
-import useWindowWidth from "@/hooks/useWindowWidth";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { useAuthStore } from "@/store/authstrore";
 import { getAllServiceProviders } from "./data";
 
 const ServiceProviders = () => {
-  const { isSmallTablet } = useWindowWidth();
   const accessToken = useAuthStore((state) => state.access_token);
   const [state, setState] = useState({
     total_pages: 5,
@@ -37,25 +35,23 @@ const ServiceProviders = () => {
   return (
     <div className="space-y-9">
       <div className="page-header-container">
-        {!isSmallTablet && (
-          <AutoResizingGrid minWidth={220} containerClassName="w-full">
-            <ManagementStatistcsCard
-              title="Total Users"
-              newData={30}
-              total={40}
-            />
-            <ManagementStatistcsCard
-              title="Mobile Users"
-              newData={40}
-              total={40}
-            />
-            <ManagementStatistcsCard
-              title="Vacant Units"
-              newData={40}
-              total={40}
-            />
-          </AutoResizingGrid>
-        )}
+        <div className="hidden md:flex gap-5 flex-wrap">
+          <ManagementStatistcsCard
+            title="Total Users"
+            newData={30}
+            total={40}
+          />
+          <ManagementStatistcsCard
+            title="Mobile Users"
+            newData={40}
+            total={40}
+          />
+          <ManagementStatistcsCard
+            title="Vacant Units"
+            newData={40}
+            total={40}
+          />
+        </div>
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">
