@@ -74,7 +74,7 @@ export const nav_items: NavItemsProps = [
       { label: "call request", href: "/call" },
       { label: "visitors request", href: "/visitors" },
       { label: "undo", href: "/undo" },
-      { label: "vehicles record", href: "/vehicles" },
+      { label: "vehicles record", href: "/vehicles-record" },
     ],
   },
   { type: "empty_wallet", label: "wallet", href: "/wallet" },

@@ -43,7 +43,7 @@ interface TaskCardProps {
   noDrag?: boolean;
   isOverlay?: boolean;
   isNew?: boolean;
-  statusChanger: boolean;
+  statusChanger?: boolean;
 }
 
 export type TaskType = "Task";
