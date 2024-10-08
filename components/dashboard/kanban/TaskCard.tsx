@@ -43,6 +43,7 @@ interface TaskCardProps {
   noDrag?: boolean;
   isOverlay?: boolean;
   isNew?: boolean;
+  statusChanger: boolean;
 }
 
 export type TaskType = "Task";
@@ -52,7 +53,7 @@ export interface TaskDragData {
   task: Task;
 }
 
-export function TaskCard({ task, isOverlay, noDrag, isNew }: TaskCardProps) {
+export function TaskCard({ task, isOverlay, noDrag, isNew, statusChanger }: TaskCardProps) {
   const [isModalOpen, setModalOpen] = useState(false);
   const wasRecentlyDragged = useRef(false);
   const router = useRouter();
@@ -94,8 +95,8 @@ export function TaskCard({ task, isOverlay, noDrag, isNew }: TaskCardProps) {
     task.content.status === "processing"
       ? "#FDB82C"
       : task.content.status === "approved"
-      ? "#01BA4C"
-      : "#E9212E";
+        ? "#01BA4C"
+        : "#E9212E";
 
   useEffect(() => {
     if (isDragging) {
@@ -223,7 +224,7 @@ export function TaskCard({ task, isOverlay, noDrag, isNew }: TaskCardProps) {
 
       <Modal state={{ isOpen: isModalOpen, setIsOpen: setModalOpen }}>
         <ModalContent>
-          <TaskModal complaintData={complaintData} />
+          <TaskModal statusChanger={statusChanger} complaintData={complaintData} />
         </ModalContent>
       </Modal>
     </div>
