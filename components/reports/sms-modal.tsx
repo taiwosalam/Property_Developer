@@ -1,6 +1,5 @@
 import { ModalTrigger } from "@/components/Modal/modal";
 import { XIcon } from "@/public/icons/icons";
-import { SectionSeparator } from "../Section/section-components";
 
 export interface SMSRecord {
   id: string;

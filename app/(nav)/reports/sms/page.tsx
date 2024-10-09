@@ -39,7 +39,7 @@ const SMSReport = () => {
 
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
-      id: index + 1,
+      id: `${index + 1}`,
       user_id: `User ${index + 1}`,
       client_name: `Client ${index + 1}`,
       phone_number: `Phone ${index + 1}`,
