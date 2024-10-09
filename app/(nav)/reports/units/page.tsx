@@ -7,6 +7,7 @@ import FilterButton from "@/components/FilterButton/filter-button";
 import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
+import { Field } from "@/components/Table/types";
 `import type { Field } from "@/components/Table/types";`
 
 const UnitsReport = () => {
