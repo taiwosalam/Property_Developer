@@ -12,7 +12,7 @@ export interface SelectProps {
   className?: string;
   required?: boolean;
   placeholder?: string;
-  onChange?: (data: string | number) => void;
+  onChange?: (data: string) => void;
   validationErrors?: ValidationErrors;
   inputTextClassName?: string;
   allowCustom?: booleab;
