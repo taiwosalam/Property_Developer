@@ -136,25 +136,20 @@ const Properties = () => {
         {gridView ? (
           <AutoResizingGrid minWidth={315}>
             {properties.length >= 1 &&
-              properties
-                .slice(0, 20)
-                .map((p) => <PropertyCard {...p} key={p.id} />)}
+              properties.map((p) => <PropertyCard {...p} key={p.id} />)}
           </AutoResizingGrid>
         ) : (
           <div className="space-y-4">
             {properties.length >= 1 &&
-              properties
-                .slice(0, 30)
-                .map((p) => <PropertyListItem key={p.id} {...p} />)}
+              properties.map((p) => <PropertyListItem key={p.id} {...p} />)}
           </div>
         )}
-        <Pagination
-          totalPages={total_pages}
-          currentPage={current_page}
-          onPageChange={handlePageChange}
-          className="mt-8 text-xs font-medium"
-        />
       </section>
+      <Pagination
+        totalPages={total_pages}
+        currentPage={current_page}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

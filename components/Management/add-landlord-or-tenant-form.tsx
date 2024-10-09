@@ -34,7 +34,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
 
   const accessToken = useAuthStore((state) => state.access_token);
 
-  const handleStateChange = (value: string) => {
+  const handleStateChange = (value: string| number) => {
     setSelectedState(value);
   };
 
