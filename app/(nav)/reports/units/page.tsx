@@ -51,7 +51,7 @@ const UnitsReport = () => {
         <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for units" />
           <FilterButton />
-          <ExportButton type="pdf" />
+          <ExportButton type="pdf" href="/reports/units/export" />
           <ExportButton type="csv" />
         </div>
       </div>

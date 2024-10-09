@@ -17,16 +17,16 @@ const CreateProperty = () => {
 
   const handleSubmit = async (data: FormData) => {
     // Add additional fields to the FormData
-    data.append("annual_rent", "5000"); // Replace "5000" with the actual value
-    data.append("service_charge", "1000"); // Replace "1000" with the actual value
-    data.append("legal", "300"); // Replace with actual value
-    data.append("other_charges", "200"); // Replace with actual value
+    // data.append("annual_rent", "5000"); // Replace "5000" with the actual value
+    // data.append("service_charge", "1000"); // Replace "1000" with the actual value
+    // data.append("legal", "300"); // Replace with actual value
+    // data.append("other_charges", "200"); // Replace with actual value
 
-    console.log(formDataToString(data));
+    // console.log(formDataToString(data));
 
-    const isSuccess = await addProperty(data, accessToken);
+    // const isSuccess = await addProperty(data, accessToken);
     // Post data to API
-    // router.push("/management/properties/create-rental-property/add-unit");
+    router.push("/management/properties/create-rental-property/add-unit");
   };
 
   return (

@@ -49,23 +49,15 @@ const ListingsReport = () => {
           newData={23}
           total={200}
         />
-        <ManagementStatistcsCard
-          title="Published"
-          newData={23}
-          total={200}
-        />
-        <ManagementStatistcsCard
-          title="Unpublished"
-          newData={23}
-          total={200}
-        />
+        <ManagementStatistcsCard title="Published" newData={23} total={200} />
+        <ManagementStatistcsCard title="Unpublished" newData={23} total={200} />
       </div>
       <div className="page-title-container">
         <PageTitle title="Listings" />
         <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for listings" />
           <FilterButton />
-          <ExportButton type="pdf" />
+          <ExportButton type="pdf" href="/reports/listings/export" />
           <ExportButton type="csv" />
         </div>
       </div>
