@@ -13,6 +13,8 @@ import {
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import { useFormDataStore } from "@/store/formdatastore";
+import { requestPasswordReset } from "../data";
+import { toast } from "sonner";
 
 const ForgotPassword: React.FC<FlowComponentProps> = ({ changeStep }) => {
   // State for managing error messages
@@ -21,13 +23,34 @@ const ForgotPassword: React.FC<FlowComponentProps> = ({ changeStep }) => {
   // Access the store's update function
   const updateFormData = useFormDataStore((state) => state.updateFormData);
 
-  const handleForgotPassword = (data: any) => {
+  const handleForgotPassword = async (data: any) => {
     // Update the form data in the store
     updateFormData({ ...data, password: data["new-password"] });
-    console.log(data, "submitted data");
+    try {
+      const res = await requestPasswordReset(data.email);
 
-    changeStep("next"); // Change the form step to the next step in the flow
+      if (res.success) {
+        console.log(res.data, "response data");
+        // Optionally: Show a success message to the user
+        toast.success("Password reset request sent successfully.");
+        // Change the form step to the next step in the flow
+        changeStep("next");
+      } else {
+        // Handle the error message based on the new structure
+        const errorMessage = res.error?.errors?.email?.[0] || "An error occurred. Please try again.";
+        toast.error(errorMessage);
+        console.error(res.error, "Error details");
+      }
+    } catch (error) {
+      // Handle unexpected errors
+      toast.error("An unexpected error occurred. Please try again.");
+      console.error("Unexpected error:", error);
+    }
+
   };
+
+
+
 
   return (
     <AuthForm

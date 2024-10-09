@@ -48,3 +48,102 @@ export const password_strength: PasswordStrengthProps = {
     color: "#01ba4c",
   },
 };
+
+interface PasswordResetResponse {
+  success: boolean;
+  data?: any; // Replace `any` with the specific type you expect
+  error?: {
+    errors?: { [key: string]: string[] }; // Expecting errors to have a specific format
+  };
+}
+
+interface resetResponse {
+  success: boolean;
+  data?: { message: string }; // Expecting a success message on successful reset
+  error?: {
+    errors?: { [key: string]: string[] };
+  };
+}
+
+export const requestPasswordReset = async (
+  email: string
+): Promise<PasswordResetResponse> => {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+  if (!baseUrl) {
+    return {
+      success: false,
+      error: { errors: { email: ["Base URL is not defined."] } },
+    };
+  }
+
+  try {
+    const response = await fetch(`${baseUrl}/requestPasswordReset`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    // Check for HTTP response status
+    if (!response.ok) {
+      const errorResponse = await response.json();
+      return {
+        success: false,
+        error: errorResponse, // Directly return the error structure
+      };
+    }
+
+    const data = await response.json();
+
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: { errors: { email: ["An unknown error occurred."] } },
+    };
+  }
+};
+
+export const resetPassword = async (
+  email: string,
+  password: string
+): Promise<resetResponse> => {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+  if (!baseUrl) {
+    return {
+      success: false,
+      error: { errors: { email: ["Base URL is not defined."] } },
+    };
+  }
+
+  try {
+    const response = await fetch(`${baseUrl}/resetPassword`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    // Check for HTTP response status
+    if (!response.ok) {
+      const errorResponse = await response.json();
+      return {
+        success: false,
+        error: errorResponse, // Directly return the error structure
+      };
+    }
+
+    const data = await response.json();
+
+    return { success: true, data: { message: data.message } };
+  } catch (error) {
+    return {
+      success: false,
+      error: { errors: { email: ["An unknown error occurred."] } },
+    };
+  }
+};
