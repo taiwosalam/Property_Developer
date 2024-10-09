@@ -102,7 +102,7 @@ const UnitBreakdownRenewalTenant = () => {
         {otherChargesInput && (
           <div className="relative">
             <Input
-              id="other_charges"
+              id="renewal_other_charges"
               label="Other Charges"
               inputClassName="bg-white"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
