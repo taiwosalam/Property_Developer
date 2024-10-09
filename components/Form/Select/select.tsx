@@ -53,7 +53,7 @@ const Select: React.FC<SelectProps> = ({
       searchTerm: "",
       isOpen: false,
     }));
-    onChange && onChange(option); // Call the onChange prop if provided
+    onChange && onChange(`${option}`); // Call the onChange prop if provided
   };
 
   // Type guard to check if the options array is an array of objects
