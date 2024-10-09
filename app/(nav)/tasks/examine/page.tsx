@@ -9,8 +9,28 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import FilterButton from "@/components/FilterButton/filter-button";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "@/store/authstrore";
+import { getAllExamine } from "./data";
 
 const Examine = () => {
+  const access_token = useAuthStore((state) => state.access_token);
+  const [examineData, setExamineData] = useState();
+
+  useEffect(() => {
+    const fetchExamineData = (): void => {
+      getAllExamine(access_token)
+        .then((data) => {
+          setExamineData(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching examines:", error);
+        });
+    };
+
+    fetchExamineData();
+  }
+    , [access_token]);
   return (
     <div className="space-y-9">
       <div className="page-header-container">
