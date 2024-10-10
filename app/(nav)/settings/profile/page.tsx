@@ -6,8 +6,6 @@ import Image from "next/image";
 // Images
 import { UploadImageIcon } from "@/public/icons/icons";
 import Transparent from "@/public/empty/transparent.png";
-import WebsiteTemplate1 from "@/public/website template/template-1.png";
-import WebsiteTemplate2 from "@/public/website template/template-2.png";
 
 // Imports
 import { industryOptions } from "@/data";
@@ -17,16 +15,11 @@ import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import SettingsSection from "@/components/Settings/settings-section";
-
 import {
-  SettingsColorScheme,
   SettingsSectionTitle,
-  SettingsUpdateButton,
   SettingsVerifiedBadge,
 } from "@/components/Settings/settings-components";
-
 import TextArea from "@/components/Form/TextArea/textarea";
-import { website_color_schemes } from "@/components/Settings/data";
 
 const Profile = () => {
   const { preview, handleImageChange } = useImageUploader({
@@ -137,7 +130,11 @@ const Profile = () => {
                 </Button>
               </div>
             </div>
-            <SettingsUpdateButton />
+            <div className="flex justify-end">
+              <Button size="base_bold" className="py-[10px] px-8">
+                update
+              </Button>
+            </div>
           </div>
         </div>
       </SettingsSection>
@@ -247,7 +244,11 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <SettingsUpdateButton />
+          <div className="flex justify-end">
+            <Button size="base_bold" className="py-[10px] px-8">
+              update
+            </Button>
+          </div>
         </div>
       </SettingsSection>
       <SettingsSection title="about company">
@@ -293,79 +294,11 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
-      <SettingsSection title="website settings">
-        <div className="custom-flex-col gap-8">
-          <div className="custom-flex-col gap-5">
-            <SettingsSectionTitle desc="Select a preferred subdomain to showcase your company profile and market your properties listings portfolio to the world." />
-            <div className="flex items-center gap-8">
-              <Input
-                id="domain_name"
-                placeholder="makinwauxdesigner"
-                label="Customize listings domain name"
-              />
-              <div className="flex pt-7">
-                <p className="text-brand-9 text-base font-normal">
-                  https://www.makinwauxdesgner.ourlisting.ng
-                </p>
-              </div>
-            </div>
-            <div className="flex">
-              <div className="custom-flex-col gap-3 text-base font-normal">
-                <p className="text-text-secondary">
-                  RSS Feed Link for Listings
-                </p>
-                <p className="text-brand-9">
-                  https://www.ourlisting.ng/user/324224535
-                </p>
-              </div>
-            </div>
+          <div className="flex justify-end">
+            <Button size="base_bold" className="py-[10px] px-8">
+              update
+            </Button>
           </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
-      <SettingsSection title="website template">
-        <div className="custom-flex-col gap-6">
-          <SettingsSectionTitle
-            title="choose template"
-            desc="https://www.ourlisting.ng/user/324224535"
-          />
-          <div className="grid grid-cols-3 gap-6 [&>*]:w-full">
-            <Image src={WebsiteTemplate1} alt="template" width={500} />
-            <Image src={WebsiteTemplate2} alt="template" width={500} />
-            <Image src={WebsiteTemplate2} alt="template" width={500} />
-          </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
-      <SettingsSection title="website color settings">
-        <div className="custom-flex-col gap-[18px]">
-          <div className="custom-flex-col gap-7">
-            <div className="custom-flex-col gap-4">
-              <SettingsSectionTitle
-                title="color scheme"
-                desc="Customize the default color to your preference from the available options listed below."
-              />
-              <div className="flex gap-2">
-                {website_color_schemes.map((color) => (
-                  <SettingsColorScheme
-                    key={color}
-                    color={color}
-                    active={color === "#0033C4"}
-                  />
-                ))}
-              </div>
-            </div>
-            <SettingsSectionTitle desc="Specify a color code or select a color that best represents your brand website. You can also incorporate additional color designs based on your preferences." />
-            <div className="flex">
-              <div className="w-10 h-10 rounded-lg border border-dashed border-borders-normal flex items-center justify-center">
-                <p className="text-text-label text-xl font-medium">+</p>
-              </div>
-            </div>
-          </div>
-          <SettingsUpdateButton />
         </div>
       </SettingsSection>
     </>
