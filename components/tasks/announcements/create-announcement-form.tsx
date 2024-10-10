@@ -1,5 +1,5 @@
 "use client";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import Select from "@/components/Form/Select/select";
 import Input from "@/components/Form/Input/input";
 import TextArea from "@/components/Form/TextArea/textarea";
@@ -13,11 +13,32 @@ const CreateAnnouncementForm: React.FC<{
   handleSubmit: (data: any) => void;
   editMode?: boolean;
 }> = ({ handleSubmit, editMode = false }) => {
+  const [images, setImages] = useState<File[]>([]);
+
+  // HANDLE IMAGES UPLOAD
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = Array.from(e.target.files || []);
+
+    const newImages = selectedFiles.filter((file) => {
+      if (file.size > 2 * 1024 * 1024) {
+        // 2 MB in bytes
+        alert(`${file.name} exceeds the 2MB size limit.`);
+        return false;
+      }
+      return true;
+    });
+
+    const finalImages = [...images, ...newImages].slice(0, 4); // Limit to 4 images
+    setImages(finalImages);
+    console.log(images)
+    e.target.value = "";
+  };
+
   return (
     <AuthForm
-      returnType="string"
+      returnType="form-data"
       onFormSubmit={handleSubmit}
-      setValidationErrors={() => {}}
+      setValidationErrors={() => { }}
     >
       <div className="flex flex-col gap-y-5 gap-x-[4%] lg:flex-row lg:items-start pb-[200px]">
         <div className="grid gap-x-4 gap-y-5 md:grid-cols-2 lg:w-[63%]">
@@ -49,41 +70,51 @@ const CreateAnnouncementForm: React.FC<{
           <TextArea id="content" className="col-span-2" />
         </div>
         <div className="grid gap-4 md:grid-cols-2 flex-1">
-          {Array(3)
-            .fill(null)
-            .map((_, index) => (
+          {images.length > 0 ? (
+            images.map((image, index) => (
               <div
                 key={index}
                 className="relative overflow-hidden rounded-lg w-full h-[110px]"
               >
-                <Image src={empty} alt="empty" fill className="object-cover" />
+                <Image
+                  src={URL.createObjectURL(image)}
+                  alt={`Uploaded ${index}`}
+                  fill
+                  className="object-cover"
+                />
                 <button
                   type="button"
                   aria-label="Remove Image"
-                  onClick={() => {}} // Delete Image
+                  onClick={() => {
+                    setImages(images.filter((_, i) => i !== index));
+                  }}
                   className="absolute top-1 right-1 z-[2]"
                 >
                   <DeleteIconOrange size={20} />
                 </button>
               </div>
-            ))}
-
+            ))
+          ) : (
+            <div className="relative overflow-hidden rounded-lg w-full h-[110px]">
+              <Image src={empty} alt="empty" fill className="object-cover" />
+            </div>
+          )}
           <label
-            // htmlFor="upload"
+            htmlFor="upload"
             className="px-4 w-full h-[110px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
           >
             <PlusIcon />
             <span className="text-black text-base font-normal mt-2">
               Add Photo/Video
             </span>
-            {/* <input
+            <input
               id="upload"
               type="file"
               accept="image/*"
               multiple
-            //   onChange={handleFileChange}
+              onChange={handleFileChange}
               className="hidden"
-            /> */}
+            />
           </label>
         </div>
       </div>

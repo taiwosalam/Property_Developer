@@ -11,7 +11,7 @@ const CreateAnnouncement = () => {
   const router = useRouter();
 
   const handleSubmit = (data: any) => {
-    console.log(data);
+    console.log({data});
     createAnnouncement(accessToken, data);
   };
 

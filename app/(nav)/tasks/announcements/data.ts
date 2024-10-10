@@ -27,6 +27,7 @@ export const createAnnouncement = async (
         authorization: `Bearer ${accessToken}`,
       },
       body: data,
+      mode: "no-cors"
     });
 
     if (!response.ok) {
