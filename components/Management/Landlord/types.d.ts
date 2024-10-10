@@ -27,5 +27,4 @@ export interface LandlordProps {
   picture?: string;
   avatar?: string;
   picture_url: string;
-  service?: string;
 }

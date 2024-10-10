@@ -11,7 +11,6 @@ import Button from "@/components/Form/Button/button";
 import ServiceProviderCard from "@/components/Management/landlord-and-tenant-card";
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import AddServiceProviderModal from "@/components/tasks/service-providers/add-service-provider-modal";
-import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { useAuthStore } from "@/store/authstrore";
 import { getAllServiceProviders } from "./data";
 
@@ -101,6 +100,7 @@ const ServiceProviders = () => {
                 phone_number="1787991995"
                 picture_url={DefaultLandlordAvatar.src}
                 service="Plumber, Electrician"
+                cardType="service-provider"
               />
             </Link>
           ))}

@@ -8,13 +8,20 @@ import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import Signature from "@/components/Signature/signature";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
-import AccountingLogoContactHeader from "@/components/Accounting/accounting-logo-contact-header";
+import ExportPageHeader from "@/components/reports/export-page-header";
+import { empty } from "@/app/config";
 
 const ExportDisbursement = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
-        <AccountingLogoContactHeader />
+        <ExportPageHeader
+          logo={empty}
+          location="States and Local Govt"
+          website="https://realesate.com"
+          phoneNumbers={["09022312133", "07012133313", "0901212121"]}
+          email="example@mail.com"
+        />
         <div className="rounded-lg bg-white p-8 flex">
           <KeyValueList
             data={{}}
