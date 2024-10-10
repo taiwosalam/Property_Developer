@@ -17,13 +17,13 @@ export interface SettingsTitleProps {
   desc?: string;
 }
 
-interface SettingsOthersProps {
+export interface SettingsOthersProps {
   title: string; 
   desc: string;  
   icon: string;  
 }
 
-interface SettingsDirectorTypes {
+export interface SettingsDirectorTypes {
   name: string; 
   email: string;  
   position?: string;  
@@ -32,7 +32,7 @@ interface SettingsDirectorTypes {
   icon?:string;
 }
 
-interface SettingsOthersCheckBoxProps {
+export interface SettingsOthersCheckBoxProps {
   title: string; 
   desc: string;  
 }
