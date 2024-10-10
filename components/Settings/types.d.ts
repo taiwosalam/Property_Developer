@@ -24,17 +24,4 @@ export interface SettingsTitleProps {
   desc?: string;
 }
 
-export type WebsiteColorScheme = (typeof website_color_schemes)[number];
 
-export interface SettingsColorSchemeProps {
-  color: WebsiteColorScheme;
-  active?: boolean;
-}
-
-export type TenantOccupantTier = (typeof tenant_occupant_tiers)[number];
-
-export interface SettingsTenantOccupantTierProps {
-  desc: string;
-  color: BadgeIconColors;
-  tier: TenantOccupantTier;
-}

@@ -1,8 +1,8 @@
-// Types
 import type {
   SettingsColorSchemeProps,
   SettingsTenantOccupantTierProps,
   SettingsTitleProps,
+    SettingsDirectorTypes, SettingsOthersCheckBoxProps, SettingsOthersProps, SettingsTitleProps
 } from "./types";
 
 // Images
@@ -12,6 +12,7 @@ import { Check } from "lucide-react";
 import Button from "../Form/Button/button";
 import { secondaryFont } from "@/utils/fonts";
 import BadgeIcon from "../BadgeIcon/badge-icon";
+import Image from "next/image";
 
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
@@ -37,6 +38,7 @@ export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
     {desc && <p className="text-text-disabled text-sm font-normal">{desc}</p>}
   </div>
 );
+
 
 export const SettingsUpdateButton = () => (
   <div className="flex justify-end">
