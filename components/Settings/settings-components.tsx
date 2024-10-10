@@ -86,7 +86,7 @@ export const DirectorCard: React.FC<SettingsDirectorTypes> = ({ name, email, pos
         <div className="flex gap-2 items-center">
           <h4 className="text-black font-bold leading-3"> {name} </h4>
           <Image
-            alt="companyDirector"
+            alt="companyy_irector"
             src={`${icon ? icon : '/icons/unverified.svg'}`}
             width={20}
             height={20}
