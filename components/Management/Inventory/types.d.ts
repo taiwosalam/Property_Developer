@@ -12,6 +12,7 @@ export interface InventoryCardDataProps {
 
 export interface InventoryCardProps {
   data: Partial<InventoryCardDataProps>;
+  viewOnly?: boolean;
 }
 
 export interface InventoryListProps extends InventoryCardProps {}

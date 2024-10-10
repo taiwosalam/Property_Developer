@@ -15,13 +15,19 @@ const ExportPageHeader: React.FC<{
 }> = ({ logo, location, website, phoneNumbers, email }) => {
   return (
     <div
-      className="rounded-lg p-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4"
+      className="rounded-lg p-7 flex flex-col md:flex-row md:justify-between md:items-center gap-4 bg-white"
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="w-[450px] h-[150px] relative overflow-hidden">
+      <div
+        className="w-[300px] h-[100px] relative overflow-hidden rounded-lg"
+        style={{
+          boxShadow:
+            "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 4px 6px 0px rgba(13, 23, 33, 0.08)",
+        }}
+      >
         <Image src={logo} alt="logo" fill className="object-cover" />
       </div>
       <div className="space-y-2">

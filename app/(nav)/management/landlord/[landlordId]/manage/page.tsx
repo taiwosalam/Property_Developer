@@ -188,7 +188,7 @@ const ManageLandlord = () => {
         />
       </div>
       <LandlordTenantInfoSection title="Property Managed">
-        <AutoResizingGrid minWidth={250}>
+        <AutoResizingGrid minWidth={315}>
           {LandlordPageData?.properties_managed?.map((property) => (
             <PropertyCard
               key={property.id}

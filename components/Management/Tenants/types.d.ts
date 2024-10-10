@@ -23,7 +23,6 @@ export interface TenantProps {
   picture?: string;
   avatar?: string;
   picture_url: string;
-  service?: string
 }
 
 export interface TenantEditContextProps {

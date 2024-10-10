@@ -1,4 +1,5 @@
-import AccountingLogoContactHeader from "@/components/Accounting/accounting-logo-contact-header";
+import ExportPageHeader from "@/components/reports/export-page-header";
+import { empty } from "@/app/config";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
@@ -7,7 +8,13 @@ const ReceiptPreviewPage = () => {
   return (
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
-        <AccountingLogoContactHeader />
+        <ExportPageHeader
+          logo={empty}
+          location="States and Local Govt"
+          website="https://realesate.com"
+          phoneNumbers={["09022312133", "07012133313", "0901212121"]}
+          email="example@mail.com"
+        />
         <h1 className="text-center my-7 font-medium text-2xl">Receipt</h1>
         <div className="rounded-lg bg-white p-8 flex">
           <KeyValueList

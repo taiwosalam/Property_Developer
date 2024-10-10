@@ -27,6 +27,7 @@ import { empty } from "@/app/config";
 
 interface PropertyCardProps extends PropertyProps {
   isClickable?: boolean;
+  viewOnly?: boolean;
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
@@ -39,6 +40,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   price,
   type,
   isClickable = true,
+  viewOnly,
 }) => {
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   const modalRef = useRef<HTMLDivElement>(null);
@@ -59,7 +61,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   };
 
   useEffect(() => {
-    if (isModalActive && isClickable) {
+    if (isModalActive && isClickable && !viewOnly) {
       document.addEventListener("click", handleClickOutside);
     } else {
       document.removeEventListener("click", handleClickOutside);
@@ -68,7 +70,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [isClickable, isModalActive]);
+  }, [isClickable, isModalActive, viewOnly]);
 
   return (
     <div
@@ -175,14 +177,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         </AnimatePresence>
       </div>
       <div
-        className="relative cursor- rounded-b-2xl p-4"
-        role="button"
-        onClick={isClickable ? () => setIsModalActive(true) : undefined}
+        className="relative rounded-b-2xl p-4"
+        role={isClickable && !viewOnly ? "button" : undefined}
+        onClick={
+          isClickable && !viewOnly ? () => setIsModalActive(true) : undefined
+        }
       >
         <p className="text-brand-5 text-xs lg:text-sm font-bold">
           ID: {propertyId}
         </p>
-        <p className="text-[#374151] text-xl lg:text-2xl font-bold">
+        <p className="text-[#374151] text-lg md:text-xl lg:text-2xl font-bold">
           {name} <br />({units} Units)
         </p>
         <p className="flex items-center gap-1 text-brand-tertiary text-xs lg:text-sm font-normal">
