@@ -115,7 +115,7 @@ const Undo = () => {
           />
         </ModalContent>
       </Modal>
-      <Pagination totalPages={20} currentPage={10} onPageChange={() => {}} />
+      <Pagination totalPages={2} currentPage={1} onPageChange={() => {}} />
     </div>
   );
 };
