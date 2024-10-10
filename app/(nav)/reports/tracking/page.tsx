@@ -49,7 +49,7 @@ const TrackingReport = () => {
         <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for audit trail" />
           <FilterButton />
-          <ExportButton type="pdf" />
+          <ExportButton type="pdf" href="/reports/tracking/export" />
           <ExportButton type="csv" />
         </div>
       </div>

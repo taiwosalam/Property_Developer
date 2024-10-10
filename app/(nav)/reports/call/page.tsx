@@ -53,7 +53,7 @@ const Call = () => {
                 <div className="flex items-center gap-4 flex-wrap">
                     <SearchInput placeholder="Search for calls request" />
                     <FilterButton />
-                    <ExportButton type="pdf" />
+                    <ExportButton type="pdf" href="/reports/call/export" />
                     <ExportButton type="csv" />
                 </div>
             </div>
