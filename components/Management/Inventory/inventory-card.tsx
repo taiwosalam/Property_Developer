@@ -12,7 +12,7 @@ import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import { SectionSeparator } from "@/components/Section/section-components";
 
-const InventoryCard: React.FC<InventoryCardProps> = ({ data }) => {
+const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
   return (
     <div className="custom-flex-col gap-4 pb-5 rounded-lg bg-white overflow-hidden">
       <div
@@ -46,23 +46,25 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data }) => {
               );
             })}
           </div>
-          <div className="flex gap-2 justify-end">
-            <Button
-              href={"/management/inventory/1/manage"}
-              variant="border"
-              size="xs_medium"
-              className="py-2 px-7"
-            >
-              manage
-            </Button>
-            <Button
-              href={"/management/inventory/1/preview"}
-              size="xs_medium"
-              className="py-2 px-7"
-            >
-              preview
-            </Button>
-          </div>
+          {!viewOnly && (
+            <div className="flex gap-2 justify-end">
+              <Button
+                href={"/management/inventory/1/manage"}
+                variant="border"
+                size="xs_medium"
+                className="py-2 px-7"
+              >
+                manage
+              </Button>
+              <Button
+                href={"/management/inventory/1/preview"}
+                size="xs_medium"
+                className="py-2 px-7"
+              >
+                preview
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -275,7 +275,8 @@ const Dashboard = () => {
           <BranchActivitiesCard />
           <NotificationCard
             sectionHeader="Staffs"
-            notifications={recentMessagesData}
+            notifications={fetchedBranchData?.staff || []}
+            branchId={branchId as string}
           />
         </div>
       </div>
@@ -286,9 +287,8 @@ const Dashboard = () => {
             <button
               type="button"
               aria-label="list-view"
-              className={`${
-                !gridView ? "bg-black" : "bg-transparent"
-              } p-1 rounded-md`}
+              className={`${!gridView ? "bg-black" : "bg-transparent"
+                } p-1 rounded-md`}
               onClick={setListView}
             >
               <div className={!gridView ? "text-white" : "text-[unset]"}>
@@ -298,9 +298,8 @@ const Dashboard = () => {
             <button
               type="button"
               aria-label="grid-view"
-              className={`${
-                gridView ? "bg-black" : "bg-transparent"
-              } p-1 rounded-md`}
+              className={`${gridView ? "bg-black" : "bg-transparent"
+                } p-1 rounded-md`}
               onClick={setGridView}
             >
               <div className={gridView ? "text-white" : "text-[unset]"}>

@@ -22,6 +22,7 @@ interface AnnouncementCardProps {
   imageUrls: string[];
   mediaCount: number;
   announcementId: string;
+  viewOnly?: boolean;
 }
 
 const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
@@ -36,6 +37,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
   imageUrls,
   mediaCount,
   announcementId,
+  viewOnly,
 }) => {
   return (
     <div
@@ -94,13 +96,15 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
             <span className="text-xs font-normal">{dislikes}</span>
           </p>
         </div>
-        <Button
-          href={`/tasks/announcements/${announcementId}/preview`}
-          size="xs_normal"
-          className="w-fit ml-auto py-2 px-4"
-        >
-          Preview
-        </Button>
+        {!viewOnly && (
+          <Button
+            href={`/tasks/announcements/${announcementId}/preview`}
+            size="xs_normal"
+            className="w-fit ml-auto py-2 px-4"
+          >
+            Preview
+          </Button>
+        )}
       </div>
     </div>
   );

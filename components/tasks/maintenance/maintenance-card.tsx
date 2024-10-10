@@ -12,6 +12,7 @@ interface MaintenanceCardProps {
   startEndDate: string;
   priority: string;
   serviceType: string;
+  viewOnly?: boolean;
 }
 
 const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
@@ -23,6 +24,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
   startEndDate,
   priority,
   serviceType,
+  viewOnly,
 }) => {
   let statusClasses = "";
   switch (status) {
@@ -47,24 +49,24 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <p>
           <span className="text-base text-text-tertiary">
             Maintenance ID:{" "}
             <span className="text-text-secondary text-sm">{maintenanceId}</span>
           </span>
         </p>
-        <div
+        <p
           className={clsx(
             statusClasses,
-            "p-2 border capitalize rounded-sm text-xs font-normal"
+            "p-2 border capitalize rounded-sm text-xs font-normal ml-auto"
           )}
         >
           {status}
-        </div>
+        </p>
       </div>
       <hr className="mt-3 mb-6 border-t border-dashed border-brand-7 opacity-50" />
-      <div className="grid grid-cols-3 gap-x-4 gap-y-5 [&>div]:flex [&>div]:flex-col [&>div]:gap-2 mb-7">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-5 [&>div]:flex [&>div]:flex-col [&>div]:gap-2 mb-7">
         <div>
           <p className="text-text-tertiary text-base">Property Name:</p>
           <p className="text-text-secondary text-sm">{propertyName}</p>
@@ -90,16 +92,18 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
           <p className="text-text-secondary text-sm">{serviceType}</p>
         </div>
       </div>
-      <Modal>
-        <ModalTrigger asChild>
-          <Button size="xs_normal" className="px-6 py-2 block ml-auto">
-            Manage
-          </Button>
-        </ModalTrigger>
-        <ModalContent>
-          <ManageMaintenanceModal />
-        </ModalContent>
-      </Modal>
+      {!viewOnly && (
+        <Modal>
+          <ModalTrigger asChild>
+            <Button size="xs_normal" className="px-6 py-2 block ml-auto">
+              Manage
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <ManageMaintenanceModal />
+          </ModalContent>
+        </Modal>
+      )}
     </div>
   );
 };

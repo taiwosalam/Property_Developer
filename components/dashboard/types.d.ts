@@ -19,12 +19,16 @@ export interface walletBalanceCardProps
 export interface notificationCardProps
   extends React.HTMLAttributes<HTMLDivElement> {
   sectionHeader: string;
+  branchId?: string;
   notifications: {
     avatarFallback: string;
     avatarSrc: string;
-    name: string;
+    name?: string;
+    full_name?: string;
     message: string;
     time: string;
     title?: string;
+    position?: string;
+    staff_ID?: string;
   }[];
 }

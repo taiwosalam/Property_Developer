@@ -13,7 +13,7 @@ import PropertyRequestModal from "../property-requests/property-request-modal";
 import DepositRequestModal from "../deposit-requests/deposit-request-modal";
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
-  <div className="w-[170px]">
+  <div>
     <p className="font-medium text-[16px] text-text-tertiary">{label}:</p>
     <p className="font-medium text-sm text-text-secondary capitalize">
       {value}

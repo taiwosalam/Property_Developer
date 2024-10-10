@@ -317,7 +317,7 @@ const Landlord = () => {
           <AutoResizingGrid minWidth={284} gap={16}>
             {landlords.map((l) => (
               <Link href={`/management/landlord/${l.id}/manage`} key={l.id}>
-                <LandlordCard {...l} />
+                <LandlordCard {...l} cardType="landlord" />
               </Link>
             ))}
           </AutoResizingGrid>
