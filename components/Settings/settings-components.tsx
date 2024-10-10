@@ -1,5 +1,9 @@
 // Types
-import type { SettingsColorSchemeProps, SettingsTitleProps } from "./types";
+import type {
+  SettingsColorSchemeProps,
+  SettingsTenantOccupantTierProps,
+  SettingsTitleProps,
+} from "./types";
 
 // Images
 import { Check } from "lucide-react";
@@ -51,5 +55,20 @@ export const SettingsColorScheme: React.FC<SettingsColorSchemeProps> = ({
     className="w-10 h-10 rounded-lg flex items-center justify-center"
   >
     {active && <Check color="white" scale={16} />}
+  </div>
+);
+
+export const SettingsTenantOccupantTier: React.FC<
+  SettingsTenantOccupantTierProps
+> = ({ tier, desc, color }) => (
+  <div
+    className="py-2 px-3 rounded-lg bg-neutral-2 custom-flex-col font-normal"
+    style={{ boxShadow: "5px 5px 20px 0px rgba(0, 0, 0, 0.02)" }}
+  >
+    <div className="flex gap-2">
+      <p className="text-text-primary text-sm capitalize">{tier}</p>
+      <BadgeIcon color={color} />
+    </div>
+    <p className="text-[#606060] text-xs">{desc}</p>
   </div>
 );
