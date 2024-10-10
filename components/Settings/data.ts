@@ -8,3 +8,24 @@ export const settings_link_tabs = [
   "appearance",
   "others",
 ] as const;
+
+export const website_color_schemes = [
+  "#0033C4",
+  "#0FA7E2",
+  "#53B07D",
+  "#E15B0F",
+  "#C1373F",
+  "#050901",
+  "#8C62FF",
+  "#005623",
+  "#01BA4C",
+  "#2DD4BF",
+  "#FFBB53",
+  "#CE9EA1",
+  "#C18A37",
+  "#C1373F",
+  "#FC63FF",
+  "#92FF3C",
+  "#9B00FAAB",
+  "#377FC1",
+] as const;

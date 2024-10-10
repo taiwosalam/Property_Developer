@@ -1,4 +1,4 @@
-import { settings_link_tabs } from "./data";
+import { settings_link_tabs, website_color_schemes } from "./data";
 
 export type SettingsLinkTab = (typeof settings_link_tabs)[number];
 
@@ -15,4 +15,11 @@ export interface SettingsSectionProps {
 export interface SettingsTitleProps {
   title?: string;
   desc?: string;
+}
+
+export type WebsiteColorScheme = (typeof website_color_schemes)[number];
+
+export interface SettingsColorSchemeProps {
+  color: WebsiteColorScheme;
+  active?: boolean;
 }
