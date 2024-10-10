@@ -1,5 +1,3 @@
-import React from "react";
-
 // Images
 import ExamineIcon from "@/public/icons/examine-icon.svg";
 
@@ -7,7 +5,11 @@ import ExamineIcon from "@/public/icons/examine-icon.svg";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 
-const ExamineCard = () => {
+interface ExamineCardProps {
+  viewOnly?: boolean;
+}
+
+const ExamineCard: React.FC<ExamineCardProps> = ({ viewOnly }) => {
   return (
     <div
       className="custom-flex-col gap-4 pb-[18px] rounded-lg overflow-hidden bg-white"
@@ -37,14 +39,16 @@ const ExamineCard = () => {
             <p className="text-neutral-4">12/01/24</p>
           </div>
         </div>
-        <div className="flex gap-2 justify-end">
-          <Button size="xs_normal" variant="border" className="py-2 px-6">
-            manage
-          </Button>
-          <Button size="xs_normal" className="py-2 px-6">
-            report
-          </Button>
-        </div>
+        {!viewOnly && (
+          <div className="flex gap-2 justify-end">
+            <Button size="xs_normal" variant="border" className="py-2 px-6">
+              manage
+            </Button>
+            <Button size="xs_normal" className="py-2 px-6">
+              report
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,15 +1,23 @@
 "use client";
+import { useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { Modal, ModalContent } from "@/components/Modal/modal";
 import PageTitle from "@/components/PageTitle/page-title";
 import SearchInput from "@/components/SearchInput/search-input";
 import FilterButton from "@/components/FilterButton/filter-button";
-import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
-import type { Field } from "@/components/Table/types";
+import type { Field, DataItem } from "@/components/Table/types";
+import UndoModal from "@/components/reports/undo-modal";
 
 const Undo = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+
+  const handleActionClick = (event: DataItem) => {
+    setSelectedEvent(event);
+    setModalOpen(true);
+  };
   const fields: Field[] = [
     { id: "0", label: "S/N", accessor: "S/N" },
     { id: "1", label: "Event Deleted", accessor: "event_deleted" },
@@ -29,18 +37,36 @@ const Undo = () => {
     { id: "8", accessor: "action" },
   ];
 
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      event_deleted: 'Landlord/Landlady Profile',
-      category: index < 5 ? "management" : "Task",
-      branch: 'Akinyele Branch',
-      deleted_by: 'Ajadi David',
-      date_deleted: '12/02/2024',
-      time: '03:30am',
+  // Design Purpose
+  const generateTableData = () => {
+    const events = [
+      { event_deleted: "Landlord/Landlady Profile", category: "Management" },
+      { event_deleted: "Branch Details", category: "Management" },
+      { event_deleted: "Staff Profile", category: "Management" },
+      { event_deleted: "Inventory", category: "Management" },
+      { event_deleted: "Property", category: "Task" },
+      { event_deleted: "Complaint", category: "Task" },
+      { event_deleted: "Service Provider", category: "Task" },
+      { event_deleted: "Examine", category: "Task" },
+      { event_deleted: "Maintenance", category: "Task" },
+      { event_deleted: "Announcement", category: "Task" },
+      { event_deleted: "Invoice", category: "Accounting" },
+      { event_deleted: "Expenses", category: "Accounting" },
+      { event_deleted: "Disbursement", category: "Accounting" },
+      { event_deleted: "Tenancy Agreement", category: "Documents" },
+      { event_deleted: "Personalized Domain", category: "Settings" },
+    ];
+
+    return events.map((event, index) => ({
+      ...event,
+      branch: "Akinyele Branch",
+      deleted_by: "Ajadi David",
+      date_deleted: "12/02/2024",
+      time: "03:30am",
     }));
   };
 
-  const tableData = generateTableData(10);
+  const tableData = generateTableData();
 
   return (
     <div className="space-y-9">
@@ -74,8 +100,22 @@ const Undo = () => {
         }}
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
+        onActionClick={handleActionClick}
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+      <Modal
+        state={{
+          isOpen: modalOpen,
+          setIsOpen: setModalOpen,
+        }}
+      >
+        <ModalContent>
+          <UndoModal
+            event={selectedEvent?.event_deleted}
+            // eventData={selectedEvent}
+          />
+        </ModalContent>
+      </Modal>
+      <Pagination totalPages={2} currentPage={1} onPageChange={() => {}} />
     </div>
   );
 };

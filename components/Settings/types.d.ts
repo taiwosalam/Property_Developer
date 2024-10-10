@@ -1,4 +1,10 @@
-import { settings_link_tabs } from "./data";
+// Imports
+import { BadgeIconColors } from "../BadgeIcon/badge-icon";
+import {
+  settings_link_tabs,
+  tenant_occupant_tiers,
+  website_color_schemes,
+} from "./data";
 
 export type SettingsLinkTab = (typeof settings_link_tabs)[number];
 
@@ -9,6 +15,7 @@ export interface SettingsLinkTabProps {
 
 export interface SettingsSectionProps {
   title: string;
+  subTitle?: string;
   children: React.ReactNode;
 }
 
@@ -17,22 +24,4 @@ export interface SettingsTitleProps {
   desc?: string;
 }
 
-export interface SettingsOthersProps {
-  title: string; 
-  desc: string;  
-  icon: string;  
-}
 
-export interface SettingsDirectorTypes {
-  name: string; 
-  email: string;  
-  position?: string;  
-  phone: string;  
-  img: string;
-  icon?:string;
-}
-
-export interface SettingsOthersCheckBoxProps {
-  title: string; 
-  desc: string;  
-}

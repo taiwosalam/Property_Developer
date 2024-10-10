@@ -44,6 +44,7 @@ interface TaskCardProps {
   isOverlay?: boolean;
   isNew?: boolean;
   statusChanger?: boolean;
+  viewOnly?: boolean;
 }
 
 export type TaskType = "Task";
@@ -53,7 +54,14 @@ export interface TaskDragData {
   task: Task;
 }
 
-export function TaskCard({ task, isOverlay, noDrag, isNew, statusChanger }: TaskCardProps) {
+export const TaskCard: React.FC<TaskCardProps> = ({
+  task,
+  isOverlay,
+  noDrag,
+  isNew,
+  statusChanger,
+  viewOnly,
+}) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const wasRecentlyDragged = useRef(false);
   const router = useRouter();
@@ -95,10 +103,11 @@ export function TaskCard({ task, isOverlay, noDrag, isNew, statusChanger }: Task
     task.content.status === "processing"
       ? "#FDB82C"
       : task.content.status === "approved"
-        ? "#01BA4C"
-        : "#E9212E";
+      ? "#01BA4C"
+      : "#E9212E";
 
   useEffect(() => {
+    if (viewOnly) return;
     if (isDragging) {
       wasRecentlyDragged.current = true;
     } else if (wasRecentlyDragged.current) {
@@ -111,9 +120,10 @@ export function TaskCard({ task, isOverlay, noDrag, isNew, statusChanger }: Task
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [isDragging, noDrag]);
+  }, [isDragging, noDrag, viewOnly]);
 
   const handleCardClick = () => {
+    if (viewOnly) return;
     if (!isDragging && !wasRecentlyDragged.current && noDrag) {
       setModalOpen(true);
     } else {
@@ -224,12 +234,15 @@ export function TaskCard({ task, isOverlay, noDrag, isNew, statusChanger }: Task
 
       <Modal state={{ isOpen: isModalOpen, setIsOpen: setModalOpen }}>
         <ModalContent>
-          <TaskModal statusChanger={statusChanger} complaintData={complaintData} />
+          <TaskModal
+            statusChanger={statusChanger}
+            complaintData={complaintData}
+          />
         </ModalContent>
       </Modal>
     </div>
   );
-}
+};
 
 const complaintData = {
   senderName: "Muibi Saheed",

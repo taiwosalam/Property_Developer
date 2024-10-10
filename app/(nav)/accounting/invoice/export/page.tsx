@@ -8,17 +8,24 @@ import Avatar from "@/public/empty/avatar.png";
 
 // Imports
 import Picture from "@/components/Picture/picture";
+import ExportPageHeader from "@/components/reports/export-page-header";
 import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
-import AccountingLogoContactHeader from "@/components/Accounting/accounting-logo-contact-header";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
+import { empty } from "@/app/config";
 
 const ExportInvoice = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
-        <AccountingLogoContactHeader />
+        <ExportPageHeader
+          logo={empty}
+          location="States and Local Govt"
+          website="https://realesate.com"
+          phoneNumbers={["09022312133", "07012133313", "090121212321"]}
+          email="example@mail.com"
+        />
         <div className="rounded-lg bg-white p-8 flex">
           <KeyValueList
             data={{}}

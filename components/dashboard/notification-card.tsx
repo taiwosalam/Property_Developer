@@ -8,10 +8,12 @@ import { notificationCardProps } from "./types";
 import messagesIcon from "@/public/icons/message.svg";
 import complaintsIcon from "@/public/icons/complaints.svg";
 import verified from "@/public/icons/verified.svg";
+import Link from "next/link";
 
 const NotificationCard: React.FC<notificationCardProps> = ({
   sectionHeader,
   notifications,
+  branchId,
 }) => {
   // Determine the icon and message text based on the sectionHeader prop
   const getEmptyState = () => {
@@ -62,7 +64,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         })}
       >
         {notifications.map((notification, index) => (
-          <div className="flex items-center gap-3" key={index}>
+          <Link href={sectionHeader === "Staffs" ? `/management/staff-branch/${branchId}/${notification.staff_ID}/staff-profile` : "#"} className="flex items-center gap-3" key={index}>
             <Avatar className="hidden h-9 w-9 sm:flex">
               <AvatarImage src={notification.avatarSrc} alt="Avatar" />
               <AvatarFallback>{notification.avatarFallback}</AvatarFallback>
@@ -70,7 +72,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
             <div className="w-full gap-1">
               <div className="w-full flex items-center justify-between">
                 <p className="text-sm font-medium text-text-primary flex items-center">
-                  {notification.name}
+                  {notification.name || notification.full_name}
                   {sectionHeader !== "Staffs" && (
                     <Image
                       src={verified}
@@ -95,10 +97,10 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                 </p>
               )}
               <p className="text-xs text-text-tertiary font-normal">
-                {notification.message.trim().slice(0, 35)}...
+                {notification.title === "Message" ? `${notification.message.trim().slice(0, 35)}...` : notification.position}
               </p>
             </div>
-          </div>
+          </Link>
         ))}
         {notifications.length === 0 && (
           <div className="flex flex-col items-center text-center gap-6">

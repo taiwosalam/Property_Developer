@@ -6,18 +6,27 @@ import Image from "next/image";
 import BadgeIcon from "../BadgeIcon/badge-icon";
 import { empty } from "@/app/config";
 
-export type UserCardProps = LandlordProps | TenantProps | ServiceProviderProps;
+// Staff Props. This is for Undo Modal Staff Profile
+export interface StaffProps {
+  id: string | number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  role: string;
+  picture_url: string;
+  avatar: string;
+}
 
-const UserCard: React.FC<UserCardProps> = ({
-  first_name,
-  last_name,
-  email,
-  user_tag,
-  phone_number,
-  // id,
-  picture_url,
-  service,
-}) => {
+export type UserCardProps =
+  | (LandlordProps & { cardType: "landlord" })
+  | (TenantProps & { cardType: "tenant" })
+  | (ServiceProviderProps & { cardType: "service-provider" })
+  | (StaffProps & { cardType: "staff" });
+
+const UserCard: React.FC<UserCardProps> = (props) => {
+  const { first_name, last_name, email, phone_number, picture_url, cardType } =
+    props;
   return (
     <div
       className="border border-brand-tertiary bg-[#F9F9F9] p-[3%] rounded-lg flex gap-[3%]"
@@ -40,13 +49,17 @@ const UserCard: React.FC<UserCardProps> = ({
         <p className="font-normal text-black text-xs mb-1 text-ellipsis line-clamp-2 break-all">
           {email}
         </p>
-        <UserTag type={user_tag} className="mb-2" />
+        {cardType !== "staff" ? (
+          <UserTag type={props.user_tag} className="mb-2" />
+        ) : (
+          <p className="text-xs text-brand-10 font-normal">{props.role}</p>
+        )}
         <p className="font-semibold text-xs text-[#8D8D8D] text-ellipsis line-clamp-1">
           {phone_number}
         </p>
-        {service && (
+        {cardType === "service-provider" && (
           <p className="font-medium text-xs text-black mt-2 text-ellipsis line-clamp-2">
-            {service}
+            {props.service}
           </p>
         )}
       </div>

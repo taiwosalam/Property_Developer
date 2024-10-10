@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import clsx from "clsx";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GridIcon, ListIcon } from "@/public/icons/icons";
 import Button from "@/components/Form/Button/button";
@@ -282,7 +283,9 @@ const StaffAndBranches = () => {
         {gridView ? (
           <AutoResizingGrid minWidth={284}>
             {branches.map((b) => (
-              <BranchCard key={b.id} {...b} />
+              <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
+                <BranchCard key={b.id} {...b} />
+              </Link>
             ))}
           </AutoResizingGrid>
         ) : (
