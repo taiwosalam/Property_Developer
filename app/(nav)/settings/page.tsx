@@ -1,7 +1,7 @@
-import React from "react";
+import { redirect } from "next/navigation";
 
 const Settings = () => {
-  return <div>settings</div>;
+  redirect(`/settings/profile`);
 };
 
 export default Settings;

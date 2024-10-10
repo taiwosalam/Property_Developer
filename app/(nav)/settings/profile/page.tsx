@@ -8,12 +8,18 @@ import { UploadImageIcon } from "@/public/icons/icons";
 import Transparent from "@/public/empty/transparent.png";
 
 // Imports
+import { industryOptions } from "@/data";
 import { getAllStates } from "@/utils/states";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import SettingsSection from "@/components/Settings/settings-section";
+import {
+  SettingsSectionTitle,
+  SettingsVerifiedBadge,
+} from "@/components/Settings/settings-components";
+import TextArea from "@/components/Form/TextArea/textarea";
 
 const Profile = () => {
   const { preview, handleImageChange } = useImageUploader({
@@ -78,16 +84,12 @@ const Profile = () => {
             </div>
           </div>
           <div className="custom-flex-col gap-6">
-            <div className="custom-flex-col gap-[2px]">
-              <p className="text-text-quaternary text-base font-medium capitalize">
-                Company Logo
-              </p>
-              <p className="text-text-disabled text-sm font-normal">
-                Ensure that your company logo has a white background, with a
-                maximum size of 2MB. The picture must be between 250 to 400
-                pixels wide, or ideally 160px x 160px.
-              </p>
-            </div>
+            <SettingsSectionTitle
+              title="company logo"
+              desc="Ensure that your company logo has a white background, with a maximum size
+      of 2MB. The picture must be between 250 to 400 pixels wide, or ideally
+      160px x 160px."
+            />
             <div className="flex gap-2">
               <label
                 htmlFor="logo"
@@ -133,6 +135,169 @@ const Profile = () => {
                 update
               </Button>
             </div>
+          </div>
+        </div>
+      </SettingsSection>
+      <SettingsSection title="company details">
+        <div className="custom-flex-col gap-8">
+          <div className="custom-flex-col gap-5">
+            <div className="flex items-center gap-4">
+              <Input
+                required
+                id="company_name"
+                label="company name"
+                placeholder="Taiwo Salam & Co . Properties Ltd"
+                className="w-[500px]"
+              />
+              <div className="flex pt-7">
+                <SettingsVerifiedBadge />
+              </div>
+            </div>
+            <div className="grid grid-cols-[1fr_1fr_2fr] gap-5">
+              <Input
+                id="date_of_registration"
+                label="date of registration"
+                type="date"
+                required
+              />
+              <Input
+                id="cac_registration_number"
+                label="cac registration number"
+                placeholder="RC43464333"
+                required
+              />
+              <div className="flex items-center gap-3">
+                <Input
+                  id="cac_certificate"
+                  label="cac certificate"
+                  placeholder="Company CAC.pdf"
+                  className="w-[300px]"
+                />
+                <div className="flex pt-7">
+                  <SettingsVerifiedBadge />
+                </div>
+              </div>
+              <Select
+                id="industry"
+                label="industry"
+                options={industryOptions}
+                inputContainerClassName="bg-neutral-2"
+              />
+              <Input
+                id="membership_number"
+                label="membership number"
+                placeholder="write here"
+              />
+              <div className="flex items-end gap-3">
+                <Input
+                  id="membership_certificate"
+                  label="membership certificate"
+                  placeholder="Click the side button to upload cac certificate"
+                  className="w-[300px]"
+                />
+                <Button variant="change" size="xs_normal" className="py-2 px-3">
+                  upload certificate
+                </Button>
+              </div>
+            </div>
+            <SettingsSectionTitle
+              title="company address"
+              desc="Provide your complete head office address for the verification process. Please select your state, local government area, city, and upload a utility bill that is no older than 3 months."
+            />
+            <div className="grid grid-cols-[1fr_1fr_2fr] gap-5">
+              <Select
+                options={getAllStates()}
+                id="state"
+                label="state"
+                inputContainerClassName="bg-neutral-2"
+              />
+              <Select
+                id="local_government"
+                options={["lga 1", "lga 2"]}
+                label="local government"
+                inputContainerClassName="bg-neutral-2"
+              />
+              <div className="flex items-center gap-3">
+                <Select
+                  id="city_town"
+                  options={[]}
+                  label="city / town"
+                  inputContainerClassName="bg-neutral-2 w-[300px]"
+                />
+              </div>
+              <Input
+                id="head_office_address"
+                label="head office address"
+                placeholder="write here"
+                className="col-span-2"
+              />
+              <div className="flex items-end gap-3">
+                <Input
+                  id="utility_document"
+                  label="utility document"
+                  placeholder="Click the side button to upload utility"
+                  className="w-[300px]"
+                />
+                <Button variant="change" size="xs_normal" className="py-2 px-3">
+                  upload utility
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Button size="base_bold" className="py-[10px] px-8">
+              update
+            </Button>
+          </div>
+        </div>
+      </SettingsSection>
+      <SettingsSection title="about company">
+        <div className="custom-flex-col gap-8">
+          <TextArea id="about company" />
+          <div className="custom-flex-col gap-6">
+            <SettingsSectionTitle
+              title="social medias"
+              desc="Add your social media company username to allow clients to check your social page."
+            />
+            <div className="flex">
+              <div className="grid grid-cols-3 gap-5 w-full max-w-[871px]">
+                <Input
+                  id="instagram"
+                  label="instagram"
+                  placeholder="https://instagram.com/"
+                />
+                <Input
+                  id="facebook"
+                  label="facebook"
+                  placeholder="https://facebook.com/"
+                />
+                <Input
+                  id="x"
+                  label="x (Twitter)"
+                  placeholder="https://x.com/"
+                />
+                <Input
+                  id="linkedin"
+                  label="linkedIn"
+                  placeholder="https://linkedin.com/"
+                />
+                <Input
+                  id="tiktok"
+                  label="tiktok"
+                  placeholder="https://tiktok.com/"
+                />
+                <Input
+                  id="youtube"
+                  label="youtube"
+                  placeholder="https://youtube.com/"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Button size="base_bold" className="py-[10px] px-8">
+              update
+            </Button>
           </div>
         </div>
       </SettingsSection>

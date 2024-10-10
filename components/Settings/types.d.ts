@@ -11,3 +11,8 @@ export interface SettingsSectionProps {
   title: string;
   children: React.ReactNode;
 }
+
+export interface SettingsTitleProps {
+  title?: string;
+  desc?: string;
+}
