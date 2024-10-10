@@ -1,13 +1,15 @@
 "use client";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import FilterButton from "@/components/FilterButton/filter-button";
-import ExportButton from "@/components/reports/export-button";
-import Pagination from "@/components/Pagination/pagination";
+
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
+import ExportPageHeader from "@/components/reports/export-page-header";
+import { empty } from "@/app/config";
+import Image from "next/image";
+import Button from "@/components/Form/Button/button";
+import { useRouter } from "next/navigation";
 
-const VehiclesRecordReport = () => {
+const ExportVehiclesRecord = () => {
+  const router = useRouter();
   const fields: Field[] = [
     { id: "0", label: "S/N", accessor: "S/N" },
     { id: "1", label: "ID", accessor: "id" },
@@ -42,16 +44,17 @@ const VehiclesRecordReport = () => {
   const tableData = generateTableData(10);
 
   return (
-    <div className="space-y-9">
-      <div className="page-title-container">
-        <PageTitle title="Vehicles Record" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Vehicles Record" />
-          <FilterButton />
-          <ExportButton type="pdf" href="/reports/vehicles-record/export" />
-          <ExportButton type="csv" />
-        </div>
-      </div>
+    <div className="space-y-9 pb-[100px]">
+      <ExportPageHeader
+        logo={empty}
+        location="States and Local Govt"
+        website="https://realesate.com"
+        phoneNumbers={["09022312133", "07012133313", "0901212121"]}
+        email="example@mail.com"
+      />
+      <p className="text-center text-black text-lg md:text-xl lg:text-2xl font-medium">
+        Summary
+      </p>
       <CustomTable
         fields={fields}
         data={tableData}
@@ -73,9 +76,41 @@ const VehiclesRecordReport = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+      <div className="w-fit ml-auto text-text-quaternary text-base font-medium space-y-2">
+        <p>Authorized Signature </p>
+        <Image src={empty} alt="signature" width={85} height={60} />
+        <p>
+          ESQ Taiwo Salam <br /> Legal Practitioner
+        </p>
+      </div>
+      <div className="sticky z-[3] bottom-0 right-0 w-full bg-white py-5 px-[25px] lg:px-[60px] flex justify-between">
+        <Button
+          size="custom"
+          className="py-2 px-8 font-bold text-sm lg:text-base"
+          style={{ color: "#0033C4", backgroundColor: "#EFF6FF" }}
+          onClick={() => router.back()}
+        >
+          Back
+        </Button>
+
+        <div className="flex gap-6">
+          <Button
+            size="custom"
+            className="py-2 px-8 font-bold text-sm lg:text-base"
+            style={{ color: "#0033C4", backgroundColor: "#EFF6FF" }}
+          >
+            Download
+          </Button>
+          <Button
+            size="custom"
+            className="py-2 px-8 font-bold text-sm lg:text-base"
+          >
+            Print
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default VehiclesRecordReport;
+export default ExportVehiclesRecord;

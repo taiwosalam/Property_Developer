@@ -47,14 +47,18 @@ const RentReport = () => {
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard title="Total Rent / Due" newData={23} total={200} />
+        <ManagementStatistcsCard
+          title="Total Rent / Due"
+          newData={23}
+          total={200}
+        />
       </div>
       <div className="page-title-container">
         <PageTitle title="Rent / Due Roll" />
         <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for Rent Roll" />
           <FilterButton />
-          <ExportButton type="pdf" />
+          <ExportButton type="pdf" href="/reports/rent/export" />
           <ExportButton type="csv" />
         </div>
       </div>

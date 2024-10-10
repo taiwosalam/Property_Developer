@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-
 import { useState, useEffect, Fragment } from "react";
 
 // Types
@@ -13,7 +11,7 @@ import {
 } from "@/app/(nav)/management/properties/create-rental-property/data";
 
 // Images
-import { PlusIcon, DeleteIconX, DeleteIconOrange } from "@/public/icons/icons";
+import { PlusIcon, DeleteIconX } from "@/public/icons/icons";
 
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -30,12 +28,13 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import SortableImage from "./sortable-image";
-import { rentPeriods } from "@/data";
+import { propertyCategories, rentPeriods } from "@/data";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { getAllBranches } from "@/app/(nav)/management/staff-branch/data";
 import { useAuthStore } from "@/store/authstrore";
 import { getAllLandlords } from "@/app/(nav)/management/landlord/data";
 import { getAllStaffsByBranch } from "./data";
+import { currencySymbols } from "@/utils/number-formatter";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 
@@ -362,7 +361,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           inputClassName="bg-white rounded-[8px]"
         />
         <Select
-          options={["residential", "mixed use", "commercial"]}
+          options={propertyCategories["rental property"]}
           id="category"
           label="Category"
           isSearchable={false}
@@ -483,7 +482,12 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           resetKey={resetKey}
         />
         <Select
-          options={[{ value: 1, label: "No Fee" }]}
+          options={[
+            { value: "landlord", label: "Keep with Landlord" },
+            { value: "manager", label: "Keep with Manager" },
+            { value: "escrow", label: "Escrow it" },
+            { value: "none", label: "None" },
+          ]}
           isSearchable={false}
           id="caution_deposit"
           label="Caution Deposit"
@@ -493,13 +497,13 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
         <Select
           id="group_chat"
           label="Group Chat"
-          options={["Yes", "No"]}
+          options={["yes", "no"]}
           isSearchable={false}
           inputContainerClassName="bg-white"
           resetKey={resetKey}
         />
         <Select
-          options={["Yes", "No"]}
+          options={["yes", "no"]}
           id="fee_penalty"
           label="Rent Penalty"
           isSearchable={false}
@@ -507,7 +511,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           resetKey={resetKey}
         />
         <Select
-          options={["Yes", "No"]}
+          options={["yes", "no"]}
           id="request_callback"
           label="Request Call Back"
           isSearchable={false}
@@ -515,7 +519,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           resetKey={resetKey}
         />
         <Select
-          options={["Yes", "No"]}
+          options={["yes", "no"]}
           id="book_visitors"
           label="Book Visitors"
           isSearchable={false}
@@ -523,7 +527,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           resetKey={resetKey}
         />
         <Select
-          options={["Yes", "No"]}
+          options={["yes", "no"]}
           id="vehicle_records"
           label="Vehicle Records"
           isSearchable={false}
@@ -531,10 +535,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           resetKey={resetKey}
         />
         <Select
-          options={[
-            { value: "true", label: "Yes" },
-            { value: "false", label: "No" },
-          ]}
+          options={["yes", "no"]}
           id="activate_vat"
           label="Activate 7.5% VAT"
           isSearchable={false}
@@ -542,7 +543,10 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           resetKey={resetKey}
         />
         <Select
-          options={["(₦) NAIRA", "($) USD", "(£) POUNDS"]}
+          options={Object.entries(currencySymbols).map(([key, symbol]) => ({
+            value: key,
+            label: `${symbol} ${key.charAt(0) + key.slice(1).toLowerCase()}`,
+          }))}
           id="currency"
           label="Currency"
           isSearchable={false}

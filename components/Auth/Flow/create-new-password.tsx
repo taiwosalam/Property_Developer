@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from "react";
 
 // Types
@@ -12,16 +14,42 @@ import {
 } from "@/components/Auth/auth-components";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
+import { useFormDataStore } from "@/store/formdatastore";
+import { resetPassword } from "../data";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const CreateNewPassword = () => {
+  const router = useRouter();
   // State for managing error messages
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
   // Handler for form submission
-  const handleCreatePassword = (data: any) => {
-    console.log(data);
-    // NOTE: This is the part where you would send the data to the backend
+  const email = useFormDataStore((state) => state.formData.email);
+
+  const handleCreatePassword = async (data: any) => {
+    const password = data["new-password"];
+
+    try {
+      const res = await resetPassword(email, password);
+
+      if (res.success) {
+        console.log(res.data?.message, "response message");
+        await toast.success(res.data?.message || "Password reset successfully.");
+        router.push("/auth/sign-in");
+      } else {
+        // Extract error message and provide feedback to the user
+        const errorMessage = res.error?.errors?.email?.[0] || "An error occurred. Please try again.";
+        toast.error(errorMessage);
+        console.error(res.error, "Error details");
+      }
+    } catch (error) {
+      // Handle unexpected errors
+      toast.error("An unexpected error occurred. Please try again.");
+      console.error("Unexpected error:", error);
+    }
   };
+
 
   return (
     <AuthForm
@@ -50,9 +78,9 @@ const CreateNewPassword = () => {
 
       <div className="flex gap-2 items-center justify-between">
         {/* Link to Terms & Conditions */}
-        <AuthAction href="" linkText="Terms & Condition">
+        {/* <AuthAction href="" linkText="Terms & Condition">
           By creating an account, you are consenting to our
-        </AuthAction>
+        </AuthAction> */}
         {/* Submit button to proceed */}
         <Button type="submit">proceed</Button>
       </div>

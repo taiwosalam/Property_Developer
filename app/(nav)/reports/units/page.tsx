@@ -7,8 +7,7 @@ import FilterButton from "@/components/FilterButton/filter-button";
 import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
-import { Field } from "@/components/Table/types";
-`import type { Field } from "@/components/Table/types";`
+import type { Field } from "@/components/Table/types";
 
 const UnitsReport = () => {
   const fields: Field[] = [
@@ -52,7 +51,7 @@ const UnitsReport = () => {
         <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for units" />
           <FilterButton />
-          <ExportButton type="pdf" />
+          <ExportButton type="pdf" href="/reports/units/export" />
           <ExportButton type="csv" />
         </div>
       </div>

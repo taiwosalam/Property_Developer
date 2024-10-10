@@ -5,6 +5,7 @@ interface AddLandlordOrTenantCardProps {
   desc?: string;
   title: string;
   buttonText: string;
+  buttonHref?: string;
   onClick?: () => void;
 }
 
@@ -13,6 +14,7 @@ const AddLandlordOrTenantCard: React.FC<AddLandlordOrTenantCardProps> = ({
   title,
   onClick,
   buttonText,
+  buttonHref,
 }) => {
   return (
     <div className="w-[250px] h-[250px] flex gap-5 flex-col text-center items-center justify-center rounded-2xl border border-solid border-brand-9 bg-neutral-2">
@@ -23,8 +25,7 @@ const AddLandlordOrTenantCard: React.FC<AddLandlordOrTenantCardProps> = ({
         <p className="text-[#606060] text-xs font-normal mb-8">{desc}</p>
       )}
       <Button
-        type="button"
-        onClick={onClick}
+        {...(buttonHref ? { href: buttonHref } : { type: "button", onClick })}
         size="base_medium"
         className="py-2 px-8"
       >

@@ -60,7 +60,7 @@ const UnitFeatures = () => {
                 selectedAreaUnit !== "half plot" && (
                   <Input
                     required
-                    id="total" //confirm ID with backend
+                    id="total_units" //confirm ID with backend
                     label={`Number of ${selectedAreaUnit}s`}
                     inputClassName="bg-white"
                     type="number"
@@ -150,8 +150,8 @@ const UnitFeatures = () => {
             dropdownRefClassName="!w-[160px]"
             required
             options={["yes", "no"]}
-            id="pet_allowed"
-            label="Pet Allowed"
+            id="pets_allowed"
+            label="Pets Allowed"
             inputContainerClassName="bg-white"
             isSearchable={false}
             resetKey={formResetKey}

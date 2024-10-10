@@ -31,7 +31,7 @@ import TextArea from "@/components/Form/TextArea/textarea";
 import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeletePropertyModal from "@/components/Management/Properties/delete-property-modal";
-import { rentPeriods } from "@/data";
+import { rentPeriods, propertyCategories } from "@/data";
 
 const CreateGatedEstateForm: React.FC<CreatePropertyFormProps> = ({
   handleSubmit,
@@ -287,7 +287,7 @@ const CreateGatedEstateForm: React.FC<CreatePropertyFormProps> = ({
           inputClassName="bg-white rounded-[8px]"
         />
         <Select
-          options={["residential", "mixed use", "commercial"]}
+          options={propertyCategories["gated estate/facility"]}
           id="category"
           label="Category"
           isSearchable={false}
