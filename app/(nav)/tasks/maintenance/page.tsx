@@ -12,6 +12,7 @@ import MaintenanceCard from "@/components/tasks/maintenance/maintenance-card";
 import { useAuthStore } from "@/store/authstrore";
 import { useEffect, useState } from "react";
 import { getALLMaintenance } from "./data";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 const Maintenance = () => {
   const accessToken = useAuthStore((state) => state.access_token);
   const [maintenanceData, setMaintenanceData] = useState([]);
@@ -44,18 +45,9 @@ const Maintenance = () => {
           </Button>
         </div>
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Maintenance" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search" />
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>Hi</ModalContent>
-          </Modal>
-        </div>
-      </div>
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Maintenance" aboutPageModalData={
+        { title: "Maintenance", description: "This page contains a list of Maintenance on the platform." }
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <AutoResizingGrid minWidth={380} gap={32}>
         {Array(10)
           .fill(null)

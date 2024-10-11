@@ -2,6 +2,7 @@
 
 import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 import FilterButton from "@/components/FilterButton/filter-button";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
@@ -69,34 +70,16 @@ const ComplaintsPage = () => {
             ))}
         </div>
       </SectionContainer>
-      <div className="page-title-container">
-        <PageTitle title="Complains" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Task" />
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>
-              <FilterModal
-                filterOptionsWithDropdown={[]}
-                filterOptions={[]}
-                onApply={() => {}}
-                date
-                //   onStateSelect={(state: string) => setSelectedState(state)}
-              />
-            </ModalContent>
-          </Modal>
-        </div>
-      </div>
-
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Complains" aboutPageModalData={
+        { title: "Complains", description: "This page contains a list of Complains on the platform." }
+      } searchInputPlaceholder="Search for Task" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       {!isMobile && (
-        <SectionContainer heading="Recent Complains" href="/tasks/complaints">
+        <SectionContainer heading="All Complaints" href="/tasks/complaints">
           <KanbanBoard />
         </SectionContainer>
       )}
 
-      <Pagination totalPages={0} currentPage={0} onPageChange={() => {}} />
+      <Pagination totalPages={0} currentPage={0} onPageChange={() => { }} />
     </div>
   );
 };

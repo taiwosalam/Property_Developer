@@ -8,6 +8,7 @@ import PropertyRequestCard from "@/components/tasks/CallBack/RequestCard";
 import { PropertyRequestData, type PropertyRequestDataType } from "./data";
 import { type PropertyRequestCardProps } from "@/components/tasks/CallBack/types";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const transformToPropertyRequestCardProps = (
   data: PropertyRequestDataType
@@ -37,18 +38,9 @@ const PropertyRequest = () => {
           className="w-[unset]"
         />
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Request" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search" />
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>Hi</ModalContent>
-          </Modal>
-        </div>
-      </div>
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Request" aboutPageModalData={
+        { title: "Request", description: "This page contains a list of Request on the platform." }
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <AutoResizingGrid gap={28} minWidth={400}>
         {PropertyRequestData.map((details, index) => (
           <PropertyRequestCard

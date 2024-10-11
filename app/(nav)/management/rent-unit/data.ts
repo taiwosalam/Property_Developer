@@ -8,14 +8,13 @@ export interface RentAndUnitState {
 //
 
 export const RentAndUnitFilters = [
-  { label: "Alphabetically", value: "alphabetically" },
   { label: "Single Property", value: "single-property" },
   { label: "Gated Eestate", value: "gated-estate" },
 ];
 
 const allStates = getAllStates() || [];
 
-export const RentAndUnitFiltersWithOptions = [
+export const RentAndUnitFiltersWithDropdown = [
   {
     label: "State",
     value: allStates.map((state) => ({

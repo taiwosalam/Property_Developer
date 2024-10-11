@@ -13,6 +13,7 @@ import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import AddServiceProviderModal from "@/components/tasks/service-providers/add-service-provider-modal";
 import { useAuthStore } from "@/store/authstrore";
 import { getAllServiceProviders } from "./data";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const ServiceProviders = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -65,19 +66,9 @@ const ServiceProviders = () => {
           </ModalContent>
         </Modal>
       </div>
-
-      <div className="page-title-container">
-        <PageTitle title="Service Provider" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for providers" />
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>Nothing here</ModalContent>
-          </Modal>
-        </div>
-      </div>
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Service Provider" aboutPageModalData={
+        { title: "Service Provider", description: "This page contains a list of Service Provider on the platform." }
+      } searchInputPlaceholder="Search for providers" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <section
         className="grid gap-4"
         style={{

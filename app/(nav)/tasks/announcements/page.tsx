@@ -11,6 +11,7 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { useAuthStore } from "@/store/authstrore";
 import { getAllAnnouncements } from "./data";
 import { Announcement } from "./types";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
@@ -42,13 +43,9 @@ const AnnouncementPage = () => {
           + Create Announcement
         </Button>
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Announcement" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput />
-          <FilterButton />
-        </div>
-      </div>
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Announcement" aboutPageModalData={
+        { title: "Announcement", description: "This page contains a list of Announcement on the platform." }
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <AutoResizingGrid minWidth={315} gap={32}>
         {announcements.map((announcement, index) => {
           const formattedDate = new Date(
