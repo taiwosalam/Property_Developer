@@ -14,12 +14,19 @@ import {
 } from "@/components/Settings/settings-components";
 import TextArea from "@/components/Form/TextArea/textarea";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
+<<<<<<< HEAD
 import { website_color_schemes } from "@/components/Settings/data";
+=======
+>>>>>>> 541075f (Added Appearance page)
 
 const Appearance = () => {
     const colorOptions = ['#0033C4', '#0FA7E2', '#53B07D', '#E15B0F', '#C1373F', '#050901', '#8C62FF', '#005623', '#01BA4C', '#2DD4BF', '#FFBB53', '#CE9EA1', '#C18A37', '#C1373F', '#FC63FF', '#92FF3C', '#9B00FAAB', '#377FC1'];
 
+<<<<<<< HEAD
     const handleSelect = (value:string) => {
+=======
+    const handleSelect = (value: string) => {
+>>>>>>> 541075f (Added Appearance page)
         console.log("Selected theme:", value);
         // Handle the selected value as needed
     };
@@ -127,7 +134,10 @@ const Appearance = () => {
                 </div>
             </SettingsSection>
 
+<<<<<<< HEAD
         
+=======
+>>>>>>> 541075f (Added Appearance page)
         </>
     );
 };

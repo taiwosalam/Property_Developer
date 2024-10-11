@@ -102,6 +102,7 @@ export const DirectorCard: React.FC<SettingsDirectorTypes> = ({ name, email, pos
   </div>
 )
 
+<<<<<<< HEAD
 export const ThemeCard: React.FC<ThemeCardProps> = ({ img, value, onSelect }) => {
   return (
     <div
@@ -124,6 +125,26 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({ img, value, onSelect }) =>
 
 
 
+=======
+export const ThemeCard: React.FC<ThemeCardProps> = ({ img, value, onSelect }) => (
+  <div
+    className="themesWrapper mt-4 flex items-center flex-wrap gap-4 cursor-pointer"
+    onClick={() => onSelect(value)} // Call onSelect with the value when clicked
+  >
+    <div className="imgWrapper w-[218px] h-[218px]">
+      <Image
+        src={img}
+        alt="Theme"
+        width={1000}
+        height={1000}
+        className="w-full h-full object-contain"
+      />
+    </div>
+  </div>
+);
+
+
+>>>>>>> 541075f (Added Appearance page)
 // GITHUB ISSUES
 
 // export const SettingsOthersType: React.FC<SettingsOthersProps> = ({ title, desc, icon }) => (
