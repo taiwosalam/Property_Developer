@@ -2,7 +2,10 @@ import type {
   SettingsColorSchemeProps,
   SettingsTenantOccupantTierProps,
   SettingsTitleProps,
-    SettingsDirectorTypes, SettingsOthersCheckBoxProps, SettingsOthersProps, SettingsTitleProps
+  SettingsDirectorTypes,
+  SettingsOthersCheckBoxProps,
+  SettingsOthersProps,
+  SettingsServicesTagProps,
 } from "./types";
 
 // Images
@@ -13,6 +16,7 @@ import Button from "../Form/Button/button";
 import { secondaryFont } from "@/utils/fonts";
 import BadgeIcon from "../BadgeIcon/badge-icon";
 import Image from "next/image";
+import clsx from "clsx";
 
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
@@ -38,7 +42,6 @@ export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
     {desc && <p className="text-text-disabled text-sm font-normal">{desc}</p>}
   </div>
 );
-
 
 export const SettingsUpdateButton = () => (
   <div className="flex justify-end">
@@ -72,5 +75,26 @@ export const SettingsTenantOccupantTier: React.FC<
       <BadgeIcon color={color} />
     </div>
     <p className="text-[#606060] text-xs">{desc}</p>
+  </div>
+);
+
+export const SettingsServicesTag: React.FC<SettingsServicesTagProps> = ({
+  active,
+  children,
+}) => (
+  <div
+    className={clsx("py-3 px-4 rounded-[4px]", {
+      "bg-brand-1": active,
+      "bg-neutral-3 opacity-50": !active,
+    })}
+  >
+    <p
+      className={clsx("text-sm font-normal", {
+        "text-black": !active,
+        "text-brand-9": active,
+      })}
+    >
+      {children}
+    </p>
   </div>
 );
