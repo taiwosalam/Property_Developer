@@ -40,8 +40,6 @@ export interface SettingsOthersCheckBoxProps {
 export interface SettingsThemeTypes{
   img: string;
 }
-<<<<<<< HEAD
-=======
 
 export interface CheckboxProps {
   color: string;
@@ -55,14 +53,6 @@ interface ThemeCardProps {
   onSelect: (value: string) => void; // Pass the value when selected
 }
 
-
-// GITHUB CONFLICT
-// export interface SettingsOthersProps {
-//   title: string; 
-//   desc: string;  
-//   icon: string;  
-// }
->>>>>>> 541075f (Added Appearance page)
 
 export interface CheckboxProps {
   color: string;
