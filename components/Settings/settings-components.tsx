@@ -84,7 +84,7 @@ export const DirectorCard: React.FC<SettingsDirectorTypes> = ({ name, email, pos
       </div>
       <div className="flex flex-col relative">
         <div className="flex gap-2 items-center">
-          <h4 className="text-black font-bold leading-3"> {name} </h4>
+          <h4 className="text-black font-bold leading-3 text-ellipsis line-clamp-1"> {name} </h4>
           <Image
             alt="companyy_irector"
             src={`${icon ? icon : '/icons/unverified.svg'}`}
@@ -94,7 +94,7 @@ export const DirectorCard: React.FC<SettingsDirectorTypes> = ({ name, email, pos
           />
         </div>
         <p className="text-sm"> {email} </p>
-        {position && <p className="my-4 text-base text-brand-10"> {position} </p>}
+        {position && <p className="text-xs text-brand-10 font-normal my-2"> {position} </p>}
         {(!position || position === "") && <div className="py-1 my-2 max-w-[100px] bg-status-success-1 rounded-md text-center text-status-success-3">mobile</div>}
         <p className="text-md text-[#8D8D8D]"> {phone} </p>
       </div>
