@@ -9,7 +9,8 @@ import {
   SettingsUpdateButton,
 } from "@/components/Settings/settings-components";
 
-import { services, services_sections } from "@/components/Settings/data";
+import { services } from "@/components/Settings/services";
+import { services_sections } from "@/components/Settings/data";
 
 const Services = () => {
   return (

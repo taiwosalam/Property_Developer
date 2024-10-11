@@ -20,6 +20,7 @@ const Picture: React.FC<PictureProps> = ({
   status,
   rounded,
   className,
+  fit = "cover",
   resolutionMultiplier = 2,
   containerClassName,
 }) => {
@@ -36,13 +37,13 @@ const Picture: React.FC<PictureProps> = ({
         width={imageWidth * resolutionMultiplier}
         height={imageHeight * resolutionMultiplier}
         className={clsx(
-          "object-cover",
           {
             "rounded-full": rounded,
           },
           className
         )}
         style={{
+          objectFit: fit,
           width: imageWidth,
           height: imageHeight,
           minWidth: imageWidth,

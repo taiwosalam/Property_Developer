@@ -1,11 +1,13 @@
 // Imports
 import { BadgeIconColors } from "../BadgeIcon/badge-icon";
+
 import {
-  services,
   settings_link_tabs,
   tenant_occupant_tiers,
   website_color_schemes,
 } from "./data";
+
+import { services } from "./services";
 
 export type SettingsLinkTab = (typeof settings_link_tabs)[number];
 
