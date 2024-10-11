@@ -9,6 +9,7 @@ import type { Field } from "@/components/Table/types";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authstrore";
 import { getAllEventsOnCalendar } from "./data";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const CalendarPage = () => {
   const access_token = useAuthStore((state) => state.access_token);
@@ -48,18 +49,9 @@ const CalendarPage = () => {
 
   return (
     <div className="space-y-9">
-      <div className="page-title-container">
-        <PageTitle title="Calendar" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search" />
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>Nothing here</ModalContent>
-          </Modal>
-        </div>
-      </div>
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Calendar" aboutPageModalData={
+        { title: "Calendar", description: "This page contains a list of Calendar on the platform." }
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <div className="page-title-container">
         <PageTitle title="up coming events" />
         <p className="text-text-label text-sm md:text-base font-medium">
@@ -88,7 +80,7 @@ const CalendarPage = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
     </div>
   );
 };

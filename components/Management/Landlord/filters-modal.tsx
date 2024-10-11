@@ -23,7 +23,7 @@ type FilterOptionWithDropdown = {
 
 type FilterModalProps = {
   filterOptionsWithDropdown?: FilterOptionWithDropdown[];
-  filterOptions: FilterOption[];
+  filterOptions?: FilterOption[];
   filterOptionsWithRadio?: FilterOptionWithRadio[];
   onApply: (selectedFilters: string[]) => void;
   title?: string;
@@ -424,7 +424,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       ))}
 
       {/* Regular filter options */}
-      {filterOptions.map((option) => (
+      {filterOptions && filterOptions.map((option) => (
         <div
           key={option.value}
           className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5]"
@@ -454,10 +454,10 @@ const FilterModal: React.FC<FilterModalProps> = ({
       {activeDropdownOption
         ? renderDropdownOptions()
         : activeRadioOption
-        ? renderRadioOptions()
-        : showDatePicker
-        ? renderDateOptions()
-        : renderMainOptions()}
+          ? renderRadioOptions()
+          : showDatePicker
+            ? renderDateOptions()
+            : renderMainOptions()}
     </div>
   );
 };

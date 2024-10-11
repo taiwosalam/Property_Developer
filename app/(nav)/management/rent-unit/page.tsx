@@ -10,13 +10,14 @@ import clsx from "clsx";
 import FilterButton from "@/components/FilterButton/filter-button";
 import {
   RentAndUnitFilters,
-  RentAndUnitFiltersWithOptions,
+  RentAndUnitFiltersWithDropdown,
   RentAndUnitState,
 } from "./data";
 import StatusIndicator from "@/components/Management/status-indicator";
 import Pagination from "@/components/Pagination/pagination";
 import RentalPropertyCard from "@/components/Management/Rent And Unit/rental-property-card";
 import RentalPropertyListCard from "@/components/Management/Rent And Unit/rental-property-list";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const RentAndUnit = () => {
   const [state, setState] = useState<RentAndUnitState>({
@@ -69,52 +70,11 @@ const RentAndUnit = () => {
           className="w-[240px]"
         />
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Rent & Unit" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Rent and Unit" />
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              aria-label="list-view"
-              className={clsx(
-                "p-1 rounded-md",
-                !gridView
-                  ? "bg-black text-white"
-                  : "bg-transparent text-[unset]"
-              )}
-              onClick={setListView}
-            >
-              <ListIcon />
-            </button>
-            <button
-              type="button"
-              aria-label="grid-view"
-              className={clsx(
-                "p-1 rounded-md",
-                gridView ? "bg-black text-white" : "bg-transparent text-[unset]"
-              )}
-              onClick={setGridView}
-            >
-              <GridIcon />
-            </button>
-          </div>
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>
-              <FilterModal
-                filterOptionsWithDropdown={RentAndUnitFiltersWithOptions}
-                filterOptions={RentAndUnitFilters}
-                onApply={handleFilterApply}
-                date
-              />
-            </ModalContent>
-          </Modal>
-        </div>
-      </div>
-
+      <FilterBar azFilter gridView={gridView}
+        setGridView={setGridView}
+        setListView={setListView} onStateSelect={() => { }} pageTitle="Rent & Unit" aboutPageModalData={
+          { title: "Rent & Unit", description: "This page contains a list of Rent & Unit on the platform." }
+        } searchInputPlaceholder="Search for Rent and Unit" handleFilterApply={handleFilterApply} isDateTrue filterOptions={RentAndUnitFilters} filterWithOptionsWithDropdown={RentAndUnitFiltersWithDropdown} />
       <section className="capitalize space-y-4 px-4 w-full">
         <div className="w-full flex items-center justify-end">
           <div className="flex gap-4 flex-wrap">

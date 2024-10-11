@@ -85,7 +85,7 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div
       className={clsx(
-        "flex gap-4 items-center justify-center custom-primary-color mt-8 text-xs font-medium",
+        "w-full flex flex-wrap gap-4 items-center justify-center custom-primary-color mt-8 text-xs font-medium",
         className
       )}
     >

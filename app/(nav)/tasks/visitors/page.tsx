@@ -9,6 +9,7 @@ import VisitorRequestCard from "@/components/tasks/CallBack/RequestCard";
 import { VisitorRequestData, type VisitorRequestDataDataType } from "./data";
 import { type VisitorRequestCardProps } from "@/components/tasks/CallBack/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const transformToVisitorRequestCardProps = (
   data: VisitorRequestDataDataType
@@ -39,18 +40,9 @@ const BookVisitorsPage = () => {
         <ManagementStatistcsCard total={12} title="Completed" newData={12} />
         <ManagementStatistcsCard total={12} title="Pending" newData={12} />
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Book for Visitation" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search " />
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>Nothing to show</ModalContent>
-          </Modal>
-        </div>
-      </div>
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Book for Visitation" aboutPageModalData={
+        { title: "Book for Visitation", description: "This page contains a list of Book for Visitation on the platform." }
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <AutoResizingGrid gap={28} minWidth={400}>
         {VisitorRequestData.map((details, index) => (
           <VisitorRequestCard
