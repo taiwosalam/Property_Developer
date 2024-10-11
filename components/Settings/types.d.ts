@@ -49,6 +49,10 @@ export interface SettingsServicesTagProps {
 
 export type SettingsServiceOwners = keyof typeof services;
 
+export interface SettingsUpdateButtonProps {
+  text?: string;
+}
+
 interface SettingsOthersProps {
   title: string;
   desc: string;

@@ -1,22 +1,22 @@
 import type {
-  SettingsColorSchemeProps,
-  SettingsTenantOccupantTierProps,
   SettingsTitleProps,
+  SettingsColorSchemeProps,
+  SettingsServicesTagProps,
+  SettingsUpdateButtonProps,
+  SettingsTenantOccupantTierProps,
   SettingsDirectorTypes,
   SettingsOthersCheckBoxProps,
   SettingsOthersProps,
-  SettingsServicesTagProps,
 } from "./types";
 
 // Images
 import { Check } from "lucide-react";
 
 // Imports
+import clsx from "clsx";
 import Button from "../Form/Button/button";
 import { secondaryFont } from "@/utils/fonts";
 import BadgeIcon from "../BadgeIcon/badge-icon";
-import Image from "next/image";
-import clsx from "clsx";
 
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
@@ -43,10 +43,12 @@ export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
   </div>
 );
 
-export const SettingsUpdateButton = () => (
+export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
+  text = "update",
+}) => (
   <div className="flex justify-end">
     <Button size="base_bold" className="py-[10px] px-8">
-      update
+      {text}
     </Button>
   </div>
 );
