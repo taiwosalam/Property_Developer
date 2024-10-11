@@ -24,6 +24,7 @@ import {
 } from "@/components/Settings/settings-components";
 import TextArea from "@/components/Form/TextArea/textarea";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
+import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 
 const Others = () => {
     const { preview, handleImageChange } = useImageUploader({
@@ -195,10 +196,9 @@ const Others = () => {
                             "Property becomes vacant and is moved to the listing page.",
                             "Document is created using my signature, name, or consent.",
                         ].map((option) => (
-                            <label key={option} className="flex gap-1">
-                                <input type='checkbox' checked={false} onChange={() => { }} />
-                                <span className="text-sm">{option}</span>
-                            </label>
+                            <DocumentCheckbox darkText>
+                                { option }
+                            </DocumentCheckbox>
                         ))}
                     </div>
 
