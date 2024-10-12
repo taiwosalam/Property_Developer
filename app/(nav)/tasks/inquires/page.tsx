@@ -18,6 +18,7 @@ import RequestCallBackCard from "@/components/tasks/CallBack/RequestCard";
 import type { CallRequestCardProps } from "@/components/tasks/CallBack/types";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authstrore";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const transformToCallBackRequestCardProps = (
   data: RequestCallBackCardDataType
@@ -70,26 +71,9 @@ const Inquires = () => {
           newData={12}
         />
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Request Callback" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search " />
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>
-              <FilterModal
-                filterOptionsWithDropdown={inquiriesFilterOptionsWithDropdown}
-                filterOptions={[]}
-                onApply={() => { }}
-                date
-                onStateSelect={() => { }}
-              />
-            </ModalContent>
-          </Modal>
-        </div>
-      </div>
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Request Callback" aboutPageModalData={
+        { title: "Request Callback", description: "This page contains a list of Request Callback on the platform." }
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <AutoResizingGrid gap={28} minWidth={400}>
         {requestCallBackCardData.map((userDetails, index) => (
           <RequestCallBackCard

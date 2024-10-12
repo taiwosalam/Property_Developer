@@ -3,20 +3,15 @@ import { useEffect, useState } from "react";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { ModalContent, ModalTrigger, Modal } from "@/components/Modal/modal";
-import clsx from "clsx";
 import Button from "@/components/Form/Button/button";
-import SearchInput from "@/components/SearchInput/search-input";
-import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
-import { ListIcon, GridIcon } from "@/public/icons/icons";
-import AboutPage from "@/components/AboutPage/about-page";
 import PropertyListItem from "@/components/Management/Properties/property-list-item";
 import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import FilterButton from "@/components/FilterButton/filter-button";
 import { PropertyProps } from "@/components/Management/Properties/types";
 import { useAuthStore } from "@/store/authstrore";
 import { getAllProperties } from "./data";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Properties = () => {
   const acessToken = useAuthStore((state) => state.access_token);
@@ -81,55 +76,11 @@ const Properties = () => {
       </div>
 
       {/* Page Title with search */}
-      <div className="page-title-container">
-        <PageTitle
-          title="Properties"
-          aboutPageModal={
-            <AboutPage
-              title="Properties"
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer rhoncus nunc interdum turpis bibendum, quis molestie sapien convallis. Vivamus porta elementum nibh, vel placerat mauris vehicula non. Ut maximus vehicula tortor, nec pretium lacus venenatis id. Morbi pretium aliquet nisi, nec vestibulum nibh blandit in. "
-            />
-          }
-        />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Properties" />
-          <div className="flex items-center gap-x-3">
-            <button
-              type="button"
-              aria-label="list-view"
-              className={clsx(
-                "p-1 rounded-md",
-                !gridView
-                  ? "bg-black text-white"
-                  : "bg-transparent text-[unset]"
-              )}
-              onClick={setListView}
-            >
-              <ListIcon />
-            </button>
-            <button
-              type="button"
-              aria-label="grid-view"
-              className={clsx(
-                "p-1 rounded-md",
-                gridView ? "bg-black text-white" : "bg-transparent text-[unset]"
-              )}
-              onClick={setGridView}
-            >
-              <GridIcon />
-            </button>
-          </div>
-
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>
-              <div>Hi</div>
-            </ModalContent>
-          </Modal>
-        </div>
-      </div>
+      <FilterBar azFilter gridView={gridView}
+        setGridView={setGridView}
+        setListView={setListView} onStateSelect={() => { }} pageTitle="Properties" aboutPageModalData={
+          { title: "Properties", description: "This page contains a list of properties on the platform." }
+        } searchInputPlaceholder="Search for Properties" handleFilterApply={() => { }} isDateTrue filterOptionsWithRadio={[]} filterWithOptionsWithDropdown={[]} />
 
       {/* Card / List View */}
       <section>

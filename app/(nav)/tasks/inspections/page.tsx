@@ -9,6 +9,7 @@ import Pagination from "@/components/Pagination/pagination";
 import SearchInput from "@/components/SearchInput/search-input";
 import InspectionCard from "@/components/tasks/Inspections/inspection-card";
 import FilterButton from "@/components/FilterButton/filter-button";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const InspectionPage = () => {
   return (
@@ -30,31 +31,14 @@ const InspectionPage = () => {
           total={657}
         />
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Inspection" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Inspection" />
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>
-              <FilterModal
-                filterOptionsWithDropdown={[]}
-                filterOptions={[]}
-                onApply={() => {}}
-                date
-                //   onStateSelect={(state: string) => setSelectedState(state)}
-              />
-            </ModalContent>
-          </Modal>
-        </div>
-      </div>
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Inspection" aboutPageModalData={
+        { title: "Inspection", description: "This page contains a list of Inspection on the platform." }
+      } searchInputPlaceholder="Search for Inspection" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <AutoResizingGrid minWidth={505} gap={32}>
         <InspectionCard type="physical" />
         <InspectionCard type="virtual" />
       </AutoResizingGrid>
-      <Pagination totalPages={5} currentPage={1} onPageChange={() => {}} />
+      <Pagination totalPages={5} currentPage={1} onPageChange={() => { }} />
     </div>
   );
 };

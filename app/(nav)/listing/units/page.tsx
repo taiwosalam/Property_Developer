@@ -8,6 +8,7 @@ import PageTitle from "@/components/PageTitle/page-title";
 import SearchInput from "@/components/SearchInput/search-input";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import VacantUnitCard from "@/components/Listing/Units/vacant-unit-card";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Units = () => {
   return (
@@ -29,25 +30,9 @@ const Units = () => {
           total={657}
         />
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Vacant Units" />
-        <div className="flex items-center gap-4">
-          <SearchInput placeholder="Search for Staff and Branch" />
-          <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-            <button>
-              <div className="flex items-center gap-2 cursor-pointer">
-                <Image
-                  src="/icons/sliders.svg"
-                  alt="filters"
-                  width={20}
-                  height={20}
-                />
-                <p className="text-[#344054] text-base font-medium">Filters</p>
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Vacant Units" aboutPageModalData={
+        { title: "Vacant Units", description: "This page contains a list of Vacant Units on the platform." }
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <div className="custom-flex-col gap-5">
         {Array(5)
           .fill(null)
