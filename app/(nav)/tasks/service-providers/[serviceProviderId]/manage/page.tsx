@@ -1,13 +1,14 @@
 "use client";
 
-// import { useParams } from "next/navigation";
 import clsx from "clsx";
 import { useState } from "react";
+import { secondaryFont } from "@/utils/fonts";
 import {
   LandlordTenantInfoBox as InfoBox,
   LandlordTenantInfo as ContactInfo,
   LandlordTenantInfoSection as InfoSection,
 } from "@/components/Management/landlord-tenant-info-components";
+import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import Picture from "@/components/Picture/picture";
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import Button from "@/components/Form/Button/button";
@@ -17,6 +18,7 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { ChevronLeft } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
 import ServiceCard from "@/components/tasks/service-providers/service-card";
+// import { useParams } from "next/navigation";
 interface ServiceProviderData {
   user_tag: "web" | "mobile";
   // user_name: string;
@@ -36,11 +38,16 @@ const ManageServiceProvider = () => {
 
   return (
     <div className="space-y-5">
-      <button aria-label="back" className="block" onClick={() => router.back()}>
-        <ChevronLeft />
-      </button>
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
-        <InfoBox style={{ padding: "24px 40px" }}>
+        <InfoBox style={{ padding: "24px 40px" }} className="relative">
+          <button
+            type="button"
+            aria-label="back"
+            className="absolute top-3 left-3"
+            onClick={() => router.back()}
+          >
+            <ChevronLeft />
+          </button>
           <div className="flex flex-col xl:flex-row gap-5">
             <div className="flex items-start">
               <Picture
@@ -55,7 +62,10 @@ const ManageServiceProvider = () => {
                 Abimbola Adedeji
               </p>
               <p
-                className="text-sm font-normal mb-4"
+                className={clsx(
+                  "text-sm font-normal mb-4",
+                  secondaryFont.className
+                )}
                 style={{ color: "rgba(21, 21, 21, 0.70)" }}
               >
                 abimbola@gmail.com

@@ -21,10 +21,17 @@ import {
 import { getOneLandlord } from "../../data";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import {
+  ChevronLeft,
+  ArrowRightIcon,
+  ArrowLeftIcon,
+} from "@/public/icons/icons";
 import { useAuthStore } from "@/store/authstrore";
 import { useParams, useRouter } from "next/navigation";
 import { LandlordPageData } from "../../types";
 import { ASSET_URL, empty } from "@/app/config";
+import UserTag from "@/components/Tags/user-tag";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
 
 const ManageLandlord = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -55,10 +62,22 @@ const ManageLandlord = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   if (!LandlordPageData) return null;
+
   return (
     <div className="custom-flex-col gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
-        <LandlordTenantInfoBox style={{ padding: "24px 40px" }}>
+        <LandlordTenantInfoBox
+          style={{ padding: "24px 40px" }}
+          className="relative"
+        >
+          <button
+            type="button"
+            aria-label="back"
+            className="absolute top-3 left-3"
+            onClick={() => router.back()}
+          >
+            <ChevronLeft />
+          </button>
           <div className="flex flex-col xl:flex-row gap-5">
             <div className="flex items-start">
               <Picture
@@ -89,58 +108,71 @@ const ManageLandlord = () => {
                   </p>
                 </div>
                 <div className="custom-flex-col gap-2">
-                  <div className="flex">
-                    <div className="py-1 px-4 rounded-lg bg-status-success-1">
-                      <p className="capitalize text-status-success-3 text-[10px] font-normal">
-                        {LandlordPageData?.user_tag}
-                      </p>
-                    </div>
-                  </div>
+                  <UserTag type={LandlordPageData.user_tag} />
                   <p className="text-neutral-800 text-base font-medium">
                     ID: {LandlordPageData?.id}
                   </p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-4">
-                <Button size="base_medium" className="py-2 px-8">
-                  message
-                </Button>
-                <Button
-                  variant="light_green"
-                  size="base_medium"
-                  className="py-2 px-8"
-                >
-                  unflag
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                <Button
-                  href={`/management/landlord/${LandlordPageData?.id}/manage/edit`}
-                  size="base_medium"
-                  className="py-2 px-8"
-                >
-                  edit
-                </Button>
-                <Button size="base_medium" className="py-2 px-8">
-                  update with ID
-                </Button>
-              </div>
+              {LandlordPageData?.user_tag === "mobile" ? (
+                <div className="flex flex-wrap gap-4">
+                  <Button size="base_medium" className="py-2 px-8">
+                    message
+                  </Button>
+                  <Button
+                    variant="light_green"
+                    size="base_medium"
+                    className="py-2 px-8"
+                  >
+                    unflag
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-4">
+                  <Button
+                    href={`/management/landlord/${LandlordPageData?.id}/manage/edit`}
+                    size="base_medium"
+                    className="py-2 px-8"
+                  >
+                    edit
+                  </Button>
+                  <Button size="base_medium" className="py-2 px-8">
+                    update with ID
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </LandlordTenantInfoBox>
+
+        {LandlordPageData?.user_tag === "mobile" ? (
+          <LandlordTenantInfo
+            info={{
+              gender: "LandlordPageData.gender",
+              birthday: "LandlordPageData.birthday",
+              religion: "LandlordPageData.religion",
+              phone: LandlordPageData.phone_number,
+              marital_status: "LandlordPageData.marital_status",
+            }}
+          />
+        ) : (
+          <LandlordTenantInfo
+            heading="Contact Address"
+            info={
+              LandlordPageData?.contact_address
+                ? {
+                    address: LandlordPageData.contact_address.address,
+                    city: LandlordPageData.contact_address.city,
+                    state: LandlordPageData.contact_address.state,
+                    "L.G": LandlordPageData.contact_address.local_govt,
+                  }
+                : {}
+            }
+          />
+        )}
+
         <LandlordTenantInfo
-          info={
-            LandlordPageData?.contact_address
-              ? {
-                  address: LandlordPageData.contact_address.address,
-                  city: LandlordPageData.contact_address.city,
-                  state: LandlordPageData.contact_address.state,
-                  "L.G": LandlordPageData.contact_address.local_govt,
-                }
-              : {}
-          }
-        />
-        <LandlordTenantInfo
+          containerClassName="flex flex-col justify-center"
           heading="bank details"
           info={
             LandlordPageData?.bank_details
@@ -154,38 +186,118 @@ const ManageLandlord = () => {
               : {}
           }
         />
+
+        {LandlordPageData?.user_tag === "mobile" ? (
+          <LandlordTenantInfo
+            heading="Contact Address"
+            containerClassName="flex flex-col justify-center"
+            info={
+              LandlordPageData?.contact_address
+                ? {
+                    address: LandlordPageData.contact_address.address,
+                    city: LandlordPageData.contact_address.city,
+                    state: LandlordPageData.contact_address.state,
+                    "L.G": LandlordPageData.contact_address.local_govt,
+                  }
+                : {}
+            }
+          />
+        ) : (
+          <LandlordTenantInfo
+            containerClassName="flex flex-col justify-center"
+            heading="Others"
+            info={{
+              occupation: "LandlordPageData?.occupation",
+              employment_title: "LandlordPageData?.employment_title",
+              "family type": "LandlordPageData?.family_type",
+              xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
+            }}
+          />
+        )}
+
         <LandlordTenantInfo
-          heading="Others"
+          heading="Next of Kin"
           info={{
-            address: "U4 Joke Plaza Bodija Ibadan",
-            city: "ibadan",
-            state: "oyo state",
-            "L.G": "Ibadan North Central",
+            name: "LandlordPageData.next_of_kin.name",
+            address: "LandlordPageData.next_of_kin.address",
+            "phone number": "LandlordPageData.next_of_kin.phone_number",
+            relationship: "LandlordPageData.next_of_kin.relationship",
           }}
         />
-        <LandlordTenantInfo
-          heading="Guarantor"
-          info={
-            LandlordPageData?.guarantor
-              ? {
-                  name: LandlordPageData.guarantor.name,
-                  relationship: LandlordPageData.guarantor.relationship,
-                  email: LandlordPageData.guarantor.email,
-                  phone: LandlordPageData.guarantor.phone_number,
-                  address: LandlordPageData.guarantor.address,
-                  note: LandlordPageData.guarantor.note,
-                }
-              : {}
-          }
-        />
-        <LandlordTenantInfo
-          heading="Note"
-          info={
-            LandlordPageData?.guarantor.note
-              ? { note: LandlordPageData.guarantor.note }
-              : { note: "N/A" }
-          }
-        />
+        {LandlordPageData?.user_tag === "web" ? (
+          <LandlordTenantInfoBox>
+            <div className="custom-flex-col gap-4">
+              <div className="flex justify-between gap-4">
+                <h3 className="text-black text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
+                  <span>Note</span>
+                  <sub className="text-sm font-normal bottom-[unset]">
+                    22/12/2022
+                  </sub>
+                </h3>
+                <div className="flex gap-3 text-text-tertiary">
+                  <button type="button" aria-label="Previous">
+                    <ArrowLeftIcon />
+                  </button>
+                  <button type="button" aria-label="Next">
+                    <ArrowRightIcon />
+                  </button>
+                </div>
+              </div>
+              <TruncatedText
+                lines={7}
+                className="text-text-quaternary text-sm lg:text-base font-normal"
+              >
+                building, is a residential property that living read more. They
+                want to work with their budget in booking an appointment. They
+                wants to ease themselves the stress having to que, and also
+                reducety that living read more. They want to work with their
+                budget in booking an appointment. They wants to ease themselves
+                the stress having to que, and stress having to que, and stress
+                having to que, and stress having to que, and stress having to
+                que, and stress havingalso reduce the read more They wants to
+                ease themselves of the stress of having to que, and also reduce
+                the time spent searching for something new.for something new. A
+                multi-family home, also know as a duplex, triplex, or multi-unit
+                building, is a residential property that living read more. They
+                want to work with their budget in booking an appointment. ime
+                spent searching
+              </TruncatedText>
+            </div>
+          </LandlordTenantInfoBox>
+        ) : (
+          <>
+            <LandlordTenantInfo
+              containerClassName="flex flex-col justify-center"
+              heading="Others"
+              info={{
+                occupation: "LandlordPageData?.occupation",
+                employment_title: "LandlordPageData?.employment_title",
+                "family type": "LandlordPageData?.family_type",
+                xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
+              }}
+            />
+            <LandlordTenantInfo
+              heading="Guarantor 1"
+              containerClassName="flex flex-col justify-center"
+              info={{
+                name: "LandlordPageData.guarantor1.name",
+                email: "LandlordPageData.guarantor1.email",
+                "phone number": "LandlordPageData.guarantor1.phone_number",
+                address: "LandlordPageData.guarantor1.address",
+              }}
+            />
+            <LandlordTenantInfo
+              heading="Guarantor 2"
+              containerClassName="flex flex-col justify-center"
+              info={{
+                name: "LandlordPageData.guarantor2.name",
+                email: "LandlordPageData.guarantor2.email",
+                "phone number": "LandlordPageData.guarantor2.phone_number",
+                address: "LandlordPageData.guarantor2.address",
+              }}
+            />
+          </>
+        )}
       </div>
       <LandlordTenantInfoSection title="Property Managed">
         <AutoResizingGrid minWidth={315}>

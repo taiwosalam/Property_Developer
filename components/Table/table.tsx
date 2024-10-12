@@ -164,7 +164,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     ...field.cellStyle,
                     ...(field.accessor === "email"
                       ? { textTransform: "lowercase" }
-                      : {}), // Apply unset for email only
+                      : {}),
                   }}
                 >
                   {renderValue(

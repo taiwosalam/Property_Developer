@@ -96,7 +96,7 @@ const ServiceProviders = () => {
                 first_name="Allys"
                 last_name="Quantrill"
                 email="aquantrill0@tinypic.com"
-                user_tag="web"
+                user_tag={index % 2 === 0 ? "web" : "mobile"}
                 phone_number="1787991995"
                 picture_url={DefaultLandlordAvatar.src}
                 service="Plumber, Electrician"

@@ -12,6 +12,7 @@ import { secondaryFont } from "@/utils/fonts";
 // Imports
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
+import UserTag from "@/components/Tags/user-tag";
 
 import {
   LandlordTenantInfo,

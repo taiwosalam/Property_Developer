@@ -1,3 +1,4 @@
+"use client";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -6,13 +7,27 @@ import {
   LandlordTenantInfoEditGrid as InfoEditGrid,
   LandlordTenantInfoEditSection as InfoEditSection,
 } from "@/components/Management/landlord-tenant-info-components";
+import { useState, useEffect } from "react";
 import Select from "@/components/Form/Select/select";
-import { getAllStates } from "@/utils/states";
+import { getAllStates, getLocalGovernments } from "@/utils/states";
+import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import Picture from "@/components/Picture/picture";
 import Avatar from "@/public/empty/avatar.png";
 import OrangeCloseCircle from "@/public/icons/orange-close-circle.svg";
 const EditServiceProvider = () => {
-  const states = getAllStates();
+  const [address, setAddress] = useState<{
+    state: string;
+    local_government: string;
+    // city: string;
+  }>({
+    state: "",
+    local_government: "",
+    // city: "",
+  });
+  useEffect(() => {
+    setAddress((prev) => ({ ...prev, local_government: "" }));
+  }, [address.state]);
+
   return (
     <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
       <h2 className="text-black text-lg lg:text-xl font-medium">
@@ -22,24 +37,54 @@ const EditServiceProvider = () => {
         <div className="custom-flex-col gap-5 flex-1">
           <InfoEditSection title="Details">
             <InfoEditGrid>
-              <Input id="full_name" label="full name" required />
-              <Input id="email" type="email" label="email" required />
-              <Input id="service_rendered" label="service rendered" required />
-              <Input id="personal_number" label="personal number" required />
-              <Input id="address" label="address" required />
+              <Input
+                id="full_name"
+                label="full name"
+                required
+                inputClassName="rounded-lg"
+              />
+              <Input
+                id="email"
+                type="email"
+                label="email"
+                required
+                inputClassName="rounded-lg"
+              />
+              <Input
+                id="service_rendered"
+                label="service rendered"
+                required
+                inputClassName="rounded-lg"
+              />
+              <PhoneNumberInput
+                id="personal_number"
+                label="personal number"
+                required
+                inputClassName="!bg-neutral-2"
+              />
+              <Input
+                id="address"
+                label="address"
+                required
+                inputClassName="rounded-lg"
+              />
               <Select
                 id="state"
                 label="state"
-                options={states}
+                options={getAllStates()}
                 placeholder="Select options"
                 inputContainerClassName="bg-neutral-2"
+                onChange={(state) => setAddress((prev) => ({ ...prev, state }))}
+                value={address.state}
               />
               <Select
                 id="local-government"
                 label="local government"
                 placeholder="Select options"
-                options={["local government 1", "local government 2"]}
+                options={getLocalGovernments(address.state)}
                 inputContainerClassName="bg-neutral-2"
+                onChange={(lga) => setAddress((prev) => ({ ...prev, lga }))}
+                value={address.local_government}
               />
               <div className="flex items-end justify-end">
                 <Button>update</Button>
@@ -48,10 +93,26 @@ const EditServiceProvider = () => {
           </InfoEditSection>
           <InfoEditSection title="company details">
             <InfoEditGrid>
-              <Input id="name" label="name" required />
-              <Input id="email" type="email" label="email" required />
-              <Input id="phone_number" label="phone number" required />
-              <Input id="address" label="address" />
+              <Input
+                id="name"
+                label="name"
+                required
+                inputClassName="rounded-lg"
+              />
+              <Input
+                id="email"
+                type="email"
+                label="email"
+                required
+                inputClassName="rounded-lg"
+              />
+              <PhoneNumberInput
+                id="phone_number"
+                label="phone number"
+                required
+                inputClassName="!bg-neutral-2"
+              />
+              <Input id="address" label="address" inputClassName="rounded-lg" />
               <div className="flex items-end justify-end md:col-span-2">
                 <Button>update</Button>
               </div>
@@ -59,9 +120,24 @@ const EditServiceProvider = () => {
           </InfoEditSection>
           <InfoEditSection title="bank details">
             <InfoEditGrid>
-              <Input id="bank_name" label="bank name" required />
-              <Input id="account_name" label="account name" required />
-              <Input id="account_number" label="account number" required />
+              <Input
+                id="bank_name"
+                label="bank name"
+                required
+                inputClassName="rounded-lg"
+              />
+              <Input
+                id="account_name"
+                label="account name"
+                required
+                inputClassName="rounded-lg"
+              />
+              <Input
+                id="account_number"
+                label="account number"
+                required
+                inputClassName="rounded-lg"
+              />
 
               <div className="flex items-end justify-end">
                 <Button>update</Button>
@@ -75,8 +151,14 @@ const EditServiceProvider = () => {
                 label="document type"
                 placeholder="Select options"
                 options={[]}
+                inputContainerClassName="bg-neutral-2"
               />
-              <Input id="browse" type="file" label="browse" />
+              <Input
+                id="browse"
+                type="file"
+                label="browse"
+                inputClassName="rounded-lg"
+              />
               <div className="flex items-end">
                 <Button>add document</Button>
               </div>

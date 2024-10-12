@@ -2,12 +2,10 @@
 import { toast } from "sonner";
 
 export interface StateType {
-  selectedState: string;
-  selectedLGA: string;
-  selectedCity: string;
+  state: string;
+  lga: string;
+  city: string;
   selectedBranch: string;
-  localGovernments: string[];
-  cities: string[];
   staff: { id: string; label: string }[];
   staffOptions: string[];
   images: string[];
@@ -19,12 +17,10 @@ export interface StateType {
 }
 
 export const proerty_state_data: StateType = {
-  selectedState: "",
-  selectedLGA: "",
-  selectedCity: "",
+  state: "",
+  lga: "",
+  city: "",
   selectedBranch: "",
-  localGovernments: [],
-  cities: [],
   staff: [],
   staffOptions: [],
   images: [],

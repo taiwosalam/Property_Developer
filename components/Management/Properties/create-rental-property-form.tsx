@@ -47,12 +47,10 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   const accessToken = useAuthStore((state) => state.access_token);
 
   const {
-    selectedState,
-    selectedLGA,
-    selectedCity,
+    state: selectedState,
+    lga,
+    city,
     selectedBranch,
-    localGovernments,
-    cities,
     staff,
     staffOptions,
     images,
@@ -202,43 +200,20 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
   }, [accessToken, selectedBranch]);
 
   useEffect(() => {
-    if (selectedState) {
-      const lgas = getLocalGovernments(selectedState);
-      setState((x) => ({
-        ...x,
-        localGovernments: lgas,
-        selectedLGA: "",
-        selectedCity: "",
-        cities: [],
-      }));
-    } else {
-      setState((x) => ({
-        ...x,
-        localGovernments: [],
-        selectedLGA: "",
-        selectedCity: "",
-        cities: [],
-      }));
-    }
+    setState((x) => ({
+      ...x,
+      lga: "",
+      city: "",
+    }));
   }, [selectedState]);
 
-  // Update cities when LGA changes
+  // Clear city when LGA changes
   useEffect(() => {
-    if (selectedLGA && selectedState) {
-      const cities = getCities(selectedState, selectedLGA);
-      setState((x) => ({
-        ...x,
-        cities,
-        selectedCity: "",
-      }));
-    } else {
-      setState((x) => ({
-        ...x,
-        cities: [],
-        selectedCity: "",
-      }));
-    }
-  }, [selectedLGA, selectedState]);
+    setState((x) => ({
+      ...x,
+      city: "",
+    }));
+  }, [lga]);
 
   // Function to reset the state
   const handleReset = () => {
@@ -336,24 +311,24 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
           label="State"
           value={selectedState}
           inputContainerClassName="bg-white"
-          onChange={(selectedState) => setPropertyState({ selectedState })}
+          onChange={(state) => setPropertyState({ state })}
         />
         <Select
-          options={localGovernments}
+          options={getLocalGovernments(selectedState)}
           id="local_govt"
           label="local government"
-          value={selectedLGA}
+          value={lga}
           inputContainerClassName="bg-white"
-          onChange={(selectedLGA) => setPropertyState({ selectedLGA })}
+          onChange={(lga) => setPropertyState({ lga })}
         />
         <Select
-          options={cities}
+          options={getCities(selectedState, lga)}
           id="city"
           label="City / Area"
           allowCustom={true}
-          value={selectedCity}
+          value={city}
           inputContainerClassName="bg-white"
-          onChange={(selectedCity) => setPropertyState({ selectedCity })}
+          onChange={(city) => setPropertyState({ city })}
         />
         <Input
           id="full_address"

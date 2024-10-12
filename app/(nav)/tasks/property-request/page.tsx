@@ -40,7 +40,7 @@ const PropertyRequest = () => {
       <div className="page-title-container">
         <PageTitle title="Request" />
         <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search" />
+          <SearchInput placeholder="Search Property Request" />
           <Modal>
             <ModalTrigger asChild>
               <FilterButton />

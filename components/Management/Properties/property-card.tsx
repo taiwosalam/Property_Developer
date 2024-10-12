@@ -10,11 +10,6 @@ import {
   swipePower,
 } from "@/utils/slider";
 import { motion, AnimatePresence } from "framer-motion";
-import Sample from "@/public/empty/SampleProperty.jpeg";
-import Sample2 from "@/public/empty/SampleProperty2.jpeg";
-import Sample3 from "@/public/empty/SampleProperty3.jpeg";
-import Sample4 from "@/public/empty/SampleProperty4.png";
-import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import {
   LocationIcon,
@@ -42,7 +37,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   isClickable = true,
   viewOnly,
 }) => {
-  const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   const modalRef = useRef<HTMLDivElement>(null);
   const [[page, direction], setPage] = useState([0, 0]);
   const [isModalActive, setIsModalActive] = useState(false);
@@ -119,8 +113,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         <AnimatePresence initial={false} custom={direction}>
           <motion.img
             key={page}
-            src={sampleImages[imageIndex]?.src || empty}
-            alt={`${name} ${imageIndex + 1}`}
+            src={images[imageIndex]}
+            alt={`${name} image-${imageIndex + 1}`}
             custom={direction}
             variants={variants}
             initial="enter"
