@@ -18,7 +18,7 @@ const Properties = () => {
 
   const initialState = {
     gridView: true,
-    total_pages: 50,
+    total_pages: 20,
     current_page: 1,
     isModalOpen: false,
   };
@@ -34,12 +34,12 @@ const Properties = () => {
     setState((state) => ({ ...state, current_page: page }));
   };
 
-  const [properties, setProperties] = useState<PropertyProps[]>([]);
+  // const [properties, setProperties] = useState<PropertyProps[]>([]);
 
   useEffect(() => {
-    getAllProperties(acessToken).then((data) => {
-      setProperties(data);
-    });
+    // getAllProperties(acessToken).then((data) => {
+    //   setProperties(data);
+    // });
   }, [acessToken]);
 
   return (
@@ -86,13 +86,51 @@ const Properties = () => {
       <section>
         {gridView ? (
           <AutoResizingGrid minWidth={315}>
-            {properties.length >= 1 &&
-              properties.map((p) => <PropertyCard {...p} key={p.id} />)}
+            {/* {properties.length >= 1 &&
+                properties.map((p) => <PropertyCard {...p} key={p.id} />)} */}
+            {Array.from({ length: 10 }).map((_, index) => (
+              <PropertyCard
+                key={index}
+                address="123 Main St"
+                id={1}
+                propertyId={1}
+                images={[
+                  "/empty/empty.svg",
+                  "/empty/empty.svg",
+                  "/empty/empty.svg",
+                  "/empty/empty.svg",
+                  "/empty/empty.svg",
+                ]}
+                name="Property 1"
+                units={1}
+                price={1000}
+                type="rent"
+              />
+            ))}
           </AutoResizingGrid>
         ) : (
           <div className="space-y-4">
-            {properties.length >= 1 &&
-              properties.map((p) => <PropertyListItem key={p.id} {...p} />)}
+            {/* {properties.length >= 1 &&
+              properties.map((p) => <PropertyListItem key={p.id} {...p} />)} */}
+            {Array.from({ length: 10 }).map((_, index) => (
+              <PropertyListItem
+                key={index}
+                address="123 Main St"
+                id={1}
+                propertyId={1}
+                images={[
+                  "/empty/empty.svg",
+                  "/empty/empty.svg",
+                  "/empty/empty.svg",
+                  "/empty/empty.svg",
+                  "/empty/empty.svg",
+                ]}
+                name="Property 1"
+                units={1}
+                price={1000}
+                type="rent"
+              />
+            ))}
           </div>
         )}
       </section>

@@ -32,6 +32,7 @@ const Button: React.FC<ButtonProps> = ({
     </Link>
   ) : (
     <button
+      type="button"
       className={clsx(
         "rounded-[4px] capitalize",
         button_variants.size[size],

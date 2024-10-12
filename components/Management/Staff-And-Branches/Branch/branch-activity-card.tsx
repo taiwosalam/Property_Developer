@@ -1,10 +1,14 @@
-import React from "react";
+import clsx from "clsx";
 
 interface ActivityItemProps {
   label: string;
   description: string;
   time: string;
   color: string;
+}
+
+interface BranchActivitiesCardProps {
+  className?: string;
 }
 
 const ActivityItem: React.FC<ActivityItemProps> = ({
@@ -30,7 +34,9 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
   );
 };
 
-const BranchActivitiesCard = () => {
+const BranchActivitiesCard: React.FC<BranchActivitiesCardProps> = ({
+  className,
+}) => {
   const activities = [
     {
       label: "Complain",
@@ -63,7 +69,13 @@ const BranchActivitiesCard = () => {
   ];
 
   return (
-    <div className="bg-brand-1 rounded-lg shadow-md w-full">
+    <div
+      className={clsx("bg-brand-1 rounded-lg", className)}
+      style={{
+        boxShadow:
+          "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
+      }}
+    >
       <div className="flex justify-between items-center p-4">
         <div>
           <h2 className="font-medium text-sm">Branch Activities</h2>

@@ -4,7 +4,7 @@ export type LandlordPageData = {
   name: string;
   email: string;
   phone_number: string;
-  user_tag: string;
+  user_tag: "web" | "mobile";
   id: number;
   contact_address: {
     address: string;

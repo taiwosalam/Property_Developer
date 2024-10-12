@@ -24,7 +24,7 @@ const Landlord = () => {
   const accessToken = useAuthStore((state) => state.access_token);
   const initialState: LandlordPageState = {
     gridView: true,
-    total_pages: 50,
+    total_pages: 5,
     current_page: 1,
     loading: true,
     error: null,
@@ -221,19 +221,19 @@ const Landlord = () => {
             title="Total Landlords"
             newData={new_landlords_this_month}
             total={total_landlords}
-            className="w-[unset]"
+            className="w-[240px]"
           />
           <ManagementStatistcsCard
             title="Web Landlords"
             newData={new_web_landlords_this_month}
             total={web_landlords}
-            className="w-[unset]"
+            className="w-[240px]"
           />
           <ManagementStatistcsCard
             title="Mobile Landlords"
             newData={new_mobile_landlords_this_month}
             total={mobile_landlords}
-            className="w-[unset]"
+            className="w-[240px]"
           />
         </div>
 

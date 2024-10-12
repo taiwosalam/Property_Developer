@@ -4,7 +4,7 @@ import React from "react";
 import type { InspectionCardInfoProps } from "./types";
 
 // Images
-import LocationIcon from "@/public/icons/location.svg";
+import { LocationIcon } from "@/public/icons/icons";
 import SampleProperty from "@/public/empty/SampleProperty.jpeg";
 
 // Imports
@@ -16,7 +16,12 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
   className,
 }) => {
   return (
-    <div className={clsx("flex items-center gap-6 justify-between", className)}>
+    <div
+      className={clsx(
+        "flex flex-wrap items-center gap-6 justify-between",
+        className
+      )}
+    >
       <div className="flex items-center gap-4">
         <div className="relative rounded-[4px] overflow-hidden">
           <Picture
@@ -31,12 +36,12 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
             </p>
           </div>
         </div>
-        <div className="custom-flex-col gap-1 text-text-secondary text-base font-bold">
+        <div className="custom-flex-col gap-1 text-text-secondary text-sm lg:text-base font-bold">
           <p>Newly Built 1 Bedroom</p>
           <p>Room and Parlour</p>
-          <div className="flex items-center gap-1">
-            <Picture src={LocationIcon} alt="location" width={12} height={16} />
-            <p className="text-text-disabled text-xs font-normal">
+          <div className="text-text-disabled flex items-center gap-1">
+            <LocationIcon />
+            <p className="text-xs font-normal">
               Street 23, All Avenue, Nigeria
             </p>
           </div>
@@ -44,7 +49,7 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
       </div>
       <div className="custom-flex-col">
         <p
-          className={`text-brand-primary text-2xl font-bold ${secondaryFont.className}`}
+          className={`text-brand-primary text-lg md:text-xl lg:text-2xl font-bold ${secondaryFont.className}`}
         >
           ₦1,950,000
         </p>
