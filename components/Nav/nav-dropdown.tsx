@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { usePathname } from "next/navigation";
 
 // Types
@@ -19,17 +18,17 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
   children,
   highlight,
   onContentClick,
+  isOpen,
+  onToggle,
 }) => {
   const pathname = usePathname();
-
-  const [isOpen, setIsOpen] = useState(highlight);
 
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
 
   return (
     <div className="custom-flex-col">
       <div
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={onToggle}
         className="relative flex items-center nav-button"
       >
         <NavButton type={type} highlight={isOpen || highlight}>
