@@ -20,6 +20,8 @@ import {
   current_subscriptions,
   personalized_domain,
 } from "./data";
+
+import clsx from "clsx";
 import Select from "@/components/Form/Select/select";
 import CustomTable from "@/components/Table/table";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
@@ -46,13 +48,27 @@ const Subscriptions = () => {
     evenRowColor: "#FAFAFA",
   };
 
+  const transformedSubscriptions = current_subscriptions.data.map((data) => ({
+    ...data,
+    status: (
+      <p
+        className={clsx({
+          "text-status-success-2": data.status === "Active",
+          "text-status-caution-2": data.status === "Pending",
+        })}
+      >
+        {data.status}
+      </p>
+    ),
+  }));
+
   return (
     <>
       <SettingsSection title="Current Subscription/Ads-on">
         <div className="custom-flex-col gap-7">
           <SettingsSectionTitle desc="Current Subscription and Ads-on Plan are business model where you pay a recurring fee at regular intervals either monthly or annually to access a dashboard modules, data, information and menu. Here's a breakdown of your current subscriptions." />
           <CustomTable
-            data={current_subscriptions.data}
+            data={transformedSubscriptions}
             fields={current_subscriptions.fields}
             {...table_style_props}
           />
@@ -215,7 +231,7 @@ const Subscriptions = () => {
           <SettingsSection title="Subscription History">
             <div className="custom-flex-col gap-8">
               <CustomTable
-                data={current_subscriptions.data}
+                data={transformedSubscriptions}
                 fields={current_subscriptions.fields}
                 {...table_style_props}
               />
