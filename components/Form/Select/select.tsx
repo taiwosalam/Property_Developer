@@ -11,7 +11,7 @@ const Select: React.FC<SelectProps> = ({
   id,
   label,
   defaultValue,
-  value: propValue = "",
+  value: propValue,
   required,
   className,
   options,
@@ -32,12 +32,12 @@ const Select: React.FC<SelectProps> = ({
     isOpen: boolean;
     searchTerm: string;
     filteredOptions: string[] | SelectOptionObject[];
-    selectedValue: string | number;
+    selectedValue?: string | number;
   } = {
     isOpen: false,
     searchTerm: "",
     filteredOptions: options,
-    selectedValue: "",
+    selectedValue: defaultValue,
   };
   const [state, setState] = useState(initialState);
   const { isOpen, searchTerm, filteredOptions, selectedValue } = state;
@@ -101,8 +101,8 @@ const Select: React.FC<SelectProps> = ({
 
   // Initialize
   useEffect(() => {
-    setState((x) => ({ ...x, selectedValue: propValue }));
-  }, [propValue, resetKey]);
+    setState((x) => ({ ...x, selectedValue: propValue || defaultValue }));
+  }, [propValue, resetKey, defaultValue]);
 
   useEffect(() => {
     setValidationError(null);
@@ -118,7 +118,7 @@ const Select: React.FC<SelectProps> = ({
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
-      {/* input for flow progress */}
+      {/* input for flow progress and holding the selected value for form submission */}
       <input
         name={id}
         id={id}
@@ -255,7 +255,7 @@ const Select: React.FC<SelectProps> = ({
                   <p>No match</p>
                   {allowCustom && (
                     <>
-                      <hr className="mb-[1px]" /> <hr />
+                      <hr className="mb-[1px]" />
                       <button
                         type="button"
                         onClick={() => handleSelection(searchTerm)}

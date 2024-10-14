@@ -10,7 +10,15 @@ import type { FlowProgressProps } from "./types";
 import gsap from "gsap";
 import FlowProgressBar from "./flow-progress-bar";
 
-export const FlowProgressContext = createContext<Record<string, any>>({});
+interface FlowProgressContextType {
+  handleInputChange: () => void;
+  canSubmit: boolean;
+}
+
+export const FlowProgressContext = createContext<FlowProgressContextType>({
+  handleInputChange: () => {},
+  canSubmit: false,
+});
 
 const FlowProgress: React.FC<FlowProgressProps> = ({
   steps,
@@ -47,7 +55,7 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     }
 
     if (input.classList.contains("react-quill-hidden-input")) {
-      return value !== "<p><br></p>" && value !== "<p></p>";
+      return value && value !== "<p><br></p>" && value !== "<p></p>";
     }
 
     return value;

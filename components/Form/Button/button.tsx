@@ -8,7 +8,7 @@ import type { ButtonProps } from "./types";
 import clsx from "clsx";
 import { button_variants } from "./data";
 
-const Button: React.FC<ButtonProps> = ({
+const  Button: React.FC<ButtonProps> = ({
   href,
   style,
   children,

@@ -312,6 +312,23 @@ export const landlordTypes = [
   "Joint Venture Partnership",
 ];
 
+export const tenantTypes = [
+  "Couples",
+  "Divorce",
+  "Family of 3",
+  "Family of 4",
+  "Family 4 Plus",
+  "Government Agency",
+  "Individual",
+  "Multifamily",
+  "Organization",
+  "Single Mother",
+  "Student",
+  "Cooperate",
+  "Window",
+  "Others",
+];
+
 export const nextOfKinRelationships = [
   "Spouse",
   "Parent",

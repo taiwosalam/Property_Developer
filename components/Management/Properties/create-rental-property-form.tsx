@@ -220,7 +220,7 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
     setState((x) => ({
       ...x,
       resetKey: x.resetKey + 1,
-      selectedState: "",
+      state: "",
       images: [],
       staff: [],
     }));

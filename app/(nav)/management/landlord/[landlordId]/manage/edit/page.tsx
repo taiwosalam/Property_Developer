@@ -5,6 +5,7 @@ import Avatar from "@/public/empty/avatar-1.svg";
 import OrangeCloseCircle from "@/public/icons/orange-close-circle.svg";
 
 // Imports
+import clsx from "clsx";
 import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
 import Input from "@/components/Form/Input/input";
 import Picture from "@/components/Picture/picture";
@@ -95,32 +96,33 @@ const EditLandlord = () => {
           <LandlordTenantInfoEditSection title="profile">
             <LandlordTenantInfoEditGrid>
               <Input
-                id="firstname"
+                id="landlord-firstname"
                 label="first name"
                 required
                 inputClassName="rounded-lg"
               />
               <Input
-                id="lastname"
+                id="landlord-lastname"
                 label="last name"
                 required
                 inputClassName="rounded-lg"
               />
               <Input
-                id="email"
+                id="landlord-email"
                 type="email"
                 label="email"
                 required
                 inputClassName="rounded-lg"
               />
               <PhoneNumberInput
-                id="phone-number"
+                id="landlord-phone-number"
                 label="phone number"
                 required
                 inputClassName="!bg-neutral-2"
+                // Pass defaultValue to prefill the input
               />
               <Select
-                id="state"
+                id="landlord-state"
                 label="state"
                 options={states}
                 placeholder="Select options"
@@ -129,7 +131,7 @@ const EditLandlord = () => {
                 onChange={(value) => handleAddressChange(value, "state")}
               />
               <Select
-                id="local-government"
+                id="landlord-local_government"
                 label="local government"
                 placeholder="Select options"
                 options={getLocalGovernments(address.state)}
@@ -140,7 +142,7 @@ const EditLandlord = () => {
                 }
               />
               <Select
-                id="city"
+                id="landlord-city"
                 label="city"
                 placeholder="Select options"
                 options={getCities(address.state, address.local_government)}
@@ -149,7 +151,11 @@ const EditLandlord = () => {
                 allowCustom={true}
                 onChange={(value) => handleAddressChange(value, "city")}
               />
-              <Input id="address" label="address" inputClassName="rounded-lg" />
+              <Input
+                id="landlord-address"
+                label="address"
+                inputClassName="rounded-lg"
+              />
               <Select
                 id="owner-type"
                 label="owner type"
@@ -167,7 +173,9 @@ const EditLandlord = () => {
                 options={genderTypes}
               />
               <div className="col-span-2 flex justify-end">
-                <Button>update</Button>
+                <Button size="base_medium" className="py-2 px-6">
+                  update
+                </Button>
               </div>
             </LandlordTenantInfoEditGrid>
           </LandlordTenantInfoEditSection>
@@ -176,20 +184,20 @@ const EditLandlord = () => {
           <LandlordTenantInfoEditSection title="Next of Kin">
             <LandlordTenantInfoEditGrid>
               <Input
-                id="fullname"
+                id="next-of-kin-fullname"
                 label="full name"
                 required
                 inputClassName="rounded-lg"
               />
               <Input
-                id="email"
+                id="next-of-kin-email"
                 type="email"
                 label="email"
                 required
                 inputClassName="rounded-lg"
               />
               <PhoneNumberInput
-                id="phone-number"
+                id="next-of-kin-phone-number"
                 label="phone number"
                 required
                 inputClassName="!bg-neutral-2"
@@ -201,9 +209,15 @@ const EditLandlord = () => {
                 options={nextOfKinRelationships}
                 inputContainerClassName="bg-neutral-2"
               />
-              <Input id="address" label="address" inputClassName="rounded-lg" />
+              <Input
+                id="next-of-kin-address"
+                label="address"
+                inputClassName="rounded-lg"
+              />
               <div className="flex items-end justify-end">
-                <Button>update</Button>
+                <Button size="base_medium" className="py-2 px-6">
+                  update
+                </Button>
               </div>
             </LandlordTenantInfoEditGrid>
           </LandlordTenantInfoEditSection>
@@ -212,20 +226,20 @@ const EditLandlord = () => {
           <LandlordTenantInfoEditSection title="Guarantor">
             <LandlordTenantInfoEditGrid>
               <Input
-                id="fullname"
+                id="guarantor-fullname"
                 label="full name"
                 required
                 inputClassName="rounded-lg"
               />
               <Input
-                id="email"
+                id="guarantor-email"
                 type="email"
                 label="email"
                 required
                 inputClassName="rounded-lg"
               />
               <PhoneNumberInput
-                id="phone-number"
+                id="guarantor-phone-number"
                 label="phone number"
                 required
                 inputClassName="!bg-neutral-2"
@@ -237,9 +251,15 @@ const EditLandlord = () => {
                 options={guarantorRelationships}
                 inputContainerClassName="bg-neutral-2"
               />
-              <Input id="address" label="address" inputClassName="rounded-lg" />
+              <Input
+                id="guarantor-address"
+                label="address"
+                inputClassName="rounded-lg"
+              />
               <div className="flex items-end justify-end">
-                <Button>update</Button>
+                <Button size="base_medium" className="py-2 px-6">
+                  update
+                </Button>
               </div>
             </LandlordTenantInfoEditGrid>
           </LandlordTenantInfoEditSection>
@@ -269,8 +289,15 @@ const EditLandlord = () => {
                 inputContainerClassName="bg-neutral-2"
                 options={familyTypes}
               />
-              <div className="flex items-end justify-end">
-                <Button>update</Button>
+              <div
+                className={clsx(
+                  "flex items-end justify-end",
+                  employment.toLowerCase() !== "employed" && "col-span-2"
+                )}
+              >
+                <Button size="base_medium" className="py-2 px-6">
+                  update
+                </Button>
               </div>
             </LandlordTenantInfoEditGrid>
           </LandlordTenantInfoEditSection>
@@ -295,7 +322,9 @@ const EditLandlord = () => {
               />
 
               <div className="flex items-end justify-end">
-                <Button>update</Button>
+                <Button size="base_medium" className="py-2 px-6">
+                  update
+                </Button>
               </div>
             </LandlordTenantInfoEditGrid>
           </LandlordTenantInfoEditSection>
@@ -317,7 +346,9 @@ const EditLandlord = () => {
                 inputClassName="rounded-lg"
               />
               <div className="flex items-end">
-                <Button>add document</Button>
+                <Button size="base_medium" className="py-2 px-6">
+                  add document
+                </Button>
               </div>
             </LandlordTenantInfoEditGrid>
           </LandlordTenantInfoEditSection>
@@ -356,7 +387,9 @@ const EditLandlord = () => {
                   ))}
               </div>
             </div>
-            <Button>change photo</Button>
+            <Button size="base_medium" className="py-2 px-6">
+              change photo
+            </Button>
           </LandlordTenantInfoEditSection>
           <LandlordTenantInfoEditSection title="add note">
             <textarea
@@ -369,7 +402,11 @@ const EditLandlord = () => {
       <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex justify-between">
         <Modal>
           <ModalTrigger asChild>
-            <Button style={{ color: "#E9212E", backgroundColor: "#FDE9EA" }}>
+            <Button
+              style={{ color: "#E9212E", backgroundColor: "#FDE9EA" }}
+              size="base_medium"
+              className="py-2 px-6"
+            >
               delete account
             </Button>
           </ModalTrigger>
@@ -381,10 +418,14 @@ const EditLandlord = () => {
           <Button
             href={`/management/landlord/${landlordId}/manage`}
             style={{ color: "#0033C4", backgroundColor: "#EFF6FF" }}
+            size="base_medium"
+            className="py-2 px-6"
           >
             exit
           </Button>
-          <Button>save</Button>
+          <Button size="base_medium" className="py-2 px-6">
+            save
+          </Button>
         </div>
       </div>
     </div>

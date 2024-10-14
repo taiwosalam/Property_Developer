@@ -1,7 +1,9 @@
 export interface PhoneNumberProps {
   id: string;
   value?: string;
+  defaultValue?: string;
   label?: string;
+  resetKey?: number;
   className?: string;
   required?: boolean;
   placeholder?: string;
