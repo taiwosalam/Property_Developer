@@ -25,6 +25,9 @@ import {
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import NewDisbursementModal from "@/components/Accounting/Disbursement/new-disbursement-modal";
 import SortButton from "@/components/FilterButton/sort-button";
+import FilterButton from "@/components/FilterButton/filter-button";
+import FilterModal from "@/components/Management/Landlord/filters-modal";
+import { accountingDisbursementOptionsWithDropdown } from "./data";
 
 const Disbursement = () => {
   return (
@@ -51,16 +54,20 @@ const Disbursement = () => {
           <div className="flex items-center gap-4">
             <SearchInput placeholder="Search for Staff and Branch" />
             <SortButton />
-            <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-              <button>
-                <div className="flex items-center gap-2 cursor-pointer">
-                  <Picture src="/icons/sliders.svg" alt="filters" size={20} />
-                  <p className="text-[#344054] text-base font-medium">
-                    Filters
-                  </p>
-                </div>
-              </button>
-            </div>
+            <Modal>
+              <ModalTrigger asChild>
+                <FilterButton />
+              </ModalTrigger>
+              <ModalContent>
+                <FilterModal
+                  filterOptions={[]}
+                  date
+                  filterOptionsWithDropdown={accountingDisbursementOptionsWithDropdown}
+                  onApply={() => { }}
+                  onStateSelect={() => { }}
+                />
+              </ModalContent>
+            </Modal>
             <Link
               href={"/accounting/disbursement/export"}
               className="flex items-center gap-2 py-[10px] px-4 rounded-lg border border-solid border-[#D0D5DD] bg-white"

@@ -28,3 +28,28 @@ export interface LandlordProps {
   avatar?: string;
   picture_url: string;
 }
+
+export type FilterOption = {
+  label: string;
+  value: string;
+};
+
+export type FilterOptionWithRadio = {
+  label: string;
+  value: FilterOption[];
+};
+
+export type FilterOptionWithDropdown = {
+  label: string;
+  value: FilterOption[];
+};
+
+export type FilterModalProps = {
+  filterOptionsWithDropdown?: FilterOptionWithDropdown[];
+  filterOptions?: FilterOption[];
+  filterOptionsWithRadio?: FilterOptionWithRadio[];
+  onApply: (selectedFilters: string[]) => void;
+  title?: string;
+  onStateSelect?: (state: string) => void;
+  date?: boolean; // New prop to determine if date picker should be shown
+};

@@ -32,6 +32,7 @@ import {
   DropdownContent,
   DropdownTrigger,
 } from "@/components/Dropdown/dropdown";
+import { accountingStatementOptionsWithDropdown } from "./data";
 
 const Statement = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -127,7 +128,7 @@ const Statement = () => {
                 <ModalContent>
                   <FilterModal
                     filterOptions={[]}
-                    filterOptionsWithDropdown={[]}
+                    filterOptionsWithDropdown={accountingStatementOptionsWithDropdown}
                     onApply={handleFilterApply}
                     date
                     onStateSelect={(state: string) => setSelectedState(state)}
@@ -249,7 +250,7 @@ const Statement = () => {
             </tbody>
           </table>
         </div>
-        <Pagination totalPages={10} currentPage={1} onPageChange={() => {}} />
+        <Pagination totalPages={10} currentPage={1} onPageChange={() => { }} />
       </div>
     </div>
   );

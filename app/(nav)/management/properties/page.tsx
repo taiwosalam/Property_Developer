@@ -8,10 +8,9 @@ import Pagination from "@/components/Pagination/pagination";
 import PropertyListItem from "@/components/Management/Properties/property-list-item";
 import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import { PropertyProps } from "@/components/Management/Properties/types";
 import { useAuthStore } from "@/store/authstrore";
-import { getAllProperties } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { propertyFilterOptionsRadio, propertyFilterOptionsWithDropdowns } from "./data";
 
 const Properties = () => {
   const acessToken = useAuthStore((state) => state.access_token);
@@ -80,7 +79,7 @@ const Properties = () => {
         setGridView={setGridView}
         setListView={setListView} onStateSelect={() => { }} pageTitle="Properties" aboutPageModalData={
           { title: "Properties", description: "This page contains a list of properties on the platform." }
-        } searchInputPlaceholder="Search for Properties" handleFilterApply={() => { }} isDateTrue filterOptionsWithRadio={[]} filterWithOptionsWithDropdown={[]} />
+        } searchInputPlaceholder="Search for Properties" handleFilterApply={() => { }} isDateTrue filterOptionsWithRadio={propertyFilterOptionsRadio} filterWithOptionsWithDropdown={propertyFilterOptionsWithDropdowns} />
 
       {/* Card / List View */}
       <section>

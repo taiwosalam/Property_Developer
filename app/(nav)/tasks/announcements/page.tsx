@@ -2,14 +2,11 @@
 
 import { useEffect, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import FilterButton from "@/components/FilterButton/filter-button";
 import Button from "@/components/Form/Button/button";
 import AnnouncementCard from "@/components/tasks/announcements/announcement-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { useAuthStore } from "@/store/authstrore";
-import { getAllAnnouncements } from "./data";
+import { announcementrFilterOptionsWithDropdown, getAllAnnouncements } from "./data";
 import { Announcement } from "./types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
@@ -45,7 +42,7 @@ const AnnouncementPage = () => {
       </div>
       <FilterBar azFilter onStateSelect={() => { }} pageTitle="Announcement" aboutPageModalData={
         { title: "Announcement", description: "This page contains a list of Announcement on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={announcementrFilterOptionsWithDropdown} />
       <AutoResizingGrid minWidth={315} gap={32}>
         {announcements.map((announcement, index) => {
           const formattedDate = new Date(
