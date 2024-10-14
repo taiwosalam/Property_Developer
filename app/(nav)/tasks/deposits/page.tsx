@@ -1,13 +1,10 @@
 "use client";
 
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import PageTitle from "@/components/PageTitle/page-title";
-import FilterButton from "@/components/FilterButton/filter-button";
-import SearchInput from "@/components/SearchInput/search-input";
 import DepositRequestCard from "@/components/tasks/CallBack/RequestCard";
 import { type DepositRequestCardProps } from "@/components/tasks/CallBack/types";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { DepositRequestData, type DepositRequestDataType } from "./data";
+import { DepositRequestData, depositRequestOptionsWithDropdown, type DepositRequestDataType } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const transformToDepositRequestCardProps = (
@@ -40,7 +37,7 @@ const DepositRequest = () => {
       </div>
       <FilterBar azFilter onStateSelect={() => { }} pageTitle="Caution Deposit Request" aboutPageModalData={
         { title: "Caution Deposit Request", description: "This page contains a list of Caution Deposit Request on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={depositRequestOptionsWithDropdown} />
       <AutoResizingGrid gap={28} minWidth={400}>
         {DepositRequestData.map((details, index) => (
           <DepositRequestCard

@@ -1,11 +1,6 @@
 "use client";
 
-import FilterButton from "@/components/FilterButton/filter-button";
-import FilterModal from "@/components/Management/Landlord/filters-modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
 import {
   getAllCallbackRequests,
   inquiriesFilterOptionsWithDropdown,
@@ -73,7 +68,7 @@ const Inquires = () => {
       </div>
       <FilterBar azFilter onStateSelect={() => { }} pageTitle="Request Callback" aboutPageModalData={
         { title: "Request Callback", description: "This page contains a list of Request Callback on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={inquiriesFilterOptionsWithDropdown} />
       <AutoResizingGrid gap={28} minWidth={400}>
         {requestCallBackCardData.map((userDetails, index) => (
           <RequestCallBackCard

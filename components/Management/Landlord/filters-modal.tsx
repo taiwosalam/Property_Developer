@@ -3,33 +3,8 @@ import Image from "next/image";
 import { ModalTrigger } from "@/components/Modal/modal";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import DateInput from "@/components/Form/DateInput/date-input";
-import { Dayjs } from "dayjs";
-
-// Types
-type FilterOption = {
-  label: string;
-  value: string;
-};
-
-type FilterOptionWithRadio = {
-  label: string;
-  value: FilterOption[];
-};
-
-type FilterOptionWithDropdown = {
-  label: string;
-  value: FilterOption[];
-};
-
-type FilterModalProps = {
-  filterOptionsWithDropdown?: FilterOptionWithDropdown[];
-  filterOptions?: FilterOption[];
-  filterOptionsWithRadio?: FilterOptionWithRadio[];
-  onApply: (selectedFilters: string[]) => void;
-  title?: string;
-  onStateSelect?: (state: string) => void;
-  date?: boolean; // New prop to determine if date picker should be shown
-};
+import dayjs, { Dayjs } from "dayjs";
+import { FilterModalProps, FilterOptionWithDropdown, FilterOptionWithRadio } from "./types";
 
 const FilterModal: React.FC<FilterModalProps> = ({
   filterOptionsWithDropdown,
@@ -55,13 +30,18 @@ const FilterModal: React.FC<FilterModalProps> = ({
     null
   );
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedStartDate, setSelectedStartDate] = useState<string | null>(null);
+  const [selectedEndDate, setSelectedEndDate] = useState<string | null>(null);
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
 
-  const handleDateChange = (date?: Dayjs | null) => {
-    setSelectedDate(date ? date.toISOString() : null);
-    setSelectedDateOption(date ? date.format("DD/MM/YYYY") : null);
+  const handleDateChange = (type: "start" | "end", date?: Dayjs | null) => {
+    if (type === "start") {
+      setSelectedStartDate(date ? date.toISOString() : null);
+    } else if (type === "end") {
+      setSelectedEndDate(date ? date.toISOString() : null);
+    }
   };
+
 
   const toggleDatePicker = () => {
     setShowDatePicker((prev) => !prev);
@@ -111,10 +91,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
       ...selectedFilters,
       ...selectedDropdownValues,
       ...(selectedRadioOption ? [selectedRadioOption] : []),
-      ...(selectedDate ? [`date:${selectedDate}`] : []),
+      ...(selectedStartDate ? [`startDate:${selectedStartDate}`] : []),
+      ...(selectedEndDate ? [`endDate:${selectedEndDate}`] : []),
     ];
     onApply(filtersToApply);
   };
+
 
   // Show dropdown options content within the same modal
   const showDropdownOptions = (option: FilterOptionWithDropdown) => {
@@ -291,7 +273,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
               <ChevronLeft />
             </span>
             <h2 className="text-lg font-bold text-primary-navy">
-              Registration Date
+              Date
             </h2>
           </div>
           <button className="p-2" onClick={() => setShowDatePicker(false)}>
@@ -314,7 +296,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
             </label>
             <DateInput
               id="registration_date_from"
-              onChange={handleDateChange}
+              value={selectedStartDate ? dayjs(selectedStartDate) : undefined}
+              onChange={(date) => handleDateChange("start", date)}
               inputClassName="setup-f"
             />
           </div>
@@ -323,11 +306,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
               htmlFor="registration_date_to"
               className="text-xs text-black"
             >
-              to
+              To
             </label>
             <DateInput
               id="registration_date_to"
-              onChange={handleDateChange}
+              value={selectedEndDate ? dayjs(selectedEndDate) : undefined}
+              onChange={(date) => handleDateChange("end", date)}
               inputClassName="setup-f"
             />
           </div>
@@ -342,6 +326,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
     );
   };
 
+  // Content for the main modal options
   // Content for the main modal options
   const renderMainOptions = () => (
     <>
@@ -358,23 +343,25 @@ const FilterModal: React.FC<FilterModalProps> = ({
         </ModalTrigger>
       </div>
 
-      <div
-        className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] cursor-pointer"
-        onClick={toggleDatePicker}
-      >
-        <label className="text-sm capitalize">Registration Date</label>
-        {selectedDateOption ? (
-          <Image
-            src="/icons/checkbox-checked.svg"
-            alt="check"
-            width={20}
-            height={20}
-            className="min-w-[20px] min-h-[20px]"
-          />
-        ) : (
-          <ChevronRight />
-        )}
-      </div>
+      {date && (
+        <div
+          className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] cursor-pointer"
+          onClick={toggleDatePicker}
+        >
+          <label className="text-sm capitalize">Date</label>
+          {(selectedStartDate || selectedEndDate) ? (
+            <Image
+              src="/icons/checkbox-checked.svg"
+              alt="check"
+              width={20}
+              height={20}
+              className="min-w-[20px] min-h-[20px]"
+            />
+          ) : (
+            <ChevronRight />
+          )}
+        </div>
+      )}
 
       {/* Dropdown filter options */}
       {filterOptionsWithDropdown?.map((option) => (
@@ -448,6 +435,20 @@ const FilterModal: React.FC<FilterModalProps> = ({
       </button>
     </>
   );
+
+  // Main return statement in the component
+  return (
+    <div className="w-[400px] rounded-[20px] bg-white p-[20px] custom-flex-col">
+      {activeDropdownOption
+        ? renderDropdownOptions()
+        : activeRadioOption
+          ? renderRadioOptions()
+          : showDatePicker && date
+            ? renderDateOptions()
+            : renderMainOptions()}
+    </div>
+  );
+
 
   return (
     <div className="w-[400px] rounded-[20px] bg-white p-[20px] custom-flex-col">
