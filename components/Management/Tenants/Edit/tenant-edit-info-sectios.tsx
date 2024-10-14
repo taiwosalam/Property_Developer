@@ -6,91 +6,146 @@ import {
   LandlordTenantInfoEditSection,
 } from "../../landlord-tenant-info-components";
 
-import { getAllStates } from "@/utils/states";
+import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
 import Input from "@/components/Form/Input/input";
+import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
 import { useTenantEditContext } from "./tenant-edit-context";
+import { useState, useEffect, useRef } from "react";
+import { tenantTypes, genderTypes } from "@/data";
 
 const states = getAllStates();
 
 export const TenantEditProfileInfoSection = () => {
   const { data } = useTenantEditContext();
+  const hasMounted = useRef(false);
 
   const [firstname, lastname] = data?.name ? data.name.split(" ") : ["", ""];
+
+  const [address, setAddress] = useState<{
+    state: string;
+    local_govt: string;
+    city: string;
+  }>({
+    state: data?.contact_address.state || "",
+    local_govt: data?.contact_address.local_govt || "",
+    city: data?.contact_address.city || "",
+  });
+
+  const handleAddressChange = (value: string, key: keyof typeof address) => {
+    setAddress((prev) => ({ ...prev, [key]: value }));
+  };
+
+  useEffect(() => {
+    if (hasMounted.current) {
+      console.log("local govt changed");
+      setAddress((prev) => ({ ...prev, city: "" }));
+    }
+  }, [address.local_govt]);
+
+  useEffect(() => {
+    if (hasMounted.current) {
+      setAddress((prev) => ({ ...prev, city: "", local_govt: "" }));
+    }
+  }, [address.state]);
+
+  useEffect(() => {
+    if (!hasMounted.current) {
+      console.log("setting mounted to true");
+      hasMounted.current = true;
+    }
+  }, []);
 
   return (
     <LandlordTenantInfoEditSection title="profile">
       <LandlordTenantInfoEditGrid>
         <Input
-          id="first_name"
+          id="tenant-first_name"
           label="first name"
           placeholder="Placeholder"
           defaultValue={firstname}
           required
+          inputClassName="rounded-lg"
         />
         <Input
-          id="last_name"
+          id="tenant-last_name"
           label="last name"
           placeholder="Placeholder"
           defaultValue={lastname}
           required
+          inputClassName="rounded-lg"
         />
         <Input
-          id="email"
+          id="tenant-email"
           type="email"
           label="email"
           placeholder="Placeholder"
           defaultValue={data?.email}
           required
+          inputClassName="rounded-lg"
         />
-        <Input
-          id="phone_number"
+        <PhoneNumberInput
+          id="tenant-phone_number"
           label="phone number"
           placeholder="Placeholder"
           defaultValue={data?.phone_number}
           required
+          inputClassName="!bg-neutral-2"
         />
         <Select
-          id="state"
+          id="tenant-state"
           label="state"
           options={states}
           placeholder="Select options"
+          inputContainerClassName="bg-neutral-2"
+          value={address.state}
+          onChange={(value) => handleAddressChange(value, "state")}
         />
         <Select
-          id="local_government"
+          id="tenant-local_government"
           label="local government"
           placeholder="Select options"
-          options={["local government 1", "local government 2"]}
+          options={getLocalGovernments(address.state)}
+          inputContainerClassName="bg-neutral-2"
+          value={address.local_govt}
+          onChange={(value) => handleAddressChange(value, "local_govt")}
         />
-        <Input
-          id="city"
+        <Select
+          id="tenant-city"
           label="city"
-          placeholder="Placeholder"
-          defaultValue={data?.contact_address.city}
+          placeholder="Select options"
+          options={getCities(address.state, address.local_govt)}
+          inputContainerClassName="bg-neutral-2"
+          value={address.city}
+          onChange={(value) => handleAddressChange(value, "city")}
+          allowCustom={true}
         />
         <Input
-          id="address"
+          id="tenant-address"
           label="address"
           placeholder="Placeholder"
+          inputClassName="rounded-lg"
           defaultValue={data?.contact_address.address}
         />
         <Select
           id="tenant_type"
-          label="owner type"
+          label="tenant type"
           isSearchable={false}
           placeholder="Select options"
-          options={["owner type 1", "owner type 2"]}
+          options={tenantTypes}
+          inputContainerClassName="bg-neutral-2"
         />
         <Select
           id="gender"
           label="gender"
           isSearchable={false}
           placeholder="Select options"
-          options={["male", "female"]}
+          inputContainerClassName="bg-neutral-2"
+          options={genderTypes}
         />
-        <div className="flex items-end">
+        <div className="col-span-2 flex items-end justify-end">
           <Button size="base_medium" className="py-2 px-6">
             update
           </Button>
@@ -264,6 +319,7 @@ export const TenantEditNoteSection = () => {
       style={{ padding: "40px 16px", gap: "20px" }}
       headingStyle={{ padding: "0 24px" }}
     >
+      {/* Pass defaultValue to prefill */}
       <TextArea id="add_note" />
     </LandlordTenantInfoEditSection>
   );

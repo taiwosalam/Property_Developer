@@ -91,6 +91,8 @@ const EditTenant = () => {
             <TenantEditBankDetailsSection />
             <TenantEditAttachmentSection />
           </div>
+
+          {/* Right Side */}
           <div className="w-full lg:w-[334px] custom-flex-col gap-5">
             <LandlordTenantInfoEditSection title="edit avatar">
               <div className="flex">
