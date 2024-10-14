@@ -1,46 +1,91 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import Image from "next/image";
 
 // Imports
-import Button from "@/components/Form/Button/button";
 import SettingsSection from "@/components/Settings/settings-section";
 import {
-    DirectorCard,
-    SettingsOthersCheckBox,
-    SettingsOthersType,
-    SettingsSectionTitle,
-    SettingsVerifiedBadge,
     ThemeCard,
+    SettingsSectionTitle,
+    CustomColorPicker,
 } from "@/components/Settings/settings-components";
-import TextArea from "@/components/Form/TextArea/textarea";
-import Checkbox from "@/components/Form/Checkbox/checkbox";
 import { website_color_schemes } from "@/components/Settings/data";
 
 const Appearance = () => {
-    const colorOptions = ['#0033C4', '#0FA7E2', '#53B07D', '#E15B0F', '#C1373F', '#050901', '#8C62FF', '#005623', '#01BA4C', '#2DD4BF', '#FFBB53', '#CE9EA1', '#C18A37', '#C1373F', '#FC63FF', '#92FF3C', '#9B00FAAB', '#377FC1'];
+    const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
+    const [selectedView, setSelectedView] = useState<string | null>(null);
+    const [selectedNavbar, setSelectedNavbar] = useState<string | null>(null);
+    const [selectedMode, setSelectedMode] = useState<string | null>(null);
+    const [selectedColor, setSelectedColor] = useState<string | null>(null);
+    const [showColorPicker, setShowColorPicker] = useState(false);
+    const [customColor, setCustomColor] = useState("#ffffff");
 
-    const handleSelect = (value:string) => {
-        console.log("Selected theme:", value);
-        // Handle the selected value as needed
+    const handleSelect = (type: string, value: string) => {
+        switch (type) {
+            case 'theme':
+                setSelectedTheme(value);
+                break;
+            case 'view':
+                setSelectedView(value);
+                break;
+            case 'navbar':
+                setSelectedNavbar(value);
+                break;
+            case 'mode':
+                setSelectedMode(value);
+                break;
+        }
+    };
+
+    const handleColorSelect = (color: string) => {
+        setSelectedColor(color);
+        // Here you can also add logic to save the selected color to your app's state or backend
+    };
+
+    const handleCustomColorClick = () => {
+        setShowColorPicker(true);
+    };
+
+    const handleCloseColorPicker = () => {
+        setShowColorPicker(false);
+    };
+
+    const handleCustomColorChange = (color: string) => {
+        setCustomColor(color);
     };
 
     return (
         <>
-            {/* COMPANY TYPE SETTINGS */}
+            {/* DASHBOARD THEMES */}
             <SettingsSection title="Dashboard Themes">
                 <SettingsSectionTitle
-                    title="Selet Theme Template"
+                    title="Select Theme Template"
                     desc="Select the themes that best match your interests."
                 />
-                <div className="themes flex gap-5 flex-wrap">
-                    <ThemeCard img="/global/theme1.svg" value="theme1" onSelect={handleSelect} />
-                    <ThemeCard img="/global/theme2.svg" value="theme2" onSelect={handleSelect} />
-                    <ThemeCard img="/global/theme3.svg" value="theme3" onSelect={handleSelect} />
+                <div className="themes flex gap-5 flex-wrap mt-6">
+                    <ThemeCard 
+                        img="/global/theme1.svg" 
+                        value="theme1" 
+                        onSelect={(value) => handleSelect('theme', value)}
+                        isSelected={selectedTheme === 'theme1'}
+                    />
+                    <ThemeCard 
+                        img="/global/theme2.svg" 
+                        value="theme2" 
+                        onSelect={(value) => handleSelect('theme', value)}
+                        isSelected={selectedTheme === 'theme2'}
+                    />
+                    <ThemeCard 
+                        img="/global/theme3.svg" 
+                        value="theme3" 
+                        onSelect={(value) => handleSelect('theme', value)}
+                        isSelected={selectedTheme === 'theme3'}
+                    />
                 </div>
-                <div className="flex justify-end">
-                    <Button size="base_bold" className="py-[10px] px-8">
-                        update
-                    </Button>
+                <div className="flex justify-end mt-4">
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Update
+                    </button>
                 </div>
             </SettingsSection>
 
@@ -50,14 +95,24 @@ const Appearance = () => {
                     title="Card Arrangement"
                     desc="Kindly select from 'grid' or 'list' to determine the appearance of your cards."
                 />
-                <div className="themes flex gap-5 flex-wrap">
-                    <ThemeCard img="/global/grid-view.svg" value="grid" onSelect={handleSelect} />
-                    <ThemeCard img="/global/list-view.svg" value="list" onSelect={handleSelect} />
+                <div className="themes flex gap-5 flex-wrap mt-6">
+                    <ThemeCard 
+                        img="/global/grid-view.svg" 
+                        value="grid" 
+                        onSelect={(value) => handleSelect('view', value)}
+                        isSelected={selectedView === 'grid'}
+                    />
+                    <ThemeCard 
+                        img="/global/list-view.svg" 
+                        value="list" 
+                        onSelect={(value) => handleSelect('view', value)}
+                        isSelected={selectedView === 'list'}
+                    />
                 </div>
-                <div className="flex justify-end">
-                    <Button size="base_bold" className="py-[10px] px-8">
-                        update
-                    </Button>
+                <div className="flex justify-end mt-4">
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Update
+                    </button>
                 </div>
             </SettingsSection>
 
@@ -67,14 +122,24 @@ const Appearance = () => {
                     title="Navbar"
                     desc="Kindly select how you want your nav bar to be like"
                 />
-                <div className="themes flex gap-5 flex-wrap">
-                    <ThemeCard img="/global/nav1.svg" value="nav1" onSelect={handleSelect} />
-                    <ThemeCard img="/global/nav2.svg" value="nav2" onSelect={handleSelect} />
+                <div className="themes flex gap-5 flex-wrap mt-6">
+                    <ThemeCard 
+                        img="/global/nav1.svg" 
+                        value="nav1" 
+                        onSelect={(value) => handleSelect('navbar', value)}
+                        isSelected={selectedNavbar === 'nav1'}
+                    />
+                    <ThemeCard 
+                        img="/global/nav2.svg" 
+                        value="nav2" 
+                        onSelect={(value) => handleSelect('navbar', value)}
+                        isSelected={selectedNavbar === 'nav2'}
+                    />
                 </div>
-                <div className="flex justify-end">
-                    <Button size="base_bold" className="py-[10px] px-8">
-                        update
-                    </Button>
+                <div className="flex justify-end mt-4">
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Update
+                    </button>
                 </div>
             </SettingsSection>
 
@@ -84,50 +149,76 @@ const Appearance = () => {
                     title="Color scheme"
                     desc="Choose Light or Dark Mode Scheme."
                 />
-                <div className="themes flex gap-5 flex-wrap">
-                    <ThemeCard img="/global/nav1.svg" value="light" onSelect={handleSelect} />
-                    <ThemeCard img="/global/nav2.svg" value="dark" onSelect={handleSelect} />
+                <div className="themes flex gap-5 flex-wrap mt-6">
+                    <ThemeCard 
+                        img="/global/nav1.svg" 
+                        value="light" 
+                        onSelect={(value) => handleSelect('mode', value)}
+                        isSelected={selectedMode === 'light'}
+                    />
+                    <ThemeCard 
+                        img="/global/nav2.svg" 
+                        value="dark" 
+                        onSelect={(value) => handleSelect('mode', value)}
+                        isSelected={selectedMode === 'dark'}
+                    />
                 </div>
-                <div className="flex justify-end">
-                    <Button size="base_bold" className="py-[10px] px-8">
-                        update
-                    </Button>
+                <div className="flex justify-end mt-4">
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Update
+                    </button>
                 </div>
             </SettingsSection>
 
-            {/* DASHBOARD COLOR SETTINNS */}
+            {/* DASHBOARD COLOR SETTINGS */}
             <SettingsSection title="Theme and Color Settings">
                 <SettingsSectionTitle
                     title="Dashboard Color Scheme"
                     desc="Customize the default color to your preference from the available options listed below."
                 />
-                <div className="themes flex gap-5 flex-wrap">
-                    {colorOptions.map((option) => (
-                        <div className={`h-[40px] w-[40px] my-2 rounded-md bg-[${option}]`} style={{ backgroundColor: option }} key={option}>
-                            <label htmlFor="color">
-                                <input id="color" type="button" className={`h-12`} />
-                            </label>
+                <div className="themes flex gap-5 flex-wrap mt-6">
+                    {website_color_schemes.map((color) => (
+                        <div
+                            key={color}
+                            className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${selectedColor === color ? 'border-2 border-[#0033C4]' : ''}`}
+                            style={{ backgroundColor: color }}
+                            onClick={() => handleColorSelect(color)}
+                        >
+                            {selectedColor === color && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <Image
+                                        src="/icons/whitemark.svg"
+                                        alt="Selected"
+                                        width={24}
+                                        height={24}
+                                    />
+                                </div>
+                            )}
                         </div>
                     ))}
-                </div>
-
-                <div className="new-color flex flex-col">
-                    <p className="text-sm my-4 text-text-disabled">Specify a color code or select a color that best represents your brand. You can also incorporate additional color designs based on your preferences.</p>
-                    <div className="c w-[40px] h-[40px] rounded-md text-base border border-gray-300 bg-white flex items-center justify-center cursor-pointer">
-                        <label htmlFor="new">
-                            +
-                            <input type="color" id="new" className="h-12 hidden" />
-                        </label>
+                    <div
+                        className="h-[40px] w-[40px] my-2 rounded-md text-base border border-gray-300 bg-white flex items-center justify-center cursor-pointer"
+                        onClick={handleCustomColorClick}
+                    >
+                        +
                     </div>
                 </div>
-                <div className="flex justify-end">
-                    <Button size="base_bold" className="py-[10px] px-8">
-                        update
-                    </Button>
+
+                {showColorPicker && (
+                    <CustomColorPicker
+                        color={customColor}
+                        onColorChange={handleCustomColorChange}
+                        onColorSelect={handleColorSelect}
+                        onClose={handleCloseColorPicker}
+                    />
+                )}
+
+                <div className="flex justify-end mt-4">
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Update
+                    </button>
                 </div>
             </SettingsSection>
-
-        
         </>
     );
 };

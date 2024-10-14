@@ -9,10 +9,10 @@ import type {
   SettingsDirectorTypes,
   SettingsOthersCheckBoxProps,
   SettingsOthersProps,
-  ThemeCardProps,
   SettingsEnrollmentCardProps,
 } from "./types";
 
+import { HexColorPicker } from 'react-colorful';
 // Images
 import { Check } from "lucide-react";
 
@@ -203,28 +203,7 @@ export const SettingsServicesTag: React.FC<SettingsServicesTagProps> = ({
   </div>
 );
 
-export const ThemeCard: React.FC<ThemeCardProps> = ({
-  img,
-  value,
-  onSelect,
-}) => {
-  return (
-    <div
-      className="themesWrapper mt-4 flex items-center flex-wrap gap-4 cursor-pointer"
-      onClick={() => onSelect(value)} // Trigger onSelect with value on click
-    >
-      <div className="imgWrapper w-[218px] h-[218px]">
-        <Image
-          src={img}
-          alt="Theme"
-          width={1000}
-          height={1000}
-          className="w-full h-full object-contain"
-        />
-      </div>
-    </div>
-  );
-};
+
 
 
 export const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
@@ -401,3 +380,59 @@ const SelectPlanButton: React.FC<{ isFree: boolean }> = ({ isFree }) => (
 );
 
 
+
+interface ThemeCardProps {
+    img: string;
+    value: string;
+    onSelect: (value: string) => void;
+    isSelected: boolean;
+}
+
+export const ThemeCard: React.FC<ThemeCardProps> = ({ img, value, onSelect, isSelected }) => {
+    return (
+        <div 
+            className={`cursor-pointer ${isSelected ? 'border-2 border-[#0033C4]' : ''}`}
+            onClick={() => onSelect(value)}
+        >
+            <Image src={img} alt={value} width={200} height={150} />
+        </div>
+    );
+};
+
+
+
+interface CustomColorPickerProps {
+  color: string;
+  onColorChange: (color: string) => void;
+  onColorSelect: (color: string) => void;
+  onClose: () => void;
+}
+
+export const CustomColorPicker: React.FC<CustomColorPickerProps> = ({ color, onColorChange, onColorSelect, onClose }) => {
+  const handleSubmit = () => {
+    onColorSelect(color);
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg">
+        <h3 className="text-lg font-semibold mb-4">Choose a Custom Color</h3>
+        <HexColorPicker color={color} onChange={onColorChange} />
+        <div className="mt-4 flex justify-between">
+          <input
+            type="text"
+            value={color}
+            onChange={(e) => onColorChange(e.target.value)}
+            className="border rounded px-2 py-1 w-28"
+          />
+          <div className="w-10 h-10 rounded" style={{ backgroundColor: color }} />
+        </div>
+        <div className="mt-6 flex justify-end space-x-2">
+          <button onClick={onClose} className="px-4 py-2 text-sm bg-gray-200 text-gray-800 rounded">Cancel</button>
+          <button onClick={handleSubmit} className="px-4 py-2 text-sm bg-blue-500 text-white rounded">Apply</button>
+        </div>
+      </div>
+    </div>
+  );
+};
