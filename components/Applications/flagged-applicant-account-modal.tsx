@@ -22,6 +22,7 @@ const FlaggedApplicantAccountModal = () => {
                 id={"1"}
                 last_name="abah"
                 user_tag="web"
+                cardType="landlord"
                 first_name="david"
                 email="example@gmail.com"
                 phone_number="08132086958"
@@ -36,6 +37,7 @@ const FlaggedApplicantAccountModal = () => {
                 id={"1"}
                 last_name="abah"
                 user_tag="web"
+                cardType="landlord"
                 first_name="david"
                 email="example@gmail.com"
                 phone_number="08132086958"

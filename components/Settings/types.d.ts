@@ -18,6 +18,7 @@ export interface SettingsLinkTabProps {
 
 export interface SettingsSectionProps {
   title: string;
+  subTitle?: string;
   children: React.ReactNode;
 }
 
@@ -84,7 +85,7 @@ export interface SettingsDirectorTypes {
   phone: string;
   img: string;
   icon?: string;
-  desc: string;
+  desc?: string;
 }
 
 export interface SettingsOthersCheckBoxProps {

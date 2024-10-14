@@ -7,6 +7,7 @@ import type {
   SettingsDirectorTypes,
   SettingsOthersCheckBoxProps,
   SettingsOthersProps,
+  ThemeCardProps,
 } from "./types";
 
 // Images
@@ -196,3 +197,26 @@ export const SettingsServicesTag: React.FC<SettingsServicesTagProps> = ({
     </p>
   </div>
 );
+
+export const ThemeCard: React.FC<ThemeCardProps> = ({
+  img,
+  value,
+  onSelect,
+}) => {
+  return (
+    <div
+      className="themesWrapper mt-4 flex items-center flex-wrap gap-4 cursor-pointer"
+      onClick={() => onSelect(value)} // Trigger onSelect with value on click
+    >
+      <div className="imgWrapper w-[218px] h-[218px]">
+        <Image
+          src={img}
+          alt="Theme"
+          width={1000}
+          height={1000}
+          className="w-full h-full object-contain"
+        />
+      </div>
+    </div>
+  );
+};
