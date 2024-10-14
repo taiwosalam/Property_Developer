@@ -15,7 +15,6 @@ import UserTag from "@/components/Tags/user-tag";
 import {
   LandlordTenantInfo,
   LandlordTenantInfoBox,
-  // LandlordTenantUserTag,
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
 } from "@/components/Management/landlord-tenant-info-components";

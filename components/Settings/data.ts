@@ -1,6 +1,6 @@
 // Types
-import type { TenantOccupantTier } from "./types";
 import type { BadgeIconColors } from "../BadgeIcon/badge-icon";
+import type { SettingsServiceOwners, TenantOccupantTier } from "./types";
 
 export const settings_link_tabs = [
   "profile",
@@ -69,4 +69,17 @@ export const tenant_occupant_level_types: Record<
     color: "black",
     desc: "Tenant/Occupant at this level are uncommon; they are individuals who are already familiar with every terms and conditions of the app. They have verified and validated their profiles as required in all specifications and have been using the app for more than a year. They may be influencers or service providers with proper recommendations.Selecting this tier category implies that you want all your applicants to be at this level, but it is not recommended.",
   },
+};
+
+export const services_sections: Record<string, SettingsServiceOwners> = {
+  "Estate Surveyor & Valuer": "Property Managers",
+  "Land Surveyor": "Registered Surveyor, Technician Surveyor",
+  "Quantity Surveyor": "Analyst",
+  Architect: "Appraiser",
+  "Town Planner": "Developer",
+  "Civil Engineer": "Contractor, Builder",
+  Realtor: "Real Estate Agents, Broker, Investors",
+  "Legal Practitioner":
+    "Law Firm, Barristers, Arbitrators, Solicitors, Attorneys, Advocates, Lawyer",
+  Hospitality: "Hotel, Short Stay, Aparment, Holiday Home",
 };

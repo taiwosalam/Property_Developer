@@ -12,6 +12,7 @@ export interface PictureProps {
   rounded?: boolean;
   className?: string;
   style?: CSSProperties;
+  fit?: "cover" | "contain";
   resolutionMultiplier?: number;
   containerClassName?: string;
 }
