@@ -8,6 +8,7 @@ import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const ListingsReport = () => {
   const fields: Field[] = [
@@ -52,15 +53,9 @@ const ListingsReport = () => {
         <ManagementStatistcsCard title="Published" newData={23} total={200} />
         <ManagementStatistcsCard title="Unpublished" newData={23} total={200} />
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Listings" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for listings" />
-          <FilterButton />
-          <ExportButton type="pdf" href="/reports/listings/export" />
-          <ExportButton type="csv" />
-        </div>
-      </div>
+      <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="Listings" aboutPageModalData={
+        { title: "Listings", description: "This page contains a list of Listings on the platform." }
+      } searchInputPlaceholder="Search for Listings" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -82,7 +77,7 @@ const ListingsReport = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
     </div>
   );
 };

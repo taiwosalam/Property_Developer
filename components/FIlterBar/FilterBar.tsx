@@ -7,6 +7,7 @@ import FilterModal from "../Management/Landlord/filters-modal";
 import PageTitle from "../PageTitle/page-title";
 import AboutPage from "../AboutPage/about-page";
 import SortButton from "../FilterButton/sort-button";
+import ExportButton from "../reports/export-button";
 
 // Define the types for the props
 type FilterOption = {
@@ -41,6 +42,7 @@ interface FilterBarProps {
     setGridView?: () => void;
     setListView?: () => void;
     azFilter?: boolean;
+    exports?: boolean;
 }
 
 
@@ -58,6 +60,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
     setGridView,
     setListView,
     azFilter,
+    exports
 }) => {
     return (
         <div className="page-title-container">
@@ -117,6 +120,12 @@ const FilterBar: React.FC<FilterBarProps> = ({
                         />
                     </ModalContent>
                 </Modal>
+                {exports &&
+                    <div className="flex items-center gap-4">
+                        <ExportButton type="pdf" href="/reports/tenants/export" />
+                        <ExportButton type="csv" />
+                    </div>
+                }
             </div>
         </div>
     );

@@ -1,13 +1,9 @@
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import FilterButton from "@/components/FilterButton/filter-button";
-import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Call = () => {
     const fields: Field[] = [
@@ -48,15 +44,9 @@ const Call = () => {
                 <ManagementStatistcsCard title="Resolved" newData={34} total={657} />
                 <ManagementStatistcsCard title="Unresolved" newData={34} total={657} />
             </div>
-            <div className="page-title-container">
-                <PageTitle title="Calls Request" />
-                <div className="flex items-center gap-4 flex-wrap">
-                    <SearchInput placeholder="Search for calls request" />
-                    <FilterButton />
-                    <ExportButton type="pdf" href="/reports/call/export" />
-                    <ExportButton type="csv" />
-                </div>
-            </div>
+            <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="calls request" aboutPageModalData={
+                { title: "calls request", description: "This page contains a list of calls request on the platform." }
+            } searchInputPlaceholder="Search for calls request" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
             <CustomTable
                 fields={fields}
                 data={tableData}
