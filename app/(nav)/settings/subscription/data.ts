@@ -82,8 +82,7 @@ export const personalized_domain: SubscriptionTableType = {
     },
     {
       id: "5",
-      label: "",
-      accessor: "",
+      accessor: "action",
     },
   ],
   data: [
