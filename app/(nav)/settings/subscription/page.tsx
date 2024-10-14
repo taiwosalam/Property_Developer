@@ -26,6 +26,12 @@ import Select from "@/components/Form/Select/select";
 import CustomTable from "@/components/Table/table";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 import Pagination from "@/components/Pagination/pagination";
+import {
+  Dropdown,
+  DropdownContent,
+  DropdownTrigger,
+} from "@/components/Dropdown/dropdown";
+import { VerticalEllipsisIcon } from "@/public/icons/icons";
 
 const Subscriptions = () => {
   const table_style_props: Partial<CustomTableProps> = {
@@ -62,6 +68,32 @@ const Subscriptions = () => {
     ),
   }));
 
+  const transformedPersonalizedDomain = personalized_domain.data.map(
+    (data) => ({
+      ...data,
+      status: (
+        <div className="flex">
+          <p className="p-2 bg-brand-1 rounded-[4px] text-brand-9">
+            {data.status}
+          </p>
+        </div>
+      ),
+      // more: (
+      //   <Dropdown>
+      //     <DropdownTrigger className="p-2 flex items-center justify-center">
+      //       <VerticalEllipsisIcon />
+      //     </DropdownTrigger>
+      //     <DropdownContent>
+      //       <div className="w-[250px] bg-white custom-flex-col py-2 gap-2 text-text-secondary text-base font-bold capitalize text-center">
+      //         <button className="p-4">Manage Disbursement</button>
+      //         <button className="p-4">Preview Disbursement</button>
+      //       </div>
+      //     </DropdownContent>
+      //   </Dropdown>
+      // ),
+    })
+  );
+
   return (
     <>
       <SettingsSection title="Current Subscription/Ads-on">
@@ -88,8 +120,8 @@ const Subscriptions = () => {
                   <div className="custom-flex-col gap-4">
                     <SettingsSectionTitle title="Domain" />
                     <CustomTable
-                      data={personalized_domain.data}
                       fields={personalized_domain.fields}
+                      data={transformedPersonalizedDomain}
                       {...table_style_props}
                     />
                   </div>
@@ -109,7 +141,7 @@ const Subscriptions = () => {
                   </div>
                 </div>
               </div>
-              <SettingsUpdateButton text="add domain" />
+              <SettingsUpdateButton text="add domain" type="add domain" />
             </div>
           </SettingsSection>
           <SettingsSection title="listing">
@@ -189,7 +221,7 @@ const Subscriptions = () => {
                   />
                 </div>
               </div>
-              <SettingsUpdateButton text="purchase unit" />
+              <SettingsUpdateButton text="purchase unit" type="purchase unit" />
             </div>
           </SettingsSection>
           <SettingsSection title="Feature Your Company">
@@ -212,7 +244,7 @@ const Subscriptions = () => {
                   />
                 </div>
               </div>
-              <SettingsUpdateButton text="feature now" />
+              <SettingsUpdateButton text="feature now" type="feature" />
             </div>
           </SettingsSection>
           <SettingsSection title="Legal Process">

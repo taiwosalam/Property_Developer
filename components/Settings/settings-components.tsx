@@ -1,24 +1,32 @@
+import Image from "next/image";
+
+// Types
 import type {
-  SettingsTitleProps,
-  SettingsColorSchemeProps,
-  SettingsServicesTagProps,
-  SettingsUpdateButtonProps,
-  SettingsTenantOccupantTierProps,
-  SettingsDirectorTypes,
-  SettingsOthersCheckBoxProps,
-  SettingsOthersProps,
   ThemeCardProps,
+  SettingsTitleProps,
+  SettingsOthersProps,
+  SettingsDirectorTypes,
+  SettingsColorSchemeProps,
+  SettingsUpdateButtonProps,
+  SettingsOthersCheckBoxProps,
+  SettingsTenantOccupantTierProps,
 } from "./types";
+
+import type { ButtonProps } from "../Form/Button/types";
 
 // Images
 import { Check } from "lucide-react";
 
 // Imports
-import clsx from "clsx";
-import Image from "next/image";
 import Button from "../Form/Button/button";
 import { secondaryFont } from "@/utils/fonts";
 import BadgeIcon from "../BadgeIcon/badge-icon";
+import SettingsOTPFlow from "./Modals/settings-otp-flow";
+import SettingsUpdateModal from "./Modals/settings-update-modal";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import SettingsRemoveFlow from "./Modals/settings-remove-flow";
+import SettingsAddMoreFlow from "./Modals/settings-add-more-flow";
+import SettingsPaymentModal from "./Modals/settings-payment-modal";
 
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
@@ -46,14 +54,82 @@ export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
 );
 
 export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
+  remove,
+  addMore,
   text = "update",
-}) => (
-  <div className="flex justify-end">
-    <Button size="base_bold" className="py-[10px] px-8">
-      {text}
-    </Button>
-  </div>
-);
+  type = "default",
+}) => {
+  const button_props: ButtonProps = {
+    size: "base_bold",
+    className: "py-[10px] px-8",
+  };
+
+  const remove_props: ButtonProps = {
+    ...button_props,
+    variant: "light_red",
+  };
+
+  const add_more_props: ButtonProps = {
+    ...button_props,
+    variant: "sky_blue",
+  };
+
+  return (
+    <div className="flex justify-end gap-4">
+      {(remove || addMore) && (
+        <Modal>
+          <ModalTrigger asChild>
+            <Button
+              {...(remove
+                ? { ...remove_props }
+                : addMore
+                ? { ...add_more_props }
+                : null)}
+            >
+              {remove ? "remove" : addMore ? "add more" : ""}
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            {remove ? (
+              <SettingsRemoveFlow />
+            ) : addMore ? (
+              <SettingsAddMoreFlow />
+            ) : null}
+          </ModalContent>
+        </Modal>
+      )}
+      <Modal>
+        <ModalTrigger asChild>
+          <Button {...button_props}>{text}</Button>
+        </ModalTrigger>
+        <ModalContent>
+          {type === "default" ? (
+            <SettingsUpdateModal />
+          ) : type === "otp" ? (
+            <SettingsOTPFlow />
+          ) : type === "add domain" ? (
+            <SettingsPaymentModal
+              limitTransferFields
+              title="Personalized Domain Price"
+            />
+          ) : type === "purchase unit" ? (
+            <SettingsPaymentModal
+              hideTitleOnProceed
+              title="SMS Credit Price"
+              annum={{ price: 2000, title: "5999 unit" }}
+            />
+          ) : type === "feature" ? (
+            <SettingsPaymentModal
+              hideTitleOnProceed
+              annum={{ price: 1000, title: "1 mo" }}
+              desc="Paying to feature your company will prioritize all your property listings, it appears first to all users and ranks first for potentials."
+            />
+          ) : null}
+        </ModalContent>
+      </Modal>
+    </div>
+  );
+};
 
 export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
   title,
@@ -174,27 +250,6 @@ export const DirectorCard: React.FC<SettingsDirectorTypes> = ({
       </div>
     </div>
     <p className="text-[#606060] text-xs">{desc}</p>
-  </div>
-);
-
-export const SettingsServicesTag: React.FC<SettingsServicesTagProps> = ({
-  active,
-  children,
-}) => (
-  <div
-    className={clsx("py-3 px-4 rounded-[4px]", {
-      "bg-brand-1": active,
-      "bg-neutral-3 opacity-50": !active,
-    })}
-  >
-    <p
-      className={clsx("text-sm font-normal", {
-        "text-black": !active,
-        "text-brand-9": active,
-      })}
-    >
-      {children}
-    </p>
   </div>
 );
 
