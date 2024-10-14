@@ -9,6 +9,7 @@ import CustomTable from "@/components/Table/table";
 import type { Field, DataItem } from "@/components/Table/types";
 import SMSModal, { type SMSRecord } from "@/components/reports/sms-modal";
 import { Modal, ModalContent } from "@/components/Modal/modal";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const SMSReport = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -56,13 +57,9 @@ const SMSReport = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard title="Total SMS" newData={23} total={200} />
       </div>
-      <div className="page-title-container">
-        <PageTitle title="SMS" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for sms" />
-          <FilterButton />
-        </div>
-      </div>
+      <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="sms" aboutPageModalData={
+        { title: "sms", description: "This page contains a list of sms on the platform." }
+      } searchInputPlaceholder="Search for sms" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -95,7 +92,7 @@ const SMSReport = () => {
           <SMSModal {...(selectedSMS as SMSRecord)} />
         </ModalContent>
       </Modal>
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
     </div>
   );
 };

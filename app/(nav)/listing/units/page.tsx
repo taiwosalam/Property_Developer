@@ -1,11 +1,5 @@
 "use client";
-
-import React from "react";
-import Image from "next/image";
-
 // Imports
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import VacantUnitCard from "@/components/Listing/Units/vacant-unit-card";
 import FilterBar from "@/components/FIlterBar/FilterBar";

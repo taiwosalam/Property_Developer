@@ -1,12 +1,8 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 
 // Imports
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import PropertyListingCard from "@/components/Listing/Property/property-listing-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { property_listing_status } from "@/components/Listing/Property/data";
