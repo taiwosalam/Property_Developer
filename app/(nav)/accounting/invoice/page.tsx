@@ -28,6 +28,7 @@ import {
   DropdownContent,
   DropdownTrigger,
 } from "@/components/Dropdown/dropdown";
+import { accountingInvoiceOptionsWithDropdown } from "./date";
 
 const AccountingInvoicePage = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -136,9 +137,8 @@ const AccountingInvoicePage = () => {
                 <ModalContent>
                   <FilterModal
                     filterOptions={[]}
-                    filterOptionsWithDropdown={[]}
+                    filterOptionsWithDropdown={accountingInvoiceOptionsWithDropdown}
                     onApply={handleFilterApply}
-                    date
                     onStateSelect={(state: string) => setSelectedState(state)}
                   />
                 </ModalContent>

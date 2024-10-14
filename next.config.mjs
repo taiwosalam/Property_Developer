@@ -1,4 +1,3 @@
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async redirects() {
@@ -22,6 +21,7 @@ const nextConfig = {
       },
     ],
   },
+  reactStrictMode: false
 };
 
 export default nextConfig;

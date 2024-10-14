@@ -239,7 +239,7 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
 .quill-toolbar {
   display: flex;
   justify-content: left;
-  /* border-top: 1px solid #ddd; */
+  flex-wrap: wrap;
   padding: 5px;
 }
 

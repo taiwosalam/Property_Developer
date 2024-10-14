@@ -6,6 +6,7 @@ import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const VehiclesRecordReport = () => {
   const fields: Field[] = [
@@ -43,15 +44,9 @@ const VehiclesRecordReport = () => {
 
   return (
     <div className="space-y-9">
-      <div className="page-title-container">
-        <PageTitle title="Vehicles Record" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Vehicles Record" />
-          <FilterButton />
-          <ExportButton type="pdf" href="/reports/vehicles-record/export" />
-          <ExportButton type="csv" />
-        </div>
-      </div>
+      <FilterBar azFilter isDateTrue exports onStateSelect={() => { }} pageTitle="vehicle records" aboutPageModalData={
+        { title: "vehicle records", description: "This page contains a list of vehicle records on the platform." }
+      } searchInputPlaceholder="Search for vehicle records" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -73,7 +68,7 @@ const VehiclesRecordReport = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
     </div>
   );
 };

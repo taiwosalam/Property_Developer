@@ -1,13 +1,9 @@
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import FilterButton from "@/components/FilterButton/filter-button";
-import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Visitors = () => {
     const fields: Field[] = [
@@ -53,15 +49,9 @@ const Visitors = () => {
                 <ManagementStatistcsCard title="Checked In Visitors" newData={34} total={657} />
                 <ManagementStatistcsCard title="Check Out Visitors" newData={34} total={657} />
             </div>
-            <div className="page-title-container">
-                <PageTitle title="Visitors Request" />
-                <div className="flex items-center gap-4 flex-wrap">
-                    <SearchInput placeholder="Search for visitors request" />
-                    <FilterButton />
-                    <ExportButton type="pdf" href="/reports/visitors/export"/>
-                    <ExportButton type="csv" />
-                </div>
-            </div>
+            <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="visitors request" aboutPageModalData={
+                { title: "visitors request", description: "This page contains a list of visitors request on the platform." }
+            } searchInputPlaceholder="Search for visitors request" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
             <CustomTable
                 fields={fields}
                 data={tableData}

@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 // Images
 import Avatar from "@/public/empty/avatar-1.svg";
 import Verified from "@/public/icons/verified.svg";
@@ -17,7 +15,7 @@ import UserTag from "@/components/Tags/user-tag";
 import {
   LandlordTenantInfo,
   LandlordTenantInfoBox,
-  LandlordTenantUserTag,
+  // LandlordTenantUserTag,
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
 } from "@/components/Management/landlord-tenant-info-components";
@@ -66,11 +64,11 @@ const ManageTenant = () => {
                   </p>
                 </div>
                 <div className="custom-flex-col gap-2">
-                  <div className="flex">
-                    <UserTag type={tenant.user_tag} />
-                  </div>
+                  <UserTag type={tenant.user_tag} />
+                  <UserTag type={tenant.user_tag} />
                   <p className="text-neutral-800 text-base font-medium">
-                    ID: 22132876554444
+                    ID: {tenantId}
+                    ID: {tenantId}
                   </p>
                 </div>
               </div>
@@ -113,6 +111,8 @@ const ManageTenant = () => {
             </div>
           </div>
         </LandlordTenantInfoBox>
+
+
         <LandlordTenantInfo
           info={{
             gender: tenant.gender,

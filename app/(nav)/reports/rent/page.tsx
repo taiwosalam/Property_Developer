@@ -8,6 +8,7 @@ import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const RentReport = () => {
   const fields: Field[] = [
@@ -53,15 +54,9 @@ const RentReport = () => {
           total={200}
         />
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Rent / Due Roll" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Rent Roll" />
-          <FilterButton />
-          <ExportButton type="pdf" href="/reports/rent/export" />
-          <ExportButton type="csv" />
-        </div>
-      </div>
+      <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="Rent / Due Roll" aboutPageModalData={
+        { title: "Rent / Due Roll", description: "This page contains a list of Rent / Due Roll on the platform." }
+      } searchInputPlaceholder="Search for Rent Roll" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -83,7 +78,7 @@ const RentReport = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
     </div>
   );
 };

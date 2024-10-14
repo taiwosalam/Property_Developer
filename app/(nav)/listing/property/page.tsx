@@ -1,17 +1,14 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 
 // Imports
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import PropertyListingCard from "@/components/Listing/Property/property-listing-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { property_listing_status } from "@/components/Listing/Property/data";
 import { PropertyListingStatusItem } from "@/components/Listing/Property/property-listing-component";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { listingPropertyOptionsWithRadio, lstingPropertyOptionsWithDropdown } from "./data";
 
 const Property = () => {
   return (
@@ -42,9 +39,9 @@ const Property = () => {
           className="w-[240px]"
         />
       </div>
-      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Moderating Property" aboutPageModalData={
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Drafted Property" aboutPageModalData={
         { title: "Moderating Property", description: "This page contains a list of Moderating Property on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue={false} filterOptions={[]} filterOptionsWithRadio={listingPropertyOptionsWithRadio} filterWithOptionsWithDropdown={lstingPropertyOptionsWithDropdown} />
       <div className="custom-flex-col gap-8">
         <div className="flex gap-4 justify-end">
           {Object.entries(property_listing_status).map(([key, value], idx) => (

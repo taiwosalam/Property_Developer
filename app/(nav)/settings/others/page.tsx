@@ -186,8 +186,8 @@ const Others = () => {
               "A property is created and awaiting approval.",
               "Property becomes vacant and is moved to the listing page.",
               "Document is created using my signature, name, or consent.",
-            ].map((option, idx) => (
-              <DocumentCheckbox key={`${option}-${idx}`} darkText>
+            ].map((option, index) => (
+              <DocumentCheckbox darkText key={index}>
                 {option}
               </DocumentCheckbox>
             ))}
