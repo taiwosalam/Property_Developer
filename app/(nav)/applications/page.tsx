@@ -1,12 +1,11 @@
+"use client"
 import React from "react";
 
 // Imports
-import Picture from "@/components/Picture/picture";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
 import ApplicationCard from "@/components/Applications/application-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Applications = () => {
   return (
@@ -29,22 +28,9 @@ const Applications = () => {
         />
       </AutoResizingGrid>
       <div className="custom-flex-col gap-5">
-        <div className="page-title-container">
-          <PageTitle title="Applications" />
-          <div className="flex items-center gap-4">
-            <SearchInput placeholder="Search for Staff and Branch" />
-            <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-              <button>
-                <div className="flex items-center gap-2 cursor-pointer">
-                  <Picture src="/icons/sliders.svg" alt="filters" size={20} />
-                  <p className="text-[#344054] text-base font-medium">
-                    Filters
-                  </p>
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
+        <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="Applications" aboutPageModalData={
+          { title: "Applications", description: "This page contains a list of Applications on the platform." }
+        } searchInputPlaceholder="Search for units" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
         <AutoResizingGrid minWidth={350} gap={32}>
           <ApplicationCard />
           <ApplicationCard type="guest" />
