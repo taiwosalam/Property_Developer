@@ -7,6 +7,7 @@ import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const TrackingReport = () => {
   const fields: Field[] = [
@@ -44,15 +45,9 @@ const TrackingReport = () => {
 
   return (
     <div className="space-y-9">
-      <div className="page-title-container">
-        <PageTitle title="Tracking" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for audit trail" />
-          <FilterButton />
-          <ExportButton type="pdf" href="/reports/tracking/export" />
-          <ExportButton type="csv" />
-        </div>
-      </div>
+      <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="Tracking" aboutPageModalData={
+        { title: "Tracking", description: "This page contains a list of Tracking on the platform." }
+      } searchInputPlaceholder="Search for audit trail" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -74,7 +69,7 @@ const TrackingReport = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
     </div>
   );
 };

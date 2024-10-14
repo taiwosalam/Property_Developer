@@ -2,13 +2,11 @@
 import { useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { Modal, ModalContent } from "@/components/Modal/modal";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import FilterButton from "@/components/FilterButton/filter-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field, DataItem } from "@/components/Table/types";
 import UndoModal from "@/components/reports/undo-modal";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Undo = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -73,13 +71,9 @@ const Undo = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard title="Total" newData={34} total={657} />
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Undo" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Undo" />
-          <FilterButton />
-        </div>
-      </div>
+      <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="undo" aboutPageModalData={
+        { title: "undo", description: "This page contains a list of undo on the platform." }
+      } searchInputPlaceholder="Search for undo" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -111,11 +105,11 @@ const Undo = () => {
         <ModalContent>
           <UndoModal
             event={selectedEvent?.event_deleted}
-            // eventData={selectedEvent}
+          // eventData={selectedEvent}
           />
         </ModalContent>
       </Modal>
-      <Pagination totalPages={2} currentPage={1} onPageChange={() => {}} />
+      <Pagination totalPages={2} currentPage={1} onPageChange={() => { }} />
     </div>
   );
 };

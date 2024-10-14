@@ -1,13 +1,9 @@
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import FilterButton from "@/components/FilterButton/filter-button";
-import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const TenantsReport = () => {
   const fields: Field[] = [
@@ -52,15 +48,9 @@ const TenantsReport = () => {
           total={200}
         />
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Tenants/Occupants" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Tenants & Occupants" />
-          <FilterButton />
-          <ExportButton type="pdf" href="/reports/tenants/export" />
-          <ExportButton type="csv" />
-        </div>
-      </div>
+      <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="Tenants/Occupants" aboutPageModalData={
+        { title: "Tenants/Occupants", description: "This page contains a list of Tenants/Occupants on the platform." }
+      } searchInputPlaceholder="Search for Tenants/Occupants" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -82,7 +72,7 @@ const TenantsReport = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
     </div>
   );
 };

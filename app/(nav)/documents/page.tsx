@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 
 // Images
@@ -12,6 +13,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import CreateTenancyAggrementModal from "@/components/BadgeIcon/create-tenancy-aggrement-modal";
+import SortButton from "@/components/FilterButton/sort-button";
 
 const Documents = () => {
   return (
@@ -43,7 +45,8 @@ const Documents = () => {
         <div className="page-title-container">
           <div></div>
           <div className="flex items-center gap-4">
-            <SearchInput placeholder="Search for Staff and Branch" />
+            <SearchInput placeholder="Search" />
+            <SortButton />
             <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
               <button>
                 <div className="flex items-center gap-2 cursor-pointer">

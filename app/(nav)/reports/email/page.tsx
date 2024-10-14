@@ -2,13 +2,11 @@
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import { useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import FilterButton from "@/components/FilterButton/filter-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import EmailModal, { type EmailRecord } from "@/components/reports/email-modal";
 import type { Field, DataItem } from "@/components/Table/types";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const EmailReport = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -63,13 +61,9 @@ const EmailReport = () => {
           total={200}
         />
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Email" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for email" />
-          <FilterButton />
-        </div>
-      </div>
+      <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="Email" aboutPageModalData={
+        { title: "Email", description: "This page contains a list of Email on the platform." }
+      } searchInputPlaceholder="Search for Email" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -102,7 +96,7 @@ const EmailReport = () => {
           <EmailModal {...(selectedSMS as EmailRecord)} />
         </ModalContent>
       </Modal>
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
     </div>
   );
 };
