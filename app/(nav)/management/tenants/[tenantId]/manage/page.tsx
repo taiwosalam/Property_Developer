@@ -67,7 +67,7 @@ const ManageTenant = () => {
                 </div>
                 <div className="custom-flex-col gap-2">
                   <div className="flex">
-                    <LandlordTenantUserTag type={tenant.user_tag} />
+                    <UserTag type={tenant.user_tag} />
                   </div>
                   <p className="text-neutral-800 text-base font-medium">
                     ID: 22132876554444
