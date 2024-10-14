@@ -15,10 +15,11 @@ import Pagination from "@/components/Pagination/pagination";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Button from "@/components/Form/Button/button";
-import { getAllLandlords, LandlordPageState } from "./data";
+import { getAllLandlords, getLandlordsHelpInfo, LandlordPageState } from "./data";
 import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { LandlordHelpInfo } from "./types";
 
 const Landlord = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -64,6 +65,8 @@ const Landlord = () => {
     setState((state) => ({ ...state, gridView: false }));
   };
 
+  const [fetchedLandlordHelpInfo, setFetchedLandlordHelpInfo] = useState<LandlordHelpInfo>();
+
   // Fetch the landlords when the component mounts
   const fetchLandlords = useCallback(async () => {
     try {
@@ -76,8 +79,20 @@ const Landlord = () => {
     }
   }, [accessToken]);
 
+  const fetchLandlordHelpe = async () => {
+    try {
+      const data = await getLandlordsHelpInfo();
+      console.log(data.res[0]);
+      setFetchedLandlordHelpInfo(data.res[0]);
+    } catch (error) {
+      console.error("Error fetching landlord help info:", error);
+    }
+  };
+
+
   useEffect(() => {
     fetchLandlords();
+    fetchLandlordHelpe();
   }, [fetchLandlords]);
 
   const handlePageChange = (page: number) => {
@@ -252,7 +267,7 @@ const Landlord = () => {
       <FilterBar azFilter gridView={gridView}
         setGridView={setGridView}
         setListView={setListView} onStateSelect={onStateSelect} pageTitle="Landlords/Landladies (Owners)" aboutPageModalData={
-          { title: "Landlords/Landladies (Owners)", description: "This page contains a list of all landlords and landladies who own properties on the platform." }
+          { title: "Landlords/Landladies (Owners)", description: `${fetchedLandlordHelpInfo?.description}` }
         } searchInputPlaceholder="Search for Landlords" handleFilterApply={handleFilterApply} isDateTrue filterOptionsWithRadio={landlordFiltersRadio} filterWithOptionsWithDropdown={landlordFiltersWithDropdown} />
       <section>
         {gridView ? (
