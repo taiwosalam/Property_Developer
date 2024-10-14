@@ -1,9 +1,13 @@
 "use client";
 
-import { Send, TrendingUp } from "lucide-react";
+import { TrendingUp } from "lucide-react";
+import {
+  CardSendIcon,
+  CardBlueWalletIcon,
+  CardReceiveIcon,
+} from "@/public/icons/icons";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Image from "next/image";
 
 const BranchStatCard = ({
   title,
@@ -19,7 +23,7 @@ const BranchStatCard = ({
   };
   return (
     <Card className="border-none shadow-none rounded-[8px] bg-[#FAFAFA]">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardHeader className="flex flex-row flex-wrap gap-2 items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         <div
           className={`${
@@ -28,35 +32,21 @@ const BranchStatCard = ({
               : title === "Total Expenses"
               ? "bg-status-error-1"
               : "bg-status-success-1"
-          } w-[40px] h-[40px] flex items-center justify-center rounded-full`}
+          } w-[40px] h-[40px] flex items-center justify-center rounded-full aspect-square`}
         >
           {title === "Total Expenses" ? (
-            <Image src={"/icons/send.svg"} alt="send" width={16} height={16} />
+            <CardSendIcon />
           ) : title === "Total Balance" ? (
-            <Image
-              src={"/icons/blue-wallet.svg"}
-              alt="icon"
-              width={16}
-              height={16}
-              style={{
-                width: "16px",
-                height: "16px",
-              }}
-            />
+            <CardBlueWalletIcon />
           ) : (
-            <Image
-              src={"/icons/receive.svg"}
-              alt="receive"
-              width={16}
-              height={16}
-            />
+            <CardReceiveIcon />
           )}
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-[#202224] mb-5">
+        <p className="text-lg md:text-xl lg:text-2xl font-bold text-[#202224] mb-5">
           ₦ {formatNumber(balance)}
-        </div>
+        </p>
         <div className="text-text-label flex items-center space-x-3 font-normal text-sm">
           <TrendingUp
             className={`${

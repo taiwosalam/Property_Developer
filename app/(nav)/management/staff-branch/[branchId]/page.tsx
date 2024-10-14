@@ -22,7 +22,6 @@ import {
 } from "@/app/(nav)/dashboard/data";
 import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
-import useWindowWidth from "@/hooks/useWindowWidth";
 import SearchInput from "@/components/SearchInput/search-input";
 import { GridIcon, ListIcon, LocationIcon } from "@/public/icons/icons";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -53,7 +52,6 @@ const Dashboard = () => {
 
   const { gridView, total_pages, current_page } = state;
   const { branchId } = useParams();
-  const { isMobile, isTablet } = useWindowWidth();
 
   const setGridView = () => {
     setState((state) => ({ ...state, gridView: true }));
@@ -115,10 +113,10 @@ const Dashboard = () => {
   }, [accessToken, branchId]);
 
   return (
-    <div className="custom-flex-col gap-5">
-      <div className="w-full flex items-center justify-between">
+    <div className="custom-flex-col gap-6">
+      <div className="w-full gap-2 flex items-center justify-between flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-black">
+          <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black">
             {fetchedBranchData?.branch?.branch_title || "Null"}
           </h1>
           <div className="text-text-disabled flex items-center space-x-1">
@@ -128,7 +126,7 @@ const Dashboard = () => {
             </p>
           </div>
         </div>
-        <div className="flex items-center justify-between space-x-2">
+        <div className="flex items-center justify-between gap-2 ml-auto flex-wrap">
           <Modal>
             <ModalTrigger asChild>
               <Button
@@ -152,134 +150,113 @@ const Dashboard = () => {
           </Button>
         </div>
       </div>
-      <div className="w-full h-full xl:flex gap-x-10">
-        <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-7">
-          <div className="bg-white p-6 space-y-4 rounded-lg">
-            <div className="ml-auto flex w-[390px] px-4 bg-[#F5F5F5] rounded-md items-center justify-end">
-              <DatePickerWithRange
-                selectedRange={
-                  {
-                    startDate: new Date(),
-                    endDate: new Date(),
-                    key: "selection",
-                  } as any
-                }
-                onDateChange={
-                  (range: any) => console.log(range)
-                  // Add date range logic here
-                }
-              />
-              <Select
-                value={"90d"}
-                onValueChange={
-                  (value: string) => console.log(value)
-                  // Add date range logic here
-                }
+      <div className="flex flex-col-reverse md:flex-row md:justify-between gap-x-8 gap-y-4 md:items-start">
+        <div className="md:w-[58%] lg:w-[68%] bg-white p-6 space-y-4 rounded-lg border border-[rgba(186,199,213,0.20)]">
+          <div className="ml-auto flex w-[390px] max-w-full px-4 bg-[#F5F5F5] rounded-md items-center justify-end">
+            <DatePickerWithRange
+              selectedRange={
+                {
+                  startDate: new Date(),
+                  endDate: new Date(),
+                  key: "selection",
+                } as any
+              }
+              onDateChange={
+                (range: any) => console.log(range)
+                // Add date range logic here
+              }
+            />
+            <Select
+              value={"90d"}
+              onValueChange={
+                (value: string) => console.log(value)
+                // Add date range logic here
+              }
+            >
+              <SelectTrigger
+                className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto"
+                aria-label="Select a value"
               >
-                <SelectTrigger
-                  className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto"
-                  aria-label="Select a value"
-                >
-                  <SelectValue placeholder="Last 3 months" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  <SelectItem value="90d" className="rounded-lg">
-                    Last 3 months
-                  </SelectItem>
-                  <SelectItem value="30d" className="rounded-lg">
-                    Last 30 days
-                  </SelectItem>
-                  <SelectItem value="7d" className="rounded-lg">
-                    Last 7 days
-                  </SelectItem>
-                  <SelectItem value="1d" className="rounded-lg">
-                    Yesterday
-                  </SelectItem>
-                  <SelectItem value="custom" className="rounded-lg">
-                    Custom
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="w-full h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              <BranchStatCard
-                title="Total Receipts"
-                balance={1234535}
-                upvalue={54}
-              />
-              <BranchStatCard
-                title="Total Expenses"
-                balance={1234535}
-                upvalue={54}
-              />
-              <BranchStatCard
-                title="Total Balance"
-                balance={1234535}
-                upvalue={54}
-              />
-            </div>
+                <SelectValue placeholder="Last 3 months" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                <SelectItem value="90d" className="rounded-lg">
+                  Last 3 months
+                </SelectItem>
+                <SelectItem value="30d" className="rounded-lg">
+                  Last 30 days
+                </SelectItem>
+                <SelectItem value="7d" className="rounded-lg">
+                  Last 7 days
+                </SelectItem>
+                <SelectItem value="1d" className="rounded-lg">
+                  Yesterday
+                </SelectItem>
+                <SelectItem value="custom" className="rounded-lg">
+                  Custom
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          {isMobile || isTablet ? (
-            <div className="w-full flex flex-row py-1.5 xl:py-7 overflow-x-scroll md:overflow-hidden md:grid md:grid-cols-2 gap-3 no-scrollbar">
-              {dashboardCardData.map((card, index) => (
-                <Card
-                  key={index}
-                  title={card.title}
-                  icon={card.icon}
-                  value={card.value}
-                  subvalue={card.subValue}
-                  bg={card.bg}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="w-full grid lg:grid-cols-3 gap-3">
-              {[0, 1, 2].map((columnIndex) => (
-                <div key={columnIndex} className="flex flex-col gap-3">
-                  {dashboardCardData
-                    .slice(
-                      columnIndex * itemsPerColumn,
-                      (columnIndex + 1) * itemsPerColumn
-                    )
-                    .map((card, index) => (
-                      <Card
-                        key={index}
-                        title={card.title}
-                        icon={card.icon}
-                        value={card.value}
-                        subvalue={card.subValue}
-                        bg={card.bg}
-                      />
-                    ))}
-                </div>
-              ))}
-            </div>
-          )}
-          {!isMobile && (
-            <div className="w-full h-fit">
-              <DashboardChart chartTitle="Reports" visibleRange={false} />
-            </div>
-          )}
-        </div>
-        <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full space-y-6 mt-6 xl:mt-0">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h1 className="text-[14px] font-medium">Branch Wallet</h1>
-              <p className="text-xs text-text-label">ID: 2324354678</p>
-            </div>
-            <BranchBalanceCard
-              mainBalance={walletBalanceCardData.mainBalance}
-              cautionDeposit={walletBalanceCardData.cautionDeposit}
+          <div className="w-full h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <BranchStatCard
+              title="Total Receipts"
+              balance={1234535}
+              upvalue={54}
+            />
+            <BranchStatCard
+              title="Total Expenses"
+              balance={1234535}
+              upvalue={54}
+            />
+            <BranchStatCard
+              title="Total Balance"
+              balance={1234535}
+              upvalue={54}
             />
           </div>
-          <BranchActivitiesCard />
-          <NotificationCard
-            sectionHeader="Staffs"
-            notifications={fetchedBranchData?.staff || []}
-            branchId={branchId as string}
+        </div>
+        <div className="md:flex-1 space-y-4">
+          <div className="max-w-full flex items-center justify-between flex-wrap gap-2">
+            <h1 className="text-[14px] font-medium">Branch Wallet</h1>
+            <p className="text-xs text-text-label">ID: 2324354678</p>
+          </div>
+          <BranchBalanceCard
+            mainBalance={walletBalanceCardData.mainBalance}
+            cautionDeposit={walletBalanceCardData.cautionDeposit}
+            className="max-w-full"
           />
         </div>
       </div>
+      <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 lg:items-start">
+        <div className="lg:w-[68%] grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {dashboardCardData.map((card, index) => (
+            <Card
+              key={index}
+              title={card.title}
+              icon={card.icon}
+              value={card.value}
+              subvalue={card.subValue}
+              bg={card.bg}
+            />
+          ))}
+        </div>
+        <BranchActivitiesCard className="lg:flex-1" />
+      </div>
+      <div className="flex gap-x-8 gap-y-4 items-start">
+        <DashboardChart
+          chartTitle="Reports"
+          visibleRange={false}
+          className="hidden md:block md:w-[68%]"
+        />
+        <NotificationCard
+          sectionHeader="Staffs"
+          notifications={fetchedBranchData?.staff || []}
+          branchId={branchId as string}
+          className="md:flex-1"
+        />
+      </div>
+
       <div className="page-title-container" style={{ justifyContent: "end" }}>
         <div className="flex items-center gap-4 flex-wrap">
           <SearchInput placeholder="Search for Branch properties" />
@@ -287,8 +264,9 @@ const Dashboard = () => {
             <button
               type="button"
               aria-label="list-view"
-              className={`${!gridView ? "bg-black" : "bg-transparent"
-                } p-1 rounded-md`}
+              className={`${
+                !gridView ? "bg-black" : "bg-transparent"
+              } p-1 rounded-md`}
               onClick={setListView}
             >
               <div className={!gridView ? "text-white" : "text-[unset]"}>
@@ -298,8 +276,9 @@ const Dashboard = () => {
             <button
               type="button"
               aria-label="grid-view"
-              className={`${gridView ? "bg-black" : "bg-transparent"
-                } p-1 rounded-md`}
+              className={`${
+                gridView ? "bg-black" : "bg-transparent"
+              } p-1 rounded-md`}
               onClick={setGridView}
             >
               <div className={gridView ? "text-white" : "text-[unset]"}>
@@ -350,13 +329,13 @@ const Dashboard = () => {
             ))}
           </div>
         )}
-        <Pagination
-          totalPages={total_pages}
-          currentPage={current_page}
-          onPageChange={handlePageChange}
-          className="mt-8 text-xs font-medium"
-        />
       </section>
+
+      <Pagination
+        totalPages={total_pages}
+        currentPage={current_page}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

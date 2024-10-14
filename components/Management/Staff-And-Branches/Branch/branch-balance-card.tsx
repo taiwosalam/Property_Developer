@@ -71,7 +71,7 @@ const BranchBalanceCard = ({
         </div>
         <div className="relative space-y-3">
           {/* Header Section */}
-          <div className="flex items-center justify-between ">
+          <div className="flex items-center justify-between gap-2">
             <div className="flex items-center space-x-2">
               <p className="text-text-invert text-sm font-medium">
                 Branch Balance
@@ -103,7 +103,7 @@ const BranchBalanceCard = ({
             <Image src="/icons/caution.svg" alt="info" width={12} height={12} />
           </div>
 
-          <div className="w-full flex justify-center space-x-4">
+          <div className="w-full flex items-start space-x-4">
             {options.map((option, index) => (
               <div
                 key={index}
@@ -118,7 +118,7 @@ const BranchBalanceCard = ({
                     className="w-[14px] h-[14px]"
                   />
                 </div>
-                <p className="capitalize text-white text-xs font-normal">
+                <p className="text-center capitalize text-white text-xs font-normal">
                   {option.name}
                 </p>
               </div>

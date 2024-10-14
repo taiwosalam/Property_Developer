@@ -11,6 +11,7 @@ import PropertyListingCard from "@/components/Listing/Property/property-listing-
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { property_listing_status } from "@/components/Listing/Property/data";
 import { PropertyListingStatusItem } from "@/components/Listing/Property/property-listing-component";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Property = () => {
   return (
@@ -41,25 +42,9 @@ const Property = () => {
           className="w-[240px]"
         />
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Moderating property" />
-        <div className="flex items-center gap-4">
-          <SearchInput placeholder="Search for Staff and Branch" />
-          <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-            <button>
-              <div className="flex items-center gap-2 cursor-pointer">
-                <Image
-                  src="/icons/sliders.svg"
-                  alt="filters"
-                  width={20}
-                  height={20}
-                />
-                <p className="text-[#344054] text-base font-medium">Filters</p>
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Moderating Property" aboutPageModalData={
+        { title: "Moderating Property", description: "This page contains a list of Moderating Property on the platform." }
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <div className="custom-flex-col gap-8">
         <div className="flex gap-4 justify-end">
           {Object.entries(property_listing_status).map(([key, value], idx) => (

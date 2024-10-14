@@ -298,6 +298,83 @@ export const rentPeriods = [
   "decennial",
 ];
 
+export const landlordTypes = [
+  "Individual Landlord",
+  "Corporate Landlord",
+  "Real Estate Investment Trust (REIT)",
+  "Property Management Company",
+  "Institutional Owner",
+  "Private Investor",
+  "Government Housing Authority",
+  "Cooperative Housing Association",
+  "Developer-Owned Property",
+  "Family Trust",
+  "Joint Venture Partnership",
+];
+
+export const nextOfKinRelationships = [
+  "Spouse",
+  "Parent",
+  "Child",
+  "Sibling",
+  "Grandparent",
+  "Grandchild",
+  "Aunt/Uncle",
+  "Niece/Nephew",
+  "Cousin",
+  "Legal Guardian",
+  "Domestic Partner",
+];
+
+export const guarantorRelationships = [
+  "Parent/Guardian",
+  "Spouse/Partner",
+  "Sibling/Relative",
+  "Employer",
+  "Friend",
+  "Business Partner",
+  "Colleague/Co-worker",
+  "Mentor/Advisor",
+  "Previous Landlord",
+  "Community Leader",
+  "Neighbor",
+];
+
+export const genderTypes = [
+  'male','female', 'others'
+]
+
+export const familyTypes = [
+  'Couple', 'Divorced', 'Family of 3, Family of 4', 'Family 4 Plus', 'Individual', 'Multifamily', 'Single Mother', 'Widow', 'Others'
+]
+
+export const employmentOptions = [
+  "Employed",
+  "Self-Employed",
+  "Unemployed",
+  "Retired",
+  "Student",
+  "Others",
+];
+
+export const employmentTypeOptions = [
+  "Full-Time",
+  "Part-Time",
+  "Contract-Based",
+  "Freelance Work",
+  "Internship",
+  "Temporary",
+  "Apprenticeship",
+  "Seasonal",
+  "Remote Work",
+  "On-site Work",
+  "Volunteer Work",
+  "Commission-Based",
+  "Gig/Project-Based Work",
+  "Shift Work",
+  "Casual Employment",
+];
+
 export const states: State[] = [
   {
     Abia: {

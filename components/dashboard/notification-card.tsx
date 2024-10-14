@@ -1,9 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import clsx from "clsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
 import React from "react";
 import Image from "next/image";
-import clsx from "clsx";
 import { notificationCardProps } from "./types";
 import messagesIcon from "@/public/icons/message.svg";
 import complaintsIcon from "@/public/icons/complaints.svg";
@@ -14,6 +14,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
   sectionHeader,
   notifications,
   branchId,
+  className,
 }) => {
   // Determine the icon and message text based on the sectionHeader prop
   const getEmptyState = () => {
@@ -43,7 +44,13 @@ const NotificationCard: React.FC<notificationCardProps> = ({
   const emptyState = getEmptyState();
 
   return (
-    <Card className="w-full border-none shadow">
+    <Card
+      className={clsx("w-full border-none", className)}
+      style={{
+        boxShadow:
+          "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
+      }}
+    >
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-[16px]">
           <p className="font-medium">{sectionHeader}</p>
@@ -64,7 +71,15 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         })}
       >
         {notifications.map((notification, index) => (
-          <Link href={sectionHeader === "Staffs" ? `/management/staff-branch/${branchId}/${notification.staff_ID}/staff-profile` : "#"} className="flex items-center gap-3" key={index}>
+          <Link
+            href={
+              sectionHeader === "Staffs"
+                ? `/management/staff-branch/${branchId}/${notification.staff_ID}/staff-profile`
+                : "#"
+            }
+            className="flex items-center gap-3"
+            key={index}
+          >
             <Avatar className="hidden h-9 w-9 sm:flex">
               <AvatarImage src={notification.avatarSrc} alt="Avatar" />
               <AvatarFallback>{notification.avatarFallback}</AvatarFallback>
@@ -97,7 +112,9 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                 </p>
               )}
               <p className="text-xs text-text-tertiary font-normal">
-                {notification.title === "Message" ? `${notification.message.trim().slice(0, 35)}...` : notification.position}
+                {notification.title === "Message"
+                  ? `${notification.message.trim().slice(0, 35)}...`
+                  : notification.position}
               </p>
             </div>
           </Link>

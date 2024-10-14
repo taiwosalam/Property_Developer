@@ -12,6 +12,7 @@ import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authstrore";
 import { getAllExamine } from "./data";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Examine = () => {
   const access_token = useAuthStore((state) => state.access_token);
@@ -45,18 +46,9 @@ const Examine = () => {
           + create new
         </Button>
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Examine" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search" />
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>Hi</ModalContent>
-          </Modal>
-        </div>
-      </div>
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Examine" aboutPageModalData={
+        { title: "Examine", description: "This page contains a list of Examine on the platform." }
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <AutoResizingGrid minWidth={350} gap={32}>
         {Array(10)
           .fill(null)

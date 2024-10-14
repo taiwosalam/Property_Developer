@@ -6,7 +6,7 @@ import Image from "next/image";
 // Images
 import { UploadImageIcon } from "@/public/icons/icons";
 import Transparent from "@/public/empty/transparent.png";
-
+import LandlordCard from "@/components/Management/landlord-and-tenant-card";
 // Imports
 import { industryOptions } from "@/data";
 import { getAllStates } from "@/utils/states";
@@ -24,6 +24,9 @@ import {
 } from "@/components/Settings/settings-components";
 import TextArea from "@/components/Form/TextArea/textarea";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
+import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
+import Link from "next/link";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const Others = () => {
     const { preview, handleImageChange } = useImageUploader({
@@ -75,7 +78,7 @@ const Others = () => {
                         title="Company Director"
                         desc="Please provide the details of the additional directors you wish to include on your landing page. You can click on the current card to edit and add their information."
                     />
-                    <div className="flex gap-2">
+                    <AutoResizingGrid minWidth={284} gap={16}>
                         <DirectorCard
                             name='Esq Abimbola Adedeji'
                             email='abimbola@gmail.com'
@@ -90,7 +93,7 @@ const Others = () => {
                             position='Estate Surveyor & Valuer'
                             phone='+2348132086958'
                         />
-                        <div className="ml-8 card p-2 flex min-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
+                        <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
                             <div className="flex flex-col items-center gap-1 justify-center">
                                 <Image
                                     src='/icons/profile.svg'
@@ -101,7 +104,7 @@ const Others = () => {
                                 <p> + Add new Profile </p>
                             </div>
                         </div>
-                    </div>
+                        </AutoResizingGrid>
                 </div>
                 <div className="flex justify-end">
                     <Button size="base_bold" className="py-[10px] px-8">
@@ -147,7 +150,7 @@ const Others = () => {
                     title="Restricted Users"
                     desc="Please provide the details of the tenants, occupant, owner, landlord or landlady you wish to restrict from the group chat. Once restricted, they will not have access to chat in the group until the restriction is removed. You can click on the current card to delete or add restrictions."
                 />
-                <div className="flex gap-2">
+                 <AutoResizingGrid minWidth={284} gap={16}>
                     <DirectorCard
                         name='Esq Abimbola Adedeji'
                         email='abimbola@gmail.com'
@@ -162,7 +165,7 @@ const Others = () => {
                         phone='+2348132086958'
                         icon='/icons/verified-success.svg'
                     />
-                    <div className="ml-8 card p-2 flex min-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
+                    <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
                         <div className="flex flex-col items-center gap-1 justify-center">
                             <Image
                                 src='/icons/profile.svg'
@@ -173,7 +176,7 @@ const Others = () => {
                             <p> + Add new Profile </p>
                         </div>
                     </div>
-                </div>
+                 </AutoResizingGrid>
             </div>
             <div className="flex justify-end">
                 <Button size="base_bold" className="py-[10px] px-8">
@@ -195,10 +198,9 @@ const Others = () => {
                             "Property becomes vacant and is moved to the listing page.",
                             "Document is created using my signature, name, or consent.",
                         ].map((option) => (
-                            <label key={option} className="flex gap-1">
-                                <input type='checkbox' checked={false} onChange={() => { }} />
-                                <span className="text-sm">{option}</span>
-                            </label>
+                            <DocumentCheckbox darkText>
+                                {option}
+                            </DocumentCheckbox>
                         ))}
                     </div>
 

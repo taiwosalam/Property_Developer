@@ -13,6 +13,7 @@ import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-recor
 import CreateRecordModal from "@/components/tasks/vehicles-record/create-record-modal";
 import type { VehicleRecord } from "@/components/tasks/vehicles-record/types";
 import { VehicleRecordData } from "./data";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const VehiclesRecordPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -54,13 +55,9 @@ const VehiclesRecordPage = () => {
           </ModalContent>
         </Modal>
       </div>
-      <div className="page-title-container">
-        <PageTitle title="Vehicles Record" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for vehicle record" />
-          <FilterButton />
-        </div>
-      </div>
+      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Vehicle Record" aboutPageModalData={
+        { title: "Vehicle Record", description: "This page contains a list of Vehicle Record on the platform." }
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
       <CustomTable
         fields={fields}
         data={VehicleRecordData}

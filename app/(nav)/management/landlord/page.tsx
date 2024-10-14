@@ -2,8 +2,6 @@
 
 // Imports
 import { useEffect, useState, useCallback } from "react";
-import clsx from "clsx";
-import { GridIcon, ListIcon } from "@/public/icons/icons";
 import AddLandlordModal from "@/components/Management/Landlord/add-landlord-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordCard from "@/components/Management/landlord-and-tenant-card";
@@ -12,25 +10,21 @@ import Link from "next/link";
 import CustomTable from "@/components/Table/table";
 import type { LandlordProps } from "@/components/Management/Landlord/types";
 import type { Field } from "@/components/Table/types";
-import SearchInput from "@/components/SearchInput/search-input";
 import UserTag from "@/components/Tags/user-tag";
 import Pagination from "@/components/Pagination/pagination";
-import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
-import PageTitle from "@/components/PageTitle/page-title";
-import AboutPage from "@/components/AboutPage/about-page";
 import Button from "@/components/Form/Button/button";
 import { getAllLandlords, LandlordPageState } from "./data";
 import { useAuthStore } from "@/store/authstrore";
-import FilterButton from "@/components/FilterButton/filter-button";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Landlord = () => {
   const accessToken = useAuthStore((state) => state.access_token);
   const initialState: LandlordPageState = {
     gridView: true,
-    total_pages: 50,
+    total_pages: 5,
     current_page: 1,
     loading: true,
     error: null,
@@ -62,6 +56,14 @@ const Landlord = () => {
     },
   } = state;
 
+  const setGridView = () => {
+    setState((state) => ({ ...state, gridView: true }));
+  };
+
+  const setListView = () => {
+    setState((state) => ({ ...state, gridView: false }));
+  };
+
   // Fetch the landlords when the component mounts
   const fetchLandlords = useCallback(async () => {
     try {
@@ -78,12 +80,6 @@ const Landlord = () => {
     fetchLandlords();
   }, [fetchLandlords]);
 
-  const setGridView = () => {
-    setState((state) => ({ ...state, gridView: true }));
-  };
-  const setListView = () => {
-    setState((state) => ({ ...state, gridView: false }));
-  };
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
   };
@@ -98,7 +94,7 @@ const Landlord = () => {
   const onStateSelect = (selectedState: string) => {
     const localGovernments = getLocalGovernments(selectedState);
 
-    const updatedFilters = landlordFiltersWithOptions.map((filter) => {
+    const updatedFilters = landlordFiltersWithDropdown.map((filter) => {
       if (filter.label === "Local Government") {
         return {
           ...filter,
@@ -112,7 +108,7 @@ const Landlord = () => {
     });
   };
 
-  const landlordFiltersWithOptions = [
+  const landlordFiltersWithDropdown = [
     {
       label: "Branch",
       value: [
@@ -147,10 +143,6 @@ const Landlord = () => {
         { label: "All Landlords", value: "all_landlords" },
       ],
     },
-  ];
-
-  const landlordFilters = [
-    { label: "Alphabetically", value: "alphabetically" },
   ];
 
   const handleFilterApply = (filters: any) => {
@@ -229,19 +221,19 @@ const Landlord = () => {
             title="Total Landlords"
             newData={new_landlords_this_month}
             total={total_landlords}
-            className="w-[unset]"
+            className="w-[240px]"
           />
           <ManagementStatistcsCard
             title="Web Landlords"
             newData={new_web_landlords_this_month}
             total={web_landlords}
-            className="w-[unset]"
+            className="w-[240px]"
           />
           <ManagementStatistcsCard
             title="Mobile Landlords"
             newData={new_mobile_landlords_this_month}
             total={mobile_landlords}
-            className="w-[unset]"
+            className="w-[240px]"
           />
         </div>
 
@@ -257,61 +249,11 @@ const Landlord = () => {
         </Modal>
       </div>
 
-      <div className="page-title-container">
-        <PageTitle
-          title="Landlords/Landladies (Owners)"
-          aboutPageModal={
-            <AboutPage
-              title="Landlords"
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer rhoncus nunc interdum turpis bibendum, quis molestie sapien convallis. Vivamus porta elementum nibh, vel placerat mauris vehicula non. Ut maximus vehicula tortor, nec pretium lacus venenatis id. Morbi pretium aliquet nisi, nec vestibulum nibh blandit in. "
-            />
-          }
-        />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Landlords" />
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              aria-label="list-view"
-              className={clsx(
-                "p-1 rounded-md",
-                !gridView
-                  ? "bg-black text-white"
-                  : "bg-transparent text-[unset]"
-              )}
-              onClick={setListView}
-            >
-              <ListIcon />
-            </button>
-            <button
-              type="button"
-              aria-label="grid-view"
-              className={clsx(
-                "p-1 rounded-md",
-                gridView ? "bg-black text-white" : "bg-transparent text-[unset]"
-              )}
-              onClick={setGridView}
-            >
-              <GridIcon />
-            </button>
-          </div>
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>
-              <FilterModal
-                filterOptionsWithDropdown={landlordFiltersWithOptions}
-                filterOptions={landlordFilters}
-                filterOptionsWithRadio={landlordFiltersRadio}
-                onApply={handleFilterApply}
-                onStateSelect={onStateSelect}
-                date={true}
-              />
-            </ModalContent>
-          </Modal>
-        </div>
-      </div>
+      <FilterBar azFilter gridView={gridView}
+        setGridView={setGridView}
+        setListView={setListView} onStateSelect={onStateSelect} pageTitle="Landlords/Landladies (Owners)" aboutPageModalData={
+          { title: "Landlords/Landladies (Owners)", description: "This page contains a list of all landlords and landladies who own properties on the platform." }
+        } searchInputPlaceholder="Search for Landlords" handleFilterApply={handleFilterApply} isDateTrue filterOptionsWithRadio={landlordFiltersRadio} filterWithOptionsWithDropdown={landlordFiltersWithDropdown} />
       <section>
         {gridView ? (
           <AutoResizingGrid minWidth={284} gap={16}>

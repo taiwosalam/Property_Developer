@@ -24,6 +24,7 @@ import {
 
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import NewDisbursementModal from "@/components/Accounting/Disbursement/new-disbursement-modal";
+import SortButton from "@/components/FilterButton/sort-button";
 
 const Disbursement = () => {
   return (
@@ -49,6 +50,7 @@ const Disbursement = () => {
           <div></div>
           <div className="flex items-center gap-4">
             <SearchInput placeholder="Search for Staff and Branch" />
+            <SortButton />
             <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
               <button>
                 <div className="flex items-center gap-2 cursor-pointer">

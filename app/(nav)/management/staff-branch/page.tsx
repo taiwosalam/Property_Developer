@@ -21,6 +21,7 @@ import Pagination from "@/components/Pagination/pagination";
 import CreateBranchModal from "@/components/Management/Staff-And-Branches/create-branch-modal";
 import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const StaffAndBranches = () => {
   const router = useRouter();
@@ -92,7 +93,7 @@ const StaffAndBranches = () => {
     // Add filtering logic here for branches
   };
 
-  const StaffAndBranchFiltersWithOptions = [
+  const StaffAndBranchFiltersWithDropdown = [
     {
       label: "State",
       value: allStates.map((state) => ({
@@ -104,9 +105,9 @@ const StaffAndBranches = () => {
       label: "Local Government",
       value: selectedState
         ? localGovernments.map((lga) => ({
-            label: lga,
-            value: lga,
-          }))
+          label: lga,
+          value: lga,
+        }))
         : [],
     },
   ];
@@ -231,53 +232,12 @@ const StaffAndBranches = () => {
           </ModalContent>
         </Modal>
       </div>
-
-      <div className="page-title-container">
-        <PageTitle title="Staff & Branch" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Staff and Branch" />
-          <div className="flex items-center gap-x-3">
-            <button
-              type="button"
-              aria-label="list-view"
-              className={clsx(
-                "p-1 rounded-md",
-                !gridView
-                  ? "bg-black text-white"
-                  : "bg-transparent text-[unset]"
-              )}
-              onClick={setListView}
-            >
-              <ListIcon />
-            </button>
-            <button
-              type="button"
-              aria-label="grid-view"
-              className={clsx(
-                "p-1 rounded-md",
-                gridView ? "bg-black text-white" : "bg-transparent text-[unset]"
-              )}
-              onClick={setGridView}
-            >
-              <GridIcon />
-            </button>
-          </div>
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>
-              <FilterModal
-                filterOptionsWithDropdown={StaffAndBranchFiltersWithOptions}
-                filterOptions={StaffAndBranchFilters}
-                onApply={handleFilterApply}
-                date
-                onStateSelect={(state: string) => setSelectedState(state)}
-              />
-            </ModalContent>
-          </Modal>
-        </div>
-      </div>
+      <FilterBar azFilter gridView={gridView}
+        setGridView={setGridView}
+        setListView={setListView} onStateSelect={(state: string) => setSelectedState(state)}
+        pageTitle="Staff & Branch" aboutPageModalData={
+          { title: "Staff & Branch", description: "This page contains a list of all Staff & Branch on the platform." }
+        } searchInputPlaceholder="Search for Staff & Branch" handleFilterApply={handleFilterApply} isDateTrue filterWithOptionsWithDropdown={StaffAndBranchFiltersWithDropdown} />
 
       <section className="capitalize">
         {gridView ? (

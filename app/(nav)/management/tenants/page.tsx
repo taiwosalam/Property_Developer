@@ -24,6 +24,7 @@ import { useAuthStore } from "@/store/authstrore";
 import FilterButton from "@/components/FilterButton/filter-button";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Tenants = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -74,7 +75,7 @@ const Tenants = () => {
   const onStateSelect = (selectedState: string) => {
     const localGovernments = getLocalGovernments(selectedState);
 
-    const updatedFilters = tenantFiltersWithOptions.map((filter) => {
+    const updatedFilters = tenantFilterOptionssWithDropdown.map((filter) => {
       if (filter.label === "Local Government") {
         return {
           ...filter,
@@ -94,7 +95,7 @@ const Tenants = () => {
     { label: "Occupants", value: "occupants" },
   ];
 
-  const tenantFiltersWithOptions = [
+  const tenantFilterOptionssWithDropdown = [
     {
       label: "Branch",
       value: [
@@ -250,53 +251,11 @@ const Tenants = () => {
         </Modal>
       </div>
 
-      <div className="page-title-container">
-        <PageTitle title="Tenants/Occupants (Users)" />
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Tenants & Occupants" />
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              aria-label="list-view"
-              className={clsx(
-                "p-1 rounded-md",
-                !gridView
-                  ? "bg-black text-white"
-                  : "bg-transparent text-[unset]"
-              )}
-              onClick={setListView}
-            >
-              <ListIcon />
-            </button>
-            <button
-              type="button"
-              aria-label="grid-view"
-              className={clsx(
-                "p-1 rounded-md",
-                gridView ? "bg-black text-white" : "bg-transparent text-[unset]"
-              )}
-              onClick={setGridView}
-            >
-              <GridIcon />
-            </button>
-          </div>
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>
-              <FilterModal
-                filterOptions={tenantFilters}
-                filterOptionsWithRadio={tenantFiltersRadio}
-                filterOptionsWithDropdown={tenantFiltersWithOptions}
-                onApply={handleFilterApply}
-                onStateSelect={onStateSelect}
-                date={true}
-              />
-            </ModalContent>
-          </Modal>
-        </div>
-      </div>
+      <FilterBar azFilter gridView={gridView}
+        setGridView={setGridView}
+        setListView={setListView} onStateSelect={onStateSelect} pageTitle="Tenants/Occupants (Users)" aboutPageModalData={
+          { title: "Tenants/Occupants (Users)", description: "This page contains a list of all tenants and occupants" }
+        } searchInputPlaceholder="Search for Tenants & Occupants" handleFilterApply={handleFilterApply} isDateTrue filterOptionsWithRadio={tenantFiltersRadio} filterWithOptionsWithDropdown={tenantFilterOptionssWithDropdown} />
       <section>
         {gridView ? (
           <AutoResizingGrid minWidth={284} gap={16}>

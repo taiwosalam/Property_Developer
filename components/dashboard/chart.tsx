@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import clsx from "clsx";
 import {
   LineChart,
   CartesianGrid,
@@ -54,13 +55,17 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function DashboardChart({
-  visibleRange,
-  chartTitle,
-}: {
+interface DashboardChartProps {
   visibleRange?: boolean;
   chartTitle?: string;
-}) {
+  className?: string;
+}
+
+export const DashboardChart: React.FC<DashboardChartProps> = ({
+  visibleRange,
+  chartTitle,
+  className,
+}) => {
   const [salesEnabled, setSalesEnabled] = React.useState(true);
   const [profitsEnabled, setProfitsEnabled] = React.useState(true);
   const [expensesEnabled, setExpensesEnabled] = React.useState(true);
@@ -115,7 +120,7 @@ export function DashboardChart({
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   return (
-    <Card className="shadow-sm border-none">
+    <Card className={clsx("shadow-sm border-none", className)}>
       <>
         <CardHeader className="flex w-full items-center gap-2 space-y-0 py-3 sm:flex-row">
           <div className="flex w-full py-2 justify-between">
@@ -320,4 +325,4 @@ export function DashboardChart({
       </CardContent>
     </Card>
   );
-}
+};

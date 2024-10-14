@@ -1,5 +1,3 @@
-import React from "react";
-
 // Types
 import type { InspectionCardProps } from "./types";
 
@@ -39,14 +37,14 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ type }) => {
         </div>
       </div>
       <div className="custom-flex-col gap-8 px-[18px]">
-        <div className="flex justify-between">
+        <div className="flex justify-between gap-2">
           <InspectionCardDetail
-            desc="Booked by"
-            title="Salam AIshat"
+            title="Booked by"
+            desc="Salam AIshat"
             verirified
           />
-          <InspectionCardDetail desc="Inspection Date" title="25/01/2024" />
-          <InspectionCardDetail desc="Inspection Time" title="12:30pm" />
+          <InspectionCardDetail title="Inspection Date" desc="25/01/2024" />
+          <InspectionCardDetail title="Inspection Time" desc="12:30pm" />
         </div>
         <div className="flex items-center gap-4 justify-end">
           <Picture src={ChatIcon} alt="chat" size={24} />
