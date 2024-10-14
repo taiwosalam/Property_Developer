@@ -5,6 +5,7 @@ import type { PhoneNumberProps } from "./types";
 
 // Imports
 import clsx from "clsx";
+import { useState, useEffect } from "react";
 import Label from "../Label/label";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -13,6 +14,8 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
   id,
   label,
   value,
+  defaultValue,
+  resetKey,
   required,
   className,
   placeholder,
@@ -20,6 +23,19 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
   inputClassName,
   inputContainerClassName,
 }) => {
+  const [phoneValue, setPhoneValue] = useState(defaultValue);
+
+  useEffect(() => {
+    setPhoneValue(value || defaultValue);
+  }, [value, resetKey, defaultValue]);
+
+  const handleChange = (newValue: string) => {
+    setPhoneValue(newValue);
+    if (onChange) {
+      onChange(newValue);
+    }
+  };
+
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
       {/* Render the label if provided */}
@@ -29,9 +45,9 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
         </Label>
       )}
       <PhoneInput
-        country={"ng"} // Default country code (Nigeria)
-        value={value}
-        onChange={onChange} // Update with selected phone number
+        country="ng" // Default country code (Nigeria)
+        value={phoneValue}
+        onChange={handleChange}
         countryCodeEditable={false}
         enableSearch={true}
         preferredCountries={["ng", "us", "gb"]}

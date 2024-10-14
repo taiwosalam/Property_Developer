@@ -92,7 +92,7 @@ export const LandlordTenantInfoEditSection: React.FC<{
   children: React.ReactNode;
 }> = ({ title, style, children, headingStyle }) => (
   <div
-    className="p-6 xl:p-10 pt-5 rounded-[20px] bg-white custom-flex-col gap-10"
+    className="p-6 pt-5 rounded-[20px] bg-white custom-flex-col gap-10"
     style={style}
   >
     <h2
@@ -113,6 +113,7 @@ export const LandlordTenantInfoEditGrid: React.FC<{
   </div>
 );
 
+// This Usertag is not consistent with design and Redundant
 export const LandlordTenantUserTag: React.FC<{
   type: "web" | "mobile" | "branch manager";
 }> = ({ type }) => (

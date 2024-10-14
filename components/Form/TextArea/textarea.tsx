@@ -50,7 +50,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   const { handleInputChange } = useContext(FlowProgressContext);
   const [mounted, setMounted] = useState(false);
   const quillRef = useRef<ReactQuill>(null);
-  const [editorValue, setEditorValue] = useState(value || "");
+  const [editorValue, setEditorValue] = useState(defaultValue);
 
   const handleChange = (content: string) => {
     setEditorValue(content); // Update editorValue state
@@ -58,7 +58,8 @@ const TextArea: React.FC<TextAreaProps> = ({
       onChange(content);
     }
   };
-  // Handle undo and red
+
+  // Handle undo and redo
   const handleUndo = () => {
     const editor = quillRef.current?.getEditor();
     if (editor) {
@@ -83,8 +84,8 @@ const TextArea: React.FC<TextAreaProps> = ({
   }, [handleInputChange, editorValue]);
 
   useEffect(() => {
-    setEditorValue(value || "");
-  }, [resetKey, value]);
+    setEditorValue(value || defaultValue);
+  }, [value, defaultValue, resetKey]);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
@@ -99,7 +100,6 @@ const TextArea: React.FC<TextAreaProps> = ({
             <DynamicReactQuill
               forwardedRef={quillRef}
               value={editorValue}
-              defaultValue={defaultValue}
               onChange={handleChange}
               placeholder={placeholder}
               className={clsx("quill-editor", inputSpaceClassName)}
@@ -123,14 +123,9 @@ const TextArea: React.FC<TextAreaProps> = ({
             />
             {/* Hidden input field */}
 
-            <div
-              id="toolbar"
-              className="quill-toolbar bg-[#F3F6F9] max-w-full"
-            >
-              <select className="ql-header">
-                <option value="" selected>
-                  Paragraph
-                </option>
+            <div id="toolbar" className="quill-toolbar bg-[#F3F6F9] max-w-full">
+              <select className="ql-header" defaultValue="">
+                <option value="">Paragraph</option>
                 <option value="1">Header 1</option>
                 <option value="2">Header 2</option>
               </select>
