@@ -1,4 +1,9 @@
+"use client";
+
 import React from "react";
+
+// Types
+import type { CustomTableProps } from "@/components/Table/types";
 
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -9,17 +14,51 @@ import {
   SettingsSectionTitle,
   SettingsUpdateButton,
 } from "@/components/Settings/settings-components";
+
+import {
+  added_units,
+  current_subscriptions,
+  personalized_domain,
+} from "./data";
 import Select from "@/components/Form/Select/select";
+import CustomTable from "@/components/Table/table";
+import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
+import Pagination from "@/components/Pagination/pagination";
 
 const Subscriptions = () => {
+  const table_style_props: Partial<CustomTableProps> = {
+    tableHeadClassName: "bg-brand-9 h-[45px]",
+    tableHeadCellSx: {
+      color: "#EFF6FF",
+      fontWeight: 500,
+      border: "none",
+      textAlign: "left",
+      fontSize: "14px",
+    },
+    tableBodyCellSx: {
+      border: "none",
+      textAlign: "left",
+      fontWeight: 500,
+      color: "#050901",
+      fontSize: "14px",
+    },
+    oddRowColor: "#fff",
+    evenRowColor: "#FAFAFA",
+  };
+
   return (
     <>
       <SettingsSection title="Current Subscription/Ads-on">
         <div className="custom-flex-col gap-7">
           <SettingsSectionTitle desc="Current Subscription and Ads-on Plan are business model where you pay a recurring fee at regular intervals either monthly or annually to access a dashboard modules, data, information and menu. Here's a breakdown of your current subscriptions." />
+          <CustomTable
+            data={current_subscriptions.data}
+            fields={current_subscriptions.fields}
+            {...table_style_props}
+          />
         </div>
       </SettingsSection>
-      <div className="h-[1px] bg-brand-9 opacity-50"></div>
+      <div className="h-[1px] border border-dashed border-brand-9 opacity-50"></div>
       <div className="custom-flex-col gap-[18px]">
         <h2 className="text-primary-navy text-base font-medium">
           Adds On Subscriptions
@@ -30,7 +69,14 @@ const Subscriptions = () => {
               <div className="custom-flex-col gap-6">
                 <SettingsSectionTitle desc="A personalized domain is used for forwarding one URL to another, especially if your company has a website and you want this current landing page to have the same URL as your company website. You can create a sub-domain under your website for this landing page or purchase your preferred domain name and redirect this domain to it." />
                 <div className="custom-flex-col gap-10">
-                  <div className=""></div>
+                  <div className="custom-flex-col gap-4">
+                    <SettingsSectionTitle title="Domain" />
+                    <CustomTable
+                      data={personalized_domain.data}
+                      fields={personalized_domain.fields}
+                      {...table_style_props}
+                    />
+                  </div>
                   <div className="custom-flex-col gap-8">
                     <SettingsSectionTitle
                       title="Add Domain"
@@ -52,6 +98,55 @@ const Subscriptions = () => {
           </SettingsSection>
           <SettingsSection title="listing">
             <div className="custom-flex-col gap-8">
+              <div className="custom-flex-col gap-[30px]">
+                <div className="flex flex-col gap-4">
+                  <DocumentCheckbox darkText>
+                    Automatically list vacant units.
+                  </DocumentCheckbox>
+                  <DocumentCheckbox darkText>
+                    Automatically renew and update property listings.
+                  </DocumentCheckbox>
+                  <div className="flex gap-4">
+                    <div className="flex gap-4">
+                      <Input
+                        placeholder="123"
+                        id="sponsor_unit_available"
+                        label="Listing sponsor Unit Available"
+                      />
+                      <div className="flex items-end">
+                        <Button
+                          variant="change"
+                          size="xs_normal"
+                          className="py-2 px-3"
+                        >
+                          Buy More Unit
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="flex gap-4">
+                      <Input
+                        id="sponsor-proprty"
+                        label="Sponsor Proprty"
+                        placeholder="Insert unit ID"
+                      />
+                      <div className="flex items-end">
+                        <Button
+                          variant="change"
+                          size="xs_normal"
+                          className="py-2 px-3"
+                        >
+                          Add Unit ID
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <CustomTable
+                  data={added_units.data}
+                  fields={added_units.fields}
+                  {...table_style_props}
+                />
+              </div>
               <SettingsUpdateButton />
             </div>
           </SettingsSection>
@@ -118,7 +213,18 @@ const Subscriptions = () => {
             </div>
           </SettingsSection>
           <SettingsSection title="Subscription History">
-            <div className="custom-flex-col gap-8"></div>
+            <div className="custom-flex-col gap-8">
+              <CustomTable
+                data={current_subscriptions.data}
+                fields={current_subscriptions.fields}
+                {...table_style_props}
+              />
+              <Pagination
+                currentPage={1}
+                totalPages={10}
+                onPageChange={() => {}}
+              />
+            </div>
           </SettingsSection>
         </div>
       </div>
