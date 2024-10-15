@@ -69,3 +69,27 @@ export const getOneLandlord = async (
     return null;
   }
 };
+export const getLandlordsHelpInfo = async () => {
+  try {
+    const response = await fetch(
+      `https://kb.ourproperty.ng/property-manager/api/helpinfo/landlord`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Check if the response status is ok (200-299)
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+
+    // Parse the JSON data
+    const res = await response.json();
+    return { success: "True", res };
+  } catch (error) {
+    return { success: "False", error: (error as Error).message };
+  }
+};
