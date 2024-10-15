@@ -164,3 +164,25 @@ interface ThemeCardProps {
   value: string;
   onSelect: (value: string) => void; // Pass the value when selected
 }
+
+
+export interface SettingsEnrollmentCardProps {
+  planTitle: string;
+  desc: string;
+  planFor: string;
+  price: string;
+  discount: string;
+  duration: string;
+  showFeatures: boolean;
+  setShowFeatures: (show: boolean) => void;
+  onSelect: () => void;
+  features: string[];
+  billingType: 'monthly' | 'yearly';
+  payMonthly: () => void;
+  payYearly: () => void;
+  quantity: number;
+  incrementQuantity: () => void;
+  decrementQuantity: () => void;
+  isFree?: boolean;
+  onBillingTypeChange: (type: 'monthly' | 'yearly') => void;
+}

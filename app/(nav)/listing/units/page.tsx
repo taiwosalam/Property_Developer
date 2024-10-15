@@ -3,6 +3,7 @@
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import VacantUnitCard from "@/components/Listing/Units/vacant-unit-card";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { listingUnitOptionsWithRadio, lstingUnitOptionsWithDropdown } from "./data";
 
 const Units = () => {
   return (
@@ -26,7 +27,7 @@ const Units = () => {
       </div>
       <FilterBar azFilter onStateSelect={() => { }} pageTitle="Vacant Units" aboutPageModalData={
         { title: "Vacant Units", description: "This page contains a list of Vacant Units on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue={false} filterOptions={[]} filterWithOptionsWithDropdown={lstingUnitOptionsWithDropdown} filterOptionsWithRadio={listingUnitOptionsWithRadio} />
       <div className="custom-flex-col gap-5">
         {Array(5)
           .fill(null)

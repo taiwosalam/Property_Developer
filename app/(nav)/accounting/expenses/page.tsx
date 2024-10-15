@@ -28,6 +28,7 @@ import { DateRange } from "react-day-picker";
 import ThreeDotsVertical from "@/public/icons/three-dots-vertical.svg";
 import Link from "next/link";
 import CreateExpenceModal from "@/components/Accounting/expenses/create-expense/CreateExpenceModal";
+import { accountingExpensesOptionsWithDropdown } from "./data";
 
 const AccountingExpensesPage = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -136,9 +137,8 @@ const AccountingExpensesPage = () => {
                 <ModalContent>
                   <FilterModal
                     filterOptions={[]}
-                    filterOptionsWithDropdown={[]}
+                    filterOptionsWithDropdown={accountingExpensesOptionsWithDropdown}
                     onApply={handleFilterApply}
-                    date
                     onStateSelect={(state: string) => setSelectedState(state)}
                   />
                 </ModalContent>

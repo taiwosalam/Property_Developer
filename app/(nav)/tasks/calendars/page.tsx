@@ -1,14 +1,11 @@
 "use client";
 import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import FilterButton from "@/components/FilterButton/filter-button";
 import CustomTable from "@/components/Table/table";
 import Pagination from "@/components/Pagination/pagination";
 import type { Field } from "@/components/Table/types";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authstrore";
-import { getAllEventsOnCalendar } from "./data";
+import { calendarsrFilterOptionsWithDropdown, getAllEventsOnCalendar } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const CalendarPage = () => {
@@ -51,7 +48,7 @@ const CalendarPage = () => {
     <div className="space-y-9">
       <FilterBar azFilter onStateSelect={() => { }} pageTitle="Calendar" aboutPageModalData={
         { title: "Calendar", description: "This page contains a list of Calendar on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={calendarsrFilterOptionsWithDropdown} />
       <div className="page-title-container">
         <PageTitle title="up coming events" />
         <p className="text-text-label text-sm md:text-base font-medium">

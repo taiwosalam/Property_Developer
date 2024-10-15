@@ -1,4 +1,4 @@
-export const complaintsFilterOptionsWithDropdown = [
+export const inspectionFilterOptionsWithDropdown = [
   {
     label: "Property",
     value: [

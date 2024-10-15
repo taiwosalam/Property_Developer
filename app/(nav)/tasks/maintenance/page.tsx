@@ -11,7 +11,7 @@ import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import MaintenanceCard from "@/components/tasks/maintenance/maintenance-card";
 import { useAuthStore } from "@/store/authstrore";
 import { useEffect, useState } from "react";
-import { getALLMaintenance } from "./data";
+import { getALLMaintenance, maintenanceFilterOptionsWithDropdown, maintenanceFilterOptionsWithRadio } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 const Maintenance = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -47,7 +47,7 @@ const Maintenance = () => {
       </div>
       <FilterBar azFilter onStateSelect={() => { }} pageTitle="Maintenance" aboutPageModalData={
         { title: "Maintenance", description: "This page contains a list of Maintenance on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={maintenanceFilterOptionsWithDropdown} filterOptionsWithRadio={maintenanceFilterOptionsWithRadio} />
       <AutoResizingGrid minWidth={380} gap={32}>
         {Array(10)
           .fill(null)

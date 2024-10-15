@@ -1,18 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Link from "next/link";
-import FilterButton from "@/components/FilterButton/filter-button";
 import Pagination from "@/components/Pagination/pagination";
 import Button from "@/components/Form/Button/button";
 import ServiceProviderCard from "@/components/Management/landlord-and-tenant-card";
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import AddServiceProviderModal from "@/components/tasks/service-providers/add-service-provider-modal";
 import { useAuthStore } from "@/store/authstrore";
-import { getAllServiceProviders } from "./data";
+import { getAllServiceProviders, serviceProviderFilterOptionsWithDropdown } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const ServiceProviders = () => {
@@ -68,7 +65,7 @@ const ServiceProviders = () => {
       </div>
       <FilterBar azFilter onStateSelect={() => { }} pageTitle="Service Provider" aboutPageModalData={
         { title: "Service Provider", description: "This page contains a list of Service Provider on the platform." }
-      } searchInputPlaceholder="Search for providers" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search for providers" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={serviceProviderFilterOptionsWithDropdown} />
       <section
         className="grid gap-4"
         style={{
