@@ -118,6 +118,7 @@ export interface CheckboxProps {
 interface ThemeCardProps {
   img: string;
   value: string;
+  isSelected: boolean;
   onSelect: (value: string) => void; // Pass the value when selected
 }
 

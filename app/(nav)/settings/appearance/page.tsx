@@ -53,6 +53,7 @@ const Appearance = () => {
     const handleCustomColorChange = (color: string) => {
         setCustomColor(color);
     };
+    
 
     return (
         <>
@@ -196,11 +197,15 @@ const Appearance = () => {
                             )}
                         </div>
                     ))}
-                    <div
-                        className="h-[40px] w-[40px] my-2 rounded-md text-base border border-gray-300 bg-white flex items-center justify-center cursor-pointer"
+
+                    <div className="">
+                        <p className="text-sm text-text-disabled"> Specify a color code or select a color that best represents your brand. You can also incorporate additional color designs based on your preferences. </p>
+                    <button
+                        className="h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white flex items-center justify-center cursor-pointer"
                         onClick={handleCustomColorClick}
                     >
                         +
+                    </button>
                     </div>
                 </div>
 
