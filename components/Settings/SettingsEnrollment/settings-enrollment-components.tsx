@@ -11,7 +11,7 @@ export const PlanHeader: React.FC<{
   <div
     className={`plan-title py-5 px-4 bg-[#F4F9FF] border-b relative ${themeColor}`}
   >
-    <h3 className={`text-[16px] font-medium tracking-[0px] ${themeColor}`}>
+    <h3 className={`text-[16px] font-medium tracking-[0px] text-[${themeColor}]`}>
       {planTitle.toUpperCase()}
     </h3>
     <p className="text-[14px] font-medium tracking-[0px] text-text-secondary">
@@ -28,7 +28,7 @@ export const PlanHeader: React.FC<{
     </p>
     <div className="absolute bottom-0 flex items-center justify-center w-full">
       <div
-        className={`flex items-center justify-center py-[3px] px-10 rounded-t-md ${themeColor}`}
+        className={`flex items-center justify-center py-[3px] px-10 rounded-t-md ${isFree ? "bg-[#38BDF8] bg-opacity-40" : "bg-brand-9"}`}
       ></div>
     </div>
   </div>
@@ -92,17 +92,17 @@ export const BillingTypeButton: React.FC<{
     <button
       onClick={() => handleBillingTypeChange(type)}
       disabled={isFree}
-      className={`${isFree ? "opacity-50 cursor-not-allowed" : ""}`}
+      className={`${isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : "text-text-secondary"}`}
     >
       {isFree
         ? `Free ${type === "yearly" ? "Annually" : "Monthly"}`
-        : `Pay ${type === "yearly" ? "Yearly" : "Monthly"}`}
+        : `Pay ${type === "yearly" ? "Annually" : "Monthly"}`}
     </button>
     {type === "yearly" && (
       <Link
         href="#"
         className={`${
-          isFree ? "opacity-50 cursor-not-allowed" : "text-brand-9"
+          isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : "text-brand-9"
         }`}
       >
         {isFree ? "No stress" : "Get Discount"}
@@ -126,7 +126,7 @@ export const QuantityCounter: React.FC<{
 }) => (
   <div className="counter flex items-center justify-center w-full gap-2">
     <div className="flex items-center gap-6 w-full max-w-[74px] border border-neutral-3 px-2 rounded-md">
-      <p className="count pl-1 text-[#000] text-[14px] font-medium tracking-[0px]">
+      <p className={`count pl-1 text-[#000] text-[14px] font-medium tracking-[0px] ${isFree ? "opacity-50 cursor-not-allowed" : ""}`}>
         {isFree ? 0 : quantity}
       </p>
       <div className="btns flex flex-col">
@@ -144,7 +144,7 @@ export const QuantityCounter: React.FC<{
         />
       </div>
     </div>
-    <p className={`${isFree ? "opacity-50 cursor-not-allowed" : ""}`}>
+    <p className={`${isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : ""}`}>
       {" "}
       Total {billingType === "monthly" ? "Months" : "Years"}{" "}
     </p>
@@ -160,7 +160,6 @@ export const CounterButton: React.FC<{
   <button
     className="text-white rounded-md"
     onClick={onClick}
-    disabled={disabled}
   >
     <Image src={icon} alt={alt} width={20} height={20} />
   </button>
@@ -197,7 +196,7 @@ export const FeaturesList: React.FC<{
         {features.map((feature, index) => (
           <div key={index} className="flex items-center gap-2">
             <Image src="/icons/mark.svg" alt="mark" width={16} height={17} />
-            <p>{feature}</p>
+            <p className="text-brand-9">{feature}</p>
           </div>
         ))}
       </div>
@@ -205,7 +204,7 @@ export const FeaturesList: React.FC<{
   );
 
 export const SelectPlanButton: React.FC<{ isFree: boolean }> = ({ isFree }) => (
-  <div className="px-6 pb-4">
+  <div className="px-6 pb-4 flex justify-end">
     <div
       className={`buynowbtn w-full flex items-center justify-center p-[8px] gap-[10px] rounded-[4px] ${
         isFree ? "bg-brand-9 bg-opacity-40 cursor-not-allowed" : "bg-brand-9"

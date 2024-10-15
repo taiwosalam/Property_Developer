@@ -144,25 +144,26 @@ export interface SettingsThemeTypes {
 export interface CheckboxProps {
   color: string;
   checked: boolean;
-  onChange: (checked: boolean) => void; // Passes the new checked state
+  onChange: (checked: boolean) => void;
 }
 
 interface ThemeCardProps {
   img: string;
   value: string;
-  onSelect: (value: string) => void; // Pass the value when selected
+  onSelect: (value: string) => void; 
 }
 
 export interface CheckboxProps {
   color: string;
   checked: boolean;
-  onChange: (checked: boolean) => void; // Passes the new checked state
+  onChange: (checked: boolean) => void;
 }
 
 interface ThemeCardProps {
   img: string;
   value: string;
-  onSelect: (value: string) => void; // Pass the value when selected
+  isSelected: boolean;
+  onSelect: (value: string) => void; 
 }
 
 
