@@ -20,6 +20,7 @@ import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { LandlordHelpInfo } from "./types";
+import { title } from "process";
 
 const Landlord = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -264,11 +265,24 @@ const Landlord = () => {
         </Modal>
       </div>
 
-      <FilterBar azFilter gridView={gridView}
+      <FilterBar
+        azFilter
+        gridView={gridView}
         setGridView={setGridView}
-        setListView={setListView} onStateSelect={onStateSelect} pageTitle="Landlords/Landladies (Owners)" aboutPageModalData={
-          { title: "Landlords/Landladies (Owners)", description: `${fetchedLandlordHelpInfo?.description}` }
-        } searchInputPlaceholder="Search for Landlords" handleFilterApply={handleFilterApply} isDateTrue filterOptionsWithRadio={landlordFiltersRadio} filterWithOptionsWithDropdown={landlordFiltersWithDropdown} />
+        setListView={setListView}
+        onStateSelect={onStateSelect}
+        pageTitle="Landlords/Landladies (Owners)"
+        aboutPageModalData={{
+          title: fetchedLandlordHelpInfo?.slug || "",
+          description: fetchedLandlordHelpInfo?.description || "",
+          video: fetchedLandlordHelpInfo?.acf.video_link || "",
+        }}
+        searchInputPlaceholder="Search for Landlords"
+        handleFilterApply={handleFilterApply}
+        isDateTrue
+        filterOptionsWithRadio={landlordFiltersRadio}
+        filterWithOptionsWithDropdown={landlordFiltersWithDropdown}
+      />
       <section>
         {gridView ? (
           <AutoResizingGrid minWidth={284} gap={16}>

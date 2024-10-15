@@ -29,7 +29,7 @@ const Applications = () => {
       </AutoResizingGrid>
       <div className="custom-flex-col gap-5">
         <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="Applications" aboutPageModalData={
-          { title: "Applications", description: "This page contains a list of Applications on the platform." }
+          { title: "Applications", description: "This page contains a list of Applications on the platform.", video: "" }
         } searchInputPlaceholder="Search for units" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
         <AutoResizingGrid minWidth={350} gap={32}>
           <ApplicationCard />

@@ -30,7 +30,6 @@ import SettingsAddMoreFlow from "./Modals/settings-add-more-flow";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import SettingsPaymentModal from "./Modals/settings-payment-modal";
 import { HexColorPicker } from "react-colorful";
-
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
     <p
@@ -86,8 +85,8 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
               {...(remove
                 ? { ...remove_props }
                 : addMore
-                ? { ...add_more_props }
-                : null)}
+                  ? { ...add_more_props }
+                  : null)}
             >
               {remove ? "remove" : addMore ? "add more" : ""}
             </Button>
