@@ -1,27 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import React, { useState } from "react";
-
 // Imports
 import SettingsSection from "@/components/Settings/settings-section";
+import Link from "next/link";
 import SettingsEnrollmentCard from "@/components/Settings/SettingsEnrollment/settings-enrollment-card";
 
 const Enrollment = () => {
-  const [showFreeFeatures, setShowFreeFeatures] = useState(false);
-  const [showBasicFeatures, setShowBasicFeatures] = useState(false);
-  const [billingType, setBillingType] = useState<"monthly" | "yearly">(
-    "monthly"
-  );
-  //   const [quantity, setQuantity] = useState(1);
-  const [showPremiumFeatures, setShowPremiumFeatures] = useState(false);
+  const [billingType, setBillingType] = useState<"monthly" | "yearly">("monthly");
+  const [showFeatures, setShowFeatures] = useState(false);
 
-  const [basicBillingType, setBasicBillingType] = useState<
-    "monthly" | "yearly"
-  >("monthly");
-  const [premiumBillingType, setPremiumBillingType] = useState<
-    "monthly" | "yearly"
-  >("monthly");
+  const [basicBillingType, setBasicBillingType] = useState<"monthly" | "yearly">("monthly");
+  const [premiumBillingType, setPremiumBillingType] = useState<"monthly" | "yearly">("monthly");
 
   const [basicQuantity, setBasicQuantity] = useState(1);
   const [premiumQuantity, setPremiumQuantity] = useState(1);
@@ -69,8 +59,8 @@ const Enrollment = () => {
             price="₦000.00"
             discount=""
             duration=""
-            showFeatures={showFreeFeatures}
-            setShowFeatures={setShowFreeFeatures}
+            showFeatures={showFeatures}
+            setShowFeatures={setShowFeatures}
             onSelect={() => {}}
             features={[
               "Maximum of 1 Branch",
@@ -94,14 +84,14 @@ const Enrollment = () => {
           {/* Basic Plan (paid plan) */}
           <SettingsEnrollmentCard
             planTitle="Basic Plan"
-            price={calculatePrice(basicBillingType, basicQuantity, 5000, 60000)}
-            discount={basicBillingType === "monthly" ? `(Billed at ${calculatePrice(basicBillingType, basicQuantity, 5000, 60000 )} per month)` 
+            price={calculatePrice(basicBillingType, basicQuantity, 3500, 60000)}
+            discount={basicBillingType === "monthly" ? `(Billed at ₦42,000/year)` 
                     : `Save ${(5000 * 12 - 60000).toLocaleString("en-NG", {style: "currency", currency: "NGN",})} annually`}
             desc="The Basic plan is ideal for Property Managers overseeing maximum of 2 branches with a limited number of properties. It offers basic features tailored for smaller-scale operations."
             planFor="Property Managers"
             duration={basicBillingType === "monthly" ? `${basicQuantity} ${basicQuantity === 1 ? "Month" : "Months"}` : `${basicQuantity} {basicQuantity === 1 ? "Year" : "Years"}`}
-            showFeatures={showBasicFeatures}
-            setShowFeatures={setShowBasicFeatures}
+            showFeatures={showFeatures}
+            setShowFeatures={setShowFeatures}
             billingType={basicBillingType}
             quantity={basicQuantity}
             incrementQuantity={() => setBasicQuantity((prev) => prev + 1)}
@@ -133,13 +123,13 @@ const Enrollment = () => {
               12000,
               120000
             )}
-            discount={premiumBillingType === "monthly" ? `(Billed at ${calculatePrice(premiumBillingType, premiumQuantity, 12000,120000 )} per month)`
+            discount={premiumBillingType === "monthly" ? `(Billed at ₦120,000/year)`
                 : `Save ${(12000 * 12 - 120000).toLocaleString("en-NG", {style: "currency", currency: "NGN", })} annually`
             }
             duration={premiumBillingType === "monthly" ? `${premiumQuantity} ${ premiumQuantity === 1 ? "Month" : "Months" }`
                 : `${premiumQuantity} ${ premiumQuantity === 1 ? "Year" : "Years" }`}
-            showFeatures={showPremiumFeatures}
-            setShowFeatures={setShowPremiumFeatures}
+            showFeatures={showFeatures}
+            setShowFeatures={setShowFeatures}
             billingType={premiumBillingType}
             quantity={premiumQuantity}
             incrementQuantity={() => setPremiumQuantity((prev) => prev + 1)}

@@ -43,17 +43,9 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   });
 
   const handleCardClick = () => {
-    const cardName = planTitle.toLowerCase();
-    setIsOpen((prevState) => ({
-      ...prevState,
-      [cardName]: !prevState[cardName],
-    }));
     setShowFeatures(!showFeatures);
   };
 
-  const cardMaxHeight = isOpen[planTitle.toLowerCase()]
-    ? "h-auto"
-    : "max-h-[500px]";
   const getFeaturesText = () =>
     isFree
       ? "Free Features"
@@ -62,12 +54,12 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         } Features`;
 
   const themeColor = isFree
-    ? "border-[#38BDF8]"
+    ? "border-[#38BDF8] text-[#38BDF8]  "
     : "text-brand-9 border-brand-9";
 
   return (
     <div
-      className={`max-w-[420px] pricingCard bg-white rounded-lg shadow-md hover:border-2 ${themeColor} ${cardMaxHeight}`}
+      className={`max-w-[420px] flex flex-col justify-between pricingCard bg-white rounded-lg shadow-md hover:border-2 ${themeColor}`}
     >
       <PlanHeader
         planTitle={planTitle}

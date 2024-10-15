@@ -29,7 +29,7 @@ import SettingsUpdateModal from "./Modals/settings-update-modal";
 import SettingsAddMoreFlow from "./Modals/settings-add-more-flow";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import SettingsPaymentModal from "./Modals/settings-payment-modal";
-
+import { HexColorPicker } from "react-colorful";
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
     <p
@@ -85,8 +85,8 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
               {...(remove
                 ? { ...remove_props }
                 : addMore
-                ? { ...add_more_props }
-                : null)}
+                  ? { ...add_more_props }
+                  : null)}
             >
               {remove ? "remove" : addMore ? "add more" : ""}
             </Button>
@@ -259,13 +259,15 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
   img,
   value,
   onSelect,
+  isSelected,
 }) => {
   return (
     <div
-      className="themesWrapper mt-4 flex items-center flex-wrap gap-4 cursor-pointer"
+      className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer
+      }`}
       onClick={() => onSelect(value)} // Trigger onSelect with value on click
     >
-      <div className="imgWrapper w-[218px] h-[218px]">
+      <div className={`imgWrapper w-full h-full ${isSelected ? "border-2 border-blue-500 rounded-md w-full" : ""}`}>
         <Image
           src={img}
           alt="Theme"
@@ -273,6 +275,45 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
           height={1000}
           className="w-full h-full object-contain"
         />
+      </div>
+    </div>
+  );
+};
+
+export const CustomColorPicker: React.FC<{
+  color: string;
+  onChange: (color: string) => void;
+  onClose: () => void;
+}> = ({ color, onChange, onClose }) => {
+  return (
+    <div className="bg-white rounded-lg shadow-xl pb-6 w-[390px] flex flex-col items-center justify-center">
+      <div className="w-full">
+        <HexColorPicker
+          color={color}
+          onChange={onChange}
+          className="w-full"
+          style={{ width: "390px" }}
+        />
+      </div>
+      <div className="p">
+        <div className="flex gap-2 items-center justify-center w-full">
+          <p className="text-sm text-text-primary">Hex</p>
+          <input
+            type="text"
+            value={color}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded mb-4 mt-4"
+            placeholder="Enter hex color code"
+          />
+        </div>
+        <div className="flex justify-center items-center w-full">
+          <button
+            onClick={onClose}
+            className="w-full py-2 bg-brand-9 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            Set Color
+          </button>
+        </div>
       </div>
     </div>
   );
