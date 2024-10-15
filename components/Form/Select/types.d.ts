@@ -5,7 +5,7 @@ export interface SelectOptionObject {
 
 export interface SelectProps {
   id: string;
-  defaultValue?: string ;
+  defaultValue?: string;
   options: string[] | SelectOptionObject[];
   value?: string;
   label?: string;
@@ -15,10 +15,11 @@ export interface SelectProps {
   onChange?: (data: string) => void;
   validationErrors?: ValidationErrors;
   inputTextClassName?: string;
-  allowCustom?: booleab;
+  allowCustom?: boolean;
   isSearchable?: boolean;
   hiddenInputClassName?: string;
   inputContainerClassName?: string;
   dropdownRefClassName?: string;
   resetKey?: number;
+  requiredNoStar?: boolean;
 }

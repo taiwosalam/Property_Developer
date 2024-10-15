@@ -7,6 +7,12 @@ interface UnitFormContextType extends UnitFormState {
   setImages: (newImages: string[], options?: { append: boolean }) => void;
   removeImage: (index: number) => void;
   setUnitType: (unitType: "" | UnitTypeKey) => void;
+  setSaved?: (saved: boolean) => void;
+  duplicate?: {
+    val: boolean;
+    count: number;
+  };
+  setDuplicate?: (duplicate: { val: boolean; count: number }) => void;
 }
 
 export const UnitFormContext = createContext<UnitFormContextType | undefined>(

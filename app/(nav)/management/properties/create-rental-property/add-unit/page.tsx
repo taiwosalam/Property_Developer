@@ -5,8 +5,6 @@ import { ChevronLeft } from "@/public/icons/icons";
 import PropertyDetails from "@/components/Management/Properties/property-details";
 import PropertySettings from "@/components/Management/Properties/property-settings";
 import { useAddUnitStore } from "@/store/add-unit-store";
-// import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
-// import FooterModal from "./footer-modal";
 import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-card";
 import UnitForm from "@/components/Management/Properties/unit-form";
 import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
@@ -15,13 +13,15 @@ const AddUnit = () => {
   const [saved, setSaved] = useState(false);
 
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
+  const removeUnit = useAddUnitStore((s) => s.removeUnit);
 
   const router = useRouter();
 
   const [duplicate, setDuplicate] = useState({ val: false, count: 2 });
 
-  //   useeffect to fetch property info from API with the Property ID.Change True/False Values to Yes/No. Set Unit Store Values.
-  // useEffect(() => {}, []);
+  //   useeffect to fetch property info from API with the Property ID. Set Unit Store Values.
+  
+
   return (
     <div className="pb-[70px] lg:pb-[80px]">
       {/* Back Button & Page Title */}
@@ -42,8 +42,8 @@ const AddUnit = () => {
         className="mb-[52px]"
       />
       <div className="space-y-6 lg:space-y-8">
-        <PropertyDetails />
-        <PropertySettings />
+        <PropertyDetails heading="Property Details" />
+        <PropertySettings heading="Property Settings" />
         {addedUnits.length > 0 && (
           <>
             <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
@@ -55,13 +55,19 @@ const AddUnit = () => {
                 key={index}
                 index={index}
                 data={unit}
-                // handleRemove={() => removeUnit(index)}
+                handleRemove={() => removeUnit(index)}
               />
             ))}
           </>
         )}
 
-        {!saved && <UnitForm empty={true} data={{}} duplicate={duplicate} />}
+        {!saved && (
+          <UnitForm
+            empty={true}
+            duplicate={duplicate}
+            setDuplicate={setDuplicate}
+          />
+        )}
       </div>
     </div>
   );

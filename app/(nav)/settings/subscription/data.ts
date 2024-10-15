@@ -82,8 +82,8 @@ export const personalized_domain: SubscriptionTableType = {
     },
     {
       id: "5",
-      label: "",
-      accessor: "",
+      // accessor: "more",
+      accessor: "action",
     },
   ],
   data: [
@@ -93,6 +93,7 @@ export const personalized_domain: SubscriptionTableType = {
       http: "Not Secured",
       start_date: "12/02/2024",
       due_date: "11/02/2025",
+      more: "More",
     },
   ],
 };

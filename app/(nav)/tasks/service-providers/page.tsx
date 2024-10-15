@@ -9,7 +9,10 @@ import ServiceProviderCard from "@/components/Management/landlord-and-tenant-car
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import AddServiceProviderModal from "@/components/tasks/service-providers/add-service-provider-modal";
 import { useAuthStore } from "@/store/authstrore";
-import { getAllServiceProviders } from "./data";
+import {
+  getAllServiceProviders,
+  serviceProviderFilterOptionsWithDropdown,
+} from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const ServiceProviders = () => {
@@ -72,11 +75,11 @@ const ServiceProviders = () => {
           description:
             "This page contains a list of Service Provider on the platform.",
         }}
-        searchInputPlaceholder="Search for Service Provider"
+        searchInputPlaceholder="Search for service provider"
         handleFilterApply={() => {}}
         isDateTrue
         filterOptions={[]}
-        filterWithOptionsWithDropdown={[]}
+        filterWithOptionsWithDropdown={serviceProviderFilterOptionsWithDropdown}
       />
       <section
         className="grid gap-4"

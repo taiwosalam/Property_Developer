@@ -16,12 +16,10 @@ import { useImageUploader } from "@/hooks/useImageUploader";
 import Picture from "@/components/Picture/picture";
 import PlusIcon from "@/public/icons/plus-bold.svg";
 
-interface State {
+interface Address {
   selectedState: string;
   selectedLGA: string;
   selectedCity: string;
-  localGovernments: string[];
-  cities: string[];
 }
 
 const CreateBranchModal = () => {
@@ -40,66 +38,22 @@ const CreateBranchModal = () => {
     inputFileRef.current?.value && (inputFileRef.current.value = "");
   };
 
-  const [state, setState] = useState<State>({
+  const [address, setAddress] = useState<Address>({
     selectedState: "",
     selectedLGA: "",
     selectedCity: "",
-    localGovernments: [],
-    cities: [],
   });
-  const { selectedState, selectedLGA, selectedCity, localGovernments, cities } =
-    state;
 
-  const handleStateChange = (value: string) => {
-    setState((x) => ({ ...x, selectedState: value }));
+  const { selectedState, selectedLGA, selectedCity } = address;
+
+  const handleAddressChange = (field: keyof Address, value: string) => {
+    setAddress((prevState) => ({
+      ...prevState,
+      [field]: value,
+      ...(field === "selectedState" && { selectedLGA: "", selectedCity: "" }),
+      ...(field === "selectedLGA" && { selectedCity: "" }),
+    }));
   };
-
-  const handleLGAChange = (value: string) => {
-    setState((x) => ({ ...x, selectedLGA: value }));
-  };
-
-  const handleCityChange = (selectedCity: string) => {
-    setState((x) => ({ ...x, selectedCity }));
-  };
-
-  useEffect(() => {
-    if (selectedState) {
-      const lgas = getLocalGovernments(selectedState);
-      setState((x) => ({
-        ...x,
-        localGovernments: lgas,
-        selectedLGA: "",
-        selectedCity: "",
-        cities: [],
-      }));
-    } else {
-      setState((x) => ({
-        ...x,
-        localGovernments: [],
-        selectedLGA: "",
-        selectedCity: "",
-        cities: [],
-      }));
-    }
-  }, [selectedState]);
-
-  // Update cities when LGA changes
-  useEffect(() => {
-    if (selectedLGA && selectedState) {
-      const cities = getCities(selectedState, selectedLGA);
-      setState((x) => ({
-        ...x,
-        cities,
-        selectedCity: "",
-      }));
-    } else {
-      setState((x) => ({
-        ...x,
-        cities: [],
-        selectedCity: "",
-      }));
-    }
-  }, [selectedLGA, selectedState]);
 
   const accessToken = useAuthStore((state) => state.access_token);
 
@@ -135,29 +89,30 @@ const CreateBranchModal = () => {
               label="Branch Name/Title"
               id="branch_title"
               inputClassName="rounded-[8px]"
+              required
             />
             <Select
               label="state"
               id="state"
               options={getAllStates()}
               value={selectedState}
-              onChange={handleStateChange}
+              onChange={(value) => handleAddressChange("selectedState", value)}
               inputContainerClassName="bg-neutral-2"
             />
             <Select
               label="Local Government"
               id="local_government"
-              options={localGovernments}
+              options={getLocalGovernments(selectedState)}
               value={selectedLGA}
-              onChange={handleLGAChange}
+              onChange={(value) => handleAddressChange("selectedLGA", value)}
               inputContainerClassName="bg-neutral-2"
             />
             <Select
               label="city"
               id="city"
-              options={cities}
+              options={getCities(selectedState, selectedLGA)}
               value={selectedCity}
-              onChange={handleCityChange}
+              onChange={(value) => handleAddressChange("selectedCity", value)}
               allowCustom={true}
               inputContainerClassName="bg-neutral-2"
             />

@@ -3,15 +3,11 @@
 import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import FilterButton from "@/components/FilterButton/filter-button";
-import FilterModal from "@/components/Management/Landlord/filters-modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
-import SearchInput from "@/components/SearchInput/search-input";
 import { SectionContainer } from "@/components/Section/section-components";
 import useWindowWidth from "@/hooks/useWindowWidth";
+import { complaintsFilterOptionsWithDropdown } from "./data";
 
 const ComplaintsPage = () => {
   const { isMobile } = useWindowWidth();
@@ -72,7 +68,7 @@ const ComplaintsPage = () => {
       </SectionContainer>
       <FilterBar azFilter onStateSelect={() => { }} pageTitle="Complains" aboutPageModalData={
         { title: "Complains", description: "This page contains a list of Complains on the platform." }
-      } searchInputPlaceholder="Search for Task" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search for Task" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={complaintsFilterOptionsWithDropdown} />
       {!isMobile && (
         <SectionContainer heading="All Complaints" href="/tasks/complaints">
           <KanbanBoard />

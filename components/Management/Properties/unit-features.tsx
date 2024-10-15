@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import MultiSelect from "@/components/Form/MultiSelect/multiselect";
 import { unitFacilities } from "@/data";
 import { useUnitForm } from "./unit-form-context";
+import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
+import { useAddUnitStore } from "@/store/add-unit-store";
 
 const UnitFeatures = () => {
+  const { handleInputChange } = useContext(FlowProgressContext);
   const { unitType, formResetKey } = useUnitForm();
-  // const unitType = "apartment";
+  const propertyDetails = useAddUnitStore((state) => state.propertyDetails);
 
   const [selectedAreaUnit, setSelectedAreaUnit] = useState("");
 
@@ -22,6 +25,10 @@ const UnitFeatures = () => {
   useEffect(() => {
     setSelectedAreaUnit("");
   }, [formResetKey]);
+
+  const isGatedEstateOrFacility =
+    propertyDetails?.category === "estate" ||
+    propertyDetails?.category === "facility";
 
   return (
     <div>
@@ -42,6 +49,7 @@ const UnitFeatures = () => {
             onChange={handleAreaUnitChange}
             inputContainerClassName="bg-white"
             hiddenInputClassName="unit-form-input"
+            resetKey={formResetKey}
           />
 
           {/* Conditionally render input fields based on selected area unit */}
@@ -55,6 +63,7 @@ const UnitFeatures = () => {
                 inputClassName="bg-white unit-form-input"
                 type="number"
                 min={1}
+                onChange={handleInputChange}
               />
               {/* Show second input only if selected unit is not "sqm" or "half plot" */}
               {selectedAreaUnit !== "sqm" &&
@@ -66,27 +75,29 @@ const UnitFeatures = () => {
                     inputClassName="bg-white unit-form-input"
                     type="number"
                     min={1}
+                    onChange={handleInputChange}
                   />
                 )}
             </>
           )}
         </>
-        {/*  */}
+
         {unitType !== "land" && (
           <>
             {/* Default fields for other unit types */}
             <Input
               id="bedroom"
-              required
+              required={!isGatedEstateOrFacility}
               label="Bedroom"
               inputClassName="bg-white keep-spinner unit-form-input"
               type="number"
               min={0}
               max={99}
               maxLength={2}
+              onChange={handleInputChange}
             />
             <Input
-              required
+              required={!isGatedEstateOrFacility}
               id="bathroom"
               label="Bathroom"
               inputClassName="bg-white keep-spinner unit-form-input"
@@ -94,9 +105,10 @@ const UnitFeatures = () => {
               min={0}
               max={99}
               maxLength={2}
+              onChange={handleInputChange}
             />
             <Input
-              required
+              required={!isGatedEstateOrFacility}
               id="toilet"
               label="Toilet"
               inputClassName="bg-white keep-spinner unit-form-input"
@@ -104,14 +116,17 @@ const UnitFeatures = () => {
               min={0}
               max={99}
               maxLength={2}
+              onChange={handleInputChange}
             />
-            <MultiSelect
-              options={facilitiesOptions}
-              maxSelections={10}
-              id="facilities"
-              label="Select Facilities (Maximum of 10)"
-              // inputContainerClassName="bg-white"
-            />
+            {!isGatedEstateOrFacility && (
+              <MultiSelect
+                options={facilitiesOptions}
+                maxSelections={10}
+                id="facilities"
+                label="Select Facilities (Maximum of 10)"
+                resetKey={formResetKey}
+              />
+            )}
           </>
         )}
       </div>
@@ -119,7 +134,7 @@ const UnitFeatures = () => {
         <div className="flex gap-4 md:gap-5 flex-wrap">
           <Select
             dropdownRefClassName="!w-[160px]"
-            required
+            required={!isGatedEstateOrFacility}
             options={["yes", "no"]}
             id="en_suit"
             label="En-Suit"
@@ -130,7 +145,7 @@ const UnitFeatures = () => {
           />
           <Select
             dropdownRefClassName="!w-[160px]"
-            required
+            required={!isGatedEstateOrFacility}
             options={["yes", "no"]}
             id="prepaid"
             label="Prepaid"
@@ -141,7 +156,7 @@ const UnitFeatures = () => {
           />
           <Select
             dropdownRefClassName="!w-[160px]"
-            required
+            required={!isGatedEstateOrFacility}
             options={["yes", "no"]}
             id="wardrobe"
             label="Wardrobe"
@@ -152,7 +167,7 @@ const UnitFeatures = () => {
           />
           <Select
             dropdownRefClassName="!w-[160px]"
-            required
+            required={!isGatedEstateOrFacility}
             options={["yes", "no"]}
             id="pets_allowed"
             label="Pets Allowed"

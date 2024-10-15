@@ -1,3 +1,6 @@
+// Types
+import type { FormSteps } from "@/app/(onboarding)/auth/types";
+
 // Imports
 import { BadgeIconColors } from "../BadgeIcon/badge-icon";
 
@@ -8,6 +11,7 @@ import {
 } from "./data";
 
 import { services } from "./services";
+import { string } from "zod";
 
 export type SettingsLinkTab = (typeof settings_link_tabs)[number];
 
@@ -51,6 +55,46 @@ export type SettingsServiceOwners = keyof typeof services;
 
 export interface SettingsUpdateButtonProps {
   text?: string;
+  remove?: boolean;
+  addMore?: boolean;
+  type?: "default" | "otp" | "add domain" | "purchase unit" | "feature";
+}
+
+export interface DefaultSettingsModalProps {
+  changeStep: (step: FormSteps) => void;
+}
+
+export type SettingsPaymentOptions =
+  | "options"
+  | "bank transfer"
+  | "online funding";
+
+export interface DefaultSettingsPaymentModalProps {
+  changeStep: (step: SettingsPaymentOptions) => void;
+}
+
+export interface SettingsAnnumSwitcherProps {
+  data?: {
+    price: number;
+    title: string;
+  };
+  noButtons?: boolean;
+}
+
+export interface SettingsPaymentModalProps {
+  desc?: string;
+  title?: string;
+  annum?: {
+    price: number;
+    title: string;
+  };
+  hideTitleOnProceed?: boolean;
+  limitTransferFields?: boolean;
+  headings?: Partial<Record<SettingsPaymentOptions, string>>;
+}
+
+export interface SettingsPaymentTransferProps {
+  limitFields?: boolean;
 }
 
 interface SettingsOthersProps {
@@ -119,4 +163,26 @@ interface ThemeCardProps {
   img: string;
   value: string;
   onSelect: (value: string) => void; // Pass the value when selected
+}
+
+
+export interface SettingsEnrollmentCardProps {
+  planTitle: string;
+  desc: string;
+  planFor: string;
+  price: string;
+  discount: string;
+  duration: string;
+  showFeatures: boolean;
+  setShowFeatures: (show: boolean) => void;
+  onSelect: () => void;
+  features: string[];
+  billingType: 'monthly' | 'yearly';
+  payMonthly: () => void;
+  payYearly: () => void;
+  quantity: number;
+  incrementQuantity: () => void;
+  decrementQuantity: () => void;
+  isFree?: boolean;
+  onBillingTypeChange: (type: 'monthly' | 'yearly') => void;
 }

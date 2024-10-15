@@ -7,7 +7,11 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import MaintenanceCard from "@/components/tasks/maintenance/maintenance-card";
 import { useAuthStore } from "@/store/authstrore";
 import { useEffect, useState } from "react";
-import { getALLMaintenance } from "./data";
+import {
+  getALLMaintenance,
+  maintenanceFilterOptionsWithDropdown,
+  maintenanceFilterOptionsWithRadio,
+} from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Maintenance = () => {
@@ -51,11 +55,12 @@ const Maintenance = () => {
           description:
             "This page contains a list of Maintenance on the platform.",
         }}
-        searchInputPlaceholder="Search Maintenance"
+        searchInputPlaceholder="Search for maintenance"
         handleFilterApply={() => {}}
         isDateTrue
         filterOptions={[]}
-        filterWithOptionsWithDropdown={[]}
+        filterWithOptionsWithDropdown={maintenanceFilterOptionsWithDropdown}
+        filterOptionsWithRadio={maintenanceFilterOptionsWithRadio}
       />
       <AutoResizingGrid minWidth={380} gap={32}>
         {Array(10)

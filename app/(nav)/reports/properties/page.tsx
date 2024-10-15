@@ -1,14 +1,10 @@
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import FilterButton from "@/components/FilterButton/filter-button";
-import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { reportsPropertiessFilterOptionsWithDropdown } from "./data";
 
 const PropertiesReport = () => {
   const fields: Field[] = [
@@ -50,7 +46,7 @@ const PropertiesReport = () => {
       </div>
       <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="Properties Report" aboutPageModalData={
         { title: "Properties Report", description: "This page contains a list of Properties Report on the platform." }
-      } searchInputPlaceholder="Search for Properties Report" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search for Properties Report" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsPropertiessFilterOptionsWithDropdown} />
       <CustomTable
         fields={fields}
         data={tableData}

@@ -88,7 +88,6 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
           validationErrors={errorMsgs}
         />
         <Input
-          required
           id="email"
           label="email"
           type="email"

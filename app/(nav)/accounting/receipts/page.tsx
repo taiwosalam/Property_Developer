@@ -21,6 +21,7 @@ import { ExclamationMark } from "@/public/icons/icons";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import Link from "next/link";
+import { accountingReceiptOptionsWithDropdown } from "./data";
 
 const AccountingReceiptsPage = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -119,9 +120,8 @@ const AccountingReceiptsPage = () => {
                 <ModalContent>
                   <FilterModal
                     filterOptions={[]}
-                    filterOptionsWithDropdown={[]}
+                    filterOptionsWithDropdown={accountingReceiptOptionsWithDropdown}
                     onApply={handleFilterApply}
-                    date
                     onStateSelect={(state: string) => setSelectedState(state)}
                   />
                 </ModalContent>

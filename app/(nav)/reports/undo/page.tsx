@@ -7,6 +7,7 @@ import CustomTable from "@/components/Table/table";
 import type { Field, DataItem } from "@/components/Table/types";
 import UndoModal from "@/components/reports/undo-modal";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { reportsUndoFilterOptionsWithDropdown } from "./data";
 
 const Undo = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -71,9 +72,20 @@ const Undo = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard title="Total" newData={34} total={657} />
       </div>
-      <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="undo" aboutPageModalData={
-        { title: "undo", description: "This page contains a list of undo on the platform." }
-      } searchInputPlaceholder="Search for undo" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      <FilterBar
+        azFilter
+        isDateTrue
+        onStateSelect={() => {}}
+        pageTitle="undo"
+        aboutPageModalData={{
+          title: "undo",
+          description: "This page contains a list of undo on the platform.",
+        }}
+        searchInputPlaceholder="Search for undo"
+        handleFilterApply={() => {}}
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={reportsUndoFilterOptionsWithDropdown}
+      />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -105,11 +117,11 @@ const Undo = () => {
         <ModalContent>
           <UndoModal
             event={selectedEvent?.event_deleted}
-          // eventData={selectedEvent}
+            // eventData={selectedEvent}
           />
         </ModalContent>
       </Modal>
-      <Pagination totalPages={2} currentPage={1} onPageChange={() => { }} />
+      <Pagination totalPages={2} currentPage={1} onPageChange={() => {}} />
     </div>
   );
 };

@@ -30,6 +30,7 @@ export interface UnitCardProps {
 }
 
 export interface CreatePropertyFormProps {
+  formType: "rental" | "gated-estate";
   handleSubmit: (a?: any) => void;
   editMode?: boolean;
 }

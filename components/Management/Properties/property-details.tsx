@@ -5,28 +5,14 @@ import TruncatedText from "@/components/TruncatedText/truncated-text";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { SectionSeparator } from "@/components/Section/section-components";
 
-const PropertyDetails = () => {
-  const propertyDetails = useAddUnitStore((state) => state.propertyDetails);
-  // if (!propertyDetails) return null;
-  // const {
-  //   property_title,
-  //   state,
-  //   local_govt,
-  //   full_address,
-  //   branch,
-  //   account_officer,
-  //   manager,
-  //   category,
-  //   desciption,
-  // } = propertyDetails;
-
+const PropertyDetails = ({ heading }: { heading: string }) => {
   return (
     <div
       className="py-6 px-4 rounded-lg bg-white"
       style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
     >
       <h2 className="text-primary-navy text-lg lg:text-xl font-bold">
-        Property Details 
+        {heading}
       </h2>
       <SectionSeparator className="!my-2.5" />
       <div className="mb-4 md:mb-2.5 flex flex-col md:flex-row md:items-center gap-2 md:justify-between">

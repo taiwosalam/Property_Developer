@@ -4,11 +4,8 @@ import React from "react";
 import Image from "next/image";
 
 // Images
-import { UploadImageIcon } from "@/public/icons/icons";
 import Transparent from "@/public/empty/transparent.png";
-import LandlordCard from "@/components/Management/landlord-and-tenant-card";
 // Imports
-import { industryOptions } from "@/data";
 import { getAllStates } from "@/utils/states";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
@@ -20,19 +17,11 @@ import {
   SettingsOthersCheckBox,
   SettingsOthersType,
   SettingsSectionTitle,
-  SettingsVerifiedBadge,
 } from "@/components/Settings/settings-components";
-import TextArea from "@/components/Form/TextArea/textarea";
-import Checkbox from "@/components/Form/Checkbox/checkbox";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
-import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const Others = () => {
-  const { preview, handleImageChange } = useImageUploader({
-    placeholder: Transparent,
-  });
-
   return (
     <>
       {/* COMPANY TYPE SETTINGS */}
@@ -197,8 +186,8 @@ const Others = () => {
               "A property is created and awaiting approval.",
               "Property becomes vacant and is moved to the listing page.",
               "Document is created using my signature, name, or consent.",
-            ].map((option, idx) => (
-              <DocumentCheckbox key={`${option}-${idx}`} darkText>
+            ].map((option, index) => (
+              <DocumentCheckbox darkText key={index}>
                 {option}
               </DocumentCheckbox>
             ))}

@@ -73,15 +73,20 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     const stepValue = 100 / inputs.length;
     const filledInputs = inputs.filter(isInputFilled);
     progress.current = filledInputs.length * stepValue;
-    gsap.to(barRef.current, {
-      width: `${progress.current}%`,
-      ease: "expo.out",
-    });
+
+    // Only animate the progress bar if it is shown
+    if (showProgressBar) {
+      gsap.to(barRef.current, {
+        width: `${progress.current}%`,
+        ease: "expo.out",
+      });
+    }
 
     // Check if all required fields are filled
     const allRequired = inputs.filter((input) => {
       return (
         input.classList.contains("required") ||
+        input.hasAttribute("required") ||
         (requiredFields &&
           (requiredFields.includes(input.name) ||
             requiredFields.includes(input.id)))

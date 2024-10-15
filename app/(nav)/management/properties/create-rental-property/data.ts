@@ -3,8 +3,8 @@ import { toast } from "sonner";
 
 export interface StateType {
   state: string;
-  lga: string;
   city: string;
+  lga: string;
   selectedBranch: string;
   staff: { id: string; label: string }[];
   staffOptions: string[];
@@ -18,8 +18,8 @@ export interface StateType {
 
 export const proerty_state_data: StateType = {
   state: "",
-  lga: "",
   city: "",
+  lga: "",
   selectedBranch: "",
   staff: [],
   staffOptions: [],

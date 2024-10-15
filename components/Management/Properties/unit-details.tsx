@@ -17,8 +17,11 @@ const UnitDetails = () => {
     category: "residential", // for testing. remove this line and uncomment d line above
   };
 
-  const { unitType: selectedUnitType, setUnitType: setSelectedUnitType } =
-    useUnitForm();
+  const {
+    unitType: selectedUnitType,
+    setUnitType: setSelectedUnitType,
+    formResetKey,
+  } = useUnitForm();
 
   const [unitTypeOptions, setUnitTypeOptions] = useState<string[]>([]);
   const [unitSubtypeOptions, setUnitSubtypeOptions] = useState<string[]>([]);
@@ -112,6 +115,8 @@ const UnitDetails = () => {
           value={selectedUnitType}
           onChange={handleUnitTypeChange}
           hiddenInputClassName="unit-form-input"
+          requiredNoStar
+          resetKey={formResetKey}
         />
         {selectedUnitType !== "land" && (
           <Select
@@ -122,6 +127,8 @@ const UnitDetails = () => {
             value={selectedSubtype}
             onChange={handleSubtypeChange}
             hiddenInputClassName="unit-form-input"
+            requiredNoStar
+            resetKey={formResetKey}
           />
         )}
         <Select
@@ -132,6 +139,8 @@ const UnitDetails = () => {
           value={selectedPreference}
           onChange={handlePreferenceChange}
           hiddenInputClassName="unit-form-input"
+          requiredNoStar
+          resetKey={formResetKey}
         />
       </div>
     </div>

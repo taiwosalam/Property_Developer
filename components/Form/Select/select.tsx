@@ -24,7 +24,8 @@ const Select: React.FC<SelectProps> = ({
   hiddenInputClassName,
   inputContainerClassName,
   dropdownRefClassName,
-  resetKey, // <-- New prop for external reset control
+  resetKey,
+  requiredNoStar,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -125,6 +126,7 @@ const Select: React.FC<SelectProps> = ({
         type="hidden"
         className={hiddenInputClassName}
         value={selectedValue || ""}
+        required={required || requiredNoStar}
       />
       {label && (
         <Label id={id} required={required}>

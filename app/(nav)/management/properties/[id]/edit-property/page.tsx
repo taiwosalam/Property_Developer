@@ -7,7 +7,7 @@ import { ChevronLeft } from "@/public/icons/icons";
 
 // Imports
 import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-card";
-import CreateRentalPropertyForm from "@/components/Management/Properties/create-rental-property-form";
+import CreateRentalPropertyForm from "@/components/Management/Properties/create-property-form";
 import CreateGatedEstateForm from "@/components/Management/Properties/create-gated-estate-form";
 import { SectionSeparator } from "@/components/Section/section-components";
 

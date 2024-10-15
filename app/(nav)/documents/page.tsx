@@ -14,6 +14,9 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import CreateTenancyAggrementModal from "@/components/BadgeIcon/create-tenancy-aggrement-modal";
 import SortButton from "@/components/FilterButton/sort-button";
+import FilterButton from "@/components/FilterButton/filter-button";
+import FilterModal from "@/components/Management/Landlord/filters-modal";
+import { DocumentssFilterOptionsWithDropdown } from "./data";
 
 const Documents = () => {
   return (
@@ -47,16 +50,21 @@ const Documents = () => {
           <div className="flex items-center gap-4">
             <SearchInput placeholder="Search" />
             <SortButton />
-            <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
-              <button>
-                <div className="flex items-center gap-2 cursor-pointer">
-                  <Picture src="/icons/sliders.svg" alt="filters" size={20} />
-                  <p className="text-[#344054] text-base font-medium">
-                    Filters
-                  </p>
-                </div>
-              </button>
-            </div>
+            <Modal>
+              <ModalTrigger asChild>
+                <FilterButton />
+              </ModalTrigger>
+              <ModalContent>
+                <FilterModal
+                  filterOptionsWithDropdown={DocumentssFilterOptionsWithDropdown}
+                  filterOptions={[]}
+                  onApply={() => { }
+                  }
+                  onStateSelect={() => { }}
+                  date
+                />
+              </ModalContent>
+            </Modal>
           </div>
         </div>
         <AutoResizingGrid minWidth={560}>

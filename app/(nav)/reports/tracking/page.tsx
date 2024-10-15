@@ -1,13 +1,9 @@
 "use client";
-// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import FilterButton from "@/components/FilterButton/filter-button";
-import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { reportsListingsFilterOptionsWithDropdown } from "./data";
 
 const TrackingReport = () => {
   const fields: Field[] = [
@@ -45,9 +41,9 @@ const TrackingReport = () => {
 
   return (
     <div className="space-y-9">
-      <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="Tracking" aboutPageModalData={
+      <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="Tracking" aboutPageModalData={
         { title: "Tracking", description: "This page contains a list of Tracking on the platform." }
-      } searchInputPlaceholder="Search for audit trail" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search for audit trail" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsListingsFilterOptionsWithDropdown} />
       <CustomTable
         fields={fields}
         data={tableData}

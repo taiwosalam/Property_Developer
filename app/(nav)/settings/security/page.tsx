@@ -3,6 +3,7 @@
 import React from "react";
 
 // Images
+import { Check } from "lucide-react";
 import DangerIcon from "@/public/icons/danger.svg";
 import ImageBlue from "@/public/icons/image-blue.svg";
 import SignatureImage from "@/public/accounting/signature.svg";
@@ -14,13 +15,13 @@ import Picture from "@/components/Picture/picture";
 import Select from "@/components/Form/Select/select";
 import Button from "@/components/Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
+import FundingCard from "@/components/Wallet/AddFunds/funding-card";
 import SettingsSection from "@/components/Settings/settings-section";
+
 import {
   SettingsSectionTitle,
   SettingsUpdateButton,
 } from "@/components/Settings/settings-components";
-import { Check } from "lucide-react";
-import FundingCard from "@/components/Wallet/AddFunds/funding-card";
 
 const Security = () => {
   const { preview, inputFileRef, handleImageChange } = useImageUploader();
@@ -81,18 +82,7 @@ const Security = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-end gap-4">
-            <Button
-              size="base_bold"
-              variant="light_red"
-              className="py-[10px] px-8"
-            >
-              remove
-            </Button>
-            <Button size="base_bold" className="py-[10px] px-8">
-              update
-            </Button>
-          </div>
+          <SettingsUpdateButton type="otp" remove />
         </div>
       </SettingsSection>
       <SettingsSection title="directors profile">
@@ -155,18 +145,7 @@ const Security = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-end gap-4">
-            <Button
-              size="base_bold"
-              variant="sky_blue"
-              className="py-[10px] px-8"
-            >
-              add more
-            </Button>
-            <Button size="base_bold" className="py-[10px] px-8">
-              update
-            </Button>
-          </div>
+          <SettingsUpdateButton type="otp" addMore />
         </div>
       </SettingsSection>
       <SettingsSection title="wallet">
@@ -184,7 +163,7 @@ const Security = () => {
               className="w-[277px]"
             />
           </div>
-          <SettingsUpdateButton />
+          <SettingsUpdateButton type="otp" />
         </div>
       </SettingsSection>
       <SettingsSection title="password">
@@ -210,7 +189,7 @@ const Security = () => {
               className="w-[277px]"
             />
           </div>
-          <SettingsUpdateButton />
+          <SettingsUpdateButton type="otp" />
         </div>
       </SettingsSection>
       <SettingsSection title="Bank Details">
@@ -258,7 +237,7 @@ const Security = () => {
               </div>
             </div>
           </div>
-          <SettingsUpdateButton />
+          <SettingsUpdateButton type="otp" />
         </div>
       </SettingsSection>
       <SettingsSection title="Customized SMS name">
@@ -271,7 +250,7 @@ const Security = () => {
               className="w-[277px]"
             />
           </div>
-          <SettingsUpdateButton />
+          <SettingsUpdateButton type="otp" />
         </div>
       </SettingsSection>
       <SettingsSection title="SMTP Settings">
@@ -285,7 +264,7 @@ const Security = () => {
             <Input id="password" label="password" className="w-[277px]" />
             <Input id="smtp_server" label="STMP Server" className="w-[277px]" />
           </div>
-          <SettingsUpdateButton />
+          <SettingsUpdateButton type="otp" />
         </div>
       </SettingsSection>
     </>

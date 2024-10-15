@@ -36,7 +36,7 @@ const WalletBankTransferCard: React.FC<WalletBankTransferCardProps> = ({
           <p>Account Number</p>
           <p className="text-brand-primary">1211265949</p>
         </div>
-        {!cantInteract && (
+        {proceed && (
           <div className="flex items-end">
             <Button onClick={proceed} size="xs_medium" className="py-1 px-2">
               proceed

@@ -15,6 +15,7 @@ import UserTag from "@/components/Tags/user-tag";
 import {
   LandlordTenantInfo,
   LandlordTenantInfoBox,
+  // LandlordTenantUserTag,
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
 } from "@/components/Management/landlord-tenant-info-components";
@@ -64,7 +65,9 @@ const ManageTenant = () => {
                 </div>
                 <div className="custom-flex-col gap-2">
                   <UserTag type={tenant.user_tag} />
+                  <UserTag type={tenant.user_tag} />
                   <p className="text-neutral-800 text-base font-medium">
+                    ID: {tenantId}
                     ID: {tenantId}
                   </p>
                 </div>
@@ -108,6 +111,7 @@ const ManageTenant = () => {
             </div>
           </div>
         </LandlordTenantInfoBox>
+
 
         <LandlordTenantInfo
           info={{

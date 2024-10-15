@@ -1,3 +1,5 @@
+import { CSSProperties } from "react";
+
 export interface WalletAnalyticsProps {
   amount: number;
   title: "credit" | "debit" | "funds";
@@ -22,6 +24,7 @@ export type WalletWithdrawFundsOptions = "withdrawal" | "input pin";
 export interface WalletModalPresetProps {
   title: string;
   back?: () => void;
+  style?: CSSProperties;
   children: React.ReactNode;
 }
 
@@ -36,6 +39,7 @@ export interface WalletBankTransferCardProps {
 }
 
 export interface WalletOnlineFundingCardProps {
+  noInput?: boolean;
   proceed: () => void;
 }
 

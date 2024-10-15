@@ -4,6 +4,7 @@ import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { reportsTenantsFilterOptionsWithDropdown } from "./data";
 
 const TenantsReport = () => {
   const fields: Field[] = [
@@ -50,7 +51,7 @@ const TenantsReport = () => {
       </div>
       <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="Tenants/Occupants" aboutPageModalData={
         { title: "Tenants/Occupants", description: "This page contains a list of Tenants/Occupants on the platform." }
-      } searchInputPlaceholder="Search for Tenants/Occupants" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search for Tenants/Occupants" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsTenantsFilterOptionsWithDropdown} />
       <CustomTable
         fields={fields}
         data={tableData}

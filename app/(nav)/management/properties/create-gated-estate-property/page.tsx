@@ -1,9 +1,9 @@
 "use client";
 
-import CreateGatedEstateForm from "@/components/Management/Properties/create-gated-estate-form";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "@/public/icons/icons";
 import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
+import CreatePropertyForm from "@/components/Management/Properties/create-property-form";
 
 const CreateGatedEstate = () => {
   const router = useRouter();
@@ -35,7 +35,7 @@ const CreateGatedEstate = () => {
         percentage={27}
         className="mb-[52px]"
       />
-      <CreateGatedEstateForm handleSubmit={handleSubmit} />
+      <CreatePropertyForm handleSubmit={handleSubmit} formType="gated-estate" />
     </>
   );
 };
