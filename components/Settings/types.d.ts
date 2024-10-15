@@ -1,3 +1,6 @@
+// Types
+import type { FormSteps } from "@/app/(onboarding)/auth/types";
+
 // Imports
 import { BadgeIconColors } from "../BadgeIcon/badge-icon";
 
@@ -8,6 +11,7 @@ import {
 } from "./data";
 
 import { services } from "./services";
+import { string } from "zod";
 
 export type SettingsLinkTab = (typeof settings_link_tabs)[number];
 
@@ -51,6 +55,46 @@ export type SettingsServiceOwners = keyof typeof services;
 
 export interface SettingsUpdateButtonProps {
   text?: string;
+  remove?: boolean;
+  addMore?: boolean;
+  type?: "default" | "otp" | "add domain" | "purchase unit" | "feature";
+}
+
+export interface DefaultSettingsModalProps {
+  changeStep: (step: FormSteps) => void;
+}
+
+export type SettingsPaymentOptions =
+  | "options"
+  | "bank transfer"
+  | "online funding";
+
+export interface DefaultSettingsPaymentModalProps {
+  changeStep: (step: SettingsPaymentOptions) => void;
+}
+
+export interface SettingsAnnumSwitcherProps {
+  data?: {
+    price: number;
+    title: string;
+  };
+  noButtons?: boolean;
+}
+
+export interface SettingsPaymentModalProps {
+  desc?: string;
+  title?: string;
+  annum?: {
+    price: number;
+    title: string;
+  };
+  hideTitleOnProceed?: boolean;
+  limitTransferFields?: boolean;
+  headings?: Partial<Record<SettingsPaymentOptions, string>>;
+}
+
+export interface SettingsPaymentTransferProps {
+  limitFields?: boolean;
 }
 
 interface SettingsOthersProps {
@@ -100,26 +144,26 @@ export interface SettingsThemeTypes {
 export interface CheckboxProps {
   color: string;
   checked: boolean;
-  onChange: (checked: boolean) => void; // Passes the new checked state
+  onChange: (checked: boolean) => void;
 }
 
 interface ThemeCardProps {
   img: string;
   value: string;
-  onSelect: (value: string) => void; // Pass the value when selected
+  onSelect: (value: string) => void; 
 }
 
 export interface CheckboxProps {
   color: string;
   checked: boolean;
-  onChange: (checked: boolean) => void; // Passes the new checked state
+  onChange: (checked: boolean) => void;
 }
 
 interface ThemeCardProps {
   img: string;
   value: string;
   isSelected: boolean;
-  onSelect: (value: string) => void; // Pass the value when selected
+  onSelect: (value: string) => void; 
 }
 
 

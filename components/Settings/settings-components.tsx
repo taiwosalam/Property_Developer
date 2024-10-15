@@ -1,28 +1,35 @@
+import Link from "next/link";
+import Image from "next/image";
+
+// Types
 import type {
-  SettingsTitleProps,
-  SettingsColorSchemeProps,
-  SettingsServicesTagProps,
-  SettingsUpdateButtonProps,
-  SettingsTenantOccupantTierProps,
-  SettingsDirectorTypes,
-  SettingsOthersCheckBoxProps,
-  SettingsOthersProps,
-  SettingsEnrollmentCardProps,
   ThemeCardProps,
+  SettingsTitleProps,
+  SettingsOthersProps,
+  SettingsDirectorTypes,
+  SettingsColorSchemeProps,
+  SettingsUpdateButtonProps,
+  SettingsOthersCheckBoxProps,
+  SettingsEnrollmentCardProps,
+  SettingsTenantOccupantTierProps,
 } from "./types";
 
-import { HexColorPicker } from "react-colorful";
+import type { ButtonProps } from "../Form/Button/types";
+
 // Images
 import { Check } from "lucide-react";
 
 // Imports
-import clsx from "clsx";
-import Image from "next/image";
 import Button from "../Form/Button/button";
 import { secondaryFont } from "@/utils/fonts";
 import BadgeIcon from "../BadgeIcon/badge-icon";
-import { useState } from "react";
-import Link from "next/link";
+import SettingsOTPFlow from "./Modals/settings-otp-flow";
+import SettingsRemoveFlow from "./Modals/settings-remove-flow";
+import SettingsUpdateModal from "./Modals/settings-update-modal";
+import SettingsAddMoreFlow from "./Modals/settings-add-more-flow";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import SettingsPaymentModal from "./Modals/settings-payment-modal";
+import { HexColorPicker } from "react-colorful";
 
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
@@ -50,14 +57,82 @@ export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
 );
 
 export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
+  remove,
+  addMore,
   text = "update",
-}) => (
-  <div className="flex justify-end">
-    <Button size="base_bold" className="py-[10px] px-8">
-      {text}
-    </Button>
-  </div>
-);
+  type = "default",
+}) => {
+  const button_props: ButtonProps = {
+    size: "base_bold",
+    className: "py-[10px] px-8",
+  };
+
+  const remove_props: ButtonProps = {
+    ...button_props,
+    variant: "light_red",
+  };
+
+  const add_more_props: ButtonProps = {
+    ...button_props,
+    variant: "sky_blue",
+  };
+
+  return (
+    <div className="flex justify-end gap-4">
+      {(remove || addMore) && (
+        <Modal>
+          <ModalTrigger asChild>
+            <Button
+              {...(remove
+                ? { ...remove_props }
+                : addMore
+                ? { ...add_more_props }
+                : null)}
+            >
+              {remove ? "remove" : addMore ? "add more" : ""}
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            {remove ? (
+              <SettingsRemoveFlow />
+            ) : addMore ? (
+              <SettingsAddMoreFlow />
+            ) : null}
+          </ModalContent>
+        </Modal>
+      )}
+      <Modal>
+        <ModalTrigger asChild>
+          <Button {...button_props}>{text}</Button>
+        </ModalTrigger>
+        <ModalContent>
+          {type === "default" ? (
+            <SettingsUpdateModal />
+          ) : type === "otp" ? (
+            <SettingsOTPFlow />
+          ) : type === "add domain" ? (
+            <SettingsPaymentModal
+              limitTransferFields
+              title="Personalized Domain Price"
+            />
+          ) : type === "purchase unit" ? (
+            <SettingsPaymentModal
+              hideTitleOnProceed
+              title="SMS Credit Price"
+              annum={{ price: 2000, title: "5999 unit" }}
+            />
+          ) : type === "feature" ? (
+            <SettingsPaymentModal
+              hideTitleOnProceed
+              annum={{ price: 1000, title: "1 mo" }}
+              desc="Paying to feature your company will prioritize all your property listings, it appears first to all users and ranks first for potentials."
+            />
+          ) : null}
+        </ModalContent>
+      </Modal>
+    </div>
+  );
+};
 
 export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
   title,
@@ -181,340 +256,6 @@ export const DirectorCard: React.FC<SettingsDirectorTypes> = ({
   </div>
 );
 
-export const SettingsServicesTag: React.FC<SettingsServicesTagProps> = ({
-  active,
-  children,
-}) => (
-  <div
-    className={clsx("py-3 px-4 rounded-[4px]", {
-      "bg-brand-1": active,
-      "bg-neutral-3 opacity-50": !active,
-    })}
-  >
-    <p
-      className={clsx("text-sm font-normal", {
-        "text-black": !active,
-        "text-brand-9": active,
-      })}
-    >
-      {children}
-    </p>
-  </div>
-);
-
-export const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
-  planTitle,
-  desc,
-  planFor,
-  price,
-  discount,
-  showFeatures,
-  setShowFeatures,
-  features,
-  billingType,
-  quantity,
-  incrementQuantity,
-  decrementQuantity,
-  isFree = false,
-  onBillingTypeChange,
-}) => {
-  const handleBillingTypeChange = (type: "monthly" | "yearly") => {
-    if (!isFree) {
-      onBillingTypeChange(type);
-    }
-  };
-
-  const [isOpen, setIsOpen] = useState<Record<string, boolean>>({
-    free: false,
-    basic: false,
-    premium: false,
-  });
-
-  const handleCardClick = () => {
-    const cardName = planTitle.toLowerCase();
-    setIsOpen((prevState) => ({
-      ...prevState,
-      [cardName]: !prevState[cardName],
-    }));
-    setShowFeatures(!showFeatures);
-  };
-
-  const cardMaxHeight = isOpen[planTitle.toLowerCase()]
-    ? "h-auto"
-    : "max-h-[500px]";
-  const getFeaturesText = () =>
-    isFree
-      ? "Free Features"
-      : `${
-          planTitle.toLowerCase().includes("premium") ? "Premium" : "Basic"
-        } Features`;
-
-  const themeColor = isFree
-    ? "border-[#38BDF8]"
-    : "text-brand-9 border-brand-9";
-
-  return (
-    <div
-      className={`max-w-[420px] pricingCard bg-white rounded-lg shadow-md hover:border-2 ${themeColor} ${cardMaxHeight}`}
-    >
-      <PlanHeader
-        planTitle={planTitle}
-        desc={desc}
-        planFor={planFor}
-        isFree={isFree}
-        themeColor={themeColor}
-      />
-      <div
-        className={`priceWrapper w-full flex items-center justify-center flex-col px-4 mt-5 ${
-          isFree ? "bg-white bg-opacity-40 z-50" : ""
-        }`}
-      >
-        <PriceSection price={price} discount={discount} isFree={isFree} />
-        <BillingTypeSelector
-          billingType={billingType}
-          handleBillingTypeChange={handleBillingTypeChange}
-          isFree={isFree}
-        />
-        <QuantityCounter
-          quantity={quantity}
-          incrementQuantity={incrementQuantity}
-          decrementQuantity={decrementQuantity}
-          isFree={isFree}
-          billingType={billingType}
-        />
-      </div>
-      <FeaturesToggle
-        showFeatures={showFeatures}
-        getFeaturesText={getFeaturesText}
-        handleCardClick={handleCardClick}
-      />
-      <FeaturesList showFeatures={showFeatures} features={features} />
-      <SelectPlanButton isFree={isFree} />
-    </div>
-  );
-};
-
-// Sub-components
-const PlanHeader: React.FC<{
-  planTitle: string;
-  desc: string;
-  planFor: string;
-  isFree: boolean;
-  themeColor: string;
-}> = ({ planTitle, desc, planFor, isFree, themeColor }) => (
-  <div
-    className={`plan-title py-6 px-4 bg-[#F4F9FF] border-b relative ${themeColor}`}
-  >
-    <h3 className={`text-[16px] font-medium tracking-[0px]  ${isFree ? 'text-[#38BDF8]' : 'text-brand-9'}`}>
-      {planTitle.toUpperCase()}
-    </h3>
-    <p className="text-[14px] font-medium tracking-[0px] text-text-secondary">
-      {desc.split(planFor).map((part, index) =>
-        index === 0 ? (
-          part
-        ) : (
-          <>
-            <strong key={index}>{planFor}</strong>
-            {part}
-          </>
-        )
-      )}
-    </p>
-    <div className="absolute bottom-0 flex items-center justify-center w-full">
-      <div
-        className={`flex items-center justify-center py-[3px] px-10 rounded-t-md ${isFree ? 'bg-[#38BDF8]' : 'bg-brand-9'}`}
-      ></div>
-    </div>
-  </div>
-);
-
-const PriceSection: React.FC<{
-  price: string;
-  discount: string;
-  isFree: boolean;
-}> = ({ price, discount, isFree }) => (
-  <div className="w-full max-w-[344px] flex-col flex items-center">
-    <h3
-      className={`text-[20px] font-bold tracking-[0px] leading-[150%] text-text-secondary ${
-        isFree ? "text-opacity-40" : ""
-      }`}
-    >
-      {isFree ? "₦0.00" : price}
-    </h3>
-    {!isFree && <p>{discount}</p>}
-  </div>
-);
-
-const BillingTypeSelector: React.FC<{
-  billingType: string;
-  handleBillingTypeChange: (type: "monthly" | "yearly") => void;
-  isFree: boolean;
-}> = ({ billingType, handleBillingTypeChange, isFree }) => (
-  <div
-    className={`flex w-full justify-center my-5 bg-brand-1 min-h-[54px] gap-5 py-2 rounded-md ${
-      isFree ? "bg-opacity-40" : ""
-    }`}
-  >
-    <BillingTypeButton
-      type="yearly"
-      billingType={billingType}
-      handleBillingTypeChange={handleBillingTypeChange}
-      isFree={isFree}
-    />
-    <BillingTypeButton
-      type="monthly"
-      billingType={billingType}
-      handleBillingTypeChange={handleBillingTypeChange}
-      isFree={isFree}
-    />
-  </div>
-);
-
-const BillingTypeButton: React.FC<{
-  type: "monthly" | "yearly";
-  billingType: string;
-  handleBillingTypeChange: (type: "monthly" | "yearly") => void;
-  isFree: boolean;
-}> = ({ type, billingType, handleBillingTypeChange, isFree }) => (
-  <div
-    className={`flex flex-col items-center justify-center px-6 ${
-      billingType === type
-        ? "border border-brand-9 rounded-md transition-all duration-300 ease-in-out bg-white"
-        : ""
-    }`}
-  >
-    <button
-      onClick={() => handleBillingTypeChange(type)}
-      disabled={isFree}
-      className={`${isFree ? "opacity-50 cursor-not-allowed " : "text-black"}`}
-    >
-      {isFree
-        ? `Free ${type === "yearly" ? "Annually" : "Monthly"}`
-        : `Pay ${type === "yearly" ? "Yearly" : "Monthly"}`}
-    </button>
-    {type === "yearly" && (
-      <Link
-        href="#"
-        className={`${
-          isFree ? "opacity-50 cursor-not-allowed" : "text-brand-9"
-        }`}
-      >
-        {isFree ? "No stress" : "Get Discount"}
-      </Link>
-    )}
-  </div>
-);
-
-const QuantityCounter: React.FC<{
-  quantity: number;
-  incrementQuantity: () => void;
-  decrementQuantity: () => void;
-  isFree: boolean;
-  billingType: string;
-}> = ({
-  quantity,
-  incrementQuantity,
-  decrementQuantity,
-  isFree,
-  billingType,
-}) => (
-  <div className="counter flex items-center justify-center w-full gap-2">
-    <div className="flex items-center gap-6 w-full max-w-[74px] border border-neutral-3 px-2 rounded-md">
-      <p className="count pl-1 text-[#000] text-[14px] font-medium tracking-[0px]">
-        {isFree ? 0 : quantity}
-      </p>
-      <div className="btns flex flex-col">
-        <CounterButton
-          onClick={incrementQuantity}
-          disabled={isFree}
-          icon="/icons/plus.svg"
-          alt="plus"
-        />
-        <CounterButton
-          onClick={decrementQuantity}
-          disabled={isFree}
-          icon="/icons/minus.svg"
-          alt="minus"
-        />
-      </div>
-    </div>
-    <p className={`${isFree ? "opacity-50 cursor-not-allowed" : ""}`}>
-      {" "}
-      Total {billingType === "monthly" ? "Months" : "Years"}{" "}
-    </p>
-  </div>
-);
-
-const CounterButton: React.FC<{
-  onClick: () => void;
-  disabled: boolean;
-  icon: string;
-  alt: string;
-}> = ({ onClick, disabled, icon, alt }) => (
-  <button
-    className="text-white rounded-md"
-    onClick={onClick}
-    disabled={disabled}
-  >
-    <Image src={icon} alt={alt} width={20} height={20} />
-  </button>
-);
-
-const FeaturesToggle: React.FC<{
-  showFeatures: boolean;
-  getFeaturesText: () => string;
-  handleCardClick: () => void;
-}> = ({ showFeatures, getFeaturesText, handleCardClick }) => (
-  <div className="flex w-full py-5 px-6">
-    <button
-      className="text-brand-9 text-[18px] font-medium tracking-[0px] flex items-center gap-2"
-      onClick={handleCardClick}
-    >
-      {showFeatures ? getFeaturesText() : "View Features"}
-      <Image
-        src={showFeatures ? "/icons/up.svg" : "/icons/down.svg"}
-        alt="arrow-right"
-        width={20}
-        height={20}
-      />
-    </button>
-  </div>
-);
-
-const FeaturesList: React.FC<{ showFeatures: boolean; features: string[] }> = ({
-  showFeatures,
-  features,
-}) =>
-  showFeatures && (
-    <div className="featuresWrapper my-2 flex flex-col gap-2 w-full items-start justify-start px-6">
-      <div className="flex items-start gap-2 flex-col">
-        {features.map((feature, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <Image src="/icons/mark.svg" alt="mark" width={16} height={17} />
-            <p>{feature}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-const SelectPlanButton: React.FC<{ isFree: boolean }> = ({ isFree }) => (
-  <div className="px-6 pb-4">
-    <div
-      className={`buynowbtn w-full flex items-center justify-center p-[8px] gap-[10px] rounded-[4px] ${
-        isFree ? "bg-brand-9 bg-opacity-40 cursor-not-allowed" : "bg-brand-9"
-      }`}
-    >
-      <button
-        className={`text-center text-[14px] font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
-        disabled={isFree}
-      >
-        Select Plan
-      </button>
-    </div>
-  </div>
-);
-
 export const ThemeCard: React.FC<ThemeCardProps> = ({
   img,
   value,
@@ -523,61 +264,53 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
 }) => {
   return (
     <div
-      className={`cursor-pointer ${
-        isSelected ? "border-2 border-[#0033C4] rounded-md" : ""
+      className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer
       }`}
-      onClick={() => onSelect(value)}
+      onClick={() => onSelect(value)} // Trigger onSelect with value on click
     >
-      <Image src={img} alt={value} width={200} height={150} />
+      <div className={`imgWrapper w-full h-full ${isSelected ? "border-2 border-blue-500 rounded-md w-full" : ""}`}>
+        <Image
+          src={img}
+          alt="Theme"
+          width={1000}
+          height={1000}
+          className="w-full h-full object-contain"
+        />
+      </div>
     </div>
   );
 };
 
-interface CustomColorPickerProps {
+export const CustomColorPicker: React.FC<{
   color: string;
-  onColorChange: (color: string) => void;
-  onColorSelect: (color: string) => void;
+  onChange: (color: string) => void;
   onClose: () => void;
-}
-
-export const CustomColorPicker: React.FC<CustomColorPickerProps> = ({
-  color,
-  onColorChange,
-  onColorSelect,
-  onClose,
-}) => {
-  const handleSubmit = () => {
-    onColorSelect(color);
-    onClose();
-  };
-
+}> = ({ color, onChange, onClose }) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg min-w-[390px]">
+    <div className="bg-white rounded-lg shadow-xl pb-6 w-[390px] flex flex-col items-center justify-center">
+      <div className="w-full">
         <HexColorPicker
           color={color}
-          onChange={onColorChange}
-          style={{ minWidth: "390px" }}
+          onChange={onChange}
+          className="w-full"
+          style={{ width: "390px" }}
         />
-        <div className="mt-4 flex flex-col justify-center min-w-[390px] items-center">
-          <div className="wrapper flex w-full gap-2 items-center justify-center">
-            <p> HEX </p>
-            <input
-              type="text"
-              value={color}
-              onChange={(e) => onColorChange(e.target.value)}
-              className="border rounded px-2 py-1 w-28"
-            />
-          </div>
-          <div
-            className="w-10 h-10 rounded"
-            style={{ backgroundColor: color }}
+      </div>
+      <div className="p">
+        <div className="flex gap-2 items-center justify-center w-full">
+          <p className="text-sm text-text-primary">Hex</p>
+          <input
+            type="text"
+            value={color}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded mb-4 mt-4"
+            placeholder="Enter hex color code"
           />
         </div>
-        <div className="my-2 flex justify-center items-center w-full px-4">
+        <div className="flex justify-center items-center w-full">
           <button
-            onClick={handleSubmit}
-            className="px-4 py-2 text-sm bg-brand-9 text-white rounded w-full items-center justify-center"
+            onClick={onClose}
+            className="w-full py-2 bg-brand-9 text-white rounded hover:bg-blue-600 transition-colors"
           >
             Set Color
           </button>
