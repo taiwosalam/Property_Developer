@@ -34,9 +34,10 @@ interface FilterBarProps {
     isDateTrue: boolean;
     searchInputPlaceholder: string;
     pageTitle: string;
-    aboutPageModalData: {
+    aboutPageModalData?: {
         title: string;
         description: string;
+        video?: string;
     };
     gridView?: boolean;
     setGridView?: () => void;
@@ -66,12 +67,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
         <div className="page-title-container">
             <PageTitle
                 title={pageTitle}
-                aboutPageModal={
-                    <AboutPage
-                        title={aboutPageModalData.title}
-                        description={aboutPageModalData.description}
-                    />
-                }
+                aboutPageModalData={aboutPageModalData}
             />
             <div className="flex items-center gap-4 flex-wrap">
                 <SearchInput

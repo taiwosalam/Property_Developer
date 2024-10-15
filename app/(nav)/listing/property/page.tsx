@@ -40,7 +40,7 @@ const Property = () => {
         />
       </div>
       <FilterBar azFilter onStateSelect={() => { }} pageTitle="Drafted Property" aboutPageModalData={
-        { title: "Moderating Property", description: "This page contains a list of Moderating Property on the platform." }
+        { title: "Moderating Property", description: "This page contains a list of Moderating Property on the platform.", video: "" }
       } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue={false} filterOptions={[]} filterOptionsWithRadio={listingPropertyOptionsWithRadio} filterWithOptionsWithDropdown={lstingPropertyOptionsWithDropdown} />
       <div className="custom-flex-col gap-8">
         <div className="flex gap-4 justify-end">
