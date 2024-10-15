@@ -5,7 +5,7 @@ import { Fragment } from "react";
 import { ChevronLeft } from "@/public/icons/icons";
 
 import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
-import CreateRentalPropertyForm from "@/components/Management/Properties/create-rental-property-form";
+import CreateRentalPropertyForm from "@/components/Management/Properties/create-property-form";
 import { addProperty } from "./data";
 import { useAuthStore } from "@/store/authstrore";
 import { formDataToString } from "@/components/Auth/auth-components";
@@ -50,7 +50,7 @@ const CreateProperty = () => {
         percentage={27}
         className="mb-[52px]"
       />
-      <CreateRentalPropertyForm handleSubmit={handleSubmit} />
+      <CreateRentalPropertyForm handleSubmit={handleSubmit} formType="rental" />
     </Fragment>
   );
 };

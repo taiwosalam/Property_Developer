@@ -17,8 +17,11 @@ const UnitDetails = () => {
     category: "residential", // for testing. remove this line and uncomment d line above
   };
 
-  const { unitType: selectedUnitType, setUnitType: setSelectedUnitType } =
-    useUnitForm();
+  const {
+    unitType: selectedUnitType,
+    setUnitType: setSelectedUnitType,
+    formResetKey,
+  } = useUnitForm();
 
   const [unitTypeOptions, setUnitTypeOptions] = useState<string[]>([]);
   const [unitSubtypeOptions, setUnitSubtypeOptions] = useState<string[]>([]);
@@ -91,7 +94,8 @@ const UnitDetails = () => {
 
   return (
     <div>
-      <h4 className="text-primary-navy text-lg md:text-xl font-bold">
+      <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
+        <span className="text-status-error-primary">*</span>
         Unit Details
       </h4>
       <hr className="my-4" />
@@ -100,7 +104,8 @@ const UnitDetails = () => {
           id="unit_number"
           label="Unit Number or Name"
           placeholder="Flat 1"
-          inputClassName="bg-white rounded-[8px]"
+          inputClassName="bg-white rounded-[8px] unit-form-input"
+          requiredNoStar
         />
         <Select
           id="unit_type"
@@ -109,6 +114,9 @@ const UnitDetails = () => {
           inputContainerClassName="bg-white"
           value={selectedUnitType}
           onChange={handleUnitTypeChange}
+          hiddenInputClassName="unit-form-input"
+          requiredNoStar
+          resetKey={formResetKey}
         />
         {selectedUnitType !== "land" && (
           <Select
@@ -118,6 +126,9 @@ const UnitDetails = () => {
             inputContainerClassName="bg-white"
             value={selectedSubtype}
             onChange={handleSubtypeChange}
+            hiddenInputClassName="unit-form-input"
+            requiredNoStar
+            resetKey={formResetKey}
           />
         )}
         <Select
@@ -127,6 +138,9 @@ const UnitDetails = () => {
           options={unitPreferencesOptions}
           value={selectedPreference}
           onChange={handlePreferenceChange}
+          hiddenInputClassName="unit-form-input"
+          requiredNoStar
+          resetKey={formResetKey}
         />
       </div>
     </div>

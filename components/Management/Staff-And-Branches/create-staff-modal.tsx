@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 // Types
 import type { ValidationErrors } from "@/utils/types";
 import type { CreateStaffModalProps } from "./types";
 
 // Images
-import PlusAvatar from "@/public/global/plus-avatar.svg";
+import CameraCircle from "@/public/icons/camera-circle.svg";
 
 // Imports
 import { toast } from "sonner";
@@ -23,16 +23,18 @@ import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "@/components/Auth/auth-components";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
+import { titles, genderTypes } from "@/data";
+import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 
 const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
   const { setIsOpen } = useModal();
 
   const { preview, setPreview, inputFileRef, handleImageChange } =
     useImageUploader({
-      placeholder: PlusAvatar,
+      placeholder: CameraCircle,
     });
 
-  const [activeAvatar, setActiveAvatar] = useState<string>("");
+  const [activeAvatar, setActiveAvatar] = useState("");
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
   const accessToken = useAuthStore((state) => state.access_token);
@@ -81,7 +83,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
         className="custom-flex-col gap-5"
         setValidationErrors={setErrorMsgs}
       >
-        <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           <input type="hidden" name="branch_id" value={branchId} />
           <Select
             isSearchable
@@ -89,7 +91,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
             validationErrors={errorMsgs}
             label="personal title / qualifiction"
             inputContainerClassName="bg-neutral-2"
-            options={["prince", "princess", "alhaji", "alhaja"]}
+            options={titles}
           />
           <Select
             isSearchable
@@ -133,42 +135,39 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
           <Select
             id="gender"
             label="Gender"
-            options={["male", "female"]}
+            options={genderTypes}
             validationErrors={errorMsgs}
             inputContainerClassName="bg-neutral-2"
           />
-          <Input
+          <PhoneNumberInput
             id="phone_number"
             label="phone number"
-            validationErrors={errorMsgs}
-            inputClassName="rounded-[8px]"
+            // validationErrors={errorMsgs} //Teni pls do validaltion erros for this component
+            inputClassName="!bg-neutral-2"
           />
           <Input
             id="new-password"
             label="create password"
             validationErrors={errorMsgs}
             inputClassName="rounded-[8px]"
+            type="password"
           />
           <Input
             id="confirm_password"
             label="confirm password"
             validationErrors={errorMsgs}
             inputClassName="rounded-[8px]"
+            type="password"
           />
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-end flex-wrap gap-4 md:gap-5">
           <div className="custom-flex-col gap-3">
             <p className="text-black text-base font-medium">
               Upload staff picture or choose an avatar.
             </p>
-            <div className="flex gap-3 items-center">
-              <label htmlFor="picture" className="cursor-pointer">
-                <Picture
-                  src={preview}
-                  alt="plus"
-                  size={40}
-                  className="rounded-[4px] bg-[#D9D9D9] border border-solid border-neutral-4"
-                />
+            <div className="flex gap-3 items-end">
+              <label htmlFor="picture" className="relative cursor-pointer">
+                <Picture src={preview} alt="plus" size={70} rounded />
                 <input
                   type="file"
                   id="picture"
@@ -186,7 +185,11 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
               />
             </div>
           </div>
-          <Button type="submit" size="base_medium" className="py-2 px-8">
+          <Button
+            type="submit"
+            size="base_medium"
+            className="py-2 px-8 ml-auto"
+          >
             create
           </Button>
         </div>

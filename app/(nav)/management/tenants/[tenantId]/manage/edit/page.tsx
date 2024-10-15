@@ -31,10 +31,13 @@ import {
   TenantEditBankDetailsSection,
   TenantEditProfileInfoSection,
   TenantEditGuarantorInfoSection,
+  TenantEditNextOfKinInfoSection,
 } from "@/components/Management/Tenants/Edit/tenant-edit-info-sectios";
+// import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 
 const EditTenant = () => {
   const { tenant, tenantId } = useTenantData();
+  // const { data: tenant, tenantId } = MockFunction();
 
   const { preview, setPreview, inputFileRef, handleImageChange } =
     useImageUploader();
@@ -86,6 +89,7 @@ const EditTenant = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="custom-flex-col gap-5 flex-1">
             <TenantEditProfileInfoSection />
+            <TenantEditNextOfKinInfoSection />
             <TenantEditGuarantorInfoSection />
             <TenantEditOthersInfoSection />
             <TenantEditBankDetailsSection />

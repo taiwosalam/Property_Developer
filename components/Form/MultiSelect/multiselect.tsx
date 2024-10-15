@@ -10,6 +10,7 @@ interface MultiSelectProps {
   label?: string;
   inputTextClassName?: string;
   className?: string;
+  resetKey?: number;
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
@@ -20,6 +21,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   maxSelections = Infinity, // Default to no limit if not provided
   label,
   inputTextClassName,
+  resetKey,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
@@ -58,6 +60,10 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     };
   }, []);
 
+  useEffect(() => {
+    setSelectedItems([]);
+  }, [resetKey]);
+
   return (
     <div className={clsx("flex flex-col gap-2", className)}>
       {label && (
@@ -95,7 +101,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                   "p-2 cursor-pointer hover:bg-gray-100 capitalize",
                   isSelected(option) && "bg-blue-100"
                 )}
-                onClick={() => handleSelect(option)} // Only select/deselect item, no toggle
+                onClick={() => handleSelect(option)}
               >
                 <input
                   type="checkbox"

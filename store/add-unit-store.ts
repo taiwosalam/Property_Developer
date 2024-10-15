@@ -26,7 +26,6 @@ interface PropertySettings {
 }
 
 interface AddUnitStore {
-  // propertyCreation: PropertyCreation;
   propertyDetails: null | PropertyDetails;
   propertySettings: null | PropertySettings;
 
@@ -50,9 +49,9 @@ export const useAddUnitStore = create<AddUnitStore>((set) => ({
   addedUnits: [],
   addUnit: (unitData, duplicateCount = 0) => {
     set((state) => {
-      // perform post request and send unitDataWithImages along. ur response should come with the unit data u just added and use that to set d state of addedUnits
+      // perform post request should come with the unit data u just added and use that to set d state of addedUnits
       const updatedUnits = [...state.addedUnits, unitData];
-      // Step 3: Replicate the added unit if `duplicateCount` > 0.
+      // Replicate the added unit if `duplicateCount` > 0.
       const replicatedUnits = Array(duplicateCount).fill(unitData);
 
       return {

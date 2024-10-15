@@ -2,17 +2,18 @@
 
 // Imports
 import Button from "@/components/Form/Button/button";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import FilterButton from "@/components/FilterButton/filter-button";
-import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import MaintenanceCard from "@/components/tasks/maintenance/maintenance-card";
 import { useAuthStore } from "@/store/authstrore";
 import { useEffect, useState } from "react";
-import { getALLMaintenance, maintenanceFilterOptionsWithDropdown, maintenanceFilterOptionsWithRadio } from "./data";
+import {
+  getALLMaintenance,
+  maintenanceFilterOptionsWithDropdown,
+  maintenanceFilterOptionsWithRadio,
+} from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+
 const Maintenance = () => {
   const accessToken = useAuthStore((state) => state.access_token);
   const [maintenanceData, setMaintenanceData] = useState([]);
@@ -45,9 +46,22 @@ const Maintenance = () => {
           </Button>
         </div>
       </div>
-      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Maintenance" aboutPageModalData={
-        { title: "Maintenance", description: "This page contains a list of Maintenance on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={maintenanceFilterOptionsWithDropdown} filterOptionsWithRadio={maintenanceFilterOptionsWithRadio} />
+      <FilterBar
+        azFilter
+        onStateSelect={() => {}}
+        pageTitle="Maintenance"
+        aboutPageModalData={{
+          title: "Maintenance",
+          description:
+            "This page contains a list of Maintenance on the platform.",
+        }}
+        searchInputPlaceholder="Search for maintenance"
+        handleFilterApply={() => {}}
+        isDateTrue
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={maintenanceFilterOptionsWithDropdown}
+        filterOptionsWithRadio={maintenanceFilterOptionsWithRadio}
+      />
       <AutoResizingGrid minWidth={380} gap={32}>
         {Array(10)
           .fill(null)

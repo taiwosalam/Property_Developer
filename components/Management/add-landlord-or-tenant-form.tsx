@@ -1,13 +1,15 @@
-import { useState, useEffect } from "react";
+"use client";
+import { useState } from "react";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
+import { tenantTypes, landlordTypes, genderTypes } from "@/data";
 import Input from "../Form/Input/input";
 import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
 import Button from "../Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "../Auth/auth-components";
-import { ValidationErrors } from "@/utils/types";
+import type { ValidationErrors } from "@/utils/types";
 import { useAuthStore } from "@/store/authstrore";
 import Picture from "../Picture/picture";
 import Avatars from "../Avatars/avatars";
@@ -16,6 +18,8 @@ interface AddLandLordOrTenantFormProps {
   type: "landlord" | "tenant";
   submitAction: (data: any) => void;
 }
+
+type Address = "selectedState" | "selectedLGA" | "selectedCity";
 
 const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   type,
@@ -26,51 +30,43 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
       placeholder: CameraCircle,
     });
 
-  const [selectedLGA, setSelectedLGA] = useState("");
-  const [selectedState, setSelectedState] = useState("");
-  const [activeAvatar, setActiveAvatar] = useState<string>("");
-  const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
-  const [localGovernments, setLocalGovernments] = useState<string[]>([]);
+  const [state, setState] = useState({
+    selectedState: "",
+    selectedLGA: "",
+    // selectedCity: "", // form not looking for city
+    activeAvatar: "",
+    errorMsgs: {} as ValidationErrors,
+  });
+
+  const { selectedState, selectedLGA, activeAvatar, errorMsgs } = state;
 
   const accessToken = useAuthStore((state) => state.access_token);
 
-  const handleStateChange = (value: string) => {
-    setSelectedState(value);
-  };
-
-  const handleLGAChange = (value: string) => {
-    setSelectedLGA(value);
-  };
-
   const handleAvatarChange = (avatar: string) => {
     setPreview(avatar);
-    setActiveAvatar(avatar);
+    setState((prevState) => ({ ...prevState, activeAvatar: avatar }));
     inputFileRef.current?.value && (inputFileRef.current.value = "");
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      // Update local governments based on selectedState
-      if (selectedState) {
-        const lgas = getLocalGovernments(selectedState);
-        setLocalGovernments(lgas);
-      } else {
-        setLocalGovernments([]);
-      }
-      setSelectedLGA("");
-    };
-
-    fetchData(); // Call the async function to fetch data
-  }, [selectedState, accessToken]); // Run effect when selectedState or accessToken changes
+  const handleAddressChange = (field: Address, value: string) => {
+    setState((prevState) => ({
+      ...prevState,
+      [field]: value,
+      ...(field === "selectedState" && { selectedLGA: "", selectedCity: "" }),
+      ...(field === "selectedLGA" && { selectedCity: "" }),
+    }));
+  };
 
   return (
     <AuthForm
       returnType="form-data"
       onFormSubmit={submitAction}
       className="custom-flex-col gap-5"
-      setValidationErrors={setErrorMsgs}
+      setValidationErrors={(errors: ValidationErrors) =>
+        setState((prevState) => ({ ...prevState, errorMsgs: errors }))
+      }
     >
-      <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <Input
           required
           id="first_name"
@@ -86,7 +82,6 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
           validationErrors={errorMsgs}
         />
         <Input
-          required
           id="email"
           label="email"
           type="email"
@@ -96,7 +91,8 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         <PhoneNumberInput
           id="phone_number"
           label="phone number"
-          // validationErrors={errorMsgs} validation errors left to you Teni
+          inputClassName="!bg-neutral-2"
+          // validationErrors={errorMsgs} validation errors left to you Teni!
         />
         <Select
           validationErrors={errorMsgs}
@@ -105,18 +101,18 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
           label="state"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
-          value={selectedState ? selectedState : undefined}
-          onChange={handleStateChange} // Update handler
+          value={selectedState}
+          onChange={(value) => handleAddressChange("selectedState", value)}
         />
         <Select
           validationErrors={errorMsgs}
-          options={localGovernments}
+          options={getLocalGovernments(selectedState)}
           id="local_government"
           label="local government"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
-          onChange={handleLGAChange} // Update handler
-          value={selectedLGA ? selectedLGA : undefined} // Controlled value
+          onChange={(value) => handleAddressChange("selectedLGA", value)}
+          value={selectedLGA}
         />
         <Input
           validationErrors={errorMsgs}
@@ -126,14 +122,14 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         />
         <Select
           validationErrors={errorMsgs}
-          options={["Individual", "Couples", "Widow"]}
+          options={type === "landlord" ? landlordTypes : tenantTypes}
           id={`${type === "landlord" ? "owner" : "tenant"}_type`}
           label={`${type === "landlord" ? "owner" : "Tenant/Occupant"} Type`}
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
         />
         <Select
           validationErrors={errorMsgs}
-          options={["male", "female"]}
+          options={genderTypes}
           id="gender"
           label="Gender"
           isSearchable={false}
@@ -141,7 +137,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
         />
       </div>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-end flex-wrap gap-4 md:gap-5">
         <div className="custom-flex-col gap-3">
           <p className="text-black text-base font-medium">
             Upload picture or select an avatar.
@@ -163,7 +159,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
             <Avatars type="avatars" onClick={handleAvatarChange} />
           </div>
         </div>
-        <Button type="submit" size="base_medium" className="py-2 px-8">
+        <Button type="submit" size="base_medium" className="py-2 px-8 ml-auto">
           create
         </Button>
       </div>

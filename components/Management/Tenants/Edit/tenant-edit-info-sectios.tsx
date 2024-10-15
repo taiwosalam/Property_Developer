@@ -1,6 +1,7 @@
 "use client";
 
 // Imports
+import clsx from "clsx";
 import {
   LandlordTenantInfoEditGrid,
   LandlordTenantInfoEditSection,
@@ -13,50 +14,49 @@ import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
 import { useTenantEditContext } from "./tenant-edit-context";
-import { useState, useEffect, useRef } from "react";
-import { tenantTypes, genderTypes } from "@/data";
+import { useState, useEffect } from "react";
+import {
+  tenantTypes,
+  genderTypes,
+  nextOfKinRelationships,
+  guarantorRelationships,
+  familyTypes,
+  employmentOptions,
+  employmentTypeOptions,
+} from "@/data";
 
 const states = getAllStates();
 
 export const TenantEditProfileInfoSection = () => {
   const { data } = useTenantEditContext();
-  const hasMounted = useRef(false);
 
   const [firstname, lastname] = data?.name ? data.name.split(" ") : ["", ""];
 
-  const [address, setAddress] = useState<{
-    state: string;
-    local_govt: string;
-    city: string;
-  }>({
-    state: data?.contact_address.state || "",
-    local_govt: data?.contact_address.local_govt || "",
-    city: data?.contact_address.city || "",
+  const [address, setAddress] = useState({
+    state: "",
+    local_govt: "",
+    city: "",
   });
 
-  const handleAddressChange = (value: string, key: keyof typeof address) => {
-    setAddress((prev) => ({ ...prev, [key]: value }));
+  const handleAddressChange = (field: keyof typeof address, value: string) => {
+    setAddress((x) => ({
+      ...x,
+      [field]: value,
+      ...(field === "state" && { local_govt: "", city: "" }),
+      ...(field === "local_govt" && { city: "" }),
+    }));
   };
 
   useEffect(() => {
-    if (hasMounted.current) {
-      console.log("local govt changed");
-      setAddress((prev) => ({ ...prev, city: "" }));
+    if (data) {
+      setAddress((prev) => ({
+        ...prev,
+        state: data.contact_address.state || "",
+        local_govt: data.contact_address.local_govt || "",
+        city: data.contact_address.city || "",
+      }));
     }
-  }, [address.local_govt]);
-
-  useEffect(() => {
-    if (hasMounted.current) {
-      setAddress((prev) => ({ ...prev, city: "", local_govt: "" }));
-    }
-  }, [address.state]);
-
-  useEffect(() => {
-    if (!hasMounted.current) {
-      console.log("setting mounted to true");
-      hasMounted.current = true;
-    }
-  }, []);
+  }, [data]);
 
   return (
     <LandlordTenantInfoEditSection title="profile">
@@ -64,7 +64,6 @@ export const TenantEditProfileInfoSection = () => {
         <Input
           id="tenant-first_name"
           label="first name"
-          placeholder="Placeholder"
           defaultValue={firstname}
           required
           inputClassName="rounded-lg"
@@ -72,7 +71,6 @@ export const TenantEditProfileInfoSection = () => {
         <Input
           id="tenant-last_name"
           label="last name"
-          placeholder="Placeholder"
           defaultValue={lastname}
           required
           inputClassName="rounded-lg"
@@ -81,7 +79,6 @@ export const TenantEditProfileInfoSection = () => {
           id="tenant-email"
           type="email"
           label="email"
-          placeholder="Placeholder"
           defaultValue={data?.email}
           required
           inputClassName="rounded-lg"
@@ -89,7 +86,6 @@ export const TenantEditProfileInfoSection = () => {
         <PhoneNumberInput
           id="tenant-phone_number"
           label="phone number"
-          placeholder="Placeholder"
           defaultValue={data?.phone_number}
           required
           inputClassName="!bg-neutral-2"
@@ -101,31 +97,30 @@ export const TenantEditProfileInfoSection = () => {
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
           value={address.state}
-          onChange={(value) => handleAddressChange(value, "state")}
+          onChange={(value) => handleAddressChange("state", value)}
         />
         <Select
           id="tenant-local_government"
           label="local government"
           placeholder="Select options"
-          options={getLocalGovernments(address.state)}
           inputContainerClassName="bg-neutral-2"
+          options={getLocalGovernments(address.state)}
           value={address.local_govt}
-          onChange={(value) => handleAddressChange(value, "local_govt")}
+          onChange={(value) => handleAddressChange("local_govt", value)}
         />
         <Select
           id="tenant-city"
           label="city"
           placeholder="Select options"
           options={getCities(address.state, address.local_govt)}
-          inputContainerClassName="bg-neutral-2"
           value={address.city}
-          onChange={(value) => handleAddressChange(value, "city")}
+          onChange={(value) => handleAddressChange("city", value)}
           allowCustom={true}
+          inputContainerClassName="bg-neutral-2"
         />
         <Input
           id="tenant-address"
           label="address"
-          placeholder="Placeholder"
           inputClassName="rounded-lg"
           defaultValue={data?.contact_address.address}
         />
@@ -135,6 +130,7 @@ export const TenantEditProfileInfoSection = () => {
           isSearchable={false}
           placeholder="Select options"
           options={tenantTypes}
+          defaultValue={"default: data?.tenant_type"}
           inputContainerClassName="bg-neutral-2"
         />
         <Select
@@ -142,10 +138,67 @@ export const TenantEditProfileInfoSection = () => {
           label="gender"
           isSearchable={false}
           placeholder="Select options"
-          inputContainerClassName="bg-neutral-2"
           options={genderTypes}
+          inputContainerClassName="bg-neutral-2"
+          defaultValue={data?.gender || ""}
         />
         <div className="col-span-2 flex items-end justify-end">
+          <Button size="base_medium" className="py-2 px-6">
+            update
+          </Button>
+        </div>
+      </LandlordTenantInfoEditGrid>
+    </LandlordTenantInfoEditSection>
+  );
+};
+
+export const TenantEditNextOfKinInfoSection = () => {
+  const { data } = useTenantEditContext();
+  const next_of_kin = data?.next_of_kin || {
+    name: "",
+    email: "",
+    address: "",
+    phone: "",
+    relationship: "",
+  };
+
+  return (
+    <LandlordTenantInfoEditSection title="Next of Kin">
+      <LandlordTenantInfoEditGrid>
+        <Input
+          id="next-of-kin-fullname"
+          label="full name"
+          defaultValue={next_of_kin.name}
+          inputClassName="rounded-lg"
+        />
+        <Input
+          id="next-of-kin-email"
+          type="email"
+          label="email"
+          defaultValue={next_of_kin.email}
+          inputClassName="rounded-lg"
+        />
+        <PhoneNumberInput
+          id="next-of-kin-phone-number"
+          label="phone number"
+          defaultValue={next_of_kin.phone || ""}
+          inputClassName="!bg-neutral-2"
+        />
+        <Select
+          id="next-of-kin-relationship"
+          label="relationship"
+          placeholder="Select options"
+          options={nextOfKinRelationships}
+          defaultValue={next_of_kin.relationship || ""}
+          inputContainerClassName="bg-neutral-2"
+        />
+        <Input
+          id="next-of-kin-address"
+          label="address"
+          defaultValue={next_of_kin.address}
+          inputClassName="rounded-lg"
+        />
+        <div className="flex items-end justify-end">
           <Button size="base_medium" className="py-2 px-6">
             update
           </Button>
@@ -163,6 +216,7 @@ export const TenantEditGuarantorInfoSection = () => {
     email: "",
     address: "",
     phone_number: "",
+    relationship: "",
   };
 
   return (
@@ -173,6 +227,7 @@ export const TenantEditGuarantorInfoSection = () => {
           label="full name"
           placeholder="Placeholder"
           defaultValue={guarantor.name}
+          inputClassName="rounded-lg"
         />
         <Input
           id="guarantor_email"
@@ -180,26 +235,31 @@ export const TenantEditGuarantorInfoSection = () => {
           label="email"
           placeholder="Placeholder"
           defaultValue={guarantor.email}
+          inputClassName="rounded-lg"
         />
-        <Input
+        <PhoneNumberInput
           id="guarantor_phone_number"
           label="phone number"
           placeholder="Placeholder"
-          defaultValue={guarantor.phone_number}
+          defaultValue={guarantor.phone_number || ""}
+          inputClassName="!bg-neutral-2"
         />
         <Select
-          id="relationship"
+          id="guarantor-relationship"
           label="relationship"
           placeholder="Select options"
-          options={["single", "married"]}
+          options={guarantorRelationships}
+          defaultValue={guarantor.relationship || ""}
+          inputContainerClassName="bg-neutral-2"
         />
         <Input
           id="guarantor_address"
           label="address"
           placeholder="Placeholder"
           defaultValue={guarantor.address}
+          inputClassName="rounded-lg"
         />
-        <div className="flex items-end">
+        <div className="flex items-end justify-end">
           <Button size="base_medium" className="py-2 px-6">
             update
           </Button>
@@ -219,28 +279,46 @@ export const TenantEditOthersInfoSection = () => {
     family_type: "",
   };
 
+  const [employment, setEmployment] = useState(others.occupation);
+
+  useEffect(() => {
+    setEmployment(others.occupation);
+  }, [others.occupation]);
+
   return (
     <LandlordTenantInfoEditSection title="Others">
       <LandlordTenantInfoEditGrid>
-        <Input
+        <Select
           id="employment"
           label="employment"
-          placeholder="Placeholder"
-          defaultValue={others.occupation}
+          options={employmentOptions}
+          defaultValue={others.occupation || ""}
+          inputContainerClassName="bg-neutral-2"
+          onChange={(value) => setEmployment(value)}
         />
-        <Input
-          id="employment_type"
-          label="employment type"
-          placeholder="Placeholder"
-          defaultValue={others.type}
-        />
-        <Input
+        {employment && employment.toLowerCase() === "employed" && (
+          <Select
+            id="employment_type"
+            label="employment type"
+            options={employmentTypeOptions}
+            inputContainerClassName="bg-neutral-2"
+            defaultValue={others.type || ""}
+          />
+        )}
+        <Select
           id="family_type"
           label="family type"
-          placeholder="Placeholder"
-          defaultValue={others.family_type}
+          options={familyTypes}
+          inputContainerClassName="bg-neutral-2"
+          defaultValue={others.family_type || ""}
         />
-        <div className="flex items-end">
+        <div
+          className={clsx(
+            "flex items-end justify-end",
+            (employment && employment.toLowerCase()) !== "employed" &&
+              "col-span-2"
+          )}
+        >
           <Button size="base_medium" className="py-2 px-6">
             update
           </Button>
@@ -268,20 +346,23 @@ export const TenantEditBankDetailsSection = () => {
           label="bank name"
           placeholder="Placeholder"
           defaultValue={bank_details.bank_name}
+          inputClassName="rounded-lg"
         />
         <Input
           id="account_name"
           label="account name"
           placeholder="Placeholder"
           defaultValue={bank_details.account_name}
+          inputClassName="rounded-lg"
         />
         <Input
           id="account_number"
           label="account number"
           placeholder="Placeholder"
           defaultValue={bank_details.account_number}
+          inputClassName="rounded-lg"
         />
-        <div className="flex items-end">
+        <div className="flex items-end justify-end">
           <Button size="base_medium" className="py-2 px-6">
             update
           </Button>
@@ -299,10 +380,16 @@ export const TenantEditAttachmentSection = () => {
           id="document_type"
           label="document type"
           placeholder="Select options"
-          options={["single", "married"]}
+          options={["invoice", "receipt", "agreement", "other document"]}
+          inputContainerClassName="bg-neutral-2"
         />
-        <Input id="upload_attachment" type="file" label="browse" />
-        <div className="flex items-end">
+        <Input
+          id="upload_attachment"
+          type="file"
+          label="browse"
+          inputClassName="rounded-lg"
+        />
+        <div className="flex items-end justify-end">
           <Button size="base_medium" className="py-2 px-6">
             add document
           </Button>
@@ -316,8 +403,8 @@ export const TenantEditNoteSection = () => {
   return (
     <LandlordTenantInfoEditSection
       title="add note"
-      style={{ padding: "40px 16px", gap: "20px" }}
-      headingStyle={{ padding: "0 24px" }}
+      // style={{ padding: "40px 16px", gap: "20px" }}
+      // headingStyle={{ padding: "0 24px" }}
     >
       {/* Pass defaultValue to prefill */}
       <TextArea id="add_note" />

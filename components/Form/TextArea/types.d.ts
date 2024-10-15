@@ -10,4 +10,5 @@ export interface TextAreaProps {
   inputSpaceClassName?: string;
   onChange?: (data: string) => void;
   resetKey?: number;
+  requiredNoStar?: boolean;
 }

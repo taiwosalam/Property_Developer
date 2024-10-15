@@ -69,7 +69,7 @@ const UnitBreakdownRenewalTenant = () => {
   return (
     <div>
       <h4 className="text-primary-navy text-lg md:text-xl font-bold">
-        Unit Rent Breakdown - Renewal Tenants
+        Unit Fee Breakdown - Renewal Tenants
       </h4>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -77,14 +77,16 @@ const UnitBreakdownRenewalTenant = () => {
           required
           id="renewal_rent_period"
           options={rentPeriods}
-          label="Rent Period"
+          label="Fee Period"
           inputContainerClassName="bg-white"
+          hiddenInputClassName="unit-form-input"
+          resetKey={formResetKey}
         />
         <Input
           id="renewal_rent_amount"
           required
-          label="Rent Amount"
-          inputClassName="bg-white"
+          label="Fee Amount"
+          inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={rentAmount}
           onChange={(value) => handleInputChange("rentAmount", value)}
@@ -93,7 +95,7 @@ const UnitBreakdownRenewalTenant = () => {
         <Input
           id="renewal_service_charge"
           label="Service Charge"
-          inputClassName="bg-white"
+          inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={serviceCharge}
           onChange={(value) => handleInputChange("serviceCharge", value)}
@@ -133,7 +135,7 @@ const UnitBreakdownRenewalTenant = () => {
           required
           id="renewal_total_package"
           label="Total Package"
-          inputClassName="bg-white"
+          inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={totalPackage}
           readOnly

@@ -26,8 +26,11 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
   children,
   className,
   activeStep,
-  inputClassName, // New optional prop
-  requiredFields, // New optional prop
+  inputClassName,
+  requiredFields,
+  showProgressBar = true,
+  images = [],
+  imagesRequired = false,
 }) => {
   const progress = useRef(0);
   const barRef = useRef<HTMLDivElement | null>(null);
@@ -70,15 +73,20 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     const stepValue = 100 / inputs.length;
     const filledInputs = inputs.filter(isInputFilled);
     progress.current = filledInputs.length * stepValue;
-    gsap.to(barRef.current, {
-      width: `${progress.current}%`,
-      ease: "expo.out",
-    });
+
+    // Only animate the progress bar if it is shown
+    if (showProgressBar) {
+      gsap.to(barRef.current, {
+        width: `${progress.current}%`,
+        ease: "expo.out",
+      });
+    }
 
     // Check if all required fields are filled
     const allRequired = inputs.filter((input) => {
       return (
         input.classList.contains("required") ||
+        input.hasAttribute("required") ||
         (requiredFields &&
           (requiredFields.includes(input.name) ||
             requiredFields.includes(input.id)))
@@ -86,9 +94,10 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     });
 
     const allRequiredFilled = allRequired.every(isInputFilled);
-    setCanSubmit(allRequiredFilled);
-    // console.log("Setting canSubmit to: ", allRequiredFilled);
-  }, [inputClassName, requiredFields]);
+    // Check if images are required and at least one image is present
+    const imagesCondition = !imagesRequired || images.length > 0;
+    setCanSubmit(allRequiredFilled && imagesCondition);
+  }, [inputClassName, requiredFields, images, imagesRequired]);
 
   useEffect(() => {
     const selector = inputClassName ? `.${inputClassName}` : "input";
@@ -115,19 +124,20 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
       value={{ handleInputChange, canSubmit: canSubmit }}
     >
       <div ref={containerRef} className={className}>
-        <div className="flex gap-[10px] bg-white" style={style}>
-          {Array(steps)
-            .fill(null)
-            .map((_, index) => (
-              <FlowProgressBar
-                key={index}
-                complete={activeStep > index}
-                ref={activeStep === index ? barRef : undefined}
-                bg_color="#D9D9D9"
-                // bg_color="#EFF6FF"
-              />
-            ))}
-        </div>
+        {showProgressBar && (
+          <div className="flex gap-[10px] bg-white" style={style}>
+            {Array(steps)
+              .fill(null)
+              .map((_, index) => (
+                <FlowProgressBar
+                  key={index}
+                  complete={activeStep > index}
+                  ref={activeStep === index ? barRef : undefined}
+                  bg_color="#D9D9D9"
+                />
+              ))}
+          </div>
+        )}
         {children}
       </div>
     </FlowProgressContext.Provider>

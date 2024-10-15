@@ -294,7 +294,9 @@ const UndoModal: React.FC<UndoModalProps> = ({ event }) => {
             : "Are you certain you want to proceed with restoring it?"}
         </p>
         <div className="flex flex-col items-center gap-4">
-          <Button type="button">proceed</Button>
+          <Button type="button" size="base_medium" className="py-2 px-8">
+            proceed
+          </Button>
           <button
             onClick={() => setActiveStep("details")}
             className="text-brand-primary text-sm font-medium"

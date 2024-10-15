@@ -8,11 +8,13 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { useAddUnitStore } from "@/store/add-unit-store";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 
 const UnitPictures = () => {
   const { images, setImages, removeImage, isEditing } = useUnitForm();
+  const propertyDetails = useAddUnitStore((state) => state.propertyDetails);
 
   const sortableImages = images.map((image, index) => ({
     id: index,
@@ -20,8 +22,15 @@ const UnitPictures = () => {
     image,
   }));
 
+  const maxImages =
+    propertyDetails?.category === "estate" ||
+    propertyDetails?.category === "facility"
+      ? 5
+      : 14;
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
+    let files = Array.from(e.target.files || []);
+    files = files.slice(0, maxImages - images.length);
     const validImages: string[] = [];
     const oversizeImages: string[] = [];
     for (const file of files) {

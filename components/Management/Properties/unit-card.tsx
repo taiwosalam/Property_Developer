@@ -4,11 +4,14 @@ import SampleProperty6 from "@/public/empty/SampleProperty6.jpg";
 
 // Imports
 import { UnitCardProps } from "./types";
+import { useState } from "react";
 import { unit_card_data_props } from "./data";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { SectionSeparator } from "@/components/Section/section-components";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import ModalPreset from "@/components/Modal/modal-preset";
 
 const UnitCard: React.FC<UnitCardProps> = ({
   data,
@@ -18,6 +21,7 @@ const UnitCard: React.FC<UnitCardProps> = ({
   const handleEdit = () => {
     setIsEditing(true);
   };
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <>
@@ -33,7 +37,7 @@ const UnitCard: React.FC<UnitCardProps> = ({
             size="base_medium"
             variant="light_red"
             className="py-2 px-8"
-            onClick={handleRemove}
+            onClick={() => setModalOpen(true)}
           >
             remove
           </Button>
@@ -64,6 +68,42 @@ const UnitCard: React.FC<UnitCardProps> = ({
           </div>
         </div>
       </div>
+      <Modal
+        state={{
+          isOpen: modalOpen,
+          setIsOpen: setModalOpen,
+        }}
+      >
+        <ModalContent>
+          <ModalPreset type="warning">
+            <p className="text-text-disabled text-sm font-normal">
+              Are you sure you want to proceed with deleting this unit from the
+              property records?{" "}
+              <span className="text-status-error-primary">*</span>Please note
+              that you can only delete units without occupant records.
+            </p>
+            <div className="flex flex-col items-center gap-4">
+              <Button
+                type="button"
+                size="base_medium"
+                className="py-2 px-8"
+                onClick={() => {
+                  handleRemove && handleRemove();
+                  setModalOpen(false);
+                }}
+              >
+                proceed
+              </Button>
+              <button
+                className="text-brand-primary text-sm font-medium"
+                onClick={() => setModalOpen(false)}
+              >
+                Back
+              </button>
+            </div>
+          </ModalPreset>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

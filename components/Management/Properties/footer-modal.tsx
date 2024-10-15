@@ -3,25 +3,19 @@ import Button from "@/components/Form/Button/button";
 import Input from "@/components/Form/Input/input";
 import { useModal } from "@/components/Modal/modal";
 import { Pointer } from "@/public/icons/icons";
-import { useAddUnitStore } from "@/store/add-unit-store";
 
 interface ModalProps {
-  setSaved: (a: boolean) => void;
-  duplicate: {
+  duplicate?: {
     val: boolean;
     count: number;
   };
-  setDuplicate: (dup: { val: boolean; count: number }) => void;
+  setDuplicate?: (dup: { val: boolean; count: number }) => void;
 }
 
-const FooterModal: React.FC<ModalProps> = ({
-  setSaved,
-  duplicate,
-  setDuplicate,
-}) => {
+const FooterModal: React.FC<ModalProps> = ({ duplicate, setDuplicate }) => {
   const { setIsOpen } = useModal();
   const [countPopup, setCountPopup] = useState(false);
-  const [count, setCount] = useState(duplicate.count);
+  const [count, setCount] = useState(duplicate?.count || 1);
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white py-7 px-6 shadow-lg text-center z-50">
@@ -49,9 +43,14 @@ const FooterModal: React.FC<ModalProps> = ({
               size="base_medium"
               className="py-2 px-8"
               onClick={(e) => {
-                setDuplicate({ val: true, count });
-                setIsOpen(false); // Close the modal
-                e.currentTarget.form?.requestSubmit();
+                e.preventDefault();
+                const form = e.currentTarget.form;
+                setDuplicate?.({ val: true, count });
+                // timeout to ensure state of duplicate is updated before form submission
+                setTimeout(() => {
+                  setIsOpen(false); // Close the modal
+                  form?.requestSubmit();
+                }, 0);
               }}
             >
               Add

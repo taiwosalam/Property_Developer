@@ -46,6 +46,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   inputSpaceClassName,
   onChange,
   resetKey,
+  requiredNoStar,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [mounted, setMounted] = useState(false);
@@ -119,6 +120,7 @@ const TextArea: React.FC<TextAreaProps> = ({
               name={id}
               id={id}
               value={editorValue || ""}
+              required={required || requiredNoStar}
               className={clsx("react-quill-hidden-input", hiddenInputClassName)}
             />
             {/* Hidden input field */}
