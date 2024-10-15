@@ -12,6 +12,7 @@ import Select from "@/components/Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import Picture from "@/components/Picture/picture";
+import TextArea from "@/components/Form/TextArea/textarea";
 import Avatar from "@/public/empty/avatar.png";
 import OrangeCloseCircle from "@/public/icons/orange-close-circle.svg";
 const EditServiceProvider = () => {
@@ -87,7 +88,9 @@ const EditServiceProvider = () => {
                 value={address.local_government}
               />
               <div className="flex items-end justify-end">
-                <Button>update</Button>
+                <Button size="base_medium" className="py-2 px-6">
+                  update
+                </Button>
               </div>
             </InfoEditGrid>
           </InfoEditSection>
@@ -114,7 +117,9 @@ const EditServiceProvider = () => {
               />
               <Input id="address" label="address" inputClassName="rounded-lg" />
               <div className="flex items-end justify-end md:col-span-2">
-                <Button>update</Button>
+                <Button size="base_medium" className="py-2 px-6">
+                  update
+                </Button>
               </div>
             </InfoEditGrid>
           </InfoEditSection>
@@ -140,7 +145,9 @@ const EditServiceProvider = () => {
               />
 
               <div className="flex items-end justify-end">
-                <Button>update</Button>
+                <Button size="base_medium" className="py-2 px-6">
+                  update
+                </Button>
               </div>
             </InfoEditGrid>
           </InfoEditSection>
@@ -160,7 +167,9 @@ const EditServiceProvider = () => {
                 inputClassName="rounded-lg"
               />
               <div className="flex items-end">
-                <Button>add document</Button>
+                <Button size="base_medium" className="py-2 px-6">
+                  add document
+                </Button>
               </div>
             </InfoEditGrid>
           </InfoEditSection>
@@ -196,13 +205,12 @@ const EditServiceProvider = () => {
                   ))}
               </div>
             </div>
-            <Button>change photo</Button>
+            <Button size="base_medium" className="py-2 px-6">
+              change photo
+            </Button>
           </InfoEditSection>
           <InfoEditSection title="add note">
-            <textarea
-              className="w-full h-[120px] p-4 rounded-lg border border-solid border-neutral-200"
-              placeholder="Note goes here"
-            ></textarea>
+            <TextArea id="note" label="note" placeholder="Note goes here" />
           </InfoEditSection>
         </div>
       </div>

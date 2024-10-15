@@ -21,7 +21,8 @@ const UnitPictures = () => {
   }));
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
+    let files = Array.from(e.target.files || []);
+    files = files.slice(0, 14 - images.length);
     const validImages: string[] = [];
     const oversizeImages: string[] = [];
     for (const file of files) {

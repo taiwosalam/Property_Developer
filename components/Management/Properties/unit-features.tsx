@@ -41,6 +41,7 @@ const UnitFeatures = () => {
             value={selectedAreaUnit}
             onChange={handleAreaUnitChange}
             inputContainerClassName="bg-white"
+            hiddenInputClassName="unit-form-input"
           />
 
           {/* Conditionally render input fields based on selected area unit */}
@@ -51,7 +52,7 @@ const UnitFeatures = () => {
                 id="area_sqm" //confirm ID with backend
                 label="Total Area (m²)"
                 labelclassName="undo-text-transform"
-                inputClassName="bg-white"
+                inputClassName="bg-white unit-form-input"
                 type="number"
                 min={1}
               />
@@ -62,7 +63,7 @@ const UnitFeatures = () => {
                     required
                     id="total_units" //confirm ID with backend
                     label={`Number of ${selectedAreaUnit}s`}
-                    inputClassName="bg-white"
+                    inputClassName="bg-white unit-form-input"
                     type="number"
                     min={1}
                   />
@@ -78,7 +79,7 @@ const UnitFeatures = () => {
               id="bedroom"
               required
               label="Bedroom"
-              inputClassName="bg-white keep-spinner"
+              inputClassName="bg-white keep-spinner unit-form-input"
               type="number"
               min={0}
               max={99}
@@ -88,7 +89,7 @@ const UnitFeatures = () => {
               required
               id="bathroom"
               label="Bathroom"
-              inputClassName="bg-white keep-spinner"
+              inputClassName="bg-white keep-spinner unit-form-input"
               type="number"
               min={0}
               max={99}
@@ -98,7 +99,7 @@ const UnitFeatures = () => {
               required
               id="toilet"
               label="Toilet"
-              inputClassName="bg-white keep-spinner"
+              inputClassName="bg-white keep-spinner unit-form-input"
               type="number"
               min={0}
               max={99}
@@ -125,6 +126,7 @@ const UnitFeatures = () => {
             inputContainerClassName="bg-white"
             isSearchable={false}
             resetKey={formResetKey}
+            hiddenInputClassName="unit-form-input"
           />
           <Select
             dropdownRefClassName="!w-[160px]"
@@ -135,6 +137,7 @@ const UnitFeatures = () => {
             inputContainerClassName="bg-white"
             isSearchable={false}
             resetKey={formResetKey}
+            hiddenInputClassName="unit-form-input"
           />
           <Select
             dropdownRefClassName="!w-[160px]"
@@ -145,6 +148,7 @@ const UnitFeatures = () => {
             inputContainerClassName="bg-white"
             isSearchable={false}
             resetKey={formResetKey}
+            hiddenInputClassName="unit-form-input"
           />
           <Select
             dropdownRefClassName="!w-[160px]"
@@ -155,6 +159,7 @@ const UnitFeatures = () => {
             inputContainerClassName="bg-white"
             isSearchable={false}
             resetKey={formResetKey}
+            hiddenInputClassName="unit-form-input"
           />
         </div>
       )}

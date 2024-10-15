@@ -7,13 +7,14 @@ import Select from "@/components/Form/Select/select";
 import Input from "@/components/Form/Input/input";
 import DateInput from "@/components/Form/DateInput/date-input";
 import { useState } from "react";
-import InputTextarea from "@/components/Form/InputTextarea/inputTextarea";
+import TextArea from "@/components/Form/TextArea/textarea";
 import {
   currencySymbols,
   formatCostInputValue,
 } from "@/utils/number-formatter";
 import Button from "@/components/Form/Button/button";
 import { AuthForm } from "@/components/Auth/auth-components";
+import { maintenanceTypes, priorityLevels } from "./data";
 import { createMaintenance } from "../data";
 import { useAuthStore } from "@/store/authstrore";
 
@@ -76,7 +77,7 @@ const CreateMaintenace = () => {
           <Select
             id="priority"
             label="Priority"
-            options={["low", "medium", "high"]}
+            options={priorityLevels}
             isSearchable={false}
             inputContainerClassName="bg-white"
           />
@@ -89,8 +90,7 @@ const CreateMaintenace = () => {
           <Select
             id="maintenance_service_type"
             label="Maintenance Type"
-            options={["tailoring", "lawyer"]}
-            isSearchable={false}
+            options={maintenanceTypes}
             inputContainerClassName="bg-white"
           />
           <Select
@@ -123,12 +123,16 @@ const CreateMaintenace = () => {
             onChange={handleMaintenanceCostChange}
             value={maintenanceCost}
           />
-          <InputTextarea
+          <TextArea
             id="maintenance_quotation"
             label="Maintenance Quotation"
-            rows={4}
+            inputSpaceClassName="bg-white"
           />
-          <InputTextarea id="work_details" label="Work Details" rows={4} />
+          <TextArea
+            id="work_details"
+            label="Work Details"
+            inputSpaceClassName="bg-white"
+          />
         </div>
         <div
           className="sticky h-[80px] bottom-0 py-5 px-[25px] lg:px-[60px] bg-white flex items-center justify-between gap-10"

@@ -91,7 +91,8 @@ const UnitDetails = () => {
 
   return (
     <div>
-      <h4 className="text-primary-navy text-lg md:text-xl font-bold">
+      <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
+        <span className="text-status-error-primary">*</span>
         Unit Details
       </h4>
       <hr className="my-4" />
@@ -100,7 +101,8 @@ const UnitDetails = () => {
           id="unit_number"
           label="Unit Number or Name"
           placeholder="Flat 1"
-          inputClassName="bg-white rounded-[8px]"
+          inputClassName="bg-white rounded-[8px] unit-form-input"
+          requiredNoStar
         />
         <Select
           id="unit_type"
@@ -109,6 +111,7 @@ const UnitDetails = () => {
           inputContainerClassName="bg-white"
           value={selectedUnitType}
           onChange={handleUnitTypeChange}
+          hiddenInputClassName="unit-form-input"
         />
         {selectedUnitType !== "land" && (
           <Select
@@ -118,6 +121,7 @@ const UnitDetails = () => {
             inputContainerClassName="bg-white"
             value={selectedSubtype}
             onChange={handleSubtypeChange}
+            hiddenInputClassName="unit-form-input"
           />
         )}
         <Select
@@ -127,6 +131,7 @@ const UnitDetails = () => {
           options={unitPreferencesOptions}
           value={selectedPreference}
           onChange={handlePreferenceChange}
+          hiddenInputClassName="unit-form-input"
         />
       </div>
     </div>

@@ -203,7 +203,7 @@ const EditLandlord = () => {
                 inputClassName="!bg-neutral-2"
               />
               <Select
-                id="relationship"
+                id="next-of-kin-relationship"
                 label="relationship"
                 placeholder="Select options"
                 options={nextOfKinRelationships}
@@ -245,7 +245,7 @@ const EditLandlord = () => {
                 inputClassName="!bg-neutral-2"
               />
               <Select
-                id="relationship"
+                id="guarantor-relationship"
                 label="relationship"
                 placeholder="Select options"
                 options={guarantorRelationships}

@@ -79,12 +79,13 @@ const UnitBreakdownRenewalTenant = () => {
           options={rentPeriods}
           label="Rent Period"
           inputContainerClassName="bg-white"
+          hiddenInputClassName="unit-form-input"
         />
         <Input
           id="renewal_rent_amount"
           required
           label="Rent Amount"
-          inputClassName="bg-white"
+          inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={rentAmount}
           onChange={(value) => handleInputChange("rentAmount", value)}
@@ -93,7 +94,7 @@ const UnitBreakdownRenewalTenant = () => {
         <Input
           id="renewal_service_charge"
           label="Service Charge"
-          inputClassName="bg-white"
+          inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={serviceCharge}
           onChange={(value) => handleInputChange("serviceCharge", value)}
@@ -133,7 +134,7 @@ const UnitBreakdownRenewalTenant = () => {
           required
           id="renewal_total_package"
           label="Total Package"
-          inputClassName="bg-white"
+          inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={totalPackage}
           readOnly

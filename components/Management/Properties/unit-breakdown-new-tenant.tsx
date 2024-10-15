@@ -119,12 +119,13 @@ const UnitBreakdownNewTenant = () => {
           label="Rent Period"
           inputContainerClassName="bg-white"
           resetKey={formResetKey}
+          hiddenInputClassName="unit-form-input"
         />
         <Input
           id="rent_amount"
           label="Rent Amount"
           required
-          inputClassName="bg-white"
+          inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={rentAmount}
           onChange={(value) => handleInputChange("rentAmount", value)}
@@ -215,12 +216,13 @@ const UnitBreakdownNewTenant = () => {
           inputContainerClassName="bg-white"
           dropdownRefClassName="!w-[160px]"
           resetKey={formResetKey}
+          hiddenInputClassName="unit-form-input"
         />
         <Input
           required
           id="total_package"
           label="Total Package"
-          inputClassName="bg-white"
+          inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={totalPackage}
           readOnly

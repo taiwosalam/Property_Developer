@@ -1,13 +1,15 @@
+"use client";
 import { useState, useEffect } from "react";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
+import { tenantTypes, landlordTypes, genderTypes } from "@/data";
 import Input from "../Form/Input/input";
 import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
 import Button from "../Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "../Auth/auth-components";
-import { ValidationErrors } from "@/utils/types";
+import type { ValidationErrors } from "@/utils/types";
 import { useAuthStore } from "@/store/authstrore";
 import Picture from "../Picture/picture";
 import Avatars from "../Avatars/avatars";
@@ -28,7 +30,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
 
   const [selectedLGA, setSelectedLGA] = useState("");
   const [selectedState, setSelectedState] = useState("");
-  const [activeAvatar, setActiveAvatar] = useState<string>("");
+  const [activeAvatar, setActiveAvatar] = useState("");
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
   const [localGovernments, setLocalGovernments] = useState<string[]>([]);
 
@@ -96,6 +98,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         <PhoneNumberInput
           id="phone_number"
           label="phone number"
+          inputClassName="!bg-neutral-2"
           // validationErrors={errorMsgs} validation errors left to you Teni
         />
         <Select
@@ -126,14 +129,14 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         />
         <Select
           validationErrors={errorMsgs}
-          options={["Individual", "Couples", "Widow"]}
+          options={type === "landlord" ? landlordTypes : tenantTypes}
           id={`${type === "landlord" ? "owner" : "tenant"}_type`}
           label={`${type === "landlord" ? "owner" : "Tenant/Occupant"} Type`}
           inputContainerClassName="bg-neutral-2 rounded-[8px]"
         />
         <Select
           validationErrors={errorMsgs}
-          options={["male", "female"]}
+          options={genderTypes}
           id="gender"
           label="Gender"
           isSearchable={false}

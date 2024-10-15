@@ -7,6 +7,7 @@ interface ContactAddress {
 
 interface NextOfKin {
   name: string | null;
+  email: string | null;
   address: string | null;
   phone: string | null;
   relationship: string | null;
@@ -17,6 +18,7 @@ interface Guarantor {
   email: string | null;
   phone_number: string | null;
   address: string | null;
+  relationship: string | null;
 }
 
 interface Others {

@@ -291,12 +291,10 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
         />
       </div>
       {/* Property Details */}
-      <div className="flex gap-[2px] text-xs md:text-sm lg:text-base font-medium mb-4">
+      <p className="text-primary-navy font-bold text-lg lg:text-xl">
         <span className="text-status-error-primary">*</span>
-        <p className="text-primary-navy font-bold text-lg lg:text-xl">
-          Property Details
-        </p>
-      </div>
+        Property Details
+      </p>
       <hr className="my-4" />
       <div className="mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Input
@@ -411,12 +409,12 @@ const CreateRentalPropertyForm: React.FC<CreatePropertyFormProps> = ({
         />
       </div>
       {/* Property Settings */}
-      <div className="flex gap-[2px] text-xs md:text-sm lg:text-base font-medium mb-4">
+
+      <p className="text-primary-navy font-bold text-lg lg:text-xl">
         <span className="text-status-error-primary">*</span>
-        <p className="text-primary-navy font-bold text-lg lg:text-xl">
-          Property Settings
-        </p>
-      </div>
+        Property Settings
+      </p>
+
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Select

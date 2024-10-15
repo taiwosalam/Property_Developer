@@ -35,6 +35,7 @@ const Input: React.FC<InputProps> = ({
   min,
   max,
   maxLength,
+  requiredNoStar,
 }) => {
   // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -98,7 +99,7 @@ const Input: React.FC<InputProps> = ({
           name={id}
           value={value}
           ref={inputRef}
-          required={required}
+          required={required || requiredNoStar}
           readOnly={readOnly}
           disabled={disabled}
           placeholder={placeholder}
