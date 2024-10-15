@@ -83,3 +83,22 @@ export const services_sections: Record<string, SettingsServiceOwners> = {
     "Law Firm, Barristers, Arbitrators, Solicitors, Attorneys, Advocates, Lawyer",
   Hospitality: "Hotel, Short Stay, Aparment, Holiday Home",
 };
+
+export const settings_payment_switcher = [
+  {
+    title: "Per Annum",
+    price: 2000,
+  },
+  {
+    title: "2 years",
+    price: 4000,
+  },
+  {
+    title: "3 years",
+    price: 6000,
+  },
+  {
+    title: "4 years",
+    price: 8000,
+  },
+];

@@ -9,6 +9,7 @@ import Button from "../Form/Button/button";
 import { WalletFundsCardsHeading } from "./wallet-components";
 
 const WalletOnlineFundingCard: React.FC<WalletOnlineFundingCardProps> = ({
+  noInput,
   proceed,
 }) => {
   return (
@@ -19,13 +20,15 @@ const WalletOnlineFundingCard: React.FC<WalletOnlineFundingCardProps> = ({
       />
       <div></div>
       <div className="custom-flex-col gap-6">
-        <Input
-          id="amount"
-          placeholder="₦ 0.00"
-          label="Input the amount you wish to deposit"
-          inputClassName="bg-white"
-          labelclassName="normal-case"
-        />
+        {!noInput && (
+          <Input
+            id="amount"
+            placeholder="₦ 0.00"
+            label="Input the amount you wish to deposit"
+            inputClassName="bg-white"
+            labelclassName="normal-case"
+          />
+        )}
         <div className="flex justify-end">
           <Button onClick={proceed} size="xs_medium" className="py-1 px-2">
             proceed
