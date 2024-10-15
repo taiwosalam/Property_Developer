@@ -7,6 +7,7 @@ import CustomTable from "@/components/Table/table";
 import type { Field, DataItem } from "@/components/Table/types";
 import UndoModal from "@/components/reports/undo-modal";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { reportsUndoFilterOptionsWithDropdown } from "./data";
 
 const Undo = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -73,7 +74,7 @@ const Undo = () => {
       </div>
       <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="undo" aboutPageModalData={
         { title: "undo", description: "This page contains a list of undo on the platform." }
-      } searchInputPlaceholder="Search for undo" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search for undo" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsUndoFilterOptionsWithDropdown} />
       <CustomTable
         fields={fields}
         data={tableData}

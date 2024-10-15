@@ -1,12 +1,9 @@
 "use client";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import FilterButton from "@/components/FilterButton/filter-button";
-import ExportButton from "@/components/reports/export-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { reportsVehiclesFilterOptionsWithDropdown } from "./data";
 
 const VehiclesRecordReport = () => {
   const fields: Field[] = [
@@ -46,7 +43,7 @@ const VehiclesRecordReport = () => {
     <div className="space-y-9">
       <FilterBar azFilter isDateTrue exports onStateSelect={() => { }} pageTitle="vehicle records" aboutPageModalData={
         { title: "vehicle records", description: "This page contains a list of vehicle records on the platform." }
-      } searchInputPlaceholder="Search for vehicle records" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search for vehicle records" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsVehiclesFilterOptionsWithDropdown} />
       <CustomTable
         fields={fields}
         data={tableData}

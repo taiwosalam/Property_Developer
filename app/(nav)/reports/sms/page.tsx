@@ -1,15 +1,13 @@
 "use client";
 import { useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import FilterButton from "@/components/FilterButton/filter-button";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field, DataItem } from "@/components/Table/types";
 import SMSModal, { type SMSRecord } from "@/components/reports/sms-modal";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { reportsSmsFilterOptionsWithDropdown } from "./data";
 
 const SMSReport = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -59,7 +57,7 @@ const SMSReport = () => {
       </div>
       <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="sms" aboutPageModalData={
         { title: "sms", description: "This page contains a list of sms on the platform." }
-      } searchInputPlaceholder="Search for sms" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search for sms" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsSmsFilterOptionsWithDropdown} />
       <CustomTable
         fields={fields}
         data={tableData}
