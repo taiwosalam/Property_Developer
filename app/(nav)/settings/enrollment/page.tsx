@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import React, { useState } from "react";
+
 // Imports
 import SettingsSection from "@/components/Settings/settings-section";
-import { SettingsEnrollmentCard } from "@/components/Settings/settings-components";
-import Link from "next/link";
+import SettingsEnrollmentCard from "@/components/Settings/SettingsEnrollment/settings-enrollment-card";
 
 const Enrollment = () => {
   const [showFreeFeatures, setShowFreeFeatures] = useState(false);
@@ -124,7 +125,7 @@ const Enrollment = () => {
           {/* Premium Plan */}
           <SettingsEnrollmentCard
             planTitle="Premium Plan"
-            desc="Highly recommended for Property Managers overseeing over 7 branches and managing more than 100 properties. It's an ideal solution for those seeking a streamlined approach to property management."
+            desc="Highly recommended for Property Managers overseeing over 7 branches and managing more than 100 properties. It&apos;s an ideal solution for those seeking a streamlined approach to property management."
             planFor="Property Managers"
             price={calculatePrice(
               premiumBillingType,
@@ -165,11 +166,11 @@ const Enrollment = () => {
             PROFESSIONAL PLAN
           </h3>
           <p className="text-sm  max-w-[964px] text-text-secondary">
-            If none of the available plans does not meet your company's
+            If none of the available plans does not meet your company&apos;s
             standards, consider opting for the Professional plan. This plan
             provides unlimited access to all software solutions. Professional
             plans are ideal for established property managers who wish to
-            customize the software with their company's name and brand.{" "}
+            customize the software with their company&apos;s name and brand.{" "}
           </p>
 
           <h4 className="text-sm font-bold mt-4 text-text-secondary">
