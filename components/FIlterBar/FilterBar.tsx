@@ -95,7 +95,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                             )}
                             onClick={setGridView}
                         >
-                            <GridIcon />
+                            <GridIcon />``
                         </button>
                     </div>
                 }
