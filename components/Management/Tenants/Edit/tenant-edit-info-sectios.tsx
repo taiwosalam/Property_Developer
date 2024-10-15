@@ -35,30 +35,25 @@ export const TenantEditProfileInfoSection = () => {
   const [address, setAddress] = useState({
     state: "",
     local_govt: "",
-    localGovtOptions: [] as string[],
-    cityOptions: [] as string[],
+    city: "",
   });
 
-  useEffect(() => {
-    if (address.state) {
-      const lgas = getLocalGovernments(address.state);
-      setAddress((prev) => ({ ...prev, localGovtOptions: lgas }));
-    }
-  }, [address.state]);
-
-  useEffect(() => {
-    if (address.local_govt && address.state) {
-      const cities = getCities(address.state, address.local_govt);
-      setAddress((prev) => ({ ...prev, cityOptions: cities }));
-    }
-  }, [address.local_govt]);
+  const handleAddressChange = (field: keyof typeof address, value: string) => {
+    setAddress((x) => ({
+      ...x,
+      [field]: value,
+      ...(field === "state" && { local_govt: "", city: "" }),
+      ...(field === "local_govt" && { city: "" }),
+    }));
+  };
 
   useEffect(() => {
     if (data) {
       setAddress((prev) => ({
         ...prev,
-        state: data?.contact_address.state || "",
-        local_govt: data?.contact_address.local_govt || "",
+        state: data.contact_address.state || "",
+        local_govt: data.contact_address.local_govt || "",
+        city: data.contact_address.city || "",
       }));
     }
   }, [data]);
@@ -101,28 +96,25 @@ export const TenantEditProfileInfoSection = () => {
           options={states}
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
-          defaultValue={data?.contact_address.state}
-          onChange={(value) =>
-            setAddress((prev) => ({ ...prev, state: value }))
-          }
+          value={address.state}
+          onChange={(value) => handleAddressChange("state", value)}
         />
         <Select
           id="tenant-local_government"
           label="local government"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
-          options={address.localGovtOptions}
-          defaultValue={data?.contact_address.local_govt || ""}
-          onChange={(value) =>
-            setAddress((prev) => ({ ...prev, local_govt: value }))
-          }
+          options={getLocalGovernments(address.state)}
+          value={address.local_govt}
+          onChange={(value) => handleAddressChange("local_govt", value)}
         />
         <Select
           id="tenant-city"
           label="city"
           placeholder="Select options"
-          options={address.cityOptions}
-          defaultValue={data?.contact_address.city || ""}
+          options={getCities(address.state, address.local_govt)}
+          value={address.city}
+          onChange={(value) => handleAddressChange("city", value)}
           allowCustom={true}
           inputContainerClassName="bg-neutral-2"
         />

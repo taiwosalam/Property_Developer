@@ -32,7 +32,7 @@ const Avatars: React.FC<AvatarsProps> = ({
   }, [type, accessToken]);
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 flex-wrap">
       {avatars
         ? avatars.slice(0, maxSize).map((avatar, idx) => (
             <button

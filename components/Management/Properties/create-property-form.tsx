@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
 
 // Types
 import type { CreatePropertyFormProps } from "./types";
@@ -70,7 +70,16 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const setPropertyState = (
     changes: Partial<Record<PropertyStateDataKeys, any>>
   ) => {
-    setState((x) => ({ ...x, ...changes }));
+    setState((x) => {
+      const newState = { ...x, ...changes };
+      if ("state" in changes) {
+        newState.lga = "";
+        newState.city = "";
+      } else if ("lga" in changes) {
+        newState.city = "";
+      }
+      return newState;
+    });
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -198,22 +207,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
 
     if (selectedBranch) fetchStaff();
   }, [accessToken, selectedBranch]);
-
-  useEffect(() => {
-    setState((x) => ({
-      ...x,
-      lga: "",
-      city: "",
-    }));
-  }, [selectedState]);
-
-  // Clear city when LGA changes
-  useEffect(() => {
-    setState((x) => ({
-      ...x,
-      city: "",
-    }));
-  }, [lga]);
 
   // Function to reset the state
   const handleReset = () => {
