@@ -7,8 +7,7 @@ import { ChevronLeft } from "@/public/icons/icons";
 
 // Imports
 import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-card";
-import CreateRentalPropertyForm from "@/components/Management/Properties/create-property-form";
-import CreateGatedEstateForm from "@/components/Management/Properties/create-gated-estate-form";
+import CreatePropertyForm from "@/components/Management/Properties/create-property-form";
 import { SectionSeparator } from "@/components/Section/section-components";
 
 const EditProperty = () => {
@@ -29,15 +28,23 @@ const EditProperty = () => {
         <p className="text-black font-bold text-lg lg:text-xl">Edit Property</p>
       </div>
       <SectionSeparator className="!my-2.5" />
-      {/* Check for type of Property in your fetched property info choose which form to render... Also set the property info and added unit in unit store (zustand)*/}
-      <CreateRentalPropertyForm editMode handleSubmit={handleSubmit} />
-      {/* <CreateGatedEstateForm editMode /> */}
+      {/* Check for type of Property in your fetched property info. Also set the property info and added unit in unit store (zustand). property type determines formType */}
+      <CreatePropertyForm
+        editMode
+        handleSubmit={handleSubmit}
+        formType="rental" //to be dynamic
+      />
 
       <div className="custom-flex-col gap-10">
         {Array(3)
           .fill(null)
           .map((_, index) => (
-            <AddUnitFormCard key={index} data={{}} index={index} />
+            <AddUnitFormCard
+              key={index}
+              data={{}}
+              index={index}
+              handleRemove={() => {}}
+            />
           ))}
       </div>
     </div>
