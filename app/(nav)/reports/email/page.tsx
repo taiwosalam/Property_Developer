@@ -7,6 +7,7 @@ import CustomTable from "@/components/Table/table";
 import EmailModal, { type EmailRecord } from "@/components/reports/email-modal";
 import type { Field, DataItem } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { reportsEmailFilterOptionsWithDropdown } from "./data";
 
 const EmailReport = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -63,7 +64,7 @@ const EmailReport = () => {
       </div>
       <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="Email" aboutPageModalData={
         { title: "Email", description: "This page contains a list of Email on the platform." }
-      } searchInputPlaceholder="Search for Email" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      } searchInputPlaceholder="Search for Email" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsEmailFilterOptionsWithDropdown} />
       <CustomTable
         fields={fields}
         data={tableData}

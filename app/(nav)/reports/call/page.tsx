@@ -4,6 +4,7 @@ import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { reportsCallsFilterOptionsWithDropdown } from "./data";
 
 const Call = () => {
     const fields: Field[] = [
@@ -44,9 +45,9 @@ const Call = () => {
                 <ManagementStatistcsCard title="Resolved" newData={34} total={657} />
                 <ManagementStatistcsCard title="Unresolved" newData={34} total={657} />
             </div>
-            <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="calls request" aboutPageModalData={
+            <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="calls request" aboutPageModalData={
                 { title: "calls request", description: "This page contains a list of calls request on the platform." }
-            } searchInputPlaceholder="Search for calls request" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+            } searchInputPlaceholder="Search for calls request" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsCallsFilterOptionsWithDropdown} />
             <CustomTable
                 fields={fields}
                 data={tableData}
