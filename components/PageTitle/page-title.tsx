@@ -16,7 +16,7 @@ const PageTitle: React.FC<PageTitleProps> = ({ title, aboutPageModalData }) => {
           <button
             type="button"
             aria-label="Guide"
-            className="p-1 hidden md:block"
+            className="p-1"
           >
             <ExclamationMark />
           </button>
