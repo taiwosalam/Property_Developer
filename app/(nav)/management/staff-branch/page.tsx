@@ -22,6 +22,7 @@ import CreateBranchModal from "@/components/Management/Staff-And-Branches/create
 import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import GlobalPageLoader from "@/components/Loader/global-page-loader";
 
 const StaffAndBranches = () => {
   const router = useRouter();
@@ -198,7 +199,7 @@ const StaffAndBranches = () => {
 
   // console.log(branches);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <GlobalPageLoader />;
   if (error) return <div>Error: {error.message}</div>;
 
   return (

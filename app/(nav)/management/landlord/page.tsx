@@ -15,12 +15,17 @@ import Pagination from "@/components/Pagination/pagination";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Button from "@/components/Form/Button/button";
-import { getAllLandlords, getLandlordsHelpInfo, LandlordPageState } from "./data";
+import {
+  getAllLandlords,
+  getLandlordsHelpInfo,
+  LandlordPageState,
+} from "./data";
 import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { LandlordHelpInfo } from "./types";
 import { title } from "process";
+import GlobalPageLoader from "@/components/Loader/global-page-loader";
 
 const Landlord = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -66,7 +71,8 @@ const Landlord = () => {
     setState((state) => ({ ...state, gridView: false }));
   };
 
-  const [fetchedLandlordHelpInfo, setFetchedLandlordHelpInfo] = useState<LandlordHelpInfo>();
+  const [fetchedLandlordHelpInfo, setFetchedLandlordHelpInfo] =
+    useState<LandlordHelpInfo>();
 
   // Fetch the landlords when the component mounts
   const fetchLandlords = useCallback(async () => {
@@ -89,7 +95,6 @@ const Landlord = () => {
       console.error("Error fetching landlord help info:", error);
     }
   };
-
 
   useEffect(() => {
     fetchLandlords();
@@ -226,7 +231,7 @@ const Landlord = () => {
     { id: "6", accessor: "manage/chat" },
   ];
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <GlobalPageLoader />;
   if (error) return <div>Error: {error.message}</div>;
 
   return (

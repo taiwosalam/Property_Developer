@@ -32,6 +32,7 @@ import { LandlordPageData } from "../../types";
 import { ASSET_URL, empty } from "@/app/config";
 import UserTag from "@/components/Tags/user-tag";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
+import GlobalPageLoader from "@/components/Loader/global-page-loader";
 
 const ManageLandlord = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -59,7 +60,7 @@ const ManageLandlord = () => {
     fetchLandlords();
   }, [accessToken, landlordId, router]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <GlobalPageLoader />;
   if (error) return <div>Error: {error.message}</div>;
   if (!LandlordPageData) return null;
 

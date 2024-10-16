@@ -21,6 +21,7 @@ import DashboarddCalendar from "@/components/dashboard/calendar";
 import { SectionContainer } from "@/components/Section/section-components";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 const Dashboard = () => {
   const { isMobile, isTablet } = useWindowWidth();
@@ -128,7 +129,10 @@ const Dashboard = () => {
                       />
                     </td>
                     <td>
-                      <p>Amori Ademakinwa</p>
+                      <div className="flex items-center">
+                        <p>Amori Ademakinwa</p>
+                        <BadgeIcon color="blue" />
+                      </div>
                     </td>
                     <td>
                       <p>1234563456</p>
