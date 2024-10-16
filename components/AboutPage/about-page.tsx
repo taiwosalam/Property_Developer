@@ -4,16 +4,23 @@ import Image from "next/image";
 import CloseCircle from "@/public/icons/close-circle.svg";
 import { PlayIconButton } from "@/public/icons/icons";
 import { ModalTrigger } from "../Modal/modal";
-import React from 'react'
-import ReactPlayer from 'react-player/lazy'
+import React, { useEffect, useState } from 'react'
+import dynamic from "next/dynamic";
+const DynamicReactPlayer = dynamic(() => import("react-player"), {
+  ssr: false,
+});
 
 const AboutPage: React.FC<AboutPageProps> = ({
   title,
   description,
   video,
 }) => {
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   return (
-    <div className="w-[600px] max-w-[90%] rounded-[10px] bg-white overflow-hidden">
+    <div className="w-[600px] max-w-[90%] rounded-[10px] max-h-[90%] bg-white overflow-x-hidden overflow-y-scroll">
       <div className="bg-brand-1 px-8 py-6 w-full">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-center">{title}</h2>
@@ -25,7 +32,7 @@ const AboutPage: React.FC<AboutPageProps> = ({
       <div className="px-8 py-6">
         <p className="mb-6">{description}</p>
         <div className="rounded-[4px] border-4 border-text-tertiary w-full h-[205px] mb-6">
-          <ReactPlayer url={video} width={528} height={197} pip controls
+          <DynamicReactPlayer url={video} width="100%" height="100%" pip controls
             playIcon={<PlayIconButton />}
             config={{
             }} />
