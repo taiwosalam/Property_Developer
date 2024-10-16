@@ -357,13 +357,19 @@ export const guarantorRelationships = [
   "Neighbor",
 ];
 
-export const genderTypes = [
-  'male','female', 'others'
-]
+export const genderTypes = ["male", "female", "not specify"];
 
 export const familyTypes = [
-  'Couple', 'Divorced', 'Family of 3, Family of 4', 'Family 4 Plus', 'Individual', 'Multifamily', 'Single Mother', 'Widow', 'Others'
-]
+  "Couple",
+  "Divorced",
+  "Family of 3, Family of 4",
+  "Family 4 Plus",
+  "Individual",
+  "Multifamily",
+  "Single Mother",
+  "Widow",
+  "Others",
+];
 
 export const employmentOptions = [
   "Employed",
