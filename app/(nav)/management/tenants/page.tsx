@@ -221,7 +221,7 @@ const Tenants = () => {
   if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div className="space-y-9">
+    <div className="space-y-8">
       <div className="page-header-container">
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
