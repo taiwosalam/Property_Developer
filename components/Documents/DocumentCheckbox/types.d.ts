@@ -1,5 +1,6 @@
 export interface DocumentCheckboxProps {
   title?: string;
+  checked?: boolean;
   children: React.ReactNode;
   darkText?: boolean;
   state?: {

@@ -16,18 +16,35 @@ const Enrollment = () => {
   const [basicQuantity, setBasicQuantity] = useState(1);
   const [premiumQuantity, setPremiumQuantity] = useState(1);
 
-  const calculatePrice = (
-    billingType: "monthly" | "yearly",
-    quantity: number,
-    baseMonthly: number,
-    baseYearly: number
-  ) => {
-    const basePrice = billingType === "monthly" ? baseMonthly : baseYearly;
-    return (basePrice * quantity).toLocaleString("en-NG", {
-      style: "currency",
-      currency: "NGN",
-    });
-  };
+const calculatePrice = (
+  billingType: "monthly" | "yearly",
+  quantity: number,
+  baseMonthly: number,
+  baseYearly: number
+) => {
+  // Limit quantity based on billing type
+  const limitedQuantity = billingType === "yearly" ? Math.min(quantity, 5) : quantity;
+
+  let basePrice = billingType === "monthly" ? baseMonthly : baseYearly;
+  let totalPrice = 0;
+
+  if (billingType === "monthly") {
+    totalPrice = basePrice * limitedQuantity;
+  } else { // yearly
+    const discounts = [0, 0.04, 0.06, 0.08, 0.10];
+    for (let i = 1; i <= limitedQuantity; i++) {
+      const discountPercentage = discounts[i - 1];
+      const discountedPrice = basePrice * (1 - discountPercentage);
+      totalPrice += discountedPrice;
+    }
+  }
+
+  return totalPrice.toLocaleString("en-NG", {
+    style: "currency",
+    currency: "NGN",
+  });
+};
+
 
   const payMonthly = () => {
     setBillingType("monthly");
@@ -39,6 +56,22 @@ const Enrollment = () => {
 
   const handleBillingTypeChange = (type: "monthly" | "yearly") => {
     setBillingType(type);
+  };
+
+  const incrementBasicQuantity = () => {
+    setBasicQuantity((prev) => Math.min(prev + 1, basicBillingType === "yearly" ? 5 : 11));
+  };
+
+  const decrementBasicQuantity = () => {
+    setBasicQuantity((prev) => Math.max(1, prev - 1));
+  };
+
+  const incrementPremiumQuantity = () => {
+    setPremiumQuantity((prev) => Math.min(prev + 1, premiumBillingType === "yearly" ? 5 : 11));
+  };
+
+  const decrementPremiumQuantity = () => {
+    setPremiumQuantity((prev) => Math.max(1, prev - 1));
   };
 
   return (
@@ -84,9 +117,10 @@ const Enrollment = () => {
           {/* Basic Plan (paid plan) */}
           <SettingsEnrollmentCard
             planTitle="Basic Plan"
-            price={calculatePrice(basicBillingType, basicQuantity, 3500, 60000)}
+            price={calculatePrice(basicBillingType, basicQuantity, 3500, 40950)}
             discount={basicBillingType === "monthly" ? `(Billed at ₦42,000/year)` 
-                    : `Save ${(5000 * 12 - 60000).toLocaleString("en-NG", {style: "currency", currency: "NGN",})} annually`}
+                    : '(Billed at ₦3,500/month)'
+            }
             desc="The Basic plan is ideal for Property Managers overseeing maximum of 2 branches with a limited number of properties. It offers basic features tailored for smaller-scale operations."
             planFor="Property Managers"
             duration={basicBillingType === "monthly" ? `${basicQuantity} ${basicQuantity === 1 ? "Month" : "Months"}` : `${basicQuantity} {basicQuantity === 1 ? "Year" : "Years"}`}
@@ -94,8 +128,8 @@ const Enrollment = () => {
             setShowFeatures={setShowFeatures}
             billingType={basicBillingType}
             quantity={basicQuantity}
-            incrementQuantity={() => setBasicQuantity((prev) => prev + 1)}
-            decrementQuantity={() => setBasicQuantity((prev) => Math.max(1, prev - 1))}
+            incrementQuantity={incrementBasicQuantity}
+            decrementQuantity={decrementBasicQuantity}
             isFree={false}
             onBillingTypeChange={(type) => setBasicBillingType(type)}
             features={[
@@ -121,9 +155,9 @@ const Enrollment = () => {
               premiumBillingType,
               premiumQuantity,
               12000,
-              120000
+              117000
             )}
-            discount={premiumBillingType === "monthly" ? `(Billed at ₦120,000/year)`
+            discount={premiumBillingType === "monthly" ? `(Billed at ₦144,000/year)`
                 : `Save ${(12000 * 12 - 120000).toLocaleString("en-NG", {style: "currency", currency: "NGN", })} annually`
             }
             duration={premiumBillingType === "monthly" ? `${premiumQuantity} ${ premiumQuantity === 1 ? "Month" : "Months" }`
@@ -132,8 +166,8 @@ const Enrollment = () => {
             setShowFeatures={setShowFeatures}
             billingType={premiumBillingType}
             quantity={premiumQuantity}
-            incrementQuantity={() => setPremiumQuantity((prev) => prev + 1)}
-            decrementQuantity={() => setPremiumQuantity((prev) => Math.max(1, prev - 1))}
+            incrementQuantity={incrementPremiumQuantity}
+            decrementQuantity={decrementPremiumQuantity}
             isFree={false}
             onBillingTypeChange={(type) => setPremiumBillingType(type)}
             features={[

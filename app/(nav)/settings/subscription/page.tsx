@@ -106,7 +106,7 @@ const Subscriptions = () => {
           />
         </div>
       </SettingsSection>
-      <div className="h-[1px] border border-dashed border-brand-9 opacity-50"></div>
+      <div className="line h-[1px] border border-dashed border-brand-9 opacity-50 w-full !px-0" style={{ paddingLeft: 0, paddingRight: 0 }}></div>
       <div className="custom-flex-col gap-[18px]">
         <h2 className="text-primary-navy text-base font-medium">
           Adds On Subscriptions

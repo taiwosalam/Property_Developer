@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 
 // Images
@@ -32,6 +32,23 @@ const Profile = () => {
   const { preview, handleImageChange } = useImageUploader({
     placeholder: Transparent,
   });
+
+    const [socialInputs, setSocialInputs] = useState({
+    instagram: "https://instagram.com/",
+    facebook: "https://facebook.com/",
+    twitter: "https://twitter.com/",
+    linkedin: "https://linkedin.com/",
+    tiktok: "https://tiktok.com/",
+    youtube: "https://youtube.com/",
+  });
+
+  const handleSocialInputChange = (platform: string, value: string) => {
+    setSocialInputs(prev => ({
+      ...prev,
+      [platform]: value
+    }));
+  };
+
 
   return (
     <>
@@ -250,7 +267,7 @@ const Profile = () => {
           <SettingsUpdateButton />
         </div>
       </SettingsSection>
-      <SettingsSection title="about company">
+            <SettingsSection title="about company">
         <div className="custom-flex-col gap-8">
           <TextArea id="about company" />
           <div className="custom-flex-col gap-6">
@@ -263,63 +280,45 @@ const Profile = () => {
                 <Input
                   id="instagram"
                   label="instagram"
-                  placeholder="https://instagram.com/"
+                  placeholder="username"
+                  value={socialInputs.instagram}
+                  onChange={(value) => handleSocialInputChange("instagram", value)}
                 />
                 <Input
                   id="facebook"
                   label="facebook"
-                  placeholder="https://facebook.com/"
+                  placeholder="username"
+                  value={socialInputs.facebook}
+                  onChange={(value) => handleSocialInputChange("facebook", value)}
                 />
                 <Input
-                  id="x"
+                  id="twitter"
                   label="x (Twitter)"
-                  placeholder="https://x.com/"
+                  placeholder="username"
+                  value={socialInputs.twitter}
+                  onChange={(value) => handleSocialInputChange("twitter", value)}
                 />
                 <Input
                   id="linkedin"
                   label="linkedIn"
-                  placeholder="https://linkedin.com/"
+                  placeholder="username"
+                  value={socialInputs.linkedin}
+                  onChange={(value) => handleSocialInputChange("linkedin", value)}
                 />
                 <Input
                   id="tiktok"
                   label="tiktok"
-                  placeholder="https://tiktok.com/"
+                  placeholder="username"
+                  value={socialInputs.tiktok}
+                  onChange={(value) => handleSocialInputChange("tiktok", value)}
                 />
                 <Input
                   id="youtube"
                   label="youtube"
-                  placeholder="https://youtube.com/"
+                  placeholder="username"
+                  value={socialInputs.youtube}
+                  onChange={(value) => handleSocialInputChange("youtube", value)}
                 />
-              </div>
-            </div>
-          </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
-      <SettingsSection title="website settings">
-        <div className="custom-flex-col gap-8">
-          <div className="custom-flex-col gap-5">
-            <SettingsSectionTitle desc="Select a preferred subdomain to showcase your company profile and market your properties listings portfolio to the world." />
-            <div className="flex items-center gap-8">
-              <Input
-                id="domain_name"
-                placeholder="makinwauxdesigner"
-                label="Customize listings domain name"
-              />
-              <div className="flex pt-7">
-                <p className="text-brand-9 text-base font-normal">
-                  https://www.makinwauxdesgner.ourlisting.ng
-                </p>
-              </div>
-            </div>
-            <div className="flex">
-              <div className="custom-flex-col gap-3 text-base font-normal">
-                <p className="text-text-secondary">
-                  RSS Feed Link for Listings
-                </p>
-                <p className="text-brand-9">
-                  https://www.ourlisting.ng/user/324224535
-                </p>
               </div>
             </div>
           </div>
