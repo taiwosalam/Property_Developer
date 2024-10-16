@@ -40,9 +40,9 @@ const RentalPropertyListCard = () => {
           <DetailItem
             label="Tenants Name"
             value={
-              <p className="underline underline-offset-4 flex items-center">
-                David Ajala <BadgeIcon color="red" />
-              </p>
+              <span className="flex items-center">
+                <span className="border-black border-b">David Ajala</span> <BadgeIcon color="green" />
+              </span>
             }
           />
           <DetailItem label="Due Date" value="12/12/2024" />
