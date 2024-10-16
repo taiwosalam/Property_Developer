@@ -124,7 +124,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
       <>
         <CardHeader className="flex w-full items-center gap-2 space-y-0 py-3 sm:flex-row">
           <div className="flex w-full py-2 justify-between">
-            <CardTitle className="text-sm">
+            <CardTitle className="text-[#262626] text-base capitalize font-medium">
               {chartTitle || "Chart Title"}
             </CardTitle>
             <div

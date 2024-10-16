@@ -180,7 +180,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <div className="w-full flex items-center justify-between text-xs py-3">
               <div className="flex items-center align-middle">
                 <Image src={List} alt="theme" width={20} height={20} />
-                <p className="text-text-disabled font-bold">
+                <p className="text-text-disabled font-bold capitalize">
                   {task.content.status}
                 </p>
               </div>
@@ -213,11 +213,17 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               />
             </div>
             <div className="w-full flex items-center justify-between">
-              <div className="flex -space-x-2.5 overflow-hidden">
+              <div className="flex -space-x-2.5">
                 {task.content.userAvatars.map((avatar, index) => (
                   <Avatar
                     key={index}
                     className="h-6 w-6 rounded-full border-2 border-white"
+                    style={{
+                      boxShadow:
+                        index !== task.content.userAvatars.length - 1
+                          ? "3px 4px 8px 0px rgba(53, 37, 19, 0.31)"
+                          : undefined,
+                    }}
                   >
                     <AvatarImage src={avatar} alt="Avatar" />
                     <AvatarFallback>{avatar.charAt(0)}</AvatarFallback>

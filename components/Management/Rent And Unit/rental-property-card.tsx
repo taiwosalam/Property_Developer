@@ -159,7 +159,7 @@ const RentalPropertyCard: React.FC = () => {
               {activeStatuses.map((status) => (
                 <div
                   key={status}
-                  className="w-4 h-4 rounded-full"
+                  className="w-[15px] h-[15px] rounded-full"
                   style={{ backgroundColor: getBackgroundColor(status) }}
                 ></div>
               ))}
@@ -171,9 +171,8 @@ const RentalPropertyCard: React.FC = () => {
 
           {/* Hover information */}
           <div
-            className={`absolute inset-0 bg-white py-2 transition-all duration-300 flex items-center justify-between ${
-              isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
+            className={`absolute inset-0 bg-white py-2 transition-all duration-300 flex items-center justify-between ${isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
           >
             <div className="text-sm">
               <span className="font-semibold text-text-label text-xs">

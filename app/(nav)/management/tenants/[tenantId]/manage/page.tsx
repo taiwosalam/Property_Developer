@@ -138,13 +138,12 @@ const ManageTenant = () => {
             </colgroup>
             <thead>
               <tr>
-                <th></th>
-                <th>name</th>
-                <th>payment ID</th>
+                <th>S/N</th>
+                <th>payment date</th>
+                <th>amount paid</th>
                 <th>details</th>
-                <th>credit</th>
-                <th>debit</th>
-                <th>date</th>
+                <th>start date</th>
+                <th>due date</th>
               </tr>
             </thead>
             <tbody>
@@ -153,27 +152,19 @@ const ManageTenant = () => {
                 .map((_, idx) => (
                   <tr key={idx}>
                     <td>
-                      <Picture
-                        src={Avatar}
-                        alt="profile picture"
-                        size={40}
-                        rounded
-                      />
+                      <p>{idx + 1}</p>
                     </td>
                     <td>
-                      <p>Abimbola Adedeji</p>
+                      <p>12/01/2023</p>
                     </td>
                     <td>
-                      <p>22132876554444</p>
+                      <p>₦115,000.00</p>
                     </td>
                     <td>
                       <p>Rent cost: Start date: Sept 22, 2020</p>
                     </td>
                     <td>
-                      <p className="text-status-success-3">₦ 100,000</p>
-                    </td>
-                    <td>
-                      <p className="text-status-error-primary">--- ---</p>
+                      <p>12/01/2023</p>
                     </td>
                     <td>
                       <p>12/12/12</p>

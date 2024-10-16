@@ -37,6 +37,7 @@ interface FilterBarProps {
     title: string;
     description: string;
     video?: string;
+    readingLink?: string;
   };
   gridView?: boolean;
   setGridView?: () => void;
