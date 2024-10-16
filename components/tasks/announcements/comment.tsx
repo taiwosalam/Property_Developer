@@ -89,9 +89,6 @@ const Comment: React.FC<CommentProps> = ({
           <p className="ml-10 my-2 text-neutral-4 text-[10px] font-medium">
             Replies
           </p>
-          {/* {replies.map((r) => (
-            <Comment key={r.id} {...r} />
-          ))} */}
           <div className="relative ml-10 pl-5 border-l border-neutral-300">
             {replies.map((r) => (
               <Comment key={r.id} {...r} />

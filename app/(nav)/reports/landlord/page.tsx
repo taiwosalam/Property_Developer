@@ -38,9 +38,26 @@ const LandlordsReport = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard title="Total" newData={23} total={200} />
       </div>
-      <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="Landlord/Landlady" aboutPageModalData={
-        { title: "Landlord/Landlady", description: "This page contains a list of Landlord/Landlady on the platform." }
-      } searchInputPlaceholder="Search for Landlord/Landlady" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsLandlordsFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        exports
+        isDateTrue
+        onStateSelect={() => {}}
+        pageTitle="Landlord/Landlady"
+        aboutPageModalData={{
+          title: "Landlord/Landlady",
+          description:
+            "This page contains a list of Landlord/Landlady on the platform.",
+        }}
+        searchInputPlaceholder="Search for Landlord/Landlady"
+        handleFilterApply={() => {}}
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={
+          reportsLandlordsFilterOptionsWithDropdown
+        }
+        hasGridListToggle={false}
+        exportHref="/reports/landlord/export"
+      />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -62,7 +79,7 @@ const LandlordsReport = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

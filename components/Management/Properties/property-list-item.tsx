@@ -33,7 +33,10 @@ const PropertyListItem: React.FC<PropertyProps> = ({
       <ImageModal
         isOpen={screenModal}
         onClose={() => setScreenModal(false)}
-        images={sampleImages.map((image) => image.src)}
+        images={sampleImages.map((image, i) => ({
+          src: image.src,
+          isVideo: false,
+        }))}
         currentIndex={0}
       />
       <div className="flex items-center gap-4 justify-between overflow-y-auto">

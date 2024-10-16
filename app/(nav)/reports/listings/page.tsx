@@ -49,9 +49,23 @@ const ListingsReport = () => {
         <ManagementStatistcsCard title="Published" newData={23} total={200} />
         <ManagementStatistcsCard title="Unpublished" newData={23} total={200} />
       </div>
-      <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="Listings" aboutPageModalData={
-        { title: "Listings", description: "This page contains a list of Listings on the platform." }
-      } searchInputPlaceholder="Search for Listings" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsListingsFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        exports
+        isDateTrue
+        onStateSelect={() => {}}
+        pageTitle="Listings"
+        aboutPageModalData={{
+          title: "Listings",
+          description: "This page contains a list of Listings on the platform.",
+        }}
+        searchInputPlaceholder="Search for Listings"
+        handleFilterApply={() => {}}
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={reportsListingsFilterOptionsWithDropdown}
+        hasGridListToggle={false}
+        exportHref="/reports/listings/export"
+      />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -73,7 +87,7 @@ const ListingsReport = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

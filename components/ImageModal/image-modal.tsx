@@ -4,33 +4,15 @@ import { Dialog } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   wrap,
-  //   variants as sliderVariants,
+  variants as sliderVariants,
   swipeConfidenceThreshold,
   swipePower,
 } from "@/utils/slider";
 import { NextIcon, PreviousIcon } from "@/public/icons/icons";
 
-const sliderVariants = {
-  enter: (direction: number) => {
-    return {
-      x: direction > 0 ? "100%" : "-100%",
-    };
-  },
-  center: {
-    zIndex: 1,
-    x: 0,
-  },
-  exit: (direction: number) => {
-    return {
-      zIndex: 0,
-      x: direction < 0 ? "100%" : "-100%",
-    };
-  },
-};
-
 interface ImageModalProps {
   isOpen: boolean;
-  images: string[];
+  images: { src: string; isVideo: boolean }[];
   currentIndex: number;
   onClose: () => void;
 }
@@ -92,7 +74,7 @@ const ImageModal: React.FC<ImageModalProps> = ({
         <AnimatePresence initial={false} custom={direction}>
           <motion.img
             key={page}
-            src={images[imageIndex]}
+            src={images[imageIndex].src}
             alt={`Image ${imageIndex + 1}`}
             custom={direction}
             variants={sliderVariants}

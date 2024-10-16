@@ -41,9 +41,23 @@ const TrackingReport = () => {
 
   return (
     <div className="space-y-9">
-      <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="Tracking" aboutPageModalData={
-        { title: "Tracking", description: "This page contains a list of Tracking on the platform." }
-      } searchInputPlaceholder="Search for audit trail" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsListingsFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        exports
+        isDateTrue
+        onStateSelect={() => {}}
+        pageTitle="Tracking"
+        aboutPageModalData={{
+          title: "Tracking",
+          description: "This page contains a list of Tracking on the platform.",
+        }}
+        searchInputPlaceholder="Search for audit trail"
+        handleFilterApply={() => {}}
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={reportsListingsFilterOptionsWithDropdown}
+        hasGridListToggle={false}
+        exportHref="/reports/tracking/export"
+      />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -65,7 +79,7 @@ const TrackingReport = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };
