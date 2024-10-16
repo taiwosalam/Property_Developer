@@ -5,7 +5,7 @@ import CloseCircle from "@/public/icons/close-circle.svg";
 import { PlayIconButton } from "@/public/icons/icons";
 import { ModalTrigger } from "../Modal/modal";
 import React from 'react'
-import ReactPlayer from 'react-player/lazy'
+// import ReactPlayer from 'react-player/lazy'
 
 const AboutPage: React.FC<AboutPageProps> = ({
   title,

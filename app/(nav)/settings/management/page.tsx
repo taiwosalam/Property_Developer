@@ -32,77 +32,81 @@ const Management = () => {
           <div className="flex">
             <div className="flex justify-between w-full max-w-[900px]">
               <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view and reply branch messages
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can add/delete branch properties
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view and edit branch profile
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can upgrade or downgrade branch staff account
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view branch request
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can approve/decline account officer property added
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can check in visitors
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view all request
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>Can create Examine</DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
+                  Can create Examine
+                </DocumentCheckbox>
+                <DocumentCheckbox darkText checked={true}>
                   Can manage inspections
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can create and manage announcement
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can add and manage tenants/occupants
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view and reply branch reviews
                 </DocumentCheckbox>
               </div>
               <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can add/delete branch staff
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can add/delete branch staff
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view branch account statement
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can approve/decline account officer portfolio
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can add and manage landlords/landlady
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can approve/decline account officer announcement
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>Can view complain</DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
+                  Can view complain
+                </DocumentCheckbox>
+                <DocumentCheckbox darkText checked={true}>
                   Can create inventory
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can manage calender
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can create service provider
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can check in and manage vehicle records
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can approve and refund caution deposit
                 </DocumentCheckbox>
               </div>
@@ -119,57 +123,57 @@ const Management = () => {
           <div className="flex">
             <div className="flex justify-between w-full max-w-[900px]">
               <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can manage assign tenants/occupants
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can manage assign properties
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view service provider
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can create announcement
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can add properties to branch
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view assign request
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can create branch inventory
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can reply assign messages
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can check in and manage vehicle records
                 </DocumentCheckbox>
               </div>
               <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can manage assign landlord/landlady
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can approve/ decline assign task
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view assign account statement
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view assign account statement
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can check in visitors
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can check calendars
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can create branch examine
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can reply to inspections
                 </DocumentCheckbox>
               </div>
@@ -186,43 +190,45 @@ const Management = () => {
           <div className="flex">
             <div className="flex justify-between w-full max-w-[900px]">
               <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can be added to task
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view assign complain
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view announcement
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>Can create examine</DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
+                  Can create examine
+                </DocumentCheckbox>
+                <DocumentCheckbox darkText checked={true}>
                   Can reply to inspections
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view service provider
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can check in vehicle records
                 </DocumentCheckbox>
               </div>
               <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can check in visitors
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view assign request
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can create inventory
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Cab reply assign messages
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can check calendars
                 </DocumentCheckbox>
-                <DocumentCheckbox darkText>
+                <DocumentCheckbox darkText checked={true}>
                   Can view and reply assign messages
                 </DocumentCheckbox>
               </div>

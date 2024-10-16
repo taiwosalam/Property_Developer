@@ -53,13 +53,20 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
           planTitle.toLowerCase().includes("premium") ? "Premium" : "Basic"
         } Features`;
 
-  const themeColor = isFree
-    ? "border-[#38BDF8] text-[#38BDF8]  "
-    : "text-brand-9 border-brand-9";
-
+        const getThemeColor = () => {
+          if (isFree) {
+            return "border-[#38BDF8] text-[#38BDF8]";
+          } else if (planTitle.toLowerCase().includes("premium")) {
+            return "border-[#8C62FF] text-[#8C62FF] bg-[#F4F9FF]";
+          } else {
+            return "border-brand-9 text-brand-9";
+          }
+        };
+      
+  const themeColor = getThemeColor();
   return (
     <div
-      className={`max-w-[420px] flex flex-col justify-between pricingCard bg-white rounded-lg shadow-md hover:border-2 ${themeColor}`}
+      className={`max-w-[344px] flex flex-col justify-between pricingCard bg-white rounded-lg shadow-lg hover:border-2 ${themeColor}`}
     >
       <PlanHeader
         planTitle={planTitle}
