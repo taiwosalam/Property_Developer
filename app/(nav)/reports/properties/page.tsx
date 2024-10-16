@@ -44,9 +44,26 @@ const PropertiesReport = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard title="Total" newData={23} total={200} />
       </div>
-      <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="Properties Report" aboutPageModalData={
-        { title: "Properties Report", description: "This page contains a list of Properties Report on the platform." }
-      } searchInputPlaceholder="Search for Properties Report" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsPropertiessFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        exports
+        isDateTrue
+        onStateSelect={() => {}}
+        pageTitle="Properties Report"
+        aboutPageModalData={{
+          title: "Properties Report",
+          description:
+            "This page contains a list of Properties Report on the platform.",
+        }}
+        searchInputPlaceholder="Search for Properties Report"
+        handleFilterApply={() => {}}
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={
+          reportsPropertiessFilterOptionsWithDropdown
+        }
+        hasGridListToggle={false}
+        exportHref="/reports/properties/export"
+      />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -68,7 +85,7 @@ const PropertiesReport = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

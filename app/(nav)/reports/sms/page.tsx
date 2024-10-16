@@ -55,9 +55,22 @@ const SMSReport = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard title="Total SMS" newData={23} total={200} />
       </div>
-      <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="sms" aboutPageModalData={
-        { title: "sms", description: "This page contains a list of sms on the platform." }
-      } searchInputPlaceholder="Search for sms" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsSmsFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        isDateTrue
+        onStateSelect={() => {}}
+        pageTitle="SMS"
+        aboutPageModalData={{
+          title: "sms",
+          description: "This page contains a list of sms on the platform.",
+        }}
+        searchInputPlaceholder="Search for sms"
+        handleFilterApply={() => {}}
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={reportsSmsFilterOptionsWithDropdown}
+        hasGridListToggle={false}
+        exportHref="/reports/sms/export"
+      />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -90,7 +103,7 @@ const SMSReport = () => {
           <SMSModal {...(selectedSMS as SMSRecord)} />
         </ModalContent>
       </Modal>
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

@@ -41,9 +41,24 @@ const VehiclesRecordReport = () => {
 
   return (
     <div className="space-y-9">
-      <FilterBar azFilter isDateTrue exports onStateSelect={() => { }} pageTitle="vehicle records" aboutPageModalData={
-        { title: "vehicle records", description: "This page contains a list of vehicle records on the platform." }
-      } searchInputPlaceholder="Search for vehicle records" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsVehiclesFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        isDateTrue
+        exports
+        onStateSelect={() => {}}
+        pageTitle="vehicle records"
+        aboutPageModalData={{
+          title: "vehicle records",
+          description:
+            "This page contains a list of vehicle records on the platform.",
+        }}
+        searchInputPlaceholder="Search for vehicle records"
+        handleFilterApply={() => {}}
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={reportsVehiclesFilterOptionsWithDropdown}
+        hasGridListToggle={false}
+        exportHref="/reports/vehicles-record/export"
+      />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -65,7 +80,7 @@ const VehiclesRecordReport = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

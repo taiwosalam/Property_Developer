@@ -6,14 +6,15 @@ import Notes from "@/components/tasks/complainid/notes";
 import TaskStatusProgress from "@/components/tasks/complainid/task-status-progress";
 
 const ManageComplain = () => {
-  const images = [
-    "/empty/SampleProperty.jpeg",
-    "/empty/SampleProperty2.jpeg",
-    "/empty/SampleProperty3.jpeg",
-    "/empty/SampleProperty4.png",
-    "/empty/SampleProperty5.jpg",
-    "/empty/SampleProperty6.jpg",
-  ];
+ const images = [
+   { src: "/empty/SampleProperty.jpeg", isVideo: false },
+   { src: "/empty/SampleProperty2.jpeg", isVideo: true },
+   { src: "/empty/SampleProperty3.jpeg", isVideo: false },
+   { src: "/empty/SampleProperty4.png", isVideo: false },
+   { src: "/empty/SampleProperty5.jpg", isVideo: false },
+   { src: "/empty/SampleProperty6.jpg", isVideo: false },
+   { src: "/empty/SampleProperty.jpeg", isVideo: false },
+ ];
 
   return (
     <section className="w-full lg:flex lg:items-start lg:gap-x-10">

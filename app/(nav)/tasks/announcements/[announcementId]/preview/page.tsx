@@ -12,12 +12,13 @@ const PreviewAnnouncement = () => {
   const router = useRouter();
   const { announcementId } = useParams();
   const images = [
-    "/empty/SampleProperty.jpeg",
-    "/empty/SampleProperty2.jpeg",
-    "/empty/SampleProperty3.jpeg",
-    "/empty/SampleProperty4.png",
-    "/empty/SampleProperty5.jpg",
-    "/empty/SampleProperty6.jpg",
+    { src: "/empty/SampleProperty.jpeg", isVideo: false },
+    { src: "/empty/SampleProperty2.jpeg", isVideo: true },
+    { src: "/empty/SampleProperty3.jpeg", isVideo: false },
+    { src: "/empty/SampleProperty4.png", isVideo: false },
+    { src: "/empty/SampleProperty5.jpg", isVideo: false },
+    { src: "/empty/SampleProperty6.jpg", isVideo: false },
+    { src: "/empty/SampleProperty.jpeg", isVideo: false },
   ];
   return (
     <div className="space-y-6">
@@ -43,15 +44,16 @@ const PreviewAnnouncement = () => {
           Manage Announcement
         </Button>
       </div>
-      <div className="flex flex-col gap-y-5 gap-x-[3.5%] lg:flex-row lg:items-start">
+      <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         {/* Left Side */}
-        <div className="lg:w-[58%]">
+        <div className="lg:w-[58%] h-[500px] overflow-y-auto custom-round-scrollbar pr-2">
           <AnnouncementPost />
         </div>
         {/* Right Side */}
         <div className="flex-1 space-y-5">
           <AttachedImagesGrid images={images} />
           <AnnouncementInfo
+            containerClassName="rounded-lg"
             heading="summary"
             info={{
               branch: "All/ Bodija, Moniya, Tokyo",
