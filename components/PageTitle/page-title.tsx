@@ -26,6 +26,7 @@ const PageTitle: React.FC<PageTitleProps> = ({ title, aboutPageModalData }) => {
             title={aboutPageModalData?.title ?? ""}
             description={aboutPageModalData?.description}
             video={aboutPageModalData?.video}
+            readingLink={aboutPageModalData?.readingLink}
           />
         </ModalContent>
       </Modal>
