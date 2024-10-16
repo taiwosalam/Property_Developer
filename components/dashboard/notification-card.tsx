@@ -45,15 +45,15 @@ const NotificationCard: React.FC<notificationCardProps> = ({
 
   return (
     <Card
-      className={clsx("w-full border-none", className)}
+      className={clsx("w-full min-h-[340px] border-none", className)}
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <CardHeader>
+      <CardHeader className="p-4 pb-[10px]">
         <CardTitle className="flex items-center justify-between text-[16px]">
-          <p className="font-medium">{sectionHeader}</p>
+          <p className="text-black font-medium">{sectionHeader}</p>
           <p
             className={clsx(
               "flex items-center font-medium",
@@ -66,7 +66,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent
-        className={clsx("grid gap-8", {
+        className={clsx("grid gap-4 p-4 pt-0", {
           "py-[55px] px-[40px]": notifications.length === 0,
         })}
       >

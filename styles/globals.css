@@ -352,3 +352,23 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
 .undo-text-transform {
   text-transform: unset !important;
 }
+
+/* ------------------------ */
+.loader {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 4px solid #0033C4;
+  border-left-color: transparent;
+  animation: spin89345 1s linear infinite;
+}
+
+@keyframes spin89345 {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

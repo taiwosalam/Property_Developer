@@ -32,6 +32,7 @@ import { getOneLandlord } from "../../../data";
 import { useAuthStore } from "@/store/authstrore";
 import { useParams, useRouter } from "next/navigation";
 import { LandlordPageData } from "../../../types";
+import GlobalPageLoader from "@/components/Loader/global-page-loader";
 
 const EditLandlord = () => {
   const states = getAllStates();
@@ -83,7 +84,7 @@ const EditLandlord = () => {
     // fetchLandlords();
   }, [accessToken, landlordId, router]);
 
-  // if (loading) return <div>Loading...</div>;
+  // if (loading) return <GlobalPageLoader />;
 
   return (
     <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">

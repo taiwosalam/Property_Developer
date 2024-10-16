@@ -25,6 +25,7 @@ import FilterButton from "@/components/FilterButton/filter-button";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import GlobalPageLoader from "@/components/Loader/global-page-loader";
 
 const Tenants = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -216,7 +217,7 @@ const Tenants = () => {
     { id: "6", accessor: "manage/chat" },
   ];
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <GlobalPageLoader />;
   if (error) return <div>Error: {error.message}</div>;
 
   return (
@@ -251,11 +252,23 @@ const Tenants = () => {
         </Modal>
       </div>
 
-      <FilterBar azFilter gridView={gridView}
+      <FilterBar
+        azFilter
+        gridView={gridView}
         setGridView={setGridView}
-        setListView={setListView} onStateSelect={onStateSelect} pageTitle="Tenants/Occupants (Users)" aboutPageModalData={
-          { title: "Tenants/Occupants (Users)", description: "This page contains a list of all tenants and occupants" }
-        } searchInputPlaceholder="Search for Tenants & Occupants" handleFilterApply={handleFilterApply} isDateTrue filterOptionsWithRadio={tenantFiltersRadio} filterWithOptionsWithDropdown={tenantFilterOptionssWithDropdown} />
+        setListView={setListView}
+        onStateSelect={onStateSelect}
+        pageTitle="Tenants/Occupants (Users)"
+        aboutPageModalData={{
+          title: "Tenants/Occupants (Users)",
+          description: "This page contains a list of all tenants and occupants",
+        }}
+        searchInputPlaceholder="Search for Tenants & Occupants"
+        handleFilterApply={handleFilterApply}
+        isDateTrue
+        filterOptionsWithRadio={tenantFiltersRadio}
+        filterWithOptionsWithDropdown={tenantFilterOptionssWithDropdown}
+      />
       <section>
         {gridView ? (
           <AutoResizingGrid minWidth={284} gap={16}>
