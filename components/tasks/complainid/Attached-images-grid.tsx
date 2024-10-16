@@ -1,3 +1,4 @@
+"use client";
 import { ChevronLeft, PlayIconButton2 } from "@/public/icons/icons";
 import Image from "next/image";
 import { useState } from "react";
