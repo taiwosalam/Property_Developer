@@ -47,6 +47,7 @@ const Maintenance = () => {
         </div>
       </div>
       <FilterBar
+        hasGridListToggle={false}
         azFilter
         onStateSelect={() => {}}
         pageTitle="Maintenance"
@@ -55,7 +56,7 @@ const Maintenance = () => {
           description:
             "This page contains a list of Maintenance on the platform.",
         }}
-        searchInputPlaceholder="Search for maintenance"
+        searchInputPlaceholder="Search maintenance"
         handleFilterApply={() => {}}
         isDateTrue
         filterOptions={[]}

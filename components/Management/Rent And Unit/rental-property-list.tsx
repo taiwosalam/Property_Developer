@@ -6,6 +6,7 @@ import { CameraIcon } from "lucide-react";
 import { DetailItem } from "../detail-item";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import { images } from "@/components/PopupSlider/data";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 const RentalPropertyListCard = () => {
   const [isOpened, setIsOpened] = useState(false);
@@ -25,8 +26,8 @@ const RentalPropertyListCard = () => {
           ))}
         </div>
       </div>
-      <div className="w-full flex items-center gap-4 py-4 border-y border-gray-200">
-        <div className="col-span-2 grid grid-cols-2 gap-x-8 gap-y-4 flex-1">
+      <div className="flex items-center gap-4 py-4 border-y border-gray-200 overflow-y-auto">
+        <div className="flex-grow-1 flex-shrink-0 grid grid-cols-2 gap-x-2 gap-y-4 w-fit xl:max-w-[calc(100%-200px-16px)]">
           <DetailItem
             label="Unit Details"
             value="Newly Built 5 Bedroom Detached Duplex"
@@ -39,16 +40,17 @@ const RentalPropertyListCard = () => {
           <DetailItem
             label="Tenants Name"
             value={
-              <span className="flex items-center">
-                David Ajala <span className="ml-1 text-green-500">•</span>
-              </span>
+              <p className="underline underline-offset-4 flex items-center">
+                David Ajala <BadgeIcon color="red" />
+              </p>
             }
           />
           <DetailItem label="Due Date" value="12/12/2024" />
         </div>
         <div
-          className="flex justify-end items-center relative w-[200px] h-[200px] cursor-pointer"
+          className="flex-shrink-0 relative w-[200px] h-[200px]"
           onClick={() => setIsOpened(true)}
+          role="button"
         >
           <Image
             src="/empty/SampleProperty3.jpeg"

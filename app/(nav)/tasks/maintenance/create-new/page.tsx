@@ -123,22 +123,24 @@ const CreateMaintenace = () => {
             onChange={handleMaintenanceCostChange}
             value={maintenanceCost}
           />
-          <TextArea
-            id="maintenance_quotation"
-            label="Maintenance Quotation"
-            inputSpaceClassName="bg-white"
-          />
-          <TextArea
-            id="work_details"
-            label="Work Details"
-            inputSpaceClassName="bg-white"
-          />
+          <div className="col-span-full grid gap-4 md:gap-5 md:grid-cols-2">
+            <TextArea
+              id="maintenance_quotation"
+              label="Maintenance Quotation"
+              inputSpaceClassName="bg-white"
+            />
+            <TextArea
+              id="work_details"
+              label="Work Details"
+              inputSpaceClassName="bg-white"
+            />
+          </div>
         </div>
         <div
-          className="sticky h-[80px] bottom-0 py-5 px-[25px] lg:px-[60px] bg-white flex items-center justify-between gap-10"
+          className="sticky bottom-0 py-5 px-[25px] lg:px-[60px] bg-white flex items-center justify-between gap-x-10 gap-y-4 flex-wrap"
           style={{ boxShadow: "0px -2px 10px 0px rgba(0, 0, 0, 0.05)" }}
         >
-          <div className="flex items-center gap-2 text-sm text-text-secondary">
+          <div className="flex flex-wrap items-center gap-2 text-sm text-text-secondary">
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
