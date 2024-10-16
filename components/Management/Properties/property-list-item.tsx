@@ -36,54 +36,55 @@ const PropertyListItem: React.FC<PropertyProps> = ({
         images={sampleImages.map((image) => image.src)}
         currentIndex={0}
       />
-      <div className="flex flex-col md:flex-row md:items-center gap-2 md:justify-between">
-        <div className="overflow-x-auto max-w-full flex-grow">
-          <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[40%,1fr]">
-            <div>
-              <p className="text-[#747474]">Last Updated</p>
-              <p className="text-black">23/04/2023</p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Annual Returns</p>
-              <p className="text-brand-primary font-bold">₦1,950,000</p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Total Units</p>
-              <p className="text-black">14 Units</p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Annual Income</p>
-              <p className="text-highlight font-bold">₦700,000</p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Available Units</p>
-              <p className="text-black">Abiola Moniya</p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Branch</p>
-              <p>Moniya Appartment</p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Mobile Tenants</p>
-              <p className="text-black">12</p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Account Officer</p>
-              <p className="text-black">Anikulapo Jesus</p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Web Tenants</p>
-              <p className="text-black">5</p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Address</p>
-              <p className="text-black">
-                Newly Built 5 Bedroom Detached Duplex
-              </p>
-            </div>
+      <div className="flex items-center gap-4 justify-between overflow-y-auto">
+        <div className="flex-grow-1 flex-shrink-0 text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[170px,1fr] xl:max-w-[calc(100%-220px-16px)] w-fit">
+          <div>
+            <p className="text-[#747474]">Last Updated</p>
+            <p className="text-black max-w-[198pxpx]">23/04/2023</p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Annual Returns</p>
+            <p className="text-brand-primary font-bold max-w-[198pxpx]">
+              ₦1,950,000
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Total Units</p>
+            <p className="text-black max-w-[198pxpx]">14 Units</p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Annual Income</p>
+            <p className="text-highlight font-bold max-w-[198pxpx]">₦700,000</p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Available Units</p>
+            <p className="text-black max-w-[198pxpx]">Abiola Moniya</p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Branch</p>
+            <p className="text-black max-w-[198pxpx]">Moniya Appartment</p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Mobile Tenants</p>
+            <p className="text-black max-w-[198pxpx]">12</p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Account Officer</p>
+            <p className="text-black max-w-[198pxpx]">Anikulapo Jesus</p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Web Tenants</p>
+            <p className="text-black max-w-[198pxpx]">5</p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Address</p>
+            <p className="text-black max-w-[198pxpx]">
+              Newly Built 5 Bedroom Detached Duplex
+            </p>
           </div>
         </div>
-        <div className="w-[220px] h-[220px] rounded-2xl relative overflow-hidden group cursor-pointer">
+
+        <div className="w-[220px] h-[220px] rounded-2xl relative overflow-hidden group cursor-pointer flex-shrink-0">
           <div
             role="button"
             className="absolute z-[10] inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -104,8 +105,9 @@ const PropertyListItem: React.FC<PropertyProps> = ({
           <Image src={Sample} alt={name} fill className="object-cover" />
         </div>
       </div>
+
       <hr className="my-4" />
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2">
           <p
             className={clsx(

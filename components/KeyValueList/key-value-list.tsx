@@ -7,9 +7,10 @@ import { KeyValueListProps } from "./types";
 import clsx from "clsx";
 
 export const KeyValueList = <T extends object>({
-  referenceObject,
+  styles,
   data = {},
   chunkSize = 3,
+  referenceObject,
   direction = "row",
 }: KeyValueListProps<T>) => {
   const keys = Object.keys(referenceObject) as Array<keyof T>; // Ensure keys are from the referenceObject
@@ -39,10 +40,13 @@ export const KeyValueList = <T extends object>({
                   key={`${chunkIndex}-${String(key)}`}
                   className="custom-flex-col gap-2"
                 >
-                  <p className="text-[#747474]">
+                  <p
+                    className="text-[#747474] whitespace-nowrap"
+                    style={styles?.[key]?.label}
+                  >
                     {String(key).split("_").join(" ")}
                   </p>
-                  <p className="text-black">
+                  <p className="text-black" style={styles?.[key]?.value}>
                     {/* Safely render the value or placeholder */}
                     {data[key] !== undefined ? String(data[key]) : "---"}
                   </p>
@@ -55,7 +59,8 @@ export const KeyValueList = <T extends object>({
                 {chunk.map((key) => (
                   <p
                     key={`${chunkIndex}-${String(key)}`}
-                    className="text-[#747474]"
+                    className="text-[#747474] whitespace-nowrap"
+                    style={styles?.[key]?.label}
                   >
                     {String(key).split("_").join(" ")}
                   </p>
@@ -66,6 +71,7 @@ export const KeyValueList = <T extends object>({
                   <p
                     key={`${chunkIndex}-${String(key)}`}
                     className="text-black"
+                    style={styles?.[key]?.value}
                   >
                     {/* Safely render the value or placeholder */}
                     {data[key] !== undefined ? String(data[key]) : "---"}
