@@ -3,7 +3,11 @@ import Pagination from "@/components/Pagination/pagination";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import VisitorRequestCard from "@/components/tasks/CallBack/RequestCard";
-import { VisitorRequestData, VisitorRequestFilterOptionsWithDropdown, type VisitorRequestDataDataType } from "./data";
+import {
+  VisitorRequestData,
+  VisitorRequestFilterOptionsWithDropdown,
+  type VisitorRequestDataDataType,
+} from "./data";
 import { type VisitorRequestCardProps } from "@/components/tasks/CallBack/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
@@ -36,9 +40,22 @@ const BookVisitorsPage = () => {
         <ManagementStatistcsCard total={12} title="Completed" newData={12} />
         <ManagementStatistcsCard total={12} title="Pending" newData={12} />
       </div>
-      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Book for Visitation" aboutPageModalData={
-        { title: "Book for Visitation", description: "This page contains a list of Book for Visitation on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={VisitorRequestFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        onStateSelect={() => {}}
+        pageTitle="Book for Visitation"
+        aboutPageModalData={{
+          title: "Book for Visitation",
+          description:
+            "This page contains a list of Book for Visitation on the platform.",
+        }}
+        searchInputPlaceholder="Search"
+        handleFilterApply={() => {}}
+        isDateTrue
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={VisitorRequestFilterOptionsWithDropdown}
+        hasGridListToggle={false}
+      />
       <AutoResizingGrid gap={28} minWidth={400}>
         {VisitorRequestData.map((details, index) => (
           <VisitorRequestCard

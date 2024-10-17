@@ -3,7 +3,10 @@
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import VacantUnitCard from "@/components/Listing/Units/vacant-unit-card";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { listingUnitOptionsWithRadio, lstingUnitOptionsWithDropdown } from "./data";
+import {
+  listingUnitOptionsWithRadio,
+  lstingUnitOptionsWithDropdown,
+} from "./data";
 
 const Units = () => {
   return (
@@ -25,9 +28,23 @@ const Units = () => {
           total={657}
         />
       </div>
-      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Vacant Units" aboutPageModalData={
-        { title: "Vacant Units", description: "This page contains a list of Vacant Units on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue={false} filterOptions={[]} filterWithOptionsWithDropdown={lstingUnitOptionsWithDropdown} filterOptionsWithRadio={listingUnitOptionsWithRadio} />
+      <FilterBar
+        azFilter
+        onStateSelect={() => {}}
+        pageTitle="Vacant Units"
+        aboutPageModalData={{
+          title: "Vacant Units",
+          description:
+            "This page contains a list of Vacant Units on the platform.",
+        }}
+        searchInputPlaceholder="Search"
+        handleFilterApply={() => {}}
+        isDateTrue={false}
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={lstingUnitOptionsWithDropdown}
+        filterOptionsWithRadio={listingUnitOptionsWithRadio}
+        hasGridListToggle={false}
+      />
       <div className="custom-flex-col gap-5">
         {Array(5)
           .fill(null)

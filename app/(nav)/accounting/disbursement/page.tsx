@@ -4,8 +4,6 @@ import React from "react";
 import Link from "next/link";
 
 // Images
-import PdfIcon from "@/public/icons/pdf-icon.svg";
-import ExcelIcon from "@/public/icons/excel-icon.svg";
 import ThreeDotsVertical from "@/public/icons/three-dots-vertical.svg";
 
 import Avatar from "@/public/empty/avatar.png";
@@ -14,7 +12,6 @@ import Avatar from "@/public/empty/avatar.png";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import { ExclamationMark } from "@/public/icons/icons";
-import SearchInput from "@/components/SearchInput/search-input";
 
 import {
   Dropdown,
@@ -24,10 +21,8 @@ import {
 
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import NewDisbursementModal from "@/components/Accounting/Disbursement/new-disbursement-modal";
-import SortButton from "@/components/FilterButton/sort-button";
-import FilterButton from "@/components/FilterButton/filter-button";
-import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { accountingDisbursementOptionsWithDropdown } from "./data";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Disbursement = () => {
   return (
@@ -49,41 +44,21 @@ const Disbursement = () => {
         </Modal>
       </div>
       <div className="custom-flex-col gap-4">
-        <div className="page-title-container">
-          <div></div>
-          <div className="flex items-center gap-4">
-            <SearchInput placeholder="Search for Staff and Branch" />
-            <SortButton />
-            <Modal>
-              <ModalTrigger asChild>
-                <FilterButton />
-              </ModalTrigger>
-              <ModalContent>
-                <FilterModal
-                  filterOptions={[]}
-                  date
-                  filterOptionsWithDropdown={accountingDisbursementOptionsWithDropdown}
-                  onApply={() => { }}
-                  onStateSelect={() => { }}
-                />
-              </ModalContent>
-            </Modal>
-            <Link
-              href={"/accounting/disbursement/export"}
-              className="flex items-center gap-2 py-[10px] px-4 rounded-lg border border-solid border-[#D0D5DD] bg-white"
-            >
-              <Picture src={PdfIcon} alt="pdf icon" size={20} />
-              <p className="text-[#344054] text-base font-medium">Export</p>
-            </Link>
-            <Link
-              href={"/accounting/disbursement/export"}
-              className="flex items-center gap-2 py-[10px] px-4 rounded-lg border border-solid border-[#D0D5DD] bg-white"
-            >
-              <Picture src={ExcelIcon} alt="excel icon" size={20} />
-              <p className="text-[#344054] text-base font-medium">Export</p>
-            </Link>
-          </div>
-        </div>
+        <FilterBar
+          azFilter
+          onStateSelect={() => {}}
+          searchInputPlaceholder="Search for disbursement"
+          handleFilterApply={() => {}}
+          isDateTrue
+          filterOptions={[]}
+          filterWithOptionsWithDropdown={
+            accountingDisbursementOptionsWithDropdown
+          }
+          hasGridListToggle={false}
+          exports
+          exportHref="/accounting/disbursement/export"
+        />
+
         <div className="rounded-lg w-full pb-[120px] overflow-x-scroll no-scrollbar">
           <table className="dash-table">
             <colgroup>

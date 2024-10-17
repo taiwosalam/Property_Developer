@@ -9,7 +9,10 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-record-modal";
 import CreateRecordModal from "@/components/tasks/vehicles-record/create-record-modal";
 import type { VehicleRecord } from "@/components/tasks/vehicles-record/types";
-import { VehicleRecordData, vehicleRecordFIltersOptionsWithDropdown } from "./data";
+import {
+  VehicleRecordData,
+  vehicleRecordFIltersOptionsWithDropdown,
+} from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const VehiclesRecordPage = () => {
@@ -52,9 +55,22 @@ const VehiclesRecordPage = () => {
           </ModalContent>
         </Modal>
       </div>
-      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Vehicle Record" aboutPageModalData={
-        { title: "Vehicle Record", description: "This page contains a list of Vehicle Record on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={vehicleRecordFIltersOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        onStateSelect={() => {}}
+        pageTitle="Vehicle Record"
+        aboutPageModalData={{
+          title: "Vehicle Record",
+          description:
+            "This page contains a list of Vehicle Record on the platform.",
+        }}
+        searchInputPlaceholder="Search"
+        handleFilterApply={() => {}}
+        isDateTrue
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={vehicleRecordFIltersOptionsWithDropdown}
+        hasGridListToggle={false}
+      />
       <CustomTable
         fields={fields}
         data={VehicleRecordData}
