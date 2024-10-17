@@ -1,3 +1,4 @@
+"use client"
 import Skeleton from "@mui/material/Skeleton";
 import PageTitle from "../PageTitle/page-title";
 
