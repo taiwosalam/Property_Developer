@@ -32,7 +32,7 @@ interface FilterBarProps {
   onStateSelect: (state: string) => void;
   isDateTrue: boolean;
   searchInputPlaceholder: string;
-  pageTitle: string;
+  pageTitle?: string;
   aboutPageModalData?: {
     title: string;
     description: string;
@@ -68,8 +68,15 @@ const FilterBar: React.FC<FilterBarProps> = ({
 }) => {
   return (
     <div className="page-title-container">
-      <PageTitle title={pageTitle} aboutPageModalData={aboutPageModalData} />
-      <div className="flex items-center gap-4 flex-wrap">
+      {pageTitle && (
+        <PageTitle title={pageTitle} aboutPageModalData={aboutPageModalData} />
+      )}
+      <div
+        className={clsx(
+          "flex items-center gap-4 flex-wrap",
+          !pageTitle && "ml-auto"
+        )}
+      >
         <SearchInput
           placeholder={searchInputPlaceholder}
           className="max-w-[250px] md:max-w-max"
