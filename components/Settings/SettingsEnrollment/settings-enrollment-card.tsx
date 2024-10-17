@@ -29,6 +29,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   decrementQuantity,
   isFree = false,
   onBillingTypeChange,
+  discountText,
 }) => {
   const handleBillingTypeChange = (type: "monthly" | "yearly") => {
     if (!isFree) {
@@ -53,16 +54,16 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
           planTitle.toLowerCase().includes("premium") ? "Premium" : "Basic"
         } Features`;
 
-        const getThemeColor = () => {
-          if (isFree) {
-            return "border-[#38BDF8] text-[#38BDF8]";
-          } else if (planTitle.toLowerCase().includes("premium")) {
-            return "border-[#8C62FF] text-[#8C62FF] bg-[#F4F9FF]";
-          } else {
-            return "border-brand-9 text-brand-9";
-          }
-        };
-      
+  const getThemeColor = () => {
+    if (isFree) {
+      return "border-[#38BDF8] text-[#38BDF8]";
+    } else if (planTitle.toLowerCase().includes("premium")) {
+      return "border-[#8C62FF] text-[#8C62FF] bg-[#F4F9FF]";
+    } else {
+      return "border-brand-9 text-brand-9";
+    }
+  };
+
   const themeColor = getThemeColor();
   return (
     <div
@@ -85,6 +86,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
           billingType={billingType}
           handleBillingTypeChange={handleBillingTypeChange}
           isFree={isFree}
+          discountText={discountText}
         />
         <QuantityCounter
           quantity={quantity}

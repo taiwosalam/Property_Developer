@@ -28,6 +28,7 @@ import { ModalTrigger } from "@/components/Modal/modal";
 import AddLandLordOrTenantForm from "@/components/Management/add-landlord-or-tenant-form";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import DirectorsForm from "./DirectorsForm";
+import RestrictUserForm from "./RestrictUserForm";
 
 const Others = () => {
   return (
@@ -40,7 +41,7 @@ const Others = () => {
             desc="The company specializes in managing tenants for both commercial and residential properties, as well as overseeing occupants within gated estates."
             icon="/icons/settingUserIcon.svg"
           />
-        <SettingsOthersType
+          <SettingsOthersType
             title="Facility Manager"
             desc="The company specializes in managing short-stay apartments, holiday homes, and hotels, catering to occupants for brief durations."
             icon="/icons/user-edit.svg"
@@ -92,26 +93,24 @@ const Others = () => {
             />
             <Modal>
               <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
-          <ModalTrigger>
-              <div className="flex flex-col items-center gap-1 justify-center">
-                <Image
-                  src="/icons/profile.svg"
-                  alt="add director"
-                  width={30}
-                  height={30}
-                />
-                <span> + Add new Profile </span>
-              </div>
-            </ModalTrigger>
-
+                <ModalTrigger>
+                  <div className="flex flex-col items-center gap-1 justify-center">
+                    <Image
+                      src="/icons/profile.svg"
+                      alt="add director"
+                      width={30}
+                      height={30}
+                    />
+                    <span> + Add new Profile </span>
+                  </div>
+                </ModalTrigger>
               </div>
               <ModalContent>
-              <LandlordTenantModalPreset
-                heading="Create New Director">
-                <DirectorsForm submitAction={() => {}} />
-              </LandlordTenantModalPreset>
-            </ModalContent>
-        </Modal>
+                <LandlordTenantModalPreset heading="Create New Director">
+                  <DirectorsForm submitAction={() => {}} />
+                </LandlordTenantModalPreset>
+              </ModalContent>
+            </Modal>
           </AutoResizingGrid>
         </div>
         <div className="flex justify-end mt-2">
@@ -149,44 +148,56 @@ const Others = () => {
           />
         </div>
 
-      {/* RESTRICTED USERS */}
-      <div className="custom-flex-col gap-6 mt-4">
-        <SettingsSectionTitle
-          title="Restricted Users"
-          desc="Please provide the details of the tenants, occupant, owner, landlord or landlady you wish to restrict from the group chat. Once restricted, they will not have access to chat in the group until the restriction is removed. You can click on the current card to delete or add restrictions."
-        />
-        <AutoResizingGrid minWidth={284} gap={16}>
-          <DirectorCard
-            name="Esq Abimbola Adedeji"
-            email="abimbola@gmail.com"
-            img="/empty/SampleLandlord.jpeg"
-            phone="+2348132086958"
-            icon="/icons/verified.svg"
+        {/* RESTRICTED USERS */}
+        <div className="custom-flex-col gap-6 mt-4">
+          <SettingsSectionTitle
+            title="Restricted Users"
+            desc="Please provide the details of the tenants, occupant, owner, landlord or landlady you wish to restrict from the group chat. Once restricted, they will not have access to chat in the group until the restriction is removed. You can click on the current card to delete or add restrictions."
           />
-          <DirectorCard
-            name="Esv Abimbola Adedeji"
-            email="abimbola@gmail.com"
-            img="/empty/SampleLandlord.jpeg"
-            phone="+2348132086958"
-            icon="/icons/verified-success.svg"
-          />
-          <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
-            <div className="flex flex-col items-center gap-1 justify-center">
-              <Image
-                src="/icons/profile.svg"
-                alt="add director"
-                width={30}
-                height={30}
-                />
-              <p> + Add new Profile </p>
-            </div>
-          </div>
-        </AutoResizingGrid>
-      </div>
-      <div className="flex justify-end mt-2">
+          <AutoResizingGrid minWidth={284} gap={16}>
+            <DirectorCard
+              name="Esq Abimbola Adedeji"
+              email="abimbola@gmail.com"
+              img="/empty/SampleLandlord.jpeg"
+              phone="+2348132086958"
+              icon="/icons/verified.svg"
+            />
+            <DirectorCard
+              name="Esv Abimbola Adedeji"
+              email="abimbola@gmail.com"
+              img="/empty/SampleLandlord.jpeg"
+              phone="+2348132086958"
+              icon="/icons/verified-success.svg"
+            />
+
+            <Modal>
+              <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
+                <ModalTrigger>
+                  <div className="flex flex-col items-center gap-1 justify-center">
+                    <Image
+                      src="/icons/profile.svg"
+                      alt="add director"
+                      width={30}
+                      height={30}
+                    />
+                    <span> + Add new Profile </span>
+                  </div>
+                </ModalTrigger>
+              </div>
+              <div className="w-[00px]">
+              <ModalContent>
+                <LandlordTenantModalPreset heading="Restrict User">
+                  <RestrictUserForm submitAction={() => {}} />
+                </LandlordTenantModalPreset>
+              </ModalContent>
+              </div>
+            </Modal>
+          </AutoResizingGrid>
+        </div>
+        <div className="flex justify-end mt-2">
           <SettingsUpdateButton />
         </div>
-    </SettingsSection>
+      </SettingsSection>
 
       {/* NOTIFICATIONS */}
       <SettingsSection title="Notifications">

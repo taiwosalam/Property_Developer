@@ -65,7 +65,8 @@ export const BillingTypeSelector: React.FC<{
   billingType: string;
   handleBillingTypeChange: (type: "monthly" | "yearly") => void;
   isFree: boolean;
-}> = ({ billingType, handleBillingTypeChange, isFree }) => (
+  discountText: string
+}> = ({ billingType, handleBillingTypeChange, isFree, discountText }) => (
   <div
     className={`flex w-full justify-center my-5 bg-brand-1 min-h-[54px] gap-5 py-2 rounded-md ${
       isFree ? "bg-opacity-40" : ""
@@ -76,12 +77,14 @@ export const BillingTypeSelector: React.FC<{
       billingType={billingType}
       handleBillingTypeChange={handleBillingTypeChange}
       isFree={isFree}
+      discountText={discountText}
     />
     <BillingTypeButton
       type="monthly"
       billingType={billingType}
       handleBillingTypeChange={handleBillingTypeChange}
       isFree={isFree}
+      discountText={discountText}
     />
   </div>
 );
@@ -90,9 +93,10 @@ export const BillingTypeSelector: React.FC<{
 export const BillingTypeButton: React.FC<{
   type: "monthly" | "yearly";
   billingType: string;
+  discountText: string;
   handleBillingTypeChange: (type: "monthly" | "yearly") => void;
   isFree: boolean;
-}> = ({ type, billingType, handleBillingTypeChange, isFree }) => (
+}> = ({ type, billingType, handleBillingTypeChange, isFree, discountText }) => (
   <div
     className={`flex flex-col items-center justify-center px-6 ${
       billingType === type
@@ -117,7 +121,7 @@ export const BillingTypeButton: React.FC<{
           isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : "text-brand-9"
         }`}
       >
-        {isFree ? "No stress" : billingType === "yearly" ? "Save 2.5%" : "Get Discount"}
+    {isFree ? "No stress" : billingType === "yearly" ? discountText : "Get Discount"}
       </Link>
     )}
   </div>

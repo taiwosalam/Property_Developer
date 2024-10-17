@@ -15,28 +15,30 @@ const Enrollment = () => {
 
   const [basicQuantity, setBasicQuantity] = useState(1);
   const [premiumQuantity, setPremiumQuantity] = useState(1);
+  let discountText = "Save 2.5%";
 
-const calculatePrice = (
-  billingType: "monthly" | "yearly",
-  quantity: number,
-  baseMonthly: number,
-  baseYearly: number
-) => {
+  const calculatePrice = (
+    billingType: "monthly" | "yearly",
+    quantity: number,
+    baseMonthly: number,
+    baseYearly: number
+  ) => {
   // Limit quantity based on billing type
   const limitedQuantity = billingType === "yearly" ? Math.min(quantity, 5) : quantity;
 
-  let basePrice = billingType === "monthly" ? baseMonthly : baseYearly;
+  let basePrice = billingType === "monthly" ? baseMonthly : baseMonthly * 12;
   let totalPrice = 0;
 
   if (billingType === "monthly") {
     totalPrice = basePrice * limitedQuantity;
   } else { // yearly
-    const discounts = [0, 0.04, 0.06, 0.08, 0.10];
+    const discounts = [0.025, 0.04, 0.06, 0.08, 0.10];
     for (let i = 1; i <= limitedQuantity; i++) {
       const discountPercentage = discounts[i - 1];
       const discountedPrice = basePrice * (1 - discountPercentage);
       totalPrice += discountedPrice;
     }
+    discountText = `Save ${(discounts[limitedQuantity - 1] * 100).toFixed(0)}%`;
   }
 
   return totalPrice.toLocaleString("en-NG", {
@@ -90,7 +92,8 @@ const calculatePrice = (
             desc="Free plans offer a reduced set of features in comparison to paid alternatives, but provide users with trial options to explore the software without time constraints."
             planFor=""
             price="₦000.00"
-            discount=""
+            discount={discountText}
+            discountText={discountText}
             duration=""
             showFeatures={showFeatures}
             setShowFeatures={setShowFeatures}
@@ -144,6 +147,7 @@ const calculatePrice = (
             payMonthly={payMonthly}
             payYearly={payYearly}
             onSelect={() => {}}
+            discountText={discountText}
           />
 
           {/* Premium Plan */}
@@ -158,7 +162,7 @@ const calculatePrice = (
               117000
             )}
             discount={premiumBillingType === "monthly" ? `(Billed at ₦144,000/year)`
-                : `Save ${(12000 * 12 - 120000).toLocaleString("en-NG", {style: "currency", currency: "NGN", })} annually`
+                : `(Billed at ₦12,000/month)`
             }
             duration={premiumBillingType === "monthly" ? `${premiumQuantity} ${ premiumQuantity === 1 ? "Month" : "Months" }`
                 : `${premiumQuantity} ${ premiumQuantity === 1 ? "Year" : "Years" }`}
@@ -182,6 +186,7 @@ const calculatePrice = (
             payMonthly={payMonthly}
             payYearly={payYearly}
             onSelect={() => {}}
+            discountText={discountText}
           />
         </div>
 
