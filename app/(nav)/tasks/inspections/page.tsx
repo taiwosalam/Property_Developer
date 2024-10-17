@@ -27,14 +27,27 @@ const InspectionPage = () => {
           total={657}
         />
       </div>
-      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Inspection" aboutPageModalData={
-        { title: "Inspection", description: "This page contains a list of Inspection on the platform." }
-      } searchInputPlaceholder="Search for Inspection" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={inspectionFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        onStateSelect={() => {}}
+        pageTitle="Inspection"
+        aboutPageModalData={{
+          title: "Inspection",
+          description:
+            "This page contains a list of Inspection on the platform.",
+        }}
+        searchInputPlaceholder="Search for Inspection"
+        handleFilterApply={() => {}}
+        isDateTrue
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={inspectionFilterOptionsWithDropdown}
+        hasGridListToggle={false}
+      />
       <AutoResizingGrid minWidth={505} gap={32}>
         <InspectionCard type="physical" />
         <InspectionCard type="virtual" />
       </AutoResizingGrid>
-      <Pagination totalPages={5} currentPage={1} onPageChange={() => { }} />
+      <Pagination totalPages={5} currentPage={1} onPageChange={() => {}} />
     </div>
   );
 };

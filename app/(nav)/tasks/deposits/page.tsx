@@ -4,7 +4,11 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import DepositRequestCard from "@/components/tasks/CallBack/RequestCard";
 import { type DepositRequestCardProps } from "@/components/tasks/CallBack/types";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { DepositRequestData, depositRequestOptionsWithDropdown, type DepositRequestDataType } from "./data";
+import {
+  DepositRequestData,
+  depositRequestOptionsWithDropdown,
+  type DepositRequestDataType,
+} from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const transformToDepositRequestCardProps = (
@@ -35,9 +39,22 @@ const DepositRequest = () => {
         <ManagementStatistcsCard title="Completed" newData={657} total={34} />
         <ManagementStatistcsCard title="Pending" newData={657} total={34} />
       </div>
-      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Caution Deposit Request" aboutPageModalData={
-        { title: "Caution Deposit Request", description: "This page contains a list of Caution Deposit Request on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={depositRequestOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        onStateSelect={() => {}}
+        pageTitle="Caution Deposit Request"
+        aboutPageModalData={{
+          title: "Caution Deposit Request",
+          description:
+            "This page contains a list of Caution Deposit Request on the platform.",
+        }}
+        searchInputPlaceholder="Search"
+        handleFilterApply={() => {}}
+        isDateTrue
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={depositRequestOptionsWithDropdown}
+        hasGridListToggle={false}
+      />
       <AutoResizingGrid gap={28} minWidth={400}>
         {DepositRequestData.map((details, index) => (
           <DepositRequestCard

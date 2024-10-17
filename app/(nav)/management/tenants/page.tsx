@@ -61,7 +61,7 @@ const Tenants = () => {
   }, [accessToken]);
 
   useEffect(() => {
-    // fetchLandlords();
+    fetchLandlords();
   }, [fetchLandlords]);
 
   const states = getAllStates();
@@ -212,11 +212,7 @@ const Tenants = () => {
 
   if (loading)
     return (
-      <CustomLoader
-        pageTitle="Tenants/Occupants (Users)"
-        statsCardCount={3}
-        tableView
-      />
+      <CustomLoader pageTitle="Tenants/Occupants (Users)" statsCardCount={3} />
     );
   if (error) return <div>Error: {error.message}</div>;
 
