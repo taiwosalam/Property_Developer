@@ -15,6 +15,7 @@ import Picture from "@/components/Picture/picture";
 import Avatars from "@/components/Avatars/avatars";
 import TextArea from "@/components/Form/TextArea/textarea";
 import { DirectorCard } from "@/components/Settings/settings-components";
+import UserCard from "@/components/Management/landlord-and-tenant-card";
 
 interface RestrictUserFormProps {
   submitAction: (data: any) => void;
@@ -48,15 +49,16 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({ submitAction }) => 
         setState((prevState) => ({ ...prevState, errorMsgs: errors }))
       }
     >
-        <div className="flex w-full items-center justify-center">
-        <DirectorCard
-              name="Esv Abimbola Adedeji"
-              email="abimbola@gmail.com"
-              img="/empty/SampleLandlord.jpeg"
-              phone="+2348132086958"
-              icon="/icons/verified-success.svg"
-            />
-        </div>
+    <div className="flex items-center justify-center">
+        <UserCard
+        full_name="Esq Abimbola Adedeji"
+        email="abimbola@gmail.com"
+        phone_number="+2348132086958"
+        picture_url="/empty/SampleLandlord.jpeg"
+        cardType="base"
+        user_tag="mobile"
+      />
+      </div>
         <div className="flex items-center justify-center gap-8 w-full">
         <Select
           validationErrors={errorMsgs}

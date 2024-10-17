@@ -29,6 +29,7 @@ import AddLandLordOrTenantForm from "@/components/Management/add-landlord-or-ten
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import DirectorsForm from "./DirectorsForm";
 import RestrictUserForm from "./RestrictUserForm";
+import UserCard from "@/components/Management/landlord-and-tenant-card";
 
 const Others = () => {
   return (
@@ -77,20 +78,25 @@ const Others = () => {
             desc="Please provide the details of the additional directors you wish to include on your landing page. You can click on the current card to edit and add their information."
           />
           <AutoResizingGrid minWidth={284} gap={16}>
-            <DirectorCard
-              name="Esq Abimbola Adedeji"
-              email="abimbola@gmail.com"
-              img="/empty/SampleLandlord.jpeg"
-              position="Legal Practitional"
-              phone="+2348132086958"
+            <UserCard
+            first_name="Esq"
+            last_name="Abimbola Adedeji"
+            email="abimbola@gmail.com"
+            phone_number="+2348132086958"
+            picture_url="/empty/SampleLandlord.jpeg"
+            cardType="staff"
+            role="Legal Practitioner"
             />
-            <DirectorCard
-              name="Esv Abimbola Adedeji"
-              email="abimbola@gmail.com"
-              img="/empty/SampleLandlord.jpeg"
-              position="Estate Surveyor & Valuer"
-              phone="+2348132086958"
+            <UserCard
+            first_name="Esq"
+            last_name="Abimbola Adedeji"
+            email="abimbola@gmail.com"
+            phone_number="+2348132086958"
+            picture_url="/empty/SampleLandlord.jpeg"
+            cardType="staff"
+            role="Estate Surveyor & Valuer"
             />
+            
             <Modal>
               <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
                 <ModalTrigger>
@@ -155,21 +161,23 @@ const Others = () => {
             desc="Please provide the details of the tenants, occupant, owner, landlord or landlady you wish to restrict from the group chat. Once restricted, they will not have access to chat in the group until the restriction is removed. You can click on the current card to delete or add restrictions."
           />
           <AutoResizingGrid minWidth={284} gap={16}>
-            <DirectorCard
-              name="Esq Abimbola Adedeji"
-              email="abimbola@gmail.com"
-              img="/empty/SampleLandlord.jpeg"
-              phone="+2348132086958"
-              icon="/icons/verified.svg"
-            />
-            <DirectorCard
-              name="Esv Abimbola Adedeji"
-              email="abimbola@gmail.com"
-              img="/empty/SampleLandlord.jpeg"
-              phone="+2348132086958"
-              icon="/icons/verified-success.svg"
-            />
-
+            <UserCard
+            full_name="Esq Abimbola Adedeji"
+            email="abimbola@gmail.com"
+            phone_number="+2348132086958"
+            picture_url="/empty/SampleLandlord.jpeg"
+            cardType="base"
+            user_tag="mobile"
+      />
+            <UserCard
+            full_name="Esq Abimbola Adedeji"
+            email="abimbola@gmail.com"
+            phone_number="+2348132086958"
+            picture_url="/empty/SampleLandlord.jpeg"
+            cardType="base"
+            user_tag="mobile"
+      />
+            
             <Modal>
               <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
                 <ModalTrigger>
