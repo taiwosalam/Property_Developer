@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 // Imports
@@ -11,21 +11,38 @@ import {
 } from "@/components/Settings/settings-components";
 import { website_color_schemes } from "@/components/Settings/data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { useThemeStoreSelectors } from "@/store/themeStore";
+import { rgbToHex } from "@/utils/rgbaToHex";
 
 const Appearance = () => {
+  const primaryColor = useThemeStoreSelectors.getState().primaryColor;
+  const setPrimaryColor = useThemeStoreSelectors.getState().setPrimaryColor;
+
+  console.log(primaryColor);
+  console.log(rgbToHex(primaryColor));
+
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [selectedView, setSelectedView] = useState<string | null>(null);
   const [selectedNavbar, setSelectedNavbar] = useState<string | null>(null);
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(
+    rgbToHex(primaryColor)
+  );
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
+
+  // Log selected color whenever it changes
+  useEffect(() => {
+    if (selectedColor) {
+      setPrimaryColor(selectedColor);
+    }
+  }, [setPrimaryColor, selectedColor]);
 
   const handleSelect = (type: string, value: string) => {
     switch (type) {
       case "theme":
         setSelectedTheme(value);
-        console.log("selected theme", selectedTheme);
+        console.log("selected theme", value);
         break;
       case "view":
         setSelectedView(value);
@@ -42,7 +59,6 @@ const Appearance = () => {
   const handleColorSelect = (color: string) => {
     setSelectedColor(color);
     setCustomColor(color);
-    // Here you can also add logic to save the selected color to your app's state or backend
   };
 
   const handleCustomColorClick = () => {
@@ -184,8 +200,11 @@ const Appearance = () => {
           {website_color_schemes.map((color) => (
             <div
               key={color}
-              className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${selectedColor === color ? "border-2 border-blue-500 rounded-md h-[40px] w-[40px]" : ""
-                }`}
+              className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${
+                selectedColor === color
+                  ? "border-2 border-blue-500 rounded-md h-[40px] w-[40px]"
+                  : ""
+              }`}
               style={{ backgroundColor: color }}
               onClick={() => handleColorSelect(color)}
             >
@@ -212,7 +231,10 @@ const Appearance = () => {
         </div>
         <Modal>
           <ModalTrigger
-            className={`h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white flex items-center justify-center cursor-pointer ${showColorPicker ? "border-2 border-blue-500" : ""}`}>
+            className={`h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white flex items-center justify-center cursor-pointer ${
+              showColorPicker ? "border-2 border-blue-500" : ""
+            }`}
+          >
             +
           </ModalTrigger>
           <ModalContent>

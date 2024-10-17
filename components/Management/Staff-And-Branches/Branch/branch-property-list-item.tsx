@@ -29,7 +29,7 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
       <ImageModal
         isOpen={screenModal}
         onClose={() => setScreenModal(false)}
-        images={sampleImages.map((image, i) => ({
+        images={sampleImages.map((image) => ({
           src: image.src,
           isVideo: false,
         }))}

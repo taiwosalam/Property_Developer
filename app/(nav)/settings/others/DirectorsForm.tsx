@@ -64,7 +64,6 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction }) => {
     >
       <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <Select
-          validationErrors={errorMsgs}
           options={titles}
           id="title"
           label="Profile Tilte/Qualification"
@@ -109,8 +108,8 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction }) => {
           inputClassName="!bg-neutral-2"
         />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        <div className="grid-col1 flex flex-col gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+        <div className="flex flex-col gap-4 md:gap-5 md:justify-between">
          <Input
           id="password"
           type="password"
@@ -126,14 +125,13 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction }) => {
           validationErrors={errorMsgs}
         />
         </div>
-        <div className="">
             <TextArea
             id="about"
             label="About Director"
             placeholder=""
-            hiddenInputClassName="setup-f"
+            inputSpaceClassName="md:!h-[90px]"
         />
-              </div>
+          
         <div className="custom-flex-col gap-3">
           <p className="text-black text-base font-medium">
             Upload picture or choose an avatar.
