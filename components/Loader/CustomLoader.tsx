@@ -6,6 +6,7 @@ interface CustomLoaderProps {
   statsCardCount?: number;
   hasPageTitle?: boolean;
   pageTitle?: string;
+  dashboard?: boolean;
   // tableView?: boolean;
 }
 
@@ -14,6 +15,7 @@ const CustomLoader: React.FC<CustomLoaderProps> = ({
   statsCardCount = 3,
   hasPageTitle = true,
   pageTitle,
+  dashboard = false,
   // tableView = false,
 }) => {
   const skeletonCount = window.innerWidth > 1920 ? 15 : 9; // Example threshold for TV screens
@@ -66,6 +68,7 @@ const CustomLoader: React.FC<CustomLoaderProps> = ({
           />
         ))}
       </div>
+      
     </div>
   );
 };
