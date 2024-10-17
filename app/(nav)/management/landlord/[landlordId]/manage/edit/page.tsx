@@ -32,8 +32,8 @@ import { getOneLandlord } from "../../../data";
 import { useAuthStore } from "@/store/authstrore";
 import { useParams, useRouter } from "next/navigation";
 import { LandlordPageData } from "../../../types";
-import GlobalPageLoader from "@/components/Loader/global-page-loader";
 import BackButton from "@/components/BackButton/back-button";
+import TextArea from "@/components/Form/TextArea/textarea";
 
 const EditLandlord = () => {
   const states = getAllStates();
@@ -392,10 +392,7 @@ const EditLandlord = () => {
             </Button>
           </LandlordTenantInfoEditSection>
           <LandlordTenantInfoEditSection title="add note">
-            <textarea
-              className="w-full h-[120px] p-4 rounded-lg border border-solid border-neutral-200"
-              placeholder="Note goes here"
-            ></textarea>
+            <TextArea id="note" label="note" />
           </LandlordTenantInfoEditSection>
         </div>
       </div>

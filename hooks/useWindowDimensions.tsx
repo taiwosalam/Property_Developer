@@ -1,4 +1,4 @@
-// useWindowDimensions.tsx
+"use client";
 import { useState, useEffect } from "react";
 
 interface WindowDimensions {

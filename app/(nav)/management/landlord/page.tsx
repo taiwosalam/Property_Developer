@@ -24,8 +24,7 @@ import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { LandlordHelpInfo } from "./types";
-import { title } from "process";
-import GlobalPageLoader from "@/components/Loader/global-page-loader";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const Landlord = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -86,7 +85,7 @@ const Landlord = () => {
     }
   }, [accessToken]);
 
-  const fetchLandlordHelpe = async () => {
+  const fetchLandlordHelp = useCallback(async () => {
     try {
       const data = await getLandlordsHelpInfo();
       console.log(data.res[0]);
@@ -94,12 +93,12 @@ const Landlord = () => {
     } catch (error) {
       console.error("Error fetching landlord help info:", error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchLandlords();
-    fetchLandlordHelpe();
-  }, [fetchLandlords]);
+    fetchLandlordHelp();
+  }, [fetchLandlords, fetchLandlordHelp]);
 
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
@@ -231,7 +230,14 @@ const Landlord = () => {
     { id: "6", accessor: "manage/chat" },
   ];
 
-  if (loading) return <GlobalPageLoader />;
+  if (loading)
+    return (
+      <CustomLoader
+        statsCardCount={3}
+        pageTitle="Landlords/Landladies (Owners)"
+      />
+    );
+
   if (error) return <div>Error: {error.message}</div>;
 
   return (
@@ -243,18 +249,21 @@ const Landlord = () => {
             newData={new_landlords_this_month}
             total={total_landlords}
             className="w-[240px]"
+            colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Web Landlords"
             newData={new_web_landlords_this_month}
             total={web_landlords}
             className="w-[240px]"
+            colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Mobile Landlords"
             newData={new_mobile_landlords_this_month}
             total={mobile_landlords}
             className="w-[240px]"
+            colorScheme={3}
           />
         </div>
 
