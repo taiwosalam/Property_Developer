@@ -30,6 +30,7 @@ import SettingsAddMoreFlow from "./Modals/settings-add-more-flow";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import SettingsPaymentModal from "./Modals/settings-payment-modal";
 import { HexColorPicker } from "react-colorful";
+import DocumentCheckbox from "../Documents/DocumentCheckbox/document-checkbox";
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
     <p
@@ -143,15 +144,16 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
       <Image src={icon} width={24} height={24} alt="user" />
       <div className="flex flex-col">
         <h4 className="text-text-quaternary text-base"> {title} </h4>
-        <p className="text-text-disabled text-sm font-normal max-w-[900px]">
-          {" "}
-          {desc}{" "}
+        <p className="text-text-disabled text-sm font-normal max-w-[900px]"> 
+          {desc}
         </p>
       </div>
     </div>
 
     <div className="second flex justify-end">
-      <input type="checkbox" />
+      <DocumentCheckbox darkText checked={true}>
+        {''}
+      </DocumentCheckbox>
     </div>
   </div>
 );
@@ -176,8 +178,7 @@ export const SettingsOthersCheckBox: React.FC<SettingsOthersCheckBoxProps> = ({
     <div className="flex flex-col">
       <h4 className="text-text-quaternary text-base"> {title} </h4>
       <p className="text-text-disabled text-sm font-normal max-w-[900px]">
-        {" "}
-        {desc}{" "}
+        {desc}
       </p>
     </div>
 

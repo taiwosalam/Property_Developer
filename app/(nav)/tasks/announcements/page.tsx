@@ -6,7 +6,10 @@ import Button from "@/components/Form/Button/button";
 import AnnouncementCard from "@/components/tasks/announcements/announcement-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { useAuthStore } from "@/store/authstrore";
-import { announcementrFilterOptionsWithDropdown, getAllAnnouncements } from "./data";
+import {
+  announcementrFilterOptionsWithDropdown,
+  getAllAnnouncements,
+} from "./data";
 import { Announcement } from "./types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
@@ -20,7 +23,7 @@ const AnnouncementPage = () => {
     });
   }, [access_token]);
 
-  console.log(announcements);
+  // console.log(announcements);
 
   return (
     <div className="space-y-9">
@@ -40,9 +43,22 @@ const AnnouncementPage = () => {
           + Create Announcement
         </Button>
       </div>
-      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Announcement" aboutPageModalData={
-        { title: "Announcement", description: "This page contains a list of Announcement on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={announcementrFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        onStateSelect={() => {}}
+        pageTitle="Announcement"
+        aboutPageModalData={{
+          title: "Announcement",
+          description:
+            "This page contains a list of Announcement on the platform.",
+        }}
+        searchInputPlaceholder="Search Announcement"
+        handleFilterApply={() => {}}
+        isDateTrue
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={announcementrFilterOptionsWithDropdown}
+        hasGridListToggle={false}
+      />
       <AutoResizingGrid minWidth={315} gap={32}>
         {announcements.map((announcement, index) => {
           const formattedDate = new Date(

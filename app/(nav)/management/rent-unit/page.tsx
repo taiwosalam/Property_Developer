@@ -1,13 +1,6 @@
 "use client";
 import { useState } from "react";
-import FilterModal from "@/components/Management/Landlord/filters-modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import PageTitle from "@/components/PageTitle/page-title";
-import SearchInput from "@/components/SearchInput/search-input";
-import { GridIcon, ListIcon } from "@/public/icons/icons";
-import clsx from "clsx";
-import FilterButton from "@/components/FilterButton/filter-button";
 import {
   RentAndUnitFilters,
   RentAndUnitFiltersWithDropdown,
@@ -18,6 +11,7 @@ import Pagination from "@/components/Pagination/pagination";
 import RentalPropertyCard from "@/components/Management/Rent And Unit/rental-property-card";
 import RentalPropertyListCard from "@/components/Management/Rent And Unit/rental-property-list";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const RentAndUnit = () => {
   const [state, setState] = useState<RentAndUnitState>({
@@ -70,11 +64,24 @@ const RentAndUnit = () => {
           className="w-[240px]"
         />
       </div>
-      <FilterBar azFilter gridView={gridView}
+      <FilterBar
+        azFilter
+        gridView={gridView}
         setGridView={setGridView}
-        setListView={setListView} onStateSelect={() => { }} pageTitle="Rent & Unit" aboutPageModalData={
-          { title: "Rent & Unit", description: "This page contains a list of Rent & Unit on the platform." }
-        } searchInputPlaceholder="Search for Rent and Unit" handleFilterApply={handleFilterApply} isDateTrue filterOptions={RentAndUnitFilters} filterWithOptionsWithDropdown={RentAndUnitFiltersWithDropdown} />
+        setListView={setListView}
+        onStateSelect={() => {}}
+        pageTitle="Rent & Unit"
+        aboutPageModalData={{
+          title: "Rent & Unit",
+          description:
+            "This page contains a list of Rent & Unit on the platform.",
+        }}
+        searchInputPlaceholder="Search for Rent and Unit"
+        handleFilterApply={handleFilterApply}
+        isDateTrue
+        filterOptions={RentAndUnitFilters}
+        filterWithOptionsWithDropdown={RentAndUnitFiltersWithDropdown}
+      />
       <section className="capitalize space-y-4 px-4 w-full">
         <div className="w-full flex items-center justify-end">
           <div className="flex gap-4 flex-wrap">
@@ -86,11 +93,11 @@ const RentAndUnit = () => {
           </div>
         </div>
         {gridView ? (
-          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-7">
+          <AutoResizingGrid minWidth={315}>
             <RentalPropertyCard />
             <RentalPropertyCard />
             <RentalPropertyCard />
-          </div>
+          </AutoResizingGrid>
         ) : (
           <div className="space-y-4">
             <RentalPropertyListCard />

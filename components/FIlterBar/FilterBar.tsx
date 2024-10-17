@@ -5,7 +5,6 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import FilterButton from "../FilterButton/filter-button";
 import FilterModal from "../Management/Landlord/filters-modal";
 import PageTitle from "../PageTitle/page-title";
-import AboutPage from "../AboutPage/about-page";
 import SortButton from "../FilterButton/sort-button";
 import ExportButton from "../reports/export-button";
 
@@ -38,6 +37,7 @@ interface FilterBarProps {
     title: string;
     description: string;
     video?: string;
+    readingLink?: string;
   };
   gridView?: boolean;
   setGridView?: () => void;
@@ -45,6 +45,7 @@ interface FilterBarProps {
   azFilter?: boolean;
   exports?: boolean;
   hasGridListToggle?: boolean;
+  exportHref?: string;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -63,6 +64,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
   azFilter,
   exports,
   hasGridListToggle = true,
+  exportHref,
 }) => {
   return (
     <div className="page-title-container">
@@ -118,7 +120,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
         </Modal>
         {exports && (
           <div className="flex items-center gap-4">
-            <ExportButton type="pdf" href="/reports/tenants/export" />
+            <ExportButton type="pdf" href={exportHref} />
             <ExportButton type="csv" />
           </div>
         )}

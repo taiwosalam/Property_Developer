@@ -1,38 +1,48 @@
 import Link from "next/link";
 import Image from "next/image";
 
+
 export const PlanHeader: React.FC<{
   planTitle: string;
   desc: string;
   planFor: string;
   isFree: boolean;
   themeColor: string;
-}> = ({ planTitle, desc, planFor, isFree, themeColor }) => (
-  <div
-    className={`plan-title py-5 px-4 bg-[#F4F9FF] border-b relative ${themeColor}`}
-  >
-    <h3 className={`text-[16px] font-medium tracking-[0px] text-[${themeColor}]`}>
-      {planTitle.toUpperCase()}
-    </h3>
-    <p className="text-[14px] font-medium tracking-[0px] text-text-secondary">
-      {desc.split(planFor).map((part, index) =>
-        index === 0 ? (
-          part
-        ) : (
-          <>
-            <strong key={index}>{planFor}</strong>
-            {part}
-          </>
-        )
-      )}
-    </p>
-    <div className="absolute bottom-0 flex items-center justify-center w-full">
-      <div
-        className={`flex items-center justify-center py-[3px] px-10 rounded-t-md ${isFree ? "bg-[#38BDF8] bg-opacity-40" : "bg-brand-9"}`}
-      ></div>
+}> = ({ planTitle, desc, planFor, isFree, themeColor }) => {
+  const getBgColor = () => {
+    if (isFree) return "bg-[#38BDF8] bg-opacity-40";
+    if (planTitle.toLowerCase() === "basic plan") return "bg-brand-9";
+    if (planTitle.toLowerCase() === "premium plan") return "bg-[#8C62FF]";
+    return "bg-brand-9"; // Default fallback color
+  };
+
+  return (
+    <div
+      className={`plan-title py-5 px-4 bg-[#F4F9FF] border-b relative ${themeColor}`}
+    >
+      <h3 className={`text-[16px] font-medium tracking-[0px] text-[${themeColor}]`}>
+        {planTitle.toUpperCase()}
+      </h3>
+      <p className="text-[14px] font-medium tracking-[0px] text-text-secondary">
+        {desc.split(planFor).map((part, index) =>
+          index === 0 ? (
+            part
+          ) : (
+            <>
+              <strong key={index}>{planFor}</strong>
+              {part}
+            </>
+          )
+        )}
+      </p>
+      <div className="absolute bottom-0 flex items-center justify-center w-full">
+        <div
+          className={`flex items-center justify-center py-[3px] px-10 rounded-t-md ${getBgColor()}`}
+        ></div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const PriceSection: React.FC<{
   price: string;
@@ -47,7 +57,7 @@ export const PriceSection: React.FC<{
     >
       {isFree ? "₦0.00" : price}
     </h3>
-    {!isFree && <p>{discount}</p>}
+    {!isFree && <p className="text-text-disabled text-sm font-medium tracking-[0px]">{discount}</p>}
   </div>
 );
 
@@ -76,6 +86,7 @@ export const BillingTypeSelector: React.FC<{
   </div>
 );
 
+
 export const BillingTypeButton: React.FC<{
   type: "monthly" | "yearly";
   billingType: string;
@@ -85,14 +96,15 @@ export const BillingTypeButton: React.FC<{
   <div
     className={`flex flex-col items-center justify-center px-6 ${
       billingType === type
-        ? "border border-brand-9 rounded-md transition-all duration-300 ease-in-out bg-white"
+        ? "border rounded-md transition-all duration-300 ease-in-out " +
+          (isFree ? "border-text-disabled" : "border-brand-9 bg-white")
         : ""
     }`}
   >
     <button
       onClick={() => handleBillingTypeChange(type)}
       disabled={isFree}
-      className={`${isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : "text-text-secondary"}`}
+      className={`${isFree ? "text-text-secondary opacity-50 cursor-not-allowed text-sm" : "text-text-secondary text-base"}`}
     >
       {isFree
         ? `Free ${type === "yearly" ? "Annually" : "Monthly"}`
@@ -105,7 +117,7 @@ export const BillingTypeButton: React.FC<{
           isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : "text-brand-9"
         }`}
       >
-        {isFree ? "No stress" : "Get Discount"}
+        {isFree ? "No stress" : billingType === "yearly" ? "Save 2.5%" : "Get Discount"}
       </Link>
     )}
   </div>
@@ -170,7 +182,7 @@ export const FeaturesToggle: React.FC<{
   getFeaturesText: () => string;
   handleCardClick: () => void;
 }> = ({ showFeatures, getFeaturesText, handleCardClick }) => (
-  <div className="flex w-full py-5 px-6">
+  <div className="flex w-full px-6">
     <button
       className="text-brand-9 text-[18px] font-medium tracking-[0px] flex items-center gap-2"
       onClick={handleCardClick}
@@ -196,7 +208,7 @@ export const FeaturesList: React.FC<{
         {features.map((feature, index) => (
           <div key={index} className="flex items-center gap-2">
             <Image src="/icons/mark.svg" alt="mark" width={16} height={17} />
-            <p className="text-brand-9">{feature}</p>
+            <p className="text-brand-9 text-sm font-medium tracking-[0px]">{feature}</p>
           </div>
         ))}
       </div>

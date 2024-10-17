@@ -62,9 +62,22 @@ const EmailReport = () => {
           total={200}
         />
       </div>
-      <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="Email" aboutPageModalData={
-        { title: "Email", description: "This page contains a list of Email on the platform." }
-      } searchInputPlaceholder="Search for Email" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsEmailFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        isDateTrue
+        onStateSelect={() => {}}
+        pageTitle="Email"
+        aboutPageModalData={{
+          title: "Email",
+          description: "This page contains a list of Email on the platform.",
+        }}
+        searchInputPlaceholder="Search for Email"
+        handleFilterApply={() => {}}
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={reportsEmailFilterOptionsWithDropdown}
+        hasGridListToggle={false}
+        exportHref="/reports/email/export"
+      />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -97,7 +110,7 @@ const EmailReport = () => {
           <EmailModal {...(selectedSMS as EmailRecord)} />
         </ModalContent>
       </Modal>
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

@@ -281,6 +281,7 @@ const Landlord = () => {
           title: fetchedLandlordHelpInfo?.slug || "",
           description: fetchedLandlordHelpInfo?.description || "",
           video: fetchedLandlordHelpInfo?.acf.video_link || "",
+          readingLink: fetchedLandlordHelpInfo?.link || "",
         }}
         searchInputPlaceholder="Search for Landlords"
         handleFilterApply={handleFilterApply}

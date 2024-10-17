@@ -17,9 +17,17 @@ import {
   SettingsOthersCheckBox,
   SettingsOthersType,
   SettingsSectionTitle,
+  SettingsUpdateButton,
 } from "@/components/Settings/settings-components";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import { industryOptions } from "@/data";
+import { Modal } from "@/components/Modal/modal";
+import { ModalContent } from "@/components/Modal/modal";
+import { ModalTrigger } from "@/components/Modal/modal";
+import AddLandLordOrTenantForm from "@/components/Management/add-landlord-or-tenant-form";
+import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import DirectorsForm from "./DirectorsForm";
 
 const Others = () => {
   return (
@@ -32,7 +40,7 @@ const Others = () => {
             desc="The company specializes in managing tenants for both commercial and residential properties, as well as overseeing occupants within gated estates."
             icon="/icons/settingUserIcon.svg"
           />
-          <SettingsOthersType
+        <SettingsOthersType
             title="Facility Manager"
             desc="The company specializes in managing short-stay apartments, holiday homes, and hotels, catering to occupants for brief durations."
             icon="/icons/user-edit.svg"
@@ -46,15 +54,15 @@ const Others = () => {
 
         <div className="flex mt-4">
           <div className="w-full max-w-[871px] grid grid-cols-3 gap-5">
-            <Input
-              id="current_category"
-              label="Current Category"
+            {/* <Input
+              id="current_industry"
+              label="Current Industry"
               placeholder="Legal Practitional"
-            />
+            /> */}
             <Select
-              options={getAllStates()}
-              id="change_category"
-              label="Change Category"
+              options={industryOptions}
+              id="current_industry"
+              label="Current Industry"
               placeholder="Select options"
               inputContainerClassName="bg-neutral-2"
             />
@@ -82,7 +90,9 @@ const Others = () => {
               position="Estate Surveyor & Valuer"
               phone="+2348132086958"
             />
-            <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
+            <Modal>
+              <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
+          <ModalTrigger>
               <div className="flex flex-col items-center gap-1 justify-center">
                 <Image
                   src="/icons/profile.svg"
@@ -90,15 +100,22 @@ const Others = () => {
                   width={30}
                   height={30}
                 />
-                <p> + Add new Profile </p>
+                <span> + Add new Profile </span>
               </div>
-            </div>
+            </ModalTrigger>
+
+              </div>
+              <ModalContent>
+              <LandlordTenantModalPreset
+                heading="Create New Director">
+                <DirectorsForm submitAction={() => {}} />
+              </LandlordTenantModalPreset>
+            </ModalContent>
+        </Modal>
           </AutoResizingGrid>
         </div>
-        <div className="flex justify-end">
-          <Button size="base_bold" className="py-[10px] px-8">
-            update
-          </Button>
+        <div className="flex justify-end mt-2">
+          <SettingsUpdateButton />
         </div>
       </SettingsSection>
 
@@ -131,7 +148,6 @@ const Others = () => {
             icon="/icons/user-tag.svg"
           />
         </div>
-      </SettingsSection>
 
       {/* RESTRICTED USERS */}
       <div className="custom-flex-col gap-6 mt-4">
@@ -161,17 +177,16 @@ const Others = () => {
                 alt="add director"
                 width={30}
                 height={30}
-              />
+                />
               <p> + Add new Profile </p>
             </div>
           </div>
         </AutoResizingGrid>
       </div>
-      <div className="flex justify-end">
-        <Button size="base_bold" className="py-[10px] px-8">
-          update
-        </Button>
-      </div>
+      <div className="flex justify-end mt-2">
+          <SettingsUpdateButton />
+        </div>
+    </SettingsSection>
 
       {/* NOTIFICATIONS */}
       <SettingsSection title="Notifications">
@@ -187,7 +202,7 @@ const Others = () => {
               "Property becomes vacant and is moved to the listing page.",
               "Document is created using my signature, name, or consent.",
             ].map((option, index) => (
-              <DocumentCheckbox darkText key={index}>
+              <DocumentCheckbox darkText key={index} checked={true}>
                 {option}
               </DocumentCheckbox>
             ))}
@@ -212,19 +227,16 @@ const Others = () => {
             />
           </div>
         </div>
-        <div className="flex justify-end">
-          <Button size="base_bold" className="py-[10px] px-8">
-            update
-          </Button>
+        <div className="flex justify-end mt-2">
+          <SettingsUpdateButton />
         </div>
       </SettingsSection>
 
       {/* RESET SETTINGS */}
       <SettingsSection title="Notifications">
         <h4 className="text-sm text-text-disabled">
-          {" "}
           This section enables you to revert all modifications made in the
-          settings back to their default state.{" "}
+          settings back to their default state.
         </h4>
         <div className="mt-4 flex flex-col gap-2">
           <SettingsOthersType
@@ -253,10 +265,8 @@ const Others = () => {
             icon="/icons/cog.svg"
           />
         </div>
-        <div className="flex justify-end">
-          <Button size="base_bold" className="py-[10px] px-8">
-            update
-          </Button>
+        <div className="flex justify-end mt-2">
+          <SettingsUpdateButton />
         </div>
       </SettingsSection>
     </>

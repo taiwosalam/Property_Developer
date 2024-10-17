@@ -85,6 +85,7 @@ const Undo = () => {
         handleFilterApply={() => {}}
         filterOptions={[]}
         filterWithOptionsWithDropdown={reportsUndoFilterOptionsWithDropdown}
+        hasGridListToggle={false}
       />
       <CustomTable
         fields={fields}

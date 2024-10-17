@@ -16,9 +16,10 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
   state,
   darkText,
   children,
+  checked,
 }) => {
   // Internal state for when the component is uncontrolled
-  const [internalIsChecked, setInternalIsChecked] = useState(false);
+  const [internalIsChecked, setInternalIsChecked] = useState(checked || false);
 
   // Determine whether to use controlled or internal state
   const isChecked = state ? state.isChecked : internalIsChecked;

@@ -5,5 +5,6 @@ export interface PageTitleProps {
     title: string;
     description: string;
     video?: string;
+    readingLink?: string;
   };
 }
