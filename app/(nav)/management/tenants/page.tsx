@@ -212,7 +212,11 @@ const Tenants = () => {
 
   if (loading)
     return (
-      <CustomLoader pageTitle="Tenants/Occupants (Users)" statsCardCount={3} />
+      <CustomLoader
+        pageTitle="Tenants/Occupants (Users)"
+        statsCardCount={3}
+        tableView
+      />
     );
   if (error) return <div>Error: {error.message}</div>;
 
