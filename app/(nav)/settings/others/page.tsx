@@ -3,12 +3,7 @@
 import React from "react";
 import Image from "next/image";
 
-// Images
-import Transparent from "@/public/empty/transparent.png";
 // Imports
-import { getAllStates } from "@/utils/states";
-import Input from "@/components/Form/Input/input";
-import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import SettingsSection from "@/components/Settings/settings-section";
@@ -25,7 +20,6 @@ import { industryOptions } from "@/data";
 import { Modal } from "@/components/Modal/modal";
 import { ModalContent } from "@/components/Modal/modal";
 import { ModalTrigger } from "@/components/Modal/modal";
-import AddLandLordOrTenantForm from "@/components/Management/add-landlord-or-tenant-form";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import DirectorsForm from "./DirectorsForm";
 import RestrictUserForm from "./RestrictUserForm";
@@ -56,11 +50,6 @@ const Others = () => {
 
         <div className="flex mt-4">
           <div className="w-full max-w-[871px] grid grid-cols-3 gap-5">
-            {/* <Input
-              id="current_industry"
-              label="Current Industry"
-              placeholder="Legal Practitional"
-            /> */}
             <Select
               options={industryOptions}
               id="current_industry"

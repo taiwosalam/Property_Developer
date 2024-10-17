@@ -1,9 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-
-// Types
-import type { SettingsEnrollmentCardProps } from "../types";
 import {
   BillingTypeSelector,
   FeaturesList,
@@ -12,7 +9,27 @@ import {
   PriceSection,
   QuantityCounter,
   SelectPlanButton,
-} from "../SettingsEnrollment/settings-enrollment-components";
+} from "./settings-enrollment-components";
+
+interface SettingsEnrollmentCardProps {
+  planTitle: string;
+  desc: string;
+  planFor?: string;
+  price: string;
+  discount: string;
+  discountText: string;
+  duration: string;
+  showFeatures: boolean;
+  setShowFeatures: (show: boolean) => void;
+  features: string[];
+  billingType: "monthly" | "yearly";
+  quantity: number;
+  incrementQuantity: () => void;
+  decrementQuantity: () => void;
+  isFree?: boolean;
+  onBillingTypeChange: (type: "monthly" | "yearly") => void;
+  isLifeTimePlan: boolean;
+}
 
 const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   planTitle,
@@ -20,6 +37,8 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   planFor,
   price,
   discount,
+  discountText,
+  duration,
   showFeatures,
   setShowFeatures,
   features,
@@ -29,19 +48,13 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   decrementQuantity,
   isFree = false,
   onBillingTypeChange,
-  discountText,
+  isLifeTimePlan
 }) => {
   const handleBillingTypeChange = (type: "monthly" | "yearly") => {
     if (!isFree) {
       onBillingTypeChange(type);
     }
   };
-
-  const [isOpen, setIsOpen] = useState<Record<string, boolean>>({
-    free: false,
-    basic: false,
-    premium: false,
-  });
 
   const handleCardClick = () => {
     setShowFeatures(!showFeatures);
@@ -65,6 +78,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   };
 
   const themeColor = getThemeColor();
+
   return (
     <div
       className={`max-w-[344px] flex flex-col justify-between pricingCard bg-white rounded-lg shadow-lg hover:border-2 ${themeColor}`}
@@ -75,18 +89,24 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         planFor={planFor}
         isFree={isFree}
         themeColor={themeColor}
-      />
+        />
       <div
         className={`priceWrapper w-full flex items-center justify-center flex-col px-4 mt-5 ${
           isFree ? "bg-white bg-opacity-40 z-50" : ""
         }`}
-      >
-        <PriceSection price={price} discount={discount} isFree={isFree} />
+        >
+        <PriceSection 
+          price={price} 
+          discount={discount} 
+          isFree={isFree} 
+          duration={duration}
+        />
         <BillingTypeSelector
           billingType={billingType}
           handleBillingTypeChange={handleBillingTypeChange}
           isFree={isFree}
           discountText={discountText}
+          isLifeTimePlan={isLifeTimePlan}
         />
         <QuantityCounter
           quantity={quantity}
@@ -94,6 +114,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
           decrementQuantity={decrementQuantity}
           isFree={isFree}
           billingType={billingType}
+          isLifeTimePlan={isLifeTimePlan}
         />
       </div>
       <FeaturesToggle

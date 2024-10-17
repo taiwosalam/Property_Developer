@@ -1,14 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 
-
 export const PlanHeader: React.FC<{
-  planTitle: string;
-  desc: string;
-  planFor: string;
-  isFree: boolean;
-  themeColor: string;
-}> = ({ planTitle, desc, planFor, isFree, themeColor }) => {
+  planTitle?: string;
+  desc?: string;
+  planFor?: string;
+  isFree?: boolean;
+  themeColor?: string;
+}> = ({ planTitle = '', desc = '', planFor = '', isFree = false, themeColor = '' }) => {
   const getBgColor = () => {
     if (isFree) return "bg-[#38BDF8] bg-opacity-40";
     if (planTitle.toLowerCase() === "basic plan") return "bg-brand-9";
@@ -45,10 +44,11 @@ export const PlanHeader: React.FC<{
 };
 
 export const PriceSection: React.FC<{
-  price: string;
-  discount: string;
-  isFree: boolean;
-}> = ({ price, discount, isFree }) => (
+  price?: string;
+  discount?: string;
+  isFree?: boolean;
+  duration?: string;
+}> = ({ price = '', discount = '', isFree = false, duration }) => (
   <div className="w-full max-w-[344px] flex-col flex items-center">
     <h3
       className={`text-[20px] font-bold tracking-[0px] leading-[150%] text-text-secondary ${
@@ -56,17 +56,19 @@ export const PriceSection: React.FC<{
       }`}
     >
       {isFree ? "₦0.00" : price}
+      {duration && duration.toUpperCase() !== 'LIFE TIME PLAN' && ` / ${duration}`}
     </h3>
     {!isFree && <p className="text-text-disabled text-sm font-medium tracking-[0px]">{discount}</p>}
   </div>
 );
 
 export const BillingTypeSelector: React.FC<{
-  billingType: string;
-  handleBillingTypeChange: (type: "monthly" | "yearly") => void;
-  isFree: boolean;
-  discountText: string
-}> = ({ billingType, handleBillingTypeChange, isFree, discountText }) => (
+  billingType?: string;
+  handleBillingTypeChange?: (type: "monthly" | "yearly") => void;
+  isFree?: boolean;
+  discountText?: string;
+  isLifeTimePlan?: boolean;
+}> = ({ billingType = 'monthly', handleBillingTypeChange = () => {}, isFree = false, discountText = '', isLifeTimePlan = false }) => (
   <div
     className={`flex w-full justify-center my-5 bg-brand-1 min-h-[54px] gap-5 py-2 rounded-md ${
       isFree ? "bg-opacity-40" : ""
@@ -78,6 +80,7 @@ export const BillingTypeSelector: React.FC<{
       handleBillingTypeChange={handleBillingTypeChange}
       isFree={isFree}
       discountText={discountText}
+      isLifeTimePlan={isLifeTimePlan}
     />
     <BillingTypeButton
       type="monthly"
@@ -85,18 +88,21 @@ export const BillingTypeSelector: React.FC<{
       handleBillingTypeChange={handleBillingTypeChange}
       isFree={isFree}
       discountText={discountText}
+      isLifeTimePlan={isLifeTimePlan}
     />
   </div>
 );
 
-
 export const BillingTypeButton: React.FC<{
   type: "monthly" | "yearly";
-  billingType: string;
-  discountText: string;
-  handleBillingTypeChange: (type: "monthly" | "yearly") => void;
-  isFree: boolean;
-}> = ({ type, billingType, handleBillingTypeChange, isFree, discountText }) => (
+  billingType?: string;
+  discountText?: string;
+  handleBillingTypeChange?: (type: "monthly" | "yearly") => void;
+  isFree?: boolean;
+  duration?: string;
+  isLifeTimePlan?: boolean;
+}> = ({ type, billingType = 'monthly', handleBillingTypeChange = () => {}, isFree = false, discountText = '', duration = '', isLifeTimePlan }) => {
+  return(
   <div
     className={`flex flex-col items-center justify-center px-6 ${
       billingType === type
@@ -112,7 +118,9 @@ export const BillingTypeButton: React.FC<{
     >
       {isFree
         ? `Free ${type === "yearly" ? "Annually" : "Monthly"}`
-        : `Pay ${type === "yearly" ? "Annually" : "Monthly"}`}
+        : isLifeTimePlan
+          ? 'Pay Once'
+          : `Pay ${type === "yearly" ? "Annually" : "Monthly"}`}
     </button>
     {type === "yearly" && (
       <Link
@@ -121,29 +129,31 @@ export const BillingTypeButton: React.FC<{
           isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : "text-brand-9"
         }`}
       >
-    {isFree ? "No stress" : billingType === "yearly" ? discountText : "Get Discount"}
+        {isFree ? "No stress" : billingType === "yearly" ? discountText : "Get Discount"}
       </Link>
     )}
   </div>
-);
+)}
 
 export const QuantityCounter: React.FC<{
-  quantity: number;
-  incrementQuantity: () => void;
-  decrementQuantity: () => void;
-  isFree: boolean;
-  billingType: string;
+  quantity?: number;
+  incrementQuantity?: () => void;
+  decrementQuantity?: () => void;
+  isFree?: boolean;
+  billingType?: string;
+  isLifeTimePlan?: boolean;
 }> = ({
-  quantity,
-  incrementQuantity,
-  decrementQuantity,
-  isFree,
-  billingType,
+  quantity = 1,
+  incrementQuantity = () => {},
+  decrementQuantity = () => {},
+  isFree = false,
+  billingType = 'monthly',
+  isLifeTimePlan,
 }) => (
   <div className="counter flex items-center justify-center w-full gap-2">
     <div className="flex items-center gap-6 w-full max-w-[74px] border border-neutral-3 px-2 rounded-md">
       <p className={`count pl-1 text-[#000] text-[14px] font-medium tracking-[0px] ${isFree ? "opacity-50 cursor-not-allowed" : ""}`}>
-        {isFree ? 0 : quantity}
+        {isLifeTimePlan ? 0: isFree ? 0 : quantity}
       </p>
       <div className="btns flex flex-col">
         <CounterButton
@@ -168,11 +178,11 @@ export const QuantityCounter: React.FC<{
 );
 
 export const CounterButton: React.FC<{
-  onClick: () => void;
-  disabled: boolean;
+  onClick?: () => void;
+  disabled?: boolean;
   icon: string;
   alt: string;
-}> = ({ onClick, disabled, icon, alt }) => (
+}> = ({ onClick = () => {}, disabled = false, icon, alt }) => (
   <button
     className="text-white rounded-md"
     onClick={onClick}
@@ -182,10 +192,10 @@ export const CounterButton: React.FC<{
 );
 
 export const FeaturesToggle: React.FC<{
-  showFeatures: boolean;
-  getFeaturesText: () => string;
-  handleCardClick: () => void;
-}> = ({ showFeatures, getFeaturesText, handleCardClick }) => (
+  showFeatures?: boolean;
+  getFeaturesText?: () => string;
+  handleCardClick?: () => void;
+}> = ({ showFeatures = false, getFeaturesText = () => 'View Features', handleCardClick = () => {} }) => (
   <div className="flex w-full px-6">
     <button
       className="text-brand-9 text-[18px] font-medium tracking-[0px] flex items-center gap-2"
@@ -203,9 +213,9 @@ export const FeaturesToggle: React.FC<{
 );
 
 export const FeaturesList: React.FC<{
-  showFeatures: boolean;
-  features: string[];
-}> = ({ showFeatures, features }) =>
+  showFeatures?: boolean;
+  features?: string[];
+}> = ({ showFeatures = false, features = [] }) =>
   showFeatures && (
     <div className="featuresWrapper my-2 flex flex-col gap-2 w-full items-start justify-start px-6">
       <div className="flex items-start gap-2 flex-col">
@@ -219,7 +229,7 @@ export const FeaturesList: React.FC<{
     </div>
   );
 
-export const SelectPlanButton: React.FC<{ isFree: boolean }> = ({ isFree }) => (
+export const SelectPlanButton: React.FC<{ isFree?: boolean }> = ({ isFree = false }) => (
   <div className="px-6 pb-4 flex justify-end">
     <div
       className={`buynowbtn w-full flex items-center justify-center p-[8px] gap-[10px] rounded-[4px] ${
