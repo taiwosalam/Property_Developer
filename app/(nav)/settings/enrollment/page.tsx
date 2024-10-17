@@ -38,12 +38,11 @@ const calculatePrice = (
       discount = planType === "basic" ? "₦750,000/outrightly" : "₦2,000,000/outrightly";
     } else {
       const discounts = [0.025, 0.04, 0.06, 0.08, 0.10];
-      for (let i = 1; i <= limitedQuantity; i++) {
-        const discountPercentage = discounts[i - 1];
-        const discountedPrice = basePrice * (1 - discountPercentage);
-        totalPrice += discountedPrice;
-      }
-      discountText = `Save ${(discounts[limitedQuantity - 1] * 100).toFixed(1)}%`;
+      totalPrice = basePrice * limitedQuantity;
+      const discountPercentage = discounts[limitedQuantity - 1];
+      const discountAmount = totalPrice * discountPercentage;
+      totalPrice -= discountAmount;
+      discountText = `Save ${(discountPercentage * 100).toFixed(1)}%`;
       discount = `(Billed at ₦${baseMonthly.toLocaleString()}/month)`;
     }
   }
@@ -57,7 +56,7 @@ const calculatePrice = (
     discount,
     duration: quantity > 5 && billingType === "yearly" ? "" : `${quantity}${quantity === 1 ? (billingType === "monthly" ? "m" : "y") : (billingType === "monthly" ? "m" : "y")}`
   };
-  };
+};
 
   const incrementQuantity = (setter: React.Dispatch<React.SetStateAction<number>>, billingType: "monthly" | "yearly") => {
     setter((prev) => Math.min(prev + 1, billingType === "yearly" ? 6 : 11));
