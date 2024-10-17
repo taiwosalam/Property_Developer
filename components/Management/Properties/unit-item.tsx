@@ -30,7 +30,10 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
       <ImageModal
         isOpen={screenModal}
         onClose={() => setScreenModal(false)}
-        images={sampleImages.map((image) => image.src)}
+        images={sampleImages.map((image) => ({
+          src: image.src,
+          isVideo: false,
+        }))}
         currentIndex={0}
       />
       <div className="flex items-center justify-between">

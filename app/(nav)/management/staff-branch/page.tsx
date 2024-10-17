@@ -1,28 +1,22 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { GridIcon, ListIcon } from "@/public/icons/icons";
 import Button from "@/components/Form/Button/button";
 import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
 import CustomTable from "@/components/Table/table";
 import type { Field, DataItem } from "@/components/Table/types";
-import FilterButton from "@/components/FilterButton/filter-button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
-import SearchInput from "@/components/SearchInput/search-input";
 import { type StaffAndBranchPageState, getAllBranches } from "./data";
-import PageTitle from "@/components/PageTitle/page-title";
 import Pagination from "@/components/Pagination/pagination";
 import CreateBranchModal from "@/components/Management/Staff-And-Branches/create-branch-modal";
 import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import GlobalPageLoader from "@/components/Loader/global-page-loader";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const StaffAndBranches = () => {
   const router = useRouter();
@@ -106,9 +100,9 @@ const StaffAndBranches = () => {
       label: "Local Government",
       value: selectedState
         ? localGovernments.map((lga) => ({
-          label: lga,
-          value: lga,
-        }))
+            label: lga,
+            value: lga,
+          }))
         : [],
     },
   ];
@@ -167,7 +161,6 @@ const StaffAndBranches = () => {
   ];
 
   const handleSelectTableItem = (item: DataItem) => {
-    // Navigate to the desired route using the item id
     router.push(`/management/staff-branch/${item.id}`);
   };
 
@@ -199,7 +192,9 @@ const StaffAndBranches = () => {
 
   // console.log(branches);
 
-  if (loading) return <GlobalPageLoader />;
+  if (loading)
+    return <CustomLoader pageTitle="Staff & Branch" statsCardCount={3} />;
+
   if (error) return <div>Error: {error.message}</div>;
 
   return (
@@ -210,16 +205,19 @@ const StaffAndBranches = () => {
             title="Total Branches"
             newData={new_branches_count}
             total={total_branches}
+            colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Total Properties"
             newData={new_properties_count}
             total={total_properties}
+            colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Total Staff"
             newData={new_staffs_count}
             total={total_staffs}
+            colorScheme={3}
           />
         </div>
         <Modal>
@@ -233,12 +231,23 @@ const StaffAndBranches = () => {
           </ModalContent>
         </Modal>
       </div>
-      <FilterBar azFilter gridView={gridView}
+      <FilterBar
+        azFilter
+        gridView={gridView}
         setGridView={setGridView}
-        setListView={setListView} onStateSelect={(state: string) => setSelectedState(state)}
-        pageTitle="Staff & Branch" aboutPageModalData={
-          { title: "Staff & Branch", description: "This page contains a list of all Staff & Branch on the platform." }
-        } searchInputPlaceholder="Search for Staff & Branch" handleFilterApply={handleFilterApply} isDateTrue filterWithOptionsWithDropdown={StaffAndBranchFiltersWithDropdown} />
+        setListView={setListView}
+        onStateSelect={(state: string) => setSelectedState(state)}
+        pageTitle="Staff & Branch"
+        aboutPageModalData={{
+          title: "Staff & Branch",
+          description:
+            "This page contains a list of all Staff & Branch on the platform.",
+        }}
+        searchInputPlaceholder="Search for Staff & Branch"
+        handleFilterApply={handleFilterApply}
+        isDateTrue
+        filterWithOptionsWithDropdown={StaffAndBranchFiltersWithDropdown}
+      />
 
       <section className="capitalize">
         {gridView ? (
