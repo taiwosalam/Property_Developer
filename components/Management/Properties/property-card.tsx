@@ -18,7 +18,6 @@ import {
   VideoIcon,
   CameraIcon,
 } from "@/public/icons/icons";
-import { empty } from "@/app/config";
 
 interface PropertyCardProps extends PropertyProps {
   isClickable?: boolean;

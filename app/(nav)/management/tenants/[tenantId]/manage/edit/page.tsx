@@ -33,6 +33,7 @@ import {
   TenantEditGuarantorInfoSection,
   TenantEditNextOfKinInfoSection,
 } from "@/components/Management/Tenants/Edit/tenant-edit-info-sectios";
+import BackButton from "@/components/BackButton/back-button";
 // import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 
 const EditTenant = () => {
@@ -83,9 +84,7 @@ const EditTenant = () => {
         setValidationErrors={setErrorMsgs}
         className="custom-flex-col gap-6 lg:gap-10 pb-[100px]"
       >
-        <h2 className="text-black text-xl font-medium">
-          Edit Tenants & Occupant
-        </h2>
+        <BackButton>Edit Tenants & Occupant</BackButton>
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="custom-flex-col gap-5 flex-1">
             <TenantEditProfileInfoSection />

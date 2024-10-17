@@ -49,9 +49,24 @@ const TenantsReport = () => {
           total={200}
         />
       </div>
-      <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="Tenants/Occupants" aboutPageModalData={
-        { title: "Tenants/Occupants", description: "This page contains a list of Tenants/Occupants on the platform." }
-      } searchInputPlaceholder="Search for Tenants/Occupants" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsTenantsFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        exports
+        isDateTrue
+        onStateSelect={() => {}}
+        pageTitle="Tenants/Occupants"
+        aboutPageModalData={{
+          title: "Tenants/Occupants",
+          description:
+            "This page contains a list of Tenants/Occupants on the platform.",
+        }}
+        searchInputPlaceholder="Search for Tenants/Occupants"
+        handleFilterApply={() => {}}
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={reportsTenantsFilterOptionsWithDropdown}
+        hasGridListToggle={false}
+        exportHref="/reports/tenants/export"
+      />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -73,7 +88,7 @@ const TenantsReport = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

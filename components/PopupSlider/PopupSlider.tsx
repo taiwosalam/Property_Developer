@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { Dialog } from "@mui/material";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
-import { NextIcon, PreviousIcon } from "@/public/icons/icons";
+import { NextIcon, PreviousIcon, XIcon } from "@/public/icons/icons";
 import { PopupImageModalProps } from "./types";
+import CloseCircle from "@/public/icons/close-circle.svg";
 import Image from "next/image";
 
 const PopupImageModal: React.FC<PopupImageModalProps> = ({
@@ -29,6 +30,11 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
     },
   });
 
+  const triggerClose = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onClose();
+  }
+
   useEffect(() => {
     if (instanceRef.current) {
       instanceRef.current.moveToIdx(currentIndex);
@@ -51,7 +57,7 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
         className="relative flex justify-center items-center overflow-hidden h-[500px] max-h-[85vh]"
         style={{ width: "min(900px)" }}
       >
-        {loaded && instanceRef.current && (
+        {loaded && (
           <>
             <button
               type="button"
@@ -96,8 +102,11 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
             </div>
           ))}
         </div>
+        <div className="absolute top-10 right-10 cursor-pointer bg-white rounded-full bg-opacity-60" onClick={triggerClose}>
+          <XIcon size="30" />
+        </div>
       </div>
-    </Dialog>
+    </Dialog >
   );
 };
 

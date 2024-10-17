@@ -106,7 +106,7 @@ const TextArea: React.FC<TextAreaProps> = ({
               className={clsx("quill-editor", inputSpaceClassName)}
               modules={{
                 toolbar: {
-                  container: "#toolbar",
+                  container: `#toolbar-${id}`,
                 },
                 history: {
                   delay: 2000,
@@ -125,7 +125,10 @@ const TextArea: React.FC<TextAreaProps> = ({
             />
             {/* Hidden input field */}
 
-            <div id="toolbar" className="quill-toolbar bg-[#F3F6F9] max-w-full">
+            <div
+              id={`toolbar-${id}`}
+              className="quill-toolbar bg-[#F3F6F9] max-w-full"
+            >
               <select className="ql-header" defaultValue="">
                 <option value="">Paragraph</option>
                 <option value="1">Header 1</option>

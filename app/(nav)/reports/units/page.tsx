@@ -43,9 +43,23 @@ const UnitsReport = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard title="Total Units" newData={23} total={200} />
       </div>
-      <FilterBar azFilter exports isDateTrue onStateSelect={() => { }} pageTitle="Units" aboutPageModalData={
-        { title: "Units", description: "This page contains a list of Units on the platform." }
-      } searchInputPlaceholder="Search for Units" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={reportsUnitsFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        exports
+        isDateTrue
+        onStateSelect={() => {}}
+        pageTitle="Units"
+        aboutPageModalData={{
+          title: "Units",
+          description: "This page contains a list of Units on the platform.",
+        }}
+        searchInputPlaceholder="Search for Units"
+        handleFilterApply={() => {}}
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={reportsUnitsFilterOptionsWithDropdown}
+        hasGridListToggle={false}
+        exportHref="/reports/units/export"
+      />
       <CustomTable
         fields={fields}
         data={tableData}
@@ -67,7 +81,7 @@ const UnitsReport = () => {
         evenRowColor="#fff"
         oddRowColor="#FAFAFA"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => { }} />
+      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

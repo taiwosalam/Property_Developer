@@ -2,29 +2,24 @@
 
 // Imports
 import { useEffect, useState, useCallback } from "react";
-import clsx from "clsx";
 import Button from "@/components/Form/Button/button";
-import { GridIcon, ListIcon } from "@/public/icons/icons";
 import TenantCard from "@/components/Management/landlord-and-tenant-card";
 import type { TenantProps } from "@/components/Management/Tenants/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import type { Field } from "@/components/Table/types";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import CustomTable from "@/components/Table/table";
-import SearchInput from "@/components/SearchInput/search-input";
 import Pagination from "@/components/Pagination/pagination";
 import UserTag from "@/components/Tags/user-tag";
 import AddTenantModal from "@/components/Management/Tenants/add-tenant-modal";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
-import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
-import PageTitle from "@/components/PageTitle/page-title";
 import { defaultTenantPageData, getAllTenants, TenantPageState } from "./data";
 import { useAuthStore } from "@/store/authstrore";
-import FilterButton from "@/components/FilterButton/filter-button";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import GlobalPageLoader from "@/components/Loader/global-page-loader";
 
 const Tenants = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -125,9 +120,9 @@ const Tenants = () => {
     {
       label: "Tenant Type",
       value: [
-        { label: "Mobile Tenant", value: "mobile_tenant" },
-        { label: "Web Tenant", value: "web_tenant" },
-        { label: "All Tenant", value: "all_tenants" },
+        { label: "Mobile user", value: "mobile_user" },
+        { label: "Web user", value: "web_user" },
+        { label: "All users", value: "all_users" },
       ],
     },
   ];
@@ -216,7 +211,7 @@ const Tenants = () => {
     { id: "6", accessor: "manage/chat" },
   ];
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <GlobalPageLoader />;
   if (error) return <div>Error: {error.message}</div>;
 
   return (
@@ -251,11 +246,23 @@ const Tenants = () => {
         </Modal>
       </div>
 
-      <FilterBar azFilter gridView={gridView}
+      <FilterBar
+        azFilter
+        gridView={gridView}
         setGridView={setGridView}
-        setListView={setListView} onStateSelect={onStateSelect} pageTitle="Tenants/Occupants (Users)" aboutPageModalData={
-          { title: "Tenants/Occupants (Users)", description: "This page contains a list of all tenants and occupants" }
-        } searchInputPlaceholder="Search for Tenants & Occupants" handleFilterApply={handleFilterApply} isDateTrue filterOptionsWithRadio={tenantFiltersRadio} filterWithOptionsWithDropdown={tenantFilterOptionssWithDropdown} />
+        setListView={setListView}
+        onStateSelect={onStateSelect}
+        pageTitle="Tenants/Occupants (Users)"
+        aboutPageModalData={{
+          title: "Tenants/Occupants (Users)",
+          description: "This page contains a list of all tenants and occupants",
+        }}
+        searchInputPlaceholder="Search for Tenants & Occupants"
+        handleFilterApply={handleFilterApply}
+        isDateTrue
+        filterOptionsWithRadio={tenantFiltersRadio}
+        filterWithOptionsWithDropdown={tenantFilterOptionssWithDropdown}
+      />
       <section>
         {gridView ? (
           <AutoResizingGrid minWidth={284} gap={16}>

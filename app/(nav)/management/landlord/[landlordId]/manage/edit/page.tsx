@@ -32,6 +32,8 @@ import { getOneLandlord } from "../../../data";
 import { useAuthStore } from "@/store/authstrore";
 import { useParams, useRouter } from "next/navigation";
 import { LandlordPageData } from "../../../types";
+import GlobalPageLoader from "@/components/Loader/global-page-loader";
+import BackButton from "@/components/BackButton/back-button";
 
 const EditLandlord = () => {
   const states = getAllStates();
@@ -83,13 +85,11 @@ const EditLandlord = () => {
     // fetchLandlords();
   }, [accessToken, landlordId, router]);
 
-  // if (loading) return <div>Loading...</div>;
+  // if (loading) return <GlobalPageLoader />;
 
   return (
     <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
-      <h2 className="text-black text-lg lg:text-xl font-medium">
-        Edit Landlord
-      </h2>
+      <BackButton>Edit Landlord</BackButton>
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="custom-flex-col gap-5 flex-1">
           {/* Profile */}
