@@ -24,7 +24,7 @@ const SettingsSection: React.FC<SettingsSectionProps> = ({
       className="bg-white rounded-2xl custom-flex-col"
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
-      <div className="flex justify-between py-[18px] px-6 bg-neutral-2 rounded-tr-2xl">
+      <div className="flex justify-between py-[18px] px-6 bg-neutral-2 rounded-t-2xl">
         <div className="content flex items-center gap-2">
           <p className="text-primary-navy text-base font-medium capitalize">
             {title}

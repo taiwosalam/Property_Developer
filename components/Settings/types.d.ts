@@ -164,6 +164,7 @@ interface ThemeCardProps {
   value: string;
   isSelected: boolean;
   onSelect: (value: string) => void; 
+  className?: string
 }
 
 

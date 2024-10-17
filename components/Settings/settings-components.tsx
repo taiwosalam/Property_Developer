@@ -264,8 +264,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
 }) => {
   return (
     <div
-      className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer
-      }`}
+      className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer ${isSelected === false ? 'bg-white bg-opacity-60 border-3 border-red-500' : ''}`}
       onClick={() => onSelect(value)} // Trigger onSelect with value on click
     >
       <div className={`imgWrapper w-full h-full ${isSelected ? "border-2 border-blue-500 rounded-md w-full" : ""}`}>
@@ -320,3 +319,48 @@ export const CustomColorPicker: React.FC<{
   );
 };
 
+
+// WEBBSITE COLOR SCHEME
+interface ColorSchemeSelectorProps {
+  selectedColor: string | null;
+  onColorSelect: (color: string) => void;
+}
+
+
+
+
+
+export const WebsiteColorSchemes: React.FC<{
+  websiteColorSchemes: string[];
+  selectedColor: string | null; 
+  onColorSelect: (color: string) => void;
+}> = ({ websiteColorSchemes, selectedColor, onColorSelect }) => {
+  return (
+    <div className="themes flex gap-5 flex-wrap mt-6">
+      {websiteColorSchemes.map((color, index) => (
+        <div
+          key={index}
+          className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${
+            selectedColor === color
+              ? "border-2 border-blue-500 rounded-md h-[40px] w-[40px]"
+              : ""
+          }`}
+          style={{ backgroundColor: color }}
+          onClick={() => onColorSelect(color)}
+        >
+          {selectedColor === color && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Image
+                src="/icons/whitemark.svg"
+                alt="Selected"
+                width={24}
+                height={24}
+                priority
+              />
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};

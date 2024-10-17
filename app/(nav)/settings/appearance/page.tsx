@@ -1,3 +1,259 @@
+// "use client";
+// import React, { useEffect, useState } from "react";
+// import Image from "next/image";
+
+// // Imports
+// import SettingsSection from "@/components/Settings/settings-section";
+// import {
+//   ThemeCard,
+//   SettingsSectionTitle,
+//   CustomColorPicker,
+//   WebsiteColorSchemes,
+// } from "@/components/Settings/settings-components";
+// import { website_color_schemes } from "@/components/Settings/data";
+// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+// import { useThemeStoreSelectors } from "@/store/themeStore";
+// import { rgbToHex } from "@/utils/rgbaToHex";
+// import { Tooltip } from "@mui/material";
+
+// const Appearance = () => {
+//   const primaryColor = useThemeStoreSelectors.getState().primaryColor;
+//   const setPrimaryColor = useThemeStoreSelectors.getState().setPrimaryColor;
+
+//   console.log(primaryColor);
+//   console.log(rgbToHex(primaryColor));
+
+//   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
+//   const [selectedView, setSelectedView] = useState<string | null>(null);
+//   const [selectedNavbar, setSelectedNavbar] = useState<string | null>(null);
+//   const [selectedMode, setSelectedMode] = useState<string | null>(null);
+//   const [selectedColor, setSelectedColor] = useState<string | null>(
+//     rgbToHex(primaryColor)
+//   );
+//   const [modalOpen, setModalOpen] = useState(false);
+//   const [customColor, setCustomColor] = useState("#ffffff");
+
+//   // Log selected color whenever it changes
+//   useEffect(() => {
+//     if (selectedColor) {
+//       setPrimaryColor(selectedColor);
+//     }
+//   }, [setPrimaryColor, selectedColor]);
+
+//   const handleSelect = (type: string, value: string) => {
+//     switch (type) {
+//       case "theme":
+//         setSelectedTheme(value);
+//         break;
+//       case "view":
+//         setSelectedView(value);
+//         break;
+//       case "navbar":
+//         setSelectedNavbar(value);
+//         break;
+//       case "mode":
+//         setSelectedMode(value);
+//         break;
+//     }
+//   };
+
+//   const handleColorSelect = (color: string) => {
+//     if (!color) return; 
+//     setSelectedColor(color);
+//     setCustomColor(color);
+//   };
+
+
+//   const handleCustomColorChange = (color: string) => {
+//     if (!color) return;
+//     setCustomColor(color);
+//     setSelectedColor(color);
+//     console.log("selected color = ", color);
+//   };
+
+//   return (
+//     <>
+//       {/* DASHBOARD THEMES */}
+//       <SettingsSection title="Dashboard Themes">
+//         <SettingsSectionTitle
+//           title="Select Theme Template"
+//           desc="Select the themes that best match your interests."
+//         />
+//         <div className="themes flex gap-5 flex-wrap mt-6">
+//           <ThemeCard
+//             img="/global/theme1.svg"
+//             value="theme1"
+//             onSelect={(value) => handleSelect("theme", value)}
+//             isSelected={selectedTheme === "theme1"}
+//           />
+//           <Tooltip title="You don't have permission to do this" followCursor>
+//           <div className="relative" title="Sorry, this theme is for Professional Plan subscribers only">
+//             <ThemeCard
+//               img="/global/theme2.svg"
+//               value="theme2"
+//               onSelect={() => {}}
+//               isSelected={false}
+//               className="opacity-50 cursor-not-allowed"
+//             />
+//           </Tooltip>
+//           </div>
+
+//           <Tooltip title="You don't have permission to do this" followCursor>
+//           <div className="relative" title="Sorry, this theme is for Professional Plan subscribers only">
+//             <ThemeCard
+//               img="/global/theme3.svg"
+//               value="theme3"
+//               onSelect={() => {}}
+//               isSelected={false}
+//               className="opacity-50 cursor-not-allowed"
+//             />
+//           </div>
+//           </Tooltip>
+//         </div>
+//         <div className="flex justify-end mt-4">
+//           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+//             Update
+//           </button>
+//         </div>
+//       </SettingsSection>
+
+//       {/* GRID & LIST DISPLAY SETTINGS */}
+//       <SettingsSection title="Grid and List Settings">
+//         <SettingsSectionTitle
+//           title="Card Arrangement"
+//           desc="Kindly select from 'grid' or 'list' to determine the appearance of your cards."
+//         />
+//         <div className="themes flex gap-5 flex-wrap mt-6">
+//           <ThemeCard
+//             img="/global/grid-view.svg"
+//             value="grid"
+//             onSelect={(value) => handleSelect("view", value)}
+//             isSelected={selectedView === "grid"}
+//           />
+//           <ThemeCard
+//             img="/global/list-view.svg"
+//             value="list"
+//             onSelect={(value) => handleSelect("view", value)}
+//             isSelected={selectedView === "list"}
+//           />
+//         </div>
+//         <div className="flex justify-end mt-4">
+//           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+//             Update
+//           </button>
+//         </div>
+//       </SettingsSection>
+
+//       {/* NAVBAR DISPLAY SETTINGS */}
+//       <SettingsSection title="Navbar Settings">
+//         <SettingsSectionTitle
+//           title="Navbar"
+//           desc="Kindly select how you want your nav bar to be like"
+//         />
+//         <div className="themes flex gap-5 flex-wrap mt-6">
+//           <ThemeCard
+//             img="/global/nav1.svg"
+//             value="nav1"
+//             onSelect={(value) => handleSelect("navbar", value)}
+//             isSelected={selectedNavbar === "nav1"}
+//           />
+//           <ThemeCard
+//             img="/global/nav2.svg"
+//             value="nav2"
+//             onSelect={(value) => handleSelect("navbar", value)}
+//             isSelected={selectedNavbar === "nav2"}
+//           />
+//         </div>
+//         <div className="flex justify-end mt-4">
+//           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+//             Update
+//           </button>
+//         </div>
+//       </SettingsSection>
+
+//       {/* MODE - DARK/LIGHT MODE SETTINGS */}
+//       <SettingsSection title="Mode">
+//         <SettingsSectionTitle
+//           title="Color scheme"
+//           desc="Choose Light or Dark Mode Scheme."
+//         />
+//         <div className="themes flex gap-5 flex-wrap">
+//           <ThemeCard
+//             img="/global/light-mode.svg"
+//             value="light"
+//             onSelect={(value) => handleSelect("mode", value)}
+//             isSelected={selectedMode === "light"}
+//           />
+//           <ThemeCard
+//             img="/global/dark-mode.svg"
+//             value="dark"
+//             onSelect={(value) => handleSelect("mode", value)}
+//             isSelected={selectedMode === "dark"}
+//           />
+//         </div>
+//         <div className="flex justify-end mt-4">
+//           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+//             Update
+//           </button>
+//         </div>
+//       </SettingsSection>
+
+//       {/* DASHBOARD COLOR SETTINGS */}
+//       <SettingsSection title="Theme and Color Settings">
+//         <SettingsSectionTitle
+//           title="Dashboard Color Scheme"
+//           desc="Customize the default color to your preference from the available options listed below."
+//         />
+
+//         <WebsiteColorSchemes
+//           websiteColorSchemes={website_color_schemes as unknown as string[]}
+//           selectedColor={selectedColor}
+//           onColorSelect={handleColorSelect}
+//         />
+
+//         <div className="">
+//           <p className="text-sm text-text-disabled">
+//             Specify a color code or select a color that best represents your
+//             brand. You can also incorporate additional color designs based on
+//             your preferences.
+//           </p>
+//         </div>
+//         {/* </div> */}
+//         <Modal
+//           state={{
+//             isOpen: modalOpen,
+//             setIsOpen: setModalOpen,
+//           }}
+//         >
+//           <ModalTrigger
+//             className={`h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white flex items-center justify-center cursor-pointer ${
+//               modalOpen ? "border-2 border-blue-500" : ""
+//             }`}
+//           >
+//             +
+//           </ModalTrigger>
+//           <ModalContent>
+//             <CustomColorPicker
+//               color={customColor}
+//               onChange={handleCustomColorChange}
+//               onClose={() => {
+//                 setCustomColor(customColor);
+//                 setModalOpen(false);
+//               }}
+//             />
+//           </ModalContent>
+//         </Modal>
+//         <div className="flex justify-end mt-4">
+//           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+//             Update
+//           </button>
+//         </div>
+//       </SettingsSection>
+//     </>
+//   );
+// };
+
+// export default Appearance;
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
@@ -8,11 +264,13 @@ import {
   ThemeCard,
   SettingsSectionTitle,
   CustomColorPicker,
+  WebsiteColorSchemes,
 } from "@/components/Settings/settings-components";
 import { website_color_schemes } from "@/components/Settings/data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 import { rgbToHex } from "@/utils/rgbaToHex";
+import { Tooltip } from "@mui/material";
 
 const Appearance = () => {
   const primaryColor = useThemeStoreSelectors.getState().primaryColor;
@@ -25,9 +283,7 @@ const Appearance = () => {
   const [selectedView, setSelectedView] = useState<string | null>(null);
   const [selectedNavbar, setSelectedNavbar] = useState<string | null>(null);
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string | null>(
-    rgbToHex(primaryColor)
-  );
+  const [selectedColor, setSelectedColor] = useState<string | null>(rgbToHex(primaryColor));
   const [modalOpen, setModalOpen] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
 
@@ -39,10 +295,10 @@ const Appearance = () => {
   }, [setPrimaryColor, selectedColor]);
 
   const handleSelect = (type: string, value: string) => {
+    if (!value) return; // Added check to prevent setting undefined values
     switch (type) {
       case "theme":
         setSelectedTheme(value);
-        console.log("selected theme", value);
         break;
       case "view":
         setSelectedView(value);
@@ -57,15 +313,13 @@ const Appearance = () => {
   };
 
   const handleColorSelect = (color: string) => {
+    if (!color) return; // Added check to prevent setting undefined colors
     setSelectedColor(color);
     setCustomColor(color);
   };
 
-  const handleCustomColorClick = () => {
-      setModalOpen((prev) => !prev); // Toggle the state
-  };
-
   const handleCustomColorChange = (color: string) => {
+    if (!color) return; // Added check to prevent setting undefined colors
     setCustomColor(color);
     setSelectedColor(color);
     console.log("selected color = ", color);
@@ -86,21 +340,38 @@ const Appearance = () => {
             onSelect={(value) => handleSelect("theme", value)}
             isSelected={selectedTheme === "theme1"}
           />
-          <ThemeCard
-            img="/global/theme2.svg"
-            value="theme2"
-            onSelect={(value) => handleSelect("theme", value)}
-            isSelected={selectedTheme === "theme2"}
-          />
-          <ThemeCard
-            img="/global/theme3.svg"
-            value="theme3"
-            onSelect={(value) => handleSelect("theme", value)}
-            isSelected={selectedTheme === "theme3"}
-          />
+          <Tooltip title="Sorry, this theme is for Professional Plan subscribers only" followCursor>
+            <div className="relative" title="Sorry, this theme is for Professional Plan subscribers only">
+              <ThemeCard
+                img="/global/theme2.svg"
+                value="theme2"
+                onSelect={() => {}}
+                isSelected={false}
+                className="opacity-50 cursor-not-allowed"
+              />
+            </div>
+          </Tooltip>
+
+          <Tooltip title="Sorry, this theme is for Professional Plan subscribers only" followCursor>
+            <div className="relative" title="Sorry, this theme is for Professional Plan subscribers only">
+              <ThemeCard
+                img="/global/theme3.svg"
+                value="theme3"
+                onSelect={() => {}}
+                isSelected={false}
+                className="opacity-50 cursor-not-allowed"
+              />
+            </div>
+          </Tooltip>
         </div>
         <div className="flex justify-end mt-4">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => {
+              // Add functionality to handle update action
+              console.log("Update clicked");
+            }}
+          >
             Update
           </button>
         </div>
@@ -168,13 +439,13 @@ const Appearance = () => {
         />
         <div className="themes flex gap-5 flex-wrap">
           <ThemeCard
-            img="/global/nav1.svg"
+            img="/global/light-mode.svg"
             value="light"
             onSelect={(value) => handleSelect("mode", value)}
             isSelected={selectedMode === "light"}
           />
           <ThemeCard
-            img="/global/nav2.svg"
+            img="/global/dark-mode.svg"
             value="dark"
             onSelect={(value) => handleSelect("mode", value)}
             isSelected={selectedMode === "dark"}
@@ -193,46 +464,25 @@ const Appearance = () => {
           title="Dashboard Color Scheme"
           desc="Customize the default color to your preference from the available options listed below."
         />
-        <div className="themes flex gap-5 flex-wrap mt-6">
-          {website_color_schemes.map((color, index) => (
-            <div
-              key={index}
-              className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${
-                selectedColor === color
-                  ? "border-2 border-blue-500 rounded-md h-[40px] w-[40px]"
-                  : ""
-              }`}
-              style={{ backgroundColor: color }}
-              onClick={() => handleColorSelect(color)}
-            >
-              {selectedColor === color && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Image
-                    src="/icons/whitemark.svg"
-                    alt="Selected"
-                    width={24}
-                    height={24}
-                    priority
-                  />
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
 
-          <div className="">
-            <p className="text-sm text-text-disabled">
-              Specify a color code or select a color that best represents your
-              brand. You can also incorporate additional color designs based on
-              your preferences.
-            </p>
-          </div>
-        {/* </div> */}
+        <WebsiteColorSchemes
+          websiteColorSchemes={website_color_schemes as unknown as string[]}
+          selectedColor={selectedColor}
+          onColorSelect={handleColorSelect}
+        />
+
+        <div className="">
+          <p className="text-sm text-text-disabled">
+            Specify a color code or select a color that best represents your
+            brand. You can also incorporate additional color designs based on
+            your preferences.
+          </p>
+        </div>
         <Modal
-        state={{
-          isOpen: modalOpen,
-          setIsOpen: setModalOpen,
-        }}
+          state={{
+            isOpen: modalOpen,
+            setIsOpen: setModalOpen,
+          }}
         >
           <ModalTrigger
             className={`h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white flex items-center justify-center cursor-pointer ${
@@ -243,7 +493,7 @@ const Appearance = () => {
           </ModalTrigger>
           <ModalContent>
             <CustomColorPicker
-              color={customColor} 
+              color={customColor}
               onChange={handleCustomColorChange}
               onClose={() => {
                 setCustomColor(customColor);

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 // Images
@@ -19,16 +19,40 @@ import { useImageUploader } from "@/hooks/useImageUploader";
 import SettingsSection from "@/components/Settings/settings-section";
 
 import {
+  CustomColorPicker,
   SettingsColorScheme,
   SettingsSectionTitle,
   SettingsUpdateButton,
+  WebsiteColorSchemes,
   SettingsVerifiedBadge,
 } from "@/components/Settings/settings-components";
 
 import TextArea from "@/components/Form/TextArea/textarea";
 import { website_color_schemes } from "@/components/Settings/data";
+import { ModalContent } from "@/components/Modal/modal";
+import { ModalTrigger } from "@/components/Modal/modal";
+import { Modal } from "@/components/Modal/modal";
+import { useThemeStoreSelectors } from "@/store/themeStore";
+import { rgbToHex } from "@/utils/rgbaToHex";
+
 
 const Profile = () => {
+  const primaryColor = useThemeStoreSelectors.getState().primaryColor;
+  const setPrimaryColor = useThemeStoreSelectors.getState().setPrimaryColor;
+  const [selectedMode, setSelectedMode] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(
+    rgbToHex(primaryColor)
+  );
+
+  useEffect(() => {
+    if (selectedColor) {
+      setPrimaryColor(selectedColor);
+    }
+  }, [setPrimaryColor, selectedColor]);
+
+  
+  const [modalOpen, setModalOpen] = useState(false);
+  const [customColor, setCustomColor] = useState("#ffffff");
   const { preview, handleImageChange } = useImageUploader({
     placeholder: Transparent,
   });
@@ -41,6 +65,17 @@ const Profile = () => {
     tiktok: "https://tiktok.com/",
     youtube: "https://youtube.com/",
   });
+
+  const handleCustomColorChange = (color: string) => {
+    setCustomColor(color);
+    setSelectedColor(color);
+    console.log("selected color = ", color);
+  };
+
+  const handleColorSelect = (color: string) => {
+    setSelectedColor(color);
+    setCustomColor(color);
+  };
 
   const handleSocialInputChange = (platform: string, value: string) => {
     setSocialInputs((prev) => ({
@@ -349,32 +384,45 @@ const Profile = () => {
         </div>
       </SettingsSection>
       <SettingsSection title="website color settings">
-        <div className="custom-flex-col gap-[18px]">
-          <div className="custom-flex-col gap-7">
-            <div className="custom-flex-col gap-4">
+            <div className="custom-flex-col gap-4 mb-7">
               <SettingsSectionTitle
                 title="color scheme"
                 desc="Customize the default color to your preference from the available options listed below."
               />
               <div className="flex gap-2">
-                {website_color_schemes.map((color, i) => (
-                  <SettingsColorScheme
-                    key={`${color}-${i}`}
-                    color={color}
-                    active={color === "#0033C4"}
+                  <WebsiteColorSchemes
+                     websiteColorSchemes={website_color_schemes as unknown as string[]}
+                     selectedColor={selectedColor}
+                     onColorSelect={handleColorSelect}
                   />
-                ))}
               </div>
             </div>
+            <div className="flex flex-col gap-7">
             <SettingsSectionTitle desc="Specify a color code or select a color that best represents your brand website. You can also incorporate additional color designs based on your preferences." />
-            <div className="flex">
-              <div className="w-10 h-10 rounded-lg border border-dashed border-borders-normal flex items-center justify-center">
-                <p className="text-text-label text-xl font-medium">+</p>
-              </div>
+            <div className="w-10 h-10 rounded-lg border border-dashed border-borders-normal flex items-center justify-center">
+            <Modal
+              state={{
+                isOpen: modalOpen,
+                setIsOpen: setModalOpen,
+              }}>
+              <ModalTrigger
+              >
+                +
+              </ModalTrigger>
+              <ModalContent>
+                <CustomColorPicker
+                  color={customColor}
+                  onChange={handleCustomColorChange}
+                  onClose={() => {
+                    setCustomColor(customColor);
+                    setModalOpen(false);
+                  }}
+                />
+              </ModalContent>
+            </Modal>
             </div>
-          </div>
+            </div>
           <SettingsUpdateButton />
-        </div>
       </SettingsSection>
     </>
   );
