@@ -33,7 +33,7 @@ const Profile = () => {
     placeholder: Transparent,
   });
 
-    const [socialInputs, setSocialInputs] = useState({
+  const [socialInputs, setSocialInputs] = useState({
     instagram: "https://instagram.com/",
     facebook: "https://facebook.com/",
     twitter: "https://twitter.com/",
@@ -43,12 +43,11 @@ const Profile = () => {
   });
 
   const handleSocialInputChange = (platform: string, value: string) => {
-    setSocialInputs(prev => ({
+    setSocialInputs((prev) => ({
       ...prev,
-      [platform]: value
+      [platform]: value,
     }));
   };
-
 
   return (
     <>
@@ -267,9 +266,9 @@ const Profile = () => {
           <SettingsUpdateButton />
         </div>
       </SettingsSection>
-            <SettingsSection title="about company">
+      <SettingsSection title="about company">
         <div className="custom-flex-col gap-8">
-          <TextArea id="about company" />
+          {/* <TextArea id="about company" /> */}
           <div className="custom-flex-col gap-6">
             <SettingsSectionTitle
               title="social medias"
@@ -282,28 +281,36 @@ const Profile = () => {
                   label="instagram"
                   placeholder="username"
                   value={socialInputs.instagram}
-                  onChange={(value) => handleSocialInputChange("instagram", value)}
+                  onChange={(value) =>
+                    handleSocialInputChange("instagram", value)
+                  }
                 />
                 <Input
                   id="facebook"
                   label="facebook"
                   placeholder="username"
                   value={socialInputs.facebook}
-                  onChange={(value) => handleSocialInputChange("facebook", value)}
+                  onChange={(value) =>
+                    handleSocialInputChange("facebook", value)
+                  }
                 />
                 <Input
                   id="twitter"
                   label="x (Twitter)"
                   placeholder="username"
                   value={socialInputs.twitter}
-                  onChange={(value) => handleSocialInputChange("twitter", value)}
+                  onChange={(value) =>
+                    handleSocialInputChange("twitter", value)
+                  }
                 />
                 <Input
                   id="linkedin"
                   label="linkedIn"
                   placeholder="username"
                   value={socialInputs.linkedin}
-                  onChange={(value) => handleSocialInputChange("linkedin", value)}
+                  onChange={(value) =>
+                    handleSocialInputChange("linkedin", value)
+                  }
                 />
                 <Input
                   id="tiktok"
@@ -317,7 +324,9 @@ const Profile = () => {
                   label="youtube"
                   placeholder="username"
                   value={socialInputs.youtube}
-                  onChange={(value) => handleSocialInputChange("youtube", value)}
+                  onChange={(value) =>
+                    handleSocialInputChange("youtube", value)
+                  }
                 />
               </div>
             </div>
@@ -348,9 +357,9 @@ const Profile = () => {
                 desc="Customize the default color to your preference from the available options listed below."
               />
               <div className="flex gap-2">
-                {website_color_schemes.map((color) => (
+                {website_color_schemes.map((color, i) => (
                   <SettingsColorScheme
-                    key={color}
+                    key={`${color}-${i}`}
                     color={color}
                     active={color === "#0033C4"}
                   />

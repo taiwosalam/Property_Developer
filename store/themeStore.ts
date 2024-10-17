@@ -15,8 +15,16 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>((set) => ({
   primaryColor: "",
   secondaryColor: "",
-  setPrimaryColor: (color: string) => set({ primaryColor: color }),
-  setSecondaryColor: (color: string) => set({ secondaryColor: color }),
+  setPrimaryColor: (color: string) => {
+    set({ primaryColor: color });
+    localStorage.setItem("primary-color", color);
+    document.documentElement.style.setProperty("--primary-color", color);
+  },
+  setSecondaryColor: (color: string) => {
+    set({ secondaryColor: color });
+    localStorage.setItem("secondary-color", color);
+    document.documentElement.style.setProperty("--secondary-color", color);
+  },
 }));
 
 export const useThemeStoreSelectors = createSelectors(useThemeStore);

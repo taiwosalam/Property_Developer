@@ -117,24 +117,24 @@ export const BillingTypeButton: React.FC<{
     <button
       onClick={() => handleBillingTypeChange(type)}
       disabled={isFree}
-      className={`${isFree ? "text-text-secondary opacity-50 cursor-not-allowed text-sm" : "text-text-secondary text-base"}`}
+      className={`flex flex-col items-center ${isFree ? "text-text-secondary opacity-50 cursor-not-allowed text-sm" : "text-text-secondary text-base"}`}
     >
       {isFree
         ? `Free ${type === "yearly" ? "Annually" : "Monthly"}`
         : type === "yearly" && isLifeTimePlan
           ? 'Pay Once'
           : `Pay ${type === "yearly" ? "Annually" : "Monthly"}`}
+      
+      {(type === "yearly" && !isLifeTimePlan) || (type === "yearly" && isLifeTimePlan) ? (
+        <span
+          className={`${
+            isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : "text-brand-9"
+          }`}
+        >
+          {isFree || (isLifeTimePlan && type === "yearly") ? "Save stress" : billingType === "yearly" ? discountText : "Get Discount"}
+        </span>
+      ) : null}
     </button>
-  {(type === "yearly" && !isLifeTimePlan) || (type === "yearly" && isLifeTimePlan) ? (
-      <Link
-        href="#"
-        className={`${
-          isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : "text-brand-9"
-        }`}
-      >
-        {isFree || (isLifeTimePlan && type === "yearly") ? "Save stress" : billingType === "yearly" ? discountText : "Get Discount"}
-      </Link>
-    ) : null}
   </div>
 )}
 

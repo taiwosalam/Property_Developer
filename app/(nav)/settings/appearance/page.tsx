@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 // Imports
@@ -11,21 +11,38 @@ import {
 } from "@/components/Settings/settings-components";
 import { website_color_schemes } from "@/components/Settings/data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { useThemeStoreSelectors } from "@/store/themeStore";
+import { rgbToHex } from "@/utils/rgbaToHex";
 
 const Appearance = () => {
+  const primaryColor = useThemeStoreSelectors.getState().primaryColor;
+  const setPrimaryColor = useThemeStoreSelectors.getState().setPrimaryColor;
+
+  console.log(primaryColor);
+  console.log(rgbToHex(primaryColor));
+
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [selectedView, setSelectedView] = useState<string | null>(null);
   const [selectedNavbar, setSelectedNavbar] = useState<string | null>(null);
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<string | null>(
+    rgbToHex(primaryColor)
+  );
+  const [modalOpen, setModalOpen] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
+
+  // Log selected color whenever it changes
+  useEffect(() => {
+    if (selectedColor) {
+      setPrimaryColor(selectedColor);
+    }
+  }, [setPrimaryColor, selectedColor]);
 
   const handleSelect = (type: string, value: string) => {
     switch (type) {
       case "theme":
         setSelectedTheme(value);
-        console.log("selected theme", selectedTheme);
+        console.log("selected theme", value);
         break;
       case "view":
         setSelectedView(value);
@@ -37,7 +54,16 @@ const Appearance = () => {
         setSelectedMode(value);
         break;
     }
-  };  
+  };
+
+  const handleColorSelect = (color: string) => {
+    setSelectedColor(color);
+    setCustomColor(color);
+  };
+
+  const handleCustomColorClick = () => {
+      setModalOpen((prev) => !prev); // Toggle the state
+  };
 
   const handleCustomColorChange = (color: string) => {
     setCustomColor(color);
@@ -171,9 +197,13 @@ const Appearance = () => {
           {website_color_schemes.map((color, index) => (
             <div
               key={index}
-              className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${selectedColor === color ? "border-2 border-blue-500 rounded-md h-[40px] w-[40px]" : ""
-                }`}
+              className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${
+                selectedColor === color
+                  ? "border-2 border-blue-500 rounded-md h-[40px] w-[40px]"
+                  : ""
+              }`}
               style={{ backgroundColor: color }}
+              onClick={() => handleColorSelect(color)}
             >
               {selectedColor === color && (
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -182,11 +212,13 @@ const Appearance = () => {
                     alt="Selected"
                     width={24}
                     height={24}
+                    priority
                   />
                 </div>
               )}
             </div>
           ))}
+        </div>
 
           <div className="">
             <p className="text-sm text-text-disabled">
@@ -195,10 +227,18 @@ const Appearance = () => {
               your preferences.
             </p>
           </div>
-        </div>
-        <Modal>
+        {/* </div> */}
+        <Modal
+        state={{
+          isOpen: modalOpen,
+          setIsOpen: setModalOpen,
+        }}
+        >
           <ModalTrigger
-            className={`h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white flex items-center justify-center cursor-pointer ${showColorPicker ? "border-2 border-blue-500" : ""}`}>
+            className={`h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white flex items-center justify-center cursor-pointer ${
+              modalOpen ? "border-2 border-blue-500" : ""
+            }`}
+          >
             +
           </ModalTrigger>
           <ModalContent>
@@ -206,9 +246,8 @@ const Appearance = () => {
               color={customColor} 
               onChange={handleCustomColorChange}
               onClose={() => {
-                console.log("Closing color picker. Selected color:", customColor);
-                setShowColorPicker(false);
                 setCustomColor(customColor);
+                setModalOpen(false);
               }}
             />
           </ModalContent>
