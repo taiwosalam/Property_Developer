@@ -32,7 +32,7 @@ import { LandlordPageData } from "../../types";
 import { ASSET_URL, empty } from "@/app/config";
 import UserTag from "@/components/Tags/user-tag";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
-import GlobalPageLoader from "@/components/Loader/global-page-loader";
+import GlobalPageLoader from "@/components/Loader/CustomLoader";
 
 const ManageLandlord = () => {
   const accessToken = useAuthStore((state) => state.access_token);
