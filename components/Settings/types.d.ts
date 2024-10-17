@@ -186,4 +186,5 @@ export interface SettingsEnrollmentCardProps {
   decrementQuantity: () => void;
   isFree?: boolean;
   onBillingTypeChange: (type: 'monthly' | 'yearly') => void;
+  discountText: string;
 }

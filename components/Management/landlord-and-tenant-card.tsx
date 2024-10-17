@@ -8,34 +8,41 @@ import { empty } from "@/app/config";
 
 // Staff Props. This is for Undo Modal Staff Profile
 export interface StaffProps {
-  id: string | number;
   first_name: string;
   last_name: string;
   email: string;
   phone_number: string;
   role: string;
   picture_url: string;
-  avatar: string;
+}
+
+export interface BaseProps {
+  full_name: string;
+  email: string;
+  phone_number: string;
+  picture_url: string;
+  user_tag: 'mobile' | 'web';
 }
 
 export type UserCardProps =
   | (LandlordProps & { cardType: "landlord" })
   | (TenantProps & { cardType: "tenant" })
   | (ServiceProviderProps & { cardType: "service-provider" })
-  | (StaffProps & { cardType: "staff" });
+  | (StaffProps & { cardType: "staff" })
+  | (BaseProps & { cardType: "base" });
 
 const UserCard: React.FC<UserCardProps> = (props) => {
-  const { first_name, last_name, email, phone_number, picture_url, cardType } =
+  const {  email, phone_number, picture_url, cardType } =
     props;
   return (
     <div
-      className="border border-brand-tertiary bg-[#F9F9F9] p-[3%] rounded-lg flex gap-[3%]"
+      className="border border-brand-tertiary bg-[#F9F9F9] p-2 rounded-lg flex gap-2 items-start"
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
     >
-      <div className="rounded-lg relative w-[30%] overflow-hidden aspect-[0.9] flex-shrink-0">
+      <div className="rounded-lg relative overflow-hidden flex-shrink-0 w-[82px] h-[90px]">
         <Image
           src={picture_url || empty}
-          alt={first_name}
+          alt={cardType !== 'base' ? props?.first_name : props?.full_name}
           fill
           sizes="300px"
           className="w-full h-full object-cover"
@@ -43,7 +50,7 @@ const UserCard: React.FC<UserCardProps> = (props) => {
       </div>
       <div className="flex-1 flex flex-col items-start">
         <p className="flex items-center font-bold text-black text-sm capitalize">
-          <span className="text-ellipsis line-clamp-1">{`${first_name} ${last_name}`}</span>
+          <span className="text-ellipsis line-clamp-1">{cardType !== 'base' ? `${props.first_name} ${props.last_name}` : props.full_name}</span>
           <BadgeIcon color="red" />
         </p>
         <p className="font-normal text-black text-xs mb-1 text-ellipsis line-clamp-2 break-all">

@@ -29,7 +29,10 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
       <ImageModal
         isOpen={screenModal}
         onClose={() => setScreenModal(false)}
-        images={sampleImages.map((image) => image.src)}
+        images={sampleImages.map((image) => ({
+          src: image.src,
+          isVideo: false,
+        }))}
         currentIndex={0}
       />
       <div className="flex flex-col-reverse md:flex-row md:items-center gap-4 md:justify-between">
