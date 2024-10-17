@@ -296,8 +296,8 @@ export const CustomColorPicker: React.FC<{
           style={{ width: "390px" }}
         />
       </div>
-      <div className="p">
-        <div className="flex gap-2 items-center justify-center w-full">
+      <div className="p w-full flex flex-col items-center justify-center">
+        <div className="flex gap-2 items-center justify-center w-[246px]">
           <p className="text-sm text-text-primary">Hex</p>
           <input
             type="text"
@@ -307,7 +307,7 @@ export const CustomColorPicker: React.FC<{
             placeholder="Enter hex color code"
           />
         </div>
-        <div className="flex justify-center items-center w-full">
+        <div className="flex justify-center items-center w-full px-6">
           <button
             onClick={onClose}
             className="w-full py-2 bg-brand-9 text-white rounded hover:bg-blue-600 transition-colors"

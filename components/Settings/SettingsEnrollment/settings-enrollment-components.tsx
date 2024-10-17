@@ -101,7 +101,10 @@ export const BillingTypeButton: React.FC<{
   isFree?: boolean;
   duration?: string;
   isLifeTimePlan?: boolean;
-}> = ({ type, billingType = 'monthly', handleBillingTypeChange = () => {}, isFree = false, discountText = '', duration = '', isLifeTimePlan }) => {
+  planType?: "basic" | "premium" | "free";
+}> = ({ type, billingType = 'monthly', handleBillingTypeChange = () => {}, isFree = false, discountText = '', duration = '', isLifeTimePlan, planType }) => {
+  const isYearlyLifeTimePlan = type === "yearly" && isLifeTimePlan && planType === "basic";
+
   return(
   <div
     className={`flex flex-col items-center justify-center px-6 ${
@@ -118,20 +121,20 @@ export const BillingTypeButton: React.FC<{
     >
       {isFree
         ? `Free ${type === "yearly" ? "Annually" : "Monthly"}`
-        : isLifeTimePlan
+        : type === "yearly" && isLifeTimePlan
           ? 'Pay Once'
           : `Pay ${type === "yearly" ? "Annually" : "Monthly"}`}
     </button>
-    {type === "yearly" && (
+  {(type === "yearly" && !isLifeTimePlan) || (type === "yearly" && isLifeTimePlan) ? (
       <Link
         href="#"
         className={`${
           isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : "text-brand-9"
         }`}
       >
-        {isFree ? "No stress" : billingType === "yearly" ? discountText : "Get Discount"}
+        {isFree || (isLifeTimePlan && type === "yearly") ? "Save stress" : billingType === "yearly" ? discountText : "Get Discount"}
       </Link>
-    )}
+    ) : null}
   </div>
 )}
 

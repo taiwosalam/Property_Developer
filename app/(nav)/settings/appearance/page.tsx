@@ -37,25 +37,12 @@ const Appearance = () => {
         setSelectedMode(value);
         break;
     }
-  };
-
-  const handleColorSelect = (color: string) => {
-    setSelectedColor(color);
-    setCustomColor(color);
-    // Here you can also add logic to save the selected color to your app's state or backend
-  };
-
-  const handleCustomColorClick = () => {
-    setShowColorPicker((prev) => !prev); // Toggle the state
-  };
-
-  const handleCloseColorPicker = () => {
-    setShowColorPicker(false);
-  };
+  };  
 
   const handleCustomColorChange = (color: string) => {
     setCustomColor(color);
     setSelectedColor(color);
+    console.log("selected color = ", color);
   };
 
   return (
@@ -181,13 +168,12 @@ const Appearance = () => {
           desc="Customize the default color to your preference from the available options listed below."
         />
         <div className="themes flex gap-5 flex-wrap mt-6">
-          {website_color_schemes.map((color) => (
+          {website_color_schemes.map((color, index) => (
             <div
-              key={color}
+              key={index}
               className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${selectedColor === color ? "border-2 border-blue-500 rounded-md h-[40px] w-[40px]" : ""
                 }`}
               style={{ backgroundColor: color }}
-              onClick={() => handleColorSelect(color)}
             >
               {selectedColor === color && (
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -217,9 +203,13 @@ const Appearance = () => {
           </ModalTrigger>
           <ModalContent>
             <CustomColorPicker
-              color={customColor}
+              color={customColor} 
               onChange={handleCustomColorChange}
-              onClose={handleCloseColorPicker}
+              onClose={() => {
+                console.log("Closing color picker. Selected color:", customColor);
+                setShowColorPicker(false);
+                setCustomColor(customColor);
+              }}
             />
           </ModalContent>
         </Modal>
