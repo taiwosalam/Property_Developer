@@ -24,50 +24,24 @@ import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 const Dashboard = () => {
-  const { isMobile, isTablet } = useWindowWidth();
-
-  const itemsPerColumn = Math.ceil(dashboardCardData.length / 3);
+  const { isMobile } = useWindowWidth();
 
   return (
     <section className="custom-flex-col gap-10">
-      <div className="w-full h-full xl:flex gap-x-10">
-        <div className="w-full flex-1 h-full xl:w-[70%] space-y-4 xl:space-y-6">
-          {isMobile || isTablet ? (
-            <div className="w-full flex flex-row py-1.5 xl:py-7 overflow-x-scroll md:overflow-hidden md:grid md:grid-cols-2 gap-3 no-scrollbar">
-              {dashboardCardData.map((card, index) => (
-                <Card
-                  key={index}
-                  title={card.title}
-                  icon={card.icon}
-                  value={card.value}
-                  subvalue={card.subValue}
-                  bg={card.bg}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="w-full grid lg:grid-cols-3 gap-3 py-1.5 xl:py-7">
-              {[0, 1, 2].map((columnIndex) => (
-                <div key={columnIndex} className="flex flex-col gap-3">
-                  {dashboardCardData
-                    .slice(
-                      columnIndex * itemsPerColumn,
-                      (columnIndex + 1) * itemsPerColumn
-                    )
-                    .map((card, index) => (
-                      <Card
-                        key={index}
-                        title={card.title}
-                        icon={card.icon}
-                        value={card.value}
-                        subvalue={card.subValue}
-                        bg={card.bg}
-                      />
-                    ))}
-                </div>
-              ))}
-            </div>
-          )}
+      <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
+        <div className="w-full xl:flex-1 space-y-4 xl:space-y-6">
+          <div className="w-full flex py-1.5 xl:py-7 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
+            {dashboardCardData.map((card, index) => (
+              <Card
+                key={index}
+                title={card.title}
+                icon={card.icon}
+                value={card.value}
+                subvalue={card.subValue}
+                bg={card.bg}
+              />
+            ))}
+          </div>
 
           {!isMobile && (
             <>
@@ -80,26 +54,24 @@ const Dashboard = () => {
             </>
           )}
         </div>
-        <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full space-y-6 mt-6 xl:mt-0">
+
+        <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
           <WalletBalanceCard
             mainBalance={walletBalanceCardData.mainBalance}
             cautionDeposit={walletBalanceCardData.cautionDeposit}
           />
           <DashboarddCalendar />
-          <div>
-            <NotificationCard
-              sectionHeader="Recent Messages"
-              notifications={recentMessagesData}
-            />
-          </div>
-          <div>
-            <NotificationCard
-              sectionHeader="Complaints"
-              notifications={complaintsData}
-            />
-          </div>
+          <NotificationCard
+            sectionHeader="Recent Messages"
+            notifications={recentMessagesData}
+          />
+          <NotificationCard
+            sectionHeader="Complaints"
+            notifications={complaintsData}
+          />
         </div>
       </div>
+
       <SectionContainer heading="Recent invoice" href="/">
         <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
           <table className="dash-table">

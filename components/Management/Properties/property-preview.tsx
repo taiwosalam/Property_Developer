@@ -38,9 +38,6 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
     relocate: "#620E13",
   };
 
-  const goBack = () => {
-    router.back();
-  };
   const [[page, direction], setPage] = useState([0, 0]);
   const paginate = (newDirection: number) => {
     setPage([page + newDirection, newDirection]);
@@ -55,7 +52,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
         <button
           type="button"
           aria-label="Go Back"
-          onClick={goBack}
+          onClick={() => router.back()}
           className="p-2"
         >
           <ChevronLeft />

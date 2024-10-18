@@ -80,6 +80,7 @@ const ServiceProviders = () => {
         isDateTrue
         filterOptions={[]}
         filterWithOptionsWithDropdown={serviceProviderFilterOptionsWithDropdown}
+        hasGridListToggle={false}
       />
       <section
         className="grid gap-4"

@@ -38,9 +38,21 @@ const PropertyRequest = () => {
           className="w-[unset]"
         />
       </div>
-      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Request" aboutPageModalData={
-        { title: "Request", description: "This page contains a list of Request on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+      <FilterBar
+        azFilter
+        onStateSelect={() => {}}
+        pageTitle="Request"
+        aboutPageModalData={{
+          title: "Request",
+          description: "This page contains a list of Request on the platform.",
+        }}
+        searchInputPlaceholder="Search"
+        handleFilterApply={() => {}}
+        isDateTrue
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={[]}
+        hasGridListToggle={false}
+      />
       <AutoResizingGrid gap={28} minWidth={400}>
         {PropertyRequestData.map((details, index) => (
           <PropertyRequestCard

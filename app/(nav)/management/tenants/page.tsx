@@ -61,7 +61,7 @@ const Tenants = () => {
   }, [accessToken]);
 
   useEffect(() => {
-    // fetchLandlords();
+    fetchLandlords();
   }, [fetchLandlords]);
 
   const states = getAllStates();

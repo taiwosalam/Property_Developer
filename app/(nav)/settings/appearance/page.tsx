@@ -270,15 +270,17 @@ import { website_color_schemes } from "@/components/Settings/data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 import { rgbToHex } from "@/utils/rgbaToHex";
+<<<<<<< HEAD
 import { Tooltip } from "@mui/material";
+=======
+import { hexToRgb } from "@/utils/rgbaToHex";
+>>>>>>> d480ff44710fa1f2d0828c0a0984830d56a93962
 
 const Appearance = () => {
+  const setColor = useThemeStoreSelectors.getState().setColor;
   const primaryColor = useThemeStoreSelectors.getState().primaryColor;
-  const setPrimaryColor = useThemeStoreSelectors.getState().setPrimaryColor;
 
-  console.log(primaryColor);
-  console.log(rgbToHex(primaryColor));
-
+  // State variables for managing selected options
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [selectedView, setSelectedView] = useState<string | null>(null);
   const [selectedNavbar, setSelectedNavbar] = useState<string | null>(null);
@@ -287,12 +289,12 @@ const Appearance = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
 
-  // Log selected color whenever it changes
+  // Update primary color and generate secondary color when selectedColor changes
   useEffect(() => {
     if (selectedColor) {
-      setPrimaryColor(selectedColor);
+      setColor(selectedColor);
     }
-  }, [setPrimaryColor, selectedColor]);
+  }, [setColor, selectedColor]);
 
   const handleSelect = (type: string, value: string) => {
     if (!value) return; // Added check to prevent setting undefined values
