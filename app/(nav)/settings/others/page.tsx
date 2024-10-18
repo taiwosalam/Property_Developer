@@ -241,7 +241,7 @@ const Others = () => {
       </SettingsSection>
 
       {/* RESET SETTINGS */}
-      <SettingsSection title="Notifications">
+      <SettingsSection title="Reset Settings">
         <h4 className="text-sm text-text-disabled">
           This section enables you to revert all modifications made in the
           settings back to their default state.

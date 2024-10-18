@@ -264,9 +264,12 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
 }) => {
   return (
     <div
-      className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer ${isSelected === false ? 'bg-white bg-opacity-60 border-3 border-red-500' : ''}`}
-      onClick={() => onSelect(value)} // Trigger onSelect with value on click
+      className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer relative`}
+      onClick={() => onSelect(value)} 
     >
+      {isSelected === false && ( // Conditionally render the background
+        <div className="absolute inset-0 bg-white bg-opacity-60 z-10" /> 
+      )}
       <div className={`imgWrapper w-full h-full ${isSelected ? "border-2 border-blue-500 rounded-md w-full" : ""}`}>
         <Image
           src={img}
