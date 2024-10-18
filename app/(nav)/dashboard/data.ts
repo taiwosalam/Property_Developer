@@ -1,4 +1,14 @@
-import { useAuthStore } from "@/store/authstrore";
+import {
+  BuildingIcon,
+  LandlordIcon,
+  TenantIcon,
+  BedIcon,
+  ExpiredIcon,
+  InvoiceIcon,
+  InquiriesIcon,
+  ComplaintsIcon,
+  ListingsIcon,
+} from "@/public/icons/dashboard-cards/icons";
 
 function getBackgroundColor(title: string): string {
   let backgroundColor: string;
@@ -39,72 +49,72 @@ function getBackgroundColor(title: string): string {
   return backgroundColor;
 }
 
-export const dashboardCardData = Object.entries({
-  properties: {
+export const dashboardCardData = [
+  {
     title: "Properties",
     bg: getBackgroundColor("properties"),
-    icon: "/icons/dashboard-cards/Building.svg",
+    icon: BuildingIcon,
     value: 10,
     subValue: 20,
   },
-  landlords: {
+  {
     title: "Landlords",
     bg: getBackgroundColor("landlords"),
-    icon: "/icons/dashboard-cards/landlords.svg",
+    icon: LandlordIcon,
     value: 15,
     subValue: 20,
   },
-  tenantsOccupants: {
+  {
     title: "Tenants & Occupants",
     bg: getBackgroundColor("tenants & occupants"),
-    icon: "/icons/dashboard-cards/tenants&occupants.svg",
+    icon: TenantIcon,
     value: 25,
     subValue: 20,
   },
-  vacantUnit: {
+  {
     title: "Vacant Unit",
     bg: getBackgroundColor("vacant unit"),
-    icon: "/icons/dashboard-cards/bed.svg",
+    icon: BedIcon,
     value: 5,
     subValue: 20,
   },
-  expired: {
+  {
     title: "Expired",
     bg: getBackgroundColor("expired"),
-    icon: "/icons/dashboard-cards/expired.svg",
+    icon: ExpiredIcon,
     value: 3,
     subValue: 20,
   },
-  invoices: {
+  {
     title: "Invoices",
     bg: getBackgroundColor("invoices"),
-    icon: "/icons/dashboard-cards/invoices.svg",
+    icon: InvoiceIcon,
     value: 12,
     subValue: 20,
   },
-  inquiries: {
+  {
     title: "Inquiries",
     bg: getBackgroundColor("inquiries"),
-    icon: "/icons/dashboard-cards/enquires.svg",
+    icon: InquiriesIcon,
     value: 20,
     subValue: 20,
   },
 
-  complaints: {
+  {
     title: "Complaints",
     bg: getBackgroundColor("complaints"),
-    icon: "/icons/dashboard-cards/complaints.svg",
+    icon: ComplaintsIcon,
     value: 8,
     subValue: 20,
   },
-  listings: {
+  {
     title: "Listings",
     bg: getBackgroundColor("listings"),
-    icon: "/icons/dashboard-cards/listings.png",
+    icon: ListingsIcon,
     value: 7,
     subValue: 20,
   },
-}).map(([key, value]) => ({ id: key, ...value }));
+];
 
 export const walletBalanceCardData = {
   mainBalance: 1000,

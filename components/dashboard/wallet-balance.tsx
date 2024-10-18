@@ -13,6 +13,11 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import SVG from "../SVG/svg";
 import { Eye, EyeOff } from "lucide-react";
+import {
+  BluePlusIcon,
+  BlueBuildingIcon,
+  BlueSendIcon,
+} from "@/public/icons/dashboard-cards/icons";
 import AddFundsModal from "../Wallet/AddFunds/add-funds-modal";
 import SendFundsModal from "../Wallet/SendFunds/send-funds-modal";
 import WithdrawFundsModal from "../Wallet/Withdraw/withdraw-funds-modal";
@@ -21,19 +26,19 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 const options = [
   {
     name: "Add Funds",
-    icon: "/icons/dashboard-cards/blue-plus.svg",
+    icon: <BluePlusIcon />,
     // link: "/dashboard/add-funds",
     action: <AddFundsModal />,
   },
   {
     name: "Send Funds",
-    icon: "/icons/dashboard-cards/blue-send.svg",
+    icon: <BlueSendIcon />,
     // link: "/dashboard/send-funds",
     action: <SendFundsModal />,
   },
   {
     name: "Withdraw",
-    icon: "/icons/dashboard-cards/blue-building.svg",
+    icon: <BlueBuildingIcon />,
     // link: "/dashboard/withdraw-funds",
     action: <WithdrawFundsModal />,
   },
@@ -93,7 +98,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
             <p className="text-text-white-secondary text-sm font-medium">
               Balance
             </p>
-            <button onClick={hideWalletBalance}>
+            <button onClick={hideWalletBalance} type="button">
               {hideBalance ? (
                 <span className="text-white">
                   <Eye size={12} />
@@ -120,13 +125,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
               <Modal key={index}>
                 <ModalTrigger className="space-y-2">
                   <div className="bg-white w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
-                    <Image
-                      src={option.icon}
-                      alt="icon"
-                      width={12}
-                      height={12}
-                      className="w-[14px] h-[14px]"
-                    />
+                    {option.icon}
                   </div>
                   <p className="capitalize text-white text-xs font-normal">
                     {option.name}
