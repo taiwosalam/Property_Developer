@@ -1,4 +1,4 @@
-import Link from "next/link";
+
 import Image from "next/image";
 import { ModalTrigger } from "@/components/Modal/modal";
 import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
@@ -184,6 +184,58 @@ export const BillingTypeButton: React.FC<{
   );
 };
 
+// export const QuantityCounter: React.FC<{
+//   quantity?: number;
+//   incrementQuantity?: () => void;
+//   decrementQuantity?: () => void;
+//   isFree?: boolean;
+//   billingType?: string;
+//   isLifeTimePlan?: boolean;
+// }> = ({
+//   quantity = 1,
+//   incrementQuantity = () => {},
+//   decrementQuantity = () => {},
+//   isFree = false,
+//   billingType = "monthly",
+//   isLifeTimePlan,
+// }) => (
+//   <div className="counter flex items-center justify-center w-full gap-2">
+//     <div className="flex items-center gap-6 w-full max-w-[74px] border border-neutral-3 px-2 rounded-md">
+//       <p
+//         className={`count pl-1 text-[#000] text-[14px] font-medium tracking-[0px] ${
+//           isFree ? "opacity-50 cursor-not-allowed" : ""
+//         }`}
+//       >
+//         {isLifeTimePlan ? 0 : isFree ? 0 : quantity}
+//       </p>
+//       <div className="btns flex flex-col">
+//         <CounterButton
+//           onClick={incrementQuantity}
+//           disabled={isFree}
+//           icon="/icons/plus.svg"
+//           alt="plus"
+//         />
+//         <CounterButton
+//           onClick={decrementQuantity}
+//           disabled={isFree}
+//           icon="/icons/minus.svg"
+//           alt="minus"
+//         />
+//       </div>
+//     </div>
+//     <p
+//       className={`${
+//         isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : ""
+//       }`}
+//     >
+//       Total {billingType === "monthly" ? "Months" : "Years"}
+//     </p>
+//   </div>
+// );
+
+
+
+
 export const QuantityCounter: React.FC<{
   quantity?: number;
   incrementQuantity?: () => void;
@@ -191,6 +243,7 @@ export const QuantityCounter: React.FC<{
   isFree?: boolean;
   billingType?: string;
   isLifeTimePlan?: boolean;
+  onPlanChange?: (planType: "basic" | "premium") => void; // New prop to handle plan changes
 }> = ({
   quantity = 1,
   incrementQuantity = () => {},
@@ -198,41 +251,49 @@ export const QuantityCounter: React.FC<{
   isFree = false,
   billingType = "monthly",
   isLifeTimePlan,
-}) => (
-  <div className="counter flex items-center justify-center w-full gap-2">
-    <div className="flex items-center gap-6 w-full max-w-[74px] border border-neutral-3 px-2 rounded-md">
+  onPlanChange, // New prop to handle plan changes
+}) => {
+  const handlePlanChange = (planType: "basic" | "premium") => {
+    if (onPlanChange) {
+      onPlanChange(planType); // Call the function to handle plan change
+    }
+  };
+
+  return (
+    <div className="counter flex items-center justify-center w-full gap-2">
+      <div className="flex items-center gap-6 w-full max-w-[74px] border border-neutral-3 px-2 rounded-md">
+        <p
+          className={`count pl-1 text-[#000] text-[14px] font-medium tracking-[0px] ${
+            isFree ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
+          {isLifeTimePlan ? 0 : isFree ? 0 : quantity}
+        </p>
+        <div className="btns flex flex-col">
+          <CounterButton
+            onClick={incrementQuantity}
+            disabled={isFree}
+            icon="/icons/plus.svg"
+            alt="plus"
+          />
+          <CounterButton
+            onClick={decrementQuantity}
+            disabled={isFree}
+            icon="/icons/minus.svg"
+            alt="minus"
+          />
+        </div>
+      </div>
       <p
-        className={`count pl-1 text-[#000] text-[14px] font-medium tracking-[0px] ${
-          isFree ? "opacity-50 cursor-not-allowed" : ""
+        className={`${
+          isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : ""
         }`}
       >
-        {isLifeTimePlan ? 0 : isFree ? 0 : quantity}
+        Total {billingType === "monthly" ? "Months" : "Years"}
       </p>
-      <div className="btns flex flex-col">
-        <CounterButton
-          onClick={incrementQuantity}
-          disabled={isFree}
-          icon="/icons/plus.svg"
-          alt="plus"
-        />
-        <CounterButton
-          onClick={decrementQuantity}
-          disabled={isFree}
-          icon="/icons/minus.svg"
-          alt="minus"
-        />
-      </div>
     </div>
-    <p
-      className={`${
-        isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : ""
-      }`}
-    >
-      {" "}
-      Total {billingType === "monthly" ? "Months" : "Years"}{" "}
-    </p>
-  </div>
-);
+  );
+};
 
 export const CounterButton: React.FC<{
   onClick?: () => void;

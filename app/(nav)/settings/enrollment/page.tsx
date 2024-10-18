@@ -1,6 +1,6 @@
-  "use client";
+"use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SettingsSection from "@/components/Settings/settings-section";
 import SettingsEnrollmentCard from "@/components/Settings/SettingsEnrollment/settings-enrollment-card";
 import Link from "next/link";
@@ -11,52 +11,57 @@ const Enrollment = () => {
   const [premiumBillingType, setPremiumBillingType] = useState<"monthly" | "yearly">("monthly");
   const [basicQuantity, setBasicQuantity] = useState(1);
   const [premiumQuantity, setPremiumQuantity] = useState(1);
+  const [basicIsLifeTimePlan, setBasicIsLifeTimePlan] = useState(false);
+  const [premiumIsLifeTimePlan, setPremiumIsLifeTimePlan] = useState(false);
 
+  const calculatePrice = (
+    billingType: "monthly" | "yearly",
+    quantity: number,
+    baseMonthly: number,
+    planType: "basic" | "premium"
+  ) => {
+    const limitedQuantity = billingType === "yearly" ? Math.min(quantity, 5) : quantity;
+    let basePrice = billingType === "monthly" ? baseMonthly : baseMonthly * 12;
+    let discountText = "";
+    let discount = "";
+    let totalPrice: number | string = 0;
+    let isLifeTimePlan = false;
 
-
-let isLifeTimePlan: boolean = false;
-const calculatePrice = (
-  billingType: "monthly" | "yearly",
-  quantity: number,
-  baseMonthly: number,
-  planType: "basic" | "premium"
-) => {
-  const limitedQuantity = billingType === "yearly" ? Math.min(quantity, 5) : quantity;
-  let basePrice = billingType === "monthly" ? baseMonthly : baseMonthly * 12;
-  let discountText = "";
-  let discount = "";
-  let totalPrice: number | string = 0;
-
-  if (billingType === "monthly") {
-    totalPrice = basePrice * limitedQuantity;
-    discount = `(Billed at ₦${(basePrice * 12).toLocaleString()}/year)`;
-  } else {
-    if (quantity > 5) {
-      discountText = "No stress";
-      totalPrice = "LIFE TIME PLAN";
-      isLifeTimePlan = true;
-      discount = planType === "basic" ? "₦750,000/outrightly" : "₦2,000,000/outrightly";
-    } else {
-      const discounts = [0.025, 0.04, 0.06, 0.08, 0.10];
-      totalPrice = basePrice * limitedQuantity;
-      const discountPercentage = discounts[limitedQuantity - 1];
-      const discountAmount = totalPrice * discountPercentage;
-      totalPrice -= discountAmount;
-      discountText = `Save ${(discountPercentage * 100).toFixed(1)}%`;
-      discount = `(Billed at ₦${baseMonthly.toLocaleString()}/month)`;
+    // Adjust quantity based on the selected plan
+    if (planType === "premium" && quantity > 6) {
+      quantity = 6; // Limit premium plan quantity to a maximum of 6
     }
-  }
 
-  return {
-    price: typeof totalPrice === 'number' ? totalPrice.toLocaleString("en-NG", {
-      style: "currency",
-      currency: "NGN",
-    }) : totalPrice,
-    discountText,
-    discount,
-    duration: quantity > 5 && billingType === "yearly" ? "" : `${quantity}${quantity === 1 ? (billingType === "monthly" ? "m" : "y") : (billingType === "monthly" ? "m" : "y")}`
+    if (billingType === "monthly") {
+      totalPrice = basePrice * limitedQuantity;
+      discount = `(Billed at ₦${(basePrice * 12).toLocaleString()}/year)`;
+    } else {
+      if (quantity > 5) {
+        totalPrice = "LIFE TIME PLAN";
+        isLifeTimePlan = true;
+        discount = planType === "basic" ? "₦750,000/outrightly" : "₦2,000,000/outrightly";
+      } else {
+        const discounts = [0.025, 0.04, 0.06, 0.08, 0.10];
+        totalPrice = basePrice * limitedQuantity;
+        const discountPercentage = discounts[limitedQuantity - 1];
+        const discountAmount = totalPrice * discountPercentage;
+        totalPrice -= discountAmount;
+        discountText = `Save ${(discountPercentage * 100).toFixed(1)}%`;
+        discount = `(Billed at ₦${baseMonthly.toLocaleString()}/month)`;
+      }
+    }
+
+    return {
+      price: typeof totalPrice === 'number' ? totalPrice.toLocaleString("en-NG", {
+        style: "currency",
+        currency: "NGN",
+      }) : totalPrice,
+      discountText,
+      discount,
+      duration: quantity > 5 && billingType === "yearly" ? "" : `${quantity}${quantity === 1 ? (billingType === "monthly" ? "m" : "y") : (billingType === "monthly" ? "m" : "y")}`,
+      isLifeTimePlan // Return the lifetime plan status
+    };
   };
-};
 
   const incrementQuantity = (setter: React.Dispatch<React.SetStateAction<number>>, billingType: "monthly" | "yearly") => {
     setter((prev) => Math.min(prev + 1, billingType === "yearly" ? 6 : 11));
@@ -65,6 +70,14 @@ const calculatePrice = (
   const decrementQuantity = (setter: React.Dispatch<React.SetStateAction<number>>) => {
     setter((prev) => Math.max(1, prev - 1));
   };
+
+  const basicPriceDetails = calculatePrice(basicBillingType, basicQuantity, 3500, "basic");
+  const premiumPriceDetails = calculatePrice(premiumBillingType, premiumQuantity, 12000, "premium");
+
+  useEffect(() => {
+    setBasicIsLifeTimePlan(basicPriceDetails.isLifeTimePlan);
+    setPremiumIsLifeTimePlan(premiumPriceDetails.isLifeTimePlan);
+  }, [basicPriceDetails.isLifeTimePlan, premiumPriceDetails.isLifeTimePlan]);
 
   return (
     <SettingsSection title="Enrollment/Renewal">
@@ -99,7 +112,7 @@ const calculatePrice = (
           incrementQuantity={() => {}}
           decrementQuantity={() => {}}
           onBillingTypeChange={() => {}}
-          isLifeTimePlan={isLifeTimePlan}
+          isLifeTimePlan={false}
         />
 
         <SettingsEnrollmentCard
@@ -123,8 +136,8 @@ const calculatePrice = (
             "Maximum of 150 Tenants & Occupants ",
             "Ads-on are required",
           ]}
-          {...calculatePrice(basicBillingType, basicQuantity, 3500, "basic")}
-          isLifeTimePlan={isLifeTimePlan}
+          {...basicPriceDetails} // Spread the calculated price details
+          isLifeTimePlan={basicIsLifeTimePlan}
         />
 
         <SettingsEnrollmentCard
@@ -148,8 +161,8 @@ const calculatePrice = (
             "Unlimited Tenants & Occupants",
             "Ads-on for SMS & Domain Required",
           ]}
-          {...calculatePrice(premiumBillingType, premiumQuantity, 12000, "premium")}
-          isLifeTimePlan={isLifeTimePlan}
+          {...premiumPriceDetails} // Spread the calculated price details
+          isLifeTimePlan={premiumIsLifeTimePlan}
         />
       </div>
 
