@@ -31,7 +31,6 @@ export const website_color_schemes = [
   "#92FF3C",
   "#9B00FAAB",
   "#377FC1",
-  "#000000",
 ] as const;
 
 export const tenant_occupant_tiers = [

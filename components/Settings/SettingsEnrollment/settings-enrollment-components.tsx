@@ -101,7 +101,10 @@ export const BillingTypeButton: React.FC<{
   isFree?: boolean;
   duration?: string;
   isLifeTimePlan?: boolean;
-}> = ({ type, billingType = 'monthly', handleBillingTypeChange = () => {}, isFree = false, discountText = '', duration = '', isLifeTimePlan }) => {
+  planType?: "basic" | "premium" | "free";
+}> = ({ type, billingType = 'monthly', handleBillingTypeChange = () => {}, isFree = false, discountText = '', duration = '', isLifeTimePlan, planType }) => {
+  const isYearlyLifeTimePlan = type === "yearly" && isLifeTimePlan && planType === "basic";
+
   return(
   <div
     className={`flex flex-col items-center justify-center px-6 ${
@@ -114,24 +117,24 @@ export const BillingTypeButton: React.FC<{
     <button
       onClick={() => handleBillingTypeChange(type)}
       disabled={isFree}
-      className={`${isFree ? "text-text-secondary opacity-50 cursor-not-allowed text-sm" : "text-text-secondary text-base"}`}
+      className={`flex flex-col items-center ${isFree ? "text-text-secondary opacity-50 cursor-not-allowed text-sm" : "text-text-secondary text-base"}`}
     >
       {isFree
         ? `Free ${type === "yearly" ? "Annually" : "Monthly"}`
-        : isLifeTimePlan
+        : type === "yearly" && isLifeTimePlan
           ? 'Pay Once'
           : `Pay ${type === "yearly" ? "Annually" : "Monthly"}`}
+      
+      {(type === "yearly" && !isLifeTimePlan) || (type === "yearly" && isLifeTimePlan) ? (
+        <span
+          className={`${
+            isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : "text-brand-9"
+          }`}
+        >
+          {isFree || (isLifeTimePlan && type === "yearly") ? "Save stress" : billingType === "yearly" ? discountText : "Get Discount"}
+        </span>
+      ) : null}
     </button>
-    {type === "yearly" && (
-      <Link
-        href="#"
-        className={`${
-          isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : "text-brand-9"
-        }`}
-      >
-        {isFree ? "No stress" : billingType === "yearly" ? discountText : "Get Discount"}
-      </Link>
-    )}
   </div>
 )}
 
