@@ -153,7 +153,7 @@ const calculatePrice = (
         />
       </div>
 
-      <div className="flex flex-col w-full pr-10 pl-4 rounded-md mt-8 flex-wrap shadow-md py-4">
+      <div className="flex flex-col w-full pr-10 pl-4 rounded-md mt-8 flex-wrap shadow-md py-4 bg-[url('/icons/enrollment-bg.svg')] bg-no-repeat bg-center bg-cover bg-opacity-60">
         <h3 className="text-[16px] underline font-bold text-brand-9">
           PROFESSIONAL PLAN
         </h3>

@@ -75,9 +75,10 @@ const EditTenant = () => {
     setPreview(`${ASSET_URL}${tenant?.picture}` || tenant?.avatar || empty);
   }, [tenant, setPreview]);
 
-  if (loading) return (
-    <CustomLoader layout="edit-page" pageTitle="Edit Tenants & Occupant" />
-  );
+  if (loading)
+    return (
+      <CustomLoader layout="edit-page" pageTitle="Edit Tenants & Occupant" />
+    );
   if (error) return <div>Error: {error.message}</div>;
   if (!tenant) return null;
 

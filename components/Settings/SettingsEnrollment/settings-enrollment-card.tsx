@@ -50,8 +50,18 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   onBillingTypeChange,
   isLifeTimePlan
 }) => {
+  // const handleBillingTypeChange = (type: "monthly" | "yearly") => {
+  //   if (!isFree) {
+  //     onBillingTypeChange(type);
+  //   }
+  // };
+
+
   const handleBillingTypeChange = (type: "monthly" | "yearly") => {
     if (!isFree) {
+      if (type === "yearly") {
+        decrementQuantity(); 
+      }
       onBillingTypeChange(type);
     }
   };

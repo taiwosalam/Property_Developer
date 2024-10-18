@@ -8,6 +8,7 @@ import {
   SettingsSectionTitle,
   CustomColorPicker,
   WebsiteColorSchemes,
+  SettingsUpdateButton,
 } from "@/components/Settings/settings-components";
 import { website_color_schemes } from "@/components/Settings/data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -121,7 +122,7 @@ const Appearance = () => {
           </Tooltip>
         </div>
         <div className="flex justify-end mt-4">
-          <button
+          {/* <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             onClick={() => {
               // Add functionality to handle update action
@@ -129,7 +130,8 @@ const Appearance = () => {
             }}
           >
             Update
-          </button>
+          </button> */}
+          <SettingsUpdateButton />
         </div>
       </SettingsSection>
 
@@ -154,9 +156,7 @@ const Appearance = () => {
           />
         </div>
         <div className="flex justify-end mt-4">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Update
-          </button>
+        <SettingsUpdateButton />
         </div>
       </SettingsSection>
 
@@ -181,9 +181,7 @@ const Appearance = () => {
           />
         </div>
         <div className="flex justify-end mt-4">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Update
-          </button>
+        <SettingsUpdateButton />
         </div>
       </SettingsSection>
 
@@ -208,9 +206,7 @@ const Appearance = () => {
           />
         </div>
         <div className="flex justify-end mt-4">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Update
-          </button>
+        <SettingsUpdateButton />
         </div>
       </SettingsSection>
 
@@ -259,9 +255,7 @@ const Appearance = () => {
           </ModalContent>
         </Modal>
         <div className="flex justify-end mt-4">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Update
-          </button>
+        <SettingsUpdateButton />
         </div>
       </SettingsSection>
     </>
