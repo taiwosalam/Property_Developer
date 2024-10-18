@@ -233,6 +233,7 @@ const Landlord = () => {
   if (loading)
     return (
       <CustomLoader
+        layout="page"
         statsCardCount={3}
         pageTitle="Landlords/Landladies (Owners)"
       />
