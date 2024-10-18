@@ -91,6 +91,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction }) => {
           type="email"
           inputClassName="rounded-[8px]"
           validationErrors={errorMsgs}
+          required
         />
           <Select
             validationErrors={errorMsgs}
@@ -116,6 +117,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction }) => {
           label="Create password"
           placeholder="Create password"
           validationErrors={errorMsgs}
+          required
         />
          <Input
           id="confirm-password"
@@ -123,6 +125,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction }) => {
           label="Confirm password"
           placeholder="Confirm password"
           validationErrors={errorMsgs}
+          required
         />
         </div>
             <TextArea

@@ -1,5 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ModalTrigger } from "@/components/Modal/modal";
+import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
+import { Modal } from "@/components/Modal/modal";
+import { ModalContent } from "@/components/Modal/modal";
 
 export const PlanHeader: React.FC<{
   planTitle?: string;
@@ -7,7 +11,13 @@ export const PlanHeader: React.FC<{
   planFor?: string;
   isFree?: boolean;
   themeColor?: string;
-}> = ({ planTitle = '', desc = '', planFor = '', isFree = false, themeColor = '' }) => {
+}> = ({
+  planTitle = "",
+  desc = "",
+  planFor = "",
+  isFree = false,
+  themeColor = "",
+}) => {
   const getBgColor = () => {
     if (isFree) return "bg-[#38BDF8] bg-opacity-40";
     if (planTitle.toLowerCase() === "basic plan") return "bg-brand-9";
@@ -17,9 +27,11 @@ export const PlanHeader: React.FC<{
 
   return (
     <div
-      className={`plan-title py-5 px-4 bg-[#F4F9FF] border-b relative ${themeColor}`}
+      className={`plan-title pt-5 px-4 bg-[#F4F9FF] border-b  h-[155px] relative ${themeColor}`}
     >
-      <h3 className={`text-[16px] font-medium tracking-[0px] text-[${themeColor}]`}>
+      <h3
+        className={`text-[16px] font-medium tracking-[0px] text-[${themeColor}]`}
+      >
         {planTitle.toUpperCase()}
       </h3>
       <p className="text-[14px] font-medium tracking-[0px] text-text-secondary">
@@ -34,9 +46,9 @@ export const PlanHeader: React.FC<{
           )
         )}
       </p>
-      <div className="absolute bottom-0 flex items-center justify-center w-full">
+      <div className="absolute left-0 bottom-0 flex items-center justify-center w-full">
         <div
-          className={`flex items-center justify-center py-[3px] px-10 rounded-t-md ${getBgColor()}`}
+          className={`flex items-center justify-center h-1 w-[50px] rounded-t-[8px] ${getBgColor()}`}
         ></div>
       </div>
     </div>
@@ -48,7 +60,7 @@ export const PriceSection: React.FC<{
   discount?: string;
   isFree?: boolean;
   duration?: string;
-}> = ({ price = '', discount = '', isFree = false, duration }) => (
+}> = ({ price = "", discount = "", isFree = false, duration }) => (
   <div className="w-full max-w-[344px] flex-col flex items-center">
     <h3
       className={`text-[20px] font-bold tracking-[0px] leading-[150%] text-text-secondary ${
@@ -56,9 +68,15 @@ export const PriceSection: React.FC<{
       }`}
     >
       {isFree ? "₦0.00" : price}
-      {duration && duration.toUpperCase() !== 'LIFE TIME PLAN' && ` / ${duration}`}
+      {duration &&
+        duration.toUpperCase() !== "LIFE TIME PLAN" &&
+        ` / ${duration}`}
     </h3>
-    {!isFree && <p className="text-text-disabled text-sm font-medium tracking-[0px]">{discount}</p>}
+    {!isFree && (
+      <p className="text-text-disabled text-sm font-medium tracking-[0px]">
+        {discount}
+      </p>
+    )}
   </div>
 );
 
@@ -68,7 +86,13 @@ export const BillingTypeSelector: React.FC<{
   isFree?: boolean;
   discountText?: string;
   isLifeTimePlan?: boolean;
-}> = ({ billingType = 'monthly', handleBillingTypeChange = () => {}, isFree = false, discountText = '', isLifeTimePlan = false }) => (
+}> = ({
+  billingType = "monthly",
+  handleBillingTypeChange = () => {},
+  isFree = false,
+  discountText = "",
+  isLifeTimePlan = false,
+}) => (
   <div
     className={`flex w-full justify-center my-5 bg-brand-1 min-h-[54px] gap-5 py-2 rounded-md ${
       isFree ? "bg-opacity-40" : ""
@@ -102,41 +126,63 @@ export const BillingTypeButton: React.FC<{
   duration?: string;
   isLifeTimePlan?: boolean;
   planType?: "basic" | "premium" | "free";
-}> = ({ type, billingType = 'monthly', handleBillingTypeChange = () => {}, isFree = false, discountText = '', duration = '', isLifeTimePlan, planType }) => {
-  const isYearlyLifeTimePlan = type === "yearly" && isLifeTimePlan && planType === "basic";
+}> = ({
+  type,
+  billingType = "monthly",
+  handleBillingTypeChange = () => {},
+  isFree = false,
+  discountText = "",
+  duration = "",
+  isLifeTimePlan,
+  planType,
+}) => {
+  const isYearlyLifeTimePlan =
+    type === "yearly" && isLifeTimePlan && planType === "basic";
 
-  return(
-  <div
-    className={`flex flex-col items-center justify-center px-6 ${
-      billingType === type
-        ? "border rounded-md transition-all duration-300 ease-in-out " +
-          (isFree ? "border-text-disabled" : "border-brand-9 bg-white")
-        : ""
-    }`}
-  >
-    <button
-      onClick={() => handleBillingTypeChange(type)}
-      disabled={isFree}
-      className={`flex flex-col items-center ${isFree ? "text-text-secondary opacity-50 cursor-not-allowed text-sm" : "text-text-secondary text-base"}`}
+  return (
+    <div
+      className={`flex flex-col items-center justify-center px-6 ${
+        billingType === type
+          ? "border rounded-md transition-all duration-300 ease-in-out " +
+            (isFree ? "border-text-disabled" : "border-brand-9 bg-white")
+          : ""
+      }`}
     >
-      {isFree
-        ? `Free ${type === "yearly" ? "Annually" : "Monthly"}`
-        : type === "yearly" && isLifeTimePlan
-          ? 'Pay Once'
+      <button
+        onClick={() => handleBillingTypeChange(type)}
+        disabled={isFree}
+        className={`flex flex-col items-center ${
+          isFree
+            ? "text-text-secondary opacity-50 cursor-not-allowed text-sm"
+            : "text-text-secondary text-base"
+        }`}
+      >
+        {isFree
+          ? `Free ${type === "yearly" ? "Annually" : "Monthly"}`
+          : type === "yearly" && isLifeTimePlan
+          ? "Pay Once"
           : `Pay ${type === "yearly" ? "Annually" : "Monthly"}`}
-      
-      {(type === "yearly" && !isLifeTimePlan) || (type === "yearly" && isLifeTimePlan) ? (
-        <span
-          className={`${
-            isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : "text-brand-9"
-          }`}
-        >
-          {isFree || (isLifeTimePlan && type === "yearly") ? "Save stress" : billingType === "yearly" ? discountText : "Get Discount"}
-        </span>
-      ) : null}
-    </button>
-  </div>
-)}
+
+        {(type === "yearly" && !isLifeTimePlan) ||
+        (type === "yearly" && isLifeTimePlan) ? (
+          <span
+            className={`${
+              isFree
+                ? "text-text-secondary opacity-50 cursor-not-allowed"
+                : "text-brand-9"
+            }`}
+          >
+            {isFree || (isLifeTimePlan && type === "yearly")
+              ? "Save stress"
+              : billingType === "yearly"
+              ? discountText
+              : "Get Discount"}
+          </span>
+        ) : null}
+      </button>
+    </div>
+  );
+};
 
 export const QuantityCounter: React.FC<{
   quantity?: number;
@@ -150,13 +196,17 @@ export const QuantityCounter: React.FC<{
   incrementQuantity = () => {},
   decrementQuantity = () => {},
   isFree = false,
-  billingType = 'monthly',
+  billingType = "monthly",
   isLifeTimePlan,
 }) => (
   <div className="counter flex items-center justify-center w-full gap-2">
     <div className="flex items-center gap-6 w-full max-w-[74px] border border-neutral-3 px-2 rounded-md">
-      <p className={`count pl-1 text-[#000] text-[14px] font-medium tracking-[0px] ${isFree ? "opacity-50 cursor-not-allowed" : ""}`}>
-        {isLifeTimePlan ? 0: isFree ? 0 : quantity}
+      <p
+        className={`count pl-1 text-[#000] text-[14px] font-medium tracking-[0px] ${
+          isFree ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+      >
+        {isLifeTimePlan ? 0 : isFree ? 0 : quantity}
       </p>
       <div className="btns flex flex-col">
         <CounterButton
@@ -173,7 +223,11 @@ export const QuantityCounter: React.FC<{
         />
       </div>
     </div>
-    <p className={`${isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : ""}`}>
+    <p
+      className={`${
+        isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : ""
+      }`}
+    >
       {" "}
       Total {billingType === "monthly" ? "Months" : "Years"}{" "}
     </p>
@@ -186,10 +240,7 @@ export const CounterButton: React.FC<{
   icon: string;
   alt: string;
 }> = ({ onClick = () => {}, disabled = false, icon, alt }) => (
-  <button
-    className="text-white rounded-md"
-    onClick={onClick}
-  >
+  <button className="text-white rounded-md" onClick={onClick}>
     <Image src={icon} alt={alt} width={20} height={20} />
   </button>
 );
@@ -198,7 +249,11 @@ export const FeaturesToggle: React.FC<{
   showFeatures?: boolean;
   getFeaturesText?: () => string;
   handleCardClick?: () => void;
-}> = ({ showFeatures = false, getFeaturesText = () => 'View Features', handleCardClick = () => {} }) => (
+}> = ({
+  showFeatures = false,
+  getFeaturesText = () => "View Features",
+  handleCardClick = () => {},
+}) => (
   <div className="flex w-full px-6">
     <button
       className="text-brand-9 text-[18px] font-medium tracking-[0px] flex items-center gap-2"
@@ -225,26 +280,37 @@ export const FeaturesList: React.FC<{
         {features.map((feature, index) => (
           <div key={index} className="flex items-center gap-2">
             <Image src="/icons/mark.svg" alt="mark" width={16} height={17} />
-            <p className="text-brand-9 text-sm font-medium tracking-[0px]">{feature}</p>
+            <p className="text-brand-9 text-sm font-medium tracking-[0px]">
+              {feature}
+            </p>
           </div>
         ))}
       </div>
     </div>
   );
 
-export const SelectPlanButton: React.FC<{ isFree?: boolean }> = ({ isFree = false }) => (
+export const SelectPlanButton: React.FC<{ isFree?: boolean }> = ({
+  isFree = false,
+}) => (
   <div className="px-6 pb-4 flex justify-end">
     <div
       className={`buynowbtn w-full flex items-center justify-center p-[8px] gap-[10px] rounded-[4px] ${
         isFree ? "bg-brand-9 bg-opacity-40 cursor-not-allowed" : "bg-brand-9"
       }`}
     >
-      <button
-        className={`text-center text-[14px] font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
-        disabled={isFree}
-      >
-        Select Plan
-      </button>
+      <Modal>
+        <ModalTrigger asChild>
+          <button
+            className={`text-center text-[14px] font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
+            disabled={isFree}
+          >
+            Select Plan
+          </button>
+        </ModalTrigger>
+        <ModalContent>
+          <AddFundsModal />
+        </ModalContent>
+      </Modal>
     </div>
   </div>
 );
