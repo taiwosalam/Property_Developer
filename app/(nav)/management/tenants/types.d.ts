@@ -19,6 +19,7 @@ interface Guarantor {
   phone_number: string | null;
   address: string | null;
   relationship: string | null;
+  note: string | null;
 }
 
 interface Others {

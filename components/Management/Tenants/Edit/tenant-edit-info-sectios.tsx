@@ -130,7 +130,7 @@ export const TenantEditProfileInfoSection = () => {
           isSearchable={false}
           placeholder="Select options"
           options={tenantTypes}
-          defaultValue={"default: data?.tenant_type"}
+          defaultValue={"default: data?.tenant_type"} //value not provided from api
           inputContainerClassName="bg-neutral-2"
         />
         <Select

@@ -1,18 +1,14 @@
 "use client";
 
-import React from "react";
 import { useRouter } from "next/navigation";
-
+import clsx from "clsx";
 // Types
 import type { BackButtonProps } from "./types";
 
 // Images
-import ChevronLeft from "@/public/icons/chevron-left.svg";
+import { ChevronLeft } from "@/public/icons/icons";
 
-// Imports
-import Picture from "../Picture/picture";
-
-const BackButton: React.FC<BackButtonProps> = ({ children }) => {
+const BackButton: React.FC<BackButtonProps> = ({ children, className }) => {
   const router = useRouter();
 
   const handleBack = () => {
@@ -20,11 +16,16 @@ const BackButton: React.FC<BackButtonProps> = ({ children }) => {
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <button onClick={handleBack}>
-        <Picture src={ChevronLeft} alt="back" size={32} />
+    <div className={clsx("flex items-center gap-1", className)}>
+      <button
+        onClick={handleBack}
+        type="button"
+        aria-label="Go Back"
+        className="p-2"
+      >
+        <ChevronLeft />
       </button>
-      <h1 className="text-2xl font-bold text-black">{children}</h1>
+      <h1 className="text-black font-bold text-lg lg:text-xl">{children}</h1>
     </div>
   );
 };
