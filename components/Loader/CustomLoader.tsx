@@ -1,27 +1,24 @@
 "use client";
 import Skeleton from "@mui/material/Skeleton";
 import PageTitle from "../PageTitle/page-title";
+import type { CustomLoaderProps } from "./types";
+import { LoadingProfileInfo, LoadingProfileCard } from "./LoadingProfile";
 
-interface CustomLoaderProps {
-  hasStartCards?: boolean;
-  statsCardCount?: number;
-  hasPageTitle?: boolean;
-  pageTitle?: string;
-  dashboard?: boolean;
-  tableView?: boolean;
-}
+const CustomLoader: React.FC<CustomLoaderProps> = (props) => {
+  const { layout } = props;
 
-const CustomLoader: React.FC<CustomLoaderProps> = ({
-  hasStartCards = true,
-  statsCardCount = 3,
-  hasPageTitle = true,
-  pageTitle,
-  dashboard = false,
-  tableView = false,
-}) => {
+  // Apply defaults only when layout is 'page' and the props are not provided
+  const view = layout === "page" ? props.view || "grid" : undefined;
+  const hasStartCards =
+    layout === "page" ? props.hasStartCards ?? true : undefined;
+  const statsCardCount =
+    layout === "page" ? props.statsCardCount ?? 3 : undefined;
+  const hasPageTitle =
+    layout === "page" ? props.hasPageTitle ?? true : undefined;
+
   return (
     <div className="max-h-[calc(100vh-200px)] space-y-9 overflow-y-hidden">
-      {dashboard ? (
+      {layout === "dasboard" ? (
         <div className="flex flex-col xl:flex-row gap-x-10 gap-y-6">
           <div className="xl:flex-1 flex py-1.5 xl:py-7 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
             {Array.from({ length: 9 }).map((_, index) => (
@@ -56,7 +53,7 @@ const CustomLoader: React.FC<CustomLoaderProps> = ({
             />
           </div>
         </div>
-      ) : (
+      ) : layout === "page" ? (
         <>
           {hasStartCards && (
             <div className="hidden md:flex flex-wrap gap-5">
@@ -76,8 +73,8 @@ const CustomLoader: React.FC<CustomLoaderProps> = ({
 
           {hasPageTitle && (
             <div className="page-title-container h-16">
-              {pageTitle ? (
-                <PageTitle title={pageTitle} />
+              {props.pageTitle ? (
+                <PageTitle title={props.pageTitle} />
               ) : (
                 <Skeleton
                   variant="text"
@@ -92,9 +89,9 @@ const CustomLoader: React.FC<CustomLoaderProps> = ({
             </div>
           )}
 
-          {tableView ? (
-            <div className="table-view-loading grid grid-cols-1 md:grid-cols-2 gap-4">
-              {Array.from({ length: 10 }).map((_, index) => (
+          {view === "table" ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {Array.from({ length: 15 }).map((_, index) => (
                 <Skeleton
                   key={index}
                   width={"100%"}
@@ -122,7 +119,14 @@ const CustomLoader: React.FC<CustomLoaderProps> = ({
             </div>
           )}
         </>
-      )}
+      ) : layout === "profile" ? (
+        <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
+          <LoadingProfileInfo />
+          {Array.from({ length: 8 }).map((_, index) => (
+            <LoadingProfileCard key={index} />
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 };

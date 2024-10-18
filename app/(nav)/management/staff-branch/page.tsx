@@ -193,7 +193,13 @@ const StaffAndBranches = () => {
   // console.log(branches);
 
   if (loading)
-    return <CustomLoader pageTitle="Staff & Branch" statsCardCount={3} />;
+    return (
+      <CustomLoader
+        layout="page"
+        pageTitle="Staff & Branch"
+        statsCardCount={3}
+      />
+    );
 
   if (error) return <div>Error: {error.message}</div>;
 

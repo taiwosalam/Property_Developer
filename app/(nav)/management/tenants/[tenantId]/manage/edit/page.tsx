@@ -37,7 +37,7 @@ import BackButton from "@/components/BackButton/back-button";
 // import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 
 const EditTenant = () => {
-  const { tenant, tenantId } = useTenantData();
+  const { tenant, tenantId, error, loading } = useTenantData();
   // const { data: tenant, tenantId } = MockFunction();
 
   const { preview, setPreview, inputFileRef, handleImageChange } =
