@@ -17,7 +17,7 @@ import {
 } from "@/public/icons/icons";
 import clsx from "clsx";
 
-const SettingsLinkTab: React.FC<SettingsLinkTabProps> = ({ type, active }) => {
+const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> = ({ type, active, className }) => {
   const active_color = "#0033C4";
   const default_color = "#3F4247";
 
@@ -31,7 +31,8 @@ const SettingsLinkTab: React.FC<SettingsLinkTabProps> = ({ type, active }) => {
         {
           "bg-white border-brand-9": active,
           "border-transparent hover:bg-neutral-3": !active,
-        }
+        },
+        className
       )}
     >
       {type === "profile" ? (

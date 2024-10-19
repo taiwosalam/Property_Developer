@@ -312,7 +312,8 @@ export const CustomColorPicker: React.FC<{
         <div className="flex justify-center items-center w-full px-6">
           <button
             onClick={onClose}
-            className="w-full py-2 bg-brand-9 text-white rounded hover:bg-blue-600 transition-colors"
+            className={`w-full py-2 text-white rounded hover:opacity-90 transition-colors`}
+            style={{ backgroundColor: color }}
           >
             Set Color
           </button>
