@@ -53,11 +53,11 @@ const NotificationCard: React.FC<notificationCardProps> = ({
     >
       <CardHeader className="p-4 pb-[10px]">
         <CardTitle className="flex items-center justify-between text-[16px]">
-          <p className="text-black font-medium">{sectionHeader}</p>
+          <p className="text-black font-medium dark:text-[#f1f1fd]">{sectionHeader}</p>
           <p
             className={clsx(
               "flex items-center font-medium",
-              notifications.length === 0 ? "text-[#C1C2C3]" : "text-[#4F5E71]"
+              notifications.length === 0 ? "text-[#C1C2C3]" : "text-[#4F5E71] dark:text-[#f1f1fd]"
             )}
           >
             See all
@@ -86,7 +86,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
             </Avatar>
             <div className="w-full gap-1">
               <div className="w-full flex items-center justify-between">
-                <p className="text-sm font-medium text-text-primary flex items-center">
+                <p className="text-sm font-medium text-text-primary dark:text-[#f1f1fd] flex items-center">
                   {notification.name || notification.full_name}
                   {sectionHeader !== "Staffs" && (
                     <Image
@@ -107,7 +107,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                 </p>
               </div>
               {notification.title != "Staffs" && (
-                <p className="text-xs text-text-secondary capitalize">
+                <p className="text-xs text-text-secondary capitalize dark:text-text-disabled">
                   {notification.title}
                 </p>
               )}

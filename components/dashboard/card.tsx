@@ -9,7 +9,7 @@ const Card: React.FC<cardProps> = ({ className, ...props }) => {
   return (
     <div
       className={clsx(
-        "rounded-[8px] min-w-[270px] md:min-w-full md:h-[130px] py-4 px-[18px] text-text-primary bg-white dark:bg-black dark:text-white dark:border dark:border-[#292d32]",
+        "rounded-[8px] min-w-[270px] md:min-w-full md:h-[130px] py-4 px-[18px] text-text-primary bg-white dark:bg-[#020617] dark:text-white dark:border dark:border-[#292d32]",
         className
       )}
       style={{

@@ -29,9 +29,9 @@ const NavSwitchUserSwitch = ({ userType }: { userType: string }) => {
     <div ref={containerRef} className="relative flex-1 max-w-[240px]">
       <button
         onClick={handleSwitch}
-        className="w-full h-full p-4 flex items-center justify-between gap-2 rounded-lg bg-[#F1F1F1]"
+        className="w-full h-full p-4 flex items-center justify-between gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]"
       >
-        <p className="text-[#0a132ea6] text-base font-semibold capitalize custom-truncated">
+        <p className="text-[#0a132ea6] dark:text-[#F1F1D9] text-base font-semibold capitalize custom-truncated">
           {userType}
         </p>
         <ChevronDown size={20} color="#0a132ea6" />
@@ -39,18 +39,18 @@ const NavSwitchUserSwitch = ({ userType }: { userType: string }) => {
       {isOpen && (
         <div
           style={{ boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.1)" }}
-          className="absolute top-full left-0 w-full py-2 bg-white rounded-bl-lg rounded-br-lg"
+          className="absolute top-full left-0 w-full py-2 bg-white dark:bg-[#3C3D37] rounded-bl-lg rounded-br-lg"
         >
-          <div className="custom-flex-col text-[#0a132ea6] text-base font-semibold">
+          <div className="custom-flex-col text-[#0a132ea6] text-base font-semibold dark:text-white">
             <button
               onClick={() => handleUserSwitch("property manager")}
-              className="p-4 capitalize text-start hover:bg-neutral-2"
+              className="p-4 capitalize text-start hover:bg-neutral-2 hover:bg-opacity-50 dark:hover:bg-[#292d32]"
             >
               property manager
             </button>
             <button
               onClick={() => handleUserSwitch("hospilatity manager")}
-              className="p-4 capitalize text-start hover:bg-neutral-2"
+              className="p-4 capitalize text-start hover:bg-neutral-2 hover:bg-opacity-50 dark:hover:bg-[#292d32]"
             >
               hospitality manager
             </button>

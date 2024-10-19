@@ -134,7 +134,7 @@ const Navbar = () => {
   return (
     <div
       className={clsx(
-        "sticky top-0 z-[2] w-full h-[100px] px-3 sm:px-10 flex items-center border-b border-solid border-neutral-2 bg-white dark:bg-black",
+        "sticky top-0 z-[2] w-full h-[100px] px-3 sm:px-10 flex items-center border-b border-solid border-neutral-2 dark:border-[#292929] bg-white dark:bg-[#020617]",
         {
           skeleton: loading,
         }
@@ -170,7 +170,7 @@ const Navbar = () => {
               <>
                 <NavSwitchUserSwitch userType={dashboardData.company_type} />
                 <Modal>
-                  <ModalTrigger className="p-4 flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-black">
+                  <ModalTrigger className="p-4 flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
                     <Picture src={Search} alt="search" size={24} />
                     <p className="text-[#0a132ea6] dark:text-white text-base font-semibold">
                       Search
@@ -227,10 +227,10 @@ const Navbar = () => {
                   status
                 />
                 <div className="hidden sm:flex flex-col text-text-secondary capitalize">
-                  <p className="text-[10px] md:text-xs font-normal">
+                  <p className="text-[10px] md:text-xs font-normal dark:text-[#F1F1D9]">
                     {getGreeting()},
                   </p>
-                  <p className="text-xs md:text-base font-medium">
+                  <p className="text-xs md:text-base font-medium dark:text-white">
                     {dashboardData.director_name}
                   </p>
                 </div>
