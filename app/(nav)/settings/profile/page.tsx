@@ -37,18 +37,9 @@ import { rgbToHex } from "@/utils/rgbaToHex";
 
 
 const Profile = () => {
-  const primaryColor = useThemeStoreSelectors.getState().primaryColor;
-  const setPrimaryColor = useThemeStoreSelectors.getState().setPrimaryColor;
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string | null>(
-    rgbToHex(primaryColor)
-  );
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (selectedColor) {
-      setPrimaryColor(selectedColor);
-    }
-  }, [setPrimaryColor, selectedColor]);
 
   
   const [modalOpen, setModalOpen] = useState(false);
@@ -399,13 +390,13 @@ const Profile = () => {
             </div>
             <div className="flex flex-col gap-7">
             <SettingsSectionTitle desc="Specify a color code or select a color that best represents your brand website. You can also incorporate additional color designs based on your preferences." />
-            <div className="w-10 h-10 rounded-lg border border-dashed border-borders-normal flex items-center justify-center">
             <Modal
               state={{
                 isOpen: modalOpen,
                 setIsOpen: setModalOpen,
               }}>
               <ModalTrigger
+                className='w-10 h-10 rounded-lg border border-dashed border-borders-normal flex items-center justify-center'
               >
                 +
               </ModalTrigger>
@@ -420,7 +411,6 @@ const Profile = () => {
                 />
               </ModalContent>
             </Modal>
-            </div>
             </div>
           <SettingsUpdateButton />
       </SettingsSection>

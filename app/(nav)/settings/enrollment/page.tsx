@@ -34,7 +34,7 @@ const Enrollment = () => {
 
     if (billingType === "monthly") {
       totalPrice = basePrice * limitedQuantity;
-      discount = `(Billed at ₦${(basePrice * 12).toLocaleString()}/year)`;
+      discount = planType === "basic" ? "(Billed at ₦40,950/year)" : "(Billed at ₦140,000/year)";
     } else {
       if (quantity > 5) {
         totalPrice = "LIFE TIME PLAN";

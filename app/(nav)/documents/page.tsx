@@ -48,7 +48,7 @@ const Documents = () => {
         <div className="page-title-container">
           <div></div>
           <div className="flex items-center gap-4">
-            <SearchInput placeholder="Search" />
+            <SearchInput placeholder="Document Search" />
             <SortButton />
             <Modal>
               <ModalTrigger asChild>

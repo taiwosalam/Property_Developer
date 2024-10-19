@@ -16,7 +16,6 @@ import { useThemeStoreSelectors } from "@/store/themeStore";
 import { rgbToHex } from "@/utils/rgbaToHex";
 import { Tooltip } from "@mui/material";
 
-
 const Appearance = () => {
   const setColor = useThemeStoreSelectors.getState().setColor;
   const primaryColor = useThemeStoreSelectors.getState().primaryColor;
@@ -156,7 +155,7 @@ const Appearance = () => {
           />
         </div>
         <div className="flex justify-end mt-4">
-        <SettingsUpdateButton />
+          <SettingsUpdateButton />
         </div>
       </SettingsSection>
 
@@ -181,7 +180,7 @@ const Appearance = () => {
           />
         </div>
         <div className="flex justify-end mt-4">
-        <SettingsUpdateButton />
+          <SettingsUpdateButton />
         </div>
       </SettingsSection>
 
@@ -206,7 +205,7 @@ const Appearance = () => {
           />
         </div>
         <div className="flex justify-end mt-4">
-        <SettingsUpdateButton />
+          <SettingsUpdateButton />
         </div>
       </SettingsSection>
 
@@ -230,32 +229,51 @@ const Appearance = () => {
             your preferences.
           </p>
         </div>
-        <Modal
-          state={{
-            isOpen: modalOpen,
-            setIsOpen: setModalOpen,
-          }}
-        >
-          <ModalTrigger
-            className={`h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white flex items-center justify-center cursor-pointer ${
-              modalOpen ? "border-2 border-blue-500" : ""
-            }`}
+
+        <div className="flex gap-2">
+          {customColor && !modalOpen && (
+            <div
+              className={`h-[40px] w-[40px] my-2 rounded-md text-base border border-gray-300 flex items-center justify-center cursor-pointer relative`}
+              style={{ backgroundColor: customColor }}>
+                  {selectedColor === customColor && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img
+                src="/icons/whitemark.svg"
+                alt="Selected"
+                width={24}
+                height={24}
+              />
+            </div>
+          )}
+          </div>
+          )}
+          <Modal
+            state={{
+              isOpen: modalOpen,
+              setIsOpen: setModalOpen,
+            }}
           >
-            +
-          </ModalTrigger>
-          <ModalContent>
-            <CustomColorPicker
-              color={customColor}
-              onChange={handleCustomColorChange}
-              onClose={() => {
-                setCustomColor(customColor);
-                setModalOpen(false);
-              }}
-            />
-          </ModalContent>
-        </Modal>
+            <ModalTrigger
+              className={`h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white flex items-center justify-center cursor-pointer ${
+                modalOpen ? "border-2 border-blue-500" : ""
+              }`}
+            >
+              +
+            </ModalTrigger>
+            <ModalContent>
+              <CustomColorPicker
+                color={customColor}
+                onChange={handleCustomColorChange}
+                onClose={() => {
+                  setCustomColor(customColor);
+                  setModalOpen(false);
+                }}
+              />
+            </ModalContent>
+          </Modal>
+        </div>
         <div className="flex justify-end mt-4">
-        <SettingsUpdateButton />
+          <SettingsUpdateButton />
         </div>
       </SettingsSection>
     </>
