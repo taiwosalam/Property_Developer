@@ -33,7 +33,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
 
   const sidenav_class_styles =
-    "top-[100px] overflow-x-hidden overflow-y-auto no-scrollbar bg-white";
+    "top-[100px] overflow-x-hidden overflow-y-auto no-scrollbar bg-white dark:bg-black";
   const sidenav_height = "calc(100vh - 100px)";
 
   useEffect(() => {
@@ -110,16 +110,16 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Sidenav />
           </div>
         )}
-        <div className="w-full custom-flex-col flex-1 bg-neutral-2">
+        <div className="w-full custom-flex-col flex-1 bg-neutral-2 dark:bg-black">
           <div
             style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
-            className="custom-flex-col sticky top-[99px] bg-white z-[2]"
+            className="custom-flex-col sticky top-[99px] bg-white dark:bg-black z-[2]"
           >
             <div
               className="h-[1px]"
               style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
             ></div>
-            <div className="h-[50px] px-3 sm:pr-10 flex flex-wrap items-center justify-between gap-2 bg-white max-w-full overflow-hidden">
+            <div className="h-[50px] px-3 sm:pr-10 flex flex-wrap items-center justify-between gap-2 bg-white dark:bg-black max-w-full overflow-hidden">
               <button
                 type="button"
                 aria-label="toggle sidenav"

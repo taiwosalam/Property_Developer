@@ -24,7 +24,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     <>
       <div className="flex flex-1 p-4 pr-0">
         <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar">
-          <div className="flex gap-4 sticky top-0 z-[2] bg-white pb-2">
+          <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
             <Input
               id="search"
               placeholder="Search for messages"

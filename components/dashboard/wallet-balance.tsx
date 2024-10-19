@@ -76,8 +76,8 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
     <div className={clsx("space-y-2", className)}>
       {!noHeader && (
         <div className="w-full flex items-center justify-between font-normal">
-          <p className="text-[#262626] text-sm">Wallet</p>
-          <Link href="" className="text-[#4F5E71] text-xs flex items-center">
+          <p className="text-[#262626] text-sm dark:text-white">Wallet</p>
+          <Link href="" className="text-[#4F5E71] text-xs flex items-center dark:text-white">
             <p>Transaction History</p>
             <SVG type="right_arrow" className="ml-2" />
           </Link>

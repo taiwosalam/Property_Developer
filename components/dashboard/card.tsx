@@ -9,7 +9,7 @@ const Card: React.FC<cardProps> = ({ className, ...props }) => {
   return (
     <div
       className={clsx(
-        "rounded-[8px] min-w-[270px] md:min-w-full md:h-[130px] py-4 px-[18px] text-text-primary bg-white",
+        "rounded-[8px] min-w-[270px] md:min-w-full md:h-[130px] py-4 px-[18px] text-text-primary bg-white dark:bg-black dark:text-white dark:border dark:border-[#292d32]",
         className
       )}
       style={{
@@ -19,7 +19,9 @@ const Card: React.FC<cardProps> = ({ className, ...props }) => {
       {...props}
     >
       <div className="w-full flex justify-between mb-1">
-        <p className="text-text-secondary text-sm font-medium">{props.title}</p>
+        <p className="text-text-secondary dark:text-[#f1f1f1] text-sm font-medium">
+          {props.title}
+        </p>
         <div
           className={`h-[35px] w-[35px] flex items-center rounded-[6px] p-1 justify-center`}
           style={{
@@ -31,9 +33,9 @@ const Card: React.FC<cardProps> = ({ className, ...props }) => {
       </div>
       <div className="text-3xl font-bold mb-2">{props.value}</div>
       <div>
-        <p className="text-text-secondary text-sm font-medium">
+        <p className="text-text-secondary text-sm font-medium dark:text-[#f1f1f1]">
           {props.subvalue}
-          <span className="text-text-label text-xs font-normal capitalize ml-2">
+          <span className="text-text-label dark:text-[#f1f1f1] text-xs font-normal capitalize ml-2">
             This month
           </span>
         </p>

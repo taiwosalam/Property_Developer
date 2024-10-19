@@ -10,6 +10,8 @@ import Search from "@/public/icons/search-icon.svg";
 import PlusBold from "@/public/icons/plus-bold.svg";
 import DropdownList from "@/public/icons/dropdown-list.svg";
 import SearchIconBold from "@/public/icons/search-icon-bold.svg";
+import Sun from "@/public/icons/sun.svg";
+import DarkIcon from "@/public/icons/dark-icon.svg";
 
 import Avatar from "@/public/empty/avatar.png";
 import LogoPlacholder from "@/public/empty/logo-placeholder.svg";
@@ -17,6 +19,7 @@ import LogoPlacholder from "@/public/empty/logo-placeholder.svg";
 // Imports
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
+import { useTheme } from "next-themes"
 
 import {
   Dropdown,
@@ -65,6 +68,28 @@ const Navbar = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const { theme, setTheme } = useTheme()
+
+  const [themeIcon, setThemeIcon] = useState(Moon); 
+
+  const toggleTheme = () => {
+    console.log(theme); 
+    switch (theme) { 
+      case "light":
+        setTheme("dark");
+        setThemeIcon(DarkIcon);
+        break;
+      case "dark":
+        setTheme("light");
+        setThemeIcon(Sun); 
+        break;
+      default: 
+        setTheme("light"); 
+        setThemeIcon(Sun); 
+        break;
+    }
+  };
+
   const [dashboardData, setDashboardData] = useState<UserData>({
     user_id: 0,
     email: "",
@@ -109,7 +134,7 @@ const Navbar = () => {
   return (
     <div
       className={clsx(
-        "sticky top-0 z-[2] w-full h-[100px] px-3 sm:px-10 flex items-center border-b border-solid border-neutral-2 bg-white",
+        "sticky top-0 z-[2] w-full h-[100px] px-3 sm:px-10 flex items-center border-b border-solid border-neutral-2 bg-white dark:bg-black",
         {
           skeleton: loading,
         }
@@ -145,9 +170,9 @@ const Navbar = () => {
               <>
                 <NavSwitchUserSwitch userType={dashboardData.company_type} />
                 <Modal>
-                  <ModalTrigger className="p-4 flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1]">
+                  <ModalTrigger className="p-4 flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-black">
                     <Picture src={Search} alt="search" size={24} />
-                    <p className="text-[#0a132ea6] text-base font-semibold">
+                    <p className="text-[#0a132ea6] dark:text-white text-base font-semibold">
                       Search
                     </p>
                   </ModalTrigger>
@@ -187,7 +212,9 @@ const Navbar = () => {
               <Link href={"/notifications"}>
                 <Picture src={Bell} alt="notifications" size={32} />
               </Link>
-              <Picture src={Moon} alt="theme" size={32} />
+              <button onClick={toggleTheme}>
+                <Picture src={themeIcon} alt="theme" size={32} />
+              </button>
             </div>
           )}
           <Dropdown className="flex items-center">

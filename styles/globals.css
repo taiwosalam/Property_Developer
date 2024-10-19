@@ -381,3 +381,10 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
     transform: rotate(360deg);
   }
 }
+
+
+.dark-card {
+  background: #000000;
+  border: 1px solid #d1d5db;
+  color: #fff;
+}

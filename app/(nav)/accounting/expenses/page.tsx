@@ -93,7 +93,7 @@ const AccountingExpensesPage = () => {
             </ModalContent>
           </Modal>
         </div>
-        <div className="bg-white rounded-[8px] border border-opacity-20 border-[#BAC7D533] p-4 space-y-6">
+        <div className="bg-white rounded-[8px] border border-opacity-20 border-[#BAC7D533] dark:bg-black dark:border-[#292d32] p-4 space-y-6">
           <div className="flex flex-wrap gap-y-4 items-center justify-between">
             <div
               className={`w-fit flex bg-[#F5F5F5] rounded-md items-center justify-center`}

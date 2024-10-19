@@ -217,7 +217,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 {task.content.userAvatars.map((avatar, index) => (
                   <Avatar
                     key={index}
-                    className="h-6 w-6 rounded-full border-2 border-white"
+                    className="h-6 w-6 rounded-full border-2 border-white dark:border-[#2]"
                     style={{
                       boxShadow:
                         index !== task.content.userAvatars.length - 1
