@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import { ModalTrigger } from "@/components/Modal/modal";
 import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
@@ -191,7 +190,7 @@ export const QuantityCounter: React.FC<{
   isFree?: boolean;
   billingType?: string;
   isLifeTimePlan?: boolean;
-  onPlanChange?: (planType: "basic" | "premium") => void; //prop to handle plan changes
+  onPlanChange?: (planType: "basic" | "premium") => void;
 }> = ({
   quantity = 1,
   incrementQuantity = () => {},
@@ -199,11 +198,11 @@ export const QuantityCounter: React.FC<{
   isFree = false,
   billingType = "monthly",
   isLifeTimePlan,
-  onPlanChange, // prop to handle plan changes
+  onPlanChange,
 }) => {
   const handlePlanChange = (planType: "basic" | "premium") => {
     if (onPlanChange) {
-      onPlanChange(planType); // Call the function to handle plan change
+      onPlanChange(planType);
     }
   };
 
@@ -231,29 +230,6 @@ export const QuantityCounter: React.FC<{
             alt="minus"
           />
         </div>
-}) => (
-  <div className="counter flex items-center justify-center w-full gap-2">
-    <div className="flex items-center gap-6 w-full max-w-[74px] border border-neutral-3 px-2 rounded-md">
-      <p
-        className={`count pl-1 text-[#000] text-[14px] font-medium tracking-[0px] ${
-          isFree ? "opacity-50 cursor-not-allowed" : ""
-        }`}
-      >
-        {isLifeTimePlan ? 0 : isFree ? 0 : quantity}
-      </p>
-      <div className="btns flex flex-col">
-        <CounterButton
-          onClick={incrementQuantity}
-          disabled={isFree}
-          icon="/icons/plus.svg"
-          alt="plus"
-        />
-        <CounterButton
-          onClick={decrementQuantity}
-          disabled={isFree}
-          icon="/icons/minus.svg"
-          alt="minus"
-        />
       </div>
       <p
         className={`${
@@ -265,16 +241,6 @@ export const QuantityCounter: React.FC<{
     </div>
   );
 };
-    <p
-      className={`${
-        isFree ? "text-text-secondary opacity-50 cursor-not-allowed" : ""
-      }`}
-    >
-      {" "}
-      Total {billingType === "monthly" ? "Months" : "Years"}{" "}
-    </p>
-  </div>
-);
 
 export const CounterButton: React.FC<{
   onClick?: () => void;
