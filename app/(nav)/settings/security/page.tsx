@@ -112,31 +112,31 @@ const Security = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 <Input
                   id="fullname"
                   label="full name"
                   placeholder="Taiwo Salam"
-                  className="w-[277px]"
+                  className="w-full"
                 />
                 <Select
                   id="personal_title_qualification"
                   options={titles}
                   label="personal title / qualification"
-                  inputContainerClassName="w-[277px] bg-neutral-2"
+                  inputContainerClassName="w-full bg-neutral-2"
                 />
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <Select
                     id="real_estate_title"
                     options={industryOptions}
                     label="real estate title"
-                    inputContainerClassName="w-[277px] bg-neutral-2"
+                    inputContainerClassName="w-full bg-neutral-2"
                   />
                   <div className="flex items-end">
                     <Button
                       size="xs_normal"
                       variant="light_red"
-                      className="py-2 px-3"
+                      className="py-2 px-3 w-full sm:w-auto"
                     >
                       remove
                     </Button>
@@ -154,13 +154,13 @@ const Security = () => {
             title="Wallet Pin"
             desc="This PIN is necessary for bank withdrawals, wallet transfers, and other associated transactions."
           />
-          <div className="flex gap-5">
-            <Input id="current_pin" label="current pin" className="w-[277px]" />
-            <Input id="new_pin" label="new pin" className="w-[277px]" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <Input id="current_pin" label="current pin" className="w-full" />
+            <Input id="new_pin" label="new pin" className="w-full" />
             <Input
               id="re_enter_password"
               label="re-enter password"
-              className="w-[277px]"
+              className="w-full"
             />
           </div>
           <SettingsUpdateButton type="otp" />
@@ -198,23 +198,23 @@ const Security = () => {
             title="Bank Account Withdrawal Details"
             desc="The registered name must match your bank details, and you can only link one bank to your account."
           />
-          <div className="flex items-end gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-end">
             <Select
               id="bank_name"
               label="bank name"
               options={["sterling bank"]}
-              inputContainerClassName="w-[277px] bg-neutral-2"
+              inputContainerClassName="w-full bg-neutral-2"
             />
             <Input
               id="account_number"
               label="account number"
-              className="w-[277px]"
+              className="w-full"
             />
             <div className="h-[45px] px-6 flex gap-[18px] items-center bg-status-success-1">
               <div className="w-4 h-4 pt-[1px] rounded-full flex items-center justify-center bg-status-success-primary">
                 <Check size={10} color="white" />
               </div>
-              <p className="text-status-success-primary text-xs font-normal capitalize">
+              <p className="text-status-success-primary text-xs font-normal capitalize truncate">
                 David Adekunle Ajala
               </p>
             </div>
@@ -259,10 +259,10 @@ const Security = () => {
             title="Set up email alias"
             desc="Choose how you intend to utilize your SMTP: for private and business correspondence, updates, notifications, mobile messages, transactional messages, marketing communications, or other purposes. This feature enables you to utilize your own domain email address to send messages to your users."
           />
-          <div className="flex gap-5">
-            <Input id="email" label="email address" className="w-[277px]" />
-            <Input id="password" label="password" className="w-[277px]" />
-            <Input id="smtp_server" label="STMP Server" className="w-[277px]" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <Input id="email" label="email address" className="w-full" />
+            <Input id="password" label="password" className="w-full" />
+            <Input id="smtp_server" label="SMTP Server" className="w-full" />
           </div>
           <SettingsUpdateButton type="otp" />
         </div>

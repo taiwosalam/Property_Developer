@@ -236,7 +236,7 @@ const Appearance = () => {
               className={`h-[40px] w-[40px] my-2 rounded-md text-base border border-gray-300 flex items-center justify-center cursor-pointer relative`}
               style={{ backgroundColor: customColor }}>
                   {selectedColor === customColor && (
-            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center">
               <img
                 src="/icons/whitemark.svg"
                 alt="Selected"
