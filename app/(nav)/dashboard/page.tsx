@@ -35,7 +35,7 @@ const Dashboard = () => {
               <Card
                 key={index}
                 title={card.title}
-                icon={card.icon}
+                icon={<card.icon />}
                 value={card.value}
                 subvalue={card.subValue}
                 bg={card.bg}

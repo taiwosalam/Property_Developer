@@ -1,8 +1,12 @@
-"use client";
 import Skeleton from "@mui/material/Skeleton";
 import PageTitle from "../PageTitle/page-title";
 import type { CustomLoaderProps } from "./types";
-import { LoadingProfileInfo, LoadingProfileCard } from "./LoadingProfile";
+import {
+  LoadingProfileInfo,
+  LoadingProfileCard,
+  LoadingEditProfile,
+} from "./LoadingProfile";
+import DashboardLoading from "./DashboardLoading";
 
 const CustomLoader: React.FC<CustomLoaderProps> = (props) => {
   const { layout } = props;
@@ -17,42 +21,9 @@ const CustomLoader: React.FC<CustomLoaderProps> = (props) => {
     layout === "page" ? props.hasPageTitle ?? true : undefined;
 
   return (
-    <div className="max-h-[calc(100vh-200px)] space-y-9 overflow-y-hidden">
+    <div className="h-[calc(100vh-200px)] space-y-9 overflow-y-hidden">
       {layout === "dasboard" ? (
-        <div className="flex flex-col xl:flex-row gap-x-10 gap-y-6">
-          <div className="xl:flex-1 flex py-1.5 xl:py-7 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
-            {Array.from({ length: 9 }).map((_, index) => (
-              <Skeleton
-                key={index}
-                className="min-w-[270px] md:min-w-full"
-                height={130}
-                animation="wave"
-                sx={{
-                  transform: "none",
-                  flexShrink: 0,
-                }}
-              />
-            ))}
-          </div>
-          <div className="xl:w-[30%] xl:max-w-[342px] grid md:grid-cols-2 xl:grid-cols-1 gap-6 py-1.5 xl:py-7">
-            <Skeleton
-              width={"100%"}
-              height={190}
-              animation="wave"
-              sx={{
-                transform: "none",
-              }}
-            />
-            <Skeleton
-              width={"100%"}
-              height={190}
-              animation="wave"
-              sx={{
-                transform: "none",
-              }}
-            />
-          </div>
-        </div>
+        <DashboardLoading />
       ) : layout === "page" ? (
         <>
           {hasStartCards && (
@@ -122,11 +93,15 @@ const CustomLoader: React.FC<CustomLoaderProps> = (props) => {
       ) : layout === "profile" ? (
         <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
           <LoadingProfileInfo />
-          {Array.from({ length: 8 }).map((_, index) => (
+          {Array.from({ length: 15 }).map((_, index) => (
             <LoadingProfileCard key={index} />
           ))}
         </div>
-      ) : null}
+      ) : layout === "edit-page" ? (
+        <LoadingEditProfile pageTitle={props.pageTitle} />
+      ) : (
+        "Loading..."
+      )}
     </div>
   );
 };

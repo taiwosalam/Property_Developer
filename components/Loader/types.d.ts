@@ -1,5 +1,5 @@
 export interface LoaderBaseProps {
-  layout: "dasboard" | "page" | "profile";
+  layout: "dasboard" | "page" | "profile" | "edit-profile";
 }
 
 export interface LoadingPageProps extends LoaderBaseProps {
@@ -19,7 +19,13 @@ export interface LoadingProfileProps extends LoaderBaseProps {
   layout: "profile";
 }
 
+export interface LoadingEditPageProps extends LoaderBaseProps {
+  layout: "edit-page";
+  pageTitle?: string;
+}
+
 export type CustomLoaderProps =
   | LoadingPageProps
   | LoadingDasboardProps
-  | LoadingProfileProps;
+  | LoadingProfileProps
+  | LoadingEditPageProps;

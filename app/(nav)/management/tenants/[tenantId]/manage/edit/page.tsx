@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 
 // Types
 import type { ValidationErrors } from "@/utils/types";
-
-// Images
-import OrangeCloseCircle from "@/public/icons/orange-close-circle.svg";
+import { DeleteIconOrange } from "@/public/icons/icons";
 
 // Imports
 import useTenantData from "@/hooks/useTenantData";
@@ -34,6 +32,7 @@ import {
   TenantEditNextOfKinInfoSection,
 } from "@/components/Management/Tenants/Edit/tenant-edit-info-sectios";
 import BackButton from "@/components/BackButton/back-button";
+import CustomLoader from "@/components/Loader/CustomLoader";
 // import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 
 const EditTenant = () => {
@@ -76,6 +75,13 @@ const EditTenant = () => {
     setPreview(`${ASSET_URL}${tenant?.picture}` || tenant?.avatar || empty);
   }, [tenant, setPreview]);
 
+  if (loading)
+    return (
+      <CustomLoader layout="edit-page" pageTitle="Edit Tenants & Occupant" />
+    );
+  if (error) return <div>Error: {error.message}</div>;
+  if (!tenant) return null;
+
   return (
     <TenantEditContext.Provider value={{ data: tenant }}>
       <AuthForm
@@ -115,12 +121,7 @@ const EditTenant = () => {
                     type="button"
                     className="absolute top-0 right-0 translate-x-[5px] -translate-y-[5px]"
                   >
-                    <Picture
-                      src={OrangeCloseCircle}
-                      alt="close"
-                      size={32}
-                      style={{ objectFit: "contain" }}
-                    />
+                    <DeleteIconOrange size={32} />
                   </button>
                 </div>
               </div>
@@ -131,7 +132,6 @@ const EditTenant = () => {
                 <Avatars type="avatars" onClick={handleAvatarChange} />
               </div>
               <Button
-                type="button"
                 size="base_medium"
                 className="py-2 px-6"
                 onClick={handleChangeButton}
