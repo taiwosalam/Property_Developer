@@ -307,7 +307,7 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
 }
 
 .dash-table tbody tr:nth-child(2n + 1) {
-  @apply bg-brand-1;
+  @apply bg-brand-1 dark:bg-black text-[#f1f1fd];
 }
 
 .dash-table th {
@@ -322,7 +322,7 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
   text-align: start;
   padding: 12px 16px;
 
-  @apply text-text-primary text-base font-medium;
+  @apply text-text-primary text-base font-medium dark:text-[#DECDB6];
 }
 
 .dash-table td p {
@@ -380,4 +380,11 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
   100% {
     transform: rotate(360deg);
   }
+}
+
+
+.dark-card {
+  background: #000000;
+  border: 1px solid #d1d5db;
+  color: #fff;
 }

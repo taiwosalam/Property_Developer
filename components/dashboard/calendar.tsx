@@ -11,7 +11,7 @@ const DashboarddCalendar = () => {
       mode="single"
       selected={date}
       onSelect={setDate}
-      className="rounded-lg shadow-md border w-full"
+      className="rounded-lg shadow-md border w-full dark:border-[#3c3d37] dark:border dark:bg-[#020617]"
     />
   );
 };

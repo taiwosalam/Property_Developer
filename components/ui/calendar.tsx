@@ -27,7 +27,7 @@ function Calendar({
         month: "space-y-4 w-full",
         // Styling for the caption container
         caption:
-          "flex justify-start pt-1 pb-4 relative items-center border-b border-[#CCCCCCB2",
+          "flex justify-start pt-1 pb-4 relative items-center border-b border-[#3c3d37]",
         // Styling for the caption label
         caption_label: "text-sm font-medium",
         // Styling for the navigation container

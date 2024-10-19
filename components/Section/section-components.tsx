@@ -73,12 +73,14 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
 }) => (
   <div className="custom-flex-col gap-4">
     <div className="flex items-center justify-between">
-      <h1 className="text-text-primary text-xl font-medium capitalize">
+      <h1 className="text-text-primary text-xl font-medium capitalize dark:text-[#f1f1fd]">
         {heading}
       </h1>
       {href && (
         <Link href={href} className="flex items-center gap-1">
-          <p className="text-text-label text-base font-medium">See all</p>
+          <p className="text-text-label text-base font-medium dark:text-[#f1f1fd]">
+            See all
+          </p>
           <SVG
             color="#5A5D61"
             type="right_arrow"
