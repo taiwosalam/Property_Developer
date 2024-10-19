@@ -44,7 +44,7 @@ const ManageLandlord = () => {
   if (!LandlordPageData) return null;
 
   return (
-    <div className="custom-flex-col gap-10">
+    <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
         <LandlordTenantInfoBox
           style={{ padding: "24px 40px" }}

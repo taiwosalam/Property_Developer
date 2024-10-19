@@ -26,7 +26,7 @@ const Card: React.FC<cardProps> = ({ className, ...props }) => {
             backgroundColor: props.bg,
           }}
         >
-          <Image src={props.icon} alt="icon" width={33} height={33} />
+          {props.icon}
         </div>
       </div>
       <div className="text-3xl font-bold mb-2">{props.value}</div>

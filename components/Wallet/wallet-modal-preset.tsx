@@ -19,7 +19,7 @@ const WalletModalPreset: React.FC<WalletModalPresetProps> = ({
 }) => {
   return (
     <div
-      className="w-[600px] bg-white rounded-lg overflow-hidden custom-flex-col"
+      className="w-[600px] max-w-[80%] max-h-[85%] bg-white rounded-lg overflow-auto custom-flex-col custom-round-scrollbar"
       style={{
         border: "1px solid rgba(193, 194, 195, 0.40)",
         boxShadow:
@@ -27,7 +27,7 @@ const WalletModalPreset: React.FC<WalletModalPresetProps> = ({
         ...style,
       }}
     >
-      <div className="custom-flex-col gap-[2px] py-4 px-6 bg-brand-1">
+      <div className="custom-flex-col gap-[2px] py-4 px-6 bg-brand-1 sticky top-0 z-[2]">
         <div className="flex items-center justify-between">
           {back ? (
             <button
@@ -43,9 +43,9 @@ const WalletModalPreset: React.FC<WalletModalPresetProps> = ({
             <Picture src={Cancel} alt="close" size={24} />
           </ModalTrigger>
         </div>
-        <div className="flex justify-center">
-          <p className="text-text-secondary text-base font-medium">{title}</p>
-        </div>
+        <p className="text-text-secondary text-base font-medium text-center">
+          {title}
+        </p>
       </div>
       <div className="p-6">{children}</div>
     </div>
