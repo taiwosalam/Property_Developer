@@ -86,7 +86,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
 
   return (
     <div
-      className={`max-w-[344px] flex flex-col justify-between pricingCard bg-white`}
+      className={`max-w-[344px] flex flex-col justify-between pricingCard rounded-lg bg-white overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
     >
       <PlanHeader
         planTitle={planTitle}
