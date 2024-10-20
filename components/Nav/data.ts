@@ -1,5 +1,5 @@
 // Types
-import type { CreateNewItemsProps, NavItemsProps } from "./types";
+import type { NavItemsProps } from "./types";
 
 export const nav_items: NavItemsProps = [
   {
@@ -89,48 +89,6 @@ export const nav_items: NavItemsProps = [
     href: "/documents",
   },
   { type: "settings", label: "settings", href: "/settings" },
-];
-
-export const create_new_items: CreateNewItemsProps = [
-  {
-    type: "people",
-    label: "management",
-    content: [
-      { label: "landlord / landlady" },
-      { label: "tenants / occupants" },
-      { label: "branch" },
-      { label: "staff" },
-      { label: "inventory" },
-      { label: "property" },
-    ],
-  },
-  {
-    type: "briefcase_timer",
-    label: "tasks",
-    content: [
-      { label: "examine" },
-      { label: "maintenance" },
-      { label: "service provider" },
-      { label: "event" },
-      { label: "task" },
-      { label: "reminder" },
-      { label: "announcement" },
-    ],
-  },
-  {
-    type: "menu_board",
-    label: "accounting",
-    content: [
-      { label: "invoice" },
-      { label: "expenses" },
-      { label: "disbursement" },
-    ],
-  },
-  {
-    type: "folder",
-    label: "documents",
-    content: [{ label: "tenancy agreement" }],
-  },
 ];
 
 export const getGreeting = () => {

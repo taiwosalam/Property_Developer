@@ -3,12 +3,7 @@ import Link from "next/link";
 
 // Types
 import type { Color } from "@/types/global";
-import type {
-  NavButtonProps,
-  NavCreateNewColumnProps,
-  NavIconProps,
-  NavSearchTabProps,
-} from "./types";
+import type { NavIconProps, NavButtonProps, NavSearchTabProps } from "./types";
 
 // Imports
 import clsx from "clsx";
@@ -45,7 +40,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
           type={type}
           color={color}
           className={clsx("w-[30px] flex justify-center", {
-            "path-fill": type === "chart"
+            "path-fill": type === "chart",
           })}
         />
       )}
@@ -77,7 +72,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
 };
 
 export const NavIcon: React.FC<NavIconProps> = ({ src, alt, href }) => {
-const class_styles = "p-2 rounded-lg bg-background-2 dark:bg-black";
+  const class_styles = "p-2 rounded-lg bg-background-2 dark:bg-black";
   const content = <Picture src={src} alt={alt} size={20} />;
 
   return href ? (
@@ -86,43 +81,6 @@ const class_styles = "p-2 rounded-lg bg-background-2 dark:bg-black";
     </Link>
   ) : (
     <button className={class_styles}>{content}</button>
-  );
-};
-
-export const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
-  data = [],
-}) => {
-  const options = ["management", "tasks", "accounting", "documents"];
-  const content = data.filter((item) =>
-    options.includes(item.label.toLowerCase())
-  );
-
-  return (
-    <div className="flex gap-10">
-      {content.map(({ type, label, content }, index) => (
-        <div key={index} className="custom-flex-col text-base font-medium">
-          <div className="flex items-center gap-2">
-            <SVG
-              type={type}
-              color="#050901"
-              className="w-[30px] flex justify-center"
-            />
-            <p className="text-text-primary capitalize">{label}</p>
-          </div>
-          {content?.map(({ label }, idx) => (
-            <div key={idx} className="py-3 pl-10 pr-5">
-              <button className="flex items-center gap-4">
-                <SVG
-                  type="horizontal_line"
-                  className="w-[30px] flex justify-center"
-                />
-                <p className="text-text-secondary capitalize">{label}</p>
-              </button>
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
   );
 };
 
