@@ -7,12 +7,12 @@ const FilterButton = ({ onClick, ...props }: FilterButtonProps) => {
   return (
     <button
       type="button"
-      className="bg-white rounded-lg p-2 flex items-center gap-2"
+      className="bg-white dark:bg-darkText-primary rounded-lg p-2 flex items-center gap-2"
       onClick={onClick}
       {...props}
     >
       <FilterIcon />
-      <span className="text-[#344054] text-base font-medium">Filters</span>
+      <span className="text-[#344054] dark:text-darkText-1 text-base font-medium">Filters</span>
     </button>
   );
 };

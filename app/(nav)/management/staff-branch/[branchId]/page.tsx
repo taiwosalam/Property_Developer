@@ -112,7 +112,7 @@ const BranchDashboard = () => {
     <div className="custom-flex-col gap-6">
       <div className="w-full gap-2 flex items-center justify-between flex-wrap">
         <div>
-          <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black">
+          <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
             {fetchedBranchData?.branch?.branch_title || "Null"}
           </h1>
           <div className="text-text-disabled flex items-center space-x-1">
@@ -147,8 +147,8 @@ const BranchDashboard = () => {
         </div>
       </div>
       <div className="flex flex-col-reverse md:flex-row md:justify-between gap-x-8 gap-y-4 md:items-start">
-        <div className="md:w-[58%] lg:w-[68%] bg-white p-6 space-y-4 rounded-lg border border-[rgba(186,199,213,0.20)]">
-          <div className="ml-auto flex w-[390px] max-w-full px-4 bg-[#F5F5F5] rounded-md items-center justify-end">
+        <div className="md:w-[58%] lg:w-[68%] bg-white dark:bg-[#3C3D37] p-6 space-y-4 rounded-lg border border-[rgba(186,199,213,0.20)]">
+          <div className="ml-auto flex w-[390px] max-w-full px-4 bg-[#F5F5F5] dark:bg-darkText-primary rounded-md items-center justify-end">
             <DatePickerWithRange
               selectedRange={
                 {

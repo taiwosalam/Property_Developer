@@ -19,14 +19,14 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
 }) => {
   return (
     <div className="flex items-start p-2">
-      <div className={`w-1 h-10 mr-4 ${color}`}></div>
+      <div className={`w-1 h-10 mr-4 ${color} dark:text-white`}></div>
       <div>
         <div className="text-sm">
-          <span className="font-bold">
+          <span className="font-bold dark:text-darkText-1">
             {label}
             {" || "}
           </span>
-          <span>{description}</span>
+          <span className="dark:text-darkText-2">{description}</span>
         </div>
         <div className="text-sm text-gray-500">{time}</div>
       </div>
@@ -70,7 +70,7 @@ const BranchActivitiesCard: React.FC<BranchActivitiesCardProps> = ({
 
   return (
     <div
-      className={clsx("bg-brand-1 rounded-lg", className)}
+      className={clsx("bg-brand-1 dark:bg-[#3C3D37] rounded-lg", className)}
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
@@ -79,7 +79,7 @@ const BranchActivitiesCard: React.FC<BranchActivitiesCardProps> = ({
       <div className="flex justify-between items-center p-4">
         <div>
           <h2 className="font-medium text-sm">Branch Activities</h2>
-          <span className="text-text-label text-sm font-medium">
+          <span className="text-text-label dark:text-darkText-2 text-sm font-medium">
             25 January 2023
           </span>
         </div>
@@ -89,7 +89,7 @@ const BranchActivitiesCard: React.FC<BranchActivitiesCardProps> = ({
         </div>
       </div>
 
-      <div className="bg-white py-4 px-2 text-text-primary rounded-b-lg">
+      <div className="bg-white dark:bg-darkText-primary py-4 px-2 text-text-primary rounded-b-lg">
         {activities.map((activity, index) => (
           <ActivityItem
             key={index}

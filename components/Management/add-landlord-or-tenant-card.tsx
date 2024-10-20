@@ -17,12 +17,12 @@ const AddLandlordOrTenantCard: React.FC<AddLandlordOrTenantCardProps> = ({
   buttonHref,
 }) => {
   return (
-    <div className="w-[250px] h-[250px] flex gap-5 flex-col text-center items-center justify-center rounded-2xl border border-solid border-brand-9 bg-neutral-2">
+    <div className="w-[250px] h-[250px] flex gap-5 flex-col text-center items-center justify-center rounded-2xl border border-solid border-brand-9 dark:border-darkText-2 bg-neutral-2 dark:bg-[#3C3D37]">
       <p className="text-brand-9 text-xl font-medium capitalize mb-4">
         {title}
       </p>
       {desc && (
-        <p className="text-[#606060] text-xs font-normal mb-8">{desc}</p>
+        <p className="text-[#606060] dark:text-darkText-1 text-xs font-normal mb-8">{desc}</p>
       )}
       <Button
         {...(buttonHref ? { href: buttonHref } : { type: "button", onClick })}

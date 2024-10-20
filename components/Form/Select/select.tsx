@@ -137,7 +137,7 @@ const Select: React.FC<SelectProps> = ({
         {/* Trigger for the custom dropdown with embedded search field */}
         <div
           className={clsx(
-            "flex items-center dark:bg-darkText-primary border border-solid border-[#C1C2C366] hover:border-[#00000099] py-[11px] pr-3 rounded-lg custom-primary-outline transition-colors duration-300 ease-in-out",
+            "flex items-center dark:bg-darkText-primary border border-solid border-[#C1C2C366] hover:border-[#00000099] dark:hover:border-darkText-2 py-[11px] pr-3 rounded-lg custom-primary-outline transition-colors duration-300 ease-in-out",
             selectedValue ? "bg-neutral-2 dark:bg-darkText-primary" : "cursor-pointer",
             isSearchable ? "pl-10" : "pl-4",
             inputContainerClassName

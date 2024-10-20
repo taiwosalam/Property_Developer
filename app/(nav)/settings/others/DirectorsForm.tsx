@@ -139,7 +139,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction }) => {
         </div>
       </div>
       <div className="custom-flex-col gap-3 mt-3">
-        <p className="text-black text-base font-medium">
+        <p className="text-black dark:text-darkText-1 text-base font-medium">
           Upload picture or choose an avatar.
         </p>
         <div className="flex items-between justify-between w-full gap-3">

@@ -164,7 +164,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           {filteredDropdownOptions?.map((option, index) => (
             <div
               key={index}
-              className="flex items-center justify-between py-2 px-5 my-2 bg-[#F5F5F5]"
+              className="flex items-center justify-between py-2 px-5 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
             >
               <label className="text-sm capitalize">{option.label}</label>
               <input

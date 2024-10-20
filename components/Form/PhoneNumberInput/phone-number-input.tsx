@@ -37,7 +37,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
   };
 
   return (
-    <div className={clsx("custom-flex-col gap-2", className)}>
+    <div className={clsx("custom-flex-col gap-2 dark:bg-darkText-primary", className)}>
       {/* Render the label if provided */}
       {label && (
         <Label id={id} required={required}>
@@ -66,7 +66,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
           borderRadius: "8px 0 0 8px",
         }}
         containerClass={clsx(
-          "font-normal rounded-[8px] hover:outline outline-1 outline-auto outline-[#00000099] focus-within:outline focus-within:outline-[#0033c4] focus-within:outline-2 !text-xs md:!text-sm font-normal",
+          "font-normal rounded-[8px] hover:outline outline-1 outline-auto outline-[#00000099] dark:hover:outline-darkText-2 focus-within:outline focus-within:outline-[#0033c4] focus-within:outline-2 !text-xs md:!text-sm font-normal",
           inputContainerClassName
         )}
       />

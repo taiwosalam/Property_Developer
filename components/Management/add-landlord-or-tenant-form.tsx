@@ -91,7 +91,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         <PhoneNumberInput
           id="phone_number"
           label="phone number"
-          inputClassName="!bg-neutral-2"
+          inputClassName="!bg-neutral-2 !dark:bg-black"
           // validationErrors={errorMsgs} validation errors left to you Teni!
         />
         <Select
@@ -139,7 +139,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
       </div>
       <div className="flex justify-between items-end flex-wrap gap-4 md:gap-5">
         <div className="custom-flex-col gap-3">
-          <p className="text-black text-base font-medium">
+          <p className="text-black dark:text-darkText-1 text-base font-medium">
             Upload picture or select an avatar.
           </p>
           <div className="flex items-end gap-3">
