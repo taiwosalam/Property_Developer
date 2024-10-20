@@ -61,6 +61,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
         fontSize="16"
         fontWeight="bold"
         fill="#000"
+        className="dark:fill-darkText-1"
       >
         +{newValue}
       </text>
@@ -148,10 +149,12 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
       <CardContent className="py-5">
         <div className="flex gap-4 justify-between">
           <div className="flex flex-col gap-y-3">
-            <CardTitle className="text-base font-bold text-brand-10">
+            <CardTitle className="text-base font-bold text-brand-10 dark:text-darkText-1">
               {title}
             </CardTitle>
-            <p className="text-[32px] font-bold text-text-label">{total}</p>
+            <p className="text-[32px] font-bold text-text-label dark:text-darkText-1">
+              {total}
+            </p>
           </div>
           <div className="flex flex-col gap-y-3">
             <DonutChart
@@ -161,7 +164,7 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
               oldColor={oldColor || oldColorScheme}
             />
             <p
-              className="font-normal text-xs text-neutral-6 text-right"
+              className="font-normal text-xs text-neutral-6 text-right dark:text-darkText-2"
               style={{ whiteSpace: "nowrap" }}
             >
               This month

@@ -31,7 +31,7 @@ const NavSwitchUserSwitch = ({ userType }: { userType: string }) => {
         onClick={handleSwitch}
         className="w-full h-full p-4 flex items-center justify-between gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]"
       >
-        <p className="text-[#0a132ea6] dark:text-[#F1F1D9] text-base font-semibold capitalize custom-truncated">
+        <p className="text-[#0a132ea6] dark:text-white text-base font-semibold capitalize custom-truncated">
           {userType}
         </p>
         <ChevronDown size={20} color="#0a132ea6" />
@@ -56,7 +56,7 @@ const NavSwitchUserSwitch = ({ userType }: { userType: string }) => {
             </button>
             <button
               onClick={() => handleUserSwitch("property developer")}
-              className="p-4 capitalize text-start hover:bg-neutral-2"
+              className="p-4 capitalize text-start hover:bg-neutral-2 hover:bg-opacity-50 dark:hover:bg-[#292d32]"
             >
               property developer
             </button>

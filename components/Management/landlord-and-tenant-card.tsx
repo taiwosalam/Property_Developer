@@ -36,12 +36,12 @@ const UserCard: React.FC<UserCardProps> = (props) => {
     props;
   return (
     <div
-      className="border border-brand-tertiary bg-[#F9F9F9] p-2 rounded-lg flex gap-2 items-start"
+      className="border border-brand-tertiary bg-[#F9F9F9] dark:bg-[#020617] dark:border-[#3C3D37] p-2 rounded-lg flex gap-2 items-start"
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="rounded-lg relative overflow-hidden flex-shrink-0 w-[82px] h-[90px]">
         <Image
-          src={picture_url || empty}
+          src={picture_url || empty} 
           alt={cardType !== 'base' ? props?.first_name : props?.full_name}
           fill
           sizes="300px"
@@ -49,23 +49,25 @@ const UserCard: React.FC<UserCardProps> = (props) => {
         />
       </div>
       <div className="flex-1 flex flex-col items-start">
-        <p className="flex items-center font-bold text-black text-sm capitalize">
+        <p className="flex items-center font-bold text-black dark:text-darkText-1 text-sm capitalize">
           <span className="text-ellipsis line-clamp-1">{cardType !== 'base' ? `${props.first_name} ${props.last_name}` : props.full_name}</span>
           <BadgeIcon color="red" />
         </p>
-        <p className="font-normal text-black text-xs mb-1 text-ellipsis line-clamp-2 break-all">
+        <p className="font-normal text-black dark:text-darkText-1 text-xs mb-1 text-ellipsis line-clamp-2 break-all">
           {email}
         </p>
         {cardType !== "staff" ? (
           <UserTag type={props.user_tag} className="mb-2" />
         ) : (
-          <p className="text-xs text-brand-10 font-normal">{props.role}</p>
+          <p className="text-xs text-brand-10 dark:text-darkText-1 font-normal">
+            {props.role}
+          </p>
         )}
-        <p className="font-semibold text-xs text-[#8D8D8D] text-ellipsis line-clamp-1">
+        <p className="font-semibold text-xs text-[#8D8D8D] dark:text-darkText-2 text-ellipsis line-clamp-1">
           {phone_number}
         </p>
         {cardType === "service-provider" && (
-          <p className="font-medium text-xs text-black mt-2 text-ellipsis line-clamp-2">
+          <p className="font-medium text-xs text-black dark:text-darkText-1 mt-2 text-ellipsis line-clamp-2">
             {props.service}
           </p>
         )}

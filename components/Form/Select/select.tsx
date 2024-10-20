@@ -118,7 +118,7 @@ const Select: React.FC<SelectProps> = ({
   }, [validationErrors, id]);
 
   return (
-    <div className={clsx("custom-flex-col gap-2", className)}>
+    <div className={clsx("custom-flex-col gap-2 dark:bg-darkText-primary", className)}>
       {/* input for flow progress and holding the selected value for form submission */}
       <input
         name={id}
@@ -137,8 +137,8 @@ const Select: React.FC<SelectProps> = ({
         {/* Trigger for the custom dropdown with embedded search field */}
         <div
           className={clsx(
-            "flex items-center border border-solid border-[#C1C2C366] hover:border-[#00000099] py-[11px] pr-3 rounded-lg custom-primary-outline transition-colors duration-300 ease-in-out",
-            selectedValue ? "bg-neutral-2" : "cursor-pointer",
+            "flex items-center dark:bg-darkText-primary border border-solid border-[#C1C2C366] hover:border-[#00000099] py-[11px] pr-3 rounded-lg custom-primary-outline transition-colors duration-300 ease-in-out",
+            selectedValue ? "bg-neutral-2 dark:bg-darkText-primary" : "cursor-pointer",
             isSearchable ? "pl-10" : "pl-4",
             inputContainerClassName
           )}
@@ -149,7 +149,9 @@ const Select: React.FC<SelectProps> = ({
           {/* Conditionally render the search icon */}
           {isSearchable && (
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+              <span className="text-brand-9">
               <SearchIcon />
+              </span>
             </div>
           )}
           {/* Conditionally render input or selected value based on `isSearchable` */}
@@ -227,7 +229,7 @@ const Select: React.FC<SelectProps> = ({
         {isOpen && (
           <div
             className={clsx(
-              "absolute z-10 mt-2 w-full bg-white border border-solid rounded-[8px] shadow-lg",
+              "absolute z-10 mt-2 w-full bg-white dark:bg-darkText-primary dark:border-darkText-1 border border-solid rounded-[8px] shadow-lg",
               {
                 "border-[0] mt-0 shadow-[none]":
                   !searchTerm && filteredOptions.length === 0,
@@ -245,7 +247,7 @@ const Select: React.FC<SelectProps> = ({
                   return (
                     <div
                       key={optionValue}
-                      className="p-2 cursor-pointer hover:bg-gray-100 capitalize"
+                      className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-darkText-2 capitalize"
                       onClick={() => handleSelection(optionValue)}
                     >
                       {optionLabel}

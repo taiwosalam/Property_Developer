@@ -9,12 +9,12 @@ import Button from "@/components/Form/Button/button";
 
 const AddOccupantWithId = () => {
   return (
-    <div className="w-[600px] max-w-[80%] max-h-[85%] rounded-[20px] bg-white overflow-x-auto custom-round-scrollbar">
+      <div className="w-[600px] max-w-[80%] max-h-[85%] rounded-[20px] bg-white overflow-x-auto custom-round-scrollbar">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-solid border-[#B8B8B8] sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[30px] bg-white">
         <div className="flex items-center gap-2">
           <span></span>
-          <p className="text-primary-navy text-base md:text-lg lg:text-xl font-bold capitalize">
+          <p className="text-primary-navy dark:text-darkText-1 text-base md:text-lg lg:text-xl font-bold capitalize">
             Add occupant with ID
           </p>
         </div>

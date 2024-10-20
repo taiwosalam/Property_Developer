@@ -7,7 +7,7 @@ import Mail from "@/public/icons/mail.svg";
 import Bell from "@/public/icons/bell.svg";
 import Moon from "@/public/icons/moon.svg";
 import Search from "@/public/icons/search-icon.svg";
-import PlusBold from "@/public/icons/plus-bold.svg";
+import PlusBold from "@/public/icons/plus-bold.svg";  
 import DropdownList from "@/public/icons/dropdown-list.svg";
 import SearchIconBold from "@/public/icons/search-icon-bold.svg";
 import Sun from "@/public/icons/sun.svg";
@@ -171,7 +171,9 @@ const Navbar = () => {
                 <NavSwitchUserSwitch userType={dashboardData.company_type} />
                 <Modal>
                   <ModalTrigger className="p-4 flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
+                    <span className="text-brand-9">
                     <Picture src={Search} alt="search" size={24} />
+                    </span>
                     <p className="text-[#0a132ea6] dark:text-white text-base font-semibold">
                       Search
                     </p>

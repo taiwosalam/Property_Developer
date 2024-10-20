@@ -110,7 +110,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Sidenav />
           </div>
         )}
-        <div className="w-full custom-flex-col flex-1 bg-neutral-2 dark:bg-[#0b2117]">
+        <div className="w-full custom-flex-col flex-1 bg-neutral-2 dark:bg-[#000000]">
           <div
             style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
             className="custom-flex-col sticky top-[99px] bg-white dark:bg-[#697565] z-[2]"
