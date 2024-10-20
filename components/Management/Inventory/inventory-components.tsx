@@ -26,7 +26,7 @@ export const InventoryListInfo: React.FC<InventoryListInfoProps> = ({
 };
 
 export const InventoryField: React.FC<InventoryFieldProps> = ({ children }) => (
-  <div className="flex-1 p-3 rounded-[4px] border border-solid border-[#C1C2C366] bg-white">
-    <p className="text-xs md:text-sm font-normal">{children || "---"}</p>
+  <div className="flex-1 p-3 rounded-[4px] border border-solid border-[#C1C2C366] bg-white dark:bg-[#3C3D37]">
+    <p className="text-xs md:text-sm font-normal dark:text-darkText-2">{children || "---"}</p>
   </div>
 );

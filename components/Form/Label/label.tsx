@@ -12,7 +12,7 @@ const Label: React.FC<LabelProps> = ({ id, required, children, labelclassName })
       )}
     >
       {required && <span className="text-status-error-primary">*</span>}
-      <p className="text-text-label">{children}</p>
+      <p className="text-text-label dark:text-darkText-2">{children}</p>
     </label>
   );
 };

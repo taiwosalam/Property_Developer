@@ -77,15 +77,15 @@ const Navbar = () => {
     switch (theme) { 
       case "light":
         setTheme("dark");
-        setThemeIcon(DarkIcon);
+        setThemeIcon(Sun); 
         break;
       case "dark":
         setTheme("light");
-        setThemeIcon(Sun); 
+        setThemeIcon(DarkIcon);
         break;
       default: 
         setTheme("light"); 
-        setThemeIcon(Sun); 
+        setThemeIcon(DarkIcon);
         break;
     }
   };

@@ -14,10 +14,9 @@ import { SectionSeparator } from "@/components/Section/section-components";
 
 const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
   return (
-    <div className="custom-flex-col gap-4 pb-5 rounded-lg bg-white overflow-hidden">
+    <div className="custom-flex-col gap-4 pb-5 rounded-lg bg-white dark:bg-darkText-primary overflow-hidden">
       <div
-        style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
-        className="w-full h-[174px] flex items-center justify-center"
+        className="w-full h-[174px] flex items-center justify-center bg-black/20 dark:bg-darkText-2"
       >
         <Picture
           src={ClipboardCheck}
@@ -26,7 +25,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
         />
       </div>
       <div className="px-4 custom-flex-col gap-1">
-        <p className="text-black text-base font-medium capitalize text-center">
+        <p className="text-black dark:text-white text-base font-medium capitalize text-center">
           Abiola Apartment
         </p>
         <SectionSeparator />
@@ -38,7 +37,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
 
               return (
                 <div key={field} className="flex justify-between font-medium">
-                  <p className="text-text-tertiary text-base">
+                  <p className="text-text-tertiary dark:text-darkText-1 text-base">
                     {field.split("_").join(" ")}
                   </p>
                   <p className="text-text-secondary text-sm">{value}</p>
