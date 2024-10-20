@@ -5,9 +5,9 @@ import CloseCircle from "@/public/icons/close-circle.svg";
 
 // Imports
 import Picture from "../Picture/picture";
-import { create_new_items } from "./data";
 import { ModalTrigger } from "../Modal/modal";
-import { NavCreateNewColumn } from "./nav-components";
+import NavCreateNewColumn from "./nav-create-new-column";
+import { create_new_items } from "./nav-create-new-items";
 import { SectionSeparator } from "../Section/section-components";
 
 const NavCreateNew = () => {

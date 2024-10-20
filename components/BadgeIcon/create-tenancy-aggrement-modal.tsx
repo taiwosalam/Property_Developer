@@ -13,7 +13,7 @@ const CreateTenancyAggrementModal = () => {
         <div className="custom-flex-col gap-5">
           <Input id="property-id" label="property ID" inputClassName="min-w-[300px]" />
           <div className="flex justify-center">
-            <Button href="documents/create-tenancy-agreement" size="base_bold" className="py-2 px-8">
+            <Button href="/documents/create-tenancy-agreement" size="base_bold" className="py-2 px-8">
               add
             </Button>
           </div>

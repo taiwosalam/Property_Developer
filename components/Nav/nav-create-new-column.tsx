@@ -1,0 +1,71 @@
+"use client";
+
+import Link from "next/link";
+
+// Types
+import type { NavCreateNewColumnProps } from "./types";
+
+// Imports
+import SVG from "../SVG/svg";
+import { Modal, ModalContent, ModalTrigger, useModal } from "../Modal/modal";
+
+const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
+  data = [],
+}) => {
+  const { setIsOpen } = useModal();
+
+  const options = ["management", "tasks", "accounting", "documents"];
+  const content = data.filter((item) =>
+    options.includes(item.label.toLowerCase())
+  );
+
+  const class_styles = "flex items-center gap-4";
+  const icon = (
+    <SVG type="horizontal_line" className="w-[30px] flex justify-center" />
+  );
+
+  const closeCreateNewModal = () => {
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="flex gap-10">
+      {content.map(({ type, label, content }, index) => (
+        <div key={index} className="custom-flex-col text-base font-medium">
+          <div className="flex items-center gap-2">
+            <SVG
+              type={type}
+              color="#050901"
+              className="w-[30px] flex justify-center"
+            />
+            <p className="text-text-primary capitalize">{label}</p>
+          </div>
+          {content?.map(({ label, link, modal }, idx) => (
+            <div key={idx} className="py-3 pl-10 pr-5">
+              {link ? (
+                <Link
+                  href={link}
+                  className={class_styles}
+                  onClick={closeCreateNewModal}
+                >
+                  {icon}
+                  <p className="text-text-secondary capitalize">{label}</p>
+                </Link>
+              ) : (
+                <Modal>
+                  <ModalTrigger className={class_styles}>
+                    {icon}
+                    <p className="text-text-secondary capitalize">{label}</p>
+                  </ModalTrigger>
+                  <ModalContent>{modal}</ModalContent>
+                </Modal>
+              )}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default NavCreateNewColumn;

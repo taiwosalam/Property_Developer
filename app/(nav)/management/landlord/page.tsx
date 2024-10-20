@@ -242,28 +242,28 @@ const Landlord = () => {
   if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div className="space-y-9">
+    <div className="space-y-8">
       <div className="page-header-container">
         <div className="hidden md:flex flex-wrap gap-5">
           <ManagementStatistcsCard
             title="Total Landlords"
             newData={new_landlords_this_month}
             total={total_landlords}
-            className="w-[240px]"
+            className="w-[260px]"
             colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Web Landlords"
             newData={new_web_landlords_this_month}
             total={web_landlords}
-            className="w-[240px]"
+            className="w-[260px]"
             colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Mobile Landlords"
             newData={new_mobile_landlords_this_month}
             total={mobile_landlords}
-            className="w-[240px]"
+            className="w-[260px]"
             colorScheme={3}
           />
         </div>
