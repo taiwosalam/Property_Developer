@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 // Imports
 import Card from "@/components/dashboard/card";
 import Button from "@/components/Form/Button/button";
-import FilterButton from "@/components/FilterButton/filter-button";
 import {
   Select,
   SelectContent,
@@ -22,10 +20,9 @@ import {
 } from "@/app/(nav)/dashboard/data";
 import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
-import SearchInput from "@/components/SearchInput/search-input";
-import { GridIcon, ListIcon, LocationIcon } from "@/public/icons/icons";
+
+import { LocationIcon } from "@/public/icons/icons";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { PageState } from "./data";
 import Pagination from "@/components/Pagination/pagination";
 import BranchStatCard from "@/components/Management/Staff-And-Branches/Branch/branchStatCard";
@@ -39,8 +36,9 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { getOneBranch } from "../data";
 import { useAuthStore } from "@/store/authstrore";
 import { ResponseType } from "./types";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
-const Dashboard = () => {
+const BranchDashboard = () => {
   const initialState = {
     gridView: true,
     total_pages: 50,
@@ -67,8 +65,6 @@ const Dashboard = () => {
   };
 
   const properties = fetchedBranchData?.property_list || [];
-
-  const itemsPerColumn = Math.ceil(dashboardCardData.length / 3);
 
   const BranchFilters = [{ label: "Alphabetically", value: "alphabetically" }];
 
@@ -198,7 +194,7 @@ const Dashboard = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="w-full h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <AutoResizingGrid gap={12} minWidth={212}>
             <BranchStatCard
               title="Total Receipts"
               balance={1234535}
@@ -214,7 +210,7 @@ const Dashboard = () => {
               balance={1234535}
               upvalue={54}
             />
-          </div>
+          </AutoResizingGrid>
         </div>
         <div className="md:flex-1 space-y-4">
           <div className="max-w-full flex items-center justify-between flex-wrap gap-2">
@@ -229,12 +225,12 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 lg:items-start">
-        <div className="lg:w-[68%] grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="overflow-x-auto flex lg:w-[68%] md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
           {dashboardCardData.map((card, index) => (
             <Card
               key={index}
               title={card.title}
-              icon={card.icon}
+              icon={<card.icon />}
               value={card.value}
               subvalue={card.subValue}
               bg={card.bg}
@@ -243,11 +239,11 @@ const Dashboard = () => {
         </div>
         <BranchActivitiesCard className="lg:flex-1" />
       </div>
-      <div className="flex gap-x-8 gap-y-4 items-start">
+      <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 items-start">
         <DashboardChart
           chartTitle="Reports"
           visibleRange={false}
-          className="hidden md:block md:w-[68%]"
+          className="hidden md:block md:w-full lg:w-[68%]"
         />
         <NotificationCard
           sectionHeader="Staffs"
@@ -257,51 +253,18 @@ const Dashboard = () => {
         />
       </div>
 
-      <div className="page-title-container" style={{ justifyContent: "end" }}>
-        <div className="flex items-center gap-4 flex-wrap">
-          <SearchInput placeholder="Search for Branch properties" />
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              aria-label="list-view"
-              className={`${
-                !gridView ? "bg-black" : "bg-transparent"
-              } p-1 rounded-md`}
-              onClick={setListView}
-            >
-              <div className={!gridView ? "text-white" : "text-[unset]"}>
-                <ListIcon />
-              </div>
-            </button>
-            <button
-              type="button"
-              aria-label="grid-view"
-              className={`${
-                gridView ? "bg-black" : "bg-transparent"
-              } p-1 rounded-md`}
-              onClick={setGridView}
-            >
-              <div className={gridView ? "text-white" : "text-[unset]"}>
-                <GridIcon />
-              </div>
-            </button>
-          </div>
-          <Modal>
-            <ModalTrigger asChild>
-              <FilterButton />
-            </ModalTrigger>
-            <ModalContent>
-              <FilterModal
-                filterOptions={BranchFilters}
-                filterOptionsWithDropdown={branchFiltersWithOptions}
-                onApply={handleFilterApply}
-                date
-                onStateSelect={(state: string) => setSelectedState(state)}
-              />
-            </ModalContent>
-          </Modal>
-        </div>
-      </div>
+      <FilterBar
+        searchInputPlaceholder="Search for Branch properties"
+        azFilter
+        filterOptions={BranchFilters}
+        filterWithOptionsWithDropdown={branchFiltersWithOptions}
+        onStateSelect={(state: string) => setSelectedState(state)}
+        handleFilterApply={handleFilterApply}
+        isDateTrue
+        gridView={gridView}
+        setGridView={setGridView}
+        setListView={setListView}
+      />
 
       {/* Property cards */}
       <section>
@@ -340,4 +303,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default BranchDashboard;

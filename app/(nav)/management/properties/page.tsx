@@ -10,7 +10,10 @@ import AddPropertyModal from "@/components/Management/Properties/add-property-mo
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { useAuthStore } from "@/store/authstrore";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { propertyFilterOptionsRadio, propertyFilterOptionsWithDropdowns } from "./data";
+import {
+  propertyFilterOptionsRadio,
+  propertyFilterOptionsWithDropdowns,
+} from "./data";
 
 const Properties = () => {
   const acessToken = useAuthStore((state) => state.access_token);
@@ -48,18 +51,21 @@ const Properties = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Properties"
-            newData={200}
+            newData={30}
             total={657}
+            colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Rental Properties"
-            newData={200}
-            total={657}
+            newData={2000}
+            total={6570}
+            colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Gated Estate"
             newData={200}
             total={657}
+            colorScheme={3}
           />
         </div>
         <Modal>
@@ -75,11 +81,24 @@ const Properties = () => {
       </div>
 
       {/* Page Title with search */}
-      <FilterBar azFilter gridView={gridView}
+      <FilterBar
+        azFilter
+        gridView={gridView}
         setGridView={setGridView}
-        setListView={setListView} onStateSelect={() => { }} pageTitle="Properties" aboutPageModalData={
-          { title: "Properties", description: "This page contains a list of properties on the platform." }
-        } searchInputPlaceholder="Search for Properties" handleFilterApply={() => { }} isDateTrue filterOptionsWithRadio={propertyFilterOptionsRadio} filterWithOptionsWithDropdown={propertyFilterOptionsWithDropdowns} />
+        setListView={setListView}
+        onStateSelect={() => {}}
+        pageTitle="Properties"
+        aboutPageModalData={{
+          title: "Properties",
+          description:
+            "This page contains a list of properties on the platform.",
+        }}
+        searchInputPlaceholder="Search for Properties"
+        handleFilterApply={() => {}}
+        isDateTrue
+        filterOptionsWithRadio={propertyFilterOptionsRadio}
+        filterWithOptionsWithDropdown={propertyFilterOptionsWithDropdowns}
+      />
 
       {/* Card / List View */}
       <section>

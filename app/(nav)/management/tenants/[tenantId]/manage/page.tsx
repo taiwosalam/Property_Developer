@@ -1,9 +1,5 @@
 "use client";
 
-// Images
-import Avatar from "@/public/empty/avatar-1.svg";
-import Verified from "@/public/icons/verified.svg";
-
 // Fonts
 import { secondaryFont } from "@/utils/fonts";
 
@@ -11,101 +7,109 @@ import { secondaryFont } from "@/utils/fonts";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import UserTag from "@/components/Tags/user-tag";
-
+import CustomLoader from "@/components/Loader/CustomLoader";
 import {
   LandlordTenantInfo,
   LandlordTenantInfoBox,
-  // LandlordTenantUserTag,
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
 } from "@/components/Management/landlord-tenant-info-components";
-
+import { ChevronLeft } from "@/public/icons/icons";
 import { ASSET_URL, empty } from "@/app/config";
 import useTenantData from "@/hooks/useTenantData";
 import UnitItem from "@/components/Management/Properties/unit-item";
 import { getObjectProperties } from "@/utils/get-object-properties";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import UpdateTenantProfile from "@/components/Management/Tenants/update-tenant-profile";
+import { useRouter } from "next/navigation";
 
 const ManageTenant = () => {
-  const { tenant, tenantId } = useTenantData();
-
+  const { tenant, tenantId, loading, error } = useTenantData();
+  const router = useRouter();
+  if (loading) return <CustomLoader layout="profile" />;
+  if (error) return <div>Error: {error.message}</div>;
   if (!tenant) return null;
 
   const otherData = getObjectProperties(tenant);
 
   return (
-    <div className="custom-flex-col gap-10">
+    <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
-        <LandlordTenantInfoBox style={{ padding: "24px 40px" }}>
-          <div className="flex flex-col xl:flex-row gap-5">
-            <div className="flex items-start">
-              <Picture
-                src={tenant.picture ? `${ASSET_URL}${tenant.picture}` : empty}
-                alt="profile picture"
-                size={120}
-                rounded
-              />
+        <LandlordTenantInfoBox
+          style={{ padding: "24px 40px" }}
+          className="relative flex flex-col xl:flex-row gap-5"
+        >
+          <button
+            type="button"
+            aria-label="back"
+            className="absolute top-3 left-3"
+            onClick={() => router.back()}
+          >
+            <ChevronLeft />
+          </button>
+          <Picture
+            src={tenant.picture ? `${ASSET_URL}${tenant.picture}` : empty}
+            alt="profile picture"
+            size={120}
+            rounded
+          />
+          <div className="custom-flex-col gap-8">
+            <div className="custom-flex-col gap-4">
+              <div className="custom-flex-col">
+                <div className="flex items-center gap-2">
+                  <p className="text-black text-xl font-bold capitalize">
+                    {tenant.name}
+                  </p>
+                </div>
+                <p
+                  style={{ color: "rgba(21, 21, 21, 0.70)" }}
+                  className={`${secondaryFont.className} text-sm font-normal`}
+                >
+                  {tenant.email}
+                </p>
+              </div>
+              <div className="custom-flex-col gap-2">
+                <UserTag type={tenant.user_tag} />
+                <p className="text-neutral-800 text-base font-medium">
+                  ID: {tenantId}
+                </p>
+              </div>
             </div>
-            <div className="custom-flex-col gap-8">
-              <div className="custom-flex-col gap-4">
-                <div className="custom-flex-col">
-                  <div className="flex items-center gap-2">
-                    <p className="text-black text-xl font-bold capitalize">
-                      {tenant.name}
-                    </p>
-                    <Picture src={Verified} alt="verified" size={16} />
-                  </div>
-                  <p
-                    style={{ color: "rgba(21, 21, 21, 0.70)" }}
-                    className={`${secondaryFont.className} text-sm font-normal`}
+            <div className="flex flex-wrap gap-4">
+              {tenant.user_tag === "web" ? (
+                <>
+                  <Button
+                    href={`/management/tenants/${tenantId}/manage/edit`}
+                    size="base_medium"
+                    className="py-2 px-8"
                   >
-                    {tenant.email}
-                  </p>
-                </div>
-                <div className="custom-flex-col gap-2">
-                  <UserTag type={tenant.user_tag} />
-                  <p className="text-neutral-800 text-base font-medium">
-                    ID: {tenantId}
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                {tenant.user_tag === "web" ? (
-                  <>
-                    <Button
-                      href={`/management/tenants/${tenantId}/manage/edit`}
-                      size="base_medium"
-                      className="py-2 px-8"
-                    >
-                      edit
-                    </Button>
-                    <Modal>
-                      <ModalTrigger asChild>
-                        <Button size="base_medium" className="py-2 px-8">
-                          update with ID
-                        </Button>
-                      </ModalTrigger>
-                      <ModalContent>
-                        <UpdateTenantProfile />
-                      </ModalContent>
-                    </Modal>
-                  </>
-                ) : (
-                  <>
-                    <Button size="base_medium" className="py-2 px-8">
-                      message
-                    </Button>
-                    <Button
-                      variant="light_green"
-                      size="base_medium"
-                      className="py-2 px-8"
-                    >
-                      unflag
-                    </Button>
-                  </>
-                )}
-              </div>
+                    edit
+                  </Button>
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <Button size="base_medium" className="py-2 px-8">
+                        update with ID
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <UpdateTenantProfile />
+                    </ModalContent>
+                  </Modal>
+                </>
+              ) : (
+                <>
+                  <Button size="base_medium" className="py-2 px-8">
+                    message
+                  </Button>
+                  <Button
+                    variant="light_green"
+                    size="base_medium"
+                    className="py-2 px-8"
+                  >
+                    unflag
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </LandlordTenantInfoBox>

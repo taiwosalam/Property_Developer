@@ -124,13 +124,13 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
       <>
         <CardHeader className="flex w-full items-center gap-2 space-y-0 py-3 sm:flex-row">
           <div className="flex w-full py-2 justify-between">
-            <CardTitle className="text-[#262626] text-base capitalize font-medium">
+            <CardTitle className="text-[#262626] text-base capitalize font-medium dark:text-[#f1f1fd]">
               {chartTitle || "Chart Title"}
             </CardTitle>
             <div
               className={`w-fit ${
                 visibleRange ? "flex" : "hidden"
-              } bg-[#F5F5F5] rounded-md items-center justify-center`}
+              } bg-[#F5F5F5] dark:bg-[#020617] rounded-md items-center justify-center`}
             >
               <DatePickerWithRange
                 selectedRange={selectedDateRange}
@@ -138,7 +138,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
               />
               <Select value={timeRange} onValueChange={handleSelectChange}>
                 <SelectTrigger
-                  className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto"
+                  className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto dark:text-whie dark:bg-[#020617]"
                   aria-label="Select a value"
                 >
                   <SelectValue placeholder="Last 3 months" />

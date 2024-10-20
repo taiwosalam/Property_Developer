@@ -77,7 +77,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
 };
 
 export const NavIcon: React.FC<NavIconProps> = ({ src, alt, href }) => {
-  const class_styles = "p-2 rounded-lg bg-background-2";
+const class_styles = "p-2 rounded-lg bg-background-2 dark:bg-black";
   const content = <Picture src={src} alt={alt} size={20} />;
 
   return href ? (

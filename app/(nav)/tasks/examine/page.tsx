@@ -26,8 +26,7 @@ const Examine = () => {
     };
 
     fetchExamineData();
-  }
-    , [access_token]);
+  }, [access_token]);
   return (
     <div className="space-y-9">
       <div className="page-header-container">
@@ -42,9 +41,21 @@ const Examine = () => {
           + create new
         </Button>
       </div>
-      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Examine" aboutPageModalData={
-        { title: "Examine", description: "This page contains a list of Examine on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={examineFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        onStateSelect={() => {}}
+        pageTitle="Examine"
+        aboutPageModalData={{
+          title: "Examine",
+          description: "This page contains a list of Examine on the platform.",
+        }}
+        searchInputPlaceholder="Search"
+        handleFilterApply={() => {}}
+        isDateTrue
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={examineFilterOptionsWithDropdown}
+        hasGridListToggle={false}
+      />
       <AutoResizingGrid minWidth={350} gap={32}>
         {Array(10)
           .fill(null)

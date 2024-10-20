@@ -1,9 +1,11 @@
 // Imports
 
+import React from "react";
+
 // Exports
 export interface cardProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
-  icon: string;
+  icon: React.ReactNode;
   value: number;
   subvalue: number;
   bg: string;

@@ -3,12 +3,7 @@
 import React from "react";
 import Image from "next/image";
 
-// Images
-import Transparent from "@/public/empty/transparent.png";
 // Imports
-import { getAllStates } from "@/utils/states";
-import Input from "@/components/Form/Input/input";
-import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import SettingsSection from "@/components/Settings/settings-section";
@@ -25,9 +20,10 @@ import { industryOptions } from "@/data";
 import { Modal } from "@/components/Modal/modal";
 import { ModalContent } from "@/components/Modal/modal";
 import { ModalTrigger } from "@/components/Modal/modal";
-import AddLandLordOrTenantForm from "@/components/Management/add-landlord-or-tenant-form";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import DirectorsForm from "./DirectorsForm";
+import RestrictUserForm from "./RestrictUserForm";
+import UserCard from "@/components/Management/landlord-and-tenant-card";
 
 const Others = () => {
   return (
@@ -40,7 +36,7 @@ const Others = () => {
             desc="The company specializes in managing tenants for both commercial and residential properties, as well as overseeing occupants within gated estates."
             icon="/icons/settingUserIcon.svg"
           />
-        <SettingsOthersType
+          <SettingsOthersType
             title="Facility Manager"
             desc="The company specializes in managing short-stay apartments, holiday homes, and hotels, catering to occupants for brief durations."
             icon="/icons/user-edit.svg"
@@ -54,11 +50,6 @@ const Others = () => {
 
         <div className="flex mt-4">
           <div className="w-full max-w-[871px] grid grid-cols-3 gap-5">
-            {/* <Input
-              id="current_industry"
-              label="Current Industry"
-              placeholder="Legal Practitional"
-            /> */}
             <Select
               options={industryOptions}
               id="current_industry"
@@ -76,42 +67,45 @@ const Others = () => {
             desc="Please provide the details of the additional directors you wish to include on your landing page. You can click on the current card to edit and add their information."
           />
           <AutoResizingGrid minWidth={284} gap={16}>
-            <DirectorCard
-              name="Esq Abimbola Adedeji"
-              email="abimbola@gmail.com"
-              img="/empty/SampleLandlord.jpeg"
-              position="Legal Practitional"
-              phone="+2348132086958"
+            <UserCard
+            first_name="Esq"
+            last_name="Abimbola Adedeji"
+            email="abimbola@gmail.com"
+            phone_number="+2348132086958"
+            picture_url="/empty/SampleLandlord.jpeg"
+            cardType="staff"
+            role="Legal Practitioner"
             />
-            <DirectorCard
-              name="Esv Abimbola Adedeji"
-              email="abimbola@gmail.com"
-              img="/empty/SampleLandlord.jpeg"
-              position="Estate Surveyor & Valuer"
-              phone="+2348132086958"
+            <UserCard
+            first_name="Esq"
+            last_name="Abimbola Adedeji"
+            email="abimbola@gmail.com"
+            phone_number="+2348132086958"
+            picture_url="/empty/SampleLandlord.jpeg"
+            cardType="staff"
+            role="Estate Surveyor & Valuer"
             />
+            
             <Modal>
               <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
-          <ModalTrigger>
-              <div className="flex flex-col items-center gap-1 justify-center">
-                <Image
-                  src="/icons/profile.svg"
-                  alt="add director"
-                  width={30}
-                  height={30}
-                />
-                <span> + Add new Profile </span>
-              </div>
-            </ModalTrigger>
-
+                <ModalTrigger>
+                  <div className="flex flex-col items-center gap-1 justify-center">
+                    <Image
+                      src="/icons/profile.svg"
+                      alt="add director"
+                      width={30}
+                      height={30}
+                    />
+                    <span> + Add new Profile </span>
+                  </div>
+                </ModalTrigger>
               </div>
               <ModalContent>
-              <LandlordTenantModalPreset
-                heading="Create New Director">
-                <DirectorsForm submitAction={() => {}} />
-              </LandlordTenantModalPreset>
-            </ModalContent>
-        </Modal>
+                <LandlordTenantModalPreset heading="Create New Director">
+                  <DirectorsForm submitAction={() => {}} />
+                </LandlordTenantModalPreset>
+              </ModalContent>
+            </Modal>
           </AutoResizingGrid>
         </div>
         <div className="flex justify-end mt-2">
@@ -149,44 +143,58 @@ const Others = () => {
           />
         </div>
 
-      {/* RESTRICTED USERS */}
-      <div className="custom-flex-col gap-6 mt-4">
-        <SettingsSectionTitle
-          title="Restricted Users"
-          desc="Please provide the details of the tenants, occupant, owner, landlord or landlady you wish to restrict from the group chat. Once restricted, they will not have access to chat in the group until the restriction is removed. You can click on the current card to delete or add restrictions."
-        />
-        <AutoResizingGrid minWidth={284} gap={16}>
-          <DirectorCard
-            name="Esq Abimbola Adedeji"
-            email="abimbola@gmail.com"
-            img="/empty/SampleLandlord.jpeg"
-            phone="+2348132086958"
-            icon="/icons/verified.svg"
+        {/* RESTRICTED USERS */}
+        <div className="custom-flex-col gap-6 mt-4">
+          <SettingsSectionTitle
+            title="Restricted Users"
+            desc="Please provide the details of the tenants, occupant, owner, landlord or landlady you wish to restrict from the group chat. Once restricted, they will not have access to chat in the group until the restriction is removed. You can click on the current card to delete or add restrictions."
           />
-          <DirectorCard
-            name="Esv Abimbola Adedeji"
+          <AutoResizingGrid minWidth={284} gap={16}>
+            <UserCard
+            full_name="Esq Abimbola Adedeji"
             email="abimbola@gmail.com"
-            img="/empty/SampleLandlord.jpeg"
-            phone="+2348132086958"
-            icon="/icons/verified-success.svg"
-          />
-          <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
-            <div className="flex flex-col items-center gap-1 justify-center">
-              <Image
-                src="/icons/profile.svg"
-                alt="add director"
-                width={30}
-                height={30}
-                />
-              <p> + Add new Profile </p>
-            </div>
-          </div>
-        </AutoResizingGrid>
-      </div>
-      <div className="flex justify-end mt-2">
+            phone_number="+2348132086958"
+            picture_url="/empty/SampleLandlord.jpeg"
+            cardType="base"
+            user_tag="mobile"
+      />
+            <UserCard
+            full_name="Esq Abimbola Adedeji"
+            email="abimbola@gmail.com"
+            phone_number="+2348132086958"
+            picture_url="/empty/SampleLandlord.jpeg"
+            cardType="base"
+            user_tag="mobile"
+      />
+            
+            <Modal>
+              <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
+                <ModalTrigger>
+                  <div className="flex flex-col items-center gap-1 justify-center">
+                    <Image
+                      src="/icons/profile.svg"
+                      alt="add director"
+                      width={30}
+                      height={30}
+                    />
+                    <span> + Add new Profile </span>
+                  </div>
+                </ModalTrigger>
+              </div>
+              <div className="w-[00px]">
+              <ModalContent>
+                <LandlordTenantModalPreset heading="Restrict User">
+                  <RestrictUserForm submitAction={() => {}} />
+                </LandlordTenantModalPreset>
+              </ModalContent>
+              </div>
+            </Modal>
+          </AutoResizingGrid>
+        </div>
+        <div className="flex justify-end mt-2">
           <SettingsUpdateButton />
         </div>
-    </SettingsSection>
+      </SettingsSection>
 
       {/* NOTIFICATIONS */}
       <SettingsSection title="Notifications">
@@ -233,7 +241,7 @@ const Others = () => {
       </SettingsSection>
 
       {/* RESET SETTINGS */}
-      <SettingsSection title="Notifications">
+      <SettingsSection title="Reset Settings">
         <h4 className="text-sm text-text-disabled">
           This section enables you to revert all modifications made in the
           settings back to their default state.

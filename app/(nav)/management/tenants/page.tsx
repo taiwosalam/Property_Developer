@@ -19,7 +19,7 @@ import { useAuthStore } from "@/store/authstrore";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import GlobalPageLoader from "@/components/Loader/global-page-loader";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const Tenants = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -61,7 +61,6 @@ const Tenants = () => {
   }, [accessToken]);
 
   useEffect(() => {
-    // Fetch the landlords when the component mounts
     fetchLandlords();
   }, [fetchLandlords]);
 
@@ -211,7 +210,14 @@ const Tenants = () => {
     { id: "6", accessor: "manage/chat" },
   ];
 
-  if (loading) return <GlobalPageLoader />;
+  if (loading)
+    return (
+      <CustomLoader
+        layout="page"
+        pageTitle="Tenants/Occupants (Users)"
+        statsCardCount={3}
+      />
+    );
   if (error) return <div>Error: {error.message}</div>;
 
   return (
@@ -222,16 +228,19 @@ const Tenants = () => {
             title="Total Users"
             newData={new_tenants_this_month}
             total={total_tenants}
+            colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Web Tenants"
             newData={new_web_tenants_this_month}
             total={web_tenants}
+            colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Mobile Tenants"
             newData={new_mobile_tenants_this_month}
             total={mobile_tenants}
+            colorScheme={3}
           />
         </div>
         <Modal>

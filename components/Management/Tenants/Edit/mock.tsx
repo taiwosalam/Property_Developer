@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from "react";
 
-import { TenantData } from "@/app/(nav)/management/tenants/types";
+import type { TenantData } from "@/app/(nav)/management/tenants/types";
 
 export const MockFunction = () => {
   const [data, setData] = useState<TenantData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     // Simulate a delay before setting the hardcoded data
@@ -33,6 +35,7 @@ export const MockFunction = () => {
           address: "456 Elm St",
           phone_number: "+44987654321",
           relationship: "father",
+          note: "Some note",
         },
         next_of_kin: {
           name: "Jane Doe",
@@ -57,10 +60,11 @@ export const MockFunction = () => {
       };
 
       setData(hardcodedData);
+      setLoading(false);
     }, 2000); // Simulate a 2-second delay
 
     return () => clearTimeout(timer);
   }, []);
 
-  return { data, tenantId: "1" };
+  return { data, tenantId: "1", loading, error };
 };

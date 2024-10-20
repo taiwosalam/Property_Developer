@@ -130,7 +130,7 @@ export const TenantEditProfileInfoSection = () => {
           isSearchable={false}
           placeholder="Select options"
           options={tenantTypes}
-          defaultValue={"default: data?.tenant_type"}
+          defaultValue={"default: data?.tenant_type"} //value not provided from api
           inputContainerClassName="bg-neutral-2"
         />
         <Select
@@ -142,7 +142,7 @@ export const TenantEditProfileInfoSection = () => {
           inputContainerClassName="bg-neutral-2"
           defaultValue={data?.gender || ""}
         />
-        <div className="col-span-2 flex items-end justify-end">
+        <div className="md:col-span-2 flex items-end justify-end">
           <Button size="base_medium" className="py-2 px-6">
             update
           </Button>
@@ -316,7 +316,7 @@ export const TenantEditOthersInfoSection = () => {
           className={clsx(
             "flex items-end justify-end",
             (employment && employment.toLowerCase()) !== "employed" &&
-              "col-span-2"
+              "md:col-span-2"
           )}
         >
           <Button size="base_medium" className="py-2 px-6">

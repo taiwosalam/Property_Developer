@@ -77,8 +77,6 @@ const eventToComponentMap = {
         first_name="John"
         last_name="Doe"
         role="Branch Manager"
-        id="1"
-        avatar={empty}
         phone_number="08012345678"
         picture_url={empty}
       />

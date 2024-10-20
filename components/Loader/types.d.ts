@@ -1,0 +1,31 @@
+export interface LoaderBaseProps {
+  layout: "dasboard" | "page" | "profile" | "edit-profile";
+}
+
+export interface LoadingPageProps extends LoaderBaseProps {
+  layout: "page";
+  hasStartCards?: boolean;
+  statsCardCount?: number;
+  hasPageTitle?: boolean;
+  pageTitle?: string;
+  view?: "grid" | "table";
+}
+
+export interface LoadingDasboardProps extends LoaderBaseProps {
+  layout: "dasboard";
+}
+
+export interface LoadingProfileProps extends LoaderBaseProps {
+  layout: "profile";
+}
+
+export interface LoadingEditPageProps extends LoaderBaseProps {
+  layout: "edit-page";
+  pageTitle?: string;
+}
+
+export type CustomLoaderProps =
+  | LoadingPageProps
+  | LoadingDasboardProps
+  | LoadingProfileProps
+  | LoadingEditPageProps;

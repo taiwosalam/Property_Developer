@@ -32,7 +32,9 @@ const transformToCallBackRequestCardProps = (
 };
 
 const Inquires = () => {
-  const [requestCallBackCardData, setRequestCallBackCardData] = useState<RequestCallBackCardDataType[]>([]);
+  const [requestCallBackCardData, setRequestCallBackCardData] = useState<
+    RequestCallBackCardDataType[]
+  >([]);
   const accessToken = useAuthStore((state) => state.access_token);
   useEffect(() => {
     const fetchRequestData = (): void => {
@@ -66,9 +68,22 @@ const Inquires = () => {
           newData={12}
         />
       </div>
-      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Request Callback" aboutPageModalData={
-        { title: "Request Callback", description: "This page contains a list of Request Callback on the platform." }
-      } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={inquiriesFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        onStateSelect={() => {}}
+        pageTitle="Request Callback"
+        aboutPageModalData={{
+          title: "Request Callback",
+          description:
+            "This page contains a list of Request Callback on the platform.",
+        }}
+        searchInputPlaceholder="Search"
+        handleFilterApply={() => {}}
+        isDateTrue
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={inquiriesFilterOptionsWithDropdown}
+        hasGridListToggle={false}
+      />
       <AutoResizingGrid gap={28} minWidth={400}>
         {requestCallBackCardData.map((userDetails, index) => (
           <RequestCallBackCard

@@ -2,7 +2,7 @@
 
 // Images
 import Avatar from "@/public/empty/avatar-1.svg";
-import OrangeCloseCircle from "@/public/icons/orange-close-circle.svg";
+import { DeleteIconOrange } from "@/public/icons/icons";
 
 // Imports
 import clsx from "clsx";
@@ -28,21 +28,15 @@ import {
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import { useEffect, useState } from "react";
-import { getOneLandlord } from "../../../data";
+import useLandlordData from "@/hooks/useLandlordData";
 import { useAuthStore } from "@/store/authstrore";
-import { useParams, useRouter } from "next/navigation";
-import { LandlordPageData } from "../../../types";
-import GlobalPageLoader from "@/components/Loader/global-page-loader";
 import BackButton from "@/components/BackButton/back-button";
+import TextArea from "@/components/Form/TextArea/textarea";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const EditLandlord = () => {
-  const states = getAllStates();
+  const { landlord, landlordId, error, loading } = useLandlordData();
   const accessToken = useAuthStore((state) => state.access_token);
-  const { landlordId } = useParams();
-  const [LandlordPageData, setLandlordPageData] =
-    useState<LandlordPageData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   const [address, setAddress] = useState<{
     state: string;
@@ -57,35 +51,18 @@ const EditLandlord = () => {
   const [employment, setEmployment] = useState("");
 
   const handleAddressChange = (value: string, key: keyof typeof address) => {
-    setAddress((prev) => ({ ...prev, [key]: value }));
+    setAddress((prev) => ({
+      ...prev,
+      [key]: value,
+      ...(key === "state" && { local_government: "", city: "" }),
+      ...(key === "local_government" && { city: "" }),
+    }));
   };
 
-  useEffect(() => {
-    setAddress((prev) => ({ ...prev, city: "", local_government: "" }));
-  }, [address.state]);
-
-  useEffect(() => {
-    setAddress((prev) => ({ ...prev, city: "" }));
-  }, [address.local_government]);
-
-  useEffect(() => {
-    // Fetch the landlord when the component mounts
-    const fetchLandlords = async () => {
-      const data = await getOneLandlord(
-        landlordId as string,
-        accessToken as string
-      );
-
-      console.log(data, "data");
-      setLoading(false);
-      if (!data) return router.push("/management/landlord");
-      setLandlordPageData(data);
-    };
-
-    // fetchLandlords();
-  }, [accessToken, landlordId, router]);
-
-  // if (loading) return <GlobalPageLoader />;
+  if (loading)
+    return <CustomLoader layout="edit-page" pageTitle="Edit Landlord" />;
+  if (error) return <div>Error: {error.message}</div>;
+  if (!landlord) return null;
 
   return (
     <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
@@ -124,7 +101,7 @@ const EditLandlord = () => {
               <Select
                 id="landlord-state"
                 label="state"
-                options={states}
+                options={getAllStates()}
                 placeholder="Select options"
                 inputContainerClassName="bg-neutral-2"
                 value={address.state}
@@ -172,7 +149,7 @@ const EditLandlord = () => {
                 inputContainerClassName="bg-neutral-2"
                 options={genderTypes}
               />
-              <div className="col-span-2 flex justify-end">
+              <div className="md:col-span-2 flex justify-end">
                 <Button size="base_medium" className="py-2 px-6">
                   update
                 </Button>
@@ -292,7 +269,7 @@ const EditLandlord = () => {
               <div
                 className={clsx(
                   "flex items-end justify-end",
-                  employment.toLowerCase() !== "employed" && "col-span-2"
+                  employment.toLowerCase() !== "employed" && "md:col-span-2"
                 )}
               >
                 <Button size="base_medium" className="py-2 px-6">
@@ -361,13 +338,11 @@ const EditLandlord = () => {
             <div className="flex">
               <div className="relative">
                 <Picture src={Avatar} alt="profile picture" size={90} rounded />
-                <button className="absolute top-0 right-0 translate-x-[5px] -translate-y-[5px]">
-                  <Picture
-                    src={OrangeCloseCircle}
-                    alt="close"
-                    size={32}
-                    style={{ objectFit: "contain" }}
-                  />
+                <button
+                  type="button"
+                  className="absolute top-0 right-0 translate-x-[5px] -translate-y-[5px]"
+                >
+                  <DeleteIconOrange size={32} />
                 </button>
               </div>
             </div>
@@ -392,10 +367,7 @@ const EditLandlord = () => {
             </Button>
           </LandlordTenantInfoEditSection>
           <LandlordTenantInfoEditSection title="add note">
-            <textarea
-              className="w-full h-[120px] p-4 rounded-lg border border-solid border-neutral-200"
-              placeholder="Note goes here"
-            ></textarea>
+            <TextArea id="note" label="note" />
           </LandlordTenantInfoEditSection>
         </div>
       </div>

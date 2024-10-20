@@ -97,7 +97,7 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     // Check if images are required and at least one image is present
     const imagesCondition = !imagesRequired || images.length > 0;
     setCanSubmit(allRequiredFilled && imagesCondition);
-  }, [inputClassName, requiredFields, images, imagesRequired]);
+  }, [inputClassName, requiredFields, images, imagesRequired, showProgressBar]);
 
   useEffect(() => {
     const selector = inputClassName ? `.${inputClassName}` : "input";

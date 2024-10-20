@@ -1,7 +1,4 @@
 "use client";
-
-import { useEffect, useState } from "react";
-
 // Images
 import Avatar from "@/public/empty/avatar-1.svg";
 
@@ -18,7 +15,6 @@ import {
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
 } from "@/components/Management/landlord-tenant-info-components";
-import { getOneLandlord } from "../../data";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import {
@@ -26,50 +22,33 @@ import {
   ArrowRightIcon,
   ArrowLeftIcon,
 } from "@/public/icons/icons";
-import { useAuthStore } from "@/store/authstrore";
-import { useParams, useRouter } from "next/navigation";
-import { LandlordPageData } from "../../types";
+import { useRouter } from "next/navigation";
 import { ASSET_URL, empty } from "@/app/config";
 import UserTag from "@/components/Tags/user-tag";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
-import GlobalPageLoader from "@/components/Loader/global-page-loader";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import useLandlordData from "@/hooks/useLandlordData";
 
 const ManageLandlord = () => {
-  const accessToken = useAuthStore((state) => state.access_token);
-  const { landlordId } = useParams();
-  const [LandlordPageData, setLandlordPageData] =
-    useState<LandlordPageData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const {
+    landlord: LandlordPageData,
+    landlordId,
+    loading,
+    error,
+  } = useLandlordData();
+
   const router = useRouter();
 
-  useEffect(() => {
-    // Fetch the landlord when the component mounts
-    const fetchLandlords = async () => {
-      const data = await getOneLandlord(
-        landlordId as string,
-        accessToken as string
-      );
-
-      console.log(data, "data");
-      setLoading(false);
-      if (!data) return router.push("/management/landlord");
-      setLandlordPageData(data);
-    };
-
-    fetchLandlords();
-  }, [accessToken, landlordId, router]);
-
-  if (loading) return <GlobalPageLoader />;
+  if (loading) return <CustomLoader layout="profile" />;
   if (error) return <div>Error: {error.message}</div>;
   if (!LandlordPageData) return null;
 
   return (
-    <div className="custom-flex-col gap-10">
+    <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
         <LandlordTenantInfoBox
           style={{ padding: "24px 40px" }}
-          className="relative"
+          className="relative flex flex-col xl:flex-row gap-5"
         >
           <button
             type="button"
@@ -79,70 +58,66 @@ const ManageLandlord = () => {
           >
             <ChevronLeft />
           </button>
-          <div className="flex flex-col xl:flex-row gap-5">
-            <div className="flex items-start">
-              <Picture
-                src={
-                  LandlordPageData.picture
-                    ? `${ASSET_URL}${LandlordPageData.picture}`
-                    : empty
-                }
-                alt="profile picture"
-                size={120}
-                rounded
-              />
-            </div>
-            <div className="custom-flex-col gap-8">
-              <div className="custom-flex-col gap-4">
-                <div className="custom-flex-col">
-                  <div className="flex items-center">
-                    <p className="text-black text-xl font-bold capitalize">
-                      {LandlordPageData?.name}
-                    </p>
-                    <BadgeIcon color="blue" />
-                  </div>
-                  <p
-                    style={{ color: "rgba(21, 21, 21, 0.70)" }}
-                    className={`${secondaryFont.className} text-sm font-normal`}
-                  >
-                    {LandlordPageData?.email}
+          <Picture
+            src={
+              LandlordPageData.picture
+                ? `${ASSET_URL}${LandlordPageData.picture}`
+                : empty
+            }
+            alt="profile picture"
+            size={120}
+            rounded
+          />
+          <div className="custom-flex-col gap-8">
+            <div className="custom-flex-col gap-4">
+              <div className="custom-flex-col">
+                <div className="flex items-center">
+                  <p className="text-black text-xl font-bold capitalize">
+                    {LandlordPageData?.name}
                   </p>
+                  <BadgeIcon color="blue" />
                 </div>
-                <div className="custom-flex-col gap-2">
-                  <UserTag type={LandlordPageData.user_tag} />
-                  <p className="text-neutral-800 text-base font-medium">
-                    ID: {LandlordPageData?.id}
-                  </p>
-                </div>
+                <p
+                  style={{ color: "rgba(21, 21, 21, 0.70)" }}
+                  className={`${secondaryFont.className} text-sm font-normal`}
+                >
+                  {LandlordPageData?.email}
+                </p>
               </div>
-              {LandlordPageData?.user_tag === "mobile" ? (
-                <div className="flex flex-wrap gap-4">
-                  <Button size="base_medium" className="py-2 px-8">
-                    message
-                  </Button>
-                  <Button
-                    variant="light_green"
-                    size="base_medium"
-                    className="py-2 px-8"
-                  >
-                    unflag
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex flex-wrap gap-4">
-                  <Button
-                    href={`/management/landlord/${LandlordPageData?.id}/manage/edit`}
-                    size="base_medium"
-                    className="py-2 px-8"
-                  >
-                    edit
-                  </Button>
-                  <Button size="base_medium" className="py-2 px-8">
-                    update with ID
-                  </Button>
-                </div>
-              )}
+              <div className="custom-flex-col gap-2">
+                <UserTag type={LandlordPageData.user_tag} />
+                <p className="text-neutral-800 text-base font-medium">
+                  ID: {LandlordPageData?.id || landlordId}
+                </p>
+              </div>
             </div>
+            {LandlordPageData?.user_tag === "mobile" ? (
+              <div className="flex flex-wrap gap-4">
+                <Button size="base_medium" className="py-2 px-8">
+                  message
+                </Button>
+                <Button
+                  variant="light_green"
+                  size="base_medium"
+                  className="py-2 px-8"
+                >
+                  unflag
+                </Button>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-4">
+                <Button
+                  href={`/management/landlord/${LandlordPageData?.id}/manage/edit`}
+                  size="base_medium"
+                  className="py-2 px-8"
+                >
+                  edit
+                </Button>
+                <Button size="base_medium" className="py-2 px-8">
+                  update with ID
+                </Button>
+              </div>
+            )}
           </div>
         </LandlordTenantInfoBox>
 

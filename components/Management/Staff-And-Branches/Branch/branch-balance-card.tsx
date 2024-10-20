@@ -8,21 +8,26 @@ import clsx from "clsx";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { ChevronRight, Eye, EyeOff } from "lucide-react";
+import {
+  BluePlusIcon,
+  BlueBuildingIcon,
+  BlueLockIcon,
+} from "@/public/icons/dashboard-cards/icons";
 
 const options = [
   {
     name: "Add Funds",
-    icon: "/icons/dashboard-cards/blue-plus.svg",
+    icon: <BluePlusIcon />,
     link: "/dashboard/add-funds",
   },
   {
     name: "Withdraw",
-    icon: "/icons/dashboard-cards/blue-building.svg",
+    icon: <BlueBuildingIcon />,
     link: "/dashboard/withdraw-funds",
   },
   {
     name: "Hold Wallet",
-    icon: "/icons/dashboard-cards/blue-lock.svg",
+    icon: <BlueLockIcon />,
     link: "/dashboard/lock-funds",
   },
 ];
@@ -110,13 +115,7 @@ const BranchBalanceCard = ({
                 className="space-y-2 w-full flex flex-col items-center justify-center"
               >
                 <div className="bg-white w-[30px] h-[30px] rounded-full flex items-center justify-center">
-                  <Image
-                    src={option.icon}
-                    alt={`${option.name} icon`}
-                    width={16}
-                    height={16}
-                    className="w-[14px] h-[14px]"
-                  />
+                  {option.icon}
                 </div>
                 <p className="text-center capitalize text-white text-xs font-normal">
                   {option.name}

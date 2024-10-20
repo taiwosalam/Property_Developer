@@ -18,7 +18,6 @@ export const website_color_schemes = [
   "#0FA7E2",
   "#53B07D",
   "#E15B0F",
-  "#C1373F",
   "#050901",
   "#8C62FF",
   "#005623",
