@@ -1,4 +1,4 @@
-import React from "react";
+import React, { act } from "react";
 import Link from "next/link";
 
 // Types
@@ -29,7 +29,7 @@ const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> =
       className={clsx(
         "py-[14px] w-[138px] flex items-center justify-center gap-1 border-b-[2px] border-solid",
         {
-          "bg-white border-brand-9": active,
+          "bg-white border-brand-9":  active,
           "border-transparent hover:bg-neutral-3": !active,
         },
         className
@@ -52,7 +52,7 @@ const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> =
       ) : type === "others" ? (
         <SettingsIcon color={color} />
       ) : null}
-      <p className="text-base font-normal capitalize" style={{ color }}>
+      <p className="text-base font-normal capitalize dark:hover:text-white dark:text-white" style={{ color }}>
         {type}
       </p>
     </Link>

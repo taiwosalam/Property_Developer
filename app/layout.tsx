@@ -52,21 +52,21 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Theme
-         attribute="class"
-         defaultTheme="light"
+          attribute="class"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
           <ThemeProvider />
           <div className="w-full relative z-[1]">{children}</div>
           <div id="portal" className="z-[2]">
-          <Toaster
-            richColors
-            className={`${primaryFont.className} antialiased z-[1000]`}
-            position="top-right"
-            duration={5000}
-          />
-        </div>
+            <Toaster
+              richColors
+              className={`${primaryFont.className} antialiased z-[1000]`}
+              position="top-right"
+              duration={5000}
+            />
+          </div>
         </Theme>
       </body>
     </html>

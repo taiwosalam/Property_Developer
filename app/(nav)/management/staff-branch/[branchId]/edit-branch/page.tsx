@@ -138,7 +138,7 @@ const EditBranch = () => {
                 className={clsx(
                   "p-1 rounded-md",
                   state === "list"
-                    ? "bg-black text-white"
+                    ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
                     : "bg-transparent text-[unset]"
                 )}
                 onClick={setListView}
@@ -151,7 +151,7 @@ const EditBranch = () => {
                 className={clsx(
                   "p-1 rounded-md",
                   state === "grid"
-                    ? "bg-black text-white"
+                    ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
                     : "bg-transparent text-[unset]"
                 )}
                 onClick={setGridView}
@@ -159,7 +159,7 @@ const EditBranch = () => {
                 <GridIcon />
               </button>
             </div>
-            <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
+            <div className="bg-white dark:bg-[#020617] rounded-lg p-2 flex items-center space-x-2">
               <button>
                 <div className="flex items-center gap-2 cursor-pointer">
                   <Picture src={"/icons/sliders.svg"} alt="filters" size={20} />

@@ -31,16 +31,18 @@ const TaskModal = ({ complaintData, statusChanger }: { complaintData: ComplaintD
   } = complaintData;
 
   return (
-    <div className="bg-white rounded-lg shadow-lg w-full xl:max-w-5xl px-9 max-w-[90%] max-h-[500px] overflow-y-scroll no-scrollbar">
+    <div className="bg-white dark:bg-darkText-primary dark:shadow-2xl rounded-lg shadow-lg w-full xl:max-w-5xl px-9 max-w-[90%] max-h-[500px] overflow-y-scroll no-scrollbar">
       <div className="flex flex-col md:flex-row md:gap-6">
         {/* Left side - Complaint details */}
         <div className="md:w-1/2 my-10">
           <ModalTrigger close className="cursor-pointer">
+            <span className="text-brand-9">  
             <ChevronLeft />
+            </span>
           </ModalTrigger>
           <div className="my-4 w-full space-y-2 text-sm text-text-secondary">
             <div className="flex justify-between items-center">
-              <p className="text-text-tertiary w-[150px]">
+              <p className="text-text-tertiary dark:text-darkText-1 w-[150px]">
                 Complaints sent by:
               </p>
               <div className="flex items-center space-x-1">
@@ -49,30 +51,30 @@ const TaskModal = ({ complaintData, statusChanger }: { complaintData: ComplaintD
               </div>
             </div>
             <div className="flex justify-between items-center">
-              <p className="text-text-tertiary text-sm w-[140px]">
+              <p className="text-text-tertiary dark:text-darkText-1 text-sm w-[140px]">
                 Complaint Title:
               </p>
-              <span>{complaintTitle}</span>
+              <span className="dark:text-darkText-2">{complaintTitle}</span>
             </div>
             <div className="flex justify-between items-center">
-              <p className="text-text-tertiary w-[140px]">Property Name:</p>
-              <span>{propertyName}</span>
+              <p className="text-text-tertiary dark:text-darkText-1 w-[140px]">Property Name:</p>
+              <span className="dark:text-darkText-2">{propertyName}</span>
             </div>
             <div className="flex justify-between items-center">
-              <p className="text-text-tertiary w-[140px]">Property Address:</p>
-              <span>{propertyName}</span>
+              <p className="text-text-tertiary dark:text-darkText-1 w-[140px]">Property Address:</p>
+              <span className="dark:text-darkText-2">{propertyName}</span>
             </div>
             <div className="flex justify-between items-center">
-              <p className="text-text-tertiary w-[140px]">Account Officer:</p>
-              <span>{accountOfficer}</span>
+              <p className="text-text-tertiary  dark:text-darkText-1 w-[140px]">Account Officer:</p>
+              <span className="dark:text-darkText-2">{accountOfficer}</span>
             </div>
             <div className="flex justify-between items-center">
-              <p className="text-text-tertiary w-[140px]">Branch:</p>
-              <span>{branch}</span>
+              <p className="text-text-tertiary  dark:text-darkText-1 w-[140px]">Branch:</p>
+              <span className="dark:text-darkText-2">{branch}</span>
             </div>
             <div>
-              <p className="text-text-tertiary w-[140px]">Brief:</p>
-              <span> {brief}</span>
+              <p className="text-text-tertiary  dark:text-darkText-1 w-[140px]">Brief:</p>
+              <span className="dark:text-darkText-2"> {brief}</span>
             </div>
           </div>
         </div>
@@ -84,7 +86,7 @@ const TaskModal = ({ complaintData, statusChanger }: { complaintData: ComplaintD
               ? "Kindly approve or reject this complaint"
               : "Change the status of this complaint"}
           </p>
-          <p className="font-medium text-text-secondary my-3">Attach note:</p>
+          <p className="font-medium text-text-secondary dark:text-darkText-1 my-3">Attach note:</p>
           <div className="mt-4">
             <TextArea id="note" placeholder="Type Here"></TextArea>
           </div>

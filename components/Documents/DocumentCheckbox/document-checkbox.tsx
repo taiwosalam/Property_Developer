@@ -41,14 +41,14 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
         </div>
         <div className="custom-flex-col gap-[2px]">
           {title && (
-            <p className="text-text-quaternary text-base font-medium capitalize">
+            <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium capitalize">
               {title}
             </p>
           )}
           <p
             className={clsx("text-sm font-normal", {
-              "text-text-secondary": darkText,
-              "text-text-disabled": !darkText,
+              "text-text-secondary dark:text-darkText-1": darkText,
+              "text-text-disabled dark:text-darkText-disabled": !darkText,
             })}
           >
             {children}

@@ -15,10 +15,10 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   return (
     <div
       style={style}
-      className="w-[900px] max-w-[80%] max-h-[90vh] rounded-[20px] bg-white overflow-y-auto custom-round-scrollbar"
+      className="w-[900px] max-w-[80%] max-h-[90vh] rounded-[20px] bg-white dark:bg-[#020617] overflow-y-auto custom-round-scrollbar"
     >
       {/* Header */}
-      <div className="sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[30px] bg-white">
+      <div className="sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[30px] bg-white dark:bg-[#020617]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {back && (
@@ -26,7 +26,7 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
                 <ChevronLeft />
               </button>
             )}
-            <p className="text-primary-navy text-base md:text-lg lg:text-xl font-bold capitalize">
+            <p className="text-primary-navy dark:text-darkText-1 text-base md:text-lg lg:text-xl font-bold capitalize">
               {star && <span className="text-status-error-primary">*</span>}
               {heading}
             </p>

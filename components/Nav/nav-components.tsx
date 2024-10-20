@@ -106,7 +106,7 @@ export const NavSearchTab: React.FC<NavSearchTabProps> = ({
     >
       <p
         className={clsx({
-          "text-neutral-4": !active,
+          "text-neutral-4 dark:text-black": !active,
           "text-white": active,
         })}
       >

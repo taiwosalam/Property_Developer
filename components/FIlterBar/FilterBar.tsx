@@ -89,7 +89,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
               className={clsx(
                 "p-1 rounded-md",
                 !gridView
-                  ? "bg-black text-white"
+                  ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
                   : "bg-transparent text-[unset]"
               )}
               onClick={setListView}
@@ -101,7 +101,9 @@ const FilterBar: React.FC<FilterBarProps> = ({
               aria-label="grid-view"
               className={clsx(
                 "p-1 rounded-md",
-                gridView ? "bg-black text-white" : "bg-transparent text-[unset]"
+                gridView
+                  ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
+                  : "bg-transparent text-[unset]"
               )}
               onClick={setGridView}
             >
