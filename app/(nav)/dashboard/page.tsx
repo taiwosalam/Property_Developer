@@ -19,13 +19,10 @@ import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
 import DashboarddCalendar from "@/components/dashboard/calendar";
 import { SectionContainer } from "@/components/Section/section-components";
-import useWindowWidth from "@/hooks/useWindowWidth";
 import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 const Dashboard = () => {
-  const { isMobile } = useWindowWidth();
-
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
@@ -43,16 +40,15 @@ const Dashboard = () => {
             ))}
           </div>
 
-          {!isMobile && (
-            <>
-              <div className="w-full h-fit">
-                <DashboardChart chartTitle="performance" visibleRange />
-              </div>
-              <div className="w-full h-fit">
-                <DashboardChart chartTitle="listings" visibleRange />
-              </div>
-            </>
-          )}
+          {/* Chart */}
+          <div className="hidden md:block">
+            <div className="w-full h-fit">
+              <DashboardChart chartTitle="performance" visibleRange />
+            </div>
+            <div className="w-full h-fit">
+              <DashboardChart chartTitle="listings" visibleRange />
+            </div>
+          </div>
         </div>
 
         <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">

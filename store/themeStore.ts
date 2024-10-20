@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { Color } from "@/types/global"; // Ensure this is correctly set in your project
 import { createSelectors } from "./storeSelectors";
 import { hexToRgb } from "@/utils/rgbaToHex";
 
@@ -33,10 +32,10 @@ export const useThemeStore = create<ThemeState>((set) => ({
     // Calculate secondary color with alpha 0.7
     const alpha = 0.7;
     const rgbaColor = hexToRgb(color); // Get rgba format
-    const rgbaParts = rgbaColor ? rgbaColor.match(/\d+(\.\d+)?/g) : null;
+    const rgbParts = rgbaColor ? rgbaColor.match(/\d+(\.\d+)?/g) : null;
 
-    if (rgbaParts) {
-      const secondaryColor = `rgba(${rgbaParts[0]}, ${rgbaParts[1]}, ${rgbaParts[2]}, ${alpha})`;
+    if (rgbParts) {
+      const secondaryColor = `rgba(${rgbParts[0]}, ${rgbParts[1]}, ${rgbParts[2]}, ${alpha})`;
 
       localStorage.setItem("primary-color", color);
       document.documentElement.style.setProperty("--primary-color", color);

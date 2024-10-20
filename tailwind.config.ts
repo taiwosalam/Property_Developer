@@ -18,17 +18,17 @@ const config = {
         },
 
         brand: {
-          1: "#EFF6FF",
-          2: "#DBEAFE",
-          3: "#BFDBFE",
-          5: "#60A5FA",
-          7: "#2563EB",
-          9: "#0033C4",
-          10: "#1E3A8A",
+          1: "var(--brand-1)",
+          2: "var(--brand-2)",
+          3: "var(--brand-3)",
+          5: "var(--brand-5)",
+          7: "var(--brand-7)",
+          9: "var(--brand-9)",
+          10: "var(--brand-10)",
 
-          primary: "#315EE7",
-          secondary: "#6083ED",
-          tertiary: "#93C5FD",
+          primary: "var(--brand-primary)",
+          secondary: "var(--brand-secondary)",
+          tertiary: "var(--brand-tertiary)",
 
           disabled: "#F7F9FE",
         },

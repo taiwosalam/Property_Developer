@@ -6,11 +6,8 @@ import { usePathname } from "next/navigation";
 import type { NavDropdownProps } from "./types";
 
 // Imports
-import clsx from "clsx";
-import SVG from "../SVG/svg";
-import { Color } from "@/types/global";
 import { NavButton } from "./nav-components";
-import { useThemeStoreSelectors } from "@/store/themeStore";
+import { AnimatePresence, motion } from "framer-motion";
 
 const NavDropdown: React.FC<NavDropdownProps> = ({
   type,
@@ -20,35 +17,35 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
   onContentClick,
   isOpen,
   onToggle,
+  isCollapsed,
 }) => {
   const pathname = usePathname();
 
-  const primaryColor = useThemeStoreSelectors.use.primaryColor();
-
   return (
-    <div className="custom-flex-col">
-      <div
+    <div
+      className="custom-flex-col"
+      title={isCollapsed ? String(children) : undefined}
+    >
+      <NavButton
+        type={type}
+        highlight={isOpen || highlight}
         onClick={onToggle}
-        className="relative flex items-center nav-button"
+        isDropdown
+        isOpen={isOpen}
+        isCollapsed={isCollapsed}
       >
-        <NavButton type={type} highlight={isOpen || highlight}>
-          {children}
-        </NavButton>
-        <div
-          className={clsx("absolute right-5", {
-            "rotate-0": isOpen,
-            "rotate-180": !isOpen,
-          })}
-        >
-          <SVG
-            type="arrow_down"
-            color={isOpen || highlight ? "#fff" : (primaryColor as Color)}
-          />
-        </div>
-      </div>
-      {isOpen && (
-        <div className="h-full">
-          <div className="custom-flex-col">
+        {children}
+      </NavButton>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="custom-flex-col"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "unset" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            key="drop-down-content"
+          >
             {content.map(({ href, label }, index) => (
               <NavButton
                 onClick={onContentClick}
@@ -59,13 +56,14 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
                 key={index}
                 minimized
                 type="horizontal_line"
+                isCollapsed={isCollapsed}
               >
                 {label}
               </NavButton>
             ))}
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

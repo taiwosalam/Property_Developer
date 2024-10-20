@@ -33,6 +33,7 @@ import { useAuthStore } from "@/store/authstrore";
 import BackButton from "@/components/BackButton/back-button";
 import TextArea from "@/components/Form/TextArea/textarea";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const EditLandlord = () => {
   const { landlord, landlordId, error, loading } = useLandlordData();
@@ -65,7 +66,7 @@ const EditLandlord = () => {
   if (!landlord) return null;
 
   return (
-    <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
+    <div className="custom-flex-col gap-6 lg:gap-10 pb-[150px] md:pb-[100px]">
       <BackButton>Edit Landlord</BackButton>
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="custom-flex-col gap-5 flex-1">
@@ -371,7 +372,7 @@ const EditLandlord = () => {
           </LandlordTenantInfoEditSection>
         </div>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex justify-between">
+      <FixedFooter className="flex justify-between items-center flex-wrap">
         <Modal>
           <ModalTrigger asChild>
             <Button
@@ -399,7 +400,7 @@ const EditLandlord = () => {
             save
           </Button>
         </div>
-      </div>
+      </FixedFooter>
     </div>
   );
 };

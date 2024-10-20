@@ -1,37 +1,36 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 // Types
-import type { SidenavProps } from "./types";
+import type { SideNavProps } from "./types";
 
 // Imports
 import { nav_items } from "./data";
-import { empty } from "@/app/config";
 import NavDropdown from "./nav-dropdown";
 import { NavButton } from "./nav-components";
+import { empty } from "@/app/config";
 
-const Sidenav: React.FC<SidenavProps> = ({ showLogo, closeSidenav }) => {
+const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
   const pathname = usePathname();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const handleDropdownToggle = (label: string) => {
-    setActiveDropdown(prevActive => prevActive === label ? null : label);
+    setActiveDropdown((prevActive) => (prevActive === label ? null : label));
   };
 
   return (
-    <div className="custom-flex-col w-[250px] m pb-3in-w-[250px]">
-      {showLogo && (
-        <div className="flex justify-center p-3 pt-0">
-          <Image
-            src={empty}
-            alt="logo"
-            className="w-full h-[55px] object-cover"
-          />
-        </div>
-      )}
+    <div className="custom-flex-col pb-3">
+      <div className="flex md:hidden justify-center p-3 pt-0">
+        <Image
+          src={empty}
+          alt="logo"
+          className="w-full h-[55px] object-cover"
+        />
+      </div>
+
       {nav_items.map((item, idx) =>
         item.content ? (
           <NavDropdown
@@ -41,9 +40,10 @@ const Sidenav: React.FC<SidenavProps> = ({ showLogo, closeSidenav }) => {
             highlight={item.content.some((i) =>
               pathname.includes(`${item.label}${i.href}`)
             )}
-            onContentClick={closeSidenav}
+            onContentClick={closeSideNav}
             isOpen={activeDropdown === item.label}
             onToggle={() => handleDropdownToggle(item.label)}
+            isCollapsed={isCollapsed}
           >
             {item.label}
           </NavDropdown>
@@ -53,7 +53,8 @@ const Sidenav: React.FC<SidenavProps> = ({ showLogo, closeSidenav }) => {
             key={idx}
             href={item.href}
             type={item.type}
-            onClick={closeSidenav}
+            onClick={closeSideNav}
+            isCollapsed={isCollapsed}
           >
             {item.label}
           </NavButton>
@@ -63,4 +64,4 @@ const Sidenav: React.FC<SidenavProps> = ({ showLogo, closeSidenav }) => {
   );
 };
 
-export default Sidenav;
+export default SideNav;

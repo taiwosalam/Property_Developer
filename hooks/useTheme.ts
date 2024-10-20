@@ -7,6 +7,8 @@ const useThemeColors = () => {
   const setPrimaryColor = useThemeStoreSelectors.getState().setPrimaryColor;
   const setSecondaryColor = useThemeStoreSelectors.getState().setSecondaryColor;
 
+  const computedStyle = getComputedStyle(document.documentElement);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       // Retrieve colors from localStorage
@@ -17,16 +19,14 @@ const useThemeColors = () => {
       if (storedPrimaryColor) {
         setPrimaryColor(storedPrimaryColor);
       } else {
-        const computedStyle = getComputedStyle(document.documentElement);
         setPrimaryColor(
           computedStyle.getPropertyValue("--primary-color").trim()
         );
       }
-
+      
       if (storedSecondaryColor) {
         setSecondaryColor(storedSecondaryColor);
       } else {
-        const computedStyle = getComputedStyle(document.documentElement);
         setSecondaryColor(
           computedStyle.getPropertyValue("--secondary-color").trim()
         );
