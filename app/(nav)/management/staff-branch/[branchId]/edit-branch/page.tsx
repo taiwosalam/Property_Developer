@@ -163,7 +163,7 @@ const EditBranch = () => {
               <button>
                 <div className="flex items-center gap-2 cursor-pointer">
                   <Picture src={"/icons/sliders.svg"} alt="filters" size={20} />
-                  <p className="text-[#344054] text-base font-medium">
+                  <p className="text-[#344054] dark:text-darkText-2 text-base font-medium">
                     Filters
                   </p>
                 </div>
