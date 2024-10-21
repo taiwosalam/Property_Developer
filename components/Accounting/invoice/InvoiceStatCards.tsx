@@ -28,17 +28,25 @@ const InvoiceStatCards: React.FC<InvoiceStatCardsProps> = ({
         </div>
         <div
           className={`w-[60px] h-[60px] rounded-[23px] flex items-center justify-center ${
-            title === "Total Receipts Created" || title === "Total Credit"
+            title === "Total Receipts Created" ||
+            title === "Total Credit" ||
+            title === "Total Paid Vat"
               ? "bg-[#E6FAEE]"
-              : title === "Total Paid Receipts" || title === "Total Amount"
-              ? "bg-brand-2"
+              : title === "Total Paid Receipts" ||
+                title === "Total Vat Created" ||
+                title === "Total Amount"
+              ? "bg-[#93C5FD]"
               : "bg-status-error-1"
           } `}
         >
-          {(title === "Total Receipts Created" || title === "Total Credit") && (
+          {(title === "Total Receipts Created" ||
+            title === "Total Credit" ||
+            title === "Total Paid Vat") && (
             <Picture src={"/icons/receive.svg"} alt="invoice" size={30} />
           )}
-          {(title === "Total Paid Receipts" || title === "Total Amount") && (
+          {(title === "Total Paid Receipts" ||
+            title === "Total Vat Created" ||
+            title === "Total Amount") && (
             <Picture src={"/icons/blue-wallet.svg"} alt="invoice" size={30} />
           )}
           {(title === "Total Pending Receipts" || title === "Total Debit") && (
@@ -50,7 +58,8 @@ const InvoiceStatCards: React.FC<InvoiceStatCardsProps> = ({
         <div className="flex items-center gap-2">
           <Picture src={"/icons/trending-up.svg"} size={24} />
           <p className="text-text-label font-normal text-[16px]">
-            <span className="text-status-success-2">4.3%</span> Up from last week
+            <span className="text-status-success-2">4.3%</span> Up from last
+            week
           </p>
         </div>
       )}
@@ -58,7 +67,8 @@ const InvoiceStatCards: React.FC<InvoiceStatCardsProps> = ({
         <div className="flex items-center gap-2">
           <Picture src={"/icons/trending-down.svg"} size={24} />
           <p className="text-text-label font-normal text-[16px]">
-            <span className="text-status-success-2">4.3%</span> Down from last week
+            <span className="text-status-success-2">4.3%</span> Down from last
+            week
           </p>
         </div>
       )}
