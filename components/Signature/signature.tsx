@@ -12,7 +12,7 @@ const Signature = () => {
         <Image src={SignatureImage} alt="signature" height={60} />
       </div>
       <p>
-        ESQ Taiwo Salam
+        ESQ John Doe
         <br />
         Legal Practitioner
       </p>

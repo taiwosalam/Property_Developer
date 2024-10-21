@@ -8,9 +8,9 @@ export const RenewalRentDetails = (
 ) => {
   return (
     <div>
-      <div className="flex space-x-8 items-center">
+      <div className="flex space-x-8 flex-wrap xl:flex-nowrap items-center">
         {/* Left Column */}
-        <div className="w-3/5 space-y-6 py-10">
+        <div className="w-full xl:w-3/5 space-y-6 py-10">
           <div>
             <h6 className="text-[#092C4C] text-xl font-bold mb-2">
               Renewal Rent Details
@@ -109,7 +109,7 @@ export const RenewalRentDetails = (
         </div>
 
         {/* Right Column */}
-        <div className="w-2/5">
+        <div className="w-full xl:w-2/5 mb-10 xl:mb-0">
           <MatchedProfile
             occupant={{
               name: "Abimbola Adedeji",

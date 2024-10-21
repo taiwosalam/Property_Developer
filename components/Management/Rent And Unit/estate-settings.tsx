@@ -24,7 +24,7 @@ const EstateSettings = ({
       <div className="w-full flex items-center justify-between">
         <div
           className={`grid grid-cols-1 ${
-            gridThree ? "md:grid-cols-3" : "md:grid-cols-2"
+            gridThree ? "xl:grid-cols-3" : "xl:grid-cols-2"
           } gap-y-4 w-5/6`}
         >
           {estateSettingsDta.map((item, index) => (
@@ -35,8 +35,17 @@ const EstateSettings = ({
               style={{ width: "120px" }}
             />
           ))}
+          <div className="xl:hidden">
+            <Modal>
+              <ModalTrigger asChild>
+                <Button type="submit" className="py-2 px-8" onClick={() => {}}>
+                  Edit
+                </Button>
+              </ModalTrigger>
+            </Modal>
+          </div>
         </div>
-        <div>
+        <div className="hidden xl:block">
           <Modal>
             <ModalTrigger asChild>
               <Button type="submit" className="py-2 px-8" onClick={() => {}}>
