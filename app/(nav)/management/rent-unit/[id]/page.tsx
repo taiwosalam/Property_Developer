@@ -125,8 +125,8 @@ const UnitPreviewPage = () => {
             </span>
           </div>
         </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 h-[500px] rounded-2xl overflow-hidden my-auto">
+        <div className="grid xl:grid-cols-3 gap-6">
+          <div className="xl:col-span-2 h-[500px] rounded-2xl overflow-hidden my-auto">
             <PropertyImageSlider images={unitDetails.images} />
           </div>
           <div className="bg-white rounded-b-2xl p-6">

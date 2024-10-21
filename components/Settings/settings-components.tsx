@@ -31,6 +31,7 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import SettingsPaymentModal from "./Modals/settings-payment-modal";
 import { HexColorPicker } from "react-colorful";
 import DocumentCheckbox from "../Documents/DocumentCheckbox/document-checkbox";
+import { SettingUserIcon } from "@/public/icons/icons";
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
     <p
@@ -48,7 +49,7 @@ export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
 }) => (
   <div className="custom-flex-col gap-[2px]">
     {title && (
-      <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium capitalize">
+      <p className="text-text-quaternary dark:text-white text-base font-medium capitalize">
         {title}
       </p>
     )}
@@ -86,8 +87,8 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
               {...(remove
                 ? { ...remove_props }
                 : addMore
-                  ? { ...add_more_props }
-                  : null)}
+                ? { ...add_more_props }
+                : null)}
             >
               {remove ? "remove" : addMore ? "add more" : ""}
             </Button>
@@ -141,21 +142,25 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
 }) => (
   <div className="flex justify-between">
     <div className="first flex gap-1 items-start">
-      {/* <span className="dark:text-brand-9"> */}
-      <Image src={icon} width={24} height={24} alt="user" />
-      {/* </span> */}
+      <span className="dark:text-white flex-shrink-0 text-black">
+        {icon}
+      </span>
       <div className="flex flex-col">
-        <h4 className="text-text-quaternary dark:text-white text-base"> {title} </h4>
-        <p className="text-text-disabled text-sm font-normal max-w-[900px]"> 
+        <h4 className="text-text-quaternary dark:text-white text-base">
+          {title}
+        </h4>
+        <p className="text-text-disabled text-sm font-normal max-w-[900px]">
           {desc}
         </p>
       </div>
     </div>
 
-    <div className="second flex justify-end">
-      <DocumentCheckbox darkText checked={true}>
-        {''}
-      </DocumentCheckbox>
+    <div className="second flex justify-end items-end h-full">
+      <div className="ml-auto">
+        <DocumentCheckbox darkText checked={true}>
+          {""}
+        </DocumentCheckbox>
+      </div>
     </div>
   </div>
 );
@@ -175,10 +180,15 @@ export const SettingsColorScheme: React.FC<SettingsColorSchemeProps> = ({
 export const SettingsOthersCheckBox: React.FC<SettingsOthersCheckBoxProps> = ({
   title,
   desc,
+  checked = false,
+  value,
+  onChange,
 }) => (
   <div className="flex justify-between">
     <div className="flex flex-col">
-      <h4 className="text-text-quaternary dark:text-white text-base"> {title} </h4>
+      <h4 className="text-text-quaternary dark:text-white text-base">
+        {title}
+      </h4>
       <p className="text-text-disabled text-sm font-normal max-w-[900px]">
         {desc}
       </p>
@@ -186,8 +196,17 @@ export const SettingsOthersCheckBox: React.FC<SettingsOthersCheckBoxProps> = ({
 
     <div className="second flex justify-end items-center">
       <label className="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" className="sr-only peer" />
-        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-status-success-primary" />
+        <input
+          type="checkbox"
+          className="sr-only peer"
+          checked={checked}
+          onChange={(e) => onChange(value, e.target.checked)} // Call onChange with value and checked state
+        />
+        <div
+          className={`w-11 h-6 ${
+            checked ? "bg-status-success-primary" : "bg-gray-200"
+          } peer-focus:outline-none peer-focus:ring-4 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all`}
+        />
       </label>
     </div>
   </div>
@@ -201,10 +220,14 @@ export const SettingsTenantOccupantTier: React.FC<
     style={{ boxShadow: "5px 5px 20px 0px rgba(0, 0, 0, 0.02)" }}
   >
     <div className="flex gap-2">
-      <p className="text-text-primary dark:text-darkText-1 text-sm capitalize">{tier}</p>
+      <p className="text-text-primary dark:text-darkText-1 text-sm capitalize">
+        {tier}
+      </p>
       <BadgeIcon color={color} />
     </div>
-    <p className="text-text-disabled dark:text-darkText-disabled text-xs">{desc}</p>
+    <p className="text-text-disabled dark:text-darkText-disabled text-xs">
+      {desc}
+    </p>
   </div>
 );
 
@@ -217,7 +240,7 @@ export const DirectorCard: React.FC<SettingsDirectorTypes> = ({
   phone,
   icon,
 }) => (
-    <div className="card p-2 flex justify-between max-w-[397px] border rounded-md bg-[#F9F9F9] border-brand-tertiary">
+  <div className="card p-2 flex justify-between max-w-[397px] border rounded-md bg-[#F9F9F9] border-brand-tertiary">
     <div className="flex items-center gap-4">
       <div className="imageWrapper max-h-[120px] max-w-[120px] rounded-md">
         <Image
@@ -267,12 +290,16 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
   return (
     <div
       className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer relative`}
-      onClick={() => onSelect(value)} 
+      onClick={() => onSelect(value)}
     >
       {isSelected === false && ( // Conditionally render the background
-        <div className="absolute inset-0 bg-white bg-opacity-60 z-10" /> 
+        <div className="absolute inset-0 bg-white bg-opacity-60 z-10" />
       )}
-      <div className={`imgWrapper w-full h-full ${isSelected ? "border-2 border-blue-500 rounded-md w-full" : ""}`}>
+      <div
+        className={`imgWrapper w-full h-full ${
+          isSelected ? "border-2 border-blue-500 rounded-md w-full" : ""
+        }`}
+      >
         <Image
           src={img}
           alt="Theme"
@@ -281,6 +308,11 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
           className="w-full h-full object-contain"
         />
       </div>
+      {(!isSelected && (value === 'theme2' || value === 'theme3')) && (
+        <Link href="#" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand-9 text-white py-1 px-3 rounded flex items-center justify-center z-20">
+          Preview Website
+        </Link>
+      )}
     </div>
   );
 };
@@ -325,20 +357,15 @@ export const CustomColorPicker: React.FC<{
   );
 };
 
-
 // WEBBSITE COLOR SCHEME
 interface ColorSchemeSelectorProps {
   selectedColor: string | null;
   onColorSelect: (color: string) => void;
 }
 
-
-
-
-
 export const WebsiteColorSchemes: React.FC<{
   websiteColorSchemes: string[];
-  selectedColor: string | null; 
+  selectedColor: string | null;
   onColorSelect: (color: string) => void;
 }> = ({ websiteColorSchemes, selectedColor, onColorSelect }) => {
   return (

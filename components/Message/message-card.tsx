@@ -27,7 +27,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
     <Link
       href={`/messages/${id}`}
       className={clsx("custom-flex-col gap-4", {
-        "bg-neutral-2": highlight,
+        "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
       })}
     >
       <div></div>
@@ -36,14 +36,14 @@ const MessageCard: React.FC<MessageCardProps> = ({
           <Picture src={pfp} alt="profile picture" size={60} rounded status />
           <div className="custom-flex-col gap-1">
             <div className="flex items-center gap-[10px]">
-              <p className="text-text-primary text-base font-medium capitalize">
+              <p className="text-text-primary dark:text-white text-base font-medium capitalize">
                 {fullname}
               </p>
               {verified && (
                 <Picture src={VerifiedIcon} alt="verified" size={16} />
               )}
             </div>
-            <p className="text-text-quaternary text-sm font-normal custom-truncated">
+            <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal custom-truncated">
               {desc}
             </p>
           </div>
@@ -52,7 +52,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
           <p className="text-text-disabled text-xs whitespace-nowrap">{time}</p>
           {!!messages && (
             <div className="w-4 h-4 pt-[1px] rounded-full flex items-center justify-center bg-highlight">
-              <p className="text-white text-[10px] leading-[10px]">
+              <p className="text-white dark:text-black text-[10px] leading-[10px]">
                 {messages}
               </p>
             </div>

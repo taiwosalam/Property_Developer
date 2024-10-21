@@ -115,7 +115,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 </>
               )}
             </button>
-            <p className="capitalize text-text-primary text-sm font-medium truncate">
+            <p className="capitalize text-text-primary dark:text-darkText-2 text-sm font-medium truncate">
               {pathname.split("/").slice(1).join(" > ")}
             </p>
           </div>
