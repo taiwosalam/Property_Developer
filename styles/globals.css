@@ -382,9 +382,6 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
     transform: rotate(360deg);
   }
 }
-<<<<<<< HEAD
-=======
-
 
 .dark-card {
   background: #000000;
@@ -392,12 +389,10 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
   color: #fff;
 }
 
-
-.daek-text-1{
-  color: #C1C2C3;
+.daek-text-1 {
+  color: #c1c2c3;
 }
 
-.dark-text-2{
-  color: #9CA3AF;
+.dark-text-2 {
+  color: #9ca3af;
 }
->>>>>>> 10911bda1557d22443678c2198da272e38140ffb
