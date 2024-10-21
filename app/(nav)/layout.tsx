@@ -49,11 +49,11 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <aside
           ref={sideNavRef}
           className={clsx(
-            "h-[calc(100vh-100px)] fixed top-[100px] z-[3] bg-white no-scrollbar overflow-auto transition-transform duration-300",
+            "h-[calc(100vh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white no-scrollbar overflow-auto transition-transform duration-300",
             {
               "-translate-x-full md:translate-x-0 md:w-[110px] lg:w-[110px]":
                 !isSideNavOpen,
-              "translate-x-0 w-[250px] md:w-[235px] lg:w-[250px]":
+              "translate-x-0 md:w-[235px] lg:w-[250px]":
                 isSideNavOpen,
             }
           )}
