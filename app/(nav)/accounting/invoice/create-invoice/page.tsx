@@ -15,7 +15,7 @@ const CreateInvoicePage = () => {
     <section className="space-y-7 pb-20">
       <h1 className="font-medium text-2xl">Create New Invoice</h1>
       <div
-        className="bg-white rounded-[8px] p-6 flex items-center justify-between flex-wrap"
+        className="bg-white rounded-[8px] p-6 flex gap-4 items-center justify-between flex-wrap"
         style={{
           boxShadow:
             "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
@@ -57,27 +57,27 @@ const CreateInvoicePage = () => {
       </div>
       <div className="space-y-4">
         <Details />
-        <div className="flex items-center justify-between w-3/5 gap-4">
+        <div className="flex items-center justify-between max-w-[600px] gap-4">
           <Select
             id="client_name"
             options={["Client Name", "Client Name 2"]}
             label="Client Name"
-            className="w-1/2"
+            className="flex-1"
           />
-          <Input id="unit_id" label="Unit ID" className="w-1/2" />
+          <Input id="unit_id" label="Unit ID" className="flex-1" />
         </div>
       </div>
       <div className="space-y-6">
         <h1 className="text-[#092C4C] font-bold text-xl">Add Payment</h1>
         <div className="bg-white rounded-[8px] space-y-4 p-6">
-          <div className="flex items-center justify-between w-3/5 gap-4">
+          <div className="flex items-center justify-between max-w-[600px] gap-4">
             <Input
               type="text"
               id="payment_title"
               label="Payment Title"
-              className="w-1/2"
+              className="flex-1"
             />
-            <div className="w-1/2 relative">
+            <div className="flex-1 relative">
               <Input
                 type="text"
                 id="amount"

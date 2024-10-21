@@ -13,7 +13,7 @@ export interface VisitorRequestDataDataType {
   userName: string;
   requestDate: string;
   requestId: string;
-  status: "completed" | "pending" | "in-progress";
+  status: "completed" | "pending" | "in-progress" | "decline";
   pictureSrc: string;
   visitorName: string;
   visitorPhoneNumber: string;
@@ -58,6 +58,20 @@ export const VisitorRequestData: VisitorRequestDataDataType[] = [
     requestDate: "05/03/2024",
     requestId: "56566346467",
     status: "in-progress",
+    pictureSrc: "/empty/SampleLandlord.jpeg",
+    visitorName: "John Doe",
+    visitorPhoneNumber: "08012345678",
+    secretQuestion: "What is the name of the first school?",
+    secretAnswer: "Oke-Afa",
+    purpose: "Attached",
+    propertyName: "Sunset Villa",
+    branch: "Akinleye",
+  },
+  {
+    userName: "Samuel Emmauel",
+    requestDate: "05/03/2024",
+    requestId: "56566346467",
+    status: "decline",
     pictureSrc: "/empty/SampleLandlord.jpeg",
     visitorName: "John Doe",
     visitorPhoneNumber: "08012345678",

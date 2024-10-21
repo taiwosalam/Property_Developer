@@ -26,7 +26,7 @@ const Exportexpense = () => {
           phoneNumbers={["09022312133", "07012133313", "0901212121"]}
           email="example@mail.com"
         />
-        <div className="rounded-lg bg-white p-8 flex">
+        <div className="rounded-lg bg-white p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
             data={{}}
             chunkSize={2}

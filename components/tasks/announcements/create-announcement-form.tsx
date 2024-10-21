@@ -8,29 +8,52 @@ import Button from "@/components/Form/Button/button";
 import Image from "next/image";
 import { PlusIcon, DeleteIconOrange } from "@/public/icons/icons";
 import { AuthForm } from "@/components/Auth/auth-components";
+import { MAX_FILE_SIZE_MB } from "@/data";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
+const MAX_IMAGES = 4;
 const CreateAnnouncementForm: React.FC<{
   handleSubmit: (data: any) => void;
   editMode?: boolean;
 }> = ({ handleSubmit, editMode = false }) => {
-  const [images, setImages] = useState<File[]>([]);
+  const [images, setImages] = useState<string[]>([]);
 
   // HANDLE IMAGES UPLOAD
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = Array.from(e.target.files || []);
-
-    const newImages = selectedFiles.filter((file) => {
-      if (file.size > 2 * 1024 * 1024) {
-        // 2 MB in bytes
-        alert(`${file.name} exceeds the 2MB size limit.`);
-        return false;
+    let files = Array.from(e.target.files || []);
+    files = files.slice(0, MAX_IMAGES - images.length);
+    const validImages: string[] = [];
+    const oversizeImages: string[] = [];
+    for (const file of files) {
+      if (!file.type.startsWith("image/")) {
+        alert("Upload only image files.");
+        return;
       }
-      return true;
-    });
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        oversizeImages.push(file.name);
+        continue;
+      }
+      try {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          validImages.push(reader.result as string);
+          if (validImages.length + oversizeImages.length === files.length) {
+            setImages((prevImages) => [...prevImages, ...validImages]);
+          }
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error processing image:", error);
+        alert("There was an error processing your image. Please try again.");
+      }
+    }
 
-    const finalImages = [...images, ...newImages].slice(0, 4); // Limit to 4 images
-    setImages(finalImages);
-    console.log(images)
+    if (oversizeImages.length > 0) {
+      alert(
+        `Some images were rejected due to exceeding the maximum size: ${MAX_FILE_SIZE_MB} MB`
+      );
+    }
+
     e.target.value = "";
   };
 
@@ -38,9 +61,9 @@ const CreateAnnouncementForm: React.FC<{
     <AuthForm
       returnType="form-data"
       onFormSubmit={handleSubmit}
-      setValidationErrors={() => { }}
+      setValidationErrors={() => {}}
     >
-      <div className="flex flex-col gap-y-5 gap-x-[4%] lg:flex-row lg:items-start pb-[200px]">
+      <div className="flex flex-col gap-y-5 gap-x-[40px] lg:flex-row lg:items-start pb-[200px]">
         <div className="grid gap-x-4 gap-y-5 md:grid-cols-2 lg:w-[63%]">
           {!editMode && (
             <Fragment>
@@ -64,64 +87,67 @@ const CreateAnnouncementForm: React.FC<{
             id="title"
             label="Title"
             placeholder="Add title"
-            className="col-span-2"
+            className="md:col-span-2"
             inputClassName="bg-white"
           />
-          <TextArea id="content" className="col-span-2" />
+          <TextArea id="content" className="md:col-span-2" />
         </div>
-        <div className="grid gap-4 md:grid-cols-2 flex-1">
-          {images.length > 0 ? (
-            images.map((image, index) => (
-              <div
-                key={index}
-                className="relative overflow-hidden rounded-lg w-full h-[110px]"
-              >
-                <Image
-                  src={URL.createObjectURL(image)}
-                  alt={`Uploaded ${index}`}
-                  fill
-                  className="object-cover"
-                />
-                <button
-                  type="button"
-                  aria-label="Remove Image"
-                  onClick={() => {
-                    setImages(images.filter((_, i) => i !== index));
-                  }}
-                  className="absolute top-1 right-1 z-[2]"
+        <div className="lg:flex-1 space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            {images.length > 0 &&
+              images.map((src, index) => (
+                <div
+                  key={index}
+                  className="relative overflow-hidden rounded-lg w-full h-[110px]"
                 >
-                  <DeleteIconOrange size={20} />
-                </button>
-              </div>
-            ))
-          ) : (
-            <div className="relative overflow-hidden rounded-lg w-full h-[110px]">
-              <Image src={empty} alt="empty" fill className="object-cover" />
-            </div>
-          )}
-          <label
-            htmlFor="upload"
-            className="px-4 w-full h-[110px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
-          >
-            <PlusIcon />
-            <span className="text-black text-base font-normal mt-2">
-              Add Photo/Video
-            </span>
-            <input
-              id="upload"
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleFileChange}
-              className="hidden"
-            />
-          </label>
+                  <Image
+                    src={src}
+                    alt={`Uploaded ${index}`}
+                    fill
+                    className="object-cover"
+                  />
+                  <button
+                    type="button"
+                    aria-label="Remove Image"
+                    onClick={() => {
+                      setImages(images.filter((_, i) => i !== index));
+                    }}
+                    className="absolute top-1 right-1 z-[2]"
+                  >
+                    <DeleteIconOrange size={20} />
+                  </button>
+                </div>
+              ))}
+            {images.length < MAX_IMAGES && (
+              <label
+                htmlFor="upload"
+                className="px-4 w-full h-[110px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
+              >
+                <PlusIcon />
+                <span className="text-black text-base font-normal mt-2 text-center">
+                  Add Photo/Video
+                </span>
+                <input
+                  id="upload"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
+            )}
+          </div>
+          <Input
+            id="video_link"
+            label="Video Link"
+            type="url"
+            placeholder="https://www.youtube.com/video"
+            inputClassName="bg-white"
+          />
         </div>
       </div>
-      <div
-        className="sticky z-[3] bottom-0 right-0 w-full py-5 px-[25px] lg:px-[60px] bg-white flex items-center justify-end gap-4"
-        style={{ boxShadow: "0px -2px 10px 0px rgba(0, 0, 0, 0.05)" }}
-      >
+      <FixedFooter className="flex items-center justify-end gap-4">
         {editMode && (
           <Button
             variant="light_red"
@@ -138,7 +164,7 @@ const CreateAnnouncementForm: React.FC<{
         >
           {editMode ? "Update Announcement" : "Create Announcement"}
         </Button>
-      </div>
+      </FixedFooter>
     </AuthForm>
   );
 };

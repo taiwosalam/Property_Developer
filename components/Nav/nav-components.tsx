@@ -116,16 +116,33 @@ export const NavButton: React.FC<NavButtonProps> = ({
   );
 };
 
-export const NavIcon: React.FC<NavIconProps> = ({ icon, alt, href }) => {
+export const NavIcon: React.FC<NavIconProps> = ({
+  icon,
+  alt,
+  href,
+  onClick,
+}) => {
   const class_styles =
     "p-[5px] rounded-lg bg-background-2 flex items-center justify-center w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[36px] md:h-[36px] aspect-square";
 
   return href ? (
-    <Link href={href} className={class_styles} aria-label={alt} title={alt}>
+    <Link
+      href={href}
+      className={class_styles}
+      aria-label={alt}
+      title={alt}
+      onClick={onClick ? () => onClick() : undefined}
+    >
       {icon}
     </Link>
   ) : (
-    <button type="button" className={class_styles} aria-label={alt} title={alt}>
+    <button
+      type="button"
+      className={class_styles}
+      aria-label={alt}
+      title={alt}
+      onClick={onClick ? () => onClick() : undefined}
+    >
       {icon}
     </button>
   );

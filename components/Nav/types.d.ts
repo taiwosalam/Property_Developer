@@ -36,6 +36,7 @@ export interface NavIconProps {
   alt?: string;
   href?: string;
   icon: React.ReactNode;
+  onClick?: () => void;
 }
 
 export type CreateNewItemsProps = {

@@ -36,9 +36,20 @@ const BookVisitorsPage = () => {
           total={12}
           title="Total Visitors"
           newData={12}
+          colorScheme={1}
         />
-        <ManagementStatistcsCard total={12} title="Completed" newData={12} />
-        <ManagementStatistcsCard total={12} title="Pending" newData={12} />
+        <ManagementStatistcsCard
+          total={12}
+          title="Completed"
+          newData={12}
+          colorScheme={2}
+        />
+        <ManagementStatistcsCard
+          total={12}
+          title="Pending"
+          newData={12}
+          colorScheme={3}
+        />
       </div>
       <FilterBar
         azFilter
@@ -49,7 +60,7 @@ const BookVisitorsPage = () => {
           description:
             "This page contains a list of Book for Visitation on the platform.",
         }}
-        searchInputPlaceholder="Search"
+        searchInputPlaceholder="Search Visitor Request"
         handleFilterApply={() => {}}
         isDateTrue
         filterOptions={[]}

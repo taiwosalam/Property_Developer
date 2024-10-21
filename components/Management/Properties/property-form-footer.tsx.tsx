@@ -1,9 +1,9 @@
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { useContext, Fragment } from "react";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
-import clsx from "clsx";
 import Button from "@/components/Form/Button/button";
 import DeletePropertyModal from "./delete-property-modal";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const PropertyFormFooter: React.FC<{
   editMode?: boolean;
@@ -11,10 +11,7 @@ const PropertyFormFooter: React.FC<{
 }> = ({ editMode, handleReset }) => {
   const { canSubmit } = useContext(FlowProgressContext);
   return (
-    <footer
-      className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent"
-      style={{ boxShadow: "0px -2px 10px 0px rgba(0, 0, 0, 0.05)" }}
-    >
+    <FixedFooter className="flex items-center justify-end gap-10">
       {editMode ? (
         <Fragment>
           <Modal>
@@ -22,7 +19,7 @@ const PropertyFormFooter: React.FC<{
               <Button
                 size="sm_medium"
                 variant="light_red"
-                className="py-2 px-7"
+                className="py-2 px-6"
               >
                 delete property
               </Button>
@@ -35,7 +32,7 @@ const PropertyFormFooter: React.FC<{
             type="button"
             size="sm_medium"
             variant="sky_blue"
-            className="py-2 px-7"
+            className="py-2 px-6"
           >
             Add more unit
           </Button>
@@ -45,26 +42,26 @@ const PropertyFormFooter: React.FC<{
         </Fragment>
       ) : (
         <Fragment>
-          <button
+          <Button
             type="reset"
-            className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
+            variant="sky_blue"
+            size="base_medium"
+            className="py-2 px-6"
             onClick={handleReset}
           >
             Clear Fields
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
-            className={clsx(
-              "bg-brand-9 text-white active:text-brand-9 active:bg-transparent active:border-brand-9",
-              canSubmit ? "hover:bg-[#0033c4b3]" : "opacity-50"
-            )}
             disabled={!canSubmit}
+            size="base_medium"
+            className="py-2 px-6"
           >
             Add Unit
-          </button>
+          </Button>
         </Fragment>
       )}
-    </footer>
+    </FixedFooter>
   );
 };
 
