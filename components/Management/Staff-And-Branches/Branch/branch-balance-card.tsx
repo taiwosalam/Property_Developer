@@ -115,7 +115,9 @@ const BranchBalanceCard = ({
                 className="space-y-2 w-full flex flex-col items-center justify-center"
               >
                 <div className="bg-white w-[30px] h-[30px] rounded-full flex items-center justify-center">
+                  <span className="text-brand-9">
                   {option.icon}
+                  </span>
                 </div>
                 <p className="text-center capitalize text-white text-xs font-normal">
                   {option.name}

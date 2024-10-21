@@ -106,7 +106,7 @@ const EditBranchForm = ({
         </div>
       </div>
       <div className="custom-flex-col gap-3">
-        <p className="text-black text-base font-normal">
+        <p className="text-black dark:text-white text-base font-normal">
           Upload Branch picture or choose from options.
         </p>
         <div className="flex gap-3 items-center">
