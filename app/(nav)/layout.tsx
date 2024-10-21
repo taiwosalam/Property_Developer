@@ -58,7 +58,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             }
           )}
           style={{
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+            // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
             transitionProperty: "width, transform",
           }}
         >

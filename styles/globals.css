@@ -55,14 +55,6 @@ h1 {
 /* Custom utilities */
 /* -------------------------------------------------------------- */
 
-.text-brand-9 {
-  color: var(--primary-color) !important;
-}
-
-.bg-brand-9 {
-  background-color: var(--primary-color) !important;
-}
-
 .custom-primary-bg {
   background-color: var(--primary-color);
 }

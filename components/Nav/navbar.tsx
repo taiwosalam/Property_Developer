@@ -73,18 +73,25 @@ const Header = () => {
         {/*MD & Mobile Icons */}
         <div className="lg:hidden flex items-center gap-2 md:justify-between md:flex-1">
           <div className="flex items-center gap-2">
-            <NavIcon icon={<DropdownListIcon />} alt="dropdown list" />
-            <NavIcon icon={<SearchIconBold />} alt="search" />
-            <NavIcon icon={<PlusBoldIcon />} alt="create new" />
+            <NavIcon
+              icon={<DropdownListIcon size={21} />}
+              alt="dropdown list"
+            />
+            <NavIcon icon={<SearchIconBold size={21} />} alt="search" />
+            <NavIcon icon={<PlusBoldIcon size={21} />} alt="create new" />
           </div>
           <div className="flex items-center gap-2">
-            <NavIcon icon={<MailIcon />} alt="messages" href="/messages" />
             <NavIcon
-              icon={<BellIcon />}
+              icon={<MailIcon size={21} />}
+              alt="messages"
+              href="/messages"
+            />
+            <NavIcon
+              icon={<BellIcon size={21} />}
               alt="notifications"
               href="/notifications"
             />
-            <NavIcon icon={<MoonIcon />} alt="theme-toggle" />
+            <NavIcon icon={<MoonIcon size={21} />} alt="theme-toggle" />
           </div>
         </div>
 
@@ -137,7 +144,7 @@ const Header = () => {
       </div>
 
       {/* Profile Pic and Name */}
-      <Dropdown className="flex items-center">
+      <Dropdown>
         <DropdownTrigger>
           <div className="flex items-center gap-4">
             <Picture
@@ -146,24 +153,22 @@ const Header = () => {
               status
               size={50}
               rounded
+              containerClassName="flex-shrink-0"
             />
             <div className="flex flex-col text-text-secondary capitalize">
               <p className="text-[10px] md:text-xs font-normal">
                 {getGreeting()},
               </p>
               <p className="text-xs md:text-base font-medium">
-                {/* {dashboardData?.director_name} */}
-                Onosereme Emuemhonjie
+                {dashboardData?.director_name}
               </p>
             </div>
           </div>
         </DropdownTrigger>
         <DropdownContent className="custom-flex-col gap-2 pb-[10px] min-w-[300px] sm:min-w-[350px] text-sm sm:text-base font-normal capitalize">
           <NavProfileDropdown
-            // name={dashboardData?.director_name || ""}
-            // userId={dashboardData?.user_id || 0}
-            name="Onosereme Emuemhonjie"
-            userId={201}
+            name={dashboardData?.director_name || ""}
+            userId={dashboardData?.user_id || 0}
           />
         </DropdownContent>
       </Dropdown>

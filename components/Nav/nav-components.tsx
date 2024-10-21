@@ -56,8 +56,9 @@ export const NavButton: React.FC<NavButtonProps> = ({
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="relative flex-1 text-left"
+            className="relative flex-1 text-left flex-shrink-0"
           >
             <p
               className={clsx("capitalize", {
@@ -66,6 +67,11 @@ export const NavButton: React.FC<NavButtonProps> = ({
                 "text-base font-bold": !minimized,
                 "text-sm font-medium": minimized,
               })}
+              style={{
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
             >
               {children}
             </p>
@@ -112,7 +118,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
 
 export const NavIcon: React.FC<NavIconProps> = ({ icon, alt, href }) => {
   const class_styles =
-    "w-[25px] h-[25px] md:w-[36px] md:h-[36px] rounded-lg bg-background-2 flex items-center justify-center";
+    "p-[5px] rounded-lg bg-background-2 flex items-center justify-center w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[36px] md:h-[36px] aspect-square";
 
   return href ? (
     <Link href={href} className={class_styles} aria-label={alt} title={alt}>
