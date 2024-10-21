@@ -30,17 +30,17 @@ import {
   MoonIcon,
   PlusBoldIcon,
   SearchIconBold,
+  SunIcon,
   DropdownListIcon,
 } from "@/public/icons/icons";
 import { useDashboardData } from "@/hooks/useDashboardData";
-import { useState } from "react";
 
 const Header = () => {
   const { loading, data: dashboardData, error } = useDashboardData();
 
   const { theme, setTheme } = useTheme()
 
-  // const [themeIcon, setThemeIcon] = useState(MoonIcon); 
+  
 
   const toggleTheme = () => {
     console.log(theme); 
@@ -116,7 +116,7 @@ const Header = () => {
               alt="notifications"
               href="/notifications"
             />
-            <NavIcon icon={<MoonIcon size={21} />} alt="theme-toggle" />
+            <NavIcon icon={theme === "dark" ? <SunIcon size={21}/> : <MoonIcon size={21}/>} alt="theme-toggle" />
           </div>
         </div>
 
@@ -131,7 +131,7 @@ const Header = () => {
             <Modal>
               <ModalTrigger className="px-4 py-[12px] flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
                 <SearchIcon size={24} />
-                <span className="text-[#0a132ea6] text-base font-semibold">
+                <span className="text-[#0a132ea6] dark:text-white text-base font-semibold">
                   Search
                 </span>
               </ModalTrigger>
@@ -162,7 +162,7 @@ const Header = () => {
               <BellIcon />
             </Link>
             <button type="button" aria-label="theme-toggle" onClick={toggleTheme}>
-              <MoonIcon />
+              {theme === "dark" ? <SunIcon /> : <MoonIcon />}
             </button>
           </div>
         </div>
@@ -181,10 +181,10 @@ const Header = () => {
               containerClassName="flex-shrink-0"
             />
             <div className="flex flex-col text-text-secondary capitalize">
-              <p className="text-[10px] md:text-xs font-normal">
+              <p className="text-[10px] md:text-xs font-normal dark:text-[#F1F1D9]">
                 {getGreeting()},
               </p>
-              <p className="text-xs md:text-base font-medium">
+              <p className="text-xs md:text-base font-medium dark:text-white">
                 {dashboardData?.director_name}
               </p>
             </div>
