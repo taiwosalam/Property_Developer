@@ -30,7 +30,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
               placeholder="Search for messages"
               className="flex-1"
             />
-            <Button variant="sky_blue" size="xs_medium" className="py-2 px-7">
+            <Button variant="sky_blue" size="xs_medium" className="py-2 px-7 dark:bg-darkBrand-primary">
               see reviews
             </Button>
           </div>

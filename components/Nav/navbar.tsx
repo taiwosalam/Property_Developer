@@ -106,17 +106,21 @@ const Header = () => {
             <NavIcon icon={<PlusBoldIcon size={21} />} alt="create new" />
           </div>
           <div className="flex items-center gap-2">
-            <NavIcon
+            <span className="text-white dark:text-black">
+              <NavIcon
               icon={<MailIcon size={21} />}
               alt="messages"
               href="/messages"
             />
+            </span>
             <NavIcon
               icon={<BellIcon size={21} />}
               alt="notifications"
               href="/notifications"
             />
-            <NavIcon icon={theme === "dark" ? <SunIcon size={21}/> : <MoonIcon size={21}/>} alt="theme-toggle" />
+            <span className="text-white dark:text-black">
+              {theme === "dark" ? <SunIcon size={21}/> : <MoonIcon size={21}/>}
+            </span>
           </div>
         </div>
 
