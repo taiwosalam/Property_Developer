@@ -25,9 +25,9 @@ const Wallet = () => {
           <ExclamationMark />
         </div>
       </div>
-      <div className="flex gap-8">
+      <div className="flex flex-col 2xl:flex-row gap-8">
         <div className="custom-flex-col gap-10 flex-1">
-          <div className="flex gap-6">
+          <div className="flex flex-col lg:flex-row gap-6">
             <WalletAnalytics
               title="funds"
               amount={6505689}

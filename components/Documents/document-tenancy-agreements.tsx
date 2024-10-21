@@ -5,7 +5,7 @@ import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-c
 
 const DocumentTenancyAgreements = () => {
   return (
-    <div className="grid grid-cols-2 gap-10">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
       <DocumentCheckbox title="guarantor">
         Does the Landlord/Landlady require the tenant to provide a guarantor?
       </DocumentCheckbox>

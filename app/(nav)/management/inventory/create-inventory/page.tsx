@@ -20,7 +20,7 @@ const CreateInventory = () => {
         <h1 className="text-black text-2xl font-medium capitalize">
           Create Inventory
         </h1>
-        <div className="flex gap-8">
+        <div className="flex flex-col md:flex-row gap-8">
           <Input
             id="inventory-title"
             placeholder="Add Title"
@@ -42,7 +42,7 @@ const CreateInventory = () => {
           />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <InventoryItem edit />
         <InventoryItem edit />
       </div>
