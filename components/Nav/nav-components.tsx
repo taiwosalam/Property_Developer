@@ -2,7 +2,12 @@ import Link from "next/link";
 
 // Types
 import type { Color } from "@/types/global";
-import type { NavIconProps, NavButtonProps, NavSearchTabProps } from "./types";
+import type {
+  NavIconProps,
+  NavButtonProps,
+  NavSearchTabProps,
+  NavCreateNewColumnProps,
+} from "./types";
 
 // Imports
 import clsx from "clsx";
