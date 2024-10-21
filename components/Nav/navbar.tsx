@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Skeleton } from "@mui/material";
 import { empty } from "@/app/config";
 import Avatar from "@/public/empty/avatar.png";
+import { useTheme } from "next-themes"
 
 // Imports
 import Picture from "@/components/Picture/picture";
@@ -32,14 +33,38 @@ import {
   DropdownListIcon,
 } from "@/public/icons/icons";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { useState } from "react";
 
 const Header = () => {
   const { loading, data: dashboardData, error } = useDashboardData();
 
+  const { theme, setTheme } = useTheme()
+
+  // const [themeIcon, setThemeIcon] = useState(MoonIcon); 
+
+  const toggleTheme = () => {
+    console.log(theme); 
+    switch (theme) { 
+      case "light":
+        setTheme("dark");
+        // setThemeIcon(Sun); 
+        break;
+      case "dark":
+        setTheme("light");
+        // setThemeIcon(DarkIcon);
+        break;
+      default: 
+        setTheme("light"); 
+        // setThemeIcon(DarkIcon);
+        break;
+    }
+  };
+
+
   return (
     <header
       className={clsx(
-        "sticky top-0 z-[4] w-full h-[100px] px-3 md:px-10 py-[12.5px] flex gap-4 md:gap-7 lg:gap-5 items-center border-b border-solid border-neutral-2 bg-white",
+        "sticky top-0 z-[4] w-full h-[100px] px-3 md:px-10 py-[12.5px] flex gap-4 md:gap-7 lg:gap-5 items-center border-b border-solid border-neutral-2 dark:border-[#292929] bg-white dark:bg-[#020617]",
         loading && "skeleton"
       )}
     >
@@ -104,7 +129,7 @@ const Header = () => {
               userType={dashboardData?.company_type || ""}
             />
             <Modal>
-              <ModalTrigger className="px-4 py-[12px] flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1]">
+              <ModalTrigger className="px-4 py-[12px] flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
                 <SearchIcon size={24} />
                 <span className="text-[#0a132ea6] text-base font-semibold">
                   Search
@@ -136,7 +161,7 @@ const Header = () => {
             <Link href="/notifications" aria-label="notifications">
               <BellIcon />
             </Link>
-            <button type="button" aria-label="theme-toggle">
+            <button type="button" aria-label="theme-toggle" onClick={toggleTheme}>
               <MoonIcon />
             </button>
           </div>
