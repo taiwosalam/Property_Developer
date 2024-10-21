@@ -3,7 +3,7 @@ import KeyValueList from "@/components/KeyValueList/key-value-list";
 const Breakdown = () => {
   return (
     <section className="bg-white p-8 space-y-4">
-      <div className="flex">
+      <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
         <KeyValueList
           chunkSize={2}
           data={{}}

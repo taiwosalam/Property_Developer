@@ -1,3 +1,5 @@
+import KeyValueList from "@/components/KeyValueList/key-value-list";
+
 const Details = () => {
   return (
     <div
@@ -6,19 +8,16 @@ const Details = () => {
     >
       <h1 className="font-bold text-xl text-[#092C4C]">Details</h1>
       <div className="h-[2px] w-3/4 bg-[#C0C2C8] bg-opacity-20" />
-      <div className="w-full md:w-3/4 flex items-center space-x-10 text-[16px] font-normal text-black">
-        <div className="flex items-center space-x-10">
-          <p className="text-[#747474]">Property Id</p>
-          <p>1234567894</p>
-        </div>
-        <div className="flex items-center space-x-10">
-          <p className="text-[#747474]">Property Name</p>
-          <p>Olayomi Cottage</p>
-        </div>
-        <div className="flex items-center space-x-10">
-          <p className="text-[#747474]">Account Officer</p>
-          <p>Mr Taiwo Salam</p>
-        </div>
+      <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
+        <KeyValueList
+          data={{}}
+          chunkSize={1}
+          referenceObject={{
+            "Property Id": "1234567894",
+            "Property Name": "Olayomi Cottage",
+            "Account Officer": "Mr Taiwo Salam",
+          }}
+        />
       </div>
     </div>
   );
