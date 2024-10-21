@@ -16,7 +16,7 @@ const ReceiptPreviewPage = () => {
           email="example@mail.com"
         />
         <h1 className="text-center my-7 font-medium text-2xl">Receipt</h1>
-        <div className="rounded-lg bg-white p-8 flex">
+        <div className="rounded-lg bg-white p-8 flex flex-col md:flex-row">
           <KeyValueList
             data={{
               "property status": "successful",
@@ -34,7 +34,7 @@ const ReceiptPreviewPage = () => {
         </div>
         <AccountingTitleSection title="Breakdown">
           <div className="p-6 bg-white rounded-lg space-y-5">
-            <div className="flex">
+            <div className="flex flex-col md:flex-row">
               <KeyValueList
                 data={{}}
                 chunkSize={2}
