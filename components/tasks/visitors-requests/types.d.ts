@@ -1,5 +1,5 @@
 export interface VisitorRequestModalProps {
-  status: "completed" | "pending" | "in-progress";
+  status: "completed" | "pending" | "in-progress" | "decline";
   pictureSrc: string;
   id: string;
   userName: string;

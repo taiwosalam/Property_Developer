@@ -43,7 +43,7 @@ const EditTenant = () => {
     useImageUploader();
 
   const [activeAvatar, setActiveAvatar] = useState<string>("");
-  
+
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors | null>(null);
 
   const accessToken = useAuthStore((state) => state.access_token);

@@ -30,7 +30,7 @@ export interface CallRequestCardProps extends RequestCardBaseProps {
 
 export interface VisitorRequestCardProps extends RequestCardBaseProps {
   cardType: "visitor";
-  status: "completed" | "pending" | "in-progress";
+  status: "completed" | "pending" | "in-progress" | "decline";
   visitorName: string;
   visitorPhoneNumber: string;
   secretQuestion: string;

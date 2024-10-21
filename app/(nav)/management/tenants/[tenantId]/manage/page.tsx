@@ -57,8 +57,8 @@ const ManageTenant = () => {
             <div className="custom-flex-col gap-4">
               <div className="custom-flex-col">
                 <div className="flex items-center gap-2">
-                  <p className="text-black text-xl font-bold capitalize">
-                    {tenant.name}
+                  <p className="text-black text-lg lg:text-xl font-bold capitalize">
+                    {tenant.firstName} {tenant.lastName}
                   </p>
                 </div>
                 <p

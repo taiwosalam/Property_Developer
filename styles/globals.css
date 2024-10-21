@@ -184,6 +184,10 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
   margin: 0;
 }
 
+button:disabled {
+  opacity: 0.5;
+}
+
 .skeleton {
   cursor: default;
 

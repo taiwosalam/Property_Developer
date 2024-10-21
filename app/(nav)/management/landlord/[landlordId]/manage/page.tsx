@@ -72,7 +72,7 @@ const ManageLandlord = () => {
             <div className="custom-flex-col gap-4">
               <div className="custom-flex-col">
                 <div className="flex items-center">
-                  <p className="text-black text-xl font-bold capitalize">
+                  <p className="text-black text-lg lg:text-xl font-bold capitalize">
                     {LandlordPageData?.name}
                   </p>
                   <BadgeIcon color="blue" />
