@@ -1,9 +1,7 @@
-import React from "react";
-
 // Types
+import React from "react";
 import type { SVGProps } from "./types";
 import type { Color } from "@/types/global";
-
 // Imports
 import { svgs } from "./svgs";
 

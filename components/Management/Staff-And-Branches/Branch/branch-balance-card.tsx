@@ -13,6 +13,7 @@ import {
   BlueBuildingIcon,
   BlueLockIcon,
 } from "@/public/icons/dashboard-cards/icons";
+import { CautionIcon } from "@/public/icons/icons";
 
 const options = [
   {
@@ -105,7 +106,7 @@ const BranchBalanceCard = ({
             <span>
               {!hideBalance ? "₦ " + formatNumber(cautionDeposit) : "*******"}
             </span>
-            <Image src="/icons/caution.svg" alt="info" width={12} height={12} />
+            <CautionIcon />
           </div>
 
           <div className="w-full flex items-start space-x-4">

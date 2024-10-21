@@ -48,6 +48,7 @@ export const DropdownTrigger: React.FC<DropdownTriggerProps> = ({
 
   return (
     <button
+      type="button"
       className={clsx("text-start", className)}
       {...props}
       onClick={handleClick}

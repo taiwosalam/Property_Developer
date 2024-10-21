@@ -1,15 +1,19 @@
-import React from "react";
 import Link from "next/link";
 
 // Types
 import type { Color } from "@/types/global";
-import type { NavIconProps, NavButtonProps, NavSearchTabProps } from "./types";
+import type {
+  NavIconProps,
+  NavButtonProps,
+  NavSearchTabProps,
+  NavCreateNewColumnProps,
+} from "./types";
 
 // Imports
 import clsx from "clsx";
 import SVG from "../SVG/svg";
-import Picture from "../Picture/picture";
 import { useThemeStoreSelectors } from "@/store/themeStore";
+import { AnimatePresence, motion } from "framer-motion";
 
 export const NavButton: React.FC<NavButtonProps> = ({
   type,
@@ -20,6 +24,9 @@ export const NavButton: React.FC<NavButtonProps> = ({
   minimized,
   highlight,
   minimized_highlight,
+  isDropdown,
+  isOpen,
+  isCollapsed,
 }) => {
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
 
@@ -39,48 +46,125 @@ export const NavButton: React.FC<NavButtonProps> = ({
         <SVG
           type={type}
           color={color}
-          className={clsx("w-[30px] flex justify-center", {
+          className={clsx("w-[30px] flex-shrink-0 flex justify-center", {
             "path-fill": type === "chart",
           })}
         />
       )}
-      <p
-        className={clsx("capitalize", {
-          "text-white": highlight,
-          "custom-primary-color": !highlight,
-          "text-base font-bold": !minimized,
-          "text-sm font-medium": minimized,
-        })}
-      >
-        {children}
-      </p>
+      <AnimatePresence>
+        {!isCollapsed && (
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+            className="relative flex-1 text-left flex-shrink-0"
+          >
+            <p
+              className={clsx("capitalize", {
+                "text-white": highlight,
+                "custom-primary-color": !highlight,
+                "text-base font-bold": !minimized,
+                "text-sm font-medium": minimized,
+              })}
+              style={{
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {children}
+            </p>
+
+            {isDropdown && (
+              <div
+                className={clsx(
+                  "absolute right-0 top-[50%] translate-y-[-50%] transition-transform duration-300",
+                  !isOpen && "rotate-180"
+                )}
+              >
+                <SVG
+                  type="arrow_down"
+                  color={isOpen || highlight ? "#fff" : (primaryColor as Color)}
+                />
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 
   return href ? (
     <Link
-      title={minimized ? String(children) : undefined}
-      className="w-full"
+      title={String(children)}
+      className="w-full block"
       href={href}
       onClick={onClick ? () => onClick() : undefined}
     >
       {content}
     </Link>
   ) : (
-    <button className="w-full">{content}</button>
+    <button
+      aria-label={String(children)}
+      type="button"
+      className="w-full block"
+      onClick={onClick ? () => onClick() : undefined}
+    >
+      {content}
+    </button>
   );
 };
 
-export const NavIcon: React.FC<NavIconProps> = ({ src, alt, href }) => {
-  const class_styles = "p-2 rounded-lg bg-background-2 dark:bg-black";
-  const content = <Picture src={src} alt={alt} size={20} />;
+export const NavIcon: React.FC<NavIconProps> = ({ icon, alt, href }) => {
+  const class_styles =
+    "p-[5px] rounded-lg bg-background-2 flex items-center justify-center w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[36px] md:h-[36px] aspect-square";
 
   return href ? (
-    <Link href={href} className={class_styles}>
-      {content}
+    <Link href={href} className={class_styles} aria-label={alt} title={alt}>
+      {icon}
     </Link>
   ) : (
-    <button className={class_styles}>{content}</button>
+    <button type="button" className={class_styles} aria-label={alt} title={alt}>
+      {icon}
+    </button>
+  );
+};
+
+export const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
+  data = [],
+}) => {
+  const options = ["management", "tasks", "accounting", "documents"];
+  const content = data.filter((item) =>
+    options.includes(item.label.toLowerCase())
+  );
+
+  return (
+    <div className="flex gap-10">
+      {content.map(({ type, label, content }, index) => (
+        <div key={index} className="custom-flex-col text-base font-medium">
+          <div className="flex items-center gap-2">
+            <SVG
+              type={type}
+              color="#050901"
+              className="w-[30px] flex justify-center"
+            />
+            <p className="text-text-primary capitalize">{label}</p>
+          </div>
+          {content?.map(({ label }, idx) => (
+            <div key={idx} className="py-3 pl-10 pr-5">
+              <button className="flex items-center gap-4">
+                <SVG
+                  type="horizontal_line"
+                  className="w-[30px] flex justify-center"
+                />
+                <p className="text-text-secondary capitalize">{label}</p>
+              </button>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
   );
 };
 
@@ -89,7 +173,10 @@ export const NavSearchTab: React.FC<NavSearchTabProps> = ({
   active,
   children,
 }) => (
-  <button className="flex items-center gap-2 text-base font-medium capitalize">
+  <button
+    type="button"
+    className="flex items-center gap-2 text-base font-medium capitalize"
+  >
     <p
       className={clsx({
         "text-text-label": !active,

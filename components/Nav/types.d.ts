@@ -14,12 +14,14 @@ export interface NavButtonProps {
   style?: CSSProperties;
   children: React.ReactNode;
   onClick?: () => void;
+  isDropdown?: boolean;
+  isOpen?: boolean;
+  isCollapsed?: boolean;
 }
 
 export interface NavDropdownProps extends NavButtonProps {
   onContentClick?: () => void;
   content: { label: string; href: string }[];
-  isOpen: boolean;
   onToggle: () => void;
 }
 
@@ -33,7 +35,7 @@ export type NavItemsProps = {
 export interface NavIconProps {
   alt?: string;
   href?: string;
-  src: string | StaticImageData;
+  icon: React.ReactNode;
 }
 
 export type CreateNewItemsProps = {
@@ -55,7 +57,7 @@ export interface NavSearchTabProps {
   children: React.ReactNode;
 }
 
-export interface SidenavProps {
-  showLogo?: boolean;
-  closeSidenav?: () => void;
+export interface SideNavProps {
+  closeSideNav?: () => void;
+  isCollapsed?: boolean;
 }

@@ -3,23 +3,21 @@ import type { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { cva } from "class-variance-authority";
-import { GripVertical } from "lucide-react";
 import { ColumnId } from "./KanbanBoard";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 
 // Icons
-import Mail from "@/public/icons/mail.svg";
-import Clip from "@/public/icons/clip.svg";
+import { MailIcon, ClipIcon } from "@/public/icons/icons";
 import List from "@/public/icons/list.svg";
 import Drag from "@/public/icons/drag.svg";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { Modal, ModalContent } from "@/components/Modal/modal";
 import TaskModal from "./task-action-modal";
 import { useRouter } from "next/navigation";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import clsx from "clsx";
 
 export interface Task {
   id: UniqueIdentifier;
@@ -195,34 +193,24 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               />
             </div>
           </div>
-          <div className="flex space-x-5">
-            <div className="flex space-x-2 items-center">
-              <Image
-                src={Mail}
-                alt="messages"
-                width={20}
-                height={20}
-                className="w-5 h-5"
-              />
-              <Image
-                src={Clip}
-                alt="theme"
-                width={16}
-                height={16}
-                className="w-4 h-4"
-              />
-            </div>
-            <div className="w-full flex items-center justify-between">
-              <div className="flex -space-x-2.5">
+          <div className="flex gap-2 justify-between">
+            <div className="flex gap-2.5 items-center">
+              <MailIcon size={20} />
+              <ClipIcon />
+              <div className="flex itema-center">
                 {task.content.userAvatars.map((avatar, index) => (
                   <Avatar
                     key={index}
-                    className="h-6 w-6 rounded-full border-2 border-white dark:border-black"
+                    className={clsx(
+                      "h-6 w-6 rounded-full border-2 border-white",
+                      index !== 0 && "-ml-2.5"
+                    )}
                     style={{
                       boxShadow:
                         index !== task.content.userAvatars.length - 1
                           ? "3px 4px 8px 0px rgba(53, 37, 19, 0.31)"
                           : undefined,
+                      zIndex: index,
                     }}
                   >
                     <AvatarImage src={avatar} alt="Avatar" />
@@ -230,10 +218,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                   </Avatar>
                 ))}
               </div>
-              <p className="bg-brand-2 text-xs rounded-md py-2 px-4">
-                {task.content.date}
-              </p>
             </div>
+
+            <p className="bg-brand-2 text-xs rounded-md py-2 px-4">
+              {task.content.date}
+            </p>
           </div>
         </CardContent>
       </Card>

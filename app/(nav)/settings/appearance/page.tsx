@@ -13,7 +13,6 @@ import {
 import { website_color_schemes } from "@/components/Settings/data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { useThemeStoreSelectors } from "@/store/themeStore";
-import { rgbToHex } from "@/utils/rgbaToHex";
 import { Tooltip } from "@mui/material";
 
 const Appearance = () => {
@@ -26,11 +25,10 @@ const Appearance = () => {
   const [selectedNavbar, setSelectedNavbar] = useState<string | null>(null);
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(
-    rgbToHex(primaryColor)
+    primaryColor
   );
   const [modalOpen, setModalOpen] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
-
   // Update primary color and generate secondary color when selectedColor changes
   useEffect(() => {
     if (selectedColor) {

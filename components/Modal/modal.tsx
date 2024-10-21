@@ -68,7 +68,7 @@ const ModalTrigger: React.FC<ModalTriggerProps> = ({
 
   // Render a button with the onClick handler
   return (
-    <button onClick={handleClick} {...props}>
+    <button onClick={handleClick} type="button" {...props}>
       {children}
     </button>
   );
