@@ -41,7 +41,10 @@ export interface NavIconProps {
 export type CreateNewItemsProps = {
   type: SVGType;
   label: string;
-  content: { label: string }[];
+  content: (
+    | { label: string; link: string; modal?: never }
+    | { label: string; modal: React.ReactNode; link?: never }
+  )[];
 }[];
 
 export interface NavCreateNewColumnProps {

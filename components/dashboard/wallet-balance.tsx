@@ -77,8 +77,8 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
     <div className={clsx("space-y-2", className)}>
       {!noHeader && (
         <div className="w-full flex items-center justify-between font-normal">
-          <p className="text-[#262626] text-sm">Wallet</p>
-          <Link href="" className="text-[#4F5E71] text-xs flex items-center">
+          <p className="text-[#262626] text-sm dark:text-darkText-1">Wallet</p>
+          <Link href="" className="text-[#4F5E71] text-xs flex items-center dark:text-darkText-1">
             <p>Transaction History</p>
             <SVG type="right_arrow" className="ml-2" />
           </Link>
@@ -125,10 +125,10 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
             {options.map((option, index) => (
               <Modal key={index}>
                 <ModalTrigger className="space-y-2">
-                  <div className="bg-white w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
-                    {option.icon}
+                  <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
+                    <span className="text-brand-9 ">  {option.icon} </span>
                   </div>
-                  <p className="capitalize text-white text-xs font-normal">
+                  <p className="capitalize text-white dark:text-white text-xs font-normal">
                     {option.name}
                   </p>
                 </ModalTrigger>

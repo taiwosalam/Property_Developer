@@ -17,7 +17,7 @@ const ManageInventory = () => {
   return (
     <div className="custom-flex-col gap-10 min-h-[80vh]">
       <div className="custom-flex-col gap-4">
-        <h1 className="text-black text-2xl font-medium capitalize">
+        <h1 className="text-black dark:text-white text-2xl font-medium capitalize">
           Manage Inventory
         </h1>
         <div className="custom-flex-col gap-6">
@@ -25,7 +25,7 @@ const ManageInventory = () => {
             <Input
               id="inventory-title"
               value="Olalomi Cottage"
-              className="flex-1"
+              className="flex-1 dark:bg-darkText-primary !important"
               style={input_styles}
             />
             <Input
@@ -36,13 +36,13 @@ const ManageInventory = () => {
             />
           </div>
           <div
-            className="p-6 bg-white rounded-lg custom-flex-col gap-4"
+            className="p-6 bg-white dark:bg-darkText-primary rounded-lg custom-flex-col gap-4"
             style={{
               boxShadow:
                 "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
             }}
           >
-            <p className="text-brand-10 text-base font-medium">Details</p>
+            <p className="text-brand-10 dark:text-white text-base font-medium">Details</p>
             <div className="flex items-center">
               <InventoryListInfo data={{}} chunkSize={2} />
             </div>
@@ -53,7 +53,7 @@ const ManageInventory = () => {
         <InventoryItem edit />
         <InventoryItem edit />
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
+      <div className="fixed bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[60px] flex gap-6 justify-end">
         <Modal>
           <ModalTrigger asChild>
             <Button

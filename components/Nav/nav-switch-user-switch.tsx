@@ -39,9 +39,9 @@ const NavSwitchUserSwitch: React.FC<{
         type="button"
         onClick={handleSwitch}
         aria-label="switch user"
-        className="w-full h-full px-4 py-[12px] flex items-center justify-between gap-2 rounded-lg bg-[#F1F1F1]"
+        className="w-full h-full px-4 py-[12px] flex items-center justify-between gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]"
       >
-        <span className="text-[#0a132ea6] text-base font-semibold capitalize custom-truncated">
+        <span className="text-[#0a132ea6] dark:text-white text-base font-semibold capitalize custom-truncated">
           {loading ? "loading..." : error ? "Property Manager" : userType}
         </span>
         <ChevronDown size={20} color="#0a132ea6" />
@@ -50,9 +50,9 @@ const NavSwitchUserSwitch: React.FC<{
       {isOpen && (
         <div
           style={{ boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.1)" }}
-          className="absolute top-full left-0 w-full py-2 bg-white rounded-bl-lg rounded-br-lg"
+          className="absolute top-full left-0 w-full py-2 bg-white dark:bg-[#3C3D37] rounded-bl-lg rounded-br-lg"
         >
-          <div className="custom-flex-col text-[#0a132ea6] text-base font-semibold">
+          <div className="custom-flex-col text-[#0a132ea6] text-base font-semibold dark:text-white">
             <button
               type="button"
               onClick={() => handleModuleSwitch("property manager")}

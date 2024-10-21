@@ -50,12 +50,6 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   onBillingTypeChange,
   isLifeTimePlan
 }) => {
-  // const handleBillingTypeChange = (type: "monthly" | "yearly") => {
-  //   if (!isFree) {
-  //     onBillingTypeChange(type);
-  //   }
-  // };
-
 
   const handleBillingTypeChange = (type: "monthly" | "yearly") => {
     if (!isFree) {
@@ -86,12 +80,13 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
       return "border-brand-9 text-brand-9";
     }
   };
+  
 
   const themeColor = getThemeColor();
 
   return (
     <div
-      className={`max-w-[344px] flex flex-col justify-between pricingCard bg-white rounded-lg shadow-lg hover:border-2 ${themeColor}`}
+      className={`max-w-[344px] flex flex-col justify-between pricingCard rounded-lg bg-white overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
     >
       <PlanHeader
         planTitle={planTitle}

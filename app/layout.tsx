@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { getToken } from "@/utils/cookies";
 import { useAuthStoreSelectors } from "@/store/authstrore";
+import { Theme } from "@/components/theme";
 
 export default function RootLayout({
   children,
@@ -47,16 +48,23 @@ export default function RootLayout({
         <title>Create Next app</title>
       </Head>
       <body className={`${primaryFont.className} antialiased`}>
-        <ThemeProvider />
-        <div className="relative z-[1]">{children}</div>
-        <div id="portal" className="z-[2]">
-          <Toaster
-            richColors
-            className={`${primaryFont.className} antialiased z-[1000]`}
-            position="top-right"
-            duration={5000}
-          />
-        </div>
+        <Theme
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ThemeProvider />
+          <div className="w-full relative z-[1]">{children}</div>
+          <div id="portal" className="z-[2]">
+            <Toaster
+              richColors
+              className={`${primaryFont.className} antialiased z-[1000]`}
+              position="top-right"
+              duration={5000}
+            />
+          </div>
+        </Theme>
       </body>
     </html>
   );

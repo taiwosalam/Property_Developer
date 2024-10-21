@@ -267,18 +267,18 @@ const Management = () => {
                 )}
               </div>
             </div>
-            <div className="flex gap-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-10">
               <Select
                 id="tenant_screening_level_type"
                 label="tenant screening level type"
                 options={tenant_occupant_tiers as unknown as string[]}
-                inputContainerClassName="bg-neutral-2 w-[277px]"
+                inputContainerClassName="bg-neutral-2 w-full sm:w-[277px]"
               />
               <Select
                 id="occupant_screening_level_type"
                 label="occupant screening level type"
                 options={tenant_occupant_tiers as unknown as string[]}
-                inputContainerClassName="bg-neutral-2 w-[277px]"
+                inputContainerClassName="bg-neutral-2 w-full sm:w-[277px]"
               />
             </div>
           </div>

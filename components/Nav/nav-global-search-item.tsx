@@ -20,7 +20,7 @@ const NavGlobalSearchItem = () => {
           </div>
           <div className="custom-flex-col gap-1 font-medium">
             <div className="flex items-center gap-2">
-              <p className="text-black text-base capitalize">Bimbo David</p>
+              <p className="text-black dark:text-white text-base capitalize">Bimbo David</p>
               <Picture src={Verified} alt="verified" size={16} />
             </div>
             <p className="text-text-tertiary text-sm">ID: 123456789</p>

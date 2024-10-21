@@ -9,7 +9,7 @@ const CreateExpenceModal = () => {
       {/* Header */}
       <div className="flex items-center justify-between border-b border-solid border-[#B8B8B8] sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[30px] bg-white">
         <div className="flex items-center gap-2">
-          <p className="text-primary-navy text-base md:text-lg lg:text-xl font-bold capitalize">
+          <p className="text-primary-navy dark:text-darkText-1 text-base md:text-lg lg:text-xl font-bold capitalize">
             Add Property ID
           </p>
         </div>

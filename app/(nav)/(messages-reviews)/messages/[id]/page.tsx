@@ -21,7 +21,7 @@ const Chat = () => {
 
   return (
     <>
-      <div className="py-4 px-6 bg-neutral-2">
+      <div className="py-4 px-6 bg-neutral-2 dark:bg-black">
         <div className="flex items-center gap-3">
           <button onClick={() => router.push("/messages")}>
             <Picture src={ChevronLeft} alt="back" size={20} />
@@ -45,7 +45,7 @@ const Chat = () => {
           </button>
         </div>
       </div>
-      <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white custom-flex-col gap-8">
+      <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
         <Messages day="yesterday" />
         <Messages day="today" />
       </div>

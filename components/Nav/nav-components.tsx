@@ -2,12 +2,7 @@ import Link from "next/link";
 
 // Types
 import type { Color } from "@/types/global";
-import type {
-  NavButtonProps,
-  NavCreateNewColumnProps,
-  NavIconProps,
-  NavSearchTabProps,
-} from "./types";
+import type { NavIconProps, NavButtonProps, NavSearchTabProps } from "./types";
 
 // Imports
 import clsx from "clsx";
@@ -193,7 +188,7 @@ export const NavSearchTab: React.FC<NavSearchTabProps> = ({
     >
       <p
         className={clsx({
-          "text-neutral-4": !active,
+          "text-neutral-4 dark:text-black": !active,
           "text-white": active,
         })}
       >

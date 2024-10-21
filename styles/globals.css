@@ -304,11 +304,11 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
 }
 
 .dash-table thead {
-  @apply bg-brand-5;
+  @apply bg-brand-9;
 }
 
 .dash-table tbody tr:nth-child(2n + 1) {
-  @apply bg-brand-1;
+  @apply bg-brand-1 text-[#f1f1fd] dark:bg-[#020617];
 }
 
 .dash-table th {
@@ -323,7 +323,7 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
   text-align: start;
   padding: 12px 16px;
 
-  @apply text-text-primary text-base font-medium;
+  @apply text-text-primary text-base font-medium dark:text-[#DECDB6];
 }
 
 .dash-table td p {
@@ -352,7 +352,7 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
 }
 
 .page-title-container {
-  @apply flex flex-wrap gap-4 items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4;
+  @apply flex flex-wrap gap-4 items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4 dark:border-[#3C3D37];
 }
 
 .search-input-placeholder-color::placeholder {
@@ -382,3 +382,22 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
     transform: rotate(360deg);
   }
 }
+<<<<<<< HEAD
+=======
+
+
+.dark-card {
+  background: #000000;
+  border: 1px solid #d1d5db;
+  color: #fff;
+}
+
+
+.daek-text-1{
+  color: #C1C2C3;
+}
+
+.dark-text-2{
+  color: #9CA3AF;
+}
+>>>>>>> 10911bda1557d22443678c2198da272e38140ffb

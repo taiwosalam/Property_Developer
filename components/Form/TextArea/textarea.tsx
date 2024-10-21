@@ -127,7 +127,7 @@ const TextArea: React.FC<TextAreaProps> = ({
 
             <div
               id={`toolbar-${id}`}
-              className="quill-toolbar bg-[#F3F6F9] max-w-full"
+              className="quill-toolbar bg-[#F3F6F9] dark:bg-darkText-1 max-w-full"
             >
               <select className="ql-header" defaultValue="">
                 <option value="">Paragraph</option>

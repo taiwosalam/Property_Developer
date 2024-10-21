@@ -46,7 +46,7 @@ const CalendarComponent = () => {
       }}
     >
       <div
-        className="w-[618px] custom-flex-col gap-4 overflow-hidden rounded-lg bg-white"
+        className="w-[618px] custom-flex-col gap-4 overflow-hidden rounded-lg bg-white dark:bg-black"
         style={{
           border: "1px solid rgba(193, 194, 195, 0.40)",
           boxShadow:

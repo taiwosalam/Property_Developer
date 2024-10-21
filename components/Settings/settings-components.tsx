@@ -48,7 +48,7 @@ export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
 }) => (
   <div className="custom-flex-col gap-[2px]">
     {title && (
-      <p className="text-text-quaternary text-base font-medium capitalize">
+      <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium capitalize">
         {title}
       </p>
     )}
@@ -141,9 +141,11 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
 }) => (
   <div className="flex justify-between">
     <div className="first flex gap-1 items-start">
+      {/* <span className="dark:text-brand-9"> */}
       <Image src={icon} width={24} height={24} alt="user" />
+      {/* </span> */}
       <div className="flex flex-col">
-        <h4 className="text-text-quaternary text-base"> {title} </h4>
+        <h4 className="text-text-quaternary dark:text-white text-base"> {title} </h4>
         <p className="text-text-disabled text-sm font-normal max-w-[900px]"> 
           {desc}
         </p>
@@ -176,7 +178,7 @@ export const SettingsOthersCheckBox: React.FC<SettingsOthersCheckBoxProps> = ({
 }) => (
   <div className="flex justify-between">
     <div className="flex flex-col">
-      <h4 className="text-text-quaternary text-base"> {title} </h4>
+      <h4 className="text-text-quaternary dark:text-white text-base"> {title} </h4>
       <p className="text-text-disabled text-sm font-normal max-w-[900px]">
         {desc}
       </p>
@@ -195,14 +197,14 @@ export const SettingsTenantOccupantTier: React.FC<
   SettingsTenantOccupantTierProps
 > = ({ tier, desc, color }) => (
   <div
-    className="py-2 px-3 rounded-lg bg-neutral-2 custom-flex-col font-normal"
+    className="py-2 px-3 rounded-lg bg-neutral-2 dark:bg-[#3C3D37] custom-flex-col font-normal"
     style={{ boxShadow: "5px 5px 20px 0px rgba(0, 0, 0, 0.02)" }}
   >
     <div className="flex gap-2">
-      <p className="text-text-primary text-sm capitalize">{tier}</p>
+      <p className="text-text-primary dark:text-darkText-1 text-sm capitalize">{tier}</p>
       <BadgeIcon color={color} />
     </div>
-    <p className="text-[#606060] text-xs">{desc}</p>
+    <p className="text-text-disabled dark:text-darkText-disabled text-xs">{desc}</p>
   </div>
 );
 
@@ -215,7 +217,7 @@ export const DirectorCard: React.FC<SettingsDirectorTypes> = ({
   phone,
   icon,
 }) => (
-  <div className="card p-2 flex justify-between max-w-[397px] border rounded-md bg-[#F9F9F9] border-brand-tertiary">
+    <div className="card p-2 flex justify-between max-w-[397px] border rounded-md bg-[#F9F9F9] border-brand-tertiary">
     <div className="flex items-center gap-4">
       <div className="imageWrapper max-h-[120px] max-w-[120px] rounded-md">
         <Image
@@ -312,7 +314,8 @@ export const CustomColorPicker: React.FC<{
         <div className="flex justify-center items-center w-full px-6">
           <button
             onClick={onClose}
-            className="w-full py-2 bg-brand-9 text-white rounded hover:bg-blue-600 transition-colors"
+            className={`w-full py-2 text-white rounded hover:opacity-90 transition-colors`}
+            style={{ backgroundColor: color }}
           >
             Set Color
           </button>

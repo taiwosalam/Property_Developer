@@ -22,7 +22,7 @@ const BranchStatCard = ({
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
   return (
-    <Card className="border-none shadow-none rounded-[8px] bg-[#FAFAFA]">
+    <Card className="border-none shadow-none rounded-[8px] bg-[#FAFAFA] dark:bg-darkText-primary">
       <CardHeader className="flex flex-row flex-wrap gap-2 items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         <div
@@ -44,7 +44,7 @@ const BranchStatCard = ({
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-lg md:text-xl lg:text-2xl font-bold text-[#202224] mb-5">
+        <p className="text-lg md:text-xl lg:text-2xl font-bold text-[#202224] dark:text-darkText-1 mb-5">
           ₦ {formatNumber(balance)}
         </p>
         <div className="text-text-label flex items-center space-x-3 font-normal text-sm">

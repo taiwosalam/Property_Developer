@@ -69,7 +69,7 @@ const Dashboard = () => {
       </div>
 
       <SectionContainer heading="Recent invoice" href="/">
-        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
+        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar dark:bg-[#3C3D37]">
           <table className="dash-table">
             <colgroup>
               <col className="w-[72px]" />
@@ -121,7 +121,7 @@ const Dashboard = () => {
         </div>
       </SectionContainer>
       <SectionContainer heading="Recent Complains" href="/tasks/complaints">
-        <div className="bg-white p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array(6)
             .fill(null)
             .map((_, index) => (

@@ -22,7 +22,7 @@ const BranchCard: React.FC<BranchProps> = ({
           background: "linear-gradient(180deg, #38bdf8 46%, #ffffff00 0%)",
         }}
       ></div>
-      <div className="absolute left-[50%] translate-x-[-50%] top-[-2.8rem] bg-white rounded-full w-[95px] h-[95px] overflow-hidden border-[3px] border-white">
+      <div className="absolute left-[50%] translate-x-[-50%] top-[-2.8rem] bg-white dark:bg-darkText-primary rounded-full w-[95px] h-[95px] overflow-hidden border-[3px] border-white">
         <Image
           src={avatar || empty}
           alt={branch_title || ""}
@@ -30,8 +30,8 @@ const BranchCard: React.FC<BranchProps> = ({
           className="rounded-full object-cover"
         />
       </div>
-      <div className="rounded-2xl bg-white px-[20px] pt-[60px] pb-[20px] items-center text-center flex flex-col border-2 border-support-1 border-solid h-full">
-        <p className="font-bold text-base text-black leading-5 mb-[5px]">
+      <div className="rounded-2xl bg-white dark:bg-darkText-primary dark:border-[#3C3D37] px-[20px] pt-[60px] pb-[20px] items-center text-center flex flex-col border-2 border-support-1 border-solid h-full">
+        <p className="font-bold text-base text-black dark:text-white leading-5 mb-[5px]">
           {branch_title}
         </p>
         <p className="text-xs text-text-tertiary font-normal mb-[6.5px]">

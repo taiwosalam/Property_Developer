@@ -25,7 +25,7 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
 
   return (
     <div
-      className="p-[18px] flex items-center gap-[66px] flex-1 bg-white rounded-lg"
+      className="p-[18px] flex items-center gap-[66px] flex-1 bg-white dark:bg-darkText-primary rounded-lg"
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",

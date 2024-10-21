@@ -48,6 +48,13 @@ const config = {
           },
         },
 
+        darkText: {
+          1: "#C1C2C3",
+          2: "#A4A7B0 ",
+          primary: '#020617',
+        },
+
+
         neutral: {
           2: "#FAFAFA",
           3: "#F5F5F5",

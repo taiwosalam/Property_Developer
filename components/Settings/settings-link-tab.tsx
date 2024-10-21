@@ -1,4 +1,4 @@
-import React from "react";
+import React, { act } from "react";
 import Link from "next/link";
 
 // Types
@@ -17,7 +17,7 @@ import {
 } from "@/public/icons/icons";
 import clsx from "clsx";
 
-const SettingsLinkTab: React.FC<SettingsLinkTabProps> = ({ type, active }) => {
+const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> = ({ type, active, className }) => {
   const active_color = "#0033C4";
   const default_color = "#3F4247";
 
@@ -29,9 +29,10 @@ const SettingsLinkTab: React.FC<SettingsLinkTabProps> = ({ type, active }) => {
       className={clsx(
         "py-[14px] w-[138px] flex items-center justify-center gap-1 border-b-[2px] border-solid",
         {
-          "bg-white border-brand-9": active,
+          "bg-white border-brand-9":  active,
           "border-transparent hover:bg-neutral-3": !active,
-        }
+        },
+        className
       )}
     >
       {type === "profile" ? (
@@ -51,7 +52,7 @@ const SettingsLinkTab: React.FC<SettingsLinkTabProps> = ({ type, active }) => {
       ) : type === "others" ? (
         <SettingsIcon color={color} />
       ) : null}
-      <p className="text-base font-normal capitalize" style={{ color }}>
+      <p className="text-base font-normal capitalize dark:hover:text-white dark:text-white" style={{ color }}>
         {type}
       </p>
     </Link>
