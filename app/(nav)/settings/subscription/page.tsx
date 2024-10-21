@@ -160,6 +160,7 @@ const Subscriptions = () => {
                         placeholder="123"
                         id="sponsor_unit_available"
                         label="Listing sponsor Unit Available"
+                        className="flex-1"
                       />
                       <div className="flex items-end">
                         <Button
@@ -176,6 +177,7 @@ const Subscriptions = () => {
                         id="sponsor-proprty"
                         label="Sponsor Proprty"
                         placeholder="Insert unit ID"
+                        className="flex-1"
                       />
                       <div className="flex items-end">
                         <Button
