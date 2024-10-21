@@ -20,14 +20,14 @@ const PreviewInventory = () => {
           }}
         >
           <p className="text-brand-10 dark:text-darkText-1 text-base font-medium">Details</p>
-          <div className="flex items-center">
+          <div className="flex flex-col gap-4 lg:gap-0 lg:flex-row lg:items-center">
             <InventoryListInfo data={{}} chunkSize={2} />
           </div>
         </div>
       </div>
       <div className="custom-flex-col gap-4">
         <h2 className="text-black dark:text-white text-xl font-medium">Added Inventory</h2>
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <InventoryItem />
           <InventoryItem />
         </div>

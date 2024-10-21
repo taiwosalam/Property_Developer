@@ -30,7 +30,7 @@ const Management = () => {
       >
         <div className="custom-flex-col gap-8">
           <div className="flex">
-            <div className="flex justify-between w-full max-w-[900px]">
+            <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row justify-between w-full max-w-[900px]">
               <div className="custom-flex-col gap-4">
                 <DocumentCheckbox darkText checked={true}>
                   Can view and reply branch messages
@@ -121,7 +121,7 @@ const Management = () => {
       >
         <div className="custom-flex-col gap-8">
           <div className="flex">
-            <div className="flex justify-between w-full max-w-[900px]">
+            <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row justify-between w-full max-w-[900px]">
               <div className="custom-flex-col gap-4">
                 <DocumentCheckbox darkText checked={true}>
                   Can manage assign tenants/occupants
@@ -188,7 +188,7 @@ const Management = () => {
       >
         <div className="custom-flex-col gap-8">
           <div className="flex">
-            <div className="flex justify-between w-full max-w-[900px]">
+            <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row justify-between w-full max-w-[900px]">
               <div className="custom-flex-col gap-4">
                 <DocumentCheckbox darkText checked={true}>
                   Can be added to task
@@ -267,7 +267,7 @@ const Management = () => {
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-10">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-10">
               <Select
                 id="tenant_screening_level_type"
                 label="tenant screening level type"

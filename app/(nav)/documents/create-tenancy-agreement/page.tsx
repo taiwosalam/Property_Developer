@@ -20,7 +20,7 @@ const CreateTenancyAggrement = () => {
             Property Details
           </h2>
           <SectionSeparator />
-          <div className="flex">
+          <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
               data={{}}
               chunkSize={2}
@@ -38,7 +38,7 @@ const CreateTenancyAggrement = () => {
             Landlord/Landlady Details
           </h2>
           <SectionSeparator />
-          <div className="flex">
+          <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
               data={{}}
               chunkSize={2}

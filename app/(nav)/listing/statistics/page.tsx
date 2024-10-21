@@ -77,11 +77,11 @@ const Statistics = () => {
           />
         </div>
       </div>
-      <div className="flex gap-10">
+      <div className="flex flex-col xl:flex-row gap-10">
         <div className="flex-1">
           <DashboardChart visibleRange chartTitle="Performance" />
         </div>
-        <div className="w-[334px]">
+        <div className="w-full xl:w-[334px]">
           <div className="w-full py-6 px-3 custom-flex-col gap-6 bg-white">
             <div className="p-2 flex justify-between">
               <h2 className="text-text-label text-sm font-medium capitalize">

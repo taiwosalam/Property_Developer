@@ -154,12 +154,13 @@ const Subscriptions = () => {
                   <DocumentCheckbox darkText>
                     Automatically renew and update property listings.
                   </DocumentCheckbox>
-                  <div className="flex gap-4">
+                  <div className="flex flex-col lg:flex-row gap-4">
                     <div className="flex gap-4">
                       <Input
                         placeholder="123"
                         id="sponsor_unit_available"
                         label="Listing sponsor Unit Available"
+                        className="flex-1"
                       />
                       <div className="flex items-end">
                         <Button
@@ -176,6 +177,7 @@ const Subscriptions = () => {
                         id="sponsor-proprty"
                         label="Sponsor Proprty"
                         placeholder="Insert unit ID"
+                        className="flex-1"
                       />
                       <div className="flex items-end">
                         <Button
