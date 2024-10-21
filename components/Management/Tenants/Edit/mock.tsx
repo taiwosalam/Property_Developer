@@ -13,9 +13,10 @@ export const MockFunction = () => {
     // Simulate a delay before setting the hardcoded data
     const timer = setTimeout(() => {
       const hardcodedData: TenantData = {
-        avatar: "",
-        picture: "",
-        name: "John Doe",
+        avatar: "/empty/avatar-1.svg",
+        picture: "/empty/SampleLandlord.jpeg",
+        firstName: "John",
+        lastName: "Doe",
         email: "john.doe@example.com",
         user_tag: "web",
         phone_number: "1234567890",
@@ -29,13 +30,19 @@ export const MockFunction = () => {
           city: "uratta",
           address: "123 Main St",
         },
-        guarantor: {
+        guarantor1: {
           name: "Jane Doe",
           email: "jane.doe@example.com",
           address: "456 Elm St",
           phone_number: "+44987654321",
           relationship: "father",
-          note: "Some note",
+        },
+        guarantor2: {
+          name: "Joy Skaa",
+          email: "joy.ska@example.com",
+          address: "456 Elm St",
+          phone_number: "+44987654321",
+          relationship: "mother",
         },
         next_of_kin: {
           name: "Jane Doe",

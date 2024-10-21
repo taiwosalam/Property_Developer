@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Skeleton } from "@mui/material";
 import { empty } from "@/app/config";
 import Avatar from "@/public/empty/avatar.png";
-import { useTheme } from "next-themes"
+import { useTheme } from "next-themes";
 
 // Imports
 import Picture from "@/components/Picture/picture";
@@ -38,28 +38,21 @@ import { useDashboardData } from "@/hooks/useDashboardData";
 const Header = () => {
   const { loading, data: dashboardData, error } = useDashboardData();
 
-  const { theme, setTheme } = useTheme()
-
-  
+  const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
-    console.log(theme); 
-    switch (theme) { 
+    switch (theme) {
       case "light":
         setTheme("dark");
-        // setThemeIcon(Sun); 
         break;
       case "dark":
         setTheme("light");
-        // setThemeIcon(DarkIcon);
         break;
-      default: 
-        setTheme("light"); 
-        // setThemeIcon(DarkIcon);
+      default:
+        setTheme("light");
         break;
     }
   };
-
 
   return (
     <header
@@ -116,7 +109,17 @@ const Header = () => {
               alt="notifications"
               href="/notifications"
             />
-            <NavIcon icon={theme === "dark" ? <SunIcon size={21}/> : <MoonIcon size={21}/>} alt="theme-toggle" />
+            <NavIcon
+              icon={
+                theme === "dark" ? (
+                  <SunIcon size={21} />
+                ) : (
+                  <MoonIcon size={21} />
+                )
+              }
+              alt="theme-toggle"
+              onClick={toggleTheme}
+            />
           </div>
         </div>
 
@@ -161,7 +164,11 @@ const Header = () => {
             <Link href="/notifications" aria-label="notifications">
               <BellIcon />
             </Link>
-            <button type="button" aria-label="theme-toggle" onClick={toggleTheme}>
+            <button
+              type="button"
+              aria-label="theme-toggle"
+              onClick={toggleTheme}
+            >
               {theme === "dark" ? <SunIcon /> : <MoonIcon />}
             </button>
           </div>

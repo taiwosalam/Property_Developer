@@ -24,13 +24,14 @@ import {
   employmentOptions,
   employmentTypeOptions,
 } from "@/data";
+import type { TenantData } from "@/app/(nav)/management/tenants/types";
 
 const states = getAllStates();
 
 export const TenantEditProfileInfoSection = () => {
   const { data } = useTenantEditContext();
 
-  const [firstname, lastname] = data?.name ? data.name.split(" ") : ["", ""];
+  // const [firstname, lastname] = data?.name ? data.name.split(" ") : ["", ""];
 
   const [address, setAddress] = useState({
     state: "",
@@ -64,14 +65,14 @@ export const TenantEditProfileInfoSection = () => {
         <Input
           id="tenant-first_name"
           label="first name"
-          defaultValue={firstname}
+          defaultValue={data?.firstName}
           required
           inputClassName="rounded-lg"
         />
         <Input
           id="tenant-last_name"
           label="last name"
-          defaultValue={lastname}
+          defaultValue={data?.lastName}
           required
           inputClassName="rounded-lg"
         />
@@ -211,7 +212,7 @@ export const TenantEditNextOfKinInfoSection = () => {
 export const TenantEditGuarantorInfoSection = () => {
   const { data } = useTenantEditContext();
 
-  const guarantor = data?.guarantor || {
+  const guarantor1 = data?.guarantor1 || {
     name: "",
     email: "",
     address: "",
@@ -219,18 +220,29 @@ export const TenantEditGuarantorInfoSection = () => {
     relationship: "",
   };
 
-  return (
-    <LandlordTenantInfoEditSection title="Guarantor">
+  const guarantor2 = data?.guarantor2 || {
+    name: "",
+    email: "",
+    address: "",
+    phone_number: "",
+    relationship: "",
+  };
+
+  const renderGuarantorSection = (
+    guarantor: TenantData["guarantor1"],
+    index: number
+  ) => (
+    <LandlordTenantInfoEditSection title={`Guarantor ${index}`}>
       <LandlordTenantInfoEditGrid>
         <Input
-          id="guarantor_full_name"
+          id={`guarantor${index}_full_name`}
           label="full name"
           placeholder="Placeholder"
           defaultValue={guarantor.name}
           inputClassName="rounded-lg"
         />
         <Input
-          id="guarantor_email"
+          id={`guarantor${index}_email`}
           type="email"
           label="email"
           placeholder="Placeholder"
@@ -238,14 +250,14 @@ export const TenantEditGuarantorInfoSection = () => {
           inputClassName="rounded-lg"
         />
         <PhoneNumberInput
-          id="guarantor_phone_number"
+          id={`guarantor${index}_phone_number`}
           label="phone number"
           placeholder="Placeholder"
           defaultValue={guarantor.phone_number || ""}
           inputClassName="!bg-neutral-2"
         />
         <Select
-          id="guarantor-relationship"
+          id={`guarantor${index}-relationship`}
           label="relationship"
           placeholder="Select options"
           options={guarantorRelationships}
@@ -253,7 +265,7 @@ export const TenantEditGuarantorInfoSection = () => {
           inputContainerClassName="bg-neutral-2"
         />
         <Input
-          id="guarantor_address"
+          id={`guarantor${index}_address`}
           label="address"
           placeholder="Placeholder"
           defaultValue={guarantor.address}
@@ -266,6 +278,13 @@ export const TenantEditGuarantorInfoSection = () => {
         </div>
       </LandlordTenantInfoEditGrid>
     </LandlordTenantInfoEditSection>
+  );
+
+  return (
+    <>
+      {renderGuarantorSection(guarantor1, 1)}
+      {renderGuarantorSection(guarantor2, 2)}
+    </>
   );
 };
 
