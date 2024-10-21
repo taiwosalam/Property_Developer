@@ -18,10 +18,10 @@ import {
 import clsx from "clsx";
 
 const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> = ({ type, active, className }) => {
-  const active_color = "#0033C4";
-  const default_color = "#3F4247";
+  const active_color = "#fff";
+  const default_color = "#000";
 
-  const color = active ? active_color : default_color;
+  const color = active ? '#000' : '#fff';
 
   return (
     <Link
@@ -30,29 +30,29 @@ const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> =
         "py-[14px] w-[138px] flex items-center justify-center gap-1 border-b-[2px] border-solid",
         {
           "bg-white border-brand-9":  active,
-          "border-transparent hover:bg-neutral-3": !active,
+          "border-transparent hover:bg-neutral-3 hover:dark:bg-darkText-primary": !active,
         },
         className
       )}
     >
       {type === "profile" ? (
-        <ProfileIcon color={color} />
+        <ProfileIcon />
       ) : type === "management" ? (
-        <ManagementIcon color={color} />
+        <ManagementIcon />
       ) : type === "subscription" ? (
-        <SubscriptionIcon color={color} />
+        <SubscriptionIcon />
       ) : type === "services" ? (
-        <ServicesIcon color={color} />
+        <ServicesIcon />
       ) : type === "security" ? (
-        <SecurityIcon color={color} />
+        <SecurityIcon />
       ) : type === "enrollment" ? (
-        <EnrollmentIcon color={color} />
+        <EnrollmentIcon />
       ) : type === "appearance" ? (
-        <AppearanceIcon color={color} />
+        <AppearanceIcon />
       ) : type === "others" ? (
-        <SettingsIcon color={color} />
+        <SettingsIcon />
       ) : null}
-      <p className="text-base font-normal capitalize dark:hover:text-white dark:text-white" style={{ color }}>
+      <p className={`text-base font-normal capitalize ${active ? 'dark:text-black' : 'dark:text-white dark:hover:text-white'}`}>
         {type}
       </p>
     </Link>
