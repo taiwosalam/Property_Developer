@@ -138,7 +138,7 @@ const RentalPropertyCard: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
+    <div className="bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden shadow-lg">
       <div className="h-[200px] relative">
         <PropertyImageSlider images={sampleImages} showOverlay={isHovered} />
       </div>

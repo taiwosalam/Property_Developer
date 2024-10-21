@@ -11,7 +11,7 @@ import DeleteAccountModal from "@/components/Management/delete-account-modal";
 const ManageInventory = () => {
   const input_styles: CSSProperties = {
     padding: "12px 14px",
-    backgroundColor: "white",
+    backgroundColor: "white dark:bg-darkText-primary",
   };
 
   return (
@@ -25,7 +25,7 @@ const ManageInventory = () => {
             <Input
               id="inventory-title"
               value="Olalomi Cottage"
-              className="flex-1 dark:bg-darkText-primary !important"
+              className="flex-1 dark:bg-darkText-primary !important dark:text-darkText-1"
               style={input_styles}
             />
             <Input

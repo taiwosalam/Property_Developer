@@ -23,7 +23,7 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   return (
     <div
-      className="p-6 rounded-2xl bg-white"
+      className="p-6 rounded-2xl bg-white dark:bg-darkText-primary"
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       {/* Image Modal */}
@@ -57,40 +57,40 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
         <div className="overflow-x-auto max-w-full flex-grow">
           <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
             <div>
-              <p className="text-[#747474]">Unit Details</p>
-              <p className="text-black">
+              <p className="text-[#747474] dark:text-white">Unit Details</p>
+              <p className="text-black dark:text-darkText-1">
                 Newly Built 5 Bedroom Detached Duplex
               </p>
             </div>
             <div>
-              <p className="text-[#747474]">Rent</p>
-              <p className="text-black font-medium">₦300,000</p>
+              <p className="text-[#747474] dark:text-white">Rent</p>
+              <p className="text-black dark:text-darkText-1">₦300,000</p>
             </div>
             <div>
-              <p className="text-[#747474]">Unit No/Name</p>
-              <p className="text-black font-medium">Flat 4</p>
+              <p className="text-[#747474] dark:text-white">Unit No/Name</p>
+              <p className="text-black dark:text-darkText-1">Flat 4</p>
             </div>
             <div>
-              <p className="text-[#747474]">Caution Deposit</p>
-              <p className="text-black font-medium">₦300,000</p>
+              <p className="text-[#747474] dark:text-white">Caution Deposit</p>
+              <p className="text-black dark:text-darkText-1">₦300,000</p>
             </div>
             <div>
-              <p className="text-[#747474]">Unit Description</p>
-              <p className="text-black font-medium">Abiola Moniya</p>
+              <p className="text-[#747474] dark:text-white">Unit Description</p>
+              <p className="text-black dark:text-darkText-1">Abiola Moniya</p>
             </div>
             <div>
-              <p className="text-[#747474]">Service Charge</p>
-              <p className="text-black font-medium">₦300,000</p>
+              <p className="text-[#747474] dark:text-white">Service Charge</p>
+              <p className="text-black dark:text-darkText-1">₦300,000</p>
             </div>
             <div>
-              <p className="text-[#747474]">Tenants Name</p>
-              <p className="text-black font-medium underline underline-offset-4 flex items-center">
+              <p className="text-[#747474] dark:text-white">Tenants Name</p>
+              <p className="text-black dark:text-darkText-1 underline underline-offset-4 flex items-center">
                 David Ajala <BadgeIcon color="red" />
               </p>
             </div>
             <div>
-              <p className="text-[#747474]">Due Date</p>
-              <p className="text-black font-medium">12/12/2024</p>
+              <p className="text-[#747474] dark:text-white">Due Date</p>
+              <p className="text-black dark:text-darkText-1">12/12/2024</p>
             </div>
           </div>
         </div>
