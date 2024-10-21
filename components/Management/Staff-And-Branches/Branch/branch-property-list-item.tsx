@@ -22,7 +22,7 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   return (
     <div
-      className="px-6 py-4 rounded-2xl bg-white flex items-center gap-8"
+      className="px-6 py-4 rounded-2xl bg-white dark:bg-darkText-primary flex items-center gap-8"
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       {/* Image Modal */}
@@ -41,7 +41,7 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
           <div
             role="button"
             className="absolute z-[10] inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.3) dark:bg-darkText-primary" }}
             onClick={() => setScreenModal(true)}
           >
             {/* Group of icons down */}

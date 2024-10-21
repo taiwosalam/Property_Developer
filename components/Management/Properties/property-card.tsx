@@ -67,7 +67,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
   return (
     <div
-      className="rounded-2xl relative overflow-hidden bg-white"
+      className="rounded-2xl relative overflow-hidden bg-white dark:bg-darkText-primary "
       style={{ boxShadow: "4px 4px 10px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="relative h-[200px] w-full overflow-hidden rounded-t-2xl group">
@@ -179,7 +179,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         <p className="text-brand-5 text-xs lg:text-sm font-bold">
           ID: {propertyId}
         </p>
-        <p className="text-[#374151] text-lg md:text-xl lg:text-2xl font-bold">
+        <p className="text-[#374151] dark:text-white text-lg md:text-xl lg:text-2xl font-bold">
           {name} <br />({units} Units)
         </p>
         <p className="flex items-center gap-1 text-brand-tertiary text-xs lg:text-sm font-normal">
@@ -201,7 +201,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             <p className="text-brand-primary text-lg lg:text-xl font-bold">{`${
               currencySymbols["NAIRA"]
             }${formatNumber(price)}`}</p>
-            <p className="text-[#606060] font-normal text-xs">Annual Returns</p>
+            <p className="text-[#606060] dark:text-darkText-1 font-normal text-xs">Annual Returns</p>
             <p className="text-text-disabled font-medium text-sm">
               <span className="text-highlight">{`${
                 currencySymbols["NAIRA"]
@@ -219,7 +219,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             initial={{ y: "100%" }}
             animate={{ y: "0" }}
             exit={{ y: "100%" }}
-            className="bg-white px-8 pt-4 pb-10 text-xs grid grid-cols-3 gap-x-4 gap-y-2 absolute bottom-0 w-full rounded-b-2xl z-[3] cursor-default h-[55%]"
+            className="bg-white dark:bg-darkText-primary px-8 pt-4 pb-10 text-xs grid grid-cols-3 gap-x-4 gap-y-2 absolute bottom-0 w-full rounded-b-2xl z-[3] cursor-default h-[55%]"
           >
             <div>
               <p className="text-label font-normal">Branch</p>
