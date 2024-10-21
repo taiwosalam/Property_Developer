@@ -137,7 +137,7 @@ const Profile = () => {
       of 2MB. The picture must be between 250 to 400 pixels wide, or ideally
       160px x 160px."
             />
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col lg:flex-row gap-4">
               <label
                 htmlFor="logo"
                 className="relative py-10 w-full md:w-[374px] flex flex-col gap-1 items-center justify-center cursor-pointer rounded-xl overflow-hidden border-2 border-dashed border-borders-normal"
@@ -196,7 +196,7 @@ const Profile = () => {
                 <SettingsVerifiedBadge />
               </div>
             </div>
-            <div className="grid grid-cols-[1fr_1fr_2fr] gap-5">
+            <div className="grid grid-cols-1 xl:grid-cols-[1fr_1fr_2fr] gap-5">
               <Input
                 id="date_of_registration"
                 label="date of registration"

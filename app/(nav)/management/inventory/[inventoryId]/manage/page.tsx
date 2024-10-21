@@ -21,7 +21,7 @@ const ManageInventory = () => {
           Manage Inventory
         </h1>
         <div className="custom-flex-col gap-6">
-          <div className="flex gap-8">
+          <div className="flex flex-col md:flex-row gap-8">
             <Input
               id="inventory-title"
               value="Olalomi Cottage"
@@ -43,13 +43,13 @@ const ManageInventory = () => {
             }}
           >
             <p className="text-brand-10 dark:text-white text-base font-medium">Details</p>
-            <div className="flex items-center">
+            <div className="flex flex-col gap-4 lg:gap-0 lg:flex-row lg:items-center">
               <InventoryListInfo data={{}} chunkSize={2} />
             </div>
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <InventoryItem edit />
         <InventoryItem edit />
       </div>

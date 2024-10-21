@@ -9,7 +9,7 @@ import { empty } from "@/app/config";
 
 const PreviewDisbursement = () => {
   return (
-    <div className="custom-flex-col gap-10 pb-10">
+    <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
         <ExportPageHeader
           logo={empty}
@@ -18,7 +18,7 @@ const PreviewDisbursement = () => {
           phoneNumbers={["09022312133", "07012133313", "0901212121"]}
           email="example@mail.com"
         />
-        <div className="rounded-lg bg-white p-8 flex">
+        <div className="rounded-lg bg-white p-8 flex gap-6 md:gap-0 flex-col md:flex-row">
           <KeyValueList
             data={{}}
             chunkSize={2}
@@ -34,7 +34,7 @@ const PreviewDisbursement = () => {
           />
         </div>
         <AccountingTitleSection title="Disbursement Details">
-          <div className="p-6 flex bg-white rounded-lg">
+          <div className="p-6 flex gap-4 md:gap-0 flex-col md:flex-row bg-white rounded-lg">
             <KeyValueList
               data={{
                 "amount dusburse": "₦115,000.00",
