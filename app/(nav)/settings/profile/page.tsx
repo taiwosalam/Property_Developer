@@ -384,16 +384,15 @@ const Profile = () => {
           Select a preferred subdomain to showcase your company profile and
           market your properties listings portfolio to the world.
         </h5>
-        <p className="text-text-secondary text-md">
-          {" "}
-          Customize website domain name{" "}
+        <p className="text-text-secondary dark:text-darkText-1 text-md">
+          Customize website domain name
         </p>
         <div className="flex gap-4 mb-4 mt-2 items-center w-full">
           <Input
             id="custom_domain"
             label=""
             placeholder="makinwauxdesigner"
-            className=""
+            className="min-w-[300px]"
           />
           <Link href="#" className="text-brand-9 text-sm text-center">
             https://www.makinwauxdesgner.ourlisting.ng
@@ -401,9 +400,8 @@ const Profile = () => {
         </div>
 
         <div className="rssFeed flex flex-col gap-1 mb-4">
-          <h4 className="text-text-secondary text-md font-normal">
-            {" "}
-            RSS Feed Link for Listings{" "}
+          <h4 className="text-text-secondary dark:text-darkText-1 text-md font-normal">
+            RSS Feed Link for Listings
           </h4>
           <Link href="#" className="text-brand-9 text-sm underline">
             https://www.makinwauxdesgner.ourlisting.ng

@@ -119,7 +119,7 @@ interface SettingsOthersCheckBoxProps {
 export interface SettingsOthersProps {
   title: string;
   desc: string;
-  icon: string;
+  icon: React.ReactNode;
 }
 
 export interface SettingsDirectorTypes {

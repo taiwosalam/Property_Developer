@@ -31,6 +31,7 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import SettingsPaymentModal from "./Modals/settings-payment-modal";
 import { HexColorPicker } from "react-colorful";
 import DocumentCheckbox from "../Documents/DocumentCheckbox/document-checkbox";
+import { SettingUserIcon } from "@/public/icons/icons";
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
     <p
@@ -48,7 +49,7 @@ export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
 }) => (
   <div className="custom-flex-col gap-[2px]">
     {title && (
-      <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium capitalize">
+      <p className="text-text-quaternary dark:text-white text-base font-medium capitalize">
         {title}
       </p>
     )}
@@ -141,8 +142,8 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
 }) => (
   <div className="flex justify-between">
     <div className="first flex gap-1 items-start">
-      <span className="dark:text-brand-9 flex-shrink-0">
-        <Image src={icon} width={24} height={24} alt="user" className="w-6 h-6 sm:w-[24px] sm:h-[24px]" />
+      <span className="dark:text-white flex-shrink-0 text-black">
+        {icon}
       </span>
       <div className="flex flex-col">
         <h4 className="text-text-quaternary dark:text-white text-base">
@@ -307,6 +308,11 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
           className="w-full h-full object-contain"
         />
       </div>
+      {(!isSelected && (value === 'theme2' || value === 'theme3')) && (
+        <Link href="#" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand-9 text-white py-1 px-3 rounded flex items-center justify-center z-20">
+          Preview Website
+        </Link>
+      )}
     </div>
   );
 };

@@ -67,7 +67,7 @@ export const DropdownContent: React.FC<DropdownContentProps> = ({
   return (
     <div
       className={clsx(
-        "absolute z-10 bg-white border border-solid border-neutral-4 rounded-lg overflow-hidden",
+        "absolute z-10 bg-white dark:bg-darkText-primary border border-solid border-neutral-4 dark:border-[#3C3D37] rounded-lg overflow-hidden",
         {
           "opacity-100 pointer-events-auto visible": isOpen,
           "opacity-0 pointer-events-none invisible": !isOpen,

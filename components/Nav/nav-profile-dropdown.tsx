@@ -31,16 +31,16 @@ const NavProfileDropdown = ({
             status
           />
           <div className="custom-flex-col text-text-secondary font-medium">
-            <p className="text-xs font-normal">{getGreeting()},</p>
-            <p>{name}</p>
-            <p>ID: {userId}</p>
+            <p className="text-xs font-normal dark:text-darkText-2">{getGreeting()},</p>
+            <p className="dark:text-white">{name}</p>
+            <p className="dark:text-darkText-2">ID: {userId}</p>
           </div>
         </div>
         <SectionSeparator />
       </div>
       {profile_links.map((link, index) => (
         <Link
-          className="py-2 px-5 sm:py-3 sm:px-[30px] text-text-primary hover:bg-neutral-2"
+          className="py-2 px-5 sm:py-3 sm:px-[30px] text-text-primary dark:text-darkText-1 hover:bg-neutral-2 dark:hover:bg-[#3C3D37]"
           key={index}
           href={link.href}
           target={link.target || "_self"}
