@@ -10,7 +10,7 @@ const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
 }) => {
   const buttonClasses =
-    "grid place-items-center border border-brand-9 rounded-[4px] w-[30px] h-[33px]";
+    "grid place-items-center border border-brand-9 rounded-[4px] w-[25px] h-[28px] md:w-[30px] md:h-[33px]";
 
   const generatePageButtons = () => {
     const pages = [];
@@ -89,7 +89,9 @@ const Pagination: React.FC<PaginationProps> = ({
         className
       )}
     >
-      <p className={clsx(currentPage === 1 && "opacity-50")}>Previous Page</p>
+      <p className={clsx("hidden md:block", currentPage === 1 && "opacity-50")}>
+        Previous Page
+      </p>
       <div className="flex gap-1 items-center">
         <button
           type="button"
@@ -111,7 +113,12 @@ const Pagination: React.FC<PaginationProps> = ({
           <ChevronRight opacity={currentPage === totalPages ? "0.2" : 1} />
         </button>
       </div>
-      <p className={clsx(currentPage === totalPages && "opacity-50")}>
+      <p
+        className={clsx(
+          "hidden md:block",
+          currentPage === totalPages && "opacity-50"
+        )}
+      >
         Next Page
       </p>
     </div>

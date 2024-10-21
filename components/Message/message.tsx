@@ -23,8 +23,8 @@ const Message: React.FC<MessageProps> = ({
       >
         <p
           className={clsx("flex-1 text-sm font-normal", {
-            "text-white ": type === "from user",
-            "text-text-quaternary ": type === "to user",
+            "text-white": type === "from user",
+            "text-text-quaternary": type === "to user",
           })}
         >
           {text}

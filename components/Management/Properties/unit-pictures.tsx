@@ -9,8 +9,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useAddUnitStore } from "@/store/add-unit-store";
-
-const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
+import { MAX_FILE_SIZE_MB } from "@/data";
 
 const UnitPictures = () => {
   const { images, setImages, removeImage, isEditing } = useUnitForm();

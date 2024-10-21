@@ -8,7 +8,7 @@ const Messages: React.FC<MessagesProps> = ({ day }) => {
   return (
     <div className="custom-flex-col gap-8">
       <div className="flex justify-center sticky top-0">
-        <p className="py-1 px-2 rounded-[4px] bg-neutral-2 text-text-quaternary text-[10px] font-normal capitalize">
+        <p className="py-1 px-2 rounded-[4px] bg-neutral-2 dark:bg-darkText-primary text-text-quaternary dark:text-white text-[10px] font-normal capitalize">
           {day}
         </p>
       </div>

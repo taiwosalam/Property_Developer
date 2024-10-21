@@ -66,7 +66,7 @@ const EditLandlord = () => {
   if (!landlord) return null;
 
   return (
-    <div className="custom-flex-col gap-6 lg:gap-10 pb-[150px] md:pb-[100px]">
+    <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
       <BackButton>Edit Landlord</BackButton>
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="custom-flex-col gap-5 flex-1">

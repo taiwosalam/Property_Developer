@@ -83,8 +83,7 @@ const Appearance = () => {
             isSelected={selectedTheme === "theme1"}
           />
           <Tooltip
-            title="Sorry, this theme is for Professional Plan subscribers only"
-            followCursor
+            title="Sorry, this theme is for Professional Plan subscribers only" arrow
           >
             <div
               className="relative"
@@ -101,8 +100,7 @@ const Appearance = () => {
           </Tooltip>
 
           <Tooltip
-            title="Sorry, this theme is for Professional Plan subscribers only"
-            followCursor
+            title="Sorry, this theme is for Professional Plan subscribers only" arrow
           >
             <div
               className="relative"
@@ -119,15 +117,6 @@ const Appearance = () => {
           </Tooltip>
         </div>
         <div className="flex justify-end mt-4">
-          {/* <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => {
-              // Add functionality to handle update action
-              console.log("Update clicked");
-            }}
-          >
-            Update
-          </button> */}
           <SettingsUpdateButton />
         </div>
       </SettingsSection>

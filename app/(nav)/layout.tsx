@@ -51,10 +51,8 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           className={clsx(
             "h-[calc(100dvh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white dark:bg-[#020617] dark:border-[#252525] dark:border-r no-scrollbar overflow-auto transition-transform duration-300",
             {
-              "-translate-x-full md:w-[110px]":
-                !isSideNavOpen,
-              "translate-x-0 md:w-[235px] lg:w-[250px]":
-                isSideNavOpen,
+              "-translate-x-full md:w-[110px]": !isSideNavOpen,
+              "translate-x-0 md:w-[235px] lg:w-[250px]": isSideNavOpen,
             },
             "md:translate-x-0"
           )}
@@ -111,13 +109,13 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     color={primaryColor as Color}
                     className="w-8 h-8 md:hidden"
                   />
-                  <div className="hidden md:block">
+                  <div className="hidden md:block text-brand-9">
                     <SidenavArrow />
                   </div>
                 </>
               )}
             </button>
-            <p className="capitalize text-text-primary text-sm font-medium truncate">
+            <p className="capitalize text-text-primary dark:text-darkText-2 text-sm font-medium truncate">
               {pathname.split("/").slice(1).join(" > ")}
             </p>
           </div>

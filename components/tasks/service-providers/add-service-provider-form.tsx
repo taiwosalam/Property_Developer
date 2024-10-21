@@ -38,13 +38,6 @@ const AddServiceProviderForm = ({
     inputFileRef.current?.value && (inputFileRef.current.value = "");
   };
 
-  useEffect(() => {
-    setState((prev) => ({
-      ...prev,
-      selectedLGA: "",
-    }));
-  }, [selectedState]);
-
   return (
     <AuthForm
       className="custom-flex-col gap-5"
@@ -109,7 +102,11 @@ const AddServiceProviderForm = ({
           inputContainerClassName="bg-neutral-2"
           value={selectedState}
           onChange={(value) => {
-            setState((prev) => ({ ...prev, selectedState: value }));
+            setState((prev) => ({
+              ...prev,
+              selectedState: value,
+              selectedLGA: "",
+            }));
           }}
         />
         <Select
@@ -125,7 +122,7 @@ const AddServiceProviderForm = ({
           //   validationErrors={errorMsgs}
         />
       </div>
-      <div className="flex justify-between items-end">
+      <div className="flex justify-between items-end gap-4 flex-wrap">
         <div className="custom-flex-col gap-3">
           <p className="text-black text-base font-medium">
             Upload picture or select an avatar.
@@ -147,7 +144,7 @@ const AddServiceProviderForm = ({
             <Avatars type="avatars" onClick={handleAvatarChange} />
           </div>
         </div>
-        <Button type="submit" size="base_medium" className="py-2 px-8">
+        <Button type="submit" size="base_medium" className="ml-auto py-2 px-8">
           create
         </Button>
       </div>

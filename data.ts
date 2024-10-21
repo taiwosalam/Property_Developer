@@ -77,6 +77,8 @@ export const titles = [
   "Evangelist",
 ];
 
+export const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
+
 export interface LocalGovernments {
   [localGovernment: string]: string[];
 }

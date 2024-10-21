@@ -35,10 +35,10 @@ const Chat = () => {
               status
             />
             <div className="custom-flex-col">
-              <p className="text-text-primary text-base font-medium capitalize">
+              <p className="text-text-primary dark:text-white text-base font-medium capitalize">
                 {data.fullname}
               </p>
-              <p className="text-text-disabled text-[10px] font-normal">
+              <p className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal">
                 Tap here for contact info
               </p>
             </div>

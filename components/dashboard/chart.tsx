@@ -165,7 +165,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
           </div>
         </CardHeader>
         <div className="flex items-center justify-between flex-wrap lg:flex-nowrap my-2 space-y-4 lg:my-0 lg:space-y-0 px-6">
-          <div className="w-full flex space-x-0.5">
+          <div className="w-full flex items-center space-x-2">
             {/* Sales Switch */}
             <span className="flex items-center space-x-0.5">
               <Switch
