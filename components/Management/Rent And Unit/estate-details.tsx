@@ -12,7 +12,7 @@ const EstateDetails = ({ title }: { title?: string }) => {
       </h6>
       <div className="w-full h-[1px] bg-[#C0C2C8] bg-opacity-20"></div>
       <div className="w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-4">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-y-4">
           {estateData.map((item, index) => (
             <EstateDetailItem
               key={index}

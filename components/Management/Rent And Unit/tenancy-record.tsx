@@ -32,8 +32,8 @@ const TenancyRecord = () => {
       </div>
       <div className="h-[2px] w-full bg-[#C0C2C8]"></div>
       <div>
-        <div className="w-full flex items-center gap-4 py-4">
-          <div className="col-span-2 grid grid-cols-2 gap-y-4 flex-1">
+        <div className="w-full flex flex-wrap items-center gap-4 py-4 md:justify-between md:flex-1">
+          <div className="col-span-2 grid grid-cols-2 gap-y-4">
             <DetailItem label="Name" value="Abimbola Adedeji" />
             <DetailItem label="Email" value="abimbola adedeji@gmail.com" />
             <DetailItem label="Phone Number Deposit" value="+2348065558146" />
@@ -120,7 +120,9 @@ const TenancyRecord = () => {
                                 <p>Rent cost: Start date: Sept 22, 2020</p>
                               </td>
                               <td>
-                                <p className="text-status-success-3">₦ 100,000</p>
+                                <p className="text-status-success-3">
+                                  ₦ 100,000
+                                </p>
                               </td>
                               <td>
                                 <p className="text-status-error-primary">
