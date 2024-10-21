@@ -1,4 +1,3 @@
-import React from "react";
 import Image from "next/image";
 
 // Types
@@ -46,10 +45,10 @@ const Picture: React.FC<PictureProps> = ({
           objectFit: fit,
           width: imageWidth,
           height: imageHeight,
-          minWidth: imageWidth,
-          minHeight: imageHeight,
-          maxWidth: imageWidth,
-          maxHeight: imageHeight,
+          // minWidth: imageWidth,
+          // minHeight: imageHeight,
+          // maxWidth: imageWidth,
+          // maxHeight: imageHeight,
           ...style,
         }}
       />

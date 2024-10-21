@@ -10,4 +10,8 @@ export const trackOutsideClick = (
   };
 
   document.addEventListener("mousedown", handleOutsideClick);
+
+  return () => {
+    document.removeEventListener("mousedown", handleOutsideClick);
+  };
 };

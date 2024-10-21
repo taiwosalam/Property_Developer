@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { Color } from "@/types/global"; // Ensure this is correctly set in your project
 import { createSelectors } from "./storeSelectors";
-import { hexToRgb } from "@/utils/rgbaToHex";
+import { hexToRgb, rgbToHex } from "@/utils/rgbaToHex";
+import { setCSSVariables, updateBrandColors } from "@/utils/updateBrandColors";
 
 // Define the store's state and actions
 interface ThemeState {
@@ -30,28 +30,37 @@ export const useThemeStore = create<ThemeState>((set) => ({
   },
 
   setColor: (color: string) => {
-    // Calculate secondary color with alpha 0.7
-    const alpha = 0.7;
-    const rgbaColor = hexToRgb(color); // Get rgba format
-    const rgbaParts = rgbaColor ? rgbaColor.match(/\d+(\.\d+)?/g) : null;
+    let hexColor: string | null;
+    let rgbColor: string | null;
 
-    if (rgbaParts) {
-      const secondaryColor = `rgba(${rgbaParts[0]}, ${rgbaParts[1]}, ${rgbaParts[2]}, ${alpha})`;
+    // Determine if the color is in hex or RGB format
+    if (color.startsWith("#")) {
+      hexColor = color;
+      rgbColor = hexToRgb(color);
+    } else {
+      // Assume color is in RGB format
+      rgbColor = color;
+      hexColor = rgbToHex(color);
+    }
+    if (rgbColor && hexColor) {
+      const alpha = 0.7;
+      const rgbParts = rgbColor.match(/\d+(\.\d+)?/g);
+      if (rgbParts) {
+        const secondaryColor = `rgba(${rgbParts[0]}, ${rgbParts[1]}, ${rgbParts[2]}, ${alpha})`;
 
-      localStorage.setItem("primary-color", color);
-      document.documentElement.style.setProperty("--primary-color", color);
+        localStorage.setItem("primary-color", hexColor);
 
-      localStorage.setItem("secondary-color", secondaryColor);
-      document.documentElement.style.setProperty(
-        "--secondary-color",
-        secondaryColor
-      );
-
-      // Return the new state
-      return set({
-        primaryColor: color,
-        secondaryColor: secondaryColor,
-      });
+        setCSSVariables({
+          "--primary-color": hexColor,
+          "--secondary-color": secondaryColor,
+        });
+        updateBrandColors(hexColor);
+        // Return the new state
+        return set({
+          primaryColor: hexColor,
+          secondaryColor: secondaryColor,
+        });
+      }
     }
   },
 }));

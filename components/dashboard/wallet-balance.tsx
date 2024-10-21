@@ -10,7 +10,7 @@ import WalletBG from "@/public/global/wallet-bg.svg";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SVG from "../SVG/svg";
 import { Eye, EyeOff } from "lucide-react";
 import {
@@ -18,6 +18,7 @@ import {
   BlueBuildingIcon,
   BlueSendIcon,
 } from "@/public/icons/dashboard-cards/icons";
+import { CautionIcon } from "@/public/icons/icons";
 import AddFundsModal from "../Wallet/AddFunds/add-funds-modal";
 import SendFundsModal from "../Wallet/SendFunds/send-funds-modal";
 import WithdrawFundsModal from "../Wallet/Withdraw/withdraw-funds-modal";
@@ -113,12 +114,12 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
           <p className="font-medium text-xl text-white">
             {hideBalance ? "*******" : "₦ " + formatNumber(mainBalance)}
           </p>
-          <div className="text-white text-xs font-medium capitalize flex space-x-1">
+          <div className="text-white text-xs font-medium capitalize flex items-center space-x-1">
             <p className="text-text-white-secondary ">caution deposit</p>
             <span className="text-white ml-2">
               {hideBalance ? "*******" : "₦ " + formatNumber(cautionDeposit)}
             </span>
-            <Image src="/icons/caution.svg" alt="info" width={12} height={12} />
+            <CautionIcon />
           </div>
           <div className="w-full flex justify-between">
             {options.map((option, index) => (

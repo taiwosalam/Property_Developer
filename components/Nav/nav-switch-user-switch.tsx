@@ -1,12 +1,16 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 // Images
 import { ChevronDown } from "lucide-react";
 import { trackOutsideClick } from "@/utils/track-outside-click";
 
-const NavSwitchUserSwitch = ({ userType }: { userType: string }) => {
+const NavSwitchUserSwitch: React.FC<{
+  userType: string;
+  loading: boolean;
+  error: Error | null;
+}> = ({ userType, loading, error }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [active, setActive] = useState(userType);
 
@@ -20,22 +24,29 @@ const NavSwitchUserSwitch = ({ userType }: { userType: string }) => {
     }
   };
 
-  const handleUserSwitch = (user: string) => {
-    setActive(user);
+  const handleModuleSwitch = (val: string) => {
+    setActive(val);
     setIsOpen(false);
   };
+
+  useEffect(() => {
+    setActive(userType);
+  }, [userType]);
 
   return (
     <div ref={containerRef} className="relative flex-1 max-w-[240px]">
       <button
+        type="button"
         onClick={handleSwitch}
-        className="w-full h-full p-4 flex items-center justify-between gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]"
+        aria-label="switch user"
+        className="w-full h-full px-4 py-[12px] flex items-center justify-between gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]"
       >
-        <p className="text-[#0a132ea6] dark:text-white text-base font-semibold capitalize custom-truncated">
-          {userType}
-        </p>
+        <span className="text-[#0a132ea6] dark:text-white text-base font-semibold capitalize custom-truncated">
+          {loading ? "loading..." : error ? "Property Manager" : userType}
+        </span>
         <ChevronDown size={20} color="#0a132ea6" />
       </button>
+
       {isOpen && (
         <div
           style={{ boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.1)" }}
@@ -43,22 +54,25 @@ const NavSwitchUserSwitch = ({ userType }: { userType: string }) => {
         >
           <div className="custom-flex-col text-[#0a132ea6] text-base font-semibold dark:text-white">
             <button
-              onClick={() => handleUserSwitch("property manager")}
-              className="p-4 capitalize text-start hover:bg-neutral-2 hover:bg-opacity-50 dark:hover:bg-[#292d32]"
+              type="button"
+              onClick={() => handleModuleSwitch("property manager")}
+              className="p-4 capitalize text-start hover:bg-neutral-2"
             >
-              property manager
+              Property Manager
             </button>
             <button
-              onClick={() => handleUserSwitch("hospilatity manager")}
-              className="p-4 capitalize text-start hover:bg-neutral-2 hover:bg-opacity-50 dark:hover:bg-[#292d32]"
+              type="button"
+              onClick={() => handleModuleSwitch("hospilatity manager")}
+              className="p-4 capitalize text-start hover:bg-neutral-2"
             >
-              hospitality manager
+              Hospitality Manager
             </button>
             <button
-              onClick={() => handleUserSwitch("property developer")}
-              className="p-4 capitalize text-start hover:bg-neutral-2 hover:bg-opacity-50 dark:hover:bg-[#292d32]"
+              type="button"
+              onClick={() => handleModuleSwitch("property developer")}
+              className="p-4 capitalize text-start hover:bg-neutral-2"
             >
-              property developer
+              Property Developer
             </button>
           </div>
         </div>

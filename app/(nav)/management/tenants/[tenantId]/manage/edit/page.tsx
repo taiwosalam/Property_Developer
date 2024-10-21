@@ -21,7 +21,7 @@ import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import { AuthForm, formDataToString } from "@/components/Auth/auth-components";
 import { TenantEditContext } from "@/components/Management/Tenants/Edit/tenant-edit-context";
 import { LandlordTenantInfoEditSection } from "@/components/Management/landlord-tenant-info-components";
-
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import {
   TenantEditNoteSection,
   TenantEditAttachmentSection,
@@ -33,11 +33,11 @@ import {
 } from "@/components/Management/Tenants/Edit/tenant-edit-info-sectios";
 import BackButton from "@/components/BackButton/back-button";
 import CustomLoader from "@/components/Loader/CustomLoader";
-// import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
+import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 
 const EditTenant = () => {
-  const { tenant, tenantId, error, loading } = useTenantData();
-  // const { data: tenant, tenantId } = MockFunction();
+  // const { tenant, tenantId, error, loading } = useTenantData();
+  const { data: tenant, tenantId, error, loading } = MockFunction();
 
   const { preview, setPreview, inputFileRef, handleImageChange } =
     useImageUploader();
@@ -88,7 +88,7 @@ const EditTenant = () => {
         returnType="form-data"
         onFormSubmit={handleUpdateTenant}
         setValidationErrors={setErrorMsgs}
-        className="custom-flex-col gap-6 lg:gap-10 pb-[100px]"
+        className="custom-flex-col gap-6 lg:gap-10 pb-[150px] md:pb-[100px]"
       >
         <BackButton>Edit Tenants & Occupant</BackButton>
         <div className="flex flex-col lg:flex-row gap-8">
@@ -142,7 +142,7 @@ const EditTenant = () => {
             <TenantEditNoteSection />
           </div>
         </div>
-        <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
+        <FixedFooter className="flex gap-4 justify-between items-center flex-wrap">
           <Modal>
             <ModalTrigger asChild>
               <Button
@@ -172,7 +172,7 @@ const EditTenant = () => {
               save
             </Button>
           </div>
-        </div>
+        </FixedFooter>
       </AuthForm>
     </TenantEditContext.Provider>
   );

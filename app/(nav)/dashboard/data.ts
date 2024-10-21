@@ -203,26 +203,21 @@ export const complaintsData = [
 ];
 
 export const getDashboardData = async (access_token: string | null) => {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Error fetching dashboard data: ${response.statusText}`);
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${access_token}`,
+      },
     }
+  );
 
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching dashboard data:", error);
-    return {};
+  if (!response.ok) {
+    throw new Error(`Error fetching dashboard data: ${response.statusText}`);
   }
+
+  const data = await response.json();
+  return data;
 };

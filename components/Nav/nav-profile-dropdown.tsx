@@ -1,8 +1,4 @@
-import React from "react";
 import Link from "next/link";
-
-// Images
-import Logout from "@/public/icons/logout.svg";
 
 import Avatar from "@/public/empty/avatar.png";
 
@@ -13,6 +9,7 @@ import useWindowWidth from "@/hooks/useWindowWidth";
 import { profile_links } from "@/app/(nav)/notifications/data";
 import { SectionSeparator } from "../Section/section-components";
 import { logout } from "@/app/(onboarding)/auth/data";
+import { LogoutIcon } from "@/public/icons/icons";
 
 const NavProfileDropdown = ({
   name,
@@ -51,12 +48,13 @@ const NavProfileDropdown = ({
         </Link>
       ))}
       <button
+        type="button"
         className="flex gap-2 py-2 px-5 sm:py-3 sm:px-[30px] text-status-error-primary hover:bg-neutral-2"
         onClick={() => {
           logout();
         }}
       >
-        <Picture src={Logout} alt="logout" size={24} />
+        <LogoutIcon />
         logout
       </button>
     </>
