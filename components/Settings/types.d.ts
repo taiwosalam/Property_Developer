@@ -135,6 +135,9 @@ export interface SettingsDirectorTypes {
 export interface SettingsOthersCheckBoxProps {
   title: string;
   desc: string;
+  checked?: boolean; 
+  value: string;
+  onChange: (value: string, checked: boolean) => void;
 }
 
 export interface SettingsThemeTypes {

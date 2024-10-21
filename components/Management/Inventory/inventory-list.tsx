@@ -16,31 +16,33 @@ const InventoryList: React.FC<InventoryListProps> = ({ data = {} }) => {
   return (
     <div
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
-      className="w-full p-[18px] custom-flex-col gap-3 rounded-2xl bg-white overflow-hidden"
+      className="w-full p-[18px] pb-0 custom-flex-col gap-3 rounded-2xl bg-white overflow-hidden"
     >
       <p className="px-2 text-brand-10 text-base font-bold">Abiola Apartment</p>
       <SectionSeparator />
-      <div className="flex items-center">
-        <div className="flex-1 flex justify-start">
-          <div
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
-            className="p-8 rounded-lg"
-          >
-            <Picture
-              src={ClipboardCheck}
-              alt="clipboard with check mark"
-              size={60}
-            />
+      <div className="pb-[18px] overflow-x-auto custom-round-scrollbar">
+        <div className="flex items-center min-w-[800px]">
+          <div className="flex-1 flex justify-start">
+            <div
+              style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
+              className="p-8 rounded-lg"
+            >
+              <Picture
+                src={ClipboardCheck}
+                alt="clipboard with check mark"
+                size={60}
+              />
+            </div>
           </div>
-        </div>
-        <InventoryListInfo data={{}} />
-        <div className="flex-1 flex flex-col gap-4 items-end">
-          <Button variant="border" size="xs_medium" className="py-2 px-10">
-            manage
-          </Button>
-          <Button size="xs_medium" className="py-2 px-10">
-            preview
-          </Button>
+          <InventoryListInfo data={{}} />
+          <div className="flex-1 flex flex-col gap-4 items-end">
+            <Button variant="border" size="xs_medium" className="py-2 px-10">
+              manage
+            </Button>
+            <Button size="xs_medium" className="py-2 px-10">
+              preview
+            </Button>
+          </div>
         </div>
       </div>
     </div>

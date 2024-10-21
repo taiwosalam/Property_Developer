@@ -18,7 +18,7 @@ const StatisticsMessageCard: React.FC<StatisticsMessageCardProps> = ({
   const isOffers = type === "offers";
 
   return (
-    <div className="flex items-center gap-6">
+    <div className="flex items-center justify-between gap-6">
       <div className="flex items-center gap-1">
         <Picture src={Avatar} alt="profile picture" size={40} rounded />
         <div className="custom-flex-col text-text-primary text-sm">

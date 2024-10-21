@@ -30,7 +30,7 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
   };
 
   return (
-    <div className="flex">
+    <div className="flex w-full">
       <button className="flex gap-3 text-start" onClick={handleClick}>
         <div className="flex items-start">
           <Picture

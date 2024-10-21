@@ -6,8 +6,9 @@ import Image from "next/image";
 // Images
 import { UploadImageIcon } from "@/public/icons/icons";
 import Transparent from "@/public/empty/transparent.png";
-import WebsiteTemplate1 from "@/public/website template/template-1.png";
-import WebsiteTemplate2 from "@/public/website template/template-2.png";
+import WebsiteTemplate1 from "@/public/website template/template-1.svg";
+import WebsiteTemplate2 from "@/public/website template/template-2.svg";
+import WebsiteTemplate3 from "@/public/website template/template-3.svg";
 
 // Imports
 import { industryOptions } from "@/data";
@@ -25,6 +26,7 @@ import {
   SettingsUpdateButton,
   WebsiteColorSchemes,
   SettingsVerifiedBadge,
+  SettingsOthersCheckBox,
 } from "@/components/Settings/settings-components";
 
 import TextArea from "@/components/Form/TextArea/textarea";
@@ -34,10 +36,36 @@ import { ModalTrigger } from "@/components/Modal/modal";
 import { Modal } from "@/components/Modal/modal";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 import { rgbToHex } from "@/utils/rgbaToHex";
+import Link from "next/link";
+import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
+
+const websiteOptions = [
+  {
+    title: "About Us and Reviews Display",
+    desc: "Easily toggle the About Us page on or off in your website menu.",
+  },
+  {
+    title: "Services and Contact Page",
+    desc: "Control services and contact page display in your website menu by toggling it on or off.",
+  },
+  {
+    title: "Staffs and Branch Options",
+    desc: "Toggle staff and branch pages on or off in your website menu",
+  },
+  {
+    title: "Social Link Visibility",
+    desc: "Toggle on or off to display social links or icons in your website menu",
+  },
+  {
+    title: "Sponsored Logo",
+    desc: "Toggle to activate or deactivate the sponsored logo. Deactivation requires a monthly fee.",
+  },
+];
 
 const Profile = () => {
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [checkedStates, setCheckedStates] = useState<{ [key: string]: boolean }>({});
 
   const [modalOpen, setModalOpen] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
@@ -77,49 +105,53 @@ const Profile = () => {
       <SettingsSection title="company profile and details">
         <div className="custom-flex-col gap-8">
           <div className="">
-            <div className="flex items-center gap-4">
-              <Input
-                required
-                id="company_name"
-                label="company name"
-                placeholder="Taiwo Salam & Co . Properties Ltd"
-                className="w-[500px]"
-              />
-              <div className="flex pt-7">
-                <SettingsVerifiedBadge />
+            <div className="flex w-full items-start gap-4 md:flex-row flex-col">
+              <div className="md:w-2/3 w-full gap-1 flex items-end">
+                <Input
+                  required
+                  id="company_name"
+                  label="company name"
+                  placeholder="Taiwo Salam & Co. Properties Ltd"
+                  className="w-full"
+                />
+                <div className="flex mt-2 sm:mt-0 sm:ml-2">
+                  <SettingsVerifiedBadge />
+                </div>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="md:w-1/3 w-full gap-1 flex items-end">
                 <Input
                   id="company_mail"
                   label="company mail"
                   placeholder="ourtenants developer@gmail.com"
-                  className="w-[277px]"
+                  className="w-full"
                 />
-                <div className="flex pt-7">
+                <div className="flex mt-2 sm:mt-0 sm:ml-2">
                   <SettingsVerifiedBadge />
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-[1fr_1fr_2fr] gap-4 mt-4 w-full items-center justify-between">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 w-full items-center justify-between">
               <Input
                 id="date_of_registration"
                 label="date of registration"
                 type="date"
                 required
+                className="w-full"
               />
               <Input
                 id="cac_registration_number"
                 label="cac registration number"
                 placeholder="RC43464333"
                 required
+                className="w-full"
               />
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
                 <Input
                   id="cac_document"
                   label="cac document"
                   placeholder="Company CAC.pdf"
-                  className="w-full sm:w-[300px]"
+                  className="w-full"
                 />
                 <div className="flex pt-2 sm:pt-7">
                   <SettingsVerifiedBadge />
@@ -129,24 +161,25 @@ const Profile = () => {
                 id="industry"
                 label="industry"
                 options={industryOptions}
-                inputContainerClassName="bg-neutral-2"
+                inputContainerClassName="bg-neutral-2 w-full"
               />
               <Input
                 id="membership_number"
                 label="membership number"
                 placeholder="write here"
+                className="w-full"
               />
-              <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3">
+              <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
                 <Input
                   id="membership_document"
                   label="membership document"
                   placeholder="Click the side button to upload cac certificate"
-                  className="w-full sm:w-[300px]"
+                  className="w-full"
                 />
                 <Button
                   variant="change"
                   size="xs_normal"
-                  className="py-2 px-3 mt-2 sm:mt-0"
+                  className="py-2 px-3 mt-2 sm:mt-0 whitespace-nowrap"
                 >
                   verify utility
                 </Button>
@@ -180,14 +213,14 @@ const Profile = () => {
               inputContainerClassName="bg-neutral-2"
             />
           </div>
-          <div className="w-full flex gap-4">
+          <div className="w-full flex flex-col lg:flex-row gap-4">
             <Input
               id="head_office_address"
               label="head office address"
               placeholder="U4, Joke Plaza, Bodija, Ibadan"
-              className="w-[500px]"
+              className="w-full lg:w-[500px]"
             />
-            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full lg:w-auto">
               <Input
                 id="utility_document"
                 label="Utility Document"
@@ -197,46 +230,44 @@ const Profile = () => {
               <Button
                 variant="change"
                 size="xs_normal"
-                className="py-2 px-3 mt-2 sm:mt-0"
+                className="w-full sm:w-auto py-2 px-3 mt-2 sm:mt-0"
               >
                 upload utility
               </Button>
             </div>
           </div>
-          <div className="flex w-full gap-4 items-center justify-between">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
             <Input
               id="whatsapp_number"
               label="WhatsApp Number 1"
               placeholder="O9129292929"
-              className="w-[300px]"
+              className="w-full"
             />
             <Input
-              id="whatsapp_number"
-              label="company Number 1"
+              id="company_number_2"
+              label="Company Number 2"
               placeholder="O9129292929"
-              className="w-[300px]"
+              className="w-full"
             />
             <Input
-              id="company_number"
-              label="company Number 1"
+              id="company_number_3"
+              label="Company Number 3"
               placeholder="O9129292929"
-              className="w-[300px]"
+              className="w-full"
             />
             <Input
-              id="company_number"
-              label="company Number 1"
+              id="company_number_4"
+              label="Company Number 4"
               placeholder="O9129292929"
-              className="w-[300px]"
+              className="w-full"
             />
           </div>
           <div className="custom-flex-col gap-6">
             <SettingsSectionTitle
               title="company logo"
-              desc="Ensure that your company logo has a white background, with a maximum size
-      of 2MB. The picture must be between 250 to 400 pixels wide, or ideally
-      160px x 160px."
+              desc="Ensure that your company logo has a white background, with a maximum size of 2MB. The picture must be between 250 to 400 pixels wide, or ideally 160px x 160px."
             />
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col lg:flex-row gap-4">
               <label
                 htmlFor="logo"
                 className="relative py-10 w-full md:w-[374px] flex flex-col gap-1 items-center justify-center cursor-pointer rounded-xl overflow-hidden border-2 border-dashed border-borders-normal"
@@ -282,10 +313,7 @@ const Profile = () => {
       </SettingsSection>
       <SettingsSection title="about company and social links">
         <div className="custom-flex-col gap-8">
-          <TextArea 
-            id="about_company" 
-            label="about company" 
-          />
+          <TextArea id="about_company" label="about company" />
           <div className="custom-flex-col gap-6">
             <SettingsSectionTitle
               title="social medias"
@@ -351,27 +379,128 @@ const Profile = () => {
           <SettingsUpdateButton />
         </div>
       </SettingsSection>
-      <SettingsSection title="website template">
+      <SettingsSection title="website domain and template">
+        <h5 className="text-text-disabled text-sm font-normal my-4">
+          Select a preferred subdomain to showcase your company profile and
+          market your properties listings portfolio to the world.
+        </h5>
+        <p className="text-text-secondary text-md">
+          {" "}
+          Customize website domain name{" "}
+        </p>
+        <div className="flex gap-4 mb-4 mt-2 items-center w-full">
+          <Input
+            id="custom_domain"
+            label=""
+            placeholder="makinwauxdesigner"
+            className=""
+          />
+          <Link href="#" className="text-brand-9 text-sm text-center">
+            https://www.makinwauxdesgner.ourlisting.ng
+          </Link>
+        </div>
+
+        <div className="rssFeed flex flex-col gap-1 mb-4">
+          <h4 className="text-text-secondary text-md font-normal">
+            {" "}
+            RSS Feed Link for Listings{" "}
+          </h4>
+          <Link href="#" className="text-brand-9 text-sm underline">
+            https://www.makinwauxdesgner.ourlisting.ng
+          </Link>
+        </div>
         <div className="custom-flex-col gap-6">
           <SettingsSectionTitle
             title="choose template"
-            desc="https://www.ourlisting.ng/user/324224535"
+            desc="Choose how your website will be presented to your customers and clients."
           />
           <div className="grid grid-cols-3 gap-6 [&>*]:w-full">
             <Image src={WebsiteTemplate1} alt="template" width={500} />
             <Image src={WebsiteTemplate2} alt="template" width={500} />
-            <Image src={WebsiteTemplate2} alt="template" width={500} />
+            <Image src={WebsiteTemplate3} alt="template" width={500} />
           </div>
           <SettingsUpdateButton />
         </div>
       </SettingsSection>
       <SettingsSection title="website color settings">
-        <div className="custom-flex-col gap-4 mb-7">
+        <SettingsSectionTitle
+          title="Fonts Templates"
+          desc="Choose Your Preferred Font Style for Your Company Profile Website"
+        />
+        <div className="w-1/4 flex mb-5">
+          <Select
+            id="font"
+            label=""
+            placeholder="Times New Roman"
+            options={["Font 1", "Font 2"]}
+            inputContainerClassName="bg-neutral-2 w-full mt-2"
+          />
+        </div>
+
+        {/* MODULES SETTINGS */}
+        <div className="modules-list mb-5">
+          <SettingsOthersCheckBox
+            title="Modules Listing"
+            desc="Toggle on or off to control the visibility of your listing on the website, based on your subscription plan."
+            checked={checkedStates["Modules Listing"] ?? false} // Updated to use the state
+            value="Modules Listing"
+            onChange={(value, checked) => {
+              console.log(`Option "${value}" changed to: ${checked}`);
+              setCheckedStates((prev) => ({
+                ...prev,
+                ["Modules Listing"]: checked,
+              }));
+            }}
+          />
+        </div>
+        <div className="checks mb-5 flex flex-col gap-2">
+          <DocumentCheckbox
+            title="Properties For Rent"
+            darkText={false}
+            checked={true}
+            children="Properties For Rent"
+          />
+          <DocumentCheckbox
+            title="Properties For Sale"
+            darkText={false}
+            checked={false}
+            children="Properties For Sale"
+          />
+          <DocumentCheckbox
+            title="Properties For Short Let"
+            darkText={false}
+            checked={false}
+            children="Properties For Short Let"
+          />
+        </div>
+
+        {/* WEBSITE PAGE OPTIONS SETTINGS */}
+        <div className="toggles flex flex-col gap-5 mb-7">
+          {websiteOptions.map((option, index) => (
+            <SettingsOthersCheckBox
+              key={index}
+              title={option.title}
+              desc={option.desc}
+              checked={checkedStates[option.title] ?? true}
+              value={option.title}
+              onChange={(value, checked) => {
+                console.log(`Option "${value}" changed to: ${checked}`);
+                setCheckedStates((prev) => ({
+                  ...prev,
+                  [option.title]: checked,
+                }));
+              }}
+            />
+          ))}
+        </div>
+
+        {/* WEBSITE COLORS SETTINGS  */}
+        <div className="custom-flex-col">
           <SettingsSectionTitle
             title="color scheme"
             desc="Customize the default color to your preference from the available options listed below."
           />
-          <div className="flex gap-2">
+          <div className="flex gap-4">
             <WebsiteColorSchemes
               websiteColorSchemes={website_color_schemes as unknown as string[]}
               selectedColor={selectedColor}
@@ -379,7 +508,7 @@ const Profile = () => {
             />
           </div>
         </div>
-        <div className="flex flex-col gap-7">
+        <div className="flex flex-col">
           <SettingsSectionTitle desc="Specify a color code or select a color that best represents your brand website. You can also incorporate additional color designs based on your preferences." />
           <div className="flex items-center gap-2">
             {customColor && !modalOpen && (
