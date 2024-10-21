@@ -49,7 +49,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <aside
           ref={sideNavRef}
           className={clsx(
-            "h-[calc(100vh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white no-scrollbar overflow-auto transition-transform duration-300",
+            "h-[calc(100vh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white dark:bg-[#020617] dark:border-[#252525] dark:border-r no-scrollbar overflow-auto transition-transform duration-300",
             {
               "-translate-x-full md:w-[110px]":
                 !isSideNavOpen,
@@ -79,7 +79,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
           }}
           className={clsx(
-            "custom-flex-col sticky top-[99px] bg-white z-[2] duration-300",
+            "custom-flex-col sticky top-[99px] z-[2] duration-300",
             {
               "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen,
               "md:ml-[235px] lg:ml-[250px]": isSideNavOpen,
@@ -90,7 +90,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             className="h-[1px]"
             style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
           />
-          <div className="h-[50px] px-3 flex flex-wrap items-center justify-between gap-2 bg-white max-w-full overflow-hidden">
+          <div className="h-[50px] px-3 flex flex-wrap items-center justify-between gap-2 bg-white dark:bg-[#020617] max-w-full overflow-hidden">
             <button
               type="button"
               aria-label="toggle sidenav"
@@ -132,7 +132,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
           }}
           className={clsx(
-            "p-6 bg-neutral-2 relative z-[1] duration-300",
+            "p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300",
             {
               "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen,
               "opacity-50 pointer-events-none md:ml-[235px] lg:ml-[250px]":

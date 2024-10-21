@@ -162,7 +162,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
         </div>
         <div className="flex justify-between items-end flex-wrap gap-4 md:gap-5">
           <div className="custom-flex-col gap-3">
-            <p className="text-black text-base font-medium">
+            <p className="text-black dark:text-white text-base font-medium">
               Upload staff picture or choose an avatar.
             </p>
             <div className="flex gap-3 items-end">

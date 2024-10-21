@@ -56,21 +56,21 @@ const NavSwitchUserSwitch: React.FC<{
             <button
               type="button"
               onClick={() => handleModuleSwitch("property manager")}
-              className="p-4 capitalize text-start hover:bg-neutral-2"
+              className="p-4 capitalize text-start hover:bg-neutral-2 dark:hover:bg-[#292d32]"
             >
               Property Manager
             </button>
             <button
               type="button"
               onClick={() => handleModuleSwitch("hospilatity manager")}
-              className="p-4 capitalize text-start hover:bg-neutral-2"
+              className="p-4 capitalize text-start hover:bg-neutral-2 dark:hover:bg-[#292d32]"
             >
               Hospitality Manager
             </button>
             <button
               type="button"
               onClick={() => handleModuleSwitch("property developer")}
-              className="p-4 capitalize text-start hover:bg-neutral-2"
+              className="p-4 capitalize text-start hover:bg-neutral-2 dark:hover:bg-[#292d32]"
             >
               Property Developer
             </button>
