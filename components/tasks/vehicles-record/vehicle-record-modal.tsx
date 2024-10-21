@@ -8,6 +8,7 @@ import Button from "@/components/Form/Button/button";
 import type { VehicleRecord } from "./types";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import CheckInOutForm from "../visitors-requests/check-in-out-form";
+import ModalPreset from "@/components/Wallet/wallet-modal-preset";
 // import ModalPreset from "@/components/Modal/modal-preset";
 
 const VehicleRecordModal: React.FC<
@@ -34,129 +35,116 @@ const VehicleRecordModal: React.FC<
 
   if (activeStep === "default") {
     return (
-      <div className="w-[600px] max-w-[80%] max-h-[85%] rounded-lg overflow-x-auto custom-round-scrollbar">
-        {/* Header */}
-        <div className="bg-brand-1 text-base text-text-primary py-4 text-center sticky top-0 z-[2] font-medium">
-          Vehicle Record
-          <ModalTrigger
-            close
-            className="absolute top-[50%] translate-y-[-50%] right-6"
-          >
-            <XIcon size="30" />
-          </ModalTrigger>
-        </div>
-        {/* Body */}
-        <div className="bg-white py-6 px-[40px]">
-          <div className="flex flex-col md:flex-row items-center justify-between font-medium gap-2">
-            <div className="flex items-center gap-2">
-              <Picture size={80} src={pictureSrc} rounded />
-              <div className="text-base text-text-primary space-y-1">
-                <p className="flex items-center">
-                  <span>{name}</span>
-                  <BadgeIcon color="blue" />
-                </p>
-                <p>
-                  <span className="text-text-tertiary">ID:</span> {id}
-                </p>
-              </div>
-            </div>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center gap-4">
-                <p className="text-text-tertiary min-w-[100px]">Category</p>
-                <p className="text-text-primary capitalize">{category}</p>
-              </div>
-              <div className="flex items-center gap-4">
-                <p className="text-text-tertiary min-w-[100px]">Registration</p>
-                <p className="text-text-primary">{registrationDate}</p>
-              </div>
+      <ModalPreset title="Vehicle Record">
+        <div className="flex flex-col md:flex-row items-center justify-between font-medium gap-2">
+          <div className="flex items-center gap-2">
+            <Picture size={80} src={pictureSrc} rounded />
+            <div className="text-base text-text-primary space-y-1">
+              <p className="flex items-center">
+                <span>{name}</span>
+                <BadgeIcon color="blue" />
+              </p>
+              <p>
+                <span className="text-text-tertiary">ID:</span> {id}
+              </p>
             </div>
           </div>
-          <div className="border-t border-borders-dark my-5 -mx-[40px] border-dashed" />
-          <div className="mb-9 text-sm   space-y-8">
-            {/* Check In */}
-            <div>
-              <p className="mb-2 text-text-label text-base font-bold">
-                Check In
-              </p>
-              <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-1.5">
-                <div className="flex gap-4">
-                  <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
-                    By
-                  </p>
-                  <p className="text-text-primary font-medium">
-                    {checkIn.name}
-                  </p>
-                </div>
-                <div className="flex gap-4">
-                  <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
-                    Passengers
-                  </p>
-                  <p className="text-text-primary font-medium">
-                    {checkIn.passenger}
-                  </p>
-                </div>
-                <div className="flex gap-4">
-                  <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
-                    Date - Time
-                  </p>
-                  <p className="text-text-primary font-medium">
-                    {checkIn.date}
-                  </p>
-                </div>
-              </div>
-              <p className="text-text-label font-normal mb-1">Inventory</p>
-              <TruncatedText lines={2}>{checkIn.inventory}</TruncatedText>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center gap-4">
+              <p className="text-text-tertiary min-w-[100px]">Category</p>
+              <p className="text-text-primary capitalize">{category}</p>
             </div>
-            {/* Check Out */}
-            <div>
-              <p className="mb-2 text-text-label text-base font-bold">
-                Check Out
-              </p>
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <p className="text-text-label font-normal">By</p>
-                  <p className="text-text-primary font-medium">
-                    {checkOut?.name ? checkOut.name : "---"}
-                  </p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <p className="text-text-label font-normal">Passengers</p>
-                  <p>{checkOut?.passenger ? checkOut.passenger : "---"}</p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <p className="text-text-label font-normal">Date - Time</p>
-                  <p>{checkOut?.date ? checkOut.date : "---"}</p>
-                </div>
-              </div>
-              <p className="text-text-label font-normal mb-1">Inventory</p>
-              <TruncatedText lines={2}>
-                {checkOut?.inventory ? checkOut.inventory : "---"}
-              </TruncatedText>
+            <div className="flex items-center gap-4">
+              <p className="text-text-tertiary min-w-[100px]">Registration</p>
+              <p className="text-text-primary">{registrationDate}</p>
             </div>
-          </div>
-          {/* Buttons */}
-          <div className="mt-8 flex items-center justify-center gap-[70px]">
-            {status === "pending" && (
-              <Button
-                size="sm_bold"
-                className="py-[10px] px-6 rounded-lg"
-                onClick={() => setActiveStep("check-out")}
-              >
-                Check Out
-              </Button>
-            )}
-            {showOpenRecordsButton && (
-              <Button
-                size="sm_bold"
-                className="py-[10px] px-6 rounded-lg"
-                href={`/tasks/vehicles-record/${id}/record`}
-              >
-                Open Records
-              </Button>
-            )}
           </div>
         </div>
-      </div>
+        <div className="border-t border-borders-dark my-5 -mx-6 border-dashed" />
+        <div className="mb-9 text-sm space-y-8">
+          {/* Check In */}
+          <div>
+            <p className="mb-2 text-text-label text-base font-bold">Check In</p>
+            <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-1.5">
+              <div className="flex gap-4">
+                <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                  By
+                </p>
+                <p className="text-text-primary font-medium">{checkIn.name}</p>
+              </div>
+              <div className="flex gap-4">
+                <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                  Passengers
+                </p>
+                <p className="text-text-primary font-medium">
+                  {checkIn.passenger}
+                </p>
+              </div>
+              <div className="flex gap-4">
+                <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                  Date - Time
+                </p>
+                <p className="text-text-primary font-medium">{checkIn.date}</p>
+              </div>
+            </div>
+            <p className="text-text-label font-normal mb-1">Inventory</p>
+            <TruncatedText lines={2}>{checkIn.inventory}</TruncatedText>
+          </div>
+          {/* Check Out */}
+          <div>
+            <p className="mb-2 text-text-label text-base font-bold">
+              Check Out
+            </p>
+            <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-4">
+                <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                  By
+                </p>
+                <p className="text-text-primary font-medium">
+                  {checkOut?.name ? checkOut.name : "---"}
+                </p>
+              </div>
+              <div className="flex items-center gap-4">
+                <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                  Passengers
+                </p>
+                <p>{checkOut?.passenger ? checkOut.passenger : "---"}</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                  Date - Time
+                </p>
+                <p>{checkOut?.date ? checkOut.date : "---"}</p>
+              </div>
+            </div>
+            <p className="text-text-label font-normal mb-1">Inventory</p>
+            <TruncatedText lines={2}>
+              {checkOut?.inventory ? checkOut.inventory : "---"}
+            </TruncatedText>
+          </div>
+        </div>
+        {/* Buttons */}
+        <div className="mt-8 flex items-center justify-center gap-4 md:gap-[70px]">
+          {status === "pending" && (
+            <Button
+              size="sm_bold"
+              className="py-[10px] px-6 rounded-lg"
+              onClick={() => setActiveStep("check-out")}
+            >
+              Check Out
+            </Button>
+          )}
+          {showOpenRecordsButton && (
+            <Button
+              size="sm_bold"
+              className="py-[10px] px-6 rounded-lg"
+              href={`/tasks/vehicles-record/${id}/record`}
+            >
+              Open Records
+            </Button>
+          )}
+        </div>
+      </ModalPreset>
     );
   }
   if (activeStep === "check-out") {

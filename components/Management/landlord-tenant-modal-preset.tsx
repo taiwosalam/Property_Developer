@@ -39,7 +39,7 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
       </div>
 
       {/* body */}
-      <div className="px-[30px] pt-10 pb-[24px] md:pb-[36px]">{children}</div>
+      <div className="px-[30px] pt-10 pb-[24px] md:pb-[32px]">{children}</div>
     </div>
   );
 };
