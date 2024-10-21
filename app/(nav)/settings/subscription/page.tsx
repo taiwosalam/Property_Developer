@@ -154,7 +154,7 @@ const Subscriptions = () => {
                   <DocumentCheckbox darkText>
                     Automatically renew and update property listings.
                   </DocumentCheckbox>
-                  <div className="flex gap-4">
+                  <div className="flex flex-col lg:flex-row gap-4">
                     <div className="flex gap-4">
                       <Input
                         placeholder="123"
