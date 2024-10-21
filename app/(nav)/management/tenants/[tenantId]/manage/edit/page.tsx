@@ -43,6 +43,7 @@ const EditTenant = () => {
     useImageUploader();
 
   const [activeAvatar, setActiveAvatar] = useState<string>("");
+
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors | null>(null);
 
   const accessToken = useAuthStore((state) => state.access_token);
@@ -88,7 +89,7 @@ const EditTenant = () => {
         returnType="form-data"
         onFormSubmit={handleUpdateTenant}
         setValidationErrors={setErrorMsgs}
-        className="custom-flex-col gap-6 lg:gap-10 pb-[150px] md:pb-[100px]"
+        className="custom-flex-col gap-6 lg:gap-10 pb-[100px]"
       >
         <BackButton>Edit Tenants & Occupant</BackButton>
         <div className="flex flex-col lg:flex-row gap-8">
@@ -164,7 +165,7 @@ const EditTenant = () => {
               href="/management/tenants/1/manage"
               variant="sky_blue"
               size="base_medium"
-              className="py-2 px-6"
+              className="py-2 px-6 hidden md:block"
             >
               exit
             </Button>

@@ -4,7 +4,7 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import {
   getAllCallbackRequests,
   inquiriesFilterOptionsWithDropdown,
-  // RequestCallBackCardData,
+  RequestCallBackCardData as MockData,
   type RequestCallBackCardDataType,
 } from "./data";
 import Pagination from "@/components/Pagination/pagination";
@@ -46,7 +46,7 @@ const Inquires = () => {
           console.error("Error fetching examines:", error);
         });
     };
-    fetchRequestData();
+    // fetchRequestData();
   }, [accessToken]);
 
   return (
@@ -77,7 +77,7 @@ const Inquires = () => {
           description:
             "This page contains a list of Request Callback on the platform.",
         }}
-        searchInputPlaceholder="Search"
+        searchInputPlaceholder="Search Call Request"
         handleFilterApply={() => {}}
         isDateTrue
         filterOptions={[]}
@@ -85,7 +85,7 @@ const Inquires = () => {
         hasGridListToggle={false}
       />
       <AutoResizingGrid gap={28} minWidth={400}>
-        {requestCallBackCardData.map((userDetails, index) => (
+        {MockData.map((userDetails, index) => (
           <RequestCallBackCard
             key={index}
             {...transformToCallBackRequestCardProps(userDetails)}

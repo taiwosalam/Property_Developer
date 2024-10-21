@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Person = () => {
   return (
-    <div className="flex items-center gap-x-[60px]">
+    <div className="flex items-center gap-2 justify-between">
       <div className="flex items-center gap-1">
         <div className="flex-shrink-0 relative w-10 h-10 rounded-full bg-neutral-2 overflow-hidden">
           <Image
@@ -16,7 +16,7 @@ const Person = () => {
         </div>
         <p className="flex items-center">
           <span className="text-ellipsis line-clamp-1 text-base text-text-primary font-medium">
-            Salam AIsh aSalam AIshat SalamAIshat
+            Salam Alaikum
           </span>
           <BadgeIcon color="blue" />
         </p>

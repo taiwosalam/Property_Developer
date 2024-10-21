@@ -19,7 +19,6 @@ interface Guarantor {
   phone_number: string | null;
   address: string | null;
   relationship: string | null;
-  note: string | null;
 }
 
 interface Others {
@@ -39,7 +38,8 @@ interface BankDetails {
 export interface TenantData {
   avatar: string;
   picture: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   user_tag: "web" | "mobile";
   phone_number: string;
@@ -49,7 +49,8 @@ export interface TenantData {
   marital_status: string | null;
   contact_address: ContactAddress;
   next_of_kin: NextOfKin;
-  guarantor: Guarantor;
+  guarantor1: Guarantor;
+  guarantor2: Guarantor;
   others: Others;
   bank_details: BankDetails;
   attachment: string | null;
