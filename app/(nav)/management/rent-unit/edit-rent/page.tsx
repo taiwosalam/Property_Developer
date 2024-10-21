@@ -12,6 +12,7 @@ import { estateData } from "@/components/Management/Rent And Unit/data";
 import { EstateDetailItem } from "@/components/Management/Rent And Unit/detail-item";
 import Link from "next/link";
 import { RentSectionContainer } from "@/components/Management/Rent And Unit/rent-section-container";
+import Image from "next/image";
 
 const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
   <div className="flex items-center">
@@ -38,7 +39,7 @@ const EditRent = () => {
           <h6 className="font-bold text-[#092C4C] text-xl">Unit Details</h6>
           <div className="w-5/6 h-[1px] bg-[#C0C2C8] bg-opacity-20"></div>
           <div className="w-full">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-4">
               {estateData.map((item, index) => (
                 <EstateDetailItem
                   key={index}
@@ -66,7 +67,7 @@ const EditRent = () => {
           <h6 className="font-bold text-[#092C4C] text-xl my-6">
             Rent Details
           </h6>
-          <div className="grid grid-cols-5 gap-6">
+          <div className="grid md:grid-cols-2 xl:grid-cols-5 lg:gap-6">
             <div className="col-span-3 space-y-6">
               <RentSectionContainer title="Rent Fee">
                 <div className="grid grid-cols-2 gap-4 mt-4 text-[16px] font-normal">
@@ -198,15 +199,16 @@ const EditRent = () => {
                 </p>
               </div>
             </div>
-
             <div className="col-span-2 space-y-8">
               <RentSectionContainer title="User Profile">
                 <div className="flex items-center justify-center">
                   <div>
-                    <img
+                    <Image
                       src="/empty/avatar-2.svg"
                       alt="Profile"
-                      className="w-16 h-16 rounded-full mb-4 mx-auto"
+                      className="rounded-full mb-4 mx-auto"
+                      width={64}
+                      height={64}
                     />
                     <div className="w-full text-center">
                       <p className="font-bold text-xl">Abimbola Adedeji</p>
@@ -261,7 +263,7 @@ const EditRent = () => {
                   package and also calculate and deduct any outstanding
                   payments.
                 </p>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 md:gap-0 justify-between">
                   <Button
                     type="submit"
                     className="py-2 px-8"

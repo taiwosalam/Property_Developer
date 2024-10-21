@@ -1,7 +1,11 @@
 export const profile_links = [
-  "Assistance & Support",
-  "Create Suggestion",
-  "Terms & Conditions",
-  "Frequently Asked Questions",
-  "Request Call",
+  {
+    name: "Assistance & Support",
+    href: "https://kb.ourproperty.ng/",
+    target: "_blank",
+  },
+  { name: "Create Suggestion", href: "" },
+  { name: "Terms & Conditions", href: "" },
+  { name: "Frequently Asked Questions", href: "" },
+  { name: "Request Call", href: "" },
 ];

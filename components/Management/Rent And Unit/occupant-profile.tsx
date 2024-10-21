@@ -17,9 +17,9 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
       <h6 className="font-bold text-[#092C4C] text-xl">
         {title || "Occupant"} Profile
       </h6>
-      <div className="flex space-x-8">
+      <div className="flex flex-wrap lg:flex-nowrap space-x-8">
         {/* Left Column */}
-        <div className="w-3/5 space-y-5">
+        <div className="w-full lg:w-3/5 space-y-5">
           <div className="w-full h-[2px] bg-[#C0C2C8] mb-4 opacity-20"></div>
           <ProfileForm occupant={occupant} title={title === "Tenant"} />
           <FeeBreakdown
@@ -31,7 +31,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
         </div>
 
         {/* Right Column */}
-        <div className="w-2/5">
+        <div className="w-full mt-5 lg:mt-0 lg:w-2/5">
           <MatchedProfile occupant={occupant} />
         </div>
       </div>

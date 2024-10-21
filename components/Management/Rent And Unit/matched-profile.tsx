@@ -10,10 +10,12 @@ export const MatchedProfile: React.FC<{ occupant: Occupant }> = ({
     <RentSectionContainer title="Matched Profile" hidebar>
       <div className="flex items-center justify-center">
         <div>
-          <img
+          <Image
             src="/empty/avatar-2.svg"
             alt="Profile"
-            className="w-16 h-16 rounded-full mb-4 mx-auto"
+            className="rounded-full mb-4 mx-auto"
+            width={64}
+            height={64}
           />
           <div className="w-full text-center">
             <p className="font-bold text-xl">Abimbola Adedeji</p>

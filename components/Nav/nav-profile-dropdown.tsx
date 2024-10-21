@@ -42,9 +42,10 @@ const NavProfileDropdown = ({
         <Link
           className="py-2 px-5 sm:py-3 sm:px-[30px] text-text-primary hover:bg-neutral-2"
           key={index}
-          href={""}
+          href={link.href}
+          target={link.target || "_self"}
         >
-          {link}
+          {link.name}
         </Link>
       ))}
       <button
