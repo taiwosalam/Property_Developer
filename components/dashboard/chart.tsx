@@ -141,7 +141,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
     <Card className={clsx("shadow-sm border-none", className)}>
       <>
         <CardHeader className="flex w-full items-center gap-2 space-y-0 py-3 sm:flex-row">
-          <div className="flex w-full py-2 justify-between">
+          <div className="flex-col pb-6 flex w-full items-center gap-2 space-y-0 justify-between sm:flex-row">
             <CardTitle className="text-[#262626] text-base capitalize font-medium dark:text-[#f1f1fd]">
               {chartTitle || "Chart Title"}
             </CardTitle>

@@ -20,6 +20,7 @@ const NavCreateSuggestion = () => {
               required
               id="title"
               label="title"
+              className="w-full max-w-[300px]"
               options={[
                 "technical charges",
                 "billing and payment problems",
