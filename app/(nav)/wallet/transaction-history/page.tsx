@@ -12,7 +12,7 @@ import ExcelIcon from "@/public/icons/excel-icon.svg";
 import Picture from "@/components/Picture/picture";
 import BackButton from "@/components/BackButton/back-button";
 import Pagination from "@/components/Pagination/pagination";
-import { FilterIcons, PDFIcons } from "@/public/icons/icons";
+import { FilterIcons } from "@/public/icons/icons";
 
 const TransactionHistory = () => {
   return (
