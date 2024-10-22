@@ -69,14 +69,14 @@ const AssignTaskCard = () => {
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="font-medium bg-brand-1 pt-4 pb-2 px-[70px] text-center rounded-t-lg">
+      <div className="font-medium bg-brand-1 dark:bg-darkText-2 pt-4 pb-2 px-[70px] text-center rounded-t-lg">
         <h6 className="text-black text-base">Assign Task</h6>
         <p className="text-text-label text-sm">
           Kindly select who you want to add to this task
         </p>
       </div>
 
-      <div className="bg-white rounded-b-lg font-medium text-text-secondary px-4 py-6 custom-flex-col gap-2">
+      <div className="bg-white dark:bg-darkText-primary rounded-b-lg font-medium text-text-secondary px-4 py-6 custom-flex-col gap-2">
         <Select
           id="staff-select"
           isSearchable={false}

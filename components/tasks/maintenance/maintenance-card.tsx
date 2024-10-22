@@ -43,7 +43,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
   }
   return (
     <div
-      className="bg-white rounded-lg px-[18px] pt-4 pb-6 font-medium"
+      className="bg-white dark:bg-darkText-primary rounded-lg px-[18px] pt-4 pb-6 font-medium"
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
@@ -51,7 +51,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
     >
       <div className="flex items-center justify-between flex-wrap gap-2">
         <p>
-          <span className="text-base text-text-tertiary">
+          <span className="text-base text-text-tertiary dark:text-darkText-2">
             Maintenance ID:{" "}
             <span className="text-text-secondary text-sm">{maintenanceId}</span>
           </span>
@@ -68,28 +68,28 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
       <hr className="mt-3 mb-6 border-t border-dashed border-brand-7 opacity-50" />
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-5 [&>div]:flex [&>div]:flex-col [&>div]:gap-2 mb-7">
         <div>
-          <p className="text-text-tertiary text-base">Property Name:</p>
-          <p className="text-text-secondary text-sm">{propertyName}</p>
+          <p className="text-text-tertiary text-base dark:text-darkText-1">Property Name:</p>
+          <p className="text-text-secondary text-sm dark:text-darkText-2">{propertyName}</p>
         </div>
         <div>
-          <p className="text-text-tertiary text-base">Date Created:</p>
-          <p className="text-text-secondary text-sm">{dateCreated}</p>
+          <p className="text-text-tertiary text-base dark:text-darkText-1">Date Created:</p>
+          <p className="text-text-secondary text-sm dark:text-darkText-2">{dateCreated}</p>
         </div>
         <div>
-          <p className="text-text-tertiary text-base">Service Provider:</p>
-          <p className="text-text-secondary text-sm">{serviceProvider}</p>
+          <p className="text-text-tertiary text-base dark:text-darkText-1">Service Provider:</p>
+          <p className="text-text-secondary text-sm dark:text-darkText-2">{serviceProvider}</p>
         </div>
         <div>
-          <p className="text-text-tertiary text-base">Start - End Date:</p>
-          <p className="text-text-secondary text-sm">{startEndDate}</p>
+          <p className="text-text-tertiary text-base dark:text-darkText-1">Start - End Date:</p>
+          <p className="text-text-secondary text-sm dark:text-darkText-2">{startEndDate}</p>
         </div>
         <div>
-          <p className="text-text-tertiary text-base">Priority:</p>
-          <p className="text-text-secondary text-sm">{priority}</p>
+          <p className="text-text-tertiary text-base dark:text-darkText-1">Priority:</p>
+          <p className="text-text-secondary text-sm dark:text-darkText-2">{priority}</p>
         </div>
         <div>
-          <p className="text-text-tertiary text-base">Service Type:</p>
-          <p className="text-text-secondary text-sm">{serviceType}</p>
+          <p className="text-text-tertiary text-base dark:text-darkText-1">Service Type:</p>
+          <p className="text-text-secondary text-sm dark:text-darkText-2">{serviceType}</p>
         </div>
       </div>
       {!viewOnly && (

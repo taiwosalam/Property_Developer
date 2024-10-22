@@ -63,8 +63,8 @@ export const LandlordTenantInfoSection: React.FC<{
   >
     <h2
       className={clsx("capitalize", {
-        "text-black text-lg md:text-xl lg:text-2xl font-bold": !minimized,
-        "text-text-quaternary text-base md:text-lg font-medium": minimized,
+        "text-black dark:text-darkText-1 text-lg md:text-xl lg:text-2xl font-bold": !minimized,
+        "text-text-quaternary dark:text-darkText-1 text-base md:text-lg font-medium": minimized,
       })}
     >
       {title}

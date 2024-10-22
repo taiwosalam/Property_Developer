@@ -103,21 +103,21 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   return (
     <div className="flex items-center justify-between flex-wrap space-y-1">
       <div>
-        <h6 className="text-xs font-normal text-text-label">Rent</h6>
+        <h6 className="text-xs font-normal text-text-label dark:text-darkText-1">Rent</h6>
         <p className="text-sm font-medium text-brand-primary">
           {CURRENCY}
           {formatNumber(rent)}
         </p>
       </div>
       <div>
-        <h6 className="text-xs font-normal text-text-label">Caution Deposit</h6>
+        <h6 className="text-xs font-normal text-text-label dark:text-darkText-1">Caution Deposit</h6>
         <p className="text-sm font-medium text-brand-primary">
           {CURRENCY}
           {formatNumber(cautionDeposit)}
         </p>
       </div>
       <div>
-        <h6 className="text-xs font-normal text-text-label">Service Charge</h6>
+        <h6 className="text-xs font-normal text-text-label dark:text-darkText-1">Service Charge</h6>
         <p className="text-sm font-medium text-brand-primary">
           {CURRENCY}
           {formatNumber(serviceCharge)}
@@ -152,7 +152,7 @@ const RentalPropertyCard: React.FC = () => {
       >
         <div className="relative">
           <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-bold text-[#374151]">
+            <h3 className="text-2xl font-bold text-[#374151] dark:text-white">
               Moniya Apartment
             </h3>
             <div className="flex items-center space-x-1">
@@ -171,17 +171,17 @@ const RentalPropertyCard: React.FC = () => {
 
           {/* Hover information */}
           <div
-            className={`absolute inset-0 bg-white py-2 transition-all duration-300 flex items-center justify-between ${isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+            className={`absolute inset-0 bg-white dark:bg-darkText-primary py-2 transition-all duration-300 flex items-center justify-between ${isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
               }`}
           >
             <div className="text-sm">
-              <span className="font-semibold text-text-label text-xs">
+              <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Unit ID
               </span>
               <p className="text-brand-primary font-medium">1234567867</p>
             </div>
             <div className="text-sm">
-              <span className="font-semibold text-text-label text-xs">
+              <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Tenant&lsquo;s Name
               </span>
               <p className="text-brand-primary font-medium">
@@ -189,7 +189,7 @@ const RentalPropertyCard: React.FC = () => {
               </p>
             </div>
             <div className="text-sm">
-              <span className="font-semibold text-text-label text-xs">
+              <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Expiry Date
               </span>
               <p className="text-brand-primary font-medium">25/02/2024</p>

@@ -9,11 +9,11 @@ const InspectionCardDetail: React.FC<InspectionCardDetailProps> = ({
 }) => {
   return (
     <div className="custom-flex-col gap-2">
-      <p className="text-text-tertiary text-base font-medium capitalize">
+      <p className="text-text-tertiary dark:text-darkText-1 text-base font-medium capitalize">
         {title}:
       </p>
       <div className="flex items-center">
-        <p className="text-text-secondary text-sm font-medium">{desc}</p>
+        <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium">{desc}</p>
         {verirified && <BadgeIcon color="blue" />}
       </div>
     </div>

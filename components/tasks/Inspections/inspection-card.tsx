@@ -16,7 +16,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 const InspectionCard: React.FC<InspectionCardProps> = ({ type }) => {
   return (
     <div
-      className="rounded-lg bg-white custom-flex-col gap-6 pb-6"
+      className="rounded-lg bg-white dark:bg-darkText-primary custom-flex-col gap-6 pb-6"
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",

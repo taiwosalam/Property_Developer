@@ -63,7 +63,7 @@ const ManageMaintenanceModal = () => {
 
   return (
     <div
-      className="font-medium rounded-lg border border-[rgba(193,194,195,0.40)] w-[600px] max-w-[80%] max-h-[90vh] overflow-y-auto custom-round-scrollbar"
+      className="font-medium rounded-lg border border-[rgba(193,194,195,0.40)] dark:border-[#3C3D37] w-[600px] max-w-[80%] max-h-[90vh] overflow-y-auto custom-round-scrollbar"
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
@@ -79,7 +79,7 @@ const ManageMaintenanceModal = () => {
         </ModalTrigger>
       </div>
       {/* Body */}
-      <div className="px-6 pt-3 pb-8 bg-white rounded-b-lg">
+      <div className="px-6 pt-3 pb-8 bg-white dark:bg-darkText-primary rounded-b-lg">
         <div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-[18px] [&>div]:flex [&>div]:flex-col [&>div]:gap-2 px-4 py-6 rounded-lg"
           style={{
@@ -87,32 +87,32 @@ const ManageMaintenanceModal = () => {
           }}
         >
           <div>
-            <p className="text-text-tertiary text-base">Maintenance ID:</p>
-            <p className="text-text-secondary text-sm">1234567890</p>
+            <p className="text-text-tertiary text-base dark:text-darkText-1">Maintenance ID:</p>
+            <p className="text-text-secondary text-sm dark:text-darkText-2">1234567890</p>
           </div>
           <div>
-            <p className="text-text-tertiary text-base">Property Name:</p>
-            <p className="text-text-secondary text-sm">David Hall, Moniya</p>
+            <p className="text-text-tertiary text-base dark:text-darkText-1">Property Name:</p>
+            <p className="text-text-secondary text-sm dark:text-darkText-2">David Hall, Moniya</p>
           </div>
           <div>
-            <p className="text-text-tertiary text-base">Date Created:</p>
-            <p className="text-text-secondary text-sm">21/01/2024</p>
+            <p className="text-text-tertiary text-base dark:text-darkText-1">Date Created:</p>
+            <p className="text-text-secondary text-sm dark:text-darkText-2">21/01/2024</p>
           </div>
           <div>
-            <p className="text-text-tertiary text-base">Priority:</p>
-            <p className="text-text-secondary text-sm">High</p>
+            <p className="text-text-tertiary text-base dark:text-darkText-1">Priority:</p>
+            <p className="text-text-secondary text-sm dark:text-darkText-2">High</p>
           </div>
           <div>
-            <p className="text-text-tertiary text-base">Service Type:</p>
-            <p className="text-text-secondary text-sm">Legal Work</p>
+            <p className="text-text-tertiary text-base dark:text-darkText-1">Service Type:</p>
+            <p className="text-text-secondary text-sm dark:text-darkText-2">Legal Work</p>
           </div>
           <div>
-            <p className="text-text-tertiary text-base">Service Provider:</p>
-            <p className="text-text-secondary text-sm">Lawyer</p>
+            <p className="text-text-tertiary text-base dark:text-darkText-1">Service Provider:</p>
+            <p className="text-text-secondary text-sm dark:text-darkText-2">Lawyer</p>
           </div>
         </div>
         <hr className="my-4 border-t border-dashed border-brand-7 opacity-50" />
-        <p className="text-text-tertiary text-base mb-3">Work Details</p>
+        <p className="text-text-tertiary dark:text-white text-base mb-3">Work Details</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             id="details"
