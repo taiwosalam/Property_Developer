@@ -26,6 +26,14 @@ const NavCreateSuggestion = () => {
                 "billing and payment problems",
                 "service interruptions",
                 "account access and secruity",
+                "Content-related Issues",
+                "Feedback on user experience",
+                "suggestions for improvement",
+                "communication and notification",
+                "policy and rule disputes",
+                "reporting innapropriate content",
+                "dispute resolution requests",
+                "other general complaints",
               ]}
               inputContainerClassName="bg-neutral-2"
             />
