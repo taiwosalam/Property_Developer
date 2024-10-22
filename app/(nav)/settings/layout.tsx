@@ -14,7 +14,7 @@ const SettingsLayout: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <div className="custom-flex-col gap-10">
-      <div className="flex overflow-x-auto gap-1 bg-neutral-2 pb-2 no-scrollbar">
+      <div className="flex overflow-x-auto gap-1 bg-neutral-2 dark:bg-[#3C3D37] pb-2 no-scrollbar">
         <div className="flex">
           {settings_link_tabs.map((tab) => (
             <SettingsLinkTab

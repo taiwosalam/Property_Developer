@@ -57,12 +57,12 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
         >
           <ChevronLeft />
         </button>
-        <p className="text-black font-bold text-lg lg:text-xl">Preview</p>
+        <p className="text-black font-bold text-lg lg:text-xl dark:text-white">Preview</p>
       </div>
 
       {/* Heading */}
-      <div className="text-black">
-        <p className="text-base font-medium">ID: 123456789</p>
+      <div className="text-black dark:text-white">
+        <p className="text-base font-medium dark:text-darkText-1">ID: 123456789</p>
         <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
           Moniya Apartment (14Units)
         </h1>
@@ -158,37 +158,37 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
         </div>
 
         <div className="lg:w-[37.5%]">
-          <div className="bg-white p-4 md:p-6 lg:p-8 rounded-b-3xl mt-4 lg:mt-0 space-y-2">
+          <div className="bg-white dark:bg-darkText-primary p-4 md:p-6 lg:p-8 rounded-b-3xl mt-4 lg:mt-0 space-y-2">
             {/* Property Details */}
             <div className="text-base font-normal space-y-2 [&>div]:grid [&>div]:grid-cols-2">
               <h3 className="text-brand-10 font-medium">Property Details</h3>
               <div>
-                <p className="text-[#747474]">Property Title</p>
-                <p className="text-black">Harmony Cottage</p>
+                <p className="text-[#747474] dark:text-white">Property Title</p>
+                <p className="text-black dark:text-darkText-1">Harmony Cottage</p>
               </div>
               <div>
-                <p className="text-[#747474]">Landlord</p>
-                <p className="text-black">Abiola Sunday</p>
+                <p className="text-[#747474] dark:text-white">Landlord</p>
+                <p className="text-black dark:text-darkText-1">Abiola Sunday</p>
               </div>
               <div>
-                <p className="text-[#747474]">Description</p>
-                <p className="text-black">+2348132086958</p>
+                <p className="text-[#747474] dark:text-white">Description</p>
+                <p className="text-black dark:text-darkText-1">+2348132086958</p>
               </div>
               <div>
-                <p className="text-[#747474]">State</p>
-                <p className="text-black">Oyo</p>
+                <p className="text-[#747474] dark:text-white">State</p>
+                <p className="text-black dark:text-darkText-1">Oyo</p>
               </div>
               <div>
-                <p className="text-[#747474]">Categories</p>
-                <p className="text-black">Moniya Apartment</p>
+                <p className="text-[#747474] dark:text-white">Categories</p>
+                <p className="text-black dark:text-darkText-1">Moniya Apartment</p>
               </div>
               <div>
-                <p className="text-[#747474]">Blocks of Flat</p>
-                <p className="text-black">Ibadan North</p>
+                <p className="text-[#747474] dark:text-white">Blocks of Flat</p>
+                <p className="text-black dark:text-darkText-1">Ibadan North</p>
               </div>
               <div>
-                <p className="text-[#747474]">Account Officer</p>
-                <p className="text-black">Sunday Ogunwole</p>
+                <p className="text-[#747474] dark:text-white">Account Officer</p>
+                <p className="text-black dark:text-darkText-1">Sunday Ogunwole</p>
               </div>
             </div>
 
@@ -196,40 +196,40 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
             <div className="text-base font-normal space-y-2 [&>div]:grid [&>div]:grid-cols-2">
               <h3 className="text-brand-10 font-medium">Property Settings</h3>
               <div>
-                <p className="text-[#747474]">Agency Fee</p>
-                <p className="text-black">10%</p>
+                <p className="text-[#747474] dark:text-white">Agency Fee</p>
+                <p className="text-black dark:text-darkText-1">10%</p>
               </div>
               <div>
-                <p className="text-[#747474]">Caution Deposit</p>
-                <p className="text-black">N300,000</p>
+                <p className="text-[#747474] dark:text-white">Caution Deposit</p>
+                <p className="text-black dark:text-darkText-1">N300,000</p>
               </div>
               <div>
-                <p className="text-[#747474]">Period</p>
-                <p className="text-black">10%</p>
+                <p className="text-[#747474] dark:text-white">Period</p>
+                <p className="text-black dark:text-darkText-1">10%</p>
               </div>
               <div>
-                <p className="text-[#747474]">Group Chat</p>
-                <p className="text-black">Yes</p>
+                <p className="text-[#747474] dark:text-white">Group Chat</p>
+                <p className="text-black dark:text-darkText-1">Yes</p>
               </div>
               <div>
-                <p className="text-[#747474]">Charge</p>
-                <p className="text-black">Landlord</p>
+                <p className="text-[#747474] dark:text-white">Charge</p>
+                <p className="text-black dark:text-darkText-1">Landlord</p>
               </div>
               <div>
-                <p className="text-[#747474]">Agency Fee</p>
-                <p className="text-black">10%</p>
+                <p className="text-[#747474] dark:text-white">Agency Fee</p>
+                <p className="text-black dark:text-darkText-1">10%</p>
               </div>
               <div>
-                <p className="text-[#747474]">Book Visitors</p>
-                <p className="text-black">Yes</p>
+                <p className="text-[#747474] dark:text-white">Book Visitors</p>
+                <p className="text-black dark:text-darkText-1">Yes</p>
               </div>
               <div>
-                <p className="text-[#747474]">Request Call Back</p>
-                <p className="text-black">Yes</p>
+                <p className="text-[#747474] dark:text-white">Request Call Back</p>
+                <p className="text-black dark:text-darkText-1">Yes</p>
               </div>
               <div>
-                <p className="text-[#747474]">Vehicles Record</p>
-                <p className="text-black">Yes</p>
+                <p className="text-[#747474] dark:text-white">Vehicles Record</p>
+                <p className="text-black dark:text-darkText-1">Yes</p>
               </div>
             </div>
 

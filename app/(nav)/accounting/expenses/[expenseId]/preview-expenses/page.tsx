@@ -18,7 +18,7 @@ const PreviewExpenses = () => {
           phoneNumbers={["09022312133", "07012133313", "0901212121"]}
           email="example@mail.com"
         />
-        <div className="rounded-lg bg-white p-8 flex">
+        <div className="rounded-lg bg-white p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
             data={{}}
             chunkSize={2}
@@ -35,7 +35,7 @@ const PreviewExpenses = () => {
         </div>
         <AccountingTitleSection title="Total Expenses">
           <div className="p-6 bg-white rounded-lg space-y-5">
-            <div className="flex">
+            <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
               <KeyValueList
                 data={{}}
                 chunkSize={2}

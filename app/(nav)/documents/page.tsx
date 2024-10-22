@@ -29,7 +29,7 @@ const Documents = () => {
         />
       </AutoResizingGrid>
       <div className="custom-flex-col gap-6">
-        <div className="flex items-center justify-between">
+        <div className="flex gap-4 sm:gap-0 flex-col sm:flex-row sm:items-center justify-between">
           <div className="flex gap-1 items-center">
             <h1 className="text-black text-2xl font-medium">Document</h1>
             <ExclamationMark />
@@ -47,7 +47,7 @@ const Documents = () => {
         </div>
         <div className="page-title-container">
           <div></div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <SearchInput placeholder="Document Search" />
             <SortButton />
             <Modal>

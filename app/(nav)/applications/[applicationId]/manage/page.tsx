@@ -30,7 +30,7 @@ const ManageApplication = () => {
             Property Details
           </p>
           <SectionSeparator />
-          <div className="flex">
+          <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
               data={{}}
               chunkSize={4}
@@ -49,7 +49,7 @@ const ManageApplication = () => {
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-x-8 gap-y-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-5">
           <div
             className="custom-flex-col gap-5 pt-6 bg-white rounded-2xl overflow-hidden"
             style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}

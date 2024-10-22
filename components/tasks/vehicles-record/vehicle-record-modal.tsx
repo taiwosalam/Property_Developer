@@ -1,8 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ModalTrigger } from "@/components/Modal/modal";
 import Picture from "@/components/Picture/picture";
-import { XIcon } from "@/public/icons/icons";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Button from "@/components/Form/Button/button";
 import type { VehicleRecord } from "./types";

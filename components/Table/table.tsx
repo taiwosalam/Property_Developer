@@ -97,8 +97,8 @@ const CustomTable: React.FC<CustomTableProps> = ({
   tableHeadStyle,
   tableHeadCellSx,
   tableBodyCellSx,
-  evenRowColor = "#fff",
-  oddRowColor = "#fff",
+  evenRowColor = "bg-white dark:bg-gray-800",
+  oddRowColor = "bg-white dark:bg-gray-900",
   onActionClick,
 }) => {
   return (

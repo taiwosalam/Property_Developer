@@ -21,7 +21,7 @@ const ManageExpenses = () => {
           phoneNumbers={["09022312133", "07012133313", "0901212121"]}
           email="example@mail.com"
         />
-        <div className="rounded-lg bg-white p-8 flex">
+        <div className="rounded-lg bg-white p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
             data={{}}
             chunkSize={2}
@@ -38,7 +38,7 @@ const ManageExpenses = () => {
         </div>
         <AccountingTitleSection title="Total Expenses">
           <div className="flex">
-            <div className="w-full max-w-[968px] grid grid-cols-3 gap-x-[34px] gap-y-6">
+            <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
               <Input
                 id="annual-rent"
                 label="Annual Rent"
@@ -80,7 +80,7 @@ const ManageExpenses = () => {
         </AccountingTitleSection>
         <AccountingTitleSection title="Add Payment" required>
           <div className="p-6 custom-flex-col gap-4 bg-white rounded-lg">
-            <div className="grid grid-cols-3 gap-[18px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
               <Input id="payment-title" label="payment title" />
               <Input
                 id="amount"

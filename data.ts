@@ -400,6 +400,14 @@ export const employmentTypeOptions = [
   "Casual Employment",
 ];
 
+export const visitorCategories = [
+  "Occupant",
+  "Guest",
+  "Visitor",
+  "Tenants",
+  "Others",
+];
+
 export const states: State[] = [
   {
     Abia: {

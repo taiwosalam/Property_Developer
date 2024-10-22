@@ -20,7 +20,7 @@ import { InventoryField } from "./inventory-components";
 
 const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
   const input_styles: CSSProperties = {
-    backgroundColor: "white",
+    backgroundColor: "white dark:bg-darkText-primary",
   };
 
   return (
