@@ -4,12 +4,12 @@ import { empty } from "@/app/config";
 
 const ServiceCard = () => {
   return (
-    <div className="bg-white rounded-2xl p-2">
+    <div className="bg-white dark:bg-darkText-primary rounded-2xl p-2">
       <div className="relative mb-4 rounded-t-lg w-full h-[150px] overflow-hidden">
         <Image src={empty} alt="sample" fill sizes="auto" className="object-cover object-center"/>
       </div>
       <div className="custom-flex-col gap-1">
-        <p className="text-text-quaternary text-base font-bold">
+        <p className="text-text-quaternary dark:text-white text-base font-bold">
           Private Hair Dressing
         </p>
         <p className="text-text-disabled text-xs font-normal flex items-center gap-1">

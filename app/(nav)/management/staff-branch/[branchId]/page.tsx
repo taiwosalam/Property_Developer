@@ -23,7 +23,7 @@ import { DashboardChart } from "@/components/dashboard/chart";
 
 import { LocationIcon } from "@/public/icons/icons";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import { PageState } from "./data";
+import { branchIdChartConfig, branchIdChartData, PageState } from "./data";
 import Pagination from "@/components/Pagination/pagination";
 import BranchStatCard from "@/components/Management/Staff-And-Branches/Branch/branchStatCard";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
@@ -244,6 +244,8 @@ const BranchDashboard = () => {
           chartTitle="Reports"
           visibleRange={false}
           className="hidden md:block md:w-full lg:w-[68%]"
+          chartConfig={branchIdChartConfig}
+          chartData={branchIdChartData}
         />
         <NotificationCard
           sectionHeader="Staffs"

@@ -55,7 +55,9 @@ const OnboardingPopup = () => {
               </h1>
             </div>
             <div className="py-[18px] custom-flex-col rounded-lg bg-white">
-              <OnboardingAction>assistance & support</OnboardingAction>
+              <OnboardingAction href="https://kb.ourproperty.ng/">
+                Knowledge Base
+              </OnboardingAction>
               <SectionSeparator />
               <OnboardingAction>request call</OnboardingAction>
               <SectionSeparator />

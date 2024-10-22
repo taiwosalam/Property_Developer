@@ -19,6 +19,7 @@ import CheckInOutForm from "@/components/tasks/visitors-requests/check-in-out-fo
 import VehicleDetailsFormModal from "@/components/tasks/vehicles-record/vehicle-details-form-modal";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 interface UserData {
   user_tag: "web" | "mobile";
@@ -33,13 +34,16 @@ const Detail: React.FC<{
 }> = ({ label, value }) => {
   return (
     <div className="flex flex-col sm:flex-row gap-x-4 gap-y-1">
-      <p className="text-[#747474] w-[135px]">{label}</p>
-      <p className="text-black capitalize">{value}</p>
+      <p className="text-[#747474] dark:text-darkText-2 w-[135px]">
+        {label}
+      </p>
+      <p className="text-black dark:text-white capitalize">{value}</p>
     </div>
   );
 };
 
 const RecordPage = () => {
+  const  isDarkMode  = useDarkMode();
   const [userData, setUserData] = useState<UserData | null>({
     user_tag: Math.random() > 0.5 ? "web" : "mobile",
     pictureSrc: "/empty/landlord-avatar.png",
@@ -66,14 +70,13 @@ const RecordPage = () => {
             <div className="custom-flex-col gap-4">
               <div className="custom-flex-col">
                 <div className="flex items-center">
-                  <p className="text-black text-lg lg:text-xl font-bold capitalize">
+                  <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
                     Abimbola Ayodeji
                   </p>
                   <BadgeIcon color="blue" />
                 </div>
                 <p
-                  style={{ color: "rgba(21, 21, 21, 0.70)" }}
-                  className={`${secondaryFont.className} text-sm font-normal`}
+                  className={`${secondaryFont.className} text-sm dark:text-darkText-2 font-normal`}
                 >
                   ayo@gmail.com
                 </p>
@@ -82,7 +85,7 @@ const RecordPage = () => {
                 <div className="flex items-end gap-2 justify-between">
                   <div className="custom-flex-col gap-2">
                     <UserTag type={user_tag} />
-                    <p className="text-neutral-800 text-base font-medium">
+                    <p className="text-neutral-800 dark:text-darkText-2 text-base font-medium">
                       ID: 22132876554444
                     </p>
                   </div>
@@ -136,7 +139,7 @@ const RecordPage = () => {
         )}
       </div>
       {/* <VehicleDetails /> */}
-      <InfoBox className="text-black text-lg lg:text-xl font-bold">
+      <InfoBox className="text-black dark:text-white text-lg lg:text-xl font-bold">
         <h3>Vehicle Details</h3>
         <SectionSeparator className="my-4" />
         <div className="flex flex-wrap gap-4 lg:gap-16 text-sm lg:text-base font-normal capitalize">

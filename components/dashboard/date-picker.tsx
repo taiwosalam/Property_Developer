@@ -6,13 +6,19 @@ import { ChevronDown } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
+const calculateDefaultDateRange = () => {
+  const now = new Date();
+  const fromDate = new Date();
+  fromDate.setDate(now.getDate() - 30);
+  return { from: fromDate, to: now };
+};
 
 export function DatePickerWithRange({
   className,
@@ -22,18 +28,20 @@ export function DatePickerWithRange({
   selectedRange: DateRange | undefined;
   onDateChange: (range: DateRange | undefined) => void;
 }) {
-  // Use the selectedRange prop to set the initial state
-  const [date, setDate] = React.useState<DateRange | undefined>(selectedRange);
+  // Initialize with default 30-day range if no selectedRange is provided
+  const [date, setDate] = React.useState<DateRange | undefined>(
+    selectedRange || calculateDefaultDateRange()
+  );
 
   // Update local state and notify parent whenever the date changes
   const handleDateChange = (newRange: DateRange | undefined) => {
     setDate(newRange);
-    onDateChange(newRange); // Notify parent of the change
+    onDateChange(newRange);
   };
 
-  // Sync the local state with the selectedRange prop if it changes externally
+  // Sync with external changes while preserving default behavior
   React.useEffect(() => {
-    setDate(selectedRange);
+    setDate(selectedRange || calculateDefaultDateRange());
   }, [selectedRange]);
 
   return (
@@ -50,17 +58,16 @@ export function DatePickerWithRange({
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")}{" "}
-                  <ChevronDown className="ml-1 h-4 w-4" />-{" "}
+                  {format(date.from, "LLL dd, y")} -{" "}
                   {format(date.to, "LLL dd, y")}
+                  <ChevronDown className="ml-1 h-4 w-4" />
                 </>
               ) : (
-                <>{format(date.from, "LLL dd, y")}</>
+                format(date.from, "LLL dd, y")
               )
             ) : (
-              <span className="ml-2">Pick a date</span>
+              <span>Pick a date</span>
             )}
-            <ChevronDown className="ml-1 h-4 w-4" />
           </button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">

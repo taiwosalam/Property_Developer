@@ -13,6 +13,7 @@ import type {
 // Imports
 import clsx from "clsx";
 import PopupPortal from "../PopupPortal/PopupPortal";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 // Create a context for managing modal state and actions
 const ModalContext = createContext<ModalContextProps | undefined>(undefined);
@@ -51,7 +52,7 @@ const ModalTrigger: React.FC<ModalTriggerProps> = ({
   ...props
 }) => {
   const { setIsOpen } = useModal();
-
+  const isDarkMode = useDarkMode();
   // Handle click event to open or close the modal
   const handleClick: React.MouseEventHandler<HTMLElement> = (e) => {
     e.preventDefault();
@@ -82,7 +83,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
   ...props
 }) => {
   const { isOpen, setIsOpen } = useModal();
-
+  const isDarkMode = useDarkMode(); 
   // Handle clicks outside the modal to close it
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -118,7 +119,10 @@ const ModalContent: React.FC<ModalContentProps> = ({
           "w-screen h-screen flex items-center justify-center",
           className
         )}
-        style={{ backgroundColor: "rgba(0, 0, 0, 0.3)", ...style }}
+        style={{
+          backgroundColor: isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#00000033",
+          ...style
+        }}
         {...props}
       >
         {children}

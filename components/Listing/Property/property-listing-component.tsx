@@ -33,7 +33,7 @@ export const PropertyListingLabelID: React.FC<PropertyListingLabelIDProps> = ({
 export const PropertyListingTitleDesc: React.FC<
   PropertyListingTitleDescProps
 > = ({ desc, title }) => (
-  <div className="custom-flex-col text-text-primary text-base">
+  <div className="custom-flex-col text-text-primary dark:text-darkText-1 text-base">
     <p className="font-bold">{title}</p>
     <p>{desc}</p>
   </div>
@@ -45,7 +45,7 @@ export const PropertyListingRed: React.FC<PropertyListingRedProps> = ({
 
 export const PropertyListingParagraph: React.FC<PropertyListingRedProps> = ({
   children,
-}) => <p className="text-text-secondary text-base font-medium">{children}</p>;
+}) => <p className="text-text-secondary dark:text-darkText-1 text-base font-medium">{children}</p>;
 
 export const PropertyListingStatusItem: React.FC<
   PropertyListingStatusItemProps

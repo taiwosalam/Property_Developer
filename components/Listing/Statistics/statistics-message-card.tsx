@@ -21,7 +21,7 @@ const StatisticsMessageCard: React.FC<StatisticsMessageCardProps> = ({
     <div className="flex items-center justify-between gap-6">
       <div className="flex items-center gap-1">
         <Picture src={Avatar} alt="profile picture" size={40} rounded />
-        <div className="custom-flex-col text-text-primary text-sm">
+        <div className="custom-flex-col text-text-primary dark:text-darkText-1 text-sm">
           <div className="flex items-center">
             <p className="font-bold">Salam AIshat</p>
             <BadgeIcon color="blue" />

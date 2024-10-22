@@ -4,7 +4,6 @@ import Link from "next/link";
 // Images
 import { ChevronRight } from "lucide-react";
 import SendIcon from "@/public/icons/send.svg";
-import ReceiveIcon from "@/public/icons/receive.svg";
 import { ExclamationMark } from "@/public/icons/icons";
 
 // Imports
@@ -15,6 +14,7 @@ import WalletBenefiary from "@/components/Wallet/wallet-benefiary";
 import BeneficiaryList from "@/components/Wallet/beneficiary-list";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { walletChartConfig, walletChartData } from "./data";
 
 const Wallet = () => {
   return (
@@ -56,7 +56,12 @@ const Wallet = () => {
               }}
             />
           </div>
-          <DashboardChart chartTitle="Analysis" visibleRange />
+          <DashboardChart
+            chartTitle="Analysis"
+            visibleRange
+            chartConfig={walletChartConfig}
+            chartData={walletChartData}
+          />
         </div>
         <div className="custom-flex-col gap-5 min-w-[315px]">
           <div className="flex items-center justify-between text-neutral-800 font-medium">

@@ -34,52 +34,69 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
         <div className="flex flex-col md:flex-row items-center justify-between gap-2 font-medium">
           <div className="flex items-center gap-2">
             <Picture size={50} src={pictureSrc} rounded />
-            <div className="text-base text-text-primary space-y-1">
+            <div className="text-base text-text-primary dark:text-white space-y-1">
               <p className="flex">
                 <span>{userName}</span>
                 <BadgeIcon color="blue" />
               </p>
               <p>
-                <span className="text-text-tertiary">ID:</span> {id}
+                <span className="text-text-tertiary dark:text-darkText-1">
+                  ID:
+                </span>{" "}
+                {id}
               </p>
             </div>
           </div>
           <div className="space-y-2 text-sm">
             <div className="flex items-start gap-4">
-              <p className="text-text-tertiary min-w-[120px]">
+              <p className="text-text-tertiary min-w-[120px] dark:text-darkText-1">
                 Name of Visitor
               </p>
-              <p className="text-text-primary">{visitorName}</p>
+              <p className="text-text-primary dark:text-darkText-2">
+                {visitorName}
+              </p>
             </div>
             <div className="flex items-start gap-4">
-              <p className="text-text-tertiary min-w-[120px]">Request Date</p>
-              <p className="text-text-primary">{requestDate}</p>
+              <p className="text-text-tertiary min-w-[120px] dark:text-darkText-1">
+                Request Date
+              </p>
+              <p className="text-text-primary dark:text-darkText-2">
+                {requestDate}
+              </p>
             </div>
             <div className="flex items-start gap-4">
-              <p className="text-text-tertiary min-w-[120px]">
+              <p className="text-text-tertiary min-w-[120px] dark:text-darkText-1">
                 Visitor&apos;s Phone
               </p>
-              <p className="text-text-primary">{visitorPhoneNumber}</p>
+              <p className="text-text-primary dark:text-darkText-2">
+                {visitorPhoneNumber}
+              </p>
             </div>
           </div>
         </div>
         <div className="border-t border-borders-dark my-5 -mx-6 border-dashed" />
         <div className="mb-5 space-y-2 gap-5">
           <div className="flex items-start justify-between gap-1.5">
-            <p className="text-text-tertiary text-base">Secret Question</p>
-            <p className="text-text-primary text-sm text-right">
+            <p className="text-text-tertiary text-base dark:text-darkText-1">
+              Secret Question
+            </p>
+            <p className="text-text-primary text-sm text-right dark:text-darkText-2">
               {secretQuestion}
             </p>
           </div>
           <div className="flex items-start justify-between gap-1.5">
-            <p className="text-text-tertiary text-base">Answer</p>
-            <p className="text-text-primary text-sm text-right">
+            <p className="text-text-tertiary text-base dark:text-darkText-1">
+              Answer
+            </p>
+            <p className="text-text-primary text-sm text-right dark:text-darkText-2">
               {secretAnswer}
             </p>
           </div>
           <div className="flex flex-col gap-1">
-            <p className="text-text-tertiary text-base">Description:</p>
-            <p>
+            <p className="text-text-tertiary text-base dark:text-white">
+              Description:
+            </p>
+            <p className="text-text-primary dark:text-darkText-2">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
               eget dictum sem, ut molestie eros. Morbi in dolor augue. Sed
               aliquet ipsum fringilla sapien facilisis consectetur.
@@ -87,34 +104,38 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
           </div>
         </div>
         <div className="mb-9 text-sm">
-          <p className="mb-2 text-text-label text-base font-bold">Check In</p>
+          <p className="mb-2 text-text-label text-base font-bold dark:text-white">
+            Check In
+          </p>
           <div className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-1.5">
             <div className="flex gap-4">
-              <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+              <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
                 By
               </p>
-              <p className="text-text-primary font-medium">
+              <p className="text-text-primary dark:text-darkText-2 font-medium">
                 {status === "pending" ? "---" : "David Aladiye"}
               </p>
             </div>
             <div className="flex gap-4">
-              <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+              <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
                 Companion
               </p>
-              <p className="text-text-primary font-medium">
+              <p className="text-text-primary dark:text-darkText-2 font-medium">
                 {status === "pending" ? "---" : "5 People"}
               </p>
             </div>
             <div className="flex gap-4">
-              <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+              <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
                 Date - Time
               </p>
-              <p className="text-text-primary font-medium">
+              <p className="text-text-primary dark:text-darkText-2 font-medium">
                 {status === "pending" ? "---" : "12/12/12 - 12:00 PM"}
               </p>
             </div>
           </div>
-          <p className="text-text-label font-normal mb-1">Inventory</p>
+          <p className="text-text-label dark:text-white font-normal mb-1">
+            Inventory
+          </p>
           {status === "pending" ? (
             "---"
           ) : (
@@ -167,32 +188,38 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
           </div>
         ) : (
           <div className="text-sm">
-            <p className="mb-2 text-text-label text-base font-bold">
+            <p className="mb-2 text-text-label dark:text-white text-base font-bold">
               Check Out
             </p>
             <div className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-1.5">
               <div className="flex items-start gap-4">
-                <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
                   By
                 </p>
-                <p className="text-text-primary font-medium">David Aladiye</p>
+                <p className="text-text-primary dark:text-darkText-2 font-medium">
+                  David Aladiye
+                </p>
               </div>
               <div className="flex items-start gap-4">
-                <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
                   Companion
                 </p>
-                <p className="text-text-primary font-medium">5 People</p>
+                <p className="text-text-primary dark:text-darkText-2 font-medium">
+                  5 People
+                </p>
               </div>
               <div className="flex items-start gap-4">
-                <p className="text-text-label font-normal min-w-[90px] md:min-w-[unset]">
+                <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
                   Date - Time
                 </p>
-                <p className="text-text-primary font-medium">
+                <p className="text-text-primary dark:text-darkText-2 font-medium">
                   12/12/12 - 12:00 PM
                 </p>
               </div>
             </div>
-            <p className="text-text-label font-normal mb-1">Inventory</p>
+            <p className="text-text-label dark:text-white font-normal mb-1">
+              Inventory
+            </p>
             <TruncatedText lines={2}>
               Lorem ipsum, dolor sit amet consectetur adipisicing elit.
               Voluptatem cum dolorum ex, dolore deleniti veniam eum quam cumque,
