@@ -87,7 +87,6 @@ const getUniqueKey = (item: DataItem) => {
   return item.id || item._id;
 };
 
-
 const CustomTable: React.FC<CustomTableProps> = ({
   data,
   fields,
@@ -99,13 +98,15 @@ const CustomTable: React.FC<CustomTableProps> = ({
   tableHeadStyle,
   tableHeadCellSx,
   tableBodyCellSx,
-  evenRowColor,
-  oddRowColor,
+  evenRowColor: propEvenRowColor,
+  oddRowColor: propOddRowColor,
   onActionClick,
 }) => {
   const isDarkMode = useDarkMode();
-  evenRowColor = isDarkMode ? "bg-gray-800" : "bg-white"; 
-  oddRowColor = isDarkMode ? "bg-gray-700" : "bg-gray-100";
+
+  const evenRowColor = propEvenRowColor || (isDarkMode ? "#ccc" : "#fff");
+  const oddRowColor = propOddRowColor || (isDarkMode ? "#ccc" : "#fff");
+
   return (
     <TableContainer
       component={Paper}
@@ -154,7 +155,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 maxHeight: "76px",
                 transition: "background-color 0.3s ease",
                 "&:hover": {
-                  backgroundColor: "#dbe6f3",
+                  backgroundColor: isDarkMode ? "#c1c2c3" : "#dbe6f3",
                 },
               }}
             >
