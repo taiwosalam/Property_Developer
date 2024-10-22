@@ -103,44 +103,46 @@ const EditTenant = () => {
           </div>
 
           {/* Right Side */}
-          <div className="w-full lg:w-[334px] custom-flex-col gap-5">
-            <LandlordTenantInfoEditSection title="edit avatar">
-              <div className="flex">
-                <div className="relative">
-                  <Picture src={preview} alt="camera" size={90} rounded />
-                  <input
-                    type="file"
-                    id="picture"
-                    name="picture"
-                    accept="image/*"
-                    className="hidden pointer-events-none"
-                    onChange={handleImageChange}
-                    ref={inputFileRef}
-                  />
-                  <input type="hidden" name="avatar" value={activeAvatar} />
-                  <button
-                    type="button"
-                    className="absolute top-0 right-0 translate-x-[5px] -translate-y-[5px]"
-                  >
-                    <DeleteIconOrange size={32} />
-                  </button>
+          <div className="w-full lg:w-[334px]">
+            <div className="lg:sticky top-[175px] w-full lg:h-[calc(100vh-250px)] overflow-auto custom-flex-col gap-5 custom-round-scrollbar">
+              <LandlordTenantInfoEditSection title="edit avatar">
+                <div className="flex">
+                  <div className="relative">
+                    <Picture src={preview} alt="camera" size={90} rounded />
+                    <input
+                      type="file"
+                      id="picture"
+                      name="picture"
+                      accept="image/*"
+                      className="hidden pointer-events-none"
+                      onChange={handleImageChange}
+                      ref={inputFileRef}
+                    />
+                    <input type="hidden" name="avatar" value={activeAvatar} />
+                    <button
+                      type="button"
+                      className="absolute top-0 right-0 translate-x-[5px] -translate-y-[5px]"
+                    >
+                      <DeleteIconOrange size={32} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div className="custom-flex-col gap-3">
-                <p className="text-black text-base font-medium">
-                  Choose Avatar
-                </p>
-                <Avatars type="avatars" onClick={handleAvatarChange} />
-              </div>
-              <Button
-                size="base_medium"
-                className="py-2 px-6"
-                onClick={handleChangeButton}
-              >
-                change photo
-              </Button>
-            </LandlordTenantInfoEditSection>
-            <TenantEditNoteSection />
+                <div className="custom-flex-col gap-3">
+                  <p className="text-black text-base font-medium">
+                    Choose Avatar
+                  </p>
+                  <Avatars type="avatars" onClick={handleAvatarChange} />
+                </div>
+                <Button
+                  size="base_medium"
+                  className="py-2 px-6"
+                  onClick={handleChangeButton}
+                >
+                  change photo
+                </Button>
+              </LandlordTenantInfoEditSection>
+              <TenantEditNoteSection />
+            </div>
           </div>
         </div>
         <FixedFooter className="flex gap-4 justify-between items-center flex-wrap">
