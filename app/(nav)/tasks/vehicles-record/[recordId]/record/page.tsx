@@ -1,9 +1,8 @@
 "use client";
 import { useState } from "react";
-import { ChevronLeft } from "@/public/icons/icons";
-import { useRouter } from "next/navigation";
 import Picture from "@/components/Picture/picture";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { secondaryFont } from "@/utils/fonts";
 import Button from "@/components/Form/Button/button";
 import UserTag from "@/components/Tags/user-tag";
 import {
@@ -18,6 +17,8 @@ import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import CheckInOutForm from "@/components/tasks/visitors-requests/check-in-out-form";
 import VehicleDetailsFormModal from "@/components/tasks/vehicles-record/vehicle-details-form-modal";
+import BackButton from "@/components/BackButton/back-button";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 interface UserData {
   user_tag: "web" | "mobile";
@@ -26,10 +27,21 @@ interface UserData {
   id: string | number;
 }
 
+const Detail: React.FC<{
+  label: string;
+  value: string;
+}> = ({ label, value }) => {
+  return (
+    <div className="flex flex-col sm:flex-row gap-x-4 gap-y-1">
+      <p className="text-[#747474] w-[135px]">{label}</p>
+      <p className="text-black capitalize">{value}</p>
+    </div>
+  );
+};
+
 const RecordPage = () => {
-  const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>({
-    user_tag: "web",
+    user_tag: Math.random() > 0.5 ? "web" : "mobile",
     pictureSrc: "/empty/landlord-avatar.png",
     userName: "Abimbola Adedeji",
     id: "22132876554444",
@@ -37,63 +49,55 @@ const RecordPage = () => {
   if (!userData) return null;
   const { user_tag } = userData;
   return (
-    <div className="space-y-5 pb-[80px]">
-      <div className="flex items-center gap-2">
-        <button
-          aria-label="back"
-          className="block"
-          onClick={() => router.back()}
-        >
-          <ChevronLeft />
-        </button>
-        <p className="text-text-secondary text-base font-bold">
-          Vehicle Record
-        </p>
-      </div>
+    <div className="space-y-5 pb-[100px]">
+      <BackButton>Vehicle Record</BackButton>
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
-        <InfoBox style={{ padding: "24px 40px" }}>
-          <div className="flex flex-col xl:flex-row gap-5">
-            <div className="flex items-start">
-              <Picture
-                src={DefaultLandlordAvatar}
-                alt="profile picture"
-                size={120}
-                rounded
-              />
-            </div>
-            <div className="w-full">
-              <div className="flex items-center gap-2">
-                <p className="text-black text-lg lg:text-xl font-bold text-ellipsis line-clamp-1">
-                  Abimbola Adedeji
+        <InfoBox
+          style={{ padding: "24px 40px" }}
+          className="flex flex-col xl:flex-row gap-5"
+        >
+          <Picture
+            src={DefaultLandlordAvatar}
+            alt="profile picture"
+            size={120}
+            rounded
+          />
+          <div className="custom-flex-col gap-8">
+            <div className="custom-flex-col gap-4">
+              <div className="custom-flex-col">
+                <div className="flex items-center">
+                  <p className="text-black text-lg lg:text-xl font-bold capitalize">
+                    Abimbola Ayodeji
+                  </p>
+                  <BadgeIcon color="blue" />
+                </div>
+                <p
+                  style={{ color: "rgba(21, 21, 21, 0.70)" }}
+                  className={`${secondaryFont.className} text-sm font-normal`}
+                >
+                  ayo@gmail.com
                 </p>
-                <BadgeIcon color="green" />
               </div>
-              <p
-                className="text-sm font-normal mb-4"
-                style={{ color: "rgba(21, 21, 21, 0.70)" }}
-              >
-                abimbola@gmail.com
-              </p>
-              <UserTag type={userData.user_tag} />
-              {user_tag === "web" ? (
-                <div className="flex flex-wrap gap-4 mt-7">
-                  <Button
-                    // href={`/tasks/service-providers/${1}/manage/edit`}
-                    size="base_medium"
-                    variant="border"
-                    className="py-2 px-8"
-                  >
+              {user_tag === "mobile" ? (
+                <div className="flex items-end gap-2 justify-between">
+                  <div className="custom-flex-col gap-2">
+                    <UserTag type={user_tag} />
+                    <p className="text-neutral-800 text-base font-medium">
+                      ID: 22132876554444
+                    </p>
+                  </div>
+
+                  <Button size="base_medium" className="py-2 px-8">
+                    message
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-4">
+                  <Button size="base_medium" className="py-2 px-8">
                     Edit
                   </Button>
                   <Button size="base_medium" className="py-2 px-8">
                     Update with ID
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex items-end gap-2 mt-4">
-                  <p className="text-base font-normal">ID: 22132876554444</p>
-                  <Button size="base_medium" className="py-2 px-8">
-                    Message
                   </Button>
                 </div>
               )}
@@ -102,7 +106,6 @@ const RecordPage = () => {
         </InfoBox>
         {user_tag === "mobile" && (
           <ContactInfo
-            containerClassName="flex flex-col justify-center"
             info={{
               Gender: "Male",
               Religion: "Christianity",
@@ -111,7 +114,6 @@ const RecordPage = () => {
           />
         )}
         <ContactInfo
-          containerClassName="flex flex-col justify-center"
           heading="Contact Address"
           info={{
             Address: "U4 Joke Plaza Bodija Ibadan",
@@ -137,38 +139,15 @@ const RecordPage = () => {
       <InfoBox className="text-black text-lg lg:text-xl font-bold">
         <h3>Vehicle Details</h3>
         <SectionSeparator className="my-4" />
-        <div className="flex gap-16 text-sm lg:text-base font-normal capitalize">
-          <div className="flex gap-6">
-            <div className="custom-flex-col gap-4 [&>p]:text-[#747474]">
-              <p>Brand Name</p>
-              <p>Model</p>
-              <p>Manufacturer</p>
-            </div>
-            <div className="custom-flex-col gap-4 [&>p]:text-black">
-              <p>Toyota</p>
-              <p>Corolla</p>
-              <p>2002</p>
-            </div>
-          </div>
-          <div className="flex gap-6">
-            <div className="custom-flex-col gap-4 [&>p]:text-[#747474]">
-              <p>Plate Number</p>
-              <p>State</p>
-            </div>
-            <div className="custom-flex-col gap-4 [&>p]:text-black">
-              <p>OS102DR</p>
-              <p>Lagos</p>
-            </div>
-          </div>
-          <div className="flex gap-6">
-            <div className="custom-flex-col gap-4 [&>p]:text-[#747474]">
-              <p>Category</p>
-              <p>Color</p>
-            </div>
-            <div className="custom-flex-col gap-4 [&>p]:text-black">
-              <p>Guest</p>
-              <p>Black</p>
-            </div>
+        <div className="flex flex-wrap gap-4 lg:gap-16 text-sm lg:text-base font-normal capitalize">
+          <div className="grid gap-y-4 gap-x-8 grid-cols-2 lg:grid-cols-3">
+            <Detail label="Brand Name" value="Toyota" />
+            <Detail label="Plate Number" value="OS102DR" />
+            <Detail label="Category" value="Guest" />
+            <Detail label="Model" value="Corolla" />
+            <Detail label="State" value="Lagos" />
+            <Detail label="Color" value="Black" />
+            <Detail label="Manufacture Year" value="2002" />
           </div>
           <Modal>
             <ModalTrigger asChild>
@@ -208,13 +187,10 @@ const RecordPage = () => {
         </div>
       </div>
       <Pagination totalPages={10} currentPage={1} onPageChange={() => {}} />
-      <div
-        className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-4"
-        style={{ boxShadow: "0px -2px 10px 0px rgba(0, 0, 0, 0.05)" }}
-      >
+      <FixedFooter className="flex items-center justify-end">
         <Modal>
           <ModalTrigger asChild>
-            <Button size="base_medium" className="py-2 px-8">
+            <Button size="sm_normal" className="py-2 px-8">
               Create New Record
             </Button>
           </ModalTrigger>
@@ -230,7 +206,7 @@ const RecordPage = () => {
             />
           </ModalContent>
         </Modal>
-      </div>
+      </FixedFooter>
     </div>
   );
 };

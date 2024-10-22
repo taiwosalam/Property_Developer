@@ -40,9 +40,24 @@ const VehiclesRecordPage = () => {
     <div className="space-y-9">
       <div className="page-header-container">
         <div className="hidden md:flex gap-5 flex-wrap">
-          <ManagementStatistcsCard title="Check In" newData={657} total={34} />
-          <ManagementStatistcsCard title="Check Out" newData={657} total={34} />
-          <ManagementStatistcsCard title="Pending" newData={657} total={34} />
+          <ManagementStatistcsCard
+            title="Check In"
+            newData={657}
+            total={34}
+            colorScheme={1}
+          />
+          <ManagementStatistcsCard
+            title="Check Out"
+            newData={657}
+            total={34}
+            colorScheme={2}
+          />
+          <ManagementStatistcsCard
+            title="Pending"
+            newData={657}
+            total={34}
+            colorScheme={3}
+          />
         </div>
         <Modal>
           <ModalTrigger asChild>
