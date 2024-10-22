@@ -41,7 +41,7 @@ body {
   pointer-events: none;
 }
 
-#portal > * {
+#portal>* {
   position: absolute;
   pointer-events: all;
 }
@@ -82,6 +82,10 @@ h1 {
   border: 2px solid var(--primary-color);
 }
 
+.nav-button-minimized:hover {
+  background-color: var(--secondary-color);
+}
+
 .custom-default-button {
   border: 2px solid transparent;
   background-color: var(--primary-color);
@@ -102,7 +106,7 @@ h1 {
   flex-direction: column;
 }
 
-.custom-flex-col > * {
+.custom-flex-col>* {
   width: 100%;
 }
 
@@ -159,7 +163,7 @@ h1 {
 /* Overwriting default behaviour */
 /* -------------------------------------------------------------- */
 
-.sections > *:last-child .separator {
+.sections>*:last-child .separator {
   display: none;
 }
 
@@ -284,16 +288,25 @@ button:disabled {
 }
 
 .dash-table thead {
-  @apply bg-brand-9;
+  background: var(--primary-color);
 }
 
 .dash-table tbody tr:nth-child(2n + 1) {
   @apply bg-brand-1 text-[#f1f1fd] dark:bg-[#020617];
 }
 
+.dash-table tbody tr:nth-child(2n):hover {
+  background-color: rgb(241, 234, 234);
+}
+
+.dash-table tbody tr:nth-child(2n + 1):hover {
+  background-color: #97b0c6b8;
+}
+
 .dash-table th {
   white-space: nowrap;
   font-weight: 500;
+  color: #fff !important;
 }
 
 .dash-table th,
@@ -327,7 +340,7 @@ button:disabled {
 }
 
 /* for the blue buttons */
-.page-header-container > :last-child {
+.page-header-container> :last-child {
   @apply flex-shrink-0;
 }
 

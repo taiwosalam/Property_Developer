@@ -152,7 +152,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <div className="space-x-1">
               <p className="text-sm font-medium text-text-primary dark:text-darkText-1 flex items-center space-x-0.5">
                 {task.name}
-                <BadgeIcon color="green" />
+                <BadgeIcon color="black" />
               </p>
               <p className="text-xs text-[#0033C4] font-medium capitalize">
                 {task.title}
@@ -182,7 +182,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                   {task.content.status}
                 </p>
               </div>
-              <p className="text-text-tertiary dark-text-darkText-1 font-normal" hidden={isNew}>
+              <p
+                className="text-text-tertiary dark-text-darkText-1 font-normal"
+                hidden={isNew}
+              >
                 {task.content.progress}/100%
               </p>
             </div>

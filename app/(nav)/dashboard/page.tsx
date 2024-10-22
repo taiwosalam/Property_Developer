@@ -82,7 +82,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <SectionContainer heading="Recent invoice" href="/">
+      <SectionContainer heading="Recent invoice" href="/accounting/invoice">
         <div className="rounded-lg w-full overflow-x-scroll no-scrollbar dark:bg-[#3C3D37]">
           <table className="dash-table">
             <colgroup>
