@@ -5,8 +5,9 @@ import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { reportsPropertiessFilterOptionsWithDropdown } from "./data";
-
+import useDarkMode from "@/hooks/useCheckDarkMode";
 const PropertiesReport = () => {
+  const isDarkMode = useDarkMode();
   const fields: Field[] = [
     { id: "0", label: "S/N", accessor: "S/N" },
     { id: "1", label: "ID", accessor: "id" },
@@ -69,7 +70,7 @@ const PropertiesReport = () => {
         data={tableData}
         tableHeadClassName="bg-brand-9 h-[45px]"
         tableHeadCellSx={{
-          color: "#EFF6FF",
+          color: isDarkMode ? "#EFF6FF" : "#050901",
           fontWeight: 500,
           border: "none",
           textAlign: "left",
@@ -79,11 +80,11 @@ const PropertiesReport = () => {
           border: "none",
           textAlign: "left",
           fontWeight: 500,
-          color: "#050901",
+          color: isDarkMode ? "#fff" : "#050901",
           fontSize: "14px",
         }}
-        evenRowColor="#fff"
-        oddRowColor="#FAFAFA"
+        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
+        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
       />
       <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>

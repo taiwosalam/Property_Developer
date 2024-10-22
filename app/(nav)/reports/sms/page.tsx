@@ -8,8 +8,10 @@ import SMSModal, { type SMSRecord } from "@/components/reports/sms-modal";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { reportsSmsFilterOptionsWithDropdown } from "./data";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const SMSReport = () => {
+  const isDarkMode = useDarkMode();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedSMS, setSelectedSMS] = useState<SMSRecord | null>(null);
 
@@ -76,7 +78,7 @@ const SMSReport = () => {
         data={tableData}
         tableHeadClassName="bg-brand-9 h-[45px]"
         tableHeadCellSx={{
-          color: "#EFF6FF",
+          color: isDarkMode ? "#EFF6FF" : "#050901",
           fontWeight: 500,
           border: "none",
           textAlign: "left",
@@ -86,11 +88,11 @@ const SMSReport = () => {
           border: "none",
           textAlign: "left",
           fontWeight: 500,
-          color: "#050901",
+          color: isDarkMode ? "#fff" : "#050901",
           fontSize: "14px",
         }}
-        evenRowColor="#fff"
-        oddRowColor="#FAFAFA"
+        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
+        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
         onActionClick={handleActionClick}
       />
       <Modal
