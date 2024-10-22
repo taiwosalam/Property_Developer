@@ -87,19 +87,19 @@ const UnitPreviewPage = () => {
     value: string | number;
   }) => (
     <>
-      <div className="text-[16px] font-normal text-[#747474]">{label}</div>
-      <div className="text-sm text-[16px] font-normal">{value}</div>
+      <div className="text-[16px] font-normal text-[#747474] dark:text-white">{label}</div>
+      <div className="text-sm text-[16px] font-normal dark:text-darkText-2">{value}</div>
     </>
   );
 
   const PriceSection = ({ title, price }: { title: string; price: number }) => (
     <div>
-      <h3 className="font-medium text-[16px] text-[#1E3A8A] mb-2">{title}</h3>
-      <p className="text-lg font-bold text-[#1E3A8A]">
+      <h3 className="font-medium text-[16px] text-[#1E3A8A] dark:text-darkText-1 mb-2">{title}</h3>
+      <p className="text-lg font-bold text-[#1E3A8A] dark:text-brand-9">
         ₦{price.toLocaleString()}
       </p>
-      <p className="text-xs text-gray-500">Total Package</p>
-      <p className="text-sm text-gray-600">
+      <p className="text-xs text-gray-500 dark:text-darkText-1">Total Package</p>
+      <p className="text-sm text-gray-600 dark:text-brand-9">
         ₦{(price / 2.5).toLocaleString()} / Per Year
       </p>
     </div>
@@ -129,11 +129,11 @@ const UnitPreviewPage = () => {
           <div className="xl:col-span-2 h-[500px] rounded-2xl overflow-hidden my-auto">
             <PropertyImageSlider images={unitDetails.images} />
           </div>
-          <div className="bg-white rounded-b-2xl p-6">
+          <div className="bg-white dark:bg-darkText-primary rounded-b-2xl p-6">
             <h2 className="text-[16px] font-medium mb-4">Unit Details</h2>
             <div className="space-y-6">
               <section>
-                <h3 className="font-semibold text-[#1E3A8A] text-[16px] mb-2">
+                <h3 className="font-semibold text-[#1E3A8A] dark:text-brand-9 text-[16px] mb-2">
                   Categories
                 </h3>
                 <div className="grid grid-cols-2 gap-2">
@@ -166,7 +166,7 @@ const UnitPreviewPage = () => {
                 </div>
               </section>
               <section>
-                <h3 className="font-semibold text-[#1E3A8A] text-[16px] mb-2">
+                <h3 className="font-semibold text-[#1E3A8A] dark:text-brand-9 text-[16px] mb-2">
                   Unit Features
                 </h3>
                 <div className="grid grid-cols-2 gap-2">
@@ -176,7 +176,7 @@ const UnitPreviewPage = () => {
                 </div>
               </section>
               <section>
-                <h3 className="font-semibold text-[#1E3A8A] text-[16px] mb-2">
+                <h3 className="font-semibold text-[#1E3A8A] text-[16px] dark:text-brand-9 mb-2">
                   Unit Fee
                 </h3>
                 <div className="flex justify-between">
@@ -194,7 +194,7 @@ const UnitPreviewPage = () => {
           </div>
         </div>
         <div className="w-full h-fit">
-          <h6 className="font-bold text-lg text-[#092C4C] mb-6">
+          <h6 className="font-bold text-lg text-[#092C4C] dark:text-white mb-6">
             Previously Assigned Tenants Records
           </h6>
           <div className="w-full h-fit space-y-4">

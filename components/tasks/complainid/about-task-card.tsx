@@ -24,7 +24,7 @@ const AboutTaskCard = () => {
         </div>
       </div>
       <div
-        className="bg-white p-6 rounded-lg"
+        className="bg-white dark:bg-darkText-primary p-6 rounded-lg"
         style={{
           boxShadow:
             "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
@@ -36,11 +36,11 @@ const AboutTaskCard = () => {
           ))}
         </div>
         <div className="my-2">
-          <p className="text-[16px] font-medium text-text-tertiary">
+          <p className="text-[16px] font-medium text-text-tertiary dark:text-darkText-1">
             Description:
           </p>
           <TruncatedText
-            className="text-sm text-[16px] font-normal text-text-secondary"
+            className="text-sm text-[16px] font-normal text-text-secondary dark:text-darkText-2"
             lines={3}
           >
             Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusamus
@@ -64,10 +64,10 @@ const DetailItem = ({
   value: string | number;
 }) => (
   <div className="w-full">
-    <p className="text-[16px] font-medium text-text-tertiary">{label}</p>
+    <p className="text-[16px] font-medium text-text-tertiary dark:text-white">{label}</p>
     <p
       className={clsx(
-        "text-sm text-[16px] font-normal text-text-secondary",
+        "text-sm text-[16px] font-normal text-text-secondary dark:text-darkText-1",
         label === "Complaints sent by:" && "flex items-center"
       )}
     >

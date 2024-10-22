@@ -68,7 +68,7 @@ const MessagesFromTask = () => {
 
   return (
     <div
-      className="rounded-lg border border-[rgba(193,194,195,0.40)] bg-white"
+      className="rounded-lg border border-[rgba(193,194,195,0.40)] bg-white dark:border-darkText-2"
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
@@ -81,7 +81,7 @@ const MessagesFromTask = () => {
         </span>
       </div>
 
-      <div className="pb-8 bg-white rounded-b-lg">
+      <div className="pb-8 bg-white dark:bg-[#3C3D37] rounded-b-lg">
         <div
           ref={containerRef}
           className="p-4 h-[320px] overflow-y-scroll custom-round-scrollbar custom-flex-col"
@@ -108,7 +108,7 @@ const MessagesFromTask = () => {
                 {showDateLabel && (
                   <div
                     className={clsx(
-                      "sticky-date-label text-xs border border-gray-300 bg-white px-2 text-center w-fit rounded-full my-2 sticky top-0 transition-opacity duration-300"
+                      "sticky-date-label text-xs border border-gray-300 dark:border-darkText-2 bg-white dark:bg-darkText-primary px-2 text-center w-fit rounded-full my-2 sticky top-0 transition-opacity duration-300"
                     )}
                   >
                     {moment(m.time).calendar(null, {

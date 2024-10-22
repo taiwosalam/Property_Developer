@@ -6,7 +6,7 @@ import { InspectionCardTitleDescProps, InspectionDefaultExport } from "./types";
 export const InspectionCardTitle: React.FC<InspectionDefaultExport> = ({
   children,
 }) => (
-  <p className="text-text-tertiary text-base font-medium capitalize">
+  <p className="text-text-tertiary dark:text-white text-base font-medium capitalize">
     {children}
   </p>
 );
@@ -14,7 +14,7 @@ export const InspectionCardTitle: React.FC<InspectionDefaultExport> = ({
 export const InspectionCardDesc: React.FC<InspectionDefaultExport> = ({
   children,
 }) => (
-  <p className="text-text-secondary text-sm font-medium capitalize">
+  <p className="text-text-secondary dark:text-darkText-1 text-sm font-medium capitalize">
     {children}
   </p>
 );

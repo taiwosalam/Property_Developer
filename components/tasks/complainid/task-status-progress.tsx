@@ -5,7 +5,7 @@ import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
 const TaskStatusProgress = ({ percentage = 20 }) => {
   return (
     <div
-      className="border border-[rgba(193,194,195,0.40)] rounded-lg bg-white px-4 pt-4 pb-6"
+      className="border border-[rgba(193,194,195,0.40)] rounded-lg bg-white dark:bg-darkText-primary px-4 pt-4 pb-6"
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
@@ -13,7 +13,7 @@ const TaskStatusProgress = ({ percentage = 20 }) => {
     >
       <div className="flex items-center justify-between text-xs font-medium mb-8">
         <div className="space-y-1">
-          <h6 className="text-black text-base">Task status progress bar</h6>
+          <h6 className="text-black text-base dark:text-white">Task status progress bar</h6>
           <p
             className={clsx(
               "text-xs",
