@@ -1,8 +1,9 @@
-import { ModalTrigger } from "@/components/Modal/modal";
+import { DropdownTrigger } from "@/components/Dropdown/dropdown";
 import { XIcon, DownArrow } from "@/public/icons/icons";
 import Select from "@/components/Form/Select/select";
 import { SectionSeparator } from "@/components/Section/section-components";
 import Button from "@/components/Form/Button/button";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 const PlateNumber: React.FC<{
   number: string;
@@ -19,9 +20,11 @@ const PlateNumber: React.FC<{
   );
 };
 
-const CreateRecordModal = () => {
+const CreateRecordDropdown = () => {
+  const { isMobile } = useWindowWidth();
+
   return (
-    <div className="w-[600px] max-w-[80%] h-[420px] max-h-[85%] rounded-2xl overflow-x-auto custom-round-scrollbar font-medium bg-white flex flex-col md:flex-row md:items-stretch">
+    <div className="w-[550px] max-w-[80%] h-[420px] max-h-[95vh] rounded-2xl overflow-x-auto custom-round-scrollbar font-medium bg-white flex flex-col md:flex-row md:items-stretch">
       <div className="w-full md:w-[37.5%] h-full overflow-x-auto py-4 pl-4 pr-2 flex flex-col gap-2">
         <div className="bg-white sticky top-0 z-[1]">
           <p className="text-base text-text-tertiary mb-4">Create / Search</p>
@@ -39,14 +42,9 @@ const CreateRecordModal = () => {
       </div>
       <SectionSeparator direction="y" className="h-auto w-[4px]" />
       <div className="md:flex-1 flex flex-col items-center justify-between gap-7 h-full p-4 pb-8">
-        <ModalTrigger
-          close
-          type="button"
-          aria-label="Close"
-          className="self-end"
-        >
+        <DropdownTrigger aria-label="Close" className="self-end">
           <XIcon size="30" />
-        </ModalTrigger>
+        </DropdownTrigger>
         <p className="text-sm text-text-tertiary w-[80%]">
           Search the existing records using the ID, name, or plate number. If
           the driver does not have an account in the records, create one
@@ -74,4 +72,4 @@ const CreateRecordModal = () => {
   );
 };
 
-export default CreateRecordModal;
+export default CreateRecordDropdown;

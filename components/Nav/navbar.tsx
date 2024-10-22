@@ -4,7 +4,7 @@ import { Skeleton } from "@mui/material";
 import { empty } from "@/app/config";
 import Avatar from "@/public/empty/avatar.png";
 import { useTheme } from "next-themes";
-
+import useWindowWidth from "@/hooks/useWindowWidth";
 // Imports
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
@@ -37,6 +37,7 @@ import { useDashboardData } from "@/hooks/useDashboardData";
 
 const Header = () => {
   const { loading, data: dashboardData, error } = useDashboardData();
+  const { isMobile } = useWindowWidth();
 
   const { theme, setTheme } = useTheme();
 
@@ -101,10 +102,10 @@ const Header = () => {
           <div className="flex items-center gap-2">
             <span className="text-white dark:text-black">
               <NavIcon
-              icon={<MailIcon size={21} />}
-              alt="messages"
-              href="/messages"
-            />
+                icon={<MailIcon size={21} />}
+                alt="messages"
+                href="/messages"
+              />
             </span>
             <NavIcon
               icon={<BellIcon size={21} />}
@@ -185,7 +186,7 @@ const Header = () => {
               src={Avatar}
               alt="profile picture"
               status
-              size={50}
+              size={isMobile ? 50 : 60}
               rounded
               containerClassName="flex-shrink-0"
             />
