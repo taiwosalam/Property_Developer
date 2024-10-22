@@ -11,8 +11,12 @@ import { formatCostInputValue } from "@/utils/number-formatter";
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
   return (
     <div className="flex justify-between">
-      <p className="text-text-tertiary text-base">{label}</p>
-      <p className="text-text-secondary text-sm text-right">{value}</p>
+      <p className="text-text-tertiary dark:text-darkText-1 text-base">
+        {label}
+      </p>
+      <p className="text-text-secondary text-sm text-right dark:text-darkText-2">
+        {value}
+      </p>
     </div>
   );
 };
@@ -20,9 +24,11 @@ const DetailsCheck: React.FC<DetailsCheckProps> = ({ label }) => {
   return (
     <label
       htmlFor={`${label}-check`}
-      className="flex items-center justify-between gap-2 rounded-[4px] bg-neutral-3 px-[18px] py-[10px]"
+      className="flex items-center justify-between gap-2 rounded-[4px] bg-neutral-3 dark:bg-darkText-primary dark:border dark:border-darkText-1 px-[18px] py-[10px]"
     >
-      <span className="text-sm text-text-secondary">{label}</span>
+      <span className="text-sm text-text-secondary dark:text-darkText-2">
+        {label}
+      </span>
       <input
         type="checkbox"
         id={`${label}-check`}
@@ -54,7 +60,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
           <XIcon size="30" />
         </ModalTrigger>
       </div>
-      <div className="bg-white p-6 pb-[45px] text-base">
+      <div className="bg-white dark:bg-darkText-primary p-6 pb-[45px] text-base">
         <div className="space-y-2">
           <LabelValuePair label="ID" value={requestId} />
           <LabelValuePair label="Property Name" value={propertyName} />
@@ -65,7 +71,9 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
         </div>
         <div className="border-t border-brand-7 my-5 -mx-6 border-dashed" />
         <form className="space-y-4">
-          <p className="text-text-tertiary">Caution Deposits Details:</p>
+          <p className="text-text-tertiary dark:text-white">
+            Caution Deposits Details:
+          </p>
           <div className="space-y-2">
             <DetailsCheck label="Check Inventory" />
             <DetailsCheck label="Request for Examine" />
@@ -79,7 +87,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
                 className="w-[18px] h-[18px] checked:bg-brand-7 checked:border-brand-7"
                 onChange={(e) => setIsEscrowChecked(e.target.checked)}
               />
-              <span className="text-text-secondary text-sm font-normal">
+              <span className="text-text-secondary dark:text-white text-sm font-normal">
                 Request from OurProperty Administrator Escrow
               </span>
             </label>
