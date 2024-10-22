@@ -1987,3 +1987,110 @@ export const CancelIcon = () => {
     </svg>
   );
 };
+
+export const FilterIcons = () => {
+  return (
+    <svg
+      width="20"
+      height="21"
+      viewBox="0 0 20 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g id="Icon / sliders">
+        <path
+          id="Vector"
+          d="M3.33332 18.0001V12.1667"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          id="Vector_2"
+          d="M3.33332 8.83333V3"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          id="Vector_3"
+          d="M9.99997 18V10.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          id="Vector_4"
+          d="M9.99997 7.16667V3"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          id="Vector_5"
+          d="M16.6666 17.9999V13.8333"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          id="Vector_6"
+          d="M16.6666 10.5V3"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          id="Vector_7"
+          d="M0.833305 12.1667H5.83331"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          id="Vector_8"
+          d="M7.49995 7.16675H12.4999"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          id="Vector_9"
+          d="M14.1667 13.8333H19.1667"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+    </svg>
+  );
+};
+
+export const ThreeDotsVertical = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g id="bi:three-dots-vertical">
+        <path
+          id="Vector"
+          d="M14.25 19.5C14.25 20.0967 14.0129 20.669 13.591 21.091C13.169 21.5129 12.5967 21.75 12 21.75C11.4033 21.75 10.831 21.5129 10.409 21.091C9.98705 20.669 9.75 20.0967 9.75 19.5C9.75 18.9033 9.98705 18.331 10.409 17.909C10.831 17.4871 11.4033 17.25 12 17.25C12.5967 17.25 13.169 17.4871 13.591 17.909C14.0129 18.331 14.25 18.9033 14.25 19.5ZM14.25 12C14.25 12.5967 14.0129 13.169 13.591 13.591C13.169 14.0129 12.5967 14.25 12 14.25C11.4033 14.25 10.831 14.0129 10.409 13.591C9.98705 13.169 9.75 12.5967 9.75 12C9.75 11.4033 9.98705 10.831 10.409 10.409C10.831 9.98705 11.4033 9.75 12 9.75C12.5967 9.75 13.169 9.98705 13.591 10.409C14.0129 10.831 14.25 11.4033 14.25 12ZM14.25 4.5C14.25 5.09674 14.0129 5.66903 13.591 6.09099C13.169 6.51295 12.5967 6.75 12 6.75C11.4033 6.75 10.831 6.51295 10.409 6.09099C9.98705 5.66903 9.75 5.09674 9.75 4.5C9.75 3.90326 9.98705 3.33097 10.409 2.90901C10.831 2.48705 11.4033 2.25 12 2.25C12.5967 2.25 13.169 2.48705 13.591 2.90901C14.0129 3.33097 14.25 3.90326 14.25 4.5Z"
+          fill="currentColor"
+        />
+      </g>
+    </svg>
+  );
+};

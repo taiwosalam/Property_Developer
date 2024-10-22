@@ -7,8 +7,9 @@ import { empty } from "@/app/config";
 import Image from "next/image";
 import Button from "@/components/Form/Button/button";
 import { useRouter } from "next/navigation";
-
+import useDarkMode from "@/hooks/useCheckDarkMode";
 const ExportVehiclesRecord = () => {
+  const isDarkMode = useDarkMode();
   const router = useRouter();
   const fields: Field[] = [
     { id: "0", label: "S/N", accessor: "S/N" },
@@ -60,7 +61,7 @@ const ExportVehiclesRecord = () => {
         data={tableData}
         tableHeadClassName="bg-brand-9 h-[45px]"
         tableHeadCellSx={{
-          color: "#EFF6FF",
+          color: isDarkMode ? "#EFF6FF" : "#050901",
           fontWeight: 500,
           border: "none",
           textAlign: "left",
@@ -70,20 +71,20 @@ const ExportVehiclesRecord = () => {
           border: "none",
           textAlign: "left",
           fontWeight: 500,
-          color: "#050901",
+          color: isDarkMode ? "#fff" : "#050901",
           fontSize: "14px",
         }}
-        evenRowColor="#fff"
-        oddRowColor="#FAFAFA"
+        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
+        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
       />
-      <div className="w-fit ml-auto text-text-quaternary text-base font-medium space-y-2">
+      <div className="w-fit ml-auto text-text-quaternary dark:text-darkText-1 text-base font-medium space-y-2">
         <p>Authorized Signature </p>
         <Image src={empty} alt="signature" width={85} height={60} />
         <p>
           ESQ Taiwo Salam <br /> Legal Practitioner
         </p>
       </div>
-      <div className="sticky z-[3] bottom-0 right-0 w-full bg-white py-5 px-[25px] lg:px-[60px] flex justify-between">
+      <div className="sticky z-[3] bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[25px] lg:px-[60px] flex justify-between">
         <Button
           size="custom"
           className="py-2 px-8 font-bold text-sm lg:text-base"

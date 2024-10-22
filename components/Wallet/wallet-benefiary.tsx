@@ -14,10 +14,10 @@ const WalletBenefiary = () => {
       <div className="flex items-center gap-2">
         <Picture src={Avatar4} alt="profile picture" size={33} />
         <div className={`custom-flex-col ${secondaryFont.className}`}>
-          <p className="text-text-primary text-base font-medium capitalize">
+          <p className="text-text-primary dark:text-white text-base font-medium capitalize">
             David Ajala
           </p>
-          <p className="text-text-label text-xs font-normal">
+          <p className="text-text-label dark:text-darkText-1 text-xs font-normal">
             Wallet ID: 1234567890
           </p>
         </div>
