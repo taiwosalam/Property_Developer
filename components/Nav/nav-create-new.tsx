@@ -9,6 +9,7 @@ import { ModalTrigger } from "../Modal/modal";
 import NavCreateNewColumn from "./nav-create-new-column";
 import { create_new_items } from "./nav-create-new-items";
 import { SectionSeparator } from "../Section/section-components";
+import { NavCloseIcon } from "@/public/icons/icons";
 
 const NavCreateNew = () => {
   return (
@@ -22,7 +23,8 @@ const NavCreateNew = () => {
             create new
           </h2>
           <ModalTrigger close className="p-2">
-            <Picture src={CloseCircle} alt="close" size={34} />
+            {/* <Picture src={CloseCircle} alt="close" size={34} /> */}
+            <NavCloseIcon />
           </ModalTrigger>
         </div>
         <SectionSeparator />

@@ -34,7 +34,9 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
             <p className="font-medium text-[16px] text-text-tertiary">
               Date of request:
             </p>
-            <p className="font-medium text-sm text-[#050901]">{requestDate}</p>
+            <p className="font-medium text-sm text-[#050901] dark:text-darkText-2">
+              {requestDate}
+            </p>
           </div>
         </div>
       </div>
@@ -42,40 +44,42 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
       <div className="m-6 mb-12 space-y-6">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-text-tertiary font-medium text-[16px]">
+            <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
               Phone Number
             </p>
-            <p className="text-text-secondary font-medium text-[14px] text-right">
+            <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
               {phoneNumber}
             </p>
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-text-tertiary font-medium text-[16px]">
+            <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
               Property Name
             </p>
-            <p className="text-text-secondary font-medium text-[14px] text-right">
+            <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
               {propertyName}
             </p>
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-text-tertiary font-medium text-[16px]">
+            <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
               Property Address
             </p>
-            <p className="text-text-secondary font-medium text-[14px] text-right">
+            <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
               {propertyAddress}
             </p>
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-text-tertiary font-medium text-[16px]">Branch</p>
-            <p className="text-text-secondary font-medium text-[14px] text-right">
+              <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
+              Branch
+            </p>
+            <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
               {branch}
             </p>
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-text-tertiary font-medium text-[16px]">
+            <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
               Account Officer
             </p>
-            <p className="text-text-secondary font-medium text-[14px] text-right">
+            <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
               {accountOfficer}
             </p>
           </div>
@@ -83,18 +87,18 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
         {/* Footer */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-text-tertiary font-medium text-[16px]">
+            <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
               Resolved by
             </p>
-            <p className="text-text-tertiary font-medium text-[16px]">
+            <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
               Date - Time
             </p>
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-text-secondary font-medium text-[14px]">
+            <p className="text-text-secondary font-medium text-[14px] dark:text-darkText-1">
               {resolvedBy}
             </p>
-            <p className="text-text-secondary font-medium text-[14px] text-right">
+            <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
               {resolvedDateTime}
             </p>
           </div>

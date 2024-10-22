@@ -52,7 +52,7 @@ export default function CustomDatePicker({
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div
-        className={clsx("text-xs md:text-sm font-normal", containerClassName)}
+        className={clsx("text-xs md:text-sm font-normal dark:bg-darkText-primary dark:hover:border-darkText-1", containerClassName)}
       >
         <CustomStyledDatePicker
           disableFuture={disableFuture}
@@ -74,7 +74,7 @@ export default function CustomDatePicker({
               name: inputId,
               id: inputId,
               inputProps: {
-                className: `date-input ${inputClassName}`,
+                className: `date-input dark:bg-darkText-primary ${inputClassName}`,
                 sx: {
                   height: "unset",
                   paddingTop: "13px",

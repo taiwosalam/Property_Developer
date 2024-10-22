@@ -23,6 +23,7 @@ import {
 } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
 import ServiceCard from "@/components/tasks/service-providers/service-card";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 // import { useParams } from "next/navigation";
 interface ServiceProviderData {
   user_tag: "web" | "mobile";
@@ -33,6 +34,7 @@ interface ServiceProviderData {
 }
 
 const ManageServiceProvider = () => {
+  const isDarkMode = useDarkMode();
   const router = useRouter();
   const [serviceProviderData, setServiceProviderData] =
     useState<ServiceProviderData | null>({
@@ -66,12 +68,12 @@ const ManageServiceProvider = () => {
           <div className="custom-flex-col gap-4 xl:flex-1">
             <div className="custom-flex-col gap-4">
               <div className="custom-flex-col">
-                <p className="text-black text-lg lg:text-xl font-bold capitalize">
+                <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
                   Abimbola Adedeji
                 </p>
                 <p
-                  style={{ color: "rgba(21, 21, 21, 0.70)" }}
-                  className={`${secondaryFont.className} text-sm font-normal`}
+                  style={{ color: isDarkMode ? "#FFFFFF" : "#151515B3" }}
+                  className={`${secondaryFont.className} text-sm font-normal dark:text-darkText-1`}
                 >
                   abimbola@gmail.com
                 </p>
@@ -175,13 +177,13 @@ const ManageServiceProvider = () => {
           <InfoBox className="rounded-lg">
             <div className="custom-flex-col gap-4">
               <div className="flex justify-between gap-4">
-                <h3 className="text-black text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
+                <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
                   <span>Note</span>
                   <sub className="text-sm font-normal bottom-[unset]">
                     22/12/2022
                   </sub>
                 </h3>
-                <div className="flex gap-3 text-text-tertiary">
+                <div className="flex gap-3 text-text-tertiary dark:text-darkText-1">
                   <button type="button" aria-label="Previous">
                     <ArrowLeftIcon />
                   </button>
@@ -192,7 +194,7 @@ const ManageServiceProvider = () => {
               </div>
               <TruncatedText
                 lines={7}
-                className="text-text-quaternary text-sm lg:text-base font-normal"
+                className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
               >
                 building, is a residential property that living read more. They
                 want to work with their budget in booking an appointment. They

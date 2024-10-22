@@ -43,18 +43,20 @@ const Comment: React.FC<CommentProps> = ({
           />
         </div>
         <div className="space-y-1">
-          <p className="text-text-primary text-sm font-medium flex items-center">
+          <p className="text-text-primary dark:text-white text-sm font-medium flex items-center">
             <span className="text-ellipsis line-clamp-1">{name}</span>
             <BadgeIcon color="yellow" />
           </p>
-          <p className="text-text-secondary text-sm font-medium">{text}</p>
+          <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium">
+            {text}
+          </p>
         </div>
       </div>
       <div className="flex items-center gap-3 justify-end mt-2">
         <button
           type="button"
           onClick={handleReplyClick}
-          className="text-text-quaternary flex items-center gap-1"
+          className="text-text-quaternary dark:text-darkText-1 flex items-center gap-1"
         >
           <ReplyIcon />
           <span className="text-[10px] font-normal">Reply</span>

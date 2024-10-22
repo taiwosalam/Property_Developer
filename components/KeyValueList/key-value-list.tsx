@@ -41,12 +41,12 @@ export const KeyValueList = <T extends object>({
                   className="custom-flex-col gap-2"
                 >
                   <p
-                    className="text-[#747474] whitespace-nowrap"
+                    className="text-[#747474] dark:text-darkText-1 whitespace-nowrap"
                     style={styles?.[key]?.label}
                   >
                     {String(key).split("_").join(" ")}
                   </p>
-                  <p className="text-black" style={styles?.[key]?.value}>
+                  <p className="text-black dark:text-darkText-2" style={styles?.[key]?.value}>
                     {/* Safely render the value or placeholder */}
                     {data[key] !== undefined ? String(data[key]) : "---"}
                   </p>
@@ -59,7 +59,7 @@ export const KeyValueList = <T extends object>({
                 {chunk.map((key) => (
                   <p
                     key={`${chunkIndex}-${String(key)}`}
-                    className="text-[#747474] whitespace-nowrap"
+                    className="text-[#747474] dark:text-darkText-1 whitespace-nowrap"
                     style={styles?.[key]?.label}
                   >
                     {String(key).split("_").join(" ")}
@@ -70,7 +70,7 @@ export const KeyValueList = <T extends object>({
                 {chunk.map((key) => (
                   <p
                     key={`${chunkIndex}-${String(key)}`}
-                    className="text-black"
+                    className="text-black dark:text-darkText-2"
                     style={styles?.[key]?.value}
                   >
                     {/* Safely render the value or placeholder */}

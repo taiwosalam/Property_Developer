@@ -32,7 +32,7 @@ const PreviewAnnouncement = () => {
           >
             <ChevronLeft />
           </button>
-          <h1 className="text-black font-bold text-lg lg:text-xl">
+          <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
             Rent Increase & Maintenance
           </h1>
         </div>

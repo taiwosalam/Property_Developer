@@ -121,13 +121,13 @@ const TextArea: React.FC<TextAreaProps> = ({
               id={id}
               value={editorValue || ""}
               required={required || requiredNoStar}
-              className={clsx("react-quill-hidden-input", hiddenInputClassName)}
+              className={clsx("react-quill-hidden-input dark:bg-darkText-primary dark:text-black", hiddenInputClassName)}
             />
             {/* Hidden input field */}
 
             <div
               id={`toolbar-${id}`}
-              className="quill-toolbar bg-[#F3F6F9] dark:bg-darkText-1 max-w-full"
+              className="quill-toolbar bg-[#F3F6F9] dark:bg-darkText-primary dark:text-black max-w-full"
             >
               <select className="ql-header" defaultValue="">
                 <option value="">Paragraph</option>
