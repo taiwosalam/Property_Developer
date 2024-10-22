@@ -84,10 +84,6 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
         containerStyle={{
           fontFamily: "inherit",
         }}
-        // containerClass={clsx(
-        //   "font-normal rounded-[8px] hover:outline outline-1 outline-auto outline-[#00000099] dark:hover:outline-darkText-2 focus-within:outline focus-within:outline-[#0033c4] focus-within:outline-2 !text-xs md:!text-sm font-normal bg-neutral-2 dark:bg-darkText-primary",
-        //   inputContainerClassName
-        // )}
         containerClass={clsx(
           "font-normal rounded-[8px] border border-solid border-[#C1C2C366] hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out custom-primary-outline",
           inputContainerClassName
