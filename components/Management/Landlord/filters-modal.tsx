@@ -5,6 +5,7 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 import DateInput from "@/components/Form/DateInput/date-input";
 import dayjs, { Dayjs } from "dayjs";
 import { FilterModalProps, FilterOptionWithDropdown, FilterOptionWithRadio } from "./types";
+import { CancelIcon } from "@/public/icons/icons";
 
 const FilterModal: React.FC<FilterModalProps> = ({
   filterOptionsWithDropdown,
@@ -138,18 +139,19 @@ const FilterModal: React.FC<FilterModalProps> = ({
             <span className="text-sm capitalize">
               <ChevronLeft />
             </span>
-            <h2 className="text-lg font-bold text-primary-navy">
+            <h2 className="text-lg font-bold text-primary-navy dark:text-white">
               {activeDropdownOption?.label}
             </h2>
           </div>
           <button className="p-2" onClick={() => setActiveDropdownOption(null)}>
-            <Image
+            {/* <Image
               src="/icons/cancel.svg"
               alt="close"
               width={34}
               height={34}
               className="min-w-[34px] min-h-[34px]"
-            />
+            /> */}
+            <CancelIcon />
           </button>
         </div>
         {/* Search bar */}
@@ -330,8 +332,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
   // Content for the main modal options
   const renderMainOptions = () => (
     <>
-      <div className="flex items-center justify-between border-b border-solid border-gray-300">
-        <h2 className="text-lg font-bold text-primary-navy">{title}</h2>
+      <div className="flex items-center justify-between border-b border-solid border-gray-300 ">
+        <h2 className="text-lg font-bold text-primary-navy dark:text-white">{title}</h2>
         <ModalTrigger close className="p-2">
           <Image
             src="/icons/cancel.svg"
@@ -367,7 +369,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       {filterOptionsWithDropdown?.map((option) => (
         <div key={option.label}>
           <div
-            className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] cursor-pointer"
+            className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary dark:border dark:border-[#3C3D37] cursor-pointer"
             onClick={() => showDropdownOptions(option)}
           >
             <label className="text-sm capitalize">{option.label}</label>
@@ -416,7 +418,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           key={option.value}
           className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
         >
-          <label className="text-sm capitalize">{option.label}</label>
+          <label className="text-sm capitalize dark:text-black">{option.label}</label>
           <input
             type="checkbox"
             value={option.value}
@@ -438,7 +440,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   // Main return statement in the component
   return (
-    <div className="w-[400px] rounded-[20px] bg-white p-[20px] custom-flex-col">
+    <div className="w-[400px] rounded-[20px] bg-white dark:bg-darkText-primary p-[20px] custom-flex-col">
       {activeDropdownOption
         ? renderDropdownOptions()
         : activeRadioOption

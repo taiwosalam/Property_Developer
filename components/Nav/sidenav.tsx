@@ -9,12 +9,16 @@ import type { SideNavProps } from "./types";
 
 // Imports
 import { nav_items } from "./data";
+import { empty } from "@/app/config";
 import NavDropdown from "./nav-dropdown";
 import { NavButton } from "./nav-components";
-import { empty } from "@/app/config";
+import { useDashboardData } from "@/hooks/useDashboardData";
 
 const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
   const pathname = usePathname();
+
+  const { loading, data: dashboardData } = useDashboardData();
+
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const handleDropdownToggle = (label: string) => {
@@ -25,8 +29,10 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
     <div className="custom-flex-col pb-3">
       <div className="flex md:hidden justify-center p-3 pt-0">
         <Image
-          src={empty}
+          src={dashboardData?.logo || empty}
           alt="logo"
+          width={200}
+          height={55}
           className="w-full h-[55px] object-cover"
         />
       </div>

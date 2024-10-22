@@ -27,6 +27,7 @@ import {
   WebsiteColorSchemes,
   SettingsVerifiedBadge,
   SettingsOthersCheckBox,
+  ThemeCard,
 } from "@/components/Settings/settings-components";
 
 import TextArea from "@/components/Form/TextArea/textarea";
@@ -99,7 +100,13 @@ const Profile = () => {
       [platform]: value,
     }));
   };
+  
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
+  const handleSelect = (type: string,value: string)=> {
+    setSelectedTemplate(value)
+  }
+  
   return (
     <>
       <SettingsSection title="company profile and details">
@@ -273,7 +280,7 @@ const Profile = () => {
                 className="relative py-10 w-full md:w-[374px] flex flex-col gap-1 items-center justify-center cursor-pointer rounded-xl overflow-hidden border-2 border-dashed border-borders-normal"
               >
                 <UploadImageIcon />
-                <p className="text-text-secondary text-sm font-normal">
+                <p className="text-text-secondary dark:text-darkText-1 text-sm font-normal">
                   Upload your logo here
                 </p>
                 <div className="absolute inset-0">
@@ -387,7 +394,7 @@ const Profile = () => {
         <p className="text-text-secondary dark:text-darkText-1 text-md">
           Customize website domain name
         </p>
-        <div className="flex gap-4 mb-4 mt-2 items-center w-full">
+        <div className="flex gap-4 mb-4 mt-2 items-center w-full flex-wrap">
           <Input
             id="custom_domain"
             label=""
@@ -413,9 +420,24 @@ const Profile = () => {
             desc="Choose how your website will be presented to your customers and clients."
           />
           <div className="grid grid-cols-3 gap-6 [&>*]:w-full">
-            <Image src={WebsiteTemplate1} alt="template" width={500} />
-            <Image src={WebsiteTemplate2} alt="template" width={500} />
-            <Image src={WebsiteTemplate3} alt="template" width={500} />
+          <ThemeCard
+            img={WebsiteTemplate1}
+            value="template1"
+            onSelect={(value) => handleSelect("template1", value)}
+            isSelected={selectedTemplate === "template1"}
+          />
+          <ThemeCard
+            img={WebsiteTemplate2}
+            value="template2"
+            onSelect={(value) => handleSelect("template2", value)}
+            isSelected={selectedTemplate === "template2"}
+          />
+          <ThemeCard
+            img={WebsiteTemplate3}
+            value="template3"
+            onSelect={(value) => handleSelect("template3", value)}
+            isSelected={selectedTemplate === "template3"}
+          />
           </div>
           <SettingsUpdateButton />
         </div>

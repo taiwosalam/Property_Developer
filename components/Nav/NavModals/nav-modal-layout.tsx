@@ -8,6 +8,7 @@ import CloseCircle from "@/public/icons/close-circle.svg";
 
 // Imports
 import Picture from "../../Picture/picture";
+import { ModalTrigger } from "@/components/Modal/modal";
 
 const NavModalLayout: React.FC<NavModalLayoutProps> = ({ title, children }) => {
   return (
@@ -23,7 +24,9 @@ const NavModalLayout: React.FC<NavModalLayoutProps> = ({ title, children }) => {
           <h2 className="text-primary-navy text-xl font-bold capitalize">
             {title}
           </h2>
-          <Picture src={CloseCircle} alt="close" size={34} />
+          <ModalTrigger close>
+            <Picture src={CloseCircle} alt="close" size={34} />
+          </ModalTrigger>
         </div>
         {children}
       </div>

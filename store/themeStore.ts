@@ -43,7 +43,7 @@ export const useThemeStore = create<ThemeState>((set) => ({
       hexColor = rgbToHex(color);
     }
     if (rgbColor && hexColor) {
-      const alpha = 0.7;
+      const alpha = 0.4;
       const rgbParts = rgbColor.match(/\d+(\.\d+)?/g);
       if (rgbParts) {
         const secondaryColor = `rgba(${rgbParts[0]}, ${rgbParts[1]}, ${rgbParts[2]}, ${alpha})`;
