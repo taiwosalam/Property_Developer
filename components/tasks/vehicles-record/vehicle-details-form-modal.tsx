@@ -35,7 +35,7 @@ const VehicleDetailsFormModal: React.FC<VehicleDetailsFormModalProps> = (
           id="plate_number"
           label="Plate Number"
           inputClassName="rounded-lg"
-          defaultValue={editMode ? props.data.plate_number : ""}
+          defaultValue={editMode ? props.data.plate_number : undefined}
         />
         <Select
           required
@@ -82,8 +82,12 @@ const VehicleDetailsFormModal: React.FC<VehicleDetailsFormModalProps> = (
           options={[]}
           inputContainerClassName="bg-neutral-2"
         />
-        <Button size="mid" className="py-2 px-8 self-end justify-self-end">
-          Create
+        <Button
+          type="submit"
+          size="mid"
+          className="py-2 px-8 self-end justify-self-end md:col-span-2 lg:col-span-1"
+        >
+          {editMode ? "Update" : "Create"}
         </Button>
       </div>
     </ModalPreset>

@@ -6,6 +6,18 @@ import Button from "@/components/Form/Button/button";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import VehicleRecordModal from "./vehicle-record-modal";
 
+const Detail: React.FC<{
+  label: string;
+  value: string;
+}> = ({ label, value }) => {
+  return (
+    <div className="flex flex-col sm:flex-row gap-x-4 gap-y-1">
+      <p className="text-[#747474] w-[120px]">{label}</p>
+      <p className="text-black font-bold capitalize">{value}</p>
+    </div>
+  );
+};
+
 const PreviousRecord: React.FC<VehicleRecord> = (record) => {
   const { status, checkIn, checkOut } = record;
   return (
@@ -24,36 +36,17 @@ const PreviousRecord: React.FC<VehicleRecord> = (record) => {
         </p>
       </div>
       <SectionSeparator className="mt-5 mb-4" />
-      <div className="flex gap-16 text-sm lg:text-base font-normal capitalize">
-        <div className="flex gap-6">
-          <div className="custom-flex-col gap-4 [&>p]:text-[#747474]">
-            <p>Check In</p>
-            <p>Check Out</p>
-          </div>
-          <div className="custom-flex-col gap-4 [&>p]:text-black font-bold">
-            <p>{checkIn.date}</p>
-            <p>{checkOut?.date ? checkOut.date : "--"}</p>
-          </div>
-        </div>
-        <div className="flex gap-6">
-          <div className="custom-flex-col gap-4 [&>p]:text-[#747474]">
-            <p>Checked In by</p>
-            <p>Checked Out by</p>
-          </div>
-          <div className="custom-flex-col gap-4 [&>p]:text-black font-bold">
-            <p>{checkIn.name}</p>
-            <p>{checkOut?.name ? checkOut.name : "--"}</p>
-          </div>
-        </div>
-        <div className="flex gap-6">
-          <div className="custom-flex-col gap-4 [&>p]:text-[#747474]">
-            <p>Passengers In</p>
-            <p>Passengers Out</p>
-          </div>
-          <div className="custom-flex-col gap-4 [&>p]:text-black font-bold">
-            <p>{checkIn.passenger}</p>
-            <p>{checkOut?.passenger ? checkOut.passenger : "--"}</p>
-          </div>
+      <div className="flex gap-4 lg:gap-16 flex-wrap text-sm lg:text-base font-normal capitalize">
+        <div className="grid gap-y-4 gap-x-8 grid-cols-2 lg:grid-cols-3">
+          <Detail label="Check In" value={checkIn.date} />
+          <Detail label="Check In by" value={checkIn.name} />
+          <Detail label="Passengers In" value={checkIn.passenger} />
+          <Detail label="Check Out" value={checkOut?.date || "---"} />
+          <Detail label="Check Out by" value={checkOut?.name || "---"} />
+          <Detail
+            label="Passengers Out"
+            value={checkOut?.passenger || "---"}
+          />
         </div>
         <Modal>
           <ModalTrigger asChild>

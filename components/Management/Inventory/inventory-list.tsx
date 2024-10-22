@@ -16,7 +16,7 @@ const InventoryList: React.FC<InventoryListProps> = ({ data = {} }) => {
   return (
     <div
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
-      className="w-full p-[18px] pb-0 custom-flex-col gap-3 rounded-2xl bg-white overflow-hidden"
+      className="w-full p-[18px] pb-0 custom-flex-col gap-3 rounded-2xl bg-white dark:bg-darkText-primary overflow-hidden"
     >
       <p className="px-2 text-brand-10 text-base font-bold">Abiola Apartment</p>
       <SectionSeparator />
@@ -24,8 +24,8 @@ const InventoryList: React.FC<InventoryListProps> = ({ data = {} }) => {
         <div className="flex items-center min-w-[800px]">
           <div className="flex-1 flex justify-start">
             <div
-              style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
-              className="p-8 rounded-lg"
+              style={{ backgroundColor: "#CCCCCC" }}
+              className="p-8 rounded-lg dark:bg-white"
             >
               <Picture
                 src={ClipboardCheck}

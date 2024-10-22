@@ -7,7 +7,7 @@ export const LandlordTenantInfoBox: React.FC<{
   className?: string;
 }> = ({ style, children, className }) => (
   <div
-    className={clsx("p-4 bg-white rounded-2xl overflow-hidden", className)}
+    className={clsx("p-4 bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden", className)}
     style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)", ...style }}
   >
     {children}
@@ -23,7 +23,7 @@ export const LandlordTenantInfo: React.FC<{
   <LandlordTenantInfoBox className={containerClassName}>
     <div className="custom-flex-col gap-4">
       {heading && (
-        <h3 className="text-black text-lg lg:text-xl font-bold capitalize">
+        <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
           {heading.split("_").join(" ")}
         </h3>
       )}
@@ -33,14 +33,14 @@ export const LandlordTenantInfo: React.FC<{
       <div className="flex gap-10 text-sm lg:text-base font-normal capitalize">
         <div className="custom-flex-col gap-4">
           {Object.keys(info).map((key, idx) => (
-            <p key={idx} className="text-[#747474]">
+            <p key={idx} className="text-[#747474] dark:text-darkText-1">
               {key.split("_").join(" ")}:
             </p>
           ))}
         </div>
         <div className="custom-flex-col gap-4">
           {Object.values(info).map((value, idx) => (
-            <p key={idx} className="text-black">
+            <p key={idx} className="text-black dark:text-darkText-2">
               {value?.split("_").join(" ") ?? "N/A"}
             </p>
           ))}

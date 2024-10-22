@@ -37,7 +37,12 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
   };
 
   return (
-    <div className={clsx("custom-flex-col gap-2 dark:bg-darkText-primary", className)}>
+    <div
+      className={clsx(
+        "custom-flex-col gap-2 dark:bg-darkText-primary",
+        className
+      )}
+    >
       {/* Render the label if provided */}
       {label && (
         <Label id={id} required={required}>
@@ -59,14 +64,28 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
           placeholder: placeholder,
         }}
         searchNotFound="No match found"
-        inputClass={clsx("custom-phone-input", inputClassName)}
-        inputStyle={{ width: "100%" }}
+        inputClass={inputClassName}
+        inputStyle={{
+          width: "100%",
+          borderRadius: "8px",
+          fontSize: "inherit",
+          background: "inherit",
+          border: "none",
+          height: "unset",
+          paddingTop: "9px",
+          paddingBottom: "9px",
+        }}
         buttonStyle={{
-          border: "1px solid #C1C2C366",
+          border: "none",
           borderRadius: "8px 0 0 8px",
+          borderColor: "inherit",
+          width: "40px",
+        }}
+        containerStyle={{
+          fontFamily: "inherit",
         }}
         containerClass={clsx(
-          "font-normal rounded-[8px] hover:outline outline-1 outline-auto outline-[#00000099] dark:hover:outline-darkText-2 focus-within:outline focus-within:outline-[#0033c4] focus-within:outline-2 !text-xs md:!text-sm font-normal",
+          "font-normal rounded-[8px] border border-solid border-[#C1C2C366] hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out custom-primary-outline",
           inputContainerClassName
         )}
       />

@@ -15,6 +15,7 @@ import {
 
 import { ReactNode } from "react";
 import { VerticalEllipsisIcon } from "@/public/icons/icons";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const renderValue = (
   data: DataItem,
@@ -97,10 +98,15 @@ const CustomTable: React.FC<CustomTableProps> = ({
   tableHeadStyle,
   tableHeadCellSx,
   tableBodyCellSx,
-  evenRowColor = "bg-white dark:bg-gray-800",
-  oddRowColor = "bg-white dark:bg-gray-900",
+  evenRowColor: propEvenRowColor,
+  oddRowColor: propOddRowColor,
   onActionClick,
 }) => {
+  const isDarkMode = useDarkMode();
+
+  const evenRowColor = propEvenRowColor || (isDarkMode ? "#ccc" : "#fff");
+  const oddRowColor = propOddRowColor || (isDarkMode ? "#ccc" : "#fff");
+
   return (
     <TableContainer
       component={Paper}
@@ -149,7 +155,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 maxHeight: "76px",
                 transition: "background-color 0.3s ease",
                 "&:hover": {
-                  backgroundColor: "#dbe6f3",
+                  backgroundColor: isDarkMode ? "#c1c2c3" : "#dbe6f3",
                 },
               }}
             >

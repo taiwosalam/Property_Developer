@@ -2,7 +2,7 @@ import React from "react";
 
 // Images
 import PlaneBlue from "@/public/icons/plane-blue.svg";
-import CloseCircle from "@/public/icons/close-circle.svg";
+// import CloseCircle from "@/public/icons/close-circle.svg";
 
 // Imports
 import Input from "../Form/Input/input";
@@ -11,6 +11,7 @@ import { ModalTrigger } from "../Modal/modal";
 import { NavSearchTab } from "./nav-components";
 import NavGlobalSearchItem from "./nav-global-search-item";
 import { SectionSeparator } from "../Section/section-components";
+import { NavCloseIcon } from "@/public/icons/icons";
 
 const NavGlobalSearch = () => {
   const tabs = [
@@ -42,7 +43,8 @@ const NavGlobalSearch = () => {
               </p>
             </div>
             <ModalTrigger close className="p-2">
-              <Picture src={CloseCircle} alt="close" size={34} />
+              {/* <Picture src={CloseCircle} alt="close" size={34} /> */}
+              <NavCloseIcon />
             </ModalTrigger>
           </div>
           <SectionSeparator />

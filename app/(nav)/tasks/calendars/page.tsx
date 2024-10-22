@@ -66,7 +66,7 @@ const CalendarPage = () => {
       />
       <div className="page-title-container">
         <PageTitle title="up coming events" />
-        <p className="text-text-label text-sm md:text-base font-medium">
+        <p className="text-text-label dark:text-darkText-1 text-sm md:text-base font-medium">
           25TH - 28TH JAN 2024
         </p>
       </div>

@@ -116,7 +116,7 @@ export const TenantEditProfileInfoSection = () => {
           options={getCities(address.state, address.local_govt)}
           value={address.city}
           onChange={(value) => handleAddressChange("city", value)}
-          allowCustom={true}
+          allowCustom
           inputContainerClassName="bg-neutral-2"
         />
         <Input

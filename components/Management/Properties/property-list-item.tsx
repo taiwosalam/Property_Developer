@@ -26,7 +26,7 @@ const PropertyListItem: React.FC<PropertyProps> = ({
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   return (
     <div
-      className="p-6 rounded-2xl bg-white"
+      className="p-6 rounded-2xl bg-white dark:bg-darkText-primary"
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       {/* Image Modal */}
@@ -42,44 +42,44 @@ const PropertyListItem: React.FC<PropertyProps> = ({
       <div className="flex items-center gap-4 justify-between overflow-y-auto custom-round-scrollbar">
         <div className="flex-grow-1 flex-shrink-0 text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[170px,1fr] xl:max-w-[calc(100%-220px-16px)] w-fit">
           <div>
-            <p className="text-[#747474]">Last Updated</p>
-            <p className="text-black">23/04/2023</p>
+            <p className="text-[#747474] dark:text-white">Last Updated</p>
+            <p className="text-black dark:text-darkText-2">23/04/2023</p>
           </div>
           <div>
-            <p className="text-[#747474]">Annual Returns</p>
-            <p className="text-brand-primary font-bold">₦1,950,000</p>
+            <p className="text-[#747474] dark:text-white">Annual Returns</p>
+            <p className="text-brand-primary font-bold dark:text-brand-9">₦1,950,000</p>
           </div>
           <div>
-            <p className="text-[#747474]">Total Units</p>
-            <p className="text-black">14 Units</p>
+            <p className="text-[#747474] dark:text-white">Total Units</p>
+            <p className="text-black dark:text-darkText-2">14 Units</p>
           </div>
           <div>
-            <p className="text-[#747474]">Annual Income</p>
-            <p className="text-highlight font-bold">₦700,000</p>
+            <p className="text-[#747474] dark:text-white">Annual Income</p>
+            <p className="text-highlight font-bold dark:text-highlight">₦700,000</p>
           </div>
           <div>
-            <p className="text-[#747474]">Available Units</p>
-            <p className="text-black">Abiola Moniya</p>
+            <p className="text-[#747474] dark:text-white">Available Units</p>
+            <p className="text-black dark:text-darkText-2">Abiola Moniya</p>
           </div>
           <div>
-            <p className="text-[#747474]">Branch</p>
-            <p className="text-black">Moniya Appartment</p>
+            <p className="text-[#747474] dark:text-white">Branch</p>
+            <p className="text-black dark:text-darkText-2">Moniya Appartment</p>
           </div>
           <div>
-            <p className="text-[#747474]">Mobile Tenants</p>
-            <p className="text-black">12</p>
+            <p className="text-[#747474] dark:text-white">Mobile Tenants</p>
+            <p className="text-black dark:text-darkText-2">12</p>
           </div>
           <div>
-            <p className="text-[#747474]">Account Officer</p>
-            <p className="text-black">Anikulapo Jesus</p>
+            <p className="text-[#747474] dark:text-white">Account Officer</p>
+            <p className="text-black dark:text-darkText-2">Anikulapo Jesus</p>
           </div>
           <div>
-            <p className="text-[#747474]">Web Tenants</p>
-            <p className="text-black">5</p>
+            <p className="text-[#747474] dark:text-white">Web Tenants</p>
+            <p className="text-black dark:text-darkText-2">5</p>
           </div>
           <div>
-            <p className="text-[#747474]">Address</p>
-            <p className="text-black">Newly Built 5 Bedroom Detached Duplex</p>
+            <p className="text-[#747474] dark:text-white">Address</p>
+            <p className="text-black dark:text-darkText-2">Newly Built 5 Bedroom Detached Duplex</p>
           </div>
         </div>
 

@@ -19,7 +19,7 @@ const AnnouncementPost = () => {
   return (
     <div>
       <div className="space-y-8">
-        <p className="text-sm font-medium text-text-secondary">
+        <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
           #Commercial and retail real estate fundamentals are expected to remain
           strong due to the scarcity of new construction deliveries, prompting
           compelling opportunities for investors amid high interest rates and

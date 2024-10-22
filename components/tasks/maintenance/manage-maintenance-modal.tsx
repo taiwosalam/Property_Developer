@@ -130,7 +130,7 @@ const ManageMaintenanceModal = () => {
             id="start_date"
             label="Start Date"
             labelclassName="!text-sm"
-            containerClassName="bg-white"
+            containerClassName="bg-white dark:bg-darkText-primary"
             onChange={handleStartDateChange}
           />
           <DateInput

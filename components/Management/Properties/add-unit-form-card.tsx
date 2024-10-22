@@ -16,7 +16,7 @@ const AddUnitFormCard = ({
   const [isEditing, setIsEditing] = useState(false);
   return (
     <div
-      className="w-full p-6 rounded-2xl bg-white custom-flex-col gap-4"
+      className="w-full p-6 rounded-2xl bg-white dark:bg-darkText-primary custom-flex-col gap-4"
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       {!isEditing ? (

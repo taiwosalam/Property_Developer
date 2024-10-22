@@ -37,7 +37,7 @@ import PropertyFormFooter from "./property-form-footer.tsx";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 
-const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
+const   CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   editMode,
   handleSubmit,
   formType,
@@ -243,7 +243,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           required
         />
         <div className="mb-5 lg:mb-8">
-          <p className="mb-5 text-text-secondary text-base font-normal">
+          <p className="mb-5 text-text-secondary dark:text-darkText-1 text-base font-normal">
             Set {formType === "rental" ? "property" : "Estate/Facility"}{" "}
             pictures for easy recognition (maximum of 6 images).
           </p>
@@ -268,10 +268,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 {images.length < 6 && (
                   <label
                     htmlFor="upload"
-                    className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
+                    className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white dark:bg-darkText-primary flex flex-col items-center justify-center cursor-pointer text-[#626262] dark:text-darkText-1"
                   >
                     <PlusIcon />
-                    <span className="text-black text-base font-normal mt-2">
+                    <span className="text-black dark:text-darkText-1 text-base font-normal mt-2">
                       Add Pictures
                     </span>
                     <input
@@ -299,19 +299,19 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           />
         </div>
         {/* Property Details */}
-        <p className="text-primary-navy font-bold text-lg lg:text-xl">
+        <p className="text-primary-navy dark:text-white font-bold text-lg lg:text-xl">
           <span className="text-status-error-primary">*</span>
           {formType === "rental"
             ? "Property Details"
             : "Estate/Facility Details"}
         </p>
         <hr className="my-4" />
-        <div className="mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 dark:bg-darkText-primary dark:p-4 dark:rounded-lg">
           <Input
             id="property_title"
             label={formType === "rental" ? "Property Title" : "Estate Name"}
             placeholder="Design name or Decsription"
-            inputClassName="bg-white rounded-[8px] property-form-input"
+            inputClassName="bg-white dark:bg-darkText-primary rounded-[8px] property-form-input"
             requiredNoStar
           />
           <Select
@@ -443,7 +443,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 : "Estate/Facility Description"
             }
             inputSpaceClassName="bg-white"
-            className="md:col-span-2 lg:col-span-3"
+            className="md:col-span-2 lg:col-span-3 dark:text-black"
             placeholder="Write here"
             resetKey={resetKey}
             requiredNoStar
@@ -452,7 +452,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         </div>
         {/* Property Settings */}
 
-        <p className="text-primary-navy font-bold text-lg lg:text-xl">
+        <p className="text-primary-navy dark:text-white font-bold text-lg lg:text-xl">
           <span className="text-status-error-primary">*</span>
           {formType === "rental"
             ? "Property Settings"
@@ -460,7 +460,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         </p>
 
         <hr className="my-4" />
-        <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 dark:bg-darkText-primary dark:p-4 dark:rounded-lg">
           <Select
             id={formType === "rental" ? "agency_fee" : "management_fee"}
             label={formType === "rental" ? "Agency Fee" : "Management Fee"}

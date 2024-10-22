@@ -8,11 +8,14 @@ import type { NavCreateNewColumnProps } from "./types";
 // Imports
 import SVG from "../SVG/svg";
 import { Modal, ModalContent, ModalTrigger, useModal } from "../Modal/modal";
+import { useEffect, useState } from "react";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
   data = [],
 }) => {
   const { setIsOpen } = useModal();
+  const isDarkMode = useDarkMode();
 
   const options = ["management", "tasks", "accounting", "documents"];
   const content = data.filter((item) =>
@@ -21,7 +24,11 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
 
   const class_styles = "flex items-center gap-4";
   const icon = (
-    <SVG type="horizontal_line" className="w-[30px] flex justify-center" />
+    <SVG
+      type="horizontal_line"
+      className="w-[30px] flex justify-center"
+      color={isDarkMode ? "#fff" : "#050901"}
+    />
   );
 
   const closeCreateNewModal = () => {
@@ -35,10 +42,12 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
           <div className="flex items-center gap-2">
             <SVG
               type={type}
-              color="#050901"
+              color={isDarkMode ? "#fff" : "#050901"}
               className="w-[30px] flex justify-center"
             />
-            <p className="text-text-primary capitalize">{label}</p>
+            <p className="text-text-primary dark:text-white capitalize">
+              {label}
+            </p>
           </div>
           {content?.map(({ label, link, modal }, idx) => (
             <div key={idx} className="py-3 pl-10 pr-5">
@@ -49,13 +58,17 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
                   onClick={closeCreateNewModal}
                 >
                   {icon}
-                  <p className="text-text-secondary capitalize">{label}</p>
+                  <p className="text-text-secondary dark:text-darkText-1 capitalize">
+                    {label}
+                  </p>
                 </Link>
               ) : (
                 <Modal>
                   <ModalTrigger className={class_styles}>
                     {icon}
-                    <p className="text-text-secondary capitalize">{label}</p>
+                    <p className="text-text-secondary dark:text-darkText-1 capitalize">
+                      {label}
+                    </p>
                   </ModalTrigger>
                   <ModalContent>{modal}</ModalContent>
                 </Modal>

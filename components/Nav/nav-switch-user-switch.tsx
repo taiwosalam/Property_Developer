@@ -5,12 +5,14 @@ import { useRef, useState, useEffect } from "react";
 // Images
 import { ChevronDown } from "lucide-react";
 import { trackOutsideClick } from "@/utils/track-outside-click";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const NavSwitchUserSwitch: React.FC<{
   userType: string;
   loading: boolean;
   error: Error | null;
 }> = ({ userType, loading, error }) => {
+  const isDarkMode = useDarkMode();
   const [isOpen, setIsOpen] = useState(false);
   const [active, setActive] = useState(userType);
 
@@ -44,7 +46,7 @@ const NavSwitchUserSwitch: React.FC<{
         <span className="text-[#0a132ea6] dark:text-white text-base font-semibold capitalize custom-truncated">
           {loading ? "loading..." : error ? "Property Manager" : userType}
         </span>
-        <ChevronDown size={20} color="#0a132ea6" />
+        <ChevronDown size={20} color={isDarkMode ? "#fff" : "#0a132ea6"} />
       </button>
 
       {isOpen && (

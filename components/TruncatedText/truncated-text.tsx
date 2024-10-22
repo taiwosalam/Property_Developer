@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useState, useRef, useEffect, ReactNode } from "react";
 import clsx from "clsx";
 
@@ -6,12 +6,14 @@ interface TruncatedTextProps {
   children: ReactNode;
   lines?: number;
   className?: string;
+  disableShowLess?: boolean;
 }
 
 const TruncatedText: React.FC<TruncatedTextProps> = ({
   children,
   lines = 2,
   className,
+  disableShowLess = false,
 }) => {
   const [isTruncated, setIsTruncated] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
@@ -57,7 +59,7 @@ const TruncatedText: React.FC<TruncatedTextProps> = ({
           read more...
         </button>
       )}
-      {showFullText && (
+      {!disableShowLess && showFullText && (
         <button
           type="button"
           onClick={handleToggle}
