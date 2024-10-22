@@ -143,7 +143,7 @@ const Others = () => {
               key={index}
               title={type.title}
               desc={type.desc}
-              icon={type.icon as React.ReactNode}
+              icon={type.icon} 
             />
           ))}
         </div>

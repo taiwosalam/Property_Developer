@@ -12,6 +12,7 @@ import {
 
 import { services } from "./services";
 import { string } from "zod";
+import React from "react";
 
 export type SettingsLinkTab = (typeof settings_link_tabs)[number];
 
@@ -100,7 +101,7 @@ export interface SettingsPaymentTransferProps {
 interface SettingsOthersProps {
   title: string;
   desc: string;
-  icon: string;
+  icon: string | React.ReactNode;
 }
 
 interface SettingsDirectorTypes {
@@ -109,7 +110,7 @@ interface SettingsDirectorTypes {
   position?: string;
   phone: string;
   img: string;
-  icon?: string;
+  icon?: string | React.ReactNode;
 }
 
 interface SettingsOthersCheckBoxProps {
@@ -119,7 +120,7 @@ interface SettingsOthersCheckBoxProps {
 export interface SettingsOthersProps {
   title: string;
   desc: string;
-  icon: React.ReactNode;
+  icon: string | React.ReactNode;
 }
 
 export interface SettingsDirectorTypes {
@@ -128,7 +129,7 @@ export interface SettingsDirectorTypes {
   position?: string;
   phone: string;
   img: string;
-  icon?: string;
+  icon?: string | React.ReactNode;
   desc?: string;
 }
 

@@ -14,6 +14,7 @@ import { website_color_schemes } from "@/components/Settings/data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 import { Tooltip } from "@mui/material";
+import Image from "next/image";
 
 const Appearance = () => {
   const setColor = useThemeStoreSelectors.getState().setColor;
@@ -83,7 +84,7 @@ const Appearance = () => {
             isSelected={selectedTheme === "theme1"}
           />
           <Tooltip
-            title="Sorry, this theme is for Professional Plan subscribers only" arrow
+            title="Sorry, this theme is for Professional Plan subscribers only"
           >
             <div
               className="relative"
@@ -100,7 +101,7 @@ const Appearance = () => {
           </Tooltip>
 
           <Tooltip
-            title="Sorry, this theme is for Professional Plan subscribers only" arrow
+            title="Sorry, this theme is for Professional Plan subscribers only"
           >
             <div
               className="relative"
@@ -224,7 +225,7 @@ const Appearance = () => {
               style={{ backgroundColor: customColor }}>
                   {selectedColor === customColor && (
               <div className="absolute inset-0 flex items-center justify-center">
-              <img
+              <Image
                 src="/icons/whitemark.svg"
                 alt="Selected"
                 width={24}

@@ -456,20 +456,21 @@ const Profile = () => {
             title="Properties For Rent"
             darkText={false}
             checked={true}
-            children="Properties For Rent"
-          />
+          >
+           {''}
+          </DocumentCheckbox>
           <DocumentCheckbox
             title="Properties For Sale"
             darkText={false}
-            checked={false}
-            children="Properties For Sale"
-          />
+            checked={false}>
+              {''}
+          </DocumentCheckbox>
           <DocumentCheckbox
             title="Properties For Short Let"
             darkText={false}
-            checked={false}
-            children="Properties For Short Let"
-          />
+            checked={false}>
+              {""}
+          </DocumentCheckbox>
         </div>
 
         {/* WEBSITE PAGE OPTIONS SETTINGS */}
