@@ -6,7 +6,7 @@ import SignatureImage from "@/public/accounting/signature.svg";
 
 const Signature = () => {
   return (
-    <div className="custom-flex-col gap-2 text-text-quaternary text-base font-medium">
+    <div className="custom-flex-col gap-2 text-text-quaternary dark:text-darkText-1 text-base font-medium">
       <p>Authorized Signature </p>
       <div className="flex">
         <Image src={SignatureImage} alt="signature" height={60} />

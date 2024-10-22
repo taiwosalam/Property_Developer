@@ -9,15 +9,17 @@ const ExpensesStatCard: React.FC<InvoiceStatCardsProps> = ({
 }) => {
   return (
     <div
-      className="bg-white rounded-[14px] p-6 space-y-7"
+      className="bg-white dark:bg-darkText-primary rounded-[14px] p-6 space-y-7"
       style={{
         boxShadow: "6px 6px 54px 0px rgba(0, 0, 0, 0.05)",
       }}
     >
       <div className="w-full flex justify-between">
         <div className="space-y-2">
-          <p className="font-medium text-[16px] text-text-tertiary">{title}</p>
-          <p className="font-bold text-[28px] text-[#202224]">
+          <p className="font-medium text-[16px] text-text-tertiary dark:text-darkText-1">
+            {title}
+          </p>
+          <p className="font-bold text-[28px] text-[#202224] dark:text-white">
             {new Intl.NumberFormat("en-NG", {
               style: "currency",
               currency: "NGN",

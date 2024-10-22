@@ -9,10 +9,10 @@ const ExportButton: React.FC<{
   return (
     <Link
       href={href}
-      className="rounded-lg py-2 px-4 flex items-center gap-2 bg-white border border-[#D0D5DD]"
+      className="rounded-lg py-2 px-4 flex items-center gap-2 bg-white dark:bg-darkText-primary border border-[#D0D5DD]"
     >
       {type === "pdf" ? <PDFIcon /> : <ExcelIcon />}
-      <span className="text-[#344054] text-sm font-medium">Export</span>
+      <span className="text-text-secondary dark:text-darkText-1 text-sm font-medium">Export</span>
     </Link>
   );
 };

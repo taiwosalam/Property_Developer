@@ -29,7 +29,7 @@ const Disbursement = () => {
     <div className="custom-flex-col gap-8">
       <div className="flex items-center justify-between">
         <div className="flex gap-1 items-center">
-          <h1 className="text-black text-2xl font-medium">Disbursement</h1>
+          <h1 className="text-black dark:text-white text-2xl font-medium">Disbursement</h1>
           <ExclamationMark />
         </div>
         <Modal>
@@ -119,7 +119,7 @@ const Disbursement = () => {
                           />
                         </DropdownTrigger>
                         <DropdownContent>
-                          <div className="w-[250px] bg-white custom-flex-col py-2 gap-2 text-text-secondary text-base font-bold capitalize text-center">
+                          <div className="w-[250px] bg-white dark:bg-darkText-primary custom-flex-col py-2 gap-2 text-text-secondary dark:text-darkText-1 text-base font-bold capitalize text-center">
                             <Link
                               href={
                                 "/accounting/disbursement/1/manage-disbursement"
