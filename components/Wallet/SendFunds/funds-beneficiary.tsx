@@ -28,8 +28,8 @@ const FundsBeneficiary: React.FC<FundsBeneficiaryProps> = ({
         <div className="flex items-center gap-2">
           <Picture src={Avatar4} alt="profile picture" size={33} rounded />
           <div className="custom-flex-col font-medium">
-            <p className="text-[#010A23] text-sm capitalize">David Ajala</p>
-            <p className="text-[#606060] text-xs">Wallet ID: 1234567890</p>
+            <p className="text-[#010A23] dark:text-darkText-1 text-sm capitalize">David Ajala</p>
+            <p className="text-[#606060] dark:text-darkText-2 text-xs">Wallet ID: 1234567890</p>
           </div>
         </div>
         <div className="flex items-center">

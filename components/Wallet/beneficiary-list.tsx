@@ -1,10 +1,14 @@
+'use client'
+
 import React from "react";
 import WalletModalPreset from "./wallet-modal-preset";
 import Button from "../Form/Button/button";
 import FundsBeneficiary from "./SendFunds/funds-beneficiary";
 import Input from "../Form/Input/input";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const BeneficiaryList = () => {
+  const isDarkMode = useDarkMode()
   return (
     <WalletModalPreset title="Beneficiary List">
       <div className="custom-flex-col gap-6">
@@ -14,7 +18,7 @@ const BeneficiaryList = () => {
             label="add beneficiary"
             placeholder="Input Wallet ID"
             className="flex-1"
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: isDarkMode ? "#3C3D37" : "white" }}
           />
           <div className="flex items-end">
             <Button size="sm_medium" className="py-[11px] px-8">
@@ -22,8 +26,8 @@ const BeneficiaryList = () => {
             </Button>
           </div>
         </div>
-        <div className="custom-flex-col gap-4 py-[18px] rounded-2xl bg-neutral-2">
-          <p className="pl-[18px] text-[#010A23] text-base font-medium">
+        <div className="custom-flex-col gap-4 py-[18px] rounded-2xl bg-neutral-2 dark:bg-[#3C3D37]">
+          <p className="pl-[18px] text-[#010A23] dark:text-white text-base font-medium">
             Beneficiaries
           </p>
           <div className="custom-flex-col gap-2 sections">

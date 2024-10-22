@@ -280,7 +280,7 @@ const Profile = () => {
                 className="relative py-10 w-full md:w-[374px] flex flex-col gap-1 items-center justify-center cursor-pointer rounded-xl overflow-hidden border-2 border-dashed border-borders-normal"
               >
                 <UploadImageIcon />
-                <p className="text-text-secondary dark:text-darkText-1 text-sm font-normal">
+                <p className="text-text-secondary dark:text-white text-sm font-normal">
                   Upload your logo here
                 </p>
                 <div className="absolute inset-0">
@@ -425,18 +425,21 @@ const Profile = () => {
             value="template1"
             onSelect={(value) => handleSelect("template1", value)}
             isSelected={selectedTemplate === "template1"}
+            profile={true}
           />
           <ThemeCard
             img={WebsiteTemplate2}
             value="template2"
             onSelect={(value) => handleSelect("template2", value)}
             isSelected={selectedTemplate === "template2"}
+            profile={true}
           />
           <ThemeCard
             img={WebsiteTemplate3}
             value="template3"
             onSelect={(value) => handleSelect("template3", value)}
             isSelected={selectedTemplate === "template3"}
+            profile={true}
           />
           </div>
           <SettingsUpdateButton />

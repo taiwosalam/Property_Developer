@@ -8,7 +8,6 @@ import type { ApplicationCardProps } from "./types";
 import LocationIcon from "@/public/icons/location.svg";
 import PhoneFilled from "@/public/icons/phone-filled.svg";
 import CalendarFilled from "@/public/icons/calendar-filled.svg";
-import ThreeDotsVertical from "@/public/icons/three-dots-vertical.svg";
 
 import SampleProperty4 from "@/public/empty/SampleProperty4.png";
 import Avatar from "@/public/empty/avatar.png";
@@ -21,6 +20,7 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import FlaggedApplicantAccountModal from "./flagged-applicant-account-modal";
 import clsx from "clsx";
 import Link from "next/link";
+import { ThreeDotsVertical } from "@/public/icons/icons";
 
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   type = "staff",
@@ -29,7 +29,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
     <div
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.03)" }}
       className={clsx(
-        "custom-flex-col gap-4 pb-4 rounded-2xl overflow-hidden border border-solid bg-white",
+        "custom-flex-col gap-4 pb-4 rounded-2xl overflow-hidden border border-solid bg-white dark:bg-darkText-primary",
         {
           "border-support-2": type == "staff",
           "border-support-3": type == "guest",
@@ -46,12 +46,13 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
         />
         {type == "staff" && (
           <Modal>
-            <ModalTrigger className="absolute top-[18px] right-[18px] rounded-[4px] bg-brand-1 w-8 h-8 flex items-center justify-center">
-              <Picture
+            <ModalTrigger className="absolute top-[18px] right-[18px] rounded-[4px] bg-brand-1 dark:text-white dark:bg-darkText-primary w-8 h-8 flex items-center justify-center">
+              {/* <Picture
                 src={ThreeDotsVertical}
                 alt="three dots vertical"
                 size={16}
-              />
+              /> */}
+              <ThreeDotsVertical />
             </ModalTrigger>
             <ModalContent>
               <FlaggedApplicantAccountModal />
@@ -67,22 +68,26 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           <Picture src={Avatar} alt="avatar" size={50} rounded />
           <div className="custom-flex-col">
             <div className="flex items-center gap-2">
-              <p className="text-black text-sm font-bold">David Ajala</p>
+              <p className="text-black text-sm font-bold dark:text-white">
+                David Ajala
+              </p>
               {type == "staff" ? (
                 <BadgeIcon color="blue" noMargin />
               ) : (
-                <p className="text-support-3 text-xs font-bold italic">Guest</p>
+                <p className="text-support-3 text-xs font-bold italic">
+                  Guest
+                </p>
               )}
             </div>
             {type == "staff" ? (
               <p
-                className={`text-black text-xs font-normal ${secondaryFont.className}`}
+                className={`text-black text-xs font-normal ${secondaryFont.className} dark:text-white`}
               >
                 User ID: 12345678909
               </p>
             ) : (
               <p
-                className={`text-black text-xs font-normal ${secondaryFont.className}`}
+                className={`text-black dark:text-darkText-1 text-xs font-normal ${secondaryFont.className}`}
               >
                 ajaladavid75@gmail.com
               </p>
@@ -92,7 +97,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
         <div className="custom-flex-col gap-4">
           <div className="custom-flex-col gap-1">
             <p
-              className={`text-text-quaternary text-base font-bold ${secondaryFont.className}`}
+              className={`text-text-quaternary dark:text-white text-base font-bold ${secondaryFont.className}`}
             >
               Semi-Furnished 2 Bedroom Self-contain
             </p>
@@ -112,18 +117,18 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
             <div className="custom-flex-col gap-2 text-borders-normal text-xs font-medium">
               <div className="flex items-center gap-2">
                 <Picture src={PhoneFilled} alt="phone number" size={16} />
-                <p>+2348132086958</p>
+                <p className="dark:text-white">+2348132086958</p>
               </div>
               <div className="flex items-center gap-2">
                 <Picture src={CalendarFilled} alt="date" size={16} />
-                <p>12/12/2024</p>
+                <p className="dark:text-white">12/12/2024</p>
               </div>
             </div>
             <div className={`custom-flex-col ${secondaryFont.className}`}>
               <p className="text-brand-primary text-2xl font-bold">
                 ₦1,950,000
               </p>
-              <p className="text-text-label text-xs font-semibold">
+              <p className="text-text-label dark:text-white text-xs font-semibold">
                 Total Package
               </p>
               <p className="text-text-disabled text-base font-medium">

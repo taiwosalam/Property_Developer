@@ -151,11 +151,11 @@ export interface CheckboxProps {
   onChange: (checked: boolean) => void;
 }
 
-interface ThemeCardProps {
-  img: string;
-  value: string;
-  onSelect: (value: string) => void; 
-}
+// interface ThemeCardProps {
+//   img: string;
+//   value: string;
+//   onSelect: (value: string) => void; 
+// }
 
 export interface CheckboxProps {
   color: string;
@@ -169,6 +169,7 @@ interface ThemeCardProps {
   isSelected: boolean;
   onSelect: (value: string) => void; 
   className?: string
+  profile?: boolean;
 }
 
 
