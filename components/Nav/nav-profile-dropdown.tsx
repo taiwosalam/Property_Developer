@@ -55,7 +55,7 @@ const NavProfileDropdown = ({
             {label}
           </Link>
         ) : modal ? (
-          <Modal>
+          <Modal key={index}>
             <ModalTrigger className={class_styles}>{label}</ModalTrigger>
             <ModalContent>{modal}</ModalContent>
           </Modal>

@@ -10,6 +10,7 @@ import {
   ComplaintsIcon,
   ListingsIcon,
 } from "@/public/icons/dashboard-cards/icons";
+import { subDays, format } from "date-fns";
 
 function getBackgroundColor(title: string): string {
   let backgroundColor: string;
@@ -260,13 +261,11 @@ export const dashboardPerformanceChartData = [
   { date: "2024-09-30", profits: 120, sales: 140, expenses: 100 },
 ];
 
-export const dashboardListingsChartData = [
-  { date: "2024-09-01", views: 70, enquiries: 30 },
-  { date: "2024-09-02", views: 100, enquiries: 60 },
-  { date: "2024-09-03", views: 40, enquiries: 20 },
-  { date: "2024-09-08", views: 120, enquiries: 80 },
-  { date: "2024-08-18", views: 70, enquiries: 50 },
-  { date: "2024-08-20", views: 150, enquiries: 90 },
-  { date: "2024-08-28", views: 100, enquiries: 60 },
-  { date: "2024-09-30", views: 140, enquiries: 100 },
-];
+export const dashboardListingsChartData = Array.from({ length: 90 }, (_, i) => {
+  const date = subDays(new Date(), i);
+  return {
+    date: format(date, "yyyy-MM-dd"),
+    views: Math.floor(Math.random() * 100) + 50,
+    enquiries: Math.floor(Math.random() * 50) + 20,
+  };
+}).reverse();

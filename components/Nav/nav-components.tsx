@@ -29,6 +29,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
   isCollapsed,
 }) => {
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
+  const SecondaryColor = useThemeStoreSelectors.use.secondaryColor();
 
   const color = highlight ? "#fff" : (primaryColor as Color);
 
@@ -36,7 +37,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
     <div
       className={clsx("w-full py-3 pl-10 pr-5 flex items-center gap-4", {
         "nav-button": !minimized,
-        "hover:bg-brand-3": minimized,
+        "nav-button-minimized": minimized,
         "bg-brand-3": minimized_highlight,
         "custom-primary-bg": highlight,
       })}
