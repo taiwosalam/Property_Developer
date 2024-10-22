@@ -11,9 +11,9 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 const RentalPropertyListCard = () => {
   const [isOpened, setIsOpened] = useState(false);
   return (
-    <div className="p-6 bg-white rounded-2xl shadow-md text-[16px]">
+    <div className="p-6 bg-white dark:bg-darkText-primary rounded-2xl shadow-md text-[16px]">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm font-bold text-[#1E3A8A]">
+        <span className="text-sm font-bold text-[#1E3A8A] dark:text-darkText-1">
           Unit ID: 123456776342
         </span>
         <div className="flex items-center space-x-1">

@@ -14,9 +14,9 @@ const TenancyRecord = () => {
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
 
   return (
-    <div className="bg-white shadow p-6 space-y-4">
+    <div className="bg-white dark:bg-darkText-primary shadow p-6 space-y-4">
       <div className="w-full flex items-center justify-between h-[25px]">
-        <h6 className="text-[16px] font-bold text-[#1E3A8A]">Tenancy Record</h6>
+        <h6 className="text-[16px] font-bold text-[#1E3A8A] dark:text-brand-9">Tenancy Record</h6>
         {!isCollapsibleOpen && (
           <div
             className="rounded bg-[#0033C4] py-2 px-8 cursor-pointer transition-transform duration-500 hover:scale-105"
@@ -53,8 +53,10 @@ const TenancyRecord = () => {
               className="rounded-lg"
             />
             <div className="absolute top-7 right-7 bg-blue-50 rounded py-2 px-3 flex items-center space-x-2">
-              <CameraIcon width={14} height={14} />
-              <span className="text-sm">+13</span>
+              <span className="dark:text-black">
+                <CameraIcon width={14} height={14} />
+              </span>
+              <span className="text-sm dark:text-black">+13</span>
             </div>
           </div>
         </div>
@@ -75,7 +77,7 @@ const TenancyRecord = () => {
                 className="space-y-5"
               >
                 <div className="w-full space-y-4">
-                  <h6 className="text-text-quaternary text-3xl font-semibold">
+                  <h6 className="text-text-quaternary dark:text-brand-9 text-3xl font-semibold">
                     Tenancy Records
                   </h6>
                   <div className="h-[1px] w-full bg-[#C0C2C8]"></div>

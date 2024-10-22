@@ -32,7 +32,7 @@ const ComplaintsPage = () => {
       </div>
 
       <SectionContainer heading="Recent Complains" href="/donottouch">
-        <div className="bg-white p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array(3)
             .fill(null)
             .map((_, index) => (

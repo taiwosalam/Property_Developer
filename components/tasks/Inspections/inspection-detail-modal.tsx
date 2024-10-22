@@ -17,9 +17,9 @@ import Button from "@/components/Form/Button/button";
 const InspectionDetailModal = () => {
   return (
     <div
-      className="w-[600px] max-w-[80%] max-h-[90vh] rounded-lg bg-white custom-flex-col pb-14 gap-6 overflow-x-hidden overflow-y-auto custom-round-scrollbar"
+      className="w-[600px] max-w-[80%] max-h-[90vh] rounded-lg bg-white dark:bg-darkText-primary custom-flex-col pb-14 gap-6 overflow-x-hidden overflow-y-auto custom-round-scrollbar"
       style={{
-        border: "1px solid rgba(193, 194, 195, 0.40)",
+        border: "1px solid rgba(193, 194, 195, 0.40) dark:border-darkText-1",
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
