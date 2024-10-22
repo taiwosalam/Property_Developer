@@ -85,6 +85,7 @@ const Appearance = () => {
           />
           <Tooltip
             title="Sorry, this theme is for Professional Plan subscribers only"
+            followCursor
           >
             <div
               className="relative"
@@ -102,6 +103,7 @@ const Appearance = () => {
 
           <Tooltip
             title="Sorry, this theme is for Professional Plan subscribers only"
+            followCursor
           >
             <div
               className="relative"
@@ -242,7 +244,7 @@ const Appearance = () => {
             }}
           >
             <ModalTrigger
-              className={`h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white flex items-center justify-center cursor-pointer ${
+              className={`h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white dark:bg-darkText-primary flex items-center justify-center cursor-pointer ${
                 modalOpen ? "border-2 border-blue-500" : ""
               }`}
             >

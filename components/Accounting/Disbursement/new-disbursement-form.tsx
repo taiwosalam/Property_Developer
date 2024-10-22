@@ -16,10 +16,11 @@ import { ModalTrigger } from "@/components/Modal/modal";
 
 const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
   nextStep,
+  isDarkMode,
 }) => {
   return (
     <div
-      className="w-[600px] p-[18px] pb-8 rounded-lg bg-white custom-flex-col gap-8"
+      className="w-[600px] p-[18px] pb-8 rounded-lg bg-white dark:bg-darkText-primary custom-flex-col gap-8"
       style={{
         border: "1px solid rgba(193, 194, 195, 0.40)",
         boxShadow:
@@ -32,7 +33,7 @@ const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
             <Picture src={Cancel} alt="close" size={24} />
           </ModalTrigger>
         </div>
-        <p className="text-text-secondary text-base font-medium text-center">
+        <p className="text-text-secondary dark:text-white text-base font-medium text-center">
           New Disbursement
         </p>
       </div>
@@ -42,12 +43,12 @@ const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
             id="transaction-id"
             label="transaction id"
             placeholder="Input ID"
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: isDarkMode ? "#020617" : "white" }}
           />
           <Input
             id="property-name"
             label="property name"
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: isDarkMode ? "#020617" : "white" }}
           />
           <Select
             required
@@ -72,14 +73,14 @@ const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
             required
             placeholder="₦"
             id="amount-disburse"
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: isDarkMode ? "#020617" : "white" }}
             label="amount disburse"
           />
           <Input
             id="transaction-date"
             label="transaction date"
             type="date"
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: isDarkMode ? "#020617" : "white" }}
           />
         </div>
         <div className="custom-flex-col gap-1">

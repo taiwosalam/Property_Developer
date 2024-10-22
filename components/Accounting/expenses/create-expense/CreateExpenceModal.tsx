@@ -5,9 +5,9 @@ import { DeleteIconX } from "@/public/icons/icons";
 
 const CreateExpenceModal = () => {
   return (
-    <div className="w-[700px] max-w-[80%] max-h-[90vh] min-h-[70vh] rounded-[20px] bg-white overflow-y-auto custom-round-scrollbar">
+    <div className="w-[700px] max-w-[80%] max-h-[90vh] min-h-[70vh] rounded-[20px] bg-white dark:bg-darkText-primary overflow-y-auto custom-round-scrollbar">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-solid border-[#B8B8B8] sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[30px] bg-white">
+      <div className="flex items-center justify-between border-b border-solid border-[#B8B8B8] sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[30px] bg-white dark:bg-darkText-primary">
         <div className="flex items-center gap-2">
           <p className="text-primary-navy dark:text-darkText-1 text-base md:text-lg lg:text-xl font-bold capitalize">
             Add Property ID

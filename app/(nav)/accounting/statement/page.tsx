@@ -81,13 +81,13 @@ const Statement = () => {
     <div className="custom-flex-col gap-10">
       <div className="custom-flex-col gap-6">
         <div className="flex gap-1 items-center">
-          <h1 className="text-black text-2xl font-medium">Statement</h1>
+          <h1 className="text-black dark:text-white text-2xl font-medium">Statement</h1>
           <ExclamationMark />
         </div>
-        <div className="bg-white rounded-[8px] border border-opacity-20 border-[#BAC7D533] p-4 space-y-6">
+        <div className="bg-white dark:bg-[#3C3D37] rounded-[8px] border border-opacity-20 border-[#BAC7D533] p-4 space-y-6">
           <div className="flex flex-wrap gap-y-4 items-center justify-between">
             <div
-              className={`w-fit flex bg-[#F5F5F5] rounded-md items-center justify-center`}
+              className={`w-fit flex bg-[#F5F5F5] dark:bg-darkText-primary rounded-md items-center justify-center`}
             >
               <DatePickerWithRange
                 selectedRange={selectedDateRange}
@@ -138,12 +138,12 @@ const Statement = () => {
               <div className="flex items-center gap-2">
                 <Link
                   href={"/accounting/expenses/export"}
-                  className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
+                  className="border border-[#D0D5DD] dark:bg-darkText-primary dark:border-darkText-2 py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
                 >
                   <Picture src={"/icons/pdf-icon.svg"} size={20} alt="pdf" />
                   <span>Export</span>
                 </Link>
-                <div className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]">
+                <div className="border border-[#D0D5DD] dark:bg-darkText-primary dark:border-darkText-2 py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]">
                   <Picture
                     src={"/icons/excel-icon.svg"}
                     size={20}
@@ -234,7 +234,7 @@ const Statement = () => {
                           />
                         </DropdownTrigger>
                         <DropdownContent direction="up">
-                          <div className="w-[200px] bg-white custom-flex-col py-2 gap-2 text-text-secondary text-base font-bold capitalize text-center">
+                          <div className="w-[200px] bg-white dark:bg-darkText-primary custom-flex-col py-2 gap-2 text-text-secondary dark:text-darkText-1 text-base font-bold capitalize text-center">
                             <Link
                               href={"/accounting/statement/1/preview"}
                               className="p-2"

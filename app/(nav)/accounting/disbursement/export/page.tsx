@@ -22,7 +22,7 @@ const ExportDisbursement = () => {
           phoneNumbers={["09022312133", "07012133313", "0901212121"]}
           email="example@mail.com"
         />
-        <div className="rounded-lg bg-white p-8 flex">
+        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex">
           <KeyValueList
             data={{}}
             chunkSize={2}
@@ -96,7 +96,7 @@ const ExportDisbursement = () => {
           <Signature />
         </div>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
+      <div className="fixed bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[60px] flex gap-6 justify-end">
         <Button
           size="base_bold"
           variant="sky_blue"
