@@ -51,7 +51,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
           })}
         />
       )}
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {!isCollapsed && (
           <motion.div
             initial={{ opacity: 0, x: -20 }}

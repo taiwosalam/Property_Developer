@@ -35,9 +35,20 @@ const DepositRequest = () => {
           title="Total Requests"
           newData={657}
           total={34}
+          colorScheme={1}
         />
-        <ManagementStatistcsCard title="Completed" newData={657} total={34} />
-        <ManagementStatistcsCard title="Pending" newData={657} total={34} />
+        <ManagementStatistcsCard
+          title="Completed"
+          newData={657}
+          total={34}
+          colorScheme={2}
+        />
+        <ManagementStatistcsCard
+          title="Pending"
+          newData={657}
+          total={34}
+          colorScheme={3}
+        />
       </div>
       <FilterBar
         azFilter
@@ -48,7 +59,7 @@ const DepositRequest = () => {
           description:
             "This page contains a list of Caution Deposit Request on the platform.",
         }}
-        searchInputPlaceholder="Search"
+        searchInputPlaceholder="Search Deposit Record"
         handleFilterApply={() => {}}
         isDateTrue
         filterOptions={[]}

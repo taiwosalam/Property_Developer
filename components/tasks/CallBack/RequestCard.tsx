@@ -93,10 +93,16 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
         {cardType !== "property" && props.status && (
           <p
             className={clsx(
-              "p-2 font-normal text-xs border capitalize ml-auto",
+              "p-2 font-normal text-xs border capitalize ml-auto w-[85px] text-center",
               props.status === "completed"
                 ? "bg-status-success-1 border-status-success-1 text-status-success-2"
-                : "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
+                : props.status === "pending"
+                ? "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
+                : props.status === "in-progress"
+                ? "bg-[rgba(140,98,255,0.19)] border-[rgba(140,98,255,0.19)] text-[#9747FF]"
+                : props.status === "decline"
+                ? "bg-[rgba(233,33,46,0.10)] border-[rgba(233,33,46,0.10)] text-status-error-primary"
+                : ""
             )}
           >
             {props.status}

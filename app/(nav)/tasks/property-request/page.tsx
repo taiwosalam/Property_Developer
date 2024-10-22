@@ -36,6 +36,7 @@ const PropertyRequest = () => {
           newData={34}
           total={657}
           className="w-[unset]"
+          colorScheme={1}
         />
       </div>
       <FilterBar
@@ -46,7 +47,7 @@ const PropertyRequest = () => {
           title: "Request",
           description: "This page contains a list of Request on the platform.",
         }}
-        searchInputPlaceholder="Search"
+        searchInputPlaceholder="Search Property Request"
         handleFilterApply={() => {}}
         isDateTrue
         filterOptions={[]}
