@@ -93,10 +93,10 @@ const AccountingInvoicePage = () => {
             </ModalContent>
           </Modal>
         </div>
-        <div className="bg-white rounded-[8px] border border-opacity-20 border-[#BAC7D533] p-4 space-y-6">
+        <div className="bg-white dark:bg-[#3C3D37] rounded-[8px] border border-opacity-20 border-[#BAC7D533] p-4 space-y-6">
           <div className="flex flex-wrap gap-y-4 items-center justify-between">
             <div
-              className={`w-fit flex bg-[#F5F5F5] rounded-md items-center justify-center`}
+              className={`w-fit flex bg-[#F5F5F5] dark:bg-darkText-primary rounded-md items-center justify-center`}
             >
               <DatePickerWithRange
                 selectedRange={selectedDateRange}
@@ -146,14 +146,14 @@ const AccountingInvoicePage = () => {
               <div className="flex items-center gap-2">
                 <Link
                   href="/accounting/invoice/export"
-                  className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
+                  className="border border-[#D0D5DD] dark:bg-darkText-primary py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
                 >
                   <Picture src={"/icons/pdf-icon.svg"} size={20} alt="pdf" />
                   <span>Export</span>
                 </Link>
                 <Link
                   href="/accounting/invoice/export"
-                  className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
+                  className="border border-[#D0D5DD] dark:bg-darkText-primary py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
                 >
                   <Picture
                     src={"/icons/excel-icon.svg"}
@@ -238,7 +238,7 @@ const AccountingInvoicePage = () => {
                         />
                       </DropdownTrigger>
                       <DropdownContent>
-                        <div className="w-[250px] bg-white custom-flex-col py-2 gap-2 text-text-secondary text-base font-bold capitalize text-center">
+                        <div className="w-[250px] bg-white dark:bg-darkText-primary custom-flex-col py-2 gap-2 text-text-secondary dark:text-darkText-1 text-base font-bold capitalize text-center">
                           <Link
                             href={"/accounting/invoice/1/manage"}
                             className="p-4"
