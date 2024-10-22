@@ -334,42 +334,51 @@ const EditLandlord = () => {
 
         {/* Right Side */}
         <div className="w-full lg:w-[334px] custom-flex-col gap-5">
-          {/* Edit Avatar */}
-          <LandlordTenantInfoEditSection title="edit avatar">
-            <div className="flex">
-              <div className="relative">
-                <Picture src={Avatar} alt="profile picture" size={90} rounded />
-                <button
-                  type="button"
-                  className="absolute top-0 right-0 translate-x-[5px] -translate-y-[5px]"
-                >
-                  <DeleteIconOrange size={32} />
-                </button>
+          <div className="lg:sticky top-[175px] w-full lg:h-[calc(100vh-250px)] overflow-auto custom-flex-col gap-5 custom-round-scrollbar">
+            {/* Edit Avatar */}
+            <LandlordTenantInfoEditSection title="edit avatar">
+              <div className="flex">
+                <div className="relative">
+                  <Picture
+                    src={Avatar}
+                    alt="profile picture"
+                    size={90}
+                    rounded
+                  />
+                  <button
+                    type="button"
+                    className="absolute top-0 right-0 translate-x-[5px] -translate-y-[5px]"
+                  >
+                    <DeleteIconOrange size={32} />
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="custom-flex-col gap-3">
-              <p className="text-black text-base font-medium">Choose Avatar</p>
-              <div className="flex gap-3">
-                {Array(4)
-                  .fill(null)
-                  .map((_, idx) => (
-                    <Picture
-                      key={idx}
-                      src={Avatar}
-                      alt="profile picture"
-                      size={40}
-                      rounded
-                    />
-                  ))}
+              <div className="custom-flex-col gap-3">
+                <p className="text-black text-base font-medium">
+                  Choose Avatar
+                </p>
+                <div className="flex gap-3">
+                  {Array(4)
+                    .fill(null)
+                    .map((_, idx) => (
+                      <Picture
+                        key={idx}
+                        src={Avatar}
+                        alt="profile picture"
+                        size={40}
+                        rounded
+                      />
+                    ))}
+                </div>
               </div>
-            </div>
-            <Button size="base_medium" className="py-2 px-6">
-              change photo
-            </Button>
-          </LandlordTenantInfoEditSection>
-          <LandlordTenantInfoEditSection title="add note">
-            <TextArea id="note" label="note" />
-          </LandlordTenantInfoEditSection>
+              <Button size="base_medium" className="py-2 px-6">
+                change photo
+              </Button>
+            </LandlordTenantInfoEditSection>
+            <LandlordTenantInfoEditSection title="add note">
+              <TextArea id="note" label="note" />
+            </LandlordTenantInfoEditSection>
+          </div>
         </div>
       </div>
       <FixedFooter className="flex justify-between items-center flex-wrap">
