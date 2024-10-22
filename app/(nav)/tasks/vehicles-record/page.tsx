@@ -7,18 +7,13 @@ import type { Field, DataItem } from "@/components/Table/types";
 import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-record-modal";
-import CreateRecordDropdown from "@/components/tasks/vehicles-record/create-record-modal";
+import CreateRecordModal from "@/components/tasks/vehicles-record/create-record-modal";
 import type { VehicleRecord } from "@/components/tasks/vehicles-record/types";
 import {
   VehicleRecordData,
   vehicleRecordFIltersOptionsWithDropdown,
 } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import {
-  Dropdown,
-  DropdownContent,
-  DropdownTrigger,
-} from "@/components/Dropdown/dropdown";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const VehiclesRecordPage = () => {
@@ -66,16 +61,16 @@ const VehiclesRecordPage = () => {
             colorScheme={3}
           />
         </div>
-        <Dropdown>
-          <DropdownTrigger asChild>
+        <Modal>
+          <ModalTrigger asChild>
             <Button type="button" className="page-header-button">
               + Create New Record
             </Button>
-          </DropdownTrigger>
-          <DropdownContent>
-            <CreateRecordDropdown />
-          </DropdownContent>
-        </Dropdown>
+          </ModalTrigger>
+          <ModalContent>
+            <CreateRecordModal/>
+          </ModalContent>
+        </Modal>
       </div>
       <FilterBar
         azFilter
