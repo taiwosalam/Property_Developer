@@ -118,7 +118,7 @@ const ManageServiceProvider = () => {
           />
         ) : (
           <InfoBox className="space-y-6 rounded-lg">
-            <p className="text-black text-lg lg:text-xl font-bold capitalize">
+            <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
               About Business
             </p>
             <Picture
@@ -128,7 +128,7 @@ const ManageServiceProvider = () => {
               height={67}
               containerClassName="ml-10"
             />
-            <p className="font-normal text-xs text-text-quaternary">
+            <p className="font-normal text-xs text-text-quaternary dark:text-darkText-1">
               A multi-family home, also know as a duplex, triplex, or multi-unit
               building, is a residential property that living read more. They
               want to work with their budget in booking an appointment. They

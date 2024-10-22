@@ -14,8 +14,10 @@ import {
   vehicleRecordFIltersOptionsWithDropdown,
 } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const VehiclesRecordPage = () => {
+  const isDarkMode = useDarkMode();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<VehicleRecord | null>(
     null
@@ -89,8 +91,8 @@ const VehiclesRecordPage = () => {
       <CustomTable
         fields={fields}
         data={VehicleRecordData}
-        evenRowColor="#fff"
-        oddRowColor="#EFF6FF"
+        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
+        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
         tableHeadClassName="bg-brand-5 h-[76px]"
         tableHeadCellSx={{
           fontSize: 16,
@@ -102,7 +104,7 @@ const VehiclesRecordPage = () => {
         tableBodyCellSx={{
           fontWeight: 500,
           fontSize: 15,
-          color: "#050901",
+          color: isDarkMode ? "#EFF6FF" : "#050901",
           border: "none",
           textAlign: "left",
           padding: "18px 16px",

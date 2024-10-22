@@ -14,8 +14,10 @@ import DepositRequestModal from "../deposit-requests/deposit-request-modal";
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   <div>
-    <p className="font-medium text-[16px] text-text-tertiary">{label}:</p>
-    <p className="font-medium text-sm text-text-secondary capitalize">
+    <p className="font-medium text-[16px] text-text-tertiary dark:text-white">
+      {label}:
+    </p>
+    <p className="font-medium text-sm text-text-secondary capitalize dark:text-darkText-1">
       {value}
     </p>
   </div>

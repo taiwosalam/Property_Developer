@@ -6,9 +6,9 @@ import { ModalTrigger } from "@/components/Modal/modal";
 
 const UnitPublishModal = () => {
   return (
-    <div className="w-[501px] p-7 rounded-[20px] bg-white custom-flex-col gap-10">
+    <div className="w-[501px] p-7 rounded-[20px] bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] custom-flex-col gap-10">
       <div className="custom-flex-col gap-6">
-        <p className="text-black text-2xl font-bold">Prompt</p>
+        <p className="text-black dark:text-white text-2xl font-bold">Prompt</p>
         <p className="text-base font-normal">
           Are you sure you want to unpublish this unit?
         </p>

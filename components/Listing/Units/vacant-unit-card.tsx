@@ -24,7 +24,7 @@ import TruncatedText from "@/components/TruncatedText/truncated-text";
 const VacantUnitCard = () => {
   return (
     <div
-      className="p-6 pb-0 custom-flex-col gap-4 rounded-2xl bg-white"
+      className="p-6 pb-0 custom-flex-col gap-4 rounded-2xl bg-white dark:bg-darkText-primary"
       style={{ boxShadow: " 2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <p className="text-brand-10 text-base font-bold">Unit ID: 123456776342</p>
@@ -40,8 +40,8 @@ const VacantUnitCard = () => {
                 />
               </div>
               <div className="flex items-start gap-[75px] text-base font-normal">
-                <p className="text-[#747474]">Description</p>
-                <TruncatedText lines={3} className="text-text-quaternary">
+                <p className="text-[#747474] dark:text-darkText-1">Description</p>
+                <TruncatedText lines={3} className="text-text-quaternary dark:text-darkText-2">
                   A multi-family home, also know as a duplex, triplex, or
                   multi-unit building, is a residential property that living
                   read more. They want to work with their budget in booking an
