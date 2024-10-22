@@ -16,7 +16,12 @@ const BackButton: React.FC<BackButtonProps> = ({ children, className }) => {
   };
 
   return (
-    <div className={clsx("flex items-center gap-1", className)}>
+    <div
+      className={clsx(
+        "text-black dark:text-white flex items-center gap-1",
+        className
+      )}
+    >
       <button
         onClick={handleBack}
         type="button"
@@ -25,7 +30,7 @@ const BackButton: React.FC<BackButtonProps> = ({ children, className }) => {
       >
         <ChevronLeft />
       </button>
-      <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">{children}</h1>
+      <h1 className="font-bold text-lg lg:text-xl">{children}</h1>
     </div>
   );
 };

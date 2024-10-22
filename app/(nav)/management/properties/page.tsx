@@ -113,11 +113,11 @@ const Properties = () => {
                 id={1}
                 propertyId={1}
                 images={[
-                  "/empty/empty.svg",
-                  "/empty/empty.svg",
-                  "/empty/empty.svg",
-                  "/empty/empty.svg",
-                  "/empty/empty.svg",
+                  "/empty/SampleProperty.jpeg",
+                  "/empty/SampleProperty.jpeg",
+                  "/empty/SampleProperty.jpeg",
+                  "/empty/SampleProperty.jpeg",
+                  "/empty/SampleProperty.jpeg",
                 ]}
                 name="Property 1"
                 units={1}

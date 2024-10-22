@@ -63,6 +63,7 @@ const ModalTrigger: React.FC<ModalTriggerProps> = ({
   if (asChild && React.isValidElement(children)) {
     return React.cloneElement(children, {
       onClick: handleClick,
+      role: "button",
       ...props,
     });
   }

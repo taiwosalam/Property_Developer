@@ -1,15 +1,7 @@
 "use client";
-
 import * as React from "react";
 import clsx from "clsx";
-import {
-  LineChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  AreaChart,
-  Area,
-} from "recharts";
+import { CartesianGrid, XAxis, YAxis, AreaChart, Area } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
@@ -29,64 +21,63 @@ import { Switch } from "../ui/switch";
 import { Label } from "../ui/label";
 import { DateRange } from "react-day-picker";
 
-const chartData = [
-  { date: "2024-08-01", profits: 50, sales: 70, expenses: 30 },
-  { date: "2024-08-02", profits: 90, sales: 100, expenses: 60 },
-  { date: "2024-08-03", profits: 30, sales: 40, expenses: 20 },
-  { date: "2024-08-08", profits: 110, sales: 120, expenses: 80 },
-  { date: "2024-06-07", profits: 60, sales: 70, expenses: 50 },
-  { date: "2024-06-06", profits: 130, sales: 150, expenses: 90 },
-  { date: "2024-06-07", profits: 80, sales: 100, expenses: 60 },
-  { date: "2024-06-08", profits: 120, sales: 140, expenses: 100 },
-];
-
-const chartConfig = {
-  expenses: {
-    label: "Expenses",
-    color: "#E9212E",
-  },
-  profits: {
-    label: "Profits",
-    color: "#FFBB53",
-  },
-  sales: {
-    label: "Sales",
-    color: "#0033C4",
-  },
-} satisfies ChartConfig;
+interface ChartDataPoint {
+  date: string;
+  [key: string]: string | number;
+}
 
 interface DashboardChartProps {
   visibleRange?: boolean;
   chartTitle?: string;
   className?: string;
+  chartConfig: ChartConfig;
+  chartData: ChartDataPoint[];
 }
 
 export const DashboardChart: React.FC<DashboardChartProps> = ({
   visibleRange,
   chartTitle,
   className,
+  chartConfig,
+  chartData,
 }) => {
-  const [salesEnabled, setSalesEnabled] = React.useState(true);
-  const [profitsEnabled, setProfitsEnabled] = React.useState(true);
-  const [expensesEnabled, setExpensesEnabled] = React.useState(true);
-  const [timeRange, setTimeRange] = React.useState("90d");
-  const [selectedDateRange, setSelectedDateRange] = React.useState<
-    DateRange | undefined
-  >();
+  const [enabledMetrics, setEnabledMetrics] = React.useState<
+    Record<string, boolean>
+  >(() => {
+    const initialState: Record<string, boolean> = {};
+    Object.keys(chartConfig).forEach((key) => {
+      initialState[key] = true;
+    });
+    return initialState;
+  });
 
-  const handleDateChange = (range: DateRange | undefined) => {
-    setSelectedDateRange(range);
-    // If the user selects a custom range, set the timeRange to "custom"
-    if (range?.from && range?.to) {
-      setTimeRange("custom");
-    }
-  };
+  const [timeRange, setTimeRange] = React.useState("30d");
+  const [highestMetric, setHighestMetric] = React.useState<string | null>(null);
+  const [primaryColor, setPrimaryColor] = React.useState<string | null>(null);
 
   const calculateDateRange = (days: number) => {
     const now = new Date();
     const fromDate = new Date();
     fromDate.setDate(now.getDate() - days);
     return { from: fromDate, to: now };
+  };
+
+  const [selectedDateRange, setSelectedDateRange] = React.useState<
+    DateRange | undefined
+  >(calculateDateRange(30));
+
+  React.useEffect(() => {
+    if (!selectedDateRange) {
+      const initialRange = calculateDateRange(30);
+      setSelectedDateRange(initialRange);
+    }
+  }, [selectedDateRange]);
+
+  const handleDateChange = (range: DateRange | undefined) => {
+    setSelectedDateRange(range);
+    if (range?.from && range?.to) {
+      setTimeRange("custom");
+    }
   };
 
   const handleSelectChange = (value: string) => {
@@ -118,6 +109,33 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
       return date >= now;
     })
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  // Fetch primary color from localStorage during initial render
+  React.useEffect(() => {
+    const storedPrimaryColor = localStorage.getItem("primary-color");
+    setPrimaryColor(storedPrimaryColor);
+  }, []);
+
+  // Calculate highest metric whenever filtered data or enabled metrics change
+  React.useEffect(() => {
+    let maxValue = -Infinity;
+    let maxMetric: string | null = null;
+
+    // Only consider enabled metrics
+    Object.keys(chartConfig).forEach((metric) => {
+      if (enabledMetrics[metric]) {
+        const metricMax = Math.max(
+          ...filteredData.map((item) => Number(item[metric]) || 0)
+        );
+        if (metricMax > maxValue) {
+          maxValue = metricMax;
+          maxMetric = metric;
+        }
+      }
+    });
+
+    setHighestMetric(maxMetric);
+  }, [filteredData, enabledMetrics, chartConfig]);
 
   return (
     <Card className={clsx("shadow-sm border-none", className)}>
@@ -164,100 +182,73 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
             </div>
           </div>
         </CardHeader>
-        <div className="flex items-center justify-between flex-wrap lg:flex-nowrap my-2 space-y-4 lg:my-0 lg:space-y-0 px-6">
+        <div className="flex items-center justify-between flex-wrap lg:flex-nowrap my-2 space-y-4 lg:-mt-8 lg:my-0 lg:space-y-0 px-6">
           <div className="w-full flex items-center space-x-2">
-            {/* Sales Switch */}
-            <span className="flex items-center space-x-0.5">
-              <Switch
-                id="sales"
-                checked={salesEnabled}
-                onCheckedChange={(checked) => setSalesEnabled(checked)}
-                style={{
-                  backgroundColor: salesEnabled
-                    ? chartConfig.sales.color
-                    : undefined,
-                }}
-              />
-              <Label
-                htmlFor="sales"
-                style={{
-                  color: salesEnabled ? chartConfig.sales.color : undefined,
-                }}
-              >
-                Sales
-              </Label>
-            </span>
-            {/* Profits Switch */}
-            <span className="flex items-center space-x-0.5">
-              <Switch
-                id="profits"
-                checked={profitsEnabled}
-                onCheckedChange={(checked) => setProfitsEnabled(checked)}
-                style={{
-                  backgroundColor: profitsEnabled
-                    ? chartConfig.profits.color
-                    : undefined,
-                }}
-              />
-              <Label
-                htmlFor="profits"
-                style={{
-                  color: profitsEnabled ? chartConfig.profits.color : undefined,
-                }}
-              >
-                Profits
-              </Label>
-            </span>
-            {/* Expenses Switch */}
-            <span className="flex items-center space-x-0.5">
-              <Switch
-                id="expenses"
-                checked={expensesEnabled}
-                onCheckedChange={(checked) => setExpensesEnabled(checked)}
-                style={{
-                  backgroundColor: expensesEnabled
-                    ? chartConfig.expenses.color
-                    : undefined,
-                }}
-              />
-              <Label
-                htmlFor="expenses"
-                style={{
-                  color: expensesEnabled
-                    ? chartConfig.expenses.color
-                    : undefined,
-                }}
-              >
-                Expenses
-              </Label>
-            </span>
+            {Object.entries(chartConfig).map(([key, config]) => (
+              <span key={key} className="flex items-center space-x-0.5">
+                <Switch
+                  id={key}
+                  checked={enabledMetrics[key]}
+                  onCheckedChange={(checked) =>
+                    setEnabledMetrics((prev) => ({ ...prev, [key]: checked }))
+                  }
+                  style={{
+                    backgroundColor:
+                      key === highestMetric && primaryColor
+                        ? primaryColor
+                        : enabledMetrics[key]
+                        ? config.color
+                        : undefined,
+                  }}
+                />
+                <Label
+                  htmlFor={key}
+                  style={{
+                    color:
+                      key === highestMetric && primaryColor
+                        ? primaryColor
+                        : enabledMetrics[key]
+                        ? config.color
+                        : undefined,
+                  }}
+                >
+                  {config.label}
+                </Label>
+              </span>
+            ))}
           </div>
         </div>
       </>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[250px] lg:min-h-[350px] w-full -ml-6"
+          className="aspect-auto h-[280px] w-full -ml-6"
         >
           <AreaChart
             accessibilityLayer
             data={filteredData}
             margin={{ left: 12, right: 12 }}
           >
-            <defs>
-              <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="0%"
-                  stopColor={chartConfig.sales.color}
-                  stopOpacity={0.5}
-                />
-                <stop
-                  offset="95%"
-                  stopColor={chartConfig.sales.color}
-                  stopOpacity={0.05}
-                />
-              </linearGradient>
-            </defs>
+            {Object.entries(chartConfig).map(([key, config]) => {
+              const color =
+                key === highestMetric && primaryColor
+                  ? primaryColor
+                  : config.color;
+              return (
+                <defs key={`${key}-gradient`}>
+                  <linearGradient
+                    id={`color${key}`}
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="0%" stopColor={color} stopOpacity={0.5} />
+                    <stop offset="95%" stopColor={color} stopOpacity={0.05} />
+                  </linearGradient>
+                </defs>
+              );
+            })}
             <CartesianGrid
               vertical={true}
               horizontal={false}
@@ -293,32 +284,26 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
                 />
               }
             />
-            {salesEnabled && (
-              <Area
-                dataKey="sales"
-                type="monotone"
-                stroke={chartConfig.sales.color}
-                strokeWidth={1.5}
-                fill="url(#colorSales)"
-              />
-            )}
-            {profitsEnabled && (
-              <Area
-                dataKey="profits"
-                type="monotone"
-                stroke={chartConfig.profits.color}
-                strokeWidth={1.5}
-                fill="transparent"
-              />
-            )}
-            {expensesEnabled && (
-              <Area
-                dataKey="expenses"
-                type="monotone"
-                stroke={chartConfig.expenses.color}
-                strokeWidth={1.5}
-                fill="transparent"
-              />
+            {Object.entries(chartConfig).map(
+              ([key, config]) =>
+                enabledMetrics[key] && (
+                  <Area
+                    key={key}
+                    dataKey={key}
+                    type="monotone"
+                    stroke={
+                      key === highestMetric && primaryColor
+                        ? primaryColor
+                        : config.color
+                    }
+                    strokeWidth={1.5}
+                    fill={
+                      key === highestMetric && primaryColor
+                        ? `url(#color${key})`
+                        : "transparent"
+                    }
+                  />
+                )
             )}
           </AreaChart>
         </ChartContainer>
