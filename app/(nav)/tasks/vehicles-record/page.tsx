@@ -104,7 +104,7 @@ const VehiclesRecordPage = () => {
         tableBodyCellSx={{
           fontWeight: 500,
           fontSize: 15,
-          color: isDarkMode ? "#fff" : "#050901",
+          color: isDarkMode ? "#EFF6FF" : "#050901",
           border: "none",
           textAlign: "left",
           padding: "18px 16px",

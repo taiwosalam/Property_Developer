@@ -10,8 +10,10 @@ import {
   getAllEventsOnCalendar,
 } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const CalendarPage = () => {
+  const isDarkMode = useDarkMode();
   const access_token = useAuthStore((state) => state.access_token);
   const fields: Field[] = [
     { id: "1", label: "Date & Time", accessor: "date" },
@@ -73,9 +75,11 @@ const CalendarPage = () => {
       <CustomTable
         fields={fields}
         data={tableData}
+        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
+        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
         tableHeadClassName="bg-brand-9 h-[45px]"
         tableHeadCellSx={{
-          color: "#EFF6FF",
+          color: isDarkMode ? "#EFF6FF" : "#050901",
           fontWeight: 500,
           border: "none",
           textAlign: "left",
@@ -85,12 +89,10 @@ const CalendarPage = () => {
           border: "none",
           textAlign: "left",
           fontWeight: 500,
-          color: "#050901",
+          color: isDarkMode ? "#fff" : "#050901",
           fontSize: "14px",
           textTransform: "uppercase",
         }}
-        evenRowColor="#fff"
-        oddRowColor="#FAFAFA"
       />
       <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
