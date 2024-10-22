@@ -62,3 +62,8 @@ export interface SideNavProps {
   closeSideNav?: () => void;
   isCollapsed?: boolean;
 }
+
+export interface NavModalLayoutProps {
+  title: string;
+  children: React.ReactNode;
+}
