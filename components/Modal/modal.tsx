@@ -119,7 +119,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
           className
         )}
         style={{
-          backgroundColor: isDarkMode ? "rgba(255, 255, 255, 0.1m)" : "#00000033",
+          backgroundColor: isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#00000033",
           ...style
         }}
         {...props}

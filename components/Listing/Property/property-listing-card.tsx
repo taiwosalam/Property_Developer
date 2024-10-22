@@ -38,7 +38,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
 
   return (
     <div
-      className="p-6 pb-0 rounded-2xl bg-white custom-flex-col gap-4"
+      className="p-6 pb-0 rounded-2xl bg-white dark:bg-darkText-primary custom-flex-col gap-4"
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="flex items-center gap-6 justify-between">
@@ -71,17 +71,17 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                 className="absolute inset-0 custom-flex-col justify-between p-3"
               >
                 <div className="flex justify-end">
-                  <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+                  <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
                     <CameraIcon />
-                    <p className="text-black font-medium text-[10px]">+23</p>
+                    <p className="text-black dark:text-white font-medium text-[10px]">+23</p>
                   </div>
                 </div>
                 <div className="flex gap-3 justify-end">
-                  <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+                  <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
                     <CameraIcon />
-                    <p className="text-black font-medium text-[10px]">2</p>
+                    <p className="text-black dark:text-white font-medium text-[10px]">2</p>
                   </div>
-                  <div className="bg-brand-1 rounded py-1 px-1.5 gap-1.5 flex items-center">
+                  <div className="bg-brand-1 dark:bg-darkText-primary dark:text-white rounded py-1 px-1.5 gap-1.5 flex items-center">
                     <VideoIcon />
                   </div>
                 </div>

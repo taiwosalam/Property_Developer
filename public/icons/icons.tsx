@@ -811,7 +811,7 @@ export const VideoIcon = () => {
     >
       <path
         d="M14.5167 1.76567C14.4202 1.70584 14.3099 1.67173 14.1965 1.66659C14.0831 1.66146 13.9702 1.68547 13.8687 1.73634L12.1667 2.58767V2.33301C12.1667 1.23034 11.2693 0.333008 10.1667 0.333008H2.83334C1.73068 0.333008 0.833344 1.23034 0.833344 2.33301V7.66634C0.833344 8.76901 1.73068 9.66634 2.83334 9.66634H10.1667C11.2693 9.66634 12.1667 8.76901 12.1667 7.66634V7.41167L13.8687 8.26234C13.9701 8.31362 14.0829 8.33793 14.1964 8.33291C14.3099 8.32789 14.4202 8.29371 14.5167 8.23367C14.7133 8.11167 14.8333 7.89767 14.8333 7.66634V2.33301C14.8333 2.10167 14.7133 1.88767 14.5167 1.76567ZM4.16668 5.99967C4.03323 6.00316 3.90043 5.9799 3.77612 5.93125C3.6518 5.88261 3.53848 5.80956 3.44285 5.71642C3.34721 5.62329 3.27119 5.51195 3.21927 5.38896C3.16735 5.26598 3.14057 5.13384 3.14053 5.00035C3.14048 4.86685 3.16717 4.7347 3.21901 4.61168C3.27085 4.48867 3.34679 4.37727 3.44237 4.28407C3.53794 4.19087 3.65121 4.11775 3.77549 4.06902C3.89978 4.02029 4.03256 3.99694 4.16601 4.00034C4.42667 4.00699 4.67443 4.11518 4.85647 4.30186C5.03851 4.48854 5.14044 4.73894 5.14053 4.99968C5.14061 5.26043 5.03885 5.5109 4.85694 5.6977C4.67502 5.8845 4.42733 5.99286 4.16668 5.99967Z"
-        fill="black"
+        fill="currentColor"
       />
     </svg>
   );
@@ -848,63 +848,63 @@ export const FilterIcon = () => {
     >
       <path
         d="M3.33325 18.0001V12.1667"
-        stroke="#3F4247"
+        stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M3.33325 8.83333V3"
-        stroke="#3F4247"
+        stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M10 18V10.5"
-        stroke="#3F4247"
+        stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M10 7.16667V3"
-        stroke="#3F4247"
+        stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M16.6665 17.9999V13.8333"
-        stroke="#3F4247"
+        stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M16.6665 10.5V3"
-        stroke="#3F4247"
+        stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M0.833252 12.1667H5.83325"
-        stroke="#3F4247"
+        stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M7.5 7.16675H12.5"
-        stroke="#3F4247"
+        stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M14.1667 13.8333H19.1667"
-        stroke="#3F4247"
+        stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"

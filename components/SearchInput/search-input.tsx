@@ -11,7 +11,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   return (
     <div
       className={clsx(
-        "relative flex items-center border py-3 pl-10 pr-3 rounded-[8px] border-none bg-[#F1F2F4] dark:bg-darkText-primary dark:border dark:border-darkText-2",
+        "relative flex items-center border py-3 pl-10 pr-3 rounded-[8px] border-none bg-[#F1F2F4] dark:bg-darkText-primary dark:border dark:border-darkText-1",
         className
       )}
     >

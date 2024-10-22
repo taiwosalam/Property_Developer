@@ -414,7 +414,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       {filterOptions && filterOptions.map((option) => (
         <div
           key={option.value}
-          className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5]"
+          className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
         >
           <label className="text-sm capitalize">{option.label}</label>
           <input

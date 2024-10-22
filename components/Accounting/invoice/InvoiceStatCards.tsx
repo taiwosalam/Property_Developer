@@ -9,7 +9,7 @@ const InvoiceStatCards: React.FC<InvoiceStatCardsProps> = ({
 }) => {
   return (
     <div
-      className="bg-white rounded-[14px] p-6 space-y-7"
+      className="bg-white dark:bg-darkText-primary rounded-[14px] p-6 space-y-7"
       style={{
         boxShadow: "6px 6px 54px 0px rgba(0, 0, 0, 0.05)",
       }}
@@ -17,7 +17,7 @@ const InvoiceStatCards: React.FC<InvoiceStatCardsProps> = ({
       <div className="w-full flex justify-between">
         <div className="space-y-2">
           <p className="font-medium text-[16px] text-text-tertiary">{title}</p>
-          <p className="font-bold text-[28px] text-[#202224]">
+          <p className="font-bold text-[28px] text-darkText-1">
             {new Intl.NumberFormat("en-NG", {
               style: "currency",
               currency: "NGN",
