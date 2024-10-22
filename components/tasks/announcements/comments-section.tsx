@@ -4,7 +4,9 @@ import { comments } from "./data";
 const CommentsSection = () => {
   return (
     <div>
-      <h3 className="text-black text-base font-medium mb-4">Comments</h3>
+      <h3 className="text-black dark:text-white text-base font-medium mb-4">
+        Comments
+      </h3>
       {comments.map((comment, index) => (
         <div key={comment.id}>
           <Comment {...comment} />

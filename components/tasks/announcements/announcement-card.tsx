@@ -41,7 +41,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
 }) => {
   return (
     <div
-      className="bg-white rounded-lg"
+      className="bg-white dark:bg-darkText-primary rounded-lg"
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
@@ -61,23 +61,25 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
             />
           ))}
         <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
-          <div className="bg-brand-1 rounded py-1 px-1.5 grid place-items-center">
+          <div className="bg-brand-1 dark:bg-darkText-1 rounded py-1 px-1.5 grid place-items-center">
             <VideoIcon />
           </div>
-          <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+          <div className="bg-brand-1 dark:bg-darkText-1 dark:text-black rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />
-            <p className="text-black font-medium text-[10px]">+{mediaCount}</p>
+            <p className="text-black font-medium text-[10px]">
+              +{mediaCount}
+            </p>
           </div>
         </div>
       </div>
 
       <div className="p-4 font-medium">
-        <p className="mb-1 text-black text-base">{title}</p>
-        <p className="mb-2 text-xs text-text-tertiary line-clamp-3 text-ellipsis">
+        <p className="mb-1 text-black dark:text-white text-base">{title}</p>
+        <p className="mb-2 text-xs text-text-tertiary dark:text-darkText-2 line-clamp-3 text-ellipsis">
           {description}
         </p>
         <div className="mb-2 flex items-center justify-between text-sm">
-          <p className="text-text-label">ID: {id}</p>
+          <p className="text-text-label dark:text-darkText-1">ID: {id}</p>
           <p className="text-neutral-4">{date}</p>
         </div>
         <div className="mb-3 flex items-center gap-2">

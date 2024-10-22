@@ -19,9 +19,9 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
   resolvedDateTime,
 }) => {
   return (
-    <div className="w-[600px] max-w-[80%] max-h-[85%] h-fit rounded-lg bg-white overflow-x-auto custom-round-scrollbar">
+    <div className="w-[600px] max-w-[80%] max-h-[85%] h-fit rounded-lg bg-white dark:bg-[#F1F1F1] overflow-x-auto custom-round-scrollbar">
       {/* Header */}
-      <div className="py-5 bg-brand-1 flex items-center justify-center sticky top-0 z-[2]">
+      <div className="py-5 bg-brand-1 dark:bg-[#F1F1F1] flex items-center justify-center sticky top-0 z-[2]">
         <span className="font-medium text-[16px] text-text-secondary">
           Request for Call
         </span>
@@ -30,7 +30,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
         </ModalTrigger>
       </div>
       {/* body */}
-      <div className="bg-[#FFFFFF]">
+      <div className="bg-white dark:bg-darkText-primary">
         <div className="flex items-center justify-center">
           <div className="pt-10 space-y-2 mb-6">
             <div className="flex items-center justify-center">
@@ -41,10 +41,10 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
               <BadgeIcon color="blue" />
             </div>
             <div className="flex items-center space-x-1">
-              <p className="font-medium text-[16px] text-text-tertiary">
+              <p className="font-medium text-[16px] text-text-tertiary dark:text-darkText-1">
                 Date of request:
               </p>
-              <p className="font-medium text-sm text-[#050901]">
+              <p className="font-medium text-sm text-[#050901] dark:text-darkText-2">
                 {requestDate}
               </p>
             </div>
@@ -54,42 +54,42 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
         <div className="m-6 mb-12 space-y-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <p className="text-text-tertiary font-medium text-[16px]">
+              <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
                 Phone Number
               </p>
-              <p className="text-text-secondary font-medium text-[14px] text-right">
+              <p className="text-text-secondary font-medium text-[14px] text-right  dark:text-darkText-2">
                 {phoneNumber}
               </p>
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-text-tertiary font-medium text-[16px]">
+              <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
                 Property Name
               </p>
-              <p className="text-text-secondary font-medium text-[14px] text-right">
+              <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
                 {propertyName}
               </p>
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-text-tertiary font-medium text-[16px]">
+              <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
                 Property Address
               </p>
-              <p className="text-text-secondary font-medium text-[14px] text-right">
+              <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
                 {propertyAddress}
               </p>
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-text-tertiary font-medium text-[16px]">
+              <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
                 Branch
               </p>
-              <p className="text-text-secondary font-medium text-[14px] text-right">
+              <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
                 {branch}
               </p>
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-text-tertiary font-medium text-[16px]">
+              <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
                 Account Officer
               </p>
-              <p className="text-text-secondary font-medium text-[14px] text-right">
+              <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
                 {accountOfficer}
               </p>
             </div>
@@ -97,18 +97,18 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
           {/* Footer */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <p className="text-text-tertiary font-medium text-[16px]">
+              <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
                 Resolved by
               </p>
-              <p className="text-text-tertiary font-medium text-[16px]">
+              <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
                 Date - Time
               </p>
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-text-secondary font-medium text-[14px]">
+              <p className="text-text-secondary font-medium text-[14px] dark:text-darkText-2">
                 {resolvedBy}
               </p>
-              <p className="text-text-secondary font-medium text-[14px] text-right">
+              <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
                 {resolvedDateTime}
               </p>
             </div>

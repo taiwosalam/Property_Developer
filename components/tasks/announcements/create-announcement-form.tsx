@@ -121,10 +121,10 @@ const CreateAnnouncementForm: React.FC<{
             {images.length < MAX_IMAGES && (
               <label
                 htmlFor="upload"
-                className="px-4 w-full h-[110px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
+                className="px-4 w-full h-[110px] rounded-lg border-2 border-dashed border-[#626262] bg-white dark:bg-darkText-primary flex flex-col items-center justify-center cursor-pointer text-[#626262] dark:text-darkText-1"
               >
                 <PlusIcon />
-                <span className="text-black text-base font-normal mt-2 text-center">
+                <span className="text-black dark:text-darkText-1 text-base font-normal mt-2 text-center">
                   Add Photo/Video
                 </span>
                 <input

@@ -11,7 +11,7 @@ const PropertyFormFooter: React.FC<{
 }> = ({ editMode, handleReset }) => {
   const { canSubmit } = useContext(FlowProgressContext);
   return (
-    <FixedFooter className="flex items-center justify-end gap-10">
+    <FixedFooter className="flex items-center justify-end gap-10 dark:bg-darkText-primary">
       {editMode ? (
         <Fragment>
           <Modal>
