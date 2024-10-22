@@ -11,6 +11,10 @@ import Card from "@/components/dashboard/card";
 import {
   complaintsData,
   dashboardCardData,
+  dashboardListingsChartConfig,
+  dashboardListingsChartData,
+  dashboardPerformanceChartConfig,
+  dashboardPerformanceChartData,
   recentMessagesData,
   walletBalanceCardData,
 } from "./data";
@@ -41,12 +45,22 @@ const Dashboard = () => {
           </div>
 
           {/* Chart */}
-          <div className="hidden md:block">
+          <div className="hidden md:block space-y-10">
             <div className="w-full h-fit">
-              <DashboardChart chartTitle="performance" visibleRange />
+              <DashboardChart
+                chartTitle="performance"
+                visibleRange
+                chartConfig={dashboardPerformanceChartConfig}
+                chartData={dashboardPerformanceChartData}
+              />
             </div>
             <div className="w-full h-fit">
-              <DashboardChart chartTitle="listings" visibleRange />
+              <DashboardChart
+                chartTitle="listings"
+                visibleRange
+                chartConfig={dashboardListingsChartConfig}
+                chartData={dashboardListingsChartData}
+              />
             </div>
           </div>
         </div>
