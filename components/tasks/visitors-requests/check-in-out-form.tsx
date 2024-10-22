@@ -45,14 +45,18 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
               <Picture src={pictureSrc} alt="empty" size={80} rounded />
               <div className="flex flex-col">
                 <p className="flex items-center">
-                  <span className="text-text-primary text-base font-medium">
+                  <span className="text-text-primary dark:text-white text-base font-medium">
                     {userName}
                   </span>
                   <BadgeIcon color="green" />
                 </p>
                 <p className="flex items-center gap-1 text-sm font-normal">
-                  <span className="text-text-tertiary">ID</span>
-                  <span className="text-text-primary">{id}</span>
+                  <span className="text-text-tertiary dark:text-darkText-2">
+                    ID
+                  </span>
+                  <span className="text-text-primary dark:text-darkText-1">
+                    {id}
+                  </span>
                 </p>
               </div>
             </div>
@@ -65,16 +69,18 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
               ) : (
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-4">
-                    <p className="text-text-tertiary min-w-[100px]">Category</p>
-                    <p className="text-text-primary capitalize">
+                    <p className="text-text-tertiary dark:text-darkText-1 min-w-[100px]">
+                      Category
+                    </p>
+                    <p className="text-text-primary dark:text-white capitalize">
                       {props.category}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <p className="text-text-tertiary min-w-[100px]">
+                    <p className="text-text-tertiary dark:text-darkText-2 min-w-[100px]">
                       Registration
                     </p>
-                    <p className="text-text-primary">
+                    <p className="text-text-primary dark:text-white">
                       {props.registrationDate}
                     </p>
                   </div>
@@ -93,10 +99,10 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
           )}
         </div>
         <div className="md:flex-1">
-          <p className="mb-[14px] text-black text-lg lg:text-xl font-medium">
+          <p className="mb-[14px] text-text-primary dark:text-white text-lg lg:text-xl font-medium">
             {type === "decline" ? "Reason" : "Inventory"}
           </p>
-          <p className="mb-4 text-text-tertiary text-sm font-normal">
+          <p className="mb-4 text-text-tertiary dark:text-darkText-2 text-sm font-normal">
             {type === "decline"
               ? useCase === "visitor"
                 ? "Please clearly state the reason for denying visitor access."

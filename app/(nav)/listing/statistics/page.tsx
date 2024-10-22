@@ -82,9 +82,9 @@ const Statistics = () => {
           <DashboardChart visibleRange chartTitle="Performance" />
         </div>
         <div className="w-full xl:w-[334px]">
-          <div className="w-full py-6 px-3 custom-flex-col gap-6 bg-white">
+          <div className="w-full py-6 px-3 custom-flex-col gap-6 bg-white dark:bg-darkText-primary">
             <div className="p-2 flex justify-between">
-              <h2 className="text-text-label text-sm font-medium capitalize">
+              <h2 className="text-text-label dark:text-white text-sm font-medium capitalize">
                 {statistics_data_types[activeStatIndex]}
               </h2>
               <div className="flex gap-3">

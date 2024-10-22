@@ -56,7 +56,7 @@ const UnitSponsorPopover = () => {
         style={{ display: "none" }}
       >
         <div
-          className="p-6 rounded-lg bg-white custom-flex-col gap-6"
+          className="p-6 rounded-lg bg-white dark:bg-[#3C3D37] dark:border dark:border-darkText-2 custom-flex-col gap-6"
           style={{
             boxShadow:
               "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
@@ -71,7 +71,7 @@ const UnitSponsorPopover = () => {
                 <Picture src={Cancel} alt="cancel" size={24} />
               </button>
             </div>
-            <p className="text-[#A4A7B0] text-sm font-normal">
+            <p className="text-[#A4A7B0] dark:text-darkText-1 text-sm font-normal">
               The sponsor will prioritize it to appear first to all users, rank
               higher for potential, and automatically renew and update the
               listings.
@@ -81,7 +81,9 @@ const UnitSponsorPopover = () => {
             <div className="p-2 rounded-[4px] bg-support-2">
               <p className="text-brand-disabled font-bold">34</p>
             </div>
-            <p className="text-black font-normal">Available sponsor units</p>
+            <p className="text-black dark:text-white font-normal">
+              Available sponsor units
+            </p>
           </div>
           <div className="flex justify-end gap-3">
             <Button

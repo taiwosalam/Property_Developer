@@ -12,8 +12,12 @@ const Detail: React.FC<{
 }> = ({ label, value }) => {
   return (
     <div className="flex flex-col sm:flex-row gap-x-4 gap-y-1">
-      <p className="text-[#747474] w-[120px]">{label}</p>
-      <p className="text-black font-bold capitalize">{value}</p>
+      <p className="text-[#747474] dark:text-darkText-1 w-[120px]">
+        {label}
+      </p>
+      <p className="text-black dark:text-white font-bold capitalize">
+        {value}
+      </p>
     </div>
   );
 };
