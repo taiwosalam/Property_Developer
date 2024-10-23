@@ -8,6 +8,6 @@ export type SVGType = keyof typeof svgs;
 
 export interface SVGProps {
   type: SVGType;
-  color?: Color;
+  color?: Color | string;
   className?: string;
 }
