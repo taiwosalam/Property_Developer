@@ -15,7 +15,7 @@ import List from "@/public/icons/list.svg";
 import Drag from "@/public/icons/drag.svg";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import TaskModal from "./task-action-modal";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import clsx from "clsx";
 
@@ -65,6 +65,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   const [isModalOpen, setModalOpen] = useState(false);
   const wasRecentlyDragged = useRef(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   const {
     setNodeRef,
@@ -175,7 +176,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <Image src={Drag} alt="theme" width={20} height={20} />
           </button>
           <button
-            hidden={!noDrag}
+            hidden={pathname === "/dashboard" || !noDrag}
             {...attributes}
             {...listeners}
             className="text-secondary-foreground/50 h-auto cursor-pointer"
