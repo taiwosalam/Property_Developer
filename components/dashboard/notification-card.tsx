@@ -7,7 +7,7 @@ import Image from "next/image";
 import { notificationCardProps } from "./types";
 import messagesIcon from "@/public/icons/message.svg";
 import complaintsIcon from "@/public/icons/complaints.svg";
-import verified from "@/public/icons/verified.svg";
+import BadgeIcon from "../BadgeIcon/badge-icon";
 import Link from "next/link";
 
 const NotificationCard: React.FC<notificationCardProps> = ({
@@ -15,6 +15,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
   notifications,
   branchId,
   className,
+  seeAllLink,
 }) => {
   // Determine the icon and message text based on the sectionHeader prop
   const getEmptyState = () => {
@@ -45,19 +46,26 @@ const NotificationCard: React.FC<notificationCardProps> = ({
 
   return (
     <Card
-      className={clsx("w-full min-h-[340px] border-none", className)}
+      className={clsx(
+        "w-full h-[340px] border-none custom-flex-col",
+        className
+      )}
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <CardHeader className="p-4 pb-[10px]">
+      <CardHeader className="p-4 pb-[10px] sticky top-0 bg-[inherit] z-[2]">
         <CardTitle className="flex items-center justify-between text-[16px]">
-          <p className="text-black font-medium dark:text-[#f1f1fd]">{sectionHeader}</p>
+          <p className="text-black font-medium dark:text-[#f1f1fd]">
+            {sectionHeader}
+          </p>
           <p
             className={clsx(
               "flex items-center font-medium",
-              notifications.length === 0 ? "text-[#C1C2C3]" : "text-[#4F5E71] dark:text-[#f1f1fd]"
+              notifications.length === 0
+                ? "text-[#C1C2C3]"
+                : "text-[#4F5E71] dark:text-[#f1f1fd]"
             )}
           >
             See all
@@ -66,9 +74,12 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent
-        className={clsx("grid gap-4 p-4 pt-0", {
-          "py-[55px] px-[40px]": notifications.length === 0,
-        })}
+        className={clsx(
+          "custom-flex-col gap-4 p-4 pt-0 flex-1 overflow-auto custom-round-scrollbar",
+          {
+            "py-[55px] px-[40px]": notifications.length === 0,
+          }
+        )}
       >
         {notifications.map((notification, index) => (
           <Link
@@ -88,32 +99,20 @@ const NotificationCard: React.FC<notificationCardProps> = ({
               <div className="w-full flex items-center justify-between">
                 <p className="text-sm font-medium text-text-primary dark:text-[#f1f1fd] flex items-center">
                   {notification.name || notification.full_name}
-                  {sectionHeader !== "Staffs" && (
-                    <Image
-                      src={verified}
-                      alt="badge"
-                      width={14}
-                      height={14}
-                      style={{
-                        width: "14px",
-                        height: "14px",
-                      }}
-                      className="ml-1"
-                    />
-                  )}
+                  {sectionHeader !== "Staffs" && <BadgeIcon color="red" />}
                 </p>
                 <p className="text-[10px] text-text-disabled">
                   {sectionHeader === "Staffs" ? "Message" : notification.time}
                 </p>
               </div>
-              {notification.title != "Staffs" && (
-                <p className="text-xs text-text-secondary capitalize dark:text-text-disabled">
+              {sectionHeader !== "Staffs" && (
+                <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
                   {notification.title}
                 </p>
               )}
               <p className="text-xs text-text-tertiary font-normal">
-                {notification.title === "Message"
-                  ? `${notification.message.trim().slice(0, 35)}...`
+                {sectionHeader !== "Staffs"
+                  ? notification.message
                   : notification.position}
               </p>
             </div>
