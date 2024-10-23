@@ -60,17 +60,20 @@ const NotificationCard: React.FC<notificationCardProps> = ({
           <p className="text-black font-medium dark:text-[#f1f1fd]">
             {sectionHeader}
           </p>
-          <p
-            className={clsx(
-              "flex items-center font-medium",
-              notifications.length === 0
-                ? "text-[#C1C2C3]"
-                : "text-[#4F5E71] dark:text-[#f1f1fd]"
-            )}
-          >
-            See all
-            <ChevronRight className="w-5 h-5" />
-          </p>
+          {seeAllLink && (
+            <Link
+              href={seeAllLink}
+              className={clsx(
+                "flex items-center font-medium",
+                notifications.length === 0
+                  ? "text-[#C1C2C3]"
+                  : "text-[#4F5E71] dark:text-[#f1f1fd]"
+              )}
+            >
+              See all
+              <ChevronRight className="w-5 h-5" />
+            </Link>
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent
