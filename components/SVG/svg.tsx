@@ -6,7 +6,7 @@ import type { Color } from "@/types/global";
 import { svgs } from "./svgs";
 
 // Exception
-const ChartSVG: React.FC<{ color: Color }> = ({ color }) => (
+const ChartSVG: React.FC<{ color: Color | string }> = ({ color }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="30"
