@@ -15,7 +15,7 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   return (
     <div
       style={style}
-      className="w-[900px] max-w-[80%] max-h-[90vh] rounded-[20px] bg-white dark:bg-black overflow-y-auto custom-round-scrollbar"
+      className="w-[95%] max-w-[900px] max-h-[90vh] rounded-[20px] bg-white dark:bg-black overflow-y-auto custom-round-scrollbar"
     >
       {/* Header */}
       <div className="sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[30px] bg-white dark:bg-darkText-primary">
