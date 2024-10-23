@@ -2,6 +2,7 @@
 
 import Breakdown from "@/components/Accounting/invoice/create-invoice/Breakdown";
 import Details from "@/components/Accounting/invoice/create-invoice/Details";
+import BackButton from "@/components/BackButton/back-button";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 import Button from "@/components/Form/Button/button";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
@@ -13,7 +14,7 @@ import { LocationIcon } from "@/public/icons/icons";
 const CreateInvoicePage = () => {
   return (
     <section className="space-y-7 pb-20">
-      <h1 className="font-medium text-2xl">Create New Invoice</h1>
+      <BackButton>Create New Invoice</BackButton>
       <div
         className="bg-white rounded-[8px] p-6 flex gap-4 items-center justify-between flex-wrap"
         style={{

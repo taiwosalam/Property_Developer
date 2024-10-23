@@ -101,7 +101,7 @@ const Header = () => {
           </div>
           <div className="flex items-center gap-2">
               <NavIcon
-                icon={<MailIcon size={21} />}
+                icon={<MailIcon size={21} color="black" />}
                 alt="messages"
                 href="/messages"
               />

@@ -1,7 +1,7 @@
 import { type Color } from "@/types/global";
 import React from "react";
 
-export const MailIcon = ({ size = 33 }) => {
+export const MailIcon = ({ size = 33, color = "white" }) => {
   return (
     <svg
       width={size}
@@ -12,14 +12,14 @@ export const MailIcon = ({ size = 33 }) => {
     >
       <path
         d="M24.5 8H8.5C7.39543 8 6.5 8.89543 6.5 10V22C6.5 23.1046 7.39543 24 8.5 24H24.5C25.6046 24 26.5 23.1046 26.5 22V10C26.5 8.89543 25.6046 8 24.5 8Z"
-        stroke="currentColor"
+        stroke={color}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M26.5 11L17.53 16.7C17.2213 16.8934 16.8643 16.996 16.5 16.996C16.1357 16.996 15.7787 16.8934 15.47 16.7L6.5 11"
-        stroke="currentColor"
+        stroke={color}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"

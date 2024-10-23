@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 // Imports
@@ -8,11 +10,21 @@ import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import Signature from "@/public/accounting/signature.svg";
 import Image from "next/image";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import BackButton from "@/components/BackButton/back-button";
+import { useRouter } from "next/navigation";
 
 const PreviewExpenses = () => {
+  const router = useRouter();
+
+  const back = () => {
+    router.back();
+  };
+
   return (
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
+        <BackButton>Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -21,7 +33,7 @@ const PreviewExpenses = () => {
           email="example@mail.com"
         />
         <h1 className="text-center my-7 font-medium text-2xl">Invoice</h1>
-        <div className="rounded-lg bg-white p-8 flex">
+        <div className="rounded-lg bg-white p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
             data={{}}
             chunkSize={2}
@@ -42,7 +54,7 @@ const PreviewExpenses = () => {
             Lagos
           </p>
           <div className="p-6 rounded-lg space-y-5">
-            <div className="flex">
+            <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
               <KeyValueList
                 data={{}}
                 chunkSize={2}
@@ -65,7 +77,7 @@ const PreviewExpenses = () => {
         </AccountingTitleSection>
         <AccountingTitleSection title="Account Details">
           <div className="p-6 rounded-lg bg-white">
-            <div className="flex">
+            <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
               <KeyValueList
                 data={{}}
                 chunkSize={1}
@@ -93,8 +105,13 @@ const PreviewExpenses = () => {
           </div>
         </AccountingTitleSection>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
-        <Button variant="sky_blue" size="base_medium" className="py-2 px-8">
+      <FixedFooter className="flex gap-6 items-center justify-between">
+        <Button
+          onClick={back}
+          variant="sky_blue"
+          size="base_medium"
+          className="py-2 px-8"
+        >
           back
         </Button>
         <div className="flex gap-6">
@@ -105,7 +122,8 @@ const PreviewExpenses = () => {
             print
           </Button>
         </div>
-      </div>
+      </FixedFooter>
+      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end"></div>
     </div>
   );
 };

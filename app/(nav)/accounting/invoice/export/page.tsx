@@ -14,11 +14,13 @@ import KeyValueList from "@/components/KeyValueList/key-value-list";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
 import { empty } from "@/app/config";
+import BackButton from "@/components/BackButton/back-button";
 
 const ExportInvoice = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
+        <BackButton>Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"

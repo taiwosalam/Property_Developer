@@ -61,7 +61,7 @@ const Property = () => {
         hasGridListToggle={false}
       />
       <div className="custom-flex-col gap-8">
-        <div className="flex gap-4 justify-end">
+        <div className="flex flex-wrap gap-4 justify-end">
           {Object.entries(property_listing_status).map(([key, value], idx) => (
             <PropertyListingStatusItem
               key={`${key}(${idx})`}

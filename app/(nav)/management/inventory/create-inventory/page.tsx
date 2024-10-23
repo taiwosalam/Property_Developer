@@ -5,8 +5,9 @@ import React, { CSSProperties } from "react";
 // Imports
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
-import InventoryItem from "@/components/Management/Inventory/inventory-item";
 import Select from "@/components/Form/Select/select";
+import BackButton from "@/components/BackButton/back-button";
+import InventoryItem from "@/components/Management/Inventory/inventory-item";
 
 const CreateInventory = () => {
   const input_styles: CSSProperties = {
@@ -15,11 +16,9 @@ const CreateInventory = () => {
   };
 
   return (
-    <div className="custom-flex-col gap-10">
+    <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-4">
-        <h1 className="text-black text-2xl font-medium capitalize">
-          Create Inventory
-        </h1>
+        <BackButton>Create Inventory</BackButton>
         <div className="flex flex-col md:flex-row gap-8">
           <Input
             id="inventory-title"

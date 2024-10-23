@@ -38,10 +38,12 @@ export const NavButton: React.FC<NavButtonProps> = ({
       className={clsx("w-full py-3 pl-10 pr-5 flex items-center gap-4", {
         "nav-button": !minimized,
         "nav-button-minimized": minimized,
-        "bg-brand-3": minimized_highlight,
         "custom-primary-bg": highlight,
       })}
-      style={style}
+      style={{
+        backgroundColor: minimized_highlight ? SecondaryColor : undefined,
+        ...style,
+      }}
     >
       {type && (
         <SVG
