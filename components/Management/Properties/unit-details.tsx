@@ -94,7 +94,7 @@ const UnitDetails = () => {
 
   return (
     <div>
-      <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
+      <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
         <span className="text-status-error-primary">*</span>
         Unit Details
       </h4>

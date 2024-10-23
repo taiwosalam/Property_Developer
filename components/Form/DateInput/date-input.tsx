@@ -31,7 +31,7 @@ const DateInput: React.FC<DateInputProps> = ({
   };
 
   return (
-    <div className={clsx("custom-flex-col gap-2 dark:bg-darkText-primary", className)}>
+    <div className={clsx("custom-flex-col gap-2", className)}>
       {/* Render the label if provided */}
       {label && (
         <Label id={id} required={required} labelclassName={labelclassName}>
