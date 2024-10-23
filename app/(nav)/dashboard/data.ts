@@ -58,6 +58,7 @@ export const dashboardCardData = [
     icon: BuildingIcon,
     value: 10,
     subValue: 20,
+    link: "/management/properties",
   },
   {
     title: "Landlords",
@@ -65,6 +66,7 @@ export const dashboardCardData = [
     icon: LandlordIcon,
     value: 15,
     subValue: 20,
+    link: "/management/landlord",
   },
   {
     title: "Tenants & Occupants",
@@ -72,6 +74,7 @@ export const dashboardCardData = [
     icon: TenantIcon,
     value: 25,
     subValue: 20,
+    link: "/management/tenants",
   },
   {
     title: "Vacant Unit",
@@ -79,6 +82,7 @@ export const dashboardCardData = [
     icon: BedIcon,
     value: 5,
     subValue: 20,
+    link: "/management/rent-unit",
   },
   {
     title: "Expired",
@@ -86,6 +90,7 @@ export const dashboardCardData = [
     icon: ExpiredIcon,
     value: 3,
     subValue: 20,
+    link: "/management/rent-unit",
   },
   {
     title: "Invoices",
@@ -93,6 +98,7 @@ export const dashboardCardData = [
     icon: InvoiceIcon,
     value: 12,
     subValue: 20,
+    link: "/accounting/invoice",
   },
   {
     title: "Inquiries",
@@ -100,6 +106,7 @@ export const dashboardCardData = [
     icon: InquiriesIcon,
     value: 20,
     subValue: 20,
+    link: "/tasks/inquires",
   },
 
   {
@@ -108,6 +115,7 @@ export const dashboardCardData = [
     icon: ComplaintsIcon,
     value: 8,
     subValue: 20,
+    link: "/tasks/complaints",
   },
   {
     title: "Listings",
@@ -115,6 +123,7 @@ export const dashboardCardData = [
     icon: ListingsIcon,
     value: 7,
     subValue: 20,
+    link: "/listing/units",
   },
 ];
 
