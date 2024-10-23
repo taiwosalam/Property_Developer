@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 // Types
 import type { PropertyListingCardProps } from "./types";
@@ -23,6 +23,7 @@ import {
   PropertyListingParagraph,
   PropertyListingTitleDesc,
 } from "./property-listing-component";
+import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 
 const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
   data,
@@ -35,6 +36,8 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
   };
 
   const color = property_listing_status[status];
+
+  const [isOpened, setIsOpened] = useState(false);
 
   return (
     <div
@@ -59,12 +62,21 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                 referenceObject={property_listing_data}
               />
             </div>
-            <div className="relative rounded-2xl overflow-hidden">
+            <div
+              onClick={() => setIsOpened(true)}
+              className="relative rounded-2xl overflow-hidden"
+            >
               <Picture
                 src={SampleProperty6}
                 alt="property preview"
                 width={220}
                 height={204}
+              />
+              <PopupImageModal
+                isOpen={isOpened}
+                images={[SampleProperty6]}
+                onClose={() => setIsOpened(false)}
+                currentIndex={0}
               />
               <div
                 style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
@@ -73,13 +85,17 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                 <div className="flex justify-end">
                   <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
                     <CameraIcon />
-                    <p className="text-black dark:text-white font-medium text-[10px]">+23</p>
+                    <p className="text-black dark:text-white font-medium text-[10px]">
+                      +23
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-3 justify-end">
                   <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
                     <CameraIcon />
-                    <p className="text-black dark:text-white font-medium text-[10px]">2</p>
+                    <p className="text-black dark:text-white font-medium text-[10px]">
+                      2
+                    </p>
                   </div>
                   <div className="bg-brand-1 dark:bg-darkText-primary dark:text-white rounded py-1 px-1.5 gap-1.5 flex items-center">
                     <VideoIcon />

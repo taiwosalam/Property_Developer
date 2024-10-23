@@ -53,7 +53,7 @@ export const PropertyListingStatusItem: React.FC<
   return (
     <div className="flex gap-2 items-center">
       <div
-        className="w-5 h-5 rounded-full"
+        className="w-[14px] h-[14px] sm:w-5 sm:h-5 rounded-full"
         style={{ backgroundColor: color }}
       ></div>
       <p className="text-[#6C6D6D] text-xs font-medium capitalize">{text}</p>
