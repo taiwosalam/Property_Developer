@@ -29,7 +29,9 @@ const Disbursement = () => {
     <div className="custom-flex-col gap-8">
       <div className="flex items-center justify-between">
         <div className="flex gap-1 items-center">
-          <h1 className="text-black dark:text-white text-2xl font-medium">Disbursement</h1>
+          <h1 className="text-black dark:text-white text-2xl font-medium">
+            Disbursement
+          </h1>
           <ExclamationMark />
         </div>
         <Modal>
@@ -62,9 +64,9 @@ const Disbursement = () => {
         <div className="rounded-lg w-full pb-[120px] overflow-x-scroll no-scrollbar">
           <table className="dash-table">
             <colgroup>
-              <col className="w-[72px]" />
+              <col className="min-w-[72px]" />
               <col span={6} />
-              <col className="w-[62px]" />
+              <col className="min-w-[72px]" />
             </colgroup>
             <thead>
               <tr>
@@ -83,7 +85,7 @@ const Disbursement = () => {
                 .fill(null)
                 .map((_, index) => (
                   <tr key={index}>
-                    <td>
+                    <td className="flex items-center justify-center">
                       <Picture
                         src={Avatar}
                         alt="profile picture"
@@ -109,7 +111,7 @@ const Disbursement = () => {
                     <td>
                       <p>Bank Transfer</p>
                     </td>
-                    <td>
+                    <td className="flex items-center justify-center">
                       <Dropdown>
                         <DropdownTrigger className="flex items-center justify-center">
                           <Picture

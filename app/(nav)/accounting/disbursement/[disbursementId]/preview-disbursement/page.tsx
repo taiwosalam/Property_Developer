@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 // Imports
@@ -6,11 +8,21 @@ import KeyValueList from "@/components/KeyValueList/key-value-list";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
+import BackButton from "@/components/BackButton/back-button";
+import { useRouter } from "next/navigation";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const PreviewDisbursement = () => {
+  const router = useRouter();
+
+  const back = () => {
+    router.back();
+  };
+
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
+        <BackButton>Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -53,8 +65,9 @@ const PreviewDisbursement = () => {
           </div>
         </AccountingTitleSection>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
         <Button
+          onClick={back}
           variant="sky_blue"
           size="base_bold"
           className="py-2 px-8"
@@ -70,7 +83,7 @@ const PreviewDisbursement = () => {
             print
           </Button>
         </div>
-      </div>
+      </FixedFooter>
     </div>
   );
 };
