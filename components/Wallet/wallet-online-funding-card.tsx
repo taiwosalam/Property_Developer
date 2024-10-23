@@ -13,7 +13,7 @@ const WalletOnlineFundingCard: React.FC<WalletOnlineFundingCardProps> = ({
   proceed,
 }) => {
   return (
-    <div className="p-[18px] rounded-2xl overflow-hidden bg-neutral-2 custom-flex-col gap-2">
+    <div className="p-[18px] rounded-2xl overflow-hidden bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-[#3C3D37] custom-flex-col gap-2">
       <WalletFundsCardsHeading
         title="online funding"
         desc="We partner with a third party for wallet funding through any local ATM card. They apply a 1.5% VAT rate and ₦100 fee for each debit transaction. The fee is waived for transactions under ₦2500."

@@ -290,7 +290,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
 }) => {
   return (
     <div
-      className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer relative w-full justify-center`}
+      className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer relative justify-center`}
       onClick={() => onSelect(value)}
     >
       {isSelected === false && !profile && ( 
@@ -302,11 +302,11 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
           alt="Theme"
           width={1000}
           height={1000}
-          className={`w-full h-full object-contain ${profile ? "max-h-[218px]" : ""} ${isSelected ? "border-4 border-brand-9" : ""}`}
+          className={`w-full h-full object-contain max-h-[218px] ${profile ? "max-h-[218px]" : ""} ${isSelected ? "border-4 border-brand-9" : ""}`}
         />
       </div>
       {(isSelected && profile) && (
-        <Link href="#" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand-9 text-white py-1 px-3 rounded flex items-center justify-center z-20 text-xs sm:text-md lg:text-lg">
+        <Link href="#" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand-9 text-white py-1 px-3 rounded flex items-center justify-center z-20 text-xs sm:text-md">
           Preview Website
         </Link>
       )}

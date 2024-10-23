@@ -15,7 +15,7 @@ const WalletBankTransferCard: React.FC<WalletBankTransferCardProps> = ({
   return (
     <div
       className={clsx(
-        "p-[18px] rounded-2xl overflow-hidden bg-neutral-2 custom-flex-col gap-2",
+        "p-[18px] rounded-2xl overflow-hidden bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-[#3C3D37] custom-flex-col gap-2",
         {
           "pointer-events-none opacity-50": cantInteract,
         }
@@ -27,13 +27,13 @@ const WalletBankTransferCard: React.FC<WalletBankTransferCardProps> = ({
       />
       <div className="flex justify-between text-text-disabled text-sm font-medium">
         <div className="custom-flex-col gap-[2px]">
-          <p>Zenith Bank</p>
-          <p className="text-text-quaternary">
+          <p className="dark:text-white">Zenith Bank</p>
+          <p className="text-text-quaternary dark:text-darkText-1">
             Taiwo Salam & Co. Properties Ltd
           </p>
         </div>
         <div className="custom-flex-col gap-[2px]">
-          <p>Account Number</p>
+          <p className="dark:text-white">Account Number</p>
           <p className="text-brand-primary">1211265949</p>
         </div>
         {proceed && (

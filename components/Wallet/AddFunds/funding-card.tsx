@@ -25,7 +25,7 @@ const FundingCard: React.FC<FundingCardProps> = ({
 }) => {
   return (
     <div
-      className="p-4 flex items-center justify-between rounded-2xl bg-neutral-2"
+      className="p-4 flex items-center justify-between rounded-2xl bg-neutral-2 dark:bg-darkText-primary"
       style={{ boxShadow: "5px 5px 10px 0px rgba(0, 0, 0, 0.02)" }}
     >
       <div className="flex items-center gap-2">
@@ -49,7 +49,7 @@ const FundingCard: React.FC<FundingCardProps> = ({
           })}
         />
         <div
-          className={`custom-flex-col text-general-low ${secondaryFont.className}`}
+          className={`custom-flex-col text-general-low dark:text-darkText-2 ${secondaryFont.className}`}
         >
           <p className="text-sm font-medium">{title || type}</p>
           <p className="text-xs font-normal">
@@ -59,7 +59,7 @@ const FundingCard: React.FC<FundingCardProps> = ({
       </div>
       {cta ? (
         <p
-          className={`text-general-low text-[10px] font-normal ${secondaryFont.className}`}
+          className={`text-general-low dark:text-darkText-2 text-[10px] font-normal ${secondaryFont.className}`}
         >
           {cta}
         </p>
