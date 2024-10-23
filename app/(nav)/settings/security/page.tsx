@@ -85,11 +85,11 @@ const Security = () => {
           <SettingsUpdateButton type="otp" remove />
         </div>
       </SettingsSection>
-      <SettingsSection title="directors profile">
+      <SettingsSection title="Authorized Signature">
         <div className="custom-flex-col gap-8">
           <div className="custom-flex-col gap-6">
             <SettingsSectionTitle
-              title="Authorized Signature"
+              title=""
               desc="This signature is affixed to every document requiring authorization. Please sign on a plain white paper and take a photo for uploading. If possible, remove the background picture of the signature before uploading for a cleaner appearance."
             />
             <div className="custom-flex-col gap-[18px]">
@@ -138,14 +138,14 @@ const Security = () => {
                       variant="light_red"
                       className="py-2 px-3 w-full sm:w-auto"
                     >
-                      remove
+                      Add More
                     </Button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <SettingsUpdateButton type="otp" addMore />
+          <SettingsUpdateButton />
         </div>
       </SettingsSection>
       <SettingsSection title="wallet">

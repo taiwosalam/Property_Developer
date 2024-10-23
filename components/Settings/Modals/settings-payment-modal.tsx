@@ -68,7 +68,7 @@ const SettingsPaymentModal: React.FC<SettingsPaymentModalProps> = ({
                 </p>
               )}
               {title && (
-                <p className="text-[#010A23] text-base font-medium capitalize">
+                <p className="text-[#010A23] dark:text-white text-base font-medium capitalize">
                   {title}
                 </p>
               )}

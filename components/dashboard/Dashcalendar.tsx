@@ -27,18 +27,18 @@ const DashboarddCalendar = () => {
 
   return (
     <div
-      className="border border-[#CCCCCCB2] border-opacity-70 p-[18px] rounded-[8px] bg-white space-y-2"
+      className="border border-[#CCCCCCB2] dark:border-[#3C3D37] border-opacity-70 p-[18px] rounded-[8px] bg-white dark:bg-darkText-primary space-y-2"
       style={{
         boxShadow: "0px 2px 4px 0px #0D172114, 0px 1px 2px 0px #151E2B14",
       }}
     >
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-black text-base font-medium">
+          <p className="text-black dark:text-white text-base font-medium">
             {format(setMonth(new Date(year, 0), month), "MMMM")} {year}
           </p>
         </div>
-        <div className="text-[#696B70] flex items-center gap-3">
+        <div className="text-[#696B70] dark:text-darkText-1 flex items-center gap-3">
           <ArrowLeft
             size={18}
             className="cursor-pointer"
@@ -51,7 +51,7 @@ const DashboarddCalendar = () => {
           />
         </div>
       </div>
-      <div className="w-full h-[1px] bg-[#CCCCCCB2] bg-opacity-70" />
+      <div className="w-full h-[1px] bg-[#CCCCCCB2] dark:bg-darkText-1 bg-opacity-70" />
       <div className="custom-flex-col gap-4">
         <CalendarWeekDays type="short" />
         <div className="grid grid-cols-7 gap-3">

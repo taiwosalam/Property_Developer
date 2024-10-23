@@ -18,8 +18,8 @@ const DetailItem: React.FC<{ label: string; value: string }> = ({
 }) => {
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-text-tertiary text-base">{label}:</p>
-      <p className="text-text-secondary text-sm">{value}</p>
+      <p className="text-text-tertiary dark:text-white text-base">{label}:</p>
+      <p className="text-text-secondary dark:text-darkText-1 text-sm">{value}</p>
     </div>
   );
 };
@@ -28,16 +28,18 @@ const DocumentCard: React.FC<DocumentCardProps> = (props) => {
   const { documentId, cardViewDetails } = props;
   return (
     <div
-      className="bg-white rounded-lg px-[18px] pt-4 pb-6 font-medium"
+      className="bg-white dark:bg-darkText-primary rounded-lg px-[18px] pt-4 pb-6 font-medium"
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
       <p>
-        <span className="text-base text-text-tertiary">
+        <span className="text-base text-text-tertiary dark:text-white">
           Document ID:{" "}
-          <span className="text-text-secondary text-sm">{documentId}</span>
+          <span className="text-text-secondary dark:text-darkText-1 text-sm">
+            {documentId}
+          </span>
         </span>
       </p>
       <hr className="mt-3 mb-6 border-t border-dashed border-brand-7 opacity-50" />

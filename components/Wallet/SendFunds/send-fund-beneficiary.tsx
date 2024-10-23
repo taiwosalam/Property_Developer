@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 
 // Images
@@ -10,8 +11,10 @@ import Input from "@/components/Form/Input/input";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const SendFundBeneficiary = () => {
+  const isDarkMode = useDarkMode()
   return (
     <div className="custom-flex-col gap-8">
       <div className="custom-flex-col gap-4">
@@ -21,12 +24,12 @@ const SendFundBeneficiary = () => {
           </div>
           <div className="flex flex-col items-center">
             <div className="flex items-center">
-              <p className="text-[#010A23] text-base font-medium capitalize">
+              <p className="text-[#010A23] dark:text-white text-base font-medium capitalize">
                 David Ajala
               </p>
               <BadgeIcon color="red" />
             </div>
-            <p className="text-[#606060] text-sm font-normal">
+            <p className="text-[#606060] dark:text-darkText-1 text-sm font-normal">
               Wallet ID: 1234567890
             </p>
           </div>
@@ -37,17 +40,17 @@ const SendFundBeneficiary = () => {
             id="amount"
             label="amount"
             placeholder="₦"
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: isDarkMode ? "#020617" : "white" }}
           />
           <Input
             id="description"
             label="description"
             placeholder="Description"
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: isDarkMode ? "#020617" : "white" }}
           />
         </div>
         <button className="flex items-center justify-between">
-          <p className="text-text-tertiary text-sm font-normal">
+          <p className="text-text-tertiary dark:text-darkText-1 text-sm font-normal">
             Save as beneficiary
           </p>
           <Picture src={TickDefault} alt="tick" size={20} />

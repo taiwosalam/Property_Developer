@@ -40,7 +40,7 @@ interface UndoModalProps {
 
 const eventToComponentMap = {
   "Landlord/Landlady Profile": (
-    <div className="min-w-[285px] max-w-full pb-7">
+    <div className="min-w-[285px] max-w-full pb-7 dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
       <UserCard
         cardType="landlord"
         email="sam@gmail.com"
@@ -55,7 +55,7 @@ const eventToComponentMap = {
     </div>
   ),
   "Branch Details": (
-    <div className="min-w-[285px] max-w-full pb-7">
+    <div className="min-w-[285px] max-w-full pb-7 dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
       <BranchCard
         id="1"
         branch_title="Branch 1"
@@ -70,7 +70,7 @@ const eventToComponentMap = {
     </div>
   ),
   "Staff Profile": (
-    <div className="min-w-[285px] max-w-full pb-7">
+    <div className="min-w-[285px] max-w-full pb-7 dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
       <UserCard
         cardType="staff"
         email="sam@gmail.com"
@@ -83,7 +83,7 @@ const eventToComponentMap = {
     </div>
   ),
   Inventory: (
-    <div className="min-w-[330px] max-w-full">
+    <div className="min-w-[330px] max-w-full dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
       <InventoryCard
         data={{
           account_officer: "John Doe",
@@ -98,7 +98,7 @@ const eventToComponentMap = {
     </div>
   ),
   Property: (
-    <div className="min-w-[335px] max-w-full">
+    <div className="min-w-[335px] max-w-full dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
       <PropertyCard
         isClickable={false}
         address="123 Main St, Anytown, USA"
@@ -155,7 +155,7 @@ const eventToComponentMap = {
     </div>
   ),
   Examine: (
-    <div className="min-w-[350px] max-w-full">
+    <div className="min-w-[350px] max-w-full dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
       <ExamineCard viewOnly={true} />
     </div>
   ),
@@ -174,7 +174,7 @@ const eventToComponentMap = {
   ),
 
   Announcement: (
-    <div className="min-w-[315px] max-w-full">
+    <div className="min-w-[315px] max-w-full dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
       <AnnouncementCard
         viewOnly={true}
         title="Announcement 1"

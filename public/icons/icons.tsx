@@ -1,7 +1,7 @@
 import { type Color } from "@/types/global";
 import React from "react";
 
-export const MailIcon = ({ size = 33, color = "black" }) => {
+export const MailIcon = ({ size = 33, color = "currentColor" }) => {
   return (
     <svg
       width={size}

@@ -76,7 +76,7 @@ const ExportListings = () => {
         evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
         oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
       />
-      <div className="w-fit ml-auto text-text-quaternary text-base font-medium space-y-2">
+      <div className="w-fit ml-auto text-text-quaternary dark:text-darkText-1 text-base font-medium space-y-2">
         <p>Authorized Signature </p>
         <Image src={empty} alt="signature" width={85} height={60} />
         <p>
