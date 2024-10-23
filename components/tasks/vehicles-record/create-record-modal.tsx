@@ -9,7 +9,7 @@ const PlateNumber: React.FC<{
   name: string;
 }> = ({ number, state, name }) => {
   return (
-    <div className="bg-support-1 rounded-lg p-2">
+    <div className="custom-secondary-bg rounded-lg p-2">
       <p className="text-base text-white font-bold">{number}</p>
       <p className="text-xs text-white font-medium">
         {state} state &bull; {name}
