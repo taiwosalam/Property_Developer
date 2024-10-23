@@ -31,12 +31,13 @@ const ComplaintsPage = () => {
         />
       </div>
 
-      <SectionContainer heading="Recent Complains" href="/donottouch">
-        <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array(3)
+      <SectionContainer heading="Recent Complains">
+        <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 gap-4 flex items-center overflow-x-scroll no-scrollbar">
+          {Array(5)
             .fill(null)
             .map((_, index) => (
               <TaskCard
+                styles="min-w-[352.66px]"
                 statusChanger={true}
                 noDrag
                 isNew
@@ -53,7 +54,7 @@ const ComplaintsPage = () => {
                       "/empty/avatar.png",
                     ],
                     date: "25 Jan 2024",
-                    status: "approved",
+                    status: "pending",
                     progress: 50,
                   },
                   name: "John Doe",
@@ -66,16 +67,28 @@ const ComplaintsPage = () => {
             ))}
         </div>
       </SectionContainer>
-      <FilterBar azFilter onStateSelect={() => { }} pageTitle="Complains" aboutPageModalData={
-        { title: "Complains", description: "This page contains a list of Complains on the platform." }
-      } searchInputPlaceholder="Search for Task" handleFilterApply={() => { }} isDateTrue filterOptions={[]} filterWithOptionsWithDropdown={complaintsFilterOptionsWithDropdown} />
+      <FilterBar
+        azFilter
+        onStateSelect={() => {}}
+        pageTitle="Complains"
+        aboutPageModalData={{
+          title: "Complains",
+          description:
+            "This page contains a list of Complains on the platform.",
+        }}
+        searchInputPlaceholder="Search for Task"
+        handleFilterApply={() => {}}
+        isDateTrue
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={complaintsFilterOptionsWithDropdown}
+      />
       {!isMobile && (
-        <SectionContainer heading="All Complaints" href="/tasks/complaints">
+        <SectionContainer heading="All Complaints">
           <KanbanBoard />
         </SectionContainer>
       )}
 
-      <Pagination totalPages={0} currentPage={0} onPageChange={() => { }} />
+      {/* infinite scroll later */}
     </div>
   );
 };
