@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 
 // Imports
@@ -9,8 +10,10 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import DeleteDisbursementModal from "@/components/Accounting/Disbursement/delete-disbursement-modal";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const ManageDisbursement = () => {
+  const isDarkMode = useDarkMode()
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
@@ -21,7 +24,7 @@ const ManageDisbursement = () => {
           phoneNumbers={["09022312133", "07012133313", "0901212121"]}
           email="example@mail.com"
         />
-        <div className="rounded-lg bg-white p-8 flex gap-6 md:gap-0 flex-col md:flex-row">
+        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 md:gap-0 flex-col md:flex-row">
           <KeyValueList
             data={{}}
             chunkSize={2}
@@ -43,31 +46,31 @@ const ManageDisbursement = () => {
                 id="disbursement-mode"
                 label="disbursement mode"
                 placeholder="Bank Transfer"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
               <Input
                 id="ammount-disburse"
                 label="ammount disburse"
                 placeholder="₦ 300,000"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
               <Input
                 id="transaction-date"
                 label="transaction date"
                 type="date"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
               <Input
                 id="transaction-description"
                 label="transaction description"
                 placeholder="Property Rent for moniya house"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
             </div>
           </div>
         </AccountingTitleSection>
         <AccountingTitleSection title="Add Disburse">
-          <div className="p-6 custom-flex-col gap-4 bg-white rounded-lg">
+          <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
               <Input
                 id="payment-title"
@@ -84,7 +87,7 @@ const ManageDisbursement = () => {
           </div>
         </AccountingTitleSection>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
+      <div className="fixed bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[60px] flex gap-6 justify-end">
         <Modal>
           <ModalTrigger asChild>
             <Button size="base_bold" variant="light_red" className="py-2 px-8">

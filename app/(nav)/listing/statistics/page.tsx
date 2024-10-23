@@ -52,7 +52,7 @@ const Statistics = () => {
           >
             <ChevronLeft />
           </button>
-          <p className="text-black font-bold text-lg lg:text-xl">Statistics</p>
+          <p className="text-black dark:text-white font-bold text-lg lg:text-xl">Statistics</p>
         </div>
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard

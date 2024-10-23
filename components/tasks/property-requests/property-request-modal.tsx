@@ -29,7 +29,7 @@ const PropertyRequestModal: React.FC<PropertyRequestModalProps> = ({
   return (
     <div className="w-[600px] max-w-[80%] max-h-[85%] rounded-lg overflow-x-auto custom-round-scrollbar font-medium  dark:border dark:border-[#3C3D37]">
       {/* Header */}
-      <div className="bg-brand-1 text-base text-text-primary py-4 text-center sticky top-0 z-[2]">
+      <div className="bg-brand-1 dark:bg-[#3C3D37] text-base dark:text-white text-text-primary py-4 text-center sticky top-0 z-[2]">
         Property Request Details
         <ModalTrigger
           close

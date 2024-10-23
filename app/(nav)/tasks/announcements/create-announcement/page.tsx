@@ -25,7 +25,7 @@ const CreateAnnouncement = () => {
         >
           <ChevronLeft />
         </button>
-        <h1 className="text-black font-bold text-lg lg:text-xl">
+        <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
           Create Announcement
         </h1>
       </div>
