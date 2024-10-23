@@ -8,7 +8,10 @@ export interface PropertyProps {
   units: number;
   address: string;
   price: number;
-  type: "rent" | "gated";
+  type?: "rental" | "gated";
+  annualReturns?: number;
+  annualIncome?: number;
+  currency: string;
 }
 
 export type AddPropertyModalViews = "options" | "add-property-with-id";

@@ -1,14 +1,11 @@
 "use client";
-
-import { useRouter } from "next/navigation";
-import { ChevronLeft } from "@/public/icons/icons";
 import CreateAnnouncementForm from "@/components/tasks/announcements/create-announcement-form";
 import { createAnnouncement } from "../data";
 import { useAuthStore } from "@/store/authstrore";
+import BackButton from "@/components/BackButton/back-button";
 
 const CreateAnnouncement = () => {
   const accessToken = useAuthStore((state) => state.access_token);
-  const router = useRouter();
 
   const handleSubmit = (data: any) => {
     createAnnouncement(accessToken, data);
@@ -16,19 +13,7 @@ const CreateAnnouncement = () => {
 
   return (
     <div className="space-y-7">
-      <div className="flex items-center gap-1 mb-1">
-        <button
-          type="button"
-          aria-label="Go Back"
-          onClick={() => router.back()}
-          className="p-2"
-        >
-          <ChevronLeft />
-        </button>
-        <h1 className="text-black font-bold text-lg lg:text-xl">
-          Create Announcement
-        </h1>
-      </div>
+      <BackButton>Create Announcement</BackButton>
       <CreateAnnouncementForm handleSubmit={handleSubmit} />
     </div>
   );

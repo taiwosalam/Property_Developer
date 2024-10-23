@@ -1,0 +1,76 @@
+import type { ServiceProviderData } from "./types";
+
+export const serviceProviderData: ServiceProviderData = {
+  id: 1,
+  avatar: "/empty/avatar-1.svg",
+  picture: "/empty/SampleLandlord.jpeg",
+  user_tag: "web",
+  full_name: "John Doe",
+  email: "john.doe@example.com",
+  service_rendered: "Plumbing",
+  personal_number: "08012345678",
+  address: "123 Main St, Anytown, USA",
+  state: "Lagos",
+  local_government: "Ikeja",
+  company_details: {
+    name: "John Doe Plumbing",
+    email: "john.doe@example.com",
+    phone_number: "08012345678",
+    address: "123 Main St, Anytown, USA",
+  },
+  bank_details: {
+    bank_name: "Access Bank",
+    account_number: "1234567890",
+    account_name: "John Doe",
+  },
+  notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  documents: [
+    {
+      id: 1,
+      name: "Invoice 1",
+      link: "https://example.com/sample-attachment.pdf",
+      date: "2021-01-01",
+      thumbnail: "/empty/SampleLandlord.jpeg",
+      document_type: "invoice",
+    },
+    {
+      id: 2,
+      name: "Invoice 2",
+      link: "https://example.com/sample-attachment.pdf",
+      date: "2021-01-01",
+      thumbnail: "/empty/SampleLandlord2.svg",
+      document_type: "invoice",
+    },
+    {
+      id: 3,
+      name: "Receipt 1",
+      link: "https://example.com/sample-attachment.pdf",
+      date: "2021-01-01",
+      thumbnail: "/empty/SampleLogo.jpeg",
+      document_type: "receipt",
+    },
+    {
+      id: 4,
+      name: "Receipt 2",
+      link: "https://example.com/sample-attachment.pdf",
+      date: "2021-01-01",
+      thumbnail: "/empty/SampleProperty.jpeg",
+      document_type: "receipt",
+    },
+
+    {
+      id: 5,
+      name: "Classified MI6 Info",
+      link: "https://example.com/sample-attachment.pdf",
+      date: "2021-01-01",
+      document_type: "other document",
+    },
+    {
+      id: 6,
+      name: "Highly Classified FBI Database",
+      link: "https://example.com/sample-attachment.pdf",
+      date: "2021-01-01",
+      document_type: "other document",
+    },
+  ],
+};
