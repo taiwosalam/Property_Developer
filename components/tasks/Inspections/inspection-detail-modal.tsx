@@ -1,10 +1,6 @@
 import React from "react";
 
-//Images
-import CancelIcon from "@/public/icons/cancel.svg";
-
-// Imports
-import Picture from "@/components/Picture/picture";
+// Imports  
 import { ModalTrigger } from "@/components/Modal/modal";
 import InspectionCardInfo from "./inspection-card-info";
 import {
@@ -13,6 +9,7 @@ import {
   InspectionCardTitleDesc,
 } from "./inspection-card-components";
 import Button from "@/components/Form/Button/button";
+import { CancelIcon } from "@/public/icons/icons";
 
 const InspectionDetailModal = () => {
   return (
@@ -24,13 +21,13 @@ const InspectionDetailModal = () => {
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="sticky top-0 z-[2] custom-flex-col gap-[2px] py-4 px-6 bg-brand-1">
+      <div className="sticky top-0 z-[2] custom-flex-col gap-[2px] py-4 px-6 bg-brand-1 dark:bg-[#3C3D37]">
         <div className="flex justify-end">
           <ModalTrigger close>
-            <Picture src={CancelIcon} alt="close" size={24} />
+            <CancelIcon />
           </ModalTrigger>
         </div>
-        <h2 className="text-text-secondary text-base font-medium text-center">
+        <h2 className="text-text-secondary dark:text-white text-base font-medium text-center">
           Inspection details
         </h2>
       </div>

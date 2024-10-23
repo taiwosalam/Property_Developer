@@ -85,7 +85,7 @@ const UnitPictures = () => {
 
   return (
     <div className={clsx(isEditing && "!mt-0")}>
-      <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
+      <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
         Unit Pictures
       </h4>
       <hr
@@ -94,7 +94,7 @@ const UnitPictures = () => {
           isEditing ? "h-[1px]" : "h-[2px]"
         )}
       />
-      <p className="text-text-secondary mb-5">
+      <p className="text-text-secondary dark:text-darkText-1 mb-5">
         Unit pictures are what will be shown to potential clients on the mobile
         app and your default website (maximum of 14 images). Please drag your
         preferred image and place it in the first position to make it the
@@ -105,7 +105,7 @@ const UnitPictures = () => {
           items={sortableImages.map((i) => i.id)}
           strategy={verticalListSortingStrategy}
         >
-          <div className="flex gap-4 overflow-x-auto overflow-y-hidden">
+          <div className="flex gap-4 overflow-x-auto no-scrollbar overflow-y-hidden">
             {sortableImages.map((s) => (
               <SortableImage
                 key={s.id}

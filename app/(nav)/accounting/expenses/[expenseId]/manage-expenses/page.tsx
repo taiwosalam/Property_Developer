@@ -11,11 +11,13 @@ import AccountingTitleSection from "@/components/Accounting/accounting-title-sec
 import ExportPageHeader from "@/components/reports/export-page-header";
 import DeleteExpenseModal from "@/components/Accounting/expenses/delete-expense-modal";
 import { empty } from "@/app/config";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useRouter } from "next/navigation";
 
 const ManageExpenses = () => {
+  const isDarkMode = useDarkMode()
   const router = useRouter();
 
   const back = () => {
@@ -33,7 +35,7 @@ const ManageExpenses = () => {
           phoneNumbers={["09022312133", "07012133313", "0901212121"]}
           email="example@mail.com"
         />
-        <div className="rounded-lg bg-white p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
+        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
             data={{}}
             chunkSize={2}
@@ -57,41 +59,41 @@ const ManageExpenses = () => {
                 required
                 CURRENCY_SYMBOL="₦"
                 placeholder="1,000,000"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
               <Input
                 id="service-charge"
                 label="service charge"
                 CURRENCY_SYMBOL="₦"
                 placeholder="300,000"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
               <Input
                 id="refundable-caution-fee"
                 label="refundable caution fee"
                 CURRENCY_SYMBOL="₦"
                 placeholder="300,000"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
               <Input
                 id="non-refundable-agency-fee"
                 label="non refundable agency fee"
                 CURRENCY_SYMBOL="₦"
                 placeholder="300,000"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
               <Input
                 id="non-refundable-legal-fee"
                 label="non refundable legal fee"
                 CURRENCY_SYMBOL="₦"
                 placeholder="300,000"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
             </div>
           </div>
         </AccountingTitleSection>
         <AccountingTitleSection title="Add Payment" required>
-          <div className="p-6 custom-flex-col gap-4 bg-white rounded-lg">
+          <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
               <Input id="payment-title" label="payment title" />
               <Input
@@ -99,7 +101,7 @@ const ManageExpenses = () => {
                 label="amount"
                 CURRENCY_SYMBOL="₦"
                 placeholder="300,000"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
             </div>
             <div className="flex justify-end">

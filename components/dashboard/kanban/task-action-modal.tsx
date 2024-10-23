@@ -46,7 +46,7 @@ const TaskModal = ({ complaintData, statusChanger }: { complaintData: ComplaintD
                 Complaints sent by:
               </p>
               <div className="flex items-center space-x-1">
-                <span>{senderName}</span>
+                <span className="dark:text-darkText-2">{senderName}</span>
                 {senderVerified && <BadgeIcon color="green" />}
               </div>
             </div>

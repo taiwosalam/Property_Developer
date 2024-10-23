@@ -158,7 +158,7 @@ const Select: React.FC<SelectProps> = ({
           {selectedValue && !isOpen ? (
             <span
               className={clsx(
-                "flex-1 capitalize text-text-disabled dark:bg-white text-xs md:text-sm font-normal",
+                "flex-1 capitalize text-text-disabled dark:bg-transparent text-xs md:text-sm font-normal",
                 inputTextClassName
               )}
             >

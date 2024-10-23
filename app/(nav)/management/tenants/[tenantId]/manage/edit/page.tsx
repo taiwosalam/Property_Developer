@@ -128,7 +128,7 @@ const EditTenant = () => {
                   </div>
                 </div>
                 <div className="custom-flex-col gap-3">
-                  <p className="text-black text-base font-medium">
+                  <p className="text-black dark:text-white text-base font-medium">
                     Choose Avatar
                   </p>
                   <Avatars type="avatars" onClick={handleAvatarChange} />

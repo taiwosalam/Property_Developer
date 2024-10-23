@@ -293,6 +293,9 @@ button:disabled {
 
 .dash-table tbody tr:nth-child(2n + 1) {
   @apply bg-brand-1 text-[#f1f1fd] dark:bg-[#020617];
+  &:hover {
+    @apply dark:bg-[#000]; 
+  }
 }
 
 .dash-table tbody tr:nth-child(2n):hover {

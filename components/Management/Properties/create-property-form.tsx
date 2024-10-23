@@ -34,6 +34,7 @@ import { getAllStaffsByBranch } from "./data";
 import { currencySymbols } from "@/utils/number-formatter";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
 import PropertyFormFooter from "./property-form-footer.tsx";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 
@@ -44,6 +45,7 @@ const   CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
 }) => {
   const [state, setState] = useState<StateType>(proerty_state_data);
 
+  const isDarkMode = useDarkMode();
   const accessToken = useAuthStore((state) => state.access_token);
 
   const {
@@ -442,12 +444,12 @@ const   CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 ? "Property Description"
                 : "Estate/Facility Description"
             }
-            inputSpaceClassName="bg-white"
-            className="md:col-span-2 lg:col-span-3 dark:text-black"
+            className="md:col-span-2 lg:col-span-3 dark:text-white !dark:bg-transparent"
             placeholder="Write here"
             resetKey={resetKey}
             requiredNoStar
             hiddenInputClassName="property-form-input"
+            inputSpaceClassName={`${isDarkMode ? "bg-[#3C3D37]" : "bg-white"}`}
           />
         </div>
         {/* Property Settings */}

@@ -44,7 +44,7 @@ const CreateMaintenace = () => {
         <button onClick={() => router.back()}>
           <ChevronLeft />
         </button>
-        <h1 className="text-lg md:text-xl lg:text-2xl text-black font-medium">
+        <h1 className="text-lg md:text-xl lg:text-2xl text-black dark:text-white font-medium">
           New Maintenance Schedule
         </h1>
       </div>
@@ -128,12 +128,12 @@ const CreateMaintenace = () => {
             <TextArea
               id="maintenance_quotation"
               label="Maintenance Quotation"
-              inputSpaceClassName="bg-white"
+              inputSpaceClassName="bg-white dark:bg-darkText-primary"
             />
             <TextArea
               id="work_details"
               label="Work Details"
-              inputSpaceClassName="bg-white"
+              inputSpaceClassName="bg-white dark:bg-darkText-primary"
             />
           </div>
         </div>
@@ -147,14 +147,14 @@ const CreateMaintenace = () => {
                 type="checkbox"
                 className="bg-[#F9FAFB] border border-neutral-6 rounded w-[18px] h-[18px]"
               />
-              <span>Create announcement</span>
+              <span className="dark:text-darkText-2">Create announcement</span>
             </label>
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
                 className="bg-[#F9FAFB] border border-neutral-6 rounded w-[18px] h-[18px]"
               />
-              <span>Create announcement</span>
+              <span className="dark:text-darkText-2">Create announcement</span>
             </label>
           </div>
           <Button

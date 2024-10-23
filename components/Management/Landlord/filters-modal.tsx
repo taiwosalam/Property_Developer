@@ -216,18 +216,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
             <span className="text-sm capitalize">
               <ChevronLeft />
             </span>
-            <h2 className="text-lg font-bold text-primary-navy">
+            <h2 className="text-lg font-bold text-primary-navy dark:text-white">
               {activeRadioOption?.label}
             </h2>
           </div>
           <button className="p-2" onClick={() => setActiveRadioOption(null)}>
-            <Image
-              src="/icons/cancel.svg"
-              alt="close"
-              width={34}
-              height={34}
-              className="min-w-[34px] min-h-[34px]"
-            />
+            <CancelIcon />
           </button>
         </div>
         {/* Search bar */}
@@ -283,13 +277,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
             </h2>
           </div>
           <button className="p-2" onClick={() => setShowDatePicker(false)}>
-            <Image
-              src="/icons/cancel.svg"
-              alt="close"
-              width={34}
-              height={34}
-              className="min-w-[34px] min-h-[34px]"
-            />
+            <CancelIcon />
           </button>
         </div>
         <div className="py-2 space-y-3 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary">
@@ -341,13 +329,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           {title}
         </h2>
         <ModalTrigger close className="p-2">
-          <Image
-            src="/icons/cancel.svg"
-            alt="close"
-            width={34}
-            height={34}
-            className="min-w-[34px] min-h-[34px]"
-          />
+       <CancelIcon />
         </ModalTrigger>
       </div>
 
@@ -401,7 +383,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           onClick={() => showRadioOptions(option)}
           className="cursor-pointer"
         >
-          <div className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5]">
+          <div className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary dark:border dark:border-[#3C3D37]">
             <label className="text-sm capitalize">{option.label}</label>
             {selectedRadioOption ? (
               <Image

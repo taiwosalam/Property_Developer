@@ -17,7 +17,7 @@ const InvoiceStatCards: React.FC<InvoiceStatCardsProps> = ({
       <div className="w-full flex justify-between">
         <div className="space-y-2">
           <p className="font-medium text-[16px] text-text-tertiary">{title}</p>
-          <p className="font-bold text-[28px] text-[#202224]">
+          <p className="font-bold text-[28px] text-[#202224] dark:text-white">
             {new Intl.NumberFormat("en-NG", {
               style: "currency",
               currency: "NGN",
