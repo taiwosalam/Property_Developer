@@ -31,7 +31,7 @@ const Documents = () => {
       <div className="custom-flex-col gap-6">
         <div className="flex gap-4 sm:gap-0 flex-col sm:flex-row sm:items-center justify-between">
           <div className="flex gap-1 items-center">
-            <h1 className="text-black text-2xl font-medium">Document</h1>
+            <h1 className="text-black text-2xl font-medium dark:text-white">Document</h1>
             <ExclamationMark />
           </div>
           <Modal>

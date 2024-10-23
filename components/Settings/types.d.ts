@@ -168,8 +168,10 @@ interface ThemeCardProps {
   value: string;
   isSelected: boolean;
   onSelect: (value: string) => void; 
-  className?: string
+  className?: string;
   profile?: boolean;
+  showMessage?: boolean;
+  setShowMessage?: (show: boolean) => void;
 }
 
 

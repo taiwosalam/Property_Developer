@@ -238,7 +238,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           {filteredRadioOptions?.map((option, index) => (
             <div
               key={index}
-              className="flex items-center justify-between py-2 px-5 my-2 bg-[#F5F5F5]"
+              className="flex items-center justify-between py-2 px-5 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
             >
               <label className="text-sm capitalize">{option.label}</label>
               <input
@@ -274,7 +274,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
             <span className="text-sm capitalize">
               <ChevronLeft />
             </span>
-            <h2 className="text-lg font-bold text-primary-navy">
+            <h2 className="text-lg font-bold text-primary-navy dark:text-white">
               Date
             </h2>
           </div>
@@ -288,11 +288,11 @@ const FilterModal: React.FC<FilterModalProps> = ({
             />
           </button>
         </div>
-        <div className="py-2 space-y-3 px-4 my-2 bg-[#F5F5F5]">
+        <div className="py-2 space-y-3 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary">
           <div>
             <label
               htmlFor="registration_date_from"
-              className="text-xs text-black"
+              className="text-xs text-black dark:text-darkText-1"
             >
               From
             </label>
@@ -306,7 +306,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           <div>
             <label
               htmlFor="registration_date_to"
-              className="text-xs text-black"
+              className="text-xs text-black dark:text-darkText-1"
             >
               To
             </label>
