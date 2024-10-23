@@ -9,6 +9,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteDocumentModal from "@/components/Documents/delete-document-modal";
 import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-info-components";
 import DocumentTenancyAgreements from "@/components/Documents/document-tenancy-agreements";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const CreateTenancyAggrement = () => {
   return (
@@ -67,7 +68,7 @@ const CreateTenancyAggrement = () => {
         </div>
         <DocumentTenancyAgreements />
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[60px] flex gap-6 justify-end">
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
         <Modal>
           <ModalTrigger asChild>
             <Button variant="light_red" size="base_bold" className="py-2 px-6">
@@ -86,7 +87,7 @@ const CreateTenancyAggrement = () => {
             save as draft
           </Button>
         </div>
-      </div>
+      </FixedFooter>
     </div>
   );
 };

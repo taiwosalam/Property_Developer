@@ -43,12 +43,16 @@ const Picture: React.FC<PictureProps> = ({
         )}
         style={{
           objectFit: fit,
+          // Dont change the below, abeg
+          // The whole point of this component is to make sure the image is always square,
+          // or that their defined width or height doesnt change
+          // Let us be guided 😈
           width: imageWidth,
           height: imageHeight,
-          // minWidth: imageWidth,
-          // minHeight: imageHeight,
-          // maxWidth: imageWidth,
-          // maxHeight: imageHeight,
+          minWidth: imageWidth,
+          minHeight: imageHeight,
+          maxWidth: imageWidth,
+          maxHeight: imageHeight,
           ...style,
         }}
       />
