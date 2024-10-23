@@ -196,3 +196,11 @@ export interface SettingsEnrollmentCardProps {
   onBillingTypeChange: (type: 'monthly' | 'yearly') => void;
   discountText: string;
 }
+
+
+export interface ProfileUploadProps {
+  preview: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  inputFileRef: MutableRefObject<HTMLInputElement | null>; // Add this line
+  onClick: () => void;
+}

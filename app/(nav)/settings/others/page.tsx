@@ -34,6 +34,9 @@ import {
   BellIcon,
   MoonIcon,
   CogIcon,
+  SettingsBellIcon,
+  SettingsServiceIcon,
+  SettingsAppearanceIcon,
 } from "@/public/icons/icons";
 
 const companyTypes = [
@@ -109,17 +112,17 @@ const resetSettingsOptions = [
   {
     title: "Services",
     desc: "This option enables you to reset any modifications made within the service settings to their default mode.",
-    icon: <MsgIcon />,
+    icon: <SettingsServiceIcon />,
   },
   {
     title: "Notification",
     desc: "Your notification settings can be reverted to default mode if you've made any modifications that you want to undo. This allows you to reset your notifications to their original settings in case you've made changes that you'd like to revert.",
-    icon: <BellIcon />,
+    icon: <SettingsBellIcon />,
   },
   {
     title: "Appearance",
     desc: "This option allows you to reset any modifications made within the appearance settings, such as changes to theme colors or screen modes, back to their default settings.",
-    icon: <MoonIcon />,
+    icon: <SettingsAppearanceIcon />,
   },
   {
     title: "Restore All",

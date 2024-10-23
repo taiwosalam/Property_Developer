@@ -12,6 +12,7 @@ import type {
   SettingsOthersCheckBoxProps,
   SettingsEnrollmentCardProps,
   SettingsTenantOccupantTierProps,
+  ProfileUploadProps,
 } from "./types";
 
 import type { ButtonProps } from "../Form/Button/types";
@@ -32,6 +33,8 @@ import SettingsPaymentModal from "./Modals/settings-payment-modal";
 import { HexColorPicker } from "react-colorful";
 import DocumentCheckbox from "../Documents/DocumentCheckbox/document-checkbox";
 import { SettingUserIcon } from "@/public/icons/icons";
+import Picture from "../Picture/picture";
+import ImageBlue from "@/public/icons/image-blue.svg";
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
     <p
@@ -394,3 +397,29 @@ export const WebsiteColorSchemes: React.FC<{
     </div>
   );
 };
+
+
+export const ProfileUpload: React.FC<ProfileUploadProps> = ({ onChange, preview, onClick }) => {
+  return (
+    <div className="relative max-w-[100px] rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer" onClick={() => document.getElementById('file-input')?.click()}>
+      <Picture size={100} fit="contain" src={preview} alt="official signature" />
+      <div
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
+        className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
+      >
+        <Picture src={ImageBlue} alt="image icon" size={20}/>
+        <p className="text-brand-9 text-xs font-normal" onClick={onClick}>
+          Change Image
+        </p>
+      </div>
+      <input
+        id="file-input" 
+        type="file"
+        accept="image/*"
+        onChange={onChange}
+        className="hidden"
+      />
+    </div>
+  );
+};
+
