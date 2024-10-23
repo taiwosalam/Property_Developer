@@ -75,12 +75,14 @@ const Dashboard = () => {
           <DashboarddCalendar />
           <NotificationCard
             className="h-[358px]"
+            seeAllLink="/messages"
             sectionHeader="Recent Messages"
             notifications={recentMessagesData}
           />
           <NotificationCard
             className="h-[358px]"
             sectionHeader="Complaints"
+            seeAllLink="/tasks/complaints"
             notifications={complaintsData}
           />
         </div>

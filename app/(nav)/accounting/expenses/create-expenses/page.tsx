@@ -2,6 +2,7 @@
 
 import Breakdown from "@/components/Accounting/expenses/create-expense/Breakdown";
 import Details from "@/components/Accounting/invoice/create-invoice/Details";
+import BackButton from "@/components/BackButton/back-button";
 import Button from "@/components/Form/Button/button";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
@@ -10,10 +11,10 @@ import { LocationIcon } from "@/public/icons/icons";
 
 const CreateExpensePage = () => {
   return (
-    <section className="space-y-7 pb-20">
-      <h1 className="font-medium text-2xl">Create New Expense</h1>
+    <section className="space-y-7 pb-[100px]">
+      <BackButton>Create New Expense</BackButton>
       <div
-        className="bg-white rounded-[8px] p-6 flex items-center justify-between flex-wrap"
+        className="bg-white rounded-[8px] p-6 flex gap-6 items-center justify-between flex-wrap"
         style={{
           boxShadow:
             "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
@@ -102,7 +103,7 @@ const CreateExpensePage = () => {
         <h1 className="text-[#092C4C] font-bold text-xl">Breakdown</h1>
         <Breakdown />
       </div>
-      <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
+      <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[40px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
         <button
           type="reset"
           className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2 py-2 px-8"

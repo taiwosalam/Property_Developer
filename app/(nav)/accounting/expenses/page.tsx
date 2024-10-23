@@ -137,7 +137,9 @@ const AccountingExpensesPage = () => {
                 <ModalContent>
                   <FilterModal
                     filterOptions={[]}
-                    filterOptionsWithDropdown={accountingExpensesOptionsWithDropdown}
+                    filterOptionsWithDropdown={
+                      accountingExpensesOptionsWithDropdown
+                    }
                     onApply={handleFilterApply}
                     onStateSelect={(state: string) => setSelectedState(state)}
                   />
@@ -184,7 +186,9 @@ const AccountingExpensesPage = () => {
       <div className="rounded-lg w-full pb-[120px] overflow-x-scroll no-scrollbar">
         <table className="dash-table">
           <colgroup>
-            <col className="w-[72px]" />
+            <col className="min-w-[72px]" />
+            <col span={6} />
+            <col className="min-w-[72px]" />
           </colgroup>
           <thead>
             <tr>
@@ -229,7 +233,7 @@ const AccountingExpensesPage = () => {
                   <td>
                     <p>₦35,000.00</p>
                   </td>
-                  <td>
+                  <td className="flex items-center justify-center">
                     <Dropdown>
                       <DropdownTrigger className="flex items-center justify-center">
                         <Picture
