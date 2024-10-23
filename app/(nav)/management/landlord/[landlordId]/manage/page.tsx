@@ -28,8 +28,10 @@ import UserTag from "@/components/Tags/user-tag";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useLandlordData from "@/hooks/useLandlordData";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const ManageLandlord = () => {
+  const isDarkMode = useDarkMode();
   const {
     landlord: LandlordPageData,
     landlordId,
@@ -72,13 +74,13 @@ const ManageLandlord = () => {
             <div className="custom-flex-col gap-4">
               <div className="custom-flex-col">
                 <div className="flex items-center">
-                  <p className="text-black text-lg lg:text-xl font-bold capitalize">
+                  <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
                     {LandlordPageData?.name}
                   </p>
                   <BadgeIcon color="blue" />
                 </div>
                 <p
-                  style={{ color: "rgba(21, 21, 21, 0.70)" }}
+                  style={{ color: isDarkMode ? "rgba(255, 255, 255, 0.70)" : "rgba(21, 21, 21, 0.70)" }}
                   className={`${secondaryFont.className} text-sm font-normal`}
                 >
                   {LandlordPageData?.email}
@@ -86,7 +88,7 @@ const ManageLandlord = () => {
               </div>
               <div className="custom-flex-col gap-2">
                 <UserTag type={LandlordPageData.user_tag} />
-                <p className="text-neutral-800 text-base font-medium">
+                <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
                   ID: {LandlordPageData?.id || landlordId}
                 </p>
               </div>
@@ -204,7 +206,7 @@ const ManageLandlord = () => {
           <LandlordTenantInfoBox>
             <div className="custom-flex-col gap-4">
               <div className="flex justify-between gap-4">
-                <h3 className="text-black text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
+                <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
                   <span>Note</span>
                   <sub className="text-sm font-normal bottom-[unset]">
                     22/12/2022
@@ -221,7 +223,7 @@ const ManageLandlord = () => {
               </div>
               <TruncatedText
                 lines={7}
-                className="text-text-quaternary text-sm lg:text-base font-normal"
+                className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
               >
                 building, is a residential property that living read more. They
                 want to work with their budget in booking an appointment. They

@@ -1,0 +1,67 @@
+"use client";
+
+import React, { useState } from "react";
+import {
+  getYear,
+  getMonth,
+  subMonths,
+  addMonths,
+  startOfMonth,
+  format,
+  setMonth,
+} from "date-fns";
+import { CalendarDay, CalendarWeekDays } from "../Calendar/calendar-components";
+import { Calendar } from "../Calendar/data";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+
+const DashboarddCalendar = () => {
+  const [currentDate, setCurrentDate] = useState(startOfMonth(new Date()));
+
+  // Initialize the Calendar instance with month and year
+  const data = new Calendar({
+    month: getMonth(currentDate),
+    year: getYear(currentDate),
+  });
+
+  const { calendarDays, month, year } = data;
+
+  return (
+    <div
+      className="border border-[#CCCCCCB2] border-opacity-70 p-[18px] rounded-[8px] bg-white space-y-2"
+      style={{
+        boxShadow: "0px 2px 4px 0px #0D172114, 0px 1px 2px 0px #151E2B14",
+      }}
+    >
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-black text-base font-medium">
+            {format(setMonth(new Date(year, 0), month), "MMMM")} {year}
+          </p>
+        </div>
+        <div className="text-[#696B70] flex items-center gap-3">
+          <ArrowLeft
+            size={18}
+            className="cursor-pointer"
+            onClick={() => setCurrentDate(subMonths(currentDate, 1))}
+          />
+          <ArrowRight
+            size={18}
+            className="cursor-pointer"
+            onClick={() => setCurrentDate(addMonths(currentDate, 1))}
+          />
+        </div>
+      </div>
+      <div className="w-full h-[1px] bg-[#CCCCCCB2] bg-opacity-70" />
+      <div className="custom-flex-col gap-4">
+        <CalendarWeekDays type="short" />
+        <div className="grid grid-cols-7 gap-3">
+          {calendarDays.map((day, index) => (
+            <CalendarDay key={index} {...day} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DashboarddCalendar;

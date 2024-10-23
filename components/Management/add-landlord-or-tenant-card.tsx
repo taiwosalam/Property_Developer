@@ -17,7 +17,7 @@ const AddLandlordOrTenantCard: React.FC<AddLandlordOrTenantCardProps> = ({
   buttonHref,
 }) => {
   return (
-    <div className="w-[250px] h-[250px] flex gap-5 flex-col text-center items-center justify-center rounded-2xl border border-solid border-brand-9 dark:border-darkText-2 bg-neutral-2 dark:bg-[#3C3D37]">
+    <div className="w-[250px] h-[250px] flex gap-5 flex-col text-center items-center justify-center rounded-2xl border border-solid border-brand-9 dark:border-[#3C3D37] bg-neutral-2 dark:bg-darkText-primary">
       <p className="text-brand-9 text-xl font-medium capitalize mb-4">
         {title}
       </p>

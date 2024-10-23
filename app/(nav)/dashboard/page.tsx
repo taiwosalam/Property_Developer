@@ -21,10 +21,11 @@ import {
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
-import DashboarddCalendar from "@/components/dashboard/calendar";
+import DashboarddCalendar from "@/components/dashboard/Dashcalendar";
 import { SectionContainer } from "@/components/Section/section-components";
 import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import Link from "next/link";
 
 const Dashboard = () => {
   return (
@@ -33,14 +34,15 @@ const Dashboard = () => {
         <div className="w-full xl:flex-1 space-y-4 xl:space-y-6">
           <div className="w-full flex py-1.5 xl:py-7 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
             {dashboardCardData.map((card, index) => (
-              <Card
-                key={index}
-                title={card.title}
-                icon={<card.icon />}
-                value={card.value}
-                subvalue={card.subValue}
-                bg={card.bg}
-              />
+              <Link href={card.link} key={index} prefetch={false}>
+                <Card
+                  title={card.title}
+                  icon={<card.icon />}
+                  value={card.value}
+                  subvalue={card.subValue}
+                  bg={card.bg}
+                />
+              </Link>
             ))}
           </div>
 
@@ -72,10 +74,12 @@ const Dashboard = () => {
           />
           <DashboarddCalendar />
           <NotificationCard
+            className="h-[358px]"
             sectionHeader="Recent Messages"
             notifications={recentMessagesData}
           />
           <NotificationCard
+            className="h-[358px]"
             sectionHeader="Complaints"
             notifications={complaintsData}
           />

@@ -157,7 +157,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 {task.name}
                 <BadgeIcon color="black" />
               </p>
-              <p className="text-xs text-[#0033C4] font-medium capitalize">
+              <p className="text-xs text-brand-9 font-medium capitalize">
                 {task.title}
               </p>
               <p className="text-xs text-text-tertiary dark:text-darkText-1 font-normal">
@@ -236,7 +236,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               </div>
             </div>
 
-            <p className="bg-[#DBEAFE] text-xs rounded-md py-2 px-4">
+            <p className="bg-[#DBEAFE] dark:bg-[var(--secondary-color)] dark:bg-opacity-10 text-xs rounded-md py-2 px-4">
               {task.content.date}
             </p>
           </div>

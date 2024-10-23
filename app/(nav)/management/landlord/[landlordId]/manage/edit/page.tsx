@@ -98,7 +98,7 @@ const EditLandlord = () => {
                 id="landlord-phone-number"
                 label="phone number"
                 required
-                inputClassName="!bg-neutral-2"
+                inputClassName="!bg-neutral-2 dark:!bg-transparent"
                 // Pass defaultValue to prefill the input
               />
               <Select
@@ -180,7 +180,7 @@ const EditLandlord = () => {
                 id="next-of-kin-phone-number"
                 label="phone number"
                 required
-                inputClassName="!bg-neutral-2"
+                inputClassName="!bg-neutral-2 dark:!bg-transparent"
               />
               <Select
                 id="next-of-kin-relationship"
@@ -222,7 +222,7 @@ const EditLandlord = () => {
                 id="guarantor-phone-number"
                 label="phone number"
                 required
-                inputClassName="!bg-neutral-2"
+                inputClassName="!bg-neutral-2 dark:!bg-transparent"
               />
               <Select
                 id="guarantor-relationship"
@@ -356,7 +356,7 @@ const EditLandlord = () => {
                 </div>
               </div>
               <div className="custom-flex-col gap-3">
-                <p className="text-black text-base font-medium">
+                <p className="text-black dark:text-white text-base font-medium">
                   Choose Avatar
                 </p>
                 <div className="flex gap-3">

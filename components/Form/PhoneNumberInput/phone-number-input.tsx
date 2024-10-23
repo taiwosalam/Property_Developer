@@ -39,7 +39,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
   return (
     <div
       className={clsx(
-        "custom-flex-col gap-2 dark:bg-darkText-primary",
+        "custom-flex-col gap-2",
         className
       )}
     >

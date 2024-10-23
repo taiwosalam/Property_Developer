@@ -56,7 +56,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
   };
 
   const variants = cva(
-    "h-[500px] max-h-[500px] min-w-[350px] lg:min-w-[45%] xl:min-w-[32%] border-2 border-dashed rounded-lg bg-white flex flex-col",
+    "h-[500px] max-h-[500px] min-w-[350px] lg:min-w-[45%] xl:min-w-[32%] border-2 border-dashed rounded-lg bg-white dark:bg-[#3C3D37] flex flex-col",
     {
       variants: {
         dragging: {
@@ -77,7 +77,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
       })}
     >
       <CardHeader className="px-4 py-4 font-semibold text-left flex flex-row space-between items-center">
-        <span className="text-text-label">
+        <span className="text-text-label dark:text-white">
           {column.title + ` (${tasks.length})`}
         </span>
       </CardHeader>
