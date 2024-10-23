@@ -85,7 +85,7 @@ const ManageApplication = () => {
             </div>
             <div
               className="py-3 px-6 rounded-2xl"
-              style={{ backgroundColor: isDarkMode ? "white" : "var(--background-color, #fde9ea80)" }}
+              style={{ backgroundColor: isDarkMode ? "#3C3D37" : "var(--background-color, #fde9ea80)" }}
             >
               <p className="text-status-error-2 text-xs font-medium">
                 The tenant has been flagged for owing rent and causing damages

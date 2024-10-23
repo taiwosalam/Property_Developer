@@ -22,7 +22,7 @@ const ExportWallet = () => {
       <div className="custom-flex-col gap-6">
         <div className="flex justify-center">
           <div className="custom-flex-col text-center gap-1">
-            <h1 className="text-black text-2xl font-medium">Summary</h1>
+            <h1 className="text-black text-2xl font-medium dark:text-white">Summary</h1>
             <p className="text-text-label text-xl font-normal">
               21st JAN -16th March
             </p>
