@@ -10,7 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 
 // Icons
-import { MailIcon, ClipIcon } from "@/public/icons/icons";
+import { MailIcon, ClipIcon, VerticalEllipsisIcon } from "@/public/icons/icons";
 import List from "@/public/icons/list.svg";
 import Drag from "@/public/icons/drag.svg";
 import { Modal, ModalContent } from "@/components/Modal/modal";
@@ -43,6 +43,7 @@ interface TaskCardProps {
   isNew?: boolean;
   statusChanger?: boolean;
   viewOnly?: boolean;
+  styles?: string;
 }
 
 export type TaskType = "Task";
@@ -59,6 +60,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   isNew,
   statusChanger,
   viewOnly,
+  styles,
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const wasRecentlyDragged = useRef(false);
@@ -130,7 +132,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   };
 
   return (
-    <div className="group">
+    <div className={`group ${styles}`}>
       <Card
         ref={setNodeRef}
         style={style}
@@ -166,11 +168,21 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             hidden={noDrag}
             {...attributes}
             {...listeners}
-            className="stext-secondary-foreground/50 h-auto cursor-pointer"
+            className="text-secondary-foreground/50 h-auto cursor-pointer"
             ref={setActivatorNodeRef}
           >
             <span className="sr-only">Move task</span>
             <Image src={Drag} alt="theme" width={20} height={20} />
+          </button>
+          <button
+            hidden={!noDrag}
+            {...attributes}
+            {...listeners}
+            className="text-secondary-foreground/50 h-auto cursor-pointer"
+            ref={setActivatorNodeRef}
+          >
+            <span className="sr-only">Move task</span>
+            <VerticalEllipsisIcon color="#3f4247" size={18} />
           </button>
         </CardHeader>
         <CardContent className="px-3 py-3 cursor-pointer">
@@ -223,7 +235,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               </div>
             </div>
 
-            <p className="bg-brand-2 text-xs rounded-md py-2 px-4">
+            <p className="bg-[#DBEAFE] text-xs rounded-md py-2 px-4">
               {task.content.date}
             </p>
           </div>

@@ -4,7 +4,11 @@ import { ModalTrigger } from "@/components/Modal/modal";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import DateInput from "@/components/Form/DateInput/date-input";
 import dayjs, { Dayjs } from "dayjs";
-import { FilterModalProps, FilterOptionWithDropdown, FilterOptionWithRadio } from "./types";
+import {
+  FilterModalProps,
+  FilterOptionWithDropdown,
+  FilterOptionWithRadio,
+} from "./types";
 import { CancelIcon } from "@/public/icons/icons";
 
 const FilterModal: React.FC<FilterModalProps> = ({
@@ -31,7 +35,9 @@ const FilterModal: React.FC<FilterModalProps> = ({
     null
   );
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedStartDate, setSelectedStartDate] = useState<string | null>(null);
+  const [selectedStartDate, setSelectedStartDate] = useState<string | null>(
+    null
+  );
   const [selectedEndDate, setSelectedEndDate] = useState<string | null>(null);
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
 
@@ -42,7 +48,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
       setSelectedEndDate(date ? date.toISOString() : null);
     }
   };
-
 
   const toggleDatePicker = () => {
     setShowDatePicker((prev) => !prev);
@@ -97,7 +102,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
     ];
     onApply(filtersToApply);
   };
-
 
   // Show dropdown options content within the same modal
   const showDropdownOptions = (option: FilterOptionWithDropdown) => {
@@ -187,7 +191,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           ))}
         </div>
         <button
-          className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg"
+          className="mt-4 w-full bg-brand-9 text-white py-2 rounded-lg"
           onClick={() => setActiveDropdownOption(null)}
         >
           OK
@@ -253,7 +257,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           ))}
         </div>
         <button
-          className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg"
+          className="mt-4 w-full bg-brand-9 text-white py-2 rounded-lg"
           onClick={() => setActiveRadioOption(null)}
         >
           OK
@@ -319,7 +323,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           </div>
         </div>
         <button
-          className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg"
+          className="mt-4 w-full bg-brand-9 text-white py-2 rounded-lg"
           onClick={() => setShowDatePicker(false)}
         >
           OK
@@ -333,7 +337,9 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const renderMainOptions = () => (
     <>
       <div className="flex items-center justify-between border-b border-solid border-gray-300 ">
-        <h2 className="text-lg font-bold text-primary-navy dark:text-white">{title}</h2>
+        <h2 className="text-lg font-bold text-primary-navy dark:text-white">
+          {title}
+        </h2>
         <ModalTrigger close className="p-2">
           <Image
             src="/icons/cancel.svg"
@@ -351,7 +357,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           onClick={toggleDatePicker}
         >
           <label className="text-sm capitalize">Date</label>
-          {(selectedStartDate || selectedEndDate) ? (
+          {selectedStartDate || selectedEndDate ? (
             <Image
               src="/icons/checkbox-checked.svg"
               alt="check"
@@ -360,7 +366,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
               className="min-w-[20px] min-h-[20px]"
             />
           ) : (
-            <ChevronRight />
+            <ChevronRight className="text-[#344054]" />
           )}
         </div>
       )}
@@ -382,7 +388,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 className="min-w-[20px] min-h-[20px]"
               />
             ) : (
-              <ChevronRight />
+              <ChevronRight className="text-[#344054]" />
             )}
           </div>
         </div>
@@ -406,31 +412,34 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 className="min-w-[20px] min-h-[20px]"
               />
             ) : (
-              <ChevronRight />
+              <ChevronRight className="text-[#344054]" />
             )}
           </div>
         </div>
       ))}
 
       {/* Regular filter options */}
-      {filterOptions && filterOptions.map((option) => (
-        <div
-          key={option.value}
-          className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
-        >
-          <label className="text-sm capitalize dark:text-black">{option.label}</label>
-          <input
-            type="checkbox"
-            value={option.value}
-            className="cursor-pointer"
-            onChange={() => handleCheckboxChange(option.value)}
-            checked={selectedFilters.includes(option.value)}
-          />
-        </div>
-      ))}
+      {filterOptions &&
+        filterOptions.map((option) => (
+          <div
+            key={option.value}
+            className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
+          >
+            <label className="text-sm capitalize dark:text-black">
+              {option.label}
+            </label>
+            <input
+              type="checkbox"
+              value={option.value}
+              className="cursor-pointer"
+              onChange={() => handleCheckboxChange(option.value)}
+              checked={selectedFilters.includes(option.value)}
+            />
+          </div>
+        ))}
 
       <button
-        className="w-full bg-blue-600 text-white py-2 rounded-lg mt-4"
+        className="w-full bg-brand-9 text-white py-2 rounded-lg mt-4"
         onClick={handleApplyFilter}
       >
         Apply Filters
@@ -444,23 +453,22 @@ const FilterModal: React.FC<FilterModalProps> = ({
       {activeDropdownOption
         ? renderDropdownOptions()
         : activeRadioOption
-          ? renderRadioOptions()
-          : showDatePicker && date
-            ? renderDateOptions()
-            : renderMainOptions()}
+        ? renderRadioOptions()
+        : showDatePicker && date
+        ? renderDateOptions()
+        : renderMainOptions()}
     </div>
   );
-
 
   return (
     <div className="w-[400px] rounded-[20px] bg-white p-[20px] custom-flex-col">
       {activeDropdownOption
         ? renderDropdownOptions()
         : activeRadioOption
-          ? renderRadioOptions()
-          : showDatePicker
-            ? renderDateOptions()
-            : renderMainOptions()}
+        ? renderRadioOptions()
+        : showDatePicker
+        ? renderDateOptions()
+        : renderMainOptions()}
     </div>
   );
 };
