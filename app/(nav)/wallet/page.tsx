@@ -20,12 +20,14 @@ const Wallet = () => {
   return (
     <div className="custom-flex-col gap-10">
       <div className="flex gap-1">
-        <h1 className="text-black dark:text-white text-2xl font-medium">Wallet</h1>
+        <h1 className="text-black dark:text-white text-2xl font-medium">
+          Wallet
+        </h1>
         <div className="flex items-center">
           <ExclamationMark />
         </div>
       </div>
-      <div className="flex flex-col 2xl:flex-row gap-8">
+      <div className="flex flex-col xl:flex-row gap-8">
         <div className="custom-flex-col gap-10 flex-1">
           <div className="flex flex-col lg:flex-row gap-6">
             <WalletAnalytics
@@ -63,18 +65,20 @@ const Wallet = () => {
             chartData={walletChartData}
           />
         </div>
-        <div className="custom-flex-col gap-5 min-w-[315px]">
+        <div className="custom-flex-col gap-5 w-full xl:w-[315px]">
           <div className="flex items-center justify-between text-neutral-800 font-medium">
             <p className="text-sm dark:text-darkText-1">Wallet ID</p>
             <p className="text-xs dark:text-darkText-1">6564567689787</p>
           </div>
           <WalletBalanceCard noHeader mainBalance={1000} cautionDeposit={200} />
-          <div className="custom-flex-col gap-4 p-4 rounded-lg bg-white dark:bg-darkText-primary">
+          <div className="custom-flex-col gap-4 p-4 rounded-lg bg-white dark:bg-darkText-primary max-h-[339px] overflow-hidden">
             <div className="flex items-center justify-between text-base font-medium">
               <p className="text-black dark:text-white">Beneficiary</p>
               <Modal>
                 <ModalTrigger className="flex items-center gap-1">
-                  <p className="text-text-label dark:text-darkText-1">See all</p>
+                  <p className="text-text-label dark:text-darkText-1">
+                    See all
+                  </p>
                   <ChevronRight color="#5A5D61" size={16} />
                 </ModalTrigger>
                 <ModalContent>
@@ -82,7 +86,7 @@ const Wallet = () => {
                 </ModalContent>
               </Modal>
             </div>
-            <div className="custom-flex-col gap-2">
+            <div className="custom-flex-col gap-2 h-full overflow-y-scroll custom-round-scrollbar">
               {Array(6)
                 .fill(null)
                 .map((_, idx) => (
