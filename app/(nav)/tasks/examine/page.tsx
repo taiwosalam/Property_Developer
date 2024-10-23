@@ -35,6 +35,7 @@ const Examine = () => {
             title="Total Examine"
             newData={34}
             total={657}
+            colorScheme={1}
           />
         </div>
         <Button href="" className="page-header-button">
@@ -49,7 +50,7 @@ const Examine = () => {
           title: "Examine",
           description: "This page contains a list of Examine on the platform.",
         }}
-        searchInputPlaceholder="Search"
+        searchInputPlaceholder="Search for Examine"
         handleFilterApply={() => {}}
         isDateTrue
         filterOptions={[]}
