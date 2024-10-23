@@ -32,12 +32,14 @@ import {
   DropdownTrigger,
 } from "@/components/Dropdown/dropdown";
 import { VerticalEllipsisIcon } from "@/public/icons/icons";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const Subscriptions = () => {
+  const isDarkMode = useDarkMode();
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "bg-brand-9 h-[45px]",
     tableHeadCellSx: {
-      color: "#EFF6FF",
+      color: isDarkMode ? "#EFF6FF" : "#050901",
       fontWeight: 500,
       border: "none",
       textAlign: "left",
@@ -47,11 +49,11 @@ const Subscriptions = () => {
       border: "none",
       textAlign: "left",
       fontWeight: 500,
-      color: "#050901",
+      color: isDarkMode ? "#EFF6FF" : "#050901",
       fontSize: "14px",
     },
-    oddRowColor: "#fff",
-    evenRowColor: "#FAFAFA",
+    oddRowColor: isDarkMode ? "#101828" : "#fff",
+    evenRowColor: isDarkMode ? "#101828" : "#FAFAFA",
   };
 
   const transformedSubscriptions = current_subscriptions.data.map((data) => ({
@@ -108,7 +110,7 @@ const Subscriptions = () => {
       </SettingsSection>
       <div className="line h-[1px] border border-dashed border-brand-9 opacity-50 w-full !px-0" style={{ paddingLeft: 0, paddingRight: 0 }}></div>
       <div className="custom-flex-col gap-[18px]">
-        <h2 className="text-primary-navy text-base font-medium">
+        <h2 className="text-primary-navy dark:text-white text-base font-medium">
           Adds On Subscriptions
         </h2>
         <div className="custom-flex-col gap-8">
@@ -211,7 +213,7 @@ const Subscriptions = () => {
                 </div>
               </div>
               <div className="custom-flex-col gap-4">
-                <p className="text-text-quaternary text-base font-medium">
+                <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium">
                   Purchase SMS Credit{" "}
                   <span className="text-xs font-normal">(₦4/unit)</span>
                 </p>
@@ -230,7 +232,7 @@ const Subscriptions = () => {
             <div className="custom-flex-col gap-6">
               <SettingsSectionTitle desc="Promote your company by showcasing your company logo prominently on the initial screen of the user app, the landing page, and the homepage of the general website. This enhances visibility, allowing potential customers to easily recognize your brand and company. Clicking on your logo directs site visitors to your company page, providing them with more information about your brand and offerings." />
               <div className="custom-flex-col gap-4">
-                <p className="text-text-quaternary text-base font-medium">
+                <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium">
                   The Cost{" "}
                   <span className="text-xs font-normal">
                     (₦1,000/per month)
