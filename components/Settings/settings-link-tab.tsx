@@ -29,7 +29,7 @@ const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> =
       className={clsx(
         "py-[14px] w-[138px] flex items-center justify-center gap-1 border-b-[2px] border-solid",
         {
-          "bg-white border-brand-9":  active,
+          "bg-white border-brand-9 dark:bg-darkText-primary dark:text-white":  active,
           "border-transparent hover:bg-neutral-3 hover:dark:bg-darkText-primary": !active,
         },
         className
@@ -52,7 +52,7 @@ const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> =
       ) : type === "others" ? (
         <SettingsIcon />
       ) : null}
-      <p className={`text-base font-normal capitalize ${active ? 'dark:text-black' : 'dark:text-white dark:hover:text-white'}`}>
+      <p className={`text-base font-normal capitalize ${active ? 'dark:text-white' : 'dark:text-darkText-1 dark:hover:text-white'}`}>
         {type}
       </p>
     </Link>
