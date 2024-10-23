@@ -223,7 +223,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               </div>
             </div>
 
-            <p className="bg-brand-2 text-xs rounded-md py-2 px-4">
+            <p className="bg-brand-2 dark:bg-brand-9 dark:bg-opacity-10 text-xs rounded-md py-2 px-4">
               {task.content.date}
             </p>
           </div>
