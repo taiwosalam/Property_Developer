@@ -189,7 +189,8 @@ const AccountingInvoicePage = () => {
       <div className="rounded-lg w-full overflow-x-scroll no-scrollbar pb-[200px]">
         <table className="dash-table">
           <colgroup>
-            <col span={6} />
+            <col className="min-w-[72px]" />
+            <col span={5} />
             <col className="min-w-[72px]" />
           </colgroup>
           <thead>

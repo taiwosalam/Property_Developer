@@ -11,12 +11,22 @@ import AccountingTitleSection from "@/components/Accounting/accounting-title-sec
 import ExportPageHeader from "@/components/reports/export-page-header";
 import DeleteDisbursementModal from "@/components/Accounting/Disbursement/delete-disbursement-modal";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import BackButton from "@/components/BackButton/back-button";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { useRouter } from "next/navigation";
 
 const ManageDisbursement = () => {
   const isDarkMode = useDarkMode()
+  const router = useRouter();
+
+  const back = () => {
+    router.back();
+  };
+
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
+        <BackButton>Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -87,7 +97,7 @@ const ManageDisbursement = () => {
           </div>
         </AccountingTitleSection>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[60px] flex gap-6 justify-end">
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
         <Modal>
           <ModalTrigger asChild>
             <Button size="base_bold" variant="light_red" className="py-2 px-8">
@@ -100,6 +110,7 @@ const ManageDisbursement = () => {
         </Modal>
         <div className="flex gap-6">
           <Button
+            onClick={back}
             size="base_bold"
             variant="sky_blue"
             className="py-2 px-8"
@@ -111,7 +122,7 @@ const ManageDisbursement = () => {
             save
           </Button>
         </div>
-      </div>
+      </FixedFooter>
     </div>
   );
 };

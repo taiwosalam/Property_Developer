@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 // Images
@@ -12,11 +14,21 @@ import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ExpensesStatCard from "@/components/Accounting/expenses/expenses-stat-card";
+import BackButton from "@/components/BackButton/back-button";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { useRouter } from "next/navigation";
 
 const Exportexpense = () => {
+  const router = useRouter();
+
+  const back = () => {
+    router.back();
+  };
+
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
+        <BackButton>Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -58,7 +70,7 @@ const Exportexpense = () => {
         <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
           <table className="dash-table">
             <colgroup>
-              <col className="w-[72px]" />
+              <col className="min-w-[72px]" />
             </colgroup>
             <thead>
               <tr>
@@ -76,7 +88,7 @@ const Exportexpense = () => {
                 .fill(null)
                 .map((_, index) => (
                   <tr key={index}>
-                    <td>
+                    <td className="flex items-center justify-center">
                       <Picture
                         src={Avatar}
                         alt="profile picture"
@@ -111,8 +123,13 @@ const Exportexpense = () => {
           <Signature />
         </div>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
-        <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
+        <Button
+          onClick={back}
+          variant="sky_blue"
+          size="base_bold"
+          className="py-2 px-8"
+        >
           exit
         </Button>
         <div className="flex gap-6">
@@ -123,7 +140,7 @@ const Exportexpense = () => {
             print
           </Button>
         </div>
-      </div>
+      </FixedFooter>
     </div>
   );
 };

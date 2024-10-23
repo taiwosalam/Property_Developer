@@ -8,12 +8,15 @@ import KeyValueList from "@/components/KeyValueList/key-value-list";
 import Image from "next/image";
 import Signature from "@/public/accounting/signature.svg";
 import { useRouter } from "next/navigation";
+import BackButton from "@/components/BackButton/back-button";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const PrintVatPage = () => {
   const router = useRouter();
   return (
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
+        <BackButton>Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -117,7 +120,7 @@ const PrintVatPage = () => {
           </div>
         </div>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
         <Button
           variant="sky_blue"
           size="base_medium"
@@ -134,7 +137,7 @@ const PrintVatPage = () => {
             print
           </Button>
         </div>
-      </div>
+      </FixedFooter>
     </div>
   );
 };
