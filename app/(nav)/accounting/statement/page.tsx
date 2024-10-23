@@ -81,7 +81,9 @@ const Statement = () => {
     <div className="custom-flex-col gap-10">
       <div className="custom-flex-col gap-6">
         <div className="flex gap-1 items-center">
-          <h1 className="text-black dark:text-white text-2xl font-medium">Statement</h1>
+          <h1 className="text-black dark:text-white text-2xl font-medium">
+            Statement
+          </h1>
           <ExclamationMark />
         </div>
         <div className="bg-white dark:bg-[#3C3D37] rounded-[8px] border border-opacity-20 border-[#BAC7D533] p-4 space-y-6">
@@ -128,7 +130,9 @@ const Statement = () => {
                 <ModalContent>
                   <FilterModal
                     filterOptions={[]}
-                    filterOptionsWithDropdown={accountingStatementOptionsWithDropdown}
+                    filterOptionsWithDropdown={
+                      accountingStatementOptionsWithDropdown
+                    }
                     onApply={handleFilterApply}
                     date
                     onStateSelect={(state: string) => setSelectedState(state)}
@@ -177,9 +181,9 @@ const Statement = () => {
         <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
           <table className="dash-table">
             <colgroup>
-              <col className="w-[72px]" />
+              <col className="min-w-[72px]" />
               <col span={6} />
-              <col className="w-[62px]" />
+              <col className="min-w-[72px]" />
             </colgroup>
             <thead>
               <tr>
@@ -198,7 +202,7 @@ const Statement = () => {
                 .fill(null)
                 .map((_, idx) => (
                   <tr key={idx}>
-                    <td>
+                    <td className="flex items-center justify-center">
                       <Picture
                         src={Avatar}
                         alt="profile picture"
@@ -224,7 +228,7 @@ const Statement = () => {
                     <td>
                       <p>12/12/12</p>
                     </td>
-                    <td>
+                    <td className="flex items-center justify-center">
                       <Dropdown>
                         <DropdownTrigger className="flex items-center justify-center">
                           <Picture
@@ -250,7 +254,7 @@ const Statement = () => {
             </tbody>
           </table>
         </div>
-        <Pagination totalPages={10} currentPage={1} onPageChange={() => { }} />
+        <Pagination totalPages={10} currentPage={1} onPageChange={() => {}} />
       </div>
     </div>
   );
