@@ -146,7 +146,12 @@ const TenancyRecord = () => {
                       {Array(4)
                         .fill(null)
                         .map((_, idx) => (
-                          <LandlordTenantInfoDocument key={idx} />
+                          <LandlordTenantInfoDocument
+                            key={idx}
+                            id={idx}
+                            name={`invoice ${idx}`}
+                            link={`https://www.google.com`}
+                          />
                         ))}
                     </div>
                   </LandlordTenantInfoSection>
@@ -155,7 +160,12 @@ const TenancyRecord = () => {
                       {Array(3)
                         .fill(null)
                         .map((_, idx) => (
-                          <LandlordTenantInfoDocument key={idx} />
+                          <LandlordTenantInfoDocument
+                            key={idx}
+                            id={idx}
+                            name={`receipt ${idx}`}
+                            link={`https://www.google.com`}
+                          />
                         ))}
                     </div>
                   </LandlordTenantInfoSection>
@@ -164,7 +174,12 @@ const TenancyRecord = () => {
                       {Array(2)
                         .fill(null)
                         .map((_, idx) => (
-                          <LandlordTenantInfoDocument key={idx} />
+                          <LandlordTenantInfoDocument
+                            key={idx}
+                            id={idx}
+                            name={`other document ${idx}`}
+                            link={`https://www.google.com`}
+                          />
                         ))}
                     </div>
                   </LandlordTenantInfoSection>
