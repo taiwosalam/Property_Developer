@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 // Images
 import { Check } from "lucide-react";
@@ -17,6 +17,7 @@ import Button from "@/components/Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import FundingCard from "@/components/Wallet/AddFunds/funding-card";
 import SettingsSection from "@/components/Settings/settings-section";
+import { ProfileUpload } from "@/components/Settings/settings-components";
 
 import {
   SettingsSectionTitle,
@@ -25,9 +26,43 @@ import {
 
 const Security = () => {
   const { preview, inputFileRef, handleImageChange } = useImageUploader();
+  const [inputFields, setInputFields] = useState([
+    { id: Date.now(), signature: SignatureImage },
+  ]);
 
   const changeImage = () => {
     inputFileRef.current?.click();
+  };
+
+  const addInputField = () => {
+    setInputFields([
+      ...inputFields,
+      { id: Date.now(), signature: SignatureImage },
+    ]);
+    console.log("Input Fields after adding:", [...inputFields, { id: Date.now(), signature: SignatureImage }]); 
+  };
+
+  const removeInputField = (id: number) => {
+    const updatedFields = inputFields.filter((field) => field.id !== id);
+    setInputFields(updatedFields);
+    console.log("Input Fields after removing:", updatedFields);
+  };
+
+  const changeSignatureImage = (index: number) => { 
+    document.getElementById(`signature_input_${index}`)?.click();
+  };
+
+  const handleSignatureChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const newSignature = URL.createObjectURL(e.target.files[0]);
+      setInputFields(
+        inputFields.map((inputField) =>
+          inputField.id === inputFields[index].id
+            ? { ...inputField, signature: newSignature }
+            : inputField
+        )
+      );
+    }
   };
 
   return (
@@ -40,33 +75,13 @@ const Security = () => {
               desc="The profile photo size should be 180 x 180 pixels with a maximum file size of 2MB."
             />
             <div className="custom-flex-col gap-[18px]">
-              <div className="flex gap-2">
-                <Picture
-                  size={100}
-                  src={preview}
-                  alt="profile picture"
-                  className="rounded-lg"
-                />
-                <div className="flex items-end">
-                  <Button
-                    variant="change"
-                    size="xs_normal"
-                    className="py-2 px-3"
-                    onClick={changeImage}
-                  >
-                    change image
-                  </Button>
-                  <input
-                    type="file"
-                    name="picture"
-                    accept="image/*"
-                    ref={inputFileRef}
-                    onChange={handleImageChange}
-                    className="hidden pointer-events-none"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col lg:flex-row  gap-5">
+              <ProfileUpload
+                preview={preview}
+                onChange={handleImageChange}
+                inputFileRef={inputFileRef}
+                onClick={changeImage}
+              />
+              <div className="flex flex-col lg:flex-row gap-5">
                 <Input
                   id="fullname"
                   label="full name"
@@ -82,7 +97,7 @@ const Security = () => {
               </div>
             </div>
           </div>
-          <SettingsUpdateButton type="otp" remove />
+          <SettingsUpdateButton />
         </div>
       </SettingsSection>
       <SettingsSection title="Authorized Signature">
@@ -93,54 +108,80 @@ const Security = () => {
               desc="This signature is affixed to every document requiring authorization. Please sign on a plain white paper and take a photo for uploading. If possible, remove the background picture of the signature before uploading for a cleaner appearance."
             />
             <div className="custom-flex-col gap-[18px]">
-              <div className="flex gap-2">
-                <div className="relative rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer">
-                  <Picture
-                    size={100}
-                    fit="contain"
-                    src={SignatureImage}
-                    alt="official signature"
-                  />
-                  <div
-                    style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
-                    className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
+              <div className="flex flex-col gap-5">
+                {inputFields.map((field, index) => (
+                  <React.Fragment key={field.id}>
+                    <div className="relative max-w-[100px] rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer">
+                      <Picture
+                        size={100}
+                        fit="contain"
+                        src={field.signature}
+                        alt="official signature"
+                      />
+                      <div
+                        style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
+                        className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
+                      >
+                        <Picture src={ImageBlue} alt="image icon" size={20} />
+                        <p className="text-brand-9 text-xs font-normal" onClick={() => changeSignatureImage(index)}>
+                          Change Image
+                        </p>
+                      </div>
+                    <input
+                      type="file"
+                      id={`signature_input_${index}`}
+                      name={`signature_${index}`}
+                      accept="image/*"
+                      onChange={handleSignatureChange(index)}
+                      className="hidden"
+                      ref={React.createRef()} 
+                      />
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-5 justify-between items-end">
+                      <div className="flex-1">
+                        <Input
+                          id={`fullname_${index}`}
+                          label="full name"
+                          placeholder="Taiwo Salam"
+                          className="w-full"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <Select
+                          id={`personal_title_qualification_${index}`}
+                          options={titles}
+                          label="personal title / qualification"
+                          inputContainerClassName="w-full bg-neutral-2"
+                        />
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-3 items-end">
+                        <Select
+                          id={`real_estate_title_${index}`}
+                          options={industryOptions}
+                          label="real estate title"
+                          inputContainerClassName="w-full bg-neutral-2"
+                        />
+                        {index !== 0 && (
+                          <button
+                            className="bg-brand-9 min-w-[50px] text-white text-xs font-normal py-2 px-3 rounded-lg max-h-[40px]"
+                            onClick={() => removeInputField(field.id)}
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </React.Fragment>
+                ))}
+                <div className="flex items-end">
+                  <Button 
+                    size="xs_normal"
+                    variant="light_red"
+                    className="py-2 px-3 w-full sm:w-auto"
+                    onClick={addInputField}
                   >
-                    <Picture src={ImageBlue} alt="image icon" size={20} />
-                    <p className="text-brand-9 text-xs font-normal">
-                      Change Image
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                <Input
-                  id="fullname"
-                  label="full name"
-                  placeholder="Taiwo Salam"
-                  className="w-full"
-                />
-                <Select
-                  id="personal_title_qualification"
-                  options={titles}
-                  label="personal title / qualification"
-                  inputContainerClassName="w-full bg-neutral-2"
-                />
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Select
-                    id="real_estate_title"
-                    options={industryOptions}
-                    label="real estate title"
-                    inputContainerClassName="w-full bg-neutral-2"
-                  />
-                  <div className="flex items-end">
-                    <Button
-                      size="xs_normal"
-                      variant="light_red"
-                      className="py-2 px-3 w-full sm:w-auto"
-                    >
-                      Add More
-                    </Button>
-                  </div>
+                    Add More
+                  </Button>
                 </div>
               </div>
             </div>
