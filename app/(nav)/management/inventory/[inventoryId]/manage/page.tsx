@@ -2,11 +2,12 @@ import React, { CSSProperties } from "react";
 
 // Imports
 import Input from "@/components/Form/Input/input";
+import Button from "@/components/Form/Button/button";
+import BackButton from "@/components/BackButton/back-button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import InventoryItem from "@/components/Management/Inventory/inventory-item";
-import { InventoryListInfo } from "@/components/Management/Inventory/inventory-components";
-import Button from "@/components/Form/Button/button";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
+import { InventoryListInfo } from "@/components/Management/Inventory/inventory-components";
 
 const ManageInventory = () => {
   const input_styles: CSSProperties = {
@@ -15,11 +16,9 @@ const ManageInventory = () => {
   };
 
   return (
-    <div className="custom-flex-col gap-10 min-h-[80vh]">
+    <div className="custom-flex-col gap-10 min-h-[80vh] pb-[100px]">
       <div className="custom-flex-col gap-4">
-        <h1 className="text-black dark:text-white text-2xl font-medium capitalize">
-          Manage Inventory
-        </h1>
+        <BackButton>Manage Inventory</BackButton>
         <div className="custom-flex-col gap-6">
           <div className="flex flex-col md:flex-row gap-8">
             <Input
@@ -42,7 +41,9 @@ const ManageInventory = () => {
                 "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
             }}
           >
-            <p className="text-brand-10 dark:text-white text-base font-medium">Details</p>
+            <p className="text-brand-10 dark:text-white text-base font-medium">
+              Details
+            </p>
             <div className="flex flex-col gap-4 lg:gap-0 lg:flex-row lg:items-center">
               <InventoryListInfo data={{}} chunkSize={2} />
             </div>
