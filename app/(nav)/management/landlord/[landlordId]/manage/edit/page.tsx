@@ -68,8 +68,10 @@ const EditLandlord = () => {
   return (
     <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
       <BackButton>Edit Landlord</BackButton>
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="custom-flex-col gap-5 flex-1">
+      <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
+
+        {/* Left Side */}
+        <div className="custom-flex-col gap-5 flex-1 max-h-[calc(100vh-200px)] overflow-auto custom-round-scrollbar">
           {/* Profile */}
           <LandlordTenantInfoEditSection title="profile">
             <LandlordTenantInfoEditGrid>
@@ -333,7 +335,7 @@ const EditLandlord = () => {
         </div>
 
         {/* Right Side */}
-        <div className="w-full lg:w-[334px] custom-flex-col gap-5">
+        <div className="w-full lg:w-[334px] custom-flex-col gap-5 max-h-[calc(100vh-200px)] overflow-auto custom-round-scrollbar">
           <div className="lg:sticky top-[175px] w-full lg:h-[calc(100vh-250px)] overflow-auto custom-flex-col gap-5 custom-round-scrollbar">
             {/* Edit Avatar */}
             <LandlordTenantInfoEditSection title="edit avatar">
