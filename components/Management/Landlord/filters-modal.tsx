@@ -353,7 +353,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
       {date && (
         <div
-          className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] cursor-pointer"
+          className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary dark:border dark:border-[#3C3D37] cursor-pointer"
           onClick={toggleDatePicker}
         >
           <label className="text-sm capitalize">Date</label>

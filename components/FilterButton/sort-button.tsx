@@ -13,9 +13,9 @@ const SortButton = () => {
       onClick={toggleSort}
     >
       {sort === "asc" ? (
-        <ArrowDownAZ size={20} className="text-[#344054]" />
+        <ArrowDownAZ size={20} className="text-[#344054] dark:text-darkText-1" />
       ) : (
-        <ArrowUpZA size={20} className="text-[#344054]" />
+        <ArrowUpZA size={20} className="text-[#344054] dark:text-darkText-1" />
       )}
       <span className="text-[#344054] dark:text-darkText-1 text-base font-medium">
         Sort
