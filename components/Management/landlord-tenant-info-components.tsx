@@ -60,7 +60,7 @@ export const LandlordTenantInfoSection: React.FC<{
   minimized?: boolean;
   children: React.ReactNode;
 }> = ({ title, children, minimized }) => {
-  const commonClasses = "capitalize dark:text-darkText-1";
+  const commonClasses = "capitalize dark:text-white";
   return (
     <div
       className={clsx("custom-flex-col", {
