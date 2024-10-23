@@ -65,8 +65,8 @@ const Wallet = () => {
         </div>
         <div className="custom-flex-col gap-5 min-w-[315px]">
           <div className="flex items-center justify-between text-neutral-800 font-medium">
-            <p className="text-sm">Wallet ID</p>
-            <p className="text-xs">6564567689787</p>
+            <p className="text-sm dark:text-darkText-1">Wallet ID</p>
+            <p className="text-xs dark:text-darkText-1">6564567689787</p>
           </div>
           <WalletBalanceCard noHeader mainBalance={1000} cautionDeposit={200} />
           <div className="custom-flex-col gap-4 p-4 rounded-lg bg-white dark:bg-darkText-primary">

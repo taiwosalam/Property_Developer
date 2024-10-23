@@ -67,7 +67,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
   exportHref,
 }) => {
   return (
-    <div className="page-title-container">
+    <div className="page-title-container ">
       {pageTitle && (
         <PageTitle title={pageTitle} aboutPageModalData={aboutPageModalData} />
       )}

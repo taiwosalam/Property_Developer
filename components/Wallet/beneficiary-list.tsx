@@ -26,7 +26,7 @@ const BeneficiaryList = () => {
             </Button>
           </div>
         </div>
-        <div className="custom-flex-col gap-4 py-[18px] rounded-2xl bg-neutral-2 dark:bg-[#3C3D37]">
+        <div className="custom-flex-col gap-4 py-[18px] rounded-2xl bg-neutral-2 dark:bg-darkText-primary">
           <p className="pl-[18px] text-[#010A23] dark:text-white text-base font-medium">
             Beneficiaries
           </p>
