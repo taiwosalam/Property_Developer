@@ -6,6 +6,7 @@ import type {
   CalendarDayProps,
   CalendarEventTagsProps,
   CalendarEventTagItemProps,
+  CalendarWeekDaysProps,
 } from "./types";
 
 // Imports
@@ -62,14 +63,22 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({
   </div>
 );
 
-export const CalendarWeekDays = () => (
+export const CalendarWeekDays: React.FC<CalendarWeekDaysProps> = ({
+  type = "long",
+}) => (
   <div className="grid grid-cols-7 gap-3">
     {calendar_week_days.map((day, index) => (
       <p
         key={index}
         className="m-auto text-text-tertiary text-sm font-normal uppercase"
       >
-        {day}
+        {type === "full"
+          ? "Full 😂"
+          : type === "long"
+          ? day
+          : type === "short"
+          ? day.charAt(0)
+          : null}
       </p>
     ))}
   </div>

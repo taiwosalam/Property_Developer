@@ -4,7 +4,6 @@ import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import Pagination from "@/components/Pagination/pagination";
 import { SectionContainer } from "@/components/Section/section-components";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { complaintsFilterOptionsWithDropdown } from "./data";
@@ -30,7 +29,22 @@ const ComplaintsPage = () => {
           total={453}
         />
       </div>
-
+      <FilterBar
+        hasGridListToggle={false}
+        azFilter
+        onStateSelect={() => {}}
+        pageTitle="Complains"
+        aboutPageModalData={{
+          title: "Complains",
+          description:
+            "This page contains a list of Complains on the platform.",
+        }}
+        searchInputPlaceholder="Search for Task"
+        handleFilterApply={() => {}}
+        isDateTrue
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={complaintsFilterOptionsWithDropdown}
+      />
       <SectionContainer heading="Recent Complains">
         <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 gap-4 flex items-center overflow-x-scroll no-scrollbar">
           {Array(5)
@@ -67,21 +81,6 @@ const ComplaintsPage = () => {
             ))}
         </div>
       </SectionContainer>
-      <FilterBar
-        azFilter
-        onStateSelect={() => {}}
-        pageTitle="Complains"
-        aboutPageModalData={{
-          title: "Complains",
-          description:
-            "This page contains a list of Complains on the platform.",
-        }}
-        searchInputPlaceholder="Search for Task"
-        handleFilterApply={() => {}}
-        isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={complaintsFilterOptionsWithDropdown}
-      />
       {!isMobile && (
         <SectionContainer heading="All Complaints">
           <KanbanBoard />
