@@ -15,13 +15,13 @@ import { SectionSeparator } from "@/components/Section/section-components";
 
 import {
   LandlordTenantInfo,
-  LandlordTenantUserTag,
   LandlordTenantInfoSection,
 } from "@/components/Management/landlord-tenant-info-components";
 import Button from "@/components/Form/Button/button";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useRouter } from "next/navigation";
+import UserTag from "@/components/Tags/user-tag";
 
 const ManageApplication = () => {
   const router = useRouter();
@@ -87,7 +87,7 @@ const ManageApplication = () => {
                   </p>
                 </div>
                 <div className="flex">
-                  <LandlordTenantUserTag type="mobile" />
+                  <UserTag type="mobile" />
                 </div>
                 <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
                   ID: 22132876554444

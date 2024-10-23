@@ -122,7 +122,8 @@ const Properties = () => {
                 name="Property 1"
                 units={1}
                 price={1000}
-                type="rent"
+                type="rental"
+                currency="Naira"
               />
             ))}
           </AutoResizingGrid>
@@ -146,7 +147,8 @@ const Properties = () => {
                 name="Property 1"
                 units={1}
                 price={1000}
-                type="rent"
+                type="gated"
+                currency="Naira"
               />
             ))}
           </div>

@@ -1,64 +1,43 @@
 "use client";
 
 // Images
-import Avatar from "@/public/empty/avatar-1.svg";
-import { DeleteIconOrange } from "@/public/icons/icons";
 
-// Imports
-import clsx from "clsx";
-import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
-import Input from "@/components/Form/Input/input";
-import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
-import Select from "@/components/Form/Select/select";
-import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
-import {
-  LandlordTenantInfoEditGrid,
-  LandlordTenantInfoEditSection,
-} from "@/components/Management/landlord-tenant-info-components";
-import {
-  guarantorRelationships,
-  landlordTypes,
-  nextOfKinRelationships,
-  genderTypes,
-  familyTypes,
-  employmentTypeOptions,
-  employmentOptions,
-} from "@/data";
+
+import { LandlordEditContext } from "@/components/Management/Landlord/landlord-edit-context";
+
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
-import { useEffect, useState } from "react";
 import useLandlordData from "@/hooks/useLandlordData";
 import { useAuthStore } from "@/store/authstrore";
 import BackButton from "@/components/BackButton/back-button";
-import TextArea from "@/components/Form/TextArea/textarea";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
+import type { LandlordPageData } from "@/app/(nav)/management/landlord/types";
+import {
+  LandlordEditProfileInfoSection,
+  LandlordEditNextOfKinInfoSection,
+  LandlordEditGuarantorInfoSection,
+  LandlordEditBankDetailsInfoSection,
+  LandlordEditOthersInfoSection,
+  LandlordEditAttachmentInfoSection,
+  LandlordEditNoteInfoSection,
+  LandlordEditAvatarInfoSection,
+} from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
 
 const EditLandlord = () => {
-  const { landlord, landlordId, error, loading } = useLandlordData();
-  const accessToken = useAuthStore((state) => state.access_token);
-
-  const [address, setAddress] = useState<{
-    state: string;
-    local_government: string;
-    city: string;
-  }>({
-    state: "",
-    local_government: "",
-    city: "",
-  });
-
-  const [employment, setEmployment] = useState("");
-
-  const handleAddressChange = (value: string, key: keyof typeof address) => {
-    setAddress((prev) => ({
-      ...prev,
-      [key]: value,
-      ...(key === "state" && { local_government: "", city: "" }),
-      ...(key === "local_government" && { city: "" }),
-    }));
+  // const { landlord, landlordId, error, loading } = useLandlordData();
+  const {
+    data: landlord,
+    error,
+    loading,
+  } = MockFunction("landlord") as {
+    data: LandlordPageData;
+    error: Error | null;
+    loading: boolean;
   };
+  const accessToken = useAuthStore((state) => state.access_token);
 
   if (loading)
     return <CustomLoader layout="edit-page" pageTitle="Edit Landlord" />;
@@ -66,353 +45,57 @@ const EditLandlord = () => {
   if (!landlord) return null;
 
   return (
-    <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
-      <BackButton>Edit Landlord</BackButton>
-      <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
+    <LandlordEditContext.Provider value={{ data: landlord }}>
+      <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
+        <BackButton>Edit Landlord</BackButton>
+        <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
+          {/* Left Side */}
+          <div className="custom-flex-col gap-5 flex-1 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">
+            <LandlordEditProfileInfoSection />
+            <LandlordEditNextOfKinInfoSection />
+            <LandlordEditGuarantorInfoSection />
+            <LandlordEditOthersInfoSection />
+            <LandlordEditBankDetailsInfoSection />
+            <LandlordEditAttachmentInfoSection />
+            <LandlordEditNoteInfoSection />
+          </div>
 
-        {/* Left Side */}
-        <div className="custom-flex-col gap-5 flex-1 max-h-[calc(100vh-200px)] overflow-auto custom-round-scrollbar">
-          {/* Profile */}
-          <LandlordTenantInfoEditSection title="profile">
-            <LandlordTenantInfoEditGrid>
-              <Input
-                id="landlord-firstname"
-                label="first name"
-                required
-                inputClassName="rounded-lg"
-              />
-              <Input
-                id="landlord-lastname"
-                label="last name"
-                required
-                inputClassName="rounded-lg"
-              />
-              <Input
-                id="landlord-email"
-                type="email"
-                label="email"
-                required
-                inputClassName="rounded-lg"
-              />
-              <PhoneNumberInput
-                id="landlord-phone-number"
-                label="phone number"
-                required
-                inputClassName="!bg-neutral-2 dark:!bg-transparent"
-                // Pass defaultValue to prefill the input
-              />
-              <Select
-                id="landlord-state"
-                label="state"
-                options={getAllStates()}
-                placeholder="Select options"
-                inputContainerClassName="bg-neutral-2"
-                value={address.state}
-                onChange={(value) => handleAddressChange(value, "state")}
-              />
-              <Select
-                id="landlord-local_government"
-                label="local government"
-                placeholder="Select options"
-                options={getLocalGovernments(address.state)}
-                inputContainerClassName="bg-neutral-2"
-                value={address.local_government}
-                onChange={(value) =>
-                  handleAddressChange(value, "local_government")
-                }
-              />
-              <Select
-                id="landlord-city"
-                label="city"
-                placeholder="Select options"
-                options={getCities(address.state, address.local_government)}
-                inputContainerClassName="bg-neutral-2"
-                value={address.city}
-                allowCustom={true}
-                onChange={(value) => handleAddressChange(value, "city")}
-              />
-              <Input
-                id="landlord-address"
-                label="address"
-                inputClassName="rounded-lg"
-              />
-              <Select
-                id="owner-type"
-                label="owner type"
-                isSearchable={false}
-                placeholder="Select options"
-                options={landlordTypes}
-                inputContainerClassName="bg-neutral-2"
-              />
-              <Select
-                id="gender"
-                label="gender"
-                isSearchable={false}
-                placeholder="Select options"
-                inputContainerClassName="bg-neutral-2"
-                options={genderTypes}
-              />
-              <div className="md:col-span-2 flex justify-end">
-                <Button size="base_medium" className="py-2 px-6">
-                  update
-                </Button>
-              </div>
-            </LandlordTenantInfoEditGrid>
-          </LandlordTenantInfoEditSection>
-
-          {/* Next of Kin */}
-          <LandlordTenantInfoEditSection title="Next of Kin">
-            <LandlordTenantInfoEditGrid>
-              <Input
-                id="next-of-kin-fullname"
-                label="full name"
-                required
-                inputClassName="rounded-lg"
-              />
-              <Input
-                id="next-of-kin-email"
-                type="email"
-                label="email"
-                required
-                inputClassName="rounded-lg"
-              />
-              <PhoneNumberInput
-                id="next-of-kin-phone-number"
-                label="phone number"
-                required
-                inputClassName="!bg-neutral-2 dark:!bg-transparent"
-              />
-              <Select
-                id="next-of-kin-relationship"
-                label="relationship"
-                placeholder="Select options"
-                options={nextOfKinRelationships}
-                inputContainerClassName="bg-neutral-2"
-              />
-              <Input
-                id="next-of-kin-address"
-                label="address"
-                inputClassName="rounded-lg"
-              />
-              <div className="flex items-end justify-end">
-                <Button size="base_medium" className="py-2 px-6">
-                  update
-                </Button>
-              </div>
-            </LandlordTenantInfoEditGrid>
-          </LandlordTenantInfoEditSection>
-
-          {/* Guarantor */}
-          <LandlordTenantInfoEditSection title="Guarantor">
-            <LandlordTenantInfoEditGrid>
-              <Input
-                id="guarantor-fullname"
-                label="full name"
-                required
-                inputClassName="rounded-lg"
-              />
-              <Input
-                id="guarantor-email"
-                type="email"
-                label="email"
-                required
-                inputClassName="rounded-lg"
-              />
-              <PhoneNumberInput
-                id="guarantor-phone-number"
-                label="phone number"
-                required
-                inputClassName="!bg-neutral-2 dark:!bg-transparent"
-              />
-              <Select
-                id="guarantor-relationship"
-                label="relationship"
-                placeholder="Select options"
-                options={guarantorRelationships}
-                inputContainerClassName="bg-neutral-2"
-              />
-              <Input
-                id="guarantor-address"
-                label="address"
-                inputClassName="rounded-lg"
-              />
-              <div className="flex items-end justify-end">
-                <Button size="base_medium" className="py-2 px-6">
-                  update
-                </Button>
-              </div>
-            </LandlordTenantInfoEditGrid>
-          </LandlordTenantInfoEditSection>
-
-          {/* Others */}
-          <LandlordTenantInfoEditSection title="Others">
-            <LandlordTenantInfoEditGrid>
-              <Select
-                id="employment"
-                label="employment"
-                inputContainerClassName="bg-neutral-2"
-                options={employmentOptions}
-                value={employment}
-                onChange={(value) => setEmployment(value)}
-              />
-              {employment.toLowerCase() === "employed" && (
-                <Select
-                  id="employment_type"
-                  label="employment type"
-                  options={employmentTypeOptions}
-                  inputContainerClassName="bg-neutral-2"
-                />
-              )}
-              <Select
-                id="family_type"
-                label="family type"
-                inputContainerClassName="bg-neutral-2"
-                options={familyTypes}
-              />
-              <div
-                className={clsx(
-                  "flex items-end justify-end",
-                  employment.toLowerCase() !== "employed" && "md:col-span-2"
-                )}
-              >
-                <Button size="base_medium" className="py-2 px-6">
-                  update
-                </Button>
-              </div>
-            </LandlordTenantInfoEditGrid>
-          </LandlordTenantInfoEditSection>
-
-          {/* Bank Details */}
-          <LandlordTenantInfoEditSection title="Bank Details">
-            <LandlordTenantInfoEditGrid>
-              <Input
-                id="bank_name"
-                label="bank name"
-                inputClassName="rounded-lg"
-              />
-              <Input
-                id="account_name"
-                label="account name"
-                inputClassName="rounded-lg"
-              />
-              <Input
-                id="account_number"
-                label="account number"
-                inputClassName="rounded-lg"
-              />
-
-              <div className="flex items-end justify-end">
-                <Button size="base_medium" className="py-2 px-6">
-                  update
-                </Button>
-              </div>
-            </LandlordTenantInfoEditGrid>
-          </LandlordTenantInfoEditSection>
-
-          {/* Attachment */}
-          <LandlordTenantInfoEditSection title="attachment">
-            <LandlordTenantInfoEditGrid>
-              <Select
-                id="document-type"
-                label="document type"
-                placeholder="Select options"
-                inputContainerClassName="bg-neutral-2"
-                options={["invoice", "receipt", "agreement", "other document"]}
-              />
-              <Input
-                id="browse"
-                type="file"
-                label="browse"
-                inputClassName="rounded-lg"
-              />
-              <div className="flex items-end">
-                <Button size="base_medium" className="py-2 px-6">
-                  add document
-                </Button>
-              </div>
-            </LandlordTenantInfoEditGrid>
-          </LandlordTenantInfoEditSection>
-        </div>
-
-        {/* Right Side */}
-        <div className="w-full lg:w-[334px] custom-flex-col gap-5 max-h-[calc(100vh-200px)] overflow-auto custom-round-scrollbar">
-          <div className="lg:sticky top-[175px] w-full lg:h-[calc(100vh-250px)] overflow-auto custom-flex-col gap-5 custom-round-scrollbar">
-            {/* Edit Avatar */}
-            <LandlordTenantInfoEditSection title="edit avatar">
-              <div className="flex">
-                <div className="relative">
-                  <Picture
-                    src={Avatar}
-                    alt="profile picture"
-                    size={90}
-                    rounded
-                  />
-                  <button
-                    type="button"
-                    className="absolute top-0 right-0 translate-x-[5px] -translate-y-[5px]"
-                  >
-                    <DeleteIconOrange size={32} />
-                  </button>
-                </div>
-              </div>
-              <div className="custom-flex-col gap-3">
-                <p className="text-black dark:text-white text-base font-medium">
-                  Choose Avatar
-                </p>
-                <div className="flex gap-3">
-                  {Array(4)
-                    .fill(null)
-                    .map((_, idx) => (
-                      <Picture
-                        key={idx}
-                        src={Avatar}
-                        alt="profile picture"
-                        size={40}
-                        rounded
-                      />
-                    ))}
-                </div>
-              </div>
-              <Button size="base_medium" className="py-2 px-6">
-                change photo
-              </Button>
-            </LandlordTenantInfoEditSection>
-            <LandlordTenantInfoEditSection title="add note">
-              <TextArea id="note" label="note" />
-            </LandlordTenantInfoEditSection>
+          {/* Right Side */}
+          <div className="w-full lg:w-[334px] custom-flex-col gap-5 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">
+            <LandlordEditAvatarInfoSection />
           </div>
         </div>
-      </div>
-      <FixedFooter className="flex justify-between items-center flex-wrap">
-        <Modal>
-          <ModalTrigger asChild>
+        <FixedFooter className="flex justify-between items-center flex-wrap">
+          <Modal>
+            <ModalTrigger asChild>
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                variant="light_red"
+              >
+                delete account
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <DeleteAccountModal />
+            </ModalContent>
+          </Modal>
+          <div className="flex gap-6">
             <Button
-              style={{ color: "#E9212E", backgroundColor: "#FDE9EA" }}
+              href={`/management/landlord/${landlord.id}/manage`}
               size="base_medium"
-              className="py-2 px-6"
+              className="py-2 px-6 hidden md:block"
+              variant="sky_blue"
             >
-              delete account
+              exit
             </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <DeleteAccountModal />
-          </ModalContent>
-        </Modal>
-        <div className="flex gap-6">
-          <Button
-            href={`/management/landlord/${landlordId}/manage`}
-            style={{ color: "#0033C4", backgroundColor: "#EFF6FF" }}
-            size="base_medium"
-            className="py-2 px-6"
-          >
-            exit
-          </Button>
-          <Button size="base_medium" className="py-2 px-6">
-            save
-          </Button>
-        </div>
-      </FixedFooter>
-    </div>
+            <Button size="base_medium" className="py-2 px-6">
+              save
+            </Button>
+          </div>
+        </FixedFooter>
+      </div>
+    </LandlordEditContext.Provider>
   );
 };
 

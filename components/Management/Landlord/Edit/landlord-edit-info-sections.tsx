@@ -2,24 +2,22 @@
 
 // Imports
 import clsx from "clsx";
-import {
-  LandlordTenantInfoEditGrid,
-  LandlordTenantInfoEditSection,
-  LandlordTenantInfoDocument,
-} from "../../landlord-tenant-info-components";
-import { DeleteIconOrange } from "@/public/icons/icons";
-import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
 import Input from "@/components/Form/Input/input";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
-import { useTenantEditContext } from "./tenant-edit-context";
-import Picture from "@/components/Picture/picture";
-import Avatars from "@/components/Avatars/avatars";
 import { useState, useEffect, useRef } from "react";
 import {
-  tenantTypes,
+  LandlordTenantInfoEditGrid,
+  LandlordTenantInfoEditSection,
+  LandlordTenantInfoDocument,
+} from "../../landlord-tenant-info-components";
+import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
+import { DeleteIconOrange } from "@/public/icons/icons";
+import CameraCircle from "@/public/icons/camera-circle.svg";
+import {
+  landlordTypes,
   genderTypes,
   nextOfKinRelationships,
   guarantorRelationships,
@@ -27,125 +25,127 @@ import {
   employmentOptions,
   employmentTypeOptions,
 } from "@/data";
-import type { TenantData } from "@/app/(nav)/management/tenants/types";
-import CameraCircle from "@/public/icons/camera-circle.svg";
+import { useLandlordEditContext } from "../landlord-edit-context";
+import type { LandlordPageData } from "@/app/(nav)/management/landlord/types";
+import Picture from "@/components/Picture/picture";
+import Avatars from "@/components/Avatars/avatars";
 
-const states = getAllStates();
-
-export const TenantEditProfileInfoSection = () => {
-  const { data } = useTenantEditContext();
-
-  const [address, setAddress] = useState({
+export const LandlordEditProfileInfoSection = () => {
+  const { data: landlord } = useLandlordEditContext();
+  const [address, setAddress] = useState<{
+    state: string;
+    local_government: string;
+    city: string;
+  }>({
     state: "",
-    local_govt: "",
+    local_government: "",
     city: "",
   });
-
-  const handleAddressChange = (field: keyof typeof address, value: string) => {
-    setAddress((x) => ({
-      ...x,
-      [field]: value,
-      ...(field === "state" && { local_govt: "", city: "" }),
-      ...(field === "local_govt" && { city: "" }),
+  const handleAddressChange = (value: string, key: keyof typeof address) => {
+    setAddress((prev) => ({
+      ...prev,
+      [key]: value,
+      ...(key === "state" && { local_government: "", city: "" }),
+      ...(key === "local_government" && { city: "" }),
     }));
   };
 
   useEffect(() => {
-    if (data) {
-      setAddress((prev) => ({
-        ...prev,
-        state: data.contact_address.state || "",
-        local_govt: data.contact_address.local_govt || "",
-        city: data.contact_address.city || "",
-      }));
+    if (landlord) {
+      console.log(landlord.contact_address);
+      setAddress({
+        state: landlord.contact_address.state || "",
+        local_government: landlord.contact_address.local_govt || "",
+        city: landlord.contact_address.city || "",
+      });
     }
-  }, [data?.contact_address]);
+  }, [landlord?.contact_address]);
 
   return (
     <LandlordTenantInfoEditSection title="profile">
       <LandlordTenantInfoEditGrid>
         <Input
-          id="tenant-first_name"
+          id="landlord-firstname"
           label="first name"
-          defaultValue={data?.first_name}
           required
           inputClassName="rounded-lg"
+          defaultValue={landlord?.first_name}
         />
         <Input
-          id="tenant-last_name"
+          id="landlord-lastname"
           label="last name"
-          defaultValue={data?.last_name}
           required
           inputClassName="rounded-lg"
+          defaultValue={landlord?.last_name}
         />
         <Input
-          id="tenant-email"
+          id="landlord-email"
           type="email"
           label="email"
-          defaultValue={data?.email}
           required
           inputClassName="rounded-lg"
+          defaultValue={landlord?.email}
         />
         <PhoneNumberInput
-          id="tenant-phone_number"
+          id="landlord-phone-number"
           label="phone number"
-          defaultValue={data?.phone_number}
           required
           inputContainerClassName="bg-neutral-2"
+          defaultValue={landlord?.phone_number}
         />
         <Select
-          id="tenant-state"
+          id="landlord-state"
           label="state"
-          options={states}
+          options={getAllStates()}
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
           value={address.state}
-          onChange={(value) => handleAddressChange("state", value)}
+          onChange={(value) => handleAddressChange(value, "state")}
         />
         <Select
-          id="tenant-local_government"
+          id="landlord-local_government"
           label="local government"
           placeholder="Select options"
-          inputContainerClassName="bg-neutral-2 dark:!bg-darkText-primary"
           options={getLocalGovernments(address.state)}
-          value={address.local_govt}
-          onChange={(value) => handleAddressChange("local_govt", value)}
+          inputContainerClassName="bg-neutral-2"
+          value={address.local_government}
+          onChange={(value) => handleAddressChange(value, "local_government")}
         />
         <Select
-          id="tenant-city"
+          id="landlord-city"
           label="city"
           placeholder="Select options"
-          options={getCities(address.state, address.local_govt)}
-          value={address.city}
-          onChange={(value) => handleAddressChange("city", value)}
-          allowCustom
+          options={getCities(address.state, address.local_government)}
           inputContainerClassName="bg-neutral-2"
+          value={address.city}
+          allowCustom={true}
+          onChange={(value) => handleAddressChange(value, "city")}
         />
         <Input
-          id="tenant-address"
+          id="landlord-address"
           label="address"
           inputClassName="rounded-lg"
-          defaultValue={data?.contact_address.address}
+          defaultValue={landlord?.contact_address.address}
         />
         <Select
-          id="tenant_type"
-          label="tenant type"
+          id="owner-type"
+          label="owner type"
           isSearchable={false}
           placeholder="Select options"
-          options={tenantTypes}
-          defaultValue={"default: data?.tenant_type"} //value not provided from api
+          options={landlordTypes}
           inputContainerClassName="bg-neutral-2"
+          defaultValue={landlord?.type}
         />
         <Select
           id="gender"
           label="gender"
           isSearchable={false}
           placeholder="Select options"
-          options={genderTypes}
           inputContainerClassName="bg-neutral-2"
-          defaultValue={data?.gender || ""}
+          options={genderTypes}
+          defaultValue={landlord?.gender}
         />
-        <div className="md:col-span-2 flex items-end justify-end">
+        <div className="md:col-span-2 flex justify-end">
           <Button size="base_medium" className="py-2 px-6">
             update
           </Button>
@@ -155,51 +155,46 @@ export const TenantEditProfileInfoSection = () => {
   );
 };
 
-export const TenantEditNextOfKinInfoSection = () => {
-  const { data } = useTenantEditContext();
-  const next_of_kin = data?.next_of_kin || {
-    name: "",
-    email: "",
-    address: "",
-    phone: "",
-    relationship: "",
-  };
-
+export const LandlordEditNextOfKinInfoSection = () => {
+  const { data: landlord } = useLandlordEditContext();
   return (
     <LandlordTenantInfoEditSection title="Next of Kin">
       <LandlordTenantInfoEditGrid>
         <Input
           id="next-of-kin-fullname"
           label="full name"
-          defaultValue={next_of_kin.name}
+          required
           inputClassName="rounded-lg"
+          defaultValue={landlord?.next_of_kin.name}
         />
         <Input
           id="next-of-kin-email"
           type="email"
           label="email"
-          defaultValue={next_of_kin.email}
+          required
           inputClassName="rounded-lg"
+          defaultValue={landlord?.next_of_kin.email}
         />
         <PhoneNumberInput
           id="next-of-kin-phone-number"
           label="phone number"
-          defaultValue={next_of_kin.phone || ""}
+          required
           inputContainerClassName="bg-neutral-2"
+          defaultValue={landlord?.next_of_kin.phone || ""}
         />
         <Select
           id="next-of-kin-relationship"
           label="relationship"
           placeholder="Select options"
           options={nextOfKinRelationships}
-          defaultValue={next_of_kin.relationship || ""}
-          inputContainerClassName="bg-neutral-2 dark:bg-darkText-primary"
+          inputContainerClassName="bg-neutral-2"
+          defaultValue={landlord?.next_of_kin.relationship || ""}
         />
         <Input
           id="next-of-kin-address"
           label="address"
-          defaultValue={next_of_kin.address}
           inputClassName="rounded-lg"
+          defaultValue={landlord?.next_of_kin.address}
         />
         <div className="flex items-end justify-end">
           <Button size="base_medium" className="py-2 px-6">
@@ -211,8 +206,8 @@ export const TenantEditNextOfKinInfoSection = () => {
   );
 };
 
-export const TenantEditGuarantorInfoSection = () => {
-  const { data } = useTenantEditContext();
+export const LandlordEditGuarantorInfoSection = () => {
+  const { data } = useLandlordEditContext();
 
   const guarantor1 = data?.guarantor1 || {
     name: "",
@@ -231,7 +226,7 @@ export const TenantEditGuarantorInfoSection = () => {
   };
 
   const renderGuarantorSection = (
-    guarantor: TenantData["guarantor1"],
+    guarantor: LandlordPageData["guarantor1"],
     index: number
   ) => (
     <LandlordTenantInfoEditSection title={`Guarantor ${index}`}>
@@ -264,7 +259,7 @@ export const TenantEditGuarantorInfoSection = () => {
           placeholder="Select options"
           options={guarantorRelationships}
           defaultValue={guarantor.relationship || ""}
-          inputContainerClassName="bg-neutral-2 dark:!bg-darkText-primary"
+          inputContainerClassName="bg-neutral-2"
         />
         <Input
           id={`guarantor${index}_address`}
@@ -290,9 +285,42 @@ export const TenantEditGuarantorInfoSection = () => {
   );
 };
 
-export const TenantEditOthersInfoSection = () => {
-  const { data } = useTenantEditContext();
+export const LandlordEditBankDetailsInfoSection = () => {
+  const { data: landlord } = useLandlordEditContext();
+  return (
+    <LandlordTenantInfoEditSection title="Bank Details">
+      <LandlordTenantInfoEditGrid>
+        <Input
+          id="bank_name"
+          label="bank name"
+          inputClassName="rounded-lg"
+          defaultValue={landlord?.bank_details.bank_name}
+        />
+        <Input
+          id="account_name"
+          label="account name"
+          inputClassName="rounded-lg"
+          defaultValue={landlord?.bank_details.account_name}
+        />
+        <Input
+          id="account_number"
+          label="account number"
+          inputClassName="rounded-lg"
+          defaultValue={landlord?.bank_details.account_number}
+        />
 
+        <div className="flex items-end justify-end">
+          <Button size="base_medium" className="py-2 px-6">
+            update
+          </Button>
+        </div>
+      </LandlordTenantInfoEditGrid>
+    </LandlordTenantInfoEditSection>
+  );
+};
+
+export const LandlordEditOthersInfoSection = () => {
+  const { data } = useLandlordEditContext();
   const others = data?.others || {
     type: "",
     note: "",
@@ -305,18 +333,17 @@ export const TenantEditOthersInfoSection = () => {
   useEffect(() => {
     setEmployment(others.occupation);
   }, [others.occupation]);
-
   return (
     <LandlordTenantInfoEditSection title="Others">
       <LandlordTenantInfoEditGrid>
         <Select
           id="employment"
           label="employment"
-          options={employmentOptions}
-          defaultValue={others.occupation || ""}
-          value={employment || ""}
           inputContainerClassName="bg-neutral-2"
+          options={employmentOptions}
+          value={employment || ""}
           onChange={(value) => setEmployment(value)}
+          defaultValue={others.occupation || ""}
         />
         {employment && employment.toLowerCase() === "employed" && (
           <Select
@@ -330,14 +357,15 @@ export const TenantEditOthersInfoSection = () => {
         <Select
           id="family_type"
           label="family type"
-          options={familyTypes}
           inputContainerClassName="bg-neutral-2"
+          options={familyTypes}
           defaultValue={others.family_type || ""}
         />
         <div
           className={clsx(
             "flex items-end justify-end",
-            (employment && employment.toLowerCase()) !== "employed" &&
+            employment &&
+              employment.toLowerCase() !== "employed" &&
               "md:col-span-2"
           )}
         >
@@ -350,62 +378,18 @@ export const TenantEditOthersInfoSection = () => {
   );
 };
 
-export const TenantEditBankDetailsSection = () => {
-  const { data } = useTenantEditContext();
-
-  const bank_details = data?.bank_details || {
-    bank_name: "",
-    wallet_id: "",
-    account_name: "",
-    account_number: "",
-  };
-
-  return (
-    <LandlordTenantInfoEditSection title="Bank Details">
-      <LandlordTenantInfoEditGrid>
-        <Input
-          id="bank_name"
-          label="bank name"
-          placeholder="Placeholder"
-          defaultValue={bank_details.bank_name}
-          inputClassName="rounded-lg"
-        />
-        <Input
-          id="account_name"
-          label="account name"
-          placeholder="Placeholder"
-          defaultValue={bank_details.account_name}
-          inputClassName="rounded-lg"
-        />
-        <Input
-          id="account_number"
-          label="account number"
-          placeholder="Placeholder"
-          defaultValue={bank_details.account_number}
-          inputClassName="rounded-lg"
-        />
-        <div className="flex items-end justify-end">
-          <Button size="base_medium" className="py-2 px-6">
-            update
-          </Button>
-        </div>
-      </LandlordTenantInfoEditGrid>
-    </LandlordTenantInfoEditSection>
-  );
-};
-
-export const TenantEditAttachmentSection = () => {
-  const { data } = useTenantEditContext();
-  const [documents, setDocuments] = useState<TenantData["documents"]>([]);
+export const LandlordEditAttachmentInfoSection = () => {
+  const { data } = useLandlordEditContext();
+  const [documents, setDocuments] = useState<LandlordPageData["documents"]>([]);
   const [documentType, setDocumentType] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
-      const newFiles = Array.from(files).map((file, i) => ({
+      const newFiles = Array.from(files).map((file) => ({
         document_type: documentType,
-        id: i, // or generate a unique ID
+        id: file.name, // or generate a unique ID
         name: file.name,
         link: URL.createObjectURL(file),
       }));
@@ -489,8 +473,9 @@ export const TenantEditAttachmentSection = () => {
   );
 };
 
-export const TenantEditNoteSection = () => {
-  const { data } = useTenantEditContext();
+export const LandlordEditNoteInfoSection = () => {
+  const { data } = useLandlordEditContext();
+
   const [note, setNote] = useState(data?.notes || "");
 
   useEffect(() => {
@@ -526,8 +511,8 @@ export const TenantEditNoteSection = () => {
   );
 };
 
-export const TenantEditAvatarInfoSection = () => {
-  const { data } = useTenantEditContext();
+export const LandlordEditAvatarInfoSection = () => {
+  const { data } = useLandlordEditContext();
   const [profilePicture, setProfilePicture] = useState<string>(CameraCircle);
   const fileInputRef = useRef<HTMLInputElement>(null);
 

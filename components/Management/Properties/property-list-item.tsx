@@ -111,12 +111,12 @@ const PropertyListItem: React.FC<PropertyProps> = ({
           <p
             className={clsx(
               "px-4 py-1 text-[10px] font-normal rounded-lg",
-              type === "rent"
+              type === "rental"
                 ? "text-status-success-3 bg-status-success-1"
                 : "text-brand-9 bg-brand-3"
             )}
           >
-            {type === "rent" ? "Rental Property" : "Gated Estate"}
+            {type === "rental" ? "Rental Property" : "Gated Estate"}
           </p>
           <p className="font-bold text-sm md:text-base text-brand-10">
             ID: 123456776342

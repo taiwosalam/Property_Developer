@@ -1,5 +1,7 @@
 import clsx from "clsx";
 import { CSSProperties } from "react";
+import Link from "next/link";
+import Image from "next/image";
 
 export const LandlordTenantInfoBox: React.FC<{
   style?: CSSProperties;
@@ -7,7 +9,10 @@ export const LandlordTenantInfoBox: React.FC<{
   className?: string;
 }> = ({ style, children, className }) => (
   <div
-    className={clsx("p-4 bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden", className)}
+    className={clsx(
+      "p-4 bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden",
+      className
+    )}
     style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)", ...style }}
   >
     {children}
@@ -54,35 +59,76 @@ export const LandlordTenantInfoSection: React.FC<{
   title: string;
   minimized?: boolean;
   children: React.ReactNode;
-}> = ({ title, children, minimized }) => (
-  <div
-    className={clsx("custom-flex-col", {
-      "gap-2": minimized,
-      "gap-5": !minimized,
-    })}
-  >
-    <h2
-      className={clsx("capitalize", {
-        "text-black dark:text-darkText-1 text-lg md:text-xl lg:text-2xl font-bold": !minimized,
-        "text-text-quaternary dark:text-darkText-1 text-base md:text-lg font-medium": minimized,
+}> = ({ title, children, minimized }) => {
+  const commonClasses = "capitalize dark:text-white";
+  return (
+    <div
+      className={clsx("custom-flex-col", {
+        "gap-2": minimized,
+        "gap-5": !minimized,
       })}
     >
-      {title}
-    </h2>
-    {children}
-  </div>
-);
+      {minimized ? (
+        <h3
+          className={clsx(
+            commonClasses,
+            "text-text-quaternary text-base md:text-lg font-medium"
+          )}
+        >
+          {title}
+        </h3>
+      ) : (
+        <h2
+          className={clsx(
+            commonClasses,
+            "text-black text-lg md:text-xl lg:text-2xl font-bold"
+          )}
+        >
+          {title}
+        </h2>
+      )}
+      {children}
+    </div>
+  );
+};
 
-export const LandlordTenantInfoDocument: React.FC<{}> = () => (
-  <div className="w-[160px] h-[168px] rounded-2xl overflow-hidden bg-text-disabled custom-flex-col">
-    <div className="flex-1"></div>
+export interface AttachedDocumentCard {
+  id: string | number;
+  name: string;
+  date?: string;
+  thumbnail?: string;
+  link: string;
+}
+
+export const LandlordTenantInfoDocument: React.FC<AttachedDocumentCard> = ({
+  name,
+  date,
+  thumbnail,
+  link,
+}) => (
+  <Link
+    href={link}
+    className="w-[160px] h-[168px] rounded-2xl overflow-hidden bg-text-disabled custom-flex-col"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    <div className="flex-1">
+      <div
+        className="w-full h-full bg-text-disabled"
+        style={{
+          backgroundImage: thumbnail ? `url(${thumbnail})` : undefined,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      ></div>
+    </div>
     <div className="p-4 bg-brand-primary text-white text-sm lg:text-base font-medium">
       <p className="w-full whitespace-nowrap overflow-hidden text-ellipsis">
-        Name of document
+        {name}
       </p>
-      <p>12 Oct 2024</p>
+      <p>{date}</p>
     </div>
-  </div>
+  </Link>
 );
 
 export const LandlordTenantInfoEditSection: React.FC<{
@@ -110,28 +156,5 @@ export const LandlordTenantInfoEditGrid: React.FC<{
 }> = ({ children }) => (
   <div className="grid md:grid-cols-2 gap-y-5 gap-x-6 xl:gap-x-[60px]">
     {children}
-  </div>
-);
-
-// This Usertag is not consistent with design and Redundant
-export const LandlordTenantUserTag: React.FC<{
-  type: "web" | "mobile" | "branch manager";
-}> = ({ type }) => (
-  <div
-    className={clsx("py-1 px-4 rounded-lg", {
-      "bg-status-caution-1": type === "web",
-      "bg-status-success-1": type === "mobile",
-      "bg-status-error-2": type === "branch manager",
-    })}
-  >
-    <p
-      className={clsx("capitalize text-[10px] font-normal", {
-        "text-status-caution-3 ": type === "web",
-        "text-status-success-3 ": type === "mobile",
-        "text-white": type === "branch manager",
-      })}
-    >
-      {type}
-    </p>
   </div>
 );

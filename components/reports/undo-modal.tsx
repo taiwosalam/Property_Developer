@@ -109,6 +109,7 @@ const eventToComponentMap = {
         price={1000}
         type="gated"
         units={10}
+        currency="Naira"
       />
     </div>
   ),

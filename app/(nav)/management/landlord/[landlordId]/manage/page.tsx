@@ -28,22 +28,45 @@ import UserTag from "@/components/Tags/user-tag";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useLandlordData from "@/hooks/useLandlordData";
+import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
+import type { LandlordPageData } from "../../types";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const ManageLandlord = () => {
+  // const {
+  //   landlord: LandlordPageData,
+  //   landlordId,
+  //   loading,
+  //   error,
+  // } = useLandlordData();
+
+  // Stressing myself
   const isDarkMode = useDarkMode();
   const {
-    landlord: LandlordPageData,
-    landlordId,
+    data: LandlordPageData,
     loading,
     error,
-  } = useLandlordData();
+  } = MockFunction("landlord") as {
+    data: LandlordPageData;
+    loading: boolean;
+    error: Error | null;
+  };
 
   const router = useRouter();
+  const groupDocumentsByType = (documents: LandlordPageData["documents"]) => {
+    return documents.reduce((acc, document) => {
+      if (!acc[document.document_type]) {
+        acc[document.document_type] = [];
+      }
+      acc[document.document_type].push(document);
+      return acc;
+    }, {} as Record<string, LandlordPageData["documents"]>);
+  };
 
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <div>Error: {error.message}</div>;
   if (!LandlordPageData) return null;
+  const groupedDocuments = groupDocumentsByType(LandlordPageData?.documents);
 
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
@@ -75,7 +98,7 @@ const ManageLandlord = () => {
               <div className="custom-flex-col">
                 <div className="flex items-center">
                   <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                    {LandlordPageData?.name}
+                    {LandlordPageData?.first_name} {LandlordPageData?.last_name}
                   </p>
                   <BadgeIcon color="blue" />
                 </div>
@@ -89,7 +112,8 @@ const ManageLandlord = () => {
               <div className="custom-flex-col gap-2">
                 <UserTag type={LandlordPageData.user_tag} />
                 <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
-                  ID: {LandlordPageData?.id || landlordId}
+                  {/* ID: {LandlordPageData?.id || landlordId} */}
+                  ID: {LandlordPageData?.id}
                 </p>
               </div>
             </div>
@@ -282,17 +306,14 @@ const ManageLandlord = () => {
           {LandlordPageData?.properties_managed?.map((property) => (
             <PropertyCard
               key={property.id}
-              images={[]}
+              images={property.images}
               id={property.id.toString()}
               propertyId={property.id.toString()}
-              {...{
-                name: property.property_name,
-                units: property.units,
-                address: property.address,
-                price: property.rental_value,
-                type: "rent",
-                image: property.image || "https://via.placeholder.com/150",
-              }}
+              name={property.name}
+              units={property.units}
+              address={property.address}
+              price={property.rental_value}
+              currency={property.currency}
             />
           ))}
         </AutoResizingGrid>
@@ -355,33 +376,35 @@ const ManageLandlord = () => {
         <div className="flex gap-8"></div>
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="shared documents">
-        <LandlordTenantInfoSection minimized title="invoice">
-          <div className="flex flex-wrap gap-4">
-            {Array(4)
-              .fill(null)
-              .map((_, idx) => (
-                <LandlordTenantInfoDocument key={idx} />
+        {Object.entries(groupedDocuments).map(([documentType, documents]) => {
+          if (documentType === "other document") return null; // Skip "other document" for now
+          return (
+            <LandlordTenantInfoSection
+              minimized
+              title={documentType}
+              key={documentType}
+            >
+              <div className="flex flex-wrap gap-4">
+                {documents.map((document) => (
+                  <LandlordTenantInfoDocument key={document.id} {...document} />
+                ))}
+              </div>
+            </LandlordTenantInfoSection>
+          );
+        })}
+        {groupedDocuments["other document"] && (
+          <LandlordTenantInfoSection
+            minimized
+            title="other documents"
+            key="other document"
+          >
+            <div className="flex flex-wrap gap-4">
+              {groupedDocuments["other document"].map((document) => (
+                <LandlordTenantInfoDocument key={document.id} {...document} />
               ))}
-          </div>
-        </LandlordTenantInfoSection>
-        <LandlordTenantInfoSection minimized title="receipts">
-          <div className="flex flex-wrap gap-4">
-            {Array(3)
-              .fill(null)
-              .map((_, idx) => (
-                <LandlordTenantInfoDocument key={idx} />
-              ))}
-          </div>
-        </LandlordTenantInfoSection>
-        <LandlordTenantInfoSection minimized title="other documents">
-          <div className="flex flex-wrap gap-4">
-            {Array(2)
-              .fill(null)
-              .map((_, idx) => (
-                <LandlordTenantInfoDocument key={idx} />
-              ))}
-          </div>
-        </LandlordTenantInfoSection>
+            </div>
+          </LandlordTenantInfoSection>
+        )}
       </LandlordTenantInfoSection>
     </div>
   );
