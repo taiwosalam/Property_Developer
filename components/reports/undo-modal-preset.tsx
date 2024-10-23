@@ -17,10 +17,10 @@ const UndoModalPreset: React.FC<UndoModalPresetProps> = ({
   setActionType,
 }) => {
   return (
-    <div className="w-[600px] max-w-[80%] max-h-[85%] h-fit rounded-lg bg-white overflow-x-auto custom-round-scrollbar font-medium">
+    <div className="w-[600px] max-w-[80%] max-h-[85%] h-fit rounded-lg bg-white dark:bg-darkText-primary overflow-x-auto custom-round-scrollbar font-medium">
       {/* Header */}
-      <div className="py-5 rounded-t-lg bg-brand-1 flex items-center justify-center sticky top-0 z-[2]">
-        <span className="font-medium text-base text-text-secondary">
+      <div className="py-5 rounded-t-lg bg-brand-1 dark:bg-[#3C3D37] flex items-center justify-center sticky top-0 z-[2]">
+        <span className="font-medium text-base text-text-secondary dark:text-white">
           {heading}
         </span>
         <ModalTrigger close className="absolute top-4 right-6">
@@ -28,7 +28,7 @@ const UndoModalPreset: React.FC<UndoModalPresetProps> = ({
         </ModalTrigger>
       </div>
 
-      <div className="bg-white pt-8 px-[18px] pb-[18px] rounded-b-lg flex flex-col justify-between">
+      <div className="bg-white dark:bg-black pt-8 px-[18px] pb-[18px] rounded-b-lg flex flex-col justify-between">
         <div className="max-w-[90%] w-fit mx-auto mb-5">{children}</div>
         <div className="grid gap-2 grid-cols-2">
           <Button

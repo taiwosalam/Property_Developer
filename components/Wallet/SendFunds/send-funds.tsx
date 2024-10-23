@@ -27,7 +27,7 @@ const SendFunds: React.FC<WalletModalDefaultProps<WalletSendFundsOptions>> = ({
           style={{ backgroundColor: isDarkMode ? "black" : "white" }}
         />
         <div className="custom-flex-col gap-4 py-[18px] rounded-2xl bg-neutral-2 dark:bg-darkText-primary">
-          <p className="pl-[18px] text-[#010A23] text-base font-medium">
+          <p className="pl-[18px] text-[#010A23] dark:text-white text-base font-medium">
             Beneficiaries
           </p>
           <div className="custom-flex-col gap-2 sections">

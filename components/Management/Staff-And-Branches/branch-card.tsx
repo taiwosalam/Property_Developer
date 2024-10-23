@@ -45,26 +45,34 @@ const BranchCard: React.FC<BranchProps> = ({
             height={20}
             className="w-5 h-5 rounded-full object-cover"
           />
-          <p className="text-black font-medium text-sm">{manager_name}</p>
+          <p className="text-black dark:text-darkText-1 font-medium text-sm">
+            {manager_name}
+          </p>
         </div>
         <div className="flex gap-5 [&>div]:flex [&>div]:flex-col [&>div]:gap-2 [&>div]:items-center overflow-x-auto max-w-[100%]">
           <div>
             <p className="bg-support-3 text-white font-medium text-base p-1 rounded-lg w-8">
               {staff_count}
             </p>
-            <p className="text-text-label text-base font-medium">Staffs</p>
+            <p className="text-text-label text-base font-medium dark:text-darkText-1">
+              Staffs
+            </p>
           </div>
           <div>
             <p className="bg-support-2 text-white font-medium text-base p-1 rounded-lg w-8">
               {property_count}
             </p>
-            <p className="text-text-label text-base font-medium">Properties</p>
+            <p className="text-text-label text-base font-medium dark:text-darkText-1">
+              Properties
+            </p>
           </div>
           <div>
             <p className="bg-support-1 text-white font-medium text-base p-1 rounded-lg w-8">
               {unit_count}
             </p>
-            <p className="text-text-label text-base font-medium">Units</p>
+            <p className="text-text-label text-base font-medium dark:text-darkText-1">
+              Units
+            </p>
           </div>
         </div>
       </div>

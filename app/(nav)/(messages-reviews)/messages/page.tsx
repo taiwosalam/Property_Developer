@@ -15,7 +15,7 @@ const Messages = () => {
           <div className="flex justify-center">
             <Image src={LogoPlaceholder} alt="logo" width={200} />
           </div>
-          <p className="text-center text-text-quaternary text-sm font-normal">
+          <p className="text-center text-text-quaternary dark:text-darkText-1 text-sm font-normal">
             It appears that you do not have any chats open. Please click on a
             chat to open one, or click on the new message button to start a new
             message.
