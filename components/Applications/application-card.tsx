@@ -47,11 +47,6 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
         {type == "staff" && (
           <Modal>
             <ModalTrigger className="absolute top-[18px] right-[18px] rounded-[4px] bg-brand-1 dark:text-white dark:bg-darkText-primary w-8 h-8 flex items-center justify-center">
-              {/* <Picture
-                src={ThreeDotsVertical}
-                alt="three dots vertical"
-                size={16}
-              /> */}
               <ThreeDotsVertical />
             </ModalTrigger>
             <ModalContent>
@@ -74,9 +69,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
               {type == "staff" ? (
                 <BadgeIcon color="blue" noMargin />
               ) : (
-                <p className="text-support-3 text-xs font-bold italic">
-                  Guest
-                </p>
+                <p className="text-support-3 text-xs font-bold italic">Guest</p>
               )}
             </div>
             {type == "staff" ? (

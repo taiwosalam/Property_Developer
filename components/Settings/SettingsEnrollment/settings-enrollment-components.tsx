@@ -26,14 +26,14 @@ export const PlanHeader: React.FC<{
 
   return (
     <div
-      className={`plan-title pt-5 px-4 bg-[#F4F9FF] border-b  h-[155px] relative ${themeColor}`}
+      className={`plan-title pt-5 px-4 bg-[#F4F9FF] dark:bg-[#3C3D37] dark:border dark:border-[#3C3D37] border-b  h-[155px] relative ${themeColor}`}
     >
       <h3
         className={`text-[16px] font-medium tracking-[0px] text-[${themeColor}]`}
       >
         {planTitle.toUpperCase()}
       </h3>
-      <p className="text-[14px] font-medium tracking-[0px] text-text-secondary">
+      <p className="text-[14px] font-medium tracking-[0px] text-text-secondary dark:text-darkText-1">
         {desc.split(planFor).map((part, index) =>
           index === 0 ? (
             part
@@ -62,8 +62,8 @@ export const PriceSection: React.FC<{
 }> = ({ price = "", discount = "", isFree = false, duration }) => (
   <div className="w-full max-w-[344px] flex-col flex items-center">
     <h3
-      className={`text-[20px] font-bold tracking-[0px] leading-[150%] text-text-secondary ${
-        isFree ? "text-opacity-40" : ""
+      className={`text-[20px] font-bold tracking-[0px] leading-[150%] text-text-secondary dark:text-white ${
+        isFree ? "text-opacity-40 dark:text-opacity-40" : ""
       }`}
     >
       {isFree ? "₦0.00" : price}
@@ -93,8 +93,8 @@ export const BillingTypeSelector: React.FC<{
   isLifeTimePlan = false,
 }) => (
   <div
-    className={`flex w-full justify-center my-5 bg-brand-1 min-h-[54px] gap-5 py-2 rounded-md ${
-      isFree ? "bg-opacity-40" : ""
+    className={`flex w-full justify-center my-5 bg-brand-1 dark:bg-[#3C3D37] min-h-[54px] gap-5 py-2 rounded-md ${
+      isFree ? "bg-opacity-40 dark:bg-opacity-40" : ""
     }`}
   >
     <BillingTypeButton
@@ -143,7 +143,7 @@ export const BillingTypeButton: React.FC<{
       className={`flex flex-col items-center justify-center px-6 ${
         billingType === type
           ? "border rounded-md transition-all duration-300 ease-in-out " +
-            (isFree ? "border-text-disabled" : "border-brand-9 bg-white")
+            (isFree ? "border-text-disabled dark:border-[#3C3D37]" : "border-brand-9 bg-white dark:bg-darkText-primary")
           : ""
       }`}
     >
@@ -152,8 +152,8 @@ export const BillingTypeButton: React.FC<{
         disabled={isFree}
         className={`flex flex-col items-center ${
           isFree
-            ? "text-text-secondary opacity-50 cursor-not-allowed text-sm"
-            : "text-text-secondary text-base"
+            ? "text-text-secondary dark:text-darkText-1 opacity-50 cursor-not-allowed text-sm"
+            : "text-text-secondary dark:text-darkText-1 text-base"
         }`}
       >
         {isFree
@@ -167,7 +167,7 @@ export const BillingTypeButton: React.FC<{
           <span
             className={`${
               isFree
-                ? "text-text-secondary opacity-50 cursor-not-allowed"
+                ? "text-text-secondary dark:text-darkText-1 opacity-50 cursor-not-allowed"
                 : "text-brand-9"
             }`}
           >
@@ -208,9 +208,9 @@ export const QuantityCounter: React.FC<{
 
   return (
     <div className="counter flex items-center justify-center w-full gap-2">
-      <div className="flex items-center gap-6 w-full max-w-[74px] border border-neutral-3 px-2 rounded-md">
+      <div className={`flex items-center gap-6 w-full max-w-[74px] border border-neutral-3 px-2 rounded-md ${isFree ? "border-text-disabled dark:border-[#3C3D37]" : ""}`}>
         <p
-          className={`count pl-1 text-[#000] text-[14px] font-medium tracking-[0px] ${
+          className={`count pl-1 text-[#000] dark:text-white text-[14px] font-medium tracking-[0px] ${
             isFree ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
@@ -220,7 +220,7 @@ export const QuantityCounter: React.FC<{
           <CounterButton
             onClick={incrementQuantity}
             disabled={isFree}
-            icon="/icons/plus.svg"
+            icon="/icons/plus.svg"  
             alt="plus"
           />
           <CounterButton

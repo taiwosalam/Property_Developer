@@ -24,7 +24,7 @@ const DetailsCheck: React.FC<DetailsCheckProps> = ({ label }) => {
   return (
     <label
       htmlFor={`${label}-check`}
-      className="flex items-center justify-between gap-2 rounded-[4px] bg-neutral-3 dark:bg-darkText-primary dark:border dark:border-darkText-1 px-[18px] py-[10px]"
+      className="flex items-center justify-between gap-2 rounded-[4px] bg-neutral-3 dark:bg-darkText-primary dark:border dark:border-[#3C3D37] px-[18px] py-[10px]"
     >
       <span className="text-sm text-text-secondary dark:text-darkText-2">
         {label}
@@ -51,7 +51,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
   return (
     <div className="w-[600px] max-w-[80%] max-h-[85%] rounded-lg overflow-x-auto custom-round-scrollbar font-medium">
       {/* Header */}
-      <div className="bg-brand-1 text-base text-text-primary py-4 text-center sticky top-0 z-[2]">
+      <div className="bg-brand-1 dark:bg-[#3C3D37] dark:text-white text-base text-text-primary py-4 text-center sticky top-0 z-[2]">
         Property Request Details
         <ModalTrigger
           close

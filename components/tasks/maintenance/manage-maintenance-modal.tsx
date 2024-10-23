@@ -1,4 +1,4 @@
-import { XIcon } from "@/public/icons/icons";
+import { CancelIcon, XIcon } from "@/public/icons/icons";
 import Input from "@/components/Form/Input/input";
 import DateInput from "@/components/Form/DateInput/date-input";
 import {
@@ -70,11 +70,11 @@ const ManageMaintenanceModal = () => {
       }}
     >
       {/* Header */}
-      <div className="text-center text-text-secondary text-base pt-5 lg:pt-10 pb-4 rounded-t-lg bg-brand-1 sticky z-[1] top-0">
+      <div className="text-center text-text-secondary text-base pt-5 lg:pt-10 pb-4 rounded-t-lg dark:bg-[#3C3D37] dark:text-white sticky z-[1] top-0">
         Manage Maintenance
         <ModalTrigger asChild close>
           <button className="absolute top-2 right-4" aria-label="Close">
-            <XIcon />
+           <CancelIcon />
           </button>
         </ModalTrigger>
       </div>

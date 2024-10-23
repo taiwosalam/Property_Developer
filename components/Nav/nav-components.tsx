@@ -38,10 +38,12 @@ export const NavButton: React.FC<NavButtonProps> = ({
       className={clsx("w-full py-3 pl-10 pr-5 flex items-center gap-4", {
         "nav-button": !minimized,
         "nav-button-minimized": minimized,
-        "bg-brand-3": minimized_highlight,
         "custom-primary-bg": highlight,
       })}
-      style={style}
+      style={{
+        backgroundColor: minimized_highlight ? SecondaryColor : undefined,
+        ...style,
+      }}
     >
       {type && (
         <SVG
@@ -124,7 +126,7 @@ export const NavIcon: React.FC<NavIconProps> = ({
   onClick,
 }) => {
   const class_styles =
-    "p-[5px] rounded-lg bg-background-2 flex items-center justify-center w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[36px] md:h-[36px] aspect-square";
+    "p-[5px] rounded-lg bg-background-2 dark:bg-[#3C3D37] flex items-center justify-center w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[36px] md:h-[36px] aspect-square";
 
   return href ? (
     <Link

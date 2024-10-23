@@ -7,10 +7,12 @@ import type { WalletModalDefaultProps, WalletSendFundsOptions } from "../types";
 import Input from "@/components/Form/Input/input";
 import FundsBeneficiary from "./funds-beneficiary";
 import Button from "@/components/Form/Button/button";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const SendFunds: React.FC<WalletModalDefaultProps<WalletSendFundsOptions>> = ({
   changeStep,
 }) => {
+  const isDarkMode = useDarkMode()
   const handleBenefeciary = () => {
     changeStep("send fund to beneficiary");
   };
@@ -22,10 +24,10 @@ const SendFunds: React.FC<WalletModalDefaultProps<WalletSendFundsOptions>> = ({
           id="wallet-id"
           placeholder="Description"
           label="Recipient Wallet ID"
-          style={{ backgroundColor: "white" }}
+          style={{ backgroundColor: isDarkMode ? "black" : "white" }}
         />
-        <div className="custom-flex-col gap-4 py-[18px] rounded-2xl bg-neutral-2">
-          <p className="pl-[18px] text-[#010A23] text-base font-medium">
+        <div className="custom-flex-col gap-4 py-[18px] rounded-2xl bg-neutral-2 dark:bg-darkText-primary">
+          <p className="pl-[18px] text-[#010A23] dark:text-white text-base font-medium">
             Beneficiaries
           </p>
           <div className="custom-flex-col gap-2 sections">

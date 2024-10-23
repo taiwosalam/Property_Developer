@@ -91,7 +91,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         <PhoneNumberInput
           id="phone_number"
           label="phone number"
-          inputClassName="!bg-neutral-2 !dark:bg-black"
+          inputClassName="!bg-neutral-2 dark:!bg-transparent"
           // validationErrors={errorMsgs} validation errors left to you Teni!
         />
         <Select

@@ -174,8 +174,7 @@ const Vat = () => {
         <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
           <table className="dash-table">
             <colgroup>
-              <col className="w-[72px]" />
-              <col className="w-[62px]" />
+              <col className="min-w-[72px]" />
             </colgroup>
             <thead>
               <tr>

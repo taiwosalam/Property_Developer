@@ -1,8 +1,8 @@
 import Button from "../Form/Button/button";
 import { AboutPageProps } from "./types";
 import Image from "next/image";
-import CloseCircle from "@/public/icons/close-circle.svg";
-import { PlayIconButton } from "@/public/icons/icons";
+// import CloseCircle from "@/public/icons/close-circle.svg";
+import { CloseCircle, PlayIconButton } from "@/public/icons/icons";
 import { ModalTrigger } from "../Modal/modal";
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
@@ -22,12 +22,13 @@ const AboutPage: React.FC<AboutPageProps> = ({
     setIsClient(true);
   }, []);
   return (
-    <div className="w-[600px] max-w-[90%] rounded-[10px] max-h-[90%] bg-white overflow-x-auto">
-      <div className="bg-brand-1 px-8 py-6 w-full">
+    <div className="w-[600px] max-w-[90%] rounded-[10px] max-h-[90%] bg-white dark:bg-darkText-primary overflow-x-auto">
+      <div className="bg-brand-1 dark:bg-[#3C3D37] px-8 py-6 w-full">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-center">{title}</h2>
           <ModalTrigger close className="p-1" type="button">
-            <Image src={CloseCircle} alt="close" width={24} height={24} />
+            {/* <Image src={CloseCircle} alt="close" width={24} height={24} /> */}
+            <CloseCircle />
           </ModalTrigger>
         </div>
       </div>

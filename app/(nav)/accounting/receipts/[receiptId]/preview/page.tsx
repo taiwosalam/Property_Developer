@@ -1,13 +1,25 @@
+"use client";
+
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
+import BackButton from "@/components/BackButton/back-button";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { useRouter } from "next/navigation";
 
 const ReceiptPreviewPage = () => {
+  const router = useRouter();
+
+  const back = () => {
+    router.back();
+  };
+
   return (
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
+        <BackButton>Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -16,7 +28,7 @@ const ReceiptPreviewPage = () => {
           email="example@mail.com"
         />
         <h1 className="text-center my-7 font-medium text-2xl">Receipt</h1>
-        <div className="rounded-lg bg-white p-8 flex flex-col md:flex-row">
+        <div className="rounded-lg bg-white dark:bg-darkText-primary   p-8 flex flex-col md:flex-row">
           <KeyValueList
             data={{
               "property status": "successful",
@@ -33,7 +45,7 @@ const ReceiptPreviewPage = () => {
           />
         </div>
         <AccountingTitleSection title="Breakdown">
-          <div className="p-6 bg-white rounded-lg space-y-5">
+          <div className="p-6 bg-white dark:bg-darkText-primary rounded-lg space-y-5">
             <div className="flex flex-col md:flex-row">
               <KeyValueList
                 data={{}}
@@ -56,8 +68,13 @@ const ReceiptPreviewPage = () => {
           </div>
         </AccountingTitleSection>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
-        <Button variant="sky_blue" size="base_medium" className="py-2 px-8">
+      <FixedFooter className="flex gap-6 items-center justify-between">
+        <Button
+          onClick={back}
+          variant="sky_blue"
+          size="base_medium"
+          className="py-2 px-8"
+        >
           back
         </Button>
         <div className="flex gap-6">
@@ -68,7 +85,8 @@ const ReceiptPreviewPage = () => {
             print
           </Button>
         </div>
-      </div>
+      </FixedFooter>
+      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end"></div>
     </div>
   );
 };

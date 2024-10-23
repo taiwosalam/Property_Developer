@@ -137,7 +137,9 @@ const AccountingInvoicePage = () => {
                 <ModalContent>
                   <FilterModal
                     filterOptions={[]}
-                    filterOptionsWithDropdown={accountingInvoiceOptionsWithDropdown}
+                    filterOptionsWithDropdown={
+                      accountingInvoiceOptionsWithDropdown
+                    }
                     onApply={handleFilterApply}
                     onStateSelect={(state: string) => setSelectedState(state)}
                   />
@@ -187,7 +189,9 @@ const AccountingInvoicePage = () => {
       <div className="rounded-lg w-full overflow-x-scroll no-scrollbar pb-[200px]">
         <table className="dash-table">
           <colgroup>
-            <col className="w-[72px]" />
+            <col className="min-w-[72px]" />
+            <col span={5} />
+            <col className="min-w-[72px]" />
           </colgroup>
           <thead>
             <tr>
@@ -225,10 +229,10 @@ const AccountingInvoicePage = () => {
                   <td>
                     <p>₦35,000.00</p>
                   </td>
-                  <td>
+                  <td>``
                     <p>02/03/2024</p>
                   </td>
-                  <td>
+                  <td className="flex justify-center items-center">
                     <Dropdown>
                       <DropdownTrigger className="flex items-center justify-center">
                         <Picture

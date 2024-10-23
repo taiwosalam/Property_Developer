@@ -78,7 +78,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
       {!noHeader && (
         <div className="w-full flex items-center justify-between font-normal">
           <p className="text-[#262626] text-sm dark:text-darkText-1">Wallet</p>
-          <Link href="" className="text-[#4F5E71] text-xs flex items-center dark:text-darkText-1">
+          <Link href="/wallet/transaction-history" className="text-[#4F5E71] text-xs flex items-center dark:text-darkText-1">
             <p>Transaction History</p>
             <SVG type="right_arrow" className="ml-2" />
           </Link>

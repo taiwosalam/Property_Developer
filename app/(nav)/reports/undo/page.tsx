@@ -94,7 +94,7 @@ const Undo = () => {
         data={tableData}
         tableHeadClassName="bg-brand-9 h-[45px]"
         tableHeadCellSx={{
-          color: isDarkMode ? "#EFF6FF" : "#050901",
+          color: "#EFF6FF",
           fontWeight: 500,
           border: "none",
           textAlign: "left",

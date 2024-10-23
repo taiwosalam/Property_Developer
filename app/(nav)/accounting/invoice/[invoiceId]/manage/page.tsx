@@ -12,12 +12,22 @@ import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import DeleteInvoiceModal from "@/components/Accounting/invoice/delete-invoice-modal";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import BackButton from "@/components/BackButton/back-button";
+import { useRouter } from "next/navigation";
 
 const ManageInvoice = () => {
+  const router = useRouter();
+
   const isDarkMode = useDarkMode();
+
+  const back = () => {
+    router.back();
+  };
+
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
+        <BackButton>Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -25,7 +35,7 @@ const ManageInvoice = () => {
           phoneNumbers={["09022312133", "07012133313", "0901212121"]}
           email="example@mail.com"
         />
-        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex">
+        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
             data={{}}
             chunkSize={2}
@@ -46,7 +56,7 @@ const ManageInvoice = () => {
             Lagos
           </p>
           <div className="flex">
-            <div className="w-full max-w-[968px] grid grid-cols-3 gap-x-[34px] gap-y-6">
+            <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
               <Input
                 id="annual-rent"
                 label="Annual Rent"
@@ -103,7 +113,12 @@ const ManageInvoice = () => {
           </ModalContent>
         </Modal>
         <div className="flex gap-6">
-          <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
+          <Button
+            onClick={back}
+            variant="sky_blue"
+            size="base_bold"
+            className="py-2 px-8"
+          >
             exit
           </Button>
           <Button size="base_bold" className="py-2 px-8">

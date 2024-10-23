@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 // Imports
@@ -6,11 +8,21 @@ import KeyValueList from "@/components/KeyValueList/key-value-list";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
+import { useRouter } from "next/navigation";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import BackButton from "@/components/BackButton/back-button";
 
 const PreviewExpenses = () => {
+  const router = useRouter();
+
+  const back = () => {
+    router.back();
+  };
+
   return (
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
+        <BackButton>Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -18,7 +30,7 @@ const PreviewExpenses = () => {
           phoneNumbers={["09022312133", "07012133313", "0901212121"]}
           email="example@mail.com"
         />
-        <div className="rounded-lg bg-white p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
+        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
             data={{}}
             chunkSize={2}
@@ -34,7 +46,7 @@ const PreviewExpenses = () => {
           />
         </div>
         <AccountingTitleSection title="Total Expenses">
-          <div className="p-6 bg-white rounded-lg space-y-5">
+          <div className="p-6 bg-white dark:bg-darkText-primary rounded-lg space-y-5">
             <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
               <KeyValueList
                 data={{}}
@@ -57,8 +69,13 @@ const PreviewExpenses = () => {
           </div>
         </AccountingTitleSection>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
-        <Button variant="sky_blue" size="base_medium" className="py-2 px-8">
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
+        <Button
+          onClick={back}
+          variant="sky_blue"
+          size="base_medium"
+          className="py-2 px-8"
+        >
           back
         </Button>
         <div className="flex gap-6">
@@ -69,7 +86,7 @@ const PreviewExpenses = () => {
             print
           </Button>
         </div>
-      </div>
+      </FixedFooter>
     </div>
   );
 };

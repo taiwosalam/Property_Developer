@@ -168,8 +168,10 @@ interface ThemeCardProps {
   value: string;
   isSelected: boolean;
   onSelect: (value: string) => void; 
-  className?: string
+  className?: string;
   profile?: boolean;
+  showMessage?: boolean;
+  setShowMessage?: (show: boolean) => void;
 }
 
 
@@ -193,4 +195,12 @@ export interface SettingsEnrollmentCardProps {
   isFree?: boolean;
   onBillingTypeChange: (type: 'monthly' | 'yearly') => void;
   discountText: string;
+}
+
+
+export interface ProfileUploadProps {
+  preview: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  inputFileRef: MutableRefObject<HTMLInputElement | null>; // Add this line
+  onClick: () => void;
 }

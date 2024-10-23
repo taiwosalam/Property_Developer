@@ -17,6 +17,7 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { maintenanceTypes, priorityLevels } from "./data";
 import { createMaintenance } from "../data";
 import { useAuthStore } from "@/store/authstrore";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const CreateMaintenace = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -43,7 +44,7 @@ const CreateMaintenace = () => {
         <button onClick={() => router.back()}>
           <ChevronLeft />
         </button>
-        <h1 className="text-lg md:text-xl lg:text-2xl text-black font-medium">
+        <h1 className="text-lg md:text-xl lg:text-2xl text-black dark:text-white font-medium">
           New Maintenance Schedule
         </h1>
       </div>
@@ -127,18 +128,18 @@ const CreateMaintenace = () => {
             <TextArea
               id="maintenance_quotation"
               label="Maintenance Quotation"
-              inputSpaceClassName="bg-white"
+              inputSpaceClassName="bg-white dark:bg-darkText-primary"
             />
             <TextArea
               id="work_details"
               label="Work Details"
-              inputSpaceClassName="bg-white"
+              inputSpaceClassName="bg-white dark:bg-darkText-primary"
             />
           </div>
         </div>
-        <div
-          className="sticky bottom-0 py-5 px-[25px] lg:px-[60px] bg-white flex items-center justify-between gap-x-10 gap-y-4 flex-wrap"
+        <FixedFooter
           style={{ boxShadow: "0px -2px 10px 0px rgba(0, 0, 0, 0.05)" }}
+          className="flex items-center justify-between gap-x-10 gap-y-4 flex-wrap"
         >
           <div className="flex flex-wrap items-center gap-2 text-sm text-text-secondary">
             <label className="flex items-center gap-2">
@@ -146,14 +147,14 @@ const CreateMaintenace = () => {
                 type="checkbox"
                 className="bg-[#F9FAFB] border border-neutral-6 rounded w-[18px] h-[18px]"
               />
-              <span>Create announcement</span>
+              <span className="dark:text-darkText-2">Create announcement</span>
             </label>
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
                 className="bg-[#F9FAFB] border border-neutral-6 rounded w-[18px] h-[18px]"
               />
-              <span>Create announcement</span>
+              <span className="dark:text-darkText-2">Create announcement</span>
             </label>
           </div>
           <Button
@@ -163,7 +164,7 @@ const CreateMaintenace = () => {
           >
             Create Maintenance
           </Button>
-        </div>
+        </FixedFooter>
       </AuthForm>
     </div>
   );

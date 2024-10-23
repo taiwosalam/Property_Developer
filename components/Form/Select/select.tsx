@@ -118,7 +118,7 @@ const Select: React.FC<SelectProps> = ({
   }, [validationErrors, id]);
 
   return (
-    <div className={clsx("custom-flex-col gap-2 dark:bg-darkText-primary", className)}>
+    <div className={clsx("custom-flex-col gap-2", className)}>
       {/* input for flow progress and holding the selected value for form submission */}
       <input
         name={id}
@@ -149,7 +149,7 @@ const Select: React.FC<SelectProps> = ({
           {/* Conditionally render the search icon */}
           {isSearchable && (
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <span className="text-brand-9">
+              <span className="dark:text-white">
               <SearchIcon />
               </span>
             </div>
@@ -158,7 +158,7 @@ const Select: React.FC<SelectProps> = ({
           {selectedValue && !isOpen ? (
             <span
               className={clsx(
-                "flex-1 capitalize text-text-disabled text-xs md:text-sm font-normal",
+                "flex-1 capitalize text-text-disabled dark:bg-transparent text-xs md:text-sm font-normal",
                 inputTextClassName
               )}
             >

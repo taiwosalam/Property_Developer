@@ -8,6 +8,7 @@ import Image from "next/image";
 import Button from "@/components/Form/Button/button";
 import { useRouter } from "next/navigation";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 const ExportCall = () => {
   const isDarkMode = useDarkMode();
   const router = useRouter();
@@ -31,12 +32,12 @@ const ExportCall = () => {
 
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
-      id: '123456789',
-      branch: 'Akinyele Branch',
-      property_name: 'Property Name',
-      requester: 'Ajayi David',
-      request_date: '12/02/2024',
-      resolve_date_time: '12/02/2024 - 03:30am',
+      id: "123456789",
+      branch: "Akinyele Branch",
+      property_name: "Property Name",
+      requester: "Ajayi David",
+      request_date: "12/02/2024",
+      resolve_date_time: "12/02/2024 - 03:30am",
     }));
   };
 
@@ -59,7 +60,7 @@ const ExportCall = () => {
         data={tableData}
         tableHeadClassName="bg-brand-9 h-[45px]"
         tableHeadCellSx={{
-          color: isDarkMode ? "#EFF6FF" : "#050901",
+          color: "#EFF6FF",
           fontWeight: 500,
           border: "none",
           textAlign: "left",
@@ -82,7 +83,7 @@ const ExportCall = () => {
           ESQ Taiwo Salam <br /> Legal Practitioner
         </p>
       </div>
-      <div className="sticky z-[3] bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[25px] lg:px-[60px] flex justify-between">
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
         <Button
           size="custom"
           className="py-2 px-8 font-bold text-sm lg:text-base"
@@ -107,7 +108,7 @@ const ExportCall = () => {
             Print
           </Button>
         </div>
-      </div>
+      </FixedFooter>
     </div>
   );
 };

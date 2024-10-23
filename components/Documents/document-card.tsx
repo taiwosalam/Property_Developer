@@ -6,7 +6,7 @@ import KeyValueList from "../KeyValueList/key-value-list";
 const DocumentCard = () => {
   return (
     <div
-      className="pt-6 px-[18px] rounded-lg bg-white custom-flex-col gap-6"
+      className="pt-6 px-[18px] rounded-lg bg-white dark:bg-darkText-primary custom-flex-col gap-6"
       style={{
         boxShadow:
           " 0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
@@ -14,8 +14,8 @@ const DocumentCard = () => {
     >
       <div className="custom-flex-col gap-4">
         <div className="flex items-center gap-1 font-medium">
-          <p className="text-text-tertiary text-base">Document ID:</p>
-          <p className="text-text-secondary text-sm">134678765</p>
+          <p className="text-text-tertiary dark:text-darkText-1 text-base">Document ID:</p>
+          <p className="text-text-secondary dark:text-darkText-2 text-sm">134678765</p>
         </div>
         <div className="h-[1px] border border-dashed border-brand-7 opacity-50"></div>
       </div>

@@ -1,6 +1,10 @@
+"use client";
+
 import React from "react";
-import { useLayout } from "../Layout/layout-context";
+
+// Imports
 import clsx from "clsx";
+import { useLayout } from "../Layout/layout-context";
 
 const FixedFooter: React.FC<{
   children: React.ReactNode;

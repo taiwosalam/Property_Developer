@@ -22,7 +22,7 @@ const EditProperty = () => {
           aria-label="back"
           onClick={() => router.back()}
           className="py-2"
-        >
+        > 
           <ChevronLeft />
         </button>
         <p className="text-black dark:text-white font-bold text-lg lg:text-xl">

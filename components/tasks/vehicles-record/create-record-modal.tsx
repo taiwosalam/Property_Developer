@@ -9,7 +9,7 @@ const PlateNumber: React.FC<{
   name: string;
 }> = ({ number, state, name }) => {
   return (
-    <div className="bg-support-1 rounded-lg p-2">
+    <div className="custom-secondary-bg rounded-lg p-2">
       <p className="text-base text-white font-bold">{number}</p>
       <p className="text-xs text-white font-medium">
         {state} state &bull; {name}
@@ -20,10 +20,10 @@ const PlateNumber: React.FC<{
 
 const CreateRecordModal = () => {
   return (
-    <div className="w-[600px] max-w-[80%] max-h-[90%] h-[90%] md:h-[450px] rounded-2xl overflow-x-auto custom-round-scrollbar font-medium bg-white custom-flex-col relative">
+    <div className="w-[600px] max-w-[80%] max-h-[90%] h-[90%] md:h-[450px] rounded-2xl overflow-x-auto custom-round-scrollbar font-medium dark:bg-darkText-primary bg-white custom-flex-col relative">
       {/* Header */}
-      <div className="flex gap-4 justify-between items-center sticky top-0 z-[2] bg-white p-4">
-        <p className="text-base text-text-tertiary">Create / Search</p>
+      <div className="flex gap-4 justify-between items-center sticky top-0 z-[2] bg-white dark:bg-darkText-primary p-4">
+        <p className="text-base text-text-tertiary dark:text-white">Create / Search</p>
         <ModalTrigger close aria-label="Close">
           <XIcon size="30" />
         </ModalTrigger>
@@ -34,7 +34,7 @@ const CreateRecordModal = () => {
 
       <div className="p-4 pt-0 custom-flex-col md:flex-1 md:flex-row-reverse gap-8 md:overflow-hidden">
         <div className="custom-flex-col gap-4 md:flex-1 md:gap-8 md:mt-auto md:text-center">
-          <p className="text-sm text-text-tertiary md:w-[80%] mx-auto">
+          <p className="text-sm text-text-tertiary dark:text-darkText-1 md:w-[80%] mx-auto">
             Search the existing records using the ID, name, or plate number. If
             the driver does not have an account in the records, create one
             accordingly.

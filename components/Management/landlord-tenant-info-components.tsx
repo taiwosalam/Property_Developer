@@ -138,11 +138,11 @@ export const LandlordTenantInfoEditSection: React.FC<{
   children: React.ReactNode;
 }> = ({ title, style, children, headingStyle }) => (
   <div
-    className="p-6 pt-5 rounded-[20px] bg-white custom-flex-col gap-10"
+    className="p-6 pt-5 rounded-[20px] bg-white dark:bg-darkText-primary custom-flex-col gap-10"
     style={style}
   >
     <h2
-      className="text-primary-navy text-lg lg:text-xl font-bold capitalize"
+      className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold capitalize"
       style={headingStyle}
     >
       {title}

@@ -3,7 +3,8 @@ import { useRef, useState } from "react";
 
 // Images
 import Button from "../Form/Button/button";
-import ImportCircle from "@/public/icons/import-circle.svg";
+import { ImportCircle } from "@/public/icons/icons";
+// import ImportCircle from "@/public/icons/import-circle.svg";
 
 interface AddMultipleLandlordsOrTenantsProps {
   type: "landlord" | "tenant";
@@ -55,7 +56,7 @@ const AddMultipleLandlordsOrTenants: React.FC<
   return (
     <>
       <div className={`flex justify-center mb-5 md:mb-10 lg:mb-16`}>
-        <div className="border-4 border-dotted py-8 md:py-12 px-28">
+        <div className="border-4 border-dotted dark:border-darkText-2 py-8 md:py-12 px-28">
           <button
             type="button"
             aria-label="Import"
@@ -67,7 +68,10 @@ const AddMultipleLandlordsOrTenants: React.FC<
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
-            <Image src={ImportCircle} alt="import" width={120} height={120} />
+
+            <span className="dark:bg-darkText-primary bg-neutral-2 dark:text-white rounded-full">
+            <ImportCircle />
+            </span>
           </button>
           <div className="custom-flex-col gap-[10px] text-center">
             <p className="text-base md:text-xl lg:text-2xl font-bold">

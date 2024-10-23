@@ -21,14 +21,14 @@ const WalletModalPreset: React.FC<WalletModalPresetProps> = ({
         ...style,
       }}
     >
-      <div className="custom-flex-col py-4 px-6 bg-brand-1 sticky top-0 z-[2]">
+      <div className="custom-flex-col py-4 px-6 bg-brand-1 dark:bg-[#3C3D37] sticky top-0 z-[2]">
         <div className="flex items-center justify-between">
           {back ? (
             <button
               onClick={back}
               className="w-6 h-6 flex items-center justify-center"
             >
-              <ArrowLeft size={18} color="#010A23" />
+              <ArrowLeft size={18} color="currentColor" />
             </button>
           ) : (
             <div></div>
@@ -37,7 +37,7 @@ const WalletModalPreset: React.FC<WalletModalPresetProps> = ({
             <XIcon size="30" />
           </ModalTrigger>
         </div>
-        <p className="text-text-secondary text-base font-medium text-center">
+        <p className="text-text-secondary dark:text-white text-base font-medium text-center">
           {title}
         </p>
       </div>

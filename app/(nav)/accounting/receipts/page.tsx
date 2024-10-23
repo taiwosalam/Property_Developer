@@ -120,7 +120,9 @@ const AccountingReceiptsPage = () => {
                 <ModalContent>
                   <FilterModal
                     filterOptions={[]}
-                    filterOptionsWithDropdown={accountingReceiptOptionsWithDropdown}
+                    filterOptionsWithDropdown={
+                      accountingReceiptOptionsWithDropdown
+                    }
                     onApply={handleFilterApply}
                     onStateSelect={(state: string) => setSelectedState(state)}
                   />
@@ -167,7 +169,9 @@ const AccountingReceiptsPage = () => {
       <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
         <table className="dash-table">
           <colgroup>
-            <col className="w-[72px]" />
+            <col className="min-w-[72px]" />
+            <col span={5} />
+            <col className="min-w-[72px]" />
           </colgroup>
           <thead>
             <tr>
@@ -209,7 +213,7 @@ const AccountingReceiptsPage = () => {
                     <p>02/03/2024</p>
                   </td>
                   <td
-                    className="cursor-pointer w-fit"
+                    className="cursor-pointer flex items-center justify-center"
                     onClick={() =>
                       (window.location.href = "/accounting/receipts/1/preview")
                     }

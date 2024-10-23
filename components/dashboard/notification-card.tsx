@@ -47,7 +47,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
   return (
     <Card
       className={clsx(
-        "w-full h-[340px] border-none custom-flex-col",
+        "w-full h-[340px] border-none custom-flex-col overflow-hidden",
         className
       )}
       style={{
@@ -60,22 +60,25 @@ const NotificationCard: React.FC<notificationCardProps> = ({
           <p className="text-black font-medium dark:text-[#f1f1fd]">
             {sectionHeader}
           </p>
-          <p
-            className={clsx(
-              "flex items-center font-medium",
-              notifications.length === 0
-                ? "text-[#C1C2C3]"
-                : "text-[#4F5E71] dark:text-[#f1f1fd]"
-            )}
-          >
-            See all
-            <ChevronRight className="w-5 h-5" />
-          </p>
+          {seeAllLink && (
+            <Link
+              href={seeAllLink}
+              className={clsx(
+                "flex items-center font-medium",
+                notifications.length === 0
+                  ? "text-[#C1C2C3]"
+                  : "text-[#4F5E71] dark:text-[#f1f1fd]"
+              )}
+            >
+              See all
+              <ChevronRight className="w-5 h-5" />
+            </Link>
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent
         className={clsx(
-          "custom-flex-col gap-4 p-4 pt-0 flex-1 overflow-auto custom-round-scrollbar",
+          "custom-flex-col gap-4 p-4 pt-0 flex-1 overflow-auto no-scrollbar",
           {
             "py-[55px] px-[40px]": notifications.length === 0,
           }

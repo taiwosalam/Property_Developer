@@ -82,10 +82,6 @@ h1 {
   border: 2px solid var(--primary-color);
 }
 
-.nav-button-minimized:hover {
-  background-color: var(--secondary-color);
-}
-
 .custom-default-button {
   border: 2px solid transparent;
   background-color: var(--primary-color);
@@ -282,6 +278,10 @@ button:disabled {
   fill: white;
 }
 
+.nav-button-minimized:hover {
+  background-color: var(--secondary-color);
+}
+
 .dash-table {
   width: 100%;
   border-collapse: collapse;
@@ -293,6 +293,9 @@ button:disabled {
 
 .dash-table tbody tr:nth-child(2n + 1) {
   @apply bg-brand-1 text-[#f1f1fd] dark:bg-[#020617];
+  &:hover {
+    @apply dark:bg-[#000]; 
+  }
 }
 
 .dash-table tbody tr:nth-child(2n):hover {

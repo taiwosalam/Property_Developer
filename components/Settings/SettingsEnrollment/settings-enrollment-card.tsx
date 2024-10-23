@@ -86,7 +86,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
 
   return (
     <div
-      className={`max-w-[344px] flex flex-col justify-between pricingCard rounded-lg bg-white overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
+      className={`max-w-[344px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
     >
       <PlanHeader
         planTitle={planTitle}
@@ -97,7 +97,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         />
       <div
         className={`priceWrapper w-full flex items-center justify-center flex-col px-4 mt-5 ${
-          isFree ? "bg-white bg-opacity-40 z-50" : ""
+          isFree ? "bg-white bg-opacity-40 z-50 dark:bg-darkText-primary" : ""
         }`}
         >
         <PriceSection 

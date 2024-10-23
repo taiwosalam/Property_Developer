@@ -20,9 +20,18 @@ import {
 } from "@/components/Management/landlord-tenant-info-components";
 import Button from "@/components/Form/Button/button";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { useRouter } from "next/navigation";
 
 const ManageApplication = () => {
+  const router = useRouter();
+
   const isDarkMode = useDarkMode();
+
+  const back = () => {
+    router.back();
+  };
+
   return (
     <div className="custom-flex-col gap-[88px] pb-[100px]">
       <div className="custom-flex-col gap-6">
@@ -69,7 +78,9 @@ const ManageApplication = () => {
                     <BadgeIcon color="green" />
                   </div>
                   <p
-                    style={{ color: isDarkMode ? "white" : "rgba(21, 21, 21, 0.70)" }}
+                    style={{
+                      color: isDarkMode ? "white" : "rgba(21, 21, 21, 0.70)",
+                    }}
                     className={`text-sm dark:text-white font-normal ${secondaryFont.className}`}
                   >
                     abimbola@gmail.com
@@ -85,7 +96,11 @@ const ManageApplication = () => {
             </div>
             <div
               className="py-3 px-6 rounded-2xl"
-              style={{ backgroundColor: isDarkMode ? "white" : "var(--background-color, #fde9ea80)" }}
+              style={{
+                backgroundColor: isDarkMode
+                  ? "#3C3D37"
+                  : "var(--background-color, #fde9ea80)",
+              }}
             >
               <p className="text-status-error-2 text-xs font-medium">
                 The tenant has been flagged for owing rent and causing damages
@@ -144,12 +159,13 @@ const ManageApplication = () => {
           <UnitItem />
         </div>
       </LandlordTenantInfoSection>
-      <div className="fixed bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[60px] flex gap-6 justify-end">
+      <FixedFooter className="flex gap-6 flex-wrap items-center justify-between">
         <Button variant="light_red" size="base_bold" className="py-2 px-8">
           reject application
         </Button>
         <div className="flex gap-6">
           <Button
+            onClick={back}
             size="base_bold"
             variant="sky_blue"
             href="/applications"
@@ -161,7 +177,7 @@ const ManageApplication = () => {
             create invoice
           </Button>
         </div>
-      </div>
+      </FixedFooter>
     </div>
   );
 };

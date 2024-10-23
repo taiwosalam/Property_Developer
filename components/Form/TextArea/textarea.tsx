@@ -95,7 +95,7 @@ const TextArea: React.FC<TextAreaProps> = ({
           {label}
         </Label>
       )}
-      <div className="flex flex-col">
+      <div className="flex flex-col dark:border dark:border-darkText-1 dark:rounded-lg">
         {mounted && (
           <Fragment>
             <DynamicReactQuill

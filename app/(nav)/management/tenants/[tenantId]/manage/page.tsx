@@ -56,6 +56,7 @@ const ManageTenant = () => {
   const groupedDocuments = groupDocumentsByType(tenant?.documents);
 
   const otherData = getObjectProperties(tenant);
+  // const isDarkMode = useDarkMode();
 
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
@@ -87,15 +88,14 @@ const ManageTenant = () => {
                   </p>
                 </div>
                 <p
-                  style={{ color: "rgba(21, 21, 21, 0.70)" }}
-                  className={`${secondaryFont.className} text-sm font-normal`}
+                  className={`${secondaryFont.className} text-sm font-normal dark:text-white text-[#151515B3]`}
                 >
                   {tenant.email}
                 </p>
               </div>
               <div className="custom-flex-col gap-2">
                 <UserTag type={tenant.user_tag} />
-                <p className="text-neutral-800 text-base font-medium">
+                <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
                   ID: {tenantId}
                 </p>
               </div>

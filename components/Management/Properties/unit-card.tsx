@@ -25,16 +25,16 @@ const UnitCard: React.FC<UnitCardProps> = ({
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex gap-4 flex-wrap items-center justify-between">
         <p className="text-brand-10 text-base font-bold">
           Unit ID: 123456776342
         </p>
-        <div className="flex gap-8">
-          <Button size="base_medium" className="py-2 px-8" onClick={handleEdit}>
+        <div className="flex gap-4 sm:gap-8">
+          <Button size="sm_medium" className="py-2 px-8" onClick={handleEdit}>
             edit
           </Button>
           <Button
-            size="base_medium"
+            size="sm_medium"
             variant="light_red"
             className="py-2 px-8"
             onClick={() => setModalOpen(true)}
@@ -44,26 +44,28 @@ const UnitCard: React.FC<UnitCardProps> = ({
         </div>
       </div>
       <SectionSeparator />
-      <div className="flex py-4 items-center justify-between">
-        <div className="flex-1 flex gap-6">
-          <KeyValueList data={data} referenceObject={unit_card_data_props} />
-        </div>
-        <div className="relative rounded-2xl overflow-hidden">
-          <Picture src={SampleProperty6} alt="property preview" size={168} />
-          <div
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
-            className="absolute inset-0 custom-flex-col justify-between p-3"
-          >
-            <div className="flex justify-end">
-              <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
-                <CameraIcon />
-                <p className="text-black font-medium text-[10px]">+23</p>
+      <div className="overflow-x-auto custom-round-scrollbar">
+        <div className="min-w-[700px] flex py-4 items-center justify-between">
+          <div className="flex-1 flex gap-6">
+            <KeyValueList data={data} referenceObject={unit_card_data_props} />
+          </div>
+          <div className="relative rounded-2xl overflow-hidden">
+            <Picture src={SampleProperty6} alt="property preview" size={168} />
+            <div
+              style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
+              className="absolute inset-0 custom-flex-col justify-between p-3"
+            >
+              <div className="flex justify-end">
+                <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+                  <CameraIcon />
+                  <p className="text-black font-medium text-[10px]">+23</p>
+                </div>
               </div>
-            </div>
-            <div className="flex justify-center">
-              <Button size="base_medium" className="py-1 px-6">
-                Select
-              </Button>
+              <div className="flex justify-center">
+                <Button size="base_medium" className="py-1 px-6">
+                  Select
+                </Button>
+              </div>
             </div>
           </div>
         </div>

@@ -107,7 +107,7 @@ const UnitBreakdownNewTenant = () => {
 
   return (
     <div>
-      <h4 className="text-primary-navy text-lg md:text-xl font-bold">
+      <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
         Unit Fee Breakdown - New Tenant
       </h4>
       <hr className="my-4" />

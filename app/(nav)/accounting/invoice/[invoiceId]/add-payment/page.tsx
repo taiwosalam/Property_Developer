@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 // Imports
@@ -7,11 +9,23 @@ import AccountingTitleSection from "@/components/Accounting/accounting-title-sec
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import Input from "@/components/Form/Input/input";
+import BackButton from "@/components/BackButton/back-button";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { useRouter } from "next/navigation";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const PreviewExpenses = () => {
+  const router = useRouter();
+  const isDarkMode = useDarkMode()
+
+  const back = () => {
+    router.back();
+  };
+
   return (
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
+        <BackButton>Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -19,7 +33,7 @@ const PreviewExpenses = () => {
           phoneNumbers={["09022312133", "07012133313", "0901212121"]}
           email="example@mail.com"
         />
-        <div className="rounded-lg bg-white p-8 flex">
+        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex">
           <KeyValueList
             data={{}}
             chunkSize={2}
@@ -35,7 +49,7 @@ const PreviewExpenses = () => {
           />
         </div>
         <AccountingTitleSection title="Details">
-          <p className="font-normal text-[14px] text-[#6C6D6D]">
+          <p className="font-normal text-[14px] text-[#6C6D6D] dark:text-white">
             New rent payment for 3 bedroom bungalow at Ajibade road 2, Lekki
             Lagos
           </p>
@@ -47,46 +61,46 @@ const PreviewExpenses = () => {
                 required
                 CURRENCY_SYMBOL="₦"
                 placeholder="1,000,000"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
               <Input
                 id="service-charge"
                 label="service charge"
                 CURRENCY_SYMBOL="₦"
                 placeholder="300,000"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
               <Input
                 id="refundable-caution-fee"
                 label="refundable caution fee"
                 CURRENCY_SYMBOL="₦"
                 placeholder="300,000"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
               <Input
                 id="non-refundable-agency-fee"
                 label="non refundable agency fee"
                 CURRENCY_SYMBOL="₦"
                 placeholder="300,000"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
               <Input
                 id="non-refundable-legal-fee"
                 label="non refundable legal fee"
                 CURRENCY_SYMBOL="₦"
                 placeholder="300,000"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
             </div>
           </div>
           <div className="w-full h-[2px] bg-opacity-20 bg-[#C0C2C8]" />
           <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1">
-            <p className="text-[#747474]">total package</p>
+            <p className="text-[#747474] dark:text-white">total package</p>
             <p className="text-brand-primary text-xl font-bold">₦1,950,000</p>
           </div>
         </AccountingTitleSection>
         <AccountingTitleSection title="Add Payment">
-          <div className="p-6 custom-flex-col gap-4 bg-white rounded-lg">
+          <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
             <div className="grid grid-cols-3 gap-[18px]">
               <Input
                 id="payment-title"
@@ -98,7 +112,7 @@ const PreviewExpenses = () => {
                 label="amount"
                 CURRENCY_SYMBOL="₦"
                 placeholder="300,000"
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
             </div>
             <div className="flex justify-end">
@@ -109,20 +123,26 @@ const PreviewExpenses = () => {
           </div>
         </AccountingTitleSection>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
+      <FixedFooter className="flex items-center justify-between">
         <p className="text-brand-9 text-[14px] font-normal">
           <span className="text-status-error-primary text-2xl">*</span>You
           cannot add payment to paid receipts.
         </p>
         <div className="flex gap-6">
-          <Button variant="sky_blue" size="base_medium" className="py-2 px-8">
+          <Button
+            onClick={back}
+            variant="sky_blue"
+            size="base_medium"
+            className="py-2 px-8"
+          >
             Exit
           </Button>
           <Button size="base_medium" className="py-2 px-8">
             Save
           </Button>
         </div>
-      </div>
+      </FixedFooter>
+      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end"></div>
     </div>
   );
 };

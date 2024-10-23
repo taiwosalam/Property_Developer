@@ -394,14 +394,14 @@ const Profile = () => {
         <p className="text-text-secondary dark:text-darkText-1 text-md">
           Customize website domain name
         </p>
-        <div className="flex gap-4 mb-4 mt-2 items-center w-full flex-wrap">
+        <div className="flex flex-col sm:flex-row gap-4 mb-4 mt-2 items-start sm:items-center w-full">
           <Input
             id="custom_domain"
             label=""
             placeholder="makinwauxdesigner"
-            className="min-w-[300px]"
+            className="w-full sm:w-auto min-w-[200px] sm:min-w-[300px]"
           />
-          <Link href="#" className="text-brand-9 text-sm text-center">
+          <Link href="#" className="text-brand-9 text-xs sm:text-sm text-center break-all">
             https://www.makinwauxdesgner.ourlisting.ng
           </Link>
         </div>
@@ -410,7 +410,7 @@ const Profile = () => {
           <h4 className="text-text-secondary dark:text-darkText-1 text-md font-normal">
             RSS Feed Link for Listings
           </h4>
-          <Link href="#" className="text-brand-9 text-sm underline">
+          <Link href="#" className="text-brand-9 text-xs underline sm:text-sm">
             https://www.makinwauxdesgner.ourlisting.ng
           </Link>
         </div>
@@ -419,28 +419,34 @@ const Profile = () => {
             title="choose template"
             desc="Choose how your website will be presented to your customers and clients."
           />
-          <div className="grid grid-cols-3 gap-6 [&>*]:w-full">
-          <ThemeCard
-            img={WebsiteTemplate1}
-            value="template1"
-            onSelect={(value) => handleSelect("template1", value)}
-            isSelected={selectedTemplate === "template1"}
-            profile={true}
-          />
-          <ThemeCard
-            img={WebsiteTemplate2}
-            value="template2"
-            onSelect={(value) => handleSelect("template2", value)}
-            isSelected={selectedTemplate === "template2"}
-            profile={true}
-          />
-          <ThemeCard
-            img={WebsiteTemplate3}
-            value="template3"
-            onSelect={(value) => handleSelect("template3", value)}
-            isSelected={selectedTemplate === "template3"}
-            profile={true}
-          />
+          <div className="flex flex-wrap gap-6">
+            <div className="flex-1 min-w-[250px]">
+              <ThemeCard
+                img={WebsiteTemplate1}
+                value="template1"
+                onSelect={(value) => handleSelect("template1", value)}
+                isSelected={selectedTemplate === "template1"}
+                profile={true}
+              />
+            </div>
+            <div className="flex-1 min-w-[250px]">
+              <ThemeCard
+                img={WebsiteTemplate2}
+                value="template2"
+                onSelect={(value) => handleSelect("template2", value)}
+                isSelected={selectedTemplate === "template2"}
+                profile={true}
+              />
+            </div>
+            <div className="flex-1 min-w-[250px]">
+              <ThemeCard
+                img={WebsiteTemplate3}
+                value="template3"
+                onSelect={(value) => handleSelect("template3", value)}
+                isSelected={selectedTemplate === "template3"}
+                profile={true}
+              />
+            </div>
           </div>
           <SettingsUpdateButton />
         </div>
@@ -450,7 +456,7 @@ const Profile = () => {
           title="Fonts Templates"
           desc="Choose Your Preferred Font Style for Your Company Profile Website"
         />
-        <div className="w-1/4 flex mb-5">
+        <div className="w-full sm:w-1/4 flex mb-5">
           <Select
             id="font"
             label=""
