@@ -17,6 +17,7 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { maintenanceTypes, priorityLevels } from "./data";
 import { createMaintenance } from "../data";
 import { useAuthStore } from "@/store/authstrore";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const CreateMaintenace = () => {
   const accessToken = useAuthStore((state) => state.access_token);
@@ -136,9 +137,9 @@ const CreateMaintenace = () => {
             />
           </div>
         </div>
-        <div
-          className="sticky bottom-0 py-5 px-[25px] lg:px-[60px] bg-white flex items-center justify-between gap-x-10 gap-y-4 flex-wrap"
+        <FixedFooter
           style={{ boxShadow: "0px -2px 10px 0px rgba(0, 0, 0, 0.05)" }}
+          className="flex items-center justify-between gap-x-10 gap-y-4 flex-wrap"
         >
           <div className="flex flex-wrap items-center gap-2 text-sm text-text-secondary">
             <label className="flex items-center gap-2">
@@ -163,7 +164,7 @@ const CreateMaintenace = () => {
           >
             Create Maintenance
           </Button>
-        </div>
+        </FixedFooter>
       </AuthForm>
     </div>
   );
