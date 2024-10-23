@@ -16,7 +16,7 @@ const CreateTenancyAggrement = () => {
       <div className="custom-flex-col gap-6">
         <BackButton>Create Tenancy Agreement</BackButton>
         <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
-          <h2 className="text-primary-navy text-xl font-bold">
+          <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
             Property Details
           </h2>
           <SectionSeparator />
@@ -34,7 +34,7 @@ const CreateTenancyAggrement = () => {
           </div>
         </LandlordTenantInfoBox>
         <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
-          <h2 className="text-primary-navy text-xl font-bold">
+          <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
             Landlord/Landlady Details
           </h2>
           <SectionSeparator />
@@ -55,7 +55,7 @@ const CreateTenancyAggrement = () => {
       <div className="custom-flex-col gap-8">
         <div className="custom-flex-col gap-4">
           <div className="custom-flex-col gap-1">
-            <h2 className="text-primary-navy text-xl font-bold">
+            <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
               Agreement Customization
             </h2>
             <p className="text-text-disabled text-sm font-normal">
@@ -67,7 +67,7 @@ const CreateTenancyAggrement = () => {
         </div>
         <DocumentTenancyAgreements />
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
+      <div className="fixed bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[60px] flex gap-6 justify-end">
         <Modal>
           <ModalTrigger asChild>
             <Button variant="light_red" size="base_bold" className="py-2 px-6">

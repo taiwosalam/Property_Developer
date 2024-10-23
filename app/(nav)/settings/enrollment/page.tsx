@@ -170,7 +170,7 @@ const Enrollment = () => {
         <h3 className="text-[16px] underline font-bold text-brand-9">
           PROFESSIONAL PLAN
         </h3>
-        <p className="text-sm max-w-[964px] text-text-secondary">
+        <p className="text-sm max-w-[964px] text-text-secondary dark:text-darkText-1">
           If none of the available plans meets your company&apos;s
           standards, consider opting for the Professional plan. This plan
           provides unlimited access to all software solutions. Professional
@@ -178,7 +178,7 @@ const Enrollment = () => {
           customize the software with their company&apos;s name and brand.
         </p>
 
-        <h4 className="text-sm font-bold mt-4 text-text-secondary">
+        <h4 className="text-sm font-bold mt-4 text-text-secondary dark:text-white">
           Features Included:
         </h4>
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-0 justify-start w-full lg:justify-between flex-wrap">
