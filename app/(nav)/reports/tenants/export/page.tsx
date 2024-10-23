@@ -7,11 +7,8 @@ import { empty } from "@/app/config";
 import Image from "next/image";
 import Button from "@/components/Form/Button/button";
 import { useRouter } from "next/navigation";
-<<<<<<< HEAD
 import useDarkMode from "@/hooks/useCheckDarkMode";
-=======
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
->>>>>>> 009477ea0ec9f29560a6e9ec6e027b486f860928
 
 const ExportTenants = () => {
   const isDarkMode = useDarkMode()
@@ -84,11 +81,7 @@ const ExportTenants = () => {
           ESQ Taiwo Salam <br /> Legal Practitioner
         </p>
       </div>
-<<<<<<< HEAD
-      <div className="sticky z-[3] bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[25px] lg:px-[60px] flex justify-between">
-=======
       <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
->>>>>>> 009477ea0ec9f29560a6e9ec6e027b486f860928
         <Button
           size="custom"
           className="py-2 px-8 font-bold text-sm lg:text-base"
