@@ -2,7 +2,6 @@ import React from "react";
 import clsx from "clsx";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import Skeleton from "@mui/material/Skeleton";
-// import { PieChart, Pie, Cell } from "recharts";
 
 interface DonutChartProps {
   oldValue: number;
@@ -46,7 +45,6 @@ const DonutChart: React.FC<DonutChartProps> = ({
         fill="none"
         stroke={newColor}
         strokeWidth="5"
-        // strokeDasharray={`${(newPercentage * (2 * Math.PI * 25)) / 100} 157`}
         strokeDasharray={`${
           (newPercentage * circumference) / 100
         } ${circumference}`}
@@ -63,42 +61,11 @@ const DonutChart: React.FC<DonutChartProps> = ({
         fill="#000"
         className="dark:fill-darkText-1"
       >
-        +{newValue}
+        {newValue > 99 ? "99+" : newValue}
       </text>
     </svg>
   );
 };
-
-// const DonutChart: React.FC<DonutChartProps> = ({
-//   oldValue,
-//   newValue,
-//   oldColor,
-//   newColor,
-// }) => {
-//   const data = [
-//     { name: "Old", value: oldValue },
-//     { name: "New", value: newValue },
-//   ];
-//   const COLORS = [oldColor, newColor];
-//   return (
-//     <PieChart width={70} height={70}>
-//       <Pie
-//         data={data}
-//         cx="50%"
-//         cy="50%"
-//         innerRadius={20}
-//         outerRadius={30}
-//         fill="#8884d8"
-//         paddingAngle={5}
-//         dataKey="value"
-//       >
-//         {data.map((entry, index) => (
-//           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-//         ))}
-//       </Pie>
-//     </PieChart>
-//   );
-// };
 
 interface ManagementStatistcsCardProps {
   total: number;
@@ -143,30 +110,34 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
 
   return (
     <Card
-      className={clsx("w-[250px] custom-flex-col justify-center", className)}
+      className={clsx("w-[250px] h-[160px]", className)}
       style={{ boxShadow: "-2px 2px 10px rgba(21, 21, 21, 0.10)" }}
     >
-      <CardContent className="py-5">
-        <div className="flex gap-4 justify-between">
-          <div className="flex flex-col gap-y-3">
-            <CardTitle className="text-base font-bold text-brand-10 dark:text-darkText-1">
-              {title}
-            </CardTitle>
+      <CardContent className="h-full py-5">
+        <div className="flex flex-col h-full justify-between">
+          {/* Top section with title and donut */}
+          <div className="flex gap-4 items-start">
+            <div className="flex-1 min-h-[60px] flex items-start">
+              <CardTitle className="text-base font-bold text-brand-10 dark:text-darkText-1">
+                {title}
+              </CardTitle>
+            </div>
+            <div className="flex-shrink-0">
+              <DonutChart
+                oldValue={old || 0}
+                newValue={newData || 0}
+                newColor={newColor || newColorScheme}
+                oldColor={oldColor || oldColorScheme}
+              />
+            </div>
+          </div>
+
+          {/* Bottom section with total and "This month" */}
+          <div className="flex justify-between items-end">
             <p className="text-[32px] font-bold text-text-label dark:text-darkText-1">
               {total}
             </p>
-          </div>
-          <div className="flex flex-col gap-y-3">
-            <DonutChart
-              oldValue={old || 0}
-              newValue={newData || 0}
-              newColor={newColor || newColorScheme}
-              oldColor={oldColor || oldColorScheme}
-            />
-            <p
-              className="font-normal text-xs text-neutral-6 text-right dark:text-darkText-2"
-              style={{ whiteSpace: "nowrap" }}
-            >
+            <p className="font-normal text-xs text-neutral-6 dark:text-darkText-2 whitespace-nowrap">
               This month
             </p>
           </div>
