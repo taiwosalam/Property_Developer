@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 // Imports
@@ -7,11 +9,21 @@ import AccountingTitleSection from "@/components/Accounting/accounting-title-sec
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import Input from "@/components/Form/Input/input";
+import BackButton from "@/components/BackButton/back-button";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { useRouter } from "next/navigation";
 
 const PreviewExpenses = () => {
+  const router = useRouter();
+
+  const back = () => {
+    router.back();
+  };
+
   return (
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
+        <BackButton>Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -109,20 +121,26 @@ const PreviewExpenses = () => {
           </div>
         </AccountingTitleSection>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
+      <FixedFooter className="flex items-center justify-between">
         <p className="text-brand-9 text-[14px] font-normal">
           <span className="text-status-error-primary text-2xl">*</span>You
           cannot add payment to paid receipts.
         </p>
         <div className="flex gap-6">
-          <Button variant="sky_blue" size="base_medium" className="py-2 px-8">
+          <Button
+            onClick={back}
+            variant="sky_blue"
+            size="base_medium"
+            className="py-2 px-8"
+          >
             Exit
           </Button>
           <Button size="base_medium" className="py-2 px-8">
             Save
           </Button>
         </div>
-      </div>
+      </FixedFooter>
+      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end"></div>
     </div>
   );
 };
