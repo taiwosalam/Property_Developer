@@ -25,7 +25,9 @@ const EditProperty = () => {
         >
           <ChevronLeft />
         </button>
-        <p className="text-black dark:text-white font-bold text-lg lg:text-xl">Edit Property</p>
+        <p className="text-black dark:text-white font-bold text-lg lg:text-xl">
+          Edit Property
+        </p>
       </div>
       <SectionSeparator className="!my-2.5" />
       {/* Check for type of Property in your fetched property info. Also set the property info and added unit in unit store (zustand). property type determines formType */}
@@ -41,7 +43,7 @@ const EditProperty = () => {
           .map((_, index) => (
             <AddUnitFormCard
               key={index}
-              data={{}}
+              data={{ images: ["", "", ""] }}
               index={index}
               handleRemove={() => {}}
             />
