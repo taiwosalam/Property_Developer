@@ -16,10 +16,10 @@ export const WalletFundsCardsHeading: React.FC<
         <Picture src={Bank} alt="bank" size={18} />
       </div>
       <div className="custom-flex-col gap-[2px]">
-        <p className="text-text-primary text-base font-medium capitalize">
+        <p className="text-text-primary dark:text-white text-base font-medium capitalize">
           {title}
         </p>
-        <p className="text-text-tertiary text-sm font-medium">{desc}</p>
+        <p className="text-text-tertiary text-sm dark:text-darkText-1 font-medium">{desc}</p>
       </div>
     </div>
     <div className="h-[1px] border border-dashed border-borders-dark"></div>

@@ -14,10 +14,12 @@ import Input from "@/components/Form/Input/input";
 import Picture from "@/components/Picture/picture";
 import FundingCard from "../AddFunds/funding-card";
 import Button from "@/components/Form/Button/button";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const Withdrawal: React.FC<
   WalletModalDefaultProps<WalletWithdrawFundsOptions>
 > = ({ changeStep }) => {
+  const isDarkMode = useDarkMode()
   return (
     <div className="custom-flex-col gap-8">
       <div className="custom-flex-col gap-[18px]">
@@ -33,13 +35,13 @@ const Withdrawal: React.FC<
             id="amount"
             label="amount"
             placeholder="₦"
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: isDarkMode ? 'black' : "white" }}
           />
           <Input
             id="description"
             label="description"
             placeholder="Description"
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: isDarkMode ? "black" : "white" }}
           />
         </div>
       </div>
@@ -51,11 +53,11 @@ const Withdrawal: React.FC<
         >
           continue
         </Button>
-        <div className="py-3 px-4 flex gap-2 rounded-[4px] bg-status-caution-1">
+        <div className="py-3 px-4 flex gap-2 rounded-[4px] bg-status-caution-1 dark:bg-[#3C3D37]">
           <div className="flex items-start">
             <Picture src={InfoWarningIcon} alt="warning" size={26} />
           </div>
-          <p className="text-[#606060] text-sm font-normal">
+          <p className="text-[#606060] dark:text-darkText-1 text-sm font-normal">
             For security purposes, you can only withdraw money from your wallet
             to a verified account details. You can modify these details only
             from your profile.

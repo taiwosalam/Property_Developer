@@ -157,7 +157,7 @@ export const PlusBoldIcon = ({ size = 21 }) => {
         <path
           id="Vector"
           d="M9.86156 11.1125H4.86156V9.4458H9.86156V4.4458H11.5282V9.4458H16.5282V11.1125H11.5282V16.1125H9.86156V11.1125Z"
-          fill="#010A23"
+          fill="currentColor"
         />
       </g>
     </svg>
@@ -268,7 +268,7 @@ export const SearchIconBold = ({ size = 21 }) => {
         <path
           id="Vector"
           d="M15.7207 14.1266L19.2899 17.695L18.1107 18.8741L14.5424 15.305C13.2147 16.3693 11.5632 16.9482 9.86156 16.9458C5.72156 16.9458 2.36156 13.5858 2.36156 9.4458C2.36156 5.3058 5.72156 1.9458 9.86156 1.9458C14.0016 1.9458 17.3616 5.3058 17.3616 9.4458C17.364 11.1475 16.7851 12.7989 15.7207 14.1266ZM14.0491 13.5083C15.1064 12.4206 15.697 10.9628 15.6949 9.4458C15.6949 6.2233 13.0841 3.61247 9.86156 3.61247C6.63906 3.61247 4.02822 6.2233 4.02822 9.4458C4.02822 12.6683 6.63906 15.2791 9.86156 15.2791C11.3785 15.2813 12.8363 14.6907 13.9241 13.6333L14.0491 13.5083Z"
-          fill="black"
+          fill="currentColor"
         />
       </g>
     </svg>
@@ -289,7 +289,7 @@ export const DropdownListIcon = ({ size = 21 }) => {
           <path
             id="Vector"
             d="M17.3615 11.9458L10.6949 16.9458L4.02821 11.9458"
-            stroke="#050901"
+            stroke="currentColor"
             strokeWidth="1.66667"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -297,7 +297,7 @@ export const DropdownListIcon = ({ size = 21 }) => {
           <path
             id="Vector_2"
             d="M4.02821 4.4458H17.3615M4.02821 7.77913H17.3615"
-            stroke="#050901"
+            stroke="currentcolor"
             strokeWidth="1.66667"
             strokeLinecap="round"
           />

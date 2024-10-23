@@ -6,7 +6,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   textInputClassName,
   className,
   placeholder = "Search",
-  searchIconColor = "#1E3A8A",
+  searchIconColor = "currentColor",
 }) => {
   return (
     <div
