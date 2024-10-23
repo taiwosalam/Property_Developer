@@ -81,7 +81,7 @@ const EditBranch = () => {
   return (
     <div className="custom-flex-col gap-10">
       <div className="flex flex-col gap-8">
-        <div className="flex justify-between">
+        <div className="flex gap-8 flex-col sm:flex-row justify-between">
           <BackButton>Edit Branch</BackButton>
           <div className="flex gap-3">
             <Modal>
@@ -89,7 +89,7 @@ const EditBranch = () => {
                 <Button
                   type="button"
                   variant="light_red"
-                  size="base_medium"
+                  size="sm_medium"
                   className="py-2 px-8"
                 >
                   delete branch
@@ -107,7 +107,7 @@ const EditBranch = () => {
             >
               <Button
                 type="submit"
-                size="base_medium"
+                size="sm_medium"
                 className="py-2 px-8"
                 form="edit-branch-form"
               >
@@ -128,46 +128,52 @@ const EditBranch = () => {
       </div>
       <div className="custom-flex-col gap-8">
         <div className="page-title-container">
-          <PageTitle title="Edit Property" />
-          <div className="flex items-center gap-4">
-            <SearchInput placeholder="Search for Staff and Branch" />
-            <div className="flex items-center gap-x-3">
-              <button
-                type="button"
-                aria-label="list-view"
-                className={clsx(
-                  "p-1 rounded-md",
-                  state === "list"
-                    ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
-                    : "bg-transparent text-[unset]"
-                )}
-                onClick={setListView}
-              >
-                <ListIcon />
-              </button>
-              <button
-                type="button"
-                aria-label="grid-view"
-                className={clsx(
-                  "p-1 rounded-md",
-                  state === "grid"
-                    ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
-                    : "bg-transparent text-[unset]"
-                )}
-                onClick={setGridView}
-              >
-                <GridIcon />
-              </button>
-            </div>
-            <div className="bg-white dark:bg-[#020617] rounded-lg p-2 flex items-center space-x-2">
-              <button>
-                <div className="flex items-center gap-2 cursor-pointer">
-                  <Picture src={"/icons/sliders.svg"} alt="filters" size={20} />
-                  <p className="text-[#344054] dark:text-darkText-2 text-base font-medium">
-                    Filters
-                  </p>
-                </div>
-              </button>
+          <div className="w-full flex gap-4 flex-col lg:flex-row">
+            <PageTitle title="Edit Property" />
+            <div className="flex flex-wrap items-center gap-4">
+              <SearchInput placeholder="Search for Staff and Branch" />
+              <div className="flex items-center gap-x-3">
+                <button
+                  type="button"
+                  aria-label="list-view"
+                  className={clsx(
+                    "p-1 rounded-md",
+                    state === "list"
+                      ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
+                      : "bg-transparent text-[unset]"
+                  )}
+                  onClick={setListView}
+                >
+                  <ListIcon />
+                </button>
+                <button
+                  type="button"
+                  aria-label="grid-view"
+                  className={clsx(
+                    "p-1 rounded-md",
+                    state === "grid"
+                      ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
+                      : "bg-transparent text-[unset]"
+                  )}
+                  onClick={setGridView}
+                >
+                  <GridIcon />
+                </button>
+              </div>
+              <div className="bg-white dark:bg-[#020617] rounded-lg p-2 flex items-center space-x-2">
+                <button>
+                  <div className="flex items-center gap-2 cursor-pointer">
+                    <Picture
+                      src={"/icons/sliders.svg"}
+                      alt="filters"
+                      size={20}
+                    />
+                    <p className="text-[#344054] dark:text-darkText-2 text-base font-medium">
+                      Filters
+                    </p>
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
         </div>
