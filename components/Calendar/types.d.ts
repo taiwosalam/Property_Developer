@@ -32,6 +32,10 @@ export interface CalendarEventProps {
 
 // Calendar components
 // --------------------------------------------------
+export interface CalendarWeekDaysProps {
+  type?: "short" | "long" | "full";
+}
+
 export interface CalendarEventTagsProps {
   events: Record<string, Color>;
 }

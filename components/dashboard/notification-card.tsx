@@ -47,7 +47,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
   return (
     <Card
       className={clsx(
-        "w-full h-[340px] border-none custom-flex-col",
+        "w-full h-[340px] border-none custom-flex-col overflow-hidden",
         className
       )}
       style={{
@@ -75,7 +75,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
       </CardHeader>
       <CardContent
         className={clsx(
-          "custom-flex-col gap-4 p-4 pt-0 flex-1 overflow-auto custom-round-scrollbar",
+          "custom-flex-col gap-4 p-4 pt-0 flex-1 overflow-auto no-scrollbar",
           {
             "py-[55px] px-[40px]": notifications.length === 0,
           }
