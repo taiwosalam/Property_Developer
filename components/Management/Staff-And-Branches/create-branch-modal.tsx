@@ -120,7 +120,7 @@ const CreateBranchModal = () => {
             id="branch_description"
             label="Branch Description"
             placeholder="Write here"
-            inputSpaceClassName="bg-neutral-2"
+            inputSpaceClassName="bg-neutral-2 dark:bg-darkText-primary"
             className="md:col-span-2"
           />
           <div className="custom-flex-col gap-3 self-end">

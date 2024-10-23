@@ -89,7 +89,7 @@ export const TenantEditProfileInfoSection = () => {
           label="phone number"
           defaultValue={data?.phone_number}
           required
-          inputClassName="!bg-neutral-2"
+          inputClassName="!bg-neutral-2 dark:!bg-transparent"
         />
         <Select
           id="tenant-state"
@@ -104,7 +104,7 @@ export const TenantEditProfileInfoSection = () => {
           id="tenant-local_government"
           label="local government"
           placeholder="Select options"
-          inputContainerClassName="bg-neutral-2"
+          inputContainerClassName="bg-neutral-2 dark:!bg-darkText-primary"
           options={getLocalGovernments(address.state)}
           value={address.local_govt}
           onChange={(value) => handleAddressChange("local_govt", value)}
@@ -183,7 +183,7 @@ export const TenantEditNextOfKinInfoSection = () => {
           id="next-of-kin-phone-number"
           label="phone number"
           defaultValue={next_of_kin.phone || ""}
-          inputClassName="!bg-neutral-2"
+          inputClassName="!bg-neutral-2 dark:!bg-transparent"
         />
         <Select
           id="next-of-kin-relationship"
@@ -191,7 +191,7 @@ export const TenantEditNextOfKinInfoSection = () => {
           placeholder="Select options"
           options={nextOfKinRelationships}
           defaultValue={next_of_kin.relationship || ""}
-          inputContainerClassName="bg-neutral-2"
+          inputContainerClassName="bg-neutral-2 dark:!bg-darkText-primary"
         />
         <Input
           id="next-of-kin-address"
@@ -254,7 +254,7 @@ export const TenantEditGuarantorInfoSection = () => {
           label="phone number"
           placeholder="Placeholder"
           defaultValue={guarantor.phone_number || ""}
-          inputClassName="!bg-neutral-2"
+          inputClassName="!bg-neutral-2 dark:!bg-transparent"
         />
         <Select
           id={`guarantor${index}-relationship`}
@@ -262,7 +262,7 @@ export const TenantEditGuarantorInfoSection = () => {
           placeholder="Select options"
           options={guarantorRelationships}
           defaultValue={guarantor.relationship || ""}
-          inputContainerClassName="bg-neutral-2"
+          inputContainerClassName="bg-neutral-2 dark:!bg-darkText-primary"
         />
         <Input
           id={`guarantor${index}_address`}

@@ -378,7 +378,7 @@ const EditLandlord = () => {
               </Button>
             </LandlordTenantInfoEditSection>
             <LandlordTenantInfoEditSection title="add note">
-              <TextArea id="note" label="note" />
+              <TexmtArea id="note" label="note" />
             </LandlordTenantInfoEditSection>
           </div>
         </div>
