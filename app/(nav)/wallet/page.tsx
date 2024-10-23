@@ -20,7 +20,7 @@ const Wallet = () => {
   return (
     <div className="custom-flex-col gap-10">
       <div className="flex gap-1">
-        <h1 className="text-black text-2xl font-medium">Wallet</h1>
+        <h1 className="text-black dark:text-white text-2xl font-medium">Wallet</h1>
         <div className="flex items-center">
           <ExclamationMark />
         </div>
@@ -69,12 +69,12 @@ const Wallet = () => {
             <p className="text-xs">6564567689787</p>
           </div>
           <WalletBalanceCard noHeader mainBalance={1000} cautionDeposit={200} />
-          <div className="custom-flex-col gap-4 p-4 rounded-lg bg-white">
+          <div className="custom-flex-col gap-4 p-4 rounded-lg bg-white dark:bg-darkText-primary">
             <div className="flex items-center justify-between text-base font-medium">
-              <p className="text-black">Beneficiary</p>
+              <p className="text-black dark:text-white">Beneficiary</p>
               <Modal>
                 <ModalTrigger className="flex items-center gap-1">
-                  <p className="text-text-label">See all</p>
+                  <p className="text-text-label dark:text-darkText-1">See all</p>
                   <ChevronRight color="#5A5D61" size={16} />
                 </ModalTrigger>
                 <ModalContent>
@@ -94,14 +94,14 @@ const Wallet = () => {
       </div>
       <div className="custom-flex-col gap-10">
         <div className="flex justify-between">
-          <h2 className="text-text-primary text-xl font-medium">
+          <h2 className="text-text-primary dark:text-white text-xl font-medium">
             Recent Transaction
           </h2>
           <Link
             href={"/wallet/transaction-history"}
             className="flex items-center gap-1"
           >
-            <p className="text-text-label">See all</p>
+            <p className="text-text-label dark:text-darkText-1">See all</p>
             <ChevronRight color="#5A5D61" size={16} />
           </Link>
         </div>

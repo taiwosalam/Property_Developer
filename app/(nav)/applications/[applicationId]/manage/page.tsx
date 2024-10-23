@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 // Images
@@ -17,16 +19,18 @@ import {
   LandlordTenantInfoSection,
 } from "@/components/Management/landlord-tenant-info-components";
 import Button from "@/components/Form/Button/button";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const ManageApplication = () => {
+  const isDarkMode = useDarkMode();
   return (
     <div className="custom-flex-col gap-[88px] pb-[100px]">
       <div className="custom-flex-col gap-6">
         <div
           style={{ boxShadow: " 4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
-          className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white"
+          className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
         >
-          <p className="text-primary-navy text-xl font-bold">
+          <p className="text-primary-navy dark:text-white text-xl font-bold">
             Property Details
           </p>
           <SectionSeparator />
@@ -51,7 +55,7 @@ const ManageApplication = () => {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-5">
           <div
-            className="custom-flex-col gap-5 pt-6 bg-white rounded-2xl overflow-hidden"
+            className="custom-flex-col gap-5 pt-6 bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden"
             style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
           >
             <div className="flex items-center px-10 gap-5">
@@ -59,14 +63,14 @@ const ManageApplication = () => {
               <div className="custom-flex-col gap-4">
                 <div className="custom-flex-col">
                   <div className="flex gap-2">
-                    <p className="text-black text-xl font-bold capitalize">
+                    <p className="text-black dark:text-white text-xl font-bold capitalize">
                       Abimbola Adedeji
                     </p>
                     <BadgeIcon color="green" />
                   </div>
                   <p
-                    style={{ color: "rgba(21, 21, 21, 0.70)" }}
-                    className={`text-sm font-normal ${secondaryFont.className}`}
+                    style={{ color: isDarkMode ? "white" : "rgba(21, 21, 21, 0.70)" }}
+                    className={`text-sm dark:text-white font-normal ${secondaryFont.className}`}
                   >
                     abimbola@gmail.com
                   </p>
@@ -74,14 +78,14 @@ const ManageApplication = () => {
                 <div className="flex">
                   <LandlordTenantUserTag type="mobile" />
                 </div>
-                <p className="text-neutral-800 text-base font-medium">
+                <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
                   ID: 22132876554444
                 </p>
               </div>
             </div>
             <div
               className="py-3 px-6 rounded-2xl"
-              style={{ backgroundColor: "#fde9ea80" }}
+              style={{ backgroundColor: isDarkMode ? "white" : "var(--background-color, #fde9ea80)" }}
             >
               <p className="text-status-error-2 text-xs font-medium">
                 The tenant has been flagged for owing rent and causing damages
@@ -140,7 +144,7 @@ const ManageApplication = () => {
           <UnitItem />
         </div>
       </LandlordTenantInfoSection>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
+      <div className="fixed bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[60px] flex gap-6 justify-end">
         <Button variant="light_red" size="base_bold" className="py-2 px-8">
           reject application
         </Button>

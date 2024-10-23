@@ -12,6 +12,7 @@ import ExcelIcon from "@/public/icons/excel-icon.svg";
 import Picture from "@/components/Picture/picture";
 import BackButton from "@/components/BackButton/back-button";
 import Pagination from "@/components/Pagination/pagination";
+import { FilterIcons } from "@/public/icons/icons";
 
 const TransactionHistory = () => {
   return (
@@ -19,27 +20,28 @@ const TransactionHistory = () => {
       <div className="page-title-container">
         <BackButton>Transaction History</BackButton>
         <div className="flex items-center gap-4">
-          <div className="bg-white rounded-lg p-2 flex items-center space-x-2">
+          <div className="bg-white dark:bg-darkText-primary rounded-lg p-2 flex items-center space-x-2">
             <button>
               <div className="flex items-center gap-2 cursor-pointer">
-                <Picture src="/icons/sliders.svg" alt="filters" size={20} />
-                <p className="text-[#344054] text-base font-medium">Filters</p>
+                {/* <Picture src="/icons/sliders.svg" alt="filters" size={20} /> */}
+                <FilterIcons />
+                <p className="text-[#344054] dark:text-white text-base font-medium">Filters</p>
               </div>
             </button>
           </div>
           <Link
             href={"/wallet/audit-trail/export"}
-            className="flex items-center gap-2 py-[10px] px-4 rounded-lg border border-solid border-[#D0D5DD] bg-white"
+            className="flex items-center dark:bg-darkText-primary gap-2 py-[10px] px-4 rounded-lg border border-solid border-[#D0D5DD] bg-white"
           >
             <Picture src={PdfIcon} alt="pdf icon" size={20} />
-            <p className="text-[#344054] text-base font-medium">Export</p>
+            <p className="text-[#344054] dark:text-white text-base font-medium">Export</p>
           </Link>
           <Link
             href={"/wallet/audit-trail/export"}
-            className="flex items-center gap-2 py-[10px] px-4 rounded-lg border border-solid border-[#D0D5DD] bg-white"
+            className="flex items-center dark:bg-darkText-primary gap-2 py-[10px] px-4 rounded-lg border border-solid border-[#D0D5DD] bg-white"
           >
             <Picture src={ExcelIcon} alt="excel icon" size={20} />
-            <p className="text-[#344054] text-base font-medium">Export</p>
+            <p className="text-[#344054] dark:text-white text-base font-medium">Export</p>
           </Link>
         </div>
       </div>

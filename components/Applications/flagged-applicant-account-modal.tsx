@@ -15,7 +15,7 @@ const FlaggedApplicantAccountModal = () => {
         <div className="custom-flex-col gap-8">
           <div className="flex gap-6">
             <div className="custom-flex-col gap-2 flex-1">
-              <p className="text-primary-navy text-sm font-medium">
+              <p className="text-primary-navy dark:text-white text-sm font-medium">
                 Previous Manager
               </p>
               <UserCard
@@ -30,7 +30,7 @@ const FlaggedApplicantAccountModal = () => {
               />
             </div>
             <div className="custom-flex-col gap-2 flex-1">
-              <p className="text-primary-navy text-sm font-medium">
+              <p className="text-primary-navy dark:text-white text-sm font-medium">
                 Applicant Information
               </p>
               <UserCard

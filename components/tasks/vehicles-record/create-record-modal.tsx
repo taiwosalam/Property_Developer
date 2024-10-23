@@ -67,6 +67,7 @@ const CreateRecordModal = () => {
                 number="OS1036DR"
                 state="Lagos"
                 name="Anikulapo Kuti"
+                key={index}
               />
             ))}
           </div>
