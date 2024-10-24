@@ -1,5 +1,8 @@
 import React from "react";
 
+// Types
+import { NavGlobalSearchItemProps } from "./types";
+
 // Images
 import Verified from "@/public/icons/verified.svg";
 
@@ -8,8 +11,9 @@ import SVG from "../SVG/svg";
 import Picture from "../Picture/picture";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 
-const NavGlobalSearchItem = () => {
+const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({ icon }) => {
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
+
   return (
     <div
       className="py-2 px-4 rounded-md flex justify-between"
@@ -19,7 +23,7 @@ const NavGlobalSearchItem = () => {
         <div className="flex items-center gap-3">
           <div className="w-[60px] h-[60px] rounded-lg custom-secondary-bg flex items-center justify-center">
             <SVG
-              type="people"
+              type={icon}
               color={primaryColor || "#0033C4"}
               className="w-[30px] h-[30px]"
             />

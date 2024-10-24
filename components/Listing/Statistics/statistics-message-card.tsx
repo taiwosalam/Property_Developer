@@ -15,8 +15,7 @@ import clsx from "clsx";
 const StatisticsMessageCard: React.FC<StatisticsMessageCardProps> = ({
   type,
 }) => {
-  const isOffers = type === "offers";
-
+  const isOffers = false; //Note: This was removed: type === "offers"
   return (
     <div className="flex items-center justify-between gap-6">
       <div className="flex items-center gap-1">

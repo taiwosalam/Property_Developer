@@ -15,6 +15,7 @@ const Switch: React.FC<SwitchProps> = ({
 
   return (
     <button
+      onClick={onClick}
       className={clsx("flex items-center rounded-full", {
         "bg-status-success-primary justify-end": active,
         "bg-[#F1F2F4] justify-start": !active,

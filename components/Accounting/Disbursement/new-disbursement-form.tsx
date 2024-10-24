@@ -13,6 +13,7 @@ import Picture from "@/components/Picture/picture";
 import Select from "@/components/Form/Select/select";
 import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
+import TextArea from "@/components/Form/TextArea/textarea";
 
 const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
   nextStep,
@@ -20,14 +21,13 @@ const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
 }) => {
   return (
     <div
-      className="w-[600px] p-[18px] pb-8 rounded-lg bg-white dark:bg-darkText-primary custom-flex-col gap-8"
+      className="w-[600px] pb-[26px] rounded-lg bg-white dark:bg-darkText-primary custom-flex-col gap-[14px] overflow-hidden"
       style={{
-        border: "1px solid rgba(193, 194, 195, 0.40)",
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="custom-flex-col gap-[2px]">
+      <div className="custom-flex-col gap-[2px] p-4 bg-brand-1">
         <div className="flex justify-end">
           <ModalTrigger close>
             <Picture src={Cancel} alt="close" size={24} />
@@ -37,25 +37,19 @@ const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
           New Disbursement
         </p>
       </div>
-      <div className="custom-flex-col gap-6">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-[18px]">
-          <Input
-            id="transaction-id"
-            label="transaction id"
-            placeholder="Input ID"
-            style={{ backgroundColor: isDarkMode ? "#020617" : "white" }}
-          />
-          <Input
-            id="property-name"
-            label="property name"
-            style={{ backgroundColor: isDarkMode ? "#020617" : "white" }}
+      <div className="custom-flex-col gap-6 px-4">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+          <Select
+            required
+            id="property"
+            label="property"
+            options={["apartment", "house", "land"]}
           />
           <Select
             required
-            isSearchable={false}
-            id="landlord-landlady"
-            label="landlord / landlady"
-            options={["landlord 1", "landlord 2"]}
+            id="tenant-occupant"
+            label="tenant / occupany"
+            options={["tenant 1", "tenant 2"]}
           />
           <Select
             required
@@ -67,6 +61,7 @@ const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
               "wallet",
               "cash deposit",
               "bank deposit",
+              "other mode of payment",
             ]}
           />
           <Input
@@ -76,27 +71,15 @@ const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
             style={{ backgroundColor: isDarkMode ? "#020617" : "white" }}
             label="amount disburse"
           />
-          <Input
-            id="transaction-date"
-            label="transaction date"
-            type="date"
-            style={{ backgroundColor: isDarkMode ? "#020617" : "white" }}
-          />
         </div>
         <div className="custom-flex-col gap-1">
           <Label required id="transaction-description">
-            description
+            transaction description
           </Label>
-          <textarea
-            rows={4}
-            placeholder="Type here"
-            id="transaction-description"
-            name="transaction-description"
-            className="rounded-[4px] p-3 custom-primary-outline border border-solid border-[#C1C2C366] hover:border-[#00000099] transition-colors duration-300 ease-in-out resize-none"
-          ></textarea>
+          <TextArea id="transaction-description" />
         </div>
         <Button size="sm_medium" className="py-2 px-8" onClick={nextStep}>
-          submit
+          create
         </Button>
       </div>
     </div>

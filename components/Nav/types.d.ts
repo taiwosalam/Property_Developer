@@ -55,6 +55,7 @@ export interface NavCreateNewColumnProps {
 export interface NavSearchTabProps {
   count: number;
   active?: boolean;
+  onClick: () => void;
   children: React.ReactNode;
 }
 
@@ -66,4 +67,8 @@ export interface SideNavProps {
 export interface NavModalLayoutProps {
   title: string;
   children: React.ReactNode;
+}
+
+export interface NavGlobalSearchItemProps {
+  icon: SVGType;
 }
