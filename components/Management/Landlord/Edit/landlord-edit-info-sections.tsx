@@ -503,15 +503,10 @@ export const LandlordEditNoteInfoSection = () => {
       >
         Clear
       </button>
-      <TextArea
-        id="note"
-        value={note}
-        onChange={(value) => setNote(value)}
-        className="col-span-full"
-      />
+      <TextArea id="note" value={note} onChange={(value) => setNote(value)} />
       <Button
         size="base_medium"
-        className="!w-fit ml-auto py-2 px-6 col-span-full"
+        className="!w-fit ml-auto py-2 px-6"
       >
         update
       </Button>
