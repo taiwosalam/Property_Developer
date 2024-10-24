@@ -41,7 +41,7 @@ body {
   pointer-events: none;
 }
 
-#portal>* {
+#portal > * {
   position: absolute;
   pointer-events: all;
 }
@@ -102,7 +102,7 @@ h1 {
   flex-direction: column;
 }
 
-.custom-flex-col>* {
+.custom-flex-col > * {
   width: 100%;
 }
 
@@ -159,7 +159,7 @@ h1 {
 /* Overwriting default behaviour */
 /* -------------------------------------------------------------- */
 
-.sections>*:last-child .separator {
+.sections > *:last-child .separator {
   display: none;
 }
 
@@ -216,14 +216,10 @@ button:disabled {
 
 .quill-editor {
   height: 160px;
-  /* Adjust the height as needed */
   @apply rounded-t-lg;
-  /* Rounded corners */
   border: 1px solid #c1c2c366;
-  /* Optional: Add a border */
   border-bottom: none;
   padding: 0.5rem;
-  /* Optional: Add padding inside the editor */
 }
 
 .quill-toolbar {
@@ -294,7 +290,7 @@ button:disabled {
 .dash-table tbody tr:nth-child(2n + 1) {
   @apply bg-brand-1 text-[#f1f1fd] dark:bg-[#020617];
   &:hover {
-    @apply dark:bg-[#000]; 
+    @apply dark:bg-[#000];
   }
 }
 
@@ -343,7 +339,7 @@ button:disabled {
 }
 
 /* for the blue buttons */
-.page-header-container> :last-child {
+.page-header-container > :last-child {
   @apply flex-shrink-0;
 }
 
