@@ -25,9 +25,12 @@ import {
   LandlordEditNoteInfoSection,
   LandlordEditAvatarInfoSection,
 } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const EditLandlord = () => {
   // const { landlord, landlordId, error, loading } = useLandlordData();
+  const router = useRouter();
   const {
     data: landlord,
     error,
@@ -43,6 +46,12 @@ const EditLandlord = () => {
     return <CustomLoader layout="edit-page" pageTitle="Edit Landlord" />;
   if (error) return <div>Error: {error.message}</div>;
   if (!landlord) return null;
+
+  useEffect(() => {
+    if (landlord?.user_tag === "mobile") {
+      router.push(`/management/landlord/${landlord.id}/manage`);
+    }
+  }, [landlord?.user_tag, router]);
 
   return (
     <LandlordEditContext.Provider value={{ data: landlord }}>

@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import { CSSProperties } from "react";
 import Link from "next/link";
-import Image from "next/image";
 
 export const LandlordTenantInfoBox: React.FC<{
   style?: CSSProperties;

@@ -2124,11 +2124,11 @@ export const ImportCircle = () => {
   );
 };
 
-export const CloseCircle = () => {
+export const CloseCircle = ({ size = 35 }) => {
   return (
     <svg
-      width="35"
-      height="34"
+      width={size}
+      height={size}
       viewBox="0 0 35 34"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
