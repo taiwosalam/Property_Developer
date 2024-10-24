@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 
 // Types
 import type { InventoryListProps } from "./types";
@@ -7,12 +9,16 @@ import type { InventoryListProps } from "./types";
 import ClipboardCheck from "@/public/icons/clipboard-check.svg";
 
 // Imports
+import { empty } from "@/app/config";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
-import { InventoryListInfo } from "./inventory-components";
+import PopupImageModal from "@/components/PopupSlider/PopupSlider";
+import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { SectionSeparator } from "@/components/Section/section-components";
 
 const InventoryList: React.FC<InventoryListProps> = ({ data = {} }) => {
+  const [isOpened, setIsOpened] = useState(false);
+
   return (
     <div
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
@@ -24,17 +30,35 @@ const InventoryList: React.FC<InventoryListProps> = ({ data = {} }) => {
         <div className="flex items-center min-w-[800px]">
           <div className="flex-1 flex justify-start">
             <div
+              onClick={() => setIsOpened(true)}
               style={{ backgroundColor: "#CCCCCC" }}
-              className="p-8 rounded-lg dark:bg-white"
+              className="p-8 rounded-lg dark:bg-white cursor-pointer"
             >
               <Picture
                 src={ClipboardCheck}
                 alt="clipboard with check mark"
                 size={60}
               />
+              <PopupImageModal
+                isOpen={isOpened}
+                images={[empty]}
+                onClose={() => setIsOpened(false)}
+                currentIndex={0}
+              />
             </div>
           </div>
-          <InventoryListInfo data={{}} />
+          <KeyValueList
+            referenceObject={{
+              inventory_id: "",
+              edited_date: "",
+              property_name: "",
+              created_date: "",
+              branch_name: "",
+              account_officer: "",
+            }}
+            data={data}
+            chunkSize={3}
+          />
           <div className="flex-1 flex flex-col gap-4 items-end">
             <Button variant="border" size="xs_medium" className="py-2 px-10">
               manage

@@ -698,4 +698,4 @@ export const svgs = {
       />
     </svg>
   ),
-};
+} as const;
