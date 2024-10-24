@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/select";
 import {
   dashboardCardData,
-  recentMessagesData,
   walletBalanceCardData,
 } from "@/app/(nav)/dashboard/data";
 import NotificationCard from "@/components/dashboard/notification-card";
@@ -37,6 +36,8 @@ import { getOneBranch } from "../data";
 import { useAuthStore } from "@/store/authstrore";
 import { ResponseType } from "./types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { DateRange } from "react-day-picker";
+import BackButton from "@/components/BackButton/back-button";
 
 const BranchDashboard = () => {
   const initialState = {
@@ -94,6 +95,44 @@ const BranchDashboard = () => {
 
   const accessToken = useAuthStore((state) => state.access_token);
 
+  const [timeRange, setTimeRange] = useState("30d");
+  const [highestMetric, setHighestMetric] = useState<string | null>(null);
+  const [primaryColor, setPrimaryColor] = useState<string | null>(null);
+
+  const calculateDateRange = (days: number) => {
+    const now = new Date();
+    const fromDate = new Date();
+    fromDate.setDate(now.getDate() - days);
+    return { from: fromDate, to: now };
+  };
+
+  const [selectedDateRange, setSelectedDateRange] = useState<
+    DateRange | undefined
+  >(calculateDateRange(30));
+
+  useEffect(() => {
+    if (!selectedDateRange) {
+      const initialRange = calculateDateRange(30);
+      setSelectedDateRange(initialRange);
+    }
+  }, [selectedDateRange]);
+
+  const handleDateChange = (range: DateRange | undefined) => {
+    setSelectedDateRange(range);
+    if (range?.from && range?.to) {
+      setTimeRange("custom");
+    }
+  };
+
+  const handleSelectChange = (value: string) => {
+    setTimeRange(value);
+    if (value !== "custom") {
+      const days =
+        value === "90d" ? 90 : value === "30d" ? 30 : value === "7d" ? 7 : 1;
+      setSelectedDateRange(calculateDateRange(days));
+    }
+  };
+
   useEffect(() => {
     const fetchBranchData = async () => {
       if (typeof branchId === "string") {
@@ -112,15 +151,17 @@ const BranchDashboard = () => {
     <div className="custom-flex-col gap-6">
       <div className="w-full gap-2 flex items-center justify-between flex-wrap">
         <div>
-          <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-            {fetchedBranchData?.branch?.branch_title || "Null"}
-          </h1>
-          <div className="text-text-disabled flex items-center space-x-1">
-            <LocationIcon />
-            <p className="text-sm font-medium">
-              {fetchedBranchData?.branch?.branch_full_address || "Null"}
-            </p>
-          </div>
+          <BackButton>
+            <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
+              {fetchedBranchData?.branch?.branch_title || "Null"}
+            </h1>
+            <div className="text-text-disabled flex items-center space-x-1">
+              <LocationIcon />
+              <p className="text-sm font-medium">
+                {fetchedBranchData?.branch?.branch_full_address || "Null"}
+              </p>
+            </div>
+          </BackButton>
         </div>
         <div className="flex items-center justify-between gap-2 ml-auto flex-wrap">
           <Modal>
@@ -150,27 +191,12 @@ const BranchDashboard = () => {
         <div className="md:w-[58%] lg:w-[68%] bg-white dark:bg-[#3C3D37] p-6 space-y-4 rounded-lg border border-[rgba(186,199,213,0.20)]">
           <div className="ml-auto flex w-[390px] max-w-full px-4 bg-[#F5F5F5] dark:bg-darkText-primary rounded-md items-center justify-end">
             <DatePickerWithRange
-              selectedRange={
-                {
-                  startDate: new Date(),
-                  endDate: new Date(),
-                  key: "selection",
-                } as any
-              }
-              onDateChange={
-                (range: any) => console.log(range)
-                // Add date range logic here
-              }
+              selectedRange={selectedDateRange}
+              onDateChange={handleDateChange}
             />
-            <Select
-              value={"90d"}
-              onValueChange={
-                (value: string) => console.log(value)
-                // Add date range logic here
-              }
-            >
+            <Select value={timeRange} onValueChange={handleSelectChange}>
               <SelectTrigger
-                className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto"
+                className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto dark:text-whie dark:bg-[#020617]"
                 aria-label="Select a value"
               >
                 <SelectValue placeholder="Last 3 months" />
@@ -194,7 +220,7 @@ const BranchDashboard = () => {
               </SelectContent>
             </Select>
           </div>
-          <AutoResizingGrid gap={12} minWidth={212}>
+          <div className="w-full h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             <BranchStatCard
               title="Total Receipts"
               balance={1234535}
@@ -210,13 +236,16 @@ const BranchDashboard = () => {
               balance={1234535}
               upvalue={54}
             />
-          </AutoResizingGrid>
+          </div>
         </div>
         <div className="md:flex-1 space-y-4">
-          <div className="max-w-full flex items-center justify-between flex-wrap gap-2">
+          <Link
+            href={"/wallet"}
+            className="max-w-full flex items-center justify-between flex-wrap gap-2"
+          >
             <h1 className="text-[14px] font-medium">Branch Wallet</h1>
             <p className="text-xs text-text-label">ID: 2324354678</p>
-          </div>
+          </Link>
           <BranchBalanceCard
             mainBalance={walletBalanceCardData.mainBalance}
             cautionDeposit={walletBalanceCardData.cautionDeposit}
@@ -249,6 +278,7 @@ const BranchDashboard = () => {
         />
         <NotificationCard
           sectionHeader="Staffs"
+          seeAllLink={`/management/staff-branch/${branchId}/branch-staff`}
           notifications={fetchedBranchData?.staff || []}
           branchId={branchId as string}
           className="md:flex-1"

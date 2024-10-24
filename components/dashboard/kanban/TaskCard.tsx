@@ -176,7 +176,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <Image src={Drag} alt="theme" width={20} height={20} />
           </button>
           <button
-            hidden={pathname === "/dashboard" || !noDrag}
+            hidden={!noDrag}
             {...attributes}
             {...listeners}
             className="text-secondary-foreground/50 h-auto cursor-pointer"
