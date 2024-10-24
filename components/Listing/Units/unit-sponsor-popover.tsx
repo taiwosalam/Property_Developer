@@ -48,20 +48,14 @@ const UnitSponsorPopover = () => {
   }, [showPopover, close]);
 
   return (
-    <div ref={continer} className="relative">
+    <div ref={continer} className="relative dm-sans">
       {/* Popover */}
       <div
         ref={popover}
         className="absolute bottom-full left-2/4 -translate-x-2/4 custom-flex-col w-[394px]"
         style={{ display: "none" }}
       >
-        <div
-          className="p-6 rounded-lg bg-white dark:bg-[#3C3D37] dark:border dark:border-darkText-2 custom-flex-col gap-6"
-          style={{
-            boxShadow:
-              "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
-          }}
-        >
+        <div className="p-6 rounded-lg bg-white dark:bg-[#3C3D37] dark:border dark:border-darkText-2 custom-flex-col gap-6 shadow-lg">
           <div className="custom-flex-col gap-5">
             <div className="flex items-center justify-between">
               <p className="text-text-primary text-base font-bold">

@@ -37,7 +37,7 @@ const Units = () => {
           description:
             "This page contains a list of Vacant Units on the platform.",
         }}
-        searchInputPlaceholder="Search"
+        searchInputPlaceholder="Search for vacant units"
         handleFilterApply={() => {}}
         isDateTrue={false}
         filterOptions={[]}

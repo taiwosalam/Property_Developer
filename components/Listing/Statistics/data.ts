@@ -1,6 +1,6 @@
 export const statistics_data_types = [
   "enquires",
   "views",
-  "offers",
+  // "offers",
   "bookmark",
 ] as const;

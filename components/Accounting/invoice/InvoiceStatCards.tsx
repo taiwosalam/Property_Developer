@@ -58,8 +58,8 @@ const InvoiceStatCards: React.FC<InvoiceStatCardsProps> = ({
         <div className="flex items-center gap-2">
           <Picture src={"/icons/trending-up.svg"} size={24} />
           <p className="text-text-label font-normal text-[16px]">
-            <span className="text-status-success-2">4.3%</span> Up from last
-            week
+            <span className="text-status-success-2">{upvalue}%</span> Up from
+            last week
           </p>
         </div>
       )}
@@ -67,8 +67,8 @@ const InvoiceStatCards: React.FC<InvoiceStatCardsProps> = ({
         <div className="flex items-center gap-2">
           <Picture src={"/icons/trending-down.svg"} size={24} />
           <p className="text-text-label font-normal text-[16px]">
-            <span className="text-status-error-2">4.3%</span> Down from last
-            week
+            <span className="text-status-error-2">{downValue}%</span> Down from
+            last week
           </p>
         </div>
       )}
