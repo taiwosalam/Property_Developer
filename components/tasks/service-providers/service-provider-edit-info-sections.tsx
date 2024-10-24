@@ -280,9 +280,13 @@ export const ServiceProviderAttachmentSection = () => {
 
 export const ServiceProviderNotesSection = () => {
   const { data: serviceProvider } = useServiceProviderEditContext();
-  const [note, setNote] = useState(serviceProvider?.notes || "");
+  const [note, setNote] = useState<string>(
+    typeof serviceProvider?.notes === "string" ? serviceProvider.notes : ""
+  );
   useEffect(() => {
-    setNote(serviceProvider?.notes || "");
+    setNote(
+      typeof serviceProvider?.notes === "string" ? serviceProvider.notes : ""
+    );
   }, [serviceProvider?.notes]);
   return (
     <InfoEditSection title="add note" style={{ position: "relative" }}>
@@ -298,7 +302,7 @@ export const ServiceProviderNotesSection = () => {
           id="note"
           label="note"
           placeholder="Note goes here"
-          value={note}
+          value={typeof note === "string" ? note : ""}
           onChange={(value) => setNote(value)}
           className="col-span-full"
         />
