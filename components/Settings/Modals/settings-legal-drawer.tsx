@@ -70,6 +70,13 @@ const SettingsLegalDrawer = ({onClose}: {onClose: () => void}) => {
             address="56, Abiola way area Moniya ibadan"
             accountType="Web User"
           />
+          <Details
+            title="Tenant/Occupants Details"
+            name="Aderibigbe Wakili"
+            id="1234567890"
+            address="56, Abiola way area Moniya ibadan"
+            accountType="Web User"
+          />
           <div className="enageg mb-4">
             <h3 className="text-[20px] font-bold">Engage legal counsel.</h3>
             <p className="text-text-disabled text-sm mt-1 mb-3">
@@ -143,14 +150,6 @@ const [openPaymentModal, setOpenPaymentModal] = useState(false);
 };
 
 
-// const PaymentMethod = () => {
-//     return (
-//         <div>
-//             <h2>Select payment method</h2>
-//         </div>
-//     )
-// }
-
 const Details = ({
   title,
   name,
@@ -180,11 +179,15 @@ const Details = ({
               <p className="text-sm text-darkText-secondary text-text-label dark:text-white text-[16px] tracking-[0px] my-2">
                 {title === "Property Details"
                   ? "Property Description"
+                  : title === "Tenant/Occupants Details"
+                  ? "Tenants/Occupants Name"
                   : "Landlord/Landlady Name"}
               </p>
               <p className="text-sm text-darkText-secondary text-text-label dark:text-white text-[16px] tracking-[0px]">
                 {title === "Property Details"
                   ? "Property Address"
+                  : title === "Tenant/Occupants Details"
+                  ? "Tenants/Occupants ID"
                   : "Landlord ID"}
               </p>
             </div>
@@ -240,7 +243,7 @@ interface CheckboxProps {
   groupName?: string;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({
+export const Checkbox: React.FC<CheckboxProps> = ({
   title,
   state,
   darkText,
@@ -278,7 +281,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         </div>
         <div className="custom-flex-col gap-[2px]">
           {title && (
-            <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium capitalize">
+            <p className="text-text-black dark:text-darkText-1 text-base font-medium capitalize">
               {title}
             </p>
           )}

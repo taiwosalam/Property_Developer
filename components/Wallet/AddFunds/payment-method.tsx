@@ -6,9 +6,6 @@ import type { WalletAddFundsOptions as WalletAddFundsOptionsType } from "../type
   // Types
 import type { WalletAddFundsOptions, WalletModalDefaultProps } from "../types";
 
-// Imports
-import WalletOnlineFundingCard from "../wallet-online-funding-card";
-
   // Images
   import Zenith from "@/public/wallet/zenith.png";
   import Paystack from "@/public/wallet/paystack.png";
@@ -17,7 +14,6 @@ import WalletOnlineFundingCard from "../wallet-online-funding-card";
 
 // Imports
 import WalletModalPreset from "../wallet-modal-preset";
-// import AddFundsModalOptions from "./add-funds-modal-options";
 import Picture from "@/components/Picture/picture";
 import clsx from "clsx";
 import { secondaryFont } from "@/utils/fonts";
@@ -25,7 +21,6 @@ import Button from "@/components/Form/Button/button";
 import { empty } from "@/app/config";
 import AddFund from "./add-fund";
 import { WalletFundsCardsHeading } from "../wallet-components";
-import Image from "next/image";
 import { WalletLegalProcedureIcon } from "@/public/icons/icons";
 
 const PaymentMethod = () => {
@@ -209,7 +204,6 @@ const OnlineFunding = () => {
 
 
 const WalletFunding: React.FC<WalletOnlineFundingCardProps> = ({
-  noInput,
   proceed,
 }) => {
   return (
