@@ -1,7 +1,7 @@
  "use client";
 
 import React, { useState } from "react";
-import type { FundingCardProps, WalletBankTransferCardProps } from "../types";
+import type { FundingCardProps, WalletBankTransferCardProps, WalletOnlineFundingCardProps } from "../types";
 import type { WalletAddFundsOptions as WalletAddFundsOptionsType } from "../types";
   // Types
 import type { WalletAddFundsOptions, WalletModalDefaultProps } from "../types";
@@ -25,6 +25,8 @@ import Button from "@/components/Form/Button/button";
 import { empty } from "@/app/config";
 import AddFund from "./add-fund";
 import { WalletFundsCardsHeading } from "../wallet-components";
+import Image from "next/image";
+import { WalletLegalProcedureIcon } from "@/public/icons/icons";
 
 const PaymentMethod = () => {
   const [activeStep, setActiveStep] =
@@ -85,10 +87,10 @@ const AddFundsModalOptions: React.FC<
     <div className="custom-flex-col gap-4">
         <div className="w-full flex items-center justify-center flex-col">
             <h3>Legal Procedure Fee</h3>
-            <p className="not-italic leading-[30px] font-bold text-brand-9 text-[20px] font-medium"> ₦ 2,000.00  </p>
+            <p className="not-italic leading-[30px] font-bold text-brand-9 text-[20px]"> ₦ 2,000.00  </p>
         </div>
       <WalletBankTransferCard proceed={handleBankTransfer} />
-      <WalletOnlineFundingCard proceed={handleOnlineFunding} />
+      <WalletFunding proceed={handleOnlineFunding} />
     </div>
   );
 };
@@ -203,3 +205,29 @@ const OnlineFunding = () => {
       </div>
     );
   };
+
+
+
+const WalletFunding: React.FC<WalletOnlineFundingCardProps> = ({
+  noInput,
+  proceed,
+}) => {
+  return (
+    <div className="p-[18px] rounded-2xl overflow-hidden bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-[#3C3D37] custom-flex-col gap-2">
+      <div className="w-full flex gap-2">
+       <WalletLegalProcedureIcon />
+        <div className="flex flex-col">
+        <h3>Legal Procedure Fee</h3>
+        <p className="text-[12px] font-medium tracking-[0px]"> Wallet Balance: ₦ 50,000 (Sufficient funds)  </p>
+        </div>
+      </div>
+      <div className="custom-flex-col gap-6">
+        <div className="flex justify-end">
+          <Button onClick={proceed} size="xs_medium" className="py-1 px-2">
+            proceed
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
