@@ -241,6 +241,7 @@ interface CheckboxProps {
   children?: React.ReactNode;
   checked?: boolean;
   groupName?: string;
+  noCheckbox?: boolean;
 }
 
 export const Checkbox: React.FC<CheckboxProps> = ({
@@ -250,6 +251,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   children,
   checked,
   groupName,
+  noCheckbox
 }) => {
   const [internalIsChecked, setInternalIsChecked] = useState(checked || false);
 
@@ -273,13 +275,13 @@ export const Checkbox: React.FC<CheckboxProps> = ({
 
   return (
     <div className="flex w-full">
-      <button className="flex gap-3 text-start rounded-full" onClick={handleClick}>
-        <div className={`rounded-full p-[2px] flex items-center justify-center ${isChecked ? "border border-blue-600" : ""}`}>
+        <button className="flex gap-3 text-start rounded-full" onClick={handleClick}>
+        {!noCheckbox && <div className={`rounded-full p-[2px] flex items-center justify-center ${isChecked ? "border border-blue-600" : ""}`}>
         <div
           className={`rounded-full w-5 h-5 border min-w-2 min-h-2  border-darkText-2 ${isChecked ? "bg-blue-600 " : ""}`}
         ></div>
-        </div>
-        <div className="custom-flex-col gap-[2px]">
+        </div>}
+        <div className={`custom-flex-col gap-[2px] ${noCheckbox ? "hover:cursor-pointer hover:darkText-2 hover:text-white" : ""}`}>
           {title && (
             <p className="text-text-black dark:text-darkText-1 text-base font-medium capitalize">
               {title}
