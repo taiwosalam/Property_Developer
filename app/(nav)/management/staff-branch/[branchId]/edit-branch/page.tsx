@@ -29,6 +29,8 @@ import { editBranch, getOneBranch } from "../../data";
 import { ResponseType } from "../types";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
+import LockBranchModal from "@/components/Management/Staff-And-Branches/Branch/lock-branch-modal";
+import UnLockBranchModal from "@/components/Management/Staff-And-Branches/Branch/unlock-branch-modal";
 
 const EditBranch = () => {
   const [state, setState] = useState<"grid" | "list">("grid");
@@ -92,6 +94,36 @@ const EditBranch = () => {
                   size="sm_medium"
                   className="py-2 px-8"
                 >
+                  Lock Branch !
+                </Button>
+              </ModalTrigger>
+              <ModalContent>
+                <LockBranchModal />
+              </ModalContent>
+            </Modal>
+            <Modal>
+              <ModalTrigger asChild>
+                <Button
+                  type="button"
+                  variant="border"
+                  size="sm_medium"
+                  className="py-2 px-8"
+                >
+                  Un-Lock Branch !
+                </Button>
+              </ModalTrigger>
+              <ModalContent>
+                <UnLockBranchModal />
+              </ModalContent>
+            </Modal>
+            <Modal>
+              <ModalTrigger asChild>
+                <Button
+                  type="button"
+                  variant="light_red"
+                  size="sm_medium"
+                  className="py-2 px-8"
+                >
                   delete branch
                 </Button>
               </ModalTrigger>
@@ -105,14 +137,16 @@ const EditBranch = () => {
                 setIsOpen: setOpen,
               }}
             >
-              <Button
-                type="submit"
-                size="sm_medium"
-                className="py-2 px-8"
-                form="edit-branch-form"
-              >
-                update
-              </Button>
+              <ModalTrigger asChild>
+                <Button
+                  type="submit"
+                  size="sm_medium"
+                  className="py-2 px-8"
+                  form="edit-branch-form"
+                >
+                  update
+                </Button>
+              </ModalTrigger>
               <ModalContent>
                 <UpdateBranchModal />
               </ModalContent>

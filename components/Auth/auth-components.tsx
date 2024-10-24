@@ -111,7 +111,10 @@ export const AuthAction: React.FC<AuthActionProps> = ({
 );
 
 // AuthPinField Component: Manages the PIN input fields for authentication
-export const AuthPinField: React.FC<AuthPinFieldProps> = ({ onChange }) => {
+export const AuthPinField: React.FC<AuthPinFieldProps> = ({
+  length,
+  onChange,
+}) => {
   // Create a ref to hold the array of input elements
   const pinFieldRef = useRef<HTMLInputElement[] | null>(null);
 
@@ -130,7 +133,7 @@ export const AuthPinField: React.FC<AuthPinFieldProps> = ({ onChange }) => {
         validate prop ensures that only numeric inputs are allowed.
       */}
       <PinField
-        length={6} // Defines the length of the pin (number of inputs)
+        length={length || 6} // Defines the length of the pin (number of inputs)
         ref={pinFieldRef} // Attach the ref to the PinField
         inputMode="numeric" // Ensure that the input is numeric
         onChange={onChange} // Handle input changes
