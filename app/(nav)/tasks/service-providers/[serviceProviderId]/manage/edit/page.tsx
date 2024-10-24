@@ -3,14 +3,6 @@
 import Button from "@/components/Form/Button/button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
-import {
-  LandlordTenantInfoEditGrid as InfoEditGrid,
-  LandlordTenantInfoEditSection as InfoEditSection,
-} from "@/components/Management/landlord-tenant-info-components";
-import Picture from "@/components/Picture/picture";
-
-import Avatar from "@/public/empty/avatar.png";
-import OrangeCloseCircle from "@/public/icons/orange-close-circle.svg";
 import { ServiceProviderEditContext } from "@/components/tasks/service-providers/service-provider-edit-context";
 import { serviceProviderData as Mockdata } from "../data";
 import BackButton from "@/components/BackButton/back-button";

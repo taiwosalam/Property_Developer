@@ -4,7 +4,7 @@ export const serviceProviderData: ServiceProviderData = {
   id: 1,
   avatar: "/empty/avatar-1.svg",
   picture: "/empty/SampleLandlord.jpeg",
-  user_tag: "web",
+  user_tag: Math.random() < 0.5 ? "web" : "mobile",
   full_name: "John Doe",
   email: "john.doe@example.com",
   service_rendered: "Plumbing",
@@ -23,11 +23,15 @@ export const serviceProviderData: ServiceProviderData = {
     account_number: "1234567890",
     account_name: "John Doe",
   },
-  notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  notes: {
+    last_updated: "2021-01-01",
+    write_up:
+      "Hello World How are you doing today? Dont come late to work tomorrow and dont come last in your exams",
+  },
   documents: [
     {
       id: 1,
-      name: "Invoice 1",
+      name: "FBI Report Highly Classified",
       link: "https://example.com/sample-attachment.pdf",
       date: "2021-01-01",
       thumbnail: "/empty/SampleLandlord.jpeg",
@@ -35,7 +39,7 @@ export const serviceProviderData: ServiceProviderData = {
     },
     {
       id: 2,
-      name: "Invoice 2",
+      name: "MI6 Report Highly Classified",
       link: "https://example.com/sample-attachment.pdf",
       date: "2021-01-01",
       thumbnail: "/empty/SampleLandlord2.svg",
@@ -43,7 +47,7 @@ export const serviceProviderData: ServiceProviderData = {
     },
     {
       id: 3,
-      name: "Receipt 1",
+      name: "CIA Report",
       link: "https://example.com/sample-attachment.pdf",
       date: "2021-01-01",
       thumbnail: "/empty/SampleLogo.jpeg",
@@ -51,7 +55,7 @@ export const serviceProviderData: ServiceProviderData = {
     },
     {
       id: 4,
-      name: "Receipt 2",
+      name: "NSA Report",
       link: "https://example.com/sample-attachment.pdf",
       date: "2021-01-01",
       thumbnail: "/empty/SampleProperty.jpeg",
