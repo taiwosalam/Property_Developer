@@ -131,10 +131,14 @@ const CustomTable: React.FC<CustomTableProps> = ({
                   key={field.id}
                   sx={{
                     fontFamily: "unset",
-                    textAlign: "center",
+                    textAlign: "left",
                     paddingTop: "14px",
                     paddingBottom: "14px",
                     maxHeight: "76px",
+                    border: "none",
+                    color: "#EFF6FF",
+                    fontWeight: 500,
+                     whiteSpace: "nowrap",
                     ...tableHeadCellSx,
                   }}
                 >
@@ -166,6 +170,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     fontFamily: "unset",
                     paddingTop: "8px",
                     paddingBottom: "8px",
+                    border: "none",
+                    fontWeight: 500,
+                    color: isDarkMode ? "#fff" : "#050901",
                     ...tableBodyCellSx,
                     ...field.cellStyle,
                     ...(field.accessor === "email"

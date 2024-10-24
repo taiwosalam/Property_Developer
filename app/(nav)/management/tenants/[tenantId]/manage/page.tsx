@@ -13,6 +13,7 @@ import {
   LandlordTenantInfoBox,
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
+  NotesInfoBox,
 } from "@/components/Management/landlord-tenant-info-components";
 import { ChevronLeft } from "@/public/icons/icons";
 import { ASSET_URL, empty } from "@/app/config";
@@ -24,6 +25,11 @@ import UpdateTenantProfile from "@/components/Management/Tenants/update-tenant-p
 import { useRouter } from "next/navigation";
 import { TenantData } from "../../types";
 import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
+import { MobileNotesModal } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
+import CustomTable from "@/components/Table/table";
+import { statementTableFields, statementTableData } from "./data";
+import useDarkMode from "@/hooks/useCheckDarkMode";
+import { TenantEditAttachmentSection } from "@/components/Management/Tenants/Edit/tenant-edit-info-sectios";
 
 const groupDocumentsByType = (documents: TenantData["documents"]) => {
   return documents.reduce((acc, document) => {
@@ -48,6 +54,7 @@ const ManageTenant = () => {
     loading: boolean;
     error: Error | null;
   };
+  const isDarkMode = useDarkMode();
   const router = useRouter();
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <div>Error: {error.message}</div>;
@@ -55,31 +62,31 @@ const ManageTenant = () => {
 
   const groupedDocuments = groupDocumentsByType(tenant?.documents);
 
-  const otherData = getObjectProperties(tenant);
-  // const isDarkMode = useDarkMode();
+  const otherData = getObjectProperties(tenant, ["notes"]);
 
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
         <LandlordTenantInfoBox
           style={{ padding: "24px 40px" }}
-          className="relative flex flex-col xl:flex-row gap-5"
+          className="relative space-y-5"
         >
-          <button
-            type="button"
-            aria-label="back"
-            className="absolute top-3 left-3"
-            onClick={() => router.back()}
-          >
-            <ChevronLeft />
-          </button>
-          <Picture
-            src={tenant.picture ? `${ASSET_URL}${tenant.picture}` : empty}
-            alt="profile picture"
-            size={120}
-            rounded
-          />
-          <div className="custom-flex-col gap-8">
+          <div className="relative flex flex-col xl:flex-row gap-5">
+            <button
+              type="button"
+              aria-label="back"
+              className="absolute top-3 left-3"
+              onClick={() => router.back()}
+            >
+              <ChevronLeft />
+            </button>
+            <Picture
+              src={tenant.picture ? `${ASSET_URL}${tenant.picture}` : empty}
+              alt="profile picture"
+              size={120}
+              rounded
+            />
+
             <div className="custom-flex-col gap-4">
               <div className="custom-flex-col">
                 <div className="flex items-center gap-2">
@@ -100,42 +107,57 @@ const ManageTenant = () => {
                 </p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-4">
-              {tenant.user_tag === "web" ? (
-                <>
-                  <Button
-                    href={`/management/tenants/${tenantId}/manage/edit`}
-                    size="base_medium"
-                    className="py-2 px-8"
-                  >
-                    edit
-                  </Button>
-                  <Modal>
-                    <ModalTrigger asChild>
-                      <Button size="base_medium" className="py-2 px-8">
-                        update with ID
-                      </Button>
-                    </ModalTrigger>
-                    <ModalContent>
-                      <UpdateTenantProfile />
-                    </ModalContent>
-                  </Modal>
-                </>
-              ) : (
-                <>
-                  <Button size="base_medium" className="py-2 px-8">
-                    message
-                  </Button>
-                  <Button
-                    variant="light_green"
-                    size="base_medium"
-                    className="py-2 px-8"
-                  >
-                    unflag
-                  </Button>
-                </>
-              )}
-            </div>
+          </div>
+
+          <div className="w-fit mx-auto flex flex-wrap gap-4">
+            {tenant?.user_tag === "mobile" ? (
+              <>
+                <Button size="base_medium" className="py-2 px-8">
+                  message
+                </Button>
+                <Button
+                  variant="light_green"
+                  size="base_medium"
+                  className="py-2 px-8"
+                >
+                  unflag
+                </Button>
+                <Modal>
+                  <ModalTrigger>
+                    <Button
+                      variant="sky_blue"
+                      size="base_medium"
+                      className="py-2 px-8"
+                    >
+                      Note
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <MobileNotesModal notes={tenant.notes} />
+                  </ModalContent>
+                </Modal>
+              </>
+            ) : (
+              <>
+                <Button
+                  href={`/management/tenants/${tenant?.id}/manage/edit`}
+                  size="base_medium"
+                  className="py-2 px-8"
+                >
+                  edit
+                </Button>
+                <Modal>
+                  <ModalTrigger>
+                    <Button size="base_medium" className="py-2 px-8">
+                      update with ID
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <UpdateTenantProfile />
+                  </ModalContent>
+                </Modal>
+              </>
+            )}
           </div>
         </LandlordTenantInfoBox>
 
@@ -152,6 +174,7 @@ const ManageTenant = () => {
         {Object.keys(otherData).map((key, idx) => (
           <LandlordTenantInfo key={idx} heading={key} info={otherData[key]} />
         ))}
+        {tenant?.user_tag === "web" && <NotesInfoBox notes={tenant.notes} />}
       </div>
       <LandlordTenantInfoSection title="current rent">
         <UnitItem />
@@ -160,49 +183,15 @@ const ManageTenant = () => {
         <UnitItem />
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="statement">
-        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-          <table className="dash-table">
-            <colgroup>
-              <col className="w-[72px]" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th>S/N</th>
-                <th>payment date</th>
-                <th>amount paid</th>
-                <th>details</th>
-                <th>start date</th>
-                <th>due date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array(5)
-                .fill(null)
-                .map((_, idx) => (
-                  <tr key={idx}>
-                    <td>
-                      <p>{idx + 1}</p>
-                    </td>
-                    <td>
-                      <p>12/01/2023</p>
-                    </td>
-                    <td>
-                      <p>₦115,000.00</p>
-                    </td>
-                    <td>
-                      <p>Rent cost: Start date: Sept 22, 2020</p>
-                    </td>
-                    <td>
-                      <p>12/01/2023</p>
-                    </td>
-                    <td>
-                      <p>12/12/12</p>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
+        <CustomTable
+          fields={statementTableFields}
+          data={statementTableData}
+          tableHeadClassName="bg-brand-9"
+          oddRowColor={isDarkMode ? "#020617" : "var(--brand-1)"}
+          evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
+          tableBodyCellSx={{ fontSize: "1rem" }}
+          tableHeadCellSx={{ fontSize: "1rem" }}
+        />
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="previous rent">
         <div className="opacity-40">
@@ -214,6 +203,9 @@ const ManageTenant = () => {
           <UnitItem />
         </div>
       </LandlordTenantInfoSection>
+      {tenant?.user_tag === "mobile" && (
+        <TenantEditAttachmentSection useContext={false} />
+      )}
       <LandlordTenantInfoSection title="shared documents">
         {Object.entries(groupedDocuments).map(([documentType, documents]) => {
           if (documentType === "other document") return null; // Skip "other document" for now
