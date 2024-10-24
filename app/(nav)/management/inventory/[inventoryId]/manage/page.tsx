@@ -8,11 +8,13 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import InventoryItem from "@/components/Management/Inventory/inventory-item";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import { InventoryListInfo } from "@/components/Management/Inventory/inventory-components";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import Select from "@/components/Form/Select/select";
 
 const ManageInventory = () => {
   const input_styles: CSSProperties = {
     padding: "12px 14px",
-    backgroundColor: "white dark:bg-darkText-primary",
+    backgroundColor: "white",
   };
 
   return (
@@ -32,6 +34,13 @@ const ManageInventory = () => {
               placeholder="Video Link"
               className="flex-1"
               style={input_styles}
+            />
+            <Select
+              id="branch-name"
+              placeholder="Branch Name"
+              options={["branch 1", "branch 2", "branch 3"]}
+              isSearchable={false}
+              className="bg-white dark:bg-darkText-primary flex-1"
             />
           </div>
           <div
@@ -54,7 +63,7 @@ const ManageInventory = () => {
         <InventoryItem edit />
         <InventoryItem edit />
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[60px] flex gap-6 justify-end">
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
         <Modal>
           <ModalTrigger asChild>
             <Button
@@ -81,7 +90,7 @@ const ManageInventory = () => {
             save
           </Button>
         </div>
-      </div>
+      </FixedFooter>
     </div>
   );
 };

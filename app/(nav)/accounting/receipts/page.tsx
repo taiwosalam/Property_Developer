@@ -112,13 +112,14 @@ const AccountingReceiptsPage = () => {
               </Select>
             </div>
             <div className="flex items-center gap-4 flex-wrap">
-              <SearchInput placeholder="Search for Statement" />
+              <SearchInput placeholder="Search for Receipt" />
               <Modal>
                 <ModalTrigger asChild>
                   <FilterButton />
                 </ModalTrigger>
                 <ModalContent>
                   <FilterModal
+                  date
                     filterOptions={[]}
                     filterOptionsWithDropdown={
                       accountingReceiptOptionsWithDropdown

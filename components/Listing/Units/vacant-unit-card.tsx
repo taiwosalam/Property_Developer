@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 
 // Images
 import { CameraIcon } from "@/public/icons/icons";
@@ -20,18 +22,28 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Link from "next/link";
 import UnitSponsorPopover from "./unit-sponsor-popover";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
+import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 
 const VacantUnitCard = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [checked, setChecked] = useState(true);
+  const [isOpened, setIsOpened] = useState(false);
+
+  const togglePublish = () => {
+    setIsOpen(false);
+    setChecked(!checked);
+  };
+
   return (
     <div
-      className="p-6 pb-0 custom-flex-col gap-4 rounded-2xl bg-white dark:bg-darkText-primary"
+      className="p-6 custom-flex-col gap-4 rounded-2xl bg-white dark:bg-darkText-primary"
       style={{ boxShadow: " 2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <p className="text-brand-10 text-base font-bold">Unit ID: 123456776342</p>
       <SectionSeparator />
-      <div className="pb-6 overflow-x-auto custom-round-scrollbar">
+      <div className="custom-flex-col gap-4 overflow-x-auto custom-round-scrollbar">
         <div className="min-w-[800px] custom-flex-col gap-4">
-          <div className="flex gap-1 items-center">
+          <div className="flex gap-6 items-center">
             <div className="custom-flex-col flex-1 gap-2">
               <div className="flex">
                 <KeyValueList
@@ -40,8 +52,13 @@ const VacantUnitCard = () => {
                 />
               </div>
               <div className="flex items-start gap-[75px] text-base font-normal">
-                <p className="text-[#747474] dark:text-darkText-1">Description</p>
-                <TruncatedText lines={3} className="text-text-quaternary dark:text-darkText-2">
+                <p className="text-[#747474] dark:text-darkText-1">
+                  Description
+                </p>
+                <TruncatedText
+                  lines={3}
+                  className="text-text-quaternary dark:text-darkText-2"
+                >
                   A multi-family home, also know as a duplex, triplex, or
                   multi-unit building, is a residential property that living
                   read more. They want to work with their budget in booking an
@@ -56,11 +73,20 @@ const VacantUnitCard = () => {
                 </TruncatedText>
               </div>
             </div>
-            <div className="relative rounded-2xl overflow-hidden">
+            <div
+              onClick={() => setIsOpened(true)}
+              className="relative rounded-2xl overflow-hidden cursor-pointer"
+            >
               <Picture
                 src={SampleProperty6}
                 alt="property preview"
                 size={168}
+              />
+              <PopupImageModal
+                isOpen={isOpened}
+                images={[SampleProperty6]}
+                onClose={() => setIsOpened(false)}
+                currentIndex={0}
               />
               <div className="absolute inset-0 p-3">
                 <div className="flex justify-end">
@@ -72,40 +98,47 @@ const VacantUnitCard = () => {
               </div>
             </div>
           </div>
-          <SectionSeparator />
-          <div
-            className={`flex gap-12 justify-end text-brand-primary text-base font-semibold capitalize ${secondaryFont.className}`}
-          >
-            <Modal>
-              <ModalTrigger className="flex gap-2 capitalize">
-                <Switch checked />
-                <p>publish</p>
-              </ModalTrigger>
-              <ModalContent>
-                <UnitPublishModal />
-              </ModalContent>
-            </Modal>
-            <Link
-              href={"/management/properties/1"}
-              className="flex items-center gap-2"
-            >
-              <Picture src={PreviewEye} width={24} height={17} />
-              <p>preview</p>
-            </Link>
-            <Link href={"/listing/statistics"} className="flex gap-2">
-              <Picture src={StatsChart} size={24} />
-              <p>stats</p>
-            </Link>
-            <UnitSponsorPopover />
-            <Link
-              href={"/management/properties/1/edit-property"}
-              className="flex gap-2"
-            >
-              <Picture src={EditPencil} size={24} />
-              <p>edit</p>
-            </Link>
-          </div>
         </div>
+        <SectionSeparator />
+      </div>
+      <div
+        className={
+          "flex flex-wrap gap-4 lg:gap-12 justify-between lg:justify-end text-brand-primary text-base font-medium lato"
+        }
+      >
+        <div className="flex  gap-2 capitalize">
+          <Switch checked={checked} onClick={() => setIsOpen(true)} />
+          <p>publish</p>
+        </div>
+        <UnitSponsorPopover />
+        <Modal
+          state={{
+            isOpen,
+            setIsOpen,
+          }}
+        >
+          <ModalContent>
+            <UnitPublishModal isPublished={checked} onYes={togglePublish} />
+          </ModalContent>
+        </Modal>
+        <Link
+          href={"/management/properties/1"}
+          className="flex items-center gap-2"
+        >
+          <Picture src={PreviewEye} width={24} height={17} />
+          <p>Preview</p>
+        </Link>
+        <Link href={"/listing/statistics"} className="flex gap-2">
+          <Picture src={StatsChart} size={24} />
+          <p>Stats</p>
+        </Link>
+        <Link
+          href={"/management/properties/1/edit-property"}
+          className="flex gap-2"
+        >
+          <Picture src={EditPencil} size={24} />
+          <p>Edit</p>
+        </Link>
       </div>
     </div>
   );

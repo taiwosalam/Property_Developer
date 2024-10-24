@@ -191,10 +191,12 @@ export const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
 export const NavSearchTab: React.FC<NavSearchTabProps> = ({
   count,
   active,
+  onClick,
   children,
 }) => (
   <button
     type="button"
+    onClick={onClick}
     className="flex items-center gap-2 text-base font-medium capitalize"
   >
     <p

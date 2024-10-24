@@ -26,13 +26,13 @@ import { DatePickerWithRange } from "@/components/dashboard/date-picker";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import ExpensesStatCard from "@/components/Accounting/expenses/expenses-stat-card";
 import {
   Dropdown,
   DropdownContent,
   DropdownTrigger,
 } from "@/components/Dropdown/dropdown";
 import { accountingStatementOptionsWithDropdown } from "./data";
+import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
 
 const Statement = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -159,20 +159,20 @@ const Statement = () => {
             </div>
           </div>
           <AutoResizingGrid gap={24} minWidth={330}>
-            <ExpensesStatCard
-              title="Total Expenses"
-              balance={12345432}
+            <InvoiceStatCards
+              title="Total Amount"
+              balance={6506689}
               upvalue={53}
             />
-            <ExpensesStatCard
-              title="Part Payment"
-              balance={12345432}
-              downValue={53}
+            <InvoiceStatCards
+              title="Total Credit"
+              balance={706689}
+              downValue={43}
             />
-            <ExpensesStatCard
-              title="Balance"
-              balance={12345432}
-              downValue={53}
+            <InvoiceStatCards
+              title="Total Debit"
+              balance={706689}
+              downValue={43}
             />
           </AutoResizingGrid>
         </div>
