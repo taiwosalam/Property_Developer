@@ -17,10 +17,22 @@ import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import { InventoryField } from "./inventory-components";
+import { useImageUploader } from "@/hooks/useImageUploader";
+import { ImageIcon } from "@/public/icons/icons";
 
 const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
+  const { preview, inputFileRef, handleImageChange } = useImageUploader({
+    placeholder: data?.image,
+  });
+
   const input_styles: CSSProperties = {
     backgroundColor: "white dark:bg-darkText-primary",
+  };
+
+  const selectImage = () => {
+    if (inputFileRef.current) {
+      inputFileRef.current.click();
+    }
   };
 
   return (
@@ -51,7 +63,7 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
                 <>
                   <Input
                     id="inventory-quantity"
-                    placeholder="Quantity"
+                    placeholder="Quantity / Unit"
                     type="number"
                     className="flex-1"
                     style={input_styles}
@@ -73,22 +85,39 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
             </div>
           </div>
           <div className="relative h-full min-h-[165px] aspect-square rounded-2xl overflow-hidden">
-            {data?.image && (
-              <Image src={data.image} alt="property" fill sizes="200px" />
-            )}
+            <Image
+              src={preview}
+              alt="property"
+              fill
+              sizes="200px"
+              className="object-cover"
+            />
             {edit && (
               <div
                 className="absolute inset-0 flex items-center justify-center"
-                style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                // style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
               >
+                <input
+                  type="file"
+                  id="picture"
+                  name="picture"
+                  accept="image/*"
+                  ref={inputFileRef}
+                  className="hidden pointer-events-none"
+                  onChange={handleImageChange}
+                />
                 <div className="custom-flex-col gap-6">
-                  <div className="flex flex-col items-center gap-2">
-                    <Picture src={ImageBlue} size={40} />
+                  <div className="flex flex-col items-center gap-2 custom-primary-color">
+                    <ImageIcon />
                     <p className="text-brand-9 text-sm font-semibold">
                       Set picture
                     </p>
                   </div>
-                  <Button size="base_medium" className="py-1 px-6">
+                  <Button
+                    onClick={selectImage}
+                    size="base_medium"
+                    className="py-1 px-6"
+                  >
                     select
                   </Button>
                 </div>

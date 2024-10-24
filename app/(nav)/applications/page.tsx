@@ -6,6 +6,7 @@ import ApplicationCard from "@/components/Applications/application-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { DocumentssFilterOptionsWithDropdown } from "../documents/data";
 
 const Applications = () => {
   return (
@@ -28,9 +29,9 @@ const Applications = () => {
         />
       </AutoResizingGrid>
       <div className="custom-flex-col gap-5">
-        <FilterBar azFilter isDateTrue onStateSelect={() => { }} pageTitle="Applications" aboutPageModalData={
+        <FilterBar azFilter isDateTrue hasGridListToggle={false} onStateSelect={() => { }} pageTitle="Applications" aboutPageModalData={
           { title: "Applications", description: "This page contains a list of Applications on the platform.", video: "" }
-        } searchInputPlaceholder="Search for units" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={[]} />
+        } searchInputPlaceholder="Search for units" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={DocumentssFilterOptionsWithDropdown} />
         <AutoResizingGrid minWidth={350} gap={32}>
           <ApplicationCard />
           <ApplicationCard type="guest" />

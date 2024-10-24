@@ -22,7 +22,7 @@ const NavCreateSuggestion = () => {
               label="title"
               className="w-full max-w-[300px]"
               options={[
-                "technical charges",
+                "technical changes",
                 "billing and payment problems",
                 "service interruptions",
                 "account access and secruity",

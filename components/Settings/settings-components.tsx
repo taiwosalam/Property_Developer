@@ -35,6 +35,7 @@ import DocumentCheckbox from "../Documents/DocumentCheckbox/document-checkbox";
 import { SettingUserIcon } from "@/public/icons/icons";
 import Picture from "../Picture/picture";
 import ImageBlue from "@/public/icons/image-blue.svg";
+import SettingsLegalDrawer from "./Modals/settings-legal-drawer";
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
     <p
@@ -137,6 +138,7 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
     </div>
   );
 };
+
 
 export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
   title,

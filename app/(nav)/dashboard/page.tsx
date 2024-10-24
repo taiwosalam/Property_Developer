@@ -146,8 +146,9 @@ const Dashboard = () => {
             .fill(null)
             .map((_, index) => (
               <TaskCard
-                statusChanger
+                statusChanger={true}
                 noDrag
+                isNew
                 key={index}
                 task={{
                   id: "task9",
@@ -161,7 +162,7 @@ const Dashboard = () => {
                       "/empty/avatar.png",
                     ],
                     date: "25 Jan 2024",
-                    status: "approved",
+                    status: "pending",
                     progress: 50,
                   },
                   name: "John Doe",
