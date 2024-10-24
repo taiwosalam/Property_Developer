@@ -395,6 +395,7 @@ export const TenantEditBankDetailsSection = () => {
 };
 
 export const TenantEditAttachmentSection = ({ useContext = true }) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const data = useContext ? useTenantEditContext().data : null;
   const [documents, setDocuments] = useState<TenantData["documents"]>([]);
   const [documentType, setDocumentType] = useState("");

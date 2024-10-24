@@ -154,17 +154,18 @@ const BranchStaffPage = () => {
           ))}
         </AutoResizingGrid>
       ) : (
-        <CustomTable
-          displayTableHead={false}
-          fields={fields}
-          data={fetchedBranchData?.staff || []}
-          tableBodyCellSx={{
-            border: "none",
-            textAlign: "left",
-          }}
-          evenRowColor="#fff"
-          oddRowColor="#F1F2F4"
-        />
+        // <CustomTable
+        //   displayTableHead={false}
+        //   fields={fields}
+        //   data={fetchedBranchData?.staff || []}
+        //   tableBodyCellSx={{
+        //     border: "none",
+        //     textAlign: "left",
+        //   }}
+        //   evenRowColor="#fff"
+        //   oddRowColor="#F1F2F4"
+        // />
+        <>Next push</>
       )}
       <Pagination
         totalPages={total_pages}
