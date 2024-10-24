@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 // Types
 import type { CustomTableProps } from "@/components/Table/types";
@@ -33,6 +33,9 @@ import {
 } from "@/components/Dropdown/dropdown";
 import { VerticalEllipsisIcon } from "@/public/icons/icons";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import { Drawer } from "@mui/material";
+import SettingsLegalDrawer from "@/components/Settings/Modals/settings-legal-drawer";
+
 
 const Subscriptions = () => {
   const isDarkMode = useDarkMode();
@@ -95,6 +98,12 @@ const Subscriptions = () => {
       // ),
     })
   );
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); 
+
+  const handleOpenDrawer = () => {
+    setIsDrawerOpen(true); // Function to open the drawer
+  };
 
   return (
     <>
@@ -261,7 +270,14 @@ const Subscriptions = () => {
                   className="w-[277px]"
                 />
               </div>
-              <SettingsUpdateButton text="proceed" />
+              <div className="w-full flex items-end justify-end">
+                <Button 
+                  className="bg-brand-9 text-white text-xs py-2 px-3 font-medium rounded-[4px]"
+                  onClick={handleOpenDrawer} // Update onClick to open the drawer
+                >
+                  Proceed
+                </Button>
+              </div>
             </div>
           </SettingsSection>
           <SettingsSection title="Subscription History">
@@ -280,6 +296,14 @@ const Subscriptions = () => {
           </SettingsSection>
         </div>
       </div>
+      <Drawer 
+        anchor="bottom" 
+        open={isDrawerOpen} 
+        onClose={() => setIsDrawerOpen(false)} 
+        sx={{zIndex:1}}
+      >
+         <SettingsLegalDrawer onClose={() => setIsDrawerOpen(false)} />
+      </Drawer> 
     </>
   );
 };
