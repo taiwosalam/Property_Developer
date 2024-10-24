@@ -63,7 +63,10 @@ export type LandlordPageData = {
   guarantor1: Guarantor;
   guarantor2: Guarantor;
   bank_details: BankDetails;
-  notes: string;
+  notes: {
+    last_updated: string;
+    write_up: string;
+  };
   others: Others;
   documents: AttachedDocument[];
   properties_managed: PropertyManaged[];
