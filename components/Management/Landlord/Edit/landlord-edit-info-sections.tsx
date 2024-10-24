@@ -12,6 +12,7 @@ import {
   LandlordTenantInfoEditGrid,
   LandlordTenantInfoEditSection,
   LandlordTenantInfoDocument,
+  LandlordTenantInfoBox,
 } from "../../landlord-tenant-info-components";
 import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
 import { DeleteIconOrange } from "@/public/icons/icons";
@@ -29,6 +30,10 @@ import { useLandlordEditContext } from "../landlord-edit-context";
 import type { LandlordPageData } from "@/app/(nav)/management/landlord/types";
 import Picture from "@/components/Picture/picture";
 import Avatars from "@/components/Avatars/avatars";
+import { DeleteIconX } from "@/public/icons/icons";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
+import { ModalTrigger } from "@/components/Modal/modal";
+import { v4 as uuidv4 } from "uuid";
 
 export const LandlordEditProfileInfoSection = () => {
   const { data: landlord } = useLandlordEditContext();
@@ -378,8 +383,8 @@ export const LandlordEditOthersInfoSection = () => {
   );
 };
 
-export const LandlordEditAttachmentInfoSection = () => {
-  const { data } = useLandlordEditContext();
+export const LandlordEditAttachmentInfoSection = ({ useContext = true }) => {
+  const data = useContext ? useLandlordEditContext().data : null;
   const [documents, setDocuments] = useState<LandlordPageData["documents"]>([]);
   const [documentType, setDocumentType] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -389,13 +394,16 @@ export const LandlordEditAttachmentInfoSection = () => {
     if (files) {
       const newFiles = Array.from(files).map((file) => ({
         document_type: documentType,
-        id: file.name, // or generate a unique ID
+        id: uuidv4(), // or generate a unique ID
         name: file.name,
         link: URL.createObjectURL(file),
       }));
 
       setDocuments((prevDocuments) => [...newFiles, ...prevDocuments]);
       setDocumentType("");
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
   const handleChooseFileClick = () => {
@@ -415,8 +423,10 @@ export const LandlordEditAttachmentInfoSection = () => {
   };
 
   useEffect(() => {
-    setDocuments(data?.documents || []);
-  }, [data?.documents]);
+    if (useContext) {
+      setDocuments(data?.documents || []);
+    }
+  }, [data?.documents, useContext]);
 
   return (
     <LandlordTenantInfoEditSection title="attachment">
@@ -587,5 +597,82 @@ export const LandlordEditAvatarInfoSection = () => {
         Save
       </Button>
     </LandlordTenantInfoEditSection>
+  );
+};
+
+export const MobileNotesModal: React.FC<{
+  notes: { last_updated: string; write_up: string };
+}> = ({ notes }) => {
+  const [editNote, setEditNote] = useState(false);
+  const [note, setNote] = useState(notes.write_up);
+
+  useEffect(() => {
+    setNote(notes.write_up);
+  }, [notes]);
+
+  return (
+    <LandlordTenantInfoBox className="w-[600px] max-w-[80%] max-h-[85%] bg-white dark:bg-darkText-primary rounded-lg overflow-auto custom-round-scrollbar">
+      <div className="flex justify-between gap-4 sticky z-[1] top-0 bg-white dark:bg-black">
+        <div className="flex gap-2 items-center">
+          <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
+            <span>Note</span>
+            <sub className="text-sm font-normal bottom-[unset]">
+              <span className="font-bold">Last Updated</span>{" "}
+              {notes.last_updated}
+            </sub>
+          </h3>
+          <div className="flex items-center gap-2">
+            {editNote ? (
+              <>
+                <Button
+                  variant="light_red"
+                  size="xs_normal"
+                  className="py-1 px-2"
+                  onClick={() => setNote("")}
+                >
+                  Clear
+                </Button>
+                <Button
+                  variant="sky_blue"
+                  size="xs_normal"
+                  className="py-1 px-2"
+                >
+                  Update
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="sky_blue"
+                size="xs_normal"
+                className="py-1 px-2"
+                onClick={() => setEditNote(true)}
+              >
+                Edit
+              </Button>
+            )}
+          </div>
+        </div>
+        <ModalTrigger aria-label="Close" close>
+          <DeleteIconX size={28} />
+        </ModalTrigger>
+      </div>
+      <div className="pt-2">
+        {editNote ? (
+          <TextArea
+            id="write_up"
+            value={note}
+            onChange={(value) => setNote(value)}
+            inputSpaceClassName="!h-[auto] min-h-[160px]"
+          />
+        ) : (
+          <TruncatedText
+            lines={7}
+            className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
+          >
+            {notes.write_up}
+          </TruncatedText>
+        )}
+      </div>
+    </LandlordTenantInfoBox>
   );
 };

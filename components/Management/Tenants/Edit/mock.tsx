@@ -12,7 +12,7 @@ export const hardcodedTenantData: TenantData = {
   first_name: "John",
   last_name: "Doe",
   email: "john.doe@example.com",
-  user_tag: "web",
+  user_tag: Math.random() > 0.5 ? "web" : "mobile",
   phone_number: "1234567890",
   gender: "male",
   birthdate: "1990-01-01",
@@ -57,8 +57,11 @@ export const hardcodedTenantData: TenantData = {
     account_name: "John Doe",
     account_number: "123456789",
   },
-  notes:
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
+  notes: {
+    last_updated: "22/12/2022",
+    write_up:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. building, is a residential property that living read more. They want to work with their budget in booking an appointment. They wants to ease themselves the stress having to que, and also reduce the time spent searching for something new.for something new. A multi-family home, also know as a duplex, triplex, or multi-unit building, is a residential property that living read more. They want to work with their budget in booking an appointment. ime spent searching",
+  },
   documents: [
     {
       id: 1,
@@ -117,7 +120,7 @@ export const hardcodedLandlordData: LandlordPageData = {
   last_name: "Doe",
   email: "john.doe@example.com",
   phone_number: "1234567890",
-  user_tag: "web",
+  user_tag: Math.random() > 0.5 ? "web" : "mobile",
   id: 1,
   gender: "male",
   type: "Corporate Landlord",
@@ -160,8 +163,11 @@ export const hardcodedLandlordData: LandlordPageData = {
     account_name: "John Doe",
     account_number: "123456789",
   },
-  notes:
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
+  notes: {
+    last_updated: "22/12/2022",
+    write_up:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. building, is a residential property that living read more. They want to work with their budget in booking an appointment. They wants to ease themselves the stress having to que, and also reduce the time spent searching for something new.for something new. A multi-family home, also know as a duplex, triplex, or multi-unit building, is a residential property that living read more. They want to work with their budget in booking an appointment. ime spent searching",
+  },
   documents: [
     {
       id: 1,

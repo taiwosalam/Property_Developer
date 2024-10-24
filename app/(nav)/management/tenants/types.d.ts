@@ -59,6 +59,9 @@ export interface TenantData {
   guarantor2: Guarantor;
   others: Others;
   bank_details: BankDetails;
-  notes: string;
+  notes: {
+    last_updated: string;
+    write_up: string;
+  };
   documents: AttachedDocument[];
 }
