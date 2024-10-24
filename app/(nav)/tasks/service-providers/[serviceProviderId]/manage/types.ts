@@ -31,6 +31,9 @@ export interface ServiceProviderData {
   local_government: string;
   company_details: CompanyDetails;
   bank_details: BankDetails;
-  notes: string;
+  notes: {
+    last_updated: string;
+    write_up: string;
+  };
   documents: AttachedDocument[];
 }

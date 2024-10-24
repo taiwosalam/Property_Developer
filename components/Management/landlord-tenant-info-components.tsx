@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { CSSProperties } from "react";
 import Link from "next/link";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
 
 export const LandlordTenantInfoBox: React.FC<{
   style?: CSSProperties;
@@ -157,3 +158,26 @@ export const LandlordTenantInfoEditGrid: React.FC<{
     {children}
   </div>
 );
+
+export const NotesInfoBox: React.FC<{
+  notes: { last_updated: string; write_up: string };
+}> = ({ notes }) => {
+  return (
+    <LandlordTenantInfoBox className="custom-flex-col gap-4">
+      <div className="flex justify-between gap-4">
+        <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
+          <span>Note</span>
+          <sub className="text-sm font-normal bottom-[unset]">
+            <span className="font-bold">Last Updated</span> {notes.last_updated}
+          </sub>
+        </h3>
+      </div>
+      <TruncatedText
+        lines={7}
+        className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
+      >
+        {notes.write_up}
+      </TruncatedText>
+    </LandlordTenantInfoBox>
+  );
+};

@@ -67,6 +67,12 @@ const EditTenant = () => {
   if (error) return <div>Error: {error.message}</div>;
   if (!tenant) return null;
 
+  // useEffect(() => {
+  //   if (tenant?.user_tag === "mobile") {
+  //     router.push(`/management/tenants/${tenant.id}/manage`);
+  //   }
+  // }, [tenant?.user_tag, router]);
+
   return (
     <TenantEditContext.Provider value={{ data: tenant }}>
       <AuthForm

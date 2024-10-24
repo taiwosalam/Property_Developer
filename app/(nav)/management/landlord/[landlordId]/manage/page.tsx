@@ -1,6 +1,4 @@
 "use client";
-// Images
-import Avatar from "@/public/empty/avatar-1.svg";
 
 // Fonts
 import { secondaryFont } from "@/utils/fonts";
@@ -14,6 +12,7 @@ import {
   LandlordTenantInfoBox,
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
+  NotesInfoBox,
 } from "@/components/Management/landlord-tenant-info-components";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
@@ -21,7 +20,6 @@ import { ChevronLeft } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
 import { ASSET_URL, empty } from "@/app/config";
 import UserTag from "@/components/Tags/user-tag";
-import TruncatedText from "@/components/TruncatedText/truncated-text";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useLandlordData from "@/hooks/useLandlordData";
 import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
@@ -31,6 +29,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { MobileNotesModal } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
 import { LandlordEditAttachmentInfoSection } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
 import CustomTable from "@/components/Table/table";
+import { statementTableFields, statementTableData } from "./data";
 
 const ManageLandlord = () => {
   // const {
@@ -68,6 +67,20 @@ const ManageLandlord = () => {
   if (!LandlordPageData) return null;
   const groupedDocuments = groupDocumentsByType(LandlordPageData?.documents);
 
+  const transformedTableData = statementTableData.map((item) => ({
+    ...item,
+    credit: (
+      <p className={item.credit ? "text-status-success-3" : ""}>
+        {item.credit ? item.credit : "--- ---"}
+      </p>
+    ),
+    debit: (
+      <p className={item.debit ? "text-status-error-2" : ""}>
+        {item.debit ? item.debit : "--- ---"}
+      </p>
+    ),
+  }));
+
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
@@ -94,37 +107,36 @@ const ManageLandlord = () => {
               size={120}
               rounded
             />
-            <div className="custom-flex-col gap-8">
-              <div className="custom-flex-col gap-4">
-                <div className="custom-flex-col">
-                  <div className="flex items-center">
-                    <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                      {LandlordPageData?.first_name}{" "}
-                      {LandlordPageData?.last_name}
-                    </p>
-                    <BadgeIcon color="blue" />
-                  </div>
-                  <p
-                    style={{
-                      color: isDarkMode
-                        ? "rgba(255, 255, 255, 0.70)"
-                        : "rgba(21, 21, 21, 0.70)",
-                    }}
-                    className={`${secondaryFont.className} text-sm font-normal`}
-                  >
-                    {LandlordPageData?.email}
+
+            <div className="custom-flex-col gap-4">
+              <div className="custom-flex-col">
+                <div className="flex items-center">
+                  <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
+                    {LandlordPageData?.first_name} {LandlordPageData?.last_name}
                   </p>
+                  <BadgeIcon color="blue" />
                 </div>
-                <div className="custom-flex-col gap-2">
-                  <UserTag type={LandlordPageData.user_tag} />
-                  <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
-                    {/* ID: {LandlordPageData?.id || landlordId} */}
-                    ID: {LandlordPageData?.id}
-                  </p>
-                </div>
+                <p
+                  style={{
+                    color: isDarkMode
+                      ? "rgba(255, 255, 255, 0.70)"
+                      : "rgba(21, 21, 21, 0.70)",
+                  }}
+                  className={`${secondaryFont.className} text-sm font-normal`}
+                >
+                  {LandlordPageData?.email}
+                </p>
+              </div>
+              <div className="custom-flex-col gap-2">
+                <UserTag type={LandlordPageData.user_tag} />
+                <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
+                  {/* ID: {LandlordPageData?.id || landlordId} */}
+                  ID: {LandlordPageData?.id}
+                </p>
               </div>
             </div>
           </div>
+
           <div className="w-fit mx-auto flex flex-wrap gap-4">
             {LandlordPageData?.user_tag === "mobile" ? (
               <>
@@ -250,36 +262,7 @@ const ManageLandlord = () => {
           }}
         />
         {LandlordPageData?.user_tag === "web" ? (
-          <LandlordTenantInfoBox className="custom-flex-col gap-4">
-            <div className="flex justify-between gap-4">
-              <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
-                <span>Note</span>
-                <sub className="text-sm font-normal bottom-[unset]">
-                  <span className="font-bold">Last Updated</span>{" "}
-                  {LandlordPageData.notes.last_updated}
-                </sub>
-              </h3>
-            </div>
-            <TruncatedText
-              lines={7}
-              className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
-            >
-              building, is a residential property that living read more. They
-              want to work with their budget in booking an appointment. They
-              wants to ease themselves the stress having to que, and also
-              reducety that living read more. They want to work with their
-              budget in booking an appointment. They wants to ease themselves
-              the stress having to que, and stress having to que, and stress
-              having to que, and stress having to que, and stress having to que,
-              and stress havingalso reduce the read more They wants to ease
-              themselves of the stress of having to que, and also reduce the
-              time spent searching for something new.for something new. A
-              multi-family home, also know as a duplex, triplex, or multi-unit
-              building, is a residential property that living read more. They
-              want to work with their budget in booking an appointment. ime
-              spent searching
-            </TruncatedText>
-          </LandlordTenantInfoBox>
+          <NotesInfoBox notes={LandlordPageData.notes} />
         ) : (
           <>
             <LandlordTenantInfo
@@ -333,58 +316,15 @@ const ManageLandlord = () => {
         </AutoResizingGrid>
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="statement">
-        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-          <table className="dash-table">
-            <colgroup>
-              <col className="w-[72px]" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th></th>
-                <th>name</th>
-                <th>payment ID</th>
-                <th>details</th>
-                <th>credit</th>
-                <th>debit</th>
-                <th>date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array(5)
-                .fill(null)
-                .map((_, idx) => (
-                  <tr key={idx}>
-                    <td>
-                      <Picture
-                        src={Avatar}
-                        alt="profile picture"
-                        size={40}
-                        rounded
-                      />
-                    </td>
-                    <td>
-                      <p>Abimbola Adedeji</p>
-                    </td>
-                    <td>
-                      <p>22132876554444</p>
-                    </td>
-                    <td>
-                      <p>Rent cost: Start date: Sept 22, 2020</p>
-                    </td>
-                    <td>
-                      <p className="text-status-success-3">₦ 100,000</p>
-                    </td>
-                    <td>
-                      <p className="text-status-error-primary">--- ---</p>
-                    </td>
-                    <td>
-                      <p>12/12/12</p>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
+        <CustomTable
+          fields={statementTableFields}
+          data={transformedTableData}
+          tableHeadClassName="bg-brand-9"
+          oddRowColor={isDarkMode ? "#020617" : "var(--brand-1)"}
+          evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
+          tableBodyCellSx={{ fontSize: "1rem" }}
+          tableHeadCellSx={{ fontSize: "1rem" }}
+        />
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="previous property">
         <div className="flex gap-8"></div>

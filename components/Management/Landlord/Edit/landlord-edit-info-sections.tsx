@@ -384,6 +384,7 @@ export const LandlordEditOthersInfoSection = () => {
 };
 
 export const LandlordEditAttachmentInfoSection = ({ useContext = true }) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const data = useContext ? useLandlordEditContext().data : null;
   const [documents, setDocuments] = useState<LandlordPageData["documents"]>([]);
   const [documentType, setDocumentType] = useState("");
@@ -486,37 +487,35 @@ export const LandlordEditAttachmentInfoSection = ({ useContext = true }) => {
 export const LandlordEditNoteInfoSection = () => {
   const { data } = useLandlordEditContext();
 
-  const [note, setNote] = useState(data?.notes || "");
+  const [note, setNote] = useState("");
 
   useEffect(() => {
-    setNote(data?.notes || "");
-  }, [data?.notes]);
+    setNote(data?.notes?.write_up || "");
+  }, [data?.notes?.write_up]);
   return (
     <LandlordTenantInfoEditSection
       title="add note"
       style={{ position: "relative" }}
     >
-      <LandlordTenantInfoEditGrid>
-        <button
-          type="button"
-          className="absolute top-5 right-5 !w-[unset]"
-          onClick={() => setNote("")}
-        >
-          Clear
-        </button>
-        <TextArea
-          id="note"
-          value={note}
-          onChange={(value) => setNote(value)}
-          className="col-span-full"
-        />
-        <Button
-          size="base_medium"
-          className="!w-fit ml-auto py-2 px-6 col-span-full"
-        >
-          update
-        </Button>
-      </LandlordTenantInfoEditGrid>
+      <button
+        type="button"
+        className="absolute top-5 right-5 !w-[unset]"
+        onClick={() => setNote("")}
+      >
+        Clear
+      </button>
+      <TextArea
+        id="note"
+        value={note}
+        onChange={(value) => setNote(value)}
+        className="col-span-full"
+      />
+      <Button
+        size="base_medium"
+        className="!w-fit ml-auto py-2 px-6 col-span-full"
+      >
+        update
+      </Button>
     </LandlordTenantInfoEditSection>
   );
 };

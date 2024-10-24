@@ -27,10 +27,7 @@ const ManageServiceProvider = () => {
   const isDarkMode = useDarkMode();
   const router = useRouter();
   const [serviceProviderData, setServiceProviderData] =
-    useState<ServiceProviderData | null>({
-      ...Mockdata,
-      user_tag: Math.random() < 0.5 ? "web" : "mobile", // Randomly select "web" or "mobile for preview"
-    });
+    useState<ServiceProviderData | null>(Mockdata);
   if (!serviceProviderData) return null;
   const { user_tag } = serviceProviderData;
 
@@ -39,24 +36,23 @@ const ManageServiceProvider = () => {
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
         <InfoBox
           style={{ padding: "24px 40px" }}
-          className="relative flex flex-col xl:flex-row gap-5"
+          className="relative space-y-5"
         >
-          <button
-            type="button"
-            aria-label="back"
-            className="absolute top-3 left-3"
-            onClick={() => router.back()}
-          >
-            <ChevronLeft />
-          </button>
-
-          <Picture
-            src={DefaultLandlordAvatar}
-            alt="profile picture"
-            size={120}
-            rounded
-          />
-          <div className="custom-flex-col gap-4 xl:flex-1">
+          <div className="flex flex-col xl:flex-row gap-5">
+            <button
+              type="button"
+              aria-label="back"
+              className="absolute top-3 left-3"
+              onClick={() => router.back()}
+            >
+              <ChevronLeft />
+            </button>
+            <Picture
+              src={DefaultLandlordAvatar}
+              alt="profile picture"
+              size={120}
+              rounded
+            />
             <div className="custom-flex-col gap-4">
               <div className="custom-flex-col">
                 <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
@@ -70,21 +66,23 @@ const ManageServiceProvider = () => {
                 </p>
               </div>
               <UserTag type={user_tag} />
-            </div>
-            {user_tag === "mobile" ? (
-              <div className="custom-flex-col gap-2">
+              {user_tag === "mobile" && (
                 <div className="custom-flex-col gap-1">
                   <p className="text-base font-normal">
                     Wallet ID: 22132876554444
                   </p>
                   <p className="text-base font-normal">Phone NO: 08132086958</p>
                 </div>
-                <Button size="base_medium" className="!w-fit ml-auto py-2 px-8">
-                  message
-                </Button>
-              </div>
+              )}
+            </div>
+          </div>
+          <div className="w-fit mx-auto flex flex-wrap gap-4">
+            {user_tag === "mobile" ? (
+              <Button size="base_medium" className="!w-fit ml-auto py-2 px-8">
+                message
+              </Button>
             ) : (
-              <div className="flex flex-wrap gap-4">
+              <>
                 <Button
                   size="base_medium"
                   className="py-2 px-8"
@@ -95,7 +93,7 @@ const ManageServiceProvider = () => {
                 <Button size="base_medium" className="py-2 px-8">
                   update with ID
                 </Button>
-              </div>
+              </>
             )}
           </div>
         </InfoBox>

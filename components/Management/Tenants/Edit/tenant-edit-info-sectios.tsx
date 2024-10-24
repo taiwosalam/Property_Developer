@@ -394,8 +394,9 @@ export const TenantEditBankDetailsSection = () => {
   );
 };
 
-export const TenantEditAttachmentSection = () => {
-  const { data } = useTenantEditContext();
+export const TenantEditAttachmentSection = ({ useContext = true }) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const data = useContext ? useTenantEditContext().data : null;
   const [documents, setDocuments] = useState<TenantData["documents"]>([]);
   const [documentType, setDocumentType] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -431,8 +432,10 @@ export const TenantEditAttachmentSection = () => {
   };
 
   useEffect(() => {
-    setDocuments(data?.documents || []);
-  }, [data?.documents]);
+    if (useContext) {
+      setDocuments(data?.documents || []);
+    }
+  }, [data?.documents, useContext]);
 
   return (
     <LandlordTenantInfoEditSection title="attachment">
@@ -491,11 +494,11 @@ export const TenantEditAttachmentSection = () => {
 
 export const TenantEditNoteSection = () => {
   const { data } = useTenantEditContext();
-  const [note, setNote] = useState(data?.notes || "");
+  const [note, setNote] = useState("");
 
   useEffect(() => {
-    setNote(data?.notes || "");
-  }, [data?.notes]);
+    setNote(data?.notes?.write_up || "");
+  }, [data?.notes?.write_up]);
   return (
     <LandlordTenantInfoEditSection
       title="add note"

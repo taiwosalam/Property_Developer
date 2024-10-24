@@ -46,12 +46,12 @@ const EditLandlord = () => {
     return <CustomLoader layout="edit-page" pageTitle="Edit Landlord" />;
   if (error) return <div>Error: {error.message}</div>;
   if (!landlord) return null;
-
-  useEffect(() => {
-    if (landlord?.user_tag === "mobile") {
-      router.push(`/management/landlord/${landlord.id}/manage`);
-    }
-  }, [landlord?.user_tag, router]);
+  // const s = { ...landlord, user_tag: "mobile" };
+  // useEffect(() => {
+  //   if (landlord?.user_tag === "mobile") {
+  //     router.push(`/management/landlord/${landlord.id}/manage`);
+  //   }
+  // }, [landlord?.user_tag, router]);
 
   return (
     <LandlordEditContext.Provider value={{ data: landlord }}>
