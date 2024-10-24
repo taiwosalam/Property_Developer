@@ -1,3 +1,4 @@
+import type { AttachedDocumentCard } from "@/components/Management/landlord-tenant-info-components";
 interface ContactAddress {
   address: string;
   city: string | null;
@@ -35,11 +36,16 @@ interface BankDetails {
   wallet_id: string | null;
 }
 
+interface AttachedDocument extends AttachedDocumentCard {
+  document_type: string;
+}
+
 export interface TenantData {
+  id: string | number;
   avatar: string;
   picture: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   user_tag: "web" | "mobile";
   phone_number: string;
@@ -53,5 +59,9 @@ export interface TenantData {
   guarantor2: Guarantor;
   others: Others;
   bank_details: BankDetails;
-  attachment: string | null;
+  notes: {
+    last_updated: string;
+    write_up: string;
+  };
+  documents: AttachedDocument[];
 }

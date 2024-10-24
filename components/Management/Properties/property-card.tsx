@@ -190,12 +190,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <p
             className={clsx(
               "px-4 py-1 text-[10px] font-normal rounded-lg",
-              type === "rent"
+              type === "rental"
                 ? "text-status-success-3 bg-status-success-1"
                 : "text-brand-9 bg-brand-3"
             )}
           >
-            {type === "rent" ? "Rental Property" : "Gated Estate"}
+            {type === "rental" ? "Rental Property" : "Gated Estate"}
           </p>
           <div className="text-right">
             <p className="text-brand-primary text-lg lg:text-xl font-bold">{`${
@@ -231,7 +231,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             </div>
             <div>
               <p className="text-label font-normal">
-                {type === "rent" ? "Available" : "Owing"} Units
+                {type === "rental" ? "Available" : "Owing"} Units
               </p>
               <p className="text-brand-9 font-bold">5</p>
             </div>

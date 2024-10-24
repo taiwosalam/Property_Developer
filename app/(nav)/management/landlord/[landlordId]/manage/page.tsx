@@ -17,84 +17,117 @@ import {
 } from "@/components/Management/landlord-tenant-info-components";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import {
-  ChevronLeft,
-  ArrowRightIcon,
-  ArrowLeftIcon,
-} from "@/public/icons/icons";
+import { ChevronLeft } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
 import { ASSET_URL, empty } from "@/app/config";
 import UserTag from "@/components/Tags/user-tag";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useLandlordData from "@/hooks/useLandlordData";
+import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
+import type { LandlordPageData } from "../../types";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { MobileNotesModal } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
+import { LandlordEditAttachmentInfoSection } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
+import CustomTable from "@/components/Table/table";
 
 const ManageLandlord = () => {
+  // const {
+  //   landlord: LandlordPageData,
+  //   landlordId,
+  //   loading,
+  //   error,
+  // } = useLandlordData();
+
+  // Stressing myself
   const isDarkMode = useDarkMode();
   const {
-    landlord: LandlordPageData,
-    landlordId,
+    data: LandlordPageData,
     loading,
     error,
-  } = useLandlordData();
+  } = MockFunction("landlord") as {
+    data: LandlordPageData;
+    loading: boolean;
+    error: Error | null;
+  };
 
   const router = useRouter();
+  const groupDocumentsByType = (documents: LandlordPageData["documents"]) => {
+    return documents.reduce((acc, document) => {
+      if (!acc[document.document_type]) {
+        acc[document.document_type] = [];
+      }
+      acc[document.document_type].push(document);
+      return acc;
+    }, {} as Record<string, LandlordPageData["documents"]>);
+  };
 
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <div>Error: {error.message}</div>;
   if (!LandlordPageData) return null;
+  const groupedDocuments = groupDocumentsByType(LandlordPageData?.documents);
 
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
         <LandlordTenantInfoBox
           style={{ padding: "24px 40px" }}
-          className="relative flex flex-col xl:flex-row gap-5"
+          className="relative space-y-5"
         >
-          <button
-            type="button"
-            aria-label="back"
-            className="absolute top-3 left-3"
-            onClick={() => router.back()}
-          >
-            <ChevronLeft />
-          </button>
-          <Picture
-            src={
-              LandlordPageData.picture
-                ? `${ASSET_URL}${LandlordPageData.picture}`
-                : empty
-            }
-            alt="profile picture"
-            size={120}
-            rounded
-          />
-          <div className="custom-flex-col gap-8">
-            <div className="custom-flex-col gap-4">
-              <div className="custom-flex-col">
-                <div className="flex items-center">
-                  <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                    {LandlordPageData?.name}
+          <div className="flex flex-col xl:flex-row gap-5">
+            <button
+              type="button"
+              aria-label="back"
+              className="absolute top-3 left-3"
+              onClick={() => router.back()}
+            >
+              <ChevronLeft />
+            </button>
+            <Picture
+              src={
+                LandlordPageData.picture
+                  ? `${ASSET_URL}${LandlordPageData.picture}`
+                  : empty
+              }
+              alt="profile picture"
+              size={120}
+              rounded
+            />
+            <div className="custom-flex-col gap-8">
+              <div className="custom-flex-col gap-4">
+                <div className="custom-flex-col">
+                  <div className="flex items-center">
+                    <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
+                      {LandlordPageData?.first_name}{" "}
+                      {LandlordPageData?.last_name}
+                    </p>
+                    <BadgeIcon color="blue" />
+                  </div>
+                  <p
+                    style={{
+                      color: isDarkMode
+                        ? "rgba(255, 255, 255, 0.70)"
+                        : "rgba(21, 21, 21, 0.70)",
+                    }}
+                    className={`${secondaryFont.className} text-sm font-normal`}
+                  >
+                    {LandlordPageData?.email}
                   </p>
-                  <BadgeIcon color="blue" />
                 </div>
-                <p
-                  style={{ color: isDarkMode ? "rgba(255, 255, 255, 0.70)" : "rgba(21, 21, 21, 0.70)" }}
-                  className={`${secondaryFont.className} text-sm font-normal`}
-                >
-                  {LandlordPageData?.email}
-                </p>
-              </div>
-              <div className="custom-flex-col gap-2">
-                <UserTag type={LandlordPageData.user_tag} />
-                <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
-                  ID: {LandlordPageData?.id || landlordId}
-                </p>
+                <div className="custom-flex-col gap-2">
+                  <UserTag type={LandlordPageData.user_tag} />
+                  <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
+                    {/* ID: {LandlordPageData?.id || landlordId} */}
+                    ID: {LandlordPageData?.id}
+                  </p>
+                </div>
               </div>
             </div>
+          </div>
+          <div className="w-fit mx-auto flex flex-wrap gap-4">
             {LandlordPageData?.user_tag === "mobile" ? (
-              <div className="flex flex-wrap gap-4">
+              <>
                 <Button size="base_medium" className="py-2 px-8">
                   message
                 </Button>
@@ -105,9 +138,23 @@ const ManageLandlord = () => {
                 >
                   unflag
                 </Button>
-              </div>
+                <Modal>
+                  <ModalTrigger>
+                    <Button
+                      variant="sky_blue"
+                      size="base_medium"
+                      className="py-2 px-8"
+                    >
+                      Note
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <MobileNotesModal notes={LandlordPageData.notes} />
+                  </ModalContent>
+                </Modal>
+              </>
             ) : (
-              <div className="flex flex-wrap gap-4">
+              <>
                 <Button
                   href={`/management/landlord/${LandlordPageData?.id}/manage/edit`}
                   size="base_medium"
@@ -118,7 +165,7 @@ const ManageLandlord = () => {
                 <Button size="base_medium" className="py-2 px-8">
                   update with ID
                 </Button>
-              </div>
+              </>
             )}
           </div>
         </LandlordTenantInfoBox>
@@ -203,44 +250,35 @@ const ManageLandlord = () => {
           }}
         />
         {LandlordPageData?.user_tag === "web" ? (
-          <LandlordTenantInfoBox>
-            <div className="custom-flex-col gap-4">
-              <div className="flex justify-between gap-4">
-                <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
-                  <span>Note</span>
-                  <sub className="text-sm font-normal bottom-[unset]">
-                    22/12/2022
-                  </sub>
-                </h3>
-                <div className="flex gap-3 text-text-tertiary">
-                  <button type="button" aria-label="Previous">
-                    <ArrowLeftIcon />
-                  </button>
-                  <button type="button" aria-label="Next">
-                    <ArrowRightIcon />
-                  </button>
-                </div>
-              </div>
-              <TruncatedText
-                lines={7}
-                className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
-              >
-                building, is a residential property that living read more. They
-                want to work with their budget in booking an appointment. They
-                wants to ease themselves the stress having to que, and also
-                reducety that living read more. They want to work with their
-                budget in booking an appointment. They wants to ease themselves
-                the stress having to que, and stress having to que, and stress
-                having to que, and stress having to que, and stress having to
-                que, and stress havingalso reduce the read more They wants to
-                ease themselves of the stress of having to que, and also reduce
-                the time spent searching for something new.for something new. A
-                multi-family home, also know as a duplex, triplex, or multi-unit
-                building, is a residential property that living read more. They
-                want to work with their budget in booking an appointment. ime
-                spent searching
-              </TruncatedText>
+          <LandlordTenantInfoBox className="custom-flex-col gap-4">
+            <div className="flex justify-between gap-4">
+              <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
+                <span>Note</span>
+                <sub className="text-sm font-normal bottom-[unset]">
+                  <span className="font-bold">Last Updated</span>{" "}
+                  {LandlordPageData.notes.last_updated}
+                </sub>
+              </h3>
             </div>
+            <TruncatedText
+              lines={7}
+              className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
+            >
+              building, is a residential property that living read more. They
+              want to work with their budget in booking an appointment. They
+              wants to ease themselves the stress having to que, and also
+              reducety that living read more. They want to work with their
+              budget in booking an appointment. They wants to ease themselves
+              the stress having to que, and stress having to que, and stress
+              having to que, and stress having to que, and stress having to que,
+              and stress havingalso reduce the read more They wants to ease
+              themselves of the stress of having to que, and also reduce the
+              time spent searching for something new.for something new. A
+              multi-family home, also know as a duplex, triplex, or multi-unit
+              building, is a residential property that living read more. They
+              want to work with their budget in booking an appointment. ime
+              spent searching
+            </TruncatedText>
           </LandlordTenantInfoBox>
         ) : (
           <>
@@ -282,17 +320,14 @@ const ManageLandlord = () => {
           {LandlordPageData?.properties_managed?.map((property) => (
             <PropertyCard
               key={property.id}
-              images={[]}
+              images={property.images}
               id={property.id.toString()}
               propertyId={property.id.toString()}
-              {...{
-                name: property.property_name,
-                units: property.units,
-                address: property.address,
-                price: property.rental_value,
-                type: "rent",
-                image: property.image || "https://via.placeholder.com/150",
-              }}
+              name={property.name}
+              units={property.units}
+              address={property.address}
+              price={property.rental_value}
+              currency={property.currency}
             />
           ))}
         </AutoResizingGrid>
@@ -354,34 +389,39 @@ const ManageLandlord = () => {
       <LandlordTenantInfoSection title="previous property">
         <div className="flex gap-8"></div>
       </LandlordTenantInfoSection>
+      {LandlordPageData?.user_tag === "mobile" && (
+        <LandlordEditAttachmentInfoSection useContext={false} />
+      )}
       <LandlordTenantInfoSection title="shared documents">
-        <LandlordTenantInfoSection minimized title="invoice">
-          <div className="flex flex-wrap gap-4">
-            {Array(4)
-              .fill(null)
-              .map((_, idx) => (
-                <LandlordTenantInfoDocument key={idx} />
+        {Object.entries(groupedDocuments).map(([documentType, documents]) => {
+          if (documentType === "other document") return null; // Skip "other document" for now
+          return (
+            <LandlordTenantInfoSection
+              minimized
+              title={documentType}
+              key={documentType}
+            >
+              <div className="flex flex-wrap gap-4">
+                {documents.map((document) => (
+                  <LandlordTenantInfoDocument key={document.id} {...document} />
+                ))}
+              </div>
+            </LandlordTenantInfoSection>
+          );
+        })}
+        {groupedDocuments["other document"] && (
+          <LandlordTenantInfoSection
+            minimized
+            title="other documents"
+            key="other document"
+          >
+            <div className="flex flex-wrap gap-4">
+              {groupedDocuments["other document"].map((document) => (
+                <LandlordTenantInfoDocument key={document.id} {...document} />
               ))}
-          </div>
-        </LandlordTenantInfoSection>
-        <LandlordTenantInfoSection minimized title="receipts">
-          <div className="flex flex-wrap gap-4">
-            {Array(3)
-              .fill(null)
-              .map((_, idx) => (
-                <LandlordTenantInfoDocument key={idx} />
-              ))}
-          </div>
-        </LandlordTenantInfoSection>
-        <LandlordTenantInfoSection minimized title="other documents">
-          <div className="flex flex-wrap gap-4">
-            {Array(2)
-              .fill(null)
-              .map((_, idx) => (
-                <LandlordTenantInfoDocument key={idx} />
-              ))}
-          </div>
-        </LandlordTenantInfoSection>
+            </div>
+          </LandlordTenantInfoSection>
+        )}
       </LandlordTenantInfoSection>
     </div>
   );

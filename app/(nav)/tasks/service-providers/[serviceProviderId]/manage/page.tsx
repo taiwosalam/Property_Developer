@@ -16,28 +16,19 @@ import Button from "@/components/Form/Button/button";
 import UserTag from "@/components/Tags/user-tag";
 import SampleLogo from "@/public/empty/SampleLogo.jpeg";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import {
-  ChevronLeft,
-  ArrowRightIcon,
-  ArrowLeftIcon,
-} from "@/public/icons/icons";
+import { ChevronLeft } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
 import ServiceCard from "@/components/tasks/service-providers/service-card";
 import useDarkMode from "@/hooks/useCheckDarkMode";
-// import { useParams } from "next/navigation";
-interface ServiceProviderData {
-  user_tag: "web" | "mobile";
-  // user_name: string;
-  // user_email: string;
-  // user_wallet_id: string;
-  // user_phone_number: string;
-}
+import type { ServiceProviderData } from "./types";
+import { serviceProviderData as Mockdata } from "./data";
 
 const ManageServiceProvider = () => {
   const isDarkMode = useDarkMode();
   const router = useRouter();
   const [serviceProviderData, setServiceProviderData] =
     useState<ServiceProviderData | null>({
+      ...Mockdata,
       user_tag: Math.random() < 0.5 ? "web" : "mobile", // Randomly select "web" or "mobile for preview"
     });
   if (!serviceProviderData) return null;
@@ -94,7 +85,11 @@ const ManageServiceProvider = () => {
               </div>
             ) : (
               <div className="flex flex-wrap gap-4">
-                <Button size="base_medium" className="py-2 px-8">
+                <Button
+                  size="base_medium"
+                  className="py-2 px-8"
+                  href={"/tasks/service-providers/1/manage/edit"}
+                >
                   Manage
                 </Button>
                 <Button size="base_medium" className="py-2 px-8">
@@ -168,7 +163,7 @@ const ManageServiceProvider = () => {
           containerClassName="rounded-lg"
           heading="Contact Address"
           info={{
-            "Company Address:": "U4, Joke Palza bodija ibadan.",
+            "Company Address": "U4, Joke Palza bodija ibadan.",
             state: "Oyo State",
             "Local Government": "Akinyele",
           }}
@@ -176,7 +171,7 @@ const ManageServiceProvider = () => {
         {user_tag === "web" && (
           <InfoBox className="rounded-lg">
             <div className="custom-flex-col gap-4">
-              <div className="flex justify-between gap-4">
+              {/* <div className="flex justify-between gap-4">
                 <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
                   <span>Note</span>
                   <sub className="text-sm font-normal bottom-[unset]">
@@ -191,7 +186,7 @@ const ManageServiceProvider = () => {
                     <ArrowRightIcon />
                   </button>
                 </div>
-              </div>
+              </div> */}
               <TruncatedText
                 lines={7}
                 className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
@@ -229,7 +224,12 @@ const ManageServiceProvider = () => {
             {Array(2)
               .fill(null)
               .map((_, idx) => (
-                <InfoDocument key={idx} />
+                <InfoDocument
+                  key={idx}
+                  id={idx}
+                  name={"Sample Doc"}
+                  link={"https://www.google.com"}
+                />
               ))}
           </div>
         </InfoSection>

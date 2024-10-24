@@ -13,11 +13,10 @@ import Avatar from "@/public/empty/avatar-1.svg";
 // imports
 import Picture from "@/components/Picture/picture";
 import BackButton from "@/components/BackButton/back-button";
-
+import { BranchManagerTag } from "@/components/Tags/BranchManagerTag";
 import {
   LandlordTenantInfo,
   LandlordTenantInfoBox,
-  LandlordTenantUserTag,
 } from "@/components/Management/landlord-tenant-info-components";
 
 import { secondaryFont } from "@/utils/fonts";
@@ -78,7 +77,7 @@ const StaffProfile = () => {
                   </div>
                   <div className="custom-flex-col gap-2">
                     <div className="flex">
-                      <LandlordTenantUserTag type="branch manager" />
+                      <BranchManagerTag />
                     </div>
                     <p className="text-neutral-800 text-base font-medium">
                       ID: 22132876554444

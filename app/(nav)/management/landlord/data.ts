@@ -65,10 +65,10 @@ export const getOneLandlord = async (
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("Error fetching tenant", error);
-    return null;
+    console.error("Error fetching landlord", error);
   }
 };
+
 export const getLandlordsHelpInfo = async () => {
   try {
     const response = await fetch(

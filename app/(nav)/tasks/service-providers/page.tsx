@@ -41,18 +41,21 @@ const ServiceProviders = () => {
             newData={30}
             total={40}
             className="w-[230px]"
+            colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Mobile Users"
             newData={40}
             total={40}
             className="w-[230px]"
+            colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Vacant Units"
             newData={40}
             total={40}
             className="w-[230px]"
+            colorScheme={3}
           />
         </div>
         <Modal>

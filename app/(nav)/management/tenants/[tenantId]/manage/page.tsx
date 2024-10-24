@@ -22,13 +22,38 @@ import { getObjectProperties } from "@/utils/get-object-properties";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import UpdateTenantProfile from "@/components/Management/Tenants/update-tenant-profile";
 import { useRouter } from "next/navigation";
+import { TenantData } from "../../types";
+import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
+
+const groupDocumentsByType = (documents: TenantData["documents"]) => {
+  return documents.reduce((acc, document) => {
+    if (!acc[document.document_type]) {
+      acc[document.document_type] = [];
+    }
+    acc[document.document_type].push(document);
+    return acc;
+  }, {} as Record<string, TenantData["documents"]>);
+};
 
 const ManageTenant = () => {
-  const { tenant, tenantId, loading, error } = useTenantData();
+  // const { tenant, tenantId, loading, error } = useTenantData();
+  const {
+    data: tenant,
+    id: tenantId,
+    loading,
+    error,
+  } = MockFunction("tenant") as {
+    data: TenantData;
+    id: string | number;
+    loading: boolean;
+    error: Error | null;
+  };
   const router = useRouter();
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <div>Error: {error.message}</div>;
   if (!tenant) return null;
+
+  const groupedDocuments = groupDocumentsByType(tenant?.documents);
 
   const otherData = getObjectProperties(tenant);
   // const isDarkMode = useDarkMode();
@@ -59,7 +84,7 @@ const ManageTenant = () => {
               <div className="custom-flex-col">
                 <div className="flex items-center gap-2">
                   <p className="text-black text-lg lg:text-xl font-bold capitalize">
-                    {tenant.firstName} {tenant.lastName}
+                    {tenant.first_name} {tenant.last_name}
                   </p>
                 </div>
                 <p
@@ -190,33 +215,35 @@ const ManageTenant = () => {
         </div>
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="shared documents">
-        <LandlordTenantInfoSection minimized title="invoice">
-          <div className="flex flex-wrap gap-4">
-            {Array(4)
-              .fill(null)
-              .map((_, idx) => (
-                <LandlordTenantInfoDocument key={idx} />
+        {Object.entries(groupedDocuments).map(([documentType, documents]) => {
+          if (documentType === "other document") return null; // Skip "other document" for now
+          return (
+            <LandlordTenantInfoSection
+              minimized
+              title={documentType}
+              key={documentType}
+            >
+              <div className="flex flex-wrap gap-4">
+                {documents.map((document) => (
+                  <LandlordTenantInfoDocument key={document.id} {...document} />
+                ))}
+              </div>
+            </LandlordTenantInfoSection>
+          );
+        })}
+        {groupedDocuments["other document"] && (
+          <LandlordTenantInfoSection
+            minimized
+            title="other documents"
+            key="other document"
+          >
+            <div className="flex flex-wrap gap-4">
+              {groupedDocuments["other document"].map((document) => (
+                <LandlordTenantInfoDocument key={document.id} {...document} />
               ))}
-          </div>
-        </LandlordTenantInfoSection>
-        <LandlordTenantInfoSection minimized title="receipts">
-          <div className="flex flex-wrap gap-4">
-            {Array(3)
-              .fill(null)
-              .map((_, idx) => (
-                <LandlordTenantInfoDocument key={idx} />
-              ))}
-          </div>
-        </LandlordTenantInfoSection>
-        <LandlordTenantInfoSection minimized title="other documents">
-          <div className="flex flex-wrap gap-4">
-            {Array(2)
-              .fill(null)
-              .map((_, idx) => (
-                <LandlordTenantInfoDocument key={idx} />
-              ))}
-          </div>
-        </LandlordTenantInfoSection>
+            </div>
+          </LandlordTenantInfoSection>
+        )}
       </LandlordTenantInfoSection>
     </div>
   );

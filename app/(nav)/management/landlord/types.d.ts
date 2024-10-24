@@ -1,8 +1,19 @@
+import { PropertyProps } from "@/components/Management/Properties/types";
+import type { AttachedDocumentCard } from "@/components/Management/landlord-tenant-info-components";
+
 interface ContactAddress {
   address: string;
   city: string | null;
   state: string;
   local_govt: string;
+}
+
+interface NextOfKin {
+  name: string | null;
+  email: string | null;
+  address: string | null;
+  phone: string | null;
+  relationship: string | null;
 }
 
 interface Guarantor {
@@ -11,7 +22,6 @@ interface Guarantor {
   email: string | null;
   phone_number: string | null;
   address: string | null;
-  note: string | null;
 }
 
 interface BankDetails {
@@ -21,30 +31,44 @@ interface BankDetails {
   wallet_id: string | null;
 }
 
-interface PropertyManaged {
-  id: number;
-  property_name: string;
-  address: string;
-  property_tag: string;
-  units: number;
+interface Others {
+  occupation: string | null;
+  type: string | null;
+  family_type: string | null;
+  note: string | null;
+}
+
+interface PropertyManaged extends PropertyProps {
   rental_value: number;
-  annual_returns: number | null;
   account_officer: string;
-  image: string | null;
+}
+
+interface AttachedDocument extends AttachedDocumentCard {
+  document_type: string;
 }
 
 export type LandlordPageData = {
   avatar: string;
   picture: string;
-  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
+  gender: string;
   phone_number: string;
   user_tag: "web" | "mobile";
   id: number | string;
+  type: string;
   contact_address: ContactAddress;
-  guarantor: Guarantor;
+  next_of_kin: NextOfKin;
+  guarantor1: Guarantor;
+  guarantor2: Guarantor;
   bank_details: BankDetails;
-  attachment: string | null;
+  notes: {
+    last_updated: string;
+    write_up: string;
+  };
+  others: Others;
+  documents: AttachedDocument[];
   properties_managed: PropertyManaged[];
 };
 
