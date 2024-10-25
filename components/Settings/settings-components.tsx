@@ -13,6 +13,7 @@ import type {
   SettingsEnrollmentCardProps,
   SettingsTenantOccupantTierProps,
   ProfileUploadProps,
+  GroupRadioProps,
 } from "./types";
 
 import type { ButtonProps } from "../Form/Button/types";
@@ -36,6 +37,8 @@ import { SettingUserIcon } from "@/public/icons/icons";
 import Picture from "../Picture/picture";
 import ImageBlue from "@/public/icons/image-blue.svg";
 import SettingsLegalDrawer from "./Modals/settings-legal-drawer";
+import { useEffect, useState } from 'react';
+
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
     <p
@@ -143,29 +146,55 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
   title,
   desc,
   icon,
-}) => (
-  <div className="flex justify-between">
-    <div className="first flex gap-1 items-start">
-      <span className="dark:text-white flex-shrink-0 text-black">{icon}</span>
-      <div className="flex flex-col">
-        <h4 className="text-text-quaternary dark:text-white text-base">
-          {title}
-        </h4>
-        <p className="text-text-disabled text-sm font-normal max-w-[900px]">
-          {desc}
-        </p>
-      </div>
-    </div>
+  checked,
+  groupName,
+  selectedGroup,
+  setSelectedGroup,
+}) => {
+  const isChecked = selectedGroup === groupName;
 
-    <div className="second flex justify-end items-end h-full">
-      <div className="ml-auto">
-        <DocumentCheckbox darkText checked={true}>
-          {""}
-        </DocumentCheckbox>
+  return (
+    <div className="flex justify-between">
+      <div className="first flex gap-1 items-start">
+        <span className="dark:text-white flex-shrink-0 text-black">{icon}</span>
+        <div className="flex flex-col">
+          <h4 className="text-text-quaternary dark:text-white text-base">
+            {title}
+          </h4>
+          <p className="text-text-disabled text-sm font-normal max-w-[900px]">
+            {desc}
+          </p>
+        </div>
+      </div>
+
+      <div className="second flex justify-end items-end h-full">
+        <div className="ml-auto">
+            {groupName && <GroupRadio 
+             checked={isChecked}
+              groupName={groupName}
+              onClick={() => setSelectedGroup && setSelectedGroup(groupName)}
+          />}
+         {!groupName && <DocumentCheckbox darkText checked={isChecked}> {" "} </DocumentCheckbox>}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
+
+export const GroupRadio: React.FC<GroupRadioProps> = ({
+  checked,
+  onClick,
+}) => {
+  return (
+    <button className="flex gap-3 text-start rounded-full" onClick={onClick}>
+      <div className={`rounded-full p-[2px] flex items-center justify-center ${checked ? "border border-blue-600" : ""}`}>
+        <div
+          className={`rounded-full w-5 h-5 border min-w-2 min-h-2 border-darkText-2 ${checked ? "bg-blue-600" : ""}`}
+        ></div>
+      </div>
+    </button>
+  );
+};
 
 export const SettingsColorScheme: React.FC<SettingsColorSchemeProps> = ({
   color,
@@ -290,21 +319,35 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
   isSelected,
   profile,
 }) => {
+  const [showProfessionalMessage, setShowProfessionalMessage] = useState(false);
+
+  const handleClick = () => {
+    console.log("value = ", value);
+    if (value === 'theme2' || value === 'theme3') {
+      setShowProfessionalMessage(true);
+      setTimeout(() => setShowProfessionalMessage(false), 3000); 
+    } else {
+      onSelect(value);
+      isSelected = false;
+      console.log("isSelected = ", isSelected);
+    }
+  };
+
   return (
     <div
       className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer relative justify-center`}
-      onClick={() => onSelect(value)}
+      onClick={handleClick}
     >
       {isSelected === false && !profile && (
         <div className="absolute inset-0 bg-white bg-opacity-60 z-10" />
       )}
-      <div className="relative">
+      <div className="relative max-h-[218px]">
         <Image
           src={img}
           alt="Theme"
           width={1000}
           height={1000}
-          className={`w-full h-full object-contain min-h-[218px] ${
+          className={`w-full h-full object-contain ${
             isSelected ? "border-4 border-brand-9 rounded-lg" : ""
           }`}
         />
@@ -316,6 +359,13 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
         >
           Preview Website
         </Link>
+      )}
+      {showProfessionalMessage && (
+        <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-30">
+          <p className="text-white text-center px-4 py-2 rounded">
+            This feature is for professional plan only
+          </p>
+        </div>
       )}
     </div>
   );
@@ -437,3 +487,4 @@ export const ProfileUpload: React.FC<ProfileUploadProps> = ({
     </div>
   );
 };
+

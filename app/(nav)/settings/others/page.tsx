@@ -44,16 +44,19 @@ const companyTypes = [
     title: "Property Manager",
     desc: "The company specializes in managing tenants for both commercial and residential properties, as well as overseeing occupants within gated estates.",
     icon: <SettingUserIcon />,
+    groupName: "property_manager"
   },
   {
     title: "Facility Manager",
     desc: "The company specializes in managing short-stay apartments, holiday homes, and hotels, catering to occupants for brief durations.",
     icon: <UserEditIcon />,
+    groupName: "facility_manager"
   },
   {
     title: "Property Developer",
     desc: "A company engaged in real estate development, constructing and selling properties, or acquiring land for development and subsequent sale. They may offer flexible payment plans where buyers can make a deposit and pay the balance over a specified period.",
     icon: <UserTagIcon />,
+    groupName: "property_developer"
   },
 ];
 const notificationSettings = [
@@ -132,14 +135,14 @@ const resetSettingsOptions = [
 ];
 
 const Others = () => {
-  const [isChecked, setIsChecked] = useState(true);
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [checkedStates, setCheckedStates] = useState<{
     [key: string]: boolean;
   }>({});
   return (
     <>
       {/* COMPANY TYPE SETTINGS */}
-      <SettingsSection title="Company Type">
+      <SettingsSection title="Company Default Type">
       <div className="custom-flex-col gap-3">
           {companyTypes.map((type, index) => (
             <SettingsOthersType
@@ -147,12 +150,15 @@ const Others = () => {
               title={type.title}
               desc={type.desc}
               icon={type.icon} 
+              selectedGroup={selectedGroup}
+              setSelectedGroup={setSelectedGroup}
+              groupName={type.groupName}
             />
           ))}
         </div>
 
         <div className="flex mt-4">
-          <div className="w-full max-w-[871px] grid grid-cols-3 gap-5">
+          <div className="w-full max-w-[871px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             <Select
               options={industryOptions}
               id="current_industry"
