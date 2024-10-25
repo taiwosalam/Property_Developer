@@ -132,10 +132,10 @@ const CreateMaintenace = () => {
         <FixedFooter className="flex items-center justify-between gap-x-10 gap-y-4 flex-wrap">
           <div className="flex flex-wrap items-center gap-4 text-sm text-text-secondary">
             <div>
-              <DocumentCheckbox title="Create announcement" children="" />
+              <DocumentCheckbox darkText>Create Announcement</DocumentCheckbox>
             </div>
             <div>
-              <DocumentCheckbox title="Add to Calendar" children="" />
+              <DocumentCheckbox darkText>Add to Calendar</DocumentCheckbox>
             </div>
           </div>
           <Button
