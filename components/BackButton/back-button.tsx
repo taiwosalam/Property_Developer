@@ -30,7 +30,7 @@ const BackButton: React.FC<BackButtonProps> = ({ children, className }) => {
       >
         <ChevronLeft />
       </button>
-      <h1 className="font-bold text-lg lg:text-xl">{children}</h1>
+      <h1 className="font-medium text-lg lg:text-xl">{children}</h1>
     </div>
   );
 };
