@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ExclamationMark } from "@/public/icons/icons";
-import Link from "next/link";
+import ExportButton from "@/components/reports/export-button";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import ThreeDotsVertical from "@/public/icons/three-dots-vertical.svg";
@@ -29,6 +29,7 @@ import {
   DropdownTrigger,
 } from "@/components/Dropdown/dropdown";
 import { accountingInvoiceOptionsWithDropdown } from "./date";
+import Link from "next/link";
 
 const AccountingInvoicePage = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -146,24 +147,8 @@ const AccountingInvoicePage = () => {
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <Link
-                  href="/accounting/invoice/export"
-                  className="border border-[#D0D5DD] dark:bg-darkText-primary py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
-                >
-                  <Picture src={"/icons/pdf-icon.svg"} size={20} alt="pdf" />
-                  <span>Export</span>
-                </Link>
-                <Link
-                  href="/accounting/invoice/export"
-                  className="border border-[#D0D5DD] dark:bg-darkText-primary py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
-                >
-                  <Picture
-                    src={"/icons/excel-icon.svg"}
-                    size={20}
-                    alt="excep"
-                  />
-                  <span>Export</span>
-                </Link>
+                <ExportButton type="pdf" href="/accounting/invoice/export" />
+                <ExportButton type="csv" href="/accounting/invoice/export" />
               </div>
             </div>
           </div>
@@ -229,7 +214,7 @@ const AccountingInvoicePage = () => {
                   <td>
                     <p>₦35,000.00</p>
                   </td>
-                  <td>``
+                  <td>
                     <p>02/03/2024</p>
                   </td>
                   <td className="flex justify-center items-center">

@@ -13,6 +13,7 @@ import {
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
   NotesInfoBox,
+  MobileNotesModal,
 } from "@/components/Management/landlord-tenant-info-components";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
@@ -26,7 +27,6 @@ import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 import type { LandlordPageData } from "../../types";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import { MobileNotesModal } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
 import { LandlordEditAttachmentInfoSection } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
 import CustomTable from "@/components/Table/table";
 import { statementTableFields, statementTableData } from "./data";
@@ -151,7 +151,7 @@ const ManageLandlord = () => {
                   unflag
                 </Button>
                 <Modal>
-                  <ModalTrigger>
+                  <ModalTrigger asChild>
                     <Button
                       variant="sky_blue"
                       size="base_medium"

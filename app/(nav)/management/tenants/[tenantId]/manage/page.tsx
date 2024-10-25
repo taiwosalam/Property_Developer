@@ -14,6 +14,7 @@ import {
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
   NotesInfoBox,
+  MobileNotesModal,
 } from "@/components/Management/landlord-tenant-info-components";
 import { ChevronLeft } from "@/public/icons/icons";
 import { ASSET_URL, empty } from "@/app/config";
@@ -25,10 +26,8 @@ import UpdateTenantProfile from "@/components/Management/Tenants/update-tenant-p
 import { useRouter } from "next/navigation";
 import { TenantData } from "../../types";
 import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
-import { MobileNotesModal } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
 import CustomTable from "@/components/Table/table";
 import { statementTableFields, statementTableData } from "./data";
-import useDarkMode from "@/hooks/useCheckDarkMode";
 import { TenantEditAttachmentSection } from "@/components/Management/Tenants/Edit/tenant-edit-info-sectios";
 
 const groupDocumentsByType = (documents: TenantData["documents"]) => {
@@ -54,7 +53,7 @@ const ManageTenant = () => {
     loading: boolean;
     error: Error | null;
   };
-  const isDarkMode = useDarkMode();
+
   const router = useRouter();
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <div>Error: {error.message}</div>;
@@ -123,7 +122,7 @@ const ManageTenant = () => {
                   unflag
                 </Button>
                 <Modal>
-                  <ModalTrigger>
+                  <ModalTrigger asChild>
                     <Button
                       variant="sky_blue"
                       size="base_medium"

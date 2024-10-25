@@ -8,6 +8,7 @@ import UserTag from "@/components/Tags/user-tag";
 import {
   LandlordTenantInfoBox as InfoBox,
   LandlordTenantInfo as ContactInfo,
+  MobileNotesModal,
 } from "@/components/Management/landlord-tenant-info-components";
 import PreviousRecord from "@/components/tasks/vehicles-record/previous-record";
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
@@ -16,15 +17,28 @@ import { VehicleRecordData } from "@/app/(nav)/tasks/vehicles-record/data";
 import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import CheckInOutForm from "@/components/tasks/visitors-requests/check-in-out-form";
-import VehicleDetailsFormModal from "@/components/tasks/vehicles-record/vehicle-details-form-modal";
+import {
+  EditVehicleDetailsFormModal,
+  EditPersonalDetailsFormModal,
+} from "@/components/tasks/vehicles-record/edit-vehicle-details";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 interface UserData {
   user_tag: "web" | "mobile";
-  pictureSrc: string;
-  userName: string;
   id: string | number;
+  pictureSrc: string;
+  full_name: string;
+  state: string;
+  local_government: string;
+  city: string;
+  address: string;
+  phone_number: string;
+  avatar: string;
+  notes: {
+    last_updated: string;
+    write_up: string;
+  };
 }
 
 const Detail: React.FC<{
@@ -43,26 +57,47 @@ const RecordPage = () => {
   const [userData, setUserData] = useState<UserData | null>({
     user_tag: Math.random() > 0.5 ? "web" : "mobile",
     pictureSrc: "/empty/landlord-avatar.png",
-    userName: "Abimbola Adedeji",
+    full_name: "Abimbola Adedeji",
+    state: "Oyo",
+    local_government: "Ibadan North Central",
+    city: "Ibadan",
+    address: "U4 Joke Plaza Bodija Ibadan",
+    phone_number: "2348132086958",
+    avatar: "/empty/avatar-1.svg",
     id: "22132876554444",
+    notes: {
+      last_updated: "22/12/2022",
+      write_up:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. building, is a residential property that living read more. They want to work with their budget in booking an appointment. They wants to ease themselves the stress having to que, and also reduce the time spent searching for something new.for something new. A multi-family home, also know as a duplex, triplex, or multi-unit building, is a residential property that living read more. They want to work with their budget in booking an appointment. ime spent searching",
+    },
   });
   if (!userData) return null;
-  const { user_tag } = userData;
+  const {
+    user_tag,
+    notes,
+    full_name,
+    state,
+    address,
+    avatar,
+    local_government,
+    city,
+    phone_number,
+  } = userData;
   return (
     <div className="space-y-5 pb-[100px]">
       <BackButton>Vehicle Record</BackButton>
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
         <InfoBox
           style={{ padding: "24px 40px" }}
-          className="flex flex-col xl:flex-row gap-5"
+          className="relative space-y-5"
         >
-          <Picture
-            src={DefaultLandlordAvatar}
-            alt="profile picture"
-            size={120}
-            rounded
-          />
-          <div className="custom-flex-col gap-8">
+          <div className="flex flex-col xl:flex-row gap-5">
+            <Picture
+              src={DefaultLandlordAvatar}
+              alt="profile picture"
+              size={120}
+              rounded
+            />
             <div className="custom-flex-col gap-4">
               <div className="custom-flex-col">
                 <div className="flex items-center">
@@ -77,32 +112,67 @@ const RecordPage = () => {
                   ayo@gmail.com
                 </p>
               </div>
-              {user_tag === "mobile" ? (
-                <div className="flex items-end gap-2 justify-between">
-                  <div className="custom-flex-col gap-2">
-                    <UserTag type={user_tag} />
-                    <p className="text-neutral-800 dark:text-darkText-2 text-base font-medium">
-                      ID: 22132876554444
-                    </p>
-                  </div>
-
-                  <Button size="base_medium" className="py-2 px-8">
-                    message
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex flex-wrap gap-4">
-                  <Button size="base_medium" className="py-2 px-8">
-                    Edit
-                  </Button>
-                  <Button size="base_medium" className="py-2 px-8">
-                    Update with ID
-                  </Button>
-                </div>
-              )}
+              <div className="custom-flex-col gap-2">
+                <UserTag type={user_tag} />
+                {user_tag === "mobile" && (
+                  <p className="text-neutral-800 dark:text-darkText-2 text-base font-medium">
+                    ID: 22132876554444
+                  </p>
+                )}
+              </div>
             </div>
           </div>
+          <div className="w-fit mx-auto flex flex-wrap gap-4">
+            {user_tag === "mobile" ? (
+              <>
+                <Button size="base_medium" className="py-2 px-8">
+                  message
+                </Button>
+              </>
+            ) : (
+              <>
+                <Modal>
+                  <ModalTrigger asChild>
+                    <Button size="base_medium" className="py-2 px-8">
+                      Edit
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <EditPersonalDetailsFormModal
+                      data={{
+                        full_name,
+                        state,
+                        address,
+                        avatar,
+                        local_government,
+                        city,
+                        phone_number,
+                      }}
+                    />
+                  </ModalContent>
+                </Modal>
+                <Button size="base_medium" className="py-2 px-8">
+                  Update with ID
+                </Button>
+              </>
+            )}
+            <Modal>
+              <ModalTrigger asChild>
+                <Button
+                  variant="sky_blue"
+                  size="base_medium"
+                  className="py-2 px-8"
+                >
+                  Note
+                </Button>
+              </ModalTrigger>
+              <ModalContent>
+                <MobileNotesModal notes={notes} />
+              </ModalContent>
+            </Modal>
+          </div>
         </InfoBox>
+
         {user_tag === "mobile" && (
           <ContactInfo
             info={{
@@ -155,16 +225,15 @@ const RecordPage = () => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <VehicleDetailsFormModal
-                editMode={true}
+              <EditVehicleDetailsFormModal
                 data={{
-                  brand_name: "Toyota",
+                  brand_name: "Volvo",
                   plate_number: "OS102DR",
                   state: "Lagos",
                   model: "Corolla",
-                  vehicle_type: "",
+                  vehicle_type: "Cars",
                   color: "Black",
-                  manufacturer_year: "2002",
+                  manufacturer_year: "2022 - 2026",
                   visitor_category: "Guest",
                 }}
               />
@@ -198,7 +267,7 @@ const RecordPage = () => {
               useCase="vehicle"
               type="check-in"
               pictureSrc={userData.pictureSrc}
-              userName={userData.userName}
+              userName={userData.full_name}
               id={userData.id}
               category="Guest"
               registrationDate="12/01/2024 (08:09pm)"
