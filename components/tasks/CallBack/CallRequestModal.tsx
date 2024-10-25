@@ -1,8 +1,6 @@
 "use client";
 
-import { ModalTrigger } from "@/components/Modal/modal";
 import Picture from "@/components/Picture/picture";
-import { XIcon } from "@/public/icons/icons";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { CallRequestModalProps } from "./types";
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
@@ -22,7 +20,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
   return (
     <ModalPreset title="Request for Call">
       <div className="flex items-center justify-center">
-        <div className="pt-10 space-y-2 mb-6">
+        <div className="space-y-2 mb-6">
           <div className="flex items-center justify-center">
             <Picture size={50} src={requesterPicture} rounded />
           </div>
@@ -40,7 +38,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
           </div>
         </div>
       </div>
-      <div className="border-t border-brand-7 mb-6 border-dashed" />
+      <div className="border-t border-brand-7 mb-6 border-dashed -mx-6" />
       <div className="m-6 mb-12 space-y-6">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -68,7 +66,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
             </p>
           </div>
           <div className="flex items-center justify-between">
-              <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
+            <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
               Branch
             </p>
             <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">

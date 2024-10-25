@@ -1,29 +1,15 @@
 "use client";
 
 import CustomTable from "@/components/Table/table";
-import type { Field } from "@/components/Table/types";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import Image from "next/image";
 import Button from "@/components/Form/Button/button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import BackButton from "@/components/BackButton/back-button";
+import { landlordsReportTableFields } from "../data";
 
 const ExportLandlords = () => {
-  const fields: Field[] = [
-    { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "Landlord / Landlady ID", accessor: "id" },
-    {
-      id: "2",
-      label: "Name",
-      accessor: "name",
-      cellStyle: { textTransform: "uppercase" },
-    },
-    { id: "3", label: "Contact Address", accessor: "address" },
-    { id: "5", label: "Telephone", accessor: "telephone" },
-    { id: "6", label: "email", accessor: "email" },
-  ];
-
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
       id: (index + 1).toString(),
@@ -50,7 +36,7 @@ const ExportLandlords = () => {
         Summary
       </p>
       <CustomTable
-        fields={fields}
+        fields={landlordsReportTableFields}
         data={tableData}
         tableHeadClassName="h-[45px]"
       />
@@ -63,7 +49,11 @@ const ExportLandlords = () => {
       </div>
       <FixedFooter className="flex flex-wrap gap-6 items-center justify-end">
         <div className="flex gap-6">
-          <Button size="custom" variant="sky_blue">
+          <Button
+            size="custom"
+            variant="sky_blue"
+            className="py-2 px-8 font-bold text-sm lg:text-base"
+          >
             Download
           </Button>
           <Button

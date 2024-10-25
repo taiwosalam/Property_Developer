@@ -19,7 +19,6 @@ import CheckInOutForm from "@/components/tasks/visitors-requests/check-in-out-fo
 import VehicleDetailsFormModal from "@/components/tasks/vehicles-record/vehicle-details-form-modal";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import useDarkMode from "@/hooks/useCheckDarkMode";
 
 interface UserData {
   user_tag: "web" | "mobile";
@@ -34,16 +33,13 @@ const Detail: React.FC<{
 }> = ({ label, value }) => {
   return (
     <div className="flex flex-col sm:flex-row gap-x-4 gap-y-1">
-      <p className="text-[#747474] dark:text-darkText-2 w-[135px]">
-        {label}
-      </p>
+      <p className="text-[#747474] dark:text-darkText-2 w-[135px]">{label}</p>
       <p className="text-black dark:text-white capitalize">{value}</p>
     </div>
   );
 };
 
 const RecordPage = () => {
-  const  isDarkMode  = useDarkMode();
   const [userData, setUserData] = useState<UserData | null>({
     user_tag: Math.random() > 0.5 ? "web" : "mobile",
     pictureSrc: "/empty/landlord-avatar.png",

@@ -1,33 +1,15 @@
 "use client";
 
 import CustomTable from "@/components/Table/table";
-import type { Field } from "@/components/Table/types";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import Image from "next/image";
 import Button from "@/components/Form/Button/button";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { unitsReportTableFields } from "../data";
 
 const ExportUnits = () => {
-  const fields: Field[] = [
-    { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "Unit ID", accessor: "unit_id" },
-    {
-      id: "2",
-      label: "Property Name",
-      accessor: "property_name",
-    },
-    { id: "3", label: "Unit Name", accessor: "unit_name" },
-    {
-      id: "5",
-      label: "Unit Description",
-      accessor: "unit_description",
-    },
-    { id: "6", label: "status", accessor: "status" },
-    { id: "7", label: "Annual Rent", accessor: "annual_rent" },
-  ];
-
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
       unit_id: (index + 1).toString(),
@@ -55,7 +37,7 @@ const ExportUnits = () => {
         Summary
       </p>
       <CustomTable
-        fields={fields}
+        fields={unitsReportTableFields}
         data={tableData}
         tableHeadClassName="h-[45px]"
       />
@@ -71,7 +53,7 @@ const ExportUnits = () => {
           <Button
             size="custom"
             className="py-2 px-8 font-bold text-sm lg:text-base"
-            style={{ color: "#0033C4", backgroundColor: "#EFF6FF" }}
+            variant="sky_blue"
           >
             Download
           </Button>

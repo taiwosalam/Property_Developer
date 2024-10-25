@@ -2,29 +2,13 @@
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
-import type { Field } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { reportsUnitsFilterOptionsWithDropdown } from "./data";
+import {
+  reportsUnitsFilterOptionsWithDropdown,
+  unitsReportTableFields,
+} from "./data";
 
 const UnitsReport = () => {
-  const fields: Field[] = [
-    { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "Unit ID", accessor: "unit_id" },
-    {
-      id: "2",
-      label: "Property Name",
-      accessor: "property_name",
-    },
-    { id: "3", label: "Unit Name", accessor: "unit_name" },
-    {
-      id: "5",
-      label: "Unit Description",
-      accessor: "unit_description",
-    },
-    { id: "6", label: "status", accessor: "status" },
-    { id: "7", label: "Annual Rent", accessor: "annual_rent" },
-  ];
-
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
       unit_id: (index + 1).toString(),
@@ -41,7 +25,12 @@ const UnitsReport = () => {
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard title="Total Units" newData={23} total={200} />
+        <ManagementStatistcsCard
+          title="Total Units"
+          newData={23}
+          total={200}
+          colorScheme={1}
+        />
       </div>
       <FilterBar
         azFilter
@@ -61,7 +50,7 @@ const UnitsReport = () => {
         exportHref="/reports/units/export"
       />
       <CustomTable
-        fields={fields}
+        fields={unitsReportTableFields}
         data={tableData}
         tableHeadClassName="h-[45px]"
       />

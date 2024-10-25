@@ -56,16 +56,19 @@ const Inquires = () => {
           total={12}
           title="Total Request"
           newData={12}
+          colorScheme={1}
         />
         <ManagementStatistcsCard
           total={12}
           title="Total Resolved"
           newData={12}
+          colorScheme={2}
         />
         <ManagementStatistcsCard
           total={12}
           title="Total Unresolved"
           newData={12}
+          colorScheme={3}
         />
       </div>
       <FilterBar

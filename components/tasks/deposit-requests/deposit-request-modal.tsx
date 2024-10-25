@@ -7,6 +7,7 @@ import type { DepositRequestModalProps, DetailsCheckProps } from "./types";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import { formatCostInputValue } from "@/utils/number-formatter";
+import ModalPreset from "@/components/Wallet/wallet-modal-preset";
 
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
   return (
@@ -49,18 +50,8 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
   const [refundAmount, setRefundAmount] = useState("");
   const [isEscrowChecked, setIsEscrowChecked] = useState(false);
   return (
-    <div className="w-[600px] max-w-[80%] max-h-[85%] rounded-lg overflow-x-auto custom-round-scrollbar font-medium">
-      {/* Header */}
-      <div className="bg-brand-1 dark:bg-[#3C3D37] dark:text-white text-base text-text-primary py-4 text-center sticky top-0 z-[2]">
-        Property Request Details
-        <ModalTrigger
-          close
-          className="absolute top-[50%] translate-y-[-50%] right-6"
-        >
-          <XIcon size="30" />
-        </ModalTrigger>
-      </div>
-      <div className="bg-white dark:bg-darkText-primary p-6 pb-[45px] text-base">
+    <ModalPreset title="Property Request Details">
+      <div className="pb-[45px] text-base">
         <div className="space-y-2">
           <LabelValuePair label="ID" value={requestId} />
           <LabelValuePair label="Property Name" value={propertyName} />
@@ -108,7 +99,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
           </div>
         </form>
       </div>
-    </div>
+    </ModalPreset>
   );
 };
 

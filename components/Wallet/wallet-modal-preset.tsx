@@ -37,7 +37,7 @@ const WalletModalPreset: React.FC<WalletModalPresetProps> = ({
             <XIcon size="30" />
           </ModalTrigger>
         </div>
-        <p className="text-text-secondary dark:text-white text-base font-medium text-center">
+        <p className="text-text-secondary dark:text-white text-base font-medium text-center capitalize">
           {title}
         </p>
       </div>

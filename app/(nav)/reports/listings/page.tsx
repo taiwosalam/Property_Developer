@@ -2,29 +2,13 @@
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
-import type { Field } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { reportsListingsFilterOptionsWithDropdown } from "./data";
+import {
+  reportsListingsFilterOptionsWithDropdown,
+  listingsReportTableFields,
+} from "./data";
 
 const ListingsReport = () => {
-  const fields: Field[] = [
-    { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "Unit ID", accessor: "unit_id" },
-    {
-      id: "2",
-      label: "Property Name",
-      accessor: "property_name",
-    },
-    { id: "3", label: "Unit Name", accessor: "unit_name" },
-    {
-      id: "5",
-      label: "Unit Description",
-      accessor: "unit_description",
-    },
-    { id: "6", label: "Status", accessor: "status" },
-    { id: "7", label: "Rent Price", accessor: "rent_price" },
-  ];
-
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
       unit_id: (index + 1).toString(),
@@ -73,7 +57,7 @@ const ListingsReport = () => {
         exportHref="/reports/listings/export"
       />
       <CustomTable
-        fields={fields}
+        fields={listingsReportTableFields}
         data={tableData}
         tableHeadClassName="h-[45px]"
       />

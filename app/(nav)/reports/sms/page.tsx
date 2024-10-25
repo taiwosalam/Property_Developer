@@ -3,7 +3,7 @@ import { useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
-import type { Field, DataItem } from "@/components/Table/types";
+import type { DataItem } from "@/components/Table/types";
 import SMSModal, { type SMSRecord } from "@/components/reports/sms-modal";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import FilterBar from "@/components/FIlterBar/FilterBar";

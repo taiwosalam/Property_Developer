@@ -5,7 +5,7 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import EmailModal, { type EmailRecord } from "@/components/reports/email-modal";
-import type { Field, DataItem } from "@/components/Table/types";
+import type { DataItem } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
   reportsEmailFilterOptionsWithDropdown,

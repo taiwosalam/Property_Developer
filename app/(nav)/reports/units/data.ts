@@ -1,3 +1,5 @@
+import type { Field } from "@/components/Table/types";
+
 export const reportsUnitsFilterOptionsWithDropdown = [
   {
     label: "Account Officer",
@@ -23,4 +25,22 @@ export const reportsUnitsFilterOptionsWithDropdown = [
       { label: "Property 3", value: "Property3" },
     ],
   },
+];
+
+export const unitsReportTableFields: Field[] = [
+  { id: "0", label: "S/N", accessor: "S/N" },
+  { id: "1", label: "Unit ID", accessor: "unit_id" },
+  {
+    id: "2",
+    label: "Property Name",
+    accessor: "property_name",
+  },
+  { id: "3", label: "Unit Name", accessor: "unit_name" },
+  {
+    id: "5",
+    label: "Unit Description",
+    accessor: "unit_description",
+  },
+  { id: "6", label: "status", accessor: "status" },
+  { id: "7", label: "Annual Rent", accessor: "annual_rent" },
 ];
