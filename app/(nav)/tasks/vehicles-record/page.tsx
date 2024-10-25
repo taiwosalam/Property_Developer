@@ -68,7 +68,7 @@ const VehiclesRecordPage = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <CreateRecordModal/>
+            <CreateRecordModal />
           </ModalContent>
         </Modal>
       </div>
@@ -91,22 +91,14 @@ const VehiclesRecordPage = () => {
       <CustomTable
         fields={fields}
         data={VehicleRecordData}
-        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
-        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
-        tableHeadClassName="bg-brand-5 h-[76px]"
+        tableHeadClassName="h-[76px]"
         tableHeadCellSx={{
           fontSize: 16,
-          color: "#050901",
           fontWeight: 500,
-          border: "none",
-          textAlign: "left",
         }}
         tableBodyCellSx={{
           fontWeight: 500,
           fontSize: 15,
-          color: isDarkMode ? "#EFF6FF" : "#050901",
-          border: "none",
-          textAlign: "left",
           padding: "18px 16px",
         }}
         onActionClick={handleActionClick}

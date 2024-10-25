@@ -1,13 +1,14 @@
 import clsx from "clsx";
 import { Search } from "lucide-react";
 import { SearchInputProps } from "./types";
+import { useThemeStore } from "@/store/themeStore";
 
 const SearchInput: React.FC<SearchInputProps> = ({
   textInputClassName,
   className,
   placeholder = "Search",
-  searchIconColor = "currentColor",
 }) => {
+  const primaryColor = useThemeStore((state) => state.primaryColor);
   return (
     <div
       className={clsx(
@@ -17,7 +18,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
     >
       {/* Search icon positioned absolutely */}
       <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-        <Search color={searchIconColor} strokeWidth={"1"} size={20} />
+        <Search color={primaryColor} strokeWidth={"1"} size={20} />
       </div>
       <input
         type="text"
