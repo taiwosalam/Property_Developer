@@ -139,7 +139,6 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
   );
 };
 
-
 export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
   title,
   desc,
@@ -147,9 +146,7 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
 }) => (
   <div className="flex justify-between">
     <div className="first flex gap-1 items-start">
-      <span className="dark:text-white flex-shrink-0 text-black">
-        {icon}
-      </span>
+      <span className="dark:text-white flex-shrink-0 text-black">{icon}</span>
       <div className="flex flex-col">
         <h4 className="text-text-quaternary dark:text-white text-base">
           {title}
@@ -291,14 +288,14 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
   value,
   onSelect,
   isSelected,
-  profile
+  profile,
 }) => {
   return (
     <div
       className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer relative justify-center`}
       onClick={() => onSelect(value)}
     >
-      {isSelected === false && !profile && ( 
+      {isSelected === false && !profile && (
         <div className="absolute inset-0 bg-white bg-opacity-60 z-10" />
       )}
       <div className="relative">
@@ -307,11 +304,16 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
           alt="Theme"
           width={1000}
           height={1000}
-          className={`w-full h-full object-contain max-h-[218px] ${profile ? "max-h-[218px]" : ""} ${isSelected ? "border-4 border-brand-9" : ""}`}
+          className={`w-full h-full object-contain min-h-[218px] ${
+            isSelected ? "border-4 border-brand-9 rounded-lg" : ""
+          }`}
         />
       </div>
-      {(isSelected && profile) && (
-        <Link href="#" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand-9 text-white py-1 px-3 rounded flex items-center justify-center z-20 text-xs sm:text-md">
+      {isSelected && profile && (
+        <Link
+          href="#"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand-9 text-white py-1 px-3 rounded flex items-center justify-center z-20 text-xs sm:text-md"
+        >
           Preview Website
         </Link>
       )}
@@ -400,22 +402,33 @@ export const WebsiteColorSchemes: React.FC<{
   );
 };
 
-
-export const ProfileUpload: React.FC<ProfileUploadProps> = ({ onChange, preview, onClick }) => {
+export const ProfileUpload: React.FC<ProfileUploadProps> = ({
+  onChange,
+  preview,
+  onClick,
+}) => {
   return (
-    <div className="relative max-w-[100px] rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer" onClick={() => document.getElementById('file-input')?.click()}>
-      <Picture size={100} fit="contain" src={preview} alt="official signature" />
+    <div
+      className="relative max-w-[100px] rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer"
+      onClick={() => document.getElementById("file-input")?.click()}
+    >
+      <Picture
+        size={100}
+        fit="contain"
+        src={preview}
+        alt="official signature"
+      />
       <div
         style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
         className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
       >
-        <Picture src={ImageBlue} alt="image icon" size={20}/>
+        <Picture src={ImageBlue} alt="image icon" size={20} />
         <p className="text-brand-9 text-xs font-normal" onClick={onClick}>
           Change Image
         </p>
       </div>
       <input
-        id="file-input" 
+        id="file-input"
         type="file"
         accept="image/*"
         onChange={onChange}
@@ -424,4 +437,3 @@ export const ProfileUpload: React.FC<ProfileUploadProps> = ({ onChange, preview,
     </div>
   );
 };
-

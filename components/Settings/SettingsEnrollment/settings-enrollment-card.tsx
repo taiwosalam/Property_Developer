@@ -48,13 +48,12 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   decrementQuantity,
   isFree = false,
   onBillingTypeChange,
-  isLifeTimePlan
+  isLifeTimePlan,
 }) => {
-
   const handleBillingTypeChange = (type: "monthly" | "yearly") => {
     if (!isFree) {
       if (type === "yearly") {
-        decrementQuantity(); 
+        decrementQuantity();
       }
       onBillingTypeChange(type);
     }
@@ -80,13 +79,12 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
       return "border-brand-9 text-brand-9";
     }
   };
-  
 
   const themeColor = getThemeColor();
 
   return (
     <div
-      className={`max-w-[344px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
+      className={`min-w-[344px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
     >
       <PlanHeader
         planTitle={planTitle}
@@ -94,16 +92,16 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         planFor={planFor}
         isFree={isFree}
         themeColor={themeColor}
-        />
+      />
       <div
         className={`priceWrapper w-full flex items-center justify-center flex-col px-4 mt-5 ${
           isFree ? "bg-white bg-opacity-40 z-50 dark:bg-darkText-primary" : ""
         }`}
-        >
-        <PriceSection 
-          price={price} 
-          discount={discount} 
-          isFree={isFree} 
+      >
+        <PriceSection
+          price={price}
+          discount={discount}
+          isFree={isFree}
           duration={duration}
         />
         <BillingTypeSelector

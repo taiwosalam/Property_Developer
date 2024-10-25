@@ -25,12 +25,14 @@ const SettingsSection: React.FC<SettingsSectionProps> = ({
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="flex justify-between py-[18px] px-6 bg-neutral-2 dark:bg-black rounded-t-2xl">
-        <div className="content flex items-center gap-2">
+        <div className="content flex flex-col sm:flex-row items-start sm:items-center gap-2">
           <p className="text-primary-navy dark:text-white text-base font-medium capitalize">
             {title}
           </p>
           {subTitle && (
-            <p className="text-text-tertiary dark:text-white text-xs font-normal">{subTitle}</p>
+            <p className="text-text-tertiary dark:text-white text-xs font-normal">
+              {subTitle}
+            </p>
           )}
         </div>
         <button onClick={toggleContent}>

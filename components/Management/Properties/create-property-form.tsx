@@ -38,7 +38,7 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 
-const   CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
+const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   editMode,
   handleSubmit,
   formType,
@@ -449,7 +449,9 @@ const   CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             resetKey={resetKey}
             requiredNoStar
             hiddenInputClassName="property-form-input"
-            inputSpaceClassName={`${isDarkMode ? "bg-[#3C3D37]" : "bg-white"}`}
+            inputSpaceClassName={`${
+              isDarkMode ? "bg-transparent" : "bg-white"
+            }`}
           />
         </div>
         {/* Property Settings */}
