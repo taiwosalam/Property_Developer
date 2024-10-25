@@ -121,6 +121,16 @@ export interface SettingsOthersProps {
   title: string;
   desc: string;
   icon: string | React.ReactNode;
+  checked?: boolean;
+  groupName?: string;
+  selectedGroup?: string | null;
+  setSelectedGroup?: (value: string | null) => void;
+}
+
+export interface GroupRadioProps {
+  checked: boolean;
+  groupName: string;
+  onClick: () => void;
 }
 
 export interface SettingsDirectorTypes {
@@ -172,6 +182,7 @@ interface ThemeCardProps {
   profile?: boolean;
   showMessage?: boolean;
   setShowMessage?: (show: boolean) => void;
+  showProfessionalMessage?: boolean;
 }
 
 

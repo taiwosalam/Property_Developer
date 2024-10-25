@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
 import Button from "../Form/Button/button";
 import Input from "../Form/Input/input";
@@ -7,8 +7,11 @@ import Input from "../Form/Input/input";
 import router, { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 import Select from "../Form/Select/select";
-import SettingsLegalDrawer, { Checkbox } from "../Settings/Modals/settings-legal-drawer";
+import SettingsLegalDrawer, {
+  Checkbox,
+} from "../Settings/Modals/settings-legal-drawer";
 import { Drawer } from "@mui/material";
+import { Modal, useModal } from "../Modal/modal";
 
 const checkboxOptions = [
   {
@@ -50,8 +53,14 @@ const checkboxOptions = [
 ];
 
 const CreateTenancyAggrementModal = () => {
-  const pathname = usePathname();
+  const { isOpen, setIsOpen } = useModal();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+
+  useEffect(() => {
+    console.log("Modal open state: ", isOpen);
+  }, [isOpen]);
+
   const handleCheckboxChange = (value: string) => {
     setSelectedOption((prev) => {
       const isSelected = prev === value;
@@ -59,119 +68,112 @@ const CreateTenancyAggrementModal = () => {
       if (value === "tenancy_agreement") {
         setIsDrawerOpen(true);
       } else {
-        setIsDrawerOpen(false); // Optionally close the drawer for other selections
+        setIsDrawerOpen(false);
+        setIsOpen(true);
       }
       return isSelected ? null : value;
     });
   };
 
-  const handleSelectChange = (value: string) => {
-    if (value) {
-      if(selectedOption === "tenancy_agreement"){
-        setIsDrawerOpen(!true);
-      }
-      setSelectedOption(value);
-    } else {
-      setSelectedOption("");
-    }
-  };
-
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); 
-
   return (
     <>
-      {selectedOption !== "tenancy_agreement" && (
-        <LandlordTenantModalPreset
-          back={{ handleBack: () => setSelectedOption(null) }}
-          style={{ maxWidth: "714px" }}
-          heading={
-            selectedOption
-              ? checkboxOptions.find((option) => option.value === selectedOption) 
-                  ?.title || "Default Title"
-              : "Tenancy Legal Procedure"
-          }
-        >
-          {selectedOption ? (
-            <>
-              {selectedOption !== "tenancy_agreement" && (
-                <div>
-                  <Select
-                    options={["property 1", "property 2", "property 3"]}
-                    id="legal_process"
-                    onChange={handleSelectChange}
-                    value={""}
-                    label="Select property"
-                  />
-                  <Select
-                    options={["Unit 1", "Unit 2", "Unit 3"]}
-                    id="legal_process"
-                    onChange={handleSelectChange}
-                    value={""}
-                    label="Select property Unit"
-                  />
+      <Modal state={{ isOpen, setIsOpen }}>
+        {selectedOption !== "tenancy_agreement" && (
+          <LandlordTenantModalPreset
+            {...(selectedOption
+              ? { back: { handleBack: () => setSelectedOption(null) } }
+              : {})}
+            style={{ maxWidth: "714px" }}
+            heading={
+              selectedOption
+                ? checkboxOptions.find(
+                    (option) => option.value === selectedOption
+                  )?.title || "Default Title"
+                : "Tenancy Legal Procedure"
+            }
+          >
+            {selectedOption ? (
+              <>
+                {selectedOption !== "tenancy_agreement" && (
+                  <div className="flex flex-wrap gap-4 items-center justify-center">
+                    <Select
+                      options={["property 1", "property 2", "property 3"]}
+                      id="legal_process"
+                      // onChange={handleSelectChange}
+                      value={""}
+                      label="Select property"
+                      className="w-full sm:w-1/2"
+                    />
+                    <Select
+                      options={["Unit 1", "Unit 2", "Unit 3"]}
+                      id="legal_process"
+                      // onChange={handleSelectChange}
+                      value={""}
+                      label="Select property Unit"
+                      className="w-full sm:w-1/2"
+                    />
+                  </div>
+                )}
+
+                <div className="flex items-end justify-end mt-4">
+                  <Button
+                    type="button"
+                    className="bg-brand-9 rounded-md text-white"
+                  >
+                    Proceed
+                  </Button>
                 </div>
-              )}
-
-              <div className="flex items-end justify-end mt-4">
-                <Button
-                  type="button"
-                  className="bg-brand-9 rounded-md text-white"
-                >
-                  Proceed
-                </Button>
+              </>
+            ) : (
+              <div className="flex flex-col gap-1">
+                <h2 className="text-text-primary text-[20px] font-bold dark:text-white text-base not-italic leading-[32px]">
+                  Engage legal counsel.
+                </h2>
+                <p className="text-text-disabled dark:text-darkText-1 text-sm font-medium">
+                  The legal steps and processes involved in renting or leasing
+                  property, usually regulated by landlord-tenant laws and
+                  regulations. Please choose any options below that are most
+                  applicable to the property unit.
+                </p>
               </div>
-            </>
-          ) : (
-            <div className="flex flex-col gap-1">
-              <h2 className="text-text-primary text-[20px] font-bold dark:text-white text-base not-italic leading-[32px]">
-                Engage legal counsel.
-              </h2>
-              <p className="text-text-disabled dark:text-darkText-1 text-sm font-medium">
-                The legal steps and processes involved in renting or leasing
-                property, usually regulated by landlord-tenant laws and regulations.
-                Please choose any options below that are most applicable to the
-                property unit.
-              </p>
-            </div>
-          )}
+            )}
 
-          {/* Render checkboxes only if no option is selected */}
-          {!selectedOption && (
-            <div className="flex flex-col gap-4 mt-4">
-              {checkboxOptions.map((option) => (
-                <Checkbox
-                  key={option.value}
-                  title={option.title}
-                  checked={selectedOption === option.value}
-                  groupName="legal_process"
-                  state={{
-                    isChecked: selectedOption === option.value,
-                    setIsChecked: () => handleCheckboxChange(option.value),
-                  }}
-                  noCheckbox={true}
-                >
-                  <p className="text-sm text-darkText-secondary text-text-disabled tracking-[0px]">
-                    {option.description}
-                  </p>
-                </Checkbox>
-              ))}
-              <div className="flex items-end justify-end mt-4">
-                <Button type="button" className="bg-brand-9 rounded-md text-white">
-                  Proceed
-                </Button>
+            {/* Render checkboxes only if no option is selected */}
+            {!selectedOption && (
+              <div className="flex flex-col gap-4 mt-4">
+                {checkboxOptions.map((option) => (
+                  <Checkbox
+                    key={option.value}
+                    title={option.title}
+                    checked={selectedOption === option.value}
+                    groupName="legal_process"
+                    state={{
+                      isChecked: selectedOption === option.value,
+                      setIsChecked: () => {
+                        console.log(`option is ${option.value}`);
+                        handleCheckboxChange(option.value);
+                      },
+                    }}
+                    noCheckbox={true}
+                  >
+                    <p className="text-sm text-darkText-secondary text-text-disabled tracking-[0px]">
+                      {option.description}
+                    </p>
+                  </Checkbox>
+                ))}
               </div>
-            </div>
-          )}
-        </LandlordTenantModalPreset>
-      )}
-      <Drawer 
-        anchor="bottom" 
-        open={isDrawerOpen} 
-        onClose={() => setIsDrawerOpen(false)} 
-        sx={{zIndex:2}}
-      >
-         <SettingsLegalDrawer onClose={() => setIsDrawerOpen(false)} />
-      </Drawer> 
+            )}
+          </LandlordTenantModalPreset>
+        )}
+        <Drawer
+          anchor="bottom"
+          open={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+          sx={{ zIndex: 2 }}
+        >
+          <SettingsLegalDrawer onClose={() => setIsDrawerOpen(false)} />
+        </Drawer>
+      </Modal>
     </>
   );
 };

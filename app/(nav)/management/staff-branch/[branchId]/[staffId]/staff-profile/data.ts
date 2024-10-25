@@ -83,4 +83,25 @@ export const placeholder_portfolio_data: StaffProfilePortfolioProps[] = [
       },
     ],
   },
+  {
+    title: "Occupants & Tenants",
+    items: [
+      {
+        image: Avatar1,
+        user: {
+          name: "Abimbola Azeez Wasiu",
+          email: "test@test.com",
+          phone_number: "+2348123456789",
+        },
+      },
+      {
+        image: Avatar2,
+        user: {
+          name: "Oloruntoba Morakinyo",
+          email: "test@testt.com",
+          phone_number: "+2348123456789",
+        },
+      },
+    ],
+  },
 ];

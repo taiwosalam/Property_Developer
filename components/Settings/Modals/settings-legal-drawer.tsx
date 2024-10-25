@@ -269,7 +269,6 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   // Effect to synchronize state with group
   useEffect(() => {
     if (groupName && isChecked) {
-      // Logic to ensure only one checkbox in the group is checked
     }
   }, [isChecked, groupName]);
 

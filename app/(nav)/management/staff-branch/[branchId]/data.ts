@@ -4,6 +4,8 @@ export interface PageState {
   gridView: boolean;
   total_pages: number;
   current_page: number;
+  selectedState: string;
+  localGovernments: string[];
 }
 
 export const branchIdChartConfig = {

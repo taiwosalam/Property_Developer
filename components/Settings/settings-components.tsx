@@ -13,6 +13,7 @@ import type {
   SettingsEnrollmentCardProps,
   SettingsTenantOccupantTierProps,
   ProfileUploadProps,
+  GroupRadioProps,
 } from "./types";
 
 import type { ButtonProps } from "../Form/Button/types";
@@ -36,6 +37,8 @@ import { SettingUserIcon } from "@/public/icons/icons";
 import Picture from "../Picture/picture";
 import ImageBlue from "@/public/icons/image-blue.svg";
 import SettingsLegalDrawer from "./Modals/settings-legal-drawer";
+import { useEffect, useState } from 'react';
+
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
     <p
@@ -139,36 +142,59 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
   );
 };
 
-
 export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
   title,
   desc,
   icon,
-}) => (
-  <div className="flex justify-between">
-    <div className="first flex gap-1 items-start">
-      <span className="dark:text-white flex-shrink-0 text-black">
-        {icon}
-      </span>
-      <div className="flex flex-col">
-        <h4 className="text-text-quaternary dark:text-white text-base">
-          {title}
-        </h4>
-        <p className="text-text-disabled text-sm font-normal max-w-[900px]">
-          {desc}
-        </p>
-      </div>
-    </div>
+  checked,
+  groupName,
+  selectedGroup,
+  setSelectedGroup,
+}) => {
+  const isChecked = selectedGroup === groupName;
 
-    <div className="second flex justify-end items-end h-full">
-      <div className="ml-auto">
-        <DocumentCheckbox darkText checked={true}>
-          {""}
-        </DocumentCheckbox>
+  return (
+    <div className="flex justify-between">
+      <div className="first flex gap-1 items-start">
+        <span className="dark:text-white flex-shrink-0 text-black">{icon}</span>
+        <div className="flex flex-col">
+          <h4 className="text-text-quaternary dark:text-white text-base">
+            {title}
+          </h4>
+          <p className="text-text-disabled text-sm font-normal max-w-[900px]">
+            {desc}
+          </p>
+        </div>
+      </div>
+
+      <div className="second flex justify-end items-end h-full">
+        <div className="ml-auto">
+            {groupName && <GroupRadio 
+             checked={isChecked}
+              groupName={groupName}
+              onClick={() => setSelectedGroup && setSelectedGroup(groupName)}
+          />}
+         {!groupName && <DocumentCheckbox darkText checked={isChecked}> {" "} </DocumentCheckbox>}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
+
+export const GroupRadio: React.FC<GroupRadioProps> = ({
+  checked,
+  onClick,
+}) => {
+  return (
+    <button className="flex gap-3 text-start rounded-full" onClick={onClick}>
+      <div className={`rounded-full p-[2px] flex items-center justify-center ${checked ? "border border-blue-600" : ""}`}>
+        <div
+          className={`rounded-full w-5 h-5 border min-w-2 min-h-2 border-darkText-2 ${checked ? "bg-blue-600" : ""}`}
+        ></div>
+      </div>
+    </button>
+  );
+};
 
 export const SettingsColorScheme: React.FC<SettingsColorSchemeProps> = ({
   color,
@@ -291,29 +317,55 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
   value,
   onSelect,
   isSelected,
-  profile
+  profile,
 }) => {
+  const [showProfessionalMessage, setShowProfessionalMessage] = useState(false);
+
+  const handleClick = () => {
+    console.log("value = ", value);
+    if (value === 'theme2' || value === 'theme3') {
+      setShowProfessionalMessage(true);
+      setTimeout(() => setShowProfessionalMessage(false), 3000); 
+    } else {
+      onSelect(value);
+      isSelected = false;
+      console.log("isSelected = ", isSelected);
+    }
+  };
+
   return (
     <div
       className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer relative justify-center`}
-      onClick={() => onSelect(value)}
+      onClick={handleClick}
     >
-      {isSelected === false && !profile && ( 
+      {isSelected === false && !profile && (
         <div className="absolute inset-0 bg-white bg-opacity-60 z-10" />
       )}
-      <div className="relative">
+      <div className="relative max-h-[218px]">
         <Image
           src={img}
           alt="Theme"
           width={1000}
           height={1000}
-          className={`w-full h-full object-contain max-h-[218px] ${profile ? "max-h-[218px]" : ""} ${isSelected ? "border-4 border-brand-9" : ""}`}
+          className={`w-full h-full object-contain ${
+            isSelected ? "border-4 border-brand-9 rounded-lg" : ""
+          }`}
         />
       </div>
-      {(isSelected && profile) && (
-        <Link href="#" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand-9 text-white py-1 px-3 rounded flex items-center justify-center z-20 text-xs sm:text-md">
+      {isSelected && profile && (
+        <Link
+          href="#"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand-9 text-white py-1 px-3 rounded flex items-center justify-center z-20 text-xs sm:text-md"
+        >
           Preview Website
         </Link>
+      )}
+      {showProfessionalMessage && (
+        <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-30">
+          <p className="text-white text-center px-4 py-2 rounded">
+            This feature is for professional plan only
+          </p>
+        </div>
       )}
     </div>
   );
@@ -400,22 +452,33 @@ export const WebsiteColorSchemes: React.FC<{
   );
 };
 
-
-export const ProfileUpload: React.FC<ProfileUploadProps> = ({ onChange, preview, onClick }) => {
+export const ProfileUpload: React.FC<ProfileUploadProps> = ({
+  onChange,
+  preview,
+  onClick,
+}) => {
   return (
-    <div className="relative max-w-[100px] rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer" onClick={() => document.getElementById('file-input')?.click()}>
-      <Picture size={100} fit="contain" src={preview} alt="official signature" />
+    <div
+      className="relative max-w-[100px] rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer"
+      onClick={() => document.getElementById("file-input")?.click()}
+    >
+      <Picture
+        size={100}
+        fit="contain"
+        src={preview}
+        alt="official signature"
+      />
       <div
         style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
         className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
       >
-        <Picture src={ImageBlue} alt="image icon" size={20}/>
+        <Picture src={ImageBlue} alt="image icon" size={20} />
         <p className="text-brand-9 text-xs font-normal" onClick={onClick}>
           Change Image
         </p>
       </div>
       <input
-        id="file-input" 
+        id="file-input"
         type="file"
         accept="image/*"
         onChange={onChange}
