@@ -150,17 +150,17 @@ const AccountingReceiptsPage = () => {
           </div>
           <AutoResizingGrid gap={6} minWidth={330}>
             <InvoiceStatCards
-              title="Total Paid Receipts"
-              balance={12345432}
-              downValue={53}
-            />
-            <InvoiceStatCards
               title="Total Receipts Created"
               balance={12345432}
               upvalue={53}
             />
             <InvoiceStatCards
-              title="Total Pending Receipts"
+              title="Total Paid Receipts"
+              balance={12345432}
+              downValue={53}
+            />
+            <InvoiceStatCards
+              title="Total Outstanding Receipts"
               balance={12345432}
               downValue={53}
             />

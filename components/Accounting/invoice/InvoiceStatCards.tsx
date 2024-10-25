@@ -28,30 +28,34 @@ const InvoiceStatCards: React.FC<InvoiceStatCardsProps> = ({
         </div>
         <div
           className={`w-[60px] h-[60px] rounded-[23px] flex items-center justify-center ${
-            title === "Total Receipts Created" ||
+            title === "Total Paid Receipts" ||
             title === "Total Credit" ||
             title === "Total Paid Vat"
               ? "bg-[#E6FAEE]"
               : title === "Total Paid Receipts" ||
+                title === "Total Receipts Created" ||
                 title === "Total Vat Created" ||
                 title === "Total Amount"
               ? "bg-[#93C5FD]"
               : "bg-status-error-1"
           } `}
         >
-          {(title === "Total Receipts Created" ||
+          {(title === "Total Paid Receipts" ||
             title === "Total Credit" ||
             title === "Total Paid Vat") && (
             <Picture src={"/icons/receive.svg"} alt="invoice" size={30} />
           )}
-          {(title === "Total Paid Receipts" ||
+          {(title === "Total Receipts Created" ||
             title === "Total Vat Created" ||
             title === "Total Amount") && (
             <Picture src={"/icons/blue-wallet.svg"} alt="invoice" size={30} />
           )}
-          {(title === "Total Pending Receipts" || title === "Total Debit") && (
+          {title === "Total Pending Receipts" ? (
+            <Picture src={"/icons/orange-card.svg"} alt="invoice" size={30} />
+          ) : title === "Total Debit" ||
+            title === "Total Outstanding Receipts" ? (
             <Picture src={"/icons/send.svg"} alt="invoice" size={30} />
-          )}
+          ) : null}
         </div>
       </div>
       {upvalue && (
