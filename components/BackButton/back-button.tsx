@@ -8,7 +8,11 @@ import type { BackButtonProps } from "./types";
 // Images
 import { ChevronLeft } from "@/public/icons/icons";
 
-const BackButton: React.FC<BackButtonProps> = ({ children, className }) => {
+const BackButton: React.FC<BackButtonProps> = ({
+  children,
+  className,
+  bold,
+}) => {
   const router = useRouter();
 
   const handleBack = () => {
@@ -30,7 +34,14 @@ const BackButton: React.FC<BackButtonProps> = ({ children, className }) => {
       >
         <ChevronLeft />
       </button>
-      <h1 className="font-medium text-lg lg:text-xl">{children}</h1>
+      <h1
+        className={clsx("text-lg lg:text-xl", {
+          "font-bold": bold,
+          "font-medium": !bold,
+        })}
+      >
+        {children}
+      </h1>
     </div>
   );
 };
