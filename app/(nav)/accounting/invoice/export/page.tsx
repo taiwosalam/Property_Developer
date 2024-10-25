@@ -45,8 +45,10 @@ const ExportInvoice = () => {
         </div>
       </div>
       <div className="custom-flex-col gap-6">
-        <h1 className="text-black text-2xl font-medium text-center">Summary</h1>
-        <AutoResizingGrid gap={6} minWidth={330}>
+        <h1 className="text-black text-2xl font-medium text-center">
+          Invoice Summary
+        </h1>
+        <AutoResizingGrid minWidth={330}>
           <InvoiceStatCards
             title="Total Receipts Created"
             balance={12345432}
@@ -66,49 +68,47 @@ const ExportInvoice = () => {
         <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
           <table className="dash-table">
             <colgroup>
-              <col className="w-[72px]" />
+              <col className="min-w-[72px]" />
+              <col span={5} />
+              <col className="min-w-[72px]" />
             </colgroup>
             <thead>
               <tr>
                 <th></th>
+                <th>client name</th>
+                <th>invoive ID</th>
+                <th>payment reason</th>
+                <th>total amount</th>
                 <th>date</th>
-                <th>landlord / landlady</th>
-                <th>payment ID</th>
-                <th>amount</th>
-                <th>description</th>
-                <th>mode</th>
               </tr>
             </thead>
             <tbody>
-              {Array(5)
+              {Array(10)
                 .fill(null)
                 .map((_, index) => (
                   <tr key={index}>
                     <td>
                       <Picture
-                        src={Avatar}
+                        src={"/empty/avatar-1.svg"}
                         alt="profile picture"
-                        size={40}
                         rounded
+                        size={40}
                       />
-                    </td>
-                    <td>
-                      <p>02/03/2024</p>
                     </td>
                     <td>
                       <p>Amori Ademakinwa</p>
                     </td>
                     <td>
-                      <p>1234567878</p>
+                      <p>1234563456</p>
                     </td>
                     <td>
-                      <p>₦115,000.00</p>
+                      <p>Rent cost: Start date: Sept 22, 2023 - Expiry date:</p>
                     </td>
                     <td>
-                      <p>Property Rent for moniya house</p>
+                      <p>₦35,000.00</p>
                     </td>
                     <td>
-                      <p>Bank Transfer</p>
+                      <p>02/03/2024</p>
                     </td>
                   </tr>
                 ))}
