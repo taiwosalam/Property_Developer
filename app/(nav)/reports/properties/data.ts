@@ -1,3 +1,4 @@
+import type { Field } from "@/components/Table/types";
 export const reportsPropertiessFilterOptionsWithDropdown = [
   {
     label: "Account Officer",
@@ -24,3 +25,21 @@ export const reportsPropertiessFilterOptionsWithDropdown = [
     ],
   },
 ];
+  export const propertiesReportTablefields: Field[] = [
+    { id: "0", label: "S/N", accessor: "S/N" },
+    { id: "1", label: "ID", accessor: "id" },
+    {
+      id: "2",
+      label: "Property",
+      accessor: "property",
+    },
+    { id: "3", label: "Branch", accessor: "branch" },
+    {
+      id: "5",
+      label: "Account Officer",
+      accessor: "account_officer",
+      cellStyle: { textTransform: "uppercase" },
+    },
+    { id: "6", label: "landlord / landlady", accessor: "landlord" },
+    { id: "7", label: "Date Created", accessor: "date_created" },
+  ];

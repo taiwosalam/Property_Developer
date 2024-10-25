@@ -1,11 +1,14 @@
 import { ModalTrigger } from "@/components/Modal/modal";
 import { XIcon } from "@/public/icons/icons";
 import type { PropertyRequestModalProps, LabelValuePairProps } from "./types";
+import ModalPreset from "@/components/Wallet/wallet-modal-preset";
 
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
   return (
     <div className="flex justify-between">
-      <p className="text-text-tertiary text-base dark:text-darkText-1">{label}</p>
+      <p className="text-text-tertiary text-base dark:text-darkText-1">
+        {label}
+      </p>
       <p className="text-text-secondary text-sm text-right dark:text-darkText-2">
         {value}
       </p>
@@ -27,19 +30,8 @@ const PropertyRequestModal: React.FC<PropertyRequestModalProps> = ({
   description,
 }) => {
   return (
-    <div className="w-[600px] max-w-[80%] max-h-[85%] rounded-lg overflow-x-auto custom-round-scrollbar font-medium  dark:border dark:border-[#3C3D37]">
-      {/* Header */}
-      <div className="bg-brand-1 dark:bg-[#3C3D37] text-base dark:text-white text-text-primary py-4 text-center sticky top-0 z-[2]">
-        Property Request Details
-        <ModalTrigger
-          close
-          className="absolute top-[50%] translate-y-[-50%] right-6"
-        >
-          <XIcon size="30" />
-        </ModalTrigger>
-      </div>
-      {/* Body */}
-      <div className="bg-white dark:bg-darkText-primary p-6 space-y-2 text-base">
+    <ModalPreset title="Property Request Details">
+      <div className="space-y-2 text-base">
         <LabelValuePair label="Location (State)" value={state} />
         <LabelValuePair label="LGA" value={lga} />
         <LabelValuePair label="Category" value={category} />
@@ -61,7 +53,7 @@ const PropertyRequestModal: React.FC<PropertyRequestModalProps> = ({
           </p>
         </div>
       </div>
-    </div>
+    </ModalPreset>
   );
 };
 
