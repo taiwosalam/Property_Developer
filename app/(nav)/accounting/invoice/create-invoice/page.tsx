@@ -16,7 +16,7 @@ const CreateInvoicePage = () => {
     <section className="space-y-7 pb-20">
       <BackButton>Create New Invoice</BackButton>
       <div
-        className="bg-white rounded-[8px] p-6 flex gap-4 items-center justify-between flex-wrap"
+        className="bg-white dark:bg-darkText-primary rounded-[8px] p-6 flex gap-4 items-center justify-between flex-wrap"
         style={{
           boxShadow:
             "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
@@ -35,8 +35,10 @@ const CreateInvoicePage = () => {
           />
         </div>
         <div className="w-fit text-left">
-          <p className="text-text-secondary text-sm font-medium">Contacts</p>
-          <div className="text-text-secondary text-sm font-normal">
+          <p className="text-text-secondary text-sm font-medium dark:text-white">
+            Contacts
+          </p>
+          <div className="text-text-secondary text-sm font-normal dark:text-darkText-1">
             <div className="flex items-center gap-1">
               <LocationIcon color="#0033C4" />
               <span>States and Local Govt.</span>
@@ -69,8 +71,10 @@ const CreateInvoicePage = () => {
         </div>
       </div>
       <div className="space-y-6">
-        <h1 className="text-[#092C4C] font-bold text-xl">Add Payment</h1>
-        <div className="bg-white rounded-[8px] space-y-4 p-6">
+        <h1 className="text-[#092C4C] font-bold text-xl dark:text-white">
+          Add Payment
+        </h1>
+        <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
           <div className="flex items-center justify-between max-w-[600px] gap-4">
             <Input
               type="text"
@@ -102,10 +106,12 @@ const CreateInvoicePage = () => {
         </div>
       </div>
       <div className="space-y-6">
-        <h1 className="text-[#092C4C] font-bold text-xl">Breakdown</h1>
+        <h1 className="text-[#092C4C] font-bold text-xl dark:text-white">
+          Breakdown
+        </h1>
         <Breakdown />
       </div>
-      <div className="space-y-2 space-x-2 text-[#3F4247] text-sm">
+      <div className="space-y-2 space-x-2 text-[#3F4247] text-sm dark:text-darkText-1">
         {["Notification", "SMS Alert", "Email Alert"].map((option) => (
           <label key={option} className="inline-flex items-center">
             <DocumentCheckbox>
@@ -115,7 +121,7 @@ const CreateInvoicePage = () => {
         ))}
         <p>Fee will reflect upon making payment for the generated invoice</p>
       </div>
-      <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
+      <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
         <button
           type="reset"
           className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2 py-2 px-8"

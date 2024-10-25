@@ -312,7 +312,14 @@ const Subscriptions = () => {
         anchor="bottom"
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        sx={{ zIndex: 1 }}
+        sx={{
+          "& .MuiPaper-root": {
+            borderTopLeftRadius: "32px",
+            borderTopRightRadius: "32px",
+            overflow: "hidden",
+            height: "80vh",
+          },
+        }}
       >
         <SettingsLegalDrawer onClose={() => setIsDrawerOpen(false)} />
       </Drawer>
