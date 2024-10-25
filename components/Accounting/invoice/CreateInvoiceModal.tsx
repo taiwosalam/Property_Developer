@@ -5,7 +5,7 @@ import { DeleteIconX } from "@/public/icons/icons";
 
 const CreateInvoiceModal = () => {
   return (
-    <div className="w-[700px] max-w-[80%] max-h-[90vh] min-h-[70vh] rounded-[20px] bg-white overflow-y-auto custom-round-scrollbar">
+    <div className="w-[700px] max-w-[80%] max-h-[50vh] h-full rounded-[20px] bg-white overflow-y-auto custom-round-scrollbar">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-solid border-[#B8B8B8] sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[30px] bg-white">
         <div className="flex items-center gap-2">
@@ -21,7 +21,7 @@ const CreateInvoiceModal = () => {
       <div className="flex items-center justify-center my-auto">
         <div className="mt-28 space-y-5">
           <Input
-            label="Input Property Id"
+            label="Choose Property"
             type="text"
             id="add_property_id"
             className="min-w-[300px]"

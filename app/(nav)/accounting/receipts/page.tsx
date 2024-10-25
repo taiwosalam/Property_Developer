@@ -119,7 +119,7 @@ const AccountingReceiptsPage = () => {
                 </ModalTrigger>
                 <ModalContent>
                   <FilterModal
-                  date
+                    date
                     filterOptions={[]}
                     filterOptionsWithDropdown={
                       accountingReceiptOptionsWithDropdown
@@ -177,19 +177,24 @@ const AccountingReceiptsPage = () => {
           <thead>
             <tr>
               <th></th>
-              <th>client name</th>
-              <th>invoive ID</th>
-              <th>payment reason</th>
-              <th>total amount</th>
+              <th>name</th>
+              <th>payment ID</th>
+              <th>details</th>
+              <th>amount</th>
               <th>date</th>
-              <th></th>
             </tr>
           </thead>
           <tbody>
             {Array(10)
               .fill(null)
               .map((_, index) => (
-                <tr key={index}>
+                <tr
+                  key={index}
+                  onClick={() =>
+                    (window.location.href = "/accounting/receipts/1/preview")
+                  }
+                  className="cursor-pointer"
+                >
                   <td>
                     <Picture
                       src={"/empty/avatar-1.svg"}
@@ -212,18 +217,6 @@ const AccountingReceiptsPage = () => {
                   </td>
                   <td>
                     <p>02/03/2024</p>
-                  </td>
-                  <td
-                    className="cursor-pointer flex items-center justify-center"
-                    onClick={() =>
-                      (window.location.href = "/accounting/receipts/1/preview")
-                    }
-                  >
-                    <Picture
-                      src={ThreeDotsVertical}
-                      alt="three dots vertical"
-                      size={24}
-                    />
                   </td>
                 </tr>
               ))}

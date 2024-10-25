@@ -44,7 +44,7 @@ const ReceiptPreviewPage = () => {
             }}
           />
         </div>
-        <AccountingTitleSection title="Breakdown">
+        <AccountingTitleSection title="Payment details">
           <div className="p-6 bg-white dark:bg-darkText-primary rounded-lg space-y-5">
             <div className="flex flex-col md:flex-row">
               <KeyValueList
@@ -68,15 +68,7 @@ const ReceiptPreviewPage = () => {
           </div>
         </AccountingTitleSection>
       </div>
-      <FixedFooter className="flex gap-6 items-center justify-between">
-        <Button
-          onClick={back}
-          variant="sky_blue"
-          size="base_medium"
-          className="py-2 px-8"
-        >
-          back
-        </Button>
+      <FixedFooter className="flex gap-6 items-center justify-end">
         <div className="flex gap-6">
           <Button variant="sky_blue" size="base_medium" className="py-2 px-8">
             download
