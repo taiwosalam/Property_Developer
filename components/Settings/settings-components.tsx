@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 
@@ -37,7 +39,7 @@ import { SettingUserIcon } from "@/public/icons/icons";
 import Picture from "../Picture/picture";
 import ImageBlue from "@/public/icons/image-blue.svg";
 import SettingsLegalDrawer from "./Modals/settings-legal-drawer";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
@@ -169,27 +171,36 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
 
       <div className="second flex justify-end items-end h-full">
         <div className="ml-auto">
-            {groupName && <GroupRadio 
-             checked={isChecked}
+          {groupName && (
+            <GroupRadio
+              checked={isChecked}
               groupName={groupName}
               onClick={() => setSelectedGroup && setSelectedGroup(groupName)}
-          />}
-         {!groupName && <DocumentCheckbox darkText checked={isChecked}> {" "} </DocumentCheckbox>}
+            />
+          )}
+          {!groupName && (
+            <DocumentCheckbox darkText checked={isChecked}>
+              {" "}
+            </DocumentCheckbox>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export const GroupRadio: React.FC<GroupRadioProps> = ({
-  checked,
-  onClick,
-}) => {
+export const GroupRadio: React.FC<GroupRadioProps> = ({ checked, onClick }) => {
   return (
     <button className="flex gap-3 text-start rounded-full" onClick={onClick}>
-      <div className={`rounded-full p-[2px] flex items-center justify-center ${checked ? "border border-blue-600" : ""}`}>
+      <div
+        className={`rounded-full p-[2px] flex items-center justify-center ${
+          checked ? "border border-blue-600" : ""
+        }`}
+      >
         <div
-          className={`rounded-full w-5 h-5 border min-w-2 min-h-2 border-darkText-2 ${checked ? "bg-blue-600" : ""}`}
+          className={`rounded-full w-5 h-5 border min-w-2 min-h-2 border-darkText-2 ${
+            checked ? "bg-blue-600" : ""
+          }`}
         ></div>
       </div>
     </button>
@@ -323,9 +334,9 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
 
   const handleClick = () => {
     console.log("value = ", value);
-    if (value === 'theme2' || value === 'theme3') {
+    if (value === "theme2" || value === "theme3") {
       setShowProfessionalMessage(true);
-      setTimeout(() => setShowProfessionalMessage(false), 3000); 
+      setTimeout(() => setShowProfessionalMessage(false), 3000);
     } else {
       onSelect(value);
       isSelected = false;
@@ -487,4 +498,3 @@ export const ProfileUpload: React.FC<ProfileUploadProps> = ({
     </div>
   );
 };
-
