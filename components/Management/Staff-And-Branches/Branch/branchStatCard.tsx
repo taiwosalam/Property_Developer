@@ -28,7 +28,7 @@ const BranchStatCard = ({
         <div
           className={`${
             title === "Total Balance"
-              ? "bg-brand-9 bg-opacity-20"
+              ? "bg-brand-9 bg-opacity-20 text-white darK:text-white"
               : title === "Total Expenses"
               ? "bg-status-error-1"
               : "bg-status-success-1"
