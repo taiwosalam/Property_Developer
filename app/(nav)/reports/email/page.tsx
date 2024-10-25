@@ -7,11 +7,12 @@ import CustomTable from "@/components/Table/table";
 import EmailModal, { type EmailRecord } from "@/components/reports/email-modal";
 import type { Field, DataItem } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { reportsEmailFilterOptionsWithDropdown } from "./data";
-import useDarkMode from "@/hooks/useCheckDarkMode";
+import {
+  reportsEmailFilterOptionsWithDropdown,
+  emailTablefields,
+} from "./data";
 
 const EmailReport = () => {
-  const isDarkMode = useDarkMode();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedSMS, setSelectedSMS] = useState<EmailRecord | null>(null);
 
@@ -19,23 +20,6 @@ const EmailReport = () => {
     setSelectedSMS(record as EmailRecord);
     setModalOpen(true);
   };
-  const fields: Field[] = [
-    { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "User ID", accessor: "user_id" },
-    { id: "3", label: "Branch", accessor: "branch" },
-    {
-      id: "2",
-      label: "Client Name",
-      accessor: "client_name",
-    },
-    {
-      id: "5",
-      label: "Date",
-      accessor: "date",
-    },
-    { id: "8", label: "Time", accessor: "time" },
-    { id: "9", accessor: "action" },
-  ];
 
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
@@ -62,6 +46,7 @@ const EmailReport = () => {
           title="Total Emails"
           newData={23}
           total={200}
+          colorScheme={1}
         />
       </div>
       <FilterBar
@@ -81,25 +66,9 @@ const EmailReport = () => {
         exportHref="/reports/email/export"
       />
       <CustomTable
-        fields={fields}
+        fields={emailTablefields}
         data={tableData}
-        tableHeadClassName="bg-brand-9 h-[45px]"
-        tableHeadCellSx={{
-          color: "#EFF6FF",
-          fontWeight: 500,
-          border: "none",
-          textAlign: "left",
-          fontSize: "14px",
-        }}
-        tableBodyCellSx={{
-          border: "none",
-          textAlign: "left",
-          fontWeight: 500,
-          color: isDarkMode ? "#fff" : "#050901",
-          fontSize: "14px",
-        }}
-        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
-        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
+        tableHeadClassName="h-[45px]"
         onActionClick={handleActionClick}
       />
       <Modal

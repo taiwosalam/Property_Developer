@@ -2,34 +2,13 @@
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
-import type { Field } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { reportsVisitorsFilterOptionsWithDropdown } from "./data";
-import useDarkMode from "@/hooks/useCheckDarkMode";
+import {
+  reportsVisitorsFilterOptionsWithDropdown,
+  visitorsRequestTableFields,
+} from "./data";
 
 const Visitors = () => {
-  const isDarkMode = useDarkMode();
-  const fields: Field[] = [
-    { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "ID", accessor: "id" },
-    {
-      id: "2",
-      label: "Bracnh",
-      accessor: "branch",
-    },
-    { id: "3", label: "Property", accessor: "property_name" },
-    {
-      id: "5",
-      label: "Requester",
-      accessor: "requester",
-    },
-    { id: "6", label: "Visitor", accessor: "visitor" },
-    { id: "7", label: "Date", accessor: "date" },
-    { id: "8", label: "Check In", accessor: "check_in" },
-    { id: "9", label: "Check Out", accessor: "check_out" },
-    { id: "9", label: "", accessor: "action" },
-  ];
-
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
       id: "123456789",
@@ -52,16 +31,19 @@ const Visitors = () => {
           title="Visitors Request"
           newData={34}
           total={657}
+          colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Checked In Visitors"
           newData={34}
           total={657}
+          colorScheme={2}
         />
         <ManagementStatistcsCard
           title="Check Out Visitors"
           newData={34}
           total={657}
+          colorScheme={3}
         />
       </div>
       <FilterBar
@@ -83,25 +65,9 @@ const Visitors = () => {
         exportHref="/reports/visitors/export"
       />
       <CustomTable
-        fields={fields}
+        fields={visitorsRequestTableFields}
         data={tableData}
-        tableHeadClassName="bg-brand-9 h-[45px]"
-        tableHeadCellSx={{
-          color: "#EFF6FF",
-          fontWeight: 500,
-          border: "none",
-          textAlign: "left",
-          fontSize: "14px",
-        }}
-        tableBodyCellSx={{
-          border: "none",
-          textAlign: "left",
-          fontWeight: 500,
-          color: isDarkMode ? "#fff" : "#050901",
-          fontSize: "14px",
-        }}
-        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
-        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
+        tableHeadClassName="h-[45px]"
       />
       <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>

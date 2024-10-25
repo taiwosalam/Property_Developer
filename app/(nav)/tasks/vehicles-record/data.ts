@@ -1,3 +1,6 @@
+import type { Field } from "@/components/Table/types";
+import type { VehicleRecord } from "@/components/tasks/vehicles-record/types";
+
 export const vehicleRecordFIltersOptionsWithDropdown = [
   {
     label: "Property",
@@ -8,8 +11,6 @@ export const vehicleRecordFIltersOptionsWithDropdown = [
     ],
   },
 ];
-
-import type { VehicleRecord } from "@/components/tasks/vehicles-record/types";
 
 export const VehicleRecordData: VehicleRecord[] = [
   {
@@ -53,4 +54,14 @@ export const VehicleRecordData: VehicleRecord[] = [
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
     },
   },
+];
+
+export const veicleRecordTablefields: Field[] = [
+  { id: "1", accessor: "pictureSrc", isImage: true, picSize: 40 },
+  { id: "2", label: "Name", accessor: "name" },
+  { id: "3", label: "Plate Number", accessor: "plate_number" },
+  { id: "4", label: "Guest / Visitor", accessor: "category" },
+  { id: "5", label: "Last Update", accessor: "last_update" },
+  { id: "6", label: "Status", accessor: "status" },
+  { id: "7", accessor: "action" },
 ];

@@ -1,3 +1,5 @@
+import type { Field } from "@/components/Table/types";
+
 export const reportsCallsFilterOptionsWithDropdown = [
   {
     label: "Account Officer",
@@ -23,4 +25,22 @@ export const reportsCallsFilterOptionsWithDropdown = [
       { label: "Property 3", value: "Property3" },
     ],
   },
+];
+
+export const callRequestTablefields: Field[] = [
+  { id: "0", label: "S/N", accessor: "S/N" },
+  { id: "1", label: "ID", accessor: "id" },
+  {
+    id: "2",
+    label: "Bracnh",
+    accessor: "branch",
+  },
+  { id: "3", label: "Property", accessor: "property_name" },
+  {
+    id: "5",
+    label: "Requester",
+    accessor: "requester",
+  },
+  { id: "7", label: "Requuest Date", accessor: "request_date" },
+  { id: "7", label: "Resolve Date & Time", accessor: "resolve_date_time" },
 ];

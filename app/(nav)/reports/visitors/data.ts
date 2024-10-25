@@ -1,3 +1,5 @@
+import type { Field } from "@/components/Table/types";
+
 export const reportsVisitorsFilterOptionsWithDropdown = [
   {
     label: "Account Officer",
@@ -23,4 +25,25 @@ export const reportsVisitorsFilterOptionsWithDropdown = [
       { label: "Property 3", value: "Property3" },
     ],
   },
+];
+
+export const visitorsRequestTableFields: Field[] = [
+  { id: "0", label: "S/N", accessor: "S/N" },
+  { id: "1", label: "ID", accessor: "id" },
+  {
+    id: "2",
+    label: "Bracnh",
+    accessor: "branch",
+  },
+  { id: "3", label: "Property", accessor: "property_name" },
+  {
+    id: "5",
+    label: "Requester",
+    accessor: "requester",
+  },
+  { id: "6", label: "Visitor", accessor: "visitor" },
+  { id: "7", label: "Date", accessor: "date" },
+  { id: "8", label: "Check In", accessor: "check_in" },
+  { id: "9", label: "Check Out", accessor: "check_out" },
+  { id: "9", accessor: "action" },
 ];

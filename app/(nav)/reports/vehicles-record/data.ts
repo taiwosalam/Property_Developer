@@ -1,3 +1,5 @@
+import type { Field } from "@/components/Table/types";
+
 export const reportsVehiclesFilterOptionsWithDropdown = [
   {
     label: "Account Officer",
@@ -23,4 +25,21 @@ export const reportsVehiclesFilterOptionsWithDropdown = [
       { label: "Property 3", value: "Property3" },
     ],
   },
+];
+
+export const vehicleRecordReportTableFields: Field[] = [
+  { id: "0", label: "S/N", accessor: "S/N" },
+  { id: "1", label: "ID", accessor: "id" },
+  {
+    id: "2",
+    label: "Full Name",
+    accessor: "full_name",
+  },
+  { id: "3", label: "Plate Number", accessor: "plate_number" },
+  { id: "4", label: "Guest / Visitor", accessor: "guest_visitor" },
+  { id: "5", label: "Check In", accessor: "check_in" },
+  { id: "6", label: "Check Out", accessor: "check_out" },
+  { id: "7", label: "Passenger In", accessor: "passenger_in" },
+  { id: "8", label: "Passenger Out", accessor: "passenger_out" },
+  { id: "9", label: "Status", accessor: "status" },
 ];

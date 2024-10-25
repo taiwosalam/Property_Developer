@@ -4,14 +4,15 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
-import type { Field, DataItem } from "@/components/Table/types";
+import type { DataItem } from "@/components/Table/types";
 import UndoModal from "@/components/reports/undo-modal";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { reportsUndoFilterOptionsWithDropdown } from "./data";
-import useDarkMode from "@/hooks/useCheckDarkMode";
+import {
+  reportsUndoFilterOptionsWithDropdown,
+  undoRequestTableFields,
+} from "./data";
 
 const Undo = () => {
-  const isDarkMode = useDarkMode();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
@@ -19,24 +20,6 @@ const Undo = () => {
     setSelectedEvent(event);
     setModalOpen(true);
   };
-  const fields: Field[] = [
-    { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "Event Deleted", accessor: "event_deleted" },
-    {
-      id: "2",
-      label: "Category",
-      accessor: "category",
-    },
-    { id: "3", label: "Branch", accessor: "branch" },
-    {
-      id: "5",
-      label: "Deleted By",
-      accessor: "deleted_by",
-    },
-    { id: "6", label: "Date Deleted", accessor: "date_deleted" },
-    { id: "7", label: "Time", accessor: "time" },
-    { id: "8", accessor: "action" },
-  ];
 
   // Design Purpose
   const generateTableData = () => {
@@ -72,7 +55,12 @@ const Undo = () => {
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard title="Total" newData={34} total={657} />
+        <ManagementStatistcsCard
+          title="Total"
+          newData={34}
+          total={657}
+          colorScheme={1}
+        />
       </div>
       <FilterBar
         azFilter
@@ -90,25 +78,9 @@ const Undo = () => {
         hasGridListToggle={false}
       />
       <CustomTable
-        fields={fields}
+        fields={undoRequestTableFields}
         data={tableData}
-        tableHeadClassName="bg-brand-9 h-[45px]"
-        tableHeadCellSx={{
-          color: "#EFF6FF",
-          fontWeight: 500,
-          border: "none",
-          textAlign: "left",
-          fontSize: "14px",
-        }}
-        tableBodyCellSx={{
-          border: "none",
-          textAlign: "left",
-          fontWeight: 500,
-          color: isDarkMode ? "#fff" : "#050901",
-          fontSize: "14px",
-        }}
-        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
-        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
+        tableHeadClassName="h-[45px]"
         onActionClick={handleActionClick}
       />
       <Modal
