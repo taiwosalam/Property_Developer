@@ -17,6 +17,7 @@ export interface StaffAndBranchPageState {
   selectedState: string;
   selectedLGA: string;
   localGovernments: string[];
+
   loading: boolean;
   error: Error | null;
   branchesPageData: BranchesPageData;

@@ -49,6 +49,8 @@ const BranchStaffPage = () => {
     gridView: true,
     total_pages: 50,
     current_page: 1,
+    selectedState: "",
+    localGovernments: [],
   };
   const [state, setState] = useState<PageState>(initialState);
   const [fetchedBranchData, setFetchedBranchData] =

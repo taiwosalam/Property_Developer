@@ -38,18 +38,27 @@ import { ResponseType } from "./types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { DateRange } from "react-day-picker";
 import BackButton from "@/components/BackButton/back-button";
+import { getAllStates } from "@/utils/states";
 
 const BranchDashboard = () => {
   const initialState = {
     gridView: true,
     total_pages: 50,
     current_page: 1,
+    selectedState: "",
+    localGovernments: [],
   };
   const [state, setState] = useState<PageState>(initialState);
   const [fetchedBranchData, setFetchedBranchData] =
     useState<ResponseType | null>();
 
-  const { gridView, total_pages, current_page } = state;
+  const {
+    gridView,
+    total_pages,
+    current_page,
+    selectedState,
+    localGovernments,
+  } = state;
   const { branchId } = useParams();
 
   const setGridView = () => {
@@ -67,24 +76,24 @@ const BranchDashboard = () => {
 
   const properties = fetchedBranchData?.property_list || [];
 
-  const BranchFilters = [{ label: "Alphabetically", value: "alphabetically" }];
+  const allStates = getAllStates() || [];
 
   const branchFiltersWithOptions = [
     {
-      label: "Branch",
-      value: [
-        { label: "Branch 1", value: "branch1" },
-        { label: "Branch 2", value: "branch2" },
-        { label: "Branch 3", value: "branch3" },
-      ],
+      label: "State",
+      value: allStates.map((state) => ({
+        label: state,
+        value: state,
+      })),
     },
     {
-      label: "Account Officer",
-      value: [
-        { label: "Account Officer 1", value: "account_officer1" },
-        { label: "Account Officer 2", value: "account_officer2" },
-        { label: "Account Officer 3", value: "account_officer3" },
-      ],
+      label: "Local Government",
+      value: selectedState
+        ? localGovernments.map((lga) => ({
+            label: lga,
+            value: lga,
+          }))
+        : [],
     },
   ];
 
@@ -96,8 +105,8 @@ const BranchDashboard = () => {
   const accessToken = useAuthStore((state) => state.access_token);
 
   const [timeRange, setTimeRange] = useState("30d");
-  const [highestMetric, setHighestMetric] = useState<string | null>(null);
-  const [primaryColor, setPrimaryColor] = useState<string | null>(null);
+  // const [highestMetric, setHighestMetric] = useState<string | null>(null);
+  // const [primaryColor, setPrimaryColor] = useState<string | null>(null);
 
   const calculateDateRange = (days: number) => {
     const now = new Date();
@@ -238,7 +247,7 @@ const BranchDashboard = () => {
             />
           </div>
         </div>
-        <div className="md:flex-1 space-y-4">
+        <div className="md:flex-1 space-y-7">
           <Link
             href={"/wallet"}
             className="max-w-full flex items-center justify-between flex-wrap gap-2"
@@ -281,14 +290,14 @@ const BranchDashboard = () => {
           seeAllLink={`/management/staff-branch/${branchId}/branch-staff`}
           notifications={fetchedBranchData?.staff || []}
           branchId={branchId as string}
-          className="md:flex-1"
+          className="md:flex-1 lg:h-[380px]"
         />
       </div>
 
       <FilterBar
         searchInputPlaceholder="Search for Branch properties"
         azFilter
-        filterOptions={BranchFilters}
+        filterOptions={[]}
         filterWithOptionsWithDropdown={branchFiltersWithOptions}
         onStateSelect={(state: string) => setSelectedState(state)}
         handleFilterApply={handleFilterApply}

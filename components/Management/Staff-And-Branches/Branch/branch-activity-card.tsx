@@ -1,3 +1,4 @@
+import { ArrowLeftIcon, ArrowRightIcon } from "@/public/icons/icons";
 import clsx from "clsx";
 
 interface ActivityItemProps {
@@ -18,7 +19,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
   color,
 }) => {
   return (
-    <div className="flex items-start p-2">
+    <div className="flex items-start p-3">
       <div className={`w-1 h-10 mr-4 ${color} dark:text-white`}></div>
       <div>
         <div className="text-sm">
@@ -76,28 +77,37 @@ const BranchActivitiesCard: React.FC<BranchActivitiesCardProps> = ({
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="flex justify-between items-center p-4">
-        <div>
-          <h2 className="font-medium text-sm">Branch Activities</h2>
+      <div className="flex justify-between items-center p-4 bg-brand-1">
+        <div className="">
+          <h2 className="font-medium text-sm text-black">Branch Activities</h2>
           <span className="text-text-label dark:text-darkText-2 text-sm font-medium">
             25 January 2023
           </span>
         </div>
-        <div className="flex space-x-5 items-center text-gray-500">
-          <button>&lt;</button>
-          <button>&gt;</button>
+        <div className="flex space-x-5 items-center text-text-tertiary">
+          <button>
+            <ArrowLeftIcon />
+          </button>
+          <button>
+            <ArrowRightIcon />
+          </button>
         </div>
       </div>
 
       <div className="bg-white dark:bg-darkText-primary py-4 px-2 text-text-primary rounded-b-lg">
         {activities.map((activity, index) => (
-          <ActivityItem
-            key={index}
-            label={activity.label}
-            description={activity.description.substring(0, 65).concat("...")}
-            time={activity.time}
-            color={activity.color}
-          />
+          <div key={index}>
+            <ActivityItem
+              label={activity.label}
+              description={activity.description.substring(0, 65).concat("...")}
+              time={activity.time}
+              color={activity.color}
+            />
+            <div
+              className="h-[1px] w-full bg-text-disabled bg-opacity-60"
+              hidden={index === activities.length - 1}
+            />
+          </div>
         ))}
       </div>
     </div>

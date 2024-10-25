@@ -84,15 +84,15 @@ const BranchBalanceCard = ({
               </p>
               <button onClick={toggleBalanceVisibility} className="">
                 {hideBalance ? (
-                  <Eye size={14} className="text-text-invert" />
+                  <Eye size={15} className="text-text-invert" />
                 ) : (
-                  <EyeOff size={14} className="text-text-invert" />
+                  <EyeOff size={15} className="text-text-invert" />
                 )}
               </button>
             </div>
-            <p className="flex items-center text-[10px] text-white">
+            {/* <p className="flex items-center text-[10px] text-white">
               Transaction History <ChevronRight className="text-sm" />
-            </p>
+            </p> */}
           </div>
 
           {/* Main Balance */}
@@ -116,9 +116,7 @@ const BranchBalanceCard = ({
                 className="space-y-2 w-full flex flex-col items-center justify-center"
               >
                 <div className="bg-white w-[30px] h-[30px] rounded-full flex items-center justify-center">
-                  <span className="text-brand-9">
-                  {option.icon}
-                  </span>
+                  <span className="text-brand-9">{option.icon}</span>
                 </div>
                 <p className="text-center capitalize text-white text-xs font-normal">
                   {option.name}
