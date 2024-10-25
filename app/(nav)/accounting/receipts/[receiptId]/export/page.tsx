@@ -41,22 +41,21 @@ const Exportexpense = () => {
         <div className="rounded-lg bg-white p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
             data={{}}
-            chunkSize={2}
+            chunkSize={1}
             direction="column"
             referenceObject={{
-              "payment id": "",
-              "customer name": "",
-              "property name": "",
+              "summary id": "",
               "start date": "",
-              "account officer": "",
               "end date": "",
             }}
           />
         </div>
       </div>
       <div className="custom-flex-col gap-6">
-        <h1 className="text-black text-2xl font-medium text-center">Summary</h1>
-        <AutoResizingGrid gap={6} minWidth={330}>
+        <h1 className="text-black text-2xl font-medium text-center">
+          Receipt Summary
+        </h1>
+        <AutoResizingGrid minWidth={330}>
           <InvoiceStatCards
             title="Total Amount"
             balance={12345432}
@@ -76,49 +75,53 @@ const Exportexpense = () => {
         <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
           <table className="dash-table">
             <colgroup>
-              <col className="w-[72px]" />
+              <col className="min-w-[72px]" />
+              <col span={5} />
+              <col className="min-w-[72px]" />
             </colgroup>
             <thead>
               <tr>
                 <th></th>
-                <th>date</th>
-                <th>landlord / landlady</th>
+                <th>name</th>
                 <th>payment ID</th>
+                <th>details</th>
                 <th>amount</th>
-                <th>description</th>
-                <th>mode</th>
+                <th>date</th>
               </tr>
             </thead>
             <tbody>
-              {Array(5)
+              {Array(10)
                 .fill(null)
                 .map((_, index) => (
-                  <tr key={index}>
+                  <tr
+                    key={index}
+                    onClick={() =>
+                      (window.location.href = "/accounting/receipts/1/preview")
+                    }
+                    className="cursor-pointer"
+                  >
                     <td>
                       <Picture
-                        src={Avatar}
+                        src={"/empty/avatar-1.svg"}
                         alt="profile picture"
-                        size={40}
                         rounded
+                        size={40}
                       />
-                    </td>
-                    <td>
-                      <p>02/03/2024</p>
                     </td>
                     <td>
                       <p>Amori Ademakinwa</p>
                     </td>
                     <td>
-                      <p>1234567878</p>
+                      <p>1234563456</p>
                     </td>
                     <td>
-                      <p>₦115,000.00</p>
+                      <p>Rent cost: Start date: Sept 22, 2023 - Expiry date:</p>
                     </td>
                     <td>
-                      <p>Property Rent for moniya house</p>
+                      <p>₦35,000.00</p>
                     </td>
                     <td>
-                      <p>Bank Transfer</p>
+                      <p>02/03/2024</p>
                     </td>
                   </tr>
                 ))}
@@ -139,15 +142,7 @@ const Exportexpense = () => {
           </div>
         </div>
       </div>
-      <FixedFooter className="flex gap-6 flex-wrap items-center justify-between">
-        <Button
-          onClick={back}
-          variant="sky_blue"
-          size="base_bold"
-          className="py-2 px-8"
-        >
-          exit
-        </Button>
+      <FixedFooter className="flex gap-6 flex-wrap items-center justify-end">
         <div className="flex gap-6">
           <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
             download

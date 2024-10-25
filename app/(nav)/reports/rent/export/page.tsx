@@ -1,33 +1,15 @@
 "use client";
 
 import CustomTable from "@/components/Table/table";
-import type { Field } from "@/components/Table/types";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import Image from "next/image";
 import Button from "@/components/Form/Button/button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import BackButton from "@/components/BackButton/back-button";
+import { rentReportTableFields } from "../data";
 
 const ExportRent = () => {
-  const fields: Field[] = [
-    { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "Unit ID", accessor: "unit_id" },
-    {
-      id: "2",
-      label: "Property Name",
-      accessor: "property_name",
-    },
-    { id: "3", label: "Tenant / Occupant", accessor: "tenant_name" },
-    {
-      id: "5",
-      label: "Start Date",
-      accessor: "start_date",
-    },
-    { id: "6", label: "End Date", accessor: "end_date" },
-    { id: "7", label: "Status", accessor: "status" },
-    { id: "8", label: "First Deposit", accessor: "first_deposit" },
-  ];
 
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
@@ -58,7 +40,7 @@ const ExportRent = () => {
         Summary
       </p>
       <CustomTable
-        fields={fields}
+        fields={rentReportTableFields}
         data={tableData}
         tableHeadClassName="h-[45px]"
       />
