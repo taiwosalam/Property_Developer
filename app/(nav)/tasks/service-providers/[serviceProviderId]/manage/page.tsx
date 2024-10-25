@@ -187,26 +187,13 @@ const ManageServiceProvider = () => {
         />
         {user_tag === "web" && <NotesInfoBox notes={notes} />}
       </div>
-      {user_tag === "mobile" ? (
+      {user_tag === "mobile" && (
         <InfoSection title="Services">
           <AutoResizingGrid minWidth={250}>
             {Array.from({ length: 6 }).map((_, index) => (
               <ServiceCard key={index} />
             ))}
           </AutoResizingGrid>
-        </InfoSection>
-      ) : (
-        <InfoSection title="Documents">
-          <div className="flex flex-wrap gap-4">
-            {documents.map((doc, idx) => (
-              <InfoDocument
-                key={doc.id}
-                id={doc.id}
-                name={doc.name}
-                link={doc.link}
-              />
-            ))}
-          </div>
         </InfoSection>
       )}
     </div>

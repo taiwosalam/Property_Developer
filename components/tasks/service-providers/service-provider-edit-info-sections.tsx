@@ -299,7 +299,6 @@ export const ServiceProviderNotesSection = () => {
         placeholder="Note goes here"
         value={note}
         onChange={(value) => setNote(value)}
-        className="col-span-full"
       />
       <Button size="base_medium" className="!w-fit ml-auto py-2 px-6">
         update

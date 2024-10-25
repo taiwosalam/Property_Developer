@@ -26,7 +26,6 @@ const EditServiceProvider = () => {
             <ServiceProviderEditProfileInfoSection />
             <ServiceProviderCompanyDetailsSection />
             <ServiceProviderBankDetailsSection />
-            <ServiceProviderAttachmentSection />
             <ServiceProviderNotesSection />
           </div>
           <div className="w-full lg:w-[334px] custom-flex-col gap-5 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">

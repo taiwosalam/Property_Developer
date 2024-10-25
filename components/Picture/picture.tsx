@@ -47,6 +47,7 @@ const Picture: React.FC<PictureProps> = ({
           // The whole point of this component is to make sure the image is always square,
           // or that their defined width or height doesnt change
           // Let us be guided 😈
+          // In that case stop using my components create yours  🤷‍♀️😒
           width: imageWidth,
           height: imageHeight,
           minWidth: imageWidth,

@@ -66,19 +66,26 @@ const Maintenance = () => {
       <AutoResizingGrid minWidth={380} gap={32}>
         {Array(10)
           .fill(null)
-          .map((_, index) => (
-            <MaintenanceCard
-              key={index}
-              maintenanceId="12345678"
-              status="not started"
-              propertyName="David Hall, Moniya"
-              dateCreated="21/01/2024"
-              serviceProvider="Lawyer"
-              startEndDate="21ST - 26TH JAN 2024"
-              priority="High"
-              serviceType="Legal Work"
-            />
-          ))}
+          .map((_, index) => {
+            const statuses: ("not started" | "ongoing" | "completed")[] = [
+              "not started",
+              "ongoing",
+              "completed",
+            ];
+            return (
+              <MaintenanceCard
+                key={index}
+                maintenanceId="12345678"
+                status={statuses[index % 3]}
+                propertyName="David Hall, Moniya"
+                dateCreated="21/01/2024"
+                serviceProvider="Lawyer"
+                startEndDate="21ST - 26TH JAN 2024"
+                priority="High"
+                serviceType="Legal Work"
+              />
+            );
+          })}
       </AutoResizingGrid>
     </div>
   );

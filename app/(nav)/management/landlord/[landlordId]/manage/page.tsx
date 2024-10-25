@@ -319,9 +319,6 @@ const ManageLandlord = () => {
         <CustomTable
           fields={statementTableFields}
           data={transformedTableData}
-          tableHeadClassName="bg-brand-9"
-          oddRowColor={isDarkMode ? "#020617" : "var(--brand-1)"}
-          evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
           tableBodyCellSx={{ fontSize: "1rem" }}
           tableHeadCellSx={{ fontSize: "1rem" }}
         />

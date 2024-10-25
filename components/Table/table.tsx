@@ -104,14 +104,14 @@ const CustomTable: React.FC<CustomTableProps> = ({
 }) => {
   const isDarkMode = useDarkMode();
 
-  const evenRowColor = propEvenRowColor || (isDarkMode ? "#ccc" : "#fff");
-  const oddRowColor = propOddRowColor || (isDarkMode ? "#ccc" : "#fff");
+  const evenRowColor = propEvenRowColor || (isDarkMode ? "#3C3D37" : "#fff");
+  const oddRowColor = propOddRowColor || (isDarkMode ? "#020617" : "#eff6ff");
 
   return (
     <TableContainer
       component={Paper}
       className={clsx(
-        "relative max-h-[650px] custom-round-scrollbar",
+        "relative max-h-[600px] custom-round-scrollbar",
         className
       )}
       sx={{ boxShadow: "none" }}
@@ -120,7 +120,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
         {displayTableHead && (
           <TableHead
             className={clsx(
-              "sticky top-0 z-[2] capitalize",
+              "sticky top-0 z-[2] capitalize bg-brand-9",
               tableHeadClassName
             )}
             style={tableHeadStyle}
