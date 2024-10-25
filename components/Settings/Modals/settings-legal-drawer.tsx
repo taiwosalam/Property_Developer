@@ -4,11 +4,12 @@ import { Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 // Imports
-import clsx from "clsx";
-import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import PaymentMethod from "@/components/Wallet/AddFunds/payment-method";
+import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-info-components";
+import { SectionSeparator } from "@/components/Section/section-components";
+import KeyValueList from "@/components/KeyValueList/key-value-list";
+import { LegalOption } from "../types";
 
 // DATA
 const checkboxOptions = [
@@ -44,65 +45,119 @@ const checkboxOptions = [
   },
 ];
 
-const SettingsLegalDrawer = ({onClose}: {onClose: () => void}) => {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+interface SettingsLegalDrawerProps {
+  onClose: () => void;
+  noCheckbox?: boolean;
+  selectedLegalOption?: LegalOption | null;
+}
+
+const SettingsLegalDrawer: React.FC<SettingsLegalDrawerProps> = ({ onClose, noCheckbox, selectedLegalOption }) => {
+  const [selectedOption, setSelectedOption] = useState<string | null>(selectedLegalOption?.title ?? null);
 
   const handleCheckboxChange = (value: string) => {
-    setSelectedOption(value); // Update selected option
+    setSelectedOption(value);
   };
 
   return (
-    <div className="wrapper" style={{ height: "calc(80vh)" }}>
+    <div className="wrapper dark:bg-black bg-white" style={{ height: "calc(80vh)"}}>
       <div className="dark:bg-black custom-round-scrollbar no-scrollbar bg-white">
         <DrawerHeader onClose={onClose} />
-        <div className="w-full items-start flex flex-col mt-6 pl-8 gap-4 no-scrollbar custom-round-scrollbar">
-          <Details
-            title="Property Details"
-            desc="3 Bedroom Block of flat"
-            address="56, Abiola way area Moniya ibadan"
-            rent="₦115,000.00"
-            deposit="₦15,000"
-          />
-          <Details
-            title="Landlord Details"
-            name="Aderibigbe Wakili"
-            id="1234567890"
-            address="56, Abiola way area Moniya ibadan"
-            accountType="Web User"
-          />
-          <Details
-            title="Tenant/Occupants Details"
-            name="Aderibigbe Wakili"
-            id="1234567890"
-            address="56, Abiola way area Moniya ibadan"
-            accountType="Web User"
-          />
-          <div className="enageg mb-4">
-            <h3 className="text-[20px] font-bold">Engage legal counsel.</h3>
-            <p className="text-text-disabled text-sm mt-1 mb-3">
-              Please choose any options below that are most applicable to the
-              property unit.
-            </p>
-            <div className="checkboxs grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {checkboxOptions.map((option) => (
-                <Checkbox
-                  key={option.value}
-                  title={option.title}
-                  checked={selectedOption === option.value}
-                  groupName="legal_process"
-                  state={{
-                    isChecked: selectedOption === option.value,
-                    setIsChecked: () => handleCheckboxChange(option.value),
-                  }}
-                >
-                  <p className="text-sm text-darkText-secondary text-text-label text-[16px] tracking-[0px]">
-                    {option.description}
-                  </p>
-                </Checkbox>
+        <div className="bodyWrapper px-4 mt-4">
+          {selectedLegalOption && (
+            <div className="flex flex-col gap-4">
+              <h3 className="text-[20px] font-bold dark:text-white">
+                {selectedLegalOption.title}
+              </h3>
+              {selectedLegalOption.description && (
+                <p className="text-text-disabled text-sm mt-1 mb-3 dark:text-darkText-1">
+                  {selectedLegalOption.description}
+                </p>
+              )}
+            </div>
+          )}
+          <div className="cardWrapper mt-4 flex flex-col gap-4">
+          <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
+            <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
+            Property Details
+          </h2>
+          <SectionSeparator />
+          <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
+            <KeyValueList
+              data={{}}
+              chunkSize={2}
+              referenceObject={{
+                "property description": "3 Bedroom Block of flat",
+                "property address": "56, Abiola way area Moniya ibadan",
+                "annual rent": "₦115,000.00",
+                "caution deposit": "₦15,000",
+              }}
+            />
+          </div>
+        </LandlordTenantInfoBox>
+        <LandlordTenantInfoBox className="custom-flex-col gap-[10px] bg-red-500">
+          <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
+            Landlord/Landlady Details
+          </h2>
+          <SectionSeparator />
+          <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
+            <KeyValueList
+              data={{}}
+              chunkSize={2}
+              referenceObject={{
+                "Landlord/Landlady Name": "",
+                "Landlord/Landlady ID": "",
+                "Landlord/Landlady Address": "",
+                "account type": "",
+              }}
+            />
+          </div>
+        </LandlordTenantInfoBox>
+
+        <LandlordTenantInfoBox className="custom-flex-col gap-[10px] bg-red-500">
+          <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
+            Tenant/Occupants Details
+          </h2>
+          <SectionSeparator />
+          <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
+            <KeyValueList
+              data={{}}
+              chunkSize={2}
+              referenceObject={{
+                "Landlord/Landlady Name": "",
+                "Landlord/Landlady ID": "",
+                "Landlord/Landlady Address": "",
+                "account type": "",
+              }}
+              />
+          </div>
+            </LandlordTenantInfoBox>
+          </div>
+        {!selectedLegalOption?.description && (
+          <div className="enageg my-4 px-2">
+          <h3 className="text-[20px] font-bold dark:text-white"> Engage legal counsel.</h3>
+          <p className="text-text-disabled text-sm mt-1 mb-3 dark:text-darkText-1"> Please choose any options below that are most applicable to the property unit.</p>
+          <div className="checkboxs grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {checkboxOptions.map((option) => (
+              <Checkbox
+                key={option.value}
+                title={option.title}
+                checked={selectedOption === option.value}
+                groupName="legal_process"
+                noCheckbox={noCheckbox}
+                state={{
+                  isChecked: selectedOption === option.value,
+                  setIsChecked: () => handleCheckboxChange(option.value),
+                }}
+              >
+                <p className="text-sm text-darkText-secondary text-text-label text-[16px] tracking-[0px]">
+                  {option.description}
+                </p>
+              </Checkbox>
               ))}
             </div>
           </div>
-        </div>
+        )}
+      </div>
       </div>
     </div>
   );
@@ -110,8 +165,8 @@ const SettingsLegalDrawer = ({onClose}: {onClose: () => void}) => {
 
 export default SettingsLegalDrawer;
 
-const DrawerHeader = ({onClose}: {onClose: () => void}) => {
-const [openPaymentModal, setOpenPaymentModal] = useState(false);
+const DrawerHeader = ({ onClose }: { onClose: () => void }) => {
+  const [openPaymentModal, setOpenPaymentModal] = useState(false);
 
   const handleOpenPaymentModal = () => {
     setOpenPaymentModal((prev) => !prev);
@@ -129,26 +184,31 @@ const [openPaymentModal, setOpenPaymentModal] = useState(false);
         </p>
       </div>
       <div className="btns flex gap-4">
-        <Button className="bg-[#FDE9EA] text-brand-9 text-sm py-3 px-5 font-bold rounded-[8px] capitalize" onClick={onClose}>
+        <Button
+          className="bg-[#FDE9EA] text-brand-9 text-sm py-3 px-5 font-bold rounded-[8px] capitalize"
+          onClick={onClose}
+        >
           Back
         </Button>
-        <Modal> 
-        <ModalTrigger asChild>
-            <Button className="bg-brand-9 text-white text-sm py-3 px-5 font-bold rounded-[8px] capitalize" onClick={handleOpenPaymentModal}>
-                Submit
+        <Modal>
+          <ModalTrigger asChild>
+            <Button
+              className="bg-brand-9 text-white text-sm py-3 px-5 font-bold rounded-[8px] capitalize"
+              onClick={handleOpenPaymentModal}
+            >
+              Submit
             </Button>
-        </ModalTrigger>
-            <ModalContent>
-              {/* <WalletModalPreset title="Select payment method"> */}
-                <PaymentMethod />
-                {/* </WalletModalPreset> */}
-            </ModalContent>
+          </ModalTrigger>
+          <ModalContent>
+            {/* <WalletModalPreset title="Select payment method"> */}
+            <PaymentMethod />
+            {/* </WalletModalPreset> */}
+          </ModalContent>
         </Modal>
       </div>
     </div>
   );
 };
-
 
 const Details = ({
   title,
@@ -251,7 +311,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   children,
   checked,
   groupName,
-  noCheckbox
+  noCheckbox,
 }) => {
   const [internalIsChecked, setInternalIsChecked] = useState(checked || false);
 
@@ -274,13 +334,30 @@ export const Checkbox: React.FC<CheckboxProps> = ({
 
   return (
     <div className="flex w-full">
-        <button className="flex gap-3 text-start rounded-full" onClick={handleClick}>
-        {!noCheckbox && <div className={`rounded-full p-[2px] flex items-center justify-center ${isChecked ? "border border-blue-600" : ""}`}>
+      <button
+        className="flex gap-3 text-start rounded-full"
+        onClick={handleClick}
+      >
+        {!noCheckbox && (
+          <div
+            className={`rounded-full p-[2px] flex items-center justify-center ${
+              isChecked ? "border border-blue-600" : ""
+            }`}
+          >
+            <div
+              className={`rounded-full w-5 h-5 border min-w-2 min-h-2  border-darkText-2 ${
+                isChecked ? "bg-blue-600 " : ""
+              }`}
+            ></div>
+          </div>
+        )}
         <div
-          className={`rounded-full w-5 h-5 border min-w-2 min-h-2  border-darkText-2 ${isChecked ? "bg-blue-600 " : ""}`}
-        ></div>
-        </div>}
-        <div className={`custom-flex-col gap-[2px] ${noCheckbox ? "hover:cursor-pointer hover:darkText-2 hover:text-white" : ""}`}>
+          className={`custom-flex-col gap-[2px] ${
+            noCheckbox
+              ? "hover:cursor-pointer hover:darkText-2 hover:text-white"
+              : ""
+          }`}
+        >
           {title && (
             <p className="text-text-black dark:text-darkText-1 text-base font-medium capitalize">
               {title}

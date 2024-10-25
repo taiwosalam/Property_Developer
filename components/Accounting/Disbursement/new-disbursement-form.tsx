@@ -14,6 +14,7 @@ import Select from "@/components/Form/Select/select";
 import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
 import TextArea from "@/components/Form/TextArea/textarea";
+import { NavCloseIcon } from "@/public/icons/icons";
 
 const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
   nextStep,
@@ -27,10 +28,11 @@ const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="custom-flex-col gap-[2px] p-4 bg-brand-1">
+      <div className="custom-flex-col gap-[2px] p-4 bg-brand-1 dark:bg-[#3c3d37]">
         <div className="flex justify-end">
           <ModalTrigger close>
-            <Picture src={Cancel} alt="close" size={24} />
+            {/* <Picture src={Cancel} alt="close" size={24} /> */}
+            <NavCloseIcon />
           </ModalTrigger>
         </div>
         <p className="text-text-secondary dark:text-white text-base font-medium text-center">

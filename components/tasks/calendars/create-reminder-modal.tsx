@@ -16,15 +16,15 @@ const CreateReminderMOdal = () => {
   type Tab = (typeof allTabs)[number];
   const [activeTab, setActiveTab] = useState<Tab>(allTabs[0]);
   return (
-    <form className="min-w-[460px] max-h-[90vh] overflow-y-auto custom-round-scrollbar rounded-lg border border-[rgba(193,194,195,0.40)] bg-white font-medium">
+    <form className="min-w-[460px] max-h-[90vh] overflow-y-auto custom-round-scrollbar rounded-lg border border-[rgba(193,194,195,0.40)] dark:border-darkText-2 bg-white  dark:bg-darkkText-primary font-medium">
       {/* Header */}
-      <div className="text-center text-text-secondary pt-10 rounded-t-lg bg-white sticky z-[1] top-0 flex flex-col gap-5">
+      <div className="text-center text-text-secondary pt-10 rounded-t-lg bg-white dark:bg-[#3c3d37] k sticky z-[1] top-0 flex flex-col gap-5">
         <ModalTrigger asChild close>
           <button className="absolute top-2 right-4" aria-label="Close">
             <XIcon />
           </button>
         </ModalTrigger>
-        <p className="text-base">Create</p>
+        <p className="text-base dark:text-white">Create</p>
         <div className="flex items-center justify-between gap-4 max-w-[85%] mx-auto">
           {allTabs.map((tab) => (
             <button
@@ -37,7 +37,7 @@ const CreateReminderMOdal = () => {
                     activeTab === tab,
                 },
                 {
-                  "text-text-secondary": activeTab !== tab,
+                  "text-text-secondary dark:text-white": activeTab !== tab,
                 }
               )}
               onClick={() => setActiveTab(tab)}
@@ -49,7 +49,7 @@ const CreateReminderMOdal = () => {
         {/* <SectionSeparator /> */}
       </div>
       {/* Body */}
-      <div className="px-[18px] pt-4 pb-8 bg-white space-y-4">
+      <div className="px-[18px] pt-4 pb-8 bg-white dark:bg-black space-y-4">
         <Input id="title" placeholder="Add title" inputClassName="bg-white" />
         {activeTab !== "examine" && (
           <>
