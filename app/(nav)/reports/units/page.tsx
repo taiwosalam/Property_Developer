@@ -5,10 +5,8 @@ import CustomTable from "@/components/Table/table";
 import type { Field } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { reportsUnitsFilterOptionsWithDropdown } from "./data";
-import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const UnitsReport = () => {
-  const isDarkMode = useDarkMode();
   const fields: Field[] = [
     { id: "0", label: "S/N", accessor: "S/N" },
     { id: "1", label: "Unit ID", accessor: "unit_id" },
@@ -65,23 +63,7 @@ const UnitsReport = () => {
       <CustomTable
         fields={fields}
         data={tableData}
-        tableHeadClassName="bg-brand-9 h-[45px]"
-        tableHeadCellSx={{
-          color: "#EFF6FF",
-          fontWeight: 500,
-          border: "none",
-          textAlign: "left",
-          fontSize: "14px",
-        }}
-        tableBodyCellSx={{
-          border: "none",
-          textAlign: "left",
-          fontWeight: 500,
-          color: isDarkMode ? "#fff" : "#050901",
-          fontSize: "14px",
-        }}
-        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
-        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
+        tableHeadClassName="h-[45px]"
       />
       <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>

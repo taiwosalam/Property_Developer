@@ -1,3 +1,5 @@
+import type { Field } from "@/components/Table/types";
+
 export const reportsTenantsFilterOptionsWithDropdown = [
   {
     label: "Account Officer",
@@ -23,4 +25,18 @@ export const reportsTenantsFilterOptionsWithDropdown = [
       { label: "Property 3", value: "Property3" },
     ],
   },
+];
+export const tenantsReportTableFields: Field[] = [
+  { id: "0", label: "S/N", accessor: "S/N" },
+  { id: "1", label: "Tenant / Occupant ID", accessor: "id" },
+  {
+    id: "2",
+    label: "Name",
+    accessor: "name",
+    cellStyle: { textTransform: "uppercase" },
+  },
+  { id: "3", label: "Gender", accessor: "gender" },
+  { id: "4", label: "Contact Address", accessor: "address" },
+  { id: "5", label: "Telephone", accessor: "telephone" },
+  { id: "6", label: "Status", accessor: "status" },
 ];

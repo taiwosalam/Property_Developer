@@ -2,28 +2,13 @@
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
-import type { Field } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { reportsTenantsFilterOptionsWithDropdown } from "./data";
-import useDarkMode from "@/hooks/useCheckDarkMode";
+import {
+  reportsTenantsFilterOptionsWithDropdown,
+  tenantsReportTableFields,
+} from "./data";
 
 const TenantsReport = () => {
-  const isDarkMode = useDarkMode();
-  const fields: Field[] = [
-    { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "Tenant / Occupant ID", accessor: "id" },
-    {
-      id: "2",
-      label: "Name",
-      accessor: "name",
-      cellStyle: { textTransform: "uppercase" },
-    },
-    { id: "3", label: "Gender", accessor: "gender" },
-    { id: "4", label: "Contact Address", accessor: "address" },
-    { id: "5", label: "Telephone", accessor: "telephone" },
-    { id: "6", label: "Status", accessor: "status" },
-  ];
-
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
       id: (index + 1).toString(),
@@ -44,11 +29,13 @@ const TenantsReport = () => {
           title="Total Tenants"
           newData={23}
           total={200}
+          colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Total Occupants"
           newData={23}
           total={200}
+          colorScheme={2}
         />
       </div>
       <FilterBar
@@ -70,25 +57,9 @@ const TenantsReport = () => {
         exportHref="/reports/tenants/export"
       />
       <CustomTable
-        fields={fields}
+        fields={tenantsReportTableFields}
         data={tableData}
-        tableHeadClassName="bg-brand-9 h-[45px]"
-        tableHeadCellSx={{
-          color: "#EFF6FF",
-          fontWeight: 500,
-          border: "none",
-          textAlign: "left",
-          fontSize: "14px",
-        }}
-        tableBodyCellSx={{
-          border: "none",
-          textAlign: "left",
-          fontWeight: 500,
-          color: isDarkMode ? "#fff" : "#050901",
-          fontSize: "14px",
-        }}
-        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
-        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
+        tableHeadClassName="h-[45px]"
       />
       <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>

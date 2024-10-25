@@ -3,7 +3,7 @@ import { useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Button from "@/components/Form/Button/button";
 import CustomTable from "@/components/Table/table";
-import type { Field, DataItem } from "@/components/Table/types";
+import type { DataItem } from "@/components/Table/types";
 import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-record-modal";
@@ -12,26 +12,15 @@ import type { VehicleRecord } from "@/components/tasks/vehicles-record/types";
 import {
   VehicleRecordData,
   vehicleRecordFIltersOptionsWithDropdown,
+  veicleRecordTablefields,
 } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const VehiclesRecordPage = () => {
-  const isDarkMode = useDarkMode();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<VehicleRecord | null>(
     null
   );
-
-  const fields: Field[] = [
-    { id: "1", accessor: "pictureSrc", isImage: true, picSize: 40 },
-    { id: "2", label: "Name", accessor: "name" },
-    { id: "3", label: "Plate Number", accessor: "plate_number" },
-    { id: "4", label: "Guest / Visitor", accessor: "category" },
-    { id: "5", label: "Last Update", accessor: "last_update" },
-    { id: "6", label: "Status", accessor: "status" },
-    { id: "7", accessor: "action" },
-  ];
 
   const handleActionClick = (record: DataItem) => {
     setSelectedRecord(record as VehicleRecord);
@@ -89,16 +78,14 @@ const VehiclesRecordPage = () => {
         hasGridListToggle={false}
       />
       <CustomTable
-        fields={fields}
+        fields={veicleRecordTablefields}
         data={VehicleRecordData}
         tableHeadClassName="h-[76px]"
         tableHeadCellSx={{
-          fontSize: 16,
-          fontWeight: 500,
+          fontSize: "16px",
         }}
         tableBodyCellSx={{
-          fontWeight: 500,
-          fontSize: 15,
+          fontSize: "15px",
           padding: "18px 16px",
         }}
         onActionClick={handleActionClick}
