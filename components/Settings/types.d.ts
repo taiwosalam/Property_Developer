@@ -215,3 +215,10 @@ export interface ProfileUploadProps {
   inputFileRef: MutableRefObject<HTMLInputElement | null>; // Add this line
   onClick: () => void;
 }
+
+
+export interface LegalOption {
+  title: string;
+  description: string;
+  value?: string;
+}

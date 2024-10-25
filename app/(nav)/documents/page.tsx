@@ -12,7 +12,7 @@ import DocumentCard from "@/components/Documents/document-card";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import CreateTenancyAggrementModal from "@/components/BadgeIcon/create-tenancy-aggrement-modal";
+import CreateTenancyAggrementModal, { DrawerComponent } from "@/components/BadgeIcon/create-tenancy-aggrement-modal";
 import SortButton from "@/components/FilterButton/sort-button";
 import FilterButton from "@/components/FilterButton/filter-button";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
@@ -44,6 +44,7 @@ const Documents = () => {
               <CreateTenancyAggrementModal />
             </ModalContent>
           </Modal>
+          <DrawerComponent />
         </div>
         <div className="page-title-container">
           <div></div>

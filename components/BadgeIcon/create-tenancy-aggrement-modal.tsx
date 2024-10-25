@@ -12,6 +12,8 @@ import SettingsLegalDrawer, {
 } from "../Settings/Modals/settings-legal-drawer";
 import { Drawer } from "@mui/material";
 import { Modal, useModal } from "../Modal/modal";
+import Link from "next/link";
+import { useDrawerStore } from "@/store/drawerStore";
 
 const checkboxOptions = [
   {
@@ -52,130 +54,181 @@ const checkboxOptions = [
   },
 ];
 
+// const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
 const CreateTenancyAggrementModal = () => {
-  const { isOpen, setIsOpen } = useModal();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const { isDrawerOpen, openDrawer, closeDrawer, setSelectedLegalOption } = useDrawerStore();
 
-  useEffect(() => {
-    console.log("Modal open state: ", isOpen);
-  }, [isOpen]);
-
+  // HANDLE CHECKBOX CHANGE
   const handleCheckboxChange = (value: string) => {
-    setSelectedOption((prev) => {
-      const isSelected = prev === value;
-      // Set isDrawerOpen to true if the selected option is "tenancy_agreement"
-      if (value === "tenancy_agreement") {
-        setIsDrawerOpen(true);
-      } else {
-        setIsDrawerOpen(false);
-        setIsOpen(true);
-      }
-      return isSelected ? null : value;
-    });
+    setSelectedOption(value);
+    const selectedOption = checkboxOptions.find(option => option.value === value);
+    if (selectedOption) {
+      setSelectedLegalOption({
+        title: selectedOption.title,
+        description: selectedOption.description
+      });
+    }
   };
 
   return (
     <>
-      <Modal state={{ isOpen, setIsOpen }}>
-        {selectedOption !== "tenancy_agreement" && (
-          <LandlordTenantModalPreset
-            {...(selectedOption
-              ? { back: { handleBack: () => setSelectedOption(null) } }
-              : {})}
-            style={{ maxWidth: "714px" }}
-            heading={
-              selectedOption
-                ? checkboxOptions.find(
-                    (option) => option.value === selectedOption
-                  )?.title || "Default Title"
-                : "Tenancy Legal Procedure"
-            }
-          >
-            {selectedOption ? (
-              <>
-                {selectedOption !== "tenancy_agreement" && (
-                  <div className="flex flex-wrap gap-4 items-center justify-center">
-                    <Select
-                      options={["property 1", "property 2", "property 3"]}
-                      id="legal_process"
-                      // onChange={handleSelectChange}
-                      value={""}
-                      label="Select property"
-                      className="w-full sm:w-1/2"
-                    />
-                    <Select
-                      options={["Unit 1", "Unit 2", "Unit 3"]}
-                      id="legal_process"
-                      // onChange={handleSelectChange}
-                      value={""}
-                      label="Select property Unit"
-                      className="w-full sm:w-1/2"
-                    />
-                  </div>
-                )}
-
-                <div className="flex items-end justify-end mt-4">
-                  <Button
-                    type="button"
-                    className="bg-brand-9 rounded-md text-white"
-                  >
-                    Proceed
-                  </Button>
-                </div>
-              </>
+      <LandlordTenantModalPreset
+        {...(selectedOption
+          ? { back: { handleBack: () => setSelectedOption(null) } }
+          : {})}
+        style={{ maxWidth: "714px" }}
+        heading={
+          selectedOption
+            ? checkboxOptions.find((option) => option.value === selectedOption)
+                ?.title || ""
+            : "Tenancy Legal Procedure"
+        }
+      >
+        {selectedOption ? (
+          <>
+            {selectedOption !== "tenancy_agreement" ? (
+              <OtherAgreement />
             ) : (
-              <div className="flex flex-col gap-1">
-                <h2 className="text-text-primary text-[20px] font-bold dark:text-white text-base not-italic leading-[32px]">
-                  Engage legal counsel.
-                </h2>
-                <p className="text-text-disabled dark:text-darkText-1 text-sm font-medium">
-                  The legal steps and processes involved in renting or leasing
-                  property, usually regulated by landlord-tenant laws and
-                  regulations. Please choose any options below that are most
-                  applicable to the property unit.
-                </p>
-              </div>
+              selectedOption === "tenancy_agreement" && <TenancyAgreement />
             )}
-
-            {/* Render checkboxes only if no option is selected */}
-            {!selectedOption && (
-              <div className="flex flex-col gap-4 mt-4">
-                {checkboxOptions.map((option) => (
-                  <Checkbox
-                    key={option.value}
-                    title={option.title}
-                    checked={selectedOption === option.value}
-                    groupName="legal_process"
-                    state={{
-                      isChecked: selectedOption === option.value,
-                      setIsChecked: () => {
-                        console.log(`option is ${option.value}`);
-                        handleCheckboxChange(option.value);
-                      },
-                    }}
-                    noCheckbox={true}
-                  >
-                    <p className="text-sm text-darkText-secondary text-text-disabled tracking-[0px]">
-                      {option.description}
-                    </p>
-                  </Checkbox>
-                ))}
-              </div>
-            )}
-          </LandlordTenantModalPreset>
+          </>
+        ) : (
+          <div className="flex flex-col gap-1">
+            <h2 className="text-text-primary text-[20px] font-bold dark:text-white text-base not-italic leading-[32px]">
+              Engage legal counsel.
+            </h2>
+            <p className="text-text-disabled dark:text-darkText-1 text-sm font-medium">
+              The legal steps and processes involved in renting or leasing
+              property, usually regulated by landlord-tenant laws and
+              regulations. Please choose any options below that are most
+              applicable to the property unit.
+            </p>
+          </div>
         )}
-        <Drawer
-          anchor="bottom"
-          open={isDrawerOpen}
-          onClose={() => setIsDrawerOpen(false)}
-          sx={{ zIndex: 2 }}
-        >
-          <SettingsLegalDrawer onClose={() => setIsDrawerOpen(false)} />
-        </Drawer>
-      </Modal>
+
+        {/* Render checkboxes only if no option is selected */}
+        {!selectedOption && (
+          <div className="flex flex-col gap-4 mt-4">
+            {checkboxOptions.map((option) => (
+              <Checkbox
+                key={option.value}
+                title={option.title}
+                checked={selectedOption === option.value}
+                groupName="legal_process"
+                state={{
+                  isChecked: selectedOption === option.value,
+                  setIsChecked: () => {
+                    handleCheckboxChange(option.value);
+                  },
+                }}
+                noCheckbox={true}
+              >
+                <p className="text-sm text-darkText-secondary text-text-disabled tracking-[0px]">
+                  {option.description}
+                </p>
+              </Checkbox>
+            ))}
+          </div>
+        )}
+      </LandlordTenantModalPreset>
     </>
   );
 };
 
 export default CreateTenancyAggrementModal;
+
+// OTHER AGREEMENT COMPONENT FLOW
+const OtherAgreement = () => {
+  const { setIsOpen } = useModal();
+  const { isDrawerOpen, openDrawer, closeDrawer } = useDrawerStore();
+
+  const handleOpenDrawer = () => {
+    setIsOpen(false);
+    openDrawer();
+    console.log("Drawer is open", isDrawerOpen);
+  };
+
+  return (
+    <>
+      <div className="flex flex-wrap gap-4 items-center justify-center">
+        <Select
+          options={["property 1", "property 2", "property 3"]}
+          id="legal_process"
+          value={""}
+          label="Select property"
+          className="w-full sm:w-1/2"
+        />
+        <Select
+          options={["Unit 1", "Unit 2", "Unit 3"]}
+          id="legal_process"
+          value={""}
+          label="Select property Unit"
+          className="w-full sm:w-1/2"
+        />
+      </div>
+      <div className="flex items-end justify-end mt-4">
+        <Button
+          type="button"
+          className="bg-brand-9 rounded-md text-white"
+          onClick={handleOpenDrawer}
+        >
+          Proceed
+        </Button>
+      </div>
+    </>
+  );
+};
+
+// DRAWER COMPONENT FLOW
+export const DrawerComponent = () => {
+  const { isDrawerOpen, closeDrawer, selectedLegalOption } = useDrawerStore();
+  return (
+    <Drawer
+      anchor="bottom"
+      open={isDrawerOpen}
+      onClose={closeDrawer}
+      sx={{
+        "& .MuiPaper-root": {
+          borderTopLeftRadius: "32px",
+          borderTopRightRadius: "32px",
+          overflow: "hidden",
+          height: "80vh",
+        },
+        zIndex: 1
+      }}
+    >
+      <SettingsLegalDrawer 
+        onClose={closeDrawer} 
+        noCheckbox={true} 
+        selectedLegalOption={selectedLegalOption} 
+      />
+    </Drawer>
+  );
+};
+
+// TENANCY AGREEMENST COMPONENT FLOW
+const TenancyAgreement = () => {
+  return (
+    <>
+      <div className="flex flex-wrap gap-4 items-center justify-center">
+        <Select
+          options={["property 1", "property 2", "property 3"]}
+          id="legal_process"
+          value={""}
+          label="Select property"
+          className="w-full sm:w-1/2"
+        />
+      </div>
+      <div className="flex items-end justify-end mt-4">
+        <Link
+          href="/documents/create-tenancy-agreement"
+          className="bg-brand-9 px-12 py-3 rounded-md text-white"
+        >
+          Add
+        </Link>
+      </div>
+    </>
+  );
+};

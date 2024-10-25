@@ -78,13 +78,13 @@ const AddServiceProviderForm = ({
         <PhoneNumberInput
           id="company_phone"
           label="Company Phone"
-          inputClassName="!bg-neutral-2"
+          inputClassName="!bg-neutral-2 dark:!bg-transparent"
           //   validationErrors={errorMsgs}
         />
         <PhoneNumberInput
           id="personal_phone"
           label="Personal Phone"
-          inputClassName="!bg-neutral-2"
+          inputClassName="!bg-neutral-2 dark:!bg-transparent"
           //   validationErrors={errorMsgs}
         />
         <Input
