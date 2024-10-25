@@ -58,7 +58,16 @@ const BranchStatCard = ({
             height={24}
           />
           <span>
-            <span>{upvalue}</span> Up from yesterday
+            <span
+              className={`${
+                title === "Total Balance"
+                  ? "text-status-error-2"
+                  : "text-status-success-2"
+              }`}
+            >
+              {upvalue}%
+            </span>{" "}
+            Up from yesterday
           </span>
         </div>
       </CardContent>

@@ -162,7 +162,7 @@ const EditBranch = () => {
       </div>
       <div className="custom-flex-col gap-8">
         <div className="page-title-container">
-          <div className="w-full flex gap-4 flex-col lg:flex-row">
+          <div className="w-full flex gap-4 flex-col lg:flex-row lg:justify-between">
             <PageTitle title="Edit Property" />
             <div className="flex flex-wrap items-center gap-4">
               <SearchInput placeholder="Search for Staff and Branch" />
