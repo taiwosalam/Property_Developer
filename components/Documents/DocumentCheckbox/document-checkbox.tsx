@@ -31,7 +31,11 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
 
   return (
     <div className="flex w-full">
-      <button className="flex gap-3 text-start" onClick={handleClick}>
+      <button
+        className="flex gap-3 text-start"
+        onClick={handleClick}
+        type="button"
+      >
         <div className="flex items-start">
           <Picture
             src={isChecked ? CheckboxChecked : CheckboxDefault}

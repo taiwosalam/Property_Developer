@@ -280,39 +280,29 @@ export const ServiceProviderAttachmentSection = () => {
 
 export const ServiceProviderNotesSection = () => {
   const { data: serviceProvider } = useServiceProviderEditContext();
-  const [note, setNote] = useState<string>(
-    typeof serviceProvider?.notes === "string" ? serviceProvider.notes : ""
-  );
+  const [note, setNote] = useState("");
   useEffect(() => {
-    setNote(
-      typeof serviceProvider?.notes === "string" ? serviceProvider.notes : ""
-    );
-  }, [serviceProvider?.notes]);
+    setNote(serviceProvider?.notes?.write_up || "");
+  }, [serviceProvider?.notes?.write_up]);
   return (
     <InfoEditSection title="add note" style={{ position: "relative" }}>
-      <InfoEditGrid>
-        <button
-          type="button"
-          className="absolute top-5 right-5 !w-[unset]"
-          onClick={() => setNote("")}
-        >
-          Clear
-        </button>
-        <TextArea
-          id="note"
-          label="note"
-          placeholder="Note goes here"
-          value={typeof note === "string" ? note : ""}
-          onChange={(value) => setNote(value)}
-          className="col-span-full"
-        />
-        <Button
-          size="base_medium"
-          className="!w-fit ml-auto py-2 px-6 col-span-full"
-        >
-          update
-        </Button>
-      </InfoEditGrid>
+      <button
+        type="button"
+        className="absolute top-5 right-5 !w-[unset]"
+        onClick={() => setNote("")}
+      >
+        Clear
+      </button>
+      <TextArea
+        id="note"
+        label="note"
+        placeholder="Note goes here"
+        value={note}
+        onChange={(value) => setNote(value)}
+      />
+      <Button size="base_medium" className="!w-fit ml-auto py-2 px-6">
+        update
+      </Button>
     </InfoEditSection>
   );
 };

@@ -1,7 +1,5 @@
 "use client";
 import { Dayjs } from "dayjs";
-import { ChevronLeft } from "@/public/icons/icons";
-import { useRouter } from "next/navigation";
 import { SectionSeparator } from "@/components/Section/section-components";
 import Select from "@/components/Form/Select/select";
 import Input from "@/components/Form/Input/input";
@@ -18,10 +16,11 @@ import { maintenanceTypes, priorityLevels } from "./data";
 import { createMaintenance } from "../data";
 import { useAuthStore } from "@/store/authstrore";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import BackButton from "@/components/BackButton/back-button";
+import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 
 const CreateMaintenace = () => {
   const accessToken = useAuthStore((state) => state.access_token);
-  const router = useRouter();
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const handleStartDateChange = (date?: Dayjs | null) => {
     setStartDate(date || null);
@@ -40,19 +39,12 @@ const CreateMaintenace = () => {
 
   return (
     <div className="font-medium space-y-6">
-      <div className="flex items-center gap-2">
-        <button onClick={() => router.back()}>
-          <ChevronLeft />
-        </button>
-        <h1 className="text-lg md:text-xl lg:text-2xl text-black dark:text-white font-medium">
-          New Maintenance Schedule
-        </h1>
-      </div>
+      <BackButton>New Maintenance Schedule</BackButton>
       <AuthForm
         returnType="string"
         onFormSubmit={handleSubmit}
         setValidationErrors={() => {}}
-        className="space-y-5 pb-[80px]"
+        className="space-y-5 pb-[150px]"
       >
         <h2 className="text-sm md:text-base text-brand-10">Details</h2>
         <SectionSeparator className="!mt-4 !mb-6" />
@@ -137,30 +129,19 @@ const CreateMaintenace = () => {
             />
           </div>
         </div>
-        <FixedFooter
-          style={{ boxShadow: "0px -2px 10px 0px rgba(0, 0, 0, 0.05)" }}
-          className="flex items-center justify-between gap-x-10 gap-y-4 flex-wrap"
-        >
-          <div className="flex flex-wrap items-center gap-2 text-sm text-text-secondary">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                className="bg-[#F9FAFB] border border-neutral-6 rounded w-[18px] h-[18px]"
-              />
-              <span className="dark:text-darkText-2">Create announcement</span>
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                className="bg-[#F9FAFB] border border-neutral-6 rounded w-[18px] h-[18px]"
-              />
-              <span className="dark:text-darkText-2">Create announcement</span>
-            </label>
+        <FixedFooter className="flex items-center justify-between gap-x-10 gap-y-4 flex-wrap">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-text-secondary">
+            <div>
+              <DocumentCheckbox title="Create announcement" children="" />
+            </div>
+            <div>
+              <DocumentCheckbox title="Add to Calendar" children="" />
+            </div>
           </div>
           <Button
             type="submit"
             size="custom"
-            className="px-8 py-2 font-bold text-sm lg:text-base"
+            className="px-8 py-2 text-sm lg:text-base"
           >
             Create Maintenance
           </Button>

@@ -53,52 +53,50 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
       </div>
       {/* <hr className="my-4 " /> */}
       <SectionSeparator className="my-4 h-[2px]" />
-      <div className="flex flex-col md:flex-row md:items-center gap-2 md:justify-between">
-        <div className="overflow-x-auto max-w-full flex-grow">
-          <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
-            <div>
-              <p className="text-[#747474] dark:text-white">Unit Details</p>
-              <p className="text-black dark:text-darkText-1">
-                Newly Built 5 Bedroom Detached Duplex
-              </p>
-            </div>
-            <div>
-              <p className="text-[#747474] dark:text-white">Rent</p>
-              <p className="text-black dark:text-darkText-1">₦300,000</p>
-            </div>
-            <div>
-              <p className="text-[#747474] dark:text-white">Unit No/Name</p>
-              <p className="text-black dark:text-darkText-1">Flat 4</p>
-            </div>
-            <div>
-              <p className="text-[#747474] dark:text-white">Caution Deposit</p>
-              <p className="text-black dark:text-darkText-1">₦300,000</p>
-            </div>
-            <div>
-              <p className="text-[#747474] dark:text-white">Unit Description</p>
-              <p className="text-black dark:text-darkText-1">Abiola Moniya</p>
-            </div>
-            <div>
-              <p className="text-[#747474] dark:text-white">Service Charge</p>
-              <p className="text-black dark:text-darkText-1">₦300,000</p>
-            </div>
-            <div>
-              <p className="text-[#747474] dark:text-white">Tenants Name</p>
-              <p className="text-black dark:text-darkText-1 underline underline-offset-4 flex items-center">
-                David Ajala <BadgeIcon color="red" />
-              </p>
-            </div>
-            <div>
-              <p className="text-[#747474] dark:text-white">Due Date</p>
-              <p className="text-black dark:text-darkText-1">12/12/2024</p>
-            </div>
+      <div className="flex items-center gap-2 justify-between overflow-y-auto custom-round-scrollbar pb-2">
+        <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
+          <div>
+            <p className="text-[#747474] dark:text-white">Unit Details</p>
+            <p className="text-black dark:text-darkText-1">
+              Newly Built 5 Bedroom Detached Duplex
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474] dark:text-white">Rent</p>
+            <p className="text-black dark:text-darkText-1">₦300,000</p>
+          </div>
+          <div>
+            <p className="text-[#747474] dark:text-white">Unit No/Name</p>
+            <p className="text-black dark:text-darkText-1">Flat 4</p>
+          </div>
+          <div>
+            <p className="text-[#747474] dark:text-white">Caution Deposit</p>
+            <p className="text-black dark:text-darkText-1">₦300,000</p>
+          </div>
+          <div>
+            <p className="text-[#747474] dark:text-white">Unit Description</p>
+            <p className="text-black dark:text-darkText-1">Abiola Moniya</p>
+          </div>
+          <div>
+            <p className="text-[#747474] dark:text-white">Service Charge</p>
+            <p className="text-black dark:text-darkText-1">₦300,000</p>
+          </div>
+          <div>
+            <p className="text-[#747474] dark:text-white">Tenants Name</p>
+            <p className="text-black dark:text-darkText-1 underline underline-offset-4 flex items-center">
+              David Ajala <BadgeIcon color="red" />
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474] dark:text-white">Due Date</p>
+            <p className="text-black dark:text-darkText-1">12/12/2024</p>
           </div>
         </div>
 
         {/* Image */}
         <div
           role="button"
-          className="w-[168px] h-[168px] rounded-2xl relative overflow-hidden cursor-pointer"
+          className="flex-shrink-0 w-[168px] h-[168px] rounded-2xl relative overflow-hidden cursor-pointer"
           onClick={() => setScreenModal(true)}
         >
           <div className="absolute z-[1] left-[50%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">

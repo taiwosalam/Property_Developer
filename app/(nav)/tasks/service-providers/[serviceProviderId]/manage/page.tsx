@@ -8,6 +8,7 @@ import {
   LandlordTenantInfo as ContactInfo,
   LandlordTenantInfoSection as InfoSection,
   LandlordTenantInfoDocument as InfoDocument,
+  NotesInfoBox,
 } from "@/components/Management/landlord-tenant-info-components";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import Picture from "@/components/Picture/picture";
@@ -22,6 +23,8 @@ import ServiceCard from "@/components/tasks/service-providers/service-card";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import type { ServiceProviderData } from "./types";
 import { serviceProviderData as Mockdata } from "./data";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { MobileNotesModal } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
 
 const ManageServiceProvider = () => {
   const isDarkMode = useDarkMode();
@@ -29,7 +32,7 @@ const ManageServiceProvider = () => {
   const [serviceProviderData, setServiceProviderData] =
     useState<ServiceProviderData | null>(Mockdata);
   if (!serviceProviderData) return null;
-  const { user_tag } = serviceProviderData;
+  const { user_tag, notes, documents } = serviceProviderData;
 
   return (
     <div className="space-y-5">
@@ -78,9 +81,25 @@ const ManageServiceProvider = () => {
           </div>
           <div className="w-fit mx-auto flex flex-wrap gap-4">
             {user_tag === "mobile" ? (
-              <Button size="base_medium" className="!w-fit ml-auto py-2 px-8">
-                message
-              </Button>
+              <>
+                <Button size="base_medium" className="!w-fit ml-auto py-2 px-8">
+                  message
+                </Button>
+                <Modal>
+                  <ModalTrigger>
+                    <Button
+                      variant="sky_blue"
+                      size="base_medium"
+                      className="py-2 px-8"
+                    >
+                      Note
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <MobileNotesModal notes={notes} />
+                  </ModalContent>
+                </Modal>
+              </>
             ) : (
               <>
                 <Button
@@ -166,70 +185,15 @@ const ManageServiceProvider = () => {
             "Local Government": "Akinyele",
           }}
         />
-        {user_tag === "web" && (
-          <InfoBox className="rounded-lg">
-            <div className="custom-flex-col gap-4">
-              {/* <div className="flex justify-between gap-4">
-                <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
-                  <span>Note</span>
-                  <sub className="text-sm font-normal bottom-[unset]">
-                    22/12/2022
-                  </sub>
-                </h3>
-                <div className="flex gap-3 text-text-tertiary dark:text-darkText-1">
-                  <button type="button" aria-label="Previous">
-                    <ArrowLeftIcon />
-                  </button>
-                  <button type="button" aria-label="Next">
-                    <ArrowRightIcon />
-                  </button>
-                </div>
-              </div> */}
-              <TruncatedText
-                lines={7}
-                className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
-              >
-                building, is a residential property that living read more. They
-                want to work with their budget in booking an appointment. They
-                wants to ease themselves the stress having to que, and also
-                reducety that living read more. They want to work with their
-                budget in booking an appointment. They wants to ease themselves
-                the stress having to que, and stress having to que, and stress
-                having to que, and stress having to que, and stress having to
-                que, and stress havingalso reduce the read more They wants to
-                ease themselves of the stress of having to que, and also reduce
-                the time spent searching for something new.for something new. A
-                multi-family home, also know as a duplex, triplex, or multi-unit
-                building, is a residential property that living read more. They
-                want to work with their budget in booking an appointment. ime
-                spent searching
-              </TruncatedText>
-            </div>
-          </InfoBox>
-        )}
+        {user_tag === "web" && <NotesInfoBox notes={notes} />}
       </div>
-      {user_tag === "mobile" ? (
+      {user_tag === "mobile" && (
         <InfoSection title="Services">
           <AutoResizingGrid minWidth={250}>
             {Array.from({ length: 6 }).map((_, index) => (
               <ServiceCard key={index} />
             ))}
           </AutoResizingGrid>
-        </InfoSection>
-      ) : (
-        <InfoSection title="Documents">
-          <div className="flex flex-wrap gap-4">
-            {Array(2)
-              .fill(null)
-              .map((_, idx) => (
-                <InfoDocument
-                  key={idx}
-                  id={idx}
-                  name={"Sample Doc"}
-                  link={"https://www.google.com"}
-                />
-              ))}
-          </div>
         </InfoSection>
       )}
     </div>

@@ -1,4 +1,5 @@
 "use client";
+import clsx from "clsx";
 import BackButton from "@/components/BackButton/back-button";
 import TenantCard from "@/components/Management/landlord-and-tenant-card";
 import FilterBar from "@/components/FIlterBar/FilterBar";
@@ -16,7 +17,7 @@ import { ResponseType } from "../types";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import CustomTable from "@/components/Table/table";
-import { Field } from "@/components/Table/types";
+import { branchStaffTableFields, branchStaffTableData } from "./data";
 
 const BranchStaffPage = () => {
   const BranchFilters = [{ label: "Alphabetically", value: "alphabetically" }];
@@ -56,13 +57,6 @@ const BranchStaffPage = () => {
   const { gridView, total_pages, current_page } = state;
   const { branchId } = useParams();
 
-  const fields = [
-    {
-      "S/N": "01",
-      "": "",
-    },
-  ];
-
   const setGridView = () => {
     setState((state) => ({ ...state, gridView: true }));
   };
@@ -90,11 +84,27 @@ const BranchStaffPage = () => {
 
     fetchBranchData();
   }, [accessToken, branchId]);
+
+  const transformedTableData = branchStaffTableData.map((item) => ({
+    ...item,
+    gender: (
+      <p
+        className={clsx(
+          item.gender === "Male" ? "bg-support-1" : "bg-support-2",
+          "p-2 rounded-lg text-white w-8 h-8 flex items-center justify-center"
+        )}
+      >
+        {item.gender.charAt(0).toUpperCase()}
+      </p>
+    ),
+  }));
+
   return (
     <div className="custom-flex-col gap-6">
       <div className="w-full gap-2 flex items-center justify-between flex-wrap">
         <div>
           <BackButton>
+            {/* Samuel, h1 child of h1, hydration error. Backbutton is h1 */}
             <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
               {fetchedBranchData?.branch?.branch_title || "Null"}
             </h1>
@@ -154,18 +164,12 @@ const BranchStaffPage = () => {
           ))}
         </AutoResizingGrid>
       ) : (
-        // <CustomTable
-        //   displayTableHead={false}
-        //   fields={fields}
-        //   data={fetchedBranchData?.staff || []}
-        //   tableBodyCellSx={{
-        //     border: "none",
-        //     textAlign: "left",
-        //   }}
-        //   evenRowColor="#fff"
-        //   oddRowColor="#F1F2F4"
-        // />
-        <>Next push</>
+        <CustomTable
+          fields={branchStaffTableFields}
+          data={transformedTableData}
+          tableBodyCellSx={{ fontSize: "1rem" }}
+          tableHeadCellSx={{ fontSize: "1rem", height: 70 }}
+        />
       )}
       <Pagination
         totalPages={total_pages}

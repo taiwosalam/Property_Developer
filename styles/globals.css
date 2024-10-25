@@ -249,6 +249,10 @@ button:disabled {
   border: none !important;
 }
 
+.ql-snow .ql-picker.ql-expanded .ql-picker-options {
+  z-index: 30 !important;
+}
+
 /* -------------------------------------------------------------- */
 
 .can-touch,
