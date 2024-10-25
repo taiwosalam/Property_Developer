@@ -39,7 +39,10 @@ const Security = () => {
       ...inputFields,
       { id: Date.now(), signature: SignatureImage },
     ]);
-    console.log("Input Fields after adding:", [...inputFields, { id: Date.now(), signature: SignatureImage }]); 
+    console.log("Input Fields after adding:", [
+      ...inputFields,
+      { id: Date.now(), signature: SignatureImage },
+    ]);
   };
 
   const removeInputField = (id: number) => {
@@ -48,22 +51,23 @@ const Security = () => {
     console.log("Input Fields after removing:", updatedFields);
   };
 
-  const changeSignatureImage = (index: number) => { 
+  const changeSignatureImage = (index: number) => {
     document.getElementById(`signature_input_${index}`)?.click();
   };
 
-  const handleSignatureChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const newSignature = URL.createObjectURL(e.target.files[0]);
-      setInputFields(
-        inputFields.map((inputField) =>
-          inputField.id === inputFields[index].id
-            ? { ...inputField, signature: newSignature }
-            : inputField
-        )
-      );
-    }
-  };
+  const handleSignatureChange =
+    (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files[0]) {
+        const newSignature = URL.createObjectURL(e.target.files[0]);
+        setInputFields(
+          inputFields.map((inputField) =>
+            inputField.id === inputFields[index].id
+              ? { ...inputField, signature: newSignature }
+              : inputField
+          )
+        );
+      }
+    };
 
   return (
     <>
@@ -123,21 +127,24 @@ const Security = () => {
                         className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
                       >
                         <Picture src={ImageBlue} alt="image icon" size={20} />
-                        <p className="text-brand-9 text-xs font-normal" onClick={() => changeSignatureImage(index)}>
+                        <p
+                          className="text-brand-9 text-xs font-normal"
+                          onClick={() => changeSignatureImage(index)}
+                        >
                           Change Image
                         </p>
                       </div>
-                    <input
-                      type="file"
-                      id={`signature_input_${index}`}
-                      name={`signature_${index}`}
-                      accept="image/*"
-                      onChange={handleSignatureChange(index)}
-                      className="hidden"
-                      ref={React.createRef()} 
+                      <input
+                        type="file"
+                        id={`signature_input_${index}`}
+                        name={`signature_${index}`}
+                        accept="image/*"
+                        onChange={handleSignatureChange(index)}
+                        className="hidden"
+                        ref={React.createRef()}
                       />
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-5 justify-between items-end">
+                    <div className="flex flex-col md:flex-row gap-5 justify-start md:justify-end md:items-end items-start">
                       <div className="flex-1">
                         <Input
                           id={`fullname_${index}`}
@@ -174,7 +181,7 @@ const Security = () => {
                   </React.Fragment>
                 ))}
                 <div className="flex items-end">
-                  <Button 
+                  <Button
                     size="xs_normal"
                     variant="light_red"
                     className="py-2 px-3 w-full sm:w-auto"
@@ -213,21 +220,21 @@ const Security = () => {
             title="Change Password"
             desc="Use this section to reset your account password."
           />
-          <div className="flex gap-5">
+          <div className="flex flex-col sm:flex-row gap-5">
             <Input
               id="current_password"
               label="current password"
-              className="w-[277px]"
+              className="w-full sm:w-[277px]"
             />
             <Input
               id="new_password"
               label="new password"
-              className="w-[277px]"
+              className="w-full sm:w-[277px]"
             />
             <Input
               id="re_enter_new_password"
               label="re-enter new password"
-              className="w-[277px]"
+              className="w-full sm:w-[277px]"
             />
           </div>
           <SettingsUpdateButton type="otp" />

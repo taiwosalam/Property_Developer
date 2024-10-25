@@ -38,10 +38,10 @@ const Appearance = () => {
   }, [setColor, selectedColor]);
 
   const handleSelect = (type: string, value: string) => {
-    if (!value) return; // Added check to prevent setting undefined values
+    if (!value) return; 
     switch (type) {
       case "theme":
-        setSelectedTheme(value);
+          setSelectedTheme(value);
         break;
       case "view":
         setSelectedView(value);
@@ -83,10 +83,6 @@ const Appearance = () => {
             onSelect={(value) => handleSelect("theme", value)}
             isSelected={selectedTheme === "theme1"}
           />
-          <Tooltip
-            title="Sorry, this theme is for Professional Plan subscribers only"
-            followCursor
-          >
             <div
               className="relative"
               title="Sorry, this theme is for Professional Plan subscribers only"
@@ -99,12 +95,7 @@ const Appearance = () => {
                 className="opacity-50 cursor-not-allowed"
               />
             </div>
-          </Tooltip>
 
-          <Tooltip
-            title="Sorry, this theme is for Professional Plan subscribers only"
-            followCursor
-          >
             <div
               className="relative"
               title="Sorry, this theme is for Professional Plan subscribers only"
@@ -117,7 +108,6 @@ const Appearance = () => {
                 className="opacity-50 cursor-not-allowed"
               />
             </div>
-          </Tooltip>
         </div>
         <div className="flex justify-end mt-4">
           <SettingsUpdateButton />

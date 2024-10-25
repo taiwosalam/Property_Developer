@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // Types
 import type { CustomTableProps } from "@/components/Table/types";
@@ -35,7 +35,6 @@ import { VerticalEllipsisIcon } from "@/public/icons/icons";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { Drawer } from "@mui/material";
 import SettingsLegalDrawer from "@/components/Settings/Modals/settings-legal-drawer";
-
 
 const Subscriptions = () => {
   const isDarkMode = useDarkMode();
@@ -99,7 +98,7 @@ const Subscriptions = () => {
     })
   );
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleOpenDrawer = () => {
     setIsDrawerOpen(true); // Function to open the drawer
@@ -117,7 +116,10 @@ const Subscriptions = () => {
           />
         </div>
       </SettingsSection>
-      <div className="line h-[1px] border border-dashed border-brand-9 opacity-50 w-full !px-0" style={{ paddingLeft: 0, paddingRight: 0 }}></div>
+      <div
+        className="line h-[1px] border border-dashed border-brand-9 opacity-50 w-full !px-0"
+        style={{ paddingLeft: 0, paddingRight: 0 }}
+      ></div>
       <div className="custom-flex-col gap-[18px]">
         <h2 className="text-primary-navy dark:text-white text-base font-medium">
           Adds On Subscriptions
@@ -165,8 +167,8 @@ const Subscriptions = () => {
                   <DocumentCheckbox darkText>
                     Automatically renew and update property listings.
                   </DocumentCheckbox>
-                  <div className="flex flex-col lg:flex-row gap-4">
-                    <div className="flex gap-4">
+                  <div className="flex gap-4 flex-col md:flex-row">
+                    <div className="flex flex-col gap-4 md:flex-row">
                       <Input
                         placeholder="123"
                         id="sponsor_unit_available"
@@ -183,7 +185,7 @@ const Subscriptions = () => {
                         </Button>
                       </div>
                     </div>
-                    <div className="flex gap-4">
+                    <div className="flex flex-col gap-4 md:flex-row">
                       <Input
                         id="sponsor-proprty"
                         label="Sponsor Proprty"
@@ -263,17 +265,27 @@ const Subscriptions = () => {
           <SettingsSection title="Legal Process">
             <div className="custom-flex-col gap-6">
               <SettingsSectionTitle desc="Property legal process encompasses the various legal procedures and steps involved in matters related to real estate and property ownership. These procedures are governed by laws and regulations established at local, state, and national levels." />
-              <div className="flex">
-                <Input
-                  id="property_unit_id"
-                  label="Enter Unit/Property ID"
-                  className="w-[277px]"
+              <div className="flex gap-2">
+                <Select
+                  options={["property 1", "property 2", "property 3"]}
+                  id="legal_process_property"
+                  value={""}
+                  label="Select property"
+                  className="w-full sm:w-1/2"
+                />
+                <Select
+                  options={["Unit 1", "Unit 2", "Unit 3"]}
+                  id="legal_process_unit"
+                  value={""}
+                  label="Select property Unit"
+                  className="w-full sm:w-1/2"
                 />
               </div>
-              <div className="w-full flex items-end justify-end">
-                <Button 
-                  className="bg-brand-9 text-white text-xs py-2 px-3 font-medium rounded-[4px]"
-                  onClick={handleOpenDrawer} // Update onClick to open the drawer
+              <div className="flex items-end justify-end mt-4">
+                <Button
+                  type="button"
+                  className="bg-brand-9 rounded-md text-white"
+                  onClick={handleOpenDrawer}
                 >
                   Proceed
                 </Button>
@@ -296,14 +308,14 @@ const Subscriptions = () => {
           </SettingsSection>
         </div>
       </div>
-      <Drawer 
-        anchor="bottom" 
-        open={isDrawerOpen} 
-        onClose={() => setIsDrawerOpen(false)} 
-        sx={{zIndex:1}}
+      <Drawer
+        anchor="bottom"
+        open={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        sx={{ zIndex: 1 }}
       >
-         <SettingsLegalDrawer onClose={() => setIsDrawerOpen(false)} />
-      </Drawer> 
+        <SettingsLegalDrawer onClose={() => setIsDrawerOpen(false)} />
+      </Drawer>
     </>
   );
 };

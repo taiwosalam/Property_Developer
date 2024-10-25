@@ -7,8 +7,12 @@ import Link from "next/link";
 
 const Enrollment = () => {
   const [showFeatures, setShowFeatures] = useState(false);
-  const [basicBillingType, setBasicBillingType] = useState<"monthly" | "yearly">("monthly");
-  const [premiumBillingType, setPremiumBillingType] = useState<"monthly" | "yearly">("monthly");
+  const [basicBillingType, setBasicBillingType] = useState<
+    "monthly" | "yearly"
+  >("monthly");
+  const [premiumBillingType, setPremiumBillingType] = useState<
+    "monthly" | "yearly"
+  >("monthly");
   const [basicQuantity, setBasicQuantity] = useState(1);
   const [premiumQuantity, setPremiumQuantity] = useState(1);
   const [basicIsLifeTimePlan, setBasicIsLifeTimePlan] = useState(false);
@@ -20,7 +24,8 @@ const Enrollment = () => {
     baseMonthly: number,
     planType: "basic" | "premium"
   ) => {
-    const limitedQuantity = billingType === "yearly" ? Math.min(quantity, 5) : quantity;
+    const limitedQuantity =
+      billingType === "yearly" ? Math.min(quantity, 5) : quantity;
     let basePrice = billingType === "monthly" ? baseMonthly : baseMonthly * 12;
     let discountText = "";
     let discount = "";
@@ -34,14 +39,20 @@ const Enrollment = () => {
 
     if (billingType === "monthly") {
       totalPrice = basePrice * limitedQuantity;
-      discount = planType === "basic" ? "(Billed at ₦40,950/year)" : "(Billed at ₦140,000/year)";
+      discount =
+        planType === "basic"
+          ? "(Billed at ₦40,950/year)"
+          : "(Billed at ₦140,000/year)";
     } else {
       if (quantity > 5) {
         totalPrice = "LIFE TIME PLAN";
         isLifeTimePlan = true;
-        discount = planType === "basic" ? "₦750,000/outrightly" : "₦2,000,000/outrightly";
+        discount =
+          planType === "basic"
+            ? "₦750,000/outrightly"
+            : "₦2,000,000/outrightly";
       } else {
-        const discounts = [0.025, 0.04, 0.06, 0.08, 0.10];
+        const discounts = [0.025, 0.04, 0.06, 0.08, 0.1];
         totalPrice = basePrice * limitedQuantity;
         const discountPercentage = discounts[limitedQuantity - 1];
         const discountAmount = totalPrice * discountPercentage;
@@ -52,27 +63,56 @@ const Enrollment = () => {
     }
 
     return {
-      price: typeof totalPrice === 'number' ? totalPrice.toLocaleString("en-NG", {
-        style: "currency",
-        currency: "NGN",
-      }) : totalPrice,
+      price:
+        typeof totalPrice === "number"
+          ? totalPrice.toLocaleString("en-NG", {
+              style: "currency",
+              currency: "NGN",
+            })
+          : totalPrice,
       discountText,
       discount,
-      duration: quantity > 5 && billingType === "yearly" ? "" : `${quantity}${quantity === 1 ? (billingType === "monthly" ? "m" : "y") : (billingType === "monthly" ? "m" : "y")}`,
-      isLifeTimePlan // Return the lifetime plan status
+      duration:
+        quantity > 5 && billingType === "yearly"
+          ? ""
+          : `${quantity}${
+              quantity === 1
+                ? billingType === "monthly"
+                  ? "m"
+                  : "y"
+                : billingType === "monthly"
+                ? "m"
+                : "y"
+            }`,
+      isLifeTimePlan, // Return the lifetime plan status
     };
   };
 
-  const incrementQuantity = (setter: React.Dispatch<React.SetStateAction<number>>, billingType: "monthly" | "yearly") => {
+  const incrementQuantity = (
+    setter: React.Dispatch<React.SetStateAction<number>>,
+    billingType: "monthly" | "yearly"
+  ) => {
     setter((prev) => Math.min(prev + 1, billingType === "yearly" ? 6 : 11));
   };
 
-  const decrementQuantity = (setter: React.Dispatch<React.SetStateAction<number>>) => {
+  const decrementQuantity = (
+    setter: React.Dispatch<React.SetStateAction<number>>
+  ) => {
     setter((prev) => Math.max(1, prev - 1));
   };
 
-  const basicPriceDetails = calculatePrice(basicBillingType, basicQuantity, 3500, "basic");
-  const premiumPriceDetails = calculatePrice(premiumBillingType, premiumQuantity, 12000, "premium");
+  const basicPriceDetails = calculatePrice(
+    basicBillingType,
+    basicQuantity,
+    3500,
+    "basic"
+  );
+  const premiumPriceDetails = calculatePrice(
+    premiumBillingType,
+    premiumQuantity,
+    12000,
+    "premium"
+  );
 
   useEffect(() => {
     setBasicIsLifeTimePlan(basicPriceDetails.isLifeTimePlan);
@@ -83,11 +123,11 @@ const Enrollment = () => {
     <SettingsSection title="Enrollment/Renewal">
       <h4 className="text-[14px] text-text-disabled">
         This subscription plan is for Property Manager module only. To view
-        other subscription plans, go to the respective module or switch from
-        the top left of the dashboard header.
+        other subscription plans, go to the respective module or switch from the
+        top left of the dashboard header.
       </h4>
 
-      <div className="flex flex-wrap gap-4 pricingWrapper mt-4">
+      <div className="flex mb-4 flex-nowrap overflow-x-auto custom-round-scrollbar gap-4 pricingWrapper mt-4">
         <SettingsEnrollmentCard
           planTitle="FREE PLAN"
           desc="Free plans offer a reduced set of features in comparison to paid alternatives, but provide users with trial options to explore the software without time constraints."
@@ -123,7 +163,9 @@ const Enrollment = () => {
           setShowFeatures={setShowFeatures}
           billingType={basicBillingType}
           quantity={basicQuantity}
-          incrementQuantity={() => incrementQuantity(setBasicQuantity, basicBillingType)}
+          incrementQuantity={() =>
+            incrementQuantity(setBasicQuantity, basicBillingType)
+          }
           decrementQuantity={() => decrementQuantity(setBasicQuantity)}
           isFree={false}
           onBillingTypeChange={(type) => setBasicBillingType(type)}
@@ -148,7 +190,9 @@ const Enrollment = () => {
           setShowFeatures={setShowFeatures}
           billingType={premiumBillingType}
           quantity={premiumQuantity}
-          incrementQuantity={() => incrementQuantity(setPremiumQuantity, premiumBillingType)}
+          incrementQuantity={() =>
+            incrementQuantity(setPremiumQuantity, premiumBillingType)
+          }
           decrementQuantity={() => decrementQuantity(setPremiumQuantity)}
           isFree={false}
           onBillingTypeChange={(type) => setPremiumBillingType(type)}
@@ -171,11 +215,11 @@ const Enrollment = () => {
           PROFESSIONAL PLAN
         </h3>
         <p className="text-sm max-w-[964px] text-text-secondary dark:text-darkText-1">
-          If none of the available plans meets your company&apos;s
-          standards, consider opting for the Professional plan. This plan
-          provides unlimited access to all software solutions. Professional
-          plans are ideal for established property managers who wish to
-          customize the software with their company&apos;s name and brand.
+          If none of the available plans meets your company&apos;s standards,
+          consider opting for the Professional plan. This plan provides
+          unlimited access to all software solutions. Professional plans are
+          ideal for established property managers who wish to customize the
+          software with their company&apos;s name and brand.
         </p>
 
         <h4 className="text-sm font-bold mt-4 text-text-secondary dark:text-white">
@@ -183,13 +227,13 @@ const Enrollment = () => {
         </h4>
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-0 justify-start w-full lg:justify-between flex-wrap">
           <strong className="leading-[150%] w-full lg:w-4/5 max-w-[750px]">
-            All plans benefit and all Ads-on Inclusive; API integrations,
-            SaaS, Whitelabel, Custom domain, Unlimited Branches, Director,
-            Staff and Property Creations. Dedicated account officer, 24/7
-            Support and training, Email integration, and SMS prefer name.
+            All plans benefit and all Ads-on Inclusive; API integrations, SaaS,
+            Whitelabel, Custom domain, Unlimited Branches, Director, Staff and
+            Property Creations. Dedicated account officer, 24/7 Support and
+            training, Email integration, and SMS prefer name.
           </strong>
 
-          <div className="w-1/2 lg:w-1/5 bg-brand-9 h-10 text-white px-4 py-2 rounded-md flex items-center justify-center">
+          <div className="w-full sm:w-1/2 lg:w-1/5 bg-brand-9 h-10 text-white px-4 py-2 rounded-md flex items-center justify-center">
             <Link href="#" className="">
               Read More
             </Link>
