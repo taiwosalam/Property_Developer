@@ -9,7 +9,6 @@ import Button from "@/components/Form/Button/button";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Pagination from "@/components/Pagination/pagination";
-import Picture from "@/components/Picture/picture";
 import SearchInput from "@/components/SearchInput/search-input";
 import {
   Select,
@@ -18,18 +17,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ExclamationMark } from "@/public/icons/icons";
+import { ExclamationMark, VerticalEllipsisIcon } from "@/public/icons/icons";
 import ExportButton from "@/components/reports/export-button";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import ThreeDotsVertical from "@/public/icons/three-dots-vertical.svg";
 import {
   Dropdown,
   DropdownContent,
   DropdownTrigger,
 } from "@/components/Dropdown/dropdown";
-import { accountingInvoiceOptionsWithDropdown } from "./date";
+import {
+  accountingInvoiceOptionsWithDropdown,
+  invoiceTableFields,
+  invoiceTableData,
+} from "./data";
 import Link from "next/link";
+import CustomTable from "@/components/Table/table";
+import { Menu, MenuItem } from "@mui/material";
 
 const AccountingInvoicePage = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -75,8 +79,86 @@ const AccountingInvoicePage = () => {
     // Add filtering logic here for branches
   };
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const transformedTableData = invoiceTableData.map((item) => ({
+    ...item,
+    custom_action: (
+      // Flawed
+      <Dropdown>
+        <DropdownTrigger
+          aria-label="action"
+          className="p-2 grid place-items-center mx-auto text-brand-10"
+        >
+          <VerticalEllipsisIcon />
+        </DropdownTrigger>
+        <DropdownContent>
+          <div className="w-[250px] bg-white dark:bg-darkText-primary custom-flex-col py-2 gap-2 text-text-secondary dark:text-darkText-1 text-base font-bold capitalize text-center">
+            <Link
+              href={`/accounting/invoice/${item.id}/manage`}
+              className="p-4"
+            >
+              Manage
+            </Link>
+            <Link
+              href={`/accounting/invoice/${item.id}/add-payment`}
+              className="p-4"
+            >
+              Add Payment
+            </Link>
+            <Link
+              href={`/accounting/invoice/${item.id}/print-invoice`}
+              className="p-4"
+            >
+              Print Invoice
+            </Link>
+          </div>
+        </DropdownContent>
+      </Dropdown>
+      // <>
+      //   <button
+      //     type="button"
+      //     aria-label="action"
+      //     className="p-2 grid place-items-center mx-auto text-brand-10"
+      //     onClick={handleMenuClick}
+      //   >
+      //     <VerticalEllipsisIcon />
+      //   </button>
+      //   <Menu
+      //     anchorEl={anchorEl}
+      //     open={open}
+      //     onClose={handleMenuClose}
+      //     MenuListProps={{
+      //       "aria-labelledby": "basic-button",
+      //     }}
+      //   >
+      //     <MenuItem onClick={handleMenuClose}>
+      //       <Link href={`/accounting/invoice/${item.id}/manage`}>Manage</Link>
+      //     </MenuItem>
+      //     <MenuItem onClick={handleMenuClose}>
+      //       <Link href={`/accounting/invoice/${item.id}/add-payment`}>
+      //         Add Payment
+      //       </Link>
+      //     </MenuItem>
+      //     <MenuItem onClick={handleMenuClose}>
+      //       <Link href={`/accounting/invoice/${item.id}/print-invoice`}>
+      //         Print Invoice
+      //       </Link>
+      //     </MenuItem>
+      //   </Menu>
+      // </>
+    ),
+  }));
+
   return (
-    <section className="space-y-8 mt-4">
+    <section className="space-y-8">
       <div className="space-y-4">
         <div className="w-full flex items-center justify-between">
           <div className="font-medium text-2xl flex items-center space-x-1">
@@ -130,7 +212,10 @@ const AccountingInvoicePage = () => {
               </Select>
             </div>
             <div className="flex items-center gap-4 flex-wrap">
-              <SearchInput placeholder="Search for Invoice" />
+              <SearchInput
+                placeholder="Search for Invoice"
+                className="max-w-[255px]"
+              />
               <Modal>
                 <ModalTrigger asChild>
                   <FilterButton />
@@ -171,90 +256,17 @@ const AccountingInvoicePage = () => {
           </AutoResizingGrid>
         </div>
       </div>
-      <div className="rounded-lg w-full overflow-x-scroll no-scrollbar pb-[200px]">
-        <table className="dash-table">
-          <colgroup>
-            <col className="min-w-[72px]" />
-            <col span={5} />
-            <col className="min-w-[72px]" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th></th>
-              <th>client name</th>
-              <th>invoive ID</th>
-              <th>payment reason</th>
-              <th>total amount</th>
-              <th>date</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array(10)
-              .fill(null)
-              .map((_, index) => (
-                <tr key={index}>
-                  <td>
-                    <Picture
-                      src={"/empty/avatar-1.svg"}
-                      alt="profile picture"
-                      rounded
-                      size={40}
-                    />
-                  </td>
-                  <td>
-                    <p>Amori Ademakinwa</p>
-                  </td>
-                  <td>
-                    <p>1234563456</p>
-                  </td>
-                  <td>
-                    <p>Rent cost: Start date: Sept 22, 2023 - Expiry date:</p>
-                  </td>
-                  <td>
-                    <p>₦35,000.00</p>
-                  </td>
-                  <td>
-                    <p>02/03/2024</p>
-                  </td>
-                  <td className="flex justify-center items-center">
-                    <Dropdown>
-                      <DropdownTrigger className="flex items-center justify-center">
-                        <Picture
-                          src={ThreeDotsVertical}
-                          alt="three dots vertical"
-                          size={24}
-                        />
-                      </DropdownTrigger>
-                      <DropdownContent>
-                        <div className="w-[250px] bg-white dark:bg-darkText-primary custom-flex-col py-2 gap-2 text-text-secondary dark:text-darkText-1 text-base font-bold capitalize text-center">
-                          <Link
-                            href={"/accounting/invoice/1/manage"}
-                            className="p-4"
-                          >
-                            Manage
-                          </Link>
-                          <Link
-                            href={"/accounting/invoice/1/add-payment"}
-                            className="p-4"
-                          >
-                            Add Payment
-                          </Link>
-                          <Link
-                            href={"/accounting/invoice/1/print-invoice"}
-                            className="p-4"
-                          >
-                            Print Invoice
-                          </Link>
-                        </div>
-                      </DropdownContent>
-                    </Dropdown>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
+      <CustomTable
+        fields={invoiceTableFields}
+        data={transformedTableData}
+        tableHeadStyle={{ height: "76px" }}
+        tableHeadCellSx={{ fontSize: "1rem" }}
+        tableBodyCellSx={{
+          fontSize: "1rem",
+          paddingTop: "12px",
+          paddingBottom: "12px",
+        }}
+      />
       <Pagination
         totalPages={5}
         currentPage={1}
