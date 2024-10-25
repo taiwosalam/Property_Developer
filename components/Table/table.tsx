@@ -138,6 +138,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     border: "none",
                     color: "#EFF6FF",
                     fontWeight: 500,
+                    fontSize: "14px",
                     whiteSpace: "nowrap",
                     ...tableHeadCellSx,
                   }}
@@ -172,6 +173,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     paddingBottom: "8px",
                     border: "none",
                     fontWeight: 500,
+                    fontSize: "14px",
                     textAlign: "left",
                     color: isDarkMode ? "#fff" : "#050901",
                     ...tableBodyCellSx,

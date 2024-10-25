@@ -1,3 +1,4 @@
+import type { Field } from "@/components/Table/types";
 export const reportsSmsFilterOptionsWithDropdown = [
   {
     label: "Tenant/Occupant",
@@ -15,4 +16,22 @@ export const reportsSmsFilterOptionsWithDropdown = [
       { label: "Branch 3", value: "Branch3" },
     ],
   },
+];
+
+export const smsTableFields: Field[] = [
+  { id: "0", label: "S/N", accessor: "S/N" },
+  { id: "1", label: "User ID", accessor: "user_id" },
+  {
+    id: "2",
+    label: "Client Name",
+    accessor: "client_name",
+  },
+  { id: "3", label: "Phone Number", accessor: "phone_number" },
+  {
+    id: "5",
+    label: "Date",
+    accessor: "date",
+  },
+  { id: "8", label: "Time", accessor: "time" },
+  { id: "9", accessor: "action" },
 ];

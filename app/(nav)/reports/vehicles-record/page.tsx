@@ -1,29 +1,13 @@
 "use client";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
-import type { Field } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { reportsVehiclesFilterOptionsWithDropdown } from "./data";
-import useDarkMode from "@/hooks/useCheckDarkMode";
-const VehiclesRecordReport = () => {
-  const isDarkMode = useDarkMode();
-  const fields: Field[] = [
-    { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "ID", accessor: "id" },
-    {
-      id: "2",
-      label: "Full Name",
-      accessor: "full_name",
-    },
-    { id: "3", label: "Plate Number", accessor: "plate_number" },
-    { id: "4", label: "Guest / Visitor", accessor: "guest_visitor" },
-    { id: "5", label: "Check In", accessor: "check_in" },
-    { id: "6", label: "Check Out", accessor: "check_out" },
-    { id: "7", label: "Passenger In", accessor: "passenger_in" },
-    { id: "8", label: "Passenger Out", accessor: "passenger_out" },
-    { id: "9", label: "Status", accessor: "status" },
-  ];
+import {
+  reportsVehiclesFilterOptionsWithDropdown,
+  vehicleRecordReportTableFields,
+} from "./data";
 
+const VehiclesRecordReport = () => {
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
       id: (index + 1).toString(),
@@ -61,25 +45,9 @@ const VehiclesRecordReport = () => {
         exportHref="/reports/vehicles-record/export"
       />
       <CustomTable
-        fields={fields}
+        fields={vehicleRecordReportTableFields}
         data={tableData}
-        tableHeadClassName="bg-brand-9 h-[45px]"
-        tableHeadCellSx={{
-          color: "#EFF6FF",
-          fontWeight: 500,
-          border: "none",
-          textAlign: "left",
-          fontSize: "14px",
-        }}
-        tableBodyCellSx={{
-          border: "none",
-          textAlign: "left",
-          fontWeight: 500,
-          color: isDarkMode ? "#fff" : "#050901",
-          fontSize: "14px",
-        }}
-        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
-        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
+        tableHeadClassName="h-[45px]"
       />
       <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>

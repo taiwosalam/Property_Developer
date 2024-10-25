@@ -1,38 +1,15 @@
 "use client";
 
 import CustomTable from "@/components/Table/table";
-import type { Field } from "@/components/Table/types";
+import { visitorsRequestTableFields } from "../data";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import Image from "next/image";
 import Button from "@/components/Form/Button/button";
-import { useRouter } from "next/navigation";
-import useDarkMode from "@/hooks/useCheckDarkMode";
+import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const ExportVisitors = () => {
-  const isDarkMode = useDarkMode();
-  const router = useRouter();
-  const fields: Field[] = [
-    { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "ID", accessor: "id" },
-    {
-      id: "2",
-      label: "Bracnh",
-      accessor: "branch",
-    },
-    { id: "3", label: "Property", accessor: "property_name" },
-    {
-      id: "5",
-      label: "Requester",
-      accessor: "requester",
-    },
-    { id: "6", label: "Visitor", accessor: "visitor" },
-    { id: "7", label: "Date", accessor: "date" },
-    { id: "8", label: "Check In", accessor: "check_in" },
-    { id: "9", label: "Check Out", accessor: "check_out" },
-  ];
-
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
       id: "123456789",
@@ -50,6 +27,7 @@ const ExportVisitors = () => {
 
   return (
     <div className="space-y-9 pb-[100px]">
+      <BackButton>Back</BackButton>
       <ExportPageHeader
         logo={empty}
         location="States and Local Govt"
@@ -61,25 +39,9 @@ const ExportVisitors = () => {
         Summary
       </p>
       <CustomTable
-        fields={fields}
+        fields={visitorsRequestTableFields}
         data={tableData}
-        tableHeadClassName="bg-brand-9 h-[45px]"
-        tableHeadCellSx={{
-          color: "#EFF6FF",
-          fontWeight: 500,
-          border: "none",
-          textAlign: "left",
-          fontSize: "14px",
-        }}
-        tableBodyCellSx={{
-          border: "none",
-          textAlign: "left",
-          fontWeight: 500,
-          color: isDarkMode ? "#fff" : "#050901",
-          fontSize: "14px",
-        }}
-        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
-        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
+        tableHeadClassName="h-[45px]"
       />
       <div className="w-fit ml-auto text-text-quaternary dark:text-darkText-1 text-base font-medium space-y-2">
         <p>Authorized Signature </p>
@@ -88,21 +50,12 @@ const ExportVisitors = () => {
           ESQ Taiwo Salam <br /> Legal Practitioner
         </p>
       </div>
-      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
-        <Button
-          size="custom"
-          className="py-2 px-8 font-bold text-sm lg:text-base"
-          style={{ color: "#0033C4", backgroundColor: "#EFF6FF" }}
-          onClick={() => router.back()}
-        >
-          Back
-        </Button>
-
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-end">
         <div className="flex gap-6">
           <Button
             size="custom"
             className="py-2 px-8 font-bold text-sm lg:text-base"
-            style={{ color: "#0033C4", backgroundColor: "#EFF6FF" }}
+           variant="sky_blue"
           >
             Download
           </Button>

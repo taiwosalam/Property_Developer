@@ -1,3 +1,5 @@
+import type { Field } from "@/components/Table/types";
+
 export const reportsListingsFilterOptionsWithDropdown = [
   {
     label: "Staff",
@@ -15,4 +17,22 @@ export const reportsListingsFilterOptionsWithDropdown = [
       { label: "Branch 3", value: "Branch3" },
     ],
   },
+];
+export const trackingTableFields: Field[] = [
+  { id: "0", label: "S/N", accessor: "S/N" },
+  { id: "1", label: "Username", accessor: "username" },
+  {
+    id: "2",
+    label: "Page Visit",
+    accessor: "page_visited",
+  },
+  { id: "3", label: "Action Taken", accessor: "action_taken" },
+  {
+    id: "5",
+    label: "IP Address",
+    accessor: "ip_address",
+  },
+  { id: "6", label: "Location", accessor: "location" },
+  { id: "7", label: "Date", accessor: "date" },
+  { id: "8", label: "Time", accessor: "time" },
 ];

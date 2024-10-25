@@ -2,30 +2,13 @@
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
-import type { Field } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { reportsCallsFilterOptionsWithDropdown } from "./data";
-import useDarkMode from "@/hooks/useCheckDarkMode";
-const Call = () => {
-  const isDarkMode = useDarkMode();
-  const fields: Field[] = [
-    { id: "0", label: "S/N", accessor: "S/N" },
-    { id: "1", label: "ID", accessor: "id" },
-    {
-      id: "2",
-      label: "Bracnh",
-      accessor: "branch",
-    },
-    { id: "3", label: "Property", accessor: "property_name" },
-    {
-      id: "5",
-      label: "Requester",
-      accessor: "requester",
-    },
-    { id: "7", label: "Requuest Date", accessor: "request_date" },
-    { id: "7", label: "Resolve Date & Time", accessor: "resolve_date_time" },
-  ];
+import {
+  reportsCallsFilterOptionsWithDropdown,
+  callRequestTablefields,
+} from "./data";
 
+const Call = () => {
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
       id: "123456789",
@@ -46,9 +29,20 @@ const Call = () => {
           title="Call Request"
           newData={34}
           total={657}
+          colorScheme={1}
         />
-        <ManagementStatistcsCard title="Resolved" newData={34} total={657} />
-        <ManagementStatistcsCard title="Unresolved" newData={34} total={657} />
+        <ManagementStatistcsCard
+          title="Resolved"
+          newData={34}
+          total={657}
+          colorScheme={2}
+        />
+        <ManagementStatistcsCard
+          title="Unresolved"
+          newData={34}
+          total={657}
+          colorScheme={3}
+        />
       </div>
       <FilterBar
         exports
@@ -65,29 +59,13 @@ const Call = () => {
         handleFilterApply={() => {}}
         filterOptions={[]}
         filterWithOptionsWithDropdown={reportsCallsFilterOptionsWithDropdown}
-        exportHref="/reports/calls/export"
+        exportHref="/reports/call/export"
         hasGridListToggle={false}
       />
       <CustomTable
-        fields={fields}
+        fields={callRequestTablefields}
         data={tableData}
-        tableHeadClassName="bg-brand-9 h-[45px]"
-        tableHeadCellSx={{
-          color: "#EFF6FF",
-          fontWeight: 500,
-          border: "none",
-          textAlign: "left",
-          fontSize: "14px",
-        }}
-        tableBodyCellSx={{
-          border: "none",
-          textAlign: "left",
-          fontWeight: 500,
-          color: isDarkMode ? "#fff" : "#050901",
-          fontSize: "14px",
-        }}
-        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
-        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
+        tableHeadClassName="h-[45px]"
       />
       <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>

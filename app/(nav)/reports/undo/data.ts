@@ -1,3 +1,5 @@
+import type { Field } from "@/components/Table/types";
+
 export const reportsUndoFilterOptionsWithDropdown = [
   {
     label: "Account Officer",
@@ -23,4 +25,23 @@ export const reportsUndoFilterOptionsWithDropdown = [
       { label: "Property 3", value: "Property3" },
     ],
   },
+];
+
+export const undoRequestTableFields: Field[] = [
+  { id: "0", label: "S/N", accessor: "S/N" },
+  { id: "1", label: "Event Deleted", accessor: "event_deleted" },
+  {
+    id: "2",
+    label: "Category",
+    accessor: "category",
+  },
+  { id: "3", label: "Branch", accessor: "branch" },
+  {
+    id: "5",
+    label: "Deleted By",
+    accessor: "deleted_by",
+  },
+  { id: "6", label: "Date Deleted", accessor: "date_deleted" },
+  { id: "7", label: "Time", accessor: "time" },
+  { id: "8", accessor: "action" },
 ];
