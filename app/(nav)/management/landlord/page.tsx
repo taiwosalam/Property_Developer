@@ -274,7 +274,14 @@ const Landlord = () => {
           <AutoResizingGrid minWidth={284} gap={16}>
             {landlords.map((l) => (
               <Link href={`/management/landlord/${l.id}/manage`} key={l.id}>
-                <LandlordCard {...l} cardType="landlord" />
+                <LandlordCard
+                  picture_url={l.picture_url || l.avatar}
+                  name={`${l.first_name} ${l.last_name}`}
+                  user_tag={l.user_tag}
+                  badge_color="red"
+                  email={l.email}
+                  phone_number={l.phone_number}
+                />
               </Link>
             ))}
           </AutoResizingGrid>
