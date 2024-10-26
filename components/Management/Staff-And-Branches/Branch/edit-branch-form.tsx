@@ -98,7 +98,7 @@ const EditBranchForm = ({
           <div className="custom-flex-col gap-2">
             <Label id="branch-description">branch description</Label>
             <TextArea
-              className="bg-white"
+              className="bg-white dark:bg-darkText-primary"
               id="branch-description"
               defaultValue={somedata?.branch?.branch_description}
             />

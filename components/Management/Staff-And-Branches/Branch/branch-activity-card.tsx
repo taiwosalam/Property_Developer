@@ -77,9 +77,11 @@ const BranchActivitiesCard: React.FC<BranchActivitiesCardProps> = ({
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="flex justify-between items-center p-4 bg-brand-1">
+      <div className="flex justify-between items-center p-4 bg-brand-1 dark:bg-[#3c3d37]">
         <div className="">
-          <h2 className="font-medium text-sm text-black">Branch Activities</h2>
+          <h2 className="font-medium text-sm text-black dark:text-white">
+            Branch Activities
+          </h2>
           <span className="text-text-label dark:text-darkText-2 text-sm font-medium">
             25 January 2023
           </span>
