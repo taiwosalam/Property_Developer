@@ -34,6 +34,10 @@ body {
   min-height: 100vh;
 }
 
+/* * {
+  outline: 1px solid red; //FOR CSS DEBUGGING
+} */
+
 #portal {
   position: fixed;
   inset: 0;

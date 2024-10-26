@@ -15,8 +15,11 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 import { Tooltip } from "@mui/material";
 import Image from "next/image";
+import useDarkMode from "@/hooks/useCheckDarkMode";
+import { toast } from "sonner";
 
 const Appearance = () => {
+  const isDarkMode = useDarkMode();
   const setColor = useThemeStoreSelectors.getState().setColor;
   const primaryColor = useThemeStoreSelectors.getState().primaryColor;
 
@@ -38,10 +41,10 @@ const Appearance = () => {
   }, [setColor, selectedColor]);
 
   const handleSelect = (type: string, value: string) => {
-    if (!value) return; 
+    if (!value) return;
     switch (type) {
       case "theme":
-          setSelectedTheme(value);
+        setSelectedTheme(value);
         break;
       case "view":
         setSelectedView(value);
@@ -56,9 +59,17 @@ const Appearance = () => {
   };
 
   const handleColorSelect = (color: string) => {
-    if (!color) return; // Added check to prevent setting undefined colors
-    setSelectedColor(color);
-    setCustomColor(color);
+    if (!color) return;
+    if (isDarkMode && color === "#050901") {
+      toast.error(
+        "Cannot set primary color to #050901 in dark mode. Setting to default color instead."
+      );
+      setSelectedColor("#0033c4"); // Set to the alternative color
+      setCustomColor("#0033c4");
+    } else {
+      setSelectedColor(color);
+      setCustomColor(color);
+    }
   };
 
   const handleCustomColorChange = (color: string) => {
@@ -83,31 +94,31 @@ const Appearance = () => {
             onSelect={(value) => handleSelect("theme", value)}
             isSelected={selectedTheme === "theme1"}
           />
-            <div
-              className="relative"
-              title="Sorry, this theme is for Professional Plan subscribers only"
-            >
-              <ThemeCard
-                img="/global/theme2.svg"
-                value="theme2"
-                onSelect={() => {}}
-                isSelected={false}
-                className="opacity-50 cursor-not-allowed"
-              />
-            </div>
+          <div
+            className="relative"
+            title="Sorry, this theme is for Professional Plan subscribers only"
+          >
+            <ThemeCard
+              img="/global/theme2.svg"
+              value="theme2"
+              onSelect={() => {}}
+              isSelected={false}
+              className="opacity-50 cursor-not-allowed"
+            />
+          </div>
 
-            <div
-              className="relative"
-              title="Sorry, this theme is for Professional Plan subscribers only"
-            >
-              <ThemeCard
-                img="/global/theme3.svg"
-                value="theme3"
-                onSelect={() => {}}
-                isSelected={false}
-                className="opacity-50 cursor-not-allowed"
-              />
-            </div>
+          <div
+            className="relative"
+            title="Sorry, this theme is for Professional Plan subscribers only"
+          >
+            <ThemeCard
+              img="/global/theme3.svg"
+              value="theme3"
+              onSelect={() => {}}
+              isSelected={false}
+              className="opacity-50 cursor-not-allowed"
+            />
+          </div>
         </div>
         <div className="flex justify-end mt-4">
           <SettingsUpdateButton />
@@ -214,18 +225,19 @@ const Appearance = () => {
           {customColor && !modalOpen && (
             <div
               className={`h-[40px] w-[40px] my-2 rounded-md text-base border border-gray-300 flex items-center justify-center cursor-pointer relative`}
-              style={{ backgroundColor: customColor }}>
-                  {selectedColor === customColor && (
-              <div className="absolute inset-0 flex items-center justify-center">
-              <Image
-                src="/icons/whitemark.svg"
-                alt="Selected"
-                width={24}
-                height={24}
-              />
+              style={{ backgroundColor: customColor }}
+            >
+              {selectedColor === customColor && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Image
+                    src="/icons/whitemark.svg"
+                    alt="Selected"
+                    width={24}
+                    height={24}
+                  />
+                </div>
+              )}
             </div>
-          )}
-          </div>
           )}
           <Modal
             state={{

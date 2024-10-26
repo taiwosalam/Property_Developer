@@ -61,12 +61,12 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
             />
           ))}
         <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
-          <div className="bg-brand-1 dark:bg-darkText-1 rounded py-1 px-1.5 grid place-items-center">
+          <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 grid place-items-center">
             <VideoIcon />
           </div>
-          <div className="bg-brand-1 dark:bg-darkText-1 dark:text-black rounded py-1 px-1.5 flex items-center gap-1.5">
+          <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />
-            <p className="text-black font-medium text-[10px]">
+            <p className="text-black dark:text-darkText-1 font-medium text-[10px]">
               +{mediaCount}
             </p>
           </div>
