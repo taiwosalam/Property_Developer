@@ -67,7 +67,7 @@ const Tenants = () => {
     } finally {
       setState((x) => ({ ...x, loading: false }));
     }
-  }, [accessToken]);
+  }, []);
 
   useEffect(() => {
     fetchLandlords();
