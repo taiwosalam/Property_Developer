@@ -88,7 +88,7 @@ const VehiclesRecordPage = () => {
           fontSize: "15px",
           padding: "18px 16px",
         }}
-        onActionClick={handleActionClick}
+        handleSelect={handleActionClick}
       />
       <Modal
         state={{

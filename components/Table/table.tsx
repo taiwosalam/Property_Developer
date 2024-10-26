@@ -181,6 +181,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     ...(field.accessor === "email"
                       ? { textTransform: "lowercase" }
                       : {}),
+                    ...(isDarkMode ? { color: "#fff" } : {}),
                   }}
                 >
                   {renderValue(
