@@ -12,10 +12,10 @@ export const RenewalRentDetails = (
         {/* Left Column */}
         <div className="w-full xl:w-3/5 space-y-6 py-10">
           <div>
-            <h6 className="text-[#092C4C] text-xl font-bold mb-2">
+            <h6 className="text-[#092C4C] dark:text-white text-xl font-bold mb-2">
               Renewal Rent Details
             </h6>
-            <div className="w-full bg-white shadow p-6 space-y-3 rounded-sm">
+            <div className="w-full bg-white dark:bg-darkText-primary shadow p-6 space-y-3 rounded-sm">
               <p className="text-[16px] text-brand-10">Rent Fee </p>
               <div className="w-full h-[2px] bg-[#C0C2C8] opacity-20"></div>
               <div className="grid grid-cols-2 gap-4">
@@ -30,10 +30,10 @@ export const RenewalRentDetails = (
             </div>
           </div>
           <div>
-            <h6 className="text-[#092C4C] text-xl font-bold mb-2">
+            <h6 className="text-[#092C4C] dark:text-white text-xl font-bold mb-2">
               Renewal Fee
             </h6>
-            <div className="w-full bg-white shadow p-6 space-y-3 rounded-sm">
+            <div className="w-full bg-white dark:bg-darkText-primary shadow p-6 space-y-3 rounded-sm">
               <p className="text-[16px] text-brand-10">{title}</p>
               <div className="w-full h-[2px] bg-[#C0C2C8]"></div>
               <div className="grid grid-cols-2 gap-4">
@@ -47,7 +47,7 @@ export const RenewalRentDetails = (
               </div>
               <div className="w-full flex items-center justify-between">
                 <div>
-                  <h3 className="text-[#747474] text-[16px] font-normal">
+                  <h3 className="text-[#747474] dark:text-darkText-1 text-[16px] font-normal">
                     Total Package
                   </h3>
                   <p className="text-xl font-bold text-brand-primary">
@@ -65,17 +65,21 @@ export const RenewalRentDetails = (
             </div>
           </div>
           <div className="space-y-7">
-            <h6 className="font-bold text-[#092C4C] text-xl mb-2">
+            <h6 className="font-bold text-[#092C4C] dark:text-white text-xl mb-2">
               Renew Rent
             </h6>
             <div className="w-full h-[1px] bg-[#C0C2C8] mb-4"></div>
             <div className="grid grid-cols-2 gap-4">
               <label className="block">
-                <span className="text-gray-700">Start Date</span>
+                <span className="text-gray-700 dark:text-darkText-1">
+                  Start Date
+                </span>
                 <DateInput id="start date" />
               </label>
               <label className="block">
-                <span className="text-gray-700">Due Date</span>
+                <span className="text-gray-700 dark:text-darkText-1">
+                  Due Date
+                </span>
                 <DateInput id="due date" />
               </label>
             </div>
@@ -96,12 +100,12 @@ export const RenewalRentDetails = (
                 ))}
               </div>
             </div>
-            <p className="mt-2 text-sm font-medium text-text-secondary">
+            <p className="mt-2 text-sm font-medium text-text-secondary dark:text-darkText-2">
               Confirms that you have received payment for the rent renewal.
               However, if you intend to receive the payment, you can click
               &apos;create invoice&apos; for tenants to make the payment.
             </p>
-            <h6 className="font-bold text-[#092C4C] text-xl">
+            <h6 className="font-bold text-[#092C4C] dark:text-white text-xl">
               Previous Rent Records
             </h6>
             <div className="w-full h-[1px] bg-[#C0C2C8] mb-4"></div>

@@ -25,18 +25,8 @@ export interface ServiceProviderData {
   local_government: string;
   company_details: CompanyDetails;
   bank_details: BankDetails;
-  documents: Document[];
   notes: {
     last_updated: string;
     write_up: string;
   };
-}
-
-export interface Document {
-  id: number;
-  name: string;
-  link: string;
-  date: string;
-  thumbnail?: string;
-  document_type: string;
 }

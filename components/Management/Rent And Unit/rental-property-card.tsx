@@ -58,7 +58,7 @@ const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
       {loaded && instanceRef.current && (
         <>
           <div className="absolute w-full flex items-center justify-between top-5 px-5">
-            <div className="bg-brand-1 rounded py-1 px-[6px] flex items-center space-x-1">
+            <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-[6px] flex items-center space-x-1">
               <CameraIcon width={16} height={16} />
               <span className="text-sm font-medium">
                 {currentSlide + 1 + "/" + images.length}

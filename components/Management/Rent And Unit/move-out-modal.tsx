@@ -27,7 +27,7 @@ const MoveOutModal = () => {
         </div>
       </div>
       {/* body */}
-      <div className="px-[30px] pt-6 pb-[30px]">
+      <div className="px-[30px] pt-6 pb-[30px] dark:bg-darkText-primary">
         <p className="text-sm mb-6">
           Your actions indicate that the tenants have already moved out from the
           current unit of the property, and the said unit is now available for

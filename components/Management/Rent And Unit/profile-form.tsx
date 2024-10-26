@@ -36,17 +36,17 @@ export const ProfileForm: React.FC<{ occupant: Occupant; title?: boolean }> = ({
           </Modal>
         </div>
       </div>
-      <h6 className="font-bold text-[#092C4C] text-xl">
+      <h6 className="font-bold text-[#092C4C] dark:text-white text-xl">
         Start {title ? "Rent" : "Counting"}
       </h6>
       <div className="w-full h-[1px] bg-[#C0C2C8] mb-4"></div>
       <div className="grid grid-cols-2 gap-4">
         <label className="block">
-          <span className="text-gray-700">Start Date</span>
+          <span className="text-gray-700 dark:text-darkText-1">Start Date</span>
           <DateInput id="start date" />
         </label>
         <label className="block">
-          <span className="text-gray-700">Due Date</span>
+          <span className="text-gray-700 dark:text-darkText-1">Due Date</span>
           <DateInput id="due date" />
         </label>
       </div>
