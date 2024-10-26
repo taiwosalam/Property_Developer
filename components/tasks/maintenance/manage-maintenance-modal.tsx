@@ -1,4 +1,3 @@
-import { CancelIcon, XIcon } from "@/public/icons/icons";
 import Input from "@/components/Form/Input/input";
 import DateInput from "@/components/Form/DateInput/date-input";
 import {
@@ -8,7 +7,6 @@ import {
 import { useEffect, useState } from "react";
 import { Dayjs } from "dayjs";
 import Button from "@/components/Form/Button/button";
-import { ModalTrigger } from "@/components/Modal/modal";
 import { useAuthStore } from "@/store/authstrore";
 import {
   deleteMaintenance,

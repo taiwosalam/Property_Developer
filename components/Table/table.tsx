@@ -98,14 +98,14 @@ const CustomTable: React.FC<CustomTableProps> = ({
   tableHeadStyle,
   tableHeadCellSx,
   tableBodyCellSx,
-  evenRowColor: propEvenRowColor,
-  oddRowColor: propOddRowColor,
+  // evenRowColor: propEvenRowColor,
+  // oddRowColor: propOddRowColor,
   onActionClick,
 }) => {
   const isDarkMode = useDarkMode();
 
-  const evenRowColor = propEvenRowColor || (isDarkMode ? "#3C3D37" : "#fff");
-  const oddRowColor = propOddRowColor || (isDarkMode ? "#020617" : "#eff6ff");
+  const evenRowColor = isDarkMode ? "#3C3D37" : "#fff";
+  const oddRowColor = isDarkMode ? "#020617" : "#eff6ff";
 
   return (
     <TableContainer
@@ -136,7 +136,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     paddingBottom: "14px",
                     maxHeight: "76px",
                     border: "none",
-                    color: "#EFF6FF",
+                    color: "#EFFFFF",
                     fontWeight: 500,
                     fontSize: "14px",
                     whiteSpace: "nowrap",
@@ -181,6 +181,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     ...(field.accessor === "email"
                       ? { textTransform: "lowercase" }
                       : {}),
+                    ...(isDarkMode ? { color: "#fff" } : {}),
                   }}
                 >
                   {renderValue(

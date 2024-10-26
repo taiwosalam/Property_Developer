@@ -199,7 +199,7 @@ export const MobileNotesModal: React.FC<{
   }, [notes]);
 
   return (
-    <LandlordTenantInfoBox className="w-[600px] max-w-[80%] max-h-[85%] bg-white dark:bg-darkText-primary rounded-lg overflow-auto custom-round-scrollbar">
+    <LandlordTenantInfoBox className="w-[600px] max-w-[80%] max-h-[85%] min-h-[250px] bg-white dark:bg-darkText-primary rounded-lg overflow-auto custom-round-scrollbar">
       <div className="flex justify-between gap-4 sticky z-[1] top-0 bg-white dark:bg-black">
         <div className="flex gap-2 items-center">
           <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-end gap-1">

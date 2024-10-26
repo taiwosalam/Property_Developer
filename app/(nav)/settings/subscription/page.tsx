@@ -32,30 +32,12 @@ import {
   DropdownTrigger,
 } from "@/components/Dropdown/dropdown";
 import { VerticalEllipsisIcon } from "@/public/icons/icons";
-import useDarkMode from "@/hooks/useCheckDarkMode";
 import { Drawer } from "@mui/material";
 import SettingsLegalDrawer from "@/components/Settings/Modals/settings-legal-drawer";
 
 const Subscriptions = () => {
-  const isDarkMode = useDarkMode();
   const table_style_props: Partial<CustomTableProps> = {
-    tableHeadClassName: "bg-brand-9 h-[45px]",
-    tableHeadCellSx: {
-      color: isDarkMode ? "#EFF6FF" : "#050901",
-      fontWeight: 500,
-      border: "none",
-      textAlign: "left",
-      fontSize: "14px",
-    },
-    tableBodyCellSx: {
-      border: "none",
-      textAlign: "left",
-      fontWeight: 500,
-      color: isDarkMode ? "#EFF6FF" : "#050901",
-      fontSize: "14px",
-    },
-    oddRowColor: isDarkMode ? "#101828" : "#fff",
-    evenRowColor: isDarkMode ? "#101828" : "#FAFAFA",
+    tableHeadClassName: "h-[45px]",
   };
 
   const transformedSubscriptions = current_subscriptions.data.map((data) => ({
@@ -82,6 +64,7 @@ const Subscriptions = () => {
           </p>
         </div>
       ),
+      // We need a solution for this
       // more: (
       //   <Dropdown>
       //     <DropdownTrigger className="p-2 flex items-center justify-center">

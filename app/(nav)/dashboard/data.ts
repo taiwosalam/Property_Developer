@@ -11,6 +11,7 @@ import {
   ListingsIcon,
 } from "@/public/icons/dashboard-cards/icons";
 import { subDays, format } from "date-fns";
+import type { Field } from "@/components/Table/types";
 
 function getBackgroundColor(title: string): string {
   let backgroundColor: string;
@@ -278,3 +279,49 @@ export const dashboardListingsChartData = Array.from({ length: 90 }, (_, i) => {
     enquiries: Math.floor(Math.random() * 50) + 20,
   };
 }).reverse();
+
+export const invoiceTableFields: Field[] = [
+  { id: "1", accessor: "picture", isImage: true, picSize: 40 },
+  {
+    id: "2",
+    label: "Name",
+    accessor: "name",
+  },
+  { id: "3", label: "Invoice ID", accessor: "invoice_id" },
+  {
+    id: "4",
+    label: "Details",
+    accessor: "details",
+    cellStyle: {
+      textOverflow: "ellipsis",
+      overflow: "hidden",
+      whiteSpace: "nowrap",
+      maxWidth: "350px",
+    },
+  },
+  { id: "5", label: "Total Amount", accessor: "total_amount" },
+  { id: "6", label: "Date", accessor: "date" },
+];
+
+export const dashboardInvoiceTableData = Array.from(
+  { length: 15 },
+  (_, index) => {
+    const names = [
+      "Samuel Fiyinfoluwa",
+      "Dada Teniola Emmanuel",
+      "Abdulrafiu Mubi",
+    ];
+    return {
+      id: `${index + 1}`,
+      picture: "/empty/SampleLandlord.jpeg",
+      name: names[index % names.length],
+      invoice_id: `INV${index + 1}`,
+      details:
+        "Rent Cost: Start date: September 02, 2024. Rent Cost: Start date: September 02, 2024.",
+      total_amount: `₦${(
+        Math.floor(Math.random() * 20000) + 102000
+      ).toLocaleString()}`,
+      date: "12/12/2034",
+    };
+  }
+);

@@ -6,7 +6,6 @@ import Button from "@/components/Form/Button/button";
 import TenantCard from "@/components/Management/landlord-and-tenant-card";
 import type { TenantProps } from "@/components/Management/Tenants/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import type { Field } from "@/components/Table/types";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import CustomTable from "@/components/Table/table";
 import Pagination from "@/components/Pagination/pagination";
@@ -14,7 +13,13 @@ import UserTag from "@/components/Tags/user-tag";
 import AddTenantModal from "@/components/Management/Tenants/add-tenant-modal";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
-import { defaultTenantPageData, getAllTenants, TenantPageState } from "./data";
+import {
+  defaultTenantPageData,
+  getAllTenants,
+  TenantPageState,
+  tenantTableFields,
+  mockData,
+} from "./data";
 import { useAuthStore } from "@/store/authstrore";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
@@ -51,14 +56,18 @@ const Tenants = () => {
 
   const fetchLandlords = useCallback(async () => {
     try {
-      const data = await getAllTenants(accessToken);
-      setState((x) => ({ ...x, tenantsPageData: data }));
+      // const data = await getAllTenants(accessToken);
+      // setState((x) => ({ ...x, tenantsPageData: data }));
+      setState((x) => ({
+        ...x,
+        tenantsPageData: { ...x.tenantsPageData, tenants: mockData },
+      }));
     } catch (error) {
       setState((x) => ({ ...x, error: error as Error }));
     } finally {
       setState((x) => ({ ...x, loading: false }));
     }
-  }, [accessToken]);
+  }, []);
 
   useEffect(() => {
     fetchLandlords();
@@ -156,59 +165,25 @@ const Tenants = () => {
     ),
     user_tag: <UserTag type={t.user_tag} />,
     "manage/chat": (
-      <div className="flex gap-x-[4%] items-center w-full text-white text-sm font-medium [&>*]:rounded-[4px] [&>*]:capitalize [&>*]:py-[8px] [&>*]:px-[32px] [&>*]:border-2 [&>*]:border-transparent">
-        <a
-          href={`/management/tenant/${t.id}/manage`}
-          className="bg-brand-9 hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9"
+      <div className="flex gap-x-[4%] items-center w-full">
+        <Button
+          href={`/management/tenants/${t.id}/manage`}
+          size="sm_medium"
+          className="px-8 py-2"
         >
           Manage
-        </a>
-        <button
-          type="button"
-          className="bg-brand-tertiary hover:bg-[#4892e5] active:bg-transparent active:text-brand-9 active:border-brand-tertiary"
+        </Button>
+        <Button
+          variant="sky_blue"
+          size="sm_medium"
+          className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white"
           onClick={() => onClickChat(t)}
         >
           Chat
-        </button>
+        </Button>
       </div>
     ),
   }));
-
-  const fields: Field[] = [
-    {
-      id: "1",
-      accessor: "picture_url",
-      isImage: true,
-      cellStyle: { paddingRight: "4px" },
-    },
-    {
-      id: "2",
-      accessor: "full_name",
-      cellStyle: {
-        paddingLeft: "4px",
-        fontWeight: 700,
-        minWidth: 150,
-      },
-    },
-    {
-      id: "3",
-      accessor: "email",
-      cellStyle: {
-        fontWeight: 500,
-        color: "#3F4247",
-        maxWidth: 200,
-        textOverflow: "ellipsis",
-        wordBreak: "break-all",
-      },
-    },
-    {
-      id: "4",
-      accessor: "phone_number",
-      cellStyle: { fontWeight: 500, color: "#3F4247" },
-    },
-    { id: "5", accessor: "user_tag" },
-    { id: "6", accessor: "manage/chat" },
-  ];
 
   if (loading)
     return (
@@ -277,21 +252,24 @@ const Tenants = () => {
           <AutoResizingGrid minWidth={284} gap={16}>
             {tenants.map((t) => (
               <Link href={`/management/tenants/${t.id}/manage`} key={t.id}>
-                <TenantCard key={t.id} {...t} cardType="tenant" />
+                <TenantCard
+                  key={t.id}
+                  picture_url={t.picture_url || t.avatar}
+                  name={`${t.first_name} ${t.last_name}`}
+                  user_tag={t.user_tag}
+                  badge_color="yellow"
+                  email={t.email}
+                  phone_number={t.phone_number}
+                />
               </Link>
             ))}
           </AutoResizingGrid>
         ) : (
           <CustomTable
             displayTableHead={false}
-            fields={fields}
+            fields={tenantTableFields}
             data={transformedTenants}
-            tableBodyCellSx={{
-              border: "none",
-              textAlign: "left",
-            }}
-            evenRowColor="#fff"
-            oddRowColor="#F1F2F4"
+            tableBodyCellSx={{ color: "#3F4247" }}
           />
         )}
         <Pagination

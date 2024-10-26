@@ -8,22 +8,47 @@ import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
+import { useState } from "react";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import DeleteInvoiceModal from "@/components/Accounting/invoice/delete-invoice-modal";
-import useDarkMode from "@/hooks/useCheckDarkMode";
 import BackButton from "@/components/BackButton/back-button";
 import { useRouter } from "next/navigation";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import {
+  currencySymbols,
+  formatCostInputValue,
+} from "@/utils/number-formatter";
+
+type InputField =
+  | "annualRent"
+  | "serviceCharge"
+  | "refundableCautionFee"
+  | "nonRefundableAgencyFee"
+  | "nonRefundableLegalFee";
 
 const ManageInvoice = () => {
+  const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
   const router = useRouter();
-
-  const isDarkMode = useDarkMode();
 
   const back = () => {
     router.back();
   };
 
+  const [inputValues, setInputValues] = useState<Record<InputField, string>>({
+    annualRent: "",
+    serviceCharge: "",
+    refundableCautionFee: "",
+    nonRefundableAgencyFee: "",
+    nonRefundableLegalFee: "",
+  });
+
+  const handleInputChange = (field: InputField, value: string) => {
+    setInputValues((prevValues) => ({
+      ...prevValues,
+      [field]: formatCostInputValue(value),
+    }));
+  };
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
@@ -61,37 +86,53 @@ const ManageInvoice = () => {
                 id="annual-rent"
                 label="Annual Rent"
                 required
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="1,000,000"
-                style={{ backgroundColor: isDarkMode ? "#1F2937" : "white" }}
+                inputClassName="bg-white"
+                value={inputValues.annualRent}
+                onChange={(value) => handleInputChange("annualRent", value)}
               />
               <Input
                 id="service-charge"
                 label="service charge"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "#1F2937" : "white" }}
+                inputClassName="bg-white"
+                value={inputValues.serviceCharge}
+                onChange={(value) => handleInputChange("serviceCharge", value)}
               />
               <Input
                 id="refundable-caution-fee"
                 label="refundable caution fee"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "#1F2937" : "white" }}
+                inputClassName="bg-white"
+                value={inputValues.refundableCautionFee}
+                onChange={(value) =>
+                  handleInputChange("refundableCautionFee", value)
+                }
               />
               <Input
                 id="non-refundable-agency-fee"
                 label="non refundable agency fee"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "#1F2937" : "white" }}
+                inputClassName="bg-white"
+                value={inputValues.nonRefundableAgencyFee}
+                onChange={(value) =>
+                  handleInputChange("nonRefundableAgencyFee", value)
+                }
               />
               <Input
                 id="non-refundable-legal-fee"
                 label="non refundable legal fee"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "#1F2937" : "white" }}
+                inputClassName="bg-white"
+                value={inputValues.nonRefundableLegalFee}
+                onChange={(value) =>
+                  handleInputChange("nonRefundableLegalFee", value)
+                }
               />
             </div>
           </div>
@@ -101,7 +142,7 @@ const ManageInvoice = () => {
           </p>
         </AccountingTitleSection>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[60px] flex gap-6 justify-end">
+      <FixedFooter className="flex items-center justify-between gap-4">
         <Modal>
           <ModalTrigger asChild>
             <Button variant="light_red" size="base_bold" className="py-2 px-8">
@@ -125,7 +166,7 @@ const ManageInvoice = () => {
             save
           </Button>
         </div>
-      </div>
+      </FixedFooter>
     </div>
   );
 };

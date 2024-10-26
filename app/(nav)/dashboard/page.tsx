@@ -17,6 +17,8 @@ import {
   dashboardPerformanceChartData,
   recentMessagesData,
   walletBalanceCardData,
+  invoiceTableFields,
+  dashboardInvoiceTableData,
 } from "./data";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import NotificationCard from "@/components/dashboard/notification-card";
@@ -24,7 +26,7 @@ import { DashboardChart } from "@/components/dashboard/chart";
 import DashboarddCalendar from "@/components/dashboard/Dashcalendar";
 import { SectionContainer } from "@/components/Section/section-components";
 import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
-import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import CustomTable from "@/components/Table/table";
 import Link from "next/link";
 
 const Dashboard = () => {
@@ -89,56 +91,12 @@ const Dashboard = () => {
       </div>
 
       <SectionContainer heading="Recent invoice" href="/accounting/invoice">
-        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar dark:bg-[#3C3D37]">
-          <table className="dash-table">
-            <colgroup>
-              <col className="w-[72px]" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th></th>
-                <th>client name</th>
-                <th>invoive ID</th>
-                <th>payment reason</th>
-                <th>total amount</th>
-                <th>date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array(5)
-                .fill(null)
-                .map((_, index) => (
-                  <tr key={index}>
-                    <td>
-                      <Image
-                        src={Avatar}
-                        alt="profile picture"
-                        className="min-w-10 w-10 h-10 rounded-full object-cover"
-                      />
-                    </td>
-                    <td>
-                      <div className="flex items-center">
-                        <p>Amori Ademakinwa</p>
-                        <BadgeIcon color="blue" />
-                      </div>
-                    </td>
-                    <td>
-                      <p>1234563456</p>
-                    </td>
-                    <td>
-                      <p>Rent cost: Start date: Sept 22, 2023 - Expiry date:</p>
-                    </td>
-                    <td>
-                      <p>₦35,000.00</p>
-                    </td>
-                    <td>
-                      <p>02/03/2024</p>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
+        <CustomTable
+          data={dashboardInvoiceTableData}
+          fields={invoiceTableFields}
+          tableBodyCellSx={{ fontSize: "1rem" }}
+          tableHeadCellSx={{ fontSize: "1rem" }}
+        />
       </SectionContainer>
       <SectionContainer heading="Recent Complains" href="/tasks/complaints">
         <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">

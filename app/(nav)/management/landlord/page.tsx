@@ -9,7 +9,6 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import Link from "next/link";
 import CustomTable from "@/components/Table/table";
 import type { LandlordProps } from "@/components/Management/Landlord/types";
-import type { Field } from "@/components/Table/types";
 import UserTag from "@/components/Tags/user-tag";
 import Pagination from "@/components/Pagination/pagination";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
@@ -19,6 +18,8 @@ import {
   getAllLandlords,
   getLandlordsHelpInfo,
   LandlordPageState,
+  landlordTableFields,
+  mockData,
 } from "./data";
 import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
@@ -76,8 +77,12 @@ const Landlord = () => {
   // Fetch the landlords when the component mounts
   const fetchLandlords = useCallback(async () => {
     try {
-      const data = await getAllLandlords(accessToken);
-      setState((x) => ({ ...x, landlordsPageData: data }));
+      // const data = await getAllLandlords(accessToken);
+      // setState((x) => ({ ...x, landlordsPageData: data }));
+      setState((x) => ({
+        ...x,
+        landlordsPageData: { ...x.landlordsPageData, landlords: mockData },
+      }));
     } catch (error) {
       setState((x) => ({ ...x, error: error as Error }));
     } finally {
@@ -180,55 +185,25 @@ const Landlord = () => {
     ),
     user_tag: <UserTag type={l.user_tag} />,
     "manage/chat": (
-      <div className="flex gap-x-[4%] items-center w-full text-white text-sm font-medium [&>*]:rounded-[4px] [&>*]:capitalize [&>*]:py-[8px] [&>*]:px-[32px] [&>*]:border-2 [&>*]:border-transparent">
-        <a
+      <div className="flex gap-x-[4%] items-center w-full">
+        <Button
           href={`/management/landlord/${l.id}/manage`}
-          className="bg-brand-9 hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9"
+          size="sm_medium"
+          className="px-8 py-2"
         >
           Manage
-        </a>
-        <button
-          type="button"
-          className="bg-brand-tertiary hover:bg-[#4892e5] active:bg-transparent active:text-brand-9 active:border-brand-tertiary"
+        </Button>
+        <Button
+          variant="sky_blue"
+          size="sm_medium"
+          className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white"
           onClick={() => onClickChat(l)}
         >
           Chat
-        </button>
+        </Button>
       </div>
     ),
   }));
-
-  const fields: Field[] = [
-    {
-      id: "1",
-      accessor: "picture_url",
-      isImage: true,
-      cellStyle: { paddingRight: "4px" },
-    },
-    {
-      id: "2",
-      accessor: "full_name",
-      cellStyle: { paddingLeft: "4px", fontWeight: 700, minWidth: 150 },
-    },
-    {
-      id: "3",
-      accessor: "email",
-      cellStyle: {
-        fontWeight: 500,
-        color: "#3F4247",
-        maxWidth: 200,
-        textOverflow: "ellipsis",
-        wordBreak: "break-all",
-      },
-    },
-    {
-      id: "4",
-      accessor: "phone_number",
-      cellStyle: { fontWeight: 500, color: "#3F4247" },
-    },
-    { id: "5", accessor: "user_tag" },
-    { id: "6", accessor: "manage/chat" },
-  ];
 
   if (loading)
     return (
@@ -304,21 +279,23 @@ const Landlord = () => {
           <AutoResizingGrid minWidth={284} gap={16}>
             {landlords.map((l) => (
               <Link href={`/management/landlord/${l.id}/manage`} key={l.id}>
-                <LandlordCard {...l} cardType="landlord" />
+                <LandlordCard
+                  picture_url={l.picture_url || l.avatar}
+                  name={`${l.first_name} ${l.last_name}`}
+                  user_tag={l.user_tag}
+                  badge_color="red"
+                  email={l.email}
+                  phone_number={l.phone_number}
+                />
               </Link>
             ))}
           </AutoResizingGrid>
         ) : (
           <CustomTable
             displayTableHead={false}
-            fields={fields}
+            fields={landlordTableFields}
             data={transformedLandlords}
-            tableBodyCellSx={{
-              border: "none",
-              textAlign: "left",
-            }}
-            evenRowColor="#fff"
-            oddRowColor="#F1F2F4"
+            tableBodyCellSx={{ color: "#3F4247" }}
           />
         )}
         <Pagination
