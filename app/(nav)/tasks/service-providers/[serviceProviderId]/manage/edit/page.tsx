@@ -10,7 +10,6 @@ import {
   ServiceProviderEditProfileInfoSection,
   ServiceProviderCompanyDetailsSection,
   ServiceProviderBankDetailsSection,
-  ServiceProviderAttachmentSection,
   ServiceProviderNotesSection,
   ServiceProviderEditAvatarInfoSection,
 } from "@/components/tasks/service-providers/service-provider-edit-info-sections";

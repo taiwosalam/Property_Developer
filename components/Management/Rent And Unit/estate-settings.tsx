@@ -14,10 +14,10 @@ const EstateSettings = ({
 }) => {
   return (
     <div
-      className="py-6 px-6 bg-white rounded-md space-y-4"
+      className="py-6 px-6 bg-white dark:bg-darkText-primary rounded-md space-y-4"
       style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
     >
-      <h6 className="font-bold text-[#092C4C] text-xl">
+      <h6 className="font-bold text-[#092C4C] dark:text-white text-xl">
         {!title ? "Estate Settings" : title}
       </h6>
       <div className="w-5/6 h-[1px] bg-[#C0C2C8] bg-opacity-20"></div>

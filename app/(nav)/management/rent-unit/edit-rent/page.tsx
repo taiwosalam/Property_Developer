@@ -16,8 +16,8 @@ import Image from "next/image";
 
 const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
   <div className="flex items-center">
-    <p className="text-[#747474] w-[140px]">{label}</p>
-    <p>{value}</p>
+    <p className="text-[#747474] w-[140px] dark:text-white">{label}</p>
+    <p className="dark:text-darkText-1">{value}</p>
   </div>
 );
 
@@ -33,10 +33,12 @@ const EditRent = () => {
       </Link>
       <section className="space-y-6 pb-16">
         <div
-          className="py-6 px-6 bg-white shadow rounded-md space-y-4"
+          className="py-6 px-6 bg-white dark:bg-darkText-primary shadow rounded-md space-y-4"
           style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
         >
-          <h6 className="font-bold text-[#092C4C] text-xl">Unit Details</h6>
+          <h6 className="font-bold text-[#092C4C] dark:text-white text-xl">
+            Unit Details
+          </h6>
           <div className="w-5/6 h-[1px] bg-[#C0C2C8] bg-opacity-20"></div>
           <div className="w-full">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-4">
@@ -64,7 +66,7 @@ const EditRent = () => {
         />
 
         <div>
-          <h6 className="font-bold text-[#092C4C] text-xl my-6">
+          <h6 className="font-bold text-[#092C4C] dark:text-white text-xl my-6">
             Rent Details
           </h6>
           <div className="grid md:grid-cols-2 xl:grid-cols-5 lg:gap-6">
@@ -137,11 +139,15 @@ const EditRent = () => {
               <RentSectionContainer title="Edit Current Rent">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-gray-600 mb-2">Payment date</p>
+                    <p className="text-gray-600 dark:text-darkText-1 mb-2">
+                      Payment date
+                    </p>
                     <DateInput id="payment_date" />
                   </div>
                   <div>
-                    <p className="text-gray-600 mb-2">Amount Paid</p>
+                    <p className="text-gray-600 dark:text-darkText-1 mb-2">
+                      Amount Paid
+                    </p>
                     <Input
                       id="amount_paid"
                       type="text"
@@ -161,17 +167,21 @@ const EditRent = () => {
               </RentSectionContainer>
 
               <div className="p-6">
-                <h1 className="font-bold text-[#092C4C] text-xl">
+                <h1 className="font-bold text-[#092C4C] dark:text-white text-xl">
                   Add Part Payment
                 </h1>
                 <div className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20 my-4"></div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-gray-600 mb-2">Amount</p>
+                    <p className="text-gray-600 dark:text-darkText-1 mb-2">
+                      Amount
+                    </p>
                     <Input id="amount" type="text" placeholder="₦" />
                   </div>
                   <div>
-                    <p className="text-gray-600 mb-2">Date</p>
+                    <p className="text-gray-600 dark:text-darkText-1 mb-2">
+                      Date
+                    </p>
                     <DateInput id="date" />
                   </div>
                 </div>
@@ -192,7 +202,7 @@ const EditRent = () => {
                     Update
                   </Button>
                 </div>
-                <p className="text-sm text-gray-600 mt-16 clear-both">
+                <p className="text-sm text-gray-600 dark:text-darkText-1 mt-16 clear-both">
                   Clicking &lsquo;update&rsquo; confirms the partial payment.
                   However, if you intend to receive the payment, you can click
                   &lsquo;create invoice&rsquo; for tenants to make the payment.
@@ -219,7 +229,7 @@ const EditRent = () => {
                         <p className="bg-status-success-1 text-status-success-3 font-normal text-xs rounded-lg w-[70px] mx-auto">
                           Mobile
                         </p>
-                        <p className="text-neutral-800 text-[16px] font-semibold">
+                        <p className="text-neutral-800 dark:text-darkText-1 text-[16px] font-semibold">
                           ID: 2212587645444
                         </p>
                       </div>
@@ -251,12 +261,12 @@ const EditRent = () => {
               </RentSectionContainer>
 
               <RentSectionContainer title="Transfer Tenants">
-                <p className="text-sm text-text-secondary mb-4">
+                <p className="text-sm text-text-secondary dark:text-darkText-2 mb-4">
                   Transfer tenants to another unit within the same property with
                   the option to calculate and deduct outstanding amounts from
                   the new unit.
                 </p>
-                <p className="text-sm text-text-secondary mb-4">
+                <p className="text-sm text-text-secondary dark:text-darkText-2 mb-4">
                   Alternatively move the same tenants from their current rental
                   property to another rental property with the option to pay
                   either the outstanding amounts or previous package or new
@@ -332,7 +342,7 @@ const EditRent = () => {
         </RentSectionContainer>
       </section>
 
-      <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
+      <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
         <button
           type="button"
           className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"

@@ -14,7 +14,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
 }) => {
   return (
     <div className="py-6 rounded-md space-y-4">
-      <h6 className="font-bold text-[#092C4C] text-xl">
+      <h6 className="font-bold text-[#092C4C] dark:text-white text-xl">
         {title || "Occupant"} Profile
       </h6>
       <div className="flex flex-wrap lg:flex-nowrap space-x-8">
