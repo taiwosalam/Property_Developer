@@ -19,14 +19,16 @@ import Select from "@/components/Form/Select/select";
 import { InventoryField } from "./inventory-components";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { ImageIcon } from "@/public/icons/icons";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
+  const isDarkMode = useDarkMode()
   const { preview, inputFileRef, handleImageChange } = useImageUploader({
     placeholder: data?.image,
   });
 
   const input_styles: CSSProperties = {
-    backgroundColor: "white dark:bg-darkText-primary",
+    backgroundColor: isDarkMode ? '#020617' : "white",
   };
 
   const selectImage = () => {
@@ -95,7 +97,7 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
             {edit && (
               <div
                 className="absolute inset-0 flex items-center justify-center"
-                // style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                style={{ backgroundColor: isDarkMode ? '#3C3D37' : '#fff' }}
               >
                 <input
                   type="file"

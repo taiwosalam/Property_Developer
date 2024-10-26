@@ -10,7 +10,12 @@ import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 
 // Icons
-import { MailIcon, ClipIcon, VerticalEllipsisIcon } from "@/public/icons/icons";
+import {
+  MailIcon,
+  ClipIcon,
+  VerticalEllipsisIcon,
+  ComplaintsListIcon,
+} from "@/public/icons/icons";
 import List from "@/public/icons/list.svg";
 import Drag from "@/public/icons/drag.svg";
 import { Modal, ModalContent } from "@/components/Modal/modal";
@@ -190,7 +195,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           <div>
             <div className="w-full flex items-center justify-between text-xs py-3">
               <div className="flex items-center align-middle">
-                <Image src={List} alt="theme" width={20} height={20} />
+                {/* <Image src={List} alt="theme" width={20} height={20} /> */}
+                <ComplaintsListIcon />
                 <p className="text-text-disabled font-bold capitalize">
                   {task.content.status}
                 </p>

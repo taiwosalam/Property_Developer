@@ -143,7 +143,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
             id="phone_number"
             label="phone number"
             // validationErrors={errorMsgs} //Teni pls do validaltion erros for this component
-            inputClassName="!bg-neutral-2"
+            inputClassName="!bg-neutral-2 dark:!bg-transparent"
           />
           <Input
             id="new-password"
