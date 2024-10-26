@@ -2,27 +2,17 @@
 import PageTitle from "@/components/PageTitle/page-title";
 import CustomTable from "@/components/Table/table";
 import Pagination from "@/components/Pagination/pagination";
-import type { Field } from "@/components/Table/types";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authstrore";
 import {
   calendarsrFilterOptionsWithDropdown,
   getAllEventsOnCalendar,
+  CalendarTableFields,
 } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const CalendarPage = () => {
-  const isDarkMode = useDarkMode();
   const access_token = useAuthStore((state) => state.access_token);
-  const fields: Field[] = [
-    { id: "1", label: "Date & Time", accessor: "date" },
-    { id: "2", label: "Event", accessor: "event" },
-    { id: "3", label: "creator", accessor: "creator" },
-    { id: "4", label: "property name", accessor: "property_name" },
-    { id: "5", label: "branch", accessor: "branch" },
-    { id: "6", label: "account officer", accessor: "account_officer" },
-  ];
 
   const [fetchedTabelData, setFetchedTableData] = useState([]);
 
@@ -73,24 +63,10 @@ const CalendarPage = () => {
         </p>
       </div>
       <CustomTable
-        fields={fields}
+        fields={CalendarTableFields}
         data={tableData}
-        evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
-        oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
-        tableHeadClassName="bg-brand-9 h-[45px]"
-        tableHeadCellSx={{
-          color: isDarkMode ? "#EFF6FF" : "#050901",
-          fontWeight: 500,
-          border: "none",
-          textAlign: "left",
-          fontSize: "14px",
-        }}
+        tableHeadClassName="h-[45px]"
         tableBodyCellSx={{
-          border: "none",
-          textAlign: "left",
-          fontWeight: 500,
-          color: isDarkMode ? "#fff" : "#050901",
-          fontSize: "14px",
           textTransform: "uppercase",
         }}
       />

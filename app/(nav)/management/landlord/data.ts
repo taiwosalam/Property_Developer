@@ -127,3 +127,19 @@ export const landlordTableFields: Field[] = [
   { id: "5", accessor: "user_tag" },
   { id: "6", accessor: "manage/chat" },
 ];
+
+const generateMockdata = (numItems: number) => {
+  const colors = ["red", "green", "black", "blue", "yellow", "gray"];
+  return Array.from({ length: numItems }, (_, index) => ({
+    id: `${index + 1}`,
+    picture_url: "/empty/SampleLandlord.jpeg",
+    first_name: `first_name${index + 1}`,
+    last_name: `last_name${index + 1}`,
+    user_tag: index % 2 === 0 ? "mobile" : "web",
+    email: `test${index + 1}@test.com`,
+    phone_number: `08012345678`,
+    badge_color: colors[index % colors.length],
+  })) as LandlordProps[];
+};
+
+export const mockData = generateMockdata(10);

@@ -99,15 +99,13 @@ const ServiceProviders = () => {
               key={index}
             >
               <ServiceProviderCard
-                id={index}
-                first_name="Allys"
-                last_name="Quantrill"
+                name="Allys Quantrill"
                 email="aquantrill0@tinypic.com"
                 user_tag={index % 2 === 0 ? "web" : "mobile"}
+                badge_color="yellow"
                 phone_number="1787991995"
                 picture_url={DefaultLandlordAvatar.src}
-                service="Plumber, Electrician"
-                cardType="service-provider"
+                other_info="Plumber, Electrician"
               />
             </Link>
           ))}

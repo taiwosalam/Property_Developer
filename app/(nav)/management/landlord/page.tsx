@@ -19,6 +19,7 @@ import {
   getLandlordsHelpInfo,
   LandlordPageState,
   landlordTableFields,
+  mockData,
 } from "./data";
 import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
@@ -76,8 +77,12 @@ const Landlord = () => {
   // Fetch the landlords when the component mounts
   const fetchLandlords = useCallback(async () => {
     try {
-      const data = await getAllLandlords(accessToken);
-      setState((x) => ({ ...x, landlordsPageData: data }));
+      // const data = await getAllLandlords(accessToken);
+      // setState((x) => ({ ...x, landlordsPageData: data }));
+      setState((x) => ({
+        ...x,
+        landlordsPageData: { ...x.landlordsPageData, landlords: mockData },
+      }));
     } catch (error) {
       setState((x) => ({ ...x, error: error as Error }));
     } finally {

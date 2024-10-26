@@ -23,7 +23,9 @@ interface RestrictUserFormProps {
 
 type Address = "selectedState" | "selectedLGA" | "selectedCity";
 
-const RestrictUserForm: React.FC<RestrictUserFormProps> = ({ submitAction }) => {
+const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
+  submitAction,
+}) => {
   const { preview, setPreview, inputFileRef, handleImageChange } =
     useImageUploader({
       placeholder: CameraCircle,
@@ -49,17 +51,16 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({ submitAction }) => 
         setState((prevState) => ({ ...prevState, errorMsgs: errors }))
       }
     >
-    <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center">
         <UserCard
-        full_name="Esq Abimbola Adedeji"
-        email="abimbola@gmail.com"
-        phone_number="+2348132086958"
-        picture_url="/empty/SampleLandlord.jpeg"
-        cardType="base"
-        user_tag="mobile"
-      />
+          name="Esq Abimbola Adedeji"
+          email="abimbola@gmail.com"
+          phone_number="+2348132086958"
+          picture_url="/empty/SampleLandlord.jpeg"
+          user_tag="mobile"
+        />
       </div>
-        <div className="flex items-center justify-center gap-8 w-full">
+      <div className="flex items-center justify-center gap-8 w-full">
         <Select
           validationErrors={errorMsgs}
           options={titles}
@@ -78,12 +79,17 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({ submitAction }) => 
           inputContainerClassName="bg-neutral-2"
           value={selectedState}
         />
-            </div>
-        <div className="flex w-full items-end justify-end">
-        <Button type="submit" size="base_bold" variant="light_red" className="py-2 px-8 ml-auto">
+      </div>
+      <div className="flex w-full items-end justify-end">
+        <Button
+          type="submit"
+          size="base_bold"
+          variant="light_red"
+          className="py-2 px-8 ml-auto"
+        >
           Restrict User
         </Button>
-        </div>
+      </div>
     </AuthForm>
   );
 };
