@@ -180,7 +180,7 @@ const Landlord = () => {
     ),
     user_tag: <UserTag type={l.user_tag} />,
     "manage/chat": (
-      <div className="flex gap-x-[4%] items-center w-full text-sm">
+      <div className="flex gap-x-[4%] items-center w-full">
         <Button
           href={`/management/landlord/${l.id}/manage`}
           size="sm_medium"
