@@ -1,7 +1,7 @@
 "use client";
 import clsx from "clsx";
 import BackButton from "@/components/BackButton/back-button";
-import TenantCard from "@/components/Management/landlord-and-tenant-card";
+import UserCard from "@/components/Management/landlord-and-tenant-card";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import Button from "@/components/Form/Button/button";
 import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-staff-modal";
@@ -153,13 +153,12 @@ const BranchStaffPage = () => {
         <AutoResizingGrid minWidth={284}>
           {Array.from({ length: 20 }).map((_, index) => (
             <Link key={index} href="">
-              <TenantCard
-                cardType="staff"
+              <UserCard
+                badge_color="black"
                 email="test@test.com"
-                first_name="John"
-                last_name="Doe"
+                name="John Doe"
                 phone_number="123-456-7890"
-                role="Manager"
+                user_tag="Manager"
                 picture_url=""
               />
             </Link>
