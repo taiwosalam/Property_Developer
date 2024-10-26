@@ -1,5 +1,20 @@
 import { parseToHsl } from "polished";
 
+export const defaultColor = "#0033c4";
+
+export const defaultColorsMap = {
+  "--brand-1": "#eff6ff",
+  "--brand-2": "#dbeafe",
+  "--brand-3": "#bfdbfe",
+  "--brand-5": "#60a5fa",
+  "--brand-7": "#2563eb",
+  "--brand-9": defaultColor,
+  "--brand-10": "#1e3a8a",
+  "--brand-primary": "#315ee7",
+  "--brand-secondary": "#6083ed",
+  "--brand-tertiary": "#93c5fd",
+};
+
 export const setCSSVariables = (variables: Record<string, string>) => {
   const root = document.documentElement;
   Object.entries(variables).forEach(([key, value]) => {
@@ -8,19 +23,7 @@ export const setCSSVariables = (variables: Record<string, string>) => {
 };
 
 export const updateBrandColors = (primaryColor: string) => {
-  const defaultColor = "#0033c4";
-  const defaultColorsMap = {
-    "--brand-1": "#eff6ff",
-    "--brand-2": "#dbeafe",
-    "--brand-3": "#bfdbfe",
-    "--brand-5": "#60a5fa",
-    "--brand-7": "#2563eb",
-    "--brand-9": defaultColor,
-    "--brand-10": "#1e3a8a",
-    "--brand-primary": "#315ee7",
-    "--brand-secondary": "#6083ed",
-    "--brand-tertiary": "#93c5fd",
-  };
+
   if (primaryColor.toLowerCase() === defaultColor) {
     // Use default CSS values
     setCSSVariables(defaultColorsMap);
