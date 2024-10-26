@@ -17,10 +17,8 @@ import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import CustomLoader from "@/components/Loader/CustomLoader";
-import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const StaffAndBranches = () => {
-  const isDarkMode = useDarkMode();
   const router = useRouter();
   const initialState: StaffAndBranchPageState = {
     gridView: true,
@@ -205,7 +203,6 @@ const StaffAndBranches = () => {
 
   if (error) return <div>Error: {error.message}</div>;
 
-
   return (
     <div className="space-y-9">
       <div className="page-header-container">
@@ -276,20 +273,6 @@ const StaffAndBranches = () => {
               borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
             }}
             handleSelect={handleSelectTableItem}
-            tableHeadCellSx={{
-              color: isDarkMode ? "#EFF6FF" : "#050901",
-              fontWeight: 500,
-              border: "none",
-              textAlign: "left",
-            }}
-            tableBodyCellSx={{
-              fontWeight: 500,
-              color: isDarkMode ? "#fff" : "#050901",
-              border: "none",
-              textAlign: "left",
-            }}
-            evenRowColor={isDarkMode ? "#3C3D37" : "#fff"}
-            oddRowColor={isDarkMode ? "#020617" : "#FAFAFA"}
           />
         )}
         <Pagination

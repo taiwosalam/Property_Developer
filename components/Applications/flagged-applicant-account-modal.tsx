@@ -19,14 +19,12 @@ const FlaggedApplicantAccountModal = () => {
                 Previous Manager
               </p>
               <UserCard
-                id={"1"}
-                last_name="abah"
+                name="David abah"
                 user_tag="web"
-                cardType="landlord"
-                first_name="david"
                 email="example@gmail.com"
                 phone_number="08132086958"
                 picture_url="/empty/SampleLandlord.jpeg"
+                badge_color="black"
               />
             </div>
             <div className="custom-flex-col gap-2 flex-1">
@@ -34,14 +32,12 @@ const FlaggedApplicantAccountModal = () => {
                 Applicant Information
               </p>
               <UserCard
-                id={"1"}
-                last_name="abah"
+                name="David abah"
                 user_tag="web"
-                cardType="landlord"
-                first_name="david"
                 email="example@gmail.com"
                 phone_number="08132086958"
                 picture_url="/empty/SampleLandlord.jpeg"
+                badge_color="black"
               />
             </div>
           </div>
