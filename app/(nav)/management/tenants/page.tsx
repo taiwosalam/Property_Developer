@@ -6,7 +6,6 @@ import Button from "@/components/Form/Button/button";
 import TenantCard from "@/components/Management/landlord-and-tenant-card";
 import type { TenantProps } from "@/components/Management/Tenants/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import type { Field } from "@/components/Table/types";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import CustomTable from "@/components/Table/table";
 import Pagination from "@/components/Pagination/pagination";
@@ -19,6 +18,7 @@ import {
   getAllTenants,
   TenantPageState,
   tenantTableFields,
+  mockData,
 } from "./data";
 import { useAuthStore } from "@/store/authstrore";
 import Link from "next/link";
@@ -56,8 +56,12 @@ const Tenants = () => {
 
   const fetchLandlords = useCallback(async () => {
     try {
-      const data = await getAllTenants(accessToken);
-      setState((x) => ({ ...x, tenantsPageData: data }));
+      // const data = await getAllTenants(accessToken);
+      // setState((x) => ({ ...x, tenantsPageData: data }));
+      setState((x) => ({
+        ...x,
+        tenantsPageData: { ...x.tenantsPageData, tenants: mockData },
+      }));
     } catch (error) {
       setState((x) => ({ ...x, error: error as Error }));
     } finally {

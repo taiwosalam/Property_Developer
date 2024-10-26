@@ -24,7 +24,7 @@ const UserCard: React.FC<UserCardProps> = ({
 }) => {
   return (
     <div
-      className="border border-brand-tertiary bg-[#F9F9F9] dark:bg-[#020617] dark:border-[#3C3D37] p-2 rounded-lg flex gap-2 items-start"
+      className="h-full border border-brand-tertiary bg-[#F9F9F9] dark:bg-[#020617] dark:border-[#3C3D37] p-2 rounded-lg flex gap-2 items-start"
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="rounded-lg relative overflow-hidden flex-shrink-0 w-[82px] h-[90px]">
