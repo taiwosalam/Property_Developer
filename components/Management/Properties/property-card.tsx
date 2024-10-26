@@ -91,7 +91,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         </button>
 
         {/* Top left corner */}
-        <div className="absolute z-[2] top-2 left-2 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute z-[2] top-2 left-2 bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <CameraIcon width={16} height={16} />
           <span className="text-sm font-medium">
             {`${imageIndex + 1}/${images.length}`}
@@ -100,11 +100,13 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
         {/* Bottom right corner */}
         <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
-          <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+          <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />
-            <p className="text-black font-medium text-[10px]">+23</p>
+            <p className="text-black dark:text-darkText-1 font-medium text-[10px]">
+              +23
+            </p>
           </div>
-          <div className="bg-brand-1 rounded py-1 px-1.5 grid place-items-center">
+          <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 grid place-items-center">
             <VideoIcon />
           </div>
         </div>
@@ -201,7 +203,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             <p className="text-brand-primary text-lg lg:text-xl font-bold">{`${
               currencySymbols["NAIRA"]
             }${formatNumber(price)}`}</p>
-            <p className="text-[#606060] dark:text-darkText-1 font-normal text-xs">Annual Returns</p>
+            <p className="text-[#606060] dark:text-darkText-1 font-normal text-xs">
+              Annual Returns
+            </p>
             <p className="text-text-disabled font-medium text-sm">
               <span className="text-highlight">{`${
                 currencySymbols["NAIRA"]
