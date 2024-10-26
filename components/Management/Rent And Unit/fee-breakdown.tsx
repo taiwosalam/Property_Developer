@@ -12,11 +12,11 @@ export const FeeBreakdown: React.FC<{
 
   return (
     <div className="space-y-8">
-      <h6 className="my-4 font-bold text-[#092C4C] text-xl">
+      <h6 className="my-4 font-bold text-[#092C4C] dark:text-white text-xl">
         {title1 || "Estate Fee"}
       </h6>
-      <div className="py-4 px-6 bg-white shadow-lg rounded-md space-y-2">
-        <h6 className="font-bold text-[#092C4C] text-xl">
+      <div className="py-4 px-6 bg-white dark:bg-darkText-primary shadow-lg rounded-md space-y-2">
+        <h6 className="font-bold text-[#092C4C] dark:text-white text-xl">
           {title2 || "Occupant Fee"}
         </h6>
         <div className="w-full h-[1px] bg-[#C0C2C8] mb-4"></div>
@@ -26,13 +26,15 @@ export const FeeBreakdown: React.FC<{
               key={index}
               className="w-2/3 flex items-center justify-between space-y-2"
             >
-              <span>{fee.name}</span>
-              <span className="text-black">₦{fee.amount.toLocaleString()}</span>
+              <span className="dark:text-white">{fee.name}</span>
+              <span className="text-black dark:text-darkText-2">
+                ₦{fee.amount.toLocaleString()}
+              </span>
             </div>
           ))}
 
           <div className="mt-4 font-bold">
-            <p>Total Package</p>
+            <p className="dark:text-white">Total Package</p>
             <p className="text-xl text-brand-9">₦{totalFee}</p>
           </div>
 

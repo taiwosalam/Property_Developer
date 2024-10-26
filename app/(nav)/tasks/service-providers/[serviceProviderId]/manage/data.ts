@@ -28,53 +28,5 @@ export const serviceProviderData: ServiceProviderData = {
     write_up:
       "Hello World How are you doing today? Dont come late to work tomorrow and dont come last in your exams",
   },
-  documents: [
-    {
-      id: 1,
-      name: "FBI Report Highly Classified",
-      link: "https://example.com/sample-attachment.pdf",
-      date: "2021-01-01",
-      thumbnail: "/empty/SampleLandlord.jpeg",
-      document_type: "invoice",
-    },
-    {
-      id: 2,
-      name: "MI6 Report Highly Classified",
-      link: "https://example.com/sample-attachment.pdf",
-      date: "2021-01-01",
-      thumbnail: "/empty/SampleLandlord2.svg",
-      document_type: "invoice",
-    },
-    {
-      id: 3,
-      name: "CIA Report",
-      link: "https://example.com/sample-attachment.pdf",
-      date: "2021-01-01",
-      thumbnail: "/empty/SampleLogo.jpeg",
-      document_type: "receipt",
-    },
-    {
-      id: 4,
-      name: "NSA Report",
-      link: "https://example.com/sample-attachment.pdf",
-      date: "2021-01-01",
-      thumbnail: "/empty/SampleProperty.jpeg",
-      document_type: "receipt",
-    },
 
-    {
-      id: 5,
-      name: "Classified MI6 Info",
-      link: "https://example.com/sample-attachment.pdf",
-      date: "2021-01-01",
-      document_type: "other document",
-    },
-    {
-      id: 6,
-      name: "Highly Classified FBI Database",
-      link: "https://example.com/sample-attachment.pdf",
-      date: "2021-01-01",
-      document_type: "other document",
-    },
-  ],
 };

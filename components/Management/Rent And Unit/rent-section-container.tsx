@@ -10,10 +10,12 @@ export const RentSectionContainer = ({
   hidebar?: boolean;
 }) => (
   <div
-    className="bg-white p-6 rounded-lg"
+    className="bg-white p-6 rounded-lg dark:bg-darkText-primary"
     style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
   >
-    <h2 className="font-bold text-[#092C4C] text-xl">{title}</h2>
+    <h2 className="font-bold text-[#092C4C] dark:text-white text-xl">
+      {title}
+    </h2>
     <div
       className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20 my-4"
       hidden={hidebar}

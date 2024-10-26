@@ -1,8 +1,9 @@
+"use client";
+import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { CSSProperties } from "react";
 import Link from "next/link";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
-import { useState, useEffect } from "react";
 import Button from "../Form/Button/button";
 import { ModalTrigger } from "../Modal/modal";
 import TextArea from "../Form/TextArea/textarea";

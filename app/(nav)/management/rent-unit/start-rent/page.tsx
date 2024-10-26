@@ -54,10 +54,10 @@ const StartRent = () => {
           }}
         />
       </section>
-      <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
+      <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
         <button
           type="button"
-          className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
+          className="bg-brand-1 dark:bg-darkText-primary text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
           //   onClick={() => {}}
         >
           Exit

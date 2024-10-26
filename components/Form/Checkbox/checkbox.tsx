@@ -29,7 +29,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ children, checked, onChange }) => {
         height={24}
         className="w-6 h-6"
       />
-      <p className="text-text-secondary text-base font-medium capitalize">
+      <p className="text-text-secondary dark:text-darkText-1 text-base font-medium capitalize">
         {children}
       </p>
     </button>
