@@ -35,8 +35,10 @@ import {
 } from "@/public/icons/icons";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { toast } from "sonner";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const Header = () => {
+  const isDarkMode = useDarkMode();
   const { loading, data: dashboardData, error } = useDashboardData();
   const { isMobile } = useWindowWidth();
 
