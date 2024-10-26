@@ -2,7 +2,7 @@
 import type { LandlordTenantModalPresetProps } from "./types";
 
 import { ModalTrigger } from "../Modal/modal";
-import { ChevronLeft, DeleteIconX } from "@/public/icons/icons";
+import { ChevronLeft, NavCloseIcon } from "@/public/icons/icons";
 import { SectionSeparator } from "../Section/section-components";
 
 const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
@@ -11,6 +11,7 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   style,
   heading,
   children,
+  lightSeparator,
 }) => {
   return (
     <div
@@ -32,10 +33,10 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
             </p>
           </div>
           <ModalTrigger close className="p-2" aria-label="close">
-            <DeleteIconX size={34} />
+            <NavCloseIcon />
           </ModalTrigger>
         </div>
-        <SectionSeparator className="!bg-[#B8B8B8]" />
+        <SectionSeparator className={!lightSeparator ? "!bg-[#B8B8B8]" : ""} />
       </div>
 
       {/* body */}
@@ -45,3 +46,6 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
 };
 
 export default LandlordTenantModalPreset;
+//  <p className="text-text-disabled text-sm font-normal">
+//    Search for properties, units, rent, tenant/occupant, task, & more
+//  </p>;
