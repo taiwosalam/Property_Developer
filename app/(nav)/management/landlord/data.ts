@@ -1,5 +1,6 @@
 // data.ts
 import { LandlordProps } from "@/components/Management/Landlord/types";
+import { Field } from "@/components/Table/table";
 
 export interface LandlordsPageData {
   total_landlords: number;
@@ -93,3 +94,37 @@ export const getLandlordsHelpInfo = async () => {
     return { success: "False", error: (error as Error).message };
   }
 };
+
+export const landlordTableFields: Field[] = [
+  {
+    id: "1",
+    accessor: "picture_url",
+    isImage: true,
+    cellStyle: { paddingRight: "4px" },
+  },
+  {
+    id: "2",
+    accessor: "full_name",
+    cellStyle: {
+      paddingLeft: "4px",
+      fontWeight: 700,
+      minWidth: 150,
+      color: "#000",
+    },
+  },
+  {
+    id: "3",
+    accessor: "email",
+    cellStyle: {
+      maxWidth: 200,
+      textOverflow: "ellipsis",
+      wordBreak: "break-all",
+    },
+  },
+  {
+    id: "4",
+    accessor: "phone_number",
+  },
+  { id: "5", accessor: "user_tag" },
+  { id: "6", accessor: "manage/chat" },
+];

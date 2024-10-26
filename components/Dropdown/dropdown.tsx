@@ -37,6 +37,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
 export const DropdownTrigger: React.FC<DropdownTriggerProps> = ({
   className,
+  children,
   ...props
 }) => {
   const { isOpen, setIsOpen } = useDropdownContext();
@@ -52,7 +53,9 @@ export const DropdownTrigger: React.FC<DropdownTriggerProps> = ({
       className={clsx("text-start", className)}
       {...props}
       onClick={handleClick}
-    />
+    >
+      {children}
+    </button>
   );
 };
 
@@ -69,8 +72,8 @@ export const DropdownContent: React.FC<DropdownContentProps> = ({
       className={clsx(
         "absolute z-10 bg-white dark:bg-darkText-primary border border-solid border-neutral-4 dark:border-[#3C3D37] rounded-lg overflow-hidden",
         {
-          "opacity-100 pointer-events-auto visible": isOpen,
-          "opacity-0 pointer-events-none invisible": !isOpen,
+          "opacity-100 pointer-events-auto block": isOpen,
+          "opacity-0 pointer-events-none hidden": !isOpen,
           "top-[110%]": direction === "down",
           "bottom-[110%]": direction === "up",
           "left-0": position === "left",
