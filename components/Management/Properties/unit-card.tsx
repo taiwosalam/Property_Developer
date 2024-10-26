@@ -56,9 +56,11 @@ const UnitCard: React.FC<UnitCardProps> = ({
               className="absolute inset-0 custom-flex-col justify-between p-3"
             >
               <div className="flex justify-end">
-                <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+                <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
                   <CameraIcon />
-                  <p className="text-black font-medium text-[10px]">+23</p>
+                  <p className="text-black dark:text-white font-medium text-[10px]">
+                    +23
+                  </p>
                 </div>
               </div>
               <div className="flex justify-center">

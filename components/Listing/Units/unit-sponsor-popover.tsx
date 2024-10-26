@@ -55,10 +55,10 @@ const UnitSponsorPopover = () => {
         className="absolute bottom-full left-2/4 -translate-x-2/4 custom-flex-col w-[394px]"
         style={{ display: "none" }}
       >
-        <div className="p-6 rounded-lg bg-white dark:bg-[#3C3D37] dark:border dark:border-darkText-2 custom-flex-col gap-6 shadow-lg">
+        <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3c3d37] custom-flex-col gap-6 shadow-lg">
           <div className="custom-flex-col gap-5">
             <div className="flex items-center justify-between">
-              <p className="text-text-primary text-base font-bold">
+              <p className="text-text-primary dark:text-white text-base font-bold">
                 Promote this Property
               </p>
               <button onClick={close}>
