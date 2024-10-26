@@ -1,6 +1,6 @@
 // data.ts
 import { LandlordProps } from "@/components/Management/Landlord/types";
-import { Field } from "@/components/Table/table";
+import type { Field } from "@/components/Table/types";
 
 export interface LandlordsPageData {
   total_landlords: number;
@@ -117,7 +117,6 @@ export const landlordTableFields: Field[] = [
     accessor: "email",
     cellStyle: {
       maxWidth: 200,
-      textOverflow: "ellipsis",
       wordBreak: "break-all",
     },
   },

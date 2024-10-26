@@ -30,6 +30,6 @@ export interface CustomTableProps {
   tableHeadStyle?: CSSProperties; // For custom TableHead inline style
   tableHeadCellSx?: SxProps;
   tableBodyCellSx?: CSSProperties;
-  evenRowColor?: CSSProperties["color"];
-  oddRowColor?: CSSProperties["color"];
+  // evenRowColor?: CSSProperties["color"];
+  // oddRowColor?: CSSProperties["color"];
 }
