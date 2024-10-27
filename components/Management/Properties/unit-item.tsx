@@ -11,7 +11,7 @@ import Sample3 from "@/public/empty/SampleProperty3.jpeg";
 import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import ImageModal from "@/components/ImageModal/image-modal";
-const UnitItem = ({ type = "rent" }: { type?: string }) => {
+const UnitItem = ({ type = "rental" }: { type?: "rental" | "gated" }) => {
   const colors = {
     vacant: "#FFBB53",
     occupied: "#01BA4C",
@@ -116,12 +116,12 @@ const UnitItem = ({ type = "rent" }: { type?: string }) => {
       <p
         className={clsx(
           "px-4 py-1 text-[10px] font-normal rounded-lg w-fit",
-          type === "rent"
+          type === "rental"
             ? "text-status-success-3 bg-status-success-1"
             : "text-brand-9 bg-brand-3"
         )}
       >
-        {type === "rent" ? "Rental Property" : "Gated Estate"}
+        {type === "rental" ? "Rental Property" : "Gated Estate"}
       </p>
     </div>
   );

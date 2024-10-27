@@ -12,6 +12,7 @@ const BackButton: React.FC<BackButtonProps> = ({
   children,
   className,
   bold,
+  as: Component = "h1",
 }) => {
   const router = useRouter();
 
@@ -34,14 +35,14 @@ const BackButton: React.FC<BackButtonProps> = ({
       >
         <ChevronLeft />
       </button>
-      <h1
+      <Component
         className={clsx("text-lg lg:text-xl", {
           "font-bold": bold,
           "font-medium": !bold,
         })}
       >
         {children}
-      </h1>
+      </Component>
     </div>
   );
 };
