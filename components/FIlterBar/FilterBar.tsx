@@ -30,7 +30,7 @@ interface FilterBarProps {
   filterOptionsWithRadio?: FilterOptionWithRadio[];
   handleFilterApply: (filters: any) => void;
   onStateSelect: (state: string) => void;
-  isDateTrue: boolean;
+  isDateTrue?: boolean;
   searchInputPlaceholder: string;
   pageTitle?: string;
   aboutPageModalData?: {

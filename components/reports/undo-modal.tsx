@@ -150,6 +150,11 @@ const eventToComponentMap = {
       <ExamineCard viewOnly={true} />
     </div>
   ),
+  "Examine Ajibode Apartment": (
+    <div className="min-w-[350px] max-w-full dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
+      <ExamineCard viewOnly={true} />
+    </div>
+  ),
   Maintenance: (
     <MaintenanceCard
       viewOnly={true}

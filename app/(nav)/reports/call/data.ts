@@ -41,6 +41,19 @@ export const callRequestTablefields: Field[] = [
     label: "Requester",
     accessor: "requester",
   },
-  { id: "7", label: "Requuest Date", accessor: "request_date" },
+  { id: "7", label: "Requuest Date & Time", accessor: "request_date_time" },
   { id: "7", label: "Resolve Date & Time", accessor: "resolve_date_time" },
 ];
+
+const generateTableData = (numItems: number) => {
+  return Array.from({ length: numItems }, (_, index) => ({
+    id: "123456789",
+    branch: "Akinyele Branch",
+    property_name: "Property Name",
+    requester: "Ajayi David",
+    request_date_time: "12/02/2024 - 03:30am",
+    resolve_date_time: "12/02/2024 - 03:30am",
+  }));
+};
+
+export const CallRequestTableData = generateTableData(10);

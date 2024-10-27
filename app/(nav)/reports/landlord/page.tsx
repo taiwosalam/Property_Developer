@@ -1,26 +1,14 @@
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
   reportsLandlordsFilterOptionsWithDropdown,
   landlordsReportTableFields,
+  landlordsReportTableData,
 } from "./data";
 
 const LandlordsReport = () => {
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      id: (index + 1).toString(),
-      name: `name ${index + 1}`,
-      address: `ADDRESS ${index + 1}`,
-      telephone: `TELEPHONE ${index + 1}`,
-      email: `${index + 1}@email.com`,
-    }));
-  };
-
-  const tableData = generateTableData(10);
-
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
@@ -53,10 +41,9 @@ const LandlordsReport = () => {
       />
       <CustomTable
         fields={landlordsReportTableFields}
-        data={tableData}
+        data={landlordsReportTableData}
         tableHeadClassName="h-[45px]"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

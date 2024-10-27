@@ -33,5 +33,4 @@ export const smsTableFields: Field[] = [
     accessor: "date",
   },
   { id: "8", label: "Time", accessor: "time" },
-  { id: "9", accessor: "action" },
 ];

@@ -36,10 +36,26 @@ export const vehicleRecordReportTableFields: Field[] = [
     accessor: "full_name",
   },
   { id: "3", label: "Plate Number", accessor: "plate_number" },
-  { id: "4", label: "Guest / Visitor", accessor: "guest_visitor" },
+  { id: "4", label: "Record Type", accessor: "record_type" },
   { id: "5", label: "Check In", accessor: "check_in" },
   { id: "6", label: "Check Out", accessor: "check_out" },
   { id: "7", label: "Passenger In", accessor: "passenger_in" },
   { id: "8", label: "Passenger Out", accessor: "passenger_out" },
   { id: "9", label: "Status", accessor: "status" },
 ];
+
+const generateTableData = (numItems: number) => {
+  return Array.from({ length: numItems }, (_, index) => ({
+    id: (index + 1).toString(),
+    full_name: `full_name ${index + 1}`,
+    plate_number: `plate_number ${index + 1}`,
+    record_type: index % 2 === 0 ? "Guest" : "Visitor",
+    check_in: `check_in ${index + 1}`,
+    check_out: `check_out ${index + 1}`,
+    passenger_in: `${index + 1} People`,
+    passenger_out: `${index + 1} People`,
+    status: index % 2 === 0 ? "Completed" : "Pending",
+  }));
+};
+
+export const vehiclesRecordTableData = generateTableData(10);

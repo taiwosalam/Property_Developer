@@ -28,18 +28,18 @@ import { useSearchParams } from "next/navigation";
 const ManageServiceProvider = () => {
   // remove this search params stuff later
   const searchParams = useSearchParams();
-  const user_tag = searchParams.get("user_tag");
+  const tag = searchParams.get("user_tag");
   const isDarkMode = useDarkMode();
   const router = useRouter();
   // const [serviceProviderData, setServiceProviderData] =
   //   useState<ServiceProviderData | null>(Mockdata);
   const serviceProviderData = {
     ...Mockdata,
-    user_tag: user_tag,
+    user_tag: tag,
   } as ServiceProviderData;
 
   if (!serviceProviderData) return null;
-  const { notes } = serviceProviderData;
+  const { notes, user_tag } = serviceProviderData;
 
   return (
     <div className="space-y-5">

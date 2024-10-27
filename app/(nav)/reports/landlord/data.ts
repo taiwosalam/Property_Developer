@@ -29,14 +29,27 @@ export const reportsLandlordsFilterOptionsWithDropdown = [
 
 export const landlordsReportTableFields: Field[] = [
   { id: "0", label: "S/N", accessor: "S/N" },
-  { id: "1", label: "Landlord / Landlady ID", accessor: "id" },
+  { id: "1", label: "ID", accessor: "id" },
   {
     id: "2",
-    label: "Name",
-    accessor: "name",
-    cellStyle: { textTransform: "uppercase" },
+    label: "Property",
+    accessor: "property",
   },
-  { id: "3", label: "Contact Address", accessor: "address" },
-  { id: "5", label: "Telephone", accessor: "telephone" },
-  { id: "6", label: "email", accessor: "email" },
+  { id: "3", label: "Branch", accessor: "branch" },
+  { id: "5", label: "Account Officer", accessor: "account_officer" },
+  { id: "6", label: "Date Created", accessor: "date_created" },
+  { id: "7", label: "Landlord / Landlady", accessor: "landlord" },
 ];
+
+const generateTableData = (numItems: number) => {
+  return Array.from({ length: numItems }, (_, index) => ({
+    id: (index + 1).toString(),
+    property: `Property ${index + 1}`,
+    branch: `Branch ${index + 1}`,
+    account_officer: `Account Officer ${index + 1}`,
+    date_created: `6/10/2024`,
+    landlord: `John Doe`,
+  }));
+};
+
+export const landlordsReportTableData = generateTableData(10);

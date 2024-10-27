@@ -2316,3 +2316,24 @@ export const ComplaintsListIcon = () => {
     </svg>
   );
 };
+
+export const CheckboxCheckedIcon = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="24" height="24" rx="5.11111" fill="#2563EB" />
+      <path
+        d="M7.33398 12.0003L10.6673 15.3337L17.334 8.66699"
+        stroke="white"
+        strokeWidth="2.55556"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

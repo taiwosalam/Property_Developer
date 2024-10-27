@@ -1,27 +1,14 @@
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
   reportsCallsFilterOptionsWithDropdown,
   callRequestTablefields,
+  CallRequestTableData,
 } from "./data";
 
 const Call = () => {
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      id: "123456789",
-      branch: "Akinyele Branch",
-      property_name: "Property Name",
-      requester: "Ajayi David",
-      request_date: "12/02/2024",
-      resolve_date_time: "12/02/2024 - 03:30am",
-    }));
-  };
-
-  const tableData = generateTableData(10);
-
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
@@ -64,10 +51,9 @@ const Call = () => {
       />
       <CustomTable
         fields={callRequestTablefields}
-        data={tableData}
+        data={CallRequestTableData}
         tableHeadClassName="h-[45px]"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

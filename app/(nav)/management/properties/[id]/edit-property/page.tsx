@@ -1,10 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
-// Images
-import { ChevronLeft } from "@/public/icons/icons";
-
 // Imports
 import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-card";
 import CreatePropertyForm from "@/components/Management/Properties/create-property-form";
@@ -12,7 +7,6 @@ import { SectionSeparator } from "@/components/Section/section-components";
 import BackButton from "@/components/BackButton/back-button";
 
 const EditProperty = () => {
-  const router = useRouter();
   const handleSubmit = () => {};
 
   return (

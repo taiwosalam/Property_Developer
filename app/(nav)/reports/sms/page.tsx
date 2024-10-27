@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { DataItem } from "@/components/Table/types";
 import SMSModal, { type SMSRecord } from "@/components/reports/sms-modal";
@@ -13,7 +12,7 @@ const SMSReport = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedSMS, setSelectedSMS] = useState<SMSRecord | null>(null);
 
-  const handleActionClick = (record: DataItem) => {
+  const handleTableItemClick = (record: DataItem) => {
     setSelectedSMS(record as SMSRecord);
     setModalOpen(true);
   };
@@ -62,7 +61,7 @@ const SMSReport = () => {
         fields={smsTableFields}
         data={tableData}
         tableHeadClassName="h-[45px]"
-        onActionClick={handleActionClick}
+        handleSelect={handleTableItemClick}
       />
       <Modal
         state={{
@@ -74,7 +73,6 @@ const SMSReport = () => {
           <SMSModal {...(selectedSMS as SMSRecord)} />
         </ModalContent>
       </Modal>
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };
