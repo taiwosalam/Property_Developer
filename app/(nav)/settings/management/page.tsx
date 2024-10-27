@@ -267,7 +267,7 @@ const Management = () => {
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-10">
+            <div className="flex flex-col lg:flex-row items-start gap-4 lg:gap-10">
               <Select
                 id="tenant_screening_level_type"
                 label="tenant screening level type"

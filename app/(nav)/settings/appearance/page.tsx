@@ -13,15 +13,18 @@ import {
 import { website_color_schemes } from "@/components/Settings/data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { useThemeStoreSelectors } from "@/store/themeStore";
-import { Tooltip } from "@mui/material";
 import Image from "next/image";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { toast } from "sonner";
 import Select from "@/components/Form/Select/select";
-import { useGoogleFonts } from "@/hooks/useFonts";
+import useGoogleFonts from "@/hooks/useFonts";
 
 const Appearance = () => {
   const googleFonts = useGoogleFonts();
+
+  // Ensure 'Lato' is the first font in the array
+  const modifiedGoogleFonts = ["Lato", ...googleFonts];
+
   const isDarkMode = useDarkMode();
   const setColor = useThemeStoreSelectors.getState().setColor;
   const primaryColor = useThemeStoreSelectors.getState().primaryColor;
@@ -44,18 +47,22 @@ const Appearance = () => {
     }
   }, [setColor, selectedColor]);
 
+  let storedFont = "";
   useEffect(() => {
-    const storedFont = localStorage.getItem("selectedFont");
-    if (storedFont) {
-      setSelectedFont(storedFont);
-      const link = document.createElement("link");
-      link.href = `https://fonts.googleapis.com/css2?family=${storedFont.replace(
-        / /g,
-        "+"
-      )}:wght@400;700&display=swap`;
-      link.rel = "stylesheet";
-      document.head.appendChild(link);
-      document.body.style.fontFamily = storedFont;
+    // Check if running in the browser
+    if (typeof window !== "undefined") {
+      storedFont = localStorage.getItem("selectedFont") || "";
+      if (storedFont) {
+        setSelectedFont(storedFont);
+        const link = document.createElement("link");
+        link.href = `https://fonts.googleapis.com/css2?family=${storedFont.replace(
+          / /g,
+          "+"
+        )}:wght@400;700&display=swap`;
+        link.rel = "stylesheet";
+        document.head.appendChild(link);
+        document.body.style.fontFamily = storedFont;
+      }
     }
   }, []);
 
@@ -102,16 +109,23 @@ const Appearance = () => {
   };
 
   const handleFontSelect = (fontName: string) => {
+    if (fontName === "Lato") {
+      fontName = "Lato"; // Set to Lato if Default Font is selected
+    }
     setSelectedFont(fontName);
-    localStorage.setItem("selectedFont", fontName);
-    const link = document.createElement("link");
-    link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(
-      / /g,
-      "+"
-    )}:wght@400;700&display=swap`;
-    link.rel = "stylesheet";
-    document.head.appendChild(link);
-    document.body.style.fontFamily = fontName;
+
+    // Check if running in the browser
+    if (typeof window !== "undefined") {
+      localStorage.setItem("selectedFont", fontName);
+      const link = document.createElement("link");
+      link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(
+        / /g,
+        "+"
+      )}:wght@400;700&display=swap`;
+      link.rel = "stylesheet";
+      document.head.appendChild(link);
+      document.body.style.fontFamily = fontName;
+    }
   };
 
   return (
@@ -241,14 +255,15 @@ const Appearance = () => {
           title="Fonts Templates"
           desc="Choose Your Preferred Font Style for Your Company Profile Website"
         />
+
         <div className="flex gap-2 items-center">
           <div className="w-full sm:w-1/4 flex mb-5">
             <Select
               id="font"
               label=""
-              placeholder="Select a font"
+              placeholder={storedFont || "Select a font"}
               onChange={(value) => handleFontSelect(value)}
-              options={googleFonts}
+              options={modifiedGoogleFonts}
               inputContainerClassName="bg-neutral-2 w-full mt-2 min-w-[250px]"
             />
           </div>
