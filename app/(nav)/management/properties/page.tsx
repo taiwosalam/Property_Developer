@@ -122,7 +122,7 @@ const Properties = () => {
                 name="Property 1"
                 units={1}
                 price={1000}
-                type="rental"
+                type={index % 2 === 0 ? "rental" : "gated"}
                 currency="Naira"
               />
             ))}

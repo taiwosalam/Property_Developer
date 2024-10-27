@@ -6,6 +6,7 @@ import type { SelectOptionObject, SelectProps } from "./types";
 import { DeleteIconX, ArrowDownIcon, SearchIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { checkValidatonError } from "@/utils/validation";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 
 const Select: React.FC<SelectProps> = ({
   id,
@@ -86,19 +87,9 @@ const Select: React.FC<SelectProps> = ({
     });
   }, [searchTerm, options]);
 
-  // Close the dropdown when clicking outside of it
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setState((x) => ({ ...x, isOpen: false, searchTerm: "" }));
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  useOutsideClick(dropdownRef, () => {
+    setState((x) => ({ ...x, isOpen: false, searchTerm: "" }));
+  });
 
   // Initialize
   useEffect(() => {
@@ -138,7 +129,9 @@ const Select: React.FC<SelectProps> = ({
         <div
           className={clsx(
             "flex items-center dark:bg-darkText-primary border border-solid border-[#C1C2C366] hover:border-[#00000099] dark:hover:border-darkText-2 py-[11px] pr-3 rounded-lg custom-primary-outline transition-colors duration-300 ease-in-out",
-            selectedValue ? "bg-neutral-2 dark:bg-darkText-primary" : "cursor-pointer",
+            selectedValue
+              ? "bg-neutral-2 dark:bg-darkText-primary"
+              : "cursor-pointer",
             isSearchable ? "pl-10" : "pl-4",
             inputContainerClassName
           )}
@@ -150,7 +143,7 @@ const Select: React.FC<SelectProps> = ({
           {isSearchable && (
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
               <span className="dark:text-white">
-              <SearchIcon />
+                <SearchIcon />
               </span>
             </div>
           )}

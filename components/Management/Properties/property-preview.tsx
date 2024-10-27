@@ -25,6 +25,7 @@ import Sample3 from "@/public/empty/SampleProperty3.jpeg";
 import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+import BackButton from "@/components/BackButton/back-button";
 
 const PropertyPreview: React.FC<PropertyPreviewProps> = ({
   images = [Sample, Sample2, Sample3, Sample4, Sample5],
@@ -46,27 +47,18 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
   const imageIndex = wrap(0, images.length, page);
 
   return (
-    <div>
-      {/* Back Button & Preview Title */}
-      <div className="flex items-center gap-1 mb-5 lg:mb-8">
-        <button
-          type="button"
-          aria-label="Go Back"
-          onClick={() => router.back()}
-          className="p-2"
-        >
-          <ChevronLeft />
-        </button>
-        <p className="text-black font-bold text-lg lg:text-xl dark:text-white">Preview</p>
-      </div>
+    <div className="space-y-5">
+      <BackButton as="p">Preview</BackButton>
 
       {/* Heading */}
       <div className="text-black dark:text-white">
-        <p className="text-base font-medium dark:text-darkText-1">ID: 123456789</p>
+        <p className="text-base font-medium dark:text-darkText-1">
+          ID: 123456789
+        </p>
         <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
           Moniya Apartment (14Units)
         </h1>
-        <p className="text-sm text-text-label font-normal flex items-center gap-1 mb-6 lg:mb-11">
+        <p className="text-sm text-text-label font-normal flex items-center gap-1">
           <LocationIcon />
           Street 23, All Avenue, Nigeria
         </p>
@@ -164,7 +156,9 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
               <h3 className="text-brand-10 font-medium">Property Details</h3>
               <div>
                 <p className="text-[#747474] dark:text-white">Property Title</p>
-                <p className="text-black dark:text-darkText-1">Harmony Cottage</p>
+                <p className="text-black dark:text-darkText-1">
+                  Harmony Cottage
+                </p>
               </div>
               <div>
                 <p className="text-[#747474] dark:text-white">Landlord</p>
@@ -172,7 +166,9 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
               </div>
               <div>
                 <p className="text-[#747474] dark:text-white">Description</p>
-                <p className="text-black dark:text-darkText-1">+2348132086958</p>
+                <p className="text-black dark:text-darkText-1">
+                  +2348132086958
+                </p>
               </div>
               <div>
                 <p className="text-[#747474] dark:text-white">State</p>
@@ -180,15 +176,21 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
               </div>
               <div>
                 <p className="text-[#747474] dark:text-white">Categories</p>
-                <p className="text-black dark:text-darkText-1">Moniya Apartment</p>
+                <p className="text-black dark:text-darkText-1">
+                  Moniya Apartment
+                </p>
               </div>
               <div>
                 <p className="text-[#747474] dark:text-white">Blocks of Flat</p>
                 <p className="text-black dark:text-darkText-1">Ibadan North</p>
               </div>
               <div>
-                <p className="text-[#747474] dark:text-white">Account Officer</p>
-                <p className="text-black dark:text-darkText-1">Sunday Ogunwole</p>
+                <p className="text-[#747474] dark:text-white">
+                  Account Officer
+                </p>
+                <p className="text-black dark:text-darkText-1">
+                  Sunday Ogunwole
+                </p>
               </div>
             </div>
 
@@ -200,7 +202,9 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
                 <p className="text-black dark:text-darkText-1">10%</p>
               </div>
               <div>
-                <p className="text-[#747474] dark:text-white">Caution Deposit</p>
+                <p className="text-[#747474] dark:text-white">
+                  Caution Deposit
+                </p>
                 <p className="text-black dark:text-darkText-1">N300,000</p>
               </div>
               <div>
@@ -224,11 +228,15 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
                 <p className="text-black dark:text-darkText-1">Yes</p>
               </div>
               <div>
-                <p className="text-[#747474] dark:text-white">Request Call Back</p>
+                <p className="text-[#747474] dark:text-white">
+                  Request Call Back
+                </p>
                 <p className="text-black dark:text-darkText-1">Yes</p>
               </div>
               <div>
-                <p className="text-[#747474] dark:text-white">Vehicles Record</p>
+                <p className="text-[#747474] dark:text-white">
+                  Vehicles Record
+                </p>
                 <p className="text-black dark:text-darkText-1">Yes</p>
               </div>
             </div>
@@ -298,9 +306,9 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
         </div>
       </div>
 
-      <section className="mt-4 space-y-4">
+      <section className="space-y-4">
         {[...Array(4)].map((_, index) => (
-          <UnitItem key={index} />
+          <UnitItem key={index} type={index % 2 === 0 ? "rental" : "gated"} />
         ))}
       </section>
     </div>

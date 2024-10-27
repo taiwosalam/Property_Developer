@@ -23,14 +23,23 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 import type { ServiceProviderData } from "./types";
 import { serviceProviderData as Mockdata } from "./data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { useSearchParams } from "next/navigation";
 
 const ManageServiceProvider = () => {
+  // remove this search params stuff later
+  const searchParams = useSearchParams();
+  const user_tag = searchParams.get("user_tag");
   const isDarkMode = useDarkMode();
   const router = useRouter();
-  const [serviceProviderData, setServiceProviderData] =
-    useState<ServiceProviderData | null>(Mockdata);
+  // const [serviceProviderData, setServiceProviderData] =
+  //   useState<ServiceProviderData | null>(Mockdata);
+  const serviceProviderData = {
+    ...Mockdata,
+    user_tag: user_tag,
+  } as ServiceProviderData;
+
   if (!serviceProviderData) return null;
-  const { user_tag, notes } = serviceProviderData;
+  const { notes } = serviceProviderData;
 
   return (
     <div className="space-y-5">
