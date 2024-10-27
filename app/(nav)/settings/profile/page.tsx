@@ -45,7 +45,7 @@ import FileInput from "@/components/Form/FileInput/file-input";
 import CompanyMobileNumber from "@/components/Setup/company-mobile-number";
 import CompanyLogo from "@/components/Setup/company-logo";
 import CopyText from "@/components/CopyText/copy-text";
-import { useGoogleFonts } from "@/hooks/useFonts";
+import useGoogleFonts from "@/hooks/useFonts";
 
 const websiteOptions = [
   {

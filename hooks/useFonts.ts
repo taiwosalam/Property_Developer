@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const useGoogleFonts = () => {
+const useGoogleFonts = () => {
   const [googleFonts, setGoogleFonts] = useState<string[]>([]);
 
   const fetchGoogleFonts = async () => {
@@ -29,3 +29,5 @@ export const useGoogleFonts = () => {
   
     return googleFonts;
   };
+
+export default useGoogleFonts;
