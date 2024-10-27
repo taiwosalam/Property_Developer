@@ -187,7 +187,11 @@ const Landlord = () => {
     "manage/chat": (
       <div className="flex gap-x-[4%] items-center w-full">
         <Button
-          href={`/management/landlord/${l.id}/manage`}
+          // href={`/management/landlord/${l.id}/manage`}
+          href={{
+            pathname: `/management/landlord/${l.id}/manage`,
+            query: { user_tag: l.user_tag },
+          }}
           size="sm_medium"
           className="px-8 py-2"
         >
@@ -278,7 +282,14 @@ const Landlord = () => {
         {gridView ? (
           <AutoResizingGrid minWidth={284} gap={16}>
             {landlords.map((l) => (
-              <Link href={`/management/landlord/${l.id}/manage`} key={l.id}>
+              <Link
+                // href={`/management/landlord/${l.id}/manage`}
+                href={{
+                  pathname: `/management/landlord/${l.id}/manage`,
+                  query: { user_tag: l.user_tag },
+                }}
+                key={l.id}
+              >
                 <LandlordCard
                   picture_url={l.picture_url || l.avatar}
                   name={`${l.first_name} ${l.last_name}`}

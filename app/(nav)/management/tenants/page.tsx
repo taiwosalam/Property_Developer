@@ -54,7 +54,7 @@ const Tenants = () => {
     },
   } = state;
 
-  const fetchLandlords = useCallback(async () => {
+  const fetchTenants = useCallback(async () => {
     try {
       // const data = await getAllTenants(accessToken);
       // setState((x) => ({ ...x, tenantsPageData: data }));
@@ -70,8 +70,8 @@ const Tenants = () => {
   }, []);
 
   useEffect(() => {
-    fetchLandlords();
-  }, [fetchLandlords]);
+    fetchTenants();
+  }, [fetchTenants]);
 
   const states = getAllStates();
 
@@ -167,7 +167,11 @@ const Tenants = () => {
     "manage/chat": (
       <div className="flex gap-x-[4%] items-center w-full">
         <Button
-          href={`/management/tenants/${t.id}/manage`}
+          // href={`/management/tenants/${t.id}/manage`}
+          href={{
+            pathname: `/management/tenants/${t.id}/manage`,
+            query: { user_tag: t.user_tag },
+          }}
           size="sm_medium"
           className="px-8 py-2"
         >
@@ -251,7 +255,14 @@ const Tenants = () => {
         {gridView ? (
           <AutoResizingGrid minWidth={284} gap={16}>
             {tenants.map((t) => (
-              <Link href={`/management/tenants/${t.id}/manage`} key={t.id}>
+              <Link
+                // href={`/management/tenants/${t.id}/manage`}
+                href={{
+                  pathname: `/management/tenants/${t.id}/manage`,
+                  query: { user_tag: t.user_tag },
+                }}
+                key={t.id}
+              >
                 <TenantCard
                   key={t.id}
                   picture_url={t.picture_url || t.avatar}

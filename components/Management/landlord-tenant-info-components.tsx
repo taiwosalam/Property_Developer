@@ -7,7 +7,7 @@ import TruncatedText from "@/components/TruncatedText/truncated-text";
 import Button from "../Form/Button/button";
 import { ModalTrigger } from "../Modal/modal";
 import TextArea from "../Form/TextArea/textarea";
-import { DeleteIconX } from "@/public/icons/icons";
+import { NavCloseIcon } from "@/public/icons/icons";
 
 export const LandlordTenantInfoBox: React.FC<{
   style?: CSSProperties;
@@ -241,7 +241,7 @@ export const MobileNotesModal: React.FC<{
           </div>
         </div>
         <ModalTrigger aria-label="Close" close>
-          <DeleteIconX size={28} />
+          <NavCloseIcon />
         </ModalTrigger>
       </div>
       <div className="pt-2">
