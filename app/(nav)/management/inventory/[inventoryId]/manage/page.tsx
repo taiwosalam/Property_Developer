@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { CSSProperties } from "react";
 
 // Imports
@@ -14,14 +14,14 @@ import Select from "@/components/Form/Select/select";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const ManageInventory = () => {
-  const isDarkMode = useDarkMode()
+  const isDarkMode = useDarkMode();
   const input_styles: CSSProperties = {
     padding: "12px 14px",
     backgroundColor: isDarkMode ? "#020617" : "white",
   };
 
   return (
-    <div className="custom-flex-col gap-10 min-h-[80vh] pb-[100px]">
+    <div className="custom-flex-col gap-10 min-h-[80vh] pb-[150px] lg:pb-[100px]">
       <div className="custom-flex-col gap-4">
         <BackButton>Manage Inventory</BackButton>
         <div className="custom-flex-col gap-6">

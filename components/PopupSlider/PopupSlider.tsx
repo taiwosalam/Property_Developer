@@ -6,7 +6,6 @@ import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { NextIcon, PreviousIcon, XIcon } from "@/public/icons/icons";
 import { PopupImageModalProps } from "./types";
-import CloseCircle from "@/public/icons/close-circle.svg";
 import Image from "next/image";
 
 const PopupImageModal: React.FC<PopupImageModalProps> = ({

@@ -1,7 +1,7 @@
 "use client";
 import { PropertyProps } from "./types";
 import clsx from "clsx";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Button from "@/components/Form/Button/button";
 import {
   variants,
@@ -18,6 +18,7 @@ import {
   VideoIcon,
   CameraIcon,
 } from "@/public/icons/icons";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 
 interface PropertyCardProps extends PropertyProps {
   isClickable?: boolean;
@@ -47,24 +48,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
   const imageIndex = wrap(0, images.length, page);
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+  useOutsideClick(modalRef, () => {
+    if (isClickable && !viewOnly) {
       setIsModalActive(false);
     }
-  };
-
-  useEffect(() => {
-    if (isModalActive && isClickable && !viewOnly) {
-      document.addEventListener("click", handleClickOutside);
-    } else {
-      document.removeEventListener("click", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [isClickable, isModalActive, viewOnly]);
-
+  });
   return (
     <div
       className="rounded-2xl relative overflow-hidden bg-white dark:bg-darkText-primary "
@@ -147,22 +135,20 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               animate={{ y: 0 }}
               exit={{ y: "-100%" }}
               transition={{ stiffness: 100, duration: 0.3 }}
-              className="absolute z-[3] inset-0 flex items-center justify-between px-[10%] gap-x-4"
+              className="absolute z-[3] inset-0 flex items-center justify-center gap-x-10"
               style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
               ref={modalRef}
             >
               <Button
-                type="button"
-                size="mid"
-                className="!py-[8px] !px-8 !font-bold"
+                size="base_bold"
+                className="py-2 px-8"
                 href={`/management/properties/${id}/edit-property`}
               >
                 Manage
               </Button>
               <Button
-                type="button"
-                size="mid"
-                className="py-[8px] !px-8 !font-bold"
+                size="base_bold"
+                className="py-2 px-8"
                 href={`/management/properties/${id}`}
               >
                 Preview
