@@ -11,4 +11,5 @@ export interface FileInputProps {
   size: number;
   sizeUnit: "KB" | "MB";
   onChange?: (value: File | null) => void;
+  settingsPage?: boolean;
 }

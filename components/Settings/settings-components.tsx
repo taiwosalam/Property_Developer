@@ -346,7 +346,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
 
   return (
     <div
-      className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer relative justify-center`}
+      className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer relative r`}
       onClick={handleClick}
     >
       {isSelected === false && !profile && (
