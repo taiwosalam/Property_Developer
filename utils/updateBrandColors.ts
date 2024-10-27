@@ -23,7 +23,6 @@ export const setCSSVariables = (variables: Record<string, string>) => {
 };
 
 export const updateBrandColors = (primaryColor: string) => {
-
   if (primaryColor.toLowerCase() === defaultColor) {
     // Use default CSS values
     setCSSVariables(defaultColorsMap);
@@ -34,21 +33,13 @@ export const updateBrandColors = (primaryColor: string) => {
     const calculateRelativeColor = (defaultHex: string) => {
       const defaultHsl = parseToHsl(defaultHex);
       const lightnessDifference = defaultHsl.lightness - baseHsl.lightness;
-      const newLightness = primaryHsl.lightness + lightnessDifference;
+      let newLightness = primaryHsl.lightness + lightnessDifference;
+      // Ensure the new lightness does not exceed 0.90 to avoid fading to white
+      newLightness = Math.min(newLightness, 0.9);
       return `hsl(${primaryHsl.hue}, ${primaryHsl.saturation * 100}%, ${
         newLightness * 100
       }%)`;
     };
-
-    // const brand1 = lighten(0.8, primaryColor); // Lighten by 80%
-    // const brand2 = lighten(0.6, primaryColor); // Lighten by 60%
-    // const brand3 = lighten(0.4, primaryColor); // Lighten by 40%
-    // const brand5 = lighten(0.2, primaryColor); // Lighten by 20%
-    // const brand7 = lighten(0.1, primaryColor); // Lighten by 10%
-    // const brand10 = darken(0.1, primaryColor); // Darken by 20%
-    // const brandPrimary = lighten(0.15, primaryColor); // Lighten by 15%
-    // const brandSecondary = lighten(0.25, primaryColor); // Lighten by 25%
-    // const brandTertiary = lighten(0.35, primaryColor); // Lighten by 35%
 
     const customColors = {
       "--brand-1": calculateRelativeColor(defaultColorsMap["--brand-1"]),

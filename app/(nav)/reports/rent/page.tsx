@@ -1,6 +1,5 @@
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
@@ -18,7 +17,7 @@ const RentReport = () => {
       start_date: "12/12/12",
       end_date: "12/12/12",
       status: index % 2 === 0 ? "vacant" : "occupied",
-      first_deposit: `2,600,800`,
+      caution_deposit: `2,600,800`,
     }));
   };
 
@@ -57,7 +56,6 @@ const RentReport = () => {
         data={tableData}
         tableHeadClassName="h-[45px]"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

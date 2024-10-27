@@ -2,7 +2,6 @@
 import { useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { Modal, ModalContent } from "@/components/Modal/modal";
-import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import type { DataItem } from "@/components/Table/types";
 import UndoModal from "@/components/reports/undo-modal";
@@ -16,7 +15,7 @@ const Undo = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
-  const handleActionClick = (event: DataItem) => {
+  const handleItemSelect = (event: DataItem) => {
     setSelectedEvent(event);
     setModalOpen(true);
   };
@@ -37,6 +36,7 @@ const Undo = () => {
       { event_deleted: "Invoice", category: "Accounting" },
       { event_deleted: "Expenses", category: "Accounting" },
       { event_deleted: "Disbursement", category: "Accounting" },
+      { event_deleted: "Examine Ajibode Apartment", category: "Examine" },
       { event_deleted: "Tenancy Agreement", category: "Documents" },
       { event_deleted: "Personalized Domain", category: "Settings" },
     ];
@@ -81,7 +81,7 @@ const Undo = () => {
         fields={undoRequestTableFields}
         data={tableData}
         tableHeadClassName="h-[45px]"
-        onActionClick={handleActionClick}
+        handleSelect={handleItemSelect}
       />
       <Modal
         state={{
@@ -96,7 +96,6 @@ const Undo = () => {
           />
         </ModalContent>
       </Modal>
-      <Pagination totalPages={2} currentPage={1} onPageChange={() => {}} />
     </div>
   );
 };

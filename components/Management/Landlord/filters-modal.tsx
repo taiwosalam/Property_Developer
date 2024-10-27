@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Image from "next/image";
 import { ModalTrigger } from "@/components/Modal/modal";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import DateInput from "@/components/Form/DateInput/date-input";
@@ -9,7 +8,7 @@ import {
   FilterOptionWithDropdown,
   FilterOptionWithRadio,
 } from "./types";
-import { CancelIcon } from "@/public/icons/icons";
+import { CancelIcon, CheckboxCheckedIcon } from "@/public/icons/icons";
 
 const FilterModal: React.FC<FilterModalProps> = ({
   filterOptionsWithDropdown,
@@ -292,7 +291,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
               id="registration_date_from"
               value={selectedStartDate ? dayjs(selectedStartDate) : undefined}
               onChange={(date) => handleDateChange("start", date)}
-              inputClassName="setup-f"
             />
           </div>
           <div>
@@ -306,7 +304,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
               id="registration_date_to"
               value={selectedEndDate ? dayjs(selectedEndDate) : undefined}
               onChange={(date) => handleDateChange("end", date)}
-              inputClassName="setup-f"
             />
           </div>
         </div>
@@ -321,7 +318,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
   };
 
   // Content for the main modal options
-  // Content for the main modal options
   const renderMainOptions = () => (
     <>
       <div className="flex items-center justify-between border-b border-solid border-gray-300 ">
@@ -329,7 +325,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           {title}
         </h2>
         <ModalTrigger close className="p-2">
-       <CancelIcon />
+          <CancelIcon />
         </ModalTrigger>
       </div>
 
@@ -340,13 +336,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
         >
           <label className="text-sm capitalize">Date</label>
           {selectedStartDate || selectedEndDate ? (
-            <Image
-              src="/icons/checkbox-checked.svg"
-              alt="check"
-              width={20}
-              height={20}
-              className="min-w-[20px] min-h-[20px]"
-            />
+            <CheckboxCheckedIcon />
           ) : (
             <ChevronRight className="text-[#344054]" />
           )}
@@ -362,13 +352,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           >
             <label className="text-sm capitalize">{option.label}</label>
             {isDropdownOptionSelected(option.label) ? (
-              <Image
-                src="/icons/checkbox-checked.svg"
-                alt="check"
-                width={20}
-                height={20}
-                className="min-w-[20px] min-h-[20px]"
-              />
+              <CheckboxCheckedIcon />
             ) : (
               <ChevronRight className="text-[#344054]" />
             )}
@@ -386,13 +370,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           <div className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary dark:border dark:border-[#3C3D37]">
             <label className="text-sm capitalize">{option.label}</label>
             {selectedRadioOption ? (
-              <Image
-                src="/icons/checkbox-checked.svg"
-                alt="check"
-                width={20}
-                height={20}
-                className="min-w-[20px] min-h-[20px]"
-              />
+              <CheckboxCheckedIcon />
             ) : (
               <ChevronRight className="text-[#344054]" />
             )}
@@ -437,18 +415,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
         : activeRadioOption
         ? renderRadioOptions()
         : showDatePicker && date
-        ? renderDateOptions()
-        : renderMainOptions()}
-    </div>
-  );
-
-  return (
-    <div className="w-[400px] rounded-[20px] bg-white p-[20px] custom-flex-col">
-      {activeDropdownOption
-        ? renderDropdownOptions()
-        : activeRadioOption
-        ? renderRadioOptions()
-        : showDatePicker
         ? renderDateOptions()
         : renderMainOptions()}
     </div>
