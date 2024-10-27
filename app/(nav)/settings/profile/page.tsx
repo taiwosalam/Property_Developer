@@ -174,10 +174,9 @@ const Profile = () => {
                 required
                 id="cac_date"
                 label="date of registration"
-                disableFuture={true}
                 value={dayjs("2024")}
                 onChange={() => {}}
-                inputClassName="setup-f"
+                disabled
               />
               <Input
                 required
