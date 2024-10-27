@@ -94,7 +94,12 @@ const Dashboard = () => {
         <CustomTable
           data={dashboardInvoiceTableData}
           fields={invoiceTableFields}
-          tableBodyCellSx={{ fontSize: "1rem" }}
+          tableHeadClassName="h-[76px]"
+          tableBodyCellSx={{
+            fontSize: "1rem",
+            paddingTop: "18px",
+            paddingBottom: "18px",
+          }}
           tableHeadCellSx={{ fontSize: "1rem" }}
         />
       </SectionContainer>

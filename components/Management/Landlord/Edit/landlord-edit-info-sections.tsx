@@ -52,8 +52,7 @@ export const LandlordEditProfileInfoSection = () => {
   };
 
   useEffect(() => {
-    if (landlord) {
-      console.log(landlord.contact_address);
+    if (landlord?.contact_address) {
       setAddress({
         state: landlord.contact_address.state || "",
         local_government: landlord.contact_address.local_govt || "",
@@ -391,7 +390,7 @@ export const LandlordEditAttachmentInfoSection = ({ useContext = true }) => {
     if (files) {
       const newFiles = Array.from(files).map((file) => ({
         document_type: documentType,
-        id: uuidv4(), // or generate a unique ID
+        id: uuidv4(),
         name: file.name,
         link: URL.createObjectURL(file),
       }));

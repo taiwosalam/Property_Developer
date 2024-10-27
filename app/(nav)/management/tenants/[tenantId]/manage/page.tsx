@@ -29,6 +29,7 @@ import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 import CustomTable from "@/components/Table/table";
 import { statementTableFields, statementTableData } from "./data";
 import { TenantEditAttachmentSection } from "@/components/Management/Tenants/Edit/tenant-edit-info-sectios";
+import { useSearchParams } from "next/navigation";
 
 const groupDocumentsByType = (documents: TenantData["documents"]) => {
   return documents.reduce((acc, document) => {
@@ -41,9 +42,12 @@ const groupDocumentsByType = (documents: TenantData["documents"]) => {
 };
 
 const ManageTenant = () => {
+  // remove this search params stuff later
+  const searchParams = useSearchParams();
+  const user_tag = searchParams.get("user_tag");
   // const { tenant, tenantId, loading, error } = useTenantData();
   const {
-    data: tenant,
+    data: a,
     id: tenantId,
     loading,
     error,
@@ -55,6 +59,7 @@ const ManageTenant = () => {
   };
 
   const router = useRouter();
+  const tenant = { ...a, user_tag } as TenantData;
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <div>Error: {error.message}</div>;
   if (!tenant) return null;

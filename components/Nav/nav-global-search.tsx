@@ -1,10 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-
-// Images
-import PlaneBlue from "@/public/icons/plane-blue.svg";
-// import CloseCircle from "@/public/icons/close-circle.svg";
+import { useState } from "react";
+import { SendMessageIcon } from "@/public/icons/icons";
 
 // Imports
 import { SVGType } from "../SVG/types";
@@ -60,7 +57,7 @@ const NavGlobalSearch = () => {
   return (
     <div
       style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.05)" }}
-      className="w-full max-w-[95%] custom-flex-col gap-3 bg-white dark:bg-black rounded-2xl border border-solid border-neutral-4 dark:border-[#3C3D37] overflow-hidden max-h-[80vh]"
+      className="w-[85%] max-w-[1200px] custom-flex-col gap-3 bg-white dark:bg-black rounded-2xl border border-solid border-neutral-4 dark:border-[#3C3D37] overflow-hidden max-h-[80vh]"
     >
       <div className="custom-flex-col gap-6 pt-8 px-8 bg-neutral-2 dark:bg-black border-b border-solid border-neutral-4 dark:border-[#3C3D37]">
         <div className="custom-flex-col gap-3">
@@ -87,8 +84,13 @@ const NavGlobalSearch = () => {
               placeholder="Search"
               className="h-full flex-1 text-sm bg-neutral-3 dark:bg-black"
             />
-            <button className="bg-brand-9 h-full aspect-square flex justify-center items-center rounded-md">
-              <Picture src={PlaneBlue} alt="send" size={24} />
+            <button
+              aria-label="search"
+              className="bg-brand-9 h-full aspect-square flex justify-center items-center rounded-md"
+            >
+              <span className="text-white">
+                <SendMessageIcon />
+              </span>
             </button>
           </div>
         </div>
