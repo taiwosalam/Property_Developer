@@ -116,14 +116,15 @@ const Profile = () => {
     setSelectedTemplate(value);
   };
 
-  const handleCustomDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCustomDomain(e.target.value);
+  const handleCustomDomainChange = (value: string) => {
+    setCustomDomain(value);
   };
 
   const googleFonts = useGoogleFonts();
 
   const handleFontSelect = (fontName: string) => {
     setSelectedFont(fontName);
+    localStorage.setItem("selectedFont", fontName);
     const link = document.createElement("link");
     link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(
       / /g,
@@ -131,6 +132,7 @@ const Profile = () => {
     )}:wght@400;700&display=swap`;
     link.rel = "stylesheet";
     document.head.appendChild(link);
+    document.body.style.fontFamily = fontName;
   };
 
   return (
@@ -378,9 +380,7 @@ const Profile = () => {
             label=""
             placeholder=""
             value={customDomain}
-            onChange={(value) =>
-              handleCustomDomainChange({ target: { value } })
-            }
+            onChange={(value) => handleCustomDomainChange(value)}
             className="w-full sm:w-auto min-w-[200px] sm:min-w-[300px]"
           />
           {customDomain && (
