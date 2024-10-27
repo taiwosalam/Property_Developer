@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { useContext, Fragment } from "react";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
@@ -11,7 +12,12 @@ const PropertyFormFooter: React.FC<{
 }> = ({ editMode, handleReset }) => {
   const { canSubmit } = useContext(FlowProgressContext);
   return (
-    <FixedFooter className="flex items-center justify-end gap-10 dark:bg-darkText-primary">
+    <FixedFooter
+      className={clsx("flex items-center gap-10", {
+        "justify-end": !editMode,
+        "justify-between": editMode,
+      })}
+    >
       {editMode ? (
         <Fragment>
           <Modal>
@@ -28,17 +34,24 @@ const PropertyFormFooter: React.FC<{
               <DeletePropertyModal />
             </ModalContent>
           </Modal>
-          <Button
-            type="button"
-            size="sm_medium"
-            variant="sky_blue"
-            className="py-2 px-6"
-          >
-            Add more unit
-          </Button>
-          <Button type="submit" size="sm_medium" className="py-2 px-7">
-            update
-          </Button>
+          <div className="flex items-center gap-4">
+            <Button
+              type="button"
+              size="sm_medium"
+              variant="sky_blue"
+              className="py-2 px-6"
+            >
+              Add more unit
+            </Button>
+            <Button
+              type="submit"
+              size="sm_medium"
+              className="py-2 px-6"
+              disabled={!canSubmit}
+            >
+              update
+            </Button>
+          </div>
         </Fragment>
       ) : (
         <Fragment>
