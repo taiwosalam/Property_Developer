@@ -127,17 +127,24 @@ const FileInput: React.FC<FileInputProps> = ({
             fileName ? "bg-neutral-2" : "bg-none"
           )}
         >
-          <span
-            className={clsx(
-              "flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
-            )}
-          >
-            {fileName
-              ? fileName
-              : `Click ${isLgScreen ? "the side button" : "here"} to upload ${
-                  placeholder || "file"
-                }`}
-          </span>
+          {!settingsPage && (
+            <span
+              className={clsx(
+                "flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
+              )}
+            >
+              {fileName
+                ? fileName
+                : `Click ${isLgScreen ? "the side button" : "here"} to upload ${
+                    placeholder || "file"
+                  }`}
+            </span>
+          )}
+          {settingsPage && (
+            <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
+              Click to upload document
+            </span>
+          )}
           {fileName && (
             <div className="flex items-center gap-2">
               <button

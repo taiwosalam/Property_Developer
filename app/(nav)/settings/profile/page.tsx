@@ -88,7 +88,7 @@ const Profile = () => {
     instagram: "https://instagram.com/",
     facebook: "https://facebook.com/",
     twitter: "https://x.com/",
-    linkedin: "https://www.linkedin.com/company",
+    linkedin: "https://www.linkedin.com/company/",
     tiktok: "https://tiktok.com/",
     youtube: "https://www.youtube.com/@",
   });

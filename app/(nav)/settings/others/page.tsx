@@ -342,6 +342,7 @@ const Others = () => {
             />
           ))}
         </div>
+        <SettingsUpdateButton />
       </SettingsSection>
     </>
   );
