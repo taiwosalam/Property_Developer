@@ -60,10 +60,19 @@ const InventoryList: React.FC<InventoryListProps> = ({ data = {} }) => {
             chunkSize={3}
           />
           <div className="flex-1 flex flex-col gap-4 items-end">
-            <Button variant="border" size="xs_medium" className="py-2 px-10">
+            <Button
+              variant="border"
+              size="xs_medium"
+              className="py-2 px-10"
+              href={"/management/inventory/1/manage"}
+            >
               manage
             </Button>
-            <Button size="xs_medium" className="py-2 px-10">
+            <Button
+              size="xs_medium"
+              className="py-2 px-10"
+              href={"/management/inventory/1/preview"}
+            >
               preview
             </Button>
           </div>

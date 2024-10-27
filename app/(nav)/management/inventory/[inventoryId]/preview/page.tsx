@@ -5,6 +5,7 @@ import Button from "@/components/Form/Button/button";
 import BackButton from "@/components/BackButton/back-button";
 import InventoryItem from "@/components/Management/Inventory/inventory-item";
 import { InventoryListInfo } from "@/components/Management/Inventory/inventory-components";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const PreviewInventory = () => {
   return (
@@ -35,7 +36,7 @@ const PreviewInventory = () => {
           <InventoryItem />
         </div>
       </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[60px] flex gap-6 justify-end">
+      <FixedFooter className="flex gap-6 justify-end">
         <Button
           href={"/management/inventory/1/manage"}
           size="sm_medium"
@@ -43,7 +44,7 @@ const PreviewInventory = () => {
         >
           Manage inventory
         </Button>
-      </div>
+      </FixedFooter>
     </div>
   );
 };
