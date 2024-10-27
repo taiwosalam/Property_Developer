@@ -23,6 +23,7 @@ const FileInput: React.FC<FileInputProps> = ({
   fileType,
   size,
   sizeUnit,
+  settingsPage,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [file, setFile] = useState<File | null>(null);
@@ -163,16 +164,27 @@ const FileInput: React.FC<FileInputProps> = ({
           )}
         </div>
         <div className="hidden lg:block absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2">
-          <Button
-            variant="change"
-            size="sm"
-            className="whitespace-nowrap text-ellipsis"
-            style={{ background: fileName ? "" : "none" }}
-            type="button"
-            onClick={handleClick}
-          >
-            {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
-          </Button>
+          {!settingsPage && (
+            <Button
+              variant="change"
+              size="sm"
+              className="whitespace-nowrap text-ellipsis"
+              style={{ background: fileName ? "" : "none" }}
+              type="button"
+              onClick={handleClick}
+            >
+              {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
+            </Button>
+          )}
+          {settingsPage && (
+            <Button
+              variant="change"
+              size="sm"
+              className="whitespace-nowrap text-ellipsis"
+            >
+              Verify utility
+            </Button>
+          )}
         </div>
       </div>
     </div>

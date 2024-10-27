@@ -122,9 +122,9 @@ const EditBranch = () => {
                   type="button"
                   variant="light_red"
                   size="sm_medium"
-                  className="py-2 px-8"
+                  className="py-2 px-4 sm:px-8 text-xs sm:text-sm"
                 >
-                  delete branch
+                  Delete Branch
                 </Button>
               </ModalTrigger>
               <ModalContent>

@@ -1,5 +1,5 @@
 "use client";
-
+import { setCSSVariables, defaultColorsMap,defaultColor } from "@/utils/updateBrandColors";
 import { useEffect } from "react";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 
@@ -15,8 +15,10 @@ const useThemeColors = () => {
       if (storedPrimaryColor) {
         setColor(storedPrimaryColor);
       } else {
-        const computedStyle = getComputedStyle(document.documentElement);
-        setColor(computedStyle.getPropertyValue("--primary-color").trim());
+        // const computedStyle = getComputedStyle(document.documentElement);
+        // setColor(computedStyle.getPropertyValue("--primary-color").trim());
+        // setCSSVariables(defaultColorsMap);
+        setColor(defaultColor);
       }
     }
   }, [setColor]);
