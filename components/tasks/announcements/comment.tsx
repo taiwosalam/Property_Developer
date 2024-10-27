@@ -78,11 +78,15 @@ const Comment: React.FC<CommentProps> = ({
             className="w-full"
             inputClassName="border-none bg-neutral-3"
           />
-          <div className="bg-brand-9 p-2 rounded grid place-items-center">
+          <button
+            type="button"
+            className="bg-brand-9 p-2 rounded grid place-items-center"
+            aria-label="send message"
+          >
             <span className="text-white">
               <SendMessageIcon />
             </span>
-          </div>
+          </button>
         </div>
       )}
 
