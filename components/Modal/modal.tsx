@@ -63,7 +63,6 @@ const ModalTrigger: React.FC<ModalTriggerProps> = ({
   if (asChild && React.isValidElement(children)) {
     return React.cloneElement(children, {
       onClick: handleClick,
-      role: "button",
       ...props,
     });
   }
@@ -83,7 +82,7 @@ const ModalContent: React.FC<ModalContentProps> = ({
   ...props
 }) => {
   const { isOpen, setIsOpen } = useModal();
-  const isDarkMode = useDarkMode(); 
+  const isDarkMode = useDarkMode();
   // Handle clicks outside the modal to close it
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -120,8 +119,10 @@ const ModalContent: React.FC<ModalContentProps> = ({
           className
         )}
         style={{
-          backgroundColor: isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#00000033",
-          ...style
+          backgroundColor: isDarkMode
+            ? "rgba(255, 255, 255, 0.1)"
+            : "#00000033",
+          ...style,
         }}
         {...props}
       >

@@ -46,6 +46,7 @@ const Inventory = () => {
             title="Total Records"
             newData={20}
             total={100}
+            colorScheme={1}
           />
         </div>
 
@@ -60,7 +61,7 @@ const Inventory = () => {
         setGridView={setGridView}
         setListView={setListView} onStateSelect={() => { }} pageTitle="Inventory" aboutPageModalData={
           { title: "Inventory", description: "This page contains a list of inventory on the platform." }
-        } searchInputPlaceholder="Search" handleFilterApply={() => { }} isDateTrue filterOptionsWithRadio={[]} filterWithOptionsWithDropdown={inventoryFiltersWithDropdown} />
+        } searchInputPlaceholder="Search inventory" handleFilterApply={() => { }} isDateTrue filterOptionsWithRadio={[]} filterWithOptionsWithDropdown={inventoryFiltersWithDropdown} />
       {state === "grid" ? (
         <AutoResizingGrid gap={28} minWidth={330}>
           {Array(6)
