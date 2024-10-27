@@ -22,6 +22,10 @@ import { useGoogleFonts } from "@/hooks/useFonts";
 
 const Appearance = () => {
   const googleFonts = useGoogleFonts();
+
+  // Ensure 'Lato' is the first font in the array
+  const modifiedGoogleFonts = ["Lato", ...googleFonts];
+
   const isDarkMode = useDarkMode();
   const setColor = useThemeStoreSelectors.getState().setColor;
   const primaryColor = useThemeStoreSelectors.getState().primaryColor;
@@ -44,8 +48,8 @@ const Appearance = () => {
     }
   }, [setColor, selectedColor]);
 
+  const storedFont = localStorage.getItem("selectedFont");
   useEffect(() => {
-    const storedFont = localStorage.getItem("selectedFont");
     if (storedFont) {
       setSelectedFont(storedFont);
       const link = document.createElement("link");
@@ -241,14 +245,15 @@ const Appearance = () => {
           title="Fonts Templates"
           desc="Choose Your Preferred Font Style for Your Company Profile Website"
         />
+
         <div className="flex gap-2 items-center">
           <div className="w-full sm:w-1/4 flex mb-5">
             <Select
               id="font"
               label=""
-              placeholder="Select a font"
+              placeholder={storedFont || "Select a font"}
               onChange={(value) => handleFontSelect(value)}
-              options={googleFonts}
+              options={modifiedGoogleFonts}
               inputContainerClassName="bg-neutral-2 w-full mt-2 min-w-[250px]"
             />
           </div>

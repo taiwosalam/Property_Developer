@@ -124,7 +124,7 @@ const Profile = () => {
 
   const handleFontSelect = (fontName: string) => {
     setSelectedFont(fontName);
-    localStorage.setItem("selectedFont", fontName);
+    // localStorage.setItem("selectedFont", fontName);
     const link = document.createElement("link");
     link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(
       / /g,
@@ -132,7 +132,6 @@ const Profile = () => {
     )}:wght@400;700&display=swap`;
     link.rel = "stylesheet";
     document.head.appendChild(link);
-    document.body.style.fontFamily = fontName;
   };
 
   return (
@@ -228,13 +227,6 @@ const Profile = () => {
                   hiddenInputClassName="setup-f required"
                   settingsPage={true}
                 />
-                <Button
-                  variant="change"
-                  size="xs_normal"
-                  className="py-2 px-3 mt-2 sm:mt-0 whitespace-nowrap"
-                >
-                  verify utility
-                </Button>
               </div>
             </div>
           </div>
@@ -268,8 +260,8 @@ const Profile = () => {
           <div className="w-full flex flex-col lg:flex-row gap-4">
             <Input
               id="head_office_address"
-              label="head office address"
-              placeholder="U4, Joke Plaza, Bodija, Ibadan"
+              label="Head Office Address"
+              placeholder=""
               className="w-full lg:w-[500px]"
             />
             <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full lg:w-auto">

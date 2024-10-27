@@ -4,7 +4,7 @@ export const useGoogleFonts = () => {
   const [googleFonts, setGoogleFonts] = useState<string[]>([]);
 
   const fetchGoogleFonts = async () => {
-      const apikey = process.env.NEXT_PUBLIC_GOOGLE_FONT_API_KEY;
+      const apikey = process.env.NEXT_PUBLIC_GOOGLE_FONT_API_KEY || "AIzaSyAbk2ZtRpeEZgqhQ8kwMQqrJNsIBJfzHa8";
       console.log("apikey = ", apikey);
       try {
         const response = await fetch(
