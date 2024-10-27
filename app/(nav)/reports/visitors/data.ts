@@ -45,5 +45,19 @@ export const visitorsRequestTableFields: Field[] = [
   { id: "7", label: "Date", accessor: "date" },
   { id: "8", label: "Check In", accessor: "check_in" },
   { id: "9", label: "Check Out", accessor: "check_out" },
-  { id: "9", accessor: "action" },
 ];
+
+const generateTableData = (numItems: number) => {
+  return Array.from({ length: numItems }, (_, index) => ({
+    id: "123456789",
+    branch: "Akinyele Branch",
+    property_name: "Property Name",
+    requester: "Ajayi David",
+    visitor: "Ajayi David",
+    date: "12/02/2024",
+    check_in: "08:30am",
+    check_out: "08:30am",
+  }));
+};
+
+export const VisitorsRequestTableData = generateTableData(10);

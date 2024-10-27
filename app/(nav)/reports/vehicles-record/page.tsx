@@ -1,29 +1,13 @@
 "use client";
-import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
   reportsVehiclesFilterOptionsWithDropdown,
   vehicleRecordReportTableFields,
+  vehiclesRecordTableData,
 } from "./data";
 
 const VehiclesRecordReport = () => {
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      id: (index + 1).toString(),
-      full_name: `full_name ${index + 1}`,
-      plate_number: `plate_number ${index + 1}`,
-      guest_visitor: index % 2 === 0 ? "Guest" : "Visitor",
-      check_in: `check_in ${index + 1}`,
-      check_out: `check_out ${index + 1}`,
-      passenger_in: `${index + 1} People`,
-      passenger_out: `${index + 1} People`,
-      status: index % 2 === 0 ? "Completed" : "Pending",
-    }));
-  };
-
-  const tableData = generateTableData(10);
-
   return (
     <div className="space-y-9">
       <FilterBar
@@ -46,10 +30,9 @@ const VehiclesRecordReport = () => {
       />
       <CustomTable
         fields={vehicleRecordReportTableFields}
-        data={tableData}
+        data={vehiclesRecordTableData}
         tableHeadClassName="h-[45px]"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

@@ -2,7 +2,6 @@
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import { useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import EmailModal, { type EmailRecord } from "@/components/reports/email-modal";
 import type { DataItem } from "@/components/Table/types";
@@ -16,7 +15,7 @@ const EmailReport = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedSMS, setSelectedSMS] = useState<EmailRecord | null>(null);
 
-  const handleActionClick = (record: DataItem) => {
+  const handleTableItemClick = (record: DataItem) => {
     setSelectedSMS(record as EmailRecord);
     setModalOpen(true);
   };
@@ -69,7 +68,7 @@ const EmailReport = () => {
         fields={emailTablefields}
         data={tableData}
         tableHeadClassName="h-[45px]"
-        onActionClick={handleActionClick}
+        handleSelect={handleTableItemClick}
       />
       <Modal
         state={{
@@ -81,7 +80,6 @@ const EmailReport = () => {
           <EmailModal {...(selectedSMS as EmailRecord)} />
         </ModalContent>
       </Modal>
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

@@ -1,28 +1,27 @@
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
   reportsVisitorsFilterOptionsWithDropdown,
   visitorsRequestTableFields,
+  VisitorsRequestTableData,
 } from "./data";
+import { useState } from "react";
+import type { DataItem } from "@/components/Table/types";
+import { Modal, ModalContent } from "@/components/Modal/modal";
+import VisitorRequestModal from "@/components/tasks/visitors-requests/visitor-request-modal";
+import type { VisitorRequestModalProps } from "@/components/tasks/visitors-requests/types";
 
 const Visitors = () => {
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      id: "123456789",
-      branch: "Akinyele Branch",
-      property_name: "Property Name",
-      requester: "Ajayi David",
-      visitor: "Ajayi David",
-      date: "12/02/2024",
-      check_in: "08:30am",
-      check_out: "08:30am",
-    }));
-  };
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] =
+    useState<VisitorRequestModalProps | null>(null);
 
-  const tableData = generateTableData(10);
+  const handleTableItemClick = (record: DataItem) => {
+    setSelectedRecord(record as VisitorRequestModalProps);
+    setModalOpen(true);
+  };
 
   return (
     <div className="space-y-9">
@@ -66,10 +65,30 @@ const Visitors = () => {
       />
       <CustomTable
         fields={visitorsRequestTableFields}
-        data={tableData}
+        data={VisitorsRequestTableData}
         tableHeadClassName="h-[45px]"
+        handleSelect={handleTableItemClick}
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+      <Modal
+        state={{
+          isOpen: modalOpen,
+          setIsOpen: setModalOpen,
+        }}
+      >
+        <ModalContent>
+          <VisitorRequestModal
+            id="12"
+            pictureSrc="/empty/SampleLandlord.jpeg"
+            status="completed"
+            userName="Ajayi David"
+            visitorName="Ajayi David"
+            visitorPhoneNumber="09022312133"
+            requestDate="12/02/2024"
+            secretQuestion="What is your favorite color?"
+            secretAnswer="Blue"
+          />
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
