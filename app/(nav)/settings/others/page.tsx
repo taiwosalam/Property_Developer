@@ -142,7 +142,7 @@ const Others = () => {
   return (
     <>
       {/* COMPANY TYPE SETTINGS */}
-      <SettingsSection title="Company Default Type">
+      <SettingsSection title="Company Default Module">
         <div className="custom-flex-col gap-3">
           {companyTypes.map((type, index) => (
             <SettingsOthersType

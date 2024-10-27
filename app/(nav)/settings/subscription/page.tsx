@@ -236,7 +236,20 @@ const Subscriptions = () => {
                   <Select
                     required
                     id="months"
-                    options={["1", "2", "3", "4"]}
+                    options={[
+                      "1",
+                      "2",
+                      "3",
+                      "4",
+                      "5",
+                      "6",
+                      "7",
+                      "8",
+                      "9",
+                      "10",
+                      "11",
+                      "12",
+                    ]}
                     inputContainerClassName="w-[277px] bg-neutral-2"
                     label="Choose the number of months from the available options."
                   />
@@ -301,6 +314,7 @@ const Subscriptions = () => {
             borderTopRightRadius: "32px",
             overflow: "hidden",
             height: "80vh",
+            zIndex: 1,
           },
         }}
       >

@@ -163,7 +163,11 @@ const FileInput: React.FC<FileInputProps> = ({
             </div>
           )}
         </div>
-        <div className="hidden lg:block absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2">
+        <div
+          className={`${
+            !settingsPage ? "hidden lg:block" : "block"
+          } absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2`}
+        >
           {!settingsPage && (
             <Button
               variant="change"
@@ -182,7 +186,7 @@ const FileInput: React.FC<FileInputProps> = ({
               size="sm"
               className="whitespace-nowrap text-ellipsis"
             >
-              Verify utility
+              Verify Document
             </Button>
           )}
         </div>
