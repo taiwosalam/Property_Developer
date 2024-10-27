@@ -17,8 +17,11 @@ import { Tooltip } from "@mui/material";
 import Image from "next/image";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { toast } from "sonner";
+import Select from "@/components/Form/Select/select";
+import { useGoogleFonts } from "@/hooks/useFonts";
 
 const Appearance = () => {
+  const googleFonts = useGoogleFonts();
   const isDarkMode = useDarkMode();
   const setColor = useThemeStoreSelectors.getState().setColor;
   const primaryColor = useThemeStoreSelectors.getState().primaryColor;
@@ -28,6 +31,7 @@ const Appearance = () => {
   const [selectedView, setSelectedView] = useState<string | null>(null);
   const [selectedNavbar, setSelectedNavbar] = useState<string | null>(null);
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
+  const [selectedFont, setSelectedFont] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(
     primaryColor
   );
@@ -39,6 +43,21 @@ const Appearance = () => {
       setColor(selectedColor);
     }
   }, [setColor, selectedColor]);
+
+  useEffect(() => {
+    const storedFont = localStorage.getItem("selectedFont");
+    if (storedFont) {
+      setSelectedFont(storedFont);
+      const link = document.createElement("link");
+      link.href = `https://fonts.googleapis.com/css2?family=${storedFont.replace(
+        / /g,
+        "+"
+      )}:wght@400;700&display=swap`;
+      link.rel = "stylesheet";
+      document.head.appendChild(link);
+      document.body.style.fontFamily = storedFont;
+    }
+  }, []);
 
   const handleSelect = (type: string, value: string) => {
     if (!value) return;
@@ -54,6 +73,9 @@ const Appearance = () => {
         break;
       case "mode":
         setSelectedMode(value);
+        break;
+      case "font":
+        handleFontSelect(value);
         break;
     }
   };
@@ -77,6 +99,19 @@ const Appearance = () => {
     setCustomColor(color);
     setSelectedColor(color);
     console.log("selected color = ", color);
+  };
+
+  const handleFontSelect = (fontName: string) => {
+    setSelectedFont(fontName);
+    localStorage.setItem("selectedFont", fontName);
+    const link = document.createElement("link");
+    link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(
+      / /g,
+      "+"
+    )}:wght@400;700&display=swap`;
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+    document.body.style.fontFamily = fontName;
   };
 
   return (
@@ -201,7 +236,23 @@ const Appearance = () => {
       </SettingsSection>
 
       {/* DASHBOARD COLOR SETTINGS */}
-      <SettingsSection title="Theme and Color Settings">
+      <SettingsSection title="Theme Font and Color Settings">
+        <SettingsSectionTitle
+          title="Fonts Templates"
+          desc="Choose Your Preferred Font Style for Your Company Profile Website"
+        />
+        <div className="flex gap-2 items-center">
+          <div className="w-full sm:w-1/4 flex mb-5">
+            <Select
+              id="font"
+              label=""
+              placeholder="Select a font"
+              onChange={(value) => handleFontSelect(value)}
+              options={googleFonts}
+              inputContainerClassName="bg-neutral-2 w-full mt-2 min-w-[250px]"
+            />
+          </div>
+        </div>
         <SettingsSectionTitle
           title="Dashboard Color Scheme"
           desc="Customize the default color to your preference from the available options listed below."

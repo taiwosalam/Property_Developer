@@ -14,6 +14,7 @@
 
 /* Root styles */
 :root {
+
   /* --color: 0, 51, 196;
   --primary-color: rgb(var(--color));
   --secondary-color: rgba(var(--color), 0.7);
@@ -27,6 +28,12 @@
   --brand-primary: #315ee7;
   --brand-secondary: #6083ed;
   --brand-tertiary: #93c5fd; */
+  /* color: #9aeb49; */
+  --font-style: "Lato", sans-serif; 
+}
+
+body {
+  font-family: var(--font-style);
 }
 
 body {
