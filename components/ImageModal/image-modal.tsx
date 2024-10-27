@@ -8,7 +8,7 @@ import {
   swipeConfidenceThreshold,
   swipePower,
 } from "@/utils/slider";
-import { NextIcon, PreviousIcon } from "@/public/icons/icons";
+import { NextIcon, PreviousIcon, NavCloseIcon } from "@/public/icons/icons";
 
 interface ImageModalProps {
   isOpen: boolean;
@@ -39,8 +39,6 @@ const ImageModal: React.FC<ImageModalProps> = ({
       open={isOpen}
       onClose={onClose}
       maxWidth="lg"
-      //   className="mx-auto"
-      //   fullWidth
       PaperProps={{
         sx: {
           backgroundColor: "transparent",
@@ -52,6 +50,14 @@ const ImageModal: React.FC<ImageModalProps> = ({
         className="relative flex justify-center items-center overflow-hidden max-h-[85vh]"
         style={{ width: "min(900px, 80vw)" }}
       >
+        <button
+          type="button"
+          aria-label="close"
+          onClick={onClose}
+          className="absolute z-[2] top-2 right-2"
+        >
+          <NavCloseIcon />
+        </button>
         <button
           type="button"
           aria-label="previous"
