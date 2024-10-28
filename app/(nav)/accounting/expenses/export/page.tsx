@@ -78,11 +78,11 @@ const Exportexpense = () => {
               <tr>
                 <th></th>
                 <th>date</th>
-                <th>landlord / landlady</th>
-                <th>payment ID</th>
-                <th>amount</th>
+                <th>client name</th>
                 <th>description</th>
-                <th>mode</th>
+                <th>amount</th>
+                <th>payment</th>
+                <th>Balance</th>
               </tr>
             </thead>
             <tbody>
@@ -105,23 +105,23 @@ const Exportexpense = () => {
                       <p>Amori Ademakinwa</p>
                     </td>
                     <td>
-                      <p>1234567878</p>
+                      <p>Water Plumbing</p>
                     </td>
                     <td>
-                      <p>₦115,000.00</p>
+                      <p className="text-status-success-3">₦35,000.00</p>
                     </td>
                     <td>
-                      <p>Property Rent for moniya house</p>
+                      <p className="text-status-error-2">₦35,000.00</p>
                     </td>
                     <td>
-                      <p>Bank Transfer</p>
+                      <p>₦35,000</p>
                     </td>
                   </tr>
                 ))}
             </tbody>
           </table>
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-start">
           <Signature />
         </div>
       </div>
