@@ -129,7 +129,7 @@ const AccountingExpensesPage = () => {
               </Select>
             </div>
             <div className="flex items-center gap-4 flex-wrap">
-              <SearchInput placeholder="Search for Invoice" />
+              <SearchInput placeholder="Search for Expenses" />
               <Modal>
                 <ModalTrigger asChild>
                   <FilterButton />
@@ -142,6 +142,7 @@ const AccountingExpensesPage = () => {
                     }
                     onApply={handleFilterApply}
                     onStateSelect={(state: string) => setSelectedState(state)}
+                    date
                   />
                 </ModalContent>
               </Modal>
@@ -164,7 +165,7 @@ const AccountingExpensesPage = () => {
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={6} minWidth={330}>
+          <AutoResizingGrid gap={16} minWidth={330}>
             <ExpensesStatCard
               title="Total Expenses"
               balance={12345432}
@@ -248,13 +249,13 @@ const AccountingExpensesPage = () => {
                             href={"/accounting/expenses/1/manage-expenses"}
                             className="p-4"
                           >
-                            Manage Receipt
+                            Manage Expense
                           </Link>
                           <Link
                             href={"/accounting/expenses/1/preview-expenses"}
                             className="p-4"
                           >
-                            Preview Receipt
+                            Preview Expense
                           </Link>
                         </div>
                       </DropdownContent>

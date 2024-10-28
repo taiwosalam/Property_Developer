@@ -37,7 +37,7 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
         </button>
       </div>
 
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {showImages && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -103,7 +103,10 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
       {/* Image Modal */}
       <PopupImageModal
         isOpen={screenModal}
-        onClose={() => setScreenModal(false)}
+        onClose={() => {
+          setScreenModal(false);
+          // setCurrentIndex(0);
+        }}
         images={images}
         currentIndex={currentIndex}
       />
