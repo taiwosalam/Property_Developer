@@ -349,6 +349,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
       className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer relative r`}
       onClick={handleClick}
     >
+      <div className="flex justify-center items-center">
       {isSelected === false && !profile && (
         <div className="absolute inset-0 bg-white bg-opacity-60 z-10" />
       )}
@@ -374,10 +375,11 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
       {showProfessionalMessage && (
         <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-30">
           <p className="text-white text-center px-4 py-2 rounded">
-            This feature is for professional plan only
+          Sorry, this theme is for Professional Plan subscribers only
           </p>
         </div>
       )}
+      </div>
     </div>
   );
 };
