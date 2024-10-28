@@ -121,7 +121,10 @@ const AccountingReceiptsPage = () => {
               </Select>
             </div>
             <div className="flex items-center gap-4 flex-wrap">
-              <SearchInput placeholder="Search for Receipt" />
+              <SearchInput
+                placeholder="Search for Receipt"
+                className="max-w-[255px]"
+              />
               <Modal>
                 <ModalTrigger asChild>
                   <FilterButton />
@@ -180,4 +183,3 @@ const AccountingReceiptsPage = () => {
 };
 
 export default AccountingReceiptsPage;
-///accounting/receipts/1/preview
