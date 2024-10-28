@@ -50,7 +50,7 @@ const transformToPropertyRequestCardProps = (
   };
 };
 
-const PropertyRequest = () => {
+const MyPropertiesRequestPage = () => {
   return (
     <div className="space-y-9">
        <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
@@ -73,12 +73,12 @@ const PropertyRequest = () => {
       <FilterBar
         azFilter
         onStateSelect={() => {}}
-        pageTitle="Property Request"
+        pageTitle="My Properties Request"
         aboutPageModalData={{
-          title: "Property Request",
-          description: "This page contains a list of Property Request on the platform.",
+          title: "My Properties Request",
+          description: "This page contains a list of My Properties Request on the platform.",
         }}
-        searchInputPlaceholder="Search Property Request"
+        searchInputPlaceholder="Search My Properties Request"
         handleFilterApply={() => {}}
         isDateTrue
         filterOptions={[]}
@@ -104,4 +104,4 @@ const PropertyRequest = () => {
   );
 };
 
-export default PropertyRequest;
+export default MyPropertiesRequestPage;
