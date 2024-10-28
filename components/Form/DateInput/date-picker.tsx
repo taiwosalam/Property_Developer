@@ -52,7 +52,10 @@ export default function CustomDatePicker({
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div
-        className={clsx("text-xs md:text-sm font-normal dark:bg-darkText-primary dark:hover:border-darkText-1", containerClassName)}
+        className={clsx(
+          "text-xs md:text-sm font-normal dark:bg-darkText-primary dark:hover:border-darkText-1",
+          containerClassName
+        )}
       >
         <CustomStyledDatePicker
           disableFuture={disableFuture}

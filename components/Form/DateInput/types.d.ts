@@ -13,4 +13,5 @@ export interface DateInputProps {
   disablePast?: boolean;
   containerClassName?: string;
   labelclassName?: string;
+  disabled?: boolean;
 }

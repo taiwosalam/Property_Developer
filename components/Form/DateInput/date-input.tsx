@@ -23,6 +23,7 @@ const DateInput: React.FC<DateInputProps> = ({
   disablePast,
   containerClassName,
   labelclassName,
+  
 }) => {
   const handleDateChange = (date?: Dayjs | null) => {
     if (onChange) {
