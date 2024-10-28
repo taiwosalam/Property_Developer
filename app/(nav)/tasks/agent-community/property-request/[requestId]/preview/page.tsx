@@ -4,16 +4,25 @@ import BackButton from "@/components/BackButton/back-button";
 import Image, { StaticImageData } from "next/image";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
-import { comments, companyStats, threadArticle } from "../../../data";
-import { ChevronLeft, FbIcon, InstagramIcon, Mail, MapIcon, PhoneIcon, SocialWebIcon, ThumbsDown, ThumbsUp, TwitterIcon, WebsiteIcon } from "@/public/icons/icons";
+import {
+  comments,
+  propertyMoreDetails,
+  propertySummaryData,
+  readyByData,
+  threadArticle,
+} from "../../../data";
+import {
+  ChevronLeft,
+  ThumbsDown,
+  ThumbsUp,
+} from "@/public/icons/icons";
 import user1 from "@/public/empty/user1.svg";
 import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
 import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
-import SampleUser from "@/public/empty/sample-user.svg";
-import CompanyLogo from "@/public/empty/company-logo.svg";
 import Comment from "../../../[threadId]/preview/comment";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 const PreviewPage = () => {
   const router = useRouter();
@@ -49,6 +58,8 @@ const PreviewPage = () => {
         </div>
         <div className="side2 w-full lg:w-[40%] flex flex-col gap-4">
           <SummaryCard />
+          <MoreDetailsCard />
+          <ReadyByCard />
         </div>
       </div>
     </div>
@@ -124,6 +135,69 @@ const ThreadComments = () => {
 
 // SECOND SIDE
 const SummaryCard = () => {
-  return <div className="bg-white dark:bg-dark-100 rounded-lg p-4">SummaryCard</div>;
+  return (
+    <div className="bg-white dark:bg-dark-100 rounded-lg p-4">
+      <h3> Summary </h3>
+      <div className="flex flex-col mt-4 gap-2">
+        {propertySummaryData.map((item, index) => (
+          <div
+            key={index}
+            className="flex gap-4 items-start justify-between w-full"
+          >
+            <p className="text-[#747474] text-sm">{item.label}</p>
+            <p className="dark:text-white text-black text-sm">{item.value}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
+const MoreDetailsCard = () => {
+  return (
+    <div className="bg-white dark:bg-dark-100 rounded-lg p-4">
+      <div className="flex flex-col mt-4 gap-2">
+        {propertyMoreDetails.map((item, index) => (
+          <div
+            key={index}
+            className="flex gap-4 items-start justify-between w-full"
+          >
+            <p className="text-[#747474] text-sm">{item.label}</p>
+            <p className="dark:text-white text-black text-sm">{item.value}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
+const ReadyByCard = () => {
+  return (
+    <div className="bg-[#EFF6FF] dark:bg-darkText-primary rounded-lg p-4">
+      <h4 className="text-black dark:text-white font-semibold text-sm">
+        Ready By
+      </h4>
+        {readyByData.map((item, index) => (
+      <div className="flex w-full gap-3 mt-3 justify-between">
+          <div key={index} className="flex gap-1 items-center">
+            <div className="imgWrapper h-10 w-10">
+              <Image
+                src={user2}
+                alt="user"
+                width={100}
+                height={100}
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <p className="text-black dark:text-white text-md font-semibold">
+              {item.name}
+            </p>
+            <BadgeIcon color="blue" />
+          </div>
+          <p className="text-black dark:text-white text-sm"> {item.time} </p>
+      </div>
+        ))}
+    </div>
+  );
+};  

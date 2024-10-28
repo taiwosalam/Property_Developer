@@ -239,3 +239,34 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     maxBudget: "₦200,000,000",
   },
 ];
+
+
+
+export const propertySummaryData = [
+  { label: "Posted Date", value: "12/10/2024" },
+  { label: "Last Updated", value: "12/10/2024" },
+  { label: "Total Seen", value: "2341" },
+  { label: "Total Comment", value: "23414" },
+];
+
+
+export const propertyMoreDetails = [
+  { label: "Location(state):", value: "Oyo State" },
+  { label: "Local Government:", value: "Akinyele" },
+  { label: "Category:", value: "Short Let" },
+  { label: "Property Type:", value: "Apaertment" },
+  { label: "Bedroom:", value: "5+" },
+  { label: "Land Size:", value: "5+" },
+  { label: "Min Budget:", value: "₦75,000,000" },
+  { label: "Max Budget:", value: "₦200,000,000" },
+  { label: "Due Date:", value: "12/10/2024" },
+];
+
+
+export const readyByData = [
+  { name: "Salam AIshat", picture: '/empty/user1.svg', verified: true, time: '12/10/2024 (02:30pm)' },
+  { name: "Salam AIshat", picture: '/empty/user1.svg', verified: true, time: '12/10/2024 (02:30pm)' },
+  { name: "Salam AIshat", picture: '/empty/user1.svg', verified: true, time: '12/10/2024 (02:30pm)' },
+  { name: "Salam AIshat", picture: '/empty/user2.svg', verified: false, time: '12/10/2024 (02:30pm)' },
+  { name: "Salam AIshat", picture: '/empty/user3.svg', verified: true, time: '12/10/2024 (02:30pm)' },
+];
