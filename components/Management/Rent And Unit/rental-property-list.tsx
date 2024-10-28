@@ -61,7 +61,7 @@ const RentalPropertyListCard = () => {
             className="rounded-lg"
           />
           <PopupImageModal
-            images={images}
+            images={images.map((image) => ({ src: image, isVideo: false }))}
             isOpen={isOpened}
             onClose={() => setIsOpened(false)}
             currentIndex={0}

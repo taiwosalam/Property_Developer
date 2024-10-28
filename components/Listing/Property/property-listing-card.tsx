@@ -74,7 +74,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
               />
               <PopupImageModal
                 isOpen={isOpened}
-                images={[SampleProperty6]}
+                images={[{ src: SampleProperty6, isVideo: false }]}
                 onClose={() => setIsOpened(false)}
                 currentIndex={0}
               />

@@ -14,6 +14,7 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
   currentIndex,
   onClose,
 }) => {
+  console.log(currentIndex);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
@@ -91,7 +92,7 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
               className="keen-slider__slide relative w-full h-full"
             >
               <Image
-                src={image}
+                src={image.src}
                 alt={`Image ${index + 1}`}
                 fill
                 sizes="auto"
