@@ -23,7 +23,7 @@ const CommunityBoardModal = ({ lists }: { lists: { title: string; desc: string; 
       <div className="flex items-center justify-center my-auto px-10 dark:bg-darkText-primary">
         <div className="mt-4 space-y-3">
           {lists.map((item, index) => (
-            <Link href={item.link} className="flex items-start flex-col gap-2">
+            <Link href={item.link} key={index} className="flex items-start flex-col gap-2">
               <div className="head flex items-center justify-between w-full">
                 <p className="text-5 font-bold">{item.title}</p>
                 <VectorIcon />
