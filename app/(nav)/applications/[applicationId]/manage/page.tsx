@@ -17,11 +17,13 @@ import {
   LandlordTenantInfo,
   LandlordTenantInfoSection,
 } from "@/components/Management/landlord-tenant-info-components";
-import Button from "@/components/Form/Button/button";
-import useDarkMode from "@/hooks/useCheckDarkMode";
-import FixedFooter from "@/components/FixedFooter/fixed-footer";
+
 import { useRouter } from "next/navigation";
 import UserTag from "@/components/Tags/user-tag";
+import useDarkMode from "@/hooks/useCheckDarkMode";
+import Button from "@/components/Form/Button/button";
+import BackButton from "@/components/BackButton/back-button";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const ManageApplication = () => {
   const router = useRouter();
@@ -35,6 +37,7 @@ const ManageApplication = () => {
   return (
     <div className="custom-flex-col gap-[88px] pb-[100px]">
       <div className="custom-flex-col gap-6">
+        <BackButton>Back</BackButton>
         <div
           style={{ boxShadow: " 4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
           className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
