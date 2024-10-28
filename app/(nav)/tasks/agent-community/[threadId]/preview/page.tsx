@@ -21,7 +21,7 @@ import Button from "@/components/Form/Button/button";
 import SampleUser from "@/public/empty/sample-user.svg";
 import CompanyLogo from "@/public/empty/company-logo.svg";
 
-const page = () => {
+const PreviewPage = () => {
   const router = useRouter();
   const { threadId } = useParams();
   const sampleImages: StaticImageData[] = [
@@ -72,7 +72,7 @@ const page = () => {
   );
 };
 
-export default page;
+export default PreviewPage;
 
 const ThreadArticle = () => {
   return (
