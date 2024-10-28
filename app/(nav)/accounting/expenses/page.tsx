@@ -129,7 +129,7 @@ const AccountingExpensesPage = () => {
               </Select>
             </div>
             <div className="flex items-center gap-4 flex-wrap">
-              <SearchInput placeholder="Search for Invoice" />
+              <SearchInput placeholder="Search for Expenses" />
               <Modal>
                 <ModalTrigger asChild>
                   <FilterButton />

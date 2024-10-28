@@ -237,7 +237,7 @@ const AccountingInvoicePage = () => {
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={6} minWidth={330}>
+          <AutoResizingGrid gap={16} minWidth={330}>
             <InvoiceStatCards
               title="Total Receipts Created"
               balance={12345432}
