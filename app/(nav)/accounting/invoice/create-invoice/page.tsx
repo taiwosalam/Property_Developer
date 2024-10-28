@@ -8,10 +8,15 @@ import Button from "@/components/Form/Button/button";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
+import TextArea from "@/components/Form/TextArea/textarea";
 import Picture from "@/components/Picture/picture";
 import { LocationIcon } from "@/public/icons/icons";
+import { useState } from "react";
 
 const CreateInvoicePage = () => {
+  const [checked, setChecked] = useState(false);
+  const [checkedd, setCheckedd] = useState(false);
+
   return (
     <section className="space-y-7 pb-20">
       <BackButton>Create New Invoice</BackButton>
@@ -58,22 +63,37 @@ const CreateInvoicePage = () => {
           </div>
         </div>
       </div>
-      <div className="space-y-4">
+      <div className="flex flex-col gap-4">
         <Details />
-        <div className="flex items-center justify-between max-w-[600px] gap-4">
+        <div className="flex items-center justify-between max-w-[700px] gap-4">
           <Select
             id="client_name"
             options={["Client Name", "Client Name 2"]}
             label="Client Name"
             className="flex-1"
           />
-          <Input id="unit_id" label="Unit ID" className="flex-1" />
+          <div className="flex-1 self-end">
+            <DocumentCheckbox>
+              <span className="text-[#3F4247]">
+                Click to generate invoive for all tenants and occupants of this
+                property
+              </span>
+            </DocumentCheckbox>
+          </div>
+        </div>
+        <div className="w-full lg:max-w-[50%]">
+          <TextArea id="sdjn" label="Description" required />
         </div>
       </div>
       <div className="space-y-6">
-        <h1 className="text-[#092C4C] font-bold text-xl dark:text-white">
-          Add Payment
-        </h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-[#092C4C] font-bold text-xl dark:text-white">
+            Add Payment
+          </h1>
+          <Checkbox checked={checkedd} onChange={() => setCheckedd(!checkedd)}>
+            <span></span>
+          </Checkbox>
+        </div>
         <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
           <div className="flex items-center justify-between max-w-[600px] gap-4">
             <Input
@@ -106,9 +126,14 @@ const CreateInvoicePage = () => {
         </div>
       </div>
       <div className="space-y-6">
-        <h1 className="text-[#092C4C] font-bold text-xl dark:text-white">
-          Breakdown
-        </h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-[#092C4C] font-bold text-xl dark:text-white">
+            Gnerated Rent Breakdown
+          </h1>
+          <Checkbox checked={checked} onChange={() => setChecked(!checked)}>
+            <span></span>
+          </Checkbox>
+        </div>
         <Breakdown />
       </div>
       <div className="space-y-2 space-x-2 text-[#3F4247] text-sm dark:text-darkText-1">

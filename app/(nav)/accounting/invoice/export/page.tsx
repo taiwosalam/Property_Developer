@@ -42,7 +42,7 @@ const ExportInvoice = () => {
         <h1 className="text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
           Invoice Summary
         </h1>
-        <AutoResizingGrid minWidth={330}>
+        <AutoResizingGrid gap={30} minWidth={330}>
           <InvoiceStatCards
             title="Total Receipts Created"
             balance={12345432}

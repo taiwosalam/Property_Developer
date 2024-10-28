@@ -53,7 +53,7 @@ const PreviewExpenses = () => {
             New rent payment for 3 bedroom bungalow at Ajibade road 2, Lekki
             Lagos
           </p>
-          <div className="p-6 rounded-lg space-y-5">
+          <div className="p-6 rounded-lg space-y-5 bg-white">
             <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
               <KeyValueList
                 data={{}}
@@ -90,7 +90,7 @@ const PreviewExpenses = () => {
               />
             </div>
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-start">
             <div className="custom-flex-col gap-2 text-text-quaternary text-base font-medium">
               <p>Authorized Signature </p>
               <div className="flex">

@@ -171,3 +171,18 @@ export const comments: CommentProps[] = [
     ],
   },
 ];
+
+
+
+export const companyStats = [
+  { label: "Join ourproperty.ng", value: "2 Months Ago" },
+  { label: "Years in Industry", value: "6 Years+" },
+  { label: "Total Branch", value: "23" },
+  { label: "Total Staff", value: "234" },
+  { label: "Property for sale", value: "23234" },
+  { label: "Property for Rent", value: "63234" },
+  { label: "Hospitality Property", value: "74234" },
+  { label: "Total Unit Managing", value: "734" },
+  { label: "Total Reviews", value: "54" },
+  { label: "Completed Transaction", value: "74" },
+];
