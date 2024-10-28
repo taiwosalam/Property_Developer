@@ -18,13 +18,9 @@ import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
 import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
-import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import SortableImage from "./sortable-image";
+import { v4 as uuidv4 } from "uuid";
+import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
+import DraggableImage from "./draggable-image";
 import { propertyCategories, rentPeriods } from "@/data";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { getAllBranches } from "@/app/(nav)/management/staff-branch/data";
@@ -35,8 +31,7 @@ import { currencySymbols } from "@/utils/number-formatter";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
 import PropertyFormFooter from "./property-form-footer.tsx";
 import useDarkMode from "@/hooks/useCheckDarkMode";
-
-const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
+import { MAX_FILE_SIZE_MB } from "@/data";
 
 const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   editMode,
@@ -64,7 +59,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   } = state;
 
   const sortableImages = images.map((image, index) => ({
-    id: index,
+    id: uuidv4(),
     index,
     image,
   }));
@@ -123,23 +118,16 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     e.target.value = ""; // Reset input value to allow re-uploading the same file
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over) return;
-    const activeId = active.id;
-    const overId = over.id;
-    if (activeId === overId) return;
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    const { source, destination } = result;
+    if (source.index === destination.index) return;
 
-    if (activeId !== overId) {
-      const oldIndex = sortableImages.findIndex(
-        (image) => image.id === active.id
-      );
-      const newIndex = sortableImages.findIndex(
-        (image) => image.id === over.id
-      );
-      const newImages = arrayMove(images, oldIndex, newIndex);
-      setState((x) => ({ ...x, images: newImages }));
-    }
+    const newImages = Array.from(images);
+    const [movedImage] = newImages.splice(source.index, 1);
+    newImages.splice(destination.index, 0, movedImage);
+
+    setState((x) => ({ ...x, images: newImages }));
   };
 
   const removeImage = (index: number) => {
@@ -247,48 +235,51 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         <div className="mb-5 lg:mb-8">
           <p className="mb-5 text-text-secondary dark:text-darkText-1 text-base font-normal">
             Set {formType === "rental" ? "property" : "Estate/Facility"}{" "}
-            pictures for easy recognition (maximum of 6 images).
+            pictures for easy recognition (maximum of 6 images). Please drag
+            your preferred image and place it in the first position to make it
+            the primary display.
           </p>
-          <DndContext
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={sortableImages.map((i) => i.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className="flex gap-4 overflow-x-auto overflow-y-hidden">
-                {sortableImages.map((s) => (
-                  <SortableImage
-                    key={s.id}
-                    id={s.id}
-                    image={s.image}
-                    index={s.index}
-                    removeImage={removeImage}
-                  />
-                ))}
-                {images.length < 6 && (
-                  <label
-                    htmlFor="upload"
-                    className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white dark:bg-darkText-primary flex flex-col items-center justify-center cursor-pointer text-[#626262] dark:text-darkText-1"
-                  >
-                    <PlusIcon />
-                    <span className="text-black dark:text-darkText-1 text-base font-normal mt-2">
-                      Add Pictures
-                    </span>
-                    <input
-                      id="upload"
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleFileChange}
-                      className="hidden"
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="property-images" direction="horizontal">
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="flex gap-4 overflow-x-auto custom-round-scrollbar overflow-y-hidden"
+                >
+                  {sortableImages.map((s) => (
+                    <DraggableImage
+                      key={s.id}
+                      id={s.id}
+                      image={s.image}
+                      index={s.index}
+                      removeImage={removeImage}
                     />
-                  </label>
-                )}
-              </div>
-            </SortableContext>
-          </DndContext>
+                  ))}
+                  {provided.placeholder}
+                  {images.length < 6 && (
+                    <label
+                      htmlFor="property_pictures"
+                      className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
+                    >
+                      <PlusIcon />
+                      <span className="text-black text-base font-normal mt-2">
+                        Add Pictures
+                      </span>
+                      <input
+                        id="property_pictures"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         </div>
         <div className="md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3">
           <Input

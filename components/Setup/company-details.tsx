@@ -24,7 +24,7 @@ const CompanyDetails = () => {
           label="date of registration"
           onChange={handleInputChange}
           inputClassName="setup-f"
-          disableFuture={true}
+          disableFuture
         />
         <Input
           required

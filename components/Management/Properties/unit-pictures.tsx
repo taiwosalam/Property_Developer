@@ -1,13 +1,9 @@
 import { PlusIcon } from "@/public/icons/icons";
-import SortableImage from "./sortable-image";
+import DraggableImage from "./draggable-image";
 import { useUnitForm } from "./unit-form-context";
 import clsx from "clsx";
-import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { v4 as uuidv4 } from "uuid";
+import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { MAX_FILE_SIZE_MB } from "@/data";
 
@@ -16,7 +12,7 @@ const UnitPictures = () => {
   const propertyDetails = useAddUnitStore((state) => state.propertyDetails);
 
   const sortableImages = images.map((image, index) => ({
-    id: index,
+    id: uuidv4(),
     index,
     image,
   }));
@@ -64,23 +60,14 @@ const UnitPictures = () => {
     e.target.value = ""; // Reset input value to allow re-uploading the same file
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over) return;
-    const activeId = active.id;
-    const overId = over.id;
-    if (activeId === overId) return;
-
-    if (activeId !== overId) {
-      const oldIndex = sortableImages.findIndex(
-        (image) => image.id === active.id
-      );
-      const newIndex = sortableImages.findIndex(
-        (image) => image.id === over.id
-      );
-      const newImages = arrayMove(images, oldIndex, newIndex);
-      setImages(newImages, { append: false });
-    }
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    const { source, destination } = result;
+    if (source.index === destination.index) return;
+    const newImages = Array.from(images);
+    const [movedImage] = newImages.splice(source.index, 1);
+    newImages.splice(destination.index, 0, movedImage);
+    setImages(newImages, { append: false });
   };
 
   return (
@@ -100,43 +87,47 @@ const UnitPictures = () => {
         preferred image and place it in the first position to make it the
         primary display.
       </p>
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext
-          items={sortableImages.map((i) => i.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          <div className="flex gap-4 overflow-x-auto no-scrollbar overflow-y-hidden">
-            {sortableImages.map((s) => (
-              <SortableImage
-                key={s.id}
-                id={s.id}
-                image={s.image}
-                index={s.index}
-                removeImage={removeImage}
-              />
-            ))}
-            {images.length < 14 && (
-              <label
-                htmlFor="unit_pictures"
-                className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
-              >
-                <PlusIcon />
-                <span className="text-black text-base font-normal mt-2">
-                  Add Pictures
-                </span>
-                <input
-                  id="unit_pictures"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleFileChange}
-                  className="hidden"
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="unit-images" direction="horizontal">
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="flex gap-4 overflow-x-auto custom-round-scrollbar overflow-y-hidden"
+            >
+              {sortableImages.map((s) => (
+                <DraggableImage
+                  key={s.id}
+                  id={s.id}
+                  image={s.image}
+                  index={s.index}
+                  removeImage={removeImage}
                 />
-              </label>
-            )}
-          </div>
-        </SortableContext>
-      </DndContext>
+              ))}
+              {provided.placeholder}
+              {images.length < 14 && (
+                <label
+                  htmlFor="unit_pictures"
+                  className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
+                >
+                  <PlusIcon />
+                  <span className="text-black text-base font-normal mt-2">
+                    Add Pictures
+                  </span>
+                  <input
+                    id="unit_pictures"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                </label>
+              )}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 };
