@@ -295,11 +295,6 @@ const Subscriptions = () => {
                 fields={current_subscriptions.fields}
                 {...table_style_props}
               />
-              <Pagination
-                currentPage={1}
-                totalPages={10}
-                onPageChange={() => {}}
-              />
             </div>
           </SettingsSection>
         </div>
