@@ -27,6 +27,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
   const newPercentage = (newValue / total) * 100;
   const radius = 25;
   const circumference = 2 * Math.PI * radius;
+
   return (
     <svg width="60" height="60" viewBox="0 0 60 60">
       <circle
@@ -38,19 +39,21 @@ const DonutChart: React.FC<DonutChartProps> = ({
         strokeWidth="5"
         strokeLinejoin="round"
       />
-      <circle
-        cx="30"
-        cy="30"
-        r={radius}
-        fill="none"
-        stroke={newColor}
-        strokeWidth="5"
-        strokeDasharray={`${
-          (newPercentage * circumference) / 100
-        } ${circumference}`}
-        strokeLinecap="round"
-        transform="rotate(-90 30 30)"
-      />
+      {newValue > 0 && (
+        <circle
+          cx="30"
+          cy="30"
+          r={radius}
+          fill="none"
+          stroke={newColor}
+          strokeWidth="5"
+          strokeDasharray={`${
+            (newPercentage * circumference) / 100
+          } ${circumference}`}
+          strokeLinecap="round"
+          transform="rotate(-90 30 30)"
+        />
+      )}
       <text
         x="30"
         y="30"
