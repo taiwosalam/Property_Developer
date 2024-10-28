@@ -19,8 +19,9 @@ import Comment from "./comment";
 import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import SampleUser from "@/public/empty/sample-user.svg";
+import CompanyLogo from "@/public/empty/company-logo.svg";
 
-const page = () => {
+const PreviewPage = () => {
   const router = useRouter();
   const { threadId } = useParams();
   const sampleImages: StaticImageData[] = [
@@ -54,23 +55,24 @@ const page = () => {
           Create Article
         </Button>
       </div>
-      <div className="flex justify-between w-full mt-4 gap-5">
-        <div className="side1 flex w-[60%] flex-col">
-          <div className="slider h-[350px] w-full relative px-[35px]">
+      <div className="flex flex-col lg:flex-row justify-between w-full mt-4 gap-5">
+        <div className="side1 flex w-full lg:w-[60%] flex-col">
+          <div className="slider h-[250px] md:h-[300px] lg:h-[350px] w-full relative px-[20px] md:px-[35px]">
             <PropertyImageSlider images={sampleImages} thread />
           </div>
           <ThreadArticle />
           <ThreadComments />
         </div>
-        <div className="side2 w-[40%]">
+        <div className="side2 w-full lg:w-[40%] flex flex-col gap-4">
           <ContributorDetails />
+          <CompanySummary />
         </div>
       </div>
     </div>
   );
 };
 
-export default page;
+export default PreviewPage;
 
 const ThreadArticle = () => {
   return (
@@ -190,3 +192,15 @@ const ContributorUser = () => {
 
   );
 };
+
+
+const CompanySummary = () => {
+  return (
+    <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
+      <h2 className="text-black font-semibold text-lg">Company Summary</h2>
+      <div className="flex w-full items-center justify-center w-[246px] h-[48px]">
+        <Image src={CompanyLogo} alt="company logo" width={200} height={200} className="w-full h-full object-contain" />
+      </div>
+    </div>
+  )
+}
