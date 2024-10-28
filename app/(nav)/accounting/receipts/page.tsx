@@ -4,11 +4,9 @@ import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
 import FilterButton from "@/components/FilterButton/filter-button";
-import ThreeDotsVertical from "@/public/icons/three-dots-vertical.svg";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import Pagination from "@/components/Pagination/pagination";
-import Picture from "@/components/Picture/picture";
+import ExportButton from "@/components/reports/export-button";
 import SearchInput from "@/components/SearchInput/search-input";
 import {
   Select,
@@ -20,10 +18,17 @@ import {
 import { ExclamationMark } from "@/public/icons/icons";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import Link from "next/link";
-import { accountingReceiptOptionsWithDropdown } from "./data";
+import {
+  accountingReceiptOptionsWithDropdown,
+  receiptTableFields,
+  receiptTableData,
+} from "./data";
+import CustomTable from "@/components/Table/table";
+import { useRouter } from "next/navigation";
+import type { DataItem } from "@/components/Table/types";
 
 const AccountingReceiptsPage = () => {
+  const router = useRouter();
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >();
@@ -65,6 +70,10 @@ const AccountingReceiptsPage = () => {
   const handleFilterApply = (filters: any) => {
     console.log("Filter applied:", filters);
     // Add filtering logic here for branches
+  };
+
+  const handleRowSelect = (item: DataItem) => {
+    router.push(`/accounting/receipts/${item.id}/preview`);
   };
 
   return (
@@ -112,7 +121,10 @@ const AccountingReceiptsPage = () => {
               </Select>
             </div>
             <div className="flex items-center gap-4 flex-wrap">
-              <SearchInput placeholder="Search for Receipt" />
+              <SearchInput
+                placeholder="Search for Receipt"
+                className="max-w-[255px]"
+              />
               <Modal>
                 <ModalTrigger asChild>
                   <FilterButton />
@@ -130,21 +142,8 @@ const AccountingReceiptsPage = () => {
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <Link
-                  href="/accounting/receipts/1/export"
-                  className="border border-[#D0D5DD] dark:bg-darkText-primary py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
-                >
-                  <Picture src={"/icons/pdf-icon.svg"} size={20} alt="pdf" />
-                  <span>Export</span>
-                </Link>
-                <div className="border border-[#D0D5DD] dark:bg-darkText-primary py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]">
-                  <Picture
-                    src={"/icons/excel-icon.svg"}
-                    size={20}
-                    alt="excep"
-                  />
-                  <span>Export</span>
-                </div>
+                <ExportButton type="pdf" href="/accounting/receipts/1/export" />
+                <ExportButton type="csv" href="/accounting/receipts/1/export" />
               </div>
             </div>
           </div>
@@ -167,68 +166,17 @@ const AccountingReceiptsPage = () => {
           </AutoResizingGrid>
         </div>
       </div>
-      <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-        <table className="dash-table">
-          <colgroup>
-            <col className="min-w-[72px]" />
-            <col span={5} />
-            <col className="min-w-[72px]" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th></th>
-              <th>name</th>
-              <th>payment ID</th>
-              <th>details</th>
-              <th>amount</th>
-              <th>date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array(10)
-              .fill(null)
-              .map((_, index) => (
-                <tr
-                  key={index}
-                  onClick={() =>
-                    (window.location.href = "/accounting/receipts/1/preview")
-                  }
-                  className="cursor-pointer"
-                >
-                  <td>
-                    <Picture
-                      src={"/empty/avatar-1.svg"}
-                      alt="profile picture"
-                      rounded
-                      size={40}
-                    />
-                  </td>
-                  <td>
-                    <p>Amori Ademakinwa</p>
-                  </td>
-                  <td>
-                    <p>1234563456</p>
-                  </td>
-                  <td>
-                    <p>Rent cost: Start date: Sept 22, 2023 - Expiry date:</p>
-                  </td>
-                  <td>
-                    <p>₦35,000.00</p>
-                  </td>
-                  <td>
-                    <p>02/03/2024</p>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-      <Pagination
-        totalPages={5}
-        currentPage={1}
-        onPageChange={function (page: number): void {
-          throw new Error("Function not implemented.");
+      <CustomTable
+        fields={receiptTableFields}
+        data={receiptTableData()}
+        tableHeadStyle={{ height: "76px" }}
+        tableHeadCellSx={{ fontSize: "1rem" }}
+        tableBodyCellSx={{
+          fontSize: "1rem",
+          paddingTop: "12px",
+          paddingBottom: "12px",
         }}
+        handleSelect={handleRowSelect}
       />
     </section>
   );

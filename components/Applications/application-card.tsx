@@ -56,7 +56,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           <PopupImageModal
             currentIndex={0}
             isOpen={isOpened}
-            images={[SampleProperty4]}
+            images={[{ src: SampleProperty4, isVideo: false }]}
             onClose={() => setIsOpened(false)}
           />
         </div>

@@ -15,16 +15,19 @@ const InspectionPage = () => {
           title="Total Inspections"
           newData={34}
           total={657}
+          colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Physical Inspections"
           newData={34}
           total={657}
+          colorScheme={2}
         />
         <ManagementStatistcsCard
           title="Virtual Inspections"
           newData={34}
           total={657}
+          colorScheme={3}
         />
       </div>
       <FilterBar
