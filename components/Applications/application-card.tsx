@@ -41,10 +41,10 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
         }
       )}
     >
-      <div className="w-full h-[180px]">
+      <div className="relative w-full h-[180px]">
         <div
           onClick={() => setIsOpened(true)}
-          className="relative w-full h-full"
+          className="w-full h-full"
         >
           <Image
             src={SampleProperty4}

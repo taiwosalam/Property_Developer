@@ -46,6 +46,7 @@ import CompanyMobileNumber from "@/components/Setup/company-mobile-number";
 import CompanyLogo from "@/components/Setup/company-logo";
 import CopyText from "@/components/CopyText/copy-text";
 import useGoogleFonts from "@/hooks/useFonts";
+import Picture from "@/components/Picture/picture";
 
 const websiteOptions = [
   {
@@ -542,7 +543,7 @@ const Profile = () => {
               >
                 {selectedColor === customColor && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <img
+                    <Picture
                       src="/icons/whitemark.svg"
                       alt="Selected"
                       width={24}
