@@ -1,5 +1,7 @@
 import Picture from "@/components/Picture/picture";
 import { InvoiceStatCardsProps } from "../invoice/types";
+import { CardBlueWalletIcon } from "@/public/icons/icons";
+import { useThemeStore } from "@/store/themeStore";
 
 const ExpensesStatCard: React.FC<InvoiceStatCardsProps> = ({
   title,
@@ -7,6 +9,7 @@ const ExpensesStatCard: React.FC<InvoiceStatCardsProps> = ({
   upvalue,
   downValue,
 }) => {
+  const primaryColor = useThemeStore((state) => state.primaryColor);
   return (
     <div
       className="bg-white dark:bg-darkText-primary rounded-[14px] p-6 space-y-7"
@@ -41,12 +44,7 @@ const ExpensesStatCard: React.FC<InvoiceStatCardsProps> = ({
             <Picture src={"/icons/send.svg"} alt="send" size={30} />
           )}
           {title === "Part Payment" && (
-            <Picture
-              src={"/icons/green-card.svg"}
-              alt="icon"
-              width={35}
-              height={28}
-            />
+            <CardBlueWalletIcon width={45} height={35} fill={primaryColor} />
           )}
           {(title === "Balance" || title === "Total Pending Vat") && (
             <Picture
