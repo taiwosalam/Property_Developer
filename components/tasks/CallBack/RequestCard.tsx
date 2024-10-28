@@ -11,6 +11,7 @@ import CallRequestModal from "./CallRequestModal";
 import VisitorRequestModal from "../visitors-requests/visitor-request-modal";
 import PropertyRequestModal from "../property-requests/property-request-modal";
 import DepositRequestModal from "../deposit-requests/deposit-request-modal";
+import Link from "next/link";
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   <div>
@@ -217,22 +218,28 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
       </div>
       <div className="flex justify-end px-[18px]">
         {cardType === "agent-community" && (
-          <button type="button" aria-label="Message" className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1">
+          <div className="flex items-center gap-2">
+            <button type="button" aria-label="Message" className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1">
             Messsage
-          </button>
+            </button>
+
+            <Link href={`/tasks/agent-community/property-request/${requestId}/preview`} className="mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1">
+              Preview
+            </Link>
+          </div>
         )}
         {(cardType === "property" || cardType === "deposit") && (
           <button type="button" aria-label="Message" className="mr-4">
             <ReplyIcon2 />
           </button>
         )}
-        <Button
+       {cardType !== "agent-community" && <Button
           size="sm_medium"
           className="py-2 px-8"
           onClick={handleButtonClick}
         >
           {buttonText()}
-        </Button>
+        </Button>}
       </div>
       <Modal
         state={{

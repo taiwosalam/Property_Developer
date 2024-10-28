@@ -143,19 +143,19 @@ const ThreadComments = () => {
 const ContributorDetails = () => {
   return (
     <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
-      <h2 className="text-black font-semibold text-lg">Contributor Details</h2>
-      <div className="flex flex-col mt-4">
+      <h2 className="text-black font-semibold text-lg dark:text-white">Contributor Details</h2>
+      <div className="flex flex-col mt-4 gap-2">
         <div className="flex gap-4">
-          <p className="text-[#747474]"> Posted Date </p>
-          <p className="dark:text-white text-black"> 12/10/2024 </p>
+          <p className="text-[#747474] text-sm"> Posted Date </p>
+          <p className="dark:text-white text-black text-sm"> 12/10/2024 </p>
         </div>
         <div className="flex gap-4">
-          <p className="text-[#747474]"> Last Updated </p>
-          <p className="dark:text-white text-black"> 12/10/2024 </p>
+          <p className="text-[#747474] text-sm"> Last Updated </p>
+          <p className="dark:text-white text-black text-sm"> 12/10/2024 </p>
         </div>
         <div className="flex gap-4">
-          <p className="text-[#747474]"> Target Audience </p>
-          <p className="dark:text-white text-black">
+          <p className="text-[#747474] text-sm"> Target Audience </p>
+          <p className="dark:text-white text-black text-sm">
             All State, All Logal Government Area
           </p>
         </div>
@@ -197,14 +197,14 @@ const ContributorUser = () => {
 const CompanySummary = () => {
   return (
     <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
-      <h2 className="text-black font-semibold text-lg">Company Summary</h2>
+      <h2 className="text-black font-semibold text-lg dark:text-white">Company Summary</h2>
       <div className="flex items-center justify-center w-full mt-4">
       <div className="flex items-center justify-center w-[260px] h-[70px] border border-brand-9 py-2 rounded-lg">
         <Image src={CompanyLogo} alt="company logo" width={500} height={500} className="w-full h-full object-contain" />
       </div>
       </div>
       <div className="details mt-3">
-        <h3 className="text-black leading-50 font-bold text-6"> Pat Onukwuli & Co. </h3>
+        <h3 className="text-black leading-50 font-bold text-6 dark:text-white"> Pat Onukwuli & Co. </h3>
         <div className="service flex flex-col gap-1 mt-1">
         <p> Services </p>
         <p className="text-sm text-text-disabled"> Sales, Purchase, Rent of Resident Property & Commercial Property </p>
@@ -250,7 +250,7 @@ const CompanySummary = () => {
         {companyStats.map((stat, index) => (
           <div key={index} className="flex items-center justify-between gap-2">
             <p className="text-sm text-text-label">{stat.label}</p>
-            <p className="text-sm text-text-primary">{stat.value}</p>
+            <p className="text-sm text-text-primary dark:text-white">{stat.value}</p>
           </div>
         ))}
       </div>
