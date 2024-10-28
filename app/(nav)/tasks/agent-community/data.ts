@@ -73,6 +73,26 @@ export const threadData = [
     desc: 'Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...',
     comments: '30 Comments',
   },
+  {
+    picture_url: "/empty/thread.png" || empty,
+    user_pics: "/empty/thread.svg" || empty,
+    name: "Esq Salam AIshat",
+    role: "Legal Practitioner",
+    time: '3 mins ago',
+    title: 'Rent Increase & Maintenance',
+    desc: 'Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...',
+    comments: '30 Comments',
+  },
+  {
+    picture_url: "/empty/thread.png" || empty,
+    user_pics: "/empty/thread.svg" || empty,
+    name: "Esq Salam AIshat",
+    role: "Legal Practitioner",
+    time: '3 mins ago',
+    title: 'Rent Increase & Maintenance',
+    desc: 'Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...',
+    comments: '30 Comments',
+  },
 ];
 
 
