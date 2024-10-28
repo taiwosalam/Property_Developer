@@ -16,7 +16,9 @@ const TenancyRecord = () => {
   return (
     <div className="bg-white dark:bg-darkText-primary shadow p-6 space-y-4">
       <div className="w-full flex items-center justify-between h-[25px]">
-        <h6 className="text-[16px] font-bold text-[#1E3A8A] dark:text-brand-9">Tenancy Record</h6>
+        <h6 className="text-[16px] font-bold text-[#1E3A8A] dark:text-brand-9">
+          Tenancy Record
+        </h6>
         {!isCollapsibleOpen && (
           <div
             className="rounded bg-[#0033C4] py-2 px-8 cursor-pointer transition-transform duration-500 hover:scale-105"
@@ -32,8 +34,8 @@ const TenancyRecord = () => {
       </div>
       <div className="h-[2px] w-full bg-[#C0C2C8]"></div>
       <div>
-        <div className="w-full flex flex-wrap items-center gap-4 py-4 md:justify-between md:flex-1">
-          <div className="col-span-2 grid grid-cols-2 gap-y-4">
+        <div className="w-full flex flex-wrap items-center gap-4 py-4 md:justify-between md:flex-1 overflow-x-scroll">
+          <div className="col-span-2 grid md:grid-cols-2 gap-y-4">
             <DetailItem label="Name" value="Abimbola Adedeji" />
             <DetailItem label="Email" value="abimbola adedeji@gmail.com" />
             <DetailItem label="Phone Number Deposit" value="+2348065558146" />
