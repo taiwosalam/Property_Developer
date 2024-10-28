@@ -22,6 +22,7 @@ const Picture: React.FC<PictureProps> = ({
   fit = "cover",
   resolutionMultiplier = 2,
   containerClassName,
+  onClick,
 }) => {
   const imageWidth = width ?? size;
   const imageHeight = height ?? size;
@@ -29,7 +30,11 @@ const Picture: React.FC<PictureProps> = ({
   const status_wh = Math.min(12, Math.floor(size / 3));
 
   return (
-    <div className={clsx("relative", containerClassName)}>
+    <div
+      role={onClick ? "button" : undefined}
+      className={clsx("relative", containerClassName)}
+      onClick={onClick ? onClick : undefined}
+    >
       <Image
         src={src}
         alt={alt}
