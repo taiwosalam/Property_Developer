@@ -58,10 +58,9 @@ const ExpensesStatCard: React.FC<InvoiceStatCardsProps> = ({
       </div>
       {upvalue && (
         <div className="flex items-center gap-2">
-          <Picture src={"/icons/trending-up.svg"} size={24} />
+          <Picture src={"/icons/trending-up-red.svg"} size={24} />
           <p className="text-text-label font-normal text-[16px]">
-            <span className="text-status-success-2">4.3%</span> Up from last
-            week
+            <span className="text-status-error-2">4.3%</span> Up from last week
           </p>
         </div>
       )}
