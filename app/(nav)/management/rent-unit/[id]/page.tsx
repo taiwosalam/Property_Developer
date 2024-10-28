@@ -87,18 +87,26 @@ const UnitPreviewPage = () => {
     value: string | number;
   }) => (
     <>
-      <div className="text-[16px] font-normal text-[#747474] dark:text-white">{label}</div>
-      <div className="text-sm text-[16px] font-normal dark:text-darkText-2">{value}</div>
+      <div className="text-[16px] font-normal text-[#747474] dark:text-white">
+        {label}
+      </div>
+      <div className="text-sm text-[16px] font-normal dark:text-darkText-2">
+        {value}
+      </div>
     </>
   );
 
   const PriceSection = ({ title, price }: { title: string; price: number }) => (
     <div>
-      <h3 className="font-medium text-[16px] text-[#1E3A8A] dark:text-darkText-1 mb-2">{title}</h3>
+      <h3 className="font-medium text-[16px] text-[#1E3A8A] dark:text-darkText-1 mb-2">
+        {title}
+      </h3>
       <p className="text-lg font-bold text-[#1E3A8A] dark:text-brand-9">
         ₦{price.toLocaleString()}
       </p>
-      <p className="text-xs text-gray-500 dark:text-darkText-1">Total Package</p>
+      <p className="text-xs text-gray-500 dark:text-darkText-1">
+        Total Package
+      </p>
       <p className="text-sm text-gray-600 dark:text-brand-9">
         ₦{(price / 2.5).toLocaleString()} / Per Year
       </p>
@@ -117,7 +125,9 @@ const UnitPreviewPage = () => {
         </Link>
         <div>
           <span className="font-medium text-base">ID: {id}</span>
-          <h1 className="font-bold text-3xl mt-2">{unitDetails.title}</h1>
+          <h1 className="font-bold text-xl lg:text-3xl mt-2">
+            {unitDetails.title}
+          </h1>
           <div className="flex items-center gap-1 mt-1">
             <LocationIcon color="#5A5D61" />
             <span className="text-sm text-gray-600">
