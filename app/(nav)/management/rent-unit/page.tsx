@@ -1,4 +1,4 @@
-  "use client";
+"use client";
 import { useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import {
@@ -93,11 +93,11 @@ const RentAndUnit = () => {
           </div>
         </div>
         {gridView ? (
-          <AutoResizingGrid minWidth={315}>
+          <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-7">
             <RentalPropertyCard />
             <RentalPropertyCard />
             <RentalPropertyCard />
-          </AutoResizingGrid>
+          </div>
         ) : (
           <div className="space-y-4">
             <RentalPropertyListCard />

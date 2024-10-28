@@ -41,7 +41,7 @@ export const callRequestTablefields: Field[] = [
     label: "Requester",
     accessor: "requester",
   },
-  { id: "7", label: "Requuest Date & Time", accessor: "request_date_time" },
+  { id: "7", label: "Request Date & Time", accessor: "request_date_time" },
   { id: "7", label: "Resolve Date & Time", accessor: "resolve_date_time" },
 ];
 
