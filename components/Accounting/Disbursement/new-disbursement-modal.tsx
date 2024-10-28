@@ -1,5 +1,5 @@
 "use client";
-  
+
 import React from "react";
 
 // Imports
@@ -8,14 +8,12 @@ import NewDisbursementForm from "./new-disbursement-form";
 import ModalPreset from "@/components/Modal/modal-preset";
 import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
-import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const NewDisbursementModal = () => {
   const { activeStep, changeStep } = useStep(2);
-  const isDarkMode = useDarkMode();
 
   return activeStep === 1 ? (
-    <NewDisbursementForm nextStep={() => changeStep("next")} isDarkMode={isDarkMode} />
+    <NewDisbursementForm nextStep={() => changeStep("next")} />
   ) : (
     <ModalPreset type="success">
       <p>You have successfully added a new disbursement. </p>
