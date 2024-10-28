@@ -9,7 +9,7 @@ import ThreadCard from "@/components/Community/ThreadCard";
 import { threadData } from "./data";
 import Pagination from "@/components/Pagination/pagination";
 
-const page = () => {
+const AgentCommunityPage = () => {
   return (
     <div className="space-y-7">
       <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
@@ -73,4 +73,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default AgentCommunityPage;
