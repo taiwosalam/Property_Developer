@@ -1,30 +1,34 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
 import Link from "next/link";
 
-// Images
-import ThreeDotsVertical from "@/public/icons/three-dots-vertical.svg";
-
-import Avatar from "@/public/empty/avatar.png";
-
-// Imports
-import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import { ExclamationMark } from "@/public/icons/icons";
-
-import {
-  Dropdown,
-  DropdownContent,
-  DropdownTrigger,
-} from "@/components/Dropdown/dropdown";
-
+import type { DataItem } from "@/components/Table/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import NewDisbursementModal from "@/components/Accounting/Disbursement/new-disbursement-modal";
-import { accountingDisbursementOptionsWithDropdown } from "./data";
+import {
+  accountingDisbursementOptionsWithDropdown,
+  disbursementTableData,
+  disbursementTableFields,
+} from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { Menu, MenuItem } from "@mui/material";
+import CustomTable from "@/components/Table/table";
 
 const Disbursement = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    setSelectedItemId(String(item.id));
+    setAnchorEl(e.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedItemId(null);
+  };
   return (
     <div className="custom-flex-col gap-8">
       <div className="flex items-center justify-between">
@@ -60,94 +64,58 @@ const Disbursement = () => {
           exports
           exportHref="/accounting/disbursement/export"
         />
-
-        <div className="rounded-lg w-full pb-[120px] overflow-x-scroll no-scrollbar">
-          <table className="dash-table">
-            <colgroup>
-              <col className="min-w-[72px]" />
-              <col span={6} />
-              <col className="min-w-[72px]" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th></th>
-                <th>date</th>
-                <th>landlord / landlady</th>
-                <th>payment ID</th>
-                <th>amount</th>
-                <th>description</th>
-                <th>mode</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array(5)
-                .fill(null)
-                .map((_, index) => (
-                  <tr key={index}>
-                    <td className="flex items-center justify-center">
-                      <Picture
-                        src={Avatar}
-                        alt="profile picture"
-                        size={40}
-                        rounded
-                      />
-                    </td>
-                    <td>
-                      <p>02/03/2024</p>
-                    </td>
-                    <td>
-                      <p>Amori Ademakinwa</p>
-                    </td>
-                    <td>
-                      <p>1234567878</p>
-                    </td>
-                    <td>
-                      <p>₦115,000.00</p>
-                    </td>
-                    <td>
-                      <p>Property Rent for moniya house</p>
-                    </td>
-                    <td>
-                      <p>Bank Transfer</p>
-                    </td>
-                    <td className="flex items-center justify-center">
-                      <Dropdown>
-                        <DropdownTrigger className="flex items-center justify-center">
-                          <Picture
-                            src={ThreeDotsVertical}
-                            alt="three dots vertical"
-                            size={24}
-                          />
-                        </DropdownTrigger>
-                        <DropdownContent>
-                          <div className="w-[250px] bg-white dark:bg-darkText-primary custom-flex-col py-2 gap-2 text-text-secondary dark:text-darkText-1 text-base font-bold capitalize text-center">
-                            <Link
-                              href={
-                                "/accounting/disbursement/1/manage-disbursement"
-                              }
-                              className="p-4"
-                            >
-                              Manage Disbursement
-                            </Link>
-                            <Link
-                              href={
-                                "/accounting/disbursement/1/preview-disbursement"
-                              }
-                              className="p-4"
-                            >
-                              Preview Disbursement
-                            </Link>
-                          </div>
-                        </DropdownContent>
-                      </Dropdown>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
+        <CustomTable
+          fields={disbursementTableFields}
+          data={disbursementTableData}
+          tableHeadStyle={{ height: "76px" }}
+          tableHeadCellSx={{ fontSize: "1rem" }}
+          tableBodyCellSx={{
+            fontSize: "1rem",
+            paddingTop: "12px",
+            paddingBottom: "12px",
+          }}
+          onActionClick={(item, e) => {
+            handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
+          }}
+        />
       </div>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        slotProps={{
+          paper: {
+            sx: {
+              mt: 1,
+              width: 250,
+              "& .MuiMenuItem-root": {
+                padding: "16px",
+                justifyContent: "center",
+                fontWeight: "bold",
+                fontSize: "1rem",
+                textTransform: "capitalize",
+              },
+            },
+          },
+        }}
+      >
+        <MenuItem onClick={handleMenuClose} disableRipple>
+          <Link
+            href={`/accounting/disbursement/${selectedItemId}/manage-disbursement`}
+            className="w-full text-center"
+          >
+            Manage Disbursement
+          </Link>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose} disableRipple>
+          <Link
+            href={`/accounting/disbursement/${selectedItemId}/preview-disbursement`}
+            className="w-full text-center"
+          >
+            Preview Disbursement
+          </Link>
+        </MenuItem>
+      </Menu>
     </div>
   );
 };
