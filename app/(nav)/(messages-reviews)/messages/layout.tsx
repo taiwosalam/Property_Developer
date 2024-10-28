@@ -17,6 +17,7 @@ import useWindowWidth from "@/hooks/useWindowWidth";
 import Button from "@/components/Form/Button/button";
 import MessageCard from "@/components/Message/message-card";
 import { message_card_data } from "@/components/Message/data";
+import FilterButton from "@/components/FilterButton/filter-button";
 
 const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { id } = useParams();
@@ -29,11 +30,16 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
         <div className="flex flex-1 p-4 pr-0">
           <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar">
             <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
-              <Input
-                id="search"
-                placeholder="Search for messages"
-                className="flex-1"
-              />
+              <div className="flex-1 relative">
+                <Input
+                  id="search"
+                  placeholder="Search for messages"
+                  className="flex-1"
+                />
+                <div className="absolute">
+                  <FilterButton noTitle />
+                </div>
+              </div>
               <Button
                 href="/reviews"
                 variant="sky_blue"
