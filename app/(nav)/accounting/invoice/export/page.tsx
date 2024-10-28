@@ -14,7 +14,7 @@ const ExportInvoice = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton>Back</BackButton>
+        <BackButton as="p">Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"

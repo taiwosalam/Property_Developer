@@ -7,19 +7,12 @@ import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { useRouter } from "next/navigation";
 
 const ReceiptPreviewPage = () => {
-  const router = useRouter();
-
-  const back = () => {
-    router.back();
-  };
-
   return (
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton>Back</BackButton>
+        <BackButton as="p">Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -78,7 +71,6 @@ const ReceiptPreviewPage = () => {
           </Button>
         </div>
       </FixedFooter>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end"></div>
     </div>
   );
 };

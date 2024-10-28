@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
 
 // Imports
 import Button from "@/components/Form/Button/button";
@@ -12,20 +12,47 @@ import Input from "@/components/Form/Input/input";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useRouter } from "next/navigation";
-import useDarkMode from "@/hooks/useCheckDarkMode";
+import {
+  currencySymbols,
+  formatCostInputValue,
+} from "@/utils/number-formatter";
+
+type MoneyField =
+  | "annualRent"
+  | "serviceCharge"
+  | "refundableCautionFee"
+  | "nonRefundableAgencyFee"
+  | "nonRefundableLegalFee"
+  | "amount";
 
 const PreviewExpenses = () => {
+  const CURRENCY_SYMBOL = currencySymbols["NAIRA"]; // to be dynamic
   const router = useRouter();
-  const isDarkMode = useDarkMode()
 
   const back = () => {
     router.back();
   };
 
+  const [inputValues, setInputValues] = useState<Record<MoneyField, string>>({
+    annualRent: "",
+    serviceCharge: "",
+    refundableCautionFee: "",
+    nonRefundableAgencyFee: "",
+    nonRefundableLegalFee: "",
+    amount: "",
+  });
+
+  const handleInputChange = (field: MoneyField, value: string) => {
+    setInputValues((prevValues) => ({
+      ...prevValues,
+      [field]: formatCostInputValue(value),
+    }));
+  };
+
   return (
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton>Back</BackButton>
+        <BackButton as="p">Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -59,37 +86,53 @@ const PreviewExpenses = () => {
                 id="annual-rent"
                 label="Annual Rent"
                 required
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="1,000,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
+                value={inputValues.annualRent}
+                onChange={(value) => handleInputChange("annualRent", value)}
               />
               <Input
                 id="service-charge"
                 label="service charge"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
+                value={inputValues.serviceCharge}
+                onChange={(value) => handleInputChange("serviceCharge", value)}
               />
               <Input
                 id="refundable-caution-fee"
                 label="refundable caution fee"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
+                value={inputValues.refundableCautionFee}
+                onChange={(value) =>
+                  handleInputChange("refundableCautionFee", value)
+                }
               />
               <Input
                 id="non-refundable-agency-fee"
                 label="non refundable agency fee"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
+                value={inputValues.nonRefundableAgencyFee}
+                onChange={(value) =>
+                  handleInputChange("nonRefundableAgencyFee", value)
+                }
               />
               <Input
                 id="non-refundable-legal-fee"
                 label="non refundable legal fee"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
+                value={inputValues.nonRefundableLegalFee}
+                onChange={(value) =>
+                  handleInputChange("nonRefundableLegalFee", value)
+                }
               />
             </div>
           </div>
@@ -110,9 +153,10 @@ const PreviewExpenses = () => {
               <Input
                 id="amount"
                 label="amount"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                value={inputValues.amount}
+                onChange={(value) => handleInputChange("amount", value)}
               />
             </div>
             <div className="flex justify-end">
@@ -142,7 +186,6 @@ const PreviewExpenses = () => {
           </Button>
         </div>
       </FixedFooter>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end"></div>
     </div>
   );
 };
