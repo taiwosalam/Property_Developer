@@ -8,6 +8,26 @@ import Button from "@/components/Form/Button/button";
 import ThreadCard from "@/components/Community/ThreadCard";
 import { threadData } from "./data";
 import Pagination from "@/components/Pagination/pagination";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
+
+const lists = [
+  {
+    title: "All Property Request",
+    desc: "Review and respond to property needs and requests from other real estate agents within your network. Strengthen business connections and explore profit-sharing opportunities by fulfilling portfolio demands together for mutual success.",
+    link: "/tasks/agent-community/property-request",
+  },
+  {
+    title: "My Articles",
+    desc: "Assess the Articles youve initiated, any modifications made to it, and its overall performance.",
+    link: "#",
+  },
+  {
+    title: "My Properties Request",
+    desc: "Evaluate the property request you've generated, comments received, and how you've managed them.",
+    link: "#",
+  },
+];
 
 const AgentCommunityPage = () => {
   return (
@@ -18,12 +38,16 @@ const AgentCommunityPage = () => {
           newData={34}
           total={657}
         />
-        <Button
-          type="button"
-          className="bg-brand-9 text-white px-4 py-2 rounded-lg"
-        >
-          + Community Board
-        </Button>
+          <Modal>
+            <ModalTrigger asChild>
+              <Button type="button" className="page-header-button">
+                + Community Board
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+                <CommunityBoardModal lists={lists} />
+            </ModalContent>
+          </Modal>
       </div>
       <FilterBar
         hasGridListToggle={false}

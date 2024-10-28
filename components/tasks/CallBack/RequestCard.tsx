@@ -23,6 +23,11 @@ const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   </div>
 );
 
+type CardViewDetail = {
+  label: string;
+  accessor: keyof RequestCardProps;
+}
+
 const RequestCard: React.FC<RequestCardProps> = (props) => {
   const {
     cardType,
@@ -43,6 +48,10 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     // console.log("Resolve button clicked");
   };
 
+  const handlePreview = () => {
+    console.log("Preview button clicked");
+  };
+
   const handleButtonClick = () => {
     if (cardType === "callback") {
       props.status === "completed" ? handleViewDetails() : handleResolve();
@@ -50,6 +59,8 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
       handleViewDetails();
     } else if (cardType === "property") {
       handleViewDetails();
+    } else if (cardType === "agent-community") {
+      handlePreview();
     } else if (cardType === "deposit") {
       handleViewDetails();
     }
@@ -64,6 +75,8 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
       return "More Details";
     } else if (cardType === "deposit") {
       return "More Details";
+    } else if (cardType === "agent-community") {
+      return "Preview";
     } else return "nothing";
   };
 
@@ -83,12 +96,17 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               <span className="text-[16px] font-medium">{userName}</span>
               <BadgeIcon color="blue" />
             </div>
-            <div className="flelx items-center space-x-1">
+           {cardType !== "agent-community" && <div className="flelx items-center space-x-1">
               <span className="text-[16px] font-medium text-text-tertiary">
                 Date of Request:
               </span>
               <span className="text-[16px] font-medium">{requestDate}</span>
-            </div>
+            </div>}
+            {cardType === "agent-community" && <div className="flelx items-center space-x-1 mb-2">
+              <span className="text-sm font-medium text-brand-9">
+                Legal Practitioner
+              </span>
+            </div>}
           </div>
         </div>
         {/* I noticed that the property request card has no status */}
@@ -120,6 +138,8 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             ? "bg-status-caution-2 text-text-secondary"
             : cardType === "property"
             ? "bg-brand-1 text-text-secondary bg-opacity-60"
+            : cardType === "agent-community"
+            ? "bg-brand-1 text-text-secondary bg-opacity-60"
             : cardType === "deposit"
             ? "bg-status-success-1 text-text-secondary"
             : ""
@@ -132,16 +152,19 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             ? "Book For Visitors"
             : cardType === "property"
             ? "Property Request"
+            : cardType === "agent-community"
+            ? "Property Title"
             : cardType === "deposit"
             ? "Caution Deposit Request"
             : ""}
         </p>
         {/* Property card has no ID on display */}
-        {cardType !== "property" && <p>ID: {requestId}</p>}
+        {cardType !== "property" && cardType !== "agent-community" && <p>ID: {requestId}</p>}
+        {cardType === "agent-community" && <p>12/05/2024</p>}
       </div>
       <div className="px-[18px] grid grid-cols-2 sm:grid-cols-3 gap-x-5 gap-y-4">
         {cardType === "callback"
-          ? cardViewDetails.map(({ label, accessor }, index) => {
+          ? cardViewDetails.map(({ label, accessor }: CardViewDetail, index: number) => {
               return (
                 <UserDetailItems
                   key={index}
@@ -151,7 +174,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               );
             })
           : cardType === "visitor"
-          ? cardViewDetails.map(({ label, accessor }, index) => {
+          ? cardViewDetails.map(({ label, accessor }: CardViewDetail, index: number) => {
               const value =
                 accessor === "secretQuestion" || accessor === "purpose"
                   ? "attached"
@@ -161,7 +184,17 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               );
             })
           : cardType === "property"
-          ? cardViewDetails.map(({ label, accessor }, index) => {
+          ? cardViewDetails.map(({ label, accessor }: CardViewDetail, index: number) => {
+              return (
+                <UserDetailItems
+                  key={index}
+                  label={label}
+                  value={String(props[accessor])}
+                />
+              );
+            })
+          : cardType === "agent-community"
+          ? cardViewDetails.map(({ label, accessor }: CardViewDetail, index: number) => {
               return (
                 <UserDetailItems
                   key={index}
@@ -171,7 +204,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               );
             })
           : cardType === "deposit"
-          ? cardViewDetails.map(({ label, accessor }, index) => {
+          ? cardViewDetails.map(({ label, accessor }: CardViewDetail, index: number) => {
               return (
                 <UserDetailItems
                   key={index}
@@ -183,6 +216,11 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           : null}
       </div>
       <div className="flex justify-end px-[18px]">
+        {cardType === "agent-community" && (
+          <button type="button" aria-label="Message" className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1">
+            Messsage
+          </button>
+        )}
         {(cardType === "property" || cardType === "deposit") && (
           <button type="button" aria-label="Message" className="mr-4">
             <ReplyIcon2 />

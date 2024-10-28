@@ -5,7 +5,7 @@ export interface UserDetailItemsProp {
   value: string;
 }
 export interface RequestCardBaseProps {
-  cardType: "callback" | "visitor" | "property" | "deopsit";
+  cardType: "callback" | "visitor" | "property" | "deopsit" | "agent-community";
   requestDate: string;
   requestId: string;
   pictureSrc: string;
@@ -80,7 +80,9 @@ export type RequestCardProps =
   | CallRequestCardProps
   | VisitorRequestCardProps
   | PropertyRequestCardProps
+  | AgentCommunityRequestCardProps
   | DepositRequestCardProps;
+
 
 export interface CallRequestModalProps {
   branch: string;

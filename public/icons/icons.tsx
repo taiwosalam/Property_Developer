@@ -2753,3 +2753,23 @@ export const SocialWebIcon = () => {
     </svg>
   );
 };
+
+export const VectorIcon = () => {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 9 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1.31103 1.07681L7.98438 7.76912L1.31102 14.4614"
+        stroke="currentColor"
+        strokeWidth="2.00769"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
