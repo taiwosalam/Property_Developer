@@ -54,7 +54,7 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
     >
       <div
         className="relative flex justify-center items-center overflow-hidden h-[500px] max-h-[85vh]"
-        style={{ width: "min(900px)" }}
+        style={{ width: "min(90vw, 900px)" }}
       >
         {loaded && (
           <>
