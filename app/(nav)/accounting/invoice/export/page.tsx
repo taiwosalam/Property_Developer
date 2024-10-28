@@ -27,7 +27,7 @@ const ExportInvoice = () => {
           phoneNumbers={["09022312133", "07012133313", "090121212321"]}
           email="example@mail.com"
         />
-        <div className="rounded-lg bg-white p-8 flex">
+        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex">
           <KeyValueList
             data={{}}
             chunkSize={2}
@@ -76,7 +76,7 @@ const ExportInvoice = () => {
           }}
         />
         <div className="flex justify-end">
-          <div className="custom-flex-col gap-2 text-text-quaternary text-base font-medium">
+          <div className="custom-flex-col gap-2 text-text-quaternary dark:text-darkText-1 text-base font-medium">
             <p>Authorized Signature </p>
             <div className="flex">
               <Image src={Signature} alt="signature" height={60} />

@@ -88,7 +88,7 @@ const Profile = () => {
     instagram: "https://instagram.com/",
     facebook: "https://facebook.com/",
     twitter: "https://x.com/",
-    linkedin: "https://www.linkedin.com/company",
+    linkedin: "https://www.linkedin.com/company/",
     tiktok: "https://tiktok.com/",
     youtube: "https://www.youtube.com/@",
   });
@@ -174,10 +174,9 @@ const Profile = () => {
                 required
                 id="cac_date"
                 label="date of registration"
-                disableFuture={true}
                 value={dayjs("2024")}
                 onChange={() => {}}
-                inputClassName="setup-f"
+                disabled
               />
               <Input
                 required

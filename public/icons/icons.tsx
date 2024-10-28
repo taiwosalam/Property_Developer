@@ -1984,11 +1984,11 @@ export const CogIcon = () => {
 };
 
 //  NAV CLOSE ICON
-export const NavCloseIcon = () => {
+export const NavCloseIcon = ({ size = 35 }) => {
   return (
     <svg
-      width="35"
-      height="34"
+      width={size}
+      height={size}
       viewBox="0 0 35 34"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -2334,6 +2334,52 @@ export const CheckboxCheckedIcon = () => {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+    </svg>
+  );
+};
+
+export const SidebarIcon = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="12"
+      height="20"
+      viewBox="0 0 12 20"
+      fill="none"
+    >
+      <g clip-path="url(#clip0_16629_32762)">
+        <path
+          d="M2.37225 15.1411L6.74725 15.1411"
+          stroke="#5A5D61"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M2.37225 10.3911L9.37225 10.3911"
+          stroke="#5A5D61"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M2.37225 5.64111L4.99725 5.64111"
+          stroke="#5A5D61"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+      <defs>
+        <clipPath id="clip0_16629_32762">
+          <rect
+            width="19"
+            height="10.5"
+            fill="white"
+            transform="translate(11.1223 0.891113) rotate(90)"
+          />
+        </clipPath>
+      </defs>
     </svg>
   );
 };

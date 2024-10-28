@@ -23,7 +23,7 @@ const DateInput: React.FC<DateInputProps> = ({
   disablePast,
   containerClassName,
   labelclassName,
-  
+  disabled,
 }) => {
   const handleDateChange = (date?: Dayjs | null) => {
     if (onChange) {
@@ -49,6 +49,7 @@ const DateInput: React.FC<DateInputProps> = ({
         disableFuture={disableFuture}
         disablePast={disablePast}
         containerClassName={containerClassName}
+        disabled={disabled}
       />
     </div>
   );

@@ -36,6 +36,7 @@ interface CustomDatePickerProps {
   disablePast?: boolean;
   minDate?: Dayjs;
   maxDate?: Dayjs;
+  disabled?: boolean;
 }
 
 export default function CustomDatePicker({
@@ -48,6 +49,7 @@ export default function CustomDatePicker({
   disablePast,
   minDate,
   maxDate,
+  disabled,
 }: CustomDatePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -58,6 +60,7 @@ export default function CustomDatePicker({
         )}
       >
         <CustomStyledDatePicker
+          disabled={disabled}
           disableFuture={disableFuture}
           disablePast={disablePast}
           minDate={minDate}
