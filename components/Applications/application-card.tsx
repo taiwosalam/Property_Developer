@@ -1,5 +1,7 @@
-import React from "react";
+"use client";
+
 import Image from "next/image";
+import React, { useState } from "react";
 
 // Types
 import type { ApplicationCardProps } from "./types";
@@ -21,10 +23,13 @@ import FlaggedApplicantAccountModal from "./flagged-applicant-account-modal";
 import clsx from "clsx";
 import Link from "next/link";
 import { ThreeDotsVertical } from "@/public/icons/icons";
+import PopupImageModal from "../PopupSlider/PopupSlider";
 
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   type = "staff",
 }) => {
+  const [isOpened, setIsOpened] = useState(false);
+
   return (
     <div
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.03)" }}
@@ -36,14 +41,25 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
         }
       )}
     >
-      <div className="w-full h-[180px] relative">
-        <Image
-          src={SampleProperty4}
-          alt="preview"
-          fill
-          sizes="500px"
-          className="object-cover"
-        />
+      <div className="w-full h-[180px]">
+        <div
+          onClick={() => setIsOpened(true)}
+          className="relative w-full h-full"
+        >
+          <Image
+            src={SampleProperty4}
+            alt="preview"
+            fill
+            sizes="500px"
+            className="object-cover"
+          />
+          <PopupImageModal
+            currentIndex={0}
+            isOpen={isOpened}
+            images={[SampleProperty4]}
+            onClose={() => setIsOpened(false)}
+          />
+        </div>
         {type == "staff" && (
           <Modal>
             <ModalTrigger className="absolute top-[18px] right-[18px] rounded-[4px] bg-brand-1 dark:text-white dark:bg-darkText-primary w-8 h-8 flex items-center justify-center">

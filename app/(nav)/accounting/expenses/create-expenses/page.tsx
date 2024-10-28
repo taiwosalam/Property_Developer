@@ -109,19 +109,13 @@ const CreateExpensePage = () => {
         </h1>
         <Breakdown />
       </div>
-      <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[40px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
-        <button
-          type="reset"
-          className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2 py-2 px-8"
-        >
+      <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[40px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-4 [&>button]:rounded-[4px] font-semibold text-base">
+        <Button variant="border" size="sm_normal" className="py-2 px-8">
           Cancel
-        </button>
-        <button
-          type="submit"
-          className="bg-brand-9 text-white hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9 py-2 px-8"
-        >
+        </Button>
+        <Button size="sm_normal" className="py-2 px-8">
           Create
-        </button>
+        </Button>
       </div>
     </section>
   );
