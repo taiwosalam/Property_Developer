@@ -6,8 +6,10 @@ import EstateSettings from "@/components/Management/Rent And Unit/estate-setting
 import { OccupantProfile } from "@/components/Management/Rent And Unit/occupant-profile";
 import { ChevronLeft } from "@/public/icons/icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const StartCounting = () => {
+  const router = useRouter();
   return (
     <div className="space-y-6 p-4">
       <Link
@@ -50,7 +52,9 @@ const StartCounting = () => {
         <button
           type="button"
           className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
-          //   onClick={() => {}}
+          onClick={() => {
+            router.back();
+          }}
         >
           Exit
         </button>
