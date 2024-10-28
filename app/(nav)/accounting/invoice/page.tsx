@@ -78,8 +78,8 @@ const AccountingInvoicePage = () => {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    setAnchorEl(e.currentTarget);
     setSelectedItemId(String(item.id));
+    setAnchorEl(e.currentTarget);
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
