@@ -8,7 +8,6 @@ import FilterButton from "@/components/FilterButton/filter-button";
 import Button from "@/components/Form/Button/button";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import Pagination from "@/components/Pagination/pagination";
 import SearchInput from "@/components/SearchInput/search-input";
 import {
   Select,
@@ -17,15 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ExclamationMark, VerticalEllipsisIcon } from "@/public/icons/icons";
+import { ExclamationMark } from "@/public/icons/icons";
 import ExportButton from "@/components/reports/export-button";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import {
-  Dropdown,
-  DropdownContent,
-  DropdownTrigger,
-} from "@/components/Dropdown/dropdown";
 import {
   accountingInvoiceOptionsWithDropdown,
   invoiceTableFields,
@@ -34,6 +28,7 @@ import {
 import Link from "next/link";
 import CustomTable from "@/components/Table/table";
 import { Menu, MenuItem } from "@mui/material";
+import type { DataItem } from "@/components/Table/types";
 
 const AccountingInvoicePage = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -80,82 +75,16 @@ const AccountingInvoicePage = () => {
   };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    setAnchorEl(e.currentTarget);
+    setSelectedItemId(String(item.id));
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
+    setSelectedItemId(null);
   };
-
-  const transformedTableData = invoiceTableData.map((item) => ({
-    ...item,
-    custom_action: (
-      // Flawed
-      <Dropdown>
-        <DropdownTrigger
-          aria-label="action"
-          className="p-2 grid place-items-center mx-auto text-brand-10"
-        >
-          <VerticalEllipsisIcon />
-        </DropdownTrigger>
-        <DropdownContent>
-          <div className="w-[250px] bg-white dark:bg-darkText-primary custom-flex-col py-2 gap-2 text-text-secondary dark:text-darkText-1 text-base font-bold capitalize text-center">
-            <Link
-              href={`/accounting/invoice/${item.id}/manage`}
-              className="p-4"
-            >
-              Manage
-            </Link>
-            <Link
-              href={`/accounting/invoice/${item.id}/add-payment`}
-              className="p-4"
-            >
-              Add Payment
-            </Link>
-            <Link
-              href={`/accounting/invoice/${item.id}/print-invoice`}
-              className="p-4"
-            >
-              Print Invoice
-            </Link>
-          </div>
-        </DropdownContent>
-      </Dropdown>
-      // <>
-      //   <button
-      //     type="button"
-      //     aria-label="action"
-      //     className="p-2 grid place-items-center mx-auto text-brand-10"
-      //     onClick={handleMenuClick}
-      //   >
-      //     <VerticalEllipsisIcon />
-      //   </button>
-      //   <Menu
-      //     anchorEl={anchorEl}
-      //     open={open}
-      //     onClose={handleMenuClose}
-      //     MenuListProps={{
-      //       "aria-labelledby": "basic-button",
-      //     }}
-      //   >
-      //     <MenuItem onClick={handleMenuClose}>
-      //       <Link href={`/accounting/invoice/${item.id}/manage`}>Manage</Link>
-      //     </MenuItem>
-      //     <MenuItem onClick={handleMenuClose}>
-      //       <Link href={`/accounting/invoice/${item.id}/add-payment`}>
-      //         Add Payment
-      //       </Link>
-      //     </MenuItem>
-      //     <MenuItem onClick={handleMenuClose}>
-      //       <Link href={`/accounting/invoice/${item.id}/print-invoice`}>
-      //         Print Invoice
-      //       </Link>
-      //     </MenuItem>
-      //   </Menu>
-      // </>
-    ),
-  }));
 
   return (
     <section className="space-y-8">
@@ -258,7 +187,7 @@ const AccountingInvoicePage = () => {
       </div>
       <CustomTable
         fields={invoiceTableFields}
-        data={transformedTableData}
+        data={invoiceTableData}
         tableHeadStyle={{ height: "76px" }}
         tableHeadCellSx={{ fontSize: "1rem" }}
         tableBodyCellSx={{
@@ -266,14 +195,55 @@ const AccountingInvoicePage = () => {
           paddingTop: "12px",
           paddingBottom: "12px",
         }}
-      />
-      <Pagination
-        totalPages={5}
-        currentPage={1}
-        onPageChange={function (page: number): void {
-          throw new Error("Function not implemented.");
+        onActionClick={(item, e) => {
+          handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
         }}
       />
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        slotProps={{
+          paper: {
+            sx: {
+              mt: 1,
+              width: 250,
+              "& .MuiMenuItem-root": {
+                padding: "16px",
+                justifyContent: "center",
+                fontWeight: "bold",
+                fontSize: "1rem",
+                textTransform: "capitalize",
+              },
+            },
+          },
+        }}
+      >
+        <MenuItem onClick={handleMenuClose} disableRipple>
+          <Link
+            href={`/accounting/invoice/${selectedItemId}/manage`}
+            className="w-full text-center"
+          >
+            Manage
+          </Link>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose} disableRipple>
+          <Link
+            href={`/accounting/invoice/${selectedItemId}/add-payment`}
+            className="w-full text-center"
+          >
+            Add Payment
+          </Link>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose} disableRipple>
+          <Link
+            href={`/accounting/invoice/${selectedItemId}/print-invoice`}
+            className="w-full text-center"
+          >
+            Print Invoice
+          </Link>
+        </MenuItem>
+      </Menu>
     </section>
   );
 };

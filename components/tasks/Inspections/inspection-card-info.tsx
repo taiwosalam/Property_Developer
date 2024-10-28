@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 
 // Types
 import type { InspectionCardInfoProps } from "./types";
@@ -11,10 +11,12 @@ import SampleProperty from "@/public/empty/SampleProperty.jpeg";
 import clsx from "clsx";
 import { secondaryFont } from "@/utils/fonts";
 import Picture from "@/components/Picture/picture";
+import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 
 const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
   className,
 }) => {
+  const [screenModal, setScreenModal] = useState(false);
   return (
     <div
       className={clsx(
@@ -22,6 +24,13 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
         className
       )}
     >
+      <PopupImageModal
+        isOpen={screenModal}
+        onClose={() => {
+          setScreenModal(false);
+        }}
+        images={[{ src: SampleProperty }]}
+      />
       <div className="flex items-center gap-4">
         <div className="relative rounded-[4px] overflow-hidden">
           <Picture
@@ -29,6 +38,7 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
             alt="preview"
             width={130}
             height={117}
+            onClick={() => setScreenModal(true)}
           />
           <div className="absolute top-0 left-0 w-[120px] -rotate-45 -translate-x-[30px] translate-y-[20px] py-[2px] px-2 bg-status-error-2">
             <p className="text-text-invert dark:text-white text-xs font-semibold text-center">
@@ -53,7 +63,9 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
         >
           ₦1,950,000
         </p>
-        <p className="text-text-label dark:text-darkText-1 text-xs font-semibold">Total Package</p>
+        <p className="text-text-label dark:text-darkText-1 text-xs font-semibold">
+          Total Package
+        </p>
         <p className="text-text-disabled text-sm font-medium">
           <span className="text-highlight">₦700,000</span> / Yearly
         </p>
