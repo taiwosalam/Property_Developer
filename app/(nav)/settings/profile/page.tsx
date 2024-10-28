@@ -456,7 +456,7 @@ const Profile = () => {
           title="Fonts Templates"
           desc="Choose Your Preferred Font Style for Your Company Profile Website"
         />
-        <div className="w-full sm:w-1/4 flex mb-5">
+        <div className="w-full md:w-1/4 flex mb-5">
           <Select
             id="font"
             label=""
