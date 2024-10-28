@@ -4,6 +4,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AddOccupantWithId from "./add-occupant-with-id-modal";
 import DateInput from "@/components/Form/DateInput/date-input";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
+import { MatchedProfile } from "./matched-profile";
 
 export const ProfileForm: React.FC<{ occupant: Occupant; title?: boolean }> = ({
   occupant,
@@ -12,14 +13,14 @@ export const ProfileForm: React.FC<{ occupant: Occupant; title?: boolean }> = ({
   return (
     <div className="space-y-6">
       <div className="block">
-        <div className="flex w-3/4 items-center justify-between gap-3 pb-4">
+        <div className="flex flex-wrap w-full lg:w-3/4 items-center justify-between gap-3 pb-4">
           <Select
             id="sadsfs"
             label="Choose Available Occupant"
             placeholder={occupant.name}
             options={[occupant.name]}
             hiddenInputClassName="setup-f"
-            className="w-2/3"
+            className="w-full lg:w-2/3"
           />
           <Modal>
             <ModalTrigger asChild>
@@ -34,6 +35,9 @@ export const ProfileForm: React.FC<{ occupant: Occupant; title?: boolean }> = ({
               <AddOccupantWithId />
             </ModalContent>
           </Modal>
+        </div>
+        <div className="block lg:hidden">
+          <MatchedProfile occupant={occupant} />
         </div>
       </div>
       <h6 className="font-bold text-[#092C4C] dark:text-white text-xl">

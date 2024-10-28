@@ -1,36 +1,21 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
-
-// Images
-import Signature from "@/public/accounting/signature.svg";
-
-import Avatar from "@/public/empty/avatar.png";
-
-// Imports
-import Picture from "@/components/Picture/picture";
-import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
 import BackButton from "@/components/BackButton/back-button";
-import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { useRouter } from "next/navigation";
+import ExportPageFooter from "@/components/reports/export-page-footer";
+import { receiptTableFields, receiptTableData } from "../../data";
+import CustomTable from "@/components/Table/table";
+import Signature from "@/components/Signature/signature";
 
-const Exportexpense = () => {
-  const router = useRouter();
-
-  const back = () => {
-    router.back();
-  };
-
+const ExportReceipt = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton>Back</BackButton>
+        <BackButton as="p">Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -72,88 +57,22 @@ const Exportexpense = () => {
             downValue={53}
           />
         </AutoResizingGrid>
-        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-          <table className="dash-table">
-            <colgroup>
-              <col className="min-w-[72px]" />
-              <col span={5} />
-              <col className="min-w-[72px]" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th></th>
-                <th>name</th>
-                <th>payment ID</th>
-                <th>details</th>
-                <th>amount</th>
-                <th>date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array(10)
-                .fill(null)
-                .map((_, index) => (
-                  <tr
-                    key={index}
-                    onClick={() =>
-                      (window.location.href = "/accounting/receipts/1/preview")
-                    }
-                    className="cursor-pointer"
-                  >
-                    <td>
-                      <Picture
-                        src={"/empty/avatar-1.svg"}
-                        alt="profile picture"
-                        rounded
-                        size={40}
-                      />
-                    </td>
-                    <td>
-                      <p>Amori Ademakinwa</p>
-                    </td>
-                    <td>
-                      <p>1234563456</p>
-                    </td>
-                    <td>
-                      <p>Rent cost: Start date: Sept 22, 2023 - Expiry date:</p>
-                    </td>
-                    <td>
-                      <p>₦35,000.00</p>
-                    </td>
-                    <td>
-                      <p>02/03/2024</p>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="flex justify-end">
-          <div className="custom-flex-col gap-2 text-text-quaternary text-base font-medium">
-            <p>Authorized Signature </p>
-            <div className="flex">
-              <Image src={Signature} alt="signature" height={60} />
-            </div>
-            <p>
-              ESQ Taiwo Salam
-              <br />
-              Legal Practitioner
-            </p>
-          </div>
-        </div>
+        <CustomTable
+          fields={receiptTableFields}
+          data={receiptTableData()}
+          tableHeadStyle={{ height: "76px" }}
+          tableHeadCellSx={{ fontSize: "1rem" }}
+          tableBodyCellSx={{
+            fontSize: "1rem",
+            paddingTop: "12px",
+            paddingBottom: "12px",
+          }}
+        />
+        <Signature />
       </div>
-      <FixedFooter className="flex gap-6 flex-wrap items-center justify-end">
-        <div className="flex gap-6">
-          <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
-            download
-          </Button>
-          <Button size="base_bold" className="py-2 px-8">
-            print
-          </Button>
-        </div>
-      </FixedFooter>
+      <ExportPageFooter />
     </div>
   );
 };
 
-export default Exportexpense;
+export default ExportReceipt;

@@ -53,8 +53,10 @@ const Exportexpense = () => {
         </div>
       </div>
       <div className="custom-flex-col gap-6">
-        <h1 className="text-black text-2xl font-medium text-center">Summary</h1>
-        <AutoResizingGrid gap={6} minWidth={330}>
+        <h1 className="text-black text-2xl font-medium text-center">
+          Expenses Summary
+        </h1>
+        <AutoResizingGrid gap={30} minWidth={330}>
           <ExpensesStatCard
             title="Total Expenses"
             balance={12345432}
@@ -76,11 +78,11 @@ const Exportexpense = () => {
               <tr>
                 <th></th>
                 <th>date</th>
-                <th>landlord / landlady</th>
-                <th>payment ID</th>
-                <th>amount</th>
+                <th>client name</th>
                 <th>description</th>
-                <th>mode</th>
+                <th>amount</th>
+                <th>payment</th>
+                <th>Balance</th>
               </tr>
             </thead>
             <tbody>
@@ -103,35 +105,27 @@ const Exportexpense = () => {
                       <p>Amori Ademakinwa</p>
                     </td>
                     <td>
-                      <p>1234567878</p>
+                      <p>Water Plumbing</p>
                     </td>
                     <td>
-                      <p>₦115,000.00</p>
+                      <p className="text-status-success-3">₦35,000.00</p>
                     </td>
                     <td>
-                      <p>Property Rent for moniya house</p>
+                      <p className="text-status-error-2">₦35,000.00</p>
                     </td>
                     <td>
-                      <p>Bank Transfer</p>
+                      <p>₦35,000</p>
                     </td>
                   </tr>
                 ))}
             </tbody>
           </table>
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-start">
           <Signature />
         </div>
       </div>
-      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
-        <Button
-          onClick={back}
-          variant="sky_blue"
-          size="base_bold"
-          className="py-2 px-8"
-        >
-          exit
-        </Button>
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-end">
         <div className="flex gap-6">
           <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
             download

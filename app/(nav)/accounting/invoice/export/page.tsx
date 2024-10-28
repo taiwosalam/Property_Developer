@@ -1,25 +1,20 @@
-import Image from "next/image";
-
-// Images
-import Signature from "@/public/accounting/signature.svg";
-
 // Imports
 import ExportPageHeader from "@/components/reports/export-page-header";
-import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
 import { empty } from "@/app/config";
-import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import BackButton from "@/components/BackButton/back-button";
 import CustomTable from "@/components/Table/table";
 import { invoiceTableData, invoiceTableFields } from "../data";
+import Signature from "@/components/Signature/signature";
+import ExportPageFooter from "@/components/reports/export-page-footer";
 
 const ExportInvoice = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton>Back</BackButton>
+        <BackButton as="p">Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -47,7 +42,7 @@ const ExportInvoice = () => {
         <h1 className="text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
           Invoice Summary
         </h1>
-        <AutoResizingGrid minWidth={330}>
+        <AutoResizingGrid gap={30} minWidth={330}>
           <InvoiceStatCards
             title="Total Receipts Created"
             balance={12345432}
@@ -75,30 +70,9 @@ const ExportInvoice = () => {
             paddingBottom: "12px",
           }}
         />
-        <div className="flex justify-end">
-          <div className="custom-flex-col gap-2 text-text-quaternary dark:text-darkText-1 text-base font-medium">
-            <p>Authorized Signature </p>
-            <div className="flex">
-              <Image src={Signature} alt="signature" height={60} />
-            </div>
-            <p>
-              ESQ Taiwo Salam
-              <br />
-              Legal Practitioner
-            </p>
-          </div>
-        </div>
+        <Signature />
       </div>
-      <FixedFooter className="flex items-center justify-end">
-        <div className="flex gap-6">
-          <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
-            download
-          </Button>
-          <Button size="base_bold" className="py-2 px-8">
-            print
-          </Button>
-        </div>
-      </FixedFooter>
+      <ExportPageFooter />
     </div>
   );
 };
