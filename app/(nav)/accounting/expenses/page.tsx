@@ -3,16 +3,10 @@
 import ExpensesStatCard from "@/components/Accounting/expenses/expenses-stat-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
-import {
-  Dropdown,
-  DropdownContent,
-  DropdownTrigger,
-} from "@/components/Dropdown/dropdown";
 import FilterButton from "@/components/FilterButton/filter-button";
 import Button from "@/components/Form/Button/button";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import Pagination from "@/components/Pagination/pagination";
 import Picture from "@/components/Picture/picture";
 import SearchInput from "@/components/SearchInput/search-input";
 import {
@@ -25,10 +19,17 @@ import {
 import { ExclamationMark } from "@/public/icons/icons";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import ThreeDotsVertical from "@/public/icons/three-dots-vertical.svg";
 import Link from "next/link";
 import CreateExpenceModal from "@/components/Accounting/expenses/create-expense/CreateExpenceModal";
-import { accountingExpensesOptionsWithDropdown } from "./data";
+import {
+  accountingExpensesOptionsWithDropdown,
+  expenseTableFields,
+  expenseTableData,
+} from "./data";
+import { Menu, MenuItem } from "@mui/material";
+import CustomTable from "@/components/Table/table";
+import type { DataItem } from "@/components/Table/types";
+import ExportButton from "@/components/reports/export-button";
 
 const AccountingExpensesPage = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -73,6 +74,25 @@ const AccountingExpensesPage = () => {
     console.log("Filter applied:", filters);
     // Add filtering logic here for branches
   };
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    setSelectedItemId(String(item.id));
+    setAnchorEl(e.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedItemId(null);
+  };
+
+  const transformedTableData = expenseTableData().map((item) => ({
+    ...item,
+    amount: <p className="text-status-success-3">{item.amount}</p>,
+    payment: <p className="text-status-error-2">{item.payment}</p>,
+    balance: item.balance ? item.balance : "--- ---",
+  }));
 
   return (
     <section className="space-y-8 mt-4">
@@ -129,7 +149,10 @@ const AccountingExpensesPage = () => {
               </Select>
             </div>
             <div className="flex items-center gap-4 flex-wrap">
-              <SearchInput placeholder="Search for Expenses" />
+              <SearchInput
+                placeholder="Search for Expenses"
+                className="max-w-[255px]"
+              />
               <Modal>
                 <ModalTrigger asChild>
                   <FilterButton />
@@ -147,21 +170,8 @@ const AccountingExpensesPage = () => {
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <Link
-                  href={"/accounting/expenses/export"}
-                  className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054] dark:bg-darkText-primary"
-                >
-                  <Picture src={"/icons/pdf-icon.svg"} size={20} alt="pdf" />
-                  <span>Export</span>
-                </Link>
-                <div className="border border-[#D0D5DD py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054] dark:bg-darkText-primary">
-                  <Picture
-                    src={"/icons/excel-icon.svg"}
-                    size={20}
-                    alt="excep"
-                  />
-                  <span>Export</span>
-                </div>
+                <ExportButton type="pdf" href="/accounting/expenses/export" />
+                <ExportButton type="csv" href="/accounting/expenses/export" />
               </div>
             </div>
           </div>
@@ -184,95 +194,57 @@ const AccountingExpensesPage = () => {
           </AutoResizingGrid>
         </div>
       </div>
-      <div className="rounded-lg w-full pb-[120px] overflow-x-scroll no-scrollbar">
-        <table className="dash-table">
-          <colgroup>
-            <col className="min-w-[72px]" />
-            <col span={6} />
-            <col className="min-w-[72px]" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th></th>
-              <th>date</th>
-              <th>client name</th>
-              <th>descrption</th>
-              <th>amount</th>
-              <th>payment</th>
-              <th>balance</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array(10)
-              .fill(null)
-              .map((_, index) => (
-                <tr key={index} className="font-medium">
-                  <td>
-                    <Picture
-                      src={"/empty/avatar-1.svg"}
-                      alt="profile picture"
-                      rounded
-                      size={40}
-                    />
-                  </td>
-                  <td>
-                    <p>02/03/2024</p>
-                  </td>
-                  <td>
-                    <p>Amori Ademakinwa</p>
-                  </td>
-                  <td>
-                    <p>Water Plumbing</p>
-                  </td>
-                  <td>
-                    <p className="text-status-success-3">₦35,000.00</p>
-                  </td>
-                  <td>
-                    <p className="text-status-error-2">₦35,000.00</p>
-                  </td>
-                  <td>
-                    <p>₦35,000.00</p>
-                  </td>
-                  <td className="flex items-center justify-center">
-                    <Dropdown>
-                      <DropdownTrigger className="flex items-center justify-center">
-                        <Picture
-                          src={ThreeDotsVertical}
-                          alt="three dots vertical"
-                          size={24}
-                        />
-                      </DropdownTrigger>
-                      <DropdownContent>
-                        <div className="w-[250px] bg-white dark:bg-darkText-primary dark:text-white custom-flex-col py-2 gap-2 text-text-secondary text-base font-bold capitalize text-center">
-                          <Link
-                            href={"/accounting/expenses/1/manage-expenses"}
-                            className="p-4"
-                          >
-                            Manage Expense
-                          </Link>
-                          <Link
-                            href={"/accounting/expenses/1/preview-expenses"}
-                            className="p-4"
-                          >
-                            Preview Expense
-                          </Link>
-                        </div>
-                      </DropdownContent>
-                    </Dropdown>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-      <Pagination
-        totalPages={5}
-        currentPage={1}
-        onPageChange={function (page: number): void {
-          throw new Error("Function not implemented.");
+      <CustomTable
+        fields={expenseTableFields}
+        data={transformedTableData}
+        tableHeadStyle={{ height: "76px" }}
+        tableHeadCellSx={{ fontSize: "1rem" }}
+        tableBodyCellSx={{
+          fontSize: "1rem",
+          paddingTop: "12px",
+          paddingBottom: "12px",
+        }}
+        onActionClick={(item, e) => {
+          handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
         }}
       />
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        slotProps={{
+          paper: {
+            sx: {
+              mt: 1,
+              width: 250,
+              "& .MuiMenuItem-root": {
+                padding: "16px",
+                justifyContent: "center",
+                fontWeight: "bold",
+                fontSize: "1rem",
+                textTransform: "capitalize",
+              },
+            },
+          },
+        }}
+      >
+        <MenuItem onClick={handleMenuClose} disableRipple>
+          <Link
+            href={`/accounting/expenses/${selectedItemId}/manage-expenses`}
+            className="w-full text-center"
+          >
+            Manage Expense
+          </Link>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose} disableRipple>
+          <Link
+            href={`/accounting/expenses/${selectedItemId}/preview-expenses`}
+            className="w-full text-center"
+          >
+            Preview Expense
+          </Link>
+        </MenuItem>
+      </Menu>
     </section>
   );
 };

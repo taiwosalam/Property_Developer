@@ -1,10 +1,5 @@
 "use client";
 
-import Image from "next/image";
-
-// Images
-import Avatar from "@/public/empty/avatar.png";
-
 // Imports
 import Card from "@/components/dashboard/card";
 

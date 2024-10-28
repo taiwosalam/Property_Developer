@@ -78,7 +78,7 @@ const renderValue = (
       return field.contentStyle ? (
         <div style={field.contentStyle}>{value ?? "-"}</div>
       ) : (
-        value ?? "-"
+        value ?? "--- ---"
       );
   }
 };

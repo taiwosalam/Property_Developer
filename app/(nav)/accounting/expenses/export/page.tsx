@@ -1,13 +1,6 @@
 "use client";
 
-import React from "react";
-
-// Images
-import Avatar from "@/public/empty/avatar.png";
-
 // Imports
-import Picture from "@/components/Picture/picture";
-import Button from "@/components/Form/Button/button";
 import Signature from "@/components/Signature/signature";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import ExportPageHeader from "@/components/reports/export-page-header";
@@ -15,20 +8,25 @@ import { empty } from "@/app/config";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ExpensesStatCard from "@/components/Accounting/expenses/expenses-stat-card";
 import BackButton from "@/components/BackButton/back-button";
-import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { useRouter } from "next/navigation";
+import ExportPageFooter from "@/components/reports/export-page-footer";
+import CustomTable from "@/components/Table/table";
+import { expenseTableFields, expenseTableData } from "../data";
 
 const Exportexpense = () => {
-  const router = useRouter();
-
-  const back = () => {
-    router.back();
-  };
-
+  // Filter out the action field for the export page
+  const exportTableFields = expenseTableFields.filter(
+    (field) => field.accessor !== "action"
+  );
+  const transformedTableData = expenseTableData().map((item) => ({
+    ...item,
+    amount: <p className="text-status-success-3">{item.amount}</p>,
+    payment: <p className="text-status-error-2">{item.payment}</p>,
+    balance: item.balance ? item.balance : "--- ---",
+  }));
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton>Back</BackButton>
+        <BackButton as="p">Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -69,72 +67,21 @@ const Exportexpense = () => {
           />
           <ExpensesStatCard title="Balance" balance={12345432} downValue={53} />
         </AutoResizingGrid>
-        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-          <table className="dash-table">
-            <colgroup>
-              <col className="min-w-[72px]" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th></th>
-                <th>date</th>
-                <th>client name</th>
-                <th>description</th>
-                <th>amount</th>
-                <th>payment</th>
-                <th>Balance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array(5)
-                .fill(null)
-                .map((_, index) => (
-                  <tr key={index}>
-                    <td className="flex items-center justify-center">
-                      <Picture
-                        src={Avatar}
-                        alt="profile picture"
-                        size={40}
-                        rounded
-                      />
-                    </td>
-                    <td>
-                      <p>02/03/2024</p>
-                    </td>
-                    <td>
-                      <p>Amori Ademakinwa</p>
-                    </td>
-                    <td>
-                      <p>Water Plumbing</p>
-                    </td>
-                    <td>
-                      <p className="text-status-success-3">₦35,000.00</p>
-                    </td>
-                    <td>
-                      <p className="text-status-error-2">₦35,000.00</p>
-                    </td>
-                    <td>
-                      <p>₦35,000</p>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="flex justify-start">
-          <Signature />
-        </div>
+        <CustomTable
+          fields={exportTableFields}
+          data={transformedTableData}
+          tableHeadStyle={{ height: "76px" }}
+          tableHeadCellSx={{ fontSize: "1rem" }}
+          tableBodyCellSx={{
+            fontSize: "1rem",
+            paddingTop: "12px",
+            paddingBottom: "12px",
+          }}
+        />
+
+        <Signature />
       </div>
-      <FixedFooter className="flex flex-wrap gap-6 items-center justify-end">
-        <div className="flex gap-6">
-          <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
-            download
-          </Button>
-          <Button size="base_bold" className="py-2 px-8">
-            print
-          </Button>
-        </div>
-      </FixedFooter>
+      <ExportPageFooter />
     </div>
   );
 };
