@@ -44,19 +44,19 @@ const companyTypes = [
     title: "Property Manager",
     desc: "The company specializes in managing tenants for both commercial and residential properties, as well as overseeing occupants within gated estates.",
     icon: <SettingUserIcon />,
-    groupName: "property_manager"
+    groupName: "property_manager",
   },
   {
     title: "Facility Manager",
     desc: "The company specializes in managing short-stay apartments, holiday homes, and hotels, catering to occupants for brief durations.",
     icon: <UserEditIcon />,
-    groupName: "facility_manager"
+    groupName: "facility_manager",
   },
   {
     title: "Property Developer",
     desc: "A company engaged in real estate development, constructing and selling properties, or acquiring land for development and subsequent sale. They may offer flexible payment plans where buyers can make a deposit and pay the balance over a specified period.",
     icon: <UserTagIcon />,
-    groupName: "property_developer"
+    groupName: "property_developer",
   },
 ];
 const notificationSettings = [
@@ -142,14 +142,14 @@ const Others = () => {
   return (
     <>
       {/* COMPANY TYPE SETTINGS */}
-      <SettingsSection title="Company Default Type">
-      <div className="custom-flex-col gap-3">
+      <SettingsSection title="Company Default Module">
+        <div className="custom-flex-col gap-3">
           {companyTypes.map((type, index) => (
             <SettingsOthersType
               key={index}
               title={type.title}
               desc={type.desc}
-              icon={type.icon} 
+              icon={type.icon}
               selectedGroup={selectedGroup}
               setSelectedGroup={setSelectedGroup}
               groupName={type.groupName}
@@ -177,22 +177,18 @@ const Others = () => {
           />
           <AutoResizingGrid minWidth={284} gap={16}>
             <UserCard
-              first_name="Esq"
-              last_name="Abimbola Adedeji"
+              name="Esq Abimbola Adedeji"
               email="abimbola@gmail.com"
               phone_number="+2348132086958"
               picture_url="/empty/SampleLandlord.jpeg"
-              cardType="staff"
-              role="Legal Practitioner"
+              user_tag="Legal Practitioner"
             />
             <UserCard
-              first_name="Esq"
-              last_name="Abimbola Adedeji"
+              name="Esq Abimbola Adedeji"
               email="abimbola@gmail.com"
               phone_number="+2348132086958"
               picture_url="/empty/SampleLandlord.jpeg"
-              cardType="staff"
-              role="Estate Surveyor & Valuer"
+              user_tag="Estate Surveyor & Valuer"
             />
 
             <Modal>
@@ -243,19 +239,17 @@ const Others = () => {
           />
           <AutoResizingGrid minWidth={284} gap={16}>
             <UserCard
-              full_name="Esq Abimbola Adedeji"
+              name="Esq Abimbola Adedeji"
               email="abimbola@gmail.com"
               phone_number="+2348132086958"
               picture_url="/empty/SampleLandlord.jpeg"
-              cardType="base"
               user_tag="mobile"
             />
             <UserCard
-              full_name="Esq Abimbola Adedeji"
+              name="Esq Abimbola Adedeji"
               email="abimbola@gmail.com"
               phone_number="+2348132086958"
               picture_url="/empty/SampleLandlord.jpeg"
-              cardType="base"
               user_tag="mobile"
             />
 
@@ -348,6 +342,7 @@ const Others = () => {
             />
           ))}
         </div>
+        <SettingsUpdateButton />
       </SettingsSection>
     </>
   );

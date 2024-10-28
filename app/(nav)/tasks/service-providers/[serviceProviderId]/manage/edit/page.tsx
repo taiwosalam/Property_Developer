@@ -10,7 +10,6 @@ import {
   ServiceProviderEditProfileInfoSection,
   ServiceProviderCompanyDetailsSection,
   ServiceProviderBankDetailsSection,
-  ServiceProviderAttachmentSection,
   ServiceProviderNotesSection,
   ServiceProviderEditAvatarInfoSection,
 } from "@/components/tasks/service-providers/service-provider-edit-info-sections";
@@ -43,19 +42,10 @@ const EditServiceProvider = () => {
               <DeleteAccountModal />
             </ModalContent>
           </Modal>
-          <div className="flex gap-6">
-            <Button
-              href="/management/landlord/1/manage"
-              size="base_medium"
-              className="py-2 px-6 hidden md:block"
-              variant="sky_blue"
-            >
-              Exit
-            </Button>
-            <Button size="base_medium" className="py-2 px-6">
-              save
-            </Button>
-          </div>
+
+          <Button size="base_medium" className="py-2 px-6">
+            save
+          </Button>
         </FixedFooter>
       </div>
     </ServiceProviderEditContext.Provider>

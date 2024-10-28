@@ -14,8 +14,10 @@ interface ThemeState {
 }
 
 export const useThemeStore = create<ThemeState>((set) => ({
+  
+  // primaryColor: localStorage.getItem("primary-color") || "", // Check localStorage for initial value
   primaryColor: "",
-  secondaryColor: "",
+  secondaryColor: "", 
 
   setPrimaryColor: (color: string) => {
     set({ primaryColor: color });

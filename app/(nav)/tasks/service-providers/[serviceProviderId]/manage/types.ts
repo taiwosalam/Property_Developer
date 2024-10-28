@@ -1,5 +1,3 @@
-import type { AttachedDocumentCard } from "@/components/Management/landlord-tenant-info-components";
-
 interface CompanyDetails {
   name: string;
   email: string;
@@ -11,10 +9,6 @@ interface BankDetails {
   bank_name: string;
   account_number: string;
   account_name: string;
-}
-
-interface AttachedDocument extends AttachedDocumentCard {
-  document_type: string;
 }
 
 export interface ServiceProviderData {
@@ -35,5 +29,4 @@ export interface ServiceProviderData {
     last_updated: string;
     write_up: string;
   };
-  documents: AttachedDocument[];
 }

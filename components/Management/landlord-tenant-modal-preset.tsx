@@ -2,7 +2,7 @@
 import type { LandlordTenantModalPresetProps } from "./types";
 
 import { ModalTrigger } from "../Modal/modal";
-import { ChevronLeft, DeleteIconX } from "@/public/icons/icons";
+import { ChevronLeft, NavCloseIcon } from "@/public/icons/icons";
 import { SectionSeparator } from "../Section/section-components";
 
 const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
@@ -11,11 +11,12 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   style,
   heading,
   children,
+  lightSeparator,
 }) => {
   return (
     <div
       style={style}
-      className="w-[95%] max-w-[900px] max-h-[90vh] rounded-[20px] bg-white dark:bg-black overflow-y-auto custom-round-scrollbar"
+      className="w-[85%] max-w-[900px] max-h-[90vh] rounded-[20px] bg-white dark:bg-black overflow-y-auto custom-round-scrollbar"
     >
       {/* Header */}
       <div className="sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[30px] bg-white dark:bg-darkText-primary">
@@ -32,10 +33,10 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
             </p>
           </div>
           <ModalTrigger close className="p-2" aria-label="close">
-            <DeleteIconX size={34} />
+            <NavCloseIcon />
           </ModalTrigger>
         </div>
-        <SectionSeparator className="!bg-[#B8B8B8]" />
+        <SectionSeparator className={!lightSeparator ? "!bg-[#B8B8B8]" : ""} />
       </div>
 
       {/* body */}
@@ -45,3 +46,6 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
 };
 
 export default LandlordTenantModalPreset;
+//  <p className="text-text-disabled text-sm font-normal">
+//    Search for properties, units, rent, tenant/occupant, task, & more
+//  </p>;

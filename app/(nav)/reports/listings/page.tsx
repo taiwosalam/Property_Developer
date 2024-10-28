@@ -1,6 +1,5 @@
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
@@ -31,12 +30,17 @@ const ListingsReport = () => {
           total={200}
           colorScheme={1}
         />
-        <ManagementStatistcsCard title="Published" newData={23} total={200} />
+        <ManagementStatistcsCard
+          title="Published"
+          newData={23}
+          total={200}
+          colorScheme={2}
+        />
         <ManagementStatistcsCard
           title="Unpublished"
           newData={23}
           total={200}
-          colorScheme={2}
+          colorScheme={3}
         />
       </div>
       <FilterBar
@@ -61,7 +65,6 @@ const ListingsReport = () => {
         data={tableData}
         tableHeadClassName="h-[45px]"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

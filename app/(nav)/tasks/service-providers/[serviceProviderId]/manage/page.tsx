@@ -7,10 +7,9 @@ import {
   LandlordTenantInfoBox as InfoBox,
   LandlordTenantInfo as ContactInfo,
   LandlordTenantInfoSection as InfoSection,
-  LandlordTenantInfoDocument as InfoDocument,
   NotesInfoBox,
+  MobileNotesModal,
 } from "@/components/Management/landlord-tenant-info-components";
-import TruncatedText from "@/components/TruncatedText/truncated-text";
 import Picture from "@/components/Picture/picture";
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import Button from "@/components/Form/Button/button";
@@ -24,15 +23,23 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 import type { ServiceProviderData } from "./types";
 import { serviceProviderData as Mockdata } from "./data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import { MobileNotesModal } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
+import { useSearchParams } from "next/navigation";
 
 const ManageServiceProvider = () => {
+  // remove this search params stuff later
+  const searchParams = useSearchParams();
+  const tag = searchParams.get("user_tag");
   const isDarkMode = useDarkMode();
   const router = useRouter();
-  const [serviceProviderData, setServiceProviderData] =
-    useState<ServiceProviderData | null>(Mockdata);
+  // const [serviceProviderData, setServiceProviderData] =
+  //   useState<ServiceProviderData | null>(Mockdata);
+  const serviceProviderData = {
+    ...Mockdata,
+    user_tag: tag,
+  } as ServiceProviderData;
+
   if (!serviceProviderData) return null;
-  const { user_tag, notes, documents } = serviceProviderData;
+  const { notes, user_tag } = serviceProviderData;
 
   return (
     <div className="space-y-5">
@@ -86,7 +93,7 @@ const ManageServiceProvider = () => {
                   message
                 </Button>
                 <Modal>
-                  <ModalTrigger>
+                  <ModalTrigger asChild>
                     <Button
                       variant="sky_blue"
                       size="base_medium"

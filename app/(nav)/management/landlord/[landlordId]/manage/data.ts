@@ -16,6 +16,7 @@ export const statementTableFields: Field[] = [
       textOverflow: "ellipsis",
       overflow: "hidden",
       whiteSpace: "nowrap",
+      maxWidth: "350px",
     },
   },
   { id: "5", label: "Credit", accessor: "credit" },

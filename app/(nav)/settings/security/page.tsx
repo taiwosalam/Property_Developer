@@ -181,14 +181,12 @@ const Security = () => {
                   </React.Fragment>
                 ))}
                 <div className="flex items-end">
-                  <Button
-                    size="xs_normal"
-                    variant="light_red"
-                    className="py-2 px-3 w-full sm:w-auto"
+                  <button
+                    className="text-xs font-normal py-2 px-3 w-full sm:w-auto text-brand-9 bg-white"
                     onClick={addInputField}
                   >
                     Add More
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>

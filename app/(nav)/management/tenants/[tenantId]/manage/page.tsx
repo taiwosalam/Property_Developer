@@ -14,6 +14,7 @@ import {
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
   NotesInfoBox,
+  MobileNotesModal,
 } from "@/components/Management/landlord-tenant-info-components";
 import { ChevronLeft } from "@/public/icons/icons";
 import { ASSET_URL, empty } from "@/app/config";
@@ -25,11 +26,10 @@ import UpdateTenantProfile from "@/components/Management/Tenants/update-tenant-p
 import { useRouter } from "next/navigation";
 import { TenantData } from "../../types";
 import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
-import { MobileNotesModal } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
 import CustomTable from "@/components/Table/table";
 import { statementTableFields, statementTableData } from "./data";
-import useDarkMode from "@/hooks/useCheckDarkMode";
 import { TenantEditAttachmentSection } from "@/components/Management/Tenants/Edit/tenant-edit-info-sectios";
+import { useSearchParams } from "next/navigation";
 
 const groupDocumentsByType = (documents: TenantData["documents"]) => {
   return documents.reduce((acc, document) => {
@@ -42,9 +42,12 @@ const groupDocumentsByType = (documents: TenantData["documents"]) => {
 };
 
 const ManageTenant = () => {
+  // remove this search params stuff later
+  const searchParams = useSearchParams();
+  const user_tag = searchParams.get("user_tag");
   // const { tenant, tenantId, loading, error } = useTenantData();
   const {
-    data: tenant,
+    data: a,
     id: tenantId,
     loading,
     error,
@@ -54,8 +57,9 @@ const ManageTenant = () => {
     loading: boolean;
     error: Error | null;
   };
-  const isDarkMode = useDarkMode();
+
   const router = useRouter();
+  const tenant = { ...a, user_tag } as TenantData;
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <div>Error: {error.message}</div>;
   if (!tenant) return null;
@@ -123,7 +127,7 @@ const ManageTenant = () => {
                   unflag
                 </Button>
                 <Modal>
-                  <ModalTrigger>
+                  <ModalTrigger asChild>
                     <Button
                       variant="sky_blue"
                       size="base_medium"

@@ -95,19 +95,23 @@ const ServiceProviders = () => {
           .fill(null)
           .map((_, index) => (
             <Link
-              href={`/tasks/service-providers/${index + 1}/manage`}
+              href={{
+                // remove this pathname and query shit
+                pathname: `/tasks/service-providers/${index + 1}/manage`,
+                query: {
+                  user_tag: index % 2 === 0 ? "web" : "mobile",
+                },
+              }}
               key={index}
             >
               <ServiceProviderCard
-                id={index}
-                first_name="Allys"
-                last_name="Quantrill"
+                name="Allys Quantrill"
                 email="aquantrill0@tinypic.com"
                 user_tag={index % 2 === 0 ? "web" : "mobile"}
+                badge_color="yellow"
                 phone_number="1787991995"
                 picture_url={DefaultLandlordAvatar.src}
-                service="Plumber, Electrician"
-                cardType="service-provider"
+                other_info="Plumber, Electrician"
               />
             </Link>
           ))}

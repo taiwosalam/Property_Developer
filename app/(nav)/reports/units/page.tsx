@@ -1,6 +1,5 @@
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import Pagination from "@/components/Pagination/pagination";
 import CustomTable from "@/components/Table/table";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
@@ -54,7 +53,6 @@ const UnitsReport = () => {
         data={tableData}
         tableHeadClassName="h-[45px]"
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
     </div>
   );
 };

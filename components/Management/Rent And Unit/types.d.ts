@@ -16,6 +16,7 @@ export interface ActionButtonProps {
 interface PropertyImageSliderProps {
   images: StaticImageData[] | string[];
   showOverlay?: boolean;
+  thread?: boolean;
 }
 export interface UnitDetails {
   //   id: string;

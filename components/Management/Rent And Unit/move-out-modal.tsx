@@ -1,33 +1,27 @@
 import React from "react";
 import { ModalTrigger } from "@/components/Modal/modal";
 import Image from "next/image";
-import CloseCircle from "@/public/icons/close-circle.svg";
+import { CloseCircle } from "@/public/icons/icons";
 
 const MoveOutModal = () => {
   return (
     <div className="w-[600px] max-w-[80%] max-h-[85%] rounded-[20px] bg-white overflow-x-auto custom-round-scrollbar">
       {/* Header */}
-      <div className="bg-status-success-1">
+      <div className="bg-status-success-1 dark:bg-[#3C3D37]">
         <div className="flex items-center justify-between sticky px-[30px] pt-[12px]">
           <span></span>
           <ModalTrigger close className="p-2" type="button">
-            <Image
-              src={CloseCircle}
-              alt="close"
-              width={34}
-              height={34}
-              className="min-w-[34px] min-h-[34px]"
-            />
+            <CloseCircle />
           </ModalTrigger>
         </div>
-        <div className="flex items-center justify-center gap-2 my-4">
-          <p className="text-black text-center md:text-lg lg:text-xl font-bold capitalize">
+        <div className="flex items-center justify-center gap-2">
+          <p className="text-black dark:text-white text-center md:text-lg lg:text-xl font-bold capitalize">
             Move out
           </p>
         </div>
       </div>
       {/* body */}
-      <div className="px-[30px] pt-6 pb-[30px]">
+      <div className="px-[30px] pt-6 pb-[30px] dark:bg-darkText-primary">
         <p className="text-sm mb-6">
           Your actions indicate that the tenants have already moved out from the
           current unit of the property, and the said unit is now available for
@@ -37,19 +31,19 @@ const MoveOutModal = () => {
         <div>
           <h3 className="font-semibold mb-4">Caution Deposit Requirement</h3>
           <div className="space-y-3 px-4">
-            <div className="flex items-center justify-between bg-gray-300 p-2">
+            <div className="flex items-center justify-between bg-gray-300 dark:bg-transparent dark:border dark:border-[#3C3D37] p-2">
               <label htmlFor="check-inventory">Check Inventory</label>
               <input type="checkbox" id="check-inventory" className="mr-2" />
             </div>
-            <div className="flex items-center justify-between bg-gray-300 p-2">
+            <div className="flex items-center justify-between bg-gray-300 dark:bg-transparent dark:border dark:border-[#3C3D37] p-2">
               <label htmlFor="create-examine">Create Examine</label>
               <input type="checkbox" id="create-examine" className="mr-2" />
             </div>
-            <div className="flex items-center justify-between bg-gray-300 p-2">
+            <div className="flex items-center justify-between bg-gray-300 dark:bg-transparent dark:border dark:border-[#3C3D37] p-2">
               <label htmlFor="create-maintenance">Create Maintenance</label>
               <input type="checkbox" id="create-maintenance" className="mr-2" />
             </div>
-            <div className="flex items-center justify-between bg-gray-300 p-2">
+            <div className="flex items-center justify-between bg-gray-300 dark:bg-transparent dark:border dark:border-[#3C3D37] p-2">
               <label htmlFor="flag-tenant">Flag Tenant</label>
               <input type="checkbox" id="flag-tenant" className="mr-2" />
             </div>

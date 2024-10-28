@@ -13,6 +13,7 @@ import {
   LandlordTenantInfoSection,
   LandlordTenantInfoDocument,
   NotesInfoBox,
+  MobileNotesModal,
 } from "@/components/Management/landlord-tenant-info-components";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
@@ -26,12 +27,15 @@ import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 import type { LandlordPageData } from "../../types";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import { MobileNotesModal } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
 import { LandlordEditAttachmentInfoSection } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
 import CustomTable from "@/components/Table/table";
 import { statementTableFields, statementTableData } from "./data";
+import { useSearchParams } from "next/navigation";
 
 const ManageLandlord = () => {
+  // remove this search params stuff later
+  const searchParams = useSearchParams();
+  const user_tag = searchParams.get("user_tag");
   // const {
   //   landlord: LandlordPageData,
   //   landlordId,
@@ -42,7 +46,8 @@ const ManageLandlord = () => {
   // Stressing myself
   const isDarkMode = useDarkMode();
   const {
-    data: LandlordPageData,
+    // data: LandlordPageData,
+    data: a,
     loading,
     error,
   } = MockFunction("landlord") as {
@@ -52,6 +57,8 @@ const ManageLandlord = () => {
   };
 
   const router = useRouter();
+
+  const LandlordPageData = { ...a, user_tag } as LandlordPageData;
   const groupDocumentsByType = (documents: LandlordPageData["documents"]) => {
     return documents.reduce((acc, document) => {
       if (!acc[document.document_type]) {
@@ -151,7 +158,7 @@ const ManageLandlord = () => {
                   unflag
                 </Button>
                 <Modal>
-                  <ModalTrigger>
+                  <ModalTrigger asChild>
                     <Button
                       variant="sky_blue"
                       size="base_medium"

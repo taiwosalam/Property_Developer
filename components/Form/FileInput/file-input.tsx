@@ -23,6 +23,7 @@ const FileInput: React.FC<FileInputProps> = ({
   fileType,
   size,
   sizeUnit,
+  settingsPage,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [file, setFile] = useState<File | null>(null);
@@ -126,17 +127,24 @@ const FileInput: React.FC<FileInputProps> = ({
             fileName ? "bg-neutral-2" : "bg-none"
           )}
         >
-          <span
-            className={clsx(
-              "flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
-            )}
-          >
-            {fileName
-              ? fileName
-              : `Click ${isLgScreen ? "the side button" : "here"} to upload ${
-                  placeholder || "file"
-                }`}
-          </span>
+          {!settingsPage && (
+            <span
+              className={clsx(
+                "flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
+              )}
+            >
+              {fileName
+                ? fileName
+                : `Click ${isLgScreen ? "the side button" : "here"} to upload ${
+                    placeholder || "file"
+                  }`}
+            </span>
+          )}
+          {settingsPage && (
+            <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
+              Click to upload document
+            </span>
+          )}
           {fileName && (
             <div className="flex items-center gap-2">
               <button
@@ -162,17 +170,32 @@ const FileInput: React.FC<FileInputProps> = ({
             </div>
           )}
         </div>
-        <div className="hidden lg:block absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2">
-          <Button
-            variant="change"
-            size="sm"
-            className="whitespace-nowrap text-ellipsis"
-            style={{ background: fileName ? "" : "none" }}
-            type="button"
-            onClick={handleClick}
-          >
-            {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
-          </Button>
+        <div
+          className={`${
+            !settingsPage ? "hidden lg:block" : "block"
+          } absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2`}
+        >
+          {!settingsPage && (
+            <Button
+              variant="change"
+              size="sm"
+              className="whitespace-nowrap text-ellipsis"
+              style={{ background: fileName ? "" : "none" }}
+              type="button"
+              onClick={handleClick}
+            >
+              {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
+            </Button>
+          )}
+          {settingsPage && (
+            <Button
+              variant="change"
+              size="sm"
+              className="whitespace-nowrap text-ellipsis"
+            >
+              Verify Document
+            </Button>
+          )}
         </div>
       </div>
     </div>

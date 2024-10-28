@@ -1,3 +1,4 @@
+"use client";
 import React, { CSSProperties } from "react";
 
 // Imports
@@ -10,15 +11,17 @@ import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import { InventoryListInfo } from "@/components/Management/Inventory/inventory-components";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import Select from "@/components/Form/Select/select";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const ManageInventory = () => {
+  const isDarkMode = useDarkMode();
   const input_styles: CSSProperties = {
     padding: "12px 14px",
-    backgroundColor: "white",
+    backgroundColor: isDarkMode ? "#020617" : "white",
   };
 
   return (
-    <div className="custom-flex-col gap-10 min-h-[80vh] pb-[100px]">
+    <div className="custom-flex-col gap-10 min-h-[80vh] pb-[150px] lg:pb-[100px]">
       <div className="custom-flex-col gap-4">
         <BackButton>Manage Inventory</BackButton>
         <div className="custom-flex-col gap-6">
@@ -26,7 +29,7 @@ const ManageInventory = () => {
             <Input
               id="inventory-title"
               value="Olalomi Cottage"
-              className="flex-1 dark:bg-darkText-primary !important dark:text-darkText-1"
+              className="flex-1 dark:bg-darkText-primary dark:text-darkText-1"
               style={input_styles}
             />
             <Input

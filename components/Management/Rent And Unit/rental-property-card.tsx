@@ -20,9 +20,10 @@ const useNumberFormat = () => {
     new Intl.NumberFormat(NUMBER_FORMAT_LOCALE).format(number);
 };
 
-const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
+export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
   images,
   showOverlay,
+  thread,
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -58,14 +59,16 @@ const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
       {loaded && instanceRef.current && (
         <>
           <div className="absolute w-full flex items-center justify-between top-5 px-5">
-            <div className="bg-brand-1 rounded py-1 px-[6px] flex items-center space-x-1">
-              <CameraIcon width={16} height={16} />
-              <span className="text-sm font-medium">
-                {currentSlide + 1 + "/" + images.length}
-              </span>
-            </div>
+            {!thread && (
+              <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-[6px] flex items-center space-x-1">
+                <CameraIcon width={16} height={16} />
+                <span className="text-sm font-medium">
+                  {currentSlide + 1 + "/" + images.length}
+                </span>
+              </div>
+            )}
             <div className="bg-status-success-1 rounded-lg py-1 px-4 text-sm font-medium text-status-success-3">
-              <p>Gated Property</p>
+              {!thread && <p>Gated Property</p>}
             </div>
           </div>
           <button

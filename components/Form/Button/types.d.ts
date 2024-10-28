@@ -1,9 +1,10 @@
 // Imports
 import { button_variants } from "./data";
+import { UrlObject } from "url";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  href?: string;
+  href?: string | UrlObject;
   size?: ButtonSize;
   variant?: ButtonVariant;
 }

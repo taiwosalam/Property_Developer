@@ -34,14 +34,24 @@ import {
   DropdownListIcon,
 } from "@/public/icons/icons";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { toast } from "sonner";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const Header = () => {
+  const isDarkMode = useDarkMode();
   const { loading, data: dashboardData, error } = useDashboardData();
   const { isMobile } = useWindowWidth();
 
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
+    const primaryColor = localStorage.getItem("primary-color");
+    if (primaryColor === "#050901") {
+      toast.error("Cannot use dark mode on the selected primary color"); // Show toast message
+      setTheme("light"); // Set theme to light
+      return; // Exit the function if the condition is met
+    }
+
     switch (theme) {
       case "light":
         setTheme("dark");
@@ -100,11 +110,11 @@ const Header = () => {
             <NavIcon icon={<PlusBoldIcon size={21} />} alt="create new" />
           </div>
           <div className="flex items-center gap-2">
-              <NavIcon
-                icon={<MailIcon size={21} />}
-                alt="messages"
-                href="/messages"
-              />
+            <NavIcon
+              icon={<MailIcon size={21} />}
+              alt="messages"
+              href="/messages"
+            />
             <NavIcon
               icon={<BellIcon size={21} />}
               alt="notifications"

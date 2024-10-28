@@ -42,5 +42,5 @@ export const rentReportTableFields: Field[] = [
   },
   { id: "6", label: "End Date", accessor: "end_date" },
   { id: "7", label: "Status", accessor: "status" },
-  { id: "8", label: "First Deposit", accessor: "first_deposit" },
+  { id: "8", label: "Caution Deposit", accessor: "caution_deposit" },
 ];

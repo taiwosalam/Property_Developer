@@ -8,4 +8,5 @@ export interface LandlordTenantModalPresetProps {
   heading: string;
   style?: CSSProperties;
   children: React.ReactNode;
+  lightSeparator?: boolean;
 }

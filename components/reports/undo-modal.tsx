@@ -42,15 +42,11 @@ const eventToComponentMap = {
   "Landlord/Landlady Profile": (
     <div className="min-w-[285px] max-w-full pb-7 dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
       <UserCard
-        cardType="landlord"
         email="sam@gmail.com"
-        first_name="John"
-        last_name="Doe"
+        name="John Doe"
         user_tag="web"
-        id="1"
-        avatar={empty}
+        badge_color="red"
         phone_number="08012345678"
-        picture_url={empty}
       />
     </div>
   ),
@@ -72,13 +68,11 @@ const eventToComponentMap = {
   "Staff Profile": (
     <div className="min-w-[285px] max-w-full pb-7 dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
       <UserCard
-        cardType="staff"
         email="sam@gmail.com"
-        first_name="John"
-        last_name="Doe"
-        role="Branch Manager"
+        name="John Doe"
+        user_tag="Branch Manager"
+        badge_color="red"
         phone_number="08012345678"
-        picture_url={empty}
       />
     </div>
   ),
@@ -142,20 +136,21 @@ const eventToComponentMap = {
   "Service Provider": (
     <div className="min-w-[285px] max-w-full pb-7">
       <UserCard
-        cardType="service-provider"
         email="sam@gmail.com"
-        first_name="John"
-        last_name="Doe"
+        name="John Doe"
         user_tag="web"
-        id="1"
-        avatar={empty}
+        badge_color="red"
         phone_number="08012345678"
-        picture_url={empty}
-        service="Plumbing"
+        other_info="Plumbing"
       />
     </div>
   ),
   Examine: (
+    <div className="min-w-[350px] max-w-full dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
+      <ExamineCard viewOnly={true} />
+    </div>
+  ),
+  "Examine Ajibode Apartment": (
     <div className="min-w-[350px] max-w-full dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
       <ExamineCard viewOnly={true} />
     </div>

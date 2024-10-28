@@ -19,12 +19,14 @@ export const MatchedProfile: React.FC<{ occupant: Occupant }> = ({
           />
           <div className="w-full text-center">
             <p className="font-bold text-xl">Abimbola Adedeji</p>
-            <p className="text-xs text-text-label mb-4">abimbola@gmail.com</p>
+            <p className="text-xs text-text-label dark:text-darkText-1 mb-4">
+              abimbola@gmail.com
+            </p>
             <div className="space-y-2 mb-8">
               <p className="bg-status-success-1 text-status-success-3 font-normal text-xs rounded-lg w-[70px] mx-auto">
                 Mobile
               </p>
-              <p className="text-neutral-800 text-[16px] font-semibold">
+              <p className="text-neutral-800 dark:text-darkText-1 text-[16px] font-semibold">
                 ID: 2212587645444
               </p>
             </div>

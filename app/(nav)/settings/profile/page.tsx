@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import dayjs from "dayjs";
 
 // Images
 import { UploadImageIcon } from "@/public/icons/icons";
@@ -39,6 +40,12 @@ import { useThemeStoreSelectors } from "@/store/themeStore";
 import { rgbToHex } from "@/utils/rgbaToHex";
 import Link from "next/link";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
+import DateInput from "@/components/Form/DateInput/date-input";
+import FileInput from "@/components/Form/FileInput/file-input";
+import CompanyMobileNumber from "@/components/Setup/company-mobile-number";
+import CompanyLogo from "@/components/Setup/company-logo";
+import CopyText from "@/components/CopyText/copy-text";
+import useGoogleFonts from "@/hooks/useFonts";
 
 const websiteOptions = [
   {
@@ -64,9 +71,12 @@ const websiteOptions = [
 ];
 
 const Profile = () => {
-  const [selectedMode, setSelectedMode] = useState<string | null>(null);
+  const [selectedFont, setSelectedFont] = useState<string | null>(null);
+  const [customDomain, setCustomDomain] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [checkedStates, setCheckedStates] = useState<{ [key: string]: boolean }>({});
+  const [checkedStates, setCheckedStates] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   const [modalOpen, setModalOpen] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
@@ -77,16 +87,15 @@ const Profile = () => {
   const [socialInputs, setSocialInputs] = useState({
     instagram: "https://instagram.com/",
     facebook: "https://facebook.com/",
-    twitter: "https://twitter.com/",
-    linkedin: "https://linkedin.com/",
+    twitter: "https://x.com/",
+    linkedin: "https://www.linkedin.com/company/",
     tiktok: "https://tiktok.com/",
-    youtube: "https://youtube.com/",
+    youtube: "https://www.youtube.com/@",
   });
 
   const handleCustomColorChange = (color: string) => {
     setCustomColor(color);
     setSelectedColor(color);
-    console.log("selected color = ", color);
   };
 
   const handleColorSelect = (color: string) => {
@@ -100,13 +109,31 @@ const Profile = () => {
       [platform]: value,
     }));
   };
-  
+
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
-  const handleSelect = (type: string,value: string)=> {
-    setSelectedTemplate(value)
-  }
-  
+  const handleSelect = (type: string, value: string) => {
+    setSelectedTemplate(value);
+  };
+
+  const handleCustomDomainChange = (value: string) => {
+    setCustomDomain(value);
+  };
+
+  const googleFonts = useGoogleFonts();
+
+  const handleFontSelect = (fontName: string) => {
+    setSelectedFont(fontName);
+    // localStorage.setItem("selectedFont", fontName);
+    const link = document.createElement("link");
+    link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(
+      / /g,
+      "+"
+    )}:wght@400;700&display=swap`;
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+  };
+
   return (
     <>
       <SettingsSection title="company profile and details">
@@ -120,6 +147,7 @@ const Profile = () => {
                   label="company name"
                   placeholder="Taiwo Salam & Co. Properties Ltd"
                   className="w-full"
+                  disabled
                 />
                 <div className="flex mt-2 sm:mt-0 sm:ml-2">
                   <SettingsVerifiedBadge />
@@ -127,10 +155,13 @@ const Profile = () => {
               </div>
               <div className="md:w-1/3 w-full gap-1 flex items-end">
                 <Input
-                  id="company_mail"
+                  required
                   label="company mail"
-                  placeholder="ourtenants developer@gmail.com"
-                  className="w-full"
+                  id="company_mail"
+                  placeholder="ourtenantsdeveloper@gmail.com"
+                  inputClassName="rounded-[8px] bg-white w-full"
+                  value={"developer@gmail.com"}
+                  disabled
                 />
                 <div className="flex mt-2 sm:mt-0 sm:ml-2">
                   <SettingsVerifiedBadge />
@@ -139,26 +170,32 @@ const Profile = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 w-full items-center justify-between">
-              <Input
-                id="date_of_registration"
-                label="date of registration"
-                type="date"
+              <DateInput
                 required
-                className="w-full"
+                id="cac_date"
+                label="date of registration"
+                value={dayjs("2024")}
+                onChange={() => {}}
+                disabled
               />
               <Input
-                id="cac_registration_number"
-                label="cac registration number"
-                placeholder="RC43464333"
                 required
-                className="w-full"
+                label="CAC Registration Number"
+                id="cac_number"
+                placeholder="Write here"
+                inputClassName="rounded-[8px] setup-f bg-white"
+                value={"RC43464333"}
+                disabled
               />
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
                 <Input
-                  id="cac_document"
-                  label="cac document"
-                  placeholder="Company CAC.pdf"
-                  className="w-full"
+                  required
+                  label="CAC document"
+                  id="cac_certificate"
+                  placeholder="CAC"
+                  inputClassName="rounded-[8px] setup-f bg-white"
+                  value={"certificate.pdf"}
+                  disabled
                 />
                 <div className="flex pt-2 sm:pt-7">
                   <SettingsVerifiedBadge />
@@ -177,19 +214,18 @@ const Profile = () => {
                 className="w-full"
               />
               <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
-                <Input
+                <FileInput
+                  required
                   id="membership_document"
                   label="membership document"
-                  placeholder="Click the side button to upload cac certificate"
-                  className="w-full"
+                  placeholder="CAC"
+                  buttonName="Document"
+                  fileType="pdf"
+                  size={2}
+                  sizeUnit="MB"
+                  hiddenInputClassName="setup-f required"
+                  settingsPage={true}
                 />
-                <Button
-                  variant="change"
-                  size="xs_normal"
-                  className="py-2 px-3 mt-2 sm:mt-0 whitespace-nowrap"
-                >
-                  verify utility
-                </Button>
               </div>
             </div>
           </div>
@@ -223,16 +259,22 @@ const Profile = () => {
           <div className="w-full flex flex-col lg:flex-row gap-4">
             <Input
               id="head_office_address"
-              label="head office address"
-              placeholder="U4, Joke Plaza, Bodija, Ibadan"
+              label="Head Office Address"
+              placeholder=""
               className="w-full lg:w-[500px]"
             />
             <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full lg:w-auto">
-              <Input
-                id="utility_document"
-                label="Utility Document"
-                placeholder="Click the side button to upload cac certificate"
-                className="w-full sm:w-[300px]"
+              <FileInput
+                required
+                id="utility_document  "
+                label="utility document"
+                placeholder=""
+                buttonName="Document"
+                fileType="pdf"
+                size={2}
+                sizeUnit="MB"
+                hiddenInputClassName="setup-f required w-full sm:w-[300px]"
+                settingsPage={true}
               />
               <Button
                 variant="change"
@@ -243,79 +285,8 @@ const Profile = () => {
               </Button>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-            <Input
-              id="whatsapp_number"
-              label="WhatsApp Number 1"
-              placeholder="O9129292929"
-              className="w-full"
-            />
-            <Input
-              id="company_number_2"
-              label="Company Number 2"
-              placeholder="O9129292929"
-              className="w-full"
-            />
-            <Input
-              id="company_number_3"
-              label="Company Number 3"
-              placeholder="O9129292929"
-              className="w-full"
-            />
-            <Input
-              id="company_number_4"
-              label="Company Number 4"
-              placeholder="O9129292929"
-              className="w-full"
-            />
-          </div>
-          <div className="custom-flex-col gap-6">
-            <SettingsSectionTitle
-              title="company logo"
-              desc="Ensure that your company logo has a white background, with a maximum size of 2MB. The picture must be between 250 to 400 pixels wide, or ideally 160px x 160px."
-            />
-            <div className="flex flex-col lg:flex-row gap-4">
-              <label
-                htmlFor="logo"
-                className="relative py-10 w-full md:w-[374px] flex flex-col gap-1 items-center justify-center cursor-pointer rounded-xl overflow-hidden border-2 border-dashed border-borders-normal"
-              >
-                <UploadImageIcon />
-                <p className="text-text-secondary dark:text-white text-sm font-normal">
-                  Upload your logo here
-                </p>
-                <div className="absolute inset-0">
-                  <Image
-                    src={preview}
-                    alt="preview"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 374px"
-                    className="object-cover"
-                  />
-                </div>
-                <input
-                  id="logo"
-                  type="file"
-                  name="logo"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden pointer-events-none"
-                />
-              </label>
-              <div className="flex flex-col md:flex-row gap-3 items-start md:items-end">
-                <Button size="sm_normal" className="py-2 px-3 w-full md:w-auto">
-                  change logo
-                </Button>
-                <Button
-                  variant="light_red"
-                  size="sm_normal"
-                  className="py-2 px-3 w-full md:w-auto"
-                >
-                  remove logo
-                </Button>
-              </div>
-            </div>
-            <SettingsUpdateButton />
-          </div>
+          <CompanyMobileNumber />
+          <CompanyLogo hiddenInputClassName="setup-f required" />
         </div>
       </SettingsSection>
       <SettingsSection title="about company and social links">
@@ -398,55 +369,65 @@ const Profile = () => {
           <Input
             id="custom_domain"
             label=""
-            placeholder="makinwauxdesigner"
+            placeholder=""
+            value={customDomain}
+            onChange={(value) => handleCustomDomainChange(value)}
             className="w-full sm:w-auto min-w-[200px] sm:min-w-[300px]"
           />
-          <Link href="#" className="text-brand-9 text-xs sm:text-sm text-center break-all">
-            https://www.makinwauxdesgner.ourlisting.ng
-          </Link>
+          {customDomain && (
+            <CopyText
+              text={`https://www.${customDomain}.ourlisting.ng`}
+              className="text-brand-9 text-xs sm:text-sm text-center break-all"
+            />
+          )}
+          {!customDomain && (
+            <p className="text-brand-9 text-xs sm:text-sm text-center break-all">
+              {`https://www.${customDomain}.ourlisting.ng`}
+            </p>
+          )}
+          {customDomain && (
+            <div className="status bg-green-500 text-white px-2 py-1 rounded-md text-xs">
+              Available
+            </div>
+          )}
         </div>
 
         <div className="rssFeed flex flex-col gap-1 mb-4">
           <h4 className="text-text-secondary dark:text-darkText-1 text-md font-normal">
             RSS Feed Link for Listings
           </h4>
-          <Link href="#" className="text-brand-9 text-xs underline sm:text-sm">
-            https://www.makinwauxdesgner.ourlisting.ng
-          </Link>
+          <CopyText
+            text="https://www.ourlisting.ng/user/324224535"
+            className="text-brand-9 text-xs underline sm:text-sm"
+          />
         </div>
         <div className="custom-flex-col gap-6">
           <SettingsSectionTitle
             title="choose template"
             desc="Choose how your website will be presented to your customers and clients."
           />
-          <div className="flex flex-wrap gap-6">
-            <div className="flex-1 min-w-[250px]">
-              <ThemeCard
-                img={WebsiteTemplate1}
-                value="template1"
-                onSelect={(value) => handleSelect("template1", value)}
-                isSelected={selectedTemplate === "template1"}
-                profile={true}
-              />
-            </div>
-            <div className="flex-1 min-w-[250px]">
-              <ThemeCard
-                img={WebsiteTemplate2}
-                value="template2"
-                onSelect={(value) => handleSelect("template2", value)}
-                isSelected={selectedTemplate === "template2"}
-                profile={true}
-              />
-            </div>
-            <div className="flex-1 min-w-[250px]">
-              <ThemeCard
-                img={WebsiteTemplate3}
-                value="template3"
-                onSelect={(value) => handleSelect("template3", value)}
-                isSelected={selectedTemplate === "template3"}
-                profile={true}
-              />
-            </div>
+          <div className="flex flex-wrap gap-6 items-start justify-start">
+            <ThemeCard
+              img={WebsiteTemplate1}
+              value="template1"
+              onSelect={(value) => handleSelect("template1", value)}
+              isSelected={selectedTemplate === "template1"}
+              profile={true}
+            />
+            <ThemeCard
+              img={WebsiteTemplate2}
+              value="template2"
+              onSelect={(value) => handleSelect("template2", value)}
+              isSelected={selectedTemplate === "template2"}
+              profile={true}
+            />
+            <ThemeCard
+              img={WebsiteTemplate3}
+              value="template3"
+              onSelect={(value) => handleSelect("template3", value)}
+              isSelected={selectedTemplate === "template3"}
+              profile={true}
+            />
           </div>
           <SettingsUpdateButton />
         </div>
@@ -456,14 +437,25 @@ const Profile = () => {
           title="Fonts Templates"
           desc="Choose Your Preferred Font Style for Your Company Profile Website"
         />
-        <div className="w-full md:w-1/4 flex mb-5">
-          <Select
-            id="font"
-            label=""
-            placeholder="Times New Roman"
-            options={["Font 1", "Font 2"]}
-            inputContainerClassName="bg-neutral-2 w-full mt-2"
-          />
+        <div className="flex gap-2 items-center">
+          <div className="w-full sm:w-1/4 flex mb-5">
+            <Select
+              id="font"
+              label=""
+              placeholder="Select a font"
+              onChange={(value) => handleFontSelect(value)}
+              options={googleFonts}
+              inputContainerClassName="bg-neutral-2 w-full mt-2 min-w-[250px]"
+            />
+          </div>
+          <p
+            className="font text-sm text-brand-9 truncate"
+            style={{ fontFamily: selectedFont || googleFonts[0] }}
+          >
+            Your website will display a default font initially, but selecting
+            your preferred font will update all text on your website to match
+            the chosen style.
+          </p>
         </div>
 
         {/* MODULES SETTINGS */}
@@ -488,19 +480,21 @@ const Profile = () => {
             darkText={false}
             checked={true}
           >
-           {''}
+            {""}
           </DocumentCheckbox>
           <DocumentCheckbox
             title="Properties For Sale"
             darkText={false}
-            checked={false}>
-              {''}
+            checked={false}
+          >
+            {""}
           </DocumentCheckbox>
           <DocumentCheckbox
             title="Properties For Short Let"
             darkText={false}
-            checked={false}>
-              {""}
+            checked={false}
+          >
+            {""}
           </DocumentCheckbox>
         </div>
 

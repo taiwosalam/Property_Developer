@@ -43,5 +43,4 @@ export const undoRequestTableFields: Field[] = [
   },
   { id: "6", label: "Date Deleted", accessor: "date_deleted" },
   { id: "7", label: "Time", accessor: "time" },
-  { id: "8", accessor: "action" },
 ];

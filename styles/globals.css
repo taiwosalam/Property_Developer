@@ -14,7 +14,8 @@
 
 /* Root styles */
 :root {
-  --color: 0, 51, 196;
+
+  /* --color: 0, 51, 196;
   --primary-color: rgb(var(--color));
   --secondary-color: rgba(var(--color), 0.7);
   --brand-1: #eff6ff;
@@ -26,13 +27,23 @@
   --brand-10: #1e3a8a;
   --brand-primary: #315ee7;
   --brand-secondary: #6083ed;
-  --brand-tertiary: #93c5fd;
+  --brand-tertiary: #93c5fd; */
+  /* color: #9aeb49; */
+  --font-style: "Lato", sans-serif; 
+}
+
+body {
+  font-family: var(--font-style);
 }
 
 body {
   width: 100%;
   min-height: 100vh;
 }
+
+/* * {
+  outline: 1px solid red; //FOR CSS DEBUGGING
+} */
 
 #portal {
   position: fixed;
