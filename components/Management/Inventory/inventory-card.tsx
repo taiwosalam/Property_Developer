@@ -32,7 +32,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
         />
         <PopupImageModal
           isOpen={isOpened}
-          images={[empty]}
+          images={[{ src: empty, isVideo: false }]}
           onClose={() => setIsOpened(false)}
           currentIndex={0}
         />

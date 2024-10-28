@@ -8,7 +8,6 @@ import type { NavCreateNewColumnProps } from "./types";
 // Imports
 import SVG from "../SVG/svg";
 import { Modal, ModalContent, ModalTrigger, useModal } from "../Modal/modal";
-import { useEffect, useState } from "react";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
@@ -36,7 +35,7 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
   };
 
   return (
-    <div className="flex gap-10">
+    <div className="flex gap-10 w-full overflow-auto custom-round-scrollbar">
       {content.map(({ type, label, content }, index) => (
         <div key={index} className="custom-flex-col text-base font-medium">
           <div className="flex items-center gap-2">

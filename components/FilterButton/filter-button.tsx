@@ -1,9 +1,11 @@
 import { FilterIcon } from "@/public/icons/icons";
 import { ButtonHTMLAttributes } from "react";
 
-interface FilterButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
+interface FilterButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  noTitle?: boolean;
+}
 
-const FilterButton = ({ onClick, ...props }: FilterButtonProps) => {
+const FilterButton = ({ onClick, noTitle, ...props }: FilterButtonProps) => {
   return (
     <button
       type="button"
@@ -12,7 +14,12 @@ const FilterButton = ({ onClick, ...props }: FilterButtonProps) => {
       {...props}
     >
       <FilterIcon />
-      <span className="text-text-secondary dark:text-darkText-1 text-base font-medium">Filters</span>
+      <span
+        className="text-text-secondary dark:text-darkText-1 text-base font-medium"
+        hidden={noTitle}
+      >
+        Filters
+      </span>
     </button>
   );
 };

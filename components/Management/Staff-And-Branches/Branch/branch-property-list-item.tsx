@@ -7,7 +7,7 @@ import Sample2 from "@/public/empty/SampleProperty2.jpeg";
 import Sample3 from "@/public/empty/SampleProperty3.jpeg";
 import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
-import ImageModal from "@/components/ImageModal/image-modal";
+import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 
 const BranchPropertyListItem: React.FC<PropertyProps> = ({
   images,
@@ -26,7 +26,7 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       {/* Image Modal */}
-      <ImageModal
+      <PopupImageModal
         isOpen={screenModal}
         onClose={() => setScreenModal(false)}
         images={sampleImages.map((image) => ({
@@ -41,7 +41,9 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
           <div
             role="button"
             className="absolute z-[10] inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.3) dark:bg-darkText-primary" }}
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.3) dark:bg-darkText-primary",
+            }}
             onClick={() => setScreenModal(true)}
           >
             {/* Group of icons down */}

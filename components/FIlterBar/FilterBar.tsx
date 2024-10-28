@@ -46,6 +46,8 @@ interface FilterBarProps {
   exports?: boolean;
   hasGridListToggle?: boolean;
   exportHref?: string;
+  hiddenSearchInput?: boolean;
+  iconOnly?: boolean;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -65,6 +67,8 @@ const FilterBar: React.FC<FilterBarProps> = ({
   exports,
   hasGridListToggle = true,
   exportHref,
+  hiddenSearchInput,
+  iconOnly,
 }) => {
   return (
     <div className="page-title-container ">
@@ -79,7 +83,9 @@ const FilterBar: React.FC<FilterBarProps> = ({
       >
         <SearchInput
           placeholder={searchInputPlaceholder}
-          className="max-w-[250px] md:max-w-max"
+          className={`max-w-[250px] md:max-w-max ${
+            hiddenSearchInput && "hidden"
+          }`}
         />
         {hasGridListToggle && (
           <div className="flex items-center gap-3">
@@ -114,7 +120,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
         {azFilter && <SortButton />}
         <Modal>
           <ModalTrigger asChild>
-            <FilterButton />
+            <FilterButton noTitle={iconOnly} />
           </ModalTrigger>
           <ModalContent>
             <FilterModal
