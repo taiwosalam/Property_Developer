@@ -7,6 +7,7 @@ import { complaintsFilterOptionsWithDropdown } from "../complaints/data";
 import Button from "@/components/Form/Button/button";
 import ThreadCard from "@/components/Community/ThreadCard";
 import { threadData } from "./data";
+import Pagination from "@/components/Pagination/pagination";
 
 const page = () => {
   return (
@@ -41,7 +42,7 @@ const page = () => {
         filterWithOptionsWithDropdown={[]}
       />
 
-      <div className="thread_card grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="thread_card grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {threadData.map(
           (
             { name, picture_url, role, time, title, desc, comments, user_pics },
@@ -60,6 +61,13 @@ const page = () => {
             />
           )
         )}
+      </div>
+      <div className="pagination">
+        <Pagination
+          totalPages={5}
+          currentPage={1}
+          onPageChange={() => {}}
+        />
       </div>
     </div>
   );
