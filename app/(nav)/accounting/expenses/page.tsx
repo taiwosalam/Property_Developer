@@ -249,13 +249,13 @@ const AccountingExpensesPage = () => {
                             href={"/accounting/expenses/1/manage-expenses"}
                             className="p-4"
                           >
-                            Manage Receipt
+                            Manage Expense
                           </Link>
                           <Link
                             href={"/accounting/expenses/1/preview-expenses"}
                             className="p-4"
                           >
-                            Preview Receipt
+                            Preview Expense
                           </Link>
                         </div>
                       </DropdownContent>
