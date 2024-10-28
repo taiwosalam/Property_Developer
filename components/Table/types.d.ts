@@ -23,13 +23,11 @@ export interface CustomTableProps {
   fields: Field[];
   displayTableHead?: boolean;
   className?: string;
-  handleSelect?: (item: DataItem) => void;
-  onActionClick?: (item: DataItem) => void;
+  handleSelect?: (item: DataItem, e?: React.MouseEvent<HTMLElement>) => void;
+  onActionClick?: (item: DataItem, e?: React.MouseEvent<HTMLElement>) => void;
   actionButtonIcon?: ReactNode;
   tableHeadClassName?: string;
   tableHeadStyle?: CSSProperties; // For custom TableHead inline style
   tableHeadCellSx?: SxProps;
   tableBodyCellSx?: CSSProperties;
-  // evenRowColor?: CSSProperties["color"];
-  // oddRowColor?: CSSProperties["color"];
 }
