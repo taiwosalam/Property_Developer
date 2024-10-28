@@ -1,32 +1,26 @@
 "use client";
 
-import React from "react";
-
-// Images
-import Avatar from "@/public/empty/avatar.png";
-
 // Imports
-import Picture from "@/components/Picture/picture";
-import Button from "@/components/Form/Button/button";
+
 import Signature from "@/components/Signature/signature";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import BackButton from "@/components/BackButton/back-button";
-import { useRouter } from "next/navigation";
-import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import ExportPageFooter from "@/components/reports/export-page-footer";
+import CustomTable from "@/components/Table/table";
+import { disbursementTableData, disbursementTableFields } from "../data";
 
 const ExportDisbursement = () => {
-  const router = useRouter();
-
-  const back = () => {
-    router.back();
-  };
+  // Filter out the action field for the export page
+  const exportTableFields = disbursementTableFields.filter(
+    (field) => field.accessor !== "action"
+  );
 
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton>Back</BackButton>
+        <BackButton as="p">Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -52,81 +46,20 @@ const ExportDisbursement = () => {
       </div>
       <div className="custom-flex-col gap-6">
         <h1 className="text-black text-2xl font-medium text-center">Summary</h1>
-        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-          <table className="dash-table">
-            <colgroup>
-              <col className="min-w-[72px]" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th></th>
-                <th>date</th>
-                <th>landlord / landlady</th>
-                <th>payment ID</th>
-                <th>amount</th>
-                <th>description</th>
-                <th>mode</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array(5)
-                .fill(null)
-                .map((_, index) => (
-                  <tr key={index}>
-                    <td className="flex items-center justify-center">
-                      <Picture
-                        src={Avatar}
-                        alt="profile picture"
-                        size={40}
-                        rounded
-                      />
-                    </td>
-                    <td>
-                      <p>02/03/2024</p>
-                    </td>
-                    <td>
-                      <p>Amori Ademakinwa</p>
-                    </td>
-                    <td>
-                      <p>1234567878</p>
-                    </td>
-                    <td>
-                      <p>₦115,000.00</p>
-                    </td>
-                    <td>
-                      <p>Property Rent for moniya house</p>
-                    </td>
-                    <td>
-                      <p>Bank Transfer</p>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="flex justify-end">
-          <Signature />
-        </div>
+        <CustomTable
+          fields={exportTableFields}
+          data={disbursementTableData}
+          tableHeadStyle={{ height: "76px" }}
+          tableHeadCellSx={{ fontSize: "1rem" }}
+          tableBodyCellSx={{
+            fontSize: "1rem",
+            paddingTop: "12px",
+            paddingBottom: "12px",
+          }}
+        />
+        <Signature />
       </div>
-      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
-        <Button
-          onClick={back}
-          size="base_bold"
-          variant="sky_blue"
-          className="py-2 px-8"
-          href="/accounting/disbursement"
-        >
-          exit
-        </Button>
-        <div className="flex gap-6">
-          <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
-            download
-          </Button>
-          <Button size="base_bold" className="py-2 px-8">
-            print
-          </Button>
-        </div>
-      </FixedFooter>
+      <ExportPageFooter />
     </div>
   );
 };
