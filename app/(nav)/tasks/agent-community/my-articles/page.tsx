@@ -3,13 +3,12 @@
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import React from "react";
-import { complaintsFilterOptionsWithDropdown } from "../complaints/data";
 import Button from "@/components/Form/Button/button";
 import ThreadCard from "@/components/Community/ThreadCard";
-import { threadData } from "./data";
 import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
+import { threadData } from "../data";
 
 const lists = [
   {
@@ -25,11 +24,11 @@ const lists = [
   {
     title: "My Properties Request",
     desc: "Evaluate the property request you've generated, comments received, and how you've managed them.",
-    link: "#",
+    link: "/tasks/agent-community/my-properties-request",
   },
 ];
 
-const AgentCommunityPage = () => {
+const MyArticlePage = () => {
   return (
     <div className="space-y-7">
       <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
@@ -53,13 +52,13 @@ const AgentCommunityPage = () => {
         hasGridListToggle={false}
         azFilter
         onStateSelect={() => {}}
-        pageTitle="Agent Community"
+        pageTitle="My Articles"
         aboutPageModalData={{
-          title: "Agent Community",
+          title: "My Articles",
           description:
-            "This page contains a list of Agent Community on the platform.",
+            "This page contains a list of My Articles on the platform.",
         }}
-        searchInputPlaceholder="Search for Agent Community"
+        searchInputPlaceholder="Search Articles"
         handleFilterApply={() => {}}
         isDateTrue
         filterOptions={[]}
@@ -97,4 +96,4 @@ const AgentCommunityPage = () => {
   );
 };
 
-export default AgentCommunityPage;
+export default MyArticlePage;
