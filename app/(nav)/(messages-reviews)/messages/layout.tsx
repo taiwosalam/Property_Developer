@@ -33,11 +33,19 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
               <div className="flex-1 relative">
                 <Input
                   id="search"
+                  className="w-full"
                   placeholder="Search for messages"
-                  className="flex-1"
+                  leftIcon={"/icons/search-icon.svg"}
+                  inputClassName="pr-[52px] border-transparent"
                 />
-                <div className="absolute">
-                  <FilterButton noTitle />
+                <div className="absolute top-2/4 right-0 -translate-y-2/4">
+                  <FilterButton
+                    noTitle
+                    style={{
+                      padding: "10px 16px",
+                      backgroundColor: "transparent",
+                    }}
+                  />
                 </div>
               </div>
               <Button
