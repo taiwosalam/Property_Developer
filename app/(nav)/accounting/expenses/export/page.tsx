@@ -53,8 +53,10 @@ const Exportexpense = () => {
         </div>
       </div>
       <div className="custom-flex-col gap-6">
-        <h1 className="text-black text-2xl font-medium text-center">Summary</h1>
-        <AutoResizingGrid gap={6} minWidth={330}>
+        <h1 className="text-black text-2xl font-medium text-center">
+          Expenses Summary
+        </h1>
+        <AutoResizingGrid gap={30} minWidth={330}>
           <ExpensesStatCard
             title="Total Expenses"
             balance={12345432}
@@ -123,15 +125,7 @@ const Exportexpense = () => {
           <Signature />
         </div>
       </div>
-      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
-        <Button
-          onClick={back}
-          variant="sky_blue"
-          size="base_bold"
-          className="py-2 px-8"
-        >
-          exit
-        </Button>
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-end">
         <div className="flex gap-6">
           <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
             download

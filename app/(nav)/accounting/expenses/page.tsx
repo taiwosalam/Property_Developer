@@ -142,6 +142,7 @@ const AccountingExpensesPage = () => {
                     }
                     onApply={handleFilterApply}
                     onStateSelect={(state: string) => setSelectedState(state)}
+                    date
                   />
                 </ModalContent>
               </Modal>
@@ -164,7 +165,7 @@ const AccountingExpensesPage = () => {
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={6} minWidth={330}>
+          <AutoResizingGrid gap={16} minWidth={330}>
             <ExpensesStatCard
               title="Total Expenses"
               balance={12345432}
