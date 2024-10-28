@@ -2347,7 +2347,7 @@ export const SidebarIcon = () => {
       viewBox="0 0 12 20"
       fill="none"
     >
-      <g clip-path="url(#clip0_16629_32762)">
+      <g clipPath="url(#clip0_16629_32762)">
         <path
           d="M2.37225 15.1411L6.74725 15.1411"
           stroke="#5A5D61"

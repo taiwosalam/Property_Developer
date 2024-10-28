@@ -41,7 +41,7 @@ const InventoryList: React.FC<InventoryListProps> = ({ data = {} }) => {
               />
               <PopupImageModal
                 isOpen={isOpened}
-                images={[empty]}
+                images={[{ src: empty, isVideo: false }]}
                 onClose={() => setIsOpened(false)}
                 currentIndex={0}
               />

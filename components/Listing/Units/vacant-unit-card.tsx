@@ -84,7 +84,7 @@ const VacantUnitCard = () => {
               />
               <PopupImageModal
                 isOpen={isOpened}
-                images={[SampleProperty6]}
+                images={[{ src: SampleProperty6, isVideo: false }]}
                 onClose={() => setIsOpened(false)}
                 currentIndex={0}
               />

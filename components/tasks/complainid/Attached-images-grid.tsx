@@ -3,7 +3,7 @@ import { ChevronLeft, PlayIconButton2 } from "@/public/icons/icons";
 import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import ImageModal from "@/components/ImageModal/image-modal";
+import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 
 interface AttachedImagesGridProps {
   images: { src: string; isVideo: boolean }[];
@@ -16,7 +16,9 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
 
   const openModal = (index: number) => {
     setCurrentIndex(index);
-    setScreenModal(true);
+    setTimeout(() => {
+      setScreenModal(true);
+    }, 0);
   };
 
   return (
@@ -99,7 +101,7 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
       </AnimatePresence>
 
       {/* Image Modal */}
-      <ImageModal
+      <PopupImageModal
         isOpen={screenModal}
         onClose={() => setScreenModal(false)}
         images={images}

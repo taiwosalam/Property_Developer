@@ -9,7 +9,7 @@ import Sample2 from "@/public/empty/SampleProperty2.jpeg";
 import Sample3 from "@/public/empty/SampleProperty3.jpeg";
 import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
-import ImageModal from "@/components/ImageModal/image-modal";
+import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import { VideoIcon, CameraIcon } from "@/public/icons/icons";
 
 const PropertyListItem: React.FC<PropertyProps> = ({
@@ -30,7 +30,7 @@ const PropertyListItem: React.FC<PropertyProps> = ({
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       {/* Image Modal */}
-      <ImageModal
+      <PopupImageModal
         isOpen={screenModal}
         onClose={() => setScreenModal(false)}
         images={sampleImages.map((image, i) => ({
@@ -47,7 +47,9 @@ const PropertyListItem: React.FC<PropertyProps> = ({
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Annual Returns</p>
-            <p className="text-brand-primary font-bold dark:text-brand-9">₦1,950,000</p>
+            <p className="text-brand-primary font-bold dark:text-brand-9">
+              ₦1,950,000
+            </p>
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Total Units</p>
@@ -55,7 +57,9 @@ const PropertyListItem: React.FC<PropertyProps> = ({
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Annual Income</p>
-            <p className="text-highlight font-bold dark:text-highlight">₦700,000</p>
+            <p className="text-highlight font-bold dark:text-highlight">
+              ₦700,000
+            </p>
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Available Units</p>
@@ -79,7 +83,9 @@ const PropertyListItem: React.FC<PropertyProps> = ({
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Address</p>
-            <p className="text-black dark:text-darkText-2">Newly Built 5 Bedroom Detached Duplex</p>
+            <p className="text-black dark:text-darkText-2">
+              Newly Built 5 Bedroom Detached Duplex
+            </p>
           </div>
         </div>
 

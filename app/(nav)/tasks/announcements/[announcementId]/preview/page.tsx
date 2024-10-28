@@ -46,11 +46,11 @@ const PreviewAnnouncement = () => {
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         {/* Left Side */}
-        <div className="lg:w-[58%] lg:h-[600px] lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
+        <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <AnnouncementPost />
         </div>
         {/* Right Side */}
-        <div className="lg:flex-1 space-y-5 lg:h-[600px] lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
+        <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <AttachedImagesGrid images={images} />
           <AnnouncementInfo
             containerClassName="rounded-lg"
