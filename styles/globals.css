@@ -314,17 +314,18 @@ button:disabled {
 
 .dash-table tbody tr:nth-child(2n + 1) {
   @apply bg-brand-1 text-[#f1f1fd] dark:bg-[#020617];
-  &:hover {
-    @apply dark:bg-[#000];
   }
-}
+.dash-table tbody tr:nth-child(2n + 1):hover {
+  background-color: #ffffff21;
+  }
+
 
 .dash-table tbody tr:nth-child(2n):hover {
-  background-color: rgb(241, 234, 234);
+  background-color: rgba(241, 234, 234, 0.247);
 }
 
 .dash-table tbody tr:nth-child(2n + 1):hover {
-  background-color: #97b0c6b8;
+  background-color: rgba(241, 234, 234, 0.247);
 }
 
 .dash-table th {

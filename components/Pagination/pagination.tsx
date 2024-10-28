@@ -23,7 +23,7 @@ const Pagination: React.FC<PaginationProps> = ({
           type="button"
           className={clsx(buttonClasses, {
             "bg-brand-9 text-white font-normal": i === currentPage,
-            "bg-white font-light": i !== currentPage,
+            "bg-white dark:bg-darkText-primary font-light": i !== currentPage,
           })}
           onClick={() => onPageChange(i)}
           aria-label={`Page ${i}`}

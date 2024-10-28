@@ -288,7 +288,7 @@ const Security = () => {
       </SettingsSection>
       <SettingsSection title="Customized SMS name">
         <div className="custom-flex-col gap-8">
-          <SettingsSectionTitle desc="Custom sender SMS name allows you to input a preferred name, providing a way to brand your SMS messages with a personalized touch. This feature replaces the sender numbers displayed on devices receiving your SMS messages with a name of your choice, up to 11 characters in length." />
+          <SettingsSectionTitle desc="Custom sender SMS name allows you to input a preferred name, providing a way to brand your SMS messages with a personalized touch.  replaces the sender numbers displayed on devices receiving your SMS messages with a name of your choice, up to 11 characters in length." />
           <div className="flex gap-5">
             <Input
               id="desired_name"
