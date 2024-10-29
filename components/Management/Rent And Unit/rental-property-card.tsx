@@ -73,7 +73,7 @@ export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
           </div>
           <button
             aria-label="Previous image"
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-[#EFF6FF] bg-opacity-50 rounded-full p-2"
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-[#EFF6FF] bg-opacity-50 rounded-full"
             onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
               instanceRef.current?.prev();
@@ -83,7 +83,7 @@ export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
           </button>
           <button
             aria-label="Next image"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#EFF6FF] bg-opacity-50 rounded-full p-2 rotate-180"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#EFF6FF] bg-opacity-50 rounded-full rotate-180"
             onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
               instanceRef.current?.next();

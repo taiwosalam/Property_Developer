@@ -104,7 +104,7 @@ const Dashboard = () => {
             .fill(null)
             .map((_, index) => (
               <TaskCard
-                statusChanger={true}
+                statusChanger={false}
                 noDrag
                 isNew
                 key={index}

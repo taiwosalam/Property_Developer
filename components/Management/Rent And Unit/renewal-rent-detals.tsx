@@ -1,11 +1,16 @@
+"use client";
 import DateInput from "@/components/Form/DateInput/date-input";
 import { EstateDetailItem } from "./detail-item";
 import { MatchedProfile } from "./matched-profile";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import Button from "@/components/Form/Button/button";
+import { useRouter } from "next/navigation";
 
 export const RenewalRentDetails = (
   { title }: { title?: string } = { title: "Renewal Fee" }
 ) => {
+  const router = useRouter();
   return (
     <div>
       <div className="flex space-x-8 flex-wrap xl:flex-nowrap items-center">
@@ -54,13 +59,51 @@ export const RenewalRentDetails = (
                     ₦1,950,000
                   </p>
                 </div>
-                <button
-                  type="submit"
-                  className="bg-brand-9 text-white hover:bg-[#0033c4b3] active:text-brand-9 py-2 px-6 rounded active:bg-transparent active:border-brand-9"
-                  //   onClick={() => {}}
-                >
-                  Edit
-                </button>
+                <Modal>
+                  <ModalTrigger asChild>
+                    <Button
+                      type="submit"
+                      className="py-2 px-8"
+                      onClick={() => {}}
+                    >
+                      Edit
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <div className="bg-white py-10 absolute bottom-0 left-0 right-0">
+                      <p className="text-center font-semibold my-4 text-brand-9">
+                        This action will navigate you away from the Rent and
+                        Unit menu to another menu. You can choose to continue or
+                        exit from the process
+                      </p>
+                      <div className="flex items-center justify-center">
+                        <div className="flex items-center justify-between space-x-10">
+                          <Button
+                            type="submit"
+                            className="py-2 px-8"
+                            size="16_bold"
+                            onClick={() => {
+                              router.push(
+                                "/management/properties/1/edit-property"
+                              );
+                            }}
+                          >
+                            Proceed
+                          </Button>
+                          <ModalTrigger asChild close>
+                            <Button
+                              type="submit"
+                              className="py-2 px-8"
+                              size="16_bold"
+                            >
+                              Exit
+                            </Button>
+                          </ModalTrigger>
+                        </div>
+                      </div>
+                    </div>
+                  </ModalContent>
+                </Modal>
               </div>
             </div>
           </div>

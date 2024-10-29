@@ -223,7 +223,7 @@ export const ServiceProviderEditAvatarInfoSection = () => {
         serviceProvider.picture || serviceProvider.avatar || CameraCircle
       );
     }
-  }, [serviceProvider?.picture, serviceProvider?.avatar]);
+  }, [serviceProvider?.picture, serviceProvider?.avatar, serviceProvider]);
 
   return (
     <InfoEditSection title="edit avatar">

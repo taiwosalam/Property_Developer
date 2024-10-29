@@ -93,7 +93,7 @@ const RentAndUnit = () => {
           </div>
         </div>
         {gridView ? (
-          <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-7">
+          <div className="grid xl:grid-cols-3 gap-7">
             <RentalPropertyCard />
             <RentalPropertyCard />
             <RentalPropertyCard />

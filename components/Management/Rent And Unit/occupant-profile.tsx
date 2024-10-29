@@ -31,7 +31,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
         </div>
 
         {/* Right Column */}
-        <div className="w-full mt-5 lg:mt-0 lg:w-2/5 hidden lg:flex">
+        <div className="w-full mt-5 lg:mt-0 lg:w-2/5 hidden lg:block">
           <MatchedProfile occupant={occupant} />
         </div>
       </div>
