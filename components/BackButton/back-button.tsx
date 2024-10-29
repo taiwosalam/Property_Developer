@@ -1,12 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import clsx from "clsx";
+
 // Types
 import type { BackButtonProps } from "./types";
 import { cn } from "@/lib/utils";
 
 import { ChevronLeft } from "@/public/icons/icons";
+
+// Imports
+import clsx from "clsx";
 
 const BackButton: React.FC<BackButtonProps> = ({
   children,

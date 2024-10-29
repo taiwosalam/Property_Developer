@@ -53,5 +53,6 @@ export interface CalendarDayProps {
   hasEvent?: boolean;
   eventCount: number;
   isCurrentMonth: boolean;
+  events: CalendarEventProps[];
 }
 // --------------------------------------------------
