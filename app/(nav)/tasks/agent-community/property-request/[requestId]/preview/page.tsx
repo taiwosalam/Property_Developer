@@ -11,11 +11,7 @@ import {
   readyByData,
   threadArticle,
 } from "../../../data";
-import {
-  ChevronLeft,
-  ThumbsDown,
-  ThumbsUp,
-} from "@/public/icons/icons";
+import { ChevronLeft, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
 import user1 from "@/public/empty/user1.svg";
 import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
@@ -171,16 +167,15 @@ const MoreDetailsCard = () => {
   );
 };
 
-
 const ReadyByCard = () => {
   return (
     <div className="bg-[#EFF6FF] dark:bg-darkText-primary rounded-lg p-4">
       <h4 className="text-black dark:text-white font-semibold text-sm">
         Ready By
       </h4>
-        {readyByData.map((item, index) => (
-      <div className="flex w-full gap-3 mt-3 justify-between">
-          <div key={index} className="flex gap-1 items-center">
+      {readyByData.map((item, index) => (
+        <div key={index} className="flex w-full gap-3 mt-3 justify-between">
+          <div className="flex gap-1 items-center">
             <div className="imgWrapper h-10 w-10">
               <Image
                 src={user2}
@@ -196,8 +191,8 @@ const ReadyByCard = () => {
             <BadgeIcon color="blue" />
           </div>
           <p className="text-black dark:text-white text-sm"> {item.time} </p>
-      </div>
-        ))}
+        </div>
+      ))}
     </div>
   );
-};  
+};
