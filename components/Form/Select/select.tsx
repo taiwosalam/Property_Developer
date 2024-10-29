@@ -44,9 +44,25 @@ const Select: React.FC<SelectProps> = ({
   const [state, setState] = useState(initialState);
   const { isOpen, searchTerm, filteredOptions, selectedValue } = state;
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [showAbove, setShowAbove] = useState(false);
 
   // State to store validation error message
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  const updateDropdownPosition = () => {
+    if (dropdownRef.current) {
+      const dropdownRect = dropdownRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const bottomSpace = windowHeight - dropdownRect.bottom;
+      const dropdownHeight = 240; // max-h-60 = 15rem = 240px
+      setShowAbove(bottomSpace < dropdownHeight);
+      console.log({
+        bottomSpace,
+        diff: dropdownHeight - bottomSpace,
+        value: bottomSpace < dropdownHeight,
+      });
+    }
+  };
 
   const handleSelection = (option: string | number) => {
     setState((x) => ({
@@ -66,8 +82,9 @@ const Select: React.FC<SelectProps> = ({
   };
 
   useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus();
+    if (isOpen) {
+      inputRef.current?.focus();
+      updateDropdownPosition();
     }
   }, [isOpen]);
 
@@ -222,11 +239,12 @@ const Select: React.FC<SelectProps> = ({
         {isOpen && (
           <div
             className={clsx(
-              "absolute z-10 mt-2 w-full bg-white dark:bg-darkText-primary dark:border-darkText-1 border border-solid rounded-[8px] shadow-lg",
+              "absolute z-10 w-full bg-white dark:bg-darkText-primary dark:border-darkText-1 border border-solid rounded-[8px] shadow-lg",
               {
-                "border-[0] mt-0 shadow-[none]":
+                "border-[0] my-0 shadow-[none]":
                   !searchTerm && filteredOptions.length === 0,
-              }
+              },
+              showAbove ? "bottom-full mb-2" : "top-full mt-2"
             )}
           >
             <div className="max-h-60 overflow-y-auto">

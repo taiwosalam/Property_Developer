@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import clsx from "clsx";
 // Types
 import type { BackButtonProps } from "./types";
+import { cn } from "@/lib/utils";
 
-// Images
 import { ChevronLeft } from "@/public/icons/icons";
 
 const BackButton: React.FC<BackButtonProps> = ({
@@ -22,7 +22,7 @@ const BackButton: React.FC<BackButtonProps> = ({
 
   return (
     <div
-      className={clsx(
+      className={cn(
         "text-black dark:text-white flex items-center gap-1",
         className
       )}
