@@ -1,8 +1,8 @@
 "use client";
 
-import BackButton from "@/components/BackButton/back-button";
+// import BackButton from "@/components/BackButton/back-button";
 import Image, { StaticImageData } from "next/image";
-import { useKeenSlider } from "keen-slider/react";
+// import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import Sample from "@/public/empty/SampleProperty.jpeg";
 import Sample2 from "@/public/empty/SampleProperty2.jpeg";

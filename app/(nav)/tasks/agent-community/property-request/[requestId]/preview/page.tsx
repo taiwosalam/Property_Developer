@@ -2,7 +2,7 @@
 
 import BackButton from "@/components/BackButton/back-button";
 import Image, { StaticImageData } from "next/image";
-import { useKeenSlider } from "keen-slider/react";
+// import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import {
   comments,
