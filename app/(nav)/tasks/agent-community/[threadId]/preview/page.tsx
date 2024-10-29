@@ -60,7 +60,7 @@ const ThreadPreview = () => {
           </h1>
         </div>
         <Button
-          href={`/tasks/agent-community/${threadId}/create`}
+          href={`/tasks/agent-community/my-articles/create`}
           size="sm"
           className="py-2 px-3"
         >

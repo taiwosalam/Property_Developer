@@ -19,10 +19,11 @@ import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import Comment from "../../../[threadId]/preview/comment";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import ThreadComments from "@/components/Community/ThreadComments";
 
 const PreviewPage = () => {
   const router = useRouter();
-  const { threadId } = useParams();
+  const { requestId } = useParams();
   return (
     <div>
       <div className="flex items-center justify-between flex-wrap gap-2">
@@ -40,7 +41,7 @@ const PreviewPage = () => {
           </h1>
         </div>
         <Button
-          href={`/tasks/agent-community/${threadId}/create`}
+          href={`/tasks/agent-community/property-request/${requestId}/manage`}
           size="sm"
           className="py-2 px-3"
         >
@@ -119,20 +120,10 @@ const ThreadArticle = () => {
   );
 };
 
-const ThreadComments = () => {
-  return (
-    <div className="mt-4">
-      {comments.map((comment, index) => (
-        <Comment key={comment.id} {...comment} />
-      ))}
-    </div>
-  );
-};
-
 // SECOND SIDE
 const SummaryCard = () => {
   return (
-    <div className="bg-white dark:bg-dark-100 rounded-lg p-4">
+    <div className="bg-white dark:bg-darkText-primary rounded-lg p-4">
       <h3> Summary </h3>
       <div className="flex flex-col mt-4 gap-2">
         {propertySummaryData.map((item, index) => (
@@ -151,7 +142,7 @@ const SummaryCard = () => {
 
 const MoreDetailsCard = () => {
   return (
-    <div className="bg-white dark:bg-dark-100 rounded-lg p-4">
+    <div className="bg-white dark:bg-darkText-primary rounded-lg p-4">
       <div className="flex flex-col mt-4 gap-2">
         {propertyMoreDetails.map((item, index) => (
           <div
