@@ -5,7 +5,6 @@ import {
   textareaValue,
 } from "@/app/(nav)/tasks/agent-community/data";
 import TextArea from "../Form/TextArea/textarea";
-import { ThreadComments } from "@/app/(nav)/tasks/agent-community/property-request/[requestId]/preview/page";
 import Comment from "@/app/(nav)/tasks/agent-community/[threadId]/preview/comment";
 import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
