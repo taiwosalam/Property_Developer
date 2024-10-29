@@ -1,14 +1,8 @@
 "use client";
 
-import React from "react";
-
-// Images
-import Avatar from "@/public/empty/avatar.png";
-
 // Imports
-import Picture from "@/components/Picture/picture";
-import Button from "@/components/Form/Button/button";
 import Signature from "@/components/Signature/signature";
+import CustomTable from "@/components/Table/table";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
@@ -16,20 +10,22 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ExpensesStatCard from "@/components/Accounting/expenses/expenses-stat-card";
 import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
 import BackButton from "@/components/BackButton/back-button";
-import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { useRouter } from "next/navigation";
+import { vatTableData, vatTableFields } from "../data";
+import ExportPageFooter from "@/components/reports/export-page-footer";
 
 const ExportVat = () => {
-  const router = useRouter();
-
-  const back = () => {
-    router.back();
-  };
-
+  const transformedTableData = vatTableData.map((item) => ({
+    ...item,
+    total_vat: (
+      <p className={item.total_vat ? "text-status-success-3" : ""}>
+        {item.total_vat ? item.total_vat : "--- ---"}
+      </p>
+    ),
+  }));
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton>Back</BackButton>
+        <BackButton as="p">Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -75,76 +71,20 @@ const ExportVat = () => {
             downValue={53}
           />
         </AutoResizingGrid>
-        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-          <table className="dash-table">
-            <colgroup>
-              <col className="min-w-[72px]" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th></th>
-                <th>name</th>
-                <th>vat ID</th>
-                <th>payment reason</th>
-                <th>total vat</th>
-                <th>date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array(5)
-                .fill(null)
-                .map((_, idx) => (
-                  <tr key={idx}>
-                    <td>
-                      <Picture
-                        src={Avatar}
-                        alt="profile picture"
-                        size={40}
-                        rounded
-                      />
-                    </td>
-                    <td>
-                      <p>Abimbola Adedeji</p>
-                    </td>
-                    <td>
-                      <p>22132876554444</p>
-                    </td>
-                    <td>
-                      <p>Rent cost: Start date: Sept 22, 2020</p>
-                    </td>
-                    <td>
-                      <p className="text-status-success-3">₦ 100,000</p>
-                    </td>
-                    <td>
-                      <p>12/12/12</p>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="flex justify-end">
-          <Signature />
-        </div>
+        <CustomTable
+          fields={vatTableFields}
+          data={transformedTableData}
+          tableHeadStyle={{ height: "76px" }}
+          tableHeadCellSx={{ fontSize: "1rem" }}
+          tableBodyCellSx={{
+            fontSize: "1rem",
+            paddingTop: "12px",
+            paddingBottom: "12px",
+          }}
+        />
+        <Signature />
       </div>
-      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
-        <Button
-          onClick={back}
-          variant="sky_blue"
-          size="base_bold"
-          className="py-2 px-8"
-        >
-          back
-        </Button>
-        <div className="flex gap-6">
-          <Button variant="sky_blue" size="base_bold" className="py-2 px-8">
-            download
-          </Button>
-          <Button size="base_bold" className="py-2 px-8">
-            print
-          </Button>
-        </div>
-      </FixedFooter>
+      <ExportPageFooter />
     </div>
   );
 };

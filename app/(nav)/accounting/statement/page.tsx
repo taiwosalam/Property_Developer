@@ -1,12 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import React, { useState } from "react";
+import { useState } from "react";
 
 // Images
-import Avatar from "@/public/empty/avatar-1.svg";
 import { ExclamationMark } from "@/public/icons/icons";
-import ThreeDotsVertical from "@/public/icons/three-dots-vertical.svg";
 
 // Imports
 import {
@@ -18,8 +15,6 @@ import {
 } from "@/components/ui/select";
 
 import { DateRange } from "react-day-picker";
-import Picture from "@/components/Picture/picture";
-import Pagination from "@/components/Pagination/pagination";
 import SearchInput from "@/components/SearchInput/search-input";
 import FilterButton from "@/components/FilterButton/filter-button";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
@@ -200,7 +195,7 @@ const Statement = () => {
           paddingTop: "12px",
           paddingBottom: "12px",
         }}
-        handleClick={handleRowClick}
+        handleSelect={handleRowClick}
       />
     </div>
   );
