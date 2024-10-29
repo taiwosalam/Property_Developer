@@ -139,29 +139,127 @@ const ChangePropertyPage: React.FC = () => {
             </div>
           </div>
         </div>
-
         <div className="lg:w-[37.5%]">
           <div className="bg-white dark:bg-darkText-primary p-4 md:p-6 lg:p-8 rounded-b-3xl mt-4 lg:mt-0 space-y-2">
             {/* Property Details */}
             <div className="text-base font-normal space-y-2 [&>div]:grid [&>div]:grid-cols-2">
               <h3 className="text-brand-10 font-medium">Property Details</h3>
               <div>
-                <p className="text-[#747474] dark:text-white">Property Title</p>
+                <p className="text-[#747474] dark:text-white">
+                  {/* {type === "rental" ? "Property Title" : "Estate Name"} */}
+                </p>
                 <p className="text-black dark:text-darkText-1">
                   Harmony Cottage
                 </p>
               </div>
-              {/* Additional Property Details here */}
+              <div>
+                <p className="text-[#747474] dark:text-white">Landlord</p>
+                <p className="text-black dark:text-darkText-1">Abiola Sunday</p>
+              </div>
+              <div>
+                <p className="text-[#747474] dark:text-white">Description</p>
+                <p className="text-black dark:text-darkText-1">
+                  +2348132086958
+                </p>
+              </div>
+              <div>
+                <p className="text-[#747474] dark:text-white">State</p>
+                <p className="text-black dark:text-darkText-1">Oyo</p>
+              </div>
+              <div>
+                <p className="text-[#747474] dark:text-white">Categories</p>
+                <p className="text-black dark:text-darkText-1">
+                  Moniya Apartment
+                </p>
+              </div>
+              <div>
+                <p className="text-[#747474] dark:text-white">Blocks of Flat</p>
+                <p className="text-black dark:text-darkText-1">Ibadan North</p>
+              </div>
+              <div>
+                <p className="text-[#747474] dark:text-white">
+                  Account Officer
+                </p>
+                <p className="text-black dark:text-darkText-1">
+                  Sunday Ogunwole
+                </p>
+              </div>
             </div>
 
             {/* Property Settings */}
-            <div className="text-base font-normal space-y-2 [&>div]:grid [&>div]:grid-cols-2">
+            <div className="text-base font-normal space-y-3 [&>div]:grid [&>div]:grid-cols-2">
               <h3 className="text-brand-10 font-medium">Property Settings</h3>
               <div>
                 <p className="text-[#747474] dark:text-white">Agency Fee</p>
                 <p className="text-black dark:text-darkText-1">10%</p>
               </div>
-              {/* Additional Property Settings here */}
+              <div>
+                <p className="text-[#747474] dark:text-white">
+                  Caution Deposit
+                </p>
+                <p className="text-black dark:text-darkText-1">N300,000</p>
+              </div>
+              <div>
+                <p className="text-[#747474] dark:text-white">Period</p>
+                <p className="text-black dark:text-darkText-1">10%</p>
+              </div>
+              <div>
+                <p className="text-[#747474] dark:text-white">Group Chat</p>
+                <p className="text-black dark:text-darkText-1">Yes</p>
+              </div>
+              <div>
+                <p className="text-[#747474] dark:text-white">Charge</p>
+                <p className="text-black dark:text-darkText-1">Landlord</p>
+              </div>
+            </div>
+
+            {/* Additional Details */}
+
+            <div className="!mt-6 text-sm grid grid-cols-2 gap-8">
+              <div>
+                <p className="text-label font-normal">Branch</p>
+                <p className="text-brand-9 font-bold">Joke Plaza Bodija</p>
+              </div>
+              <div>
+                <p className="text-label font-normal">Total Units</p>
+                <p className="text-brand-9 font-bold">12</p>
+              </div>
+              <div>
+                <p className="text-label font-normal">Branch Manager</p>
+                <p className="text-brand-9 font-bold">Anikulapo Jesus</p>
+              </div>
+              <div>
+                <p className="text-label font-normal">Mobile Tenants</p>
+                <p className="text-brand-9 font-bold">12</p>
+              </div>
+              <div>
+                <p className="text-label font-normal">Web Tenants</p>
+                <p className="text-brand-9 font-bold">5</p>
+              </div>
+              <div>
+                <p className="text-label font-normal">Last Updated</p>
+                <p className="text-brand-9 font-bold">5 hours ago</p>
+              </div>
+              <div>
+                <p className="text-label font-normal">Available Units</p>
+                <p className="text-brand-9 font-bold">5</p>
+              </div>
+              <div>
+                <p className="text-brand-primary text-xl font-bold">
+                  {currencySymbols["NAIRA"]}
+                  {formatNumber(700000)}
+                </p>
+                <p className="text-[#606060] font-normal text-xs">
+                  {/* Annual Returns*/}
+                </p>
+                <p className="text-text-disabled font-medium text-sm">
+                  <span className="text-highlight">
+                    {currencySymbols["NAIRA"]}
+                    {formatNumber(700000)}
+                  </span>
+                  / Annual Income
+                </p>
+              </div>
             </div>
           </div>
         </div>
