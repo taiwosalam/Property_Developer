@@ -218,7 +218,7 @@ const Header = () => {
               <ModalTrigger asChild>
                 <Button
                   size="base_medium"
-                  className="py-[10px] px-5 rounded-lg line-clamp-1 text-ellipsis"
+                  className="py-[10px] px-5 rounded-lg flex-1 max-w-fit line-clamp-1 text-ellipsis"
                 >
                   + Create New
                 </Button>
