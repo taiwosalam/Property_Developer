@@ -56,7 +56,7 @@ const SecondSection = () => {
   );
 };
 
-export const AddPhotoAndVideo = () => {
+export const AddPhotoAndVideo: React.FC = () => {
   // HANDLE IMAGES UPLOAD
   const [images, setImages] = useState<string[]>([]);
   const MAX_IMAGES = 4;
