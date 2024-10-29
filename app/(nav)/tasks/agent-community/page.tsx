@@ -1,15 +1,14 @@
 "use client";
 
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import React from "react";
-import { complaintsFilterOptionsWithDropdown } from "../complaints/data";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import Button from "@/components/Form/Button/button";
 import ThreadCard from "@/components/Community/ThreadCard";
 import { threadData } from "./data";
 import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
+import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 
 const lists = [
   {
@@ -38,16 +37,16 @@ const AgentCommunityPage = () => {
           newData={34}
           total={657}
         />
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
-                + Community Board
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-                <CommunityBoardModal lists={lists} />
-            </ModalContent>
-          </Modal>
+        <Modal>
+          <ModalTrigger asChild>
+            <Button type="button" className="page-header-button">
+              + Community Board
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <CommunityBoardModal lists={lists} />
+          </ModalContent>
+        </Modal>
       </div>
       <FilterBar
         hasGridListToggle={false}
@@ -66,7 +65,7 @@ const AgentCommunityPage = () => {
         filterWithOptionsWithDropdown={[]}
       />
 
-      <div className="thread_card grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <AutoResizingGrid minWidth={300}>
         {threadData.map(
           (
             { name, picture_url, role, time, title, desc, comments, user_pics },
@@ -85,13 +84,9 @@ const AgentCommunityPage = () => {
             />
           )
         )}
-      </div>
+      </AutoResizingGrid>
       <div className="pagination">
-        <Pagination
-          totalPages={5}
-          currentPage={1}
-          onPageChange={() => {}}
-        />
+        <Pagination totalPages={5} currentPage={1} onPageChange={() => {}} />
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ const ThreadCard = ({
   comments,
 }: ThreadCardProps) => {
   return (
-    <div className="max-w-[360px] bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md">
+    <div className="bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md">
       <Link href="/tasks/agent-community/123/preview">
         <ThreadHeader
           user_pics={user_pics}
