@@ -333,7 +333,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   }, [isChecked, groupName]);
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full hover:bg-[#f2f2f2] dark:hover:bg-darkText-primary">
       <button
         className="flex gap-3 text-start rounded-full"
         onClick={handleClick}

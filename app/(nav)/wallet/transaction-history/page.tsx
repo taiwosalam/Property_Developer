@@ -6,7 +6,10 @@ import Link from "next/link";
 // Images
 import SendIcon from "@/public/icons/send.svg";
 import PdfIcon from "@/public/icons/pdf-icon.svg";
+import BankRed from "@/public/icons/bank-red.svg";
+import ReceiveIcon from "@/public/icons/receive.svg";
 import ExcelIcon from "@/public/icons/excel-icon.svg";
+import SquareTopUpGreen from "@/public/icons/square-top-up-green.svg";
 
 // Imports
 import Picture from "@/components/Picture/picture";
@@ -25,7 +28,9 @@ const TransactionHistory = () => {
               <div className="flex items-center gap-2 cursor-pointer">
                 {/* <Picture src="/icons/sliders.svg" alt="filters" size={20} /> */}
                 <FilterIcons />
-                <p className="text-[#344054] dark:text-white text-base font-medium">Filters</p>
+                <p className="text-[#344054] dark:text-white text-base font-medium">
+                  Filters
+                </p>
               </div>
             </button>
           </div>
@@ -34,14 +39,18 @@ const TransactionHistory = () => {
             className="flex items-center dark:bg-darkText-primary gap-2 py-[10px] px-4 rounded-lg border border-solid border-[#D0D5DD] bg-white"
           >
             <Picture src={PdfIcon} alt="pdf icon" size={20} />
-            <p className="text-[#344054] dark:text-white text-base font-medium">Export</p>
+            <p className="text-[#344054] dark:text-white text-base font-medium">
+              Export
+            </p>
           </Link>
           <Link
             href={"/wallet/audit-trail/export"}
             className="flex items-center dark:bg-darkText-primary gap-2 py-[10px] px-4 rounded-lg border border-solid border-[#D0D5DD] bg-white"
           >
             <Picture src={ExcelIcon} alt="excel icon" size={20} />
-            <p className="text-[#344054] dark:text-white text-base font-medium">Export</p>
+            <p className="text-[#344054] dark:text-white text-base font-medium">
+              Export
+            </p>
           </Link>
         </div>
       </div>
@@ -70,7 +79,19 @@ const TransactionHistory = () => {
                   <tr key={index}>
                     <td>
                       <div className="w-9 h-9 rounded-full flex items-center justify-center bg-status-error-1">
-                        <Picture src={SendIcon} alt="send icon" size={20} />
+                        <Picture
+                          src={
+                            index === 0
+                              ? SendIcon
+                              : index === 1
+                              ? ReceiveIcon
+                              : index === 2
+                              ? BankRed
+                              : SquareTopUpGreen
+                          }
+                          alt="send icon"
+                          size={20}
+                        />
                       </div>
                     </td>
                     <td>

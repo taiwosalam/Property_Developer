@@ -88,7 +88,7 @@ const Landlord = () => {
     } finally {
       setState((x) => ({ ...x, loading: false }));
     }
-  }, [accessToken]);
+  }, []);
 
   const fetchLandlordHelp = useCallback(async () => {
     try {

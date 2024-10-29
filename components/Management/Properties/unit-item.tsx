@@ -10,7 +10,7 @@ import Sample2 from "@/public/empty/SampleProperty2.jpeg";
 import Sample3 from "@/public/empty/SampleProperty3.jpeg";
 import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
-import ImageModal from "@/components/ImageModal/image-modal";
+import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 const UnitItem = ({ type = "rental" }: { type?: "rental" | "gated" }) => {
   const colors = {
     vacant: "#FFBB53",
@@ -27,7 +27,7 @@ const UnitItem = ({ type = "rental" }: { type?: "rental" | "gated" }) => {
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       {/* Image Modal */}
-      <ImageModal
+      <PopupImageModal
         isOpen={screenModal}
         onClose={() => setScreenModal(false)}
         images={sampleImages.map((image) => ({

@@ -1,10 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import React, { useState } from "react";
+import { useState } from "react";
 
 // Images
-import Avatar from "@/public/empty/avatar-1.svg";
 import { ExclamationMark } from "@/public/icons/icons";
 
 // Imports
@@ -17,8 +15,6 @@ import {
 } from "@/components/ui/select";
 
 import { DateRange } from "react-day-picker";
-import Picture from "@/components/Picture/picture";
-import Pagination from "@/components/Pagination/pagination";
 import SearchInput from "@/components/SearchInput/search-input";
 import FilterButton from "@/components/FilterButton/filter-button";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
@@ -26,9 +22,16 @@ import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ExpensesStatCard from "@/components/Accounting/expenses/expenses-stat-card";
-import { accountingVatOptionsWithDropdown } from "./data";
+import {
+  accountingVatOptionsWithDropdown,
+  vatTableFields,
+  vatTableData,
+} from "./data";
 import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
 import { useRouter } from "next/navigation";
+import CustomTable from "@/components/Table/table";
+import type { DataItem } from "@/components/Table/types";
+import ExportButton from "@/components/reports/export-button";
 
 const Vat = () => {
   const router = useRouter();
@@ -74,11 +77,27 @@ const Vat = () => {
     console.log("Filter applied:", filters);
     // Add filtering logic here for branches
   };
+
+  const handleRowClick = (item: DataItem) => {
+    router.push(`/accounting/vat/${item.id}/PrintVat`);
+  };
+
+  const transformedTableData = vatTableData.map((item) => ({
+    ...item,
+    total_vat: (
+      <p className={item.total_vat ? "text-status-success-3" : ""}>
+        {item.total_vat ? item.total_vat : "--- ---"}
+      </p>
+    ),
+  }));
+
   return (
     <div className="custom-flex-col gap-10">
       <div className="custom-flex-col gap-6">
         <div className="flex gap-1 items-center">
-          <h1 className="text-black dark:text-white text-2xl font-medium">Vat</h1>
+          <h1 className="text-black dark:text-white text-2xl font-medium">
+            Vat
+          </h1>
           <ExclamationMark />
         </div>
         <div className="bg-white dark:bg-[#3C3D37] rounded-[8px] border border-opacity-20 border-[#BAC7D533] p-4 space-y-6">
@@ -117,7 +136,10 @@ const Vat = () => {
               </Select>
             </div>
             <div className="flex items-center gap-4 flex-wrap">
-              <SearchInput placeholder="Search for Vat" />
+              <SearchInput
+                placeholder="Search for Vat"
+                className="max-w-[255px]"
+              />
               <Modal>
                 <ModalTrigger asChild>
                   <FilterButton />
@@ -133,21 +155,8 @@ const Vat = () => {
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <Link
-                  href={"/accounting/vat/export"}
-                  className="border border-[#D0D5DD] dark:bg-darkText-primary dark:border-darkText-2 py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
-                >
-                  <Picture src={"/icons/pdf-icon.svg"} size={20} alt="pdf" />
-                  <span>Export</span>
-                </Link>
-                <div className="border border-[#D0D5DD] dark:bg-darkText-primary dark:border-darkText-2 py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]">
-                  <Picture
-                    src={"/icons/excel-icon.svg"}
-                    size={20}
-                    alt="excep"
-                  />
-                  <span>Export</span>
-                </div>
+                <ExportButton type="pdf" href="/accounting/vat/export" />
+                <ExportButton type="csv" href="/accounting/vat/export" />
               </div>
             </div>
           </div>
@@ -170,63 +179,18 @@ const Vat = () => {
           </AutoResizingGrid>
         </div>
       </div>
-      <div className="custom-flex-col gap-8">
-        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-          <table className="dash-table">
-            <colgroup>
-              <col className="min-w-[72px]" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th></th>
-                <th>name</th>
-                <th>vat ID</th>
-                <th>payment reason</th>
-                <th>total vat</th>
-                <th>date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array(5)
-                .fill(null)
-                .map((_, idx) => (
-                  <tr
-                    key={idx}
-                    onClick={() => {
-                      router.push(`/accounting/vat/${idx + 1}/PrintVat`);
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <td>
-                      <Picture
-                        src={Avatar}
-                        alt="profile picture"
-                        size={40}
-                        rounded
-                      />
-                    </td>
-                    <td>
-                      <p>Abimbola Adedeji</p>
-                    </td>
-                    <td>
-                      <p>22132876554444</p>
-                    </td>
-                    <td>
-                      <p>Rent cost: Start date: Sept 22, 2020</p>
-                    </td>
-                    <td>
-                      <p className="text-status-success-3">₦ 100,000</p>
-                    </td>
-                    <td>
-                      <p>12/12/12</p>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-        <Pagination totalPages={10} currentPage={1} onPageChange={() => {}} />
-      </div>
+      <CustomTable
+        fields={vatTableFields}
+        data={transformedTableData}
+        tableHeadStyle={{ height: "76px" }}
+        tableHeadCellSx={{ fontSize: "1rem" }}
+        tableBodyCellSx={{
+          fontSize: "1rem",
+          paddingTop: "12px",
+          paddingBottom: "12px",
+        }}
+        handleSelect={handleRowClick}
+      />
     </div>
   );
 };

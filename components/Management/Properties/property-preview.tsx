@@ -18,18 +18,11 @@ import {
   NextIcon,
 } from "@/public/icons/icons";
 import { PropertyPreviewProps } from "./types";
-import Sample from "@/public/empty/SampleProperty.jpeg";
 import UnitItem from "./unit-item";
-import Sample2 from "@/public/empty/SampleProperty2.jpeg";
-import Sample3 from "@/public/empty/SampleProperty3.jpeg";
-import Sample4 from "@/public/empty/SampleProperty4.png";
-import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import BackButton from "@/components/BackButton/back-button";
 
-const PropertyPreview: React.FC<PropertyPreviewProps> = ({
-  images = [Sample, Sample2, Sample3, Sample4, Sample5],
-}) => {
+const PropertyPreview: React.FC<PropertyPreviewProps> = ({ images, type }) => {
   const router = useRouter();
   const colors = {
     vacant: "#FFBB53",
@@ -93,7 +86,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
             <AnimatePresence initial={false} custom={direction}>
               <motion.img
                 key={page}
-                src={images[imageIndex].src}
+                src={images[imageIndex]}
                 alt={`${"property name prop"} ${imageIndex + 1}`}
                 custom={direction}
                 variants={variants}
@@ -138,7 +131,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
                 <PlayIconButton />
               </button>
               <Image
-                src={Sample}
+                src={images[0]}
                 alt={""}
                 fill
                 objectFit="cover"
@@ -155,7 +148,9 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
             <div className="text-base font-normal space-y-2 [&>div]:grid [&>div]:grid-cols-2">
               <h3 className="text-brand-10 font-medium">Property Details</h3>
               <div>
-                <p className="text-[#747474] dark:text-white">Property Title</p>
+                <p className="text-[#747474] dark:text-white">
+                  {type === "rental" ? "Property Title" : "Estate Name"}
+                </p>
                 <p className="text-black dark:text-darkText-1">
                   Harmony Cottage
                 </p>
@@ -257,11 +252,15 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
                 <p className="text-brand-9 font-bold">Anikulapo Jesus</p>
               </div>
               <div>
-                <p className="text-label font-normal">Mobile Tenants</p>
+                <p className="text-label font-normal">
+                  Mobile {type === "rental" ? "Tenants" : "Occupants"}
+                </p>
                 <p className="text-brand-9 font-bold">12</p>
               </div>
               <div>
-                <p className="text-label font-normal">Web Tenants</p>
+                <p className="text-label font-normal">
+                  Web {type === "rental" ? "Tenants" : "Occupant"}
+                </p>
                 <p className="text-brand-9 font-bold">5</p>
               </div>
               <div>
@@ -278,7 +277,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({
                   {formatNumber(700000)}
                 </p>
                 <p className="text-[#606060] font-normal text-xs">
-                  Annual Returns
+                  Annual {type === "rental" ? "Returns" : "Fees"}
                 </p>
                 <p className="text-text-disabled font-medium text-sm">
                   <span className="text-highlight">

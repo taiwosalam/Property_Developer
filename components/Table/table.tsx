@@ -22,7 +22,7 @@ const renderValue = (
   field: Field,
   index: number,
   actionButtonIcon: ReactNode,
-  onActionClick?: (data: DataItem) => void
+  onActionClick?: CustomTableProps["onActionClick"]
 ) => {
   let value = data[field.accessor];
   if (field.accessor === "S/N") {
@@ -59,7 +59,7 @@ const renderValue = (
             type="button"
             aria-label="action"
             className="p-2 grid place-items-center mx-auto text-brand-10"
-            onClick={onActionClick ? () => onActionClick(data) : undefined}
+            onClick={onActionClick ? (e) => onActionClick(data, e) : undefined}
           >
             {actionButtonIcon || <VerticalEllipsisIcon />}
           </button>
@@ -69,7 +69,7 @@ const renderValue = (
           type="button"
           aria-label="action"
           className="p-2 grid place-items-center mx-auto text-brand-10"
-          onClick={onActionClick ? () => onActionClick(data) : undefined}
+          onClick={onActionClick ? (e) => onActionClick(data, e) : undefined}
         >
           {actionButtonIcon || <VerticalEllipsisIcon />}
         </button>
@@ -78,7 +78,7 @@ const renderValue = (
       return field.contentStyle ? (
         <div style={field.contentStyle}>{value ?? "-"}</div>
       ) : (
-        value ?? "-"
+        value ?? "--- ---"
       );
   }
 };
@@ -98,8 +98,6 @@ const CustomTable: React.FC<CustomTableProps> = ({
   tableHeadStyle,
   tableHeadCellSx,
   tableBodyCellSx,
-  // evenRowColor: propEvenRowColor,
-  // oddRowColor: propOddRowColor,
   onActionClick,
 }) => {
   const isDarkMode = useDarkMode();
@@ -153,7 +151,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
           {data.map((x, index) => (
             <TableRow
               key={getUniqueKey(x)}
-              onClick={handleSelect ? () => handleSelect(x) : undefined}
+              onClick={handleSelect ? (e) => handleSelect(x, e) : undefined}
               className="cursor-pointer"
               sx={{
                 backgroundColor: index % 2 === 0 ? oddRowColor : evenRowColor,

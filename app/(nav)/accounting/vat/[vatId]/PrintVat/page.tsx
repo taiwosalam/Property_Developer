@@ -5,18 +5,17 @@ import { empty } from "@/app/config";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
-import Image from "next/image";
-import Signature from "@/public/accounting/signature.svg";
-import { useRouter } from "next/navigation";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import Signature from "@/components/Signature/signature";
+import CustomTable from "@/components/Table/table";
+import { printVatTableData, printVatTableFields } from "./data";
 
 const PrintVatPage = () => {
-  const router = useRouter();
   return (
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton>Back</BackButton>
+        <BackButton as="p">Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -43,48 +42,17 @@ const PrintVatPage = () => {
         </div>
         <AccountingTitleSection title="Payment Details">
           <div className="h-[2px] w-full max-w-[670px] bg-[#C0C2C8]" />
-          <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-            <table className="dash-table">
-              <colgroup>
-                <col className="w-[72px]" />
-                <col className="w-[62px]" />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>S/N</th>
-                  <th>Payment Date</th>
-                  <th>VAT Paid</th>
-                  <th>Details</th>
-                  <th>Start Date</th>
-                  <th>Due Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Array(2)
-                  .fill(null)
-                  .map((_, idx) => (
-                    <tr key={idx}>
-                      <td>{idx + 1} </td>
-                      <td>
-                        <p>12/01/2023</p>
-                      </td>
-                      <td>
-                        <p>₦115,000.00</p>
-                      </td>
-                      <td>
-                        <p>Document Fee</p>
-                      </td>
-                      <td>
-                        <p className="text-status-success-3">-- -- -- --</p>
-                      </td>
-                      <td>
-                        <p>-- -- -- --</p>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
+          <CustomTable
+            fields={printVatTableFields}
+            data={printVatTableData}
+            tableHeadStyle={{ height: "76px" }}
+            tableHeadCellSx={{ fontSize: "1rem" }}
+            tableBodyCellSx={{
+              fontSize: "1rem",
+              paddingTop: "16px",
+              paddingBottom: "16px",
+            }}
+          />
         </AccountingTitleSection>
         <AccountingTitleSection title="Account Details">
           <div className="p-6 bg-white rounded-lg space-y-5">
@@ -106,29 +74,9 @@ const PrintVatPage = () => {
             </div>
           </div>
         </AccountingTitleSection>
-        <div className="flex justify-end">
-          <div className="custom-flex-col gap-2 text-text-quaternary text-base font-medium">
-            <p>Authorized Signature </p>
-            <div className="flex">
-              <Image src={Signature} alt="signature" height={60} />
-            </div>
-            <p>
-              ESQ John Doe
-              <br />
-              Legal Practitioner
-            </p>
-          </div>
-        </div>
+        <Signature />
       </div>
-      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
-        <Button
-          variant="sky_blue"
-          size="base_medium"
-          className="py-2 px-8"
-          onClick={() => router.back()}
-        >
-          back
-        </Button>
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-end">
         <div className="flex gap-6">
           <Button variant="sky_blue" size="base_medium" className="py-2 px-8">
             download

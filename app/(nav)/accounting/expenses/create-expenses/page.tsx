@@ -6,59 +6,25 @@ import BackButton from "@/components/BackButton/back-button";
 import Button from "@/components/Form/Button/button";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
+import KeyValueList from "@/components/KeyValueList/key-value-list";
 import Picture from "@/components/Picture/picture";
+import ExportPageHeader from "@/components/reports/export-page-header";
 import { LocationIcon } from "@/public/icons/icons";
 
 const CreateExpensePage = () => {
   return (
     <section className="space-y-7 pb-[100px]">
       <BackButton>Create New Expense</BackButton>
-      <div
-        className="bg-white dark:bg-darkText-primary rounded-[8px] p-6 flex gap-6 items-center justify-between flex-wrap"
-        style={{
-          boxShadow:
-            "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
-        }}
-      >
-        <div
-          style={{
-            boxShadow:
-              "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 4px 6px 0px rgba(13, 23, 33, 0.08)",
-          }}
-        >
-          <Picture
-            src={"/empty/logo placeholder.svg"}
-            width={300}
-            height={100}
-          />
-        </div>
-        <div className="w-fit text-left">
-          <p className="text-text-secondary text-sm font-medium dark:text-white">
-            Contacts
-          </p>
-          <div className="text-text-secondary text-sm font-normal dark:text-darkText-1">
-            <div className="flex items-center gap-1">
-              <LocationIcon color="#0033C4" />
-              <span>States and Local Govt.</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Picture src={"/icons/global-search.svg"} size={16} />
-              <span>https://www.hprealestate.co.in1</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Picture src={"/icons/phone.svg"} size={16} />
-              <span>08132086958 || 09123435487 || 9848848488</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Picture src={"/icons/mail2.svg"} size={16} />
-              <span>Email@gmail.com</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="space-y-4">
+      <ExportPageHeader
+        email="Email@gmail.com"
+        location="States and Local Govt."
+        logo="/empty/logo placeholder.svg"
+        phoneNumbers={["08132086958", "09123435487", "9848848488"]}
+        website="https://www.hprealestate.co.in1"
+      />
+      <div className="space-y-8">
         <Details />
-        <div className="flex items-center justify-between w-3/5 gap-4">
+        <div className="flex items-center justify-between w-3/5 gap-4 px-3">
           <Select
             id="client_name"
             options={["Client Name", "Client Name 2"]}
@@ -70,7 +36,7 @@ const CreateExpensePage = () => {
       </div>
       <div className="space-y-6">
         <h1 className="text-[#092C4C] font-bold text-xl dark:text-white">
-          Add Payment
+          Add Expenses
         </h1>
         <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
           <div className="flex items-center justify-between w-3/5 gap-4">
@@ -105,23 +71,40 @@ const CreateExpensePage = () => {
       </div>
       <div className="space-y-6">
         <h1 className="text-[#092C4C] font-bold text-xl dark:text-white">
-          Breakdown
+          Payment Added
         </h1>
-        <Breakdown />
+        <section className="bg-white dark:bg-darkText-primary p-8 space-y-4">
+          <div className="flex gap-6 2xl:gap-0 flex-col 2xl:flex-row">
+            <KeyValueList
+              data={{}}
+              referenceObject={{
+                "annual fee": "",
+              }}
+            />
+          </div>
+          <div className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20" />
+          <div>
+            <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+              Total Amount
+            </p>
+            <p className="font-bold text-xl text-[#315EE7] dark:text-brand-9">
+              {new Intl.NumberFormat("en-NG", {
+                style: "currency",
+                currency: "NGN",
+              })
+                .format(1000000)
+                .split(".")}
+            </p>
+          </div>
+        </section>
       </div>
-      <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[40px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
-        <button
-          type="reset"
-          className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2 py-2 px-8"
-        >
+      <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[40px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-4 [&>button]:rounded-[4px] font-semibold text-base">
+        <Button variant="border" size="sm_normal" className="py-2 px-8">
           Cancel
-        </button>
-        <button
-          type="submit"
-          className="bg-brand-9 text-white hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9 py-2 px-8"
-        >
+        </Button>
+        <Button size="sm_normal" className="py-2 px-8">
           Create
-        </button>
+        </Button>
       </div>
     </section>
   );

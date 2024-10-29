@@ -11,10 +11,11 @@ import Image from "next/image";
 const PopupImageModal: React.FC<PopupImageModalProps> = ({
   isOpen,
   images,
-  currentIndex,
+  currentIndex = 0,
   onClose,
 }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  console.log(currentIndex);
+
   const [loaded, setLoaded] = useState(false);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
     initial: currentIndex,
@@ -24,21 +25,18 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
     created() {
       setLoaded(true);
     },
-    slideChanged(slider) {
-      setCurrentSlide(slider.track.details.rel);
-    },
   });
 
   const triggerClose = (e: React.MouseEvent) => {
     e.stopPropagation();
     onClose();
-  }
+  };
 
   useEffect(() => {
-    if (instanceRef.current) {
+    if (isOpen && loaded && instanceRef.current) {
       instanceRef.current.moveToIdx(currentIndex);
     }
-  }, [currentIndex, instanceRef]);
+  }, [currentIndex, loaded, instanceRef, isOpen]);
 
   return (
     <Dialog
@@ -54,7 +52,7 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
     >
       <div
         className="relative flex justify-center items-center overflow-hidden h-[500px] max-h-[85vh]"
-        style={{ width: "min(900px)" }}
+        style={{ width: "min(90vw, 900px)" }}
       >
         {loaded && (
           <>
@@ -91,21 +89,24 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
               className="keen-slider__slide relative w-full h-full"
             >
               <Image
-                src={image}
+                src={image.src}
                 alt={`Image ${index + 1}`}
                 fill
                 sizes="auto"
-                priority={index === 0}
+                priority={index === currentIndex}
                 className="absolute inset-0 w-full h-full object-cover"
               />
             </div>
           ))}
         </div>
-        <div className="absolute top-10 right-10 cursor-pointer bg-white rounded-full bg-opacity-60" onClick={triggerClose}>
+        <div
+          className="absolute top-10 right-10 cursor-pointer bg-white rounded-full bg-opacity-60"
+          onClick={triggerClose}
+        >
           <XIcon size="30" />
         </div>
       </div>
-    </Dialog >
+    </Dialog>
   );
 };
 

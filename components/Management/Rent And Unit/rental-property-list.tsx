@@ -26,7 +26,7 @@ const RentalPropertyListCard = () => {
           ))}
         </div>
       </div>
-      <div className="flex items-center gap-4 py-4 border-y border-gray-200 overflow-y-auto">
+      <div className="flex items-center justify-between gap-4 py-4 border-y border-gray-200 overflow-y-auto">
         <div className="flex-grow-1 flex-shrink-0 grid grid-cols-2 gap-x-2 gap-y-4 w-fit xl:max-w-[calc(100%-200px-16px)]">
           <DetailItem
             label="Unit Details"
@@ -41,7 +41,8 @@ const RentalPropertyListCard = () => {
             label="Tenants Name"
             value={
               <span className="flex items-center">
-                <span className="border-black border-b">David Ajala</span> <BadgeIcon color="green" />
+                <span className="border-black border-b">David Ajala</span>{" "}
+                <BadgeIcon color="green" />
               </span>
             }
           />
@@ -60,7 +61,7 @@ const RentalPropertyListCard = () => {
             className="rounded-lg"
           />
           <PopupImageModal
-            images={images}
+            images={images.map((image) => ({ src: image, isVideo: false }))}
             isOpen={isOpened}
             onClose={() => setIsOpened(false)}
             currentIndex={0}

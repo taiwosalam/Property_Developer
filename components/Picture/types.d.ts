@@ -15,4 +15,5 @@ export interface PictureProps {
   fit?: CSSProperties["objectFit"];
   resolutionMultiplier?: number;
   containerClassName?: string;
+  onClick?: () => void;
 }

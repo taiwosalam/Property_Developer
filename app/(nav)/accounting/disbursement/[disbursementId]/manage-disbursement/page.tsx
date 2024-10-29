@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
 
 // Imports
+import { useState } from "react";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
@@ -10,23 +10,22 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import DeleteDisbursementModal from "@/components/Accounting/Disbursement/delete-disbursement-modal";
-import useDarkMode from "@/hooks/useCheckDarkMode";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { useRouter } from "next/navigation";
+import {
+  currencySymbols,
+  formatCostInputValue,
+} from "@/utils/number-formatter";
+import DateInput from "@/components/Form/DateInput/date-input";
 
 const ManageDisbursement = () => {
-  const isDarkMode = useDarkMode()
-  const router = useRouter();
-
-  const back = () => {
-    router.back();
-  };
-
+  const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
+  const [amountDisburse, setAmountDisburse] = useState("");
+  const [amount, setAmount] = useState("");
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton>Back</BackButton>
+        <BackButton as="p">Back</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -56,25 +55,29 @@ const ManageDisbursement = () => {
                 id="disbursement-mode"
                 label="disbursement mode"
                 placeholder="Bank Transfer"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
               />
               <Input
                 id="ammount-disburse"
                 label="ammount disburse"
-                placeholder="₦ 300,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+                placeholder="300,000"
+                inputClassName="bg-white"
+                value={amountDisburse}
+                onChange={(value) =>
+                  setAmountDisburse(formatCostInputValue(value))
+                }
               />
-              <Input
+              <DateInput
                 id="transaction-date"
                 label="transaction date"
-                type="date"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                containerClassName="bg-white"
               />
               <Input
                 id="transaction-description"
                 label="transaction description"
                 placeholder="Property Rent for moniya house"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
               />
             </div>
           </div>
@@ -87,7 +90,14 @@ const ManageDisbursement = () => {
                 label="payment title"
                 placeholder="Security Fee"
               />
-              <Input id="amount" label="amount" placeholder="₦ 115,000" />
+              <Input
+                id="amount"
+                label="amount"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+                placeholder="300,000"
+                value={amount}
+                onChange={(value) => setAmount(formatCostInputValue(value))}
+              />
             </div>
             <div className="flex justify-end">
               <Button size="base_medium" className="py-2 px-14">
@@ -109,15 +119,6 @@ const ManageDisbursement = () => {
           </ModalContent>
         </Modal>
         <div className="flex gap-6">
-          <Button
-            onClick={back}
-            size="base_bold"
-            variant="sky_blue"
-            className="py-2 px-8"
-            href="/accounting/disbursement"
-          >
-            exit
-          </Button>
           <Button size="base_bold" className="py-2 px-8">
             save
           </Button>
