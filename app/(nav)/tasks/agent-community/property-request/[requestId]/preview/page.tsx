@@ -19,6 +19,7 @@ import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import Comment from "../../../[threadId]/preview/comment";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import ThreadComments from "@/components/Community/ThreadComments";
 
 const PreviewPage = () => {
   const router = useRouter();
@@ -115,16 +116,6 @@ const ThreadArticle = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-export const ThreadComments = () => {
-  return (
-    <div className="mt-4">
-      {comments.map((comment, index) => (
-        <Comment key={comment.id} {...comment} />
-      ))}
     </div>
   );
 };
