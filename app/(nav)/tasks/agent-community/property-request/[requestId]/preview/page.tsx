@@ -178,9 +178,9 @@ const ReadyByCard = () => {
       <h4 className="text-black dark:text-white font-semibold text-sm">
         Ready By
       </h4>
-        {readyByData.map((item, index) => (
-      <div className="flex w-full gap-3 mt-3 justify-between">
-          <div key={index} className="flex gap-1 items-center">
+      {readyByData.map((item, index) => (
+        <div key={index} className="flex w-full gap-3 mt-3 justify-between">
+          <div className="flex gap-1 items-center">
             <div className="imgWrapper h-10 w-10">
               <Image
                 src={user2}
@@ -196,8 +196,8 @@ const ReadyByCard = () => {
             <BadgeIcon color="blue" />
           </div>
           <p className="text-black dark:text-white text-sm"> {item.time} </p>
-      </div>
-        ))}
+        </div>
+      ))}
     </div>
   );
 };  

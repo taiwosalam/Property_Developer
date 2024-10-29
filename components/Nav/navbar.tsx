@@ -195,7 +195,7 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Nav Switch User & Other buttons */}
+        {/* Nav Switch User & Other buttons for LG & above */}
         <div className="hidden lg:flex-1 lg:flex lg:justify-between lg:items-center lg:gap-4">
           <div className="flex-1 flex items-center gap-2">
             <NavSwitchUserSwitch
@@ -218,7 +218,7 @@ const Header = () => {
               <ModalTrigger asChild>
                 <Button
                   size="base_medium"
-                  className="py-[10px] px-5 rounded-lg"
+                  className="py-[10px] px-5 rounded-lg line-clamp-1 text-ellipsis"
                 >
                   + Create New
                 </Button>
