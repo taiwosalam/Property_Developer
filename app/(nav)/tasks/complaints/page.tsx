@@ -52,7 +52,7 @@ const ComplaintsPage = () => {
             .map((_, index) => (
               <TaskCard
                 styles="min-w-[352.66px]"
-                statusChanger={true}
+                statusChanger={false}
                 noDrag
                 isNew
                 key={index}
