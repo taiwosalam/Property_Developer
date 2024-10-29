@@ -28,7 +28,7 @@ export const ProfileForm: React.FC<{ occupant: Occupant; title?: boolean }> = ({
                 type="submit"
                 className="bg-brand-9 flex-1 text-white active:text-brand-9 active:bg-transparent active:border-brand-9 py-3 px-4 rounded mt-8"
               >
-                Change ID
+                Choose With ID
               </button>
             </ModalTrigger>
             <ModalContent>

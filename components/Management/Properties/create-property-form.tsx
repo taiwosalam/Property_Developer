@@ -491,16 +491,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               hiddenInputClassName="property-form-input"
             />
           )}
-          <Select
-            id="fee_period"
-            label="Fee Periods"
-            options={rentPeriods}
-            isSearchable={false}
-            inputContainerClassName="bg-white"
-            resetKey={resetKey}
-            requiredNoStar
-            hiddenInputClassName="property-form-input"
-          />
           {formType === "rental" && (
             <Select
               options={[

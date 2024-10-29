@@ -87,7 +87,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
           <CardContent className="flex flex-grow flex-col gap-2 px-2">
             <SortableContext items={tasksIds}>
               {tasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
+                <TaskCard key={task.id} task={task} statusChanger={true} />
               ))}
             </SortableContext>
           </CardContent>

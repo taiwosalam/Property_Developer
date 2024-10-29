@@ -89,7 +89,7 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
               className="keen-slider__slide relative w-full h-full"
             >
               <Image
-                src={image.src}
+                src={image.src || ""}
                 alt={`Image ${index + 1}`}
                 fill
                 sizes="auto"

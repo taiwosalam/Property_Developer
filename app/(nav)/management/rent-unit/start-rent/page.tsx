@@ -1,13 +1,16 @@
 "use client";
 
+import Button from "@/components/Form/Button/button";
 import { estateSettingsDta } from "@/components/Management/Rent And Unit/data";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
 import { OccupantProfile } from "@/components/Management/Rent And Unit/occupant-profile";
 import { ChevronLeft } from "@/public/icons/icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const StartRent = () => {
+  const router = useRouter();
   return (
     <div className="space-y-6 p-4">
       <Link
@@ -55,20 +58,21 @@ const StartRent = () => {
         />
       </section>
       <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
-        <button
+        <Button
           type="button"
           className="bg-brand-1 dark:bg-darkText-primary text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
-          //   onClick={() => {}}
+          onClick={() => {
+            router.push("/management/rent-unit");
+          }}
         >
           Exit
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
-          className="bg-brand-9 text-white hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9"
           //   onClick={() => {}}
         >
           Save
-        </button>
+        </Button>
       </div>
     </div>
   );

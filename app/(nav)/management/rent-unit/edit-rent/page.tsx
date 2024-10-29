@@ -13,6 +13,10 @@ import { EstateDetailItem } from "@/components/Management/Rent And Unit/detail-i
 import Link from "next/link";
 import { RentSectionContainer } from "@/components/Management/Rent And Unit/rent-section-container";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import ModalPreset from "@/components/Modal/modal-preset";
+import SwitchPropertyModal from "@/components/Management/Rent And Unit/Edit-Rent/SwitchPropertyModal";
+import SwitchUnitModal from "@/components/Management/Rent And Unit/Edit-Rent/SwitchUnitModal";
 
 const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
   <div className="flex items-center">
@@ -22,6 +26,7 @@ const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
 );
 
 const EditRent = () => {
+  const router = useRouter();
   return (
     <div className="space-y-6 p-4">
       <Link
@@ -95,11 +100,7 @@ const EditRent = () => {
                   </div>
                   <Modal>
                     <ModalTrigger asChild>
-                      <Button
-                        type="submit"
-                        className="py-2 px-8"
-                        onClick={() => {}}
-                      >
+                      <Button type="submit" className="py-2 px-8">
                         Edit
                       </Button>
                     </ModalTrigger>
@@ -116,18 +117,23 @@ const EditRent = () => {
                               type="submit"
                               className="py-2 px-8"
                               size="16_bold"
-                              onClick={() => {}}
+                              onClick={() => {
+                                router.push(
+                                  "/management/properties/1/edit-property"
+                                );
+                              }}
                             >
                               Proceed
                             </Button>
-                            <Button
-                              type="submit"
-                              className="py-2 px-8"
-                              size="16_bold"
-                              onClick={() => {}}
-                            >
-                              Exit
-                            </Button>
+                            <ModalTrigger asChild close>
+                              <Button
+                                type="submit"
+                                className="py-2 px-8"
+                                size="16_bold"
+                              >
+                                Exit
+                              </Button>
+                            </ModalTrigger>
                           </div>
                         </div>
                       </div>
@@ -156,13 +162,31 @@ const EditRent = () => {
                   </div>
                 </div>
                 <div className="flex items-center justify-end my-4">
-                  <Button
-                    type="submit"
-                    className="py-2 px-6"
-                    onClick={() => {}}
-                  >
-                    Update
-                  </Button>
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <Button
+                        type="submit"
+                        className="py-2 px-6"
+                        onClick={() => {}}
+                      >
+                        Update
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <ModalPreset type="success" className="w-full">
+                        <div className="flex flex-col gap-11">
+                          <div className="flex flex-col gap-10">
+                            <p className="text-text-tertiary text-sm">
+                              Record Added Successfully
+                            </p>
+                            <ModalTrigger asChild close>
+                              <Button>Ok</Button>
+                            </ModalTrigger>
+                          </div>
+                        </div>
+                      </ModalPreset>
+                    </ModalContent>
+                  </Modal>
                 </div>
               </RentSectionContainer>
 
@@ -194,13 +218,31 @@ const EditRent = () => {
                     />
                     <label htmlFor="createInvoice">Create Invoice</label>
                   </div>
-                  <Button
-                    type="submit"
-                    className="py-2 px-6"
-                    onClick={() => {}}
-                  >
-                    Update
-                  </Button>
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <Button
+                        type="submit"
+                        className="py-2 px-6"
+                        onClick={() => {}}
+                      >
+                        Update
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <ModalPreset type="success" className="w-full">
+                        <div className="flex flex-col gap-11">
+                          <div className="flex flex-col gap-10">
+                            <p className="text-text-tertiary text-sm">
+                              Record Added Successfully
+                            </p>
+                            <ModalTrigger asChild close>
+                              <Button>Ok</Button>
+                            </ModalTrigger>
+                          </div>
+                        </div>
+                      </ModalPreset>
+                    </ModalContent>
+                  </Modal>
                 </div>
                 <p className="text-sm text-gray-600 dark:text-darkText-1 mt-16 clear-both">
                   Clicking &lsquo;update&rsquo; confirms the partial payment.
@@ -274,22 +316,36 @@ const EditRent = () => {
                   payments.
                 </p>
                 <div className="flex items-center gap-2 md:gap-0 justify-between">
-                  <Button
-                    type="submit"
-                    className="py-2 px-8"
-                    size="16_bold"
-                    onClick={() => {}}
-                  >
-                    Switch Property
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="py-2 px-8"
-                    size="16_bold"
-                    onClick={() => {}}
-                  >
-                    Switch Unit
-                  </Button>
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <Button
+                        type="submit"
+                        className="py-2 px-8"
+                        size="16_bold"
+                        onClick={() => {}}
+                      >
+                        Switch Property
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <SwitchPropertyModal />
+                    </ModalContent>
+                  </Modal>
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <Button
+                        type="submit"
+                        className="py-2 px-8"
+                        size="16_bold"
+                        onClick={() => {}}
+                      >
+                        Switch Unit
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <SwitchUnitModal />
+                    </ModalContent>
+                  </Modal>
                 </div>
               </RentSectionContainer>
             </div>
@@ -343,18 +399,15 @@ const EditRent = () => {
       </section>
 
       <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
-        <button
+        <Button
           type="button"
-          className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
+          onClick={() => {
+            router.back();
+          }}
         >
           Exit
-        </button>
-        <button
-          type="submit"
-          className="bg-brand-9 text-white hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9"
-        >
-          Save
-        </button>
+        </Button>
+        <Button type="submit">Save</Button>
       </div>
     </div>
   );

@@ -66,9 +66,9 @@ const RentalPropertyListCard = () => {
             onClose={() => setIsOpened(false)}
             currentIndex={0}
           />
-          <div className="absolute top-7 right-7 bg-blue-50 rounded py-2 px-3 flex items-center space-x-2">
-            <CameraIcon width={14} height={14} />
-            <span className="text-sm">+13</span>
+          <div className="absolute top-3 right-3 bg-blue-50 rounded py-1 px-2 flex items-center space-x-2">
+            <CameraIcon width={10} height={10} />
+            <span className="text-xs">+13</span>
           </div>
         </div>
       </div>

@@ -39,6 +39,7 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import { DateRange } from "react-day-picker";
 import BackButton from "@/components/BackButton/back-button";
 import { getAllStates } from "@/utils/states";
+import { cn } from "@/lib/utils";
 
 const BranchDashboard = () => {
   const initialState = {
@@ -159,19 +160,18 @@ const BranchDashboard = () => {
   return (
     <div className="custom-flex-col gap-6">
       <div className="w-full gap-2 flex items-center justify-between flex-wrap">
-        <div>
-          <BackButton>
-            <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-              {fetchedBranchData?.branch?.branch_title || "Null"}
-            </h1>
-            <div className="text-text-disabled flex items-center space-x-1">
-              <LocationIcon />
-              <p className="text-sm font-medium">
-                {fetchedBranchData?.branch?.branch_full_address || "Null"}
-              </p>
-            </div>
-          </BackButton>
-        </div>
+        <BackButton as="div" className="items-start">
+          <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
+            {fetchedBranchData?.branch?.branch_title || "Null"}
+          </h1>
+          <div className="text-text-disabled flex items-center space-x-1">
+            <LocationIcon />
+            <p className="text-sm font-medium">
+              {fetchedBranchData?.branch?.branch_full_address || "Null"}
+            </p>
+          </div>
+        </BackButton>
+
         <div className="flex items-center justify-between gap-2 ml-auto flex-wrap">
           <Modal>
             <ModalTrigger asChild>

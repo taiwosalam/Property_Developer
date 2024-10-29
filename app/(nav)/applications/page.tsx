@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 
 // Imports
@@ -11,27 +11,44 @@ import { DocumentssFilterOptionsWithDropdown } from "../documents/data";
 const Applications = () => {
   return (
     <div className="custom-flex-col gap-8">
-      <AutoResizingGrid minWidth={270}>
+      <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total Application"
           newData={34}
           total={657}
+          colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Mobile Application"
           newData={34}
           total={657}
+          colorScheme={2}
         />
         <ManagementStatistcsCard
           title="Web Application"
           newData={34}
           total={657}
+          colorScheme={3}
         />
-      </AutoResizingGrid>
+      </div>
       <div className="custom-flex-col gap-5">
-        <FilterBar azFilter isDateTrue hasGridListToggle={false} onStateSelect={() => { }} pageTitle="Applications" aboutPageModalData={
-          { title: "Applications", description: "This page contains a list of Applications on the platform.", video: "" }
-        } searchInputPlaceholder="Search for units" handleFilterApply={() => { }} filterOptions={[]} filterWithOptionsWithDropdown={DocumentssFilterOptionsWithDropdown} />
+        <FilterBar
+          azFilter
+          isDateTrue
+          hasGridListToggle={false}
+          onStateSelect={() => {}}
+          pageTitle="Applications"
+          aboutPageModalData={{
+            title: "Applications",
+            description:
+              "This page contains a list of Applications on the platform.",
+            video: "",
+          }}
+          searchInputPlaceholder="Search for units"
+          handleFilterApply={() => {}}
+          filterOptions={[]}
+          filterWithOptionsWithDropdown={DocumentssFilterOptionsWithDropdown}
+        />
         <AutoResizingGrid minWidth={350} gap={32}>
           <ApplicationCard />
           <ApplicationCard type="guest" />
