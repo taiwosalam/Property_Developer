@@ -73,6 +73,7 @@ const AgentCommunityPage = () => {
           ) => (
             <ThreadCard
               key={index}
+              id={index}
               name={name}
               picture_url={picture_url}
               role={role}

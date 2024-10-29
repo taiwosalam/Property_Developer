@@ -1,5 +1,5 @@
-import Comment from "@/app/(nav)/tasks/agent-community/[threadId]/preview/comment";
 import { comments } from "@/app/(nav)/tasks/agent-community/data";
+import Comment from "@/app/(nav)/tasks/agent-community/threads/[threadId]/preview/comment";
 
 const ThreadComments = () => {
   return (

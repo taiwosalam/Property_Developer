@@ -8,6 +8,8 @@ export type ThreadCardProps = {
   time: string;
   title: string;
   desc: string;
+  myArticle?: boolean;
+  id: string | number;
   comments: string;
 };
 

@@ -1,27 +1,40 @@
 "use client";
 
-import BackButton from "@/components/BackButton/back-button";
-import Image from "next/image";
+// import BackButton from "@/components/BackButton/back-button";
+import Image, { StaticImageData } from "next/image";
+// import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
-import {
-  propertyMoreDetails,
-  propertySummaryData,
-  readyByData,
-  threadArticle,
-} from "../../../data";
+import Sample from "@/public/empty/SampleProperty.jpeg";
+import Sample2 from "@/public/empty/SampleProperty2.jpeg";
+import Sample3 from "@/public/empty/SampleProperty3.jpeg";
+import Sample4 from "@/public/empty/SampleProperty4.png";
+import Sample5 from "@/public/empty/SampleProperty5.jpg";
+import { PropertyImageSlider } from "@/components/Management/Rent And Unit/rental-property-card";
 import { ChevronLeft, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
 import user1 from "@/public/empty/user1.svg";
 import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
 import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
-import BadgeIcon from "@/components/BadgeIcon/badge-icon";
-import ThreadComments from "@/components/Community/ThreadComments";
+import {
+  comments,
+  companyStats,
+  MyArticleSummaryData,
+  threadArticle,
+} from "../../../data";
+import Comment from "@/components/tasks/announcements/comment";
 import ReadyByCard from "@/components/Community/ReadByCard";
 
-const PreviewPage = () => {
+const ThreadPreview = () => {
   const router = useRouter();
-  const { requestId } = useParams();
+  const { myArticleId } = useParams();
+  const sampleImages: StaticImageData[] = [
+    Sample,
+    Sample2,
+    Sample3,
+    Sample4,
+    Sample5,
+  ];
   return (
     <div>
       <div className="flex items-center justify-between flex-wrap gap-2">
@@ -35,25 +48,27 @@ const PreviewPage = () => {
             <ChevronLeft />
           </button>
           <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
-            Property Title
+            Rent Increase & Maintenance
           </h1>
         </div>
         <Button
-          href={`/tasks/agent-community/property-request/${requestId}/manage`}
+          href={`/tasks/agent-community/my-articles/${myArticleId}/manage`}
           size="sm"
           className="py-2 px-3"
         >
-          Manage Property Request
+          Manage Article
         </Button>
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
+          <div className="slider h-[250px] md:h-[300px] lg:h-[350px] w-full relative px-[20px] md:px-[35px]">
+            <PropertyImageSlider images={sampleImages} thread />
+          </div>
           <ThreadArticle />
           <ThreadComments />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <SummaryCard />
-          <MoreDetailsCard />
+          <Summary />
           <ReadyByCard />
         </div>
       </div>
@@ -61,11 +76,11 @@ const PreviewPage = () => {
   );
 };
 
-export default PreviewPage;
+export default ThreadPreview;
 
 const ThreadArticle = () => {
   return (
-    <div className="">
+    <div className="mt-4">
       {threadArticle.map((article, index) => (
         <p key={index} className="text-sm text-darkText-secondary mt-2">
           {article}
@@ -118,37 +133,33 @@ const ThreadArticle = () => {
   );
 };
 
-// SECOND SIDE
-const SummaryCard = () => {
+const ThreadComments = () => {
   return (
-    <div className="bg-white dark:bg-darkText-primary rounded-lg p-4">
-      <h3> Summary </h3>
-      <div className="flex flex-col mt-4 gap-2">
-        {propertySummaryData.map((item, index) => (
-          <div
-            key={index}
-            className="flex gap-4 items-start justify-between w-full"
-          >
-            <p className="text-[#747474] text-sm">{item.label}</p>
-            <p className="dark:text-white text-black text-sm">{item.value}</p>
-          </div>
-        ))}
-      </div>
+    <div className="mt-4">
+      {comments.map((comment, index) => (
+        <Comment key={comment.id} {...comment} />
+      ))}
     </div>
   );
 };
 
-const MoreDetailsCard = () => {
+// SECOND SIDE
+const Summary = () => {
   return (
-    <div className="bg-white dark:bg-darkText-primary rounded-lg p-4">
+    <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
+      <h2 className="text-black font-semibold text-lg dark:text-white">
+        Summary
+      </h2>
       <div className="flex flex-col mt-4 gap-2">
-        {propertyMoreDetails.map((item, index) => (
+        {MyArticleSummaryData.map((item, index) => (
           <div
+            className="flex gap-4 justify-between w-full items-start"
             key={index}
-            className="flex gap-4 items-start justify-between w-full"
           >
-            <p className="text-[#747474] text-sm">{item.label}</p>
-            <p className="dark:text-white text-black text-sm">{item.value}</p>
+            <p className="text-[#747474] text-sm w-1/2">{item.label}</p>
+            <p className="dark:text-white text-black text-sm flex items-start w-1/2">
+              {item.value}
+            </p>
           </div>
         ))}
       </div>

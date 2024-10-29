@@ -9,6 +9,8 @@ import {
   ManagePropertiesComments,
   SecondSection,
 } from "@/components/Community/ManageRequest";
+import { textareaValue } from "../../../data";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const ManagePropertyRequest = () => {
   const router = useRouter();
@@ -30,19 +32,27 @@ const ManagePropertyRequest = () => {
         </div>
       </div>
 
-      <div className="body w-full flex flex-col lg:flex-row justify-between mt-10 gap-10">
-        <div className="first flex flex-col w-full lg:w-[60%]">
+      <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start mb-20">
+        <div className="lg:w-[60%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <FirstSection
             inputValue="Rent Increase & Maintenance"
-            showTextAreaPlaceholder={false}
+            desc={textareaValue}
           />
           <ManagePropertiesComments />
         </div>
 
-        <div className="second flex flex-col w-full lg:w-[40%]">
+        <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <SecondSection />
         </div>
       </div>
+      <FixedFooter className="flex gap-6 justify-end">
+        <button
+          type="button"
+          className="py-2 px-7 bg-[#FDE9EA] text-[#E9212E] rounded-[4px] text-sm font-medium"
+        >
+          Delete
+        </button>
+      </FixedFooter>
     </>
   );
 };

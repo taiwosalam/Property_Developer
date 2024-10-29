@@ -10,7 +10,6 @@ import Sample3 from "@/public/empty/SampleProperty3.jpeg";
 import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import { PropertyImageSlider } from "@/components/Management/Rent And Unit/rental-property-card";
-import { comments, companyStats, threadArticle } from "../../data";
 import {
   ChevronLeft,
   FbIcon,
@@ -27,11 +26,12 @@ import {
 import user1 from "@/public/empty/user1.svg";
 import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
-import Comment from "./comment";
 import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import SampleUser from "@/public/empty/sample-user.svg";
 import CompanyLogo from "@/public/empty/company-logo.svg";
+import { comments, companyStats, threadArticle } from "../../../data";
+import Comment from "./comment";
 
 const ThreadPreview = () => {
   const router = useRouter();
@@ -67,15 +67,15 @@ const ThreadPreview = () => {
           Create Article
         </Button>
       </div>
-      <div className="flex flex-col lg:flex-row justify-between w-full mt-4 gap-5">
-        <div className="side1 flex w-full lg:w-[60%] flex-col">
+      <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
+        <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <div className="slider h-[250px] md:h-[300px] lg:h-[350px] w-full relative px-[20px] md:px-[35px]">
             <PropertyImageSlider images={sampleImages} thread />
           </div>
           <ThreadArticle />
           <ThreadComments />
         </div>
-        <div className="side2 w-full lg:w-[40%] flex flex-col gap-4">
+        <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <ContributorDetails />
           <CompanySummary />
         </div>

@@ -1,25 +1,24 @@
 "use client";
 
-import {
-  comments,
-  textareaValue,
-} from "@/app/(nav)/tasks/agent-community/data";
+import { comments } from "@/app/(nav)/tasks/agent-community/data";
 import TextArea from "../Form/TextArea/textarea";
-import Comment from "@/app/(nav)/tasks/agent-community/[threadId]/preview/comment";
 import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import { useState } from "react";
 import { ValidationErrors } from "@/utils/types";
+import Comment from "@/app/(nav)/tasks/agent-community/threads/[threadId]/preview/comment";
 
 const textAreaPlaceholderValue =
   "Please be aware that you are responsible for all posts or uploads you make. Post Real Estate, Property related Articles and stay on topic.";
 
 export const FirstSection = ({
   inputValue: initialInputValue,
-  showTextAreaPlaceholder,
+  title,
+  desc,
 }: {
   inputValue?: string;
-  showTextAreaPlaceholder?: boolean;
+  desc?: string;
+  title?: string;
 }) => {
   const [inputValue, setInputValue] = useState(initialInputValue);
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,9 +39,9 @@ export const FirstSection = ({
       <TextArea
         id="property-description"
         label=""
-        placeholder={showTextAreaPlaceholder ? textAreaPlaceholderValue : ""}
+        placeholder={desc ? desc : textAreaPlaceholderValue}
         className="w-full mt-4 min-h-[300px]"
-        value={showTextAreaPlaceholder ? "" : textareaValue}
+        value={desc}
         inputSpaceClassName="!min-h-[400px] text-text-secondary no-italic !leading-60 dark:text-darkText-2"
       />
     </div>
