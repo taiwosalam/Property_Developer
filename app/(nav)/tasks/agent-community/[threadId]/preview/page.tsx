@@ -15,11 +15,11 @@ import { ChevronLeft, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
 import user1 from "@/public/empty/user1.svg";
 import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
-import Comment from "./Comment";
+import Comment from "./comment";
 import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 
-const page = () => {
+const ThreadPreview = () => {
   const router = useRouter();
   const { threadId } = useParams();
   const sampleImages: StaticImageData[] = [
@@ -67,7 +67,7 @@ const page = () => {
   );
 };
 
-export default page;
+export default ThreadPreview;
 
 const ThreadArticle = () => {
   return (
