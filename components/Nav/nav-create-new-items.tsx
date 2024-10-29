@@ -9,6 +9,7 @@ import CreateReminderMOdal from "../tasks/calendars/create-reminder-modal";
 import CreateStaffModal from "../Management/Staff-And-Branches/create-staff-modal";
 import CreateBranchModal from "../Management/Staff-And-Branches/create-branch-modal";
 import NewDisbursementModal from "../Accounting/Disbursement/new-disbursement-modal";
+import CreateTenancyAggrementModal from "../BadgeIcon/create-tenancy-aggrement-modal";
 import AddServiceProviderModal from "../tasks/service-providers/add-service-provider-modal";
 
 export const create_new_items: CreateNewItemsProps = [
@@ -28,7 +29,7 @@ export const create_new_items: CreateNewItemsProps = [
     type: "briefcase_timer",
     label: "tasks",
     content: [
-      { label: "examine", link: "" },
+      { label: "examine", link: "/tasks/examine/create-new" },
       { label: "maintenance", link: "/tasks/maintenance/create-new" },
       { label: "service provider", modal: <AddServiceProviderModal /> },
       { label: "event", modal: <CreateReminderMOdal /> },
@@ -55,7 +56,7 @@ export const create_new_items: CreateNewItemsProps = [
     content: [
       {
         label: "tenancy agreement",
-        link: "/documents/create-tenancy-agreement",
+        modal: <CreateTenancyAggrementModal />,
       },
     ],
   },

@@ -38,7 +38,7 @@ const Examine = () => {
             colorScheme={1}
           />
         </div>
-        <Button href="" className="page-header-button">
+        <Button href="/tasks/examine/create-new" className="page-header-button">
           + create new
         </Button>
       </div>

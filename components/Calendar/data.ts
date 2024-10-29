@@ -110,6 +110,7 @@ export class Calendar implements CalendarClassData {
 
     return {
       date,
+      events: events,
       isToday: isToday(date),
       isCurrentMonth: isSameMonth(date, this.targetDate),
 
