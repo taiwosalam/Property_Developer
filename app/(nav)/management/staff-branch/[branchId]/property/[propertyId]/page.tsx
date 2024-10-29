@@ -1,7 +1,7 @@
 import PropertyPreview from "@/components/Management/Properties/property-preview";
 
 const BranchPPropertyPreview = () => {
-  return <PropertyPreview />;
+  return <PropertyPreview images={[]} type="gated" />;
 };
 
 export default BranchPPropertyPreview;
