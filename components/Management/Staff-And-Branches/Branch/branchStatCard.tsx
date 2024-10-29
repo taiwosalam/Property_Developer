@@ -6,8 +6,10 @@ import {
   CardBlueWalletIcon,
   CardReceiveIcon,
 } from "@/public/icons/icons";
-
+import { formatNumber } from "@/utils/number-formatter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useThemeStore } from "@/store/themeStore";
+import { hexToRgb } from "@/utils/rgbaToHex";
 
 const BranchStatCard = ({
   title,
@@ -18,17 +20,17 @@ const BranchStatCard = ({
   balance: number;
   upvalue: number;
 }) => {
-  const formatNumber = (num: number) => {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+  const primary = useThemeStore((state) => state.primaryColor);
   return (
     <Card className="border-none shadow-none rounded-[8px] bg-[#FAFAFA] dark:bg-darkText-primary">
       <CardHeader className="flex flex-row flex-wrap gap-2 items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <CardTitle className="text-sm font-medium text-text-primary opacity-70 dark:text-darkText-1">
+          {title}
+        </CardTitle>
         <div
           className={`${
             title === "Total Balance"
-              ? "bg-brand-9 bg-opacity-20 text-white darK:text-white"
+              ? `bg-brand-2 bg-opacity-20 text-brand-10 darK:text-white`
               : title === "Total Expenses"
               ? "bg-status-error-1"
               : "bg-status-success-1"
