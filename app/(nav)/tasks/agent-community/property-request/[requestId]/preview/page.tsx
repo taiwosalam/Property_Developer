@@ -2,7 +2,7 @@
 
 import BackButton from "@/components/BackButton/back-button";
 import Image, { StaticImageData } from "next/image";
-import { useKeenSlider } from "keen-slider/react";
+// import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import {
   comments,
@@ -11,11 +11,7 @@ import {
   readyByData,
   threadArticle,
 } from "../../../data";
-import {
-  ChevronLeft,
-  ThumbsDown,
-  ThumbsUp,
-} from "@/public/icons/icons";
+import { ChevronLeft, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
 import user1 from "@/public/empty/user1.svg";
 import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
@@ -171,7 +167,6 @@ const MoreDetailsCard = () => {
   );
 };
 
-
 const ReadyByCard = () => {
   return (
     <div className="bg-[#EFF6FF] dark:bg-darkText-primary rounded-lg p-4">
@@ -200,4 +195,4 @@ const ReadyByCard = () => {
       ))}
     </div>
   );
-};  
+};
