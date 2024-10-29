@@ -12,6 +12,7 @@ import {
   ThumbsUp,
 } from "@/public/icons/icons";
 
+const link = "/tasks/agent-community/";
 const ThreadCard = ({
   name,
   picture_url,
@@ -21,10 +22,14 @@ const ThreadCard = ({
   desc,
   time,
   comments,
+  myArticle,
+  id,
 }: ThreadCardProps) => {
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md">
-      <Link href="/tasks/agent-community/123/preview">
+      <Link
+        href={`${link}${myArticle ? "my-articles" : "threads"}/${id}/preview`}
+      >
         <ThreadHeader
           user_pics={user_pics}
           name={name}

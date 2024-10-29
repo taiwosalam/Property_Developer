@@ -2,11 +2,16 @@ import { useState } from "react";
 import Image from "next/image";
 import Input from "@/components/Form/Input/input";
 import { DeleteIconOrange, PlusIcon } from "@/public/icons/icons";
+const Image1 = "/empty/SampleLandlord.jpeg";
+const Image2 = "/empty/SampleLandlord.jpeg";
+const Image3 = "/empty/SampleLandlord.jpeg";
 
-const AddPhotoAndVideo = () => {
+const AddPhotoAndVideo = ({ editing }: { editing?: boolean }) => {
   // HANDLE IMAGES UPLOAD
   const MAX_FILE_SIZE_MB = 2;
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>(
+    editing ? [Image1, Image2, Image3] : []
+  );
   const MAX_IMAGES = 4;
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let files = Array.from(e.target.files || []);

@@ -7,10 +7,6 @@ import {
   FirstSection,
   StateAndLocalGovt,
 } from "@/components/Community/ManageRequest";
-import Image from "next/image";
-import { MAX_FILE_SIZE_MB } from "@/data";
-import { DeleteIconOrange, PlusIcon } from "@/public/icons/icons";
-import Input from "@/components/Form/Input/input";
 import AddPhotoAndVideo from "@/components/Community/AddPhotoAndVideo";
 
 const CreateArticle = () => {
@@ -35,7 +31,7 @@ const CreateArticle = () => {
 
       <div className="body w-full flex flex-col lg:flex-row justify-between mt-10 gap-10">
         <div className="first flex flex-col w-full lg:w-[60%]">
-          <FirstSection inputValue="" showTextAreaPlaceholder={true} />
+          <FirstSection inputValue="" />
         </div>
 
         <div className="second flex flex-col w-full lg:w-[40%]">

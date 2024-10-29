@@ -37,16 +37,16 @@ const MyArticlePage = () => {
           newData={34}
           total={657}
         />
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
-                + Community Board
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-                <CommunityBoardModal lists={lists} />
-            </ModalContent>
-          </Modal>
+        <Modal>
+          <ModalTrigger asChild>
+            <Button type="button" className="page-header-button">
+              + Community Board
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <CommunityBoardModal lists={lists} />
+          </ModalContent>
+        </Modal>
       </div>
       <FilterBar
         hasGridListToggle={false}
@@ -81,16 +81,14 @@ const MyArticlePage = () => {
               desc={desc}
               comments={comments}
               user_pics={user_pics}
+              myArticle={true}
+              id={index}
             />
           )
         )}
       </div>
       <div className="pagination">
-        <Pagination
-          totalPages={5}
-          currentPage={1}
-          onPageChange={() => {}}
-        />
+        <Pagination totalPages={5} currentPage={1} onPageChange={() => {}} />
       </div>
     </div>
   );
