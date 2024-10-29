@@ -693,11 +693,17 @@ export const PlayIconButton2 = () => {
   );
 };
 
-export const LocationIcon = ({ color }: { color?: string }) => {
+export const LocationIcon = ({
+  color,
+  size = 15,
+}: {
+  color?: string;
+  size?: number;
+}) => {
   return (
     <svg
-      width="13"
-      height="17"
+      width={size}
+      height={size}
       viewBox="0 0 13 17"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
