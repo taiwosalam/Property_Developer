@@ -5,6 +5,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
 import { CalendarIcon } from "@/public/icons/icons";
 import { styled } from "@mui/system";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 // Override MUI styles using styled
 const CustomStyledDatePicker = styled(DatePicker)(({ theme }) => ({
@@ -51,6 +52,10 @@ export default function CustomDatePicker({
   maxDate,
   disabled,
 }: CustomDatePickerProps) {
+  const isDarkMode = useDarkMode();
+  const CustomCalendarIcon = () => (
+    <CalendarIcon {...(isDarkMode && { color: "#fff" })} />
+  );
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div
@@ -72,7 +77,7 @@ export default function CustomDatePicker({
             onChange?.(date);
           }}
           slots={{
-            openPickerIcon: CalendarIcon,
+            openPickerIcon: CustomCalendarIcon,
           }}
           slotProps={{
             textField: {

@@ -1,12 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import React, { useState } from "react";
+import { useState } from "react";
 
 // Images
-import Avatar from "@/public/empty/avatar-1.svg";
 import { ExclamationMark } from "@/public/icons/icons";
-import ThreeDotsVertical from "@/public/icons/three-dots-vertical.svg";
 
 // Imports
 import {
@@ -18,8 +15,6 @@ import {
 } from "@/components/ui/select";
 
 import { DateRange } from "react-day-picker";
-import Picture from "@/components/Picture/picture";
-import Pagination from "@/components/Pagination/pagination";
 import SearchInput from "@/components/SearchInput/search-input";
 import FilterButton from "@/components/FilterButton/filter-button";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
@@ -27,14 +22,18 @@ import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import {
-  Dropdown,
-  DropdownContent,
-  DropdownTrigger,
-} from "@/components/Dropdown/dropdown";
-import { accountingStatementOptionsWithDropdown } from "./data";
+  accountingStatementOptionsWithDropdown,
+  statementTableFields,
+  statementTableData,
+} from "./data";
 import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
+import CustomTable from "@/components/Table/table";
+import type { DataItem } from "@/components/Table/types";
+import ExportButton from "@/components/reports/export-button";
+import { useRouter } from "next/navigation";
 
 const Statement = () => {
+  const router = useRouter();
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >();
@@ -77,6 +76,25 @@ const Statement = () => {
     console.log("Filter applied:", filters);
     // Add filtering logic here for branches
   };
+
+  const handleRowClick = (item: DataItem) => {
+    router.push(`/accounting/statement/${item.payment_id}/preview`);
+  };
+
+  const transformedTableData = statementTableData.map((item) => ({
+    ...item,
+    credit: (
+      <p className={item.credit ? "text-status-success-3" : ""}>
+        {item.credit ? item.credit : "--- ---"}
+      </p>
+    ),
+    debit: (
+      <p className={item.debit ? "text-status-error-2" : ""}>
+        {item.debit ? item.debit : "--- ---"}
+      </p>
+    ),
+  }));
+
   return (
     <div className="custom-flex-col gap-10">
       <div className="custom-flex-col gap-6">
@@ -122,7 +140,10 @@ const Statement = () => {
               </Select>
             </div>
             <div className="flex items-center gap-4 flex-wrap">
-              <SearchInput placeholder="Search for Statement" />
+              <SearchInput
+                placeholder="Search for Statement"
+                className="max-w-[255px]"
+              />
               <Modal>
                 <ModalTrigger asChild>
                   <FilterButton />
@@ -140,21 +161,8 @@ const Statement = () => {
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <Link
-                  href={"/accounting/expenses/export"}
-                  className="border border-[#D0D5DD] dark:bg-darkText-primary dark:border-darkText-2 py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]"
-                >
-                  <Picture src={"/icons/pdf-icon.svg"} size={20} alt="pdf" />
-                  <span>Export</span>
-                </Link>
-                <div className="border border-[#D0D5DD] dark:bg-darkText-primary dark:border-darkText-2 py-[10px] px-4 rounded-[8px] flex items-center gap-1 text-sm font-medium font-[#344054]">
-                  <Picture
-                    src={"/icons/excel-icon.svg"}
-                    size={20}
-                    alt="excep"
-                  />
-                  <span>Export</span>
-                </div>
+                <ExportButton type="pdf" href="/accounting/expenses/export" />
+                <ExportButton type="csv" href="/accounting/expenses/export" />
               </div>
             </div>
           </div>
@@ -177,85 +185,18 @@ const Statement = () => {
           </AutoResizingGrid>
         </div>
       </div>
-      <div className="custom-flex-col gap-8">
-        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-          <table className="dash-table">
-            <colgroup>
-              <col className="min-w-[72px]" />
-              <col span={6} />
-              <col className="min-w-[72px]" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th></th>
-                <th>name</th>
-                <th>payment ID</th>
-                <th>details</th>
-                <th>credit</th>
-                <th>debit</th>
-                <th>date</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array(5)
-                .fill(null)
-                .map((_, idx) => (
-                  <tr key={idx}>
-                    <td className="flex items-center justify-center">
-                      <Picture
-                        src={Avatar}
-                        alt="profile picture"
-                        size={40}
-                        rounded
-                      />
-                    </td>
-                    <td>
-                      <p>Abimbola Adedeji</p>
-                    </td>
-                    <td>
-                      <p>22132876554444</p>
-                    </td>
-                    <td>
-                      <p>Rent cost: Start date: Sept 22, 2020</p>
-                    </td>
-                    <td>
-                      <p className="text-status-success-3">₦ 100,000</p>
-                    </td>
-                    <td>
-                      <p className="text-status-error-primary">--- ---</p>
-                    </td>
-                    <td>
-                      <p>12/12/12</p>
-                    </td>
-                    <td className="flex items-center justify-center">
-                      <Dropdown>
-                        <DropdownTrigger className="flex items-center justify-center">
-                          <Picture
-                            src={ThreeDotsVertical}
-                            alt="three dots vertical"
-                            size={24}
-                          />
-                        </DropdownTrigger>
-                        <DropdownContent direction="up">
-                          <div className="w-[200px] bg-white dark:bg-darkText-primary custom-flex-col py-2 gap-2 text-text-secondary dark:text-darkText-1 text-base font-bold capitalize text-center">
-                            <Link
-                              href={"/accounting/statement/1/preview"}
-                              className="p-2"
-                            >
-                              Preview Statement
-                            </Link>
-                          </div>
-                        </DropdownContent>
-                      </Dropdown>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-        <Pagination totalPages={10} currentPage={1} onPageChange={() => {}} />
-      </div>
+      <CustomTable
+        fields={statementTableFields}
+        data={transformedTableData}
+        tableHeadStyle={{ height: "76px" }}
+        tableHeadCellSx={{ fontSize: "1rem" }}
+        tableBodyCellSx={{
+          fontSize: "1rem",
+          paddingTop: "12px",
+          paddingBottom: "12px",
+        }}
+        handleSelect={handleRowClick}
+      />
     </div>
   );
 };

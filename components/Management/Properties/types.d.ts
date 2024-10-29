@@ -21,7 +21,8 @@ export interface AddPropertyOptionsViewProps {
 }
 
 export interface PropertyPreviewProps {
-  images?: any[];
+  images: string[];
+  type: "rental" | "gated";
 }
 
 export type UnitCardDataProps = keyof typeof unit_card_data_props;
