@@ -46,16 +46,18 @@ const CalendarComponent = () => {
       }}
     >
       <div
-        className="w-[618px] custom-flex-col gap-4 overflow-hidden rounded-lg bg-white dark:bg-black"
+        className="w-full max-w-[618px] custom-flex-col gap-4 overflow-hidden rounded-lg bg-white dark:bg-black"
         style={{
           border: "1px solid rgba(193, 194, 195, 0.40)",
           boxShadow:
             "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
         }}
       >
-        <div className="p-[18px] bg-[#eff6ff81] custom-flex-col gap-2">
+        <div className="p-[18px] pb-0 bg-[#eff6ff81] custom-flex-col gap-2">
           <CalendarHeader />
-          <CalendarEventsTags events={calendar_event_tags} />
+          <div className="w-full overflow-x-auto pb-[18px]">
+            <CalendarEventsTags events={calendar_event_tags} />
+          </div>
         </div>
         <div className="custom-flex-col gap-4 p-[18px]">
           <div className="custom-flex-col gap-4">
@@ -70,7 +72,11 @@ const CalendarComponent = () => {
             style={{ backgroundColor: "rgba(120, 122, 126, 0.20)" }}
           />
           <div className="flex justify-end">
-            <Button size="sm_medium" className="py-2 px-8">
+            <Button
+              size="sm_medium"
+              className="py-2 px-8"
+              href="/tasks/calendars/manage"
+            >
               manage
             </Button>
           </div>

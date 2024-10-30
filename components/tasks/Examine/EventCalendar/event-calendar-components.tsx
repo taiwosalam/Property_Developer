@@ -59,12 +59,18 @@ export const EventCalendarDay: React.FC<EventCalendarDayProps> = ({
   const { right: removeRight, bottom: removeBottom } = removeBorder;
 
   return (
-    <div className="w-full h-[120px] custom-flex-col">
+    <div
+      className={clsx("w-full h-[120px] custom-flex-col", {
+        "hover:bg-neutral-2 duration-150": isCurrentMonth,
+      })}
+    >
       <div className="flex h-full flex-1">
         <div className="flex-1 custom-flex-col justify-between">
           <button
-            onClick={onClick}
-            className="flex flex-1 justify-end pt-[14px] pb-[7px] pr-6"
+            onClick={isCurrentMonth ? onClick : undefined}
+            className={clsx("flex flex-1 justify-end pt-[14px] pb-[7px] pr-6", {
+              "cursor-not-allowed": !isCurrentMonth,
+            })}
           >
             <p
               className={clsx("text-base font-medium", {
