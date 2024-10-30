@@ -62,11 +62,11 @@ export const PropertyRequestSecondSection = () => {
     >
       <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
         <h2>Request Types</h2>
-        <Select
+        {/* <Select
           id="property-category"
           label="Property Categories"
           options={["Category 1", "Category 2"]}
-        />
+        /> */}
         <PropertyRequestUnitType />
         {/* <Select
           id="bedrooms"

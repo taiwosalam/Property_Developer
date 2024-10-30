@@ -103,6 +103,30 @@ export const unitTypes = {
   facility: ["land", "industry & factory"],
 };
 
+export const unitFeature = {
+  lands: ["sqm", "half plot", "plot", "acre", "hectare"], // This can stay for general land sizes
+  buildings: ["swimming pool", "gym", "garden"], // Example building features
+  commercialLand: [
+    "joint venture",
+    "agriculture land",
+    "farm land",
+    "industrial land",
+    "factory land",
+    "commercial land",
+    "mass housing land",
+    "estate land",
+    "mixed use land",
+    "others",
+  ],
+  residentialLand: [
+    "sqm",
+    "half plot",
+    "plot",
+    "acre",
+    "hectare",
+  ],
+};
+
 export type Categories = keyof typeof unitTypes;
 
 export const unitSubtypes = {
