@@ -1,3 +1,6 @@
+// import { states } from "@/data";
+import { getAllStates } from "@/utils/states";
+
 export const inspectionFilterOptionsWithDropdown = [
   {
     label: "Property",
@@ -26,13 +29,16 @@ export const articleOptions = [
 ];
 
 export const propertyRequestOptions = [
-  {
-    label: "Property",
-    value: [
-      { label: "Property 1", value: "Property1" },
-      { label: "Property 2", value: "Property2" },
-      { label: "Property 3", value: "Property3" },
-    ],
-  },
+  { label: "All Property Request", value: "all" },
+  { label: "Trending Property Request", value: "trending" },
+  { label: "New Property Request", value: "new" },
 ];
 
+const states = getAllStates();
+
+export const stateOptions = [
+  {
+    label: "State",
+    value: states.map((state) => ({ label: state, value: state })),
+  },
+];

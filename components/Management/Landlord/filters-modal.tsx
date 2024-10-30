@@ -9,7 +9,10 @@ import {
   FilterOptionWithRadio,
 } from "./types";
 import { CancelIcon, CheckboxCheckedIcon } from "@/public/icons/icons";
-import { articleOptions } from "@/app/(nav)/tasks/inspections/data";
+import {
+  articleOptions,
+  propertyRequestOptions,
+} from "@/app/(nav)/tasks/inspections/data";
 
 const FilterModal: React.FC<FilterModalProps> = ({
   filterOptionsWithDropdown,
@@ -284,18 +287,23 @@ const FilterModal: React.FC<FilterModalProps> = ({
   };
 
   const renderPropertyRequest = () => {
-    return (
-      <div className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary">
-        <label className="text-sm capitalize dark:text-black">Property</label>
+    return propertyRequestOptions.map((option) => (
+      <div
+        key={option.value}
+        className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
+      >
+        <label className="text-sm capitalize dark:text-black">
+          {option.label}
+        </label>
         <input
           type="checkbox"
-          value="Property"
+          value={option.value}
           className="cursor-pointer"
-          onChange={() => handleCheckboxChange("Property")}
-          checked={selectedFilters.includes("Property")}
+          onChange={() => handleCheckboxChange(option.value)}
+          checked={selectedFilters.includes(option.value)}
         />
       </div>
-    );
+    ));
   };
 
   // Content for the date options

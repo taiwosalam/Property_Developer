@@ -11,6 +11,7 @@ import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModa
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { PlusIcon } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
+import { stateOptions } from "../inspections/data";
 
 const lists = [
   {
@@ -68,7 +69,7 @@ const AgentCommunityPage = () => {
         handleFilterApply={() => {}}
         isDateTrue
         filterOptions={[]}
-        filterWithOptionsWithDropdown={[]}
+        filterWithOptionsWithDropdown={stateOptions}
         article={true}
       />
 
