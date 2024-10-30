@@ -1,12 +1,10 @@
 "use client";
 
-import BackButton from "@/components/BackButton/back-button";
 import Image from "next/image";
 import "keen-slider/keen-slider.min.css";
 import {
   propertyMoreDetails,
   propertySummaryData,
-  readyByData,
   threadArticle,
 } from "../../../data";
 import { ChevronLeft, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
@@ -15,16 +13,16 @@ import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
 import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
-import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import ThreadComments from "@/components/Community/ThreadComments";
-import ReadyByCard from "@/components/Community/ReadByCard";
+import { ContributorDetails } from "@/components/Community/Contributor";
+import CompanySummary from "@/components/Community/CompanySummary";
 
 const PreviewPage = () => {
   const router = useRouter();
   const { requestId } = useParams();
   return (
     <div>
-      <div className="flex items-center justify-between flex-wrap gap-2">
+      <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
         <div className="flex items-center gap-1 mb-1">
           <button
             type="button"
@@ -39,22 +37,22 @@ const PreviewPage = () => {
           </h1>
         </div>
         <Button
-          href={`/tasks/agent-community/property-request/${requestId}/manage`}
+          href={`/tasks/agent-community/my-properties-request/create`}
           size="sm"
           className="py-2 px-3"
         >
-          Manage Property Request
+          Create Property Request
         </Button>
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
+          <MoreDetailsCard />
           <ThreadArticle />
           <ThreadComments />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <SummaryCard />
-          <MoreDetailsCard />
-          <ReadyByCard />
+          <ContributorDetails />
+          <CompanySummary />
         </div>
       </div>
     </div>

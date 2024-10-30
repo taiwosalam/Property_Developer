@@ -4,7 +4,7 @@ import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import {
-  FirstSection,
+  PropertyRequestFirstSection,
   StateAndLocalGovt,
 } from "@/components/Community/ManageRequest";
 import AddPhotoAndVideo from "@/components/Community/AddPhotoAndVideo";
@@ -33,8 +33,11 @@ const ManageMyArticle = () => {
       </div>
 
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
-        <div className="lg:w-[60%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <FirstSection inputValue="Rent Increase & Maintenance" desc={desc} />
+        <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
+          <PropertyRequestFirstSection
+            placeholderText="Rent Increase & Maintenance"
+            desc={desc}
+          />
         </div>
 
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">

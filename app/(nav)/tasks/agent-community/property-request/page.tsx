@@ -12,6 +12,8 @@ import Button from "@/components/Form/Button/button";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
 import { AgentCommunityRequestCardProps } from "../type";
 import Pagination from "@/components/Pagination/pagination";
+import { PlusIcon } from "@/public/icons/icons";
+import { useRouter } from "next/navigation";
 
 const lists = [
   {
@@ -49,59 +51,64 @@ const transformToPropertyRequestCardProps = (
 };
 
 const PropertyRequest = () => {
+  const router = useRouter();
+  const handleCreatePropertyRequestClick = () => {
+    router.push("/tasks/agent-community/my-properties-request/create");
+  };
   return (
     <div className="space-y-9">
-      <div className="relative">
-        <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
-          <ManagementStatistcsCard
-            title="Total Request"
-            newData={34}
-            total={657}
-          />
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
-                + Community Board
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <CommunityBoardModal lists={lists} />
-            </ModalContent>
-          </Modal>
-        </div>
-        <FilterBar
-          azFilter
-          onStateSelect={() => {}}
-          pageTitle="Property Request"
-          aboutPageModalData={{
-            title: "Property Request",
-            description:
-              "This page contains a list of Property Request on the platform.",
-          }}
-          searchInputPlaceholder="Search Property Request"
-          handleFilterApply={() => {}}
-          isDateTrue
-          filterOptions={[]}
-          filterWithOptionsWithDropdown={[]}
-          hasGridListToggle={false}
+      <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
+        <ManagementStatistcsCard
+          title="Total Request"
+          newData={34}
+          total={657}
         />
-        <AutoResizingGrid gap={28} minWidth={400}>
-          {PropertyRequestData.map((details, index) => (
-            <PropertyRequestCard
-              key={index}
-              {...transformToPropertyRequestCardProps(details)}
-            />
-          ))}
-        </AutoResizingGrid>
-        <div className="pagination">
-          <Pagination totalPages={5} currentPage={1} onPageChange={() => {}} />
-        </div>
+        <Modal>
+          <ModalTrigger asChild>
+            <Button type="button" className="page-header-button">
+              + Community Board
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <CommunityBoardModal lists={lists} />
+          </ModalContent>
+        </Modal>
+      </div>
+      <FilterBar
+        azFilter
+        onStateSelect={() => {}}
+        pageTitle="Property Request"
+        aboutPageModalData={{
+          title: "Property Request",
+          description:
+            "This page contains a list of Property Request on the platform.",
+        }}
+        searchInputPlaceholder="Search Property Request"
+        handleFilterApply={() => {}}
+        isDateTrue
+        filterOptions={[]}
+        filterWithOptionsWithDropdown={[]}
+        hasGridListToggle={false}
+      />
+      <AutoResizingGrid gap={28} minWidth={400}>
+        {PropertyRequestData.map((details, index) => (
+          <PropertyRequestCard
+            key={index}
+            {...transformToPropertyRequestCardProps(details)}
+          />
+        ))}
+      </AutoResizingGrid>
+      <div className="pagination">
+        <Pagination totalPages={5} currentPage={1} onPageChange={() => {}} />
+      </div>
 
-        <div className="absolute z-50 top-60 right-0">
-          <div className="fixed bg-black">
-            <Button>Create</Button>
-          </div>
-        </div>
+      <div className="top-80 right-4 fixed rounded-full">
+        <button
+          onClick={handleCreatePropertyRequestClick}
+          className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
+        >
+          <PlusIcon />
+        </button>
       </div>
     </div>
   );

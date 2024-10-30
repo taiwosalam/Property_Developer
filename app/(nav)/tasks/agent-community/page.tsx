@@ -9,6 +9,8 @@ import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+import { PlusIcon } from "@/public/icons/icons";
+import { useRouter } from "next/navigation";
 
 const lists = [
   {
@@ -24,11 +26,15 @@ const lists = [
   {
     title: "My Properties Request",
     desc: "Evaluate the property request you've generated, comments received, and how you've managed them.",
-    link: "#",
+    link: "/tasks/agent-community/my-properties-request",
   },
 ];
 
 const AgentCommunityPage = () => {
+  const router = useRouter();
+  const handleCreateArticleClick = () => {
+    router.push("/tasks/agent-community/my-articles/create");
+  };
   return (
     <div className="space-y-7">
       <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
@@ -88,6 +94,14 @@ const AgentCommunityPage = () => {
       </AutoResizingGrid>
       <div className="pagination">
         <Pagination totalPages={5} currentPage={1} onPageChange={() => {}} />
+      </div>
+      <div className="top-80 right-5 fixed rounded-full">
+        <button
+          onClick={handleCreateArticleClick}
+          className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
+        >
+          <PlusIcon />
+        </button>
       </div>
     </div>
   );
