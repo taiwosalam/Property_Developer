@@ -14,15 +14,18 @@ import Select from "@/components/Form/Select/select";
 import DateInput from "@/components/Form/DateInput/date-input";
 import TextArea from "@/components/Form/TextArea/textarea";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
+import { ModalTrigger } from "@/components/Modal/modal";
 
 const CreateExamineDate: React.FC<CreateExamineDateProps> = ({ next }) => {
   return (
     <div className="custom-flex-col gap-4 rounded-lg overflow-hidden bg-white w-[600px]">
       <div className="custom-flex-col gap-[2px] py-4 px-6">
         <div className="flex justify-end">
-          <button>
-            <CancelIcon />
-          </button>
+          <ModalTrigger close asChild>
+            <button>
+              <CancelIcon />
+            </button>
+          </ModalTrigger>
         </div>
         <div className="flex justify-center">
           <p className="text-text-secondary text-base font-medium capitalize">

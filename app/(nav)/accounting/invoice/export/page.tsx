@@ -6,7 +6,7 @@ import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
 import { empty } from "@/app/config";
 import BackButton from "@/components/BackButton/back-button";
 import CustomTable from "@/components/Table/table";
-import { invoiceTableData, invoiceTableFields } from "../data";
+import { invoiceTableData, invoiceExportTableFields } from "../data";
 import Signature from "@/components/Signature/signature";
 import ExportPageFooter from "@/components/reports/export-page-footer";
 
@@ -60,7 +60,7 @@ const ExportInvoice = () => {
           />
         </AutoResizingGrid>
         <CustomTable
-          fields={invoiceTableFields}
+          fields={invoiceExportTableFields}
           data={invoiceTableData}
           tableHeadStyle={{ height: "76px" }}
           tableHeadCellSx={{ fontSize: "1rem" }}
