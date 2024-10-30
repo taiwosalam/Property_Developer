@@ -55,7 +55,7 @@ const ReceiptPreviewPage = () => {
             </div>
             <div className="w-full h-[2px] bg-opacity-20 bg-[#C0C2C8]" />
             <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1">
-              <p className="text-[#747474]">total package</p>
+              <p className="text-[#747474]">total payment</p>
               <p className="text-brand-primary text-xl font-bold">₦1,950,000</p>
             </div>
           </div>

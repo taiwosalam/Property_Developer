@@ -52,7 +52,7 @@ const ManageInvoice = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton as="p">Back</BackButton>
+        <BackButton as="p">Manage Invoice</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -136,7 +136,7 @@ const ManageInvoice = () => {
               />
             </div>
           </div>
-          <p className="font-normal text-[14px] text-[#6C6D6D] dark:text-darkText-1 text-center">
+          <p className="font-normal text-[14px] text-[#6C6D6D] dark:text-darkText-1">
             <span className="text-status-error-primary text-2xl">*</span>
             Invoices with payment cannot be edited or deleted.
           </p>

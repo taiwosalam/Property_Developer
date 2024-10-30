@@ -29,7 +29,7 @@ const ManageExpenses = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[150px] sm:pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton>Back</BackButton>
+        <BackButton>Manage Expenses</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
