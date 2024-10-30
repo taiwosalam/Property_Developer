@@ -7,6 +7,10 @@ export interface DropdownProps {
   className?: string;
   style?: CSSProperties;
   children: React.ReactNode;
+  state?: {
+    isOpen: boolean;
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  };
 }
 
 export interface DropdownTriggerProps

@@ -10,6 +10,7 @@ import {
   CalendarTableFields,
 } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import CalendarComponent from "@/components/Calendar/calendar";
 
 const CalendarPage = () => {
   const access_token = useAuthStore((state) => state.access_token);
@@ -41,21 +42,27 @@ const CalendarPage = () => {
 
   return (
     <div className="space-y-9">
-      <FilterBar
-        azFilter
-        onStateSelect={() => {}}
-        pageTitle="Calendar"
-        aboutPageModalData={{
-          title: "Calendar",
-          description: "This page contains a list of Calendar on the platform.",
-        }}
-        searchInputPlaceholder="Search"
-        handleFilterApply={() => {}}
-        isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={calendarsrFilterOptionsWithDropdown}
-        hasGridListToggle={false}
-      />
+      <div className="custom-flex-col gap-8">
+        <FilterBar
+          azFilter
+          onStateSelect={() => {}}
+          pageTitle="Calendar"
+          aboutPageModalData={{
+            title: "Calendar",
+            description:
+              "This page contains a list of Calendar on the platform.",
+          }}
+          searchInputPlaceholder="Search"
+          handleFilterApply={() => {}}
+          isDateTrue
+          filterOptions={[]}
+          filterWithOptionsWithDropdown={calendarsrFilterOptionsWithDropdown}
+          hasGridListToggle={false}
+        />
+        <div className="flex gap-10">
+          <CalendarComponent />
+        </div>
+      </div>
       <div className="page-title-container">
         <PageTitle title="up coming events" />
         <p className="text-text-label dark:text-darkText-1 text-sm md:text-base font-medium">

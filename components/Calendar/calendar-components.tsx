@@ -22,7 +22,9 @@ export const CalendarEventTagItem: React.FC<CalendarEventTagItemProps> = ({
       className={clsx("w-[5px] h-[5px]", { "rounded-full": rounded })}
       style={{ backgroundColor: color }}
     ></div>
-    <p className="text-text-label text-sm font-medium capitalize">{title}</p>
+    <p className="text-text-label text-sm font-medium capitalize whitespace-nowrap">
+      {title}
+    </p>
   </div>
 );
 
@@ -38,19 +40,22 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({
     className={clsx(
       "relative w-8 h-8 m-auto rounded-sm flex items-center justify-center",
       {
-        "bg-white": isToday,
         "opacity-50": !isCurrentMonth,
+        "bg-white": isToday && isCurrentMonth,
       }
     )}
     style={{
       backgroundColor: !isToday && isCurrentMonth ? color : undefined,
-      boxShadow: isToday ? " 0px 0px 5px 0px rgba(0, 0, 0, 0.25)" : undefined,
+      boxShadow:
+        isToday && isCurrentMonth
+          ? " 0px 0px 5px 0px rgba(0, 0, 0, 0.25)"
+          : undefined,
     }}
   >
     <p
       className={clsx("text-base font-normal", {
-        "text-white": hasEvent && !isToday,
-        "text-text-tertiary": !hasEvent,
+        "text-white": hasEvent && !isToday && isCurrentMonth,
+        "text-text-tertiary": (!hasEvent && !isToday) || !isCurrentMonth,
       })}
     >
       {date.getDate()}
