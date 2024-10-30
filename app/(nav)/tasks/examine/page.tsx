@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authstrore";
 import { examineFilterOptionsWithDropdown, getAllExamine } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import CreateExamineModal from "@/components/tasks/Examine/create-examine-modal";
 
 const Examine = () => {
   const access_token = useAuthStore((state) => state.access_token);
@@ -38,9 +40,14 @@ const Examine = () => {
             colorScheme={1}
           />
         </div>
-        <Button href="/tasks/examine/create-new" className="page-header-button">
-          + create new
-        </Button>
+        <Modal>
+          <ModalTrigger asChild>
+            <Button className="page-header-button">+ create new</Button>
+          </ModalTrigger>
+          <ModalContent>
+            <CreateExamineModal />
+          </ModalContent>
+        </Modal>
       </div>
       <FilterBar
         azFilter

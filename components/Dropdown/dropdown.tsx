@@ -14,16 +14,22 @@ import { DropdownContext, useDropdownContext } from "./dropdown-context";
 
 export const Dropdown: React.FC<DropdownProps> = ({
   style,
+  state,
   children,
   className,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useOutsideClick(dropdownRef, () => setIsOpen(false));
+  const data = state || {
+    isOpen,
+    setIsOpen,
+  };
+
+  useOutsideClick(dropdownRef, () => data.setIsOpen(false));
 
   return (
-    <DropdownContext.Provider value={{ isOpen, setIsOpen }}>
+    <DropdownContext.Provider value={data}>
       <div
         className={clsx("relative", className)}
         ref={dropdownRef}
@@ -60,10 +66,12 @@ export const DropdownTrigger: React.FC<DropdownTriggerProps> = ({
 };
 
 export const DropdownContent: React.FC<DropdownContentProps> = ({
+  style,
   children,
   className,
   direction = "down",
   position = "right",
+  ...props
 }) => {
   const { isOpen } = useDropdownContext();
 
@@ -84,7 +92,9 @@ export const DropdownContent: React.FC<DropdownContentProps> = ({
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
+        ...style,
       }}
+      {...props}
     >
       {children}
     </div>
