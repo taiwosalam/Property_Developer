@@ -20,6 +20,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   title = "Filters by",
   date,
   article,
+  propertyRequest,
 }) => {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [activeDropdownOption, setActiveDropdownOption] =
@@ -263,24 +264,37 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   //content for the article
   const renderArticle = () => {
+    return articleOptions.map((option) => (
+      <div
+        key={option.value}
+        className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
+      >
+        <label className="text-sm capitalize dark:text-black">
+          {option.label}
+        </label>
+        <input
+          type="checkbox"
+          value={option.value}
+          className="cursor-pointer"
+          onChange={() => handleCheckboxChange(option.value)}
+          checked={selectedFilters.includes(option.value)}
+        />
+      </div>
+    ));
+  };
+
+  const renderPropertyRequest = () => {
     return (
-      articleOptions.map((option) => (
-        <div
-          key={option.value}
-          className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
-        >
-          <label className="text-sm capitalize dark:text-black">
-            {option.label}
-          </label>
-          <input
-            type="checkbox"
-            value={option.value}
-            className="cursor-pointer"
-            onChange={() => handleCheckboxChange(option.value)}
-            checked={selectedFilters.includes(option.value)}
-          />
-        </div>
-      ))
+      <div className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary">
+        <label className="text-sm capitalize dark:text-black">Property</label>
+        <input
+          type="checkbox"
+          value="Property"
+          className="cursor-pointer"
+          onChange={() => handleCheckboxChange("Property")}
+          checked={selectedFilters.includes("Property")}
+        />
+      </div>
     );
   };
 
@@ -353,7 +367,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
           <CancelIcon />
         </ModalTrigger>
       </div>
-
+      {article && renderArticle()}
+      {propertyRequest && renderPropertyRequest()}
       {date && (
         <div
           className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary dark:border dark:border-[#3C3D37] cursor-pointer"
@@ -404,7 +419,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
       ))}
 
       {/* Regular filter options */}
-      {article && renderArticle()}
       {filterOptions &&
         filterOptions.map((option) => (
           <div

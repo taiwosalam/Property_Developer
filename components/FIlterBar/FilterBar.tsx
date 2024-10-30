@@ -49,6 +49,7 @@ interface FilterBarProps {
   hiddenSearchInput?: boolean;
   iconOnly?: boolean;
   article?: boolean;
+  propertyRequest?: boolean;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -71,6 +72,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
   hiddenSearchInput,
   iconOnly,
   article,
+  propertyRequest,
 }) => {
   return (
     <div className="page-title-container ">
@@ -133,6 +135,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
               onStateSelect={onStateSelect}
               date={isDateTrue}
               article={article}
+              propertyRequest={propertyRequest}
             />
           </ModalContent>
         </Modal>

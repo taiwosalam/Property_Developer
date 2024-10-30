@@ -14,6 +14,7 @@ import { AgentCommunityRequestCardProps } from "../type";
 import Pagination from "@/components/Pagination/pagination";
 import { PlusIcon } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
+import { propertyRequestOptions } from "../../inspections/data";
 
 const lists = [
   {
@@ -87,8 +88,8 @@ const PropertyRequest = () => {
         handleFilterApply={() => {}}
         isDateTrue
         filterOptions={[]}
-        filterWithOptionsWithDropdown={[]}
         hasGridListToggle={false}
+        filterWithOptionsWithDropdown={propertyRequestOptions}
       />
       <AutoResizingGrid gap={28} minWidth={400}>
         {PropertyRequestData.map((details, index) => (
