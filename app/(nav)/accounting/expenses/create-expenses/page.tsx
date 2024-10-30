@@ -87,7 +87,7 @@ const CreateExpensePage = () => {
             <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
               Total Amount
             </p>
-            <p className="font-bold text-xl text-[#315EE7] dark:text-brand-9">
+            <p className="font-bold text-xl text-brand-9">
               {new Intl.NumberFormat("en-NG", {
                 style: "currency",
                 currency: "NGN",
