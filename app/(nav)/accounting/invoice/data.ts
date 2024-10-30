@@ -19,6 +19,25 @@ export const accountingInvoiceOptionsWithDropdown = [
   },
 ];
 
+export const invoiceExportTableFields: Field[] = [
+  { id: "1", accessor: "picture", isImage: true, picSize: 40 },
+  { id: "2", label: "Client Name", accessor: "name" },
+  { id: "3", label: "Invoice ID", accessor: "invoice_id" },
+  {
+    id: "4",
+    label: "Payment Reason",
+    accessor: "payment_reason",
+    cellStyle: {
+      textOverflow: "ellipsis",
+      overflow: "hidden",
+      whiteSpace: "nowrap",
+      maxWidth: "350px",
+    },
+  },
+  { id: "5", label: "Total Amount", accessor: "total_amount" },
+  { id: "6", label: "Date", accessor: "date" },
+];
+
 export const invoiceTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
   { id: "2", label: "Client Name", accessor: "name" },

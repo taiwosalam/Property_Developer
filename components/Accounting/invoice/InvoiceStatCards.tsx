@@ -36,7 +36,7 @@ const InvoiceStatCards: React.FC<InvoiceStatCardsProps> = ({
                 title === "Total Receipts Created" ||
                 title === "Total Vat Created" ||
                 title === "Total Amount"
-              ? "bg-[#93C5FD]"
+              ? "bg-[#93C5FD] bg-opacity-80"
               : "bg-status-error-1"
           } `}
         >

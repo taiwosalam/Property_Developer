@@ -52,7 +52,7 @@ const PreviewExpenses = () => {
   return (
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton as="p">Back</BackButton>
+        <BackButton as="p">Add Payment</BackButton>
         <ExportPageHeader
           logo={empty}
           location="States and Local Govt"
@@ -138,7 +138,7 @@ const PreviewExpenses = () => {
           </div>
           <div className="w-full h-[2px] bg-opacity-20 bg-[#C0C2C8]" />
           <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1">
-            <p className="text-[#747474] dark:text-white">total package</p>
+            <p className="text-[#747474] dark:text-white">total payment</p>
             <p className="text-brand-primary text-xl font-bold">₦1,950,000</p>
           </div>
         </AccountingTitleSection>
