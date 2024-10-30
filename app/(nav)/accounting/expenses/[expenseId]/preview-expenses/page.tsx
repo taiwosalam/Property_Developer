@@ -36,7 +36,7 @@ const PreviewExpenses = () => {
             chunkSize={2}
             direction="column"
             referenceObject={{
-              "Payment id": "",
+              "Expenses id": "",
               "Customer name": "",
               "property name": "",
               date: "",
@@ -45,7 +45,12 @@ const PreviewExpenses = () => {
             }}
           />
         </div>
-        <AccountingTitleSection title="Total Expenses">
+        <AccountingTitleSection title="Description">
+          <p className="text-sm text-text-secondary">
+            New rent payment for 3 bedroom at Ajibade road 2, Lekki Lagos
+          </p>
+        </AccountingTitleSection>
+        <AccountingTitleSection title="Expenses Details">
           <div className="p-6 bg-white dark:bg-darkText-primary rounded-lg space-y-5">
             <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
               <KeyValueList
@@ -63,11 +68,44 @@ const PreviewExpenses = () => {
             </div>
             <div className="w-full h-[2px] bg-opacity-20 bg-[#C0C2C8]" />
             <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1">
-              <p className="text-[#747474]">total package</p>
+              <p className="text-[#747474]">total amount</p>
               <p className="text-brand-primary text-xl font-bold">₦1,950,000</p>
             </div>
           </div>
         </AccountingTitleSection>
+        <AccountingTitleSection title="Deducted Payment">
+          <div className="p-6 bg-white dark:bg-darkText-primary rounded-lg space-y-5">
+            <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
+              <KeyValueList
+                data={{
+                  "25 January 2024": "₦650,000",
+                  "26 January 2024": "₦650,000",
+                  "27 January 2024": "₦650,000",
+                  "28 January 2024": "₦650,000",
+                  "29 January 2024": "₦650,000",
+                }}
+                chunkSize={2}
+                direction="column"
+                referenceObject={{
+                  "25 January 2024": "",
+                  "26 January 2024": "",
+                  "27 January 2024": "",
+                  "28 January 2024": "",
+                  "29 January 2024": "",
+                }}
+              />
+            </div>
+            <div className="w-full h-[2px] bg-opacity-20 bg-[#C0C2C8]" />
+            <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1">
+              <p className="text-[#747474]">total payment</p>
+              <p className="text-brand-primary text-xl font-bold">₦1,950,000</p>
+            </div>
+          </div>
+        </AccountingTitleSection>
+        <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1 p-6">
+          <p className="text-[#747474]">total balance</p>
+          <p className="text-brand-primary text-xl font-bold">₦1,950,000</p>
+        </div>
       </div>
       <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
         <Button
@@ -79,7 +117,14 @@ const PreviewExpenses = () => {
           back
         </Button>
         <div className="flex gap-6">
-          <Button variant="sky_blue" size="base_medium" className="py-2 px-8">
+          <Button
+            variant="sky_blue"
+            size="base_medium"
+            className="py-2 px-8"
+            onClick={() => {
+              router.back();
+            }}
+          >
             download
           </Button>
           <Button size="base_medium" className="py-2 px-8">
