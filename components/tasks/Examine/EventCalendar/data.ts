@@ -83,15 +83,17 @@ export const filterEventsByDayAndHourRange = (
   const targetDay = parseISO(targetDayString);
   const targetHour = mapHourTo24(targetHourString); // Convert hour string to 24-hour format
 
-  const startHour = targetHour - 1;
+  const startHour = targetHour - 1; // Previous hour
   const endHour = targetHour; // The target hour itself
 
   return calendar_events.filter((event) => {
     const eventHour = getHours(event.date);
+
     return (
-      isSameDay(event.date, targetDay) &&
-      eventHour >= startHour &&
-      eventHour <= endHour
+      isSameDay(event.date, targetDay) && // Ensure it's the same day
+      eventHour === endHour && // Only include events in the target hour
+      event.date.getMinutes() >= 0 &&
+      event.date.getMinutes() <= 59 // Include all minutes
     );
   });
 };
