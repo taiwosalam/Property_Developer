@@ -99,6 +99,8 @@ const MyPropertiesRequestPage = () => {
           <PropertyRequestCard
             key={index}
             {...transformToPropertyRequestCardProps(details)}
+            cardType="agent-community"
+            user={true}
           />
         ))}
       </AutoResizingGrid>

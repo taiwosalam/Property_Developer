@@ -5,10 +5,13 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import {
   PropertyRequestFirstSection,
+  PropertyRequestSecondSection,
   StateAndLocalGovt,
 } from "@/components/Community/ManageRequest";
 import AddPhotoAndVideo from "@/components/Community/AddPhotoAndVideo";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import Comment from "../../../threads/[threadId]/preview/comment";
+import ThreadComments from "@/components/Community/ThreadComments";
 
 const desc =
   "#Commercial and retail real estate fundamentals are expected to remain strong due to the scarcity of new construction deliveries, prompting compelling opportunities for investors amid high interest rates and inflation in the market, writes CHINEDUM UWAEGBULAM. Despite economic headwinds and challenges with obtaining building permits, experts predict that the demand for housing will remain strong, and the market will see a steady increase in property values this year. There are also opportunities available for high-quality properties that meet the needs of investors and tenants, while low mortgage rates and government incentives will likely contribute to this optimistic outlook as inflation may remain a concern in 2024, affecting both home prices and mortgage rates.";
@@ -28,7 +31,7 @@ const ManageMyArticle = () => {
             <ChevronLeft />
           </button>
           <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
-            Manage Article
+            Manage Property Request
           </h1>
         </div>
       </div>
@@ -38,11 +41,13 @@ const ManageMyArticle = () => {
           <PropertyRequestFirstSection
             placeholderText="Rent Increase & Maintenance"
             desc={desc}
+            inputValue="Rent Increase & Maintenance"
           />
+          <ThreadComments />
         </div>
 
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <SecondSection />
+          <PropertyRequestSecondSection />
         </div>
       </div>
       <FixedFooter className="flex gap-6 justify-end">
@@ -56,7 +61,7 @@ const ManageMyArticle = () => {
           type="button"
           className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
         >
-          Create
+          Update
         </button>
       </FixedFooter>
     </div>
@@ -64,12 +69,3 @@ const ManageMyArticle = () => {
 };
 
 export default ManageMyArticle;
-
-const SecondSection = () => {
-  return (
-    <div className="bg-white dark:bg-darkText-primary p-4 rounded-lg flex flex-col gap-4">
-      <AddPhotoAndVideo editing={true} />
-      <StateAndLocalGovt />
-    </div>
-  );
-};

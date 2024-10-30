@@ -67,12 +67,12 @@ const ThreadHeader = ({
           className="w-10 h-10 object-cover"
         />
         <div className="flex flex-col">
-          <p className="dark:text-white relative">
-            {name}
-            <span className="badge absolute -top-7 -right-5">
+          <div className="flex gap-2 items-center">
+            <p className="dark:text-white flex items-center gap-1">
+              {name}
               <BadgeIcon color="gray" />
-            </span>
-          </p>
+            </p>
+          </div>
           <p className="text-brand-9 text-sm"> {role} </p>
         </div>
       </div>
