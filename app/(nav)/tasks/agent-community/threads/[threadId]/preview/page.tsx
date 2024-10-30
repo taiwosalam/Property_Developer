@@ -55,7 +55,7 @@ const ThreadPreview = () => {
           Create Article
         </Button>
       </div>
-      <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
+      <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start my-4">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <div className="slider h-[250px] md:h-[300px] lg:h-[350px] w-full relative px-[20px] md:px-[35px]">
             <PropertyImageSlider images={sampleImages} thread />
@@ -64,7 +64,7 @@ const ThreadPreview = () => {
           <ThreadComments />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <ContributorDetails />
+          <ContributorDetails title="Contributor Details" />
           <CompanySummary />
         </div>
       </div>

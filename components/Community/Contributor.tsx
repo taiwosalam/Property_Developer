@@ -1,11 +1,11 @@
 import Image from "next/image";
 import SampleUser from "@/public/empty/sample-user.svg";
 
-export const ContributorDetails = () => {
+export const ContributorDetails = ({ title }: { title: string }) => {
   return (
     <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
       <h2 className="text-black font-semibold text-lg dark:text-white">
-        Contributor Details
+        {title}
       </h2>
       <div className="flex flex-col mt-4 gap-2">
         <div className="flex gap-4">
