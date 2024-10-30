@@ -52,4 +52,5 @@ export type FilterModalProps = {
   title?: string;
   onStateSelect?: (state: string) => void;
   date?: boolean; // New prop to determine if date picker should be shown
+  article?: boolean;
 };

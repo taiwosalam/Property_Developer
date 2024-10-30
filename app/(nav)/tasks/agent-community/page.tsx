@@ -69,6 +69,7 @@ const AgentCommunityPage = () => {
         isDateTrue
         filterOptions={[]}
         filterWithOptionsWithDropdown={[]}
+        article={true}
       />
 
       <AutoResizingGrid minWidth={300}>

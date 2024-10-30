@@ -59,17 +59,17 @@ export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
       {loaded && instanceRef.current && (
         <>
           <div className="absolute w-full flex items-center justify-between top-5 px-5">
+            <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-[6px] flex items-center space-x-1">
+              <CameraIcon width={16} height={16} />
+              <span className="text-sm font-medium">
+                {currentSlide + 1 + "/" + images.length}
+              </span>
+            </div>
             {!thread && (
-              <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-[6px] flex items-center space-x-1">
-                <CameraIcon width={16} height={16} />
-                <span className="text-sm font-medium">
-                  {currentSlide + 1 + "/" + images.length}
-                </span>
+              <div className="bg-status-success-1 rounded-lg py-1 px-4 text-sm font-medium text-status-success-3">
+                <p>Gated Property</p>
               </div>
             )}
-            <div className="bg-status-success-1 rounded-lg py-1 px-4 text-sm font-medium text-status-success-3">
-              {!thread && <p>Gated Property</p>}
-            </div>
           </div>
           <button
             aria-label="Previous image"

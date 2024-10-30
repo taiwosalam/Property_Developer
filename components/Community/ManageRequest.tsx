@@ -7,6 +7,7 @@ import { getAllStates, getLocalGovernments } from "@/utils/states";
 import { useState } from "react";
 import { ValidationErrors } from "@/utils/types";
 import Comment from "@/app/(nav)/tasks/agent-community/threads/[threadId]/preview/comment";
+import MultiSelect from "../Form/MultiSelect/multiselect";
 
 export const PropertyRequestFirstSection = ({
   inputValue: initialInputValue,
@@ -139,17 +140,14 @@ export const StateAndLocalGovt = () => {
       <h3 className="text-black dark:text-white font-semibold mb-2">
         Target Audience
       </h3>
-      <Select
-        validationErrors={errorMsgs}
-        options={getAllStates()}
-        id="state"
-        label="state"
-        placeholder="Select options"
-        inputContainerClassName="bg-neutral-2"
-        value={selectedState}
-        onChange={(value) => handleAddressChange("selectedState", value)}
+      <MultiSelect
+        options={["All States", ...getAllStates()]}
+        maxSelections={10}
+        id="states"
+        label="Select States (Maximum of 10)"
+        // resetKey={formResetKey}
       />
-      <Select
+      {/* <Select
         validationErrors={errorMsgs}
         options={getLocalGovernments(selectedState)}
         id="local_government"
@@ -158,7 +156,7 @@ export const StateAndLocalGovt = () => {
         inputContainerClassName="bg-neutral-2"
         onChange={(value) => handleAddressChange("selectedLGA", value)}
         value={selectedLGA}
-      />
+      /> */}
     </div>
   );
 };

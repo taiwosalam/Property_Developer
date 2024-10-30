@@ -51,7 +51,7 @@ const PreviewPage = () => {
           <ThreadComments />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <ContributorDetails />
+          <ContributorDetails title="Requester Details" />
           <CompanySummary />
         </div>
       </div>

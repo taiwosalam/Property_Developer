@@ -18,3 +18,9 @@ export const inspectionFilterOptionsWithDropdown = [
     ],
   },
 ];
+
+export const articleOptions = [
+  { label: "All Articles", value: "all" },
+  { label: "Trending Articles", value: "trending" },
+  { label: "New Articles", value: "new" },
+];
