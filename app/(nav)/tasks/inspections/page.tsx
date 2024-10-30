@@ -45,7 +45,6 @@ const InspectionPage = () => {
         filterOptions={[]}
         filterWithOptionsWithDropdown={inspectionFilterOptionsWithDropdown}
         hasGridListToggle={false}
-        article={true}
       />
       <AutoResizingGrid minWidth={505} gap={32}>
         <InspectionCard type="physical" />
