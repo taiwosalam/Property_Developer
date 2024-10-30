@@ -8,6 +8,8 @@ import { useState } from "react";
 import { ValidationErrors } from "@/utils/types";
 import Comment from "@/app/(nav)/tasks/agent-community/threads/[threadId]/preview/comment";
 import MultiSelect from "../Form/MultiSelect/multiselect";
+import PropertyRequestUnitType from "./UnitType";
+import { PropertyRequestContext } from "./propertyRequest";
 
 export const PropertyRequestFirstSection = ({
   inputValue: initialInputValue,
@@ -50,57 +52,63 @@ export const PropertyRequestFirstSection = ({
 
 export const PropertyRequestSecondSection = () => {
   return (
-    <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
-      <h2>Request Types</h2>
-      <Select
-        id="property-category"
-        label="Property Categories"
-        options={["Category 1", "Category 2"]}
-      />
-      <Select
-        id="property-type"
-        label="Property Type"
-        options={["Rental Property", "Gated Estate"]}
-      />
-      <Select
-        id="property-subtype"
-        label="Property Sub Type"
-        options={["Subtype 1", "Subtype 2"]}
-      />
-      <Select
-        id="bedrooms"
-        label="Bedrooms"
-        options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
-      />
-      <Select
-        id="land-size"
-        label="Land Size"
-        options={["Plot", "Square Feet"]}
-      />
-      <div className="budget flex flex-col gap-2">
-        <h3 className="text-black dark:text-white font-semibold mb-2">
-          Budget
-        </h3>
-        <Select
-          id="minimum"
-          label="Minimum"
-          options={["Budget 1", "Budget 2"]}
+    <PropertyRequestContext.Provider
+      value={{
+        unitType: "",
+        setUnitType: () => {},
+        images: [],
+        formResetKey: 0,
+      }}
+    >
+      <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
+        <h2>Request Types</h2>
+        {/* <Select
+          id="property-category"
+          label="Property Categories"
+          options={["Category 1", "Category 2"]}
+        /> */}
+        <PropertyRequestUnitType />
+        {/* <Select
+          id="bedrooms"
+          label="Bedrooms"
+          options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
         />
         <Select
-          id="maximum"
-          label="Maximum"
-          options={["Budget 1", "Budget 2"]}
-        />
+          id="land-size"
+          label="Land Size"
+          options={["Plot", "Square Feet"]}
+        /> */}
+        <div className="budget flex flex-col gap-2">
+          <h3 className="text-black dark:text-white font-semibold mb-2">
+            Budget
+          </h3>
+          <Select
+            id="minimum"
+            label="Minimum"
+            options={["Budget 1", "Budget 2"]}
+          />
+          <Select
+            id="maximum"
+            label="Maximum"
+            options={["Budget 1", "Budget 2"]}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <StateAndLocalGovt />
+          <Select
+            id="valid-till"
+            label="Valid Till"
+            options={[
+              "1 Month",
+              "2 Months",
+              "3 Months",
+              "4 Months",
+              "5 Months",
+            ]}
+          />
+        </div>
       </div>
-      <div className="flex flex-col gap-2">
-        <StateAndLocalGovt />
-        <Select
-          id="valid-till"
-          label="Valid Till"
-          options={["1 Month", "2 Months", "3 Months", "4 Months", "5 Months"]}
-        />
-      </div>
-    </div>
+    </PropertyRequestContext.Provider>
   );
 };
 

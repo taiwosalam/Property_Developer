@@ -78,7 +78,12 @@ const Select: React.FC<SelectProps> = ({
   const isOptionObjectArray = (
     options: string[] | SelectOptionObject[]
   ): options is SelectOptionObject[] => {
-    return typeof options[0] === "object";
+    // Check if options is defined and has at least one element
+    return (
+      Array.isArray(options) &&
+      options.length > 0 &&
+      typeof options[0] === "object"
+    );
   };
 
   useEffect(() => {
@@ -92,13 +97,11 @@ const Select: React.FC<SelectProps> = ({
   useEffect(() => {
     setState((x) => {
       const filteredOptions =
-        typeof options[0] === "string"
+        options && options.length > 0 && typeof options[0] === "string"
           ? (options as string[]).filter((o) =>
               o.toLowerCase().includes(searchTerm.toLowerCase())
             )
-          : (options as SelectOptionObject[]).filter((o) =>
-              o.label.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+          : []; // Provide a fallback to an empty array if options is undefined or empty
 
       return { ...x, filteredOptions };
     });
