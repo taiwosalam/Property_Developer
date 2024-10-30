@@ -6,11 +6,9 @@ import React, { useState } from "react";
 import {
   PropertyRequestFirstSection,
   PropertyRequestSecondSection,
-  StateAndLocalGovt,
 } from "@/components/Community/ManageRequest";
-import AddPhotoAndVideo from "@/components/Community/AddPhotoAndVideo";
 
-const CreateArticle = () => {
+const CreateMyPropertyRequest = () => {
   const router = useRouter();
   return (
     <>
@@ -25,31 +23,23 @@ const CreateArticle = () => {
             <ChevronLeft />
           </button>
           <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
-            Create Article
+            Create Property Request
           </h1>
         </div>
       </div>
 
       <div className="body w-full flex flex-col lg:flex-row justify-between mt-10 gap-10">
         <div className="first flex flex-col w-full lg:w-[60%]">
-          <PropertyRequestFirstSection placeholderText="Please be aware that you are responsible for all posts or uploads you make. Post Real Estate, Property related Articles and stay on topic." />
+          <PropertyRequestFirstSection
+            placeholderText="Please be aware that you are responsible for all posts. Post Real Estate, Property request only."
+          />
         </div>
-
         <div className="second flex flex-col w-full lg:w-[40%]">
-          <SecondSection />
+          <PropertyRequestSecondSection />
         </div>
       </div>
     </>
   );
 };
 
-export default CreateArticle;
-
-const SecondSection = () => {
-  return (
-    <div className="bg-white dark:bg-darkText-primary p-4 rounded-lg flex flex-col gap-4">
-      <AddPhotoAndVideo />
-      <StateAndLocalGovt />
-    </div>
-  );
-};
+export default CreateMyPropertyRequest;

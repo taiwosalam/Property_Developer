@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import Button from "@/components/Form/Button/button";
 import {
-  FirstSection,
+  PropertyRequestFirstSection,
   ManagePropertiesComments,
-  SecondSection,
+  PropertyRequestSecondSection,
 } from "@/components/Community/ManageRequest";
 import { textareaValue } from "../../../data";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
@@ -34,7 +34,8 @@ const ManagePropertyRequest = () => {
 
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start mb-20">
         <div className="lg:w-[60%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <FirstSection
+          <PropertyRequestFirstSection
+            placeholderText="Rent Increase & Maintenance"
             inputValue="Rent Increase & Maintenance"
             desc={textareaValue}
           />
@@ -42,7 +43,7 @@ const ManagePropertyRequest = () => {
         </div>
 
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <SecondSection />
+          <PropertyRequestSecondSection />
         </div>
       </div>
       <FixedFooter className="flex gap-6 justify-end">

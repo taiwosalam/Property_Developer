@@ -8,17 +8,16 @@ import { useState } from "react";
 import { ValidationErrors } from "@/utils/types";
 import Comment from "@/app/(nav)/tasks/agent-community/threads/[threadId]/preview/comment";
 
-const textAreaPlaceholderValue =
-  "Please be aware that you are responsible for all posts or uploads you make. Post Real Estate, Property related Articles and stay on topic.";
-
-export const FirstSection = ({
+export const PropertyRequestFirstSection = ({
   inputValue: initialInputValue,
   title,
+  placeholderText,
   desc,
 }: {
   inputValue?: string;
   desc?: string;
   title?: string;
+  placeholderText: string;
 }) => {
   const [inputValue, setInputValue] = useState(initialInputValue);
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +38,7 @@ export const FirstSection = ({
       <TextArea
         id="property-description"
         label=""
-        placeholder={desc ? desc : textAreaPlaceholderValue}
+        placeholder={desc ? desc : placeholderText}
         className="w-full mt-4 min-h-[300px]"
         value={desc}
         inputSpaceClassName="!min-h-[400px] text-text-secondary no-italic !leading-60 dark:text-darkText-2"
@@ -48,7 +47,7 @@ export const FirstSection = ({
   );
 };
 
-export const SecondSection = () => {
+export const PropertyRequestSecondSection = () => {
   return (
     <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
       <h2>Request Types</h2>
