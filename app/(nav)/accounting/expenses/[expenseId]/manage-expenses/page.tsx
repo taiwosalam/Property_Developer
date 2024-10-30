@@ -15,9 +15,11 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useRouter } from "next/navigation";
+import { SectionSeparator } from "@/components/Section/section-components";
+import ModalPreset from "@/components/Modal/modal-preset";
 
 const ManageExpenses = () => {
-  const isDarkMode = useDarkMode()
+  const isDarkMode = useDarkMode();
   const router = useRouter();
 
   const back = () => {
@@ -50,12 +52,36 @@ const ManageExpenses = () => {
             }}
           />
         </div>
-        <AccountingTitleSection title="Total Expenses">
-          <div className="flex">
+        <AccountingTitleSection title="Description">
+          <p className="text-sm text-text-secondary">
+            New rent payment for 3 bedroom at Ajibade road 2, Lekki Lagos
+          </p>
+        </AccountingTitleSection>
+        <AccountingTitleSection title="Add Expense">
+          <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
+              <Input id="payment-title" label="payment title" />
+              <Input
+                id="amount"
+                label="amount"
+                CURRENCY_SYMBOL="₦"
+                placeholder="300,000"
+                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+              />
+            </div>
+            <div className="flex justify-end">
+              <Button size="base_medium" className="py-2 px-14">
+                add
+              </Button>
+            </div>
+          </div>
+        </AccountingTitleSection>
+        <AccountingTitleSection title="Expenses">
+          <div className="flex bg-white w-full p-6 rounded-lg flex-col gap-8">
             <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
               <Input
                 id="annual-rent"
-                label="Annual Rent"
+                label="Annual Fee"
                 required
                 CURRENCY_SYMBOL="₦"
                 placeholder="1,000,000"
@@ -77,22 +103,36 @@ const ManageExpenses = () => {
               />
               <Input
                 id="non-refundable-agency-fee"
-                label="non refundable agency fee"
+                label="tax charges"
                 CURRENCY_SYMBOL="₦"
                 placeholder="300,000"
                 style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
               <Input
                 id="non-refundable-legal-fee"
-                label="non refundable legal fee"
+                label="security fee"
                 CURRENCY_SYMBOL="₦"
                 placeholder="300,000"
                 style={{ backgroundColor: isDarkMode ? "" : "white" }}
               />
             </div>
+            <SectionSeparator />
+            <div>
+              <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                Total Amount
+              </p>
+              <p className="font-bold text-xl text-brand-9">
+                {new Intl.NumberFormat("en-NG", {
+                  style: "currency",
+                  currency: "NGN",
+                })
+                  .format(1000000)
+                  .split(".")}
+              </p>
+            </div>
           </div>
         </AccountingTitleSection>
-        <AccountingTitleSection title="Add Payment" required>
+        <AccountingTitleSection title="Deduct Payment">
           <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
               <Input id="payment-title" label="payment title" />
@@ -106,9 +146,94 @@ const ManageExpenses = () => {
             </div>
             <div className="flex justify-end">
               <Button size="base_medium" className="py-2 px-14">
-                add
+                deduct
               </Button>
             </div>
+          </div>
+        </AccountingTitleSection>
+        <AccountingTitleSection title="Payment">
+          <div className="flex bg-white w-full p-6 rounded-lg flex-col gap-8">
+            <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
+              <div className="flex flex-col gap-4">
+                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                  25 January 2024
+                </p>
+                <p className="font-bold text-[14px] text-brand-9">
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                  })
+                    .format(1000000)
+                    .split(".")}
+                </p>
+              </div>
+              <div className="flex flex-col gap-4">
+                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                  25 January 2024
+                </p>
+                <p className="font-bold text-[14px] text-brand-9">
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                  })
+                    .format(1000000)
+                    .split(".")}
+                </p>
+              </div>
+              <div className="flex flex-col gap-4">
+                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                  25 January 2024
+                </p>
+                <p className="font-bold text-[14px] text-brand-9">
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                  })
+                    .format(1000000)
+                    .split(".")}
+                </p>
+              </div>
+              <div className="flex flex-col gap-4">
+                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                  Total Payment
+                </p>
+                <p className="font-bold text-xl text-brand-9">
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                  })
+                    .format(1000000)
+                    .split(".")}
+                </p>
+              </div>
+            </div>
+            <SectionSeparator />
+            <div className="flex flex-col gap-4">
+              <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                Total Amount
+              </p>
+              <p className="font-bold text-xl text-brand-9">
+                {new Intl.NumberFormat("en-NG", {
+                  style: "currency",
+                  currency: "NGN",
+                })
+                  .format(1000000)
+                  .split(".")}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-4 p-6">
+            <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+              Total Balance
+            </p>
+            <p className="font-bold text-xl text-brand-9">
+              {new Intl.NumberFormat("en-NG", {
+                style: "currency",
+                currency: "NGN",
+              })
+                .format(1000000)
+                .split(".")}
+            </p>
           </div>
         </AccountingTitleSection>
       </div>
@@ -123,18 +248,30 @@ const ManageExpenses = () => {
             <DeleteExpenseModal />
           </ModalContent>
         </Modal>
-        <div className="flex gap-6">
-          <Button
-            onClick={back}
-            variant="sky_blue"
-            size="base_bold"
-            className="py-2 px-8"
-          >
-            exit
-          </Button>
-          <Button size="base_bold" className="py-2 px-8">
-            save
-          </Button>
+        <div className="flex justify-end">
+          <Modal>
+            <ModalTrigger asChild>
+              <Button size="base_bold" className="py-2 px-8">
+                save
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <ModalPreset className="w-full" type="success">
+                <div className="flex flex-col gap-8">
+                  <p className="text-[14px] text-text-secondary">
+                    The expense has been successfully edited and updated
+                  </p>
+                  <Button
+                    onClick={() => {
+                      router.push("/accounting/expenses");
+                    }}
+                  >
+                    OK
+                  </Button>
+                </div>
+              </ModalPreset>
+            </ModalContent>
+          </Modal>
         </div>
       </FixedFooter>
     </div>
