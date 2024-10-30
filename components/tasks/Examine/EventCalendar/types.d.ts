@@ -6,7 +6,14 @@ import type {
   CalendarEventProps,
 } from "@/components/Calendar/types";
 
+export interface EventCalendarWeekData {
+  title: string;
+  weekDates: string[];
+  dayNumbers: string[];
+}
+
 export interface EventCalendarContextProps extends CalendarClassData {
+  weekData: EventCalendarWeekData;
   openModal: () => void;
 }
 

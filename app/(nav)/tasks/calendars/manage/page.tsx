@@ -21,6 +21,8 @@ import {
   addMonths,
   subMonths,
   startOfMonth,
+  addWeeks,
+  subWeeks,
 } from "date-fns";
 
 import { Modal, ModalContent } from "@/components/Modal/modal";
@@ -35,9 +37,11 @@ import {
 
 import clsx from "clsx";
 import { SectionSeparator } from "@/components/Section/section-components";
+import { getCurrentWeekData } from "@/components/tasks/Examine/EventCalendar/data";
+import YearEventCalendar from "@/components/tasks/Examine/EventCalendar/year-event-calendar";
+import WeekEventCalendar from "@/components/tasks/Examine/EventCalendar/week-event-calendar";
 import MonthEventCalendar from "@/components/tasks/Examine/EventCalendar/month-event-calendar";
 import { EventCalendarContext } from "@/components/tasks/Examine/EventCalendar/event-calendar-context";
-import YearEventCalendar from "@/components/tasks/Examine/EventCalendar/year-event-calendar";
 
 const ManageCalendar = () => {
   // Hooks
@@ -55,6 +59,7 @@ const ManageCalendar = () => {
     year: getYear(currentDate),
   });
   const { year, month } = data;
+  const weekData = getCurrentWeekData(currentDate);
 
   // Functions
   const handleBack = () => {
@@ -68,7 +73,7 @@ const ManageCalendar = () => {
 
   const openModal = () => setModalIsOpen(true);
 
-  const goToToday = () => setCurrentDate(startOfMonth(new Date()));
+  const goToToday = () => setCurrentDate(new Date());
 
   // Move by 1 year
   const nextYear = () => setCurrentDate((prev) => addYears(prev, 1));
@@ -78,10 +83,16 @@ const ManageCalendar = () => {
   const nextMonth = () => setCurrentDate((prev) => addMonths(prev, 1));
   const prevMonth = () => setCurrentDate((prev) => subMonths(prev, 1));
 
+  // Move by 1 week
+  const nextWeek = () => setCurrentDate((prev) => addWeeks(prev, 1));
+  const prevWeek = () => setCurrentDate((prev) => subWeeks(prev, 1));
+
   return (
     <EventCalendarContext.Provider
       value={{
         ...data,
+        weekData,
+
         openModal,
       }}
     >
@@ -94,21 +105,40 @@ const ManageCalendar = () => {
             <button onClick={goToToday}>Today</button>
             <div className="flex items-center gap-3">
               <button
-                onClick={activeLayout === "Year" ? prevYear : prevMonth}
+                onClick={
+                  activeLayout === "Year"
+                    ? prevYear
+                    : activeLayout === "Month"
+                    ? prevMonth
+                    : activeLayout === "Week"
+                    ? prevWeek
+                    : undefined
+                }
                 className="py-2 px-1"
               >
                 <ArrowLeft size={18} color="#696B70" />
               </button>
               <button
-                onClick={activeLayout === "Year" ? nextYear : nextMonth}
+                onClick={
+                  activeLayout === "Year"
+                    ? nextYear
+                    : activeLayout === "Month"
+                    ? nextMonth
+                    : activeLayout === "Week"
+                    ? nextWeek
+                    : undefined
+                }
                 className="py-2 px-1"
               >
                 <ArrowRight size={18} color="#696B70" />
               </button>
             </div>
             <p>
-              {activeLayout === "Month" &&
-                format(setMonth(new Date(year, 0), month), "MMMM")}{" "}
+              {activeLayout === "Month"
+                ? format(setMonth(new Date(year, 0), month), "MMMM")
+                : activeLayout === "Week"
+                ? weekData.title
+                : null}{" "}
               {year}
             </p>
           </div>
@@ -161,7 +191,9 @@ const ManageCalendar = () => {
           <YearEventCalendar />
         ) : activeLayout === "Month" ? (
           <MonthEventCalendar />
-        ) : activeLayout === "Week" ? null : null}
+        ) : activeLayout === "Week" ? (
+          <WeekEventCalendar />
+        ) : null}
         <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
           <ModalContent>
             <CreateReminderMOdal />
