@@ -11,6 +11,9 @@ import Input from "@/components/Form/Input/input";
 import Label from "@/components/Form/Label/label";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
+import DateInput from "@/components/Form/DateInput/date-input";
+import TextArea from "@/components/Form/TextArea/textarea";
+import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 
 const CreateExamineDate: React.FC<CreateExamineDateProps> = ({ next }) => {
   return (
@@ -50,20 +53,15 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({ next }) => {
             label="account officer"
             options={["account officer 1", "account officer 2"]}
           />
-          <Input
-            id="date"
-            type="date"
-            label="examine date"
-            style={{ backgroundColor: "white" }}
-          />
-          <div className="custom-flex-col gap-1 col-span-2">
-            <Label id="note">Attach note:</Label>
-            <textarea
-              id="note"
-              name="note"
-              placeholder="Type here"
-              className="p-3 text-xs md:text-sm font-normal rounded-[4px] custom-primary-outline border border-solid border-[#C1C2C366] bg-white dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out resize-none"
-            ></textarea>
+          <DateInput id="examine_date" label="Examine Date" />
+          <TextArea id="note" label="Attach note:" className="col-span-2" />
+          <div className="col-span-2 flex justify-end">
+            <div className="flex">
+              <DocumentCheckbox
+                alignCheckboxCenter
+                title="Create announcement"
+              ></DocumentCheckbox>
+            </div>
           </div>
         </div>
         <Button

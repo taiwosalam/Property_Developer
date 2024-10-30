@@ -17,6 +17,7 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
   darkText,
   children,
   checked,
+  alignCheckboxCenter,
 }) => {
   // Internal state for when the component is uncontrolled
   const [internalIsChecked, setInternalIsChecked] = useState(checked || false);
@@ -36,7 +37,12 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
         onClick={handleClick}
         type="button"
       >
-        <div className="flex items-start">
+        <div
+          className={clsx("flex h-full", {
+            "items-center": alignCheckboxCenter,
+            "items-start": !alignCheckboxCenter,
+          })}
+        >
           <Picture
             src={isChecked ? CheckboxChecked : CheckboxDefault}
             alt="checkbox"
@@ -49,14 +55,16 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
               {title}
             </p>
           )}
-          <p
-            className={clsx("text-sm font-normal", {
-              "text-text-secondary dark:text-darkText-1": darkText,
-              "text-text-disabled dark:text-darkText-disabled": !darkText,
-            })}
-          >
-            {children}
-          </p>
+          {children && (
+            <p
+              className={clsx("text-sm font-normal", {
+                "text-text-secondary dark:text-darkText-1": darkText,
+                "text-text-disabled dark:text-darkText-disabled": !darkText,
+              })}
+            >
+              {children}
+            </p>
+          )}
         </div>
       </button>
     </div>
