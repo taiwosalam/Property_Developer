@@ -66,10 +66,25 @@ const ExpensesStatCard: React.FC<InvoiceStatCardsProps> = ({
       )}
       {downValue && (
         <div className="flex items-center gap-2">
-          <Picture src={"/icons/trending-down.svg"} size={24} />
+          <Picture
+            src={
+              title === "Part Payment" || title === "Balance"
+                ? "/icons/trending-down-green.svg"
+                : "/icons/trending-down.svg"
+            }
+            size={24}
+          />
           <p className="text-text-label font-normal text-[16px]">
-            <span className="text-status-error-2">4.3%</span> Down from last
-            week
+            <span
+              className={`${
+                title === "Part Payment" || title === "Balance"
+                  ? "text-status-success-3"
+                  : "text-status-error-2"
+              }`}
+            >
+              4.3%
+            </span>{" "}
+            Down from last week
           </p>
         </div>
       )}
