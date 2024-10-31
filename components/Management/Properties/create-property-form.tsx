@@ -21,7 +21,7 @@ import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import { v4 as uuidv4 } from "uuid";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import DraggableImage from "./draggable-image";
-import { propertyCategories, rentPeriods } from "@/data";
+import { propertyCategories } from "@/data";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { getAllBranches } from "@/app/(nav)/management/staff-branch/data";
 import { useAuthStore } from "@/store/authstrore";
@@ -480,16 +480,28 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             hiddenInputClassName="property-form-input"
           />
           {formType === "rental" && (
-            <Select
-              id="who_to_charge"
-              options={["landlord", "tenants", "both", "none"]}
-              label="Who to Charge"
-              isSearchable={false}
-              inputContainerClassName="bg-white"
-              resetKey={resetKey}
-              requiredNoStar
-              hiddenInputClassName="property-form-input"
-            />
+            <>
+              <Select
+                id="who_to_charge_new"
+                options={["landlord", "tenants", "both", "none"]}
+                label="Who to Charge (New Tenant)"
+                isSearchable={false}
+                inputContainerClassName="bg-white"
+                resetKey={resetKey}
+                requiredNoStar
+                hiddenInputClassName="property-form-input"
+              />
+              <Select
+                id="who_to_charge_renewal"
+                options={["landlord", "tenants", "both", "none"]}
+                label="Who to Charge (Renewal Tenant)"
+                isSearchable={false}
+                inputContainerClassName="bg-white"
+                resetKey={resetKey}
+                requiredNoStar
+                hiddenInputClassName="property-form-input"
+              />
+            </>
           )}
           {formType === "rental" && (
             <Select

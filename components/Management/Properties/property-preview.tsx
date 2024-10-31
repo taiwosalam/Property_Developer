@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,7 +10,6 @@ import {
   swipePower,
 } from "@/utils/slider";
 import {
-  ChevronLeft,
   LocationIcon,
   PlayIconButton,
   PreviousIcon,
@@ -23,7 +21,6 @@ import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import BackButton from "@/components/BackButton/back-button";
 
 const PropertyPreview: React.FC<PropertyPreviewProps> = ({ images, type }) => {
-  const router = useRouter();
   const colors = {
     vacant: "#FFBB53",
     occupied: "#01BA4C",
@@ -155,10 +152,14 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({ images, type }) => {
                   Harmony Cottage
                 </p>
               </div>
-              <div>
-                <p className="text-[#747474] dark:text-white">Landlord</p>
-                <p className="text-black dark:text-darkText-1">Abiola Sunday</p>
-              </div>
+              {type === "rental" && (
+                <div>
+                  <p className="text-[#747474] dark:text-white">Landlord</p>
+                  <p className="text-black dark:text-darkText-1">
+                    Abiola Sunday
+                  </p>
+                </div>
+              )}
               <div>
                 <p className="text-[#747474] dark:text-white">Description</p>
                 <p className="text-black dark:text-darkText-1">

@@ -11,7 +11,6 @@ import { empty } from "@/app/config";
 import Input from "@/components/Form/Input/input";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { useRouter } from "next/navigation";
 import {
   currencySymbols,
   formatCostInputValue,
@@ -27,11 +26,6 @@ type MoneyField =
 
 const PreviewExpenses = () => {
   const CURRENCY_SYMBOL = currencySymbols["NAIRA"]; // to be dynamic
-  const router = useRouter();
-
-  const back = () => {
-    router.back();
-  };
 
   const [inputValues, setInputValues] = useState<Record<MoneyField, string>>({
     annualRent: "",
@@ -172,19 +166,9 @@ const PreviewExpenses = () => {
           <span className="text-status-error-primary text-2xl">*</span>You
           cannot add payment to paid receipts.
         </p>
-        <div className="flex gap-6">
-          <Button
-            onClick={back}
-            variant="sky_blue"
-            size="base_medium"
-            className="py-2 px-8"
-          >
-            Exit
-          </Button>
-          <Button size="base_medium" className="py-2 px-8">
-            Save
-          </Button>
-        </div>
+        <Button size="base_medium" className="py-2 px-8">
+          Save
+        </Button>
       </FixedFooter>
     </div>
   );

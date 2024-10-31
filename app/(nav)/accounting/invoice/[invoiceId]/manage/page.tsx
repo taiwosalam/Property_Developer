@@ -13,7 +13,6 @@ import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import DeleteInvoiceModal from "@/components/Accounting/invoice/delete-invoice-modal";
 import BackButton from "@/components/BackButton/back-button";
-import { useRouter } from "next/navigation";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import {
   currencySymbols,
@@ -29,11 +28,6 @@ type InputField =
 
 const ManageInvoice = () => {
   const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
-  const router = useRouter();
-
-  const back = () => {
-    router.back();
-  };
 
   const [inputValues, setInputValues] = useState<Record<InputField, string>>({
     annualRent: "",
@@ -153,19 +147,10 @@ const ManageInvoice = () => {
             <DeleteInvoiceModal />
           </ModalContent>
         </Modal>
-        <div className="flex gap-6">
-          <Button
-            onClick={back}
-            variant="sky_blue"
-            size="base_bold"
-            className="py-2 px-8"
-          >
-            exit
-          </Button>
-          <Button size="base_bold" className="py-2 px-8">
-            save
-          </Button>
-        </div>
+
+        <Button size="base_bold" className="py-2 px-8">
+          save
+        </Button>
       </FixedFooter>
     </div>
   );
