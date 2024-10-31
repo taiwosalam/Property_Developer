@@ -8,9 +8,12 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
 import GroupChatCamera from "@/public/icons/group-camera.svg";
-import { team_chat_data } from "./data";
+import { team_chat_data, team_chat_members_data } from "./data";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
+import { SearchIcon } from "@/public/icons/icons";
+import Avatar1 from "@/public/empty/avatar-1.svg";
+import TrashIcon from "@/public/icons/trash.svg";
 
 export const TeamChatHeader = () => {
   return (
@@ -77,7 +80,7 @@ export const TeamChatGroupDetailsModal = () => {
           </button>
         </div>
 
-        <div className="w-[75%] p-4 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar">
+        <div className="w-[75%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar">
           {side === "about" && <About />}
           {side === "members" && <Members />}
         </div>
@@ -120,7 +123,7 @@ const About = () => {
     }
   };
   return (
-    <div>
+    <div className="p-4">
       <div className="imageWrapper h-20 w-20 relative overflow-hidden">
         <Image
           src={groupImage || GroupImage}
@@ -171,10 +174,32 @@ const About = () => {
             <Image src={PencilIcon} alt="edit" width={16} height={16} />
           </button>
         </div>
-        <div className="flex items-center w-full justify-between">
+        <div className="created">
+          <h4 className="text-text-disabled text-sm font-normal">Created</h4>
+          <p className="text-text-primary text-xs font-medium">
+            12/12/2024 1:50AM
+          </p>
+        </div>
+        <div className="stats">
+          <h4 className="text-text-disabled text-sm font-normal">Stats</h4>
+          <div className="flex items-center gap-2">
+            <p className="text-text-disabled text-xs font-medium">
+              30.2k Members
+            </p>
+            <div className="w-1 h-1 rounded-full bg-status-success-3"></div>
+            <p className="text-status-success-3 text-xs font-medium">
+              30 Online
+            </p>
+          </div>
+        </div>
+        <div className="flex">
+          <h3 className="text-text-disabled text-sm font-normal">
+            Description
+          </h3>
+        </div>
+        <div className="flex gap-2 w-full justify-between">
           {isEditingDescription ? (
-            <input
-              type="text"
+            <textarea
               value={groupDescription}
               onChange={(e) => setGroupDescription(e.target.value)}
               className="text-text-primary text-sm font-medium border border-text-disabled rounded-md p-1 w-3/4 focus:outline-none"
@@ -185,7 +210,7 @@ const About = () => {
             </span>
           )}
           <button
-            className="w-1/4"
+            className="w-1/4 flex justify-end"
             type="button"
             onClick={() => setIsEditingDescription(!isEditingDescription)}
           >
@@ -197,4 +222,60 @@ const About = () => {
   );
 };
 
-const Members = () => <div>Members</div>;
+const Members = () => {
+  const [searchTerm, setSearchTerm] = useState<string>(""); // State for search input
+
+  // Function to filter members based on search input
+  const filteredMembers = team_chat_members_data.filter((member) =>
+    member.fullname.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div>
+      <div className="sticky top-0 z-[2] bg-white dark:bg-black p-4">
+        <div className="searchWrapper flex items-center gap-1 border border-text-disabled rounded-md p-1 w-full">
+          <SearchIcon size={20} />
+          <input
+            type="text"
+            placeholder="Search members"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="text-sm w-full focus:outline-none"
+          />
+        </div>
+        <div className="membersWrapper flex items-center justify-between mt-2">
+          <p className="text-text-primary text-sm font-medium">Members</p>
+          <button className="text-brand-9 text-sm font-medium">
+            + Add New Member
+          </button>
+        </div>
+      </div>
+      {filteredMembers.map((item) => (
+        <div className="userWrapper flex items-center gap-2 justify-between w-full mt-3 px-4">
+          <div className="flex items-center gap-2 w-3/4">
+            <div className="imgWrapper h-10 w-10 relative overflow-hidden">
+              <Image
+                src={Avatar1}
+                alt="profile"
+                width={100}
+                height={100}
+                className="rounded-full w-full h-full object-contain"
+              />
+            </div>
+            <div className="flex flex-col">
+              <p className="text-text-primary text-sm font-medium">
+                {item.fullname}
+              </p>
+              <p className="text-text-quaternary text-xs font-normal">
+                {item.position}
+              </p>
+            </div>
+          </div>
+          <button type="button" className="w-1/4 flex justify-end">
+            <Image src={TrashIcon} alt="delete" width={16} height={16} />
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+};
