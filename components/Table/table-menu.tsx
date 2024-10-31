@@ -22,6 +22,7 @@ const TableMenu: React.FC<TableMenuProps> = (props) => {
             mt: 1,
             width: 250,
             backgroundColor: isDarkMode ? "#1C1C1C" : "#FFFFFF",
+            boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.1)",
             "& .MuiMenuItem-root": {
               padding: "12px 26px",
               boxShadow: "none",
