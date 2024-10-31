@@ -1,5 +1,5 @@
 import Button from "@/components/Form/Button/button";
-import { ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { ModalContent, ModalTrigger, useModal } from "@/components/Modal/modal";
 import GroupImage from "@/public/empty/SampleLandlord.jpeg";
 import { Modal } from "@/components/Modal/modal";
 import PencilIcon from "@/public/icons/pencil.svg";
@@ -24,6 +24,7 @@ import Checkbox from "@/components/Form/Checkbox/checkbox";
 // Images
 import CheckboxDefault from "@/public/icons/checkbox-default.svg";
 import CheckboxChecked from "@/public/icons/checkbox-checked.svg";
+import { useTeamChatStore } from "@/store/teamChatStore";
 
 // Declare selectedMembers globally
 let chosenMembers: string[] = [];
@@ -50,7 +51,8 @@ export const TeamChatHeader = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <TeamChatCreateModal />
+            {/* <TeamChatCreateModal /> */}
+            <div>hello</div>
           </ModalContent>
         </Modal>
       </div>
@@ -58,52 +60,7 @@ export const TeamChatHeader = () => {
   );
 };
 
-export const TeamChatCreateModal = () => {
-  return (
-    <div className="flex flex-col gap-4 bg-white h-[60vh] w-[30vw] dark:bg-black rounded-lg overflow-y-auto custom-round-scrollbar">
-      <SelectMember />
-    </div>
-  );
-};
-
-export const TeamChatGroupDetailsModal = () => {
-  const [side, setSide] = useState<"about" | "members">("about");
-  const activeStyle =
-    "text-black bg-brand-9 text-sm dark:bg-[#3C3D37] transition-all duration-300 ease-in-out w-full py-1 rounded-lg";
-  const inactiveStyle =
-    "text-text-quaternary text-sm bg-transparent transition-all duration-300 ease-in-out";
-  return (
-    <div className="flex flex-col gap-4 bg-white h-[45vh] w-[30vw] dark:bg-black rounded-lg">
-      <div className="flex h-full gap-2">
-        <div className="flex flex-col gap-2 w-[25%] border-r border-neutral-3 dark:border-darkText-2 h-full p-4">
-          <button
-            className={clsx(activeStyle, {
-              [inactiveStyle]: side !== "about",
-            })}
-            onClick={() => setSide("about")}
-          >
-            About
-          </button>
-          <button
-            className={clsx(activeStyle, {
-              [inactiveStyle]: side !== "members",
-            })}
-            onClick={() => setSide("members")}
-          >
-            Members
-          </button>
-        </div>
-
-        <div className="w-[75%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar">
-          {side === "about" && <About />}
-          {side === "members" && <Members />}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const About = () => {
+export const About = () => {
   const router = useRouter();
   const { id } = useParams();
 
@@ -236,67 +193,6 @@ const About = () => {
   );
 };
 
-const Members = () => {
-  const [searchTerm, setSearchTerm] = useState<string>(""); // State for search input
-
-  // Function to filter members based on search input
-  const filteredMembers = team_chat_members_data.filter((member) =>
-    member.fullname.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  return (
-    <div>
-      <div className="sticky top-0 z-[2] bg-white dark:bg-black p-4">
-        <div className="searchWrapper flex items-center gap-1 border border-text-disabled rounded-md p-1 w-full">
-          <SearchIcon size={20} />
-          <input
-            type="text"
-            placeholder="Search members"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="text-sm w-full focus:outline-none"
-          />
-        </div>
-        <div className="membersWrapper flex items-center justify-between mt-2">
-          <p className="text-text-primary text-sm font-medium">Members</p>
-          <button className="text-brand-9 text-sm font-medium">
-            + Add New Member
-          </button>
-        </div>
-      </div>
-      {filteredMembers.map((item, index) => (
-        <div
-          key={index}
-          className="userWrapper flex items-center gap-2 justify-between w-full mt-3 px-4"
-        >
-          <div className="flex items-center gap-2 w-3/4">
-            <div className="imgWrapper h-10 w-10 relative overflow-hidden">
-              <Image
-                src={Avatar1}
-                alt="profile"
-                width={100}
-                height={100}
-                className="rounded-full w-full h-full object-contain"
-              />
-            </div>
-            <div className="flex flex-col">
-              <p className="text-text-primary text-sm font-medium">
-                {item.fullname}
-              </p>
-              <p className="text-text-quaternary text-xs font-normal">
-                {item.position}
-              </p>
-            </div>
-          </div>
-          <button type="button" className="w-1/4 flex justify-end">
-            <Image src={TrashIcon} alt="delete" width={16} height={16} />
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-};
-
 const CreateHeader = ({ selectedCount }: { selectedCount: number }) => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState<string>(""); // State for search input
@@ -361,7 +257,22 @@ const CreateHeader = ({ selectedCount }: { selectedCount: number }) => {
   );
 };
 
-const SelectMember = () => {
+export const AddMemberComp = () => {
+  const { isAddMember } = useTeamChatStore();
+  return (
+    isAddMember && (
+      <div className="flex flex-col gap-4 bg-white h-[60vh] w-[30vw] dark:bg-black rounded-lg overflow-y-auto custom-round-scrollbar">
+        <Modal>
+          <ModalContent>
+            <SelectMember />
+          </ModalContent>
+        </Modal>
+      </div>
+    )
+  );
+};
+
+export const SelectMember = () => {
   const [checkedStates, setCheckedStates] = useState<boolean[]>(
     Array(team_chat_members_data.length).fill(false)
   );
