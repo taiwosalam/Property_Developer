@@ -13,6 +13,7 @@ import Button from "@/components/Form/Button/button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import { trackOutsideClick } from "@/utils/track-outside-click";
+import { SponsorIcon } from "@/public/icons/icons";
 
 const UnitSponsorPopover = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -108,7 +109,7 @@ const UnitSponsorPopover = () => {
         className="flex gap-2 capitalize text-start"
         onClick={() => setShowPopover((prev) => !prev)}
       >
-        <Picture src={Sponsor} size={24} />
+        <SponsorIcon />
         <p>sponsor</p>
       </button>
       {/* Modal is used to display the success message */}

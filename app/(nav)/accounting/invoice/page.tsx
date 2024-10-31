@@ -27,10 +27,13 @@ import {
 } from "./data";
 import Link from "next/link";
 import CustomTable from "@/components/Table/table";
-import { Menu, MenuItem } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
 import type { DataItem } from "@/components/Table/types";
+import useDarkMode from "@/hooks/useCheckDarkMode";
+import TableMenu from "@/components/Table/table-menu";
 
 const AccountingInvoicePage = () => {
+  const isDarkMode = useDarkMode();
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >();
@@ -80,6 +83,7 @@ const AccountingInvoicePage = () => {
     e.stopPropagation();
     setSelectedItemId(String(item.id));
     setAnchorEl(e.currentTarget);
+    console.log(e.currentTarget);
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -199,30 +203,15 @@ const AccountingInvoicePage = () => {
           handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
         }}
       />
-      <Menu
+      <TableMenu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
-        slotProps={{
-          paper: {
-            sx: {
-              mt: 1,
-              width: 250,
-              "& .MuiMenuItem-root": {
-                padding: "16px",
-                justifyContent: "center",
-                fontWeight: "bold",
-                fontSize: "1rem",
-                textTransform: "capitalize",
-              },
-            },
-          },
-        }}
       >
         <MenuItem onClick={handleMenuClose} disableRipple>
           <Link
             href={`/accounting/invoice/${selectedItemId}/manage`}
-            className="w-full text-center"
+            className="w-full text-left"
           >
             Manage
           </Link>
@@ -230,7 +219,7 @@ const AccountingInvoicePage = () => {
         <MenuItem onClick={handleMenuClose} disableRipple>
           <Link
             href={`/accounting/invoice/${selectedItemId}/add-payment`}
-            className="w-full text-center"
+            className="w-full text-left"
           >
             Add Payment
           </Link>
@@ -238,12 +227,12 @@ const AccountingInvoicePage = () => {
         <MenuItem onClick={handleMenuClose} disableRipple>
           <Link
             href={`/accounting/invoice/${selectedItemId}/print-invoice`}
-            className="w-full text-center"
+            className="w-full text-left"
           >
             Print Invoice
           </Link>
         </MenuItem>
-      </Menu>
+      </TableMenu>
     </section>
   );
 };
