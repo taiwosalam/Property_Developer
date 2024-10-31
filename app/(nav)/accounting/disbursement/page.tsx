@@ -32,13 +32,7 @@ const Disbursement = () => {
   };
   return (
     <div className="custom-flex-col gap-8">
-      <div className="flex items-center justify-between">
-        <div className="flex gap-1 items-center">
-          <h1 className="text-black dark:text-white text-2xl font-medium">
-            Disbursement
-          </h1>
-          <ExclamationMark />
-        </div>
+      <div className="flex items-center justify-end">
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">
@@ -64,6 +58,7 @@ const Disbursement = () => {
           hasGridListToggle={false}
           exports
           exportHref="/accounting/disbursement/export"
+          pageTitle="Disbursement"
         />
         <CustomTable
           fields={disbursementTableFields}

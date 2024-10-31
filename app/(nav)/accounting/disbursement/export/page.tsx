@@ -45,7 +45,9 @@ const ExportDisbursement = () => {
         </div>
       </div>
       <div className="custom-flex-col gap-6">
-        <h1 className="text-black text-2xl font-medium text-center">Summary</h1>
+        <h1 className="text-black text-2xl font-medium text-center">
+          Disbursement Summary
+        </h1>
         <CustomTable
           fields={exportTableFields}
           data={disbursementTableData}
