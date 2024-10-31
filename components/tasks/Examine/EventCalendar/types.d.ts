@@ -15,10 +15,13 @@ export interface EventCalendarWeekData {
 export interface EventCalendarContextProps extends CalendarClassData {
   weekData: EventCalendarWeekData;
   openModal: () => void;
+  openActivityModal: (date: Date) => void;
 }
 
 export interface EventCalendarDayProps extends CalendarDayProps {
   onClick: () => void;
+  onEventClick: () => void;
+
   removeBorder?: {
     right?: boolean;
     bottom?: boolean;

@@ -11,7 +11,7 @@ import {
 } from "@/components/tasks/Examine/EventCalendar/event-calendar-components";
 
 const MonthEventCalendar = () => {
-  const { openModal, calendarDays } = useEventCalendar();
+  const { openModal, openActivityModal, calendarDays } = useEventCalendar();
 
   return (
     <div className="rounded-lg border border-solid border-[#B9B9B9] bg-white pt-6 pb-4 px-7 overflow-x-auto custom-round-scrollbar">
@@ -23,6 +23,7 @@ const MonthEventCalendar = () => {
               {...day}
               key={index}
               onClick={openModal}
+              onEventClick={() => openActivityModal(day.date)}
               removeBorder={{ right: (index + 1) % 7 === 0 ? true : false }}
             />
           ))}

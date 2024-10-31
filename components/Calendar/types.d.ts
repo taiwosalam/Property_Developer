@@ -50,9 +50,16 @@ export interface CalendarDayProps {
   date: Date;
   color?: Color;
   isToday: boolean;
+  isActive?: boolean;
   hasEvent?: boolean;
   eventCount: number;
+  onClick?: () => void;
   isCurrentMonth: boolean;
+  events: CalendarEventProps[];
+}
+
+export interface CalendarActivitiesProps {
+  date: Date;
   events: CalendarEventProps[];
 }
 // --------------------------------------------------

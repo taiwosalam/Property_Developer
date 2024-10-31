@@ -17,7 +17,7 @@ import useWindowWidth from "@/hooks/useWindowWidth";
 import { Calendar } from "@/components/Calendar/data";
 
 const YearEventCalendar = () => {
-  const { year } = useEventCalendar();
+  const { year, openModal, openActivityModal } = useEventCalendar();
 
   const { isCustom, isSmallTablet } = useWindowWidth(1280);
 
@@ -51,7 +51,17 @@ const YearEventCalendar = () => {
                 <CalendarWeekDays type="short" />
                 <div className="grid grid-cols-7 gap-3">
                   {monthDays.map((day, index) => (
-                    <CalendarDay key={index} {...day} />
+                    <CalendarDay
+                      key={index}
+                      {...day}
+                      onClick={
+                        day.hasEvent
+                          ? () => {
+                              openActivityModal(day.date);
+                            }
+                          : openModal
+                      }
+                    />
                   ))}
                 </div>
               </div>
