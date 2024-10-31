@@ -95,12 +95,6 @@ const About = () => {
     fullname: "",
     groupDesc: "",
   };
-
-  if (!data.pfp) {
-    router.replace("/tasks/team-chat");
-    return null;
-  }
-
   const [groupImage, setGroupImage] = useState<string | null>(data.pfp);
   const [groupName, setGroupName] = useState<string>(data.fullname);
   const [groupDescription, setGroupDescription] = useState<string>(
@@ -109,6 +103,12 @@ const About = () => {
   const [isEditingName, setIsEditingName] = useState<boolean>(false);
   const [isEditingDescription, setIsEditingDescription] =
     useState<boolean>(false);
+
+  if (!data.pfp) {
+    router.replace("/tasks/team-chat");
+    return null;
+  }
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
