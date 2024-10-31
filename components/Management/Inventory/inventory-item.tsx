@@ -22,13 +22,13 @@ import { ImageIcon } from "@/public/icons/icons";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
-  const isDarkMode = useDarkMode()
+  const isDarkMode = useDarkMode();
   const { preview, inputFileRef, handleImageChange } = useImageUploader({
     placeholder: data?.image,
   });
 
   const input_styles: CSSProperties = {
-    backgroundColor: isDarkMode ? '#020617' : "white",
+    backgroundColor: isDarkMode ? "#020617" : "white",
   };
 
   const selectImage = () => {
@@ -45,9 +45,9 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="pb-[18px] overflow-x-auto custom-round-scrollbar">
-        <div className="flex items-center gap-5 2xl:gap-[66px] min-w-[500px]">
-          <div className="custom-flex-col gap-6 flex-1 py-2">
+      <div className="pb-[18px]">
+        <div className="flex flex-wrap-reverse items-center gap-5 2xl:gap-[66px]">
+          <div className="custom-flex-col gap-6 flex-1 py-2 min-w-[240px]">
             <div className="custom-flex-col gap-2 flex-1">
               {edit ? (
                 <Input
@@ -97,7 +97,7 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
             {edit && (
               <div
                 className="absolute inset-0 flex items-center justify-center"
-                style={{ backgroundColor: isDarkMode ? '#3C3D37' : '#fff' }}
+                style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
               >
                 <input
                   type="file"
