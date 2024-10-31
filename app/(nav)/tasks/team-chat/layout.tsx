@@ -17,7 +17,7 @@ import useWindowWidth from "@/hooks/useWindowWidth";
 import { team_chat_data } from "./data";
 import TeamChartCard from "./TeamChartCard";
 import { SearchIcon } from "@/public/icons/icons";
-import { TeamChatHeader } from "./team-chatt-components";
+import { TeamChatHeader } from "./team-chat-components";
 
 const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { id } = useParams();

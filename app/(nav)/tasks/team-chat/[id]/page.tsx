@@ -10,6 +10,9 @@ import ChevronLeft from "@/public/icons/chevron-left.svg";
 import Picture from "@/components/Picture/picture";
 import Messages from "@/components/Message/messages";
 import { team_chat_data } from "../data";
+import { ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { Modal } from "@/components/Modal/modal";
+import { TeamChatGroupDetailsModal } from "../team-chat-components";
 
 const Chat = () => {
   const router = useRouter();
@@ -27,13 +30,20 @@ const Chat = () => {
             <Picture src={ChevronLeft} alt="back" size={20} />
           </button>
           <button className="flex items-center gap-4 text-left">
-            <Picture
-              src={data.pfp}
-              alt="profile picture"
-              size={32}
-              rounded
-              status
-            />
+            <Modal>
+              <ModalTrigger asChild>
+                <Picture
+                  src={data.pfp}
+                  alt="profile picture"
+                  size={32}
+                  rounded
+                  status
+                />
+              </ModalTrigger>
+              <ModalContent>
+                <TeamChatGroupDetailsModal />
+              </ModalContent>
+            </Modal>
             <div className="custom-flex-col">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
                 {data.fullname}
