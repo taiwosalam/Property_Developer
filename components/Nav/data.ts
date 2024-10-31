@@ -36,6 +36,7 @@ export const nav_items: NavItemsProps = [
       { label: "deposits request", href: "/deposits" },
       { label: "vehicles record", href: "/vehicles-record" },
       { label: "agent community", href: "/agent-community" },
+      { label: "team chat", href: "/team-chat" },
     ],
   },
   {

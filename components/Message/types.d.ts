@@ -7,6 +7,7 @@ export interface MessageCardProps {
   messages?: number;
   verified?: boolean;
   highlight?: boolean;
+  groupDesc?: string;
 }
 
 export interface MessagesProps {
