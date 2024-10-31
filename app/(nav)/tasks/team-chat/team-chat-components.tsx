@@ -250,8 +250,11 @@ const Members = () => {
           </button>
         </div>
       </div>
-      {filteredMembers.map((item) => (
-        <div className="userWrapper flex items-center gap-2 justify-between w-full mt-3 px-4">
+      {filteredMembers.map((item, index) => (
+        <div
+          key={index}
+          className="userWrapper flex items-center gap-2 justify-between w-full mt-3 px-4"
+        >
           <div className="flex items-center gap-2 w-3/4">
             <div className="imgWrapper h-10 w-10 relative overflow-hidden">
               <Image
