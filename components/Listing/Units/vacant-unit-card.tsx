@@ -3,7 +3,12 @@
 import React, { useState } from "react";
 
 // Images
-import { CameraIcon } from "@/public/icons/icons";
+import {
+  CameraIcon,
+  EditPencilIcon,
+  PreviewEyeIcon,
+  StatsChartIcon,
+} from "@/public/icons/icons";
 import SampleProperty6 from "@/public/empty/SampleProperty6.jpg";
 
 import PreviewEye from "@/public/icons/preview-eye.svg";
@@ -127,18 +132,18 @@ const VacantUnitCard = () => {
           href={"/management/properties/1"}
           className="flex items-center gap-2"
         >
-          <Picture src={PreviewEye} width={24} height={17} />
+          <PreviewEyeIcon />
           <p>Preview</p>
         </Link>
         <Link href={"/listing/statistics"} className="flex gap-2">
-          <Picture src={StatsChart} size={24} />
+          <StatsChartIcon />
           <p>Stats</p>
         </Link>
         <Link
           href={"/management/properties/1/edit-property"}
           className="flex gap-2"
         >
-          <Picture src={EditPencil} size={24} />
+          <EditPencilIcon />
           <p>Edit</p>
         </Link>
       </div>

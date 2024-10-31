@@ -65,34 +65,14 @@ const ManageExaminepage = () => {
         <SectionContainer heading="Service connected to property">
           <div className="flex flex-col gap-4 w-full">
             <AutoResizingGrid minWidth={340}>
-              <ServiceCheckbox
-                label="Electricity"
-                checked={true}
-                onChange={() => {}}
-              />
-              <ServiceCheckbox
-                label="Sewer"
-                checked={false}
-                onChange={() => {}}
-              />
-              <ServiceCheckbox label="Gas" checked={true} onChange={() => {}} />
+              <ServiceCheckbox label="Electricity" />
+              <ServiceCheckbox label="Sewer" />
+              <ServiceCheckbox label="Gas" />
             </AutoResizingGrid>
             <AutoResizingGrid minWidth={340}>
-              <ServiceCheckbox
-                label="Drainage"
-                checked={true}
-                onChange={() => {}}
-              />
-              <ServiceCheckbox
-                label="Water"
-                checked={false}
-                onChange={() => {}}
-              />
-              <ServiceCheckbox
-                label="Smoke Detector"
-                checked={true}
-                onChange={() => {}}
-              />
+              <ServiceCheckbox label="Drainage" />
+              <ServiceCheckbox label="Water" />
+              <ServiceCheckbox label="Smoke Detector" />
             </AutoResizingGrid>
           </div>
         </SectionContainer>
@@ -205,7 +185,7 @@ const ManageExaminepage = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {["Send to Landlord", "Send to Tenant"].map((item, index) => (
-                <Checkbox key={index} checked={false} onChange={() => {}}>
+                <Checkbox key={index}>
                   <span>{item}</span>
                 </Checkbox>
               ))}
@@ -232,8 +212,8 @@ export default ManageExaminepage;
 
 interface ServiceCheckboxProps {
   label: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
 }
 
 const ServiceCheckbox: React.FC<ServiceCheckboxProps> = ({
