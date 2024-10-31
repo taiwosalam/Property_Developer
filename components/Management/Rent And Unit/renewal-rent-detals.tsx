@@ -136,7 +136,7 @@ export const RenewalRentDetails = (
                   "Email Alert",
                 ].map((option) => (
                   <label key={option} className="inline-flex items-center">
-                    <Checkbox checked={false} onChange={() => {}}>
+                    <Checkbox>
                       <span>{option}</span>
                     </Checkbox>
                   </label>

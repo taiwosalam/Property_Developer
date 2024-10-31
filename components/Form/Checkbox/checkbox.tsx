@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Image from "next/image";
 
 // Types
@@ -9,11 +11,14 @@ import CheckboxDefault from "@/public/icons/checkbox-default.svg";
 import CheckboxChecked from "@/public/icons/checkbox-checked.svg"; // Add the checked state image
 
 const Checkbox: React.FC<CheckboxProps> = ({ children, checked, onChange }) => {
+  const [internalIsChecked, setInternalIsChecked] = useState(checked || false);
+
+  const isChecked = checked ? checked : internalIsChecked;
+  const setIsChecked = onChange ? onChange : setInternalIsChecked;
+
   // Handle the click event to toggle the checkbox state
   const handleCheckboxClick = () => {
-    if (onChange) {
-      onChange(!checked);
-    }
+    setIsChecked(!isChecked);
   };
 
   return (
@@ -23,7 +28,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ children, checked, onChange }) => {
       type="button"
     >
       <Image
-        src={checked ? CheckboxChecked : CheckboxDefault}
+        src={isChecked ? CheckboxChecked : CheckboxDefault}
         alt="checkbox"
         width={24}
         height={24}
