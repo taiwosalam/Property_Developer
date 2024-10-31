@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
+import Select from "@/components/Form/Select/select";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { empty } from "@/app/config";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -17,6 +18,14 @@ import {
   formatCostInputValue,
 } from "@/utils/number-formatter";
 import DateInput from "@/components/Form/DateInput/date-input";
+
+const paymentModes = [
+  "Bank Transfer",
+  "Cash Deposit",
+  "Cash Payment",
+  "Wallet",
+  "Other Mode of Payment",
+];
 
 const ManageDisbursement = () => {
   const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
@@ -51,11 +60,12 @@ const ManageDisbursement = () => {
         <AccountingTitleSection title="Disbursement Break Down">
           <div className="flex">
             <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
-              <Input
+              <Select
                 id="disbursement-mode"
                 label="disbursement mode"
                 placeholder="Bank Transfer"
-                inputClassName="bg-white"
+                options={paymentModes}
+                inputContainerClassName="bg-white"
               />
               <Input
                 id="ammount-disburse"
