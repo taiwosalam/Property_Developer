@@ -26,8 +26,9 @@ import {
   expenseTableFields,
   expenseTableData,
 } from "./data";
-import { Menu, MenuItem } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
 import CustomTable from "@/components/Table/table";
+import TableMenu from "@/components/Table/table-menu";
 import type { DataItem } from "@/components/Table/types";
 import ExportButton from "@/components/reports/export-button";
 
@@ -208,30 +209,15 @@ const AccountingExpensesPage = () => {
           handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
         }}
       />
-      <Menu
+      <TableMenu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
-        slotProps={{
-          paper: {
-            sx: {
-              mt: 1,
-              width: 250,
-              "& .MuiMenuItem-root": {
-                padding: "16px",
-                justifyContent: "center",
-                fontWeight: "bold",
-                fontSize: "1rem",
-                textTransform: "capitalize",
-              },
-            },
-          },
-        }}
       >
         <MenuItem onClick={handleMenuClose} disableRipple>
           <Link
             href={`/accounting/expenses/${selectedItemId}/manage-expenses`}
-            className="w-full text-center"
+            className="w-full text-left"
           >
             Manage Expense
           </Link>
@@ -239,12 +225,12 @@ const AccountingExpensesPage = () => {
         <MenuItem onClick={handleMenuClose} disableRipple>
           <Link
             href={`/accounting/expenses/${selectedItemId}/preview-expenses`}
-            className="w-full text-center"
+            className="w-full text-left"
           >
             Preview Expense
           </Link>
         </MenuItem>
-      </Menu>
+      </TableMenu>
     </section>
   );
 };
