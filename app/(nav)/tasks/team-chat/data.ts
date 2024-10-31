@@ -100,3 +100,16 @@ export const team_chat_data: MessageCardProps[] = [
      groupDesc: 'Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.',
   },
 ];
+
+export const team_chat_members_data = [
+  { fullname: "Salam Aishat", pfp: Avatar1, position: "staff" },
+  { fullname: "Salam Aishat", pfp: Avatar2, position: "Admin" },
+  { fullname: "Salam Aishat", pfp: Avatar3, position: "manager" },
+  { fullname: "Salam Aishat", pfp: Avatar4, position: "Admin" },
+  { fullname: "Salam Aishat", pfp: Avatar4, position: "Staff" },
+  { fullname: "Mubarak Abdullahi", pfp: Avatar4, position: "Admin" },
+  { fullname: "Onos akpan", pfp: Avatar4, position: "Branch Manager" },
+  { fullname: "Salam Aishat", pfp: Avatar4, position: "stafff" },
+  { fullname: "Salam Taiwo", pfp: Avatar4, position: "Staff" },
+  { fullname: "Salam Aishat", pfp: Avatar4, position: "Branch Manager" },
+];
