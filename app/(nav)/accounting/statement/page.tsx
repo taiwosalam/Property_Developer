@@ -78,7 +78,7 @@ const Statement = () => {
   };
 
   const handleRowClick = (item: DataItem) => {
-    router.push(`/accounting/statement/${item.payment_id}/preview`);
+    router.push(`/accounting/statement/preview`);
   };
 
   const transformedTableData = statementTableData.map((item) => ({
@@ -161,8 +161,8 @@ const Statement = () => {
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <ExportButton type="pdf" href="/accounting/expenses/export" />
-                <ExportButton type="csv" href="/accounting/expenses/export" />
+                <ExportButton type="pdf" href="/accounting/statement/export" />
+                <ExportButton type="csv" href="/accounting/statement/export" />
               </div>
             </div>
           </div>
