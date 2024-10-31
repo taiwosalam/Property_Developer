@@ -21,7 +21,7 @@ import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import { v4 as uuidv4 } from "uuid";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import DraggableImage from "./draggable-image";
-import { propertyCategories, rentPeriods } from "@/data";
+import { propertyCategories } from "@/data";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { getAllBranches } from "@/app/(nav)/management/staff-branch/data";
 import { useAuthStore } from "@/store/authstrore";
