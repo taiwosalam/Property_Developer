@@ -59,9 +59,7 @@ const CalendarPage = () => {
           filterWithOptionsWithDropdown={calendarsrFilterOptionsWithDropdown}
           hasGridListToggle={false}
         />
-        <div className="flex gap-10">
-          <CalendarComponent />
-        </div>
+        <CalendarComponent />
       </div>
       <div className="page-title-container">
         <PageTitle title="up coming events" />

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 // Images
@@ -23,6 +23,7 @@ import {
   startOfMonth,
   addWeeks,
   subWeeks,
+  isSameDay,
 } from "date-fns";
 
 import { Modal, ModalContent } from "@/components/Modal/modal";
@@ -42,6 +43,8 @@ import YearEventCalendar from "@/components/tasks/Examine/EventCalendar/year-eve
 import WeekEventCalendar from "@/components/tasks/Examine/EventCalendar/week-event-calendar";
 import MonthEventCalendar from "@/components/tasks/Examine/EventCalendar/month-event-calendar";
 import { EventCalendarContext } from "@/components/tasks/Examine/EventCalendar/event-calendar-context";
+import CalendarActivities from "@/components/Calendar/calendar-activities";
+import { calendar_events } from "@/components/Calendar/events";
 
 const ManageCalendar = () => {
   // Hooks
@@ -49,9 +52,20 @@ const ManageCalendar = () => {
 
   // States
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [activedate, setActiveDate] = useState(new Date());
   const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
+  const [activityModalIsOpen, setActivityModalIsOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(startOfMonth(new Date()));
   const [activeLayout, setActiveLayout] = useState<CalendarLayoutType>("Month");
+
+  // Memos
+  const { activities } = useMemo(() => {
+    const activities = calendar_events.filter((event) =>
+      isSameDay(event.date, activedate)
+    );
+
+    return { activities };
+  }, [activedate]);
 
   // Constants
   const data = new Calendar({
@@ -72,6 +86,10 @@ const ManageCalendar = () => {
   };
 
   const openModal = () => setModalIsOpen(true);
+  const openActivityModal = (date: Date) => {
+    setActiveDate(date);
+    setActivityModalIsOpen(true);
+  };
 
   const goToToday = () => setCurrentDate(new Date());
 
@@ -94,10 +112,11 @@ const ManageCalendar = () => {
         weekData,
 
         openModal,
+        openActivityModal,
       }}
     >
       <div className="custom-flex-col gap-6 pb-10">
-        <div className="flex gap-6 items-center justify-between flex-wrap py-3 border-t border-b border-solid border-[#EAECF0]">
+        <div className="sticky top-[150px] z-10 bg-neutral-2 flex gap-6 items-center justify-between flex-wrap py-3 border-t border-b border-solid border-[#EAECF0]">
           <div className="flex items-center gap-4 text-black text-xl font-medium capitalize">
             <button onClick={handleBack} type="button" aria-label="Go Back">
               <ChevronLeft />
@@ -197,6 +216,18 @@ const ManageCalendar = () => {
         <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
           <ModalContent>
             <CreateReminderMOdal />
+          </ModalContent>
+        </Modal>
+        <Modal
+          state={{
+            isOpen: activityModalIsOpen,
+            setIsOpen: setActivityModalIsOpen,
+          }}
+        >
+          <ModalContent>
+            <div className="w-[95vw] max-w-[500px] max-h-[85vh]">
+              <CalendarActivities date={activedate} events={activities} />
+            </div>
           </ModalContent>
         </Modal>
       </div>

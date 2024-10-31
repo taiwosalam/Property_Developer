@@ -14,7 +14,6 @@
 
 /* Root styles */
 :root {
-
   /* --color: 0, 51, 196;
   --primary-color: rgb(var(--color));
   --secondary-color: rgba(var(--color), 0.7);
@@ -29,7 +28,7 @@
   --brand-secondary: #6083ed;
   --brand-tertiary: #93c5fd; */
   /* color: #9aeb49; */
-  --font-style: "Lato", sans-serif; 
+  --font-style: "Lato", sans-serif;
 }
 
 body {
@@ -90,6 +89,10 @@ h1 {
 
 .custom-secondary-color {
   color: var(--secondary-color);
+}
+
+.custom-primary-outline-color {
+  outline-color: var(--primary-color);
 }
 
 .custom-primary-outline:focus-within {
@@ -314,11 +317,10 @@ button:disabled {
 
 .dash-table tbody tr:nth-child(2n + 1) {
   @apply bg-brand-1 text-[#f1f1fd] dark:bg-[#020617];
-  }
+}
 .dash-table tbody tr:nth-child(2n + 1):hover {
   background-color: #ffffff21;
-  }
-
+}
 
 .dash-table tbody tr:nth-child(2n):hover {
   background-color: rgba(241, 234, 234, 0.247);
