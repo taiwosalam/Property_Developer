@@ -1754,23 +1754,23 @@ export const ImageIcon: React.FC<IconProps> = ({ size = 40 }) => (
     <path
       d="M3.33337 9.99967C3.33337 8.23156 4.03575 6.53587 5.286 5.28563C6.53624 4.03539 8.23193 3.33301 10 3.33301H30C31.7682 3.33301 33.4638 4.03539 34.7141 5.28563C35.9643 6.53587 36.6667 8.23156 36.6667 9.99967V29.9997C36.6667 31.7678 35.9643 33.4635 34.7141 34.7137C33.4638 35.964 31.7682 36.6663 30 36.6663H10C8.23193 36.6663 6.53624 35.964 5.286 34.7137C4.03575 33.4635 3.33337 31.7678 3.33337 29.9997V9.99967Z"
       stroke="currentColor"
-      stroke-width="3"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M14.1667 18.3333C16.4679 18.3333 18.3333 16.4679 18.3333 14.1667C18.3333 11.8655 16.4679 10 14.1667 10C11.8655 10 10 11.8655 10 14.1667C10 16.4679 11.8655 18.3333 14.1667 18.3333Z"
       stroke="currentColor"
-      stroke-width="3"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M24.21 21.0342L10 36.6659H30.2217C31.931 36.6659 33.5703 35.9868 34.779 34.7782C35.9876 33.5695 36.6667 31.9302 36.6667 30.2209V29.9992C36.6667 29.2225 36.375 28.9242 35.85 28.3492L29.1333 21.0242C28.8203 20.6827 28.4395 20.4102 28.0153 20.2241C27.5911 20.0381 27.1327 19.9424 26.6695 19.9434C26.2062 19.9443 25.7483 20.0418 25.3248 20.2296C24.9013 20.4174 24.5216 20.6914 24.21 21.0342Z"
       stroke="currentColor"
-      stroke-width="3"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
