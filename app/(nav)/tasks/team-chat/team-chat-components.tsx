@@ -90,9 +90,13 @@ const About = () => {
   const router = useRouter();
   const { id } = useParams();
 
-  const data = team_chat_data.find((item) => item.id === id);
+  const data = team_chat_data.find((item) => item.id === id) || {
+    pfp: null,
+    fullname: "",
+    groupDesc: "",
+  };
 
-  if (!data) {
+  if (!data.pfp) {
     router.replace("/tasks/team-chat");
     return null;
   }
@@ -167,38 +171,18 @@ const About = () => {
             <Image src={PencilIcon} alt="edit" width={16} height={16} />
           </button>
         </div>
-        <div className="details flex flex-col">
-          <h4 className="text-text-disabled text-sm font-normal">Created</h4>
-          <p className="text-text-primary text-xs font-medium">
-            12/12/2024 1:50AM
-          </p>
-        </div>
-        <div className="details flex flex-col">
-          <h4 className="text-text-disabled text-sm font-normal">Stats</h4>
-          <div className="flex gap-1 items-center">
-            <p className="text-text-disabled text-xs font-medium">
-              30.2k Members
-            </p>
-            <div className="w-1 h-1 rounded-full bg-status-success-3"></div>
-            <p className="text-status-success-3 text-xs font-medium">
-              30 Online
-            </p>
-          </div>
-        </div>
         <div className="flex items-center w-full justify-between">
           {isEditingDescription ? (
-            <textarea
+            <input
+              type="text"
               value={groupDescription}
               onChange={(e) => setGroupDescription(e.target.value)}
               className="text-text-primary text-sm font-medium border border-text-disabled rounded-md p-1 w-3/4 focus:outline-none"
             />
           ) : (
-            <div className="mt-2">
-              <h4 className="text-text-disabled"> Description </h4>
-              <span className="text-text-primary text-xs font-medium">
-                {groupDescription}
-              </span>
-            </div>
+            <span className="text-text-primary text-xs font-medium">
+              {groupDescription}
+            </span>
           )}
           <button
             className="w-1/4"
