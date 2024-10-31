@@ -24,6 +24,12 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
 
   const { isCustom } = useWindowWidth(900);
   const [isSearch, setIsSearch] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  // Function to filter members based on search input
+  const filteredMembers = team_chat_data.filter((member) =>
+    member.fullname.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <>
@@ -47,6 +53,8 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                       type="text"
                       placeholder="Search"
                       className="w-full border border-text-disabled focus:outline-none rounded-lg h-full px-2"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
                     />
                   </div>
                 )}
@@ -58,7 +66,7 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                 </button>
               </div>
               <div className="custom-flex-col relative z-[1] pb-4">
-                {team_chat_data.map((message, idx) => (
+                {filteredMembers.map((message, idx) => (
                   <TeamChartCard
                     key={idx}
                     {...message}
