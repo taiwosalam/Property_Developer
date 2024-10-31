@@ -1,24 +1,15 @@
 "use client";
 
-import React from "react";
-
 // Imports
 import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
-import { useRouter } from "next/navigation";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import BackButton from "@/components/BackButton/back-button";
 
 const PreviewExpenses = () => {
-  const router = useRouter();
-
-  const back = () => {
-    router.back();
-  };
-
   return (
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
@@ -107,24 +98,9 @@ const PreviewExpenses = () => {
           <p className="text-brand-primary text-xl font-bold">₦1,950,000</p>
         </div>
       </div>
-      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
-        <Button
-          onClick={back}
-          variant="sky_blue"
-          size="base_medium"
-          className="py-2 px-8"
-        >
-          back
-        </Button>
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-end">
         <div className="flex gap-6">
-          <Button
-            variant="sky_blue"
-            size="base_medium"
-            className="py-2 px-8"
-            onClick={() => {
-              router.back();
-            }}
-          >
+          <Button variant="sky_blue" size="base_medium" className="py-2 px-8">
             download
           </Button>
           <Button size="base_medium" className="py-2 px-8">

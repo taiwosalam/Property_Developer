@@ -1,8 +1,7 @@
 "use client";
 
-import React from "react";
-
 // Imports
+import { useState } from "react";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
@@ -11,21 +10,45 @@ import AccountingTitleSection from "@/components/Accounting/accounting-title-sec
 import ExportPageHeader from "@/components/reports/export-page-header";
 import DeleteExpenseModal from "@/components/Accounting/expenses/delete-expense-modal";
 import { empty } from "@/app/config";
-import useDarkMode from "@/hooks/useCheckDarkMode";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { useRouter } from "next/navigation";
 import { SectionSeparator } from "@/components/Section/section-components";
 import ModalPreset from "@/components/Modal/modal-preset";
+import {
+  currencySymbols,
+  formatCostInputValue,
+} from "@/utils/number-formatter";
+import { useRouter } from "next/navigation";
+
+type MoneyField =
+  | "payment_amount"
+  | "annual_fee"
+  | "service_charge"
+  | "refundable_caution_fee"
+  | "tax_charges"
+  | "security_fee"
+  | "deduct_amount";
 
 const ManageExpenses = () => {
-  const isDarkMode = useDarkMode();
   const router = useRouter();
+  const [moneyValues, setMoneyValues] = useState<Record<MoneyField, string>>({
+    payment_amount: "",
+    annual_fee: "",
+    service_charge: "",
+    refundable_caution_fee: "",
+    tax_charges: "",
+    security_fee: "",
+    deduct_amount: "",
+  });
 
-  const back = () => {
-    router.back();
+  const handleMoneyInputChange = (field: MoneyField, value: string) => {
+    setMoneyValues((prevValues) => ({
+      ...prevValues,
+      [field]: formatCostInputValue(value),
+    }));
   };
 
+  const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
   return (
     <div className="custom-flex-col gap-10 pb-[150px] sm:pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
@@ -62,11 +85,15 @@ const ManageExpenses = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
               <Input id="payment-title" label="payment title" />
               <Input
-                id="amount"
+                id="payment_amount"
                 label="amount"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
+                value={moneyValues.payment_amount}
+                onChange={(value) =>
+                  handleMoneyInputChange("payment_amount", value)
+                }
               />
             </div>
             <div className="flex justify-end">
@@ -80,40 +107,60 @@ const ManageExpenses = () => {
           <div className="flex bg-white w-full p-6 rounded-lg flex-col gap-8">
             <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
               <Input
-                id="annual-rent"
+                id="annual_fee"
                 label="Annual Fee"
                 required
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="1,000,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
+                value={moneyValues.annual_fee}
+                onChange={(value) =>
+                  handleMoneyInputChange("annual_fee", value)
+                }
               />
               <Input
-                id="service-charge"
+                id="service_charge"
                 label="service charge"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
+                value={moneyValues.service_charge}
+                onChange={(value) =>
+                  handleMoneyInputChange("service_charge", value)
+                }
               />
               <Input
-                id="refundable-caution-fee"
+                id="refundable_caution_fee"
                 label="refundable caution fee"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
+                value={moneyValues.refundable_caution_fee}
+                onChange={(value) =>
+                  handleMoneyInputChange("refundable_caution_fee", value)
+                }
               />
               <Input
-                id="non-refundable-agency-fee"
+                id="tax_charges"
                 label="tax charges"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
+                value={moneyValues.tax_charges}
+                onChange={(value) =>
+                  handleMoneyInputChange("tax_charges", value)
+                }
               />
               <Input
-                id="non-refundable-legal-fee"
+                id="security_fee"
                 label="security fee"
-                CURRENCY_SYMBOL="₦"
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+                value={moneyValues.security_fee}
+                onChange={(value) =>
+                  handleMoneyInputChange("security_fee", value)
+                }
               />
             </div>
             <SectionSeparator />
@@ -139,9 +186,13 @@ const ManageExpenses = () => {
               <Input
                 id="amount"
                 label="amount"
-                CURRENCY_SYMBOL="₦"
+                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                style={{ backgroundColor: isDarkMode ? "" : "white" }}
+                inputClassName="bg-white"
+                value={moneyValues.deduct_amount}
+                onChange={(value) =>
+                  handleMoneyInputChange("deduct_amount", value)
+                }
               />
             </div>
             <div className="flex justify-end">
