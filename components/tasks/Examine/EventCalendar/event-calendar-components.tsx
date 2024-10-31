@@ -53,6 +53,7 @@ export const EventCalendarDay: React.FC<EventCalendarDayProps> = ({
   date,
   onClick,
   events = [],
+  onEventClick,
   isCurrentMonth,
   removeBorder = { right: false, bottom: false },
 }) => {
@@ -61,14 +62,14 @@ export const EventCalendarDay: React.FC<EventCalendarDayProps> = ({
   return (
     <div
       className={clsx("w-full h-[120px] custom-flex-col", {
-        "hover:bg-neutral-2 duration-150": isCurrentMonth,
+        "duration-150": isCurrentMonth,
       })}
     >
       <div className="flex h-full flex-1">
         <div className="flex-1 custom-flex-col justify-between">
           <button
             onClick={isCurrentMonth ? onClick : undefined}
-            className={clsx("flex flex-1 justify-end pt-[14px] pb-[7px] pr-6", {
+            className={clsx("flex flex-1 justify-end pt-[14px] pb-[7px] pr-6 hover:bg-neutral-2", {
               "cursor-not-allowed": !isCurrentMonth,
             })}
           >
@@ -82,7 +83,10 @@ export const EventCalendarDay: React.FC<EventCalendarDayProps> = ({
             </p>
           </button>
           <div className="max-h-full overflow-y-auto custom-round-scrollbar">
-            <div className="custom-flex-col">
+            <div
+              onClick={onEventClick}
+              className="custom-flex-col cursor-pointer"
+            >
               {isCurrentMonth &&
                 events.map((event, index) => (
                   <EventCalendarEvent

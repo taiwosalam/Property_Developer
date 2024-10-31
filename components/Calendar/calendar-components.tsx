@@ -1,12 +1,13 @@
 // Types
-import { calendar_week_days } from "./data";
+import { calendar_event_tags, calendar_week_days } from "./data";
 
 // Imports
 import type {
   CalendarDayProps,
+  CalendarEventProps,
+  CalendarWeekDaysProps,
   CalendarEventTagsProps,
   CalendarEventTagItemProps,
-  CalendarWeekDaysProps,
 } from "./types";
 
 // Imports
@@ -31,17 +32,21 @@ export const CalendarEventTagItem: React.FC<CalendarEventTagItemProps> = ({
 export const CalendarDay: React.FC<CalendarDayProps> = ({
   date,
   isToday,
+  onClick,
+  isActive,
   hasEvent,
   eventCount,
   isCurrentMonth,
   color = "#f5f5f5",
 }) => (
-  <div
+  <button
+    onClick={onClick}
     className={clsx(
       "relative w-8 h-8 m-auto rounded-sm flex items-center justify-center",
       {
         "opacity-50": !isCurrentMonth,
         "bg-white": isToday && isCurrentMonth,
+        "outline outline-2 custom-primary-outline-color": isActive,
       }
     )}
     style={{
@@ -55,7 +60,7 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({
     <p
       className={clsx("text-base font-normal", {
         "text-white": hasEvent && !isToday && isCurrentMonth,
-        "text-text-tertiary": (!hasEvent && !isToday) || !isCurrentMonth,
+        "text-text-tertiary hover:text-black": (!hasEvent && !isToday) || !isCurrentMonth,
       })}
     >
       {date.getDate()}
@@ -65,7 +70,7 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({
         <p className="text-white text-[10px] font-medium">{eventCount}</p>
       </div>
     )}
-  </div>
+  </button>
 );
 
 export const CalendarWeekDays: React.FC<CalendarWeekDaysProps> = ({
@@ -96,5 +101,21 @@ export const CalendarEventsTags: React.FC<CalendarEventTagsProps> = ({
     {Object.entries(events).map(([title, color], index) => (
       <CalendarEventTagItem key={index} title={title} color={color} />
     ))}
+  </div>
+);
+
+export const CalendarActivity: React.FC<CalendarEventProps> = ({
+  desc,
+  type,
+  title,
+}) => (
+  <div className="flex gap-4">
+    <div
+      className="w-1"
+      style={{ backgroundColor: calendar_event_tags[type] }}
+    ></div>
+    <p className="p-1 text-text-primary text-sm font-normal">
+      <span className="capitalize font-bold">{type}</span> || {desc}
+    </p>
   </div>
 );

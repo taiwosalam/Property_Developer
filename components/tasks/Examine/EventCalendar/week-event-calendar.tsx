@@ -2,17 +2,21 @@ import React from "react";
 
 // Imports
 import clsx from "clsx";
-import { format, getDate } from "date-fns";
-import { event_calendar_hours, filterEventsByDayAndHourRange } from "./data";
+import { format, getDate, parseISO } from "date-fns";
 import { useEventCalendar } from "./event-calendar-context";
+import { event_calendar_hours, filterEventsByDayAndHourRange } from "./data";
+
 import {
   calendar_event_tags,
   calendar_week_days,
 } from "@/components/Calendar/data";
+
 import { EventCalendarEvent } from "./event-calendar-components";
 
 const WeekEventCalendar = () => {
   const {
+    openModal,
+    openActivityModal,
     weekData: { weekDates, dayNumbers },
   } = useEventCalendar();
 
@@ -75,7 +79,16 @@ const WeekEventCalendar = () => {
                     className="w-full h-[70px] custom-flex-col"
                   >
                     <div className="flex h-full flex-1">
-                      <div className="flex-1">
+                      <div
+                        onClick={
+                          !!matchingEvents.length
+                            ? () => {
+                                openActivityModal(parseISO(day));
+                              }
+                            : openModal
+                        }
+                        className="flex-1 hover:bg-white cursor-pointer"
+                      >
                         <div className="max-h-full overflow-y-auto custom-round-scrollbar">
                           <div className="custom-flex-col">
                             {matchingEvents.map((event, index) => (

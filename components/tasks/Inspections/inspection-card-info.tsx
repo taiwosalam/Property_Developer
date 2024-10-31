@@ -40,11 +40,11 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
             height={117}
             onClick={() => setScreenModal(true)}
           />
-          <div className="absolute top-0 left-0 w-[120px] -rotate-45 -translate-x-[30px] translate-y-[20px] py-[2px] px-2 bg-status-error-2">
+          {/* <div className="absolute top-0 left-0 w-[120px] -rotate-45 -translate-x-[30px] translate-y-[20px] py-[2px] px-2 bg-status-error-2">
             <p className="text-text-invert dark:text-white text-xs font-semibold text-center">
               For Rent
             </p>
-          </div>
+          </div> */}
         </div>
         <div className="custom-flex-col gap-1 text-text-secondary dark:text-white text-sm lg:text-base font-bold">
           <p>Newly Built 1 Bedroom</p>
