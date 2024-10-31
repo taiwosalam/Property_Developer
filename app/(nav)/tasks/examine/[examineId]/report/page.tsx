@@ -1,6 +1,7 @@
 "use client";
 
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import Button from "@/components/Form/Button/button";
 import ExportPageHeader from "@/components/reports/export-page-header";
@@ -12,6 +13,7 @@ const ExamineReportpage = () => {
   return (
     <div>
       <div className="flex flex-col gap-8 pb-24">
+        <BackButton>Back</BackButton>
         <ExportPageHeader
           email="text@text.com"
           location="locationnñ"

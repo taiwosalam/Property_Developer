@@ -11,6 +11,7 @@ import CreateBranchModal from "../Management/Staff-And-Branches/create-branch-mo
 import NewDisbursementModal from "../Accounting/Disbursement/new-disbursement-modal";
 import CreateTenancyAggrementModal from "../BadgeIcon/create-tenancy-aggrement-modal";
 import AddServiceProviderModal from "../tasks/service-providers/add-service-provider-modal";
+import CreateExamineModal from "../tasks/Examine/create-examine-modal";
 
 export const create_new_items: CreateNewItemsProps = [
   {
@@ -29,7 +30,7 @@ export const create_new_items: CreateNewItemsProps = [
     type: "briefcase_timer",
     label: "tasks",
     content: [
-      { label: "examine", link: "/tasks/examine/create-new" },
+      { label: "examine", modal: <CreateExamineModal /> },
       { label: "maintenance", link: "/tasks/maintenance/create-new" },
       { label: "service provider", modal: <AddServiceProviderModal /> },
       { label: "event", modal: <CreateReminderMOdal /> },
