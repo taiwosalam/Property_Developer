@@ -34,11 +34,11 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   return (
     <>
       <TeamChatHeader />
-      <div className="flex bg-white dark:bg-black h-[520px]">
+      <div className="flex bg-white dark:bg-darkText-primary h-[520px]">
         {isCustom && id ? null : (
           <div className="flex flex-1 p-4 pr-0">
             <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar">
-              <div className="flex gap-4 items-center justify-between sticky top-0 z-[2] bg-white dark:bg-black pb-2">
+              <div className="flex gap-4 items-center justify-between sticky top-0 z-[2] bg-white dark:bg-darkText-primary pb-2">
                 {!isSearch && (
                   <div className="flex gap-2 items-center">
                     <h2 className="text-lg font-semibold">Groups</h2>
@@ -48,11 +48,11 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                   </div>
                 )}
                 {isSearch && (
-                  <div className="flex w-3/4 bg-black gap-2 items-center rounded-lg h-10 transition-all duration-300 ease-in-out">
+                  <div className="flex w-3/4 bg-darkText-primary gap-2 items-center rounded-lg h-10 transition-all duration-300 ease-in-out">
                     <input
                       type="text"
                       placeholder="Search"
-                      className="w-full border border-text-disabled focus:outline-none rounded-lg h-full px-2"
+                      className="w-full border border-text-disabled dark:bg-darkText-primary focus:outline-none rounded-lg h-full px-2"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />

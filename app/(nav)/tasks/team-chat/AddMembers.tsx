@@ -1,12 +1,12 @@
 "use client";
 import { team_chat_members_data } from "./data";
-import { FilterIcons, SearchIcon } from "@/public/icons/icons";
+import { FilterIcons, SearchIcon, TrashIcon } from "@/public/icons/icons";
 import { useState } from "react";
 import { Modal, ModalContent, useModal } from "@/components/Modal/modal";
 import { useTeamChatStore } from "@/store/teamChatStore";
 import Image from "next/image";
 import Avatar1 from "@/public/empty/avatar-1.svg";
-import TrashIcon from "@/public/icons/trash.svg";
+// import TrashIcon from "@/public/icons/trash.svg";
 
 const AddMembers = () => {
   const { setIsOpen } = useModal();
@@ -27,7 +27,7 @@ const AddMembers = () => {
 
   return (
     <div className="transition-all duration-300 ease-in-out">
-      <div className="sticky top-0 z-[2] bg-white dark:bg-black p-4">
+      <div className="sticky top-0 z-[2] bg-white dark:bg-darkText-primary p-4">
         <div className="searchWrapper flex items-center gap-1 border border-text-disabled rounded-md p-1 w-full">
           <SearchIcon size={20} />
           <input
@@ -35,11 +35,11 @@ const AddMembers = () => {
             placeholder="Search members"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="text-sm w-full focus:outline-none"
+            className="text-sm w-full focus:outline-none dark:bg-darkText-primary"
           />
         </div>
         <div className="membersWrapper flex items-center justify-between mt-2">
-          <p className="text-text-primary text-xs sm:text-sm font-medium">
+          <p className="text-text-primary dark:text-white text-xs sm:text-sm font-medium">
             Members
           </p>
           <button
@@ -67,16 +67,16 @@ const AddMembers = () => {
               />
             </div>
             <div className="flex flex-col">
-              <p className="text-text-primary text-sm font-medium">
+              <p className="text-text-primary dark:text-white text-sm font-medium">
                 {item.fullname}
               </p>
-              <p className="text-text-quaternary text-xs font-normal">
+              <p className="text-text-quaternary dark:text-text-disabled text-xs font-normal">
                 {item.position}
               </p>
             </div>
           </div>
           <button type="button" className="w-1/4 flex justify-end">
-            <Image src={TrashIcon} alt="delete" width={16} height={16} />
+            <TrashIcon size={16} />
           </button>
         </div>
       ))}

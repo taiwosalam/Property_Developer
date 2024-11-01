@@ -4,12 +4,13 @@ import { Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 // Imports
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import PaymentMethod from "@/components/Wallet/AddFunds/payment-method";
 import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-info-components";
 import { SectionSeparator } from "@/components/Section/section-components";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { LegalOption } from "../types";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 
 // DATA
 const checkboxOptions = [
@@ -45,6 +46,13 @@ const checkboxOptions = [
   },
 ];
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+};
+
 interface SettingsLegalDrawerProps {
   onClose: () => void;
   noCheckbox?: boolean;
@@ -65,10 +73,7 @@ const SettingsLegalDrawer: React.FC<SettingsLegalDrawerProps> = ({
   };
 
   return (
-    <div
-      className="wrapper dark:bg-black bg-white"
-      // style={{ height: "calc(80vh)" }}
-    >
+    <div className="wrapper dark:bg-black bg-white">
       <div className="dark:bg-black">
         <DrawerHeader onClose={onClose} />
         <div className="bodyWrapper px-4 mt-4">
@@ -188,18 +193,22 @@ const DrawerHeader = ({ onClose }: { onClose: () => void }) => {
     setOpenPaymentModal((prev) => !prev);
   };
 
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
-    <div className="dark:bg-[#EFF6FF] bg-white w-full max-h-[136px] flex items-center justify-between px-8 pb-8 pt-10 sticky top-0 border-b border-darkText-2">
-      <div className="title">
-        <h3 className="text-lg text-[24px] font-medium">
+    <div className="dark:bg-[#3c3d37] bg-white w-full min-h-[136px] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 px-4 md:px-8 pb-8 pt-10 sticky top-0 border-b border-darkText-2">
+      <div className="title flex-1">
+        <h3 className="text-lg text-[24px] dark:text-white font-medium">
           Tenancy Legal Procedure
         </h3>
-        <p className="text-sm text-darkText-secondary text-text-label text-[16px] tracking-[0px]">
+        <p className="text-sm text-darkText-secondary text-text-label dark:text-darkText-1 text-[16px] tracking-[0px]">
           The legal steps and processes involved in renting or leasing property,
           usually regulated by landlord-tenant laws and regulations.
         </p>
       </div>
-      <div className="btns flex gap-4">
+      <div className="btns flex flex-wrap gap-4">
         <button
           type="button"
           className="bg-[#FDE9EA] text-brand-9 text-sm py-3 px-5 font-bold rounded-[8px]"
@@ -207,21 +216,22 @@ const DrawerHeader = ({ onClose }: { onClose: () => void }) => {
         >
           Back
         </button>
-        <Modal>
-          <ModalTrigger asChild>
-            <button
-              type="button"
-              className="bg-brand-9 text-white text-sm py-3 px-5 font-bold rounded-[8px]"
-              onClick={handleOpenPaymentModal}
-            >
-              Submit
-            </button>
-          </ModalTrigger>
-          <ModalContent>
-            {/* <WalletModalPreset title="Select payment method"> */}
+        <button
+          type="button"
+          className="bg-brand-9 text-white text-sm py-3 px-5 font-bold rounded-[8px]"
+          onClick={handleOpen}
+        >
+          Submit
+        </button>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
             <PaymentMethod />
-            {/* </WalletModalPreset> */}
-          </ModalContent>
+          </Box>
         </Modal>
       </div>
     </div>

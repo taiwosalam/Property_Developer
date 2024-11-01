@@ -54,7 +54,7 @@ export const TeamChatHeader = () => {
           <div>
             <Box sx={style}>
               <div className="w-full h-full flex items-center justify-center">
-                <div className="flex flex-col gap-4 bg-white h-[60vh] w-full lg:w-[35vw] dark:bg-black rounded-lg overflow-y-auto custom-round-scrollbar">
+                <div className="flex flex-col gap-4 bg-white h-[60vh] w-full lg:w-[35vw] dark:bg-darkText-primary rounded-lg overflow-y-auto custom-round-scrollbar">
                   <MemberComponent title="New Group" group={true} />
                 </div>
               </div>
@@ -138,14 +138,14 @@ export const About = () => {
                 type="text"
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
-                className="text-text-primary text-sm font-medium border border-text-disabled rounded-md p-1 w-3/4 focus:outline-none"
+                className="text-text-primary dark:text-white text-sm font-medium border border-text-disabled rounded-md p-1 w-3/4 focus:outline-none"
               />
               <button type="button" onClick={() => setIsEditingName(false)}>
                 <Image src={SaveIcon} alt="save" width={16} height={16} />
               </button>
             </div>
           ) : (
-            <h3 className="text-text-primary text-sm font-medium">
+            <h3 className="text-text-primary dark:text-white text-sm font-medium">
               {groupName}
             </h3>
           )}
@@ -160,7 +160,7 @@ export const About = () => {
         </div>
         <div className="created">
           <h4 className="text-text-disabled text-sm font-normal">Created</h4>
-          <p className="text-text-primary text-xs font-medium">
+          <p className="text-text-primary dark:text-white text-xs font-medium">
             12/12/2024 1:50AM
           </p>
         </div>
@@ -171,7 +171,7 @@ export const About = () => {
               30.2k Members
             </p>
             <div className="w-1 h-1 rounded-full bg-status-success-3"></div>
-            <p className="text-status-success-3 text-xs font-medium">
+            <p className="text-status-success-3 dark:text-status-success-2 text-xs font-medium">
               30 Online
             </p>
           </div>
@@ -197,7 +197,7 @@ export const About = () => {
               </button>
             </div>
           ) : (
-            <span className="text-text-primary text-xs font-medium">
+            <span className="text-text-primary dark:text-white text-xs font-medium">
               {groupDescription}
             </span>
           )}

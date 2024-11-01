@@ -272,7 +272,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
         key={option.value}
         className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
       >
-        <label className="text-sm capitalize dark:text-black">
+        <label className="text-sm capitalize dark:text-white">
           {option.label}
         </label>
         <input
