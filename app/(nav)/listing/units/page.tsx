@@ -16,16 +16,19 @@ const Units = () => {
           title="Total Vacant Units"
           newData={34}
           total={657}
+          colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Published Units"
           newData={34}
           total={657}
+          colorScheme={2}
         />
         <ManagementStatistcsCard
           title="Unpublished Units"
           newData={34}
           total={657}
+          colorScheme={3}
         />
       </div>
       <FilterBar

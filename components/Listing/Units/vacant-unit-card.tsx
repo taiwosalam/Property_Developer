@@ -91,7 +91,6 @@ const VacantUnitCard = () => {
                 isOpen={isOpened}
                 images={[{ src: SampleProperty6, isVideo: false }]}
                 onClose={() => setIsOpened(false)}
-                currentIndex={0}
               />
               <div className="absolute inset-0 p-3">
                 <div className="flex justify-end">
