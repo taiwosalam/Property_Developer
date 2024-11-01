@@ -6,6 +6,7 @@ import { CancelIcon, CheckboxCheckedIcon } from "@/public/icons/icons";
 import {
   articleOptions,
   propertyRequestOptions,
+  teamChatOptions,
 } from "@/app/(nav)/tasks/inspections/data";
 import {
   FilterModalProps,
@@ -15,15 +16,9 @@ import {
 
 const FilterModal: React.FC<FilterModalProps> = ({
   closeModal,
-  filterOptionsWithDropdown,
-  filterOptions,
-  filterOptionsWithRadio,
   onApply,
   onStateSelect,
   title = "Filters by",
-  date,
-  article,
-  propertyRequest,
 }) => {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [activeDropdownOption, setActiveDropdownOption] =
@@ -108,219 +103,24 @@ const FilterModal: React.FC<FilterModalProps> = ({
     onApply(filtersToApply);
   };
 
-  // Show dropdown options content within the same modal
-  const showDropdownOptions = (option: FilterOptionWithDropdown) => {
-    setActiveDropdownOption(option);
-  };
-
-  const showRadioOptions = (option: FilterOptionWithRadio) => {
-    setActiveRadioOption(option);
-  };
-
-  const hideDropdownOptions = () => {
-    setActiveDropdownOption(null);
-    setActiveRadioOption(null);
-  };
-
-  // Check if any dropdown option is selected
-  const isDropdownOptionSelected = (dropdownLabel: string) => {
-    return (dropdownSelections[dropdownLabel] || []).length > 0;
-  };
-
-  // Check if a radio option is selected
-  const isRadioOptionSelected = (value: string) => {
-    return selectedRadioOption === value;
-  };
-
-  // Content for the dropdown options
-  const renderDropdownOptions = () => {
-    const filteredDropdownOptions = activeDropdownOption?.value.filter(
-      (option) => option.label.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    return (
-      <>
-        <div className="flex items-center justify-between border-b border-solid border-gray-300">
-          <div
-            onClick={hideDropdownOptions}
-            className="flex items-center cursor-pointer"
-          >
-            <span className="text-sm capitalize">
-              <ChevronLeft />
-            </span>
-            <h2 className="text-lg font-bold text-primary-navy dark:text-white">
-              {activeDropdownOption?.label}
-            </h2>
-          </div>
-          <button className="p-2" onClick={() => setActiveDropdownOption(null)}>
-            {/* <Image
-              src="/icons/cancel.svg"
-              alt="close"
-              width={34}
-              height={34}
-              className="min-w-[34px] min-h-[34px]"
-            /> */}
-            <CancelIcon />
-          </button>
-        </div>
-        {/* Search bar */}
+  const renderFilters = () => {
+    return teamChatOptions.map((option) => (
+      <div
+        key={option.value}
+        className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
+      >
+        <label className="text-sm capitalize dark:text-black">
+          {option.label}
+        </label>
         <input
-          type="text"
-          className="w-full border p-2 mt-4"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          type="checkbox"
+          value={option.value}
+          className="cursor-pointer"
+          onChange={() => handleCheckboxChange(option.value)}
+          checked={selectedFilters.includes(option.value)}
         />
-        <div className="max-h-[150px] overflow-y-auto pr-2 custom-round-scrollbar">
-          {filteredDropdownOptions?.map((option, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between py-2 px-5 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
-            >
-              <label className="text-sm capitalize">{option.label}</label>
-              <input
-                type="checkbox"
-                value={option.value}
-                className="cursor-pointer"
-                onChange={() =>
-                  handleDropdownCheckboxChange(
-                    activeDropdownOption!.label,
-                    option.value
-                  )
-                }
-                checked={(
-                  dropdownSelections[activeDropdownOption!.label] || []
-                ).includes(option.value)}
-              />
-            </div>
-          ))}
-        </div>
-        <button
-          className="mt-4 w-full bg-brand-9 text-white py-2 rounded-lg"
-          onClick={() => setActiveDropdownOption(null)}
-        >
-          OK
-        </button>
-      </>
-    );
-  };
-
-  // Content for the radio options
-  const renderRadioOptions = () => {
-    const filteredRadioOptions = activeRadioOption?.value.filter((option) =>
-      option.label.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    return (
-      <>
-        <div className="flex items-center justify-between border-b border-solid border-gray-300">
-          <div
-            onClick={hideDropdownOptions}
-            className="flex items-center cursor-pointer"
-          >
-            <span className="text-sm capitalize">
-              <ChevronLeft />
-            </span>
-            <h2 className="text-lg font-bold text-primary-navy dark:text-white">
-              {activeRadioOption?.label}
-            </h2>
-          </div>
-          <button className="p-2" onClick={() => setActiveRadioOption(null)}>
-            <CancelIcon />
-          </button>
-        </div>
-        {/* Search bar */}
-        <input
-          type="text"
-          className="w-full border p-2 mt-4"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <div className="max-h-[150px] overflow-y-auto pr-2 custom-round-scrollbar">
-          {filteredRadioOptions?.map((option, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between py-2 px-5 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
-            >
-              <label className="text-sm capitalize">{option.label}</label>
-              <input
-                type="radio"
-                name={activeRadioOption!.label}
-                value={option.value}
-                className="cursor-pointer"
-                onChange={() => handleRadioChange(option.value)}
-                checked={isRadioOptionSelected(option.value)}
-              />
-            </div>
-          ))}
-        </div>
-        <button
-          className="mt-4 w-full bg-brand-9 text-white py-2 rounded-lg"
-          onClick={() => setActiveRadioOption(null)}
-        >
-          OK
-        </button>
-      </>
-    );
-  };
-
-  // Content for the date options
-  const renderDateOptions = () => {
-    return (
-      <>
-        <div className="flex items-center justify-between border-b border-solid border-gray-300">
-          <div
-            onClick={() => setShowDatePicker(false)}
-            className="flex items-center cursor-pointer"
-          >
-            <span className="text-sm capitalize">
-              <ChevronLeft />
-            </span>
-            <h2 className="text-lg font-bold text-primary-navy dark:text-white">
-              Date
-            </h2>
-          </div>
-          <button className="p-2" onClick={() => setShowDatePicker(false)}>
-            <CancelIcon />
-          </button>
-        </div>
-        <div className="py-2 space-y-3 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary">
-          <div>
-            <label
-              htmlFor="registration_date_from"
-              className="text-xs text-black dark:text-darkText-1"
-            >
-              From
-            </label>
-            <DateInput
-              id="registration_date_from"
-              value={selectedStartDate ? dayjs(selectedStartDate) : undefined}
-              onChange={(date) => handleDateChange("start", date)}
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="registration_date_to"
-              className="text-xs text-black dark:text-darkText-1"
-            >
-              To
-            </label>
-            <DateInput
-              id="registration_date_to"
-              value={selectedEndDate ? dayjs(selectedEndDate) : undefined}
-              onChange={(date) => handleDateChange("end", date)}
-            />
-          </div>
-        </div>
-        <button
-          className="mt-4 w-full bg-brand-9 text-white py-2 rounded-lg"
-          onClick={() => setShowDatePicker(false)}
-        >
-          OK
-        </button>
-      </>
-    );
+      </div>
+    ));
   };
 
   // Content for the main modal options
@@ -334,74 +134,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           <CancelIcon />
         </button>
       </div>
-      {date && (
-        <div
-          className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary dark:border dark:border-[#3C3D37] cursor-pointer"
-          onClick={toggleDatePicker}
-        >
-          <label className="text-sm capitalize">Date</label>
-          {selectedStartDate || selectedEndDate ? (
-            <CheckboxCheckedIcon />
-          ) : (
-            <ChevronRight className="text-[#344054]" />
-          )}
-        </div>
-      )}
-
-      {/* Dropdown filter options */}
-      {filterOptionsWithDropdown?.map((option) => (
-        <div key={option.label}>
-          <div
-            className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary dark:border dark:border-[#3C3D37] cursor-pointer"
-            onClick={() => showDropdownOptions(option)}
-          >
-            <label className="text-sm capitalize">{option.label}</label>
-            {isDropdownOptionSelected(option.label) ? (
-              <CheckboxCheckedIcon />
-            ) : (
-              <ChevronRight className="text-[#344054]" />
-            )}
-          </div>
-        </div>
-      ))}
-
-      {/* Radio filter options */}
-      {filterOptionsWithRadio?.map((option) => (
-        <div
-          key={option.label}
-          onClick={() => showRadioOptions(option)}
-          className="cursor-pointer"
-        >
-          <div className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary dark:border dark:border-[#3C3D37]">
-            <label className="text-sm capitalize">{option.label}</label>
-            {selectedRadioOption ? (
-              <CheckboxCheckedIcon />
-            ) : (
-              <ChevronRight className="text-[#344054]" />
-            )}
-          </div>
-        </div>
-      ))}
-
-      {/* Regular filter options */}
-      {filterOptions &&
-        filterOptions.map((option) => (
-          <div
-            key={option.value}
-            className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
-          >
-            <label className="text-sm capitalize dark:text-black">
-              {option.label}
-            </label>
-            <input
-              type="checkbox"
-              value={option.value}
-              className="cursor-pointer"
-              onChange={() => handleCheckboxChange(option.value)}
-              checked={selectedFilters.includes(option.value)}
-            />
-          </div>
-        ))}
+      {renderFilters()}
 
       <button
         className="w-full bg-brand-9 text-white py-2 rounded-lg mt-4"
@@ -415,13 +148,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   // Main return statement in the component
   return (
     <div className="w-[400px] rounded-[20px] bg-white dark:bg-darkText-primary p-[20px] custom-flex-col">
-      {activeDropdownOption
-        ? renderDropdownOptions()
-        : activeRadioOption
-        ? renderRadioOptions()
-        : showDatePicker && date
-        ? renderDateOptions()
-        : renderMainOptions()}
+      {renderMainOptions()}
     </div>
   );
 };

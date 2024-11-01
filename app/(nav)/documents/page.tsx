@@ -29,6 +29,7 @@ const Documents = () => {
             title="Total Document"
             newData={34}
             total={657}
+            colorScheme={1}
           />
         </AutoResizingGrid>
         <Modal>

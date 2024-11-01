@@ -32,9 +32,15 @@ const AnnouncementPage = () => {
           <ManagementStatistcsCard
             title="Announcement"
             newData={40}
+            colorScheme={1}
             total={657}
           />
-          <ManagementStatistcsCard title="Examine" newData={657} total={40} />
+          <ManagementStatistcsCard
+            title="Examine"
+            newData={657}
+            total={40}
+            colorScheme={2}
+          />
         </div>
         <Button
           href="/tasks/announcements/create-announcement"
