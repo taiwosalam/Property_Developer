@@ -118,13 +118,7 @@ export const unitFeature = {
     "mixed use land",
     "others",
   ],
-  residentialLand: [
-    "sqm",
-    "half plot",
-    "plot",
-    "acre",
-    "hectare",
-  ],
+  residentialLand: ["sqm", "half plot", "plot", "acre", "hectare"],
 };
 
 export type Categories = keyof typeof unitTypes;

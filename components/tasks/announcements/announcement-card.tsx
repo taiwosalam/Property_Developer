@@ -85,7 +85,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
         <div className="mb-3 flex items-center gap-2">
           <p className="flex items-center gap-1 text-brand-9">
             <BlueEyeShowIcon />
-            <span className="text-sm text-[#0033C4]">
+            <span className="text-sm">
               {views} (+{newViews} today)
             </span>
           </p>
