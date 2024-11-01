@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 // Types
 import type { StatisticsDataTypes } from "@/components/Listing/Statistics/types";
@@ -11,6 +10,7 @@ import { ChevronLeft } from "@/public/icons/icons";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 // Imports
+import BackButton from "@/components/BackButton/back-button";
 import { statistics_data_types } from "@/components/Listing/Statistics/data";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import StatisticsMessageCard from "@/components/Listing/Statistics/statistics-message-card";
@@ -21,8 +21,6 @@ import {
 } from "./data";
 
 const Statistics = () => {
-  const router = useRouter();
-
   const [activeStatIndex, setActiveStatIndex] = useState(0);
   const [statsType, setStatsType] = useState<StatisticsDataTypes>("enquires");
 
@@ -43,41 +41,35 @@ const Statistics = () => {
   return (
     <div className="custom-flex-col gap-10">
       <div className="custom-flex-col gap-5">
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="back"
-            onClick={() => router.back()}
-            className="p-1"
-          >
-            <ChevronLeft />
-          </button>
-          <p className="text-black dark:text-white font-bold text-lg lg:text-xl">Statistics</p>
-        </div>
+        <BackButton bold>Statistics</BackButton>
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Enquires"
             newData={34}
             total={657}
             className="w-[240px]"
+            colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Views"
             newData={34}
             total={657}
             className="w-[240px]"
+            colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Offers"
             newData={34}
             total={657}
             className="w-[240px]"
+            colorScheme={3}
           />
           <ManagementStatistcsCard
             title="Bookmarked"
             newData={34}
             total={657}
             className="w-[240px]"
+            colorScheme={4}
           />
         </div>
       </div>

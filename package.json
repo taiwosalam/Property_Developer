@@ -51,7 +51,7 @@
     "react-pin-field": "^3.1.5",
     "react-player": "^2.16.0",
     "react-quill": "^2.0.0",
-    "recharts": "^2.13.0",
+    "recharts": "^2.13.2",
     "sharp": "^0.33.5",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",

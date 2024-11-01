@@ -15,18 +15,21 @@ const ComplaintsPage = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total Complaints"
-          newData={23}
+          newData={100}
           total={232}
+          colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Total Completed"
-          newData={23}
-          total={34}
+          newData={100}
+          total={232}
+          colorScheme={2}
         />
         <ManagementStatistcsCard
           title="Total Rejected"
-          newData={32}
-          total={453}
+          newData={100}
+          total={232}
+          colorScheme={3}
         />
       </div>
       <FilterBar
