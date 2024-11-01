@@ -17,6 +17,8 @@ import Box from "@mui/material/Box";
 import CheckboxDefault from "@/public/icons/checkbox-default.svg";
 import CheckboxChecked from "@/public/icons/checkbox-checked.svg";
 import Image from "next/image";
+import SuccessModal from "./SuccessModal";
+import SaveIcon from "@/public/icons/save.svg";
 
 const style = {
   position: "absolute",
@@ -34,6 +36,7 @@ const MemberComponent = ({
   group?: boolean;
 }) => {
   const [open, setOpen] = useState(false);
+  const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -234,11 +237,13 @@ const MemberComponent = ({
           </div>
           <div className="flex flex-col mt-4 gap-1">
             <p>Group Description</p>
-            <input
-              type="text"
-              placeholder="Group Description"
-              className="border border-text-disabled rounded-md px-2 py-3 w-full"
-            />
+            <div className="w-full">
+              <input
+                type="text"
+                placeholder="Group Description"
+                className="border border-text-disabled rounded-md px-2 py-3 w-full"
+              />
+            </div>
           </div>
           <div className="flex flex-col items-start gap-2 mt-2">
             <p className="text-text-disabled">
@@ -289,6 +294,7 @@ const MemberComponent = ({
             </button>
             <button
               type="button"
+              onClick={() => setOpenSuccessModal(true)}
               className="bg-brand-9 text-sm text-white w-1/2 py-2 rounded-md"
             >
               Create
@@ -296,6 +302,13 @@ const MemberComponent = ({
           </div>
         </div>
       )}
+      <Modal open={openSuccessModal} onClose={() => setOpenSuccessModal(false)}>
+        <Box sx={style}>
+          <div className="w-full h-full flex items-center justify-center">
+            <SuccessModal />
+          </div>
+        </Box>
+      </Modal>
     </>
   );
 };

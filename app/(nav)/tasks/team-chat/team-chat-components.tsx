@@ -12,6 +12,7 @@ import { team_chat_data, team_chat_members_data } from "./data";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import MemberComponent from "./Member";
+import SaveIcon from "@/public/icons/save.svg";
 
 const style = {
   position: "absolute",
@@ -132,23 +133,30 @@ export const About = () => {
       <div className="flex flex-col gap-2 mt-3">
         <div className="flex items-center w-full justify-between">
           {isEditingName ? (
-            <input
-              type="text"
-              value={groupName}
-              onChange={(e) => setGroupName(e.target.value)}
-              className="text-text-primary text-sm font-medium border border-text-disabled rounded-md p-1 w-3/4 focus:outline-none"
-            />
+            <div className="flex items-center w-full justify-between">
+              <input
+                type="text"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                className="text-text-primary text-sm font-medium border border-text-disabled rounded-md p-1 w-3/4 focus:outline-none"
+              />
+              <button type="button" onClick={() => setIsEditingName(false)}>
+                <Image src={SaveIcon} alt="save" width={16} height={16} />
+              </button>
+            </div>
           ) : (
             <h3 className="text-text-primary text-sm font-medium">
               {groupName}
             </h3>
           )}
-          <button
-            type="button"
-            onClick={() => setIsEditingName(!isEditingName)}
-          >
-            <Image src={PencilIcon} alt="edit" width={16} height={16} />
-          </button>
+          {isEditingName ? null : (
+            <button
+              type="button"
+              onClick={() => setIsEditingName(!isEditingName)}
+            >
+              <Image src={PencilIcon} alt="edit" width={16} height={16} />
+            </button>
+          )}
         </div>
         <div className="created">
           <h4 className="text-text-disabled text-sm font-normal">Created</h4>
@@ -175,23 +183,33 @@ export const About = () => {
         </div>
         <div className="flex gap-2 w-full justify-between">
           {isEditingDescription ? (
-            <textarea
-              value={groupDescription}
-              onChange={(e) => setGroupDescription(e.target.value)}
-              className="text-text-primary text-sm font-medium border border-text-disabled rounded-md p-1 w-3/4 focus:outline-none"
-            />
+            <div className="flex items-center w-full justify-between">
+              <textarea
+                value={groupDescription}
+                onChange={(e) => setGroupDescription(e.target.value)}
+                className="text-text-primary text-sm font-medium border border-text-disabled rounded-md p-1 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setIsEditingDescription(false)}
+              >
+                <Image src={SaveIcon} alt="save" width={16} height={16} />
+              </button>
+            </div>
           ) : (
             <span className="text-text-primary text-xs font-medium">
               {groupDescription}
             </span>
           )}
-          <button
-            className="w-1/4 flex justify-end"
-            type="button"
-            onClick={() => setIsEditingDescription(!isEditingDescription)}
-          >
-            <Image src={PencilIcon} alt="edit" width={16} height={16} />
-          </button>
+          {isEditingDescription ? null : (
+            <button
+              className="w-1/4 flex justify-end"
+              type="button"
+              onClick={() => setIsEditingDescription(!isEditingDescription)}
+            >
+              <Image src={PencilIcon} alt="edit" width={16} height={16} />
+            </button>
+          )}
         </div>
       </div>
     </div>
