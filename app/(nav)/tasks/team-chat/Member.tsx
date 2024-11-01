@@ -6,16 +6,25 @@ import { useRouter } from "next/navigation";
 import { useTeamChatStore } from "@/store/teamChatStore";
 import { ChevronLeft, PlusIcon, SearchIcon } from "@/public/icons/icons";
 import { team_chat_members_data } from "./data";
-import FilterModal from "@/components/Management/Landlord/filters-modal";
-import { Modal } from "@mui/material";
+import FilterModal from "./FilterModal";
 import FilterButton from "@/components/FilterButton/filter-button";
 import Avatar1 from "@/public/empty/avatar-1.svg";
 // Types
-
+// MODAL IMPORTS
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 // Images
 import CheckboxDefault from "@/public/icons/checkbox-default.svg";
 import CheckboxChecked from "@/public/icons/checkbox-checked.svg";
 import Image from "next/image";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+};
 
 const MemberComponent = ({
   title,
@@ -83,12 +92,19 @@ const MemberComponent = ({
 
   const handleBackNavigation = () => {
     if (isGroupDesc) {
-      setIsGroupDesc(false); // Close group description
+      setIsGroupDesc(false);
+    } else if (open) {
+      handleClose();
     } else {
-      closeAddMember(); // Navigate back to the previous component
+      closeAddMember();
     }
   };
 
+  const cancel = () => {
+    selectedCount = 0;
+    setCheckedStates(Array(team_chat_members_data.length).fill(false));
+    setSelectedMembers([]);
+  };
   return (
     <>
       <div className="sticky top-0 z-[2] bg-white dark:bg-black mt-0 py-3 px-4">
@@ -115,22 +131,34 @@ const MemberComponent = ({
           </div>
           <div>
             <div onClick={handleOpen}>
-              <FilterButton title="open" />
+              <FilterButton noTitle />
             </div>
-            <Modal open={open} onClose={handleClose} closeAfterTransition>
-              <FilterModal
-                filterOptionsWithDropdown={[]}
-                filterOptions={[]}
-                onApply={() => {}}
-                onStateSelect={() => {}}
-                date
-              />
+            <Modal
+              open={open}
+              onClose={handleClose}
+              closeAfterTransition
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <div className="w-full h-full flex items-center justify-center">
+                  <FilterModal
+                    filterOptionsWithDropdown={[]}
+                    filterOptions={[]}
+                    onApply={() => {}}
+                    onStateSelect={() => {}}
+                    date
+                    closeModal={handleClose}
+                  />
+                </div>
+              </Box>
             </Modal>
           </div>
         </div>
         {selectedCount > 0 && !isGroupDesc && (
           <div className="flex items-center justify-between gap-2 mt-2">
             <button
+              onClick={cancel}
               type="button"
               className="bg-text-disabled text-sm text-white w-1/2 py-2 rounded-md"
             >

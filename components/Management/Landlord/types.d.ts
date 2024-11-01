@@ -45,6 +45,7 @@ export type FilterOptionWithDropdown = {
 };
 
 export type FilterModalProps = {
+  closeModal?: () => void;
   filterOptionsWithDropdown?: FilterOptionWithDropdown[];
   filterOptions?: FilterOption[];
   filterOptionsWithRadio?: FilterOptionWithRadio[];
