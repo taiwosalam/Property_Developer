@@ -350,35 +350,35 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
       onClick={handleClick}
     >
       <div className="flex justify-center items-center">
-      {isSelected === false && !profile && (
-        <div className="absolute inset-0 bg-white bg-opacity-60 z-10" />
-      )}
-      <div className="relative max-h-[218px]">
-        <Image
-          src={img}
-          alt="Theme"
-          width={1000}
-          height={1000}
-          className={`w-full h-full object-contain ${
-            isSelected ? "border-4 border-brand-9 rounded-lg" : ""
-          }`}
-        />
-      </div>
-      {isSelected && profile && (
-        <Link
-          href="#"
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand-9 text-white py-1 px-3 rounded flex items-center justify-center z-20 text-xs sm:text-md"
-        >
-          Preview Website
-        </Link>
-      )}
-      {showProfessionalMessage && (
-        <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-30">
-          <p className="text-white text-center px-4 py-2 rounded">
-          Sorry, this theme is for Professional Plan subscribers only
-          </p>
+        {isSelected === false && !profile && (
+          <div className="absolute inset-0 bg-white bg-opacity-60 z-10" />
+        )}
+        <div className="relative max-h-[218px]">
+          <Image
+            src={img}
+            alt="Theme"
+            width={1000}
+            height={1000}
+            className={`w-full h-full object-contain ${
+              isSelected ? "border-4 border-brand-9 rounded-lg" : ""
+            }`}
+          />
         </div>
-      )}
+        {isSelected && profile && (
+          <Link
+            href="#"
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand-9 text-white py-1 px-3 rounded flex items-center justify-center z-20 text-xs sm:text-md"
+          >
+            Preview Demo
+          </Link>
+        )}
+        {showProfessionalMessage && (
+          <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-30">
+            <p className="text-white text-center px-4 py-2 rounded">
+              Sorry, this theme is for Professional Plan subscribers only
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
