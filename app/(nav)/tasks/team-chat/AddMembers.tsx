@@ -4,7 +4,6 @@ import { FilterIcons, SearchIcon } from "@/public/icons/icons";
 import { useState } from "react";
 import { Modal, ModalContent, useModal } from "@/components/Modal/modal";
 import { useTeamChatStore } from "@/store/teamChatStore";
-import { SelectMember } from "./team-chat-components";
 import Image from "next/image";
 import Avatar1 from "@/public/empty/avatar-1.svg";
 import TrashIcon from "@/public/icons/trash.svg";
@@ -22,7 +21,6 @@ const AddMembers = () => {
 
   const addMember = () => {
     setIsOpen(false);
-    console.log("modal closed");
     openAddMember();
     console.log("isAddMember is", isAddMember);
   };
@@ -80,8 +78,6 @@ const AddMembers = () => {
           </button>
         </div>
       ))}
-      {isAddMember && <p> here it workss</p>}
-      {isAddMember && <SelectMember />}
     </div>
   );
 };
