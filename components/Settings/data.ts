@@ -49,7 +49,7 @@ export const tenant_occupant_level_types: Record<
   }
 > = {
   "tier 1": {
-    color: "green",
+    color: "red",
     desc: "These are the tenants/occupants who have verified their email and phone numbers, indicating they have valid contact information for both email and phone communication. Selecting this option indicates your preference for or desire to have occupant/Tenants with name and valid contact information only.",
   },
   "tier 2": {

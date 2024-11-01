@@ -303,11 +303,12 @@ const Subscriptions = () => {
         anchor="bottom"
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
+        classes={{ paper: "custom-round-scrollbar" }}
         sx={{
           "& .MuiPaper-root": {
             borderTopLeftRadius: "32px",
             borderTopRightRadius: "32px",
-            overflow: "hidden",
+            overflow: "auto",
             height: "80vh",
             zIndex: 1,
           },

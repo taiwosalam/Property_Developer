@@ -110,7 +110,7 @@ const MemberComponent = ({
   };
   return (
     <>
-      <div className="sticky top-0 z-[2] bg-white dark:bg-black mt-0 py-3 px-4">
+      <div className="sticky top-0 z-[2] bg-white dark:bg-darkText-primary mt-0 py-3 px-4">
         <button
           type="button"
           className="flex items-center gap-2"
@@ -119,7 +119,9 @@ const MemberComponent = ({
           <span>
             <ChevronLeftIcon size={30} />
           </span>
-          <h2 className="text-text-primary text-lg font-medium">{title}</h2>
+          <h2 className="text-text-primary dark:text-white text-lg font-medium">
+            {title}
+          </h2>
         </button>
         <div className="searchWrapper flex items-center justify-between mt-2 gap-1 border border-text-disabled rounded-md p-1 w-full h-[50px]">
           <div className="flex items-center gap-1">
@@ -129,7 +131,7 @@ const MemberComponent = ({
               placeholder="Search Name"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="text-sm w-full focus:outline-none"
+              className="text-sm w-full dark:text-white dark:bg-darkText-primary focus:outline-none"
             />
           </div>
           <div>
@@ -214,10 +216,10 @@ const MemberComponent = ({
                 />
               </div>
               <div className="flex flex-col">
-                <p className="text-text-primary text-sm font-medium">
+                <p className="text-text-primary dark:text-white text-sm font-medium">
                   {item.fullname}
                 </p>
-                <p className="text-text-quaternary text-xs font-normal">
+                <p className="text-text-quaternary dark:text-text-disabled text-xs font-normal">
                   {item.position}
                 </p>
               </div>
@@ -228,20 +230,20 @@ const MemberComponent = ({
       {isGroupDesc && (
         <div className="text-text-primary text-sm font-medium px-4 pb-4">
           <div className="flex flex-col gap-1">
-            <p>Group Name</p>
+            <p className="dark:text-white">Group Name</p>
             <input
               type="text"
               placeholder="Group Name"
-              className="border border-text-disabled rounded-md px-2 py-3 w-full"
+              className="border border-text-disabled dark:bg-darkText-primary rounded-md px-2 py-3 w-full"
             />
           </div>
           <div className="flex flex-col mt-4 gap-1">
-            <p>Group Description</p>
+            <p className="dark:text-white">Group Description</p>
             <div className="w-full">
               <input
                 type="text"
                 placeholder="Group Description"
-                className="border border-text-disabled rounded-md px-2 py-3 w-full"
+                className="border border-text-disabled dark:bg-darkText-primary rounded-md px-2 py-3 w-full"
               />
             </div>
           </div>
@@ -271,7 +273,7 @@ const MemberComponent = ({
             ) : (
               <button
                 type="button"
-                className="bg-[#F4F4F9] border border-dashed border-text-label text-sm text-text-label w-2/4 h-[85px] rounded-md flex flex-col items-center justify-center gap-2"
+                className="bg-[#F4F4F9] dark:bg-darkText-primary border border-dashed border-text-label text-sm text-text-label w-2/4 h-[85px] rounded-md flex flex-col items-center justify-center gap-2"
                 onClick={() => fileInputRef.current?.click()} // Trigger file input click
               >
                 <input

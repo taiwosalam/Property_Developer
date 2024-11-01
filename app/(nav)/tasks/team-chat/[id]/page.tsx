@@ -15,6 +15,7 @@ import { Modal } from "@/components/Modal/modal";
 import { TeamChatGroupDetailsModal } from "../GroupDetailsModal";
 import { useTeamChatStore } from "@/store/teamChatStore";
 import { NewMemberComp } from "../NewMemberModal";
+import { Chevron } from "@/public/icons/icons";
 
 const Chat = () => {
   const router = useRouter();
@@ -26,10 +27,13 @@ const Chat = () => {
 
   return (
     <>
-      <div className="py-4 px-6 bg-neutral-2 dark:bg-black">
+      <div className="py-4 px-6 bg-neutral-2 dark:bg-darkText-primary">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/tasks/team-chat")}>
-            <Picture src={ChevronLeft} alt="back" size={20} />
+          <button
+            onClick={() => router.push("/tasks/team-chat")}
+            className="text-dark dark:text-white"
+          >
+            <Chevron size={20} />
           </button>
           <button className="flex items-center gap-4 text-left">
             <Modal>
