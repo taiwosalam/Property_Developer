@@ -122,4 +122,4 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
   );
 };
 
-// export default AccountStatsCard;
+export default AccountStatsCard;

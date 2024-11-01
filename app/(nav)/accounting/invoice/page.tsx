@@ -1,7 +1,6 @@
 "use client";
 
 import CreateInvoiceModal from "@/components/Accounting/invoice/CreateInvoiceModal";
-// import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
 import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
