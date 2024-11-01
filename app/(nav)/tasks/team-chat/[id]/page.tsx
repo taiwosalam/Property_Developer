@@ -13,8 +13,8 @@ import { team_chat_data } from "../data";
 import { ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { Modal } from "@/components/Modal/modal";
 import { TeamChatGroupDetailsModal } from "../GroupDetailsModal";
-import { AddMemberComp, SelectMember } from "../team-chat-components";
 import { useTeamChatStore } from "@/store/teamChatStore";
+import { NewMemberComp } from "../NewMemberModal";
 
 const Chat = () => {
   const router = useRouter();
@@ -52,13 +52,13 @@ const Chat = () => {
               </ModalContent>
             </Modal>
           </button>
+          <NewMemberComp />
         </div>
       </div>
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
         <Messages day="yesterday" />
         <Messages day="today" />
       </div>
-      <AddMemberComp />
     </>
   );
 };
