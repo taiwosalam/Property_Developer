@@ -173,13 +173,13 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     fontWeight: 500,
                     fontSize: "14px",
                     textAlign: "left",
-                    color: isDarkMode ? "#fff" : "#050901",
+                    color: isDarkMode ? "#C1C2C3" : "#050901",
                     ...tableBodyCellSx,
                     ...field.cellStyle,
                     ...(field.accessor === "email"
                       ? { textTransform: "lowercase" }
                       : {}),
-                    ...(isDarkMode ? { color: "#fff" } : {}),
+                    ...(isDarkMode ? { color: "#C1C2C3" } : {}),
                   }}
                 >
                   {renderValue(

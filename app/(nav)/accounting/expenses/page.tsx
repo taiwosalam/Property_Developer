@@ -1,6 +1,6 @@
 "use client";
 
-import ExpensesStatCard from "@/components/Accounting/expenses/expenses-stat-card";
+import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
 import FilterButton from "@/components/FilterButton/filter-button";
@@ -175,21 +175,30 @@ const AccountingExpensesPage = () => {
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={16} minWidth={330}>
-            <ExpensesStatCard
+          <AutoResizingGrid gap={24} minWidth={300}>
+            <AccountStatsCard
               title="Total Expenses"
               balance={12345432}
-              upvalue={53}
+              variant="redOutgoing"
+              trendDirection="up"
+              trendColor="red"
+              percentage={53}
             />
-            <ExpensesStatCard
+            <AccountStatsCard
               title="Part Payment"
               balance={12345432}
-              downValue={53}
+              variant="blueIncoming"
+              trendDirection="down"
+              trendColor="green"
+              percentage={4.3}
             />
-            <ExpensesStatCard
+            <AccountStatsCard
               title="Balance"
               balance={12345432}
-              downValue={53}
+              variant="yellowCard"
+              trendDirection="down"
+              trendColor="green"
+              percentage={4.3}
             />
           </AutoResizingGrid>
         </div>
