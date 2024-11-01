@@ -1,7 +1,8 @@
 import Button from "@/components/Form/Button/button";
-import { ModalContent, ModalTrigger, useModal } from "@/components/Modal/modal";
+// import { ModalContent, ModalTrigger, useModal } from "@/components/Modal/modal";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 import GroupImage from "@/public/empty/SampleLandlord.jpeg";
-import { Modal } from "@/components/Modal/modal";
 import PencilIcon from "@/public/icons/pencil.svg";
 import PageTitle from "@/components/PageTitle/page-title";
 import Image from "next/image";
@@ -12,11 +13,17 @@ import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import MemberComponent from "./Member";
 
-// Declare selectedMembers globally
-let chosenMembers: string[] = [];
-let selectedCount: number = 0;
-
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+};
 export const TeamChatHeader = () => {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   return (
     <div className="flex items-center justify-between w-full mb-4">
       <div>
@@ -30,19 +37,28 @@ export const TeamChatHeader = () => {
         />
       </div>
       <div>
-        <Modal>
-          <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
-              + Create Team Chat
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="flex flex-col gap-4 bg-white h-[60vh] w-[30vw] dark:bg-black rounded-lg overflow-y-auto custom-round-scrollbar">
-                <MemberComponent title="New Group" group={true} />
+        <button
+          type="button"
+          className="text-white bg-brand-9 px-6 py-2 rounded-md"
+          onClick={handleOpen}
+        >
+          + Create Team Chat
+        </button>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <div>
+            <Box sx={style}>
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="flex flex-col gap-4 bg-white h-[60vh] w-[30vw] dark:bg-black rounded-lg overflow-y-auto custom-round-scrollbar">
+                  <MemberComponent title="New Group" group={true} />
+                </div>
               </div>
-            </div>
-          </ModalContent>
+            </Box>
+          </div>
         </Modal>
       </div>
     </div>
@@ -181,73 +197,3 @@ export const About = () => {
     </div>
   );
 };
-
-// export const SelectMember = () => {
-//   const [checkedStates, setCheckedStates] = useState<boolean[]>(
-//     Array(team_chat_members_data.length).fill(false)
-//   );
-//   const [selectedMembersState, setSelectedMembers] = useState<string[]>([]);
-
-//   // Handle the click event to toggle the checkbox state
-//   const handleCheckboxClick = (index: number) => {
-//     const newCheckedStates = [...checkedStates];
-//     newCheckedStates[index] = !newCheckedStates[index];
-
-//     const newSelectedMembers = team_chat_members_data
-//       .filter((_, idx) => newCheckedStates[idx])
-//       .map((member) => member.fullname);
-//     setCheckedStates(newCheckedStates);
-//     setSelectedMembers(newSelectedMembers);
-//   };
-
-//   // Calculate the number of selected checkboxes
-//   selectedCount = checkedStates.filter((checked) => checked).length;
-
-//   const [searchTerm, setSearchTerm] = useState<string>(""); // State for search input
-//   // Function to filter members based on search input
-//   const filteredMembers = team_chat_members_data.filter((member) =>
-//     member.fullname.toLowerCase().includes(searchTerm.toLowerCase())
-//   );
-
-//   return (
-//     <div className="flex flex-col w-full gap-2 px-4">
-//       <MembersHeader selectedCount={selectedCount} />
-//       {filteredMembers.map((item, index) => (
-//         <div key={index} className="flex gap-2">
-//           <div className="checkbox">
-//             <button
-//               className="flex items-center gap-2"
-//               onClick={() => handleCheckboxClick(index)}
-//               type="button"
-//             >
-//               <Image
-//                 src={checkedStates[index] ? CheckboxChecked : CheckboxDefault}
-//                 alt="checkbox"
-//                 width={24}
-//                 height={24}
-//                 className="w-6 h-6"
-//               />
-//             </button>
-//           </div>
-//           <div className="flex items-center gap-2">
-//             <Image
-//               src={Avatar1}
-//               alt="profile"
-//               width={40}
-//               height={40}
-//               className="rounded-full w-full h-full object-contain"
-//             />
-//           </div>
-//           <div className="flex flex-col">
-//             <p className="text-text-primary text-sm font-medium">
-//               {item.fullname}
-//             </p>
-//             <p className="text-text-quaternary text-xs font-normal">
-//               {item.position}
-//             </p>
-//           </div>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
