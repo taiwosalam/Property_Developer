@@ -6,7 +6,7 @@ import KeyValueList from "@/components/KeyValueList/key-value-list";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import ExpensesStatCard from "@/components/Accounting/expenses/expenses-stat-card";
+import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import BackButton from "@/components/BackButton/back-button";
 import ExportPageFooter from "@/components/reports/export-page-footer";
 import CustomTable from "@/components/Table/table";
@@ -54,18 +54,31 @@ const Exportexpense = () => {
         <h1 className="text-black text-2xl font-medium text-center">
           Expenses Summary
         </h1>
-        <AutoResizingGrid gap={30} minWidth={330}>
-          <ExpensesStatCard
+        <AutoResizingGrid gap={30} minWidth={300}>
+          <AccountStatsCard
             title="Total Expenses"
             balance={12345432}
-            upvalue={53}
+            percentage={53}
+            variant="redOutgoing"
+            trendDirection="up"
+            trendColor="red"
           />
-          <ExpensesStatCard
+          <AccountStatsCard
             title="Part Payment"
             balance={12345432}
-            downValue={53}
+            variant="blueIncoming"
+            trendDirection="down"
+            trendColor="green"
+            percentage={4.3}
           />
-          <ExpensesStatCard title="Balance" balance={12345432} downValue={53} />
+          <AccountStatsCard
+            title="Balance"
+            balance={12345432}
+            trendDirection="down"
+            variant="yellowCard"
+            trendColor="green"
+            percentage={4.3}
+          />
         </AutoResizingGrid>
         <CustomTable
           fields={exportTableFields}

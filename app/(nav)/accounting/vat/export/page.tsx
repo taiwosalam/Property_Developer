@@ -7,8 +7,7 @@ import KeyValueList from "@/components/KeyValueList/key-value-list";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import ExpensesStatCard from "@/components/Accounting/expenses/expenses-stat-card";
-import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
+import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import BackButton from "@/components/BackButton/back-button";
 import { vatTableData, vatTableFields } from "../data";
 import ExportPageFooter from "@/components/reports/export-page-footer";
@@ -55,20 +54,29 @@ const ExportVat = () => {
           VAT Summary
         </h1>
         <AutoResizingGrid gap={24} minWidth={330}>
-          <InvoiceStatCards
+          <AccountStatsCard
             title="Total Vat Created"
             balance={12345432}
-            upvalue={53}
+            percentage={53}
+            variant="blueIncoming"
+            trendDirection="up"
+            trendColor="green"
           />
-          <InvoiceStatCards
+          <AccountStatsCard
             title="Total Paid Vat"
             balance={12345432}
-            downValue={53}
+            percentage={73}
+            variant="greenIncoming"
+            trendDirection="down"
+            trendColor="red"
           />
-          <ExpensesStatCard
+          <AccountStatsCard
             title="Total Pending Vat"
             balance={12345432}
-            downValue={53}
+            percentage={53}
+            variant="yellowCard"
+            trendDirection="down"
+            trendColor="red"
           />
         </AutoResizingGrid>
         <CustomTable

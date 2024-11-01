@@ -26,7 +26,7 @@ import {
   statementTableFields,
   statementTableData,
 } from "./data";
-import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
+import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import CustomTable from "@/components/Table/table";
 import type { DataItem } from "@/components/Table/types";
 import ExportButton from "@/components/reports/export-button";
@@ -166,21 +166,30 @@ const Statement = () => {
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={24} minWidth={330}>
-            <InvoiceStatCards
+          <AutoResizingGrid gap={24} minWidth={300}>
+            <AccountStatsCard
               title="Total Amount"
               balance={6506689}
-              upvalue={53}
+              variant="blueIncoming"
+              trendDirection="up"
+              trendColor="green"
+              percentage={53}
             />
-            <InvoiceStatCards
+            <AccountStatsCard
               title="Total Credit"
               balance={706689}
-              downValue={43}
+              variant="greenIncoming"
+              trendDirection="down"
+              trendColor="red"
+              percentage={43}
             />
-            <InvoiceStatCards
+            <AccountStatsCard
               title="Total Debit"
               balance={706689}
-              downValue={43}
+              variant="redOutgoing"
+              trendDirection="down"
+              trendColor="red"
+              percentage={43}
             />
           </AutoResizingGrid>
         </div>

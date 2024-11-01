@@ -2,7 +2,7 @@
 import ExportPageHeader from "@/components/reports/export-page-header";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
+import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import { empty } from "@/app/config";
 import BackButton from "@/components/BackButton/back-button";
 import CustomTable from "@/components/Table/table";
@@ -42,21 +42,30 @@ const ExportInvoice = () => {
         <h1 className="text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
           Invoice Summary
         </h1>
-        <AutoResizingGrid gap={30} minWidth={330}>
-          <InvoiceStatCards
+        <AutoResizingGrid gap={30} minWidth={300}>
+          <AccountStatsCard
             title="Total Receipts Created"
             balance={12345432}
-            upvalue={53}
+            percentage={53}
+            variant="blueIncoming"
+            trendDirection="up"
+            trendColor="green"
           />
-          <InvoiceStatCards
+          <AccountStatsCard
             title="Total Paid Receipts"
             balance={12345432}
-            downValue={53}
+            variant="greenIncoming"
+            trendDirection="down"
+            trendColor="red"
+            percentage={4.3}
           />
-          <InvoiceStatCards
+          <AccountStatsCard
             title="Total Pending Receipts"
             balance={12345432}
-            downValue={53}
+            variant="yellowCard"
+            trendDirection="down"
+            trendColor="red"
+            percentage={4.3}
           />
         </AutoResizingGrid>
         <CustomTable

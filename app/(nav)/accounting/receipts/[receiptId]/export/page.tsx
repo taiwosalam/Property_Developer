@@ -4,7 +4,7 @@ import KeyValueList from "@/components/KeyValueList/key-value-list";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
+import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import BackButton from "@/components/BackButton/back-button";
 import ExportPageFooter from "@/components/reports/export-page-footer";
 import { receiptTableFields, receiptTableData } from "../../data";
@@ -40,21 +40,30 @@ const ExportReceipt = () => {
         <h1 className="text-black text-2xl font-medium text-center">
           Receipt Summary
         </h1>
-        <AutoResizingGrid minWidth={330}>
-          <InvoiceStatCards
+        <AutoResizingGrid minWidth={300} gap={24}>
+          <AccountStatsCard
             title="Total Amount"
             balance={12345432}
-            downValue={53}
+            variant="blueIncoming"
+            trendDirection="up"
+            trendColor="red"
+            percentage={53}
           />
-          <InvoiceStatCards
+          <AccountStatsCard
             title="Total Credit"
             balance={12345432}
-            upvalue={53}
+            percentage={4.3}
+            variant="greenIncoming"
+            trendDirection="down"
+            trendColor="green"
           />
-          <InvoiceStatCards
+          <AccountStatsCard
             title="Total Debit"
             balance={12345432}
-            downValue={53}
+            variant="redOutgoing"
+            trendDirection="down"
+            trendColor="green"
+            percentage={4.3}
           />
         </AutoResizingGrid>
         <CustomTable
