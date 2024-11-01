@@ -58,16 +58,19 @@ const checkboxOptions = [
 
 const CreateTenancyAggrementModal = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const { isDrawerOpen, openDrawer, closeDrawer, setSelectedLegalOption } = useDrawerStore();
+  const { isDrawerOpen, openDrawer, closeDrawer, setSelectedLegalOption } =
+    useDrawerStore();
 
   // HANDLE CHECKBOX CHANGE
   const handleCheckboxChange = (value: string) => {
     setSelectedOption(value);
-    const selectedOption = checkboxOptions.find(option => option.value === value);
+    const selectedOption = checkboxOptions.find(
+      (option) => option.value === value
+    );
     if (selectedOption) {
       setSelectedLegalOption({
         title: selectedOption.title,
-        description: selectedOption.description
+        description: selectedOption.description,
       });
     }
   };
@@ -184,25 +187,27 @@ const OtherAgreement = () => {
 // DRAWER COMPONENT FLOW
 export const DrawerComponent = () => {
   const { isDrawerOpen, closeDrawer, selectedLegalOption } = useDrawerStore();
+
   return (
     <Drawer
       anchor="bottom"
       open={isDrawerOpen}
       onClose={closeDrawer}
+      classes={{ paper: "custom-round-scrollbar" }}
       sx={{
         "& .MuiPaper-root": {
           borderTopLeftRadius: "32px",
           borderTopRightRadius: "32px",
-          overflow: "hidden",
+          overflow: "auto",
           height: "80vh",
         },
-        zIndex: 1
+        zIndex: 1,
       }}
     >
-      <SettingsLegalDrawer 
-        onClose={closeDrawer} 
-        noCheckbox={true} 
-        selectedLegalOption={selectedLegalOption} 
+      <SettingsLegalDrawer
+        onClose={closeDrawer}
+        noCheckbox={true}
+        selectedLegalOption={selectedLegalOption}
       />
     </Drawer>
   );
