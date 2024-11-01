@@ -170,33 +170,26 @@ const FileInput: React.FC<FileInputProps> = ({
             </div>
           )}
         </div>
-        <div
-          className={`${
-            !settingsPage ? "hidden lg:block" : "block"
-          } absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2`}
-        >
-          {!settingsPage && (
-            <Button
-              variant="change"
-              size="sm"
-              className="whitespace-nowrap text-ellipsis"
-              style={{ background: fileName ? "" : "none" }}
-              type="button"
-              onClick={handleClick}
-            >
-              {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
-            </Button>
-          )}
-          {settingsPage && (
-            <Button
-              variant="change"
-              size="sm"
-              className="whitespace-nowrap text-ellipsis"
-            >
-              Verify Document
-            </Button>
-          )}
-        </div>
+        {!settingsPage && (
+          <div
+            className={`${
+              !settingsPage ? "hidden lg:block" : "block"
+            } absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2`}
+          >
+            {!settingsPage && (
+              <Button
+                variant="change"
+                size="sm"
+                className="whitespace-nowrap text-ellipsis"
+                style={{ background: fileName ? "" : "none" }}
+                type="button"
+                onClick={handleClick}
+              >
+                {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

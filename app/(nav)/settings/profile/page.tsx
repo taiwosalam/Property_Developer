@@ -227,6 +227,9 @@ const Profile = () => {
                   hiddenInputClassName="setup-f required"
                   settingsPage={true}
                 />
+                <Button variant="change" size="sm">
+                  Verify Document
+                </Button>
               </div>
             </div>
           </div>
@@ -438,19 +441,17 @@ const Profile = () => {
           title="Fonts Templates"
           desc="Choose Your Preferred Font Style for Your Company Profile Website"
         />
-        <div className="flex gap-2 items-center">
-          <div className="w-full sm:w-1/4 flex mb-5">
-            <Select
-              id="font"
-              label=""
-              placeholder="Select a font"
-              onChange={(value) => handleFontSelect(value)}
-              options={googleFonts}
-              inputContainerClassName="bg-neutral-2 w-full mt-2 min-w-[250px]"
-            />
-          </div>
+        <div className="flex w-full items-start lg:items-center lg:flex-row flex-col gap-2 mb-4">
+          <Select
+            id="font"
+            label=""
+            placeholder="Select a font"
+            onChange={(value) => handleFontSelect(value)}
+            options={googleFonts}
+            inputContainerClassName="bg-neutral-2 w-full mt-2 lg:min-w-[300px]"
+          />
           <p
-            className="font text-sm text-brand-9 truncate"
+            className="font text-sm text-brand-9"
             style={{ fontFamily: selectedFont || googleFonts[0] }}
           >
             Your website will display a default font initially, but selecting

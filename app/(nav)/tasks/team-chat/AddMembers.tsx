@@ -26,7 +26,7 @@ const AddMembers = () => {
   };
 
   return (
-    <div>
+    <div className="transition-all duration-300 ease-in-out">
       <div className="sticky top-0 z-[2] bg-white dark:bg-black p-4">
         <div className="searchWrapper flex items-center gap-1 border border-text-disabled rounded-md p-1 w-full">
           <SearchIcon size={20} />
@@ -39,10 +39,12 @@ const AddMembers = () => {
           />
         </div>
         <div className="membersWrapper flex items-center justify-between mt-2">
-          <p className="text-text-primary text-sm font-medium">Members</p>
+          <p className="text-text-primary text-xs sm:text-sm font-medium">
+            Members
+          </p>
           <button
             type="button"
-            className="text-brand-9 text-sm font-medium"
+            className="text-brand-9 text-xs sm:text-sm font-medium"
             onClick={addMember}
           >
             + Add New Member
