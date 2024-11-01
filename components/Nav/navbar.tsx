@@ -44,7 +44,7 @@ const Header = () => {
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
     const primaryColor = localStorage.getItem("primary-color");
-    if (primaryColor === "#050901") {
+    if (primaryColor === "#000000") {
       toast.error("Cannot use dark mode on the selected primary color"); // Show toast message
       setTheme("light"); // Set theme to light
       return; // Exit the function if the condition is met

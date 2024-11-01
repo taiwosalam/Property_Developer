@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 // Images
 import {
@@ -27,7 +27,7 @@ import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 const VacantUnitCard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [checked, setChecked] = useState(true);
-  const [isOpened, setIsOpened] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const togglePublish = () => {
     setIsOpen(false);
@@ -74,7 +74,7 @@ const VacantUnitCard = () => {
               </div>
             </div>
             <div
-              onClick={() => setIsOpened(true)}
+              onClick={() => setIsModalOpen(true)}
               className="relative rounded-2xl overflow-hidden cursor-pointer"
             >
               <Picture
@@ -83,9 +83,15 @@ const VacantUnitCard = () => {
                 size={168}
               />
               <PopupImageModal
-                isOpen={isOpened}
-                images={[{ src: SampleProperty6, isVideo: false }]}
-                onClose={() => setIsOpened(false)}
+                isOpen={isModalOpen}
+                images={[
+                  { src: "/empty/SampleProperty.jpeg" },
+                  { src: "/empty/SampleProperty2.jpeg" },
+                  { src: "/empty/SampleProperty3.jpeg" },
+                  { src: "/empty/SampleProperty4.png" },
+                  { src: "/empty/SampleProperty5.jpg" },
+                ]}
+                onClose={() => setIsModalOpen(false)}
               />
               <div className="absolute inset-0 p-3">
                 <div className="flex justify-end">

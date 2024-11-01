@@ -7,7 +7,6 @@ import FilterButton from "@/components/FilterButton/filter-button";
 import Button from "@/components/Form/Button/button";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import Picture from "@/components/Picture/picture";
 import SearchInput from "@/components/SearchInput/search-input";
 import {
   Select,

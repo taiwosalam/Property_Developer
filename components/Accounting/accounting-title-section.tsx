@@ -1,5 +1,3 @@
-import React from "react";
-
 // Types
 import type { AccountingTitleSectionProps } from "./types";
 
