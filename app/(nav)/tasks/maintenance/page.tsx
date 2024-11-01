@@ -35,6 +35,7 @@ const Maintenance = () => {
             title="Total Maintenance"
             newData={34}
             total={657}
+            colorScheme={1}
           />
         </div>
         <div className="flex items-center">
