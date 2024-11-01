@@ -63,6 +63,7 @@ const PropertyRequest = () => {
           title="Total Request"
           newData={34}
           total={657}
+          colorScheme={1}
         />
         <Modal>
           <ModalTrigger asChild>
