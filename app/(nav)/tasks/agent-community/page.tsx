@@ -41,6 +41,7 @@ const AgentCommunityPage = () => {
       <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
         <ManagementStatistcsCard
           title="Total Thread"
+          colorScheme={1}
           newData={34}
           total={657}
         />
