@@ -89,9 +89,9 @@ const Appearance = () => {
 
   const handleColorSelect = (color: string) => {
     if (!color) return;
-    if (isDarkMode && color === "#050901") {
+    if (isDarkMode && color === "#000000") {
       toast.error(
-        "Cannot set primary color to #050901 in dark mode. Setting to default color instead."
+        "Cannot set primary color to #000000 in dark mode. Setting to default color instead."
       );
       setSelectedColor("#0033c4"); // Set to the alternative color
       setCustomColor("#0033c4");
