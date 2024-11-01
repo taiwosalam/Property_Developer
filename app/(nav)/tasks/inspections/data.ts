@@ -42,3 +42,13 @@ export const stateOptions = [
     value: states.map((state) => ({ label: state, value: state })),
   },
 ];
+
+
+
+export const teamChatOptions = [
+  { label: "Moniya Branch", value: "moniya" },
+  { label: "Germany Branch", value: "germany" },
+  { label: "Tokyo Branch", value: "tokyo" },
+  { label: "Ontario Branch", value: "ontario" },
+  { label: "Australia Branch", value: "australia" },
+];
