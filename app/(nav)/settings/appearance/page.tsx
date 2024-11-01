@@ -233,7 +233,7 @@ const Appearance = () => {
           title="Color scheme"
           desc="Choose Light or Dark Mode Scheme."
         />
-        <div className="themes flex gap-5 flex-wrap">
+        <div className="themes flex gap-5 flex-wrap mt-4">
           <ThemeCard
             img="/global/light-mode.svg"
             value="light"
