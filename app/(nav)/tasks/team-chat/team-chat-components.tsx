@@ -54,7 +54,7 @@ export const TeamChatHeader = () => {
           <div>
             <Box sx={style}>
               <div className="w-full h-full flex items-center justify-center">
-                <div className="flex flex-col gap-4 bg-white h-[60vh] w-[30vw] dark:bg-black rounded-lg overflow-y-auto custom-round-scrollbar">
+                <div className="flex flex-col gap-4 bg-white h-[60vh] w-full lg:w-[35vw] dark:bg-black rounded-lg overflow-y-auto custom-round-scrollbar">
                   <MemberComponent title="New Group" group={true} />
                 </div>
               </div>
@@ -100,7 +100,7 @@ export const About = () => {
     }
   };
   return (
-    <div className="p-4">
+    <div className="p-4 transition-all duration-300 ease-in-out">
       <div className="imageWrapper h-20 w-20 relative overflow-hidden">
         <Image
           src={groupImage || GroupImage}

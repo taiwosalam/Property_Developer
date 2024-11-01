@@ -51,16 +51,25 @@ interface SettingsLegalDrawerProps {
   selectedLegalOption?: LegalOption | null;
 }
 
-const SettingsLegalDrawer: React.FC<SettingsLegalDrawerProps> = ({ onClose, noCheckbox, selectedLegalOption }) => {
-  const [selectedOption, setSelectedOption] = useState<string | null>(selectedLegalOption?.title ?? null);
+const SettingsLegalDrawer: React.FC<SettingsLegalDrawerProps> = ({
+  onClose,
+  noCheckbox,
+  selectedLegalOption,
+}) => {
+  const [selectedOption, setSelectedOption] = useState<string | null>(
+    selectedLegalOption?.title ?? null
+  );
 
   const handleCheckboxChange = (value: string) => {
     setSelectedOption(value);
   };
 
   return (
-    <div className="wrapper dark:bg-black bg-white" style={{ height: "calc(80vh)"}}>
-      <div className="dark:bg-black custom-round-scrollbar no-scrollbar bg-white">
+    <div
+      className="wrapper dark:bg-black bg-white"
+      // style={{ height: "calc(80vh)" }}
+    >
+      <div className="dark:bg-black">
         <DrawerHeader onClose={onClose} />
         <div className="bodyWrapper px-4 mt-4">
           {selectedLegalOption && (
@@ -76,88 +85,95 @@ const SettingsLegalDrawer: React.FC<SettingsLegalDrawerProps> = ({ onClose, noCh
             </div>
           )}
           <div className="cardWrapper mt-4 flex flex-col gap-4">
-          <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
-            <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
-            Property Details
-          </h2>
-          <SectionSeparator />
-          <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
-            <KeyValueList
-              data={{}}
-              chunkSize={2}
-              referenceObject={{
-                "property description": "3 Bedroom Block of flat",
-                "property address": "56, Abiola way area Moniya ibadan",
-                "annual rent": "₦115,000.00",
-                "caution deposit": "₦15,000",
-              }}
-            />
-          </div>
-        </LandlordTenantInfoBox>
-        <LandlordTenantInfoBox className="custom-flex-col gap-[10px] bg-red-500">
-          <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
-            Landlord/Landlady Details
-          </h2>
-          <SectionSeparator />
-          <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
-            <KeyValueList
-              data={{}}
-              chunkSize={2}
-              referenceObject={{
-                "Landlord/Landlady Name": "",
-                "Landlord/Landlady ID": "",
-                "Landlord/Landlady Address": "",
-                "account type": "",
-              }}
-            />
-          </div>
-        </LandlordTenantInfoBox>
+            <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
+              <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
+                Property Details
+              </h2>
+              <SectionSeparator />
+              <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
+                <KeyValueList
+                  data={{}}
+                  chunkSize={2}
+                  referenceObject={{
+                    "property description": "3 Bedroom Block of flat",
+                    "property address": "56, Abiola way area Moniya ibadan",
+                    "annual rent": "₦115,000.00",
+                    "caution deposit": "₦15,000",
+                  }}
+                />
+              </div>
+            </LandlordTenantInfoBox>
+            <LandlordTenantInfoBox className="custom-flex-col gap-[10px] bg-red-500">
+              <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
+                Landlord/Landlady Details
+              </h2>
+              <SectionSeparator />
+              <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
+                <KeyValueList
+                  data={{}}
+                  chunkSize={2}
+                  referenceObject={{
+                    "Landlord/Landlady Name": "",
+                    "Landlord/Landlady ID": "",
+                    "Landlord/Landlady Address": "",
+                    "account type": "",
+                  }}
+                />
+              </div>
+            </LandlordTenantInfoBox>
 
-        <LandlordTenantInfoBox className="custom-flex-col gap-[10px] bg-red-500">
-          <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
-            Tenant/Occupants Details
-          </h2>
-          <SectionSeparator />
-          <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
-            <KeyValueList
-              data={{}}
-              chunkSize={2}
-              referenceObject={{
-                "Landlord/Landlady Name": "",
-                "Landlord/Landlady ID": "",
-                "Landlord/Landlady Address": "",
-                "account type": "",
-              }}
-              />
-          </div>
+            <LandlordTenantInfoBox className="custom-flex-col gap-[10px] bg-red-500">
+              <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
+                Tenant/Occupants Details
+              </h2>
+              <SectionSeparator />
+              <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
+                <KeyValueList
+                  data={{}}
+                  chunkSize={2}
+                  referenceObject={{
+                    "Landlord/Landlady Name": "",
+                    "Landlord/Landlady ID": "",
+                    "Landlord/Landlady Address": "",
+                    "account type": "",
+                  }}
+                />
+              </div>
             </LandlordTenantInfoBox>
           </div>
-        {!selectedLegalOption?.description && (
-          <div className="enageg my-4 px-2">
-          <h3 className="text-[20px] font-bold dark:text-white"> Engage legal counsel.</h3>
-          <p className="text-text-disabled text-sm mt-1 mb-3 dark:text-darkText-1"> Please choose any options below that are most applicable to the property unit.</p>
-          <div className="checkboxs grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {checkboxOptions.map((option) => (
-              <Checkbox
-                key={option.value}
-                title={option.title}
-                checked={selectedOption === option.value}
-                groupName="legal_process"
-                noCheckbox={noCheckbox}
-                state={{
-                  isChecked: selectedOption === option.value,
-                  setIsChecked: () => handleCheckboxChange(option.value),
-                }}
-              >
-                <p className="text-sm text-darkText-secondary text-text-label text-[16px] tracking-[0px]">
-                  {option.description}
-                </p>
-              </Checkbox>
-              ))}
+          {!selectedLegalOption?.description && (
+            <div className="enageg my-4 px-2">
+              <h3 className="text-[20px] font-bold dark:text-white">
+                {" "}
+                Engage legal counsel.
+              </h3>
+              <p className="text-text-disabled text-sm mt-1 mb-3 dark:text-darkText-1">
+                {" "}
+                Please choose any options below that are most applicable to the
+                property unit.
+              </p>
+              <div className="checkboxs grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {checkboxOptions.map((option) => (
+                  <Checkbox
+                    key={option.value}
+                    title={option.title}
+                    checked={selectedOption === option.value}
+                    groupName="legal_process"
+                    noCheckbox={noCheckbox}
+                    state={{
+                      isChecked: selectedOption === option.value,
+                      setIsChecked: () => handleCheckboxChange(option.value),
+                    }}
+                  >
+                    <p className="text-sm text-darkText-secondary text-text-label text-[16px] tracking-[0px]">
+                      {option.description}
+                    </p>
+                  </Checkbox>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -184,20 +200,22 @@ const DrawerHeader = ({ onClose }: { onClose: () => void }) => {
         </p>
       </div>
       <div className="btns flex gap-4">
-        <Button
-          className="bg-[#FDE9EA] text-brand-9 text-sm py-3 px-5 font-bold rounded-[8px] capitalize"
+        <button
+          type="button"
+          className="bg-[#FDE9EA] text-brand-9 text-sm py-3 px-5 font-bold rounded-[8px]"
           onClick={onClose}
         >
           Back
-        </Button>
+        </button>
         <Modal>
           <ModalTrigger asChild>
-            <Button
-              className="bg-brand-9 text-white text-sm py-3 px-5 font-bold rounded-[8px] capitalize"
+            <button
+              type="button"
+              className="bg-brand-9 text-white text-sm py-3 px-5 font-bold rounded-[8px]"
               onClick={handleOpenPaymentModal}
             >
               Submit
-            </Button>
+            </button>
           </ModalTrigger>
           <ModalContent>
             {/* <WalletModalPreset title="Select payment method"> */}
