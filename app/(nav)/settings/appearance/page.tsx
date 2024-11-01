@@ -18,6 +18,7 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 import { toast } from "sonner";
 import Select from "@/components/Form/Select/select";
 import useGoogleFonts from "@/hooks/useFonts";
+import { useTheme } from "next-themes";
 
 const Appearance = () => {
   const googleFonts = useGoogleFonts();
@@ -40,6 +41,7 @@ const Appearance = () => {
   );
   const [modalOpen, setModalOpen] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
+  const { theme, setTheme } = useTheme();
   // Update primary color and generate secondary color when selectedColor changes
   useEffect(() => {
     if (selectedColor) {
@@ -80,6 +82,7 @@ const Appearance = () => {
         break;
       case "mode":
         setSelectedMode(value);
+        setTheme(value);
         break;
       case "font":
         handleFontSelect(value);
