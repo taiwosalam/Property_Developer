@@ -30,6 +30,7 @@ const MemberComponent = ({
   };
   const handleClose = () => {
     setOpen(false);
+    console.log("close modal");
   };
 
   let selectedCount: number = 0;
@@ -79,13 +80,22 @@ const MemberComponent = ({
   const openGroupDesc = () => {
     setIsGroupDesc(true);
   };
+
+  const handleBackNavigation = () => {
+    if (isGroupDesc) {
+      setIsGroupDesc(false); // Close group description
+    } else {
+      closeAddMember(); // Navigate back to the previous component
+    }
+  };
+
   return (
     <>
       <div className="sticky top-0 z-[2] bg-white dark:bg-black mt-0 py-3 px-4">
         <button
           type="button"
           className="flex items-center gap-2"
-          onClick={() => handleClose()}
+          onClick={handleBackNavigation}
         >
           <span>
             <ChevronLeftIcon size={30} />
@@ -104,10 +114,10 @@ const MemberComponent = ({
             />
           </div>
           <div>
-            <button type="button" onClick={handleOpen}>
+            <div onClick={handleOpen}>
               <FilterButton title="open" />
-            </button>
-            <Modal open={open} onClose={handleClose}>
+            </div>
+            <Modal open={open} onClose={handleClose} closeAfterTransition>
               <FilterModal
                 filterOptionsWithDropdown={[]}
                 filterOptions={[]}
