@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 // Images
@@ -12,7 +12,9 @@ import Messages from "@/components/Message/messages";
 import { team_chat_data } from "../data";
 import { ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { Modal } from "@/components/Modal/modal";
-import { TeamChatGroupDetailsModal } from "../team-chat-components";
+import { TeamChatGroupDetailsModal } from "../GroupDetailsModal";
+import { AddMemberComp, SelectMember } from "../team-chat-components";
+import { useTeamChatStore } from "@/store/teamChatStore";
 
 const Chat = () => {
   const router = useRouter();
@@ -32,23 +34,23 @@ const Chat = () => {
           <button className="flex items-center gap-4 text-left">
             <Modal>
               <ModalTrigger asChild>
-                <Picture
-                  src={data.pfp}
-                  alt="profile picture"
-                  size={32}
-                  rounded
-                  status
-                />
+                <div className="flex gap-2 items-center">
+                  <Picture
+                    src={data.pfp}
+                    alt="profile picture"
+                    size={32}
+                    rounded
+                    status
+                  />
+                  <p className="text-text-primary dark:text-white text-base font-medium capitalize">
+                    {data.fullname}
+                  </p>
+                </div>
               </ModalTrigger>
               <ModalContent>
                 <TeamChatGroupDetailsModal />
               </ModalContent>
             </Modal>
-            <div className="custom-flex-col">
-              <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-                {data.fullname}
-              </p>
-            </div>
           </button>
         </div>
       </div>
@@ -56,6 +58,7 @@ const Chat = () => {
         <Messages day="yesterday" />
         <Messages day="today" />
       </div>
+      <AddMemberComp />
     </>
   );
 };

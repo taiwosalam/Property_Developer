@@ -1,8 +1,5 @@
 "use client";
 import Button from "@/components/Form/Button/button";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import PageTitle from "@/components/PageTitle/page-title";
-import React from "react";
 
 const TeamChat = () => {
   return (
