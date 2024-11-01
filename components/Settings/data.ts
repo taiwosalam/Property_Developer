@@ -14,6 +14,7 @@ export const settings_link_tabs = [
 ] as const;
 
 export const website_color_schemes = [
+  "#2563EB",
   "#0033C4",
   "#0FA7E2",
   "#53B07D",
@@ -28,7 +29,7 @@ export const website_color_schemes = [
   "#C18A37",
   "#C1373F",
   "#FC63FF",
-  "#92FF3C",
+  "#6CE908",
   "#9B00FAAB",
   "#377FC1",
 ] as const;
