@@ -21,13 +21,12 @@ import { DatePickerWithRange } from "@/components/dashboard/date-picker";
 import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import ExpensesStatCard from "@/components/Accounting/expenses/expenses-stat-card";
+import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import {
   accountingVatOptionsWithDropdown,
   vatTableFields,
   vatTableData,
 } from "./data";
-import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
 import { useRouter } from "next/navigation";
 import CustomTable from "@/components/Table/table";
 import type { DataItem } from "@/components/Table/types";
@@ -160,21 +159,30 @@ const Vat = () => {
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={24} minWidth={330}>
-            <InvoiceStatCards
+          <AutoResizingGrid gap={24} minWidth={300}>
+            <AccountStatsCard
               title="Total Vat Created"
               balance={12345432}
-              upvalue={53}
+              percentage={53}
+              variant="blueIncoming"
+              trendDirection="up"
+              trendColor="green"
             />
-            <InvoiceStatCards
+            <AccountStatsCard
               title="Total Paid Vat"
               balance={12345432}
-              downValue={53}
+              variant="greenIncoming"
+              trendDirection="down"
+              trendColor="red"
+              percentage={73}
             />
-            <ExpensesStatCard
+            <AccountStatsCard
               title="Total Pending Vat"
               balance={12345432}
-              downValue={53}
+              variant="yellowCard"
+              trendDirection="down"
+              trendColor="red"
+              percentage={53}
             />
           </AutoResizingGrid>
         </div>

@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 
 import Button from "@/components/Form/Button/button";
-import { ExclamationMark } from "@/public/icons/icons";
 import type { DataItem } from "@/components/Table/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import NewDisbursementModal from "@/components/Accounting/Disbursement/new-disbursement-modal";

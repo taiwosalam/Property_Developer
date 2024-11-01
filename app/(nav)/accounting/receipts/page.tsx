@@ -1,6 +1,6 @@
 "use client";
 
-import InvoiceStatCards from "@/components/Accounting/invoice/InvoiceStatCards";
+import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
 import FilterButton from "@/components/FilterButton/filter-button";
@@ -147,21 +147,30 @@ const AccountingReceiptsPage = () => {
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={6} minWidth={330}>
-            <InvoiceStatCards
+          <AutoResizingGrid gap={24} minWidth={300}>
+            <AccountStatsCard
               title="Total Receipts Created"
               balance={12345432}
-              upvalue={53}
+              trendDirection="up"
+              trendColor="red"
+              variant="blueIncoming"
+              percentage={53}
             />
-            <InvoiceStatCards
+            <AccountStatsCard
               title="Total Paid Receipts"
               balance={12345432}
-              downValue={53}
+              trendDirection="down"
+              trendColor="green"
+              variant="greenIncoming"
+              percentage={4.3}
             />
-            <InvoiceStatCards
+            <AccountStatsCard
               title="Total Outstanding Receipts"
               balance={12345432}
-              downValue={53}
+              trendDirection="down"
+              trendColor="green"
+              variant="redOutgoing"
+              percentage={4.3}
             />
           </AutoResizingGrid>
         </div>
