@@ -65,6 +65,7 @@ const MyPropertiesRequestPage = () => {
         <ManagementStatistcsCard
           title="Total Request"
           newData={34}
+          colorScheme={1}
           total={657}
         />
         <Modal>
