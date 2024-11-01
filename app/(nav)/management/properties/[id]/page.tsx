@@ -10,8 +10,8 @@ const PropertyPreviewPage = ({
     <PropertyPreview
       type={params.type}
       images={[
-        "/SampleProperty.jpeg",
-        "/SampleProperty2.jpeg",
+        "/empty/SampleProperty.jpeg",
+        "/empty/SampleProperty2.jpeg",
         "/empty/SampleProperty3.jpeg",
         "/empty/SampleProperty4.png",
         "/empty/SampleProperty5.jpg",

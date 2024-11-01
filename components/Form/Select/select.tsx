@@ -56,11 +56,6 @@ const Select: React.FC<SelectProps> = ({
       const bottomSpace = windowHeight - dropdownRect.bottom;
       const dropdownHeight = 240; // max-h-60 = 15rem = 240px
       setShowAbove(bottomSpace < dropdownHeight);
-      console.log({
-        bottomSpace,
-        diff: dropdownHeight - bottomSpace,
-        value: bottomSpace < dropdownHeight,
-      });
     }
   };
 
@@ -82,9 +77,9 @@ const Select: React.FC<SelectProps> = ({
   };
 
   useEffect(() => {
+    updateDropdownPosition();
     if (isOpen) {
       inputRef.current?.focus();
-      updateDropdownPosition();
     }
   }, [isOpen]);
 

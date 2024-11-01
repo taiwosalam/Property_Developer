@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog } from "@mui/material";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { NextIcon, PreviousIcon, XIcon } from "@/public/icons/icons";
 import { PopupImageModalProps } from "./types";
 import Image from "next/image";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 
 const PopupImageModal: React.FC<PopupImageModalProps> = ({
   isOpen,
@@ -15,7 +16,7 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
   onClose,
 }) => {
   console.log(currentIndex);
-
+  const cRef = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
     initial: currentIndex,
@@ -38,10 +39,17 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
     }
   }, [currentIndex, loaded, instanceRef, isOpen]);
 
+  useOutsideClick(cRef, () => {
+    onClose();
+    console.log("clicked outside");
+
+    // instanceRef.current?.moveToIdx(0);
+  });
+
   return (
     <Dialog
       open={isOpen}
-      onClose={onClose}
+      // onClose={onClose}
       maxWidth="lg"
       PaperProps={{
         sx: {
@@ -53,6 +61,7 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
       <div
         className="relative flex justify-center items-center overflow-hidden h-[500px] max-h-[85vh]"
         style={{ width: "min(90vw, 900px)" }}
+        ref={cRef}
       >
         {loaded && (
           <>
