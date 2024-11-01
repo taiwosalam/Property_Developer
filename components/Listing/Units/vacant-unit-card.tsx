@@ -11,19 +11,14 @@ import {
 } from "@/public/icons/icons";
 import SampleProperty6 from "@/public/empty/SampleProperty6.jpg";
 
-import PreviewEye from "@/public/icons/preview-eye.svg";
-import StatsChart from "@/public/icons/stats-chart.svg";
-import EditPencil from "@/public/icons/edit-pencil.svg";
-
 // Imports
-import { secondaryFont } from "@/utils/fonts";
 import Picture from "@/components/Picture/picture";
 import UnitPublishModal from "./unit-publish-modal";
 import Switch from "@/components/Form/Switch/switch";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { unit_card_data_props } from "@/components/Management/Properties/data";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { Modal, ModalContent } from "@/components/Modal/modal";
 import Link from "next/link";
 import UnitSponsorPopover from "./unit-sponsor-popover";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
@@ -91,7 +86,6 @@ const VacantUnitCard = () => {
                 isOpen={isOpened}
                 images={[{ src: SampleProperty6, isVideo: false }]}
                 onClose={() => setIsOpened(false)}
-                currentIndex={0}
               />
               <div className="absolute inset-0 p-3">
                 <div className="flex justify-end">

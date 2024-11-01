@@ -1,7 +1,5 @@
-import React from "react";
 import clsx from "clsx";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import Skeleton from "@mui/material/Skeleton";
 
 interface DonutChartProps {
   oldValue: number;
@@ -15,6 +13,8 @@ const colors = {
   green: "#01BA4C",
   purple: "#8C62FF",
   orange: "#E15B0F",
+  lightBlue: "#38BDF8",
+  gray: "#B0B2B5",
 };
 
 const DonutChart: React.FC<DonutChartProps> = ({
@@ -75,9 +75,9 @@ interface ManagementStatistcsCardProps {
   title: string;
   newData: number;
   className?: string;
-  oldColor?: React.CSSProperties["color"];
-  newColor?: React.CSSProperties["color"];
-  colorScheme?: number;
+  // oldColor?: React.CSSProperties["color"];
+  // newColor?: React.CSSProperties["color"];
+  colorScheme: 1 | 2 | 3 | 4;
 }
 
 const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
@@ -85,9 +85,9 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
   total,
   newData,
   className,
-  oldColor,
-  newColor,
-  colorScheme = 1,
+  // oldColor,
+  // newColor,
+  colorScheme,
 }) => {
   const old = total - newData;
 
@@ -105,6 +105,10 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
     case 3:
       oldColorScheme = colors.orange;
       newColorScheme = colors.green;
+      break;
+    case 4:
+      oldColorScheme = colors.lightBlue;
+      newColorScheme = colors.gray;
       break;
     default:
       oldColorScheme = colors.blue;
@@ -129,8 +133,8 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
               <DonutChart
                 oldValue={old || 0}
                 newValue={newData || 0}
-                newColor={newColor || newColorScheme}
-                oldColor={oldColor || oldColorScheme}
+                newColor={newColorScheme}
+                oldColor={oldColorScheme}
               />
             </div>
           </div>

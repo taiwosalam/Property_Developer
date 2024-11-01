@@ -11,7 +11,6 @@ import Pagination from "@/components/Pagination/pagination";
 import RentalPropertyCard from "@/components/Management/Rent And Unit/rental-property-card";
 import RentalPropertyListCard from "@/components/Management/Rent And Unit/rental-property-list";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const RentAndUnit = () => {
   const [state, setState] = useState<RentAndUnitState>({
@@ -41,27 +40,31 @@ const RentAndUnit = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total Units"
-          newData={30}
-          total={40}
+          newData={100}
+          total={450}
           className="w-[240px]"
+          colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Occupied Units"
-          newData={40}
-          total={40}
+          newData={100}
+          total={450}
           className="w-[240px]"
+          colorScheme={2}
         />
         <ManagementStatistcsCard
           title="Vacannt Units"
-          newData={40}
-          total={40}
+          newData={100}
+          total={450}
           className="w-[240px]"
+          colorScheme={3}
         />
         <ManagementStatistcsCard
           title="Expired Units"
-          newData={40}
-          total={40}
+          newData={100}
+          total={450}
           className="w-[240px]"
+          colorScheme={4}
         />
       </div>
       <FilterBar
