@@ -22,24 +22,28 @@ const Property = () => {
           newData={34}
           total={657}
           className="w-[240px]"
+          colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Drafted"
           newData={34}
           total={657}
           className="w-[240px]"
+          colorScheme={2}
         />
         <ManagementStatistcsCard
           title="Under Moderation"
           newData={34}
           total={657}
           className="w-[240px]"
+          colorScheme={3}
         />
         <ManagementStatistcsCard
           title="Unpublished"
           newData={34}
           total={657}
           className="w-[240px]"
+          colorScheme={4}
         />
       </div>
       <FilterBar
