@@ -157,18 +157,6 @@ const Others = () => {
           ))}
         </div>
 
-        {/* <div className="flex mt-4">
-          <div className="w-full max-w-[871px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            <Select
-              options={industryOptions}
-              id="current_industry"
-              label="Current Industry"
-              placeholder="Select options"
-              inputContainerClassName="bg-neutral-2"
-            />
-          </div>
-        </div> */}
-
         {/* COMPANY DIRECTORS */}
         <div className="custom-flex-col gap-6 mt-4">
           <SettingsSectionTitle

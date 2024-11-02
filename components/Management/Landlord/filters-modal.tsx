@@ -13,6 +13,7 @@ import {
   articleOptions,
   propertyRequestOptions,
 } from "@/app/(nav)/tasks/inspections/data";
+import { SettingsOthersType } from "@/components/Settings/settings-components";
 
 const FilterModal: React.FC<FilterModalProps> = ({
   filterOptionsWithDropdown,
@@ -33,6 +34,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const [dropdownSelections, setDropdownSelections] = useState<
     Record<string, string[]>
   >({});
+  const [isTicked, setIsTicked] = useState<boolean>(false);
   const [selectedRadioOption, setSelectedRadioOption] = useState<string | null>(
     null
   );
@@ -153,13 +155,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
             </h2>
           </div>
           <button className="p-2" onClick={() => setActiveDropdownOption(null)}>
-            {/* <Image
-              src="/icons/cancel.svg"
-              alt="close"
-              width={34}
-              height={34}
-              className="min-w-[34px] min-h-[34px]"
-            /> */}
             <CancelIcon />
           </button>
         </div>
@@ -277,9 +272,10 @@ const FilterModal: React.FC<FilterModalProps> = ({
         </label>
         <input
           type="checkbox"
+          name="articleOptions"
           value={option.value}
           className="cursor-pointer"
-          onChange={() => handleCheckboxChange(option.value)}
+          onChange={() => setSelectedFilters([option.value])}
           checked={selectedFilters.includes(option.value)}
         />
       </div>
