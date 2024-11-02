@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Imports
 import SettingsSection from "@/components/Settings/settings-section";
@@ -80,6 +80,22 @@ const Appearance = () => {
       setColor(selectedColor);
     }
   }, [setColor, selectedColor]);
+
+  const zoomInputRef = useRef<HTMLInputElement>(null);
+  // FULLSCREEN
+  const toggleFullscreen = () => {
+    const elem = document.documentElement;
+
+    if (!document.fullscreenElement) {
+      elem.requestFullscreen().catch((err) => {
+        console.error(
+          `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+        );
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
 
   let storedFont = "";
   useEffect(() => {
@@ -379,28 +395,28 @@ const Appearance = () => {
           <div className="flex gap-2 mt-4">
             <button
               onClick={increaseZoom}
-              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white dark:text-black"
+              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
             >
               <ZoomPlusIcon />
             </button>
             <button
               onClick={decreaseZoom}
-              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white dark:text-black"
+              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
             >
               <ZoomMinusIcon />
             </button>
-            <div className="flex items-center justify-center min-w-[100px] rounded-md border border-text-label border-dashed px-4">
+            <div className="flex items-center justify-center min-w-[80px] rounded-md border border-text-label border-dashed px-4">
               <input
                 type="number"
                 value={zoomLevel}
                 onChange={(e) => setZoom(parseInt(e.target.value))}
-                className="focus:outline-none"
+                className="focus:outline-none dark:bg-darkText-primary"
               />
               <span className="text-gray-500">%</span>
             </div>
             <button
-              onClick={resetZoom}
-              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white dark:text-black"
+              onClick={toggleFullscreen}
+              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
             >
               <F11MinusIcon />
             </button>
