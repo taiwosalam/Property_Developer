@@ -8,4 +8,5 @@ export interface DocumentCheckboxProps {
     setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
   };
   alignCheckboxCenter?: boolean;
+  className?: string;
 }

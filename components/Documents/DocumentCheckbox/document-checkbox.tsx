@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
-
+import { useState } from "react";
 // Images
 import CheckboxDefault from "@/public/icons/checkbox-default.svg";
 import CheckboxChecked from "@/public/icons/checkbox-checked.svg";
@@ -18,6 +17,7 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
   children,
   checked,
   alignCheckboxCenter,
+  className,
 }) => {
   // Internal state for when the component is uncontrolled
   const [internalIsChecked, setInternalIsChecked] = useState(checked || false);
@@ -31,43 +31,41 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
   };
 
   return (
-    <div className="flex w-full">
-      <button
-        className="flex gap-3 text-start"
-        onClick={handleClick}
-        type="button"
+    <button
+      className={clsx("flex gap-3 text-start w-full", className)}
+      onClick={handleClick}
+      type="button"
+    >
+      <div
+        className={clsx("flex h-full", {
+          "items-center": alignCheckboxCenter,
+          "items-start": !alignCheckboxCenter,
+        })}
       >
-        <div
-          className={clsx("flex h-full", {
-            "items-center": alignCheckboxCenter,
-            "items-start": !alignCheckboxCenter,
-          })}
-        >
-          <Picture
-            src={isChecked ? CheckboxChecked : CheckboxDefault}
-            alt="checkbox"
-            size={18}
-          />
-        </div>
-        <div className="custom-flex-col gap-[2px]">
-          {title && (
-            <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium capitalize">
-              {title}
-            </p>
-          )}
-          {children && (
-            <p
-              className={clsx("text-sm font-normal", {
-                "text-text-secondary dark:text-darkText-1": darkText,
-                "text-text-disabled dark:text-darkText-disabled": !darkText,
-              })}
-            >
-              {children}
-            </p>
-          )}
-        </div>
-      </button>
-    </div>
+        <Picture
+          src={isChecked ? CheckboxChecked : CheckboxDefault}
+          alt="checkbox"
+          size={18}
+        />
+      </div>
+      <div className="custom-flex-col gap-[2px]">
+        {title && (
+          <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium capitalize">
+            {title}
+          </p>
+        )}
+        {children && (
+          <p
+            className={clsx("text-sm font-normal", {
+              "text-text-secondary dark:text-darkText-1": darkText,
+              "text-text-disabled dark:text-darkText-disabled": !darkText,
+            })}
+          >
+            {children}
+          </p>
+        )}
+      </div>
+    </button>
   );
 };
 
