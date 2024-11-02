@@ -98,32 +98,34 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
           />
           <div className="h-[50px] px-3 flex flex-wrap items-center justify-between gap-2 bg-white dark:bg-[#020617] max-w-full overflow-hidden">
-            <button
-              type="button"
-              aria-label="toggle sidenav"
-              onClick={() => {
-                setIsSideNavOpen(!isSideNavOpen);
-              }}
-            >
-              {isSideNavOpen ? (
-                <SVG
-                  type="sidebar"
-                  color={primaryColor as Color}
-                  className="w-8 h-8"
-                />
-              ) : (
-                <>
+            {navbar !== "row" && (
+              <button
+                type="button"
+                aria-label="toggle sidenav"
+                onClick={() => {
+                  setIsSideNavOpen(!isSideNavOpen);
+                }}
+              >
+                {isSideNavOpen ? (
                   <SVG
                     type="sidebar"
                     color={primaryColor as Color}
-                    className="w-8 h-8 md:hidden"
+                    className="w-8 h-8"
                   />
-                  <div className="hidden md:block text-brand-9">
-                    <SidenavArrow />
-                  </div>
-                </>
-              )}
-            </button>
+                ) : (
+                  <>
+                    <SVG
+                      type="sidebar"
+                      color={primaryColor as Color}
+                      className="w-8 h-8 md:hidden"
+                    />
+                    <div className="hidden md:block text-brand-9">
+                      <SidenavArrow />
+                    </div>
+                  </>
+                )}
+              </button>
+            )}
             <p className="capitalize text-text-primary dark:text-darkText-2 text-sm font-medium truncate">
               {pathname.split("/").slice(1).join(" > ")}
             </p>

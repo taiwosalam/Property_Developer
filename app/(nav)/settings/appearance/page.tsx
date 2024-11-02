@@ -21,6 +21,14 @@ import useGoogleFonts from "@/hooks/useFonts";
 import { useTheme } from "next-themes";
 import useSettingsStore from "@/store/settings";
 
+interface SelectedOptions {
+  theme: string;
+  view: string;
+  navbar: string;
+  mode: string;
+  font: string;
+}
+
 const Appearance = () => {
   const googleFonts = useGoogleFonts();
 
@@ -78,7 +86,7 @@ const Appearance = () => {
     }
   }, []);
 
-  const handleSelect = (type: string, value: string) => {
+  const handleSelect = (type: keyof SelectedOptions, value: string) => {
     if (!value) return;
     setSelectedOption(type, value);
     switch (type) {
@@ -97,6 +105,8 @@ const Appearance = () => {
         break;
       case "font":
         handleFontSelect(value);
+        break;
+      default:
         break;
     }
   };
