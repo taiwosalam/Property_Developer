@@ -106,6 +106,7 @@ import { NavButton } from "./nav-components";
 import clsx from "clsx";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 import { Color } from "@/types/global";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const NavDropdown: React.FC<NavDropdownProps> = ({
   type,
@@ -123,6 +124,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
   minimized_highlight,
 }) => {
   const pathname = usePathname();
+  const isDarkMode = useDarkMode();
   const { selectedOptions } = useSettingsStore();
   const navbar = selectedOptions.navbar;
 
@@ -215,6 +217,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
         classes={{ paper: "custom-round-scrollbar" }}
         sx={{
           "& .MuiPaper-root": {
+            backgroundColor: isDarkMode ? "#020617" : "#fff",
             padding: 0,
             boxShadow: "lg",
             minWidth: "15vw",

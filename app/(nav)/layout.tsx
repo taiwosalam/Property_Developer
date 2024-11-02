@@ -50,7 +50,16 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <LayoutContext.Provider value={{ isSideNavOpen }}>
       <Header />
       <div className="flex overflow-x-auto custom-round-scrollbar sticky top-[100px] z-[2] bg-white dark:bg-[#020617]">
-        {navbar === "row" && <TopNav />}
+        {navbar === "row" && (
+          <TopNav
+            closeSideNav={() => {
+              if (isMobile) {
+                setIsSideNavOpen(false);
+              }
+            }}
+            isCollapsed={!isSideNavOpen}
+          />
+        )}
       </div>
 
       <>
@@ -58,7 +67,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <aside
             ref={sideNavRef}
             className={clsx(
-              "h-[calc(100dvh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white dark:bg-[#020617] dark:border-[#252525] dark:border-r no-scrollbar overflow-auto transition-transform duration-300",
+              "h-[calc(100vh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white dark:bg-[#020617] dark:border-[#252525] dark:border-r no-scrollbar overflow-auto transition-transform duration-300",
               {
                 "-translate-x-full md:w-[110px]": !isSideNavOpen,
                 "translate-x-0 md:w-[235px] lg:w-[250px]": isSideNavOpen,

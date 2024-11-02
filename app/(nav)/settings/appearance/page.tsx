@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Imports
 import SettingsSection from "@/components/Settings/settings-section";
@@ -20,6 +20,12 @@ import Select from "@/components/Form/Select/select";
 import useGoogleFonts from "@/hooks/useFonts";
 import { useTheme } from "next-themes";
 import useSettingsStore from "@/store/settings";
+import {
+  F11MinusIcon,
+  ZoomMinusIcon,
+  ZoomPlusIcon,
+} from "@/public/icons/icons";
+import { useZoomStore } from "@/store/zoomStore";
 
 interface SelectedOptions {
   theme: string;
@@ -57,6 +63,14 @@ const Appearance = () => {
   const [selectedColor, setSelectedColor] = useState<string | null>(
     primaryColor
   );
+
+  // Zoom control
+  const zoomLevel = useZoomStore((state) => state.zoomLevel);
+  const increaseZoom = useZoomStore((state) => state.increaseZoom);
+  const decreaseZoom = useZoomStore((state) => state.decreaseZoom);
+  const resetZoom = useZoomStore((state) => state.resetZoom);
+  const setZoom = useZoomStore((state) => state.setZoom);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
   const { theme, setTheme } = useTheme();
@@ -66,6 +80,22 @@ const Appearance = () => {
       setColor(selectedColor);
     }
   }, [setColor, selectedColor]);
+
+  const zoomInputRef = useRef<HTMLInputElement>(null);
+  // FULLSCREEN
+  const toggleFullscreen = () => {
+    const elem = document.documentElement;
+
+    if (!document.fullscreenElement) {
+      elem.requestFullscreen().catch((err) => {
+        console.error(
+          `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+        );
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
 
   let storedFont = "";
   useEffect(() => {
@@ -85,6 +115,11 @@ const Appearance = () => {
       }
     }
   }, []);
+
+  // Zoom controls
+  useEffect(() => {
+    document.documentElement.style.fontSize = `${zoomLevel}%`;
+  }, [zoomLevel]);
 
   const handleSelect = (type: keyof SelectedOptions, value: string) => {
     if (!value) return;
@@ -135,7 +170,6 @@ const Appearance = () => {
       fontName = "Lato"; // Set to Lato if Default Font is selected
     }
     setSelectedFont(fontName);
-
     // Check if running in the browser
     if (typeof window !== "undefined") {
       localStorage.setItem("selectedFont", fontName);
@@ -351,6 +385,42 @@ const Appearance = () => {
               />
             </ModalContent>
           </Modal>
+        </div>
+        {/* ZOOM SETTINGS */}
+        <div className="zoom mt-4">
+          <SettingsSectionTitle
+            title="Zoom Moderation"
+            desc="Customize the dashboard's size and font weight to perfectly suit your desired style and functionality."
+          />
+          <div className="flex gap-2 mt-4">
+            <button
+              onClick={increaseZoom}
+              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
+            >
+              <ZoomPlusIcon />
+            </button>
+            <button
+              onClick={decreaseZoom}
+              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
+            >
+              <ZoomMinusIcon />
+            </button>
+            <div className="flex items-center justify-center min-w-[80px] rounded-md border border-text-label border-dashed px-4">
+              <input
+                type="number"
+                value={zoomLevel}
+                onChange={(e) => setZoom(parseInt(e.target.value))}
+                className="focus:outline-none dark:bg-darkText-primary"
+              />
+              <span className="text-gray-500">%</span>
+            </div>
+            <button
+              onClick={toggleFullscreen}
+              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
+            >
+              <F11MinusIcon />
+            </button>
+          </div>
         </div>
         <div className="flex justify-end mt-4">
           <SettingsUpdateButton />
