@@ -34,6 +34,7 @@ import {
 import { VerticalEllipsisIcon } from "@/public/icons/icons";
 import { Drawer } from "@mui/material";
 import SettingsLegalDrawer from "@/components/Settings/Modals/settings-legal-drawer";
+import { CounterButton } from "@/components/Settings/SettingsEnrollment/settings-enrollment-components";
 
 const Subscriptions = () => {
   const table_style_props: Partial<CustomTableProps> = {
@@ -85,6 +86,16 @@ const Subscriptions = () => {
 
   const handleOpenDrawer = () => {
     setIsDrawerOpen(true); // Function to open the drawer
+  };
+
+  const [count, setCount] = useState<number>(1);
+
+  const handleIncrement = () => {
+    setCount((prevCount) => (prevCount < 12 ? prevCount + 1 : prevCount));
+  };
+
+  const handleDecrement = () => {
+    setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : prevCount));
   };
 
   return (
@@ -232,8 +243,8 @@ const Subscriptions = () => {
                     (₦1,000/per month)
                   </span>
                 </p>
-                <div className="flex">
-                  <Select
+                <div className="flex justify-between max-w-[150px] px-2 items-center gap-2 border-2 border-text-disabled dark:border-[#3C3D37] rounded-md">
+                  {/* <Select
                     required
                     id="months"
                     options={[
@@ -252,7 +263,25 @@ const Subscriptions = () => {
                     ]}
                     inputContainerClassName="w-[277px] bg-neutral-2"
                     label="Choose the number of months from the available options."
+                  /> */}
+                  <input
+                    type="number"
+                    value={count}
+                    onChange={(e) => setCount(Number(e.target.value))}
+                    className="w-2/3 px-2 py-2 border-transparent focus:outline-none"
                   />
+                  <div className="btn flex flex-col items-end justify-end">
+                    <CounterButton
+                      onClick={handleIncrement}
+                      icon="/icons/plus.svg"
+                      alt="plus"
+                    />
+                    <CounterButton
+                      onClick={handleDecrement}
+                      icon="/icons/minus.svg"
+                      alt="minus"
+                    />
+                  </div>
                 </div>
               </div>
               <SettingsUpdateButton text="feature now" type="feature" />
