@@ -25,23 +25,34 @@ export const activeStatuses = [
   "relocate",
 ];
 
-export const actions = [
+type Action = {
+  color: string;
+  label: string;
+  route?: string | ((id: string) => string);
+  modal?: string;
+};
+
+export const actions: Action[] = [
   {
     color: "#FF9800",
     label: "Start Counting",
-    route: "/management/rent-unit/start-counting",
+    route: (id: string) => `/management/rent-unit/${id}/start-counting`,
   },
   {
     color: "#FF9800",
     label: "Start Rent",
-    route: "/management/rent-unit/start-rent",
+    route: (id: string) => `/management/rent-unit/${id}/start-rent`,
   },
   {
     color: "#4CAF50",
     label: "Renew Rent",
-    route: "/management/rent-unit/renew-rent",
+    route: (id: string) => `/management/rent-unit/${id}/renew-rent`,
   },
-  { color: "#60A5FA", label: "Edit", route: "/management/rent-unit/edit-rent" },
+  {
+    color: "#60A5FA",
+    label: "Edit",
+    route: (id: string) => `/management/rent-unit/${id}/edit-rent`,
+  },
   {
     color: "#E9212E",
     label: "Move Out",

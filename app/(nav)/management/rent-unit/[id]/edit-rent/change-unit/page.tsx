@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import React from "react";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
 import DateInput from "@/components/Form/DateInput/date-input";
 import Button from "@/components/Form/Button/button";

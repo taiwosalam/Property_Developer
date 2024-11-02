@@ -106,6 +106,7 @@ const RentAndUnit = () => {
                 "/empty/SampleProperty4.png",
                 "/empty/SampleProperty5.jpg",
               ]}
+              unitId="1"
             />
             <RentalPropertyCard
               propertyType="facility"
@@ -116,6 +117,7 @@ const RentAndUnit = () => {
                 "/empty/SampleProperty4.png",
                 "/empty/SampleProperty5.jpg",
               ]}
+              unitId="2"
             />
             <RentalPropertyCard
               propertyType="rental"
@@ -126,6 +128,7 @@ const RentAndUnit = () => {
                 "/empty/SampleProperty4.png",
                 "/empty/SampleProperty5.jpg",
               ]}
+              unitId="3"
             />
           </div>
         ) : (

@@ -1,4 +1,13 @@
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
+import Checkbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
+
+const CheckItem = ({ title }: { title: string }) => {
+  return (
+    <div>
+      <Checkbox />;
+    </div>
+  );
+};
 
 const MoveOutModal = () => {
   return (
