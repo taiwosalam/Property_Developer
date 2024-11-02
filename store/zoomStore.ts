@@ -1,5 +1,5 @@
-// zoomStore.ts
-import { create } from 'zustand';
+// store/zoomStore.ts
+import create from "zustand";
 
 interface ZoomState {
   zoomLevel: number;
@@ -9,12 +9,10 @@ interface ZoomState {
   setZoom: (value: number) => void;
 }
 
-const useZoomStore = create<ZoomState>((set) => ({
-  zoomLevel: 100,
-  increaseZoom: () => set((state) => ({ zoomLevel: Math.min(state.zoomLevel + 10, 200) })),
-  decreaseZoom: () => set((state) => ({ zoomLevel: Math.max(state.zoomLevel - 10, 50) })),
-  resetZoom: () => set({ zoomLevel: 100 }),
-  setZoom: (value) => set({ zoomLevel: Math.max(50, Math.min(value, 200)) }),
+export const useZoomStore = create<ZoomState>((set) => ({
+  zoomLevel: 100, // Default zoom level at 100%
+  increaseZoom: () => set((state) => ({ zoomLevel: Math.min(state.zoomLevel ++, 200) })),
+  decreaseZoom: () => set((state) => ({ zoomLevel: Math.max(state.zoomLevel --, 50) })),
+  resetZoom: () => set(() => ({ zoomLevel: 100 })),
+  setZoom: (value) => set(() => ({ zoomLevel: Math.min(Math.max(value, 50), 200) })), // Limits between 50% and 200%
 }));
-
-export default useZoomStore;

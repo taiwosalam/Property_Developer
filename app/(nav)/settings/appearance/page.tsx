@@ -25,7 +25,7 @@ import {
   ZoomMinusIcon,
   ZoomPlusIcon,
 } from "@/public/icons/icons";
-import useZoomStore from "@/store/zoomStore";
+import { useZoomStore } from "@/store/zoomStore";
 
 interface SelectedOptions {
   theme: string;
@@ -65,8 +65,12 @@ const Appearance = () => {
   );
 
   // Zoom control
-  const { zoomLevel, increaseZoom, decreaseZoom, resetZoom, setZoom } =
-    useZoomStore();
+  const zoomLevel = useZoomStore((state) => state.zoomLevel);
+  const increaseZoom = useZoomStore((state) => state.increaseZoom);
+  const decreaseZoom = useZoomStore((state) => state.decreaseZoom);
+  const resetZoom = useZoomStore((state) => state.resetZoom);
+  const setZoom = useZoomStore((state) => state.setZoom);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
   const { theme, setTheme } = useTheme();
@@ -98,23 +102,8 @@ const Appearance = () => {
 
   // Zoom controls
   useEffect(() => {
-    document.body.style.transform = `scale(${zoomLevel / 100})`;
-    document.body.style.transformOrigin = "0 0";
+    document.documentElement.style.fontSize = `${zoomLevel}%`;
   }, [zoomLevel]);
-
-  useEffect(() => {
-    const handleKeydown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === "+") {
-        increaseZoom();
-      } else if (event.ctrlKey && event.key === "-") {
-        decreaseZoom();
-      } else if (event.ctrlKey && event.key === "0") {
-        resetZoom();
-      }
-    };
-    window.addEventListener("keydown", handleKeydown);
-    return () => window.removeEventListener("keydown", handleKeydown);
-  }, [increaseZoom, decreaseZoom, resetZoom]);
 
   const handleSelect = (type: keyof SelectedOptions, value: string) => {
     if (!value) return;
@@ -388,18 +377,31 @@ const Appearance = () => {
             desc="Customize the dashboard's size and font weight to perfectly suit your desired style and functionality."
           />
           <div className="flex gap-2 mt-4">
-            <button className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white dark:text-black">
+            <button
+              onClick={increaseZoom}
+              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white dark:text-black"
+            >
               <ZoomPlusIcon />
             </button>
-            <button className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white dark:text-black">
+            <button
+              onClick={decreaseZoom}
+              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white dark:text-black"
+            >
               <ZoomMinusIcon />
             </button>
-            <input
-              type="number"
-              className="w-min-w-[100px] rounded-md border border-text-label border-dashed"
-            />
-            <p className="text-sm text-text-disabled">%</p>
-            <button className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white dark:text-black">
+            <div className="flex items-center justify-center min-w-[100px] rounded-md border border-text-label border-dashed px-4">
+              <input
+                type="number"
+                value={zoomLevel}
+                onChange={(e) => setZoom(parseInt(e.target.value))}
+                className="focus:outline-none"
+              />
+              <span className="text-gray-500">%</span>
+            </div>
+            <button
+              onClick={resetZoom}
+              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white dark:text-black"
+            >
               <F11MinusIcon />
             </button>
           </div>
