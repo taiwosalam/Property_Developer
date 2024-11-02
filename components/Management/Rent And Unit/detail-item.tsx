@@ -17,7 +17,7 @@ export const EstateDetailItem: React.FC<EstateDetailItemProps> = ({
       >
         {label}
       </span>
-      <span className="text-base font-semibold text-gray-900 dark:text-darkText-2 w-2/3">
+      <span className="text-base font-medium text-gray-900 dark:text-darkText-2 w-2/3">
         {value}
       </span>
     </div>

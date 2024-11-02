@@ -1,36 +1,20 @@
-import React from "react";
-import { ModalTrigger } from "@/components/Modal/modal";
-import Image from "next/image";
-import { CloseCircle } from "@/public/icons/icons";
+import ModalPreset from "@/components/Wallet/wallet-modal-preset";
 
 const MoveOutModal = () => {
   return (
-    <div className="w-[600px] max-w-[80%] max-h-[85%] rounded-[20px] bg-white overflow-x-auto custom-round-scrollbar">
-      {/* Header */}
-      <div className="bg-status-success-1 dark:bg-[#3C3D37]">
-        <div className="flex items-center justify-between sticky px-[30px] pt-[12px]">
-          <span></span>
-          <ModalTrigger close className="p-2" type="button">
-            <CloseCircle />
-          </ModalTrigger>
-        </div>
-        <div className="flex items-center justify-center gap-2">
-          <p className="text-black dark:text-white text-center md:text-lg lg:text-xl font-bold capitalize">
-            Move out
-          </p>
-        </div>
-      </div>
-      {/* body */}
-      <div className="px-[30px] pt-6 pb-[30px] dark:bg-darkText-primary">
-        <p className="text-sm mb-6">
+    <ModalPreset title="Move Out">
+      <div className="space-y-6">
+        <p className="text-sm text-text-secondary dark:text-darkText-1">
           Your actions indicate that the tenants have already moved out from the
           current unit of the property, and the said unit is now available for
           listing to other potential tenants. If you proceed, you will lose unit
           data, and the tenants will await caution deposit approval.
         </p>
-        <div>
-          <h3 className="font-semibold mb-4">Caution Deposit Requirement</h3>
-          <div className="space-y-3 px-4">
+        <div className="space-y-4">
+          <h3 className="text-black dark:text-white text-base font-medium">
+            Caution Deposit Requirement
+          </h3>
+          <div className="space-y-3 px-2">
             <div className="flex items-center justify-between bg-gray-300 dark:bg-transparent dark:border dark:border-[#3C3D37] p-2">
               <label htmlFor="check-inventory">Check Inventory</label>
               <input type="checkbox" id="check-inventory" className="mr-2" />
@@ -49,11 +33,11 @@ const MoveOutModal = () => {
             </div>
           </div>
         </div>
-        <button className="w-full bg-red-100 text-red-500 py-2 rounded mt-10">
+        <button className="w-full bg-status-error-1 text-status-error-2 py-2 rounded mt-10">
           Move Out
         </button>
       </div>
-    </div>
+    </ModalPreset>
   );
 };
 

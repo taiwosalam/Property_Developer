@@ -22,7 +22,7 @@ const EstateSettings = ({
       <h6 className="font-bold text-[#092C4C] dark:text-white text-xl">
         {!title ? "Estate Settings" : title}
       </h6>
-      <div className="w-5/6 h-[1px] bg-[#C0C2C8] bg-opacity-20"></div>
+      <div className="h-[1px] bg-[#C0C2C8] bg-opacity-20"></div>
       <div className="w-full flex items-center justify-between">
         <div
           className={`grid grid-cols-1 ${
@@ -40,7 +40,7 @@ const EstateSettings = ({
           <div className="xl:hidden">
             <Modal>
               <ModalTrigger asChild>
-                <Button type="submit" className="py-2 px-8" onClick={() => {}}>
+                <Button size="base_medium" className="py-2 px-6">
                   Edit
                 </Button>
               </ModalTrigger>
@@ -50,7 +50,7 @@ const EstateSettings = ({
         <div className="hidden xl:block">
           <Modal>
             <ModalTrigger asChild>
-              <Button type="submit" className="py-2 px-8" onClick={() => {}}>
+              <Button size="base_medium" className="py-2 px-6">
                 Edit
               </Button>
             </ModalTrigger>
@@ -64,8 +64,7 @@ const EstateSettings = ({
                 <div className="flex items-center justify-center">
                   <div className="flex items-center justify-between space-x-10">
                     <Button
-                      type="submit"
-                      className="py-2 px-8"
+                      className="py-2 px-6"
                       size="16_bold"
                       onClick={() => {
                         router.push("/management/properties/1/edit-property");
@@ -74,11 +73,7 @@ const EstateSettings = ({
                       Proceed
                     </Button>
                     <ModalTrigger asChild close>
-                      <Button
-                        type="submit"
-                        className="py-2 px-8"
-                        size="16_bold"
-                      >
+                      <Button className="py-2 px-6" size="16_bold">
                         Exit
                       </Button>
                     </ModalTrigger>

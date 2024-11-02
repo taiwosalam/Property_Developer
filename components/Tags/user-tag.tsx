@@ -2,7 +2,6 @@ import clsx from "clsx";
 import { UserTagProps } from "./types";
 
 const UserTag: React.FC<UserTagProps> = ({ className, type }) => {
-  // Determine background and text color based on user_tag
   const tagClasses =
     type === "mobile"
       ? "bg-status-success-1 text-status-success-3"

@@ -24,7 +24,7 @@ import { LocationIcon } from "@/public/icons/icons";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { branchIdChartConfig, branchIdChartData, PageState } from "./data";
 import Pagination from "@/components/Pagination/pagination";
-import BranchStatCard from "@/components/Management/Staff-And-Branches/Branch/branchStatCard";
+import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
 import BranchActivitiesCard from "@/components/Management/Staff-And-Branches/Branch/branch-activity-card";
 import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch/branch-balance-card";
@@ -39,7 +39,6 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import { DateRange } from "react-day-picker";
 import BackButton from "@/components/BackButton/back-button";
 import { getAllStates } from "@/utils/states";
-import { cn } from "@/lib/utils";
 
 const BranchDashboard = () => {
   const initialState = {
@@ -230,20 +229,32 @@ const BranchDashboard = () => {
             </Select>
           </div>
           <div className="w-full h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            <BranchStatCard
+            <AccountStatsCard
               title="Total Receipts"
               balance={1234535}
-              upvalue={54}
+              percentage={54}
+              trendDirection="up"
+              trendColor="green"
+              variant="greenIncoming"
+              forBranch
             />
-            <BranchStatCard
+            <AccountStatsCard
               title="Total Expenses"
               balance={1234535}
-              upvalue={54}
+              percentage={54}
+              trendDirection="up"
+              trendColor="green"
+              variant="redOutgoing"
+              forBranch
             />
-            <BranchStatCard
+            <AccountStatsCard
               title="Total Balance"
               balance={1234535}
-              upvalue={54}
+              percentage={54}
+              trendDirection="up"
+              trendColor="red"
+              variant="blueIncoming"
+              forBranch
             />
           </div>
         </div>

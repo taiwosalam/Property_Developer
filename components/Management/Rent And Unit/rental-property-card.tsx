@@ -2,28 +2,16 @@ import React, { useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
-import Sample from "@/public/empty/SampleProperty.jpeg";
-import Sample2 from "@/public/empty/SampleProperty2.jpeg";
-import Sample3 from "@/public/empty/SampleProperty3.jpeg";
-import Sample4 from "@/public/empty/SampleProperty4.png";
-import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import { CameraIcon, ChevronLeft } from "@/public/icons/icons";
 import { PropertyDetailsProps, PropertyImageSliderProps } from "./types";
 import { actions, activeStatuses, getBackgroundColor } from "./data";
 import { ActionButton } from "./action-button";
-
-const CURRENCY = "₦";
-const NUMBER_FORMAT_LOCALE = "en-NG";
-
-const useNumberFormat = () => {
-  return (number: number) =>
-    new Intl.NumberFormat(NUMBER_FORMAT_LOCALE).format(number);
-};
+import { formatNumber, currencySymbols } from "@/utils/number-formatter";
+import PropertyTag from "@/components/Tags/property-tag";
 
 export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
   images,
   showOverlay,
-  thread,
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -54,7 +42,7 @@ export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
         </div>
       ))}
       {showOverlay && (
-        <div className="absolute inset-0 bg-black bg-opacity-45 transition-opacity"></div>
+        <div className="absolute inset-0 bg-black bg-opacity-45 transition-opacity" />
       )}
       {loaded && instanceRef.current && (
         <>
@@ -65,11 +53,6 @@ export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
                 {currentSlide + 1 + "/" + images.length}
               </span>
             </div>
-            {!thread && (
-              <div className="bg-status-success-1 rounded-lg py-1 px-4 text-sm font-medium text-status-success-3">
-                <p>Gated Property</p>
-              </div>
-            )}
           </div>
           <button
             aria-label="Previous image"
@@ -102,7 +85,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   cautionDeposit,
   serviceCharge,
 }) => {
-  const formatNumber = useNumberFormat();
+  const CURRENCY = currencySymbols["NAIRA"];
   return (
     <div className="flex items-center justify-between flex-wrap space-y-1">
       <div>
@@ -136,20 +119,20 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   );
 };
 
-const RentalPropertyCard: React.FC = () => {
+const RentalPropertyCard: React.FC<{
+  propertyType: "rental" | "facility";
+  images: string[];
+}> = ({ propertyType, images }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const sampleImages: StaticImageData[] = [
-    Sample,
-    Sample2,
-    Sample3,
-    Sample4,
-    Sample5,
-  ];
 
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden shadow-lg">
       <div className="h-[200px] relative">
-        <PropertyImageSlider images={sampleImages} showOverlay={isHovered} />
+        <PropertyTag
+          propertyType={propertyType}
+          className="absolute top-5 right-5 z-10"
+        />
+        <PropertyImageSlider images={images} showOverlay={isHovered} />
       </div>
       <div
         className="p-2 pb-4 border-b border-[#C0C2C8] space-y-3 cursor-pointer transition-all duration-500"
@@ -170,7 +153,7 @@ const RentalPropertyCard: React.FC = () => {
                   key={status}
                   className="w-[15px] h-[15px] rounded-full"
                   style={{ backgroundColor: getBackgroundColor(status) }}
-                ></div>
+                />
               ))}
             </div>
           </div>

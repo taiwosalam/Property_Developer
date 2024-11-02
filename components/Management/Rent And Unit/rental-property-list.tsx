@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { actions, activeStatuses, getBackgroundColor } from "./data";
 import Image from "next/image";
 import { ActionButtonProps } from "./types";
@@ -6,23 +6,26 @@ import { CameraIcon } from "lucide-react";
 import { DetailItem } from "../detail-item";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import { images } from "@/components/PopupSlider/data";
+import PropertyTag from "@/components/Tags/property-tag";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
-const RentalPropertyListCard = () => {
+const RentalPropertyListCard: React.FC<{
+  propertyType: "rental" | "facility";
+}> = ({ propertyType }) => {
   const [isOpened, setIsOpened] = useState(false);
   return (
     <div className="p-6 bg-white dark:bg-darkText-primary rounded-2xl shadow-md text-[16px]">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm font-bold text-[#1E3A8A] dark:text-darkText-1">
+        <span className="text-sm font-bold text-brand-10 dark:text-darkText-1">
           Unit ID: 123456776342
         </span>
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center gap-1 flex-wrap">
           {activeStatuses.map((status) => (
             <div
               key={status}
               className="w-4 h-4 rounded-full"
               style={{ backgroundColor: getBackgroundColor(status) }}
-            ></div>
+            />
           ))}
         </div>
       </div>
@@ -73,9 +76,7 @@ const RentalPropertyListCard = () => {
         </div>
       </div>
       <div className="flex items-center justify-between mt-5 gap-2 px-2 flex-wrap">
-        <div className="bg-status-success-1 rounded-lg py-1 px-4 text-sm font-medium text-status-success-3">
-          <p>Gated Property</p>
-        </div>
+        <PropertyTag propertyType={propertyType} />
         <div className="flex items-center gap-2 flex-wrap">
           {actions.map((action) => (
             <ActionButton key={action.label} {...action} />

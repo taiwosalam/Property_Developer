@@ -20,6 +20,7 @@ import BackButton from "@/components/BackButton/back-button";
 import PropertySwitchUnitItem from "@/components/Management/Rent And Unit/Edit-Rent/property-switch-unit-item";
 import Button from "@/components/Form/Button/button";
 import PostProceedContent from "@/components/Management/Rent And Unit/Edit-Rent/PostProceedContent";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const images: string[] = [];
 
@@ -31,6 +32,13 @@ const ChangePropertyPage: React.FC = () => {
   };
 
   const imageIndex = wrap(0, images.length, page);
+
+  const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
+
+  const handleUnitSelect = (id: string) => {
+    setSelectedUnitId(id === selectedUnitId ? null : id);
+  };
+
   const handleChangeContent = () => {
     setStep1Done(true);
   };
@@ -40,8 +48,8 @@ const ChangePropertyPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-5 pb-24">
-      <BackButton as="h1">Change Tenants Property</BackButton>
+    <div className="space-y-5 pb-[100px]">
+      <BackButton as="p">Change Tenants Property</BackButton>
 
       {/* Heading */}
       <div className="text-black dark:text-white">
@@ -270,15 +278,29 @@ const ChangePropertyPage: React.FC = () => {
         </p>
       </div>
       <section className="space-y-4">
-        {[...Array(4)].map((_, index) => (
-          <PropertySwitchUnitItem key={index} />
-        ))}
+        {[...Array(4)].map((_, index) => {
+          const unitId = `123456776342${index}`; // Generate unique IDs for test
+          return (
+            <PropertySwitchUnitItem
+              key={index}
+              id={unitId}
+              isSelected={selectedUnitId === unitId}
+              onSelect={handleUnitSelect}
+            />
+          );
+        })}
       </section>
-      <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
-        <Button onClick={handleChangeContent} type="submit">
+      <FixedFooter className="flex justify-end">
+        <Button
+          onClick={handleChangeContent}
+          type="submit"
+          className="py-2 px-6"
+          size="base_medium"
+          disabled={!selectedUnitId}
+        >
           Proceed
         </Button>
-      </div>
+      </FixedFooter>
     </div>
   );
 };

@@ -14,7 +14,7 @@ const AddPropertyOptionsView: React.FC<AddPropertyOptionsViewProps> = ({
       />
       <AddPropertyCard
         buttonText="choose"
-        title="Add Gated Estate"
+        title="Add Facility Property"
         buttonHref="/management/properties/create-gated-estate-property"
         desc="Are you managing an entire estate, facilities, or a gated community?"
       />
