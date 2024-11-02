@@ -8,6 +8,7 @@ import type { NavDropdownProps } from "./types";
 // Imports
 import { NavButton } from "./nav-components";
 import { AnimatePresence, motion } from "framer-motion";
+import useSettingsStore from "@/store/settings";
 
 const NavDropdown: React.FC<NavDropdownProps> = ({
   type,
@@ -18,9 +19,11 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
   isOpen,
   onToggle,
   isCollapsed,
+  topNav,
 }) => {
   const pathname = usePathname();
-
+  const { selectedOptions } = useSettingsStore();
+  const navbar = selectedOptions.navbar;
   return (
     <div
       className="custom-flex-col"

@@ -14,6 +14,7 @@ import NavDropdown from "./nav-dropdown";
 import { NavButton } from "./nav-components";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import useSettingsStore from "@/store/settings";
+import TopNavDropdown from "./nav-topdown";
 
 const TopNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
   const pathname = usePathname();
@@ -43,20 +44,15 @@ const TopNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
 
       {nav_items.map((item, idx) =>
         item.content ? (
-          <NavDropdown
+          <TopNavDropdown
             key={idx}
             type={item.type}
+            topNav={true}
             content={item.content}
-            highlight={item.content.some((i) =>
-              pathname.includes(`${item.label}${i.href}`)
-            )}
-            onContentClick={closeSideNav}
-            isOpen={activeDropdown === item.label}
             onToggle={() => handleDropdownToggle(item.label)}
-            isCollapsed={isCollapsed}
           >
             {item.label}
-          </NavDropdown>
+          </TopNavDropdown>
         ) : (
           <NavButton
             highlight={item.href ? pathname.includes(item.href) : false}

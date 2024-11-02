@@ -97,7 +97,13 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             className="h-[1px]"
             style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
           />
-          <div className="h-[50px] px-3 flex flex-wrap items-center justify-between gap-2 bg-white dark:bg-[#020617] max-w-full overflow-hidden">
+          <div
+            className={`h-[50px] px-3 flex flex-wrap ${
+              navbar !== "row"
+                ? "items-center justify-between"
+                : "items-center justify-end"
+            } gap-2 bg-white dark:bg-[#020617] max-w-full overflow-hidden`}
+          >
             {navbar !== "row" && (
               <button
                 type="button"
