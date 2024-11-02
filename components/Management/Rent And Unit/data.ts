@@ -27,7 +27,7 @@ export const activeStatuses = [
 
 type Action = {
   color: string;
-  label: string;
+  label: string | ((propertyType: "rental" | "facility") => string);
   route?: string | ((id: string) => string);
   modal?: string;
 };
@@ -35,23 +35,21 @@ type Action = {
 export const actions: Action[] = [
   {
     color: "#FF9800",
-    label: "Start Counting",
-    route: (id: string) => `/management/rent-unit/${id}/start-counting`,
+    label: (propertyType) =>
+      propertyType === "rental" ? "Start Rent" : "Start Counting",
+    route: (id) => `/management/rent-unit/${id}/start-rent`,
   },
-  {
-    color: "#FF9800",
-    label: "Start Rent",
-    route: (id: string) => `/management/rent-unit/${id}/start-rent`,
-  },
+
   {
     color: "#4CAF50",
-    label: "Renew Rent",
-    route: (id: string) => `/management/rent-unit/${id}/renew-rent`,
+    label: (propertyType) =>
+      propertyType === "rental" ? "Renew Rent" : "Renew Fee",
+    route: (id) => `/management/rent-unit/${id}/renew-rent`,
   },
   {
     color: "#60A5FA",
     label: "Edit",
-    route: (id: string) => `/management/rent-unit/${id}/edit-rent`,
+    route: (id) => `/management/rent-unit/${id}/edit-rent`,
   },
   {
     color: "#E9212E",

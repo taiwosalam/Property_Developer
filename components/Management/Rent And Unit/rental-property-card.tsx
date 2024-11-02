@@ -127,6 +127,7 @@ const RentalPropertyCard: React.FC<{
 }> = ({ propertyType, images, unitId }) => {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
+  const isRental = propertyType === "rental";
 
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden shadow-lg">
@@ -198,17 +199,34 @@ const RentalPropertyCard: React.FC<{
         />
       </div>
       <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
-        {actions.map((action) => (
-          <ActionButton
-            key={action.label}
-            {...action}
-            route={
-              typeof action.route === "function"
-                ? action.route(unitId)
-                : action.route
+        {actions
+          .filter((action) => {
+            // For rental properties, exclude Relocate
+            if (propertyType === "rental" && action.label === "Relocate") {
+              return false;
             }
-          />
-        ))}
+            // For facilities, exclude Move Out
+            if (propertyType === "facility" && action.label === "Move Out") {
+              return false;
+            }
+            return true;
+          })
+          .map((action, i) => (
+            <ActionButton
+              key={i}
+              {...action}
+              route={
+                typeof action.route === "function"
+                  ? action.route(unitId)
+                  : action.route
+              }
+              label={
+                typeof action.label === "function"
+                  ? action.label(propertyType)
+                  : action.label
+              }
+            />
+          ))}
       </div>
     </div>
   );
