@@ -14,9 +14,12 @@ import { useThemeStoreSelectors } from "@/store/themeStore";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import Header from "@/components/Nav/navbar";
 import { trackOutsideClick } from "@/utils/track-outside-click";
+import useSettingsStore from "@/store/settings";
+import TopNav from "@/components/Nav/topnav";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
+  const { selectedOptions } = useSettingsStore();
   const sideNavRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowWidth();
   const [isSideNavOpen, setIsSideNavOpen] = useState(true);
@@ -41,48 +44,54 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     setIsSideNavOpen(!isMobile);
   }, [isMobile]);
 
+  const navbar = selectedOptions.navbar;
+
   return (
     <LayoutContext.Provider value={{ isSideNavOpen }}>
       <Header />
+      <div className="flex overflow-x-auto custom-round-scrollbar sticky top-[100px] z-[2] bg-white dark:bg-[#020617]">
+        {navbar === "row" && <TopNav />}
+      </div>
 
       <>
-        <aside
-          ref={sideNavRef}
-          className={clsx(
-            "h-[calc(100dvh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white dark:bg-[#020617] dark:border-[#252525] dark:border-r no-scrollbar overflow-auto transition-transform duration-300",
-            {
-              "-translate-x-full md:w-[110px]": !isSideNavOpen,
-              "translate-x-0 md:w-[235px] lg:w-[250px]": isSideNavOpen,
-            },
-            "md:translate-x-0"
-          )}
-          style={{
-            // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-            transitionProperty: "width, transform",
-          }}
-        >
-          <SideNav
-            closeSideNav={() => {
-              if (isMobile) {
-                setIsSideNavOpen(false);
-              }
+        {navbar !== "row" && (
+          <aside
+            ref={sideNavRef}
+            className={clsx(
+              "h-[calc(100dvh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white dark:bg-[#020617] dark:border-[#252525] dark:border-r no-scrollbar overflow-auto transition-transform duration-300",
+              {
+                "-translate-x-full md:w-[110px]": !isSideNavOpen,
+                "translate-x-0 md:w-[235px] lg:w-[250px]": isSideNavOpen,
+              },
+              "md:translate-x-0"
+            )}
+            style={{
+              // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+              transitionProperty: "width, transform",
             }}
-            isCollapsed={!isSideNavOpen}
-          />
-        </aside>
+          >
+            <SideNav
+              closeSideNav={() => {
+                if (isMobile) {
+                  setIsSideNavOpen(false);
+                }
+              }}
+              isCollapsed={!isSideNavOpen}
+            />
+          </aside>
+        )}
         <div
           style={{
             boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)",
             transitionProperty: "margin-left",
             transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
           }}
-          className={clsx(
-            "custom-flex-col sticky top-[99px] z-[2] duration-300",
-            {
-              "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen,
-              "md:ml-[235px] lg:ml-[250px]": isSideNavOpen,
-            }
-          )}
+          className={clsx("custom-flex-col sticky z-[2] duration-300", {
+            "w-full top-[150px]": navbar === "row", // Adjusted top to 150px to account for TopNav height
+            "top-[99px]": navbar !== "row",
+            "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen && navbar !== "row",
+            "md:ml-[235px] lg:ml-[250px]": isSideNavOpen && navbar !== "row",
+          })}
         >
           <div
             className="h-[1px]"
@@ -132,11 +141,14 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           className={clsx(
             "p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300",
             {
-              "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen,
+              "w-full md:ml-0 lg:ml-0": navbar === "row",
+              "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen && navbar !== "row",
               "opacity-50 pointer-events-none md:ml-[235px] lg:ml-[250px]":
-                isSideNavOpen,
+                isSideNavOpen && navbar !== "row",
             },
-            "md:opacity-100 md:pointer-events-auto"
+            {
+              "md:opacity-100 md:pointer-events-auto": navbar !== "row",
+            }
           )}
         >
           {children}

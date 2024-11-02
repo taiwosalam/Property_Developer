@@ -465,7 +465,7 @@ const Profile = () => {
           <SettingsOthersCheckBox
             title="Modules Listing"
             desc="Toggle on or off to control the visibility of your listing on the website, based on your subscription plan."
-            checked={checkedStates["Modules Listing"] ?? false} // Updated to use the state
+            checked={checkedStates["Modules Listing"] ?? true} // Updated to use the state
             value="Modules Listing"
             onChange={(value, checked) => {
               console.log(`Option "${value}" changed to: ${checked}`);

@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import Select from "@/components/Form/Select/select";
 import useGoogleFonts from "@/hooks/useFonts";
 import { useTheme } from "next-themes";
+import useSettingsStore from "@/store/settings";
 
 const Appearance = () => {
   const googleFonts = useGoogleFonts();
@@ -31,10 +32,19 @@ const Appearance = () => {
   const primaryColor = useThemeStoreSelectors.getState().primaryColor;
 
   // State variables for managing selected options
-  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
-  const [selectedView, setSelectedView] = useState<string | null>(null);
-  const [selectedNavbar, setSelectedNavbar] = useState<string | null>(null);
-  const [selectedMode, setSelectedMode] = useState<string | null>(null);
+  const { selectedOptions, setSelectedOption } = useSettingsStore();
+  const [selectedTheme, setSelectedTheme] = useState<string | null>(
+    selectedOptions.theme
+  );
+  const [selectedView, setSelectedView] = useState<string | null>(
+    selectedOptions.view
+  );
+  const [selectedNavbar, setSelectedNavbar] = useState<string | null>(
+    selectedOptions.navbar
+  );
+  const [selectedMode, setSelectedMode] = useState<string | null>(
+    selectedOptions.mode
+  );
   const [selectedFont, setSelectedFont] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(
     primaryColor
@@ -70,6 +80,7 @@ const Appearance = () => {
 
   const handleSelect = (type: string, value: string) => {
     if (!value) return;
+    setSelectedOption(type, value);
     switch (type) {
       case "theme":
         setSelectedTheme(value);
@@ -81,8 +92,8 @@ const Appearance = () => {
         setSelectedNavbar(value);
         break;
       case "mode":
-        setSelectedMode(value);
         setTheme(value);
+        setSelectedMode(value);
         break;
       case "font":
         handleFontSelect(value);
@@ -93,9 +104,7 @@ const Appearance = () => {
   const handleColorSelect = (color: string) => {
     if (!color) return;
     if (isDarkMode && color === "#000000") {
-      toast.error(
-        "Cannot set primary color to #000000 in dark mode. Setting to default color instead."
-      );
+      toast.error("Unable to set primary color in dark mode.");
       setSelectedColor("#0033c4"); // Set to the alternative color
       setCustomColor("#0033c4");
     } else {
@@ -211,15 +220,15 @@ const Appearance = () => {
         <div className="themes flex gap-5 flex-wrap mt-6">
           <ThemeCard
             img="/global/nav1.svg"
-            value="nav1"
+            value="column"
             onSelect={(value) => handleSelect("navbar", value)}
-            isSelected={selectedNavbar === "nav1"}
+            isSelected={selectedNavbar === "column"}
           />
           <ThemeCard
             img="/global/nav2.svg"
-            value="nav2"
+            value="row"
             onSelect={(value) => handleSelect("navbar", value)}
-            isSelected={selectedNavbar === "nav2"}
+            isSelected={selectedNavbar === "row"}
           />
         </div>
         <div className="flex justify-end mt-4">
@@ -233,7 +242,7 @@ const Appearance = () => {
           title="Color scheme"
           desc="Choose Light or Dark Mode Scheme."
         />
-        <div className="themes flex gap-5 flex-wrap">
+        <div className="themes flex gap-5 flex-wrap mt-4">
           <ThemeCard
             img="/global/light-mode.svg"
             value="light"

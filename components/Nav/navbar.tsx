@@ -36,8 +36,11 @@ import {
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import useSettingsStore from "@/store/settings";
+import TopNav from "./topnav";
 
 const Header = () => {
+  const { selectedOptions } = useSettingsStore();
   const { loading, data: dashboardData, error } = useDashboardData();
   const { isMobile } = useWindowWidth();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
@@ -63,6 +66,7 @@ const Header = () => {
     }
   };
 
+  const navbar = selectedOptions.navbar;
   return (
     <header
       className={clsx(
