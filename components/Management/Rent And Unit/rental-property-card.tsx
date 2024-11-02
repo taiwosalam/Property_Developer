@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import Image, { StaticImageData } from "next/image";
+import { useState } from "react";
+import Image from "next/image";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { CameraIcon, ChevronLeft } from "@/public/icons/icons";
@@ -8,6 +8,7 @@ import { actions, activeStatuses, getBackgroundColor } from "./data";
 import { ActionButton } from "./action-button";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import PropertyTag from "@/components/Tags/property-tag";
+import { useRouter } from "next/navigation";
 
 export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
   images,
@@ -122,8 +123,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
 const RentalPropertyCard: React.FC<{
   propertyType: "rental" | "facility";
   images: string[];
-}> = ({ propertyType, images }) => {
+  unitId: string;
+}> = ({ propertyType, images, unitId }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const router = useRouter();
 
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden shadow-lg">
@@ -135,12 +138,11 @@ const RentalPropertyCard: React.FC<{
         <PropertyImageSlider images={images} showOverlay={isHovered} />
       </div>
       <div
+        role="button"
         className="p-2 pb-4 border-b border-[#C0C2C8] space-y-3 cursor-pointer transition-all duration-500"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        onClick={() =>
-          window.location.assign("/management/rent-unit/1234567867")
-        }
+        onClick={() => router.push(`/management/rent-unit/${unitId}`)}
       >
         <div className="relative">
           <div className="flex items-center justify-between">
@@ -197,7 +199,15 @@ const RentalPropertyCard: React.FC<{
       </div>
       <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
         {actions.map((action) => (
-          <ActionButton key={action.label} {...action} />
+          <ActionButton
+            key={action.label}
+            {...action}
+            route={
+              typeof action.route === "function"
+                ? action.route(unitId)
+                : action.route
+            }
+          />
         ))}
       </div>
     </div>
