@@ -222,3 +222,23 @@ export interface LegalOption {
   description: string;
   value?: string;
 }
+
+
+export interface ZoomSettingsProps {
+  resetZoom: () => void;
+  increaseZoom: () => void;
+  decreaseZoom: () => void;
+  zoomLevel: number;
+  setZoom: (value: number) => void;
+  toggleFullscreen: () => void;
+  fullScreen?: boolean;
+}
+
+
+export interface SelectedOptions {
+  theme: string;
+  view: string;
+  navbar: string;
+  mode: string;
+  font: string;
+}

@@ -16,6 +16,7 @@ import type {
   SettingsTenantOccupantTierProps,
   ProfileUploadProps,
   GroupRadioProps,
+  ZoomSettingsProps,
 } from "./types";
 
 import type { ButtonProps } from "../Form/Button/types";
@@ -35,7 +36,13 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import SettingsPaymentModal from "./Modals/settings-payment-modal";
 import { HexColorPicker } from "react-colorful";
 import DocumentCheckbox from "../Documents/DocumentCheckbox/document-checkbox";
-import { SettingUserIcon } from "@/public/icons/icons";
+import {
+  ActiveFullScreenIcon,
+  F11MinusIcon,
+  ResetZoomIcon,
+  ZoomMinusIcon,
+  ZoomPlusIcon,
+} from "@/public/icons/icons";
 import Picture from "../Picture/picture";
 import ImageBlue from "@/public/icons/image-blue.svg";
 import SettingsLegalDrawer from "./Modals/settings-legal-drawer";
@@ -350,9 +357,6 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
       onClick={handleClick}
     >
       <div className="flex justify-center items-center">
-        {isSelected === false && !profile && (
-          <div className="absolute inset-0 bg-white bg-opacity-60 z-10" />
-        )}
         <div className="relative max-h-[218px]">
           <Image
             src={img}
@@ -497,6 +501,56 @@ export const ProfileUpload: React.FC<ProfileUploadProps> = ({
         onChange={onChange}
         className="hidden"
       />
+    </div>
+  );
+};
+
+export const ZoomSettings: React.FC<ZoomSettingsProps> = ({
+  resetZoom,
+  increaseZoom,
+  decreaseZoom,
+  zoomLevel,
+  setZoom,
+  toggleFullscreen,
+  fullScreen,
+}) => {
+  return (
+    <div className="flex gap-2 mt-4">
+      <button
+        onClick={resetZoom}
+        className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
+      >
+        <ResetZoomIcon />
+      </button>
+      <button
+        onClick={increaseZoom}
+        className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
+      >
+        <ZoomPlusIcon />
+      </button>
+      <button
+        onClick={decreaseZoom}
+        className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
+      >
+        <ZoomMinusIcon />
+      </button>
+      <div className="flex items-center justify-center max-w-[120px] rounded-md border border-text-label border-dashed px-4">
+        <input
+          type="number"
+          value={zoomLevel}
+          onChange={(e) => setZoom(parseInt(e.target.value))}
+          className="focus:outline-none dark:bg-darkText-primary w-full flex items-center justify-center"
+        />
+        <span className="text-black text-center w-full flex items-start justify-start">
+          %
+        </span>
+      </div>
+      <button
+        onClick={toggleFullscreen}
+        className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
+      >
+        {fullScreen ? <ActiveFullScreenIcon /> : <F11MinusIcon />}
+      </button>
     </div>
   );
 };
