@@ -52,9 +52,9 @@ const Select: React.FC<SelectProps> = ({
   const updateDropdownPosition = () => {
     if (dropdownRef.current) {
       const dropdownRect = dropdownRef.current.getBoundingClientRect();
+      const dropdownHeight = 240; // max-h-60 = 15rem = 240px
       const windowHeight = window.innerHeight;
       const bottomSpace = windowHeight - dropdownRect.bottom;
-      const dropdownHeight = 240; // max-h-60 = 15rem = 240px
       setShowAbove(bottomSpace < dropdownHeight);
     }
   };

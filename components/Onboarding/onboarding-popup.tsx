@@ -1,18 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Images
 import AngleDown from "@/public/icons/angle-down.svg";
 import MessagesIcon from "@/public/icons/messages.svg";
-import OnboardingChatArrow from "@/public/icons/onboarding-chat-arrow.svg";
-
+import { OnboardingChatArrow } from "@/public/icons/icons";
 // Imports
 import gsap from "gsap";
 import { secondaryFont } from "@/utils/fonts";
 import OnboardingAction from "./onboarding-action";
 import { SectionSeparator } from "../Section/section-components";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import OnboardingRequestCallback from "./onboardingRequestCallback";
 
 const OnboardingPopup = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -59,18 +60,22 @@ const OnboardingPopup = () => {
                 Knowledge Base
               </OnboardingAction>
               <SectionSeparator />
-              <OnboardingAction>request call</OnboardingAction>
+              <Modal>
+                <ModalTrigger asChild>
+                  <OnboardingAction>request call</OnboardingAction>
+                </ModalTrigger>
+                <ModalContent>
+                  <OnboardingRequestCallback />
+                </ModalContent>
+              </Modal>
               <SectionSeparator />
               <OnboardingAction>FAQ</OnboardingAction>
             </div>
           </div>
           <div className="flex justify-end px-6">
-            <Image
-              src={OnboardingChatArrow}
-              alt="arrow"
-              height={23}
-              className="h-[23px]"
-            />
+            <span className="text-brand-primary">
+              <OnboardingChatArrow />
+            </span>
           </div>
         </div>
       )}

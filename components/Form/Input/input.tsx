@@ -12,6 +12,7 @@ import clsx from "clsx";
 import Label from "../Label/label";
 import { checkValidatonError } from "@/utils/validation";
 import Picture from "@/components/Picture/picture";
+import { formatCostInputValue } from "@/utils/number-formatter";
 
 const Input: React.FC<InputProps> = ({
   id,
@@ -36,6 +37,7 @@ const Input: React.FC<InputProps> = ({
   max,
   maxLength,
   requiredNoStar,
+  formatNumber,
 }) => {
   // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -115,6 +117,9 @@ const Input: React.FC<InputProps> = ({
             const { value } = event.target;
             if (type === "number" && maxLength && value.length > maxLength) {
               event.target.value = value.slice(0, maxLength);
+            }
+            if (formatNumber) {
+              event.target.value = formatCostInputValue(value);
             }
             onChange && onChange(event.target.value);
           }}

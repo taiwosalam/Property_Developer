@@ -1,15 +1,14 @@
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { ValidationErrors } from "@/utils/types";
 import type { VerifyEmailAddressProps } from "./types";
-import ReloadBlue from "@/public/icons/reload-blue.svg";
 import { resendOtp, verifyEmail } from "@/app/(onboarding)/auth/data";
 import Button from "@/components/Form/Button/button";
 import { objectLength } from "@/utils/object-length";
 import { useFormDataStore } from "@/store/formdatastore";
 import { AuthHeading, AuthPinField } from "../auth-components";
 import { checkValidatonError, validateData } from "@/utils/validation";
+import { ReloadIcon } from "@/public/icons/icons";
 
 const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
   type,
@@ -92,13 +91,13 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
         <button
           type="button"
           onClick={handleResendCode}
-          className={`flex gap-1 custom-secondary-color text-base font-medium ${
-            !canResend && "opacity-50 cursor-not-allowed"
-          }`}
+          className="flex gap-1 custom-secondary-color text-base font-medium"
           disabled={!canResend}
         >
-          <Image src={ReloadBlue} alt="resend" height={20} />
-          <p className={canResend ? "" : "opacity-50"}>Resend code</p>
+          <span className="custom-primary-color">
+            <ReloadIcon />
+          </span>
+          <p>Resend code</p>
           {!canResend && <p>({countdown}s)</p>}
         </button>
         <button

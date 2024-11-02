@@ -1,27 +1,9 @@
-import React from "react";
-import { ModalTrigger } from "@/components/Modal/modal";
-import Image from "next/image";
-import { CloseCircle } from "@/public/icons/icons";
+import ModalPreset from "@/components/Wallet/wallet-modal-preset";
 
 const MoveOutModal = () => {
   return (
-    <div className="w-[600px] max-w-[80%] max-h-[85%] rounded-[20px] bg-white overflow-x-auto custom-round-scrollbar">
-      {/* Header */}
-      <div className="bg-status-success-1 dark:bg-[#3C3D37]">
-        <div className="flex items-center justify-between sticky px-[30px] pt-[12px]">
-          <span></span>
-          <ModalTrigger close className="p-2" type="button">
-            <CloseCircle />
-          </ModalTrigger>
-        </div>
-        <div className="flex items-center justify-center gap-2">
-          <p className="text-black dark:text-white text-center md:text-lg lg:text-xl font-bold capitalize">
-            Move out
-          </p>
-        </div>
-      </div>
-      {/* body */}
-      <div className="px-[30px] pt-6 pb-[30px] dark:bg-darkText-primary">
+    <ModalPreset title="Move Out">
+      <div>
         <p className="text-sm mb-6">
           Your actions indicate that the tenants have already moved out from the
           current unit of the property, and the said unit is now available for
@@ -53,7 +35,7 @@ const MoveOutModal = () => {
           Move Out
         </button>
       </div>
-    </div>
+    </ModalPreset>
   );
 };
 

@@ -1,8 +1,5 @@
 "use client";
 
-import React from "react";
-import { ChevronLeft } from "lucide-react";
-import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
 import DateInput from "@/components/Form/DateInput/date-input";
 import Button from "@/components/Form/Button/button";
@@ -10,13 +7,18 @@ import Input from "@/components/Form/Input/input";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { estateData } from "@/components/Management/Rent And Unit/data";
 import { EstateDetailItem } from "@/components/Management/Rent And Unit/detail-item";
-import Link from "next/link";
 import { RentSectionContainer } from "@/components/Management/Rent And Unit/rent-section-container";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ModalPreset from "@/components/Modal/modal-preset";
 import SwitchPropertyModal from "@/components/Management/Rent And Unit/Edit-Rent/SwitchPropertyModal";
 import SwitchUnitModal from "@/components/Management/Rent And Unit/Edit-Rent/SwitchUnitModal";
+import BackButton from "@/components/BackButton/back-button";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { rentRecordsTableData, rentRecordsTableFields } from "./data";
+import CustomTable from "@/components/Table/table";
+import { currencySymbols } from "@/utils/number-formatter";
+import { useSearchParams } from "next/navigation";
 
 const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
   <div className="flex items-center">
@@ -26,27 +28,25 @@ const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
 );
 
 const EditRent = () => {
+  const searchParams = useSearchParams();
+  const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
+  const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
   const router = useRouter();
+  const isRental = propertyType === "rental";
   return (
-    <div className="space-y-6 p-4">
-      <Link
-        href={"/management/rent-unit"}
-        className="flex items-center space-x-3 w-fit"
-      >
-        <ChevronLeft />
-        <h6 className="text-2xl font-medium">Edit Rent</h6>
-      </Link>
+    <div className="space-y-6">
+      <BackButton>Edit {isRental ? "Rent" : "Fee"}</BackButton>
       <section className="space-y-6 pb-16">
         <div
           className="py-6 px-6 bg-white dark:bg-darkText-primary shadow rounded-md space-y-4"
           style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
         >
           <h6 className="font-bold text-[#092C4C] dark:text-white text-xl">
-            Unit Details
+            {isRental ? "Unit" : "Estate"} Details
           </h6>
           <div className="w-5/6 h-[1px] bg-[#C0C2C8] bg-opacity-20"></div>
           <div className="w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-4 gap-x-2">
               {estateData.map((item, index) => (
                 <EstateDetailItem
                   key={index}
@@ -59,27 +59,30 @@ const EditRent = () => {
         </div>
         <EstateSettings
           gridThree
-          title="Property Settings"
+          title={isRental ? "Property Settings" : "Estate Settings"}
           estateSettingsDta={[
-            { label: "Agency Fee", value: "10%" },
+            { label: isRental ? "Agency Fee" : "Management Fee", value: "10%" },
             { label: "Period", value: "Annually" },
             { label: "Charge", value: "Tenant" },
             { label: "Caution Deposit", value: "Escrow it" },
             { label: "Group Chat", value: "Yes" },
-            { label: "Rent Penalty", value: "Yes" },
+            { label: isRental ? "Rent Penalty" : "Fee Penalty", value: "Yes" },
           ]}
         />
 
         <div>
           <h6 className="font-bold text-[#092C4C] dark:text-white text-xl my-6">
-            Rent Details
+            {isRental ? "Rent" : "Fee"} Details
           </h6>
           <div className="grid md:grid-cols-2 xl:grid-cols-5 lg:gap-6">
             <div className="col-span-3 space-y-6">
-              <RentSectionContainer title="Rent Fee">
+              <RentSectionContainer title={isRental ? "Rent Fee" : "Fee"}>
                 <div className="grid grid-cols-2 gap-4 mt-4 text-[16px] font-normal">
                   <RentFeeDetails label="Rent" value="12/1/2023" />
-                  <RentFeeDetails label="Annual Rent" value="₦300,000" />
+                  <RentFeeDetails
+                    label={isRental ? "Annual Rent" : "Annual Fee"}
+                    value="₦300,000"
+                  />
                   <RentFeeDetails label="Service Charge" value="₦300,000" />
                   <RentFeeDetails label="Other Charges" value="₦200,000" />
                 </div>
@@ -87,7 +90,10 @@ const EditRent = () => {
 
               <RentSectionContainer title="Renewal Fee">
                 <div className="grid grid-cols-2 gap-4 my-4">
-                  <RentFeeDetails label="Rent" value="₦300,000" />
+                  <RentFeeDetails
+                    label={isRental ? "Rent" : "Fee"}
+                    value="₦300,000"
+                  />
                   <RentFeeDetails label="Service Charge" value="₦200,000" />
                   <RentFeeDetails label="Other Charges" value="₦200,000" />
                 </div>
@@ -100,7 +106,7 @@ const EditRent = () => {
                   </div>
                   <Modal>
                     <ModalTrigger asChild>
-                      <Button type="submit" className="py-2 px-8">
+                      <Button size="base_medium" className="py-2 px-6">
                         Edit
                       </Button>
                     </ModalTrigger>
@@ -142,33 +148,24 @@ const EditRent = () => {
                 </div>
               </RentSectionContainer>
 
-              <RentSectionContainer title="Edit Current Rent">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-gray-600 dark:text-darkText-1 mb-2">
-                      Payment date
-                    </p>
-                    <DateInput id="payment_date" />
-                  </div>
-                  <div>
-                    <p className="text-gray-600 dark:text-darkText-1 mb-2">
-                      Amount Paid
-                    </p>
-                    <Input
-                      id="amount_paid"
-                      type="text"
-                      placeholder="₦ 300,000"
-                    />
-                  </div>
+              <RentSectionContainer
+                title={isRental ? "Edit Current Rent" : "Edit Current Fee"}
+              >
+                <div className="grid md:grid-cols-2 gap-4">
+                  <DateInput id="payment_date" label="Payment Date" />
+                  <Input
+                    id="amount_paid"
+                    placeholder="300,000"
+                    label="Amount Paid"
+                    inputClassName="bg-white"
+                    CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+                    formatNumber
+                  />
                 </div>
                 <div className="flex items-center justify-end my-4">
                   <Modal>
                     <ModalTrigger asChild>
-                      <Button
-                        type="submit"
-                        className="py-2 px-6"
-                        onClick={() => {}}
-                      >
+                      <Button size="base_medium" className="py-2 px-6">
                         Update
                       </Button>
                     </ModalTrigger>
@@ -194,20 +191,21 @@ const EditRent = () => {
                 <h1 className="font-bold text-[#092C4C] dark:text-white text-xl">
                   Add Part Payment
                 </h1>
-                <div className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20 my-4"></div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-gray-600 dark:text-darkText-1 mb-2">
-                      Amount
-                    </p>
-                    <Input id="amount" type="text" placeholder="₦" />
-                  </div>
-                  <div>
-                    <p className="text-gray-600 dark:text-darkText-1 mb-2">
-                      Date
-                    </p>
-                    <DateInput id="date" />
-                  </div>
+                <div className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20 my-4" />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Input
+                    id="amount"
+                    placeholder="300,000"
+                    label="Amount"
+                    formatNumber
+                    CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+                    inputClassName="bg-white"
+                  />
+                  <DateInput
+                    id="date"
+                    label="Date"
+                    containerClassName="bg-white"
+                  />
                 </div>
                 <div className="mt-4 flex items-center justify-between">
                   <div>
@@ -220,11 +218,7 @@ const EditRent = () => {
                   </div>
                   <Modal>
                     <ModalTrigger asChild>
-                      <Button
-                        type="submit"
-                        className="py-2 px-6"
-                        onClick={() => {}}
-                      >
+                      <Button size="base_medium" className="py-2 px-6">
                         Update
                       </Button>
                     </ModalTrigger>
@@ -252,7 +246,9 @@ const EditRent = () => {
               </div>
             </div>
             <div className="col-span-2 space-y-8">
-              <RentSectionContainer title="User Profile">
+              <RentSectionContainer
+                title={`${isRental ? "Tenant" : "Occupant"} Profile`}
+              >
                 <div className="flex items-center justify-center">
                   <div>
                     <Image
@@ -315,14 +311,13 @@ const EditRent = () => {
                   package and also calculate and deduct any outstanding
                   payments.
                 </p>
-                <div className="flex items-center gap-2 md:gap-0 justify-between">
+                <div className="flex items-center gap-2 justify-end">
                   <Modal>
                     <ModalTrigger asChild>
                       <Button
                         type="submit"
-                        className="py-2 px-8"
-                        size="16_bold"
-                        onClick={() => {}}
+                        className="py-2 px-6"
+                        size="base_medium"
                       >
                         Switch Property
                       </Button>
@@ -335,9 +330,8 @@ const EditRent = () => {
                     <ModalTrigger asChild>
                       <Button
                         type="submit"
-                        className="py-2 px-8"
-                        size="16_bold"
-                        onClick={() => {}}
+                        className="py-2 px-6"
+                        size="base_medium"
                       >
                         Switch Unit
                       </Button>
@@ -351,64 +345,31 @@ const EditRent = () => {
             </div>
           </div>
         </div>
-        <RentSectionContainer title="Previous Rent Records">
-          <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-            <table className="dash-table">
-              <colgroup>
-                <col className="w-[72px]" />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>S/N</th>
-                  <th>payment date</th>
-                  <th>amount paid</th>
-                  <th>details</th>
-                  <th>start date</th>
-                  <th>due date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Array(2)
-                  .fill(null)
-                  .map((_, idx) => (
-                    <tr key={idx}>
-                      <td>
-                        <p>0{idx + 1}</p>
-                      </td>
-                      <td>
-                        <p>12/01/2023</p>
-                      </td>
-                      <td>
-                        <p>₦ 100,000</p>
-                      </td>
-                      <td>
-                        <p>Rent cost: Start date: Sept 22, 2020</p>
-                      </td>
-                      <td>
-                        <p>12/01/2023</p>
-                      </td>
-                      <td>
-                        <p>12/12/12</p>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
+        <RentSectionContainer
+          title={isRental ? "Previous Rent Records" : "Previous Fee Records"}
+        >
+          <CustomTable
+            data={rentRecordsTableData}
+            fields={rentRecordsTableFields}
+            tableHeadCellSx={{
+              fontSize: "1rem",
+              paddingTop: "18px",
+              paddingBottom: "18px",
+            }}
+            tableBodyCellSx={{
+              fontSize: "1rem",
+              paddingTop: "18px",
+              paddingBottom: "18px",
+            }}
+          />
         </RentSectionContainer>
       </section>
 
-      <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
-        <Button
-          type="button"
-          onClick={() => {
-            router.back();
-          }}
-        >
-          Exit
+      <FixedFooter className="flex gap-4 justify-end">
+        <Button size="base_medium" className="py-2 px-6">
+          Save
         </Button>
-        <Button type="submit">Save</Button>
-      </div>
+      </FixedFooter>
     </div>
   );
 };

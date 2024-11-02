@@ -1,4 +1,5 @@
 import { CSSProperties } from "react";
+import clsx from "clsx";
 import {
   BlueIncomingIcon,
   RedOutgoingIcon,
@@ -29,6 +30,8 @@ interface AccountStatsCardProps {
   trendColor: TrendColor;
   title: string;
   balance: number;
+  className?: string;
+  forBranch?: boolean;
 }
 
 const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
@@ -38,23 +41,25 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
   trendColor,
   title,
   balance,
+  className,
+  forBranch,
 }) => {
   const getVariantStyles = (): VariantStyle => {
     switch (variant) {
       case "blueIncoming":
         return {
           backgroundColor: "rgba(0, 51, 196, 0.2)",
-          icon: <BlueIncomingIcon />,
+          icon: <BlueIncomingIcon size={forBranch ? 22 : 30} />,
         };
       case "greenIncoming":
         return {
           backgroundColor: "#E6FAEE",
-          icon: <GreenIncomingIcon />,
+          icon: <GreenIncomingIcon size={forBranch ? 30 : 40} />,
         };
       case "redOutgoing":
         return {
           backgroundColor: "#FDE9EA",
-          icon: <RedOutgoingIcon />,
+          icon: <RedOutgoingIcon size={forBranch ? 30 : 40} />,
         };
 
       case "yellowCard":
@@ -72,9 +77,17 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
   const variantStyle = getVariantStyles();
   return (
     <div
-      className="bg-white dark:bg-darkText-primary rounded-[14px] p-6 space-y-7"
+      className={clsx(
+        "space-y-7 relative",
+        {
+          "px-4 py-5 bg-[#FAFAFA] dark:bg-darkText-primary rounded-lg":
+            forBranch,
+          "p-6 bg-white dark:bg-darkText-primary rounded-[14px]": !forBranch,
+        },
+        className
+      )}
       style={{
-        boxShadow: "6px 6px 54px 0px rgba(0, 0, 0, 0.05)",
+        boxShadow: forBranch ? "none" : "6px 6px 54px 0px rgba(0, 0, 0, 0.05)",
       }}
     >
       <div className="w-full flex justify-between gap-4">
@@ -87,7 +100,11 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
           </p>
         </div>
         <div
-          className="w-[45px] h-[45px] lg:w-[60px] lg:h-[60px] rounded-[14px] lg:rounded-[23px] flex items-center justify-center"
+          className={clsx("absolute flex items-center justify-center", {
+            "w-[40px] h-[40px] rounded-full right-4 top-5": forBranch,
+            "w-[45px] h-[45px] lg:w-[60px] lg:h-[60px] rounded-[14px] lg:rounded-[23px] right-6 top-6":
+              !forBranch,
+          })}
           style={{
             backgroundColor: variantStyle.backgroundColor,
           }}
