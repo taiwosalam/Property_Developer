@@ -38,7 +38,9 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({ images, type }) => {
 
   return (
     <div className="space-y-5">
-      <BackButton as="p">Preview</BackButton>
+      <BackButton as="p" bold>
+        Preview
+      </BackButton>
 
       {/* Heading */}
       <div className="text-black dark:text-white">

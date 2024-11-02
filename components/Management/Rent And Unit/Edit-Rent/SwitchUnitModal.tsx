@@ -98,7 +98,9 @@ const SwitchUnitModal = () => {
               <div className="w-full flex items-center justify-center">
                 <Button
                   onClick={() => {
-                    router.push("/management/rent-unit/edit-rent/change-unit");
+                    router.push(
+                      "/management/rent-unit/1/edit-rent/change-unit"
+                    );
                   }}
                   className="py-2 px-8"
                   size="base_medium"

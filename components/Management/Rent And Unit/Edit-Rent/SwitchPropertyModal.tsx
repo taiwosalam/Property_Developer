@@ -60,7 +60,9 @@ const SwitchPropertyModal = () => {
           <div className="w-full flex items-center justify-center">
             <Button
               onClick={() => {
-                router.push("/management/rent-unit/edit-rent/change-property");
+                router.push(
+                  "/management/rent-unit/1/edit-rent/change-property"
+                );
               }}
               className="py-2 px-8"
               size="base_medium"

@@ -1,7 +1,7 @@
 "use client";
 
 import "keen-slider/keen-slider.min.css";
-import Link from "next/link";
+import BackButton from "@/components/BackButton/back-button";
 import { useParams } from "next/navigation";
 import { useKeenSlider } from "keen-slider/react";
 import Image from "next/image";
@@ -114,109 +114,96 @@ const UnitPreviewPage = () => {
   );
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <section className="space-y-6">
-        <Link
-          href="/management/rent-unit"
-          className="inline-flex items-center gap-2 text-[#1E3A8A] hover:text-blue-700"
-        >
-          <ChevronLeft />
-          <span className="font-bold text-xl">Unit No/Name</span>
-        </Link>
-        <div>
-          <span className="font-medium text-base">ID: {id}</span>
-          <h1 className="font-bold text-xl lg:text-3xl mt-2">
-            {unitDetails.title}
-          </h1>
-          <div className="flex items-center gap-1 mt-1">
-            <LocationIcon color="#5A5D61" />
-            <span className="text-sm text-gray-600">
-              {unitDetails.location}
-            </span>
+    <section className="space-y-6">
+      <BackButton as="p">Unit No/Name</BackButton>
+      <div>
+        <span className="font-medium text-base">ID: {id}</span>
+        <h1 className="font-bold text-xl lg:text-3xl mt-2">
+          {unitDetails.title}
+        </h1>
+        <div className="flex items-center gap-1 mt-1">
+          <LocationIcon color="#5A5D61" />
+          <span className="text-sm text-gray-600">{unitDetails.location}</span>
+        </div>
+      </div>
+      <div className="grid xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2 h-[500px] rounded-2xl overflow-hidden my-auto">
+          <PropertyImageSlider images={unitDetails.images} />
+        </div>
+        <div className="bg-white dark:bg-darkText-primary rounded-b-2xl p-6">
+          <h2 className="text-[16px] font-medium mb-4">Unit Details</h2>
+          <div className="space-y-6">
+            <section>
+              <h3 className="font-semibold text-[#1E3A8A] dark:text-brand-9 text-[16px] mb-2">
+                Categories
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                <DetailItem label="Categories" value={unitDetails.categories} />
+                <DetailItem
+                  label="Unit Number/Name"
+                  value={unitDetails.unitNumber}
+                />
+                <DetailItem
+                  label="Unit Preference"
+                  value={unitDetails.unitPreference}
+                />
+                <DetailItem label="Unit Type" value={unitDetails.unitType} />
+                <DetailItem
+                  label="Unit Sub Type"
+                  value={unitDetails.unitSubType}
+                />
+                <DetailItem label="State" value={unitDetails.state} />
+                <DetailItem
+                  label="Local Government"
+                  value={unitDetails.localGovernment}
+                />
+                <DetailItem
+                  label="Account Officer"
+                  value={unitDetails.accountOfficer}
+                />
+              </div>
+            </section>
+            <section>
+              <h3 className="font-semibold text-[#1E3A8A] dark:text-brand-9 text-[16px] mb-2">
+                Unit Features
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                <DetailItem label="Bedroom" value={unitDetails.bedrooms} />
+                <DetailItem label="Bathroom" value={unitDetails.bathrooms} />
+                <DetailItem label="Toilet" value={unitDetails.toilets} />
+              </div>
+            </section>
+            <section>
+              <h3 className="font-semibold text-[#1E3A8A] text-[16px] dark:text-brand-9 mb-2">
+                Unit Fee
+              </h3>
+              <div className="flex justify-between">
+                <PriceSection
+                  title="New Tenants"
+                  price={unitDetails.newTenantPrice}
+                />
+                <PriceSection
+                  title="Renewal Tenants"
+                  price={unitDetails.renewalTenantPrice}
+                />
+              </div>
+            </section>
           </div>
         </div>
-        <div className="grid xl:grid-cols-3 gap-6">
-          <div className="xl:col-span-2 h-[500px] rounded-2xl overflow-hidden my-auto">
-            <PropertyImageSlider images={unitDetails.images} />
-          </div>
-          <div className="bg-white dark:bg-darkText-primary rounded-b-2xl p-6">
-            <h2 className="text-[16px] font-medium mb-4">Unit Details</h2>
-            <div className="space-y-6">
-              <section>
-                <h3 className="font-semibold text-[#1E3A8A] dark:text-brand-9 text-[16px] mb-2">
-                  Categories
-                </h3>
-                <div className="grid grid-cols-2 gap-2">
-                  <DetailItem
-                    label="Categories"
-                    value={unitDetails.categories}
-                  />
-                  <DetailItem
-                    label="Unit Number/Name"
-                    value={unitDetails.unitNumber}
-                  />
-                  <DetailItem
-                    label="Unit Preference"
-                    value={unitDetails.unitPreference}
-                  />
-                  <DetailItem label="Unit Type" value={unitDetails.unitType} />
-                  <DetailItem
-                    label="Unit Sub Type"
-                    value={unitDetails.unitSubType}
-                  />
-                  <DetailItem label="State" value={unitDetails.state} />
-                  <DetailItem
-                    label="Local Government"
-                    value={unitDetails.localGovernment}
-                  />
-                  <DetailItem
-                    label="Account Officer"
-                    value={unitDetails.accountOfficer}
-                  />
-                </div>
-              </section>
-              <section>
-                <h3 className="font-semibold text-[#1E3A8A] dark:text-brand-9 text-[16px] mb-2">
-                  Unit Features
-                </h3>
-                <div className="grid grid-cols-2 gap-2">
-                  <DetailItem label="Bedroom" value={unitDetails.bedrooms} />
-                  <DetailItem label="Bathroom" value={unitDetails.bathrooms} />
-                  <DetailItem label="Toilet" value={unitDetails.toilets} />
-                </div>
-              </section>
-              <section>
-                <h3 className="font-semibold text-[#1E3A8A] text-[16px] dark:text-brand-9 mb-2">
-                  Unit Fee
-                </h3>
-                <div className="flex justify-between">
-                  <PriceSection
-                    title="New Tenants"
-                    price={unitDetails.newTenantPrice}
-                  />
-                  <PriceSection
-                    title="Renewal Tenants"
-                    price={unitDetails.renewalTenantPrice}
-                  />
-                </div>
-              </section>
-            </div>
-          </div>
+      </div>
+      <div className="w-full h-fit">
+        <h6 className="font-bold text-lg text-[#092C4C] dark:text-white mb-6">
+          Previously Assigned Tenants Records
+        </h6>
+        <div className="w-full h-fit space-y-4">
+          <TenancyRecord />
+          <TenancyRecord />
+          <TenancyRecord />
+          <TenancyRecord />
+          <TenancyRecord />
         </div>
-        <div className="w-full h-fit">
-          <h6 className="font-bold text-lg text-[#092C4C] dark:text-white mb-6">
-            Previously Assigned Tenants Records
-          </h6>
-          <div className="w-full h-fit space-y-4">
-            <TenancyRecord />
-            <TenancyRecord />
-            <TenancyRecord />
-            <TenancyRecord />
-            <TenancyRecord />
-          </div>
-        </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 };
 
