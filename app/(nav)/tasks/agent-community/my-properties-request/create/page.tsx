@@ -8,9 +8,24 @@ import {
   PropertyRequestSecondSection,
 } from "@/components/Community/ManageRequest";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { toast } from "sonner";
+import { usePropertyRequestStore } from "@/store/createPropertyStore";
 
 const CreateMyPropertyRequest = () => {
   const router = useRouter();
+  const { minBudget, maxBudget, resetBudgets } = usePropertyRequestStore();
+
+  const handleCreateClick = () => {
+    // Validate budgets here when the create button is clicked
+    if (minBudget !== null && maxBudget !== null && minBudget > maxBudget) {
+      toast.error("Maximum budget cannot be less than minimum budget.");
+      resetBudgets(); // Reset inputs to 0 or null
+    } else {
+      // Proceed with the request creation logic
+      console.log("Property request created successfully");
+    }
+  };
+
   return (
     <>
       <div className="wra mb-16">
@@ -47,6 +62,7 @@ const CreateMyPropertyRequest = () => {
           Delete
         </button>
         <button
+          onClick={handleCreateClick}
           type="button"
           className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
         >

@@ -149,9 +149,9 @@ const PropertyRequestUnitType = () => {
         }
       />
       <Select
-        id="unit_type"
+        id="property_type"
         options={unitTypeOptions}
-        label="Unit Type"
+        label="Property Type"
         inputContainerClassName="bg-white"
         value={selectedUnitType}
         onChange={(val) => handleUnitTypeChange(val)}
@@ -160,33 +160,14 @@ const PropertyRequestUnitType = () => {
       />
       <Select
         options={unitSubtypeOptions}
-        id="unit_sub_type"
-        label="Unit Sub Type"
+        id="property_sub_type"
+        label="Property Sub Type"
         inputContainerClassName="bg-white"
         value={selectedSubtype}
         onChange={handleSubtypeChange}
         hiddenInputClassName="unit-form-input"
         requiredNoStar
       />
-      {selectedUnitType === "land" ? (
-        <Select
-          id="land-size"
-          label="Land Size"
-          options={unitFeatures.lands}
-          inputContainerClassName="bg-white"
-          hiddenInputClassName="unit-form-input"
-          requiredNoStar
-        />
-      ) : (
-        <Select
-          id="building-features"
-          label="Building Features"
-          options={unitFeatures.buildings}
-          inputContainerClassName="bg-white"
-          hiddenInputClassName="unit-form-input"
-          requiredNoStar
-        />
-      )}
     </>
   );
 };
