@@ -231,14 +231,5 @@ export interface ZoomSettingsProps {
   zoomLevel: number;
   setZoom: (value: number) => void;
   toggleFullscreen: () => void;
-  fullScreen?: boolean;
 }
 
-
-export interface SelectedOptions {
-  theme: string;
-  view: string;
-  navbar: string;
-  mode: string;
-  font: string;
-}
