@@ -9,6 +9,7 @@ import {
   CustomColorPicker,
   WebsiteColorSchemes,
   SettingsUpdateButton,
+  ZoomSettings,
 } from "@/components/Settings/settings-components";
 import { website_color_schemes } from "@/components/Settings/data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -22,18 +23,12 @@ import { useTheme } from "next-themes";
 import useSettingsStore from "@/store/settings";
 import {
   F11MinusIcon,
+  ResetZoomIcon,
   ZoomMinusIcon,
   ZoomPlusIcon,
 } from "@/public/icons/icons";
 import { useZoomStore } from "@/store/zoomStore";
-
-interface SelectedOptions {
-  theme: string;
-  view: string;
-  navbar: string;
-  mode: string;
-  font: string;
-}
+import { SelectedOptions } from "@/components/Settings/types";
 
 const Appearance = () => {
   const googleFonts = useGoogleFonts();
@@ -74,6 +69,7 @@ const Appearance = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
   const { theme, setTheme } = useTheme();
+  const [fullScreen, setFullScreen] = useState(false);
   // Update primary color and generate secondary color when selectedColor changes
   useEffect(() => {
     if (selectedColor) {
@@ -81,23 +77,6 @@ const Appearance = () => {
     }
   }, [setColor, selectedColor]);
 
-  const zoomInputRef = useRef<HTMLInputElement>(null);
-  // FULLSCREEN
-  const toggleFullscreen = () => {
-    const elem = document.documentElement;
-
-    if (!document.fullscreenElement) {
-      elem.requestFullscreen().catch((err) => {
-        console.error(
-          `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
-        );
-      });
-    } else {
-      document.exitFullscreen();
-    }
-  };
-
-  let storedFont = "";
   useEffect(() => {
     // Check if running in the browser
     if (typeof window !== "undefined") {
@@ -120,6 +99,44 @@ const Appearance = () => {
   useEffect(() => {
     document.documentElement.style.fontSize = `${zoomLevel}%`;
   }, [zoomLevel]);
+
+  // Fullscreen useEffect controls
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setFullScreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = () => {
+    const elem = document.documentElement;
+
+    if (!document.fullscreenElement) {
+      elem
+        .requestFullscreen()
+        .then(() => setFullScreen(true))
+        .catch((err) => {
+          console.error(
+            `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+          );
+        });
+    } else {
+      document
+        .exitFullscreen()
+        .then(() => setFullScreen(false))
+        .catch((err) => {
+          console.error(
+            `Error attempting to exit full-screen mode: ${err.message} (${err.name})`
+          );
+        });
+    }
+  };
+  let storedFont = "";
 
   const handleSelect = (type: keyof SelectedOptions, value: string) => {
     if (!value) return;
@@ -392,35 +409,16 @@ const Appearance = () => {
             title="Zoom Moderation"
             desc="Customize the dashboard's size and font weight to perfectly suit your desired style and functionality."
           />
-          <div className="flex gap-2 mt-4">
-            <button
-              onClick={increaseZoom}
-              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
-            >
-              <ZoomPlusIcon />
-            </button>
-            <button
-              onClick={decreaseZoom}
-              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
-            >
-              <ZoomMinusIcon />
-            </button>
-            <div className="flex items-center justify-center min-w-[80px] rounded-md border border-text-label border-dashed px-4">
-              <input
-                type="number"
-                value={zoomLevel}
-                onChange={(e) => setZoom(parseInt(e.target.value))}
-                className="focus:outline-none dark:bg-darkText-primary"
-              />
-              <span className="text-gray-500">%</span>
-            </div>
-            <button
-              onClick={toggleFullscreen}
-              className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
-            >
-              <F11MinusIcon />
-            </button>
-          </div>
+          {/* ZOOM & FULLSCREEN */}
+          <ZoomSettings
+            resetZoom={resetZoom}
+            increaseZoom={increaseZoom}
+            decreaseZoom={decreaseZoom}
+            zoomLevel={zoomLevel}
+            setZoom={setZoom}
+            toggleFullscreen={toggleFullscreen}
+            fullScreen={fullScreen}
+          />
         </div>
         <div className="flex justify-end mt-4">
           <SettingsUpdateButton />
