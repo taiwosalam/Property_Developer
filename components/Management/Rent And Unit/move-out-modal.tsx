@@ -1,15 +1,9 @@
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
-import Checkbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
-
-const CheckItem = ({ title }: { title: string }) => {
-  return (
-    <div>
-      <Checkbox />;
-    </div>
-  );
-};
+import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 
 const MoveOutModal = () => {
+  const commonClasses =
+    "bg-neutral-3 dark:bg-[#3C3D37] px-[18px] py-2 rounded-[4px] flex-row-reverse justify-between items-center";
   return (
     <ModalPreset title="Move Out">
       <div className="space-y-6">
@@ -23,23 +17,27 @@ const MoveOutModal = () => {
           <h3 className="text-black dark:text-white text-base font-medium">
             Caution Deposit Requirement
           </h3>
-          <div className="space-y-3 px-2">
-            <div className="flex items-center justify-between bg-gray-300 dark:bg-transparent dark:border dark:border-[#3C3D37] p-2">
-              <label htmlFor="check-inventory">Check Inventory</label>
-              <input type="checkbox" id="check-inventory" className="mr-2" />
-            </div>
-            <div className="flex items-center justify-between bg-gray-300 dark:bg-transparent dark:border dark:border-[#3C3D37] p-2">
-              <label htmlFor="create-examine">Create Examine</label>
-              <input type="checkbox" id="create-examine" className="mr-2" />
-            </div>
-            <div className="flex items-center justify-between bg-gray-300 dark:bg-transparent dark:border dark:border-[#3C3D37] p-2">
-              <label htmlFor="create-maintenance">Create Maintenance</label>
-              <input type="checkbox" id="create-maintenance" className="mr-2" />
-            </div>
-            <div className="flex items-center justify-between bg-gray-300 dark:bg-transparent dark:border dark:border-[#3C3D37] p-2">
-              <label htmlFor="flag-tenant">Flag Tenant</label>
-              <input type="checkbox" id="flag-tenant" className="mr-2" />
-            </div>
+          <div className="space-y-3">
+            <DocumentCheckbox
+              title="Check Inventory"
+              className={commonClasses}
+              alignCheckboxCenter
+            />
+            <DocumentCheckbox
+              title="Create Examine"
+              className={commonClasses}
+              alignCheckboxCenter
+            />
+            <DocumentCheckbox
+              title="Create Maintenance"
+              className={commonClasses}
+              alignCheckboxCenter
+            />
+            <DocumentCheckbox
+              title="Flag Tenant"
+              className={commonClasses}
+              alignCheckboxCenter
+            />
           </div>
         </div>
         <button className="w-full bg-status-error-1 text-status-error-2 py-2 rounded mt-10">
