@@ -468,7 +468,7 @@ const Profile = () => {
             checked={checkedStates["Modules Listing"] ?? true} // Updated to use the state
             value="Modules Listing"
             onChange={(value, checked) => {
-              console.log(`Option "${value}" changed to: ${checked}`);
+              // console.log(`Option "${value}" changed to: ${checked}`);
               setCheckedStates((prev) => ({
                 ...prev,
                 ["Modules Listing"]: checked,
@@ -510,7 +510,7 @@ const Profile = () => {
               checked={checkedStates[option.title] ?? true}
               value={option.title}
               onChange={(value, checked) => {
-                console.log(`Option "${value}" changed to: ${checked}`);
+                // console.log(`Option "${value}" changed to: ${checked}`);
                 setCheckedStates((prev) => ({
                   ...prev,
                   [option.title]: checked,

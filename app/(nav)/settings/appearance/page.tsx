@@ -127,7 +127,7 @@ const Appearance = () => {
     if (!color) return; // Added check to prevent setting undefined colors
     setCustomColor(color);
     setSelectedColor(color);
-    console.log("selected color = ", color);
+    // console.log("selected color = ", color);
   };
 
   const handleFontSelect = (fontName: string) => {
