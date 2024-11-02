@@ -49,6 +49,11 @@ const TopNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
             type={item.type}
             topNav={true}
             content={item.content}
+            isCollapsed={isCollapsed}
+            highlight={item.content.some((i) =>
+              pathname.includes(`${item.label}${i.href}`)
+            )}
+            isOpen={activeDropdown === item.label}
             onToggle={() => handleDropdownToggle(item.label)}
           >
             {item.label}

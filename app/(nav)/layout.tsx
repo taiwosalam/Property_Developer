@@ -50,7 +50,16 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <LayoutContext.Provider value={{ isSideNavOpen }}>
       <Header />
       <div className="flex overflow-x-auto custom-round-scrollbar sticky top-[100px] z-[2] bg-white dark:bg-[#020617]">
-        {navbar === "row" && <TopNav />}
+        {navbar === "row" && (
+          <TopNav
+            closeSideNav={() => {
+              if (isMobile) {
+                setIsSideNavOpen(false);
+              }
+            }}
+            isCollapsed={!isSideNavOpen}
+          />
+        )}
       </div>
 
       <>
