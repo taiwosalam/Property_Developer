@@ -183,7 +183,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 : "text-brand-9 bg-brand-3"
             )}
           >
-            {type === "rental" ? "Rental Property" : "Gated Estate"}
+            {type === "rental" ? "Rental Property" : "Facility Property"}
           </p>
           <div className="text-right">
             <p className="text-brand-primary text-lg lg:text-xl font-bold">{`${

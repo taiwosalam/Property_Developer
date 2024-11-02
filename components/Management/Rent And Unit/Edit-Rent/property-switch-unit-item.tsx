@@ -10,9 +10,19 @@ import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
-const PropertySwitchUnitItem = () => {
+
+interface PropertySwitchUnitItemProps {
+  id: string;
+  isSelected: boolean;
+  onSelect: (id: string) => void;
+}
+
+const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
+  id,
+  isSelected,
+  onSelect,
+}) => {
   const [screenModal, setScreenModal] = useState(false);
-  const [checked, setChecked] = useState(false);
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   return (
     <div
@@ -24,17 +34,15 @@ const PropertySwitchUnitItem = () => {
         isOpen={screenModal}
         onClose={() => setScreenModal(false)}
         images={sampleImages.map((image) => ({
-          src: image.src || "",
-          isVideo: false,
+          src: image.src,
         }))}
-        currentIndex={0}
       />
       <div className="flex items-center justify-between">
         <h4 className="text-brand-10 text-base font-bold">
           Unit ID: 123456776342
         </h4>
         <div>
-          <Checkbox onChange={() => setChecked(!checked)} checked={checked}>
+          <Checkbox onChange={() => onSelect(id)} checked={isSelected}>
             <span></span>
           </Checkbox>
         </div>

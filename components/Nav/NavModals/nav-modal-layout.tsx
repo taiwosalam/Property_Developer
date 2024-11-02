@@ -1,36 +1,31 @@
-import React from "react";
-
 // Types
 import { NavModalLayoutProps } from "../types";
 
-// Images
-// import CloseCircle from "@/public/icons/close-circle.svg";
-
 // Imports
-import Picture from "../../Picture/picture";
+import { SectionSeparator } from "@/components/Section/section-components";
 import { ModalTrigger } from "@/components/Modal/modal";
 import { CloseCircle } from "@/public/icons/icons";
 
 const NavModalLayout: React.FC<NavModalLayoutProps> = ({ title, children }) => {
   return (
     <div
-      className="w-full max-w-[786px] rounded-2xl bg-white p-6 dark:bg-darkText-primary"
+      className="w-[85%] max-w-[786px] max-h-[90vh] rounded-2xl bg-white dark:bg-darkText-primary overflow-auto custom-round-scrollbar"
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05" }}
     >
       <div className="w-full custom-flex-col gap-12">
-        <div
-          className="flex items-center justify-between"
-          style={{ borderBottom: "1px solid #B8B8B8" }}
-        >
-          <h2 className="text-primary-navy dark:text-white text-xl font-bold capitalize">
-            {title}
-          </h2>
-          <ModalTrigger close>
-            {/* <Picture src={CloseCircle} alt="close" size={34} /> */}
-            <CloseCircle />
-          </ModalTrigger>
+        <div className="sticky z-[1] top-0 bg-white dark:bg-darkText-primary pt-6 px-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-primary-navy dark:text-white text-xl font-bold capitalize">
+              {title}
+            </h2>
+
+            <ModalTrigger close>
+              <CloseCircle />
+            </ModalTrigger>
+          </div>
+          <SectionSeparator className="!bg-[#B8B8B8]" />
         </div>
-        {children}
+        <div className="px-6 pb-6">{children}</div>
       </div>
     </div>
   );

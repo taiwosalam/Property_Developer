@@ -97,15 +97,42 @@ const RentAndUnit = () => {
         </div>
         {gridView ? (
           <div className="grid xl:grid-cols-3 gap-7">
-            <RentalPropertyCard />
-            <RentalPropertyCard />
-            <RentalPropertyCard />
+            <RentalPropertyCard
+              propertyType="rental"
+              images={[
+                "/empty/SampleProperty.jpeg",
+                "/empty/SampleProperty2.jpeg",
+                "/empty/SampleProperty3.jpeg",
+                "/empty/SampleProperty4.png",
+                "/empty/SampleProperty5.jpg",
+              ]}
+            />
+            <RentalPropertyCard
+              propertyType="facility"
+              images={[
+                "/empty/SampleProperty.jpeg",
+                "/empty/SampleProperty2.jpeg",
+                "/empty/SampleProperty3.jpeg",
+                "/empty/SampleProperty4.png",
+                "/empty/SampleProperty5.jpg",
+              ]}
+            />
+            <RentalPropertyCard
+              propertyType="rental"
+              images={[
+                "/empty/SampleProperty.jpeg",
+                "/empty/SampleProperty2.jpeg",
+                "/empty/SampleProperty3.jpeg",
+                "/empty/SampleProperty4.png",
+                "/empty/SampleProperty5.jpg",
+              ]}
+            />
           </div>
         ) : (
           <div className="space-y-4">
-            <RentalPropertyListCard />
-            <RentalPropertyListCard />
-            <RentalPropertyListCard />
+            <RentalPropertyListCard propertyType="rental" />
+            <RentalPropertyListCard propertyType="facility" />
+            <RentalPropertyListCard propertyType="rental" />
           </div>
         )}
       </section>

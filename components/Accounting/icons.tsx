@@ -1,9 +1,9 @@
-export const BlueIncomingIcon = () => {
+export const BlueIncomingIcon = ({ size = 30 }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="30"
-      height="31"
+      width={size}
+      height={size}
       viewBox="0 0 30 31"
       fill="none"
     >
@@ -19,12 +19,12 @@ export const BlueIncomingIcon = () => {
   );
 };
 
-export const GreenIncomingIcon = () => {
+export const GreenIncomingIcon = ({ size = 40 }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="40"
-      height="40"
+      width={size}
+      height={size}
       viewBox="0 0 40 40"
       fill="none"
     >
@@ -38,12 +38,12 @@ export const GreenIncomingIcon = () => {
   );
 };
 
-export const RedOutgoingIcon = () => {
+export const RedOutgoingIcon = ({ size = 40 }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="40"
-      height="40"
+      width={size}
+      height={size}
       viewBox="0 0 40 40"
       fill="none"
     >

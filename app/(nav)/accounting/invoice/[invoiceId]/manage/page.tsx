@@ -1,48 +1,21 @@
 "use client";
 
-import React from "react";
-
 // Imports
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
-import { useState } from "react";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import DeleteInvoiceModal from "@/components/Accounting/invoice/delete-invoice-modal";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import {
-  currencySymbols,
-  formatCostInputValue,
-} from "@/utils/number-formatter";
-
-type InputField =
-  | "annualRent"
-  | "serviceCharge"
-  | "refundableCautionFee"
-  | "nonRefundableAgencyFee"
-  | "nonRefundableLegalFee";
+import { currencySymbols } from "@/utils/number-formatter";
 
 const ManageInvoice = () => {
   const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
 
-  const [inputValues, setInputValues] = useState<Record<InputField, string>>({
-    annualRent: "",
-    serviceCharge: "",
-    refundableCautionFee: "",
-    nonRefundableAgencyFee: "",
-    nonRefundableLegalFee: "",
-  });
-
-  const handleInputChange = (field: InputField, value: string) => {
-    setInputValues((prevValues) => ({
-      ...prevValues,
-      [field]: formatCostInputValue(value),
-    }));
-  };
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
@@ -83,8 +56,7 @@ const ManageInvoice = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="1,000,000"
                 inputClassName="bg-white"
-                value={inputValues.annualRent}
-                onChange={(value) => handleInputChange("annualRent", value)}
+                formatNumber
               />
               <Input
                 id="service-charge"
@@ -92,8 +64,7 @@ const ManageInvoice = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
                 inputClassName="bg-white"
-                value={inputValues.serviceCharge}
-                onChange={(value) => handleInputChange("serviceCharge", value)}
+                formatNumber
               />
               <Input
                 id="refundable-caution-fee"
@@ -101,10 +72,7 @@ const ManageInvoice = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
                 inputClassName="bg-white"
-                value={inputValues.refundableCautionFee}
-                onChange={(value) =>
-                  handleInputChange("refundableCautionFee", value)
-                }
+                formatNumber
               />
               <Input
                 id="non-refundable-agency-fee"
@@ -112,10 +80,7 @@ const ManageInvoice = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
                 inputClassName="bg-white"
-                value={inputValues.nonRefundableAgencyFee}
-                onChange={(value) =>
-                  handleInputChange("nonRefundableAgencyFee", value)
-                }
+                formatNumber
               />
               <Input
                 id="non-refundable-legal-fee"
@@ -123,10 +88,7 @@ const ManageInvoice = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
                 inputClassName="bg-white"
-                value={inputValues.nonRefundableLegalFee}
-                onChange={(value) =>
-                  handleInputChange("nonRefundableLegalFee", value)
-                }
+                formatNumber
               />
             </div>
           </div>

@@ -1,5 +1,3 @@
-import React from "react";
-
 // Imports
 import PopupPortal from "@/components/PopupPortal/PopupPortal";
 import OnboardingPopup from "@/components/Onboarding/onboarding-popup";

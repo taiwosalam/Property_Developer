@@ -1,44 +1,24 @@
-import React from "react";
-
 // Types
 import type { CreateExamineDateProps } from "./types";
 
-// Images
-import { CancelIcon } from "@/public/icons/icons";
-
 // Imports
 import Input from "@/components/Form/Input/input";
-import Label from "@/components/Form/Label/label";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import DateInput from "@/components/Form/DateInput/date-input";
 import TextArea from "@/components/Form/TextArea/textarea";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
-import { ModalTrigger } from "@/components/Modal/modal";
+import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 
 const CreateExamineDate: React.FC<CreateExamineDateProps> = ({ next }) => {
   return (
-    <div className="custom-flex-col gap-4 rounded-lg overflow-hidden bg-white w-[600px]">
-      <div className="custom-flex-col gap-[2px] py-4 px-6">
-        <div className="flex justify-end">
-          <ModalTrigger close asChild>
-            <button>
-              <CancelIcon />
-            </button>
-          </ModalTrigger>
-        </div>
-        <div className="flex justify-center">
-          <p className="text-text-secondary text-base font-medium capitalize">
-            Create Examine Date
-          </p>
-        </div>
-      </div>
-      <div className="custom-flex-col gap-10 px-[18px] pb-8">
-        <div className="grid grid-cols-2 gap-y-[18px] gap-x-6">
+    <WalletModalPreset title="Create Examine Date">
+      <div className="custom-flex-col gap-10">
+        <div className="grid md:grid-cols-2 gap-y-[18px] gap-x-6">
           <Input
             id="title"
             placeholder="Add Title"
-            className="col-span-2"
+            className="md:col-span-2"
             style={{ backgroundColor: "white" }}
           />
           <Select
@@ -57,14 +37,11 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({ next }) => {
             options={["account officer 1", "account officer 2"]}
           />
           <DateInput id="examine_date" label="Examine Date" />
-          <TextArea id="note" label="Attach note:" className="col-span-2" />
-          <div className="col-span-2 flex justify-end">
-            <div className="flex">
-              <DocumentCheckbox
-                alignCheckboxCenter
-                title="Create announcement"
-              ></DocumentCheckbox>
-            </div>
+          <TextArea id="note" label="Attach note:" className="md:col-span-2" />
+        </div>
+        <div className="flex justify-end">
+          <div className="flex">
+            <DocumentCheckbox alignCheckboxCenter title="Create announcement" />
           </div>
         </div>
         <Button
@@ -76,7 +53,7 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({ next }) => {
           Add to Calendar
         </Button>
       </div>
-    </div>
+    </WalletModalPreset>
   );
 };
 

@@ -1,6 +1,5 @@
 // Types
 import type { LandlordTenantModalPresetProps } from "./types";
-
 import { ModalTrigger } from "../Modal/modal";
 import { ChevronLeft, NavCloseIcon } from "@/public/icons/icons";
 import { SectionSeparator } from "../Section/section-components";
@@ -46,6 +45,3 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
 };
 
 export default LandlordTenantModalPreset;
-//  <p className="text-text-disabled text-sm font-normal">
-//    Search for properties, units, rent, tenant/occupant, task, & more
-//  </p>;

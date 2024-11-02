@@ -110,7 +110,7 @@ const VacantUnitCard = () => {
       </div>
       <div
         className={
-          "flex flex-wrap gap-4 lg:gap-12 justify-between lg:justify-end text-brand-primary text-base font-medium lato"
+          "flex flex-wrap gap-4 lg:gap-12 justify-between lg:justify-end text-brand-9 text-base font-medium lato"
         }
       >
         <div className="flex  gap-2 capitalize">
