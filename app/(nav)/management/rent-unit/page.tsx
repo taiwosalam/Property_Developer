@@ -133,9 +133,9 @@ const RentAndUnit = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            <RentalPropertyListCard propertyType="rental" />
-            <RentalPropertyListCard propertyType="facility" />
-            <RentalPropertyListCard propertyType="rental" />
+            <RentalPropertyListCard propertyType="rental" unitId="1" />
+            <RentalPropertyListCard propertyType="facility" unitId="2" />
+            <RentalPropertyListCard propertyType="rental" unitId="3" />
           </div>
         )}
       </section>
