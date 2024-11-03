@@ -28,6 +28,7 @@ import { empty } from "@/app/config";
 import AddFund from "./add-fund";
 import { WalletFundsCardsHeading } from "../wallet-components";
 import { WalletLegalProcedureIcon } from "@/public/icons/icons";
+import Image from "next/image";
 
 const PaymentMethod = ({
   title,
@@ -55,6 +56,7 @@ const PaymentMethod = ({
           changeStep={setActiveStep}
           title={title}
           price={price}
+          counter={counter}
         />
       ),
     },
@@ -101,25 +103,63 @@ const AddFundsModalOptions: React.FC<
     changeStep("online funding");
   };
 
+  const [quantity, setQuantity] = useState(1);
+  const incrementQuantity = () => {
+    if (quantity < 5) {
+      setQuantity(quantity + 1);
+    }
+  };
+
+  const decrementQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
   return (
     <div className="custom-flex-col gap-4">
       <div className="w-full flex items-center justify-center flex-col">
         <h3>{title}</h3>
-        <p className="not-italic leading-[30px] font-bold text-brand-9 text-[20px]">
-          {" "}
-          ₦ {price}.00{" "}
+        <div className="flex gap-2 w-full flex-row justify-center items-center">
+          <p className="not-italic leading-[30px] font-bold text-brand-9 text-[20px]">
+            ₦ {price * quantity}.00
+          </p>
           {counter && (
-            <span className="text-text-quaternary dark:text-darkText-1 text-[16px]">
-              {counter}
-            </span>
+            <div className="flex items-center gap-2">
+              <p className="text-text-quaternary dark:text-darkText-1 text-xs">
+                ({quantity} {quantity === 1 ? "per Annum" : "years"})
+              </p>
+              <div className="btns flex flex-col">
+                <CounterButton
+                  onClick={incrementQuantity}
+                  icon="/icons/plus.svg"
+                  alt="plus"
+                />
+                <CounterButton
+                  onClick={decrementQuantity}
+                  icon="/icons/minus.svg"
+                  alt="minus"
+                />
+              </div>
+            </div>
           )}
-        </p>
+        </div>
       </div>
       <WalletBankTransferCard proceed={handleBankTransfer} />
       <WalletFunding proceed={handleOnlineFunding} />
     </div>
   );
 };
+
+export const CounterButton: React.FC<{
+  onClick?: () => void;
+  icon: string;
+  alt: string;
+}> = ({ onClick = () => {}, icon, alt }) => (
+  <button className="text-white rounded-md" onClick={onClick}>
+    <Image src={icon} alt={alt} width={20} height={20} />
+  </button>
+);
 
 const WalletBankTransferCard: React.FC<WalletBankTransferCardProps> = ({
   proceed,
