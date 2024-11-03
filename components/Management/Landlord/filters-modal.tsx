@@ -293,9 +293,10 @@ const FilterModal: React.FC<FilterModalProps> = ({
         </label>
         <input
           type="checkbox"
+          name="propertyRequestOptions"
           value={option.value}
           className="cursor-pointer"
-          onChange={() => handleCheckboxChange(option.value)}
+          onChange={() => setSelectedFilters([option.value])}
           checked={selectedFilters.includes(option.value)}
         />
       </div>

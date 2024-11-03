@@ -16,6 +16,7 @@ import { TeamChatGroupDetailsModal } from "../GroupDetailsModal";
 import { useTeamChatStore } from "@/store/teamChatStore";
 import { NewMemberComp } from "../NewMemberModal";
 import { Chevron } from "@/public/icons/icons";
+import DeleteModal from "../DeleteModal";
 
 const Chat = () => {
   const router = useRouter();

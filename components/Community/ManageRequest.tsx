@@ -6,14 +6,16 @@ import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import { useState } from "react";
 import { ValidationErrors } from "@/utils/types";
+import MultiSelect from "./multi-select";
 import Comment from "@/app/(nav)/tasks/agent-community/threads/[threadId]/preview/comment";
-import MultiSelect from "../Form/MultiSelect/multiselect";
 import PropertyRequestUnitType from "./UnitType";
 import { PropertyRequestContext } from "./propertyRequest";
 import Input from "../Form/Input/input";
 import { currencySymbols } from "@/utils/number-formatter";
 import { toast } from "sonner";
 import { usePropertyRequestStore } from "@/store/createPropertyStore";
+import { DatePickerWithRange } from "../dashboard/date-picker";
+import { DateRange } from "react-day-picker";
 
 export const PropertyRequestFirstSection = ({
   inputValue: initialInputValue,
@@ -54,91 +56,10 @@ export const PropertyRequestFirstSection = ({
   );
 };
 
-// export const PropertyRequestSecondSection = () => {
-//   const { minBudget, maxBudget, setMinBudget, setMaxBudget } =
-//     usePropertyRequestStore();
-//   const [error, setError] = useState<string | null>(null);
-//   const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
-
-//   const validateBudgets = (min: number | null, max: number | null) => {
-//     if (min !== null && max !== null && min > max) {
-//       toast.error("Minimum budget cannot be greater than maximum budget.");
-//       setMinBudget(null);
-//       setMaxBudget(null);
-//     }
-//   };
-
-//   // Handle minimum budget change
-//   const handleMinChange = (value: string) => {
-//     const numValue = parseFloat(value) || null; // Convert input to number or set to null
-//     setMinBudget(numValue);
-//     validateBudgets(numValue, maxBudget);
-//   };
-
-//   // Handle maximum budget change
-//   const handleMaxChange = (value: string) => {
-//     const numValue = parseFloat(value) || null; // Convert input to number or set to null
-//     setMaxBudget(numValue);
-//     validateBudgets(minBudget, numValue);
-//   };
-
-//   return (
-//     <PropertyRequestContext.Provider
-//       value={{
-//         unitType: "",
-//         setUnitType: () => {},
-//         images: [],
-//         formResetKey: 0,
-//       }}
-//     >
-//       <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
-//         <h2>Request Types</h2>
-//         <PropertyRequestUnitType />
-//         <div className="budget flex flex-col gap-2">
-//           <h3 className="text-black dark:text-white font-semibold mb-2">
-//             Budget
-//           </h3>
-//           <Input
-//             id="minimum"
-//             placeholder=""
-//             label="Minimum Budget"
-//             formatNumber
-//             CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-//             inputClassName="bg-white"
-//             onChange={handleMinChange}
-//             value={minBudget !== null ? minBudget.toString() : ""}
-//           />
-//           <Input
-//             id="maximum"
-//             placeholder=""
-//             label="Maximum Budget"
-//             formatNumber
-//             CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-//             inputClassName="bg-white"
-//             onChange={handleMaxChange}
-//             value={maxBudget !== null ? maxBudget.toString() : ""}
-//           />
-//         </div>
-//         <div className="flex flex-col gap-2">
-//           <StateAndLocalGovt />
-//           <Select
-//             id="valid-till"
-//             label="Valid Till"
-//             options={[
-//               "1 Month",
-//               "2 Months",
-//               "3 Months",
-//               "4 Months",
-//               "5 Months",
-//             ]}
-//           />
-//         </div>
-//       </div>
-//     </PropertyRequestContext.Provider>
-//   );
-// };
-
 export const PropertyRequestSecondSection = () => {
+  const [selectedDateRange, setSelectedDateRange] = useState<
+    DateRange | undefined
+  >();
   const { minBudget, maxBudget, setMinBudget, setMaxBudget } =
     usePropertyRequestStore();
   const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
@@ -153,6 +74,23 @@ export const PropertyRequestSecondSection = () => {
   const handleMaxChange = (value: string) => {
     const numValue = parseFloat(value) || null; // Convert input to number or set to null
     setMaxBudget(numValue);
+  };
+
+  const [timeRange, setTimeRange] = useState("90d");
+
+  const handleDateChange = (range: DateRange | undefined) => {
+    setSelectedDateRange(range);
+    // If the user selects a custom range, set the timeRange to "custom"
+    if (range?.from && range?.to) {
+      setTimeRange("custom");
+    }
+  };
+
+  const calculateDateRange = (days: number) => {
+    const now = new Date();
+    const fromDate = new Date();
+    fromDate.setDate(now.getDate() - days);
+    return { from: fromDate, to: now };
   };
 
   return (
@@ -172,6 +110,7 @@ export const PropertyRequestSecondSection = () => {
             Budget
           </h3>
           <Input
+            required
             id="minimum"
             placeholder=""
             label="Minimum Budget"
@@ -182,6 +121,7 @@ export const PropertyRequestSecondSection = () => {
             value={minBudget !== null ? minBudget.toString() : ""}
           />
           <Input
+            required
             id="maximum"
             placeholder=""
             label="Maximum Budget"
@@ -194,17 +134,17 @@ export const PropertyRequestSecondSection = () => {
         </div>
         <div className="flex flex-col gap-2">
           <StateAndLocalGovt />
-          <Select
-            id="valid-till"
-            label="Valid Till"
-            options={[
-              "1 Month",
-              "2 Months",
-              "3 Months",
-              "4 Months",
-              "5 Months",
-            ]}
-          />
+          <div className="flex flex-col gap-2">
+            <h3 className="text-black dark:text-white font-semibold mb-2">
+              Valid Till
+            </h3>
+            <DatePickerWithRange
+              id="valid-till"
+              className="w-full border border-gray-200 rounded-md"
+              selectedRange={selectedDateRange}
+              onDateChange={handleDateChange}
+            />
+          </div>
         </div>
       </div>
     </PropertyRequestContext.Provider>
@@ -226,44 +166,38 @@ export const StateAndLocalGovt = () => {
   const [state, setState] = useState({
     selectedState: "",
     selectedLGA: "",
-    // selectedCity: "", // form not looking for city
     activeAvatar: "",
     errorMsgs: {} as ValidationErrors,
   });
-  const handleAddressChange = (field: Address, value: string) => {
-    setState((prevState) => ({
-      ...prevState,
-      [field]: value,
-      ...(field === "selectedState" && {
-        selectedLGA: "",
-        selectedCity: "",
-      }),
-      ...(field === "selectedLGA" && { selectedCity: "" }),
-    }));
+
+  const [selectedStates, setSelectedStates] = useState<string[]>([]);
+
+  const handleStateSelection = (selected: string[]) => {
+    // Update selectedStates based on selection
+    if (selected.includes("All States")) {
+      setSelectedStates(["All States"]);
+    } else {
+      setSelectedStates(selected);
+    }
   };
-  const { selectedState, selectedLGA, errorMsgs } = state;
+
   return (
     <div className="audience flex flex-col gap-2">
       <h3 className="text-black dark:text-white font-semibold mb-2">
         Target Audience
       </h3>
       <MultiSelect
-        options={["All States", ...getAllStates()]}
-        maxSelections={10}
+        options={
+          selectedStates.includes("All States")
+            ? ["All States"] // Only show "All States" when it’s selected
+            : ["All States", ...getAllStates()]
+        }
+        maxSelections={selectedStates.includes("All States") ? 1 : 10}
         id="states"
         label="Select States (Maximum of 10)"
-        // resetKey={formResetKey}
+        required
+        onSelectionChange={handleStateSelection}
       />
-      {/* <Select
-        validationErrors={errorMsgs}
-        options={getLocalGovernments(selectedState)}
-        id="local_government"
-        label="local government"
-        placeholder="Select options"
-        inputContainerClassName="bg-neutral-2"
-        onChange={(value) => handleAddressChange("selectedLGA", value)}
-        value={selectedLGA}
-      /> */}
     </div>
   );
 };

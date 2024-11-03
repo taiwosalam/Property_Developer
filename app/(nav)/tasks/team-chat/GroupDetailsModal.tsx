@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { useState } from "react";
 import { About } from "./team-chat-components";
 import AddMembers from "./AddMembers";
+import DeleteModal from "./DeleteModal";
 
 export const TeamChatGroupDetailsModal = () => {
   const [side, setSide] = useState<"about" | "members">("about");

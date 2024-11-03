@@ -21,12 +21,6 @@ import Select from "@/components/Form/Select/select";
 import useGoogleFonts from "@/hooks/useFonts";
 import { useTheme } from "next-themes";
 import useSettingsStore from "@/store/settings";
-import {
-  F11MinusIcon,
-  ResetZoomIcon,
-  ZoomMinusIcon,
-  ZoomPlusIcon,
-} from "@/public/icons/icons";
 import { useZoomStore } from "@/store/zoomStore";
 import { SelectedOptions } from "@/components/Settings/types";
 
