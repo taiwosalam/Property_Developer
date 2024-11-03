@@ -139,26 +139,19 @@ const Subscriptions = () => {
                     />
                     <TableMenu
                       anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-            >
-              <MenuItem onClick={handleMenuClose} disableRipple>
-                <Link
-                  href={`/accounting/expenses/${selectedItemId}/manage-expenses`}
-                  className="w-full text-left"
-                >
-                  Manage Expense
-                </Link>
-              </MenuItem>
-              <MenuItem onClick={handleMenuClose} disableRipple>
-                <Link
-                  href={`/accounting/expenses/${selectedItemId}/preview-expenses`}
-                  className="w-full text-left"
-                >
-                  Preview Expense
-                </Link>
-              </MenuItem>
-            </TableMenu>
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                    >
+                      <MenuItem onClick={handleMenuClose} disableRipple>
+                        <p>Extend</p>
+                      </MenuItem>
+                      <MenuItem onClick={handleMenuClose} disableRipple>
+                        <p>Delete</p>
+                      </MenuItem>
+                      <MenuItem onClick={handleMenuClose} disableRipple>
+                        <p>Edit</p>
+                      </MenuItem>
+                    </TableMenu>
                   </div>
                   <div className="custom-flex-col gap-8">
                     <SettingsSectionTitle
@@ -352,7 +345,6 @@ const Subscriptions = () => {
                 fields={current_subscriptions.fields}
                 {...table_style_props}
               />
-
             </div>
           </SettingsSection>
         </div>
