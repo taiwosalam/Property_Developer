@@ -22,20 +22,23 @@ import {
 } from "./data";
 
 import clsx from "clsx";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 import Select from "@/components/Form/Select/select";
 import CustomTable from "@/components/Table/table";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
-import Pagination from "@/components/Pagination/pagination";
-import {
-  Dropdown,
-  DropdownContent,
-  DropdownTrigger,
-} from "@/components/Dropdown/dropdown";
-import { VerticalEllipsisIcon } from "@/public/icons/icons";
 import { Drawer, Link, MenuItem } from "@mui/material";
 import SettingsLegalDrawer from "@/components/Settings/Modals/settings-legal-drawer";
 import { CounterButton } from "@/components/Settings/SettingsEnrollment/settings-enrollment-components";
 import TableMenu from "@/components/Table/table-menu";
+import PaymentMethod from "@/components/Wallet/AddFunds/payment-method";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+};
 
 const Subscriptions = () => {
   const table_style_props: Partial<CustomTableProps> = {
@@ -98,6 +101,10 @@ const Subscriptions = () => {
     setSelectedItemId(null);
   };
 
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
     <>
       <SettingsSection title="Current Subscription/Ads-on">
@@ -142,16 +149,30 @@ const Subscriptions = () => {
                       open={Boolean(anchorEl)}
                       onClose={handleMenuClose}
                     >
-                      <MenuItem onClick={handleMenuClose} disableRipple>
+                      <MenuItem onClick={handleOpen}>
                         <button type="button">Extend</button>
                       </MenuItem>
-                      <MenuItem onClick={handleMenuClose} disableRipple>
+                      <MenuItem onClick={() => {}}>
                         <button type="button">Delete</button>
                       </MenuItem>
-                      <MenuItem onClick={handleMenuClose} disableRipple>
+                      <MenuItem onClick={() => {}}>
                         <button type="button">Edit</button>
                       </MenuItem>
                     </TableMenu>
+                    <Modal
+                      open={open}
+                      onClose={handleClose}
+                      aria-labelledby="modal-modal-title"
+                      aria-describedby="modal-modal-description"
+                    >
+                      <Box sx={style}>
+                        <PaymentMethod
+                          title="Personalized Domain Price"
+                          price={2000}
+                          counter={true}
+                        />
+                      </Box>
+                    </Modal>
                   </div>
                   <div className="custom-flex-col gap-8">
                     <SettingsSectionTitle
