@@ -9,7 +9,7 @@ const EstateSettings = ({
   estateSettingsDta,
   gridThree,
 }: {
-  title?: string;
+  title: string;
   estateSettingsDta: { label: string; value: string }[];
   gridThree?: boolean;
 }) => {
@@ -20,14 +20,14 @@ const EstateSettings = ({
       style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
     >
       <h6 className="font-bold text-[#092C4C] dark:text-white text-xl">
-        {!title ? "Estate Settings" : title}
+        {title}
       </h6>
-      <div className="h-[1px] bg-[#C0C2C8] bg-opacity-20"></div>
-      <div className="w-full flex items-center justify-between">
+      <div className="h-[1px] bg-[#C0C2C8] bg-opacity-20" />
+      <div className="flex flex-col xl:flex-row xl:items-center gap-2 xl:justify-between">
         <div
-          className={`grid grid-cols-1 ${
-            gridThree ? "xl:grid-cols-3" : "xl:grid-cols-2"
-          } gap-y-4 w-5/6`}
+          className={`flex-1 grid gap-y-4 gap-x-2 md:grid-cols-2 ${
+            gridThree ? "lg:grid-cols-3" : "lg:max-w-fit"
+          }`}
         >
           {estateSettingsDta.map((item, index) => (
             <EstateDetailItem
@@ -37,17 +37,8 @@ const EstateSettings = ({
               style={{ width: "120px" }}
             />
           ))}
-          <div className="xl:hidden">
-            <Modal>
-              <ModalTrigger asChild>
-                <Button size="base_medium" className="py-2 px-6">
-                  Edit
-                </Button>
-              </ModalTrigger>
-            </Modal>
-          </div>
         </div>
-        <div className="hidden xl:block">
+        <div className="w-fit ml-auto">
           <Modal>
             <ModalTrigger asChild>
               <Button size="base_medium" className="py-2 px-6">

@@ -10,14 +10,14 @@ export const EstateDetailItem: React.FC<EstateDetailItemProps> = ({
   style,
 }) => {
   return (
-    <div className="flex space-x-2">
+    <div className="flex flex-col lg:flex-row gap-x-2 gap-y-1">
       <span
-        className="text-sm font-medium text-gray-500 dark:text-white w-1/3"
+        className="text-sm font-medium text-gray-500 dark:text-white lg:w-1/3"
         style={style}
       >
         {label}
       </span>
-      <span className="text-base font-medium text-gray-900 dark:text-darkText-2 w-2/3">
+      <span className="lg:flex-1 text-base font-medium text-gray-900 dark:text-darkText-2">
         {value}
       </span>
     </div>

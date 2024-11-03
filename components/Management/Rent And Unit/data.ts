@@ -98,6 +98,7 @@ export const estateData = [
   { label: "Account Officer", value: "Ajadi David" },
   { label: "Description", value: "Lorem ipsum dolor sit amet, consecte....." },
   { label: "Categories", value: "Residential" },
+  { label: "Unit ID", value: "123456" },
 ];
 
 export const estateSettingsDta = [
@@ -105,4 +106,13 @@ export const estateSettingsDta = [
   { label: "Period", value: "Annually" },
   { label: "Fee Penalty", value: "Yes" },
   { label: "Group Chat", value: "Yes" },
+];
+
+export const propertySettingsData = [
+  { label: "Agency Fee", value: "10%" },
+  { label: "Period", value: "Annually" },
+  { label: "Charge", value: "Tenant" },
+  { label: "Caution Deposit", value: "Escrow It" },
+  { label: "Group Chat", value: "Yes" },
+  { label: "Rent Penalty", value: "Yes" },
 ];

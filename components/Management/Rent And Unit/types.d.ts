@@ -60,7 +60,7 @@ export interface FeeDetail {
 
 export interface OccupantProfileProps {
   occupant: Occupant;
-  title?: string;
+  title: string;
   title1?: string;
   title2?: string;
   feeDetails: FeeDetail[];
