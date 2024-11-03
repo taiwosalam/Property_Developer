@@ -127,7 +127,6 @@ const RentalPropertyCard: React.FC<{
 }> = ({ propertyType, images, unitId }) => {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
-  const isRental = propertyType === "rental";
 
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden shadow-lg">

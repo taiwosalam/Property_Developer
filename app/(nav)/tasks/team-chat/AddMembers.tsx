@@ -6,6 +6,7 @@ import { Modal, ModalContent, useModal } from "@/components/Modal/modal";
 import { useTeamChatStore } from "@/store/teamChatStore";
 import Image from "next/image";
 import Avatar1 from "@/public/empty/avatar-1.svg";
+import DeleteModal from "./DeleteModal";
 // import TrashIcon from "@/public/icons/trash.svg";
 
 const AddMembers = () => {
@@ -17,12 +18,26 @@ const AddMembers = () => {
     member.fullname.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const { isAddMember, openAddMember, closeAddMember } = useTeamChatStore();
+  const {
+    isAddMember,
+    openAddMember,
+    closeAddMember,
+    isDeleteMember,
+    openDeleteMember,
+    closeDeleteMember,
+    setUserNameToDelete,
+  } = useTeamChatStore();
 
   const addMember = () => {
     setIsOpen(false);
     openAddMember();
     console.log("isAddMember is", isAddMember);
+  };
+
+  const deleteMember = (fullname: string) => {
+    closeAddMember();
+    openDeleteMember();
+    setUserNameToDelete(fullname);
   };
 
   return (
@@ -75,7 +90,11 @@ const AddMembers = () => {
               </p>
             </div>
           </div>
-          <button type="button" className="w-1/4 flex justify-end">
+          <button
+            type="button"
+            className="w-1/4 flex justify-end"
+            onClick={() => deleteMember(item.fullname)}
+          >
             <TrashIcon size={16} />
           </button>
         </div>

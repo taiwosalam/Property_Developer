@@ -21,6 +21,7 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: 400,
 };
+
 export const TeamChatHeader = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -187,9 +188,10 @@ export const About = () => {
               <textarea
                 value={groupDescription}
                 onChange={(e) => setGroupDescription(e.target.value)}
-                className="text-text-primary text-sm font-medium border border-text-disabled rounded-md p-1 focus:outline-none"
+                className="text-text-primary dark:text-white text-sm font-medium border border-text-disabled rounded-md p-1 focus:outline-none w-full h-20"
               />
               <button
+                className="flex justify-end ml-2"
                 type="button"
                 onClick={() => setIsEditingDescription(false)}
               >

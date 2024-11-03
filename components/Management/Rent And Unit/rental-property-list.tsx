@@ -11,7 +11,8 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 const RentalPropertyListCard: React.FC<{
   propertyType: "rental" | "facility";
-}> = ({ propertyType }) => {
+  unitId: string;
+}> = ({ propertyType, unitId }) => {
   const [isOpened, setIsOpened] = useState(false);
   return (
     <div className="p-6 bg-white dark:bg-darkText-primary rounded-2xl shadow-md text-[16px]">
@@ -78,17 +79,34 @@ const RentalPropertyListCard: React.FC<{
       <div className="flex items-center justify-between mt-5 gap-2 px-2 flex-wrap">
         <PropertyTag propertyType={propertyType} />
         <div className="flex items-center gap-2 flex-wrap">
-          {actions.map((action) => (
-            <ActionButton
-              key={action.label}
-              {...action}
-              route={
-                typeof action.route === "function"
-                  ? action.route("1234567867")
-                  : action.route
+          {actions
+            .filter((action) => {
+              // For rental properties, exclude Relocate
+              if (propertyType === "rental" && action.label === "Relocate") {
+                return false;
               }
-            />
-          ))}
+              // For facilities, exclude Move Out
+              if (propertyType === "facility" && action.label === "Move Out") {
+                return false;
+              }
+              return true;
+            })
+            .map((action, i) => (
+              <ActionButton
+                key={i}
+                {...action}
+                route={
+                  typeof action.route === "function"
+                    ? action.route(unitId)
+                    : action.route
+                }
+                label={
+                  typeof action.label === "function"
+                    ? action.label(propertyType)
+                    : action.label
+                }
+              />
+            ))}
         </div>
       </div>
     </div>

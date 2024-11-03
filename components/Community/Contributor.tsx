@@ -31,19 +31,20 @@ export const ContributorDetails = ({ title }: { title: string }) => {
 const ContributorUser = () => {
   return (
     <div className="flex flex-col mt-6 gap-4">
-      <div className="flex gap-4">
-        <div className="imgWrapper h-[154px] w-[154px]">
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="imgWrapper h-[154px] w-[154px] mx-auto md:mx-0">
           <Image src={SampleUser} alt="user" width={300} height={300} />
         </div>
         <div className="userDetails flex flex-col gap-1">
           <p className="dark:text-white text-black text-[25px] font-bold">
-            {" "}
-            ESV Taiwo Salami{" "}
+            ESV Taiwo Salami
           </p>
-          <p className="text-brand-9 text-sm"> Estate Surveyor & Valuer </p>
-          <p className="text-white bg-[#003DAD] px-2 py-1 text-xs w-fit rounded-lg">
-            Manager
-          </p>
+          <div className="flex flex-row lg:flex-col gap-2">
+            <p className="text-brand-9 text-sm"> Estate Surveyor & Valuer </p>
+            <p className="text-white bg-[#003DAD] px-2 py-1 text-xs w-fit rounded-lg">
+              Manager
+            </p>
+          </div>
           <p className="text-sm"> Contact : +2348100000000 </p>
           <p className="text-sm"> Email Address: emailaddress@gmail.com </p>
         </div>

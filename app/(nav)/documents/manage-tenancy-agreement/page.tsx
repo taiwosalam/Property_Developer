@@ -68,23 +68,23 @@ const ManageTenancyAgreement = () => {
         </div>
         <DocumentTenancyAgreements />
       </div>
-      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
+      <FixedFooter className="flex sm:flex-wrap gap-2 items-center justify-between ">
         <Modal>
           <ModalTrigger asChild>
-            <Button variant="light_red" size="base_bold" className="py-2 px-6">
-              delete account
+            <Button variant="light_red" size="base_bold" className="py-2 px-4">
+              delete
             </Button>
           </ModalTrigger>
           <ModalContent>
             <DeleteDocumentModal />
           </ModalContent>
         </Modal>
-        <div className="flex gap-6">
+        <div className="flex gap-4">
           <Button variant="sky_blue" size="base_bold" className="py-2 px-6">
-            print & preview
+            Preview
           </Button>
           <Button size="base_bold" className="py-2 px-6">
-            save as draft
+            save
           </Button>
         </div>
       </FixedFooter>

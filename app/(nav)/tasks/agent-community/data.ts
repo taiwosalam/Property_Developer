@@ -251,15 +251,13 @@ export const propertySummaryData = [
 
 
 export const propertyMoreDetails = [
-  { label: "Location(state):", value: "Oyo State" },
-  { label: "Local Government:", value: "Akinyele" },
+  { label: "Location:", value: "Oyo State" },
   { label: "Category:", value: "Short Let" },
   { label: "Property Type:", value: "Apaertment" },
-  { label: "Bedroom:", value: "5+" },
-  { label: "Land Size:", value: "5+" },
+  { label: "Sub Type:", value: "Bungalow" },
   { label: "Min Budget:", value: "₦75,000,000" },
   { label: "Max Budget:", value: "₦200,000,000" },
-  { label: "Due Date:", value: "12/10/2024" },
+  { label: "Date Range:", value: "12/10/2024 - 12/10/2024" },
 ];
 
 

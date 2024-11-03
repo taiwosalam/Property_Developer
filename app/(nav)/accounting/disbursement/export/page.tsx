@@ -31,21 +31,18 @@ const ExportDisbursement = () => {
         <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
             data={{}}
-            chunkSize={2}
+            chunkSize={1}
             direction="column"
             referenceObject={{
-              "payment id": "",
-              "customer name": "",
-              "property name": "",
+              "summary id": "",
               "start date": "",
-              "account officer": "",
               "end date": "",
             }}
           />
         </div>
       </div>
       <div className="custom-flex-col gap-6">
-        <h1 className="text-black text-2xl font-medium text-center">
+        <h1 className="text-black dark:text-white text-2xl font-medium text-center">
           Disbursement Summary
         </h1>
         <CustomTable

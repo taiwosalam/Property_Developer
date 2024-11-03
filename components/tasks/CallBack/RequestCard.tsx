@@ -137,17 +137,17 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
       </div>
       <div
         className={clsx(
-          "py-2 px-[18px] flex items-center justify-between text-base font-medium",
+          "py-2 px-[18px] flex items-center justify-between text-base font-medium custom-secondary-bg",
           cardType === "callback"
-            ? "bg-brand-7 text-brand-1"
+            ? "text-text-secondary dark:text-white"
             : cardType === "visitor"
-            ? "bg-status-caution-2 text-text-secondary"
+            ? "text-text-secondary dark:text-white"
             : cardType === "property"
-            ? "bg-brand-1 text-text-secondary bg-opacity-60"
+            ? "text-text-secondary dark:text-white"
             : cardType === "agent-community"
-            ? "bg-brand-1 text-text-secondary bg-opacity-60"
+            ? "text-text-secondary dark:text-white"
             : cardType === "deposit"
-            ? "bg-status-success-1 text-text-secondary"
+            ? "text-text-secondary dark:text-white"
             : ""
         )}
       >
