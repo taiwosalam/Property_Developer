@@ -1,5 +1,8 @@
 "use client";
-import { estateSettingsDta } from "@/components/Management/Rent And Unit/data";
+import {
+  estateSettingsDta,
+  estateData,
+} from "@/components/Management/Rent And Unit/data";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
 import { RenewalRentDetails } from "@/components/Management/Rent And Unit/renewal-rent-detals";
@@ -10,7 +13,7 @@ const RenewRent = () => {
     <div className="space-y-6 p-4">
       <BackButton>Renew Rent</BackButton>
       <section className="space-y-6 pb-16">
-        <EstateDetails title="Unit Details" />
+        <EstateDetails title="Unit Details" estateData={estateData} />
         <EstateSettings
           title="Property Settings"
           estateSettingsDta={estateSettingsDta}
