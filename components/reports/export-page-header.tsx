@@ -36,8 +36,8 @@ const ExportPageHeader: React.FC<{
         </h4>
         <ul className="space-y-2 [&>li]:flex [&>li]:items-center [&>li]:gap-[5px] [&>li]:text-text-quaternary [&>li]:text-sm">
           <li>
-            <span className="text-brand-9">
-              <LocationIcon size={20} />
+            <span className="text-brand-9 -ml-1">
+              <LocationIcon size={22} />
             </span>
             <p className="dark:text-darkText-1">{location}</p>
           </li>

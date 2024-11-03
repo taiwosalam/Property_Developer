@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 
 // Types
-import type { CustomTableProps } from "@/components/Table/types";
+import type { CustomTableProps, DataItem } from "@/components/Table/types";
 
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -32,9 +32,10 @@ import {
   DropdownTrigger,
 } from "@/components/Dropdown/dropdown";
 import { VerticalEllipsisIcon } from "@/public/icons/icons";
-import { Drawer } from "@mui/material";
+import { Drawer, Link, MenuItem } from "@mui/material";
 import SettingsLegalDrawer from "@/components/Settings/Modals/settings-legal-drawer";
 import { CounterButton } from "@/components/Settings/SettingsEnrollment/settings-enrollment-components";
+import TableMenu from "@/components/Table/table-menu";
 
 const Subscriptions = () => {
   const table_style_props: Partial<CustomTableProps> = {
@@ -65,20 +66,6 @@ const Subscriptions = () => {
           </p>
         </div>
       ),
-      // We need a solution for this
-      // more: (
-      //   <Dropdown>
-      //     <DropdownTrigger className="p-2 flex items-center justify-center">
-      //       <VerticalEllipsisIcon />
-      //     </DropdownTrigger>
-      //     <DropdownContent>
-      //       <div className="w-[250px] bg-white custom-flex-col py-2 gap-2 text-text-secondary text-base font-bold capitalize text-center">
-      //         <button className="p-4">Manage Disbursement</button>
-      //         <button className="p-4">Preview Disbursement</button>
-      //       </div>
-      //     </DropdownContent>
-      //   </Dropdown>
-      // ),
     })
   );
 
@@ -96,6 +83,19 @@ const Subscriptions = () => {
 
   const handleDecrement = () => {
     setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : prevCount));
+  };
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+
+  const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    setSelectedItemId(String(item.id));
+    setAnchorEl(e.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedItemId(null);
   };
 
   return (
@@ -130,7 +130,35 @@ const Subscriptions = () => {
                       fields={personalized_domain.fields}
                       data={transformedPersonalizedDomain}
                       {...table_style_props}
+                      onActionClick={(item, e) => {
+                        handleMenuOpen(
+                          item,
+                          e as React.MouseEvent<HTMLElement>
+                        );
+                      }}
                     />
+                    <TableMenu
+                      anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={handleMenuClose} disableRipple>
+                <Link
+                  href={`/accounting/expenses/${selectedItemId}/manage-expenses`}
+                  className="w-full text-left"
+                >
+                  Manage Expense
+                </Link>
+              </MenuItem>
+              <MenuItem onClick={handleMenuClose} disableRipple>
+                <Link
+                  href={`/accounting/expenses/${selectedItemId}/preview-expenses`}
+                  className="w-full text-left"
+                >
+                  Preview Expense
+                </Link>
+              </MenuItem>
+            </TableMenu>
                   </div>
                   <div className="custom-flex-col gap-8">
                     <SettingsSectionTitle
@@ -324,6 +352,7 @@ const Subscriptions = () => {
                 fields={current_subscriptions.fields}
                 {...table_style_props}
               />
+
             </div>
           </SettingsSection>
         </div>

@@ -53,7 +53,7 @@ const UnitSponsorPopover = () => {
       {/* Popover */}
       <div
         ref={popover}
-        className="absolute bottom-full left-2/4 -translate-x-2/4 custom-flex-col w-[394px]"
+        className="absolute bottom-full left-2/4 -translate-x-2/4 custom-flex-col max-w-[394px]"
         style={{ display: "none" }}
       >
         <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3c3d37] custom-flex-col gap-6 shadow-lg">

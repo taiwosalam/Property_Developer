@@ -78,9 +78,9 @@ const RentalPropertyListCard: React.FC<{
       <div className="flex items-center justify-between mt-5 gap-2 px-2 flex-wrap">
         <PropertyTag propertyType={propertyType} />
         <div className="flex items-center gap-2 flex-wrap">
-          {actions.map((action) => (
+          {actions.map((action, index) => (
             <ActionButton
-              key={action.label}
+              key={index}
               {...action}
               route={
                 typeof action.route === "function"

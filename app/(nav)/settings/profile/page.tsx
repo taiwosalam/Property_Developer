@@ -135,6 +135,27 @@ const Profile = () => {
     document.head.appendChild(link);
   };
 
+  const [uploadingUtility, setUploadingUtility] = useState(false);
+  const [uploadingMembership, setUploadingMembership] = useState(false);
+
+  const handleUploadUtility = (file: File | null) => {
+    console.log(file);
+    if (file) {
+      setUploadingUtility(true);
+    } else {
+      setUploadingUtility(false);
+    }
+  };
+
+  const handleUploadMembership = (file: File | null) => {
+    console.log(file);
+    if (file) {
+      setUploadingMembership(true);
+    } else {
+      setUploadingMembership(false);
+    }
+  };
+
   return (
     <>
       <SettingsSection title="company profile and details">
@@ -216,20 +237,23 @@ const Profile = () => {
               />
               <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
                 <FileInput
+                  onChange={handleUploadMembership}
                   required
                   id="membership_document"
-                  label="membership document"
-                  placeholder="CAC"
+                  label="Membership document"
+                  placeholder=""
                   buttonName="Document"
                   fileType="pdf"
                   size={2}
                   sizeUnit="MB"
-                  hiddenInputClassName="setup-f required"
+                  hiddenInputClassName="setup-f required w-full sm:w-[250px]"
                   settingsPage={true}
                 />
-                <Button variant="change" size="sm">
-                  Verify Document
-                </Button>
+                {uploadingMembership && (
+                  <button className="w-1/2 sm:w-auto py-2 px-3 mt-2 sm:mt-0 text-brand-9">
+                    Verify Document
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -267,7 +291,7 @@ const Profile = () => {
               placeholder=""
               className="w-full lg:w-[500px]"
             />
-            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full lg:w-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-2 w-full lg:w-auto">
               <FileInput
                 required
                 id="utility_document  "
@@ -277,16 +301,15 @@ const Profile = () => {
                 fileType="pdf"
                 size={2}
                 sizeUnit="MB"
-                hiddenInputClassName="setup-f required w-full sm:w-[300px]"
+                hiddenInputClassName="setup-f required w-full sm:w-[250px]"
                 settingsPage={true}
+                onChange={handleUploadUtility}
               />
-              <Button
-                variant="change"
-                size="xs_normal"
-                className="w-full sm:w-auto py-2 px-3 mt-2 sm:mt-0"
-              >
-                upload utility
-              </Button>
+              {uploadingUtility && (
+                <button className="w-1/2 sm:w-auto py-2 px-3 mt-2 sm:mt-0 text-brand-9  ">
+                  Verify Document
+                </button>
+              )}
             </div>
           </div>
           <CompanyMobileNumber />

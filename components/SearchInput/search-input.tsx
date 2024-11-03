@@ -8,7 +8,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
   className,
   placeholder = "Search",
 }) => {
-  const primaryColor = useThemeStore((state) => state.primaryColor);
+  // const primaryColor = useThemeStore((state) => state.primaryColor);
+  const color = "currentColor";
   return (
     <div
       className={clsx(
@@ -18,7 +19,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
     >
       {/* Search icon positioned absolutely */}
       <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-        <Search color={primaryColor} strokeWidth={"1"} size={20} />
+        <Search color={color} strokeWidth={"1"} size={20} />
       </div>
       <input
         type="text"
