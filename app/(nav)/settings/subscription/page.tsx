@@ -143,13 +143,13 @@ const Subscriptions = () => {
                       onClose={handleMenuClose}
                     >
                       <MenuItem onClick={handleMenuClose} disableRipple>
-                        <p>Extend</p>
+                        <button type="button">Extend</button>
                       </MenuItem>
                       <MenuItem onClick={handleMenuClose} disableRipple>
-                        <p>Delete</p>
+                        <button type="button">Delete</button>
                       </MenuItem>
                       <MenuItem onClick={handleMenuClose} disableRipple>
-                        <p>Edit</p>
+                        <button type="button">Edit</button>
                       </MenuItem>
                     </TableMenu>
                   </div>
