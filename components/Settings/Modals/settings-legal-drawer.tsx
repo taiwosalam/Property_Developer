@@ -230,7 +230,7 @@ const DrawerHeader = ({ onClose }: { onClose: () => void }) => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <PaymentMethod />
+            <PaymentMethod title="Legal Procedure Fee" price={2000} />
           </Box>
         </Modal>
       </div>
