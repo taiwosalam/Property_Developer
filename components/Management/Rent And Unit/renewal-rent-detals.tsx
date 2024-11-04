@@ -8,12 +8,16 @@ import {
   renewalRentDetailItems,
   previousRentRecordsData,
   previousRentRecordsTableFields,
+  type RentPeriod,
+  calculateDueDate,
 } from "./data";
 import type { FeeDetail } from "./types";
 import { SectionSeparator } from "@/components/Section/section-components";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import DateInput from "@/components/Form/DateInput/date-input";
 import CustomTable from "@/components/Table/table";
+import { Dayjs } from "dayjs";
+import { useState, useEffect } from "react";
 
 export const RenewalRentDetails: React.FC<{ isRental: boolean }> = ({
   isRental,
@@ -54,7 +58,53 @@ export const RenewalFee: React.FC<{
   );
 };
 
-export const RenewalRent: React.FC<{ isRental: boolean }> = ({ isRental }) => {
+export const RenewalRent: React.FC<{
+  isRental: boolean;
+  rentPeriod: RentPeriod;
+}> = ({ isRental, rentPeriod }) => {
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
+
+  type CheckboxOption =
+    | "Create Invoice"
+    | "Mobile Notification"
+    | "SMS Alert"
+    | "Email Alert"
+    | "Rent Agreement";
+
+  const checkboxOptions: CheckboxOption[] = [
+    "Create Invoice",
+    "Mobile Notification",
+    "SMS Alert",
+    "Email Alert",
+    "Rent Agreement",
+  ];
+
+  const [checkboxStates, setCheckboxStates] = useState<
+    Record<CheckboxOption, boolean>
+  >({
+    "Create Invoice": false,
+    "Mobile Notification": true,
+    "SMS Alert": true,
+    "Email Alert": true,
+    "Rent Agreement": true,
+  });
+
+  const handleCheckboxChange = (option: CheckboxOption) => {
+    setCheckboxStates((prevState) => ({
+      ...prevState,
+      [option]: !prevState[option],
+    }));
+  };
+
+  useEffect(() => {
+    if (!startDate) {
+      setDueDate(null);
+      return;
+    }
+    setDueDate(calculateDueDate(startDate, rentPeriod));
+  }, [startDate, rentPeriod]);
+
   return (
     <div>
       <RentSectionTitle>
@@ -62,26 +112,36 @@ export const RenewalRent: React.FC<{ isRental: boolean }> = ({ isRental }) => {
       </RentSectionTitle>
       <SectionSeparator className="mt-4 mb-6" />
       <div className="grid grid-cols-2 gap-4 mb-8">
-        <DateInput id="payment_date" label="Payment Date" />
-        <DateInput id="due_date" label="Due Date" />
+        <DateInput
+          id="payment_date"
+          label="Payment Date"
+          value={startDate}
+          onChange={setStartDate}
+        />
+        <DateInput
+          id="due_date"
+          label="Due Date"
+          value={dueDate}
+          disabled
+          className="opacity-50"
+        />
       </div>
       <div className="flex items-center justify-end gap-4 flex-wrap mb-4">
-        {[
-          "Create Invoice",
-          "Mobile Notification",
-          "SMS Alert",
-          "Email Alert",
-          "Rent Agreement",
-        ].map((option) => (
-          <Checkbox sm key={option}>
+        {checkboxOptions.map((option) => (
+          <Checkbox
+            sm
+            key={option}
+            checked={checkboxStates[option]}
+            onChange={handleCheckboxChange(option)}
+          >
             {option}
           </Checkbox>
         ))}
       </div>
-      <p className="text-sm font-normal text-text-secondary">
-        Confirms that you have received payment for the rent renewal. However,
-        if you intend to receive the payment, you can click &apos;create
-        invoice&apos; for tenants to make the payment.
+      <p className="text-sm font-normal text-text-secondary w-fit ml-auto">
+        {checkboxStates["Create Invoice"]
+          ? "Rent will commence upon tenants making payment for the generated invoice."
+          : "Confirms that you have received payment for the rent renewal. However, if you intend to receive the payment, you can click 'create invoice' for tenants to make the payment."}
       </p>
     </div>
   );

@@ -7,7 +7,9 @@ import AddOccupantWithId from "./add-occupant-with-id-modal";
 import DateInput from "@/components/Form/DateInput/date-input";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import { MatchedProfile } from "./matched-profile";
-import { DUMMY_OCCUPANT } from "./data";
+import { DUMMY_OCCUPANT, calculateDueDate, type RentPeriod } from "./data";
+import { RentSectionTitle } from "./rent-section-container";
+import { Dayjs } from "dayjs";
 
 export const ProfileForm: React.FC<{
   occupants: { name: string; id: string }[];
@@ -29,6 +31,10 @@ export const ProfileForm: React.FC<{
   occupantError,
 }) => {
   const [selectedId, setSelectedId] = useState<string>("");
+
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
+  const [rentPeriod, setRentPeriod] = useState<RentPeriod>("biennially");
 
   // Simulate API call
   useEffect(() => {
@@ -64,6 +70,15 @@ export const ProfileForm: React.FC<{
     fetchOccupantData();
   }, [selectedId, onOccupantSelect, onLoadingChange, onError]);
 
+  // Calculate due date when start date or rent period changes
+  useEffect(() => {
+    if (!startDate) {
+      setDueDate(null);
+      return;
+    }
+    setDueDate(calculateDueDate(startDate, rentPeriod));
+  }, [startDate, rentPeriod]);
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
@@ -98,13 +113,24 @@ export const ProfileForm: React.FC<{
           />
         </div>
       </div>
-      <h6 className="font-bold text-[#092C4C] dark:text-white text-xl">
+      <RentSectionTitle>
         Start {isRental ? "Rent" : "Counting"}
-      </h6>
+      </RentSectionTitle>
       <div className="h-[1px] bg-[#C0C2C8] mb-4" />
       <div className="grid grid-cols-2 gap-4">
-        <DateInput id="start date" label="Start Date" />
-        <DateInput id="due date" label="Due Date" />
+        <DateInput
+          id="start date"
+          label="Start Date"
+          value={startDate}
+          onChange={setStartDate}
+        />
+        <DateInput
+          id="due date"
+          label="Due Date"
+          disabled
+          value={dueDate}
+          className="opacity-50"
+        />
       </div>
       <div className="flex items-center justify-end gap-4 flex-wrap">
         {[

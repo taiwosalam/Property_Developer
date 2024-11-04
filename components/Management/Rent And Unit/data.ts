@@ -1,5 +1,7 @@
 import type { Occupant, UnitDetails } from "./types";
 import type { Field } from "@/components/Table/types";
+import { Dayjs } from "dayjs";
+import { rentPeriods } from "@/data";
 
 export const getBackgroundColor = (StatusName: string): string => {
   switch (StatusName) {
@@ -107,6 +109,18 @@ export const estateData = [
   { label: "Unit ID", value: "123456" },
 ];
 
+export const rentalData = [
+  { label: "Property Title", value: "Golden Estate" },
+  { label: "State", value: "Oyo State" },
+  { label: "Local Government", value: "Akinyele" },
+  { label: "Full Address", value: "56, Abiola way area Moniya ibadan" },
+  { label: "Branch", value: "Moniya Branch" },
+  { label: "Account Officer", value: "Ajadi David" },
+  { label: "Landlord", value: "Akintunde Jowo" },
+  { label: "Categories", value: "Residential" },
+  { label: "Unit ID", value: "123456" },
+];
+
 export const estateSettingsDta = [
   { label: "Management Fee", value: "10%" },
   { label: "Period", value: "Annually" },
@@ -168,3 +182,43 @@ const generateTableData = (length: number) => {
 };
 
 export const previousRentRecordsData = generateTableData(5);
+
+export type RentPeriod = (typeof rentPeriods)[number];
+
+export const calculateDueDate = (
+  startDate: Dayjs,
+  rentPeriod: RentPeriod
+): Dayjs => {
+  switch (rentPeriod) {
+    case "daily":
+      return startDate.add(1, "day");
+    case "weekly":
+      return startDate.add(1, "week");
+    case "monthly":
+      return startDate.add(1, "month");
+    case "quarterly":
+      return startDate.add(3, "month");
+    case "yearly":
+      return startDate.add(1, "year");
+    case "biennially":
+      return startDate.add(2, "year");
+    case "triennially":
+      return startDate.add(3, "year");
+    case "quadrennial":
+      return startDate.add(4, "year");
+    case "quinquennial":
+      return startDate.add(5, "year");
+    case "sexennial":
+      return startDate.add(6, "year");
+    case "septennial":
+      return startDate.add(7, "year");
+    case "octennial":
+      return startDate.add(8, "year");
+    case "nonennial":
+      return startDate.add(9, "year");
+    case "decennial":
+      return startDate.add(10, "year");
+    default:
+      return startDate.add(1, "month");
+  }
+};

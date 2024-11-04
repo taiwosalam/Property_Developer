@@ -108,7 +108,7 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
       break;
     case 4:
       oldColorScheme = colors.lightBlue;
-      newColorScheme = colors.gray;
+      newColorScheme = colors.green; //Leave as green. order from Mr Taiwo
       break;
     default:
       oldColorScheme = colors.blue;
