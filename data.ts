@@ -316,7 +316,7 @@ export const rentPeriods = [
   "octennial",
   "nonennial",
   "decennial",
-] as const;
+];
 
 export const landlordTypes = [
   "Individual Landlord",
