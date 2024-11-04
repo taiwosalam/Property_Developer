@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import type { LabelValuePairProps } from "../property-requests/types";
-import type { DepositRequestModalProps, DetailsCheckProps } from "./types";
+import { PointerDownSVG } from "@/public/icons/icons";
+import type { DepositRequestModalProps } from "./types";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
@@ -31,6 +32,27 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
   const [isEscrowChecked, setIsEscrowChecked] = useState(false);
   const commonClasses =
     "bg-neutral-3 dark:bg-[#3C3D37] px-[18px] py-2 rounded-[4px] flex-row-reverse justify-between items-center w-full";
+
+  const HoverContent = () => (
+    <div className="w-[250px] absolute bottom-full right-[12px] z-10 bg-brand-10 py-2 px-4 space-y-[10px] text-white text-sm font-normal">
+      <p className="flex gap-2">
+        <span>Approved by:</span>
+        <span>John Doe</span>
+      </p>
+      <p className="flex gap-2">
+        <span>Date:</span>
+        <span>12/12/12</span>
+      </p>
+      <p className="flex gap-2">
+        <span>Time:</span>
+        <span>08:23 PM</span>
+      </p>
+      <div className="!m-0 absolute right-2 top-full text-brand-10">
+        <PointerDownSVG />
+      </div>
+    </div>
+  );
+
   return (
     <ModalPreset title="Caution Deposit Request">
       <div className="pb-[45px] text-base">
@@ -47,8 +69,14 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
           <p className="text-text-tertiary dark:text-white">
             Caution Deposits Details:
           </p>
-          <div className="space-y-2">
-            <Checkbox className={commonClasses}>Check Inventory</Checkbox>
+          <div className="space-y-2 relative">
+            <Checkbox
+              className={commonClasses}
+              checked
+              hoverContent={<HoverContent />}
+            >
+              Check Inventory
+            </Checkbox>
             <Checkbox className={commonClasses}>Request for Examine</Checkbox>
             <Checkbox className={commonClasses}>
               Request for Maintenance

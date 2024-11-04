@@ -3093,3 +3093,69 @@ export const ActiveFullScreenIcon = () => {
     </svg>
   );
 };
+
+export const PointerDownSVG = () => {
+  return (
+    <svg
+      width="18"
+      height="11"
+      viewBox="0 0 18 11"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M0 0L9 11L18 0H0Z" fill="currentColor" />
+    </svg>
+  );
+};
+
+export const CheckboxDefault = ({ size = 24 }) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g id="Checkbox" clipPath="url(#clip0_4950_215951)">
+        <rect
+          id="Checkbox/false"
+          x="0.638889"
+          y="0.638889"
+          width="22.7222"
+          height="22.7222"
+          rx="4.47222"
+          fill="#F9FAFB"
+          stroke="#CBD5E0"
+          strokeWidth="1.27778"
+        />
+      </g>
+      <defs>
+        <clipPath id="clip0_4950_215951">
+          <rect width="24" height="24" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
+  );
+};
+
+export const CheckboxChecked = ({ size = 24 }) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="24" height="24" rx="5.11111" fill="#2563EB" />
+      <path
+        d="M7.33398 12.0003L10.6673 15.3337L17.334 8.66699"
+        stroke="white"
+        strokeWidth="2.55556"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

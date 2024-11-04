@@ -1,6 +1,6 @@
 "use client";
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
-import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
+import Checkbox from "@/components/Form/Checkbox/checkbox";
 import { useState } from "react";
 import ActionModalPreset from "@/components/Modal/modal-preset";
 import { ModalTrigger } from "@/components/Modal/modal";
@@ -9,7 +9,7 @@ import DepositRequestModal from "@/components/tasks/deposit-requests/deposit-req
 
 const MoveOutModal = () => {
   const commonClasses =
-    "bg-neutral-3 dark:bg-[#3C3D37] px-[18px] py-2 rounded-[4px] flex-row-reverse justify-between items-center";
+    "bg-neutral-3 dark:bg-[#3C3D37] px-[18px] py-2 rounded-[4px] flex-row-reverse justify-between items-center w-full";
   const [modalView, setModalView] = useState<
     "warning" | "menu" | "success" | "deposit"
   >("menu");
@@ -28,26 +28,10 @@ const MoveOutModal = () => {
               Caution Deposit Requirement
             </h3>
             <div className="space-y-3">
-              <DocumentCheckbox
-                title="Check Inventory"
-                className={commonClasses}
-                alignCheckboxCenter
-              />
-              <DocumentCheckbox
-                title="Create Examine"
-                className={commonClasses}
-                alignCheckboxCenter
-              />
-              <DocumentCheckbox
-                title="Create Maintenance"
-                className={commonClasses}
-                alignCheckboxCenter
-              />
-              <DocumentCheckbox
-                title="Flag Tenant"
-                className={commonClasses}
-                alignCheckboxCenter
-              />
+              <Checkbox className={commonClasses}>Check Inventory</Checkbox>
+              <Checkbox className={commonClasses}>Create Examine</Checkbox>
+              <Checkbox className={commonClasses}>Create Maintenance</Checkbox>
+              <Checkbox className={commonClasses}>Flag Tenant</Checkbox>
             </div>
           </div>
           <button
