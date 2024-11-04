@@ -1,6 +1,7 @@
 import {
   RentSectionTitle,
   RentSectionContainer,
+  FeeDetails,
 } from "../rent-section-container";
 import { EstateDetailItem as DetailItem } from "../detail-item";
 import { renewalRentDetailItems } from "../data";
@@ -13,10 +14,13 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Button from "@/components/Form/Button/button";
 import ModalPreset from "@/components/Modal/modal-preset";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
+import type { FeeDetail } from "../types";
 import SwitchUnitModal from "./SwitchUnitModal";
 import SwitchPropertyModal from "@/components/Management/Rent And Unit/Edit-Rent/SwitchPropertyModal";
 
-export const RentDetails = ({ isRental }: { isRental: boolean }) => {
+export const RentDetails: React.FC<{
+  isRental: boolean;
+}> = ({ isRental }) => {
   return (
     <div className="space-y-6">
       <RentSectionTitle>
@@ -176,5 +180,52 @@ export const TransferTenants = ({ isRental }: { isRental: boolean }) => {
         </Modal>
       </div>
     </RentSectionContainer>
+  );
+};
+
+export const PreviousUnitBalance: React.FC<{ isRental: boolean }> = ({
+  isRental,
+}) => {
+  return (
+    <div className="space-y-6">
+      <RentSectionTitle>Previous Unit Balance</RentSectionTitle>
+      <RentSectionContainer title={isRental ? "Rent Fee" : "Fee"}>
+        <div className="space-y-6">
+          <div className="grid md:grid-cols-2 gap-4">
+            {renewalRentDetailItems.map((item, index) => (
+              <DetailItem
+                key={index}
+                label={item.label}
+                value={item.value}
+                style={{ width: "150px" }}
+              />
+            ))}
+          </div>
+          <div className="space-y-2">
+            <p className="text-[#747474] dark:text-white text-base font-normal">
+              Balance
+            </p>
+            <p className="text-lg lg:text-xl font-bold text-brand-9">
+              ₦300,000
+            </p>
+          </div>
+        </div>
+      </RentSectionContainer>
+    </div>
+  );
+};
+
+export const NewUnitCost: React.FC<{
+  isRental: boolean;
+  feeDetails: FeeDetail[];
+}> = ({ isRental, feeDetails }) => {
+  return (
+    <div className="space-y-6">
+      <RentSectionTitle>New Unit Cost</RentSectionTitle>
+      <FeeDetails
+        title={isRental ? "Annual Rent" : "Annual Fee"}
+        feeDetails={feeDetails}
+      />
+    </div>
   );
 };

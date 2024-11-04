@@ -103,7 +103,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
   const isDarkMode = useDarkMode();
 
   const evenRowColor = isDarkMode ? "#3C3D37" : "#fff";
-  const oddRowColor = isDarkMode ? "#020617" : "#eff6ff";
+  const oddRowColor = isDarkMode ? "#020617" : "var(--brand-1)";
 
   return (
     <TableContainer
