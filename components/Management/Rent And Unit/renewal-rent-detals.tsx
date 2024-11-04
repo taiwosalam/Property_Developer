@@ -73,13 +73,15 @@ export const RenewalRent: React.FC<{ isRental: boolean }> = ({ isRental }) => {
           "Email Alert",
           "Rent Agreement",
         ].map((option) => (
-          <Checkbox sm>{option}</Checkbox>
+          <Checkbox sm key={option}>
+            {option}
+          </Checkbox>
         ))}
       </div>
       <p className="text-sm font-normal text-text-secondary">
         Confirms that you have received payment for the rent renewal. However,
-        if you intend to receive the payment, you can click 'create invoice' for
-        tenants to make the payment.
+        if you intend to receive the payment, you can click &apos;create
+        invoice&apos; for tenants to make the payment.
       </p>
     </div>
   );
