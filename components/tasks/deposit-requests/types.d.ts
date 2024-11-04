@@ -6,7 +6,3 @@ export type DepositRequestModalProps = {
   branch: string;
   amount: string;
 };
-
-export type DetailsCheckProps = {
-  label: string;
-};

@@ -1,49 +1,50 @@
 "use client";
 import clsx from "clsx";
 import { useState, useEffect } from "react";
-import Image from "next/image";
-
 // Types
 import type { CheckboxProps } from "./types";
-
-// Images
-import CheckboxDefault from "@/public/icons/checkbox-default.svg";
-import CheckboxChecked from "@/public/icons/checkbox-checked.svg"; // Add the checked state image
+import { CheckboxDefault, CheckboxChecked } from "@/public/icons/icons";
 
 const Checkbox: React.FC<CheckboxProps> = ({
   children,
-  checked = false,
+  checked,
   onChange,
   sm,
   className,
+  hoverContent,
 }) => {
-  const [internalChecked, setInternalChecked] = useState(checked);
+  const [internalChecked, setInternalChecked] = useState(checked ?? false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleCheckboxClick = () => {
     if (onChange) {
       onChange(!internalChecked);
-    } else {
+    } else if (checked === undefined) {
       setInternalChecked(!internalChecked);
     }
   };
 
   useEffect(() => {
-    setInternalChecked(checked);
+    if (checked !== undefined) {
+      setInternalChecked(checked);
+    }
   }, [checked]);
 
   return (
     <button
-      className={clsx("flex items-center gap-2", className)}
+      className={clsx("flex items-center gap-2 relative", className)}
       onClick={handleCheckboxClick}
       type="button"
+      {...(hoverContent && {
+        onMouseEnter: () => setIsHovered(true),
+        onMouseLeave: () => setIsHovered(false),
+      })}
     >
-      <Image
-        src={internalChecked ? CheckboxChecked : CheckboxDefault}
-        alt="checkbox"
-        width={sm ? 18 : 24}
-        height={sm ? 18 : 24}
-        className={sm ? "w-[18px] h-[18px]" : "w-6 h-6"}
-      />
+      {internalChecked ? (
+        <CheckboxChecked size={sm ? 18 : 24} />
+      ) : (
+        <CheckboxDefault size={sm ? 18 : 24} />
+      )}
       {children && (
         <p
           className={`text-text-secondary dark:text-darkText-1 font-medium capitalize ${
@@ -53,6 +54,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
           {children}
         </p>
       )}
+      {isHovered && hoverContent && hoverContent}
     </button>
   );
 };
