@@ -113,7 +113,9 @@ export const ProfileForm: React.FC<{
           "SMS Alert",
           "Email Alert",
         ].map((option) => (
-          <Checkbox sm>{option}</Checkbox>
+          <Checkbox sm key={option}>
+            {option}
+          </Checkbox>
         ))}
       </div>
     </div>
