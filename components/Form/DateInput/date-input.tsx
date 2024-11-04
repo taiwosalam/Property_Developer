@@ -25,7 +25,7 @@ const DateInput: React.FC<DateInputProps> = ({
   labelclassName,
   disabled,
 }) => {
-  const handleDateChange = (date?: Dayjs | null) => {
+  const handleDateChange = (date: Dayjs | null) => {
     if (onChange) {
       onChange(date);
     }

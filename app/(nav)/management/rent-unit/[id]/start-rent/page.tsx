@@ -5,6 +5,7 @@ import {
   estateSettingsDta,
   estateData,
   propertySettingsData,
+  rentalData,
 } from "@/components/Management/Rent And Unit/data";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
@@ -23,7 +24,7 @@ const StartRent = () => {
       <section className="space-y-6">
         <EstateDetails
           title={`${isRental ? "Unit" : "Estate"} Details`}
-          estateData={estateData}
+          estateData={isRental ? rentalData : estateData}
         />
         <EstateSettings
           title={`${isRental ? "Property" : "Estate"} Settings`}
@@ -49,7 +50,10 @@ const StartRent = () => {
           ]}
         />
       </section>
-      <FixedFooter className="flex justify-end">
+      <FixedFooter className="flex justify-between">
+        <Button size="base_medium" className="py-2 px-6">
+          Download Agreement
+        </Button>
         <Button size="base_medium" className="py-2 px-6">
           Save
         </Button>

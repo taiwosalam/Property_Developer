@@ -235,7 +235,7 @@ const Header = () => {
             </Modal>
           </div>
 
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center text-[#5A5D61] dark:text-white">
             <Link href="/messages" aria-label="messages">
               <MailIcon />
             </Link>
@@ -269,7 +269,7 @@ const Header = () => {
               <p className="text-[10px] md:text-xs font-normal dark:text-[#F1F1D9]">
                 {getGreeting()},
               </p>
-              <p className="text-xs md:text-base font-bold dark:text-white">
+              <p className="text-xs md:text-base font-medium dark:text-white">
                 {dashboardData?.director_name}
               </p>
             </div>

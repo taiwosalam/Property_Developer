@@ -6,7 +6,7 @@ export interface DateInputProps {
   className?: string;
   inputClassName?: string;
   value?: Dayjs | null;
-  onChange?: (date?: Dayjs | null) => void;
+  onChange?: (date: Dayjs | null) => void;
   minDate?: Dayjs;
   maxDate?: Dayjs;
   disableFuture?: boolean;

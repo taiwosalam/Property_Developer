@@ -3,6 +3,7 @@ import {
   estateSettingsDta,
   propertySettingsData,
   estateData,
+  rentalData,
 } from "@/components/Management/Rent And Unit/data";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
@@ -29,7 +30,7 @@ const RenewRent = () => {
       <section className="space-y-6">
         <EstateDetails
           title={`${isRental ? "Unit" : "Estate"} Details`}
-          estateData={estateData}
+          estateData={isRental ? rentalData : estateData}
         />
         <EstateSettings
           title={`${isRental ? "Property" : "Estate"} Settings`}
@@ -52,7 +53,7 @@ const RenewRent = () => {
                 { name: "Other Charges", amount: 300000 },
               ]}
             />
-            <RenewalRent isRental={isRental} />
+            <RenewalRent isRental={isRental} rentPeriod="yearly" />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px]">
             <MatchedProfile occupant={DUMMY_OCCUPANT} title="User Profile" />
