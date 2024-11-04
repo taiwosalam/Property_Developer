@@ -1,17 +1,24 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import React from "react";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
+import {
+  estateSettingsDta,
+  estateData,
+  propertySettingsData,
+} from "@/components/Management/Rent And Unit/data";
 import DateInput from "@/components/Form/DateInput/date-input";
 import Button from "@/components/Form/Button/button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import { EstateDetailItem } from "@/components/Management/Rent And Unit/detail-item";
 import { RentSectionContainer } from "@/components/Management/Rent And Unit/rent-section-container";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ModalPreset from "@/components/Modal/modal-preset";
 import BackButton from "@/components/BackButton/back-button";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { useSearchParams } from "next/navigation";
 
 const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
   <div className="flex items-center">
@@ -20,55 +27,25 @@ const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
   </div>
 );
 
-const estateData = [
-  { label: "Property Title", value: "Golden Estate" },
-  { label: "State", value: "Oyo State" },
-  { label: "Local Government", value: "Akinyele" },
-  { label: "Full Address", value: "56, Abiola way area Moniya ibadan" },
-  { label: "Branch", value: "Moniya Branch" },
-  { label: "Account Officer", value: "Ajadi David" },
-  { label: "Landlors", value: "John Doe" },
-  { label: "Categories", value: "Residential" },
-  { label: "Unit Id", value: "1233456776543" },
-];
-
 const PostProceedContent = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
+  const isRental = propertyType === "rental";
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6 pb-[100px]">
       <BackButton>Change Property Unit</BackButton>
-      <section className="space-y-6 pb-16">
-        <div
-          className="py-6 px-6 bg-white dark:bg-darkText-primary shadow rounded-md space-y-4"
-          style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
-        >
-          <h6 className="font-bold text-[#092C4C] dark:text-white text-xl">
-            Property Details
-          </h6>
-          <div className="w-5/6 h-[1px] bg-[#C0C2C8] bg-opacity-20"></div>
-          <div className="w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-4">
-              {estateData.map((item, index) => (
-                <EstateDetailItem
-                  key={index}
-                  label={item.label}
-                  value={item.value}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
+      <section className="space-y-6">
+        <EstateDetails
+          title={`${isRental ? "Property" : "Estate"} Details`}
+          estateData={estateData}
+        />
         <EstateSettings
-          gridThree
-          title="Property Settings"
-          estateSettingsDta={[
-            { label: "Agency Fee", value: "10%" },
-            { label: "Period", value: "Annually" },
-            { label: "Charge", value: "Tenant" },
-            { label: "Caution Deposit", value: "Escrow it" },
-            { label: "Group Chat", value: "Yes" },
-            { label: "Rent Penalty", value: "Yes" },
-          ]}
+          title={`${isRental ? "Property" : "Estate"} Settings`}
+          estateSettingsDta={
+            isRental ? propertySettingsData : estateSettingsDta
+          }
+          {...(isRental ? { gridThree: true } : {})}
         />
 
         <div>

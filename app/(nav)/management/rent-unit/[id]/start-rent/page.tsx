@@ -11,15 +11,16 @@ import EstateSettings from "@/components/Management/Rent And Unit/estate-setting
 import { OccupantProfile } from "@/components/Management/Rent And Unit/occupant-profile";
 import BackButton from "@/components/BackButton/back-button";
 import { useSearchParams } from "next/navigation";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
   const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
   const isRental = propertyType === "rental";
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-[100px]">
       <BackButton>Start {isRental ? "Rent" : "Counting"}</BackButton>
-      <section className="space-y-6 pb-16">
+      <section className="space-y-6">
         <EstateDetails
           title={`${isRental ? "Unit" : "Estate"} Details`}
           estateData={estateData}
@@ -29,46 +30,30 @@ const StartRent = () => {
           estateSettingsDta={
             isRental ? propertySettingsData : estateSettingsDta
           }
+          {...(isRental ? { gridThree: true } : {})}
         />
         <OccupantProfile
-          title="Tenant"
-          title1="Commission & Fees"
-          title2="New Tenant Fee"
-          occupant={{
-            name: "Abimbola Adedeji",
-            email: "abimbola@gmail.com",
-            avatar: "/empty/avatar-1.svg",
-            gender: "Male",
-            birthday: "12/12/12",
-            religion: "Christianity",
-            phone: "+2348132086958",
-            maritalStatus: "Single",
-            address: "U4 Joke Plaza Bodija Ibadan",
-            city: "Ibadan",
-            state: "Oyo State",
-            lg: "Ibadan North Central",
-          }}
+          isRental={isRental}
+          occupants={[
+            { name: "Abimbola Adedeji", id: "id-1" },
+            { name: "Tomi Lola", id: "id-2" },
+            { name: "Hello World", id: "id-3" },
+          ]}
           feeDetails={[
-            { name: "Annual Fee", amount: 300000 },
+            { name: isRental ? "Annual Rent" : "Annual Fee", amount: 300000 },
             { name: "Service Charge", amount: 300000 },
             { name: "Caution Fee", amount: 300000 },
             { name: "Security Fee", amount: 300000 },
             { name: "Agency Fee", amount: 300000 },
             { name: "Other Charges", amount: 300000 },
           ]}
-          onEdit={() => {
-            console.log("Edit button clicked");
-          }}
         />
       </section>
-      <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
-        <Button
-          type="submit"
-          //   onClick={() => {}}
-        >
+      <FixedFooter className="flex justify-end">
+        <Button size="base_medium" className="py-2 px-6">
           Save
         </Button>
-      </div>
+      </FixedFooter>
     </div>
   );
 };

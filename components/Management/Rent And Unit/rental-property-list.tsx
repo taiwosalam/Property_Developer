@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { actions, activeStatuses, getBackgroundColor } from "./data";
 import Image from "next/image";
-import { ActionButtonProps } from "./types";
 import { CameraIcon } from "lucide-react";
 import { DetailItem } from "../detail-item";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import { images } from "@/components/PopupSlider/data";
 import PropertyTag from "@/components/Tags/property-tag";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { ActionButton } from "./action-button";
 
 const RentalPropertyListCard: React.FC<{
   propertyType: "rental" | "facility";
-}> = ({ propertyType }) => {
+  unitId: string;
+}> = ({ propertyType, unitId }) => {
   const [isOpened, setIsOpened] = useState(false);
   return (
     <div className="p-6 bg-white dark:bg-darkText-primary rounded-2xl shadow-md text-[16px]">
@@ -67,7 +68,6 @@ const RentalPropertyListCard: React.FC<{
             images={images.map((image) => ({ src: image, isVideo: false }))}
             isOpen={isOpened}
             onClose={() => setIsOpened(false)}
-            currentIndex={0}
           />
           <div className="absolute top-3 right-3 bg-blue-50 rounded py-1 px-2 flex items-center space-x-2">
             <CameraIcon width={10} height={10} />
@@ -78,14 +78,19 @@ const RentalPropertyListCard: React.FC<{
       <div className="flex items-center justify-between mt-5 gap-2 px-2 flex-wrap">
         <PropertyTag propertyType={propertyType} />
         <div className="flex items-center gap-2 flex-wrap">
-          {actions.map((action) => (
+          {actions.map((action, i) => (
             <ActionButton
-              key={action.label}
+              key={i}
               {...action}
               route={
                 typeof action.route === "function"
-                  ? action.route("1234567867")
+                  ? action.route(unitId, propertyType)
                   : action.route
+              }
+              label={
+                typeof action.label === "function"
+                  ? action.label(propertyType)
+                  : action.label
               }
             />
           ))}
@@ -96,12 +101,3 @@ const RentalPropertyListCard: React.FC<{
 };
 
 export default RentalPropertyListCard;
-
-const ActionButton: React.FC<ActionButtonProps> = ({ label, color }) => (
-  <button
-    className="py-2 px-4 rounded-[20px] text-white text-xs font-medium"
-    style={{ backgroundColor: color }}
-  >
-    {label}
-  </button>
-);

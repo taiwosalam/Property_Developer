@@ -217,7 +217,7 @@ const RentalPropertyCard: React.FC<{
               {...action}
               route={
                 typeof action.route === "function"
-                  ? action.route(unitId)
+                  ? action.route(unitId, propertyType)
                   : action.route
               }
               label={
