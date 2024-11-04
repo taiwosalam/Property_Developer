@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 
 // Types
@@ -10,7 +10,12 @@ import type { CheckboxProps } from "./types";
 import CheckboxDefault from "@/public/icons/checkbox-default.svg";
 import CheckboxChecked from "@/public/icons/checkbox-checked.svg"; // Add the checked state image
 
-const Checkbox: React.FC<CheckboxProps> = ({ children, checked, onChange }) => {
+const Checkbox: React.FC<CheckboxProps> = ({
+  children,
+  checked,
+  onChange,
+  sm,
+}) => {
   const [internalIsChecked, setInternalIsChecked] = useState(checked || false);
 
   const isChecked = checked ? checked : internalIsChecked;
@@ -30,11 +35,15 @@ const Checkbox: React.FC<CheckboxProps> = ({ children, checked, onChange }) => {
       <Image
         src={isChecked ? CheckboxChecked : CheckboxDefault}
         alt="checkbox"
-        width={24}
-        height={24}
-        className="w-6 h-6"
+        width={sm ? 18 : 24}
+        height={sm ? 18 : 24}
+        className={sm ? "w-[18px] h-[18px]" : "w-6 h-6"}
       />
-      <p className="text-text-secondary dark:text-darkText-1 text-base font-medium capitalize">
+      <p
+        className={`text-text-secondary dark:text-darkText-1 font-medium capitalize ${
+          sm ? "text-sm" : "text-base"
+        }`}
+      >
         {children}
       </p>
     </button>

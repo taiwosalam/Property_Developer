@@ -39,8 +39,10 @@ export interface UnitDetails {
 }
 
 export interface Occupant {
+  id: string;
   name: string;
   email: string;
+  userTag: "mobile" | "web";
   avatar: string;
   gender: string;
   birthday: string;
@@ -59,10 +61,7 @@ export interface FeeDetail {
 }
 
 export interface OccupantProfileProps {
-  occupant: Occupant;
-  title: string;
-  title1?: string;
-  title2?: string;
+  occupants: { name: string; id: string }[];
+  isRental: boolean;
   feeDetails: FeeDetail[];
-  onEdit: () => void;
 }

@@ -1,62 +1,92 @@
-import Image from "next/image";
-import { DetailItem } from "../detail-item";
+import Picture from "@/components/Picture/picture";
 import { Occupant } from "./types";
 import { RentSectionContainer } from "./rent-section-container";
+import UserTag from "@/components/Tags/user-tag";
 
-export const MatchedProfile: React.FC<{ occupant: Occupant }> = ({
-  occupant,
-}) => {
+export const MatchedProfile: React.FC<{
+  occupant: Occupant | null;
+  title: string;
+  isLoading?: boolean;
+  error?: Error | null;
+}> = ({ occupant, title, isLoading, error }) => {
   return (
-    <RentSectionContainer title="Matched Profile" hidebar>
-      <div className="flex items-center justify-center">
-        <div>
-          <Image
-            src="/empty/avatar-2.svg"
-            alt="Profile"
-            className="rounded-full mb-4 mx-auto"
-            width={64}
-            height={64}
-          />
-          <div className="w-full text-center">
-            <p className="font-bold text-xl">Abimbola Adedeji</p>
-            <p className="text-xs text-text-label dark:text-darkText-1 mb-4">
-              abimbola@gmail.com
-            </p>
-            <div className="space-y-2 mb-8">
-              <p className="bg-status-success-1 text-status-success-3 font-normal text-xs rounded-lg w-[70px] mx-auto">
-                Mobile
+    <RentSectionContainer title={title} hidebar className="p-8">
+      {occupant ? (
+        <div className="space-y-6">
+          <div className="w-fit mx-auto space-y-4">
+            <Picture
+              src={occupant?.avatar}
+              alt="Profile Picture"
+              size={64}
+              rounded
+              containerClassName="w-fit mx-auto"
+            />
+            <div className="w-full text-center">
+              <p className="font-bold text-xl">{occupant?.name}</p>
+              <p className="text-xs text-text-label dark:text-darkText-1 mb-4">
+                {occupant?.email}
               </p>
-              <p className="text-neutral-800 dark:text-darkText-1 text-[16px] font-semibold">
-                ID: 2212587645444
-              </p>
+              <div className="space-y-2">
+                {occupant?.userTag && (
+                  <UserTag type={occupant.userTag} className="w-fit mx-auto" />
+                )}
+                {occupant?.userTag === "mobile" && (
+                  <p className="text-neutral-800 dark:text-darkText-1 text-[16px] font-semibold">
+                    ID: {occupant?.id}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <h4 className="text-brand-9 text-[16px] font-medium">About</h4>
+            <div className="space-y-4">
+              <RentFeeDetails label="Gender" value={occupant?.gender} />
+              <RentFeeDetails label="Birthday" value={occupant?.birthday} />
+              <RentFeeDetails label="Religion" value={occupant?.religion} />
+              <RentFeeDetails label="Phone" value={occupant?.phone} />
+              <RentFeeDetails
+                label="Marital Status"
+                value={occupant?.maritalStatus}
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <h4 className="text-brand-9 text-[16px] font-medium">
+              Contact Address
+            </h4>
+            <div className="space-y-4">
+              <RentFeeDetails label="Address" value={occupant?.address} />
+              <RentFeeDetails label="City" value={occupant?.city} />
+              <RentFeeDetails label="State" value={occupant?.state} />
+              <RentFeeDetails label="LG" value={occupant?.lg} />
             </div>
           </div>
         </div>
-      </div>
-      <h1 className="text-brand-9 text-[16px] font-medium mb-2">About</h1>
-      <div className="space-y-4">
-        <RentFeeDetails label="Gender" value="Male" />
-        <RentFeeDetails label="Birthday" value="12/12/12" />
-        <RentFeeDetails label="Religion" value="Christianity" />
-        <RentFeeDetails label="Phone" value="+2348132087958" />
-        <RentFeeDetails label="Marital Status" value="Single" />
-      </div>
-      <h1 className="text-brand-9 text-[16px] font-medium my-6">
-        Contact Address
-      </h1>
-      <div className="space-y-4">
-        <RentFeeDetails label="Address" value="U4 Joke Plaza Bodija Ibadan" />
-        <RentFeeDetails label="City" value="Ibadan" />
-        <RentFeeDetails label="State" value="Oyo State" />
-        <RentFeeDetails label="LG" value="Ibadan North Central" />
-      </div>
+      ) : (
+        <div className="flex items-center justify-center h-[300px] text-lg">
+          {isLoading ? (
+            <div className="loader" />
+          ) : error ? (
+            <p className="text-status-error-primary">Error: {error.message}</p>
+          ) : (
+            <p className="text-status-error-primary">No Occupant Selected</p>
+          )}
+        </div>
+      )}
     </RentSectionContainer>
   );
 };
 
-const RentFeeDetails = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex items-center">
+const RentFeeDetails = ({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | undefined;
+}) => (
+  <div className="flex items-start">
     <p className="text-[#747474] w-[140px]">{label}</p>
-    <p>{value}</p>
+    <p>{value || "N/A"}</p>
   </div>
 );

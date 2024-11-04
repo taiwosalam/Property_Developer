@@ -1,41 +1,70 @@
 "use client";
 import {
   estateSettingsDta,
+  propertySettingsData,
   estateData,
 } from "@/components/Management/Rent And Unit/data";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
-import { RenewalRentDetails } from "@/components/Management/Rent And Unit/renewal-rent-detals";
+import {
+  RenewalRentDetails,
+  RenewalFee,
+  RenewalRent,
+  PreviousRentRecords,
+} from "@/components/Management/Rent And Unit/renewal-rent-detals";
+import Button from "@/components/Form/Button/button";
 import BackButton from "@/components/BackButton/back-button";
+import { useSearchParams } from "next/navigation";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { MatchedProfile } from "@/components/Management/Rent And Unit/matched-profile";
+import { DUMMY_OCCUPANT } from "@/components/Management/Rent And Unit/data";
 
 const RenewRent = () => {
+  const searchParams = useSearchParams();
+  const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
+  const isRental = propertyType === "rental";
   return (
-    <div className="space-y-6 p-4">
-      <BackButton>Renew Rent</BackButton>
-      <section className="space-y-6 pb-16">
-        <EstateDetails title="Unit Details" estateData={estateData} />
-        <EstateSettings
-          title="Property Settings"
-          estateSettingsDta={estateSettingsDta}
+    <div className="space-y-6 pb-[100px]">
+      <BackButton>Renew {isRental ? "Rent" : "Fee"}</BackButton>
+      <section className="space-y-6">
+        <EstateDetails
+          title={`${isRental ? "Unit" : "Estate"} Details`}
+          estateData={estateData}
         />
-        <RenewalRentDetails />
+        <EstateSettings
+          title={`${isRental ? "Property" : "Estate"} Settings`}
+          estateSettingsDta={
+            isRental ? propertySettingsData : estateSettingsDta
+          }
+          {...(isRental ? { gridThree: true } : {})}
+        />
+        <div className="pt-6 lg:flex lg:gap-10 space-y-8">
+          <div className="lg:w-3/5 space-y-8">
+            <RenewalRentDetails isRental={isRental} />
+            <RenewalFee
+              isRental={isRental}
+              feeDetails={[
+                {
+                  name: isRental ? "Rent" : "Fee",
+                  amount: 300000,
+                },
+                { name: "Service Charge", amount: 300000 },
+                { name: "Other Charges", amount: 300000 },
+              ]}
+            />
+            <RenewalRent isRental={isRental} />
+          </div>
+          <div className="lg:flex-1 lg:!mt-[52px]">
+            <MatchedProfile occupant={DUMMY_OCCUPANT} title="User Profile" />
+          </div>
+        </div>
+        <PreviousRentRecords isRental={isRental} />
       </section>
-      <div className="fixed w-screen left-0 h-[80px] bottom-0 py-5 px-[60px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-10 [&>button]:rounded-[4px] font-semibold text-base [&>button]:py-[8px] [&>button]:px-[32px] [&>button]:border-2 [&>button]:border-transparent">
-        <button
-          type="button"
-          className="bg-brand-1 text-brand-9 hover:bg-brand-2 active:bg-transparent active:border-brand-2"
-          //   onClick={() => {}}
-        >
-          Exit
-        </button>
-        <button
-          type="submit"
-          className="bg-brand-9 text-white hover:bg-[#0033c4b3] active:text-brand-9 active:bg-transparent active:border-brand-9"
-          //   onClick={() => {}}
-        >
-          Renew Rent
-        </button>
-      </div>
+      <FixedFooter className="flex items-center justify-end">
+        <Button size="base_medium" className="py-2 px-6">
+          {isRental ? "Renew Rent" : "Renew"}
+        </Button>
+      </FixedFooter>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import Select from "@/components/Form/Select/select";
+import { useState, useEffect } from "react";
 import { Occupant } from "./types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Button from "@/components/Form/Button/button";
@@ -6,28 +7,80 @@ import AddOccupantWithId from "./add-occupant-with-id-modal";
 import DateInput from "@/components/Form/DateInput/date-input";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import { MatchedProfile } from "./matched-profile";
+import { DUMMY_OCCUPANT } from "./data";
 
-export const ProfileForm: React.FC<{ occupant: Occupant; title?: boolean }> = ({
-  occupant,
-  title,
+export const ProfileForm: React.FC<{
+  occupants: { name: string; id: string }[];
+  isRental: boolean;
+  selectedOccupant: Occupant | null;
+  onOccupantSelect: (occupant: Occupant | null) => void;
+  onLoadingChange: (isLoading: boolean) => void;
+  onError: (error: Error | null) => void;
+  occupantLoading: boolean;
+  occupantError: Error | null;
+}> = ({
+  occupants,
+  isRental,
+  selectedOccupant,
+  onOccupantSelect,
+  onError,
+  onLoadingChange,
+  occupantLoading,
+  occupantError,
 }) => {
+  const [selectedId, setSelectedId] = useState<string>("");
+
+  // Simulate API call
+  useEffect(() => {
+    if (!selectedId) {
+      onOccupantSelect(null);
+      onLoadingChange(false);
+      onError(null);
+      return;
+    }
+
+    const fetchOccupantData = async () => {
+      onLoadingChange(true);
+      onError(null);
+
+      try {
+        // Simulate API delay
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        // Simulate API response
+        onOccupantSelect(DUMMY_OCCUPANT as Occupant);
+      } catch (error) {
+        console.error("Error fetching occupant:", error);
+        onOccupantSelect(null);
+        onError(
+          error instanceof Error
+            ? error
+            : new Error("Failed to fetch occupant data")
+        );
+      } finally {
+        onLoadingChange(false);
+      }
+    };
+
+    fetchOccupantData();
+  }, [selectedId, onOccupantSelect, onLoadingChange, onError]);
+
   return (
     <div className="space-y-6">
-      <div>
-        <div className="flex flex-wrap w-full lg:w-3/4 items-center justify-between gap-3 pb-4">
+      <div className="space-y-4">
+        <div className="flex flex-col md:flex-row md:items-end gap-x-[35px] gap-y-4">
           <Select
-            id="available occupants"
-            label="Choose Available Occupant"
-            options={[
-              { label: "Abimbola Ayodeji", value: "id-1" },
-              { label: "Tomi Lola", value: "id-2" },
-              { label: "Hello World", value: "id-3" },
-            ]}
-            className="w-full lg:w-2/3"
+            id={`available_${isRental ? "tenant" : "occupant"}`}
+            label={`Choose Available ${isRental ? "Tenant" : "Occupant"}`}
+            options={occupants.map((occupant) => ({
+              label: occupant.name,
+              value: occupant.id,
+            }))}
+            className="md:flex-1 md:max-w-[300px]"
+            onChange={setSelectedId}
           />
           <Modal>
             <ModalTrigger asChild>
-              <Button size="16_bold" className="py-2 px-8">
+              <Button size="16_bold" className="py-2 px-6">
                 Choose With ID
               </Button>
             </ModalTrigger>
@@ -37,39 +90,31 @@ export const ProfileForm: React.FC<{ occupant: Occupant; title?: boolean }> = ({
           </Modal>
         </div>
         <div className="block lg:hidden">
-          <MatchedProfile occupant={occupant} />
+          <MatchedProfile
+            occupant={selectedOccupant}
+            isLoading={occupantLoading}
+            error={occupantError}
+            title="Matched Profile"
+          />
         </div>
       </div>
       <h6 className="font-bold text-[#092C4C] dark:text-white text-xl">
-        Start {title ? "Rent" : "Counting"}
+        Start {isRental ? "Rent" : "Counting"}
       </h6>
-      <div className="w-full h-[1px] bg-[#C0C2C8] mb-4" />
+      <div className="h-[1px] bg-[#C0C2C8] mb-4" />
       <div className="grid grid-cols-2 gap-4">
-        <label className="block">
-          <span className="text-gray-700 dark:text-darkText-1">Start Date</span>
-          <DateInput id="start date" />
-        </label>
-        <label className="block">
-          <span className="text-gray-700 dark:text-darkText-1">Due Date</span>
-          <DateInput id="due date" />
-        </label>
+        <DateInput id="start date" label="Start Date" />
+        <DateInput id="due date" label="Due Date" />
       </div>
-
-      <div className="flex items-center justify-end">
-        <div className="space-y-5 space-x-2">
-          {[
-            "Create Invoice",
-            "Mobile Notification",
-            "SMS Alert",
-            "Email Alert",
-          ].map((option) => (
-            <label key={option} className="inline-flex items-center">
-              <Checkbox>
-                <span>{option}</span>
-              </Checkbox>
-            </label>
-          ))}
-        </div>
+      <div className="flex items-center justify-end gap-4 flex-wrap">
+        {[
+          "Create Invoice",
+          "Mobile Notification",
+          "SMS Alert",
+          "Email Alert",
+        ].map((option) => (
+          <Checkbox sm>{option}</Checkbox>
+        ))}
       </div>
     </div>
   );

@@ -21,6 +21,7 @@ import PropertySwitchUnitItem from "@/components/Management/Rent And Unit/Edit-R
 import Button from "@/components/Form/Button/button";
 import PostProceedContent from "@/components/Management/Rent And Unit/Edit-Rent/PostProceedContent";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { RentSectionTitle } from "@/components/Management/Rent And Unit/rent-section-container";
 
 const images: string[] = [];
 
@@ -153,9 +154,7 @@ const ChangePropertyPage: React.FC = () => {
             <div className="text-base font-normal space-y-2 [&>div]:grid [&>div]:grid-cols-2">
               <h3 className="text-brand-10 font-medium">Property Details</h3>
               <div>
-                <p className="text-[#747474] dark:text-white">
-                  {/* {type === "rental" ? "Property Title" : "Estate Name"} */}
-                </p>
+                <p className="text-[#747474] dark:text-white">Property Title</p>
                 <p className="text-black dark:text-darkText-1">
                   Harmony Cottage
                 </p>
@@ -272,11 +271,9 @@ const ChangePropertyPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <div>
-        <p className="text-[#092C4C] text-xl font-bold">
-          Select New Unit For Tenant
-        </p>
-      </div>
+
+      <RentSectionTitle>Select New Unit For Tenant</RentSectionTitle>
+
       <section className="space-y-4">
         {[...Array(4)].map((_, index) => {
           const unitId = `123456776342${index}`; // Generate unique IDs for test
