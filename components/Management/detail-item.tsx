@@ -7,10 +7,10 @@ export const DetailItem = ({
   value: string | number | React.ReactNode;
   style?: React.CSSProperties;
 }) => (
-  <div className="lg:grid lg:grid-cols-[170px,1fr] lg:gap-x-2">
-    <p className="font-normal text-[#747474] dark:text-white w-[170px]" style={style}>
+  <div className="flex flex-col lg:flex-row gap-x-2 gap-y-1 font-normal text-base">
+    <span className="text-[#747474] dark:text-white lg:w-1/3" style={style}>
       {label}
-    </p>
-    <p className="font-normal text-black dark:text-darkText-2 max-w-[198pxpx]">{value}</p>
+    </span>
+    <span className="lg:flex-1 text-black dark:text-darkText-2">{value}</span>
   </div>
 );

@@ -45,7 +45,7 @@ const SwitchUnitModal = () => {
         style={{ maxWidth: "600px" }}
       >
         <div className="flex flex-col gap-14">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 text-text-secondary text-[14px] font-medium">
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2">
                 <Switch
@@ -55,11 +55,9 @@ const SwitchUnitModal = () => {
                   }}
                   checked={checked1 == true}
                 />
-                <p className="text-text-secondary text-[14px] font-medium">
-                  Calculation
-                </p>
+                <p>Calculation</p>
               </div>
-              <p className="text-text-secondary text-[14px] font-medium">
+              <p>
                 {checked1 == false
                   ? "Calculate the total package of the new fee, including service charge and other Charges) for the occupant that you are transferring to the new unit."
                   : "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges) for the tenants that you are transferring to the new unit."}
@@ -73,13 +71,11 @@ const SwitchUnitModal = () => {
                 }}
                 checked={checked2 == true}
               />
-              <p className="text-text-secondary text-[14px] font-medium">
-                Deduction
-              </p>
+              <p>Deduction</p>
             </div>
-            <p className="text-text-secondary text-[14px] font-medium">
+            <p>
               {checked2 == false
-                ? "Calculate the total package of the new fee, including service charge and other Charges) for the occupant                          that you are transferring to the new unit."
+                ? "Calculate the total package of the new fee, including service charge and other Charges) for the occupant that you are transferring to the new unit."
                 : "Do not deduct the current outstanding fee balance from the cost of the new unit that the occupant are moving into."}
             </p>
           </div>

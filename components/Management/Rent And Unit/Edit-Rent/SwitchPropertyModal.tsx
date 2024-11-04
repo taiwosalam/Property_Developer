@@ -36,11 +36,11 @@ const SwitchPropertyModal = () => {
   if (modalView === "form") {
     return (
       <FormModalPreset
-        heading="Add Property ID"
+        heading="Add Property"
         back={{ handleBack: () => setModalView("warning") }}
-        style={{ maxWidth: "600px" }}
+        style={{ maxWidth: "600px", height: "400px" }}
       >
-        <div className="space-y-5 max-w-[300px] mx-auto">
+        <div className="space-y-5 max-w-[300px] mx-auto mt-5">
           <Select
             id=""
             label="Choose Property"

@@ -5,6 +5,7 @@ import {
 import { EstateDetailItem as DetailItem } from "../detail-item";
 import { renewalRentDetailItems } from "../data";
 import { SectionSeparator } from "@/components/Section/section-components";
+import { useState } from "react";
 import DateInput from "@/components/Form/DateInput/date-input";
 import Input from "@/components/Form/Input/input";
 import { currencySymbols } from "@/utils/number-formatter";
@@ -89,6 +90,7 @@ export const EditCurrentRent: React.FC<{
 
 export const AddPartPayment = () => {
   const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
+  const [createInvoice, setCreateInvoice] = useState(false);
   return (
     <div>
       <RentSectionTitle>Add Part Payment</RentSectionTitle>
@@ -105,7 +107,9 @@ export const AddPartPayment = () => {
         <DateInput id="date" label="Date" containerClassName="bg-white" />
       </div>
       <div className="flex items-center justify-between gap-4 mb-2">
-        <Checkbox sm>Create Invoice</Checkbox>
+        <Checkbox sm checked={createInvoice} onChange={setCreateInvoice}>
+          Create Invoice
+        </Checkbox>
         <Modal>
           <ModalTrigger asChild>
             <Button size="base_medium" className="py-2 px-6">
@@ -127,9 +131,9 @@ export const AddPartPayment = () => {
         </Modal>
       </div>
       <p className="text-sm font-medium text-text-secondary dark:text-darkText-1">
-        Clicking &lsquo;update&rsquo; confirms the partial payment. However, if
-        you intend to receive the payment, you can click &lsquo;create
-        invoice&rsquo; for tenants to make the payment.
+        {createInvoice
+          ? "Partial payment will be reflected once the tenant makes a payment towards the generated invoice."
+          : "Clicking 'update' confirms the partial payment. However, if you intend to receive the payment, you can click 'create invoice' for tenants to make the payment."}
       </p>
     </div>
   );
