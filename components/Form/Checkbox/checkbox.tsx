@@ -1,5 +1,5 @@
 "use client";
-
+import clsx from "clsx";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
@@ -15,6 +15,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   checked = false,
   onChange,
   sm,
+  className,
 }) => {
   const [internalChecked, setInternalChecked] = useState(checked);
 
@@ -32,7 +33,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
 
   return (
     <button
-      className="flex items-center gap-2"
+      className={clsx("flex items-center gap-2", className)}
       onClick={handleCheckboxClick}
       type="button"
     >

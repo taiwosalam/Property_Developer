@@ -7,7 +7,7 @@ import MenuModalPreset from "../../landlord-tenant-modal-preset";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-const SwitchUnitModal = () => {
+const SwitchUnitModal: React.FC<{ isRental: boolean }> = ({ isRental }) => {
   const searchParams = useSearchParams();
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const [checked1, setChecked1] = useState(false);
@@ -17,22 +17,20 @@ const SwitchUnitModal = () => {
 
   if (modalView === "warning") {
     return (
-      <ModalPreset type="warning" className="w-full min-w-[360px]">
-        <div className="flex flex-col gap-11">
-          <div className="flex flex-col gap-10">
-            <p className="text-text-tertiary text-[14px]">
-              Are you sure you want to proceed with moving the tenant&apos;s
-              records from the current unit to another unit of the same
-              property?
-            </p>
-            <div className="flex flex-col gap-2">
-              <Button onClick={() => setModalView("menu")}>OK</Button>
-              <ModalTrigger asChild close>
-                <Button variant="blank" className="text-brand-9">
-                  Back
-                </Button>
-              </ModalTrigger>
-            </div>
+      <ModalPreset type="warning">
+        <div className="flex flex-col gap-10">
+          <p className="text-text-tertiary text-[14px]">
+            Are you sure you want to proceed with moving the{" "}
+            {isRental ? "tenant's" : "occupant's"} records from the current unit
+            to another unit of the same property?
+          </p>
+          <div className="flex flex-col gap-2">
+            <Button onClick={() => setModalView("menu")}>OK</Button>
+            <ModalTrigger asChild close>
+              <Button variant="blank" className="text-brand-9">
+                Back
+              </Button>
+            </ModalTrigger>
           </div>
         </div>
       </ModalPreset>
@@ -61,8 +59,18 @@ const SwitchUnitModal = () => {
               </div>
               <p>
                 {!checked1
-                  ? "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before."
-                  : "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges) for the tenants that you are transferring to the new unit."}
+                  ? `Charge the ${
+                      isRental ? "tenants" : "occupants"
+                    } the same total package as renewal ${
+                      isRental ? "tenants" : "occupants"
+                    } since they were ${
+                      isRental ? "tenants" : "occupants"
+                    } in one of the units of the property before.`
+                  : `Calculate the total package of the new ${
+                      isRental ? "rent" : "fee"
+                    }, including caution deposit, Service Charge, agency fee, legal fee and other Charges for the ${
+                      isRental ? "tenants" : "occupants"
+                    } that you are transferring to the new unit.`}
               </p>
             </div>
             <div className="flex items-center gap-2">
