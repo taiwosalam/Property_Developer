@@ -86,7 +86,7 @@ const RentFeeDetails = ({
   value: string | undefined;
 }) => (
   <div className="flex items-start">
-    <p className="text-[#747474] w-[140px]">{label}</p>
-    <p>{value || "N/A"}</p>
+    <p className="text-[#747474] dark:text-white w-[140px]">{label}</p>
+    <p className="text-black dark:text-darkText-2">{value || "N/A"}</p>
   </div>
 );

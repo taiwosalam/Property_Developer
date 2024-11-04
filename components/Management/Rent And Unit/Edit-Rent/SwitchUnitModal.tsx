@@ -4,10 +4,12 @@ import Switch from "@/components/Form/Switch/switch";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import MenuModalPreset from "../../landlord-tenant-modal-preset";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const SwitchUnitModal = () => {
+  const searchParams = useSearchParams();
+  const propertyType = searchParams.get("type") as "rental" | "facility";
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
   const router = useRouter();
@@ -95,7 +97,7 @@ const SwitchUnitModal = () => {
                 <Button
                   onClick={() => {
                     router.push(
-                      "/management/rent-unit/1/edit-rent/change-unit"
+                      `/management/rent-unit/1/edit-rent/change-unit?type=${propertyType}`
                     );
                   }}
                   className="py-2 px-8"

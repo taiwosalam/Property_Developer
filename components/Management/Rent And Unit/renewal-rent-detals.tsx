@@ -61,7 +61,8 @@ export const RenewalFee: React.FC<{
 export const RenewalRent: React.FC<{
   isRental: boolean;
   rentPeriod: RentPeriod;
-}> = ({ isRental, rentPeriod }) => {
+  title?: string;
+}> = ({ isRental, rentPeriod, title }) => {
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
 
@@ -108,7 +109,7 @@ export const RenewalRent: React.FC<{
   return (
     <div>
       <RentSectionTitle>
-        {isRental ? "Renew Rent" : "Renewal Fee"}
+        {title || (isRental ? "Renew Rent" : "Renewal Fee")}
       </RentSectionTitle>
       <SectionSeparator className="mt-4 mb-6" />
       <div className="grid grid-cols-2 gap-4 mb-8">

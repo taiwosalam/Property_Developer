@@ -1,12 +1,15 @@
+"use client";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import FormModalPreset from "../../landlord-tenant-modal-preset";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const SwitchPropertyModal = () => {
+  const searchParams = useSearchParams();
+  const propertyType = searchParams.get("type") as "rental" | "facility";
   const router = useRouter();
   const [modalView, setModalView] = useState<"warning" | "form">("warning");
 
@@ -61,7 +64,7 @@ const SwitchPropertyModal = () => {
             <Button
               onClick={() => {
                 router.push(
-                  "/management/rent-unit/1/edit-rent/change-property"
+                  `/management/rent-unit/1/edit-rent/change-property?type=${propertyType}`
                 );
               }}
               className="py-2 px-8"
