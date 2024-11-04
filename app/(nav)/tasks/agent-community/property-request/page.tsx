@@ -58,23 +58,26 @@ const PropertyRequest = () => {
   };
   return (
     <div className="space-y-9">
-      <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
+      <div className="flex gap-5 flex-wrap items-center justify-between">
         <ManagementStatistcsCard
           title="Total Request"
           newData={34}
           total={657}
           colorScheme={1}
+          className="hidden md:block"
         />
-        <Modal>
-          <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
-              + Community Board
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <CommunityBoardModal lists={lists} />
-          </ModalContent>
-        </Modal>
+        <div className="w-full flex justify-center items-center md:justify-end md:w-auto md:items-center">
+          <Modal>
+            <ModalTrigger asChild>
+              <Button type="button" className="page-header-button">
+                + Community Board
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <CommunityBoardModal lists={lists} />
+            </ModalContent>
+          </Modal>
+        </div>
       </div>
       <FilterBar
         azFilter

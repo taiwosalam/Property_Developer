@@ -32,7 +32,7 @@ const ExportVat = () => {
           phoneNumbers={["09022312133", "07012133313", "0901212121"]}
           email="example@mail.com"
         />
-        <div className="rounded-lg bg-white p-8 flex">
+        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex">
           <KeyValueList
             data={{
               "summary id": "123456",
@@ -50,7 +50,7 @@ const ExportVat = () => {
         </div>
       </div>
       <div className="custom-flex-col gap-6">
-        <h1 className="text-black text-2xl font-medium text-center">
+        <h1 className="text-black dark:text-white text-2xl font-medium text-center">
           VAT Summary
         </h1>
         <AutoResizingGrid gap={24} minWidth={330}>

@@ -25,15 +25,12 @@ const ExportInvoice = () => {
         <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex">
           <KeyValueList
             data={{}}
-            chunkSize={2}
+            chunkSize={1}
             direction="column"
             referenceObject={{
-              "invoice id": "",
-              "customer name": "",
-              "property name": "",
-              date: "",
-              "account officer": "",
-              "unit id": "",
+              "Summary ID": "",
+              "Start Date": "",
+              "End Date": "",
             }}
           />
         </div>

@@ -164,7 +164,7 @@ export const PlusBoldIcon = ({ size = 21 }) => {
   );
 };
 
-export const CalendarIcon = ({ color = "#050901" }) => {
+export const CalendarIcon = ({ color = "currentColor" }) => {
   return (
     <svg
       width="17"

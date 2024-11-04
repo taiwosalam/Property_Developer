@@ -78,22 +78,34 @@ const RentalPropertyListCard: React.FC<{
       <div className="flex items-center justify-between mt-5 gap-2 px-2 flex-wrap">
         <PropertyTag propertyType={propertyType} />
         <div className="flex items-center gap-2 flex-wrap">
-          {actions.map((action, i) => (
-            <ActionButton
-              key={i}
-              {...action}
-              route={
-                typeof action.route === "function"
-                  ? action.route(unitId, propertyType)
-                  : action.route
+          {actions
+            .filter((action) => {
+              // For rental properties, exclude Relocate
+              if (propertyType === "rental" && action.label === "Relocate") {
+                return false;
               }
-              label={
-                typeof action.label === "function"
-                  ? action.label(propertyType)
-                  : action.label
+              // For facilities, exclude Move Out
+              if (propertyType === "facility" && action.label === "Move Out") {
+                return false;
               }
-            />
-          ))}
+              return true;
+            })
+            .map((action, i) => (
+              <ActionButton
+                key={i}
+                {...action}
+                route={
+                  typeof action.route === "function"
+                    ? action.route(unitId, propertyType)
+                    : action.route
+                }
+                label={
+                  typeof action.label === "function"
+                    ? action.label(propertyType)
+                    : action.label
+                }
+              />
+            ))}
         </div>
       </div>
     </div>

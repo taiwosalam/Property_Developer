@@ -141,6 +141,7 @@ const PropertyRequestUnitType = () => {
   return (
     <>
       <Select
+        required
         id="property-category"
         label="Property Categories"
         options={propertyCategories}
@@ -149,6 +150,7 @@ const PropertyRequestUnitType = () => {
         }
       />
       <Select
+        required
         id="property_type"
         options={unitTypeOptions}
         label="Property Type"
@@ -159,6 +161,7 @@ const PropertyRequestUnitType = () => {
         requiredNoStar
       />
       <Select
+        required
         options={unitSubtypeOptions}
         id="property_sub_type"
         label="Property Sub Type"

@@ -18,6 +18,9 @@ import { team_chat_data } from "./data";
 import TeamChartCard from "./TeamChartCard";
 import { SearchIcon } from "@/public/icons/icons";
 import { TeamChatHeader } from "./team-chat-components";
+import DeleteModal from "./DeleteModal";
+import { Box, Modal } from "@mui/material";
+import { useTeamChatStore } from "@/store/teamChatStore";
 
 const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { id } = useParams();
@@ -30,6 +33,16 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const filteredMembers = team_chat_data.filter((member) =>
     member.fullname.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  };
+
+  const { isDeleteMember, openDeleteMember, closeDeleteMember } =
+    useTeamChatStore();
 
   return (
     <>
@@ -100,6 +113,16 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
           </div>
         )}
       </div>
+      <Modal
+        open={isDeleteMember}
+        onClose={closeDeleteMember}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <DeleteModal />
+        </Box>
+      </Modal>
     </>
   );
 };
