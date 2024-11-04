@@ -52,33 +52,33 @@ const SwitchUnitModal = () => {
               <div className="flex items-center gap-2">
                 <Switch
                   size={15}
+                  checked={checked1}
                   onClick={() => {
-                    setChecked1(checked1 === false ? true : false);
+                    setChecked1((x) => !x);
                   }}
-                  checked={checked1 == true}
                 />
                 <p>Calculation</p>
               </div>
               <p>
-                {checked1 == false
-                  ? "Calculate the total package of the new fee, including service charge and other Charges) for the occupant that you are transferring to the new unit."
+                {!checked1
+                  ? "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before."
                   : "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges) for the tenants that you are transferring to the new unit."}
               </p>
             </div>
             <div className="flex items-center gap-2">
               <Switch
                 size={15}
+                checked={checked2}
                 onClick={() => {
-                  setChecked2(checked2 === false ? true : false);
+                  setChecked2((x) => !x);
                 }}
-                checked={checked2 == true}
               />
               <p>Deduction</p>
             </div>
             <p>
-              {checked2 == false
-                ? "Calculate the total package of the new fee, including service charge and other Charges) for the occupant that you are transferring to the new unit."
-                : "Do not deduct the current outstanding fee balance from the cost of the new unit that the occupant are moving into."}
+              {!checked2
+                ? "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost."
+                : "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into."}
             </p>
           </div>
           <div className="flex items-center justify-center my-auto">

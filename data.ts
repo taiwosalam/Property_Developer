@@ -300,6 +300,8 @@ export const unitFacilities = {
   ],
 };
 
+
+
 export const rentPeriods = [
   "daily",
   "weekly",
@@ -317,6 +319,8 @@ export const rentPeriods = [
   "nonennial",
   "decennial",
 ];
+
+
 
 export const landlordTypes = [
   "Individual Landlord",

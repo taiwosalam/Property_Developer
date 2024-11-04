@@ -63,6 +63,7 @@ const ChangeUnitpage = () => {
               isRental={isRental}
               rentPeriod="yearly"
               title={`Start ${isRental ? "Rent" : "Fee"}`}
+              start
             />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px]">

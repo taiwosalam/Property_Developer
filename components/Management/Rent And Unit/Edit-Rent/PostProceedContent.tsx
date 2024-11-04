@@ -60,7 +60,8 @@ const PostProceedContent = () => {
             <StartRent
               isRental={isRental}
               rentPeriod="yearly"
-              title={`Start ${isRental ? "Rent" : "Fee"}`}
+              title={`Start ${isRental ? "Rent" : "Counting"}`}
+              start
             />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px]">

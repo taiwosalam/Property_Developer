@@ -62,7 +62,8 @@ export const RenewalRent: React.FC<{
   isRental: boolean;
   rentPeriod: RentPeriod;
   title?: string;
-}> = ({ isRental, rentPeriod, title }) => {
+  start?: boolean;
+}> = ({ isRental, rentPeriod, title, start }) => {
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
 
@@ -139,10 +140,30 @@ export const RenewalRent: React.FC<{
           </Checkbox>
         ))}
       </div>
-      <p className="text-sm font-normal text-text-secondary w-fit ml-auto">
-        {checkboxStates["Create Invoice"]
-          ? "Rent will commence upon tenants making payment for the generated invoice."
-          : "Confirms that you have received payment for the rent renewal. However, if you intend to receive the payment, you can click 'create invoice' for tenants to make the payment."}
+      <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit ml-auto">
+        {start ? (
+          <>
+            {checkboxStates["Create Invoice"]
+              ? `Payment will be reflected once the ${
+                  isRental ? "tenant" : "occupant"
+                } makes a payment towards the generated invoice.`
+              : `Confirms that you have received payment for the Unit Change.  However, if you intend to receive the payment, you can click 'create invoice' for ${
+                  isRental ? "tenant" : "occupant"
+                } to make the payment.`}
+          </>
+        ) : (
+          <>
+            {checkboxStates["Create Invoice"]
+              ? `${isRental ? "Rent" : "Fee"} will commence upon ${
+                  isRental ? "tenant" : "occupant"
+                } making payment for the generated invoice.`
+              : `Confirms that you have received payment for the ${
+                  isRental ? "rent" : "fee"
+                } renewal. However, if you intend to receive the payment, you can click 'create invoice' for ${
+                  isRental ? "tenant" : "occupant"
+                } to make the payment.`}
+          </>
+        )}
       </p>
     </div>
   );
