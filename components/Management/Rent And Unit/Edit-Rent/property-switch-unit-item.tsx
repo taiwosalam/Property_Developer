@@ -10,6 +10,7 @@ import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
+import Switch from "@/components/Form/Switch/switch";
 
 interface PropertySwitchUnitItemProps {
   id: string;
@@ -24,6 +25,8 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
+  const [checked1, setChecked1] = useState(false);
+  const [checked2, setChecked2] = useState(false);
   return (
     <div
       className="p-6 rounded-2xl bg-white dark:bg-darkText-primary"
@@ -41,13 +44,8 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
         <h4 className="text-brand-10 text-base font-bold">
           Unit ID: 123456776342
         </h4>
-        <div>
-          <Checkbox onChange={() => onSelect(id)} checked={isSelected}>
-            <span></span>
-          </Checkbox>
-        </div>
+        <Checkbox onChange={() => onSelect(id)} checked={isSelected} />
       </div>
-      {/* <hr className="my-4 " /> */}
       <SectionSeparator className="my-4 h-[2px]" />
       <div className="flex items-center gap-2 justify-between overflow-y-auto custom-round-scrollbar pb-2">
         <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
@@ -98,6 +96,38 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
         </div>
       </div>
       <SectionSeparator className="my-4 h-[2px]" />
+      {isSelected && (
+        <div className="space-y-6 text-text-secondary dark:text-darkText-1 text-sm font-medium">
+          <div className="space-y-[10px]">
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={checked1}
+                onClick={() => setChecked1((x) => !x)}
+              />
+              <p>Calclation</p>
+            </div>
+            <p>
+              {!checked1
+                ? "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before"
+                : "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges) for the tenants that you are transferring to the new unit."}
+            </p>
+          </div>
+          <div className="space-y-[10px]">
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={checked2}
+                onClick={() => setChecked2((x) => !x)}
+              />
+              <p>Deduction</p>
+            </div>
+            <p>
+              {!checked2
+                ? "Do not deduct the current outstanding rent balance from the cost of the new units that the occupants are moving into"
+                : "Calculate the total package of the new fee, including service charge and other Charges for the occupant that you are transferring to the new unit."}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

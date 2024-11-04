@@ -4,17 +4,13 @@ import {
   estateData,
   propertySettingsData,
   DUMMY_OCCUPANT,
+  rentalData,
 } from "@/components/Management/Rent And Unit/data";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
 import Button from "@/components/Form/Button/button";
-import { RentSectionContainer } from "@/components/Management/Rent And Unit/rent-section-container";
-import SwitchPropertyModal from "@/components/Management/Rent And Unit/Edit-Rent/SwitchPropertyModal";
-import SwitchUnitModal from "@/components/Management/Rent And Unit/Edit-Rent/SwitchUnitModal";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
-import { rentRecordsTableData, rentRecordsTableFields } from "./data";
-import CustomTable from "@/components/Table/table";
 import { useSearchParams } from "next/navigation";
 import {
   RentDetails,
@@ -38,7 +34,7 @@ const EditRent = () => {
       <section className="space-y-6">
         <EstateDetails
           title={`${isRental ? "Unit" : "Estate"} Details`}
-          estateData={estateData}
+          estateData={isRental ? rentalData : estateData}
         />
         <EstateSettings
           title={`${isRental ? "Property" : "Estate"} Settings`}

@@ -132,7 +132,7 @@ export const RenewalRent: React.FC<{
             sm
             key={option}
             checked={checkboxStates[option]}
-            onChange={handleCheckboxChange(option)}
+            onChange={() => handleCheckboxChange(option)}
           >
             {option}
           </Checkbox>

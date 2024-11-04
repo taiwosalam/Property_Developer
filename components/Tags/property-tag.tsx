@@ -6,7 +6,7 @@ const PropertyTag: React.FC<PropertyTagProps> = ({
   propertyType,
 }) => {
   return (
-    <div
+    <p
       className={clsx(
         "rounded-lg py-1 px-4 font-normal text-sm max-w-fit text-center",
         {
@@ -18,7 +18,7 @@ const PropertyTag: React.FC<PropertyTagProps> = ({
       )}
     >
       {propertyType === "rental" ? "Rental Property" : "Facility Property"}
-    </div>
+    </p>
   );
 };
 

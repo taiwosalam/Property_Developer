@@ -15,6 +15,7 @@ const Switch: React.FC<SwitchProps> = ({
 
   return (
     <button
+      type="button"
       onClick={onClick}
       className={clsx("flex items-center rounded-full", {
         "bg-status-success-primary justify-end": active,
@@ -28,7 +29,7 @@ const Switch: React.FC<SwitchProps> = ({
       <div
         className="rounded-full bg-white"
         style={{ width: size, height: size }}
-      ></div>
+      />
     </button>
   );
 };
