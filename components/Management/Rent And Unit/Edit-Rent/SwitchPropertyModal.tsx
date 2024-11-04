@@ -7,7 +7,9 @@ import FormModalPreset from "../../landlord-tenant-modal-preset";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-const SwitchPropertyModal = () => {
+const SwitchPropertyModal: React.FC<{
+  isRental: boolean;
+}> = ({ isRental }) => {
   const searchParams = useSearchParams();
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const router = useRouter();
@@ -15,21 +17,20 @@ const SwitchPropertyModal = () => {
 
   if (modalView === "warning") {
     return (
-      <ModalPreset type="warning" className="w-full min-w-[360px]">
-        <div className="flex flex-col gap-11">
-          <div className="flex flex-col gap-10">
-            <p className="text-text-tertiary text-[14px]">
-              Are you sure you want to proceed with moving the tenant&apos;s
-              records from the current unit to another unit of another property?
-            </p>
-            <div className="flex flex-col gap-2">
-              <Button onClick={() => setModalView("form")}>OK</Button>
-              <ModalTrigger asChild close>
-                <Button variant="blank" className="text-brand-9">
-                  Back
-                </Button>
-              </ModalTrigger>
-            </div>
+      <ModalPreset type="warning">
+        <div className="flex flex-col gap-10">
+          <p className="text-text-tertiary text-[14px]">
+            Are you sure you want to proceed with moving the{" "}
+            {isRental ? "tenant's" : "occupant's"}
+            records from the current unit to another unit of another property?
+          </p>
+          <div className="flex flex-col gap-2">
+            <Button onClick={() => setModalView("form")}>OK</Button>
+            <ModalTrigger asChild close>
+              <Button variant="blank" className="text-brand-9">
+                Back
+              </Button>
+            </ModalTrigger>
           </div>
         </div>
       </ModalPreset>

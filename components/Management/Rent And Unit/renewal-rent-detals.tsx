@@ -177,7 +177,7 @@ export const PreviousRentRecords: React.FC<{ isRental: boolean }> = ({
       <RentSectionTitle>
         {isRental ? "Previous Rent Records" : "Previous Fee Records"}
       </RentSectionTitle>
-      <SectionSeparator className="mt-4 mb-6" />
+      <SectionSeparator className="mt-4 mb-6 h-[2px]" />
       <CustomTable
         data={previousRentRecordsData}
         fields={previousRentRecordsTableFields}

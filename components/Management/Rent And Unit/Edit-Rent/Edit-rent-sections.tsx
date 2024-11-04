@@ -149,13 +149,15 @@ export const TransferTenants = ({ isRental }: { isRental: boolean }) => {
       title={`Transfer ${isRental ? "Tenants" : "Occupants"}`}
     >
       <p className="text-sm text-text-secondary dark:text-darkText-2 font-normal mb-6">
-        Transfer tenants to another unit within the same property with the
-        option to calculate and deduct outstanding amounts from the new unit.
+        Transfer {isRental ? "tenants" : "occupants"} to another unit within the
+        same property with the option to calculate and deduct outstanding
+        amounts from the new unit.
         <br />
-        Alternatively move the same tenants from their current rental property
-        to another rental property with the option to pay either the outstanding
-        amounts or previous package or new package and also calculate and deduct
-        any outstanding payments.
+        Alternatively move the same {isRental ? "tenants" : "occupants"} from
+        their current {isRental && "rental"} property to another{" "}
+        {isRental ? "rental" : "property"} with the option to pay either the
+        outstanding amounts or previous package or new package and also
+        calculate and deduct any outstanding payments.
       </p>
       <div className="flex items-center gap-2 justify-end">
         <Modal>
@@ -165,7 +167,7 @@ export const TransferTenants = ({ isRental }: { isRental: boolean }) => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <SwitchPropertyModal />
+            <SwitchPropertyModal isRental={isRental} />
           </ModalContent>
         </Modal>
         <Modal>
@@ -175,7 +177,7 @@ export const TransferTenants = ({ isRental }: { isRental: boolean }) => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <SwitchUnitModal />
+            <SwitchUnitModal isRental={isRental} />
           </ModalContent>
         </Modal>
       </div>
