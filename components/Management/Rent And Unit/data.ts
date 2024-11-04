@@ -1,7 +1,6 @@
 import type { Occupant, UnitDetails } from "./types";
 import type { Field } from "@/components/Table/types";
 import { Dayjs } from "dayjs";
-import { rentPeriods } from "@/data";
 
 export const getBackgroundColor = (StatusName: string): string => {
   switch (StatusName) {
@@ -183,7 +182,21 @@ const generateTableData = (length: number) => {
 
 export const previousRentRecordsData = generateTableData(5);
 
-export type RentPeriod = (typeof rentPeriods)[number];
+export type RentPeriod =
+  | "daily"
+  | "weekly"
+  | "monthly"
+  | "quarterly"
+  | "yearly"
+  | "biennially"
+  | "triennially"
+  | "quadrennial"
+  | "quinquennial"
+  | "sexennial"
+  | "septennial"
+  | "octennial"
+  | "nonennial"
+  | "decennial";
 
 export const calculateDueDate = (
   startDate: Dayjs,

@@ -134,7 +134,7 @@ export const AddPartPayment = () => {
           </ModalContent>
         </Modal>
       </div>
-      <p className="text-sm font-medium text-text-secondary dark:text-darkText-1">
+      <p className="text-sm font-medium text-text-secondary dark:text-darkText-1 w-fit ml-auto">
         {createInvoice
           ? "Partial payment will be reflected once the tenant makes a payment towards the generated invoice."
           : "Clicking 'update' confirms the partial payment. However, if you intend to receive the payment, you can click 'create invoice' for tenants to make the payment."}
