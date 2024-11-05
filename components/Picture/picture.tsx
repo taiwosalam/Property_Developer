@@ -66,7 +66,7 @@ const Picture: React.FC<PictureProps> = ({
         <div
           className="absolute right-[5%] bottom-[5%] rounded-full bg-status-success-primary border border-solid border-white"
           style={{ width: status_wh, height: status_wh }}
-        ></div>
+        />
       )}
     </div>
   );

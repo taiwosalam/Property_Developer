@@ -1,6 +1,7 @@
 // Types
 import Link from "next/link";
 import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import type {
   SectionDescProps,
   SectionTitleProps,
@@ -45,7 +46,7 @@ export const SectionSeparator: React.FC<{
 }> = ({ className, direction = "x", style }) => (
   <div
     style={style}
-    className={clsx(
+    className={cn(
       "bg-[rgba(192,194,200,0.2)] separator",
       {
         "h-[1px] w-full": direction === "x",

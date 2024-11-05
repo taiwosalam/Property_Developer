@@ -34,7 +34,7 @@ export const RentSectionContainer: React.FC<{
 export const RentSectionTitle: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => (
-  <h2 className="font-bold text-[#092C4C] dark:text-white text-lg lg:text-xl">
+  <h2 className="font-bold text-primary-navy dark:text-white text-lg lg:text-xl">
     {children}
   </h2>
 );

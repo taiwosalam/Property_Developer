@@ -27,20 +27,16 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
     return (
       <Modal>
         <ModalTrigger asChild>
-          <button
-            className={commonStyles}
-            style={{ backgroundColor: color }}
-            // onClick={modal}
-          >
+          <button className={commonStyles} style={{ backgroundColor: color }}>
             {label}
           </button>
         </ModalTrigger>
         {modal === "Relocate" ? (
-          <ModalContent title="Relocate Unit">
+          <ModalContent>
             <RelocateModal />
           </ModalContent>
         ) : (
-          <ModalContent title="Move Out Unit">
+          <ModalContent>
             <MoveOutModal />
           </ModalContent>
         )}
