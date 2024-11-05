@@ -34,11 +34,11 @@ const ChangeUnitpage = () => {
       <BackButton>Change Unit</BackButton>
       <section className="space-y-6">
         <EstateDetails
-          title={`${isRental ? "Unit" : "Estate"} Details`}
+          title={`${isRental ? "Unit" : "Facility"} Details`}
           estateData={isRental ? rentalData : estateData}
         />
         <EstateSettings
-          title={`${isRental ? "Property" : "Estate"} Settings`}
+          title={`${isRental ? "Property" : "Facility"} Settings`}
           estateSettingsDta={
             isRental ? propertySettingsData : estateSettingsDta
           }

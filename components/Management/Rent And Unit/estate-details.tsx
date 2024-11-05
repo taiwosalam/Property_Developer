@@ -1,5 +1,6 @@
 import { EstateDetailItem } from "./detail-item";
 import { RentSectionTitle } from "./rent-section-container";
+
 const EstateDetails = ({
   title,
   estateData,
@@ -16,7 +17,12 @@ const EstateDetails = ({
       <div className="h-[1px] bg-[#C0C2C8] bg-opacity-20" />
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-2">
         {estateData.map((item, index) => (
-          <EstateDetailItem key={index} label={item.label} value={item.value} />
+          <EstateDetailItem
+            key={index}
+            label={item.label}
+            value={item.value}
+            truncate={item.label.toLowerCase() === "description"}
+          />
         ))}
       </div>
     </div>

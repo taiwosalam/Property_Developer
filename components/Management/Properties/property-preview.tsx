@@ -1,24 +1,10 @@
-"use client";
 import Image from "next/image";
-import clsx from "clsx";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  variants,
-  swipeConfidenceThreshold,
-  wrap,
-  swipePower,
-} from "@/utils/slider";
-import {
-  LocationIcon,
-  PlayIconButton,
-  PreviousIcon,
-  NextIcon,
-} from "@/public/icons/icons";
+import { LocationIcon, PlayIconButton } from "@/public/icons/icons";
 import { PropertyPreviewProps } from "./types";
 import UnitItem from "./unit-item";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import BackButton from "@/components/BackButton/back-button";
+import ImageSlider from "@/components/ImageSlider/image-slider";
 
 const PropertyPreview: React.FC<PropertyPreviewProps> = ({ images, type }) => {
   const colors = {
@@ -28,13 +14,6 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({ images, type }) => {
     expired: "#E9212E",
     relocate: "#620E13",
   };
-
-  const [[page, direction], setPage] = useState([0, 0]);
-  const paginate = (newDirection: number) => {
-    setPage([page + newDirection, newDirection]);
-  };
-
-  const imageIndex = wrap(0, images.length, page);
 
   return (
     <div className="space-y-5">
@@ -56,61 +35,10 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({ images, type }) => {
         </p>
       </div>
 
-      <div className="lg:flex gap-[2.5%]">
+      <div className="lg:flex gap-[30px]">
         <div className="lg:w-[60%]">
           {/* Main Image */}
-          <div className="relative aspect-[1.4] overflow-hidden rounded-lg">
-            <button
-              type="button"
-              aria-label="previous"
-              className={clsx(
-                "w-6 h-6 rounded-full grid place-items-center absolute z-[2] left-2 top-1/2 transform -translate-y-1/2"
-              )}
-              style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
-              onClick={() => paginate(-1)}
-            >
-              <PreviousIcon />
-            </button>
-            <button
-              type="button"
-              aria-label="next"
-              className={clsx(
-                "w-6 h-6 rounded-full grid place-items-center absolute z-[2] right-2 top-1/2 transform -translate-y-1/2"
-              )}
-              style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
-              onClick={() => paginate(1)}
-            >
-              <NextIcon />
-            </button>
-            <AnimatePresence initial={false} custom={direction}>
-              <motion.img
-                key={page}
-                src={images[imageIndex]}
-                alt={`${"property name prop"} ${imageIndex + 1}`}
-                custom={direction}
-                variants={variants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{
-                  x: { type: "spring", stiffness: 300, damping: 30 },
-                  opacity: { duration: 0.2 },
-                }}
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={1}
-                onDragEnd={(e, { offset, velocity }) => {
-                  const swipe = swipePower(offset.x, velocity.x);
-                  if (swipe < -swipeConfidenceThreshold) {
-                    paginate(1);
-                  } else if (swipe > swipeConfidenceThreshold) {
-                    paginate(-1);
-                  }
-                }}
-                className="absolute inset-0"
-              />
-            </AnimatePresence>
-          </div>
+          <ImageSlider images={images} className="aspect-[1.4] rounded-lg" />
 
           {/* Videos */}
           <div>
@@ -121,7 +49,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({ images, type }) => {
               <div
                 className="absolute inset-0 bg-black opacity-50 z-[1]"
                 aria-hidden="true"
-              ></div>
+              />
               <button
                 type="button"
                 aria-label="Play Video"
@@ -141,7 +69,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = ({ images, type }) => {
           </div>
         </div>
 
-        <div className="lg:w-[37.5%]">
+        <div className="lg:flex-1">
           <div className="bg-white dark:bg-darkText-primary p-4 md:p-6 lg:p-8 rounded-b-3xl mt-4 lg:mt-0 space-y-2">
             {/* Property Details */}
             <div className="text-base font-normal space-y-2 [&>div]:grid [&>div]:grid-cols-2">

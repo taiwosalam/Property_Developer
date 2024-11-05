@@ -103,7 +103,11 @@ export const estateData = [
   { label: "Full Address", value: "56, Abiola way area Moniya ibadan" },
   { label: "Branch", value: "Moniya Branch" },
   { label: "Account Officer", value: "Ajadi David" },
-  { label: "Description", value: "Lorem ipsum dolor sit amet, consecte....." },
+  {
+    label: "Description",
+    value:
+      "Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  },
   { label: "Categories", value: "Residential" },
   { label: "Unit ID", value: "123456" },
 ];
@@ -235,3 +239,53 @@ export const calculateDueDate = (
       return startDate.add(1, "month");
   }
 };
+
+export const sampleDocuments = [
+  {
+    id: 1,
+    name: "Invoice 1",
+    link: "https://example.com/sample-attachment.pdf",
+    date: "2021-01-01",
+    thumbnail: "/empty/SampleLandlord.jpeg",
+    document_type: "invoice",
+  },
+  {
+    id: 2,
+    name: "Invoice 2",
+    link: "https://example.com/sample-attachment.pdf",
+    date: "2021-01-01",
+    thumbnail: "/empty/SampleLandlord2.svg",
+    document_type: "invoice",
+  },
+  {
+    id: 3,
+    name: "Receipt 1",
+    link: "https://example.com/sample-attachment.pdf",
+    date: "2021-01-01",
+    thumbnail: "/empty/SampleLogo.jpeg",
+    document_type: "receipt",
+  },
+  {
+    id: 4,
+    name: "Receipt 2",
+    link: "https://example.com/sample-attachment.pdf",
+    date: "2021-01-01",
+    thumbnail: "/empty/SampleProperty.jpeg",
+    document_type: "receipt",
+  },
+
+  {
+    id: 5,
+    name: "Classified MI6 Info",
+    link: "https://example.com/sample-attachment.pdf",
+    date: "2021-01-01",
+    document_type: "other document",
+  },
+  {
+    id: 6,
+    name: "Highly Classified FBI Database",
+    link: "https://example.com/sample-attachment.pdf",
+    date: "2021-01-01",
+    document_type: "other document",
+  },
+];

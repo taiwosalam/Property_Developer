@@ -1,23 +1,12 @@
 "use client";
 import { PropertyProps } from "./types";
+import ImageSlider from "@/components/ImageSlider/image-slider";
 import clsx from "clsx";
 import { useState, useRef } from "react";
 import Button from "@/components/Form/Button/button";
-import {
-  variants,
-  swipeConfidenceThreshold,
-  wrap,
-  swipePower,
-} from "@/utils/slider";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
-import {
-  LocationIcon,
-  NextIcon,
-  PreviousIcon,
-  VideoIcon,
-  CameraIcon,
-} from "@/public/icons/icons";
+import { LocationIcon, CameraIcon, VideoIcon } from "@/public/icons/icons";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 
 interface PropertyCardProps extends PropertyProps {
@@ -38,15 +27,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   viewOnly,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const [[page, direction], setPage] = useState([0, 0]);
   const [isModalActive, setIsModalActive] = useState(false);
-
-  const paginate = (e: any, newDirection: number) => {
-    e.preventDefault();
-    setPage([page + newDirection, newDirection]);
-  };
-
-  const imageIndex = wrap(0, images.length, page);
 
   useOutsideClick(modalRef, () => {
     if (isClickable && !viewOnly) {
@@ -58,35 +39,40 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       className="rounded-2xl relative overflow-hidden bg-white dark:bg-darkText-primary "
       style={{ boxShadow: "4px 4px 10px 0px rgba(0, 0, 0, 0.05)" }}
     >
-      <div className="relative h-[200px] w-full overflow-hidden rounded-t-2xl group">
-        <button
-          type="button"
-          aria-label="previous"
-          className="w-6 h-6 rounded-full grid place-items-center absolute z-[2] left-2 top-1/2 transform -translate-y-1/2"
-          style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
-          onClick={(e) => paginate(e, -1)}
-        >
-          <PreviousIcon />
-        </button>
-        <button
-          type="button"
-          aria-label="next"
-          className="w-6 h-6 rounded-full grid place-items-center absolute z-[2] right-2 top-1/2 transform -translate-y-1/2"
-          style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
-          onClick={(e) => paginate(e, 1)}
-        >
-          <NextIcon />
-        </button>
-
-        {/* Top left corner */}
-        <div className="absolute z-[2] top-2 left-2 bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <CameraIcon width={16} height={16} />
-          <span className="text-sm font-medium">
-            {`${imageIndex + 1}/${images.length}`}
-          </span>
-        </div>
-
-        {/* Bottom right corner */}
+      <AnimatePresence>
+        {isModalActive && isClickable && (
+          <motion.div
+            key="modal-buttons"
+            initial={{ y: "-100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "-100%" }}
+            transition={{ stiffness: 100, duration: 0.3 }}
+            className="h-[45%] absolute z-[3] inset-0 flex items-center justify-center gap-x-10"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+            ref={modalRef}
+          >
+            <Button
+              size="base_bold"
+              className="py-2 px-8"
+              href={`/management/properties/${id}/edit-property`}
+            >
+              Manage
+            </Button>
+            <Button
+              size="base_bold"
+              className="py-2 px-8"
+              href={`/management/properties/${id}`}
+            >
+              Preview
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <ImageSlider
+        images={images}
+        showImageIndexOnHover
+        className="h-[200px] rounded-t-2xl"
+      >
         <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
           <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />
@@ -98,65 +84,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             <VideoIcon />
           </div>
         </div>
+      </ImageSlider>
 
-        <AnimatePresence initial={false} custom={direction}>
-          <motion.img
-            key={page}
-            src={images[imageIndex]}
-            alt={`${name} image-${imageIndex + 1}`}
-            custom={direction}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{
-              x: { type: "spring", stiffness: 300, damping: 30 },
-            }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={1}
-            onDragEnd={(e, { offset, velocity }) => {
-              e.preventDefault();
-              const swipe = swipePower(offset.x, velocity.x);
-              if (swipe < -swipeConfidenceThreshold) {
-                paginate(e, 1);
-              } else if (swipe > swipeConfidenceThreshold) {
-                paginate(e, -1);
-              }
-            }}
-            className="absolute inset-0"
-          />
-        </AnimatePresence>
-        <AnimatePresence>
-          {isModalActive && isClickable && (
-            <motion.div
-              key="modal-buttons"
-              initial={{ y: "-100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "-100%" }}
-              transition={{ stiffness: 100, duration: 0.3 }}
-              className="absolute z-[3] inset-0 flex items-center justify-center gap-x-10"
-              style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
-              ref={modalRef}
-            >
-              <Button
-                size="base_bold"
-                className="py-2 px-8"
-                href={`/management/properties/${id}/edit-property`}
-              >
-                Manage
-              </Button>
-              <Button
-                size="base_bold"
-                className="py-2 px-8"
-                href={`/management/properties/${id}`}
-              >
-                Preview
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
       <div
         className="relative rounded-b-2xl p-4"
         role={isClickable && !viewOnly ? "button" : undefined}

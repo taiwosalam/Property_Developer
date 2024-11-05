@@ -23,11 +23,11 @@ const StartRent = () => {
       <BackButton>Start {isRental ? "Rent" : "Counting"}</BackButton>
       <section className="space-y-6">
         <EstateDetails
-          title={`${isRental ? "Unit" : "Estate"} Details`}
+          title={`${isRental ? "Unit" : "Facility"} Details`}
           estateData={isRental ? rentalData : estateData}
         />
         <EstateSettings
-          title={`${isRental ? "Property" : "Estate"} Settings`}
+          title={`${isRental ? "Property" : "Facility"} Settings`}
           estateSettingsDta={
             isRental ? propertySettingsData : estateSettingsDta
           }
@@ -50,10 +50,12 @@ const StartRent = () => {
           ]}
         />
       </section>
-      <FixedFooter className="flex justify-between">
-        <Button size="base_medium" className="py-2 px-6">
-          Download Agreement
-        </Button>
+      <FixedFooter className={`flex justify-${isRental ? "between" : "end"}`}>
+        {isRental && (
+          <Button size="base_medium" className="py-2 px-6">
+            Download Agreement
+          </Button>
+        )}
         <Button size="base_medium" className="py-2 px-6">
           Save
         </Button>
