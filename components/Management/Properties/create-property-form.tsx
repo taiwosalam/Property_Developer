@@ -260,10 +260,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   {images.length < 6 && (
                     <label
                       htmlFor="property_pictures"
-                      className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
+                      className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white dark:bg-darkText-primary flex flex-col items-center justify-center cursor-pointer text-[#626262] dark:text-darkText-2"
                     >
                       <PlusIcon />
-                      <span className="text-black text-base font-normal mt-2">
+                      <span className="text-black dark:text-white text-base font-normal mt-2">
                         Add Pictures
                       </span>
                       <input

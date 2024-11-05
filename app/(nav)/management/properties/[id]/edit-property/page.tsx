@@ -5,9 +5,12 @@ import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-ca
 import CreatePropertyForm from "@/components/Management/Properties/create-property-form";
 import { SectionSeparator } from "@/components/Section/section-components";
 import BackButton from "@/components/BackButton/back-button";
+import { useSearchParams } from "next/navigation";
 
 const EditProperty = () => {
   const handleSubmit = () => {};
+  const searchParams = useSearchParams();
+  const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
 
   return (
     <div className="space-y-7 pb-[100px]">
@@ -17,7 +20,7 @@ const EditProperty = () => {
       <CreatePropertyForm
         editMode
         handleSubmit={handleSubmit}
-        formType="rental" //to be dynamic
+        formType={propertyType} //to be dynamic
       />
 
       <div className="custom-flex-col gap-10">
