@@ -16,7 +16,7 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
   units,
   address,
   price,
-  type,
+  propertyType,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
@@ -31,9 +31,7 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
         onClose={() => setScreenModal(false)}
         images={sampleImages.map((image) => ({
           src: image.src,
-          isVideo: false,
         }))}
-        currentIndex={0}
       />
       <div className="flex flex-col-reverse md:flex-row md:items-center gap-4 md:justify-between">
         {/* Image */}
@@ -44,7 +42,11 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
             style={{
               backgroundColor: "rgba(0, 0, 0, 0.3) dark:bg-darkText-primary",
             }}
-            onClick={() => setScreenModal(true)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setScreenModal(true);
+            }}
           >
             {/* Group of icons down */}
             <div className="flex items-stretch gap-[10px] absolute z-[1] left-[50%] translate-x-[-50%] bottom-4">

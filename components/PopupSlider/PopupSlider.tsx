@@ -49,7 +49,6 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
   return (
     <Dialog
       open={isOpen}
-      // onClose={onClose}
       maxWidth="lg"
       PaperProps={{
         sx: {
