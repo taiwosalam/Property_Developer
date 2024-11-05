@@ -109,11 +109,11 @@ const UnitPreviewPage = () => {
             <h3 className="text-brand-10 font-medium text-base">Unit Fee</h3>
             <div className="flex gap-2 flex-wrap justify-between">
               <PriceSection
-                title="New Tenants"
+                title="New Tenant"
                 price={unitDetails.newTenantPrice}
               />
               <PriceSection
-                title="Renewal Tenants"
+                title="Renewal Tenant"
                 price={unitDetails.renewalTenantPrice}
               />
             </div>
