@@ -2,6 +2,7 @@
 import { PropertyProps } from "./types";
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import clsx from "clsx";
+import PropertyTag from "@/components/Tags/property-tag";
 import { useState, useRef } from "react";
 import Button from "@/components/Form/Button/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,10 +23,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   units,
   address,
   price,
-  type,
+  propertyType,
   isClickable = true,
   viewOnly,
 }) => {
+  const isRental = propertyType === "rental";
   const modalRef = useRef<HTMLDivElement>(null);
   const [isModalActive, setIsModalActive] = useState(false);
 
@@ -103,17 +105,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <LocationIcon />
           {address}
         </p>
-        <div className="flex justify-between items-end mt-1">
-          <p
-            className={clsx(
-              "px-4 py-1 text-[10px] font-normal rounded-lg",
-              type === "rental"
-                ? "text-status-success-3 bg-status-success-1"
-                : "text-brand-9 bg-brand-3"
-            )}
-          >
-            {type === "rental" ? "Rental Property" : "Facility Property"}
-          </p>
+        <div className="flex flex-wrap justify-between items-end mt-1">
+          <PropertyTag propertyType={propertyType} sm />
           <div className="text-right">
             <p className="text-brand-primary text-lg lg:text-xl font-bold">{`${
               currencySymbols["NAIRA"]
@@ -150,7 +143,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             </div>
             <div>
               <p className="text-label font-normal">
-                {type === "rental" ? "Available" : "Owing"} Units
+                {isRental ? "Available" : "Owing"} Units
               </p>
               <p className="text-brand-9 font-bold">5</p>
             </div>

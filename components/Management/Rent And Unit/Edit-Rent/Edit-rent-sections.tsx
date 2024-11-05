@@ -163,7 +163,7 @@ export const TransferTenants = ({ isRental }: { isRental: boolean }) => {
         <Modal>
           <ModalTrigger asChild>
             <Button type="submit" className="py-2 px-6" size="base_medium">
-              Switch Property
+              Switch {isRental ? "Property" : "Facility"}
             </Button>
           </ModalTrigger>
           <ModalContent>

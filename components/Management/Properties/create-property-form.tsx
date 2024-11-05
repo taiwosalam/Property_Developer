@@ -260,10 +260,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   {images.length < 6 && (
                     <label
                       htmlFor="property_pictures"
-                      className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"
+                      className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white dark:bg-darkText-primary flex flex-col items-center justify-center cursor-pointer text-[#626262] dark:text-darkText-2"
                     >
                       <PlusIcon />
-                      <span className="text-black text-base font-normal mt-2">
+                      <span className="text-black dark:text-white text-base font-normal mt-2">
                         Add Pictures
                       </span>
                       <input
@@ -281,16 +281,18 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             </Droppable>
           </DragDropContext>
         </div>
-        <div className="md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3">
-          <Input
-            id="video_link"
-            label="Video Link"
-            type="url"
-            className="mb-5"
-            placeholder="https://www.youtube.com/video "
-            inputClassName="bg-white rounded-[8px] md:col-span-1"
-          />
-        </div>
+        {formType === "rental" && (
+          <div className="md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <Input
+              id="video_link"
+              label="Video Link"
+              type="url"
+              className="mb-5"
+              placeholder="https://www.youtube.com/video "
+              inputClassName="bg-white rounded-[8px] md:col-span-1"
+            />
+          </div>
+        )}
         {/* Property Details */}
         <p className="text-primary-navy dark:text-white font-bold text-lg lg:text-xl">
           <span className="text-status-error-primary">*</span>

@@ -11,6 +11,7 @@ import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import { VideoIcon, CameraIcon } from "@/public/icons/icons";
+import PropertyTag from "@/components/Tags/property-tag";
 
 const PropertyListItem: React.FC<PropertyProps> = ({
   id,
@@ -20,7 +21,7 @@ const PropertyListItem: React.FC<PropertyProps> = ({
   units,
   address,
   price,
-  type,
+  propertyType,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
@@ -112,16 +113,7 @@ const PropertyListItem: React.FC<PropertyProps> = ({
       <hr className="my-4" />
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2">
-          <p
-            className={clsx(
-              "px-4 py-1 text-[10px] font-normal rounded-lg",
-              type === "rental"
-                ? "text-status-success-3 bg-status-success-1"
-                : "text-brand-9 bg-brand-3"
-            )}
-          >
-            {type === "rental" ? "Rental Property" : "Gated Estate"}
-          </p>
+          <PropertyTag propertyType={propertyType} />
           <p className="font-bold text-sm md:text-base text-brand-10">
             ID: 123456776342
           </p>

@@ -8,7 +8,7 @@ export interface PropertyProps {
   units: number;
   address: string;
   price: number;
-  type?: "rental" | "gated";
+  propertyType: "rental" | "facility";
   annualReturns?: number;
   annualIncome?: number;
   currency: string;
@@ -20,11 +20,6 @@ export interface AddPropertyOptionsViewProps {
   setModalView: React.Dispatch<React.SetStateAction<AddPropertyModalViews>>;
 }
 
-export interface PropertyPreviewProps {
-  images: string[];
-  type: "rental" | "gated";
-}
-
 export type UnitCardDataProps = keyof typeof unit_card_data_props;
 
 export interface UnitCardProps {
@@ -34,7 +29,7 @@ export interface UnitCardProps {
 }
 
 export interface CreatePropertyFormProps {
-  formType: "rental" | "gated-estate";
+  formType: "rental" | "facility";
   handleSubmit: (a?: any) => void;
   editMode?: boolean;
 }

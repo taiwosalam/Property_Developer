@@ -11,6 +11,6 @@ export const DetailItem = ({
     <p className="text-[#747474] dark:text-white lg:w-1/3" style={style}>
       {label}
     </p>
-    <p className="lg:flex-1 text-black dark:text-darkText-2">{value}</p>
+    <p className="lg:flex-1 text-black dark:text-darkText-1">{value}</p>
   </div>
 );
