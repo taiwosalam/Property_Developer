@@ -318,6 +318,8 @@ const ManageLandlord = () => {
               address={property.address}
               price={property.rental_value}
               currency={property.currency}
+              propertyType="facility"
+
             />
           ))}
         </AutoResizingGrid>

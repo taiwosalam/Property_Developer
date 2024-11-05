@@ -322,24 +322,74 @@ const BranchDashboard = () => {
       <section>
         {gridView ? (
           <AutoResizingGrid minWidth={315}>
-            {properties.slice(0, 30).map((p) => (
+            {/* {properties.map((p) => (
               <Link
                 href={`/management/staff-branch/${branchId}/property/${p.id}`}
                 key={p.id}
               >
                 <PropertyCard {...p} isClickable={false} />
               </Link>
+            ))} */}
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Link
+                key={index}
+                href={`/management/staff-branch/${branchId}/property/${index}`}
+              >
+                <PropertyCard
+                  address="123 Main St"
+                  id={1}
+                  propertyId={1}
+                  images={[
+                    "/empty/SampleProperty.jpeg",
+                    "/empty/SampleProperty2.jpeg",
+                    "/empty/SampleProperty3.jpeg",
+                    "/empty/SampleProperty4.jpeg",
+                    "/empty/SampleProperty5.jpeg",
+                  ]}
+                  name="Property 1"
+                  units={1}
+                  price={1000}
+                  propertyType={index % 2 === 0 ? "rental" : "facility"}
+                  currency="Naira"
+                  isClickable={false}
+                />
+              </Link>
             ))}
           </AutoResizingGrid>
         ) : (
           <div className="space-y-4">
-            {properties.slice(0, 30).map((p) => (
+            {/* {properties.map((p) => (
               <Link
                 href={`/management/staff-branch/${branchId}/property/${p.id}`}
                 key={p.id}
                 className="block"
               >
                 <BranchPropertyListItem {...p} />
+              </Link>
+            ))} */}
+            {Array.from({ length: 10 }).map((_, index) => (
+              <Link
+                key={index}
+                href={`/management/staff-branch/${branchId}/property/${index}`}
+                className="block"
+              >
+                <BranchPropertyListItem
+                  address="123 Main St"
+                  id={1}
+                  propertyId={1}
+                  images={[
+                    "/empty/empty.svg",
+                    "/empty/empty.svg",
+                    "/empty/empty.svg",
+                    "/empty/empty.svg",
+                    "/empty/empty.svg",
+                  ]}
+                  name="Property 1"
+                  units={1}
+                  price={1000}
+                  propertyType={index % 2 === 0 ? "rental" : "facility"}
+                  currency="Naira"
+                />
               </Link>
             ))}
           </div>

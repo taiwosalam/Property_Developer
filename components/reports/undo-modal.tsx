@@ -101,7 +101,7 @@ const eventToComponentMap = {
         name="Property 1"
         propertyId="1"
         price={1000}
-        type="gated"
+        propertyType="facility"
         units={10}
         currency="Naira"
       />
