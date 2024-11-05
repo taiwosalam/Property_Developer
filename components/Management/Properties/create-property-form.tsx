@@ -281,16 +281,18 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             </Droppable>
           </DragDropContext>
         </div>
-        <div className="md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3">
-          <Input
-            id="video_link"
-            label="Video Link"
-            type="url"
-            className="mb-5"
-            placeholder="https://www.youtube.com/video "
-            inputClassName="bg-white rounded-[8px] md:col-span-1"
-          />
-        </div>
+        {formType === "rental" && (
+          <div className="md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <Input
+              id="video_link"
+              label="Video Link"
+              type="url"
+              className="mb-5"
+              placeholder="https://www.youtube.com/video "
+              inputClassName="bg-white rounded-[8px] md:col-span-1"
+            />
+          </div>
+        )}
         {/* Property Details */}
         <p className="text-primary-navy dark:text-white font-bold text-lg lg:text-xl">
           <span className="text-status-error-primary">*</span>

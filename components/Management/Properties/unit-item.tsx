@@ -11,7 +11,9 @@ import Sample3 from "@/public/empty/SampleProperty3.jpeg";
 import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
-const UnitItem = ({ type = "rental" }: { type?: "rental" | "gated" }) => {
+import PropertyTag from "@/components/Tags/property-tag";
+
+const UnitItem = ({ type = "rental" }: { type?: "rental" | "facility" }) => {
   const colors = {
     vacant: "#FFBB53",
     occupied: "#01BA4C",
@@ -44,11 +46,11 @@ const UnitItem = ({ type = "rental" }: { type?: "rental" | "gated" }) => {
           <div
             className="w-5 h-5 rounded-full"
             style={{ backgroundColor: colors["vacant"] }}
-          ></div>
+          />
           <div
             className="w-5 h-5 rounded-full"
             style={{ backgroundColor: colors["occupied"] }}
-          ></div>
+          />
         </div>
       </div>
       {/* <hr className="my-4 " /> */}
@@ -113,16 +115,7 @@ const UnitItem = ({ type = "rental" }: { type?: "rental" | "gated" }) => {
       </div>
 
       <SectionSeparator className="my-4 h-[2px]" />
-      <p
-        className={clsx(
-          "px-4 py-1 text-[10px] font-normal rounded-lg w-fit",
-          type === "rental"
-            ? "text-status-success-3 bg-status-success-1"
-            : "text-brand-9 bg-brand-3"
-        )}
-      >
-        {type === "rental" ? "Rental Property" : "Gated Estate"}
-      </p>
+      <PropertyTag propertyType={type} />
     </div>
   );
 };

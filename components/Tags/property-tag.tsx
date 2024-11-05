@@ -4,16 +4,18 @@ import clsx from "clsx";
 const PropertyTag: React.FC<PropertyTagProps> = ({
   className,
   propertyType,
+  sm,
 }) => {
   return (
     <p
       className={clsx(
-        "rounded-lg py-1 px-4 font-normal text-sm max-w-fit text-center",
+        "rounded-lg py-1 px-4 font-normal max-w-fit text-center",
         {
           "bg-status-success-1 text-status-success-3":
             propertyType === "rental",
           "bg-brand-3 text-brand-9": propertyType === "facility",
         },
+        sm ? "text-[10px]" : "text-sm",
         className
       )}
     >

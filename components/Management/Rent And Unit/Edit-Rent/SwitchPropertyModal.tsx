@@ -21,8 +21,8 @@ const SwitchPropertyModal: React.FC<{
         <div className="flex flex-col gap-10">
           <p className="text-text-tertiary text-[14px]">
             Are you sure you want to proceed with moving the{" "}
-            {isRental ? "tenant's" : "occupant's"}
-            records from the current unit to another unit of another property?
+            {isRental ? "tenant's" : "occupant's"} records from the current unit
+            to another unit of another property?
           </p>
           <div className="flex flex-col gap-2">
             <Button onClick={() => setModalView("form")}>OK</Button>
@@ -40,14 +40,14 @@ const SwitchPropertyModal: React.FC<{
   if (modalView === "form") {
     return (
       <FormModalPreset
-        heading="Add Property"
+        heading={`Add ${isRental ? "Property" : "Facility"}`}
         back={{ handleBack: () => setModalView("warning") }}
         style={{ maxWidth: "600px", height: "400px" }}
       >
         <div className="space-y-5 max-w-[300px] mx-auto mt-5">
           <Select
             id=""
-            label="Choose Property"
+            label={`Choose ${isRental ? "Property" : "Facility"}`}
             options={[
               { value: "1", label: "Option 1" },
               { value: "2", label: "Option 2" },
