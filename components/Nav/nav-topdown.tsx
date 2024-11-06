@@ -26,7 +26,14 @@ const TopNavDropdown: React.FC<NavDropdownProps> = ({
 
   return (
     <>
-      <NavButton type={type} highlight={highlight} onClick={handleClick}>
+      <NavButton
+        type={type}
+        highlight={highlight || Boolean(anchorEl)}
+        onClick={handleClick}
+        isDropdown
+        topNav
+        isOpen={Boolean(anchorEl)}
+      >
         {children}
       </NavButton>
 

@@ -17,6 +17,7 @@ export interface NavButtonProps {
   isDropdown?: boolean;
   isOpen?: boolean;
   isCollapsed?: boolean;
+  topNav?: boolean;
 }
 
 export interface NavDropdownProps extends NavButtonProps {

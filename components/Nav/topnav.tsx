@@ -30,6 +30,7 @@ const TopNav = () => {
             key={idx}
             href={item.href}
             type={item.type}
+            topNav
           >
             {item.label}
           </NavButton>
