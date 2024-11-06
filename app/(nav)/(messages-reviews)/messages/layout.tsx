@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useParams } from "next/navigation";
 
 // Types
@@ -38,7 +37,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                   leftIcon={"/icons/search-icon.svg"}
                   inputClassName="pr-[52px] border-transparent"
                 />
-                <div className="absolute top-2/4 right-0 -translate-y-2/4">
+                <div className="absolute top-1/2 right-0 -translate-y-1/2">
                   <FilterButton
                     noTitle
                     style={{

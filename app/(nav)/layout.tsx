@@ -91,7 +91,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
           />
           <div
-            className={`h-[50px] px-3 flex items-center flex-wrap ${
+            className={`h-[50px] px-3 flex items-center ${
               navbar !== "row" ? "justify-between" : "justify-end"
             } gap-2 bg-white dark:bg-[#020617] max-w-full overflow-hidden`}
           >
@@ -123,7 +123,12 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 )}
               </button>
             )}
-            <p className="capitalize text-text-primary dark:text-darkText-2 text-sm font-medium truncate">
+            <p
+              className="capitalize text-text-primary dark:text-darkText-2 text-sm font-medium truncate"
+              style={{
+                direction: "rtl", // RTL direction for truncating from the start
+              }}
+            >
               {pathname.split("/").slice(1).join(" > ")}
             </p>
           </div>

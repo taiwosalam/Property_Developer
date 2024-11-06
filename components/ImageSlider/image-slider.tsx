@@ -46,25 +46,28 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
       )}
       //   Make sure u pass height
     >
-      <button
-        type="button"
-        aria-label="previous"
-        className={cn(NPButtonClasses, "left-2")}
-        style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
-        onClick={(e) => paginate(e, -1)}
-      >
-        <PreviousIcon />
-      </button>
-      <button
-        type="button"
-        aria-label="next"
-        className={cn(NPButtonClasses, "right-2")}
-        style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
-        onClick={(e) => paginate(e, 1)}
-      >
-        <NextIcon />
-      </button>
-
+      {images.length > 1 && (
+        <>
+          <button
+            type="button"
+            aria-label="previous"
+            className={cn(NPButtonClasses, "left-2")}
+            style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
+            onClick={(e) => paginate(e, -1)}
+          >
+            <PreviousIcon />
+          </button>
+          <button
+            type="button"
+            aria-label="next"
+            className={cn(NPButtonClasses, "right-2")}
+            style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
+            onClick={(e) => paginate(e, 1)}
+          >
+            <NextIcon />
+          </button>
+        </>
+      )}
       {/* Top left corner */}
       <div
         className={cn(
