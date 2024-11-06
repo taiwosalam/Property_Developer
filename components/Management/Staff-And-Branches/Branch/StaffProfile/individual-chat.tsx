@@ -6,8 +6,8 @@ const IndividualChat: React.FC<{
   closeChat: () => void;
 }> = ({ closeChat }) => {
   return (
-    <div className="max-h-[600px] flex flex-col">
-      <div className="py-4 px-6 bg-neutral-2 dark:bg-[#3C3D37]">
+    <div className="h-full flex flex-col relative">
+      <div className="sticky z-[2] top-0 py-4 px-6 bg-neutral-2 dark:bg-[#3C3D37]">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -36,7 +36,7 @@ const IndividualChat: React.FC<{
           </button>
         </div>
       </div>
-      <div className="flex-1 py-5 px-6 overflow-auto custom-round-scrollbar bg-white dark:bg-darkText-primary custom-flex-col gap-8">
+      <div className="flex-1 z-[1] py-5 px-6 overflow-auto custom-round-scrollbar bg-white dark:bg-darkText-primary custom-flex-col gap-8">
         <Messages day="yesterday" />
         <Messages day="today" />
       </div>
