@@ -19,7 +19,7 @@ const StaffChat = () => {
       <div
         className={`${
           activeChatId ? "hidden" : "block"
-        } lg:block lg:w-[43%] p-4 pr-2 bg-white dark:bg-darkText-primary rounded-lg lg:rounded-r-none`}
+        } lg:block lg:w-[43%] p-4 pr-2 bg-white dark:bg-darkText-primary rounded-lg lg:rounded-r-none max-h-[600px] overflow-auto custom-round-scrollbar`}
       >
         <ChatList
           activeChatId={activeChatId}
@@ -30,12 +30,12 @@ const StaffChat = () => {
       <div
         className={`${
           activeChatId ? "block" : "hidden"
-        } lg:block lg:flex-1 rounded-lg lg:rounded-l-none`}
+        } lg:block lg:flex-1 rounded-lg lg:rounded-l-none max-h-[600px] overflow-auto custom-round-scrollbar`}
       >
         {activeChatId ? (
           <IndividualChat closeChat={closeChat} />
         ) : (
-          <div className="custom-flex-col gap-4 items-center justify-center">
+          <div className="h-full custom-flex-col gap-4 items-center justify-center">
             <div className="flex justify-center">
               <Image src={LogoPlaceholder} alt="logo" width={200} />
             </div>

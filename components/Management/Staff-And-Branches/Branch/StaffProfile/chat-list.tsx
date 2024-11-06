@@ -8,7 +8,7 @@ const ChatList: React.FC<{
   setActiveChatId: (id: string) => void;
 }> = ({ activeChatId, setActiveChatId }) => {
   return (
-    <div className="max-h-[600px] flex flex-col gap-4">
+    <div className="h-full flex flex-col gap-4 relative">
       <div className="flex gap-3 sticky top-0 z-[2]">
         <SearchInput
           placeholder="Search for messages"
