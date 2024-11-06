@@ -8,6 +8,7 @@ export interface MessageCardProps {
   verified?: boolean;
   highlight?: boolean;
   groupDesc?: string;
+  onClick?: () => void;
 }
 
 export interface MessagesProps {

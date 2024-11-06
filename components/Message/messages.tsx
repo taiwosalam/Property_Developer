@@ -1,5 +1,3 @@
-import React from "react";
-
 // Imports
 import Message from "./message";
 import { MessagesProps } from "./types";

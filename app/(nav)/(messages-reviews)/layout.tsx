@@ -1,5 +1,3 @@
-import React from "react";
-
 const MessagesReviewsLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {

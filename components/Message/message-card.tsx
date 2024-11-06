@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 
 // Images
@@ -22,14 +21,10 @@ const MessageCard: React.FC<MessageCardProps> = ({
   verified,
   highlight,
   messages = 0,
+  onClick,
 }) => {
-  return (
-    <Link
-      href={`/messages/${id}`}
-      className={clsx("custom-flex-col gap-4", {
-        "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
-      })}
-    >
+  const Children = () => (
+    <>
       <div></div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 flex-1">
@@ -60,6 +55,27 @@ const MessageCard: React.FC<MessageCardProps> = ({
         </div>
       </div>
       <SectionSeparator />
+    </>
+  );
+
+  return onClick ? (
+    <button
+      type="button"
+      onClick={onClick}
+      className={clsx("custom-flex-col gap-4", {
+        "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
+      })}
+    >
+      <Children />
+    </button>
+  ) : (
+    <Link
+      href={`/messages/${id}`}
+      className={clsx("custom-flex-col gap-4", {
+        "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
+      })}
+    >
+      <Children />
     </Link>
   );
 };

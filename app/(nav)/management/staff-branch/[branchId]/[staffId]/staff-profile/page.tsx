@@ -28,6 +28,7 @@ import {
   staffActivitiesTableFields,
 } from "./data";
 import CustomTable from "@/components/Table/table";
+import StaffChat from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/staff-chat";
 
 const StaffProfile = () => {
   const { branchId, staffId } = useParams();
@@ -39,9 +40,9 @@ const StaffProfile = () => {
           <BackButton bold>Moniya Branch</BackButton>
           <div className="flex">
             <div className="w-10"></div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 text-text-disabled">
               <LocationIcon />
-              <p className="text-text-disabled text-xs font-normal">
+              <p className="text-sm font-normal">
                 Street 23, All Avenue, Nigeria
               </p>
             </div>
@@ -151,6 +152,7 @@ const StaffProfile = () => {
         <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
           Barrister Abimbola Adedeji Chat
         </h2>
+        <StaffChat />
       </div>
       <div className="custom-flex-col gap-[18px]">
         <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
