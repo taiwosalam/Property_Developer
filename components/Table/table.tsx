@@ -158,7 +158,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 maxHeight: "76px",
                 transition: "background-color 0.3s ease",
                 "&:hover": {
-                  backgroundColor: isDarkMode ? "#c1c2c3" : "#dbe6f3",
+                  backgroundColor: isDarkMode ? "#2c2f33" : "#dbe6f3",
                 },
               }}
             >

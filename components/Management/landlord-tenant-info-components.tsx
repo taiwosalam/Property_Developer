@@ -39,7 +39,7 @@ export const LandlordTenantInfo: React.FC<{
         </h3>
       )}
       {separator && (
-        <div className="w-full border border-dashed border-brand-9 opacity-40"></div>
+        <div className="w-full border border-dashed border-brand-9 opacity-40" />
       )}
       <div className="flex gap-10 text-sm lg:text-base font-normal capitalize">
         <div className="custom-flex-col gap-4">

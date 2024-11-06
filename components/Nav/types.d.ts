@@ -13,17 +13,16 @@ export interface NavButtonProps {
   minimized_highlight?: boolean;
   style?: CSSProperties;
   children: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent) => void;
   isDropdown?: boolean;
   isOpen?: boolean;
   isCollapsed?: boolean;
 }
 
 export interface NavDropdownProps extends NavButtonProps {
-  topNav?: boolean;
   onContentClick?: () => void;
   content: { label: string; href: string }[];
-  onToggle: () => void;
+  onToggle?: () => void;
 }
 
 export type NavItemsProps = {

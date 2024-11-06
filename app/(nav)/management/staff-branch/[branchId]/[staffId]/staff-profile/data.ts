@@ -1,6 +1,6 @@
 // Types
 import type { StaffProfilePortfolioProps } from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/types";
-
+import type { Field } from "@/components/Table/types";
 // Images
 import SampleProperty from "@/public/empty/SampleProperty.jpeg";
 import SampleProperty2 from "@/public/empty/SampleProperty2.jpeg";
@@ -105,3 +105,29 @@ export const placeholder_portfolio_data: StaffProfilePortfolioProps[] = [
     ],
   },
 ];
+
+export const staffActivitiesTableFields: Field[] = [
+  { id: "1", label: "S/N", accessor: "S/N" },
+  { id: "2", label: "Username", accessor: "username" },
+  { id: "3", label: "Page Visits", accessor: "page_visits" },
+  { id: "4", label: "Action Taken", accessor: "action_taken" },
+  { id: "5", label: "IP Address", accessor: "ip_address" },
+  { id: "6", label: "Location", accessor: "location" },
+  { id: "7", label: "Date", accessor: "date" },
+  { id: "8", label: "Time", accessor: "time" },
+];
+
+const generateTableData = (numItems: number) => {
+  return Array.from({ length: numItems }, (_, index) => ({
+    id: `${index + 1}`,
+    username: "ola@gail.com",
+    page_visits: "Landlord Login Page",
+    action_taken: "Login Success",
+    ip_address: "105.113.18.186",
+    location: "6.537216, 3.3488896",
+    date: "12/12/12",
+    time: "3:20pm",
+  }));
+};
+
+export const activitiesTableData = generateTableData(5);

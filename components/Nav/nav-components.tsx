@@ -103,7 +103,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
       title={String(children)}
       className="w-full block"
       href={href}
-      onClick={onClick ? () => onClick() : undefined}
+      onClick={onClick ? (e) => onClick(e) : undefined}
     >
       {content}
     </Link>
@@ -112,7 +112,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
       aria-label={String(children)}
       type="button"
       className="w-full block"
-      onClick={onClick ? () => onClick() : undefined}
+      onClick={onClick ? (e) => onClick(e) : undefined}
     >
       {content}
     </button>

@@ -13,13 +13,11 @@ import { empty } from "@/app/config";
 import NavDropdown from "./nav-dropdown";
 import { NavButton } from "./nav-components";
 import { useDashboardData } from "@/hooks/useDashboardData";
-import useSettingsStore from "@/store/settings";
 
 const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
   const pathname = usePathname();
 
   const { loading, data: dashboardData } = useDashboardData();
-  const { selectedOptions } = useSettingsStore();
 
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 

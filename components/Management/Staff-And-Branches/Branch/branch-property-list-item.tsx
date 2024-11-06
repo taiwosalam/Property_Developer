@@ -33,9 +33,9 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
           src: image.src,
         }))}
       />
-      <div className="flex flex-col-reverse md:flex-row md:items-center gap-4 md:justify-between">
+      <div className="flex items-center gap-8 md:justify-between overflow-auto custom-round-scrollbar">
         {/* Image */}
-        <div className="w-[125px] h-[125px] rounded-lg relative overflow-hidden group cursor-pointer">
+        <div className="flex-shrink-0 w-[125px] h-[125px] rounded-lg relative overflow-hidden group cursor-pointer">
           <div
             role="button"
             className="absolute z-[10] inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -69,34 +69,30 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
           />
         </div>
 
-        <div className="overflow-x-auto max-w-full flex-grow">
-          <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
-            <div>
-              <p className="text-[#747474]">Unit Details Units</p>
-              <p className="text-black">Moniya Apartment</p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Property ID</p>
-              <p className="text-black">12345667890</p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Number of Units</p>
-              <p className="text-black">14 Units</p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Annual Returns</p>
-              <p className="text-brand-primary font-bold">₦1,950,000</p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Address</p>
-              <p className="text-black">
-                Newly Built 5 Bedroom Detached Duplex
-              </p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Annual Income</p>
-              <p className="text-highlight font-bold">₦700,000</p>
-            </div>
+        <div className="flex-shrink-0 text-sm md:text-base grid grid-cols-2 gap-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
+          <div>
+            <p className="text-[#747474]">Unit Details Units</p>
+            <p className="text-black">Moniya Apartment</p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Property ID</p>
+            <p className="text-black">12345667890</p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Number of Units</p>
+            <p className="text-black">14 Units</p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Annual Returns</p>
+            <p className="text-brand-primary font-bold">₦1,950,000</p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Address</p>
+            <p className="text-black">Newly Built 5 Bedroom Detached Duplex</p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Annual Income</p>
+            <p className="text-highlight font-bold">₦700,000</p>
           </div>
         </div>
       </div>

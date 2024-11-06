@@ -108,6 +108,7 @@ const ChangePropertyPage: React.FC = () => {
               id={unitId}
               isSelected={selectedUnitId === unitId}
               onSelect={handleUnitSelect}
+              isRental={isRental}
             />
           );
         })}
