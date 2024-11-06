@@ -105,8 +105,7 @@ const BranchStaffPage = () => {
     <div className="custom-flex-col gap-6">
       <div className="w-full gap-2 flex items-center justify-between flex-wrap">
         <div>
-          <BackButton>
-            {/* Samuel, h1 child of h1, hydration error. Backbutton is h1 */}
+          <BackButton as="div" className="items-start">
             <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
               {fetchedBranchData?.branch?.branch_title || "Null"}
             </h1>
@@ -152,7 +151,10 @@ const BranchStaffPage = () => {
       {gridView ? (
         <AutoResizingGrid minWidth={284}>
           {Array.from({ length: 20 }).map((_, index) => (
-            <Link key={index} href="">
+            <Link
+              key={index}
+              href={`/management/staff-branch/${branchId}/${1}/staff-profile`}
+            >
               <UserCard
                 badge_color="black"
                 email="test@test.com"

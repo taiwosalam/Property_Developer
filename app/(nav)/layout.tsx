@@ -13,7 +13,7 @@ import SideNav from "@/components/Nav/sidenav";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import Header from "@/components/Nav/navbar";
-import { trackOutsideClick } from "@/utils/track-outside-click";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 import useSettingsStore from "@/store/settings";
 import TopNav from "@/components/Nav/topnav";
 
@@ -26,19 +26,11 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
 
-  useEffect(() => {
-    let removeOutsideClickListener: (() => void) | undefined;
-    if (isMobile && isSideNavOpen && sideNavRef.current) {
-      removeOutsideClickListener = trackOutsideClick(sideNavRef, () =>
-        setIsSideNavOpen(false)
-      );
+  useOutsideClick(sideNavRef, () => {
+    if (isMobile) {
+      setIsSideNavOpen(false);
     }
-    return () => {
-      if (removeOutsideClickListener) {
-        removeOutsideClickListener();
-      }
-    };
-  }, [isSideNavOpen, isMobile]);
+  });
 
   useEffect(() => {
     setIsSideNavOpen(!isMobile);
@@ -49,9 +41,27 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <LayoutContext.Provider value={{ isSideNavOpen }}>
       <Header />
-      <div className="flex overflow-x-auto custom-round-scrollbar sticky top-[100px] z-[2] bg-white dark:bg-[#020617]">
-        {navbar === "row" && (
-          <TopNav
+      {navbar === "row" ? (
+        <div className="sticky top-[100px] z-[2] bg-white dark:bg-[#020617]">
+          <TopNav />
+        </div>
+      ) : (
+        <aside
+          ref={sideNavRef}
+          className={clsx(
+            "h-[calc(100vh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white dark:bg-[#020617] dark:border-[#252525] dark:border-r no-scrollbar overflow-auto transition-transform duration-300",
+            {
+              "-translate-x-full md:w-[110px]": !isSideNavOpen,
+              "translate-x-0 md:w-[235px] lg:w-[250px]": isSideNavOpen,
+            },
+            "md:translate-x-0"
+          )}
+          style={{
+            // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+            transitionProperty: "width, transform",
+          }}
+        >
+          <SideNav
             closeSideNav={() => {
               if (isMobile) {
                 setIsSideNavOpen(false);
@@ -59,36 +69,10 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             }}
             isCollapsed={!isSideNavOpen}
           />
-        )}
-      </div>
+        </aside>
+      )}
 
       <>
-        {navbar !== "row" && (
-          <aside
-            ref={sideNavRef}
-            className={clsx(
-              "h-[calc(100vh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white dark:bg-[#020617] dark:border-[#252525] dark:border-r no-scrollbar overflow-auto transition-transform duration-300",
-              {
-                "-translate-x-full md:w-[110px]": !isSideNavOpen,
-                "translate-x-0 md:w-[235px] lg:w-[250px]": isSideNavOpen,
-              },
-              "md:translate-x-0"
-            )}
-            style={{
-              // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-              transitionProperty: "width, transform",
-            }}
-          >
-            <SideNav
-              closeSideNav={() => {
-                if (isMobile) {
-                  setIsSideNavOpen(false);
-                }
-              }}
-              isCollapsed={!isSideNavOpen}
-            />
-          </aside>
-        )}
         <div
           style={{
             boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)",
@@ -107,10 +91,8 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
           />
           <div
-            className={`h-[50px] px-3 flex flex-wrap ${
-              navbar !== "row"
-                ? "items-center justify-between"
-                : "items-center justify-end"
+            className={`h-[50px] px-3 flex items-center flex-wrap ${
+              navbar !== "row" ? "justify-between" : "justify-end"
             } gap-2 bg-white dark:bg-[#020617] max-w-full overflow-hidden`}
           >
             {navbar !== "row" && (

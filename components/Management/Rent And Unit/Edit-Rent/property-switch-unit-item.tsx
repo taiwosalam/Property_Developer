@@ -16,12 +16,14 @@ interface PropertySwitchUnitItemProps {
   id: string;
   isSelected: boolean;
   onSelect: (id: string) => void;
+  isRental?: boolean;
 }
 
 const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
   id,
   isSelected,
   onSelect,
+  isRental,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
@@ -96,7 +98,7 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
         </div>
       </div>
       <SectionSeparator className="my-4 h-[2px]" />
-      {isSelected && (
+      {isSelected && isRental && (
         <div className="space-y-6 text-text-secondary dark:text-darkText-1 text-sm font-medium">
           <div className="space-y-[10px]">
             <div className="flex items-center gap-2">

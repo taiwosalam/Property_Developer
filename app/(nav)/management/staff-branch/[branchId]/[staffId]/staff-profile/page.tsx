@@ -1,12 +1,11 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
 // Images
 import { ChevronRight } from "lucide-react";
-import LocationIcon from "@/public/icons/location.svg";
+import { LocationIcon } from "@/public/icons/icons";
 
 import Avatar from "@/public/empty/avatar-1.svg";
 
@@ -23,7 +22,12 @@ import { secondaryFont } from "@/utils/fonts";
 import Button from "@/components/Form/Button/button";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import StaffProfilePortfolio from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/staff-profile-portfolio";
-import { placeholder_portfolio_data } from "./data";
+import {
+  activitiesTableData,
+  placeholder_portfolio_data,
+  staffActivitiesTableFields,
+} from "./data";
+import CustomTable from "@/components/Table/table";
 
 const StaffProfile = () => {
   const { branchId, staffId } = useParams();
@@ -32,16 +36,11 @@ const StaffProfile = () => {
     <div className="custom-flex-col gap-10">
       <div className="custom-flex-col gap-6">
         <div className="custom-flex-col gap-2">
-          <BackButton>Moniya Branch</BackButton>
+          <BackButton bold>Moniya Branch</BackButton>
           <div className="flex">
             <div className="w-10"></div>
             <div className="flex items-center gap-1">
-              <Picture
-                src={LocationIcon}
-                alt="location"
-                width={12}
-                height={16}
-              />
+              <LocationIcon />
               <p className="text-text-disabled text-xs font-normal">
                 Street 23, All Avenue, Nigeria
               </p>
@@ -60,26 +59,21 @@ const StaffProfile = () => {
                 />
               </div>
               <div className="custom-flex-col gap-2">
-                <div className="custom-flex-col gap-4">
-                  <div className="custom-flex-col">
-                    <div className="flex items-center gap-2">
-                      <p className="text-black text-xl font-bold capitalize">
-                        Barrister Abimbola Adedeji
-                      </p>
+                <div className="space-y-4">
+                  <div>
+                    <span className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
+                      Barrister Abimbola Adedeji
                       <BadgeIcon color="blue" />
-                    </div>
+                    </span>
                     <p
-                      style={{ color: "rgba(21, 21, 21, 0.70)" }}
-                      className={`${secondaryFont.className} text-sm font-normal`}
+                      className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-darkText-2`}
                     >
                       Legal Practitioner
                     </p>
                   </div>
-                  <div className="custom-flex-col gap-2">
-                    <div className="flex">
-                      <BranchManagerTag />
-                    </div>
-                    <p className="text-neutral-800 text-base font-medium">
+                  <div className="space-y-2">
+                    <BranchManagerTag />
+                    <p className="text-neutral-800 dark:text-darkText-2 text-base font-medium">
                       ID: 22132876554444
                     </p>
                   </div>
@@ -110,11 +104,11 @@ const StaffProfile = () => {
           />
           <LandlordTenantInfoBox>
             <div className="custom-flex-col gap-4">
-              <p className="text-black text-xl font-bold capitalize">
+              <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
                 About Barrister Abimbola Adedeji
-              </p>
-              <div className="w-full border border-dashed border-brand-9 opacity-40"></div>
-              <p className="text-text-quaternary text-sm font-normal">
+              </h3>
+              <div className="w-full border border-dashed border-brand-9 opacity-40" />
+              <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal">
                 A multi-family home, also know as a duplex, triplex, or
                 multi-unit building, is a residential property that living read
                 more. They want to work with their budget in booking an
@@ -140,70 +134,26 @@ const StaffProfile = () => {
       </div>
       <div className="custom-flex-col gap-[18px]">
         <div className="flex justify-between">
-          <h1 className="text-2xl font-bold text-black">
+          <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
             Barrister Abimbola Adedeji Activities
-          </h1>
+          </h2>
           <Link href={""} className="flex items-center gap-1">
             <p>See all</p>
             <ChevronRight size={16} color="#5A5D61" />
           </Link>
         </div>
-        <div className="overflow-x-auto">
-          <table className="dash-table">
-            <thead>
-              <tr>
-                <th>S/N</th>
-                <th>username</th>
-                <th>page vists</th>
-                <th>action taken</th>
-                <th>IP address</th>
-                <th>location</th>
-                <th>date</th>
-                <th>time</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array(6)
-                .fill(null)
-                .map((_, idx) => (
-                  <tr key={idx}>
-                    <td>
-                      <p>0{idx + 1}</p>
-                    </td>
-                    <td>
-                      <p>Olalomi@gmail.com</p>
-                    </td>
-                    <td>
-                      <p>Landlord login page</p>
-                    </td>
-                    <td>
-                      <p>Login success</p>
-                    </td>
-                    <td>
-                      <p>105.113.18.186</p>
-                    </td>
-                    <td>
-                      <p>6.537216,3.3488896</p>
-                    </td>
-                    <td>
-                      <p>12/12/12</p>
-                    </td>
-                    <td>
-                      <p>3:20pm</p>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
+        <CustomTable
+          data={activitiesTableData}
+          fields={staffActivitiesTableFields}
+        />
       </div>
       <div className="custom-flex-col gap-[18px]">
-        <h1 className="text-2xl font-bold text-black">
+        <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
           Barrister Abimbola Adedeji Chat
-        </h1>
+        </h2>
       </div>
       <div className="custom-flex-col gap-[18px]">
-        <h1 className="text-2xl font-bold text-black">
+        <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
           Barrister Abimbola Adedeji Portfolios
         </h1>
         <div className="custom-flex-col gap-8">

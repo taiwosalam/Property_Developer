@@ -42,53 +42,45 @@ const SwitchUnitModal: React.FC<{ isRental: boolean }> = ({ isRental }) => {
       <MenuModalPreset
         heading="Transfer To New Unit"
         back={{ handleBack: () => setModalView("warning") }}
-        style={{ maxWidth: "600px" }}
+        style={{ maxWidth: "600px", height: isRental ? "auto" : "400px" }}
       >
         <div className="flex flex-col gap-14">
-          <div className="flex flex-col gap-4 text-text-secondary text-[14px] font-medium">
-            <div className="flex flex-col gap-4">
+          {isRental && (
+            <div className="flex flex-col gap-4 text-text-secondary text-[14px] font-medium">
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                  <Switch
+                    size={15}
+                    checked={checked1}
+                    onClick={() => {
+                      setChecked1((x) => !x);
+                    }}
+                  />
+                  <p>Calculation</p>
+                </div>
+                <p>
+                  {!checked1
+                    ? "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before."
+                    : "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges for the tenants that you are transferring to the new unit."}
+                </p>
+              </div>
               <div className="flex items-center gap-2">
                 <Switch
                   size={15}
-                  checked={checked1}
+                  checked={checked2}
                   onClick={() => {
-                    setChecked1((x) => !x);
+                    setChecked2((x) => !x);
                   }}
                 />
-                <p>Calculation</p>
+                <p>Deduction</p>
               </div>
               <p>
-                {!checked1
-                  ? `Charge the ${
-                      isRental ? "tenants" : "occupants"
-                    } the same total package as renewal ${
-                      isRental ? "tenants" : "occupants"
-                    } since they were ${
-                      isRental ? "tenants" : "occupants"
-                    } in one of the units of the property before.`
-                  : `Calculate the total package of the new ${
-                      isRental ? "rent" : "fee"
-                    }, including caution deposit, Service Charge, agency fee, legal fee and other Charges for the ${
-                      isRental ? "tenants" : "occupants"
-                    } that you are transferring to the new unit.`}
+                {!checked2
+                  ? "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost."
+                  : "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into."}
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <Switch
-                size={15}
-                checked={checked2}
-                onClick={() => {
-                  setChecked2((x) => !x);
-                }}
-              />
-              <p>Deduction</p>
-            </div>
-            <p>
-              {!checked2
-                ? "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost."
-                : "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into."}
-            </p>
-          </div>
+          )}
           <div className="flex items-center justify-center my-auto">
             <div className="space-y-5">
               <Select
