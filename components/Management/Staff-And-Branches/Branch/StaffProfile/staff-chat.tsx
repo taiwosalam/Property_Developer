@@ -19,7 +19,7 @@ const StaffChat = () => {
       <div
         className={`${
           activeChatId ? "hidden" : "block"
-        } lg:block lg:w-[43%] p-4 pr-2 bg-white dark:bg-darkText-primary rounded-lg lg:rounded-r-none max-h-[600px] overflow-auto custom-round-scrollbar`}
+        } lg:block lg:w-[43%] lg:pr-2 bg-white dark:bg-darkText-primary rounded-lg lg:rounded-r-none max-h-[600px] overflow-auto custom-round-scrollbar`}
       >
         <ChatList
           activeChatId={activeChatId}

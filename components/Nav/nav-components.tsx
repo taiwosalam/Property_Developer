@@ -27,6 +27,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
   isDropdown,
   isOpen,
   isCollapsed,
+  topNav,
 }) => {
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
   const SecondaryColor = useThemeStoreSelectors.use.secondaryColor();
@@ -35,10 +36,12 @@ export const NavButton: React.FC<NavButtonProps> = ({
 
   const content = (
     <div
-      className={clsx("w-full py-3 pl-10 pr-5 flex items-center gap-4", {
+      className={clsx("w-full py-3 flex items-center gap-4", {
         "nav-button": !minimized,
         "nav-button-minimized": minimized,
         "custom-primary-bg": highlight,
+        "pl-10 pr-5": !topNav,
+        "px-5": topNav,
       })}
       style={{
         backgroundColor: minimized_highlight ? SecondaryColor : undefined,
@@ -61,7 +64,9 @@ export const NavButton: React.FC<NavButtonProps> = ({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="relative flex-1 text-left flex-shrink-0"
+            className={clsx("relative flex-1 text-left flex-shrink-0", {
+              "flex gap-2": topNav,
+            })}
           >
             <p
               className={clsx("capitalize", {
@@ -82,8 +87,11 @@ export const NavButton: React.FC<NavButtonProps> = ({
             {isDropdown && (
               <div
                 className={clsx(
-                  "absolute right-0 top-[50%] translate-y-[-50%] transition-transform duration-300",
-                  !isOpen && "rotate-180"
+                  "transition-transform duration-300",
+                  isOpen && "rotate-180",
+                  {
+                    "absolute right-0 top-[50%] translate-y-[-50%]": !topNav,
+                  }
                 )}
               >
                 <SVG

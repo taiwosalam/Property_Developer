@@ -126,8 +126,8 @@ const StaffProfile = () => {
             heading="Information"
             info={{
               branch: "moniya branch",
-              password: "Jumpper23",
               "date created": "23/07/2023",
+              "last updated": "23/07/2023",
               status: "active",
             }}
           />
