@@ -6,11 +6,14 @@ import { unitFacilities } from "@/data";
 import { useUnitForm } from "./unit-form-context";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { useAddUnitStore } from "@/store/add-unit-store";
+import { useParams } from "next/navigation";
 
 const UnitFeatures = () => {
   const { handleInputChange } = useContext(FlowProgressContext);
+  const params = useParams();
+  const propertyType = params.propertyType as "rental" | "facility";
+  // const propertyType = useAddUnitStore((state) => state.propertyType);
   const { unitType, formResetKey } = useUnitForm();
-  const propertyType = useAddUnitStore((state) => state.propertyType);
 
   const [selectedAreaUnit, setSelectedAreaUnit] = useState("");
 
@@ -27,7 +30,6 @@ const UnitFeatures = () => {
   }, [formResetKey]);
 
   const isFacility = propertyType === "facility";
-    
 
   return (
     <div>

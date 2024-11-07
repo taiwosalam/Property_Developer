@@ -118,7 +118,7 @@ const UnitDetails = () => {
           requiredNoStar
           resetKey={formResetKey}
         />
-        {selectedUnitType.toLowerCase() !== "land" && (
+        {selectedUnitType?.toLowerCase() !== "land" && (
           <Select
             options={unitSubtypeOptions || []}
             id="unit_sub_type"

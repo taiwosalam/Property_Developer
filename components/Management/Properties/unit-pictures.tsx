@@ -6,11 +6,13 @@ import { v4 as uuidv4 } from "uuid";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { MAX_FILE_SIZE_MB } from "@/data";
+import { useParams } from "next/navigation";
 
 const UnitPictures = () => {
   const { images, setImages, removeImage, isEditing } = useUnitForm();
-  const propertyType = useAddUnitStore((state) => state.propertyType);
-
+  // const propertyType = useAddUnitStore((state) => state.propertyType);
+  const params = useParams();
+  const propertyType = params.propertyType as "rental" | "facility";
   const sortableImages = images.map((image, index) => ({
     id: uuidv4(),
     index,
