@@ -4,6 +4,7 @@ import UnitDetails from "./unit-details";
 import UnitFeatures from "./unit-features";
 import UnitBreakdownNewTenant from "./unit-breakdown-new-tenant";
 import UnitBreakdownRenewalTenant from "./unit-breakdown-renewal-tenants";
+import UnitBreakdownFacility from "./unit-breakdown-facility";
 import { UnitFormContext } from "./unit-form-context";
 import { getFormData } from "@/utils/getFormData";
 import { useAddUnitStore } from "@/store/add-unit-store";
@@ -40,18 +41,14 @@ const UnitForm: React.FC<UnitFormProps> = ({
   const addUnit = useAddUnitStore((s) => s.addUnit);
   const editUnit = useAddUnitStore((s) => s.editUnit);
   const formRef = useRef<HTMLFormElement>(null);
-  const propertyDetails = useAddUnitStore((state) => state.propertyDetails);
+  const propertyType = useAddUnitStore((state) => state.propertyType);
   const [state, setState] = useState<UnitFormState>({
     isEditing: isEditing,
     images: empty ? [] : data.images,
     unitType: empty ? "" : data.unitType,
     formResetKey: 0,
   });
-  const maxImages =
-    propertyDetails?.category === "estate" ||
-    propertyDetails?.category === "facility"
-      ? 5
-      : 14;
+  const maxImages = propertyType === "facility" ? 5 : 14;
   const setImages = (newImages: string[], options?: { append: boolean }) =>
     setState((x) => {
       const append = options?.append ?? true;
@@ -153,8 +150,14 @@ const UnitForm: React.FC<UnitFormProps> = ({
           <UnitPictures />
           <UnitDetails />
           <UnitFeatures />
-          <UnitBreakdownNewTenant />
-          <UnitBreakdownRenewalTenant />
+          {propertyType === "rental" ? (
+            <>
+              <UnitBreakdownNewTenant />
+              <UnitBreakdownRenewalTenant />
+            </>
+          ) : (
+            <UnitBreakdownFacility />
+          )}
           {!empty ? (
             <EditUnitActions handleCancel={handleCancel} />
           ) : (

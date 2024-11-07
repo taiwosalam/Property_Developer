@@ -19,3 +19,16 @@ export interface StaffProfilePortfolioItemProps {
     phone_number: string;
   };
 }
+
+export interface StaffProfileProps {
+  personal_title: string;
+  real_estate_title: string;
+  full_name: string;
+  email: string;
+  phone_number: string;
+  gender: string;
+  position: string;
+  avatar?: string;
+  picture?: string;
+  about: string;
+}

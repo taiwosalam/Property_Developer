@@ -1,5 +1,3 @@
-import React from "react";
-
 // Imports
 import useStep from "@/hooks/useStep";
 import Button from "@/components/Form/Button/button";

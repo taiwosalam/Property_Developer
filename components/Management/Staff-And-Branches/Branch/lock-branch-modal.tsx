@@ -6,9 +6,7 @@ import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import { AuthPinField } from "@/components/Auth/auth-components";
-import Image from "next/image";
-import ReloadBlue from "@/public/icons/reload-blue.svg";
-import { XIcon } from "@/public/icons/icons";
+import { ReloadIcon, XIcon } from "@/public/icons/icons";
 
 const LockBranchModal = () => {
   const { activeStep, changeStep } = useStep(3);
@@ -88,13 +86,13 @@ const LockBranchModal = () => {
         <button
           type="button"
           onClick={handleResendCode}
-          className={`flex gap-1 custom-secondary-color text-base font-medium mb-10 ${
-            !canResend && "opacity-50 cursor-not-allowed"
-          }`}
+          className="flex gap-1 custom-secondary-color text-base font-medium mb-10"
           disabled={!canResend}
         >
-          <Image src={ReloadBlue} alt="resend" height={20} />
-          <p className={canResend ? "" : "opacity-50"}>Resend code</p>
+          <span className="custom-primary-color">
+            <ReloadIcon />
+          </span>
+          <p>Resend code</p>
           {!canResend && <p>({countdown}s)</p>}
         </button>
         <div className="w-full px-6 mb-4">
@@ -104,7 +102,7 @@ const LockBranchModal = () => {
               changeStep("next");
             }}
           >
-            Withdraw
+            Proceed
           </Button>
         </div>
       </div>

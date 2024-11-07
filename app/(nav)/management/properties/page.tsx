@@ -62,7 +62,7 @@ const Properties = () => {
             colorScheme={2}
           />
           <ManagementStatistcsCard
-            title="Gated Estate"
+            title="Facility Properties"
             newData={200}
             total={657}
             colorScheme={3}

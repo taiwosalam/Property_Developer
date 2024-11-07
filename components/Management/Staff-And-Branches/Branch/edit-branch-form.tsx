@@ -1,14 +1,10 @@
 "use client";
 
-import React from "react";
-
 // Images
-import PlusAvatar from "@/public/global/plus-avatar.svg";
-
+import CameraCircle from "@/public/icons/camera-circle.svg";
 // Imports
-import { getAllStates } from "@/utils/states";
+import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import Input from "@/components/Form/Input/input";
-import Label from "@/components/Form/Label/label";
 import Picture from "@/components/Picture/picture";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
@@ -17,6 +13,8 @@ import { SectionSeparator } from "@/components/Section/section-components";
 import { ResponseType } from "@/app/(nav)/management/staff-branch/[branchId]/types";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
+import { useState, useEffect } from "react";
+import Avatars from "@/components/Avatars/avatars";
 
 const EditBranchForm = ({
   somedata,
@@ -25,18 +23,52 @@ const EditBranchForm = ({
   somedata: ResponseType;
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }) => {
-  const states = getAllStates();
-
-  const { preview, handleImageChange } = useImageUploader({
-    placeholder: PlusAvatar,
-  });
+  const { preview, setPreview, handleImageChange, inputFileRef } =
+    useImageUploader({
+      placeholder: CameraCircle,
+    });
+  const [activeAvatar, setActiveAvatar] = useState(
+    somedata?.branch?.branch_image || ""
+  );
 
   const setValidationErrors = (errors: ValidationErrors) => {
     // Handle validation errors
     console.error(errors);
   };
 
-  console.log(somedata);
+  const handleAvatarChange = (avatar: string) => {
+    setPreview(avatar);
+    setActiveAvatar(avatar);
+    inputFileRef.current?.value && (inputFileRef.current.value = "");
+  };
+
+  // console.log(somedata);
+
+  const [address, setAddress] = useState({
+    state: "",
+    local_govt: "",
+    city: "",
+  });
+
+  const handleAddressChange = (field: keyof typeof address, value: string) => {
+    setAddress((x) => ({
+      ...x,
+      [field]: value,
+      ...(field === "state" && { local_govt: "", city: "" }),
+      ...(field === "local_govt" && { city: "" }),
+    }));
+  };
+
+  useEffect(() => {
+    if (somedata?.branch?.branch_full_address) {
+      setAddress((prev) => ({
+        ...prev,
+        state: somedata?.branch?.state || "",
+        local_govt: somedata?.branch?.local_government || "",
+        city: somedata?.branch?.city || "",
+      }));
+    }
+  }, [somedata?.branch?.branch_full_address]);
 
   return (
     <AuthForm
@@ -49,7 +81,7 @@ const EditBranchForm = ({
         <h2 className="text-brand-10 text-base font-bold">Branch Details</h2>
         <SectionSeparator />
         <div className="custom-flex-col gap-5">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             <Input
               id="branch-title"
               label="branch title"
@@ -61,24 +93,28 @@ const EditBranchForm = ({
               id="state"
               isSearchable
               label="state"
-              options={states}
+              options={getAllStates()}
               inputContainerClassName="bg-white"
-              defaultValue={somedata?.branch?.state}
+              value={address.state}
+              onChange={(value) => handleAddressChange("state", value)}
             />
             <Select
               id="local-government"
               isSearchable
               label="local government"
-              options={[]}
+              options={getLocalGovernments(address.state)}
               inputContainerClassName="bg-white"
-              defaultValue={somedata?.branch?.local_government}
+              value={address.local_govt}
+              onChange={(value) => handleAddressChange("local_govt", value)}
             />
-            <Input
+            <Select
               id="city"
               label="city"
               placeholder="Ibadan"
-              inputClassName="bg-white"
-              defaultValue={somedata?.branch?.city}
+              inputContainerClassName="bg-white"
+              value={address.city}
+              onChange={(value) => handleAddressChange("city", value)}
+              options={getCities(address.state, address.local_govt)}
             />
             <Input
               id="full-address"
@@ -95,14 +131,13 @@ const EditBranchForm = ({
               defaultValue={somedata?.branch?.branch_wallet}
             />
           </div>
-          <div className="custom-flex-col gap-2">
-            <Label id="branch-description">branch description</Label>
-            <TextArea
-              className="bg-white dark:bg-darkText-primary"
-              id="branch-description"
-              defaultValue={somedata?.branch?.branch_description}
-            />
-          </div>
+
+          <TextArea
+            className="bg-white dark:bg-darkText-primary"
+            id="branch-description"
+            defaultValue={somedata?.branch?.branch_description}
+            label="branch description"
+          />
         </div>
       </div>
       <div className="custom-flex-col gap-3">
@@ -111,12 +146,7 @@ const EditBranchForm = ({
         </p>
         <div className="flex gap-3 items-center">
           <label htmlFor="picture" className="cursor-pointer">
-            <Picture
-              src={somedata?.branch?.branch_image || preview}
-              alt="plus"
-              size={40}
-              className="rounded-[4px] bg-[#D9D9D9] border border-solid border-neutral-4"
-            />
+            <Picture src={preview} alt="Camera" size={40} rounded />
             <input
               type="file"
               id="picture"
@@ -124,20 +154,11 @@ const EditBranchForm = ({
               accept="image/*"
               className="hidden pointer-events-none"
               onChange={handleImageChange}
+              ref={inputFileRef}
             />
+            <input type="hidden" name="avatar" value={activeAvatar} />
           </label>
-          {Array(4)
-            .fill(null)
-            .map((_, idx) => (
-              <button type="button" key={idx}>
-                <Picture
-                  src={`/empty/avatar-${idx + 1}.svg`}
-                  alt="avatar"
-                  size={40}
-                  rounded
-                />
-              </button>
-            ))}
+          <Avatars type="avatars" onClick={handleAvatarChange} />
         </div>
       </div>
     </AuthForm>

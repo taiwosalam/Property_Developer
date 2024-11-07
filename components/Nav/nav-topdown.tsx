@@ -71,6 +71,7 @@ const TopNavDropdown: React.FC<NavDropdownProps> = ({
             href={href && `/${children}${href}`}
             key={index}
             minimized
+            topNav
             type="horizontal_line"
             onClick={handleClose}
           >

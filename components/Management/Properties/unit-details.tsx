@@ -14,7 +14,7 @@ import { useUnitForm } from "./unit-form-context";
 const UnitDetails = () => {
   // const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
   const propertyDetails: { category: Categories } = {
-    category: "residential", // for testing. remove this line and uncomment d line above
+    category: "facility", // for testing. remove this line and uncomment d line above
   };
 
   const {
@@ -32,15 +32,15 @@ const UnitDetails = () => {
   const [selectedPreference, setSelectedPreference] = useState("");
 
   const handleUnitTypeChange = (val: string) => {
-    setSelectedUnitType(val as UnitTypeKey);
+    setSelectedUnitType(val.toLowerCase() as UnitTypeKey);
   };
 
   const handleSubtypeChange = (val: string) => {
-    setSelectedSubtype(val);
+    setSelectedSubtype(val.toLowerCase());
   };
 
   const handlePreferenceChange = (val: string) => {
-    setSelectedPreference(val);
+    setSelectedPreference(val.toLowerCase());
   };
 
   useEffect(() => {
@@ -55,11 +55,11 @@ const UnitDetails = () => {
   useEffect(() => {
     // Check if unit type is selected
     if (selectedUnitType) {
-      if (selectedUnitType === "land") {
+      if (selectedUnitType.toLowerCase() === "land") {
         // Handle the special case for land based on the category
         if (
-          propertyDetails?.category === "commercial" ||
-          propertyDetails?.category === "facility"
+          propertyDetails?.category.toLowerCase() === "commercial" ||
+          propertyDetails?.category.toLowerCase() === "facility"
         ) {
           // Use the commercial subtypes under land
           setUnitSubtypeOptions(unitSubtypes.land.commercial);
@@ -73,8 +73,8 @@ const UnitDetails = () => {
         // For other unit types, just use their subtypes normally
         setUnitSubtypeOptions(unitSubtypes[selectedUnitType] as string[]);
         if (
-          propertyDetails?.category === "commercial" ||
-          propertyDetails?.category === "facility"
+          propertyDetails?.category.toLowerCase() === "commercial" ||
+          propertyDetails?.category.toLowerCase() === "facility"
         ) {
           // Use the commercial building preferences
           setUnitPreferencesOptions(unitPreferences.buildings.commercial);
@@ -118,9 +118,9 @@ const UnitDetails = () => {
           requiredNoStar
           resetKey={formResetKey}
         />
-        {selectedUnitType !== "land" && (
+        {selectedUnitType.toLowerCase() !== "land" && (
           <Select
-            options={unitSubtypeOptions}
+            options={unitSubtypeOptions || []}
             id="unit_sub_type"
             label="Unit Sub Type"
             inputContainerClassName="bg-white"

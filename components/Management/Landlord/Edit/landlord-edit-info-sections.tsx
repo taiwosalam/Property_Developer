@@ -513,7 +513,7 @@ export const LandlordEditAvatarInfoSection = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (data) {
+    if (data?.picture || data?.avatar) {
       setProfilePicture(data.picture || data.avatar || CameraCircle);
     }
   }, [data?.picture, data?.avatar]);

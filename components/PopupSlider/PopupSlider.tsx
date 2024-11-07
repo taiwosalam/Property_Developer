@@ -7,7 +7,6 @@ import "keen-slider/keen-slider.min.css";
 import { NextIcon, PreviousIcon, XIcon } from "@/public/icons/icons";
 import { PopupImageModalProps } from "./types";
 import Image from "next/image";
-import { useOutsideClick } from "@/hooks/useOutsideClick";
 
 const PopupImageModal: React.FC<PopupImageModalProps> = ({
   isOpen,
@@ -39,16 +38,10 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
     }
   }, [currentIndex, loaded, instanceRef, isOpen]);
 
-  useOutsideClick(cRef, () => {
-    onClose();
-    console.log("clicked outside");
-
-    // instanceRef.current?.moveToIdx(0);
-  });
-
   return (
     <Dialog
       open={isOpen}
+      onClose={onClose}
       maxWidth="lg"
       PaperProps={{
         sx: {

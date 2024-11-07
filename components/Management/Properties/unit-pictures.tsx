@@ -9,7 +9,7 @@ import { MAX_FILE_SIZE_MB } from "@/data";
 
 const UnitPictures = () => {
   const { images, setImages, removeImage, isEditing } = useUnitForm();
-  const propertyDetails = useAddUnitStore((state) => state.propertyDetails);
+  const propertyType = useAddUnitStore((state) => state.propertyType);
 
   const sortableImages = images.map((image, index) => ({
     id: uuidv4(),
@@ -17,11 +17,7 @@ const UnitPictures = () => {
     image,
   }));
 
-  const maxImages =
-    propertyDetails?.category === "estate" ||
-    propertyDetails?.category === "facility"
-      ? 5
-      : 14;
+  const maxImages = propertyType === "facility" ? 5 : 14;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let files = Array.from(e.target.files || []);
@@ -105,7 +101,7 @@ const UnitPictures = () => {
                 />
               ))}
               {provided.placeholder}
-              {images.length < 14 && (
+              {images.length < maxImages && (
                 <label
                   htmlFor="unit_pictures"
                   className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white flex flex-col items-center justify-center cursor-pointer text-[#626262]"

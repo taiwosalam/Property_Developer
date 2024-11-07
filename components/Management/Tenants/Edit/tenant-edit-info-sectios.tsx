@@ -51,7 +51,7 @@ export const TenantEditProfileInfoSection = () => {
   };
 
   useEffect(() => {
-    if (data) {
+    if (data?.contact_address) {
       setAddress((prev) => ({
         ...prev,
         state: data.contact_address.state || "",
