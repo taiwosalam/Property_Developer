@@ -1,3 +1,4 @@
+"use client";
 import { useState, useRef } from "react";
 import UnitPictures from "./unit-pictures";
 import UnitDetails from "./unit-details";
@@ -12,6 +13,7 @@ import { UnitTypeKey } from "@/data";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
 import EditUnitActions from "./editUnitActions";
 import AddUntFooter from "./AddUnitFooter";
+import { useParams } from "next/navigation";
 export interface UnitFormState {
   isEditing?: boolean;
   images: string[];
@@ -41,13 +43,16 @@ const UnitForm: React.FC<UnitFormProps> = ({
   const addUnit = useAddUnitStore((s) => s.addUnit);
   const editUnit = useAddUnitStore((s) => s.editUnit);
   const formRef = useRef<HTMLFormElement>(null);
-  const propertyType = useAddUnitStore((state) => state.propertyType);
+  // const propertyType = useAddUnitStore((state) => state.propertyType);
+  const params = useParams();
+  const propertyType = params.propertyType as "rental" | "facility";
   const [state, setState] = useState<UnitFormState>({
     isEditing: isEditing,
     images: empty ? [] : data.images,
     unitType: empty ? "" : data.unitType,
     formResetKey: 0,
   });
+
   const maxImages = propertyType === "facility" ? 5 : 14;
   const setImages = (newImages: string[], options?: { append: boolean }) =>
     setState((x) => {
@@ -138,7 +143,7 @@ const UnitForm: React.FC<UnitFormProps> = ({
         <form
           id={empty ? "add-unit-form" : "edit-unit-form"}
           ref={formRef}
-          className="space-y-6 lg:space-y-8 max-w-[970px]"
+          className="space-y-6 lg:space-y-8"
           onSubmit={empty ? emptySubmit : editSubmit}
         >
           {isEditing && (
