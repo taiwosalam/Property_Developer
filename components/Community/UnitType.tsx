@@ -64,7 +64,7 @@ const PropertyRequestUnitType = () => {
         "others",
       ],
     },
-    "industry & Factory": [
+    "industry & factory": [
       "church",
       "industry",
       "filling station",
@@ -123,7 +123,7 @@ const PropertyRequestUnitType = () => {
           : (Object.values(subtypes).flat() as string[])
       );
     } else if (val === "industry & factory") {
-      const subtypes = unitSubtypes["industry & Factory"];
+      const subtypes = unitSubtypes["industry & factory"];
       setUnitSubtypeOptions(
         Array.isArray(subtypes)
           ? subtypes
