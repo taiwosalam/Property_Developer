@@ -1,24 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-
-// Images
-import { GridIcon, ListIcon } from "@/public/icons/icons";
-
+import Link from "next/link";
 // Imports
-import clsx from "clsx";
-import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
-import PageTitle from "@/components/PageTitle/page-title";
 import BackButton from "@/components/BackButton/back-button";
-import SearchInput from "@/components/SearchInput/search-input";
 import PropertyCard from "@/components/Management/Properties/property-card";
-import {
-  Modal,
-  ModalContent,
-  ModalTrigger,
-  useModal,
-} from "@/components/Modal/modal";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import EditBranchForm from "@/components/Management/Staff-And-Branches/Branch/edit-branch-form";
 import DeleteBranchModal from "@/components/Management/Staff-And-Branches/Branch/delete-branch-modal";
@@ -31,20 +19,14 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import LockBranchModal from "@/components/Management/Staff-And-Branches/Branch/lock-branch-modal";
 import UnLockBranchModal from "@/components/Management/Staff-And-Branches/Branch/unlock-branch-modal";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const EditBranch = () => {
-  const [state, setState] = useState<"grid" | "list">("grid");
+  const [isGridView, setIsGridView] = useState<boolean>(true);
   const [fetchedBranchData, setFetchedBranchData] =
     useState<ResponseType | null>();
   const [isOpen, setOpen] = useState(false);
   const { branchId } = useParams() as { branchId: string };
-
-  const setGridView = () => {
-    setState("grid");
-  };
-  const setListView = () => {
-    setState("list");
-  };
 
   const properties = fetchedBranchData?.property_list || [];
 
@@ -90,9 +72,9 @@ const EditBranch = () => {
               <ModalTrigger asChild>
                 <Button
                   type="button"
-                  variant="light_red"
                   size="sm_medium"
-                  className="py-2 px-8"
+                  className="py-2 px-8 border-status-caution-2 text-status-error-2"
+                  variant="blank"
                 >
                   Lock Branch !
                 </Button>
@@ -105,9 +87,9 @@ const EditBranch = () => {
               <ModalTrigger asChild>
                 <Button
                   type="button"
-                  variant="border"
+                  variant="blank"
                   size="sm_medium"
-                  className="py-2 px-8"
+                  className="py-2 px-8 border-status-success-2 text-brand-9"
                 >
                   Un-Lock Branch !
                 </Button>
@@ -161,66 +143,77 @@ const EditBranch = () => {
         )}
       </div>
       <div className="custom-flex-col gap-8">
-        <div className="page-title-container">
-          <div className="w-full flex gap-4 flex-col lg:flex-row lg:justify-between">
-            <PageTitle title="Edit Property" />
-            <div className="flex flex-wrap items-center gap-4">
-              <SearchInput placeholder="Search for Staff and Branch" />
-              <div className="flex items-center gap-x-3">
-                <button
-                  type="button"
-                  aria-label="list-view"
-                  className={clsx(
-                    "p-1 rounded-md",
-                    state === "list"
-                      ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
-                      : "bg-transparent text-[unset]"
-                  )}
-                  onClick={setListView}
-                >
-                  <ListIcon />
-                </button>
-                <button
-                  type="button"
-                  aria-label="grid-view"
-                  className={clsx(
-                    "p-1 rounded-md",
-                    state === "grid"
-                      ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
-                      : "bg-transparent text-[unset]"
-                  )}
-                  onClick={setGridView}
-                >
-                  <GridIcon />
-                </button>
-              </div>
-              <div className="bg-white dark:bg-[#020617] rounded-lg p-2 flex items-center space-x-2">
-                <button>
-                  <div className="flex items-center gap-2 cursor-pointer">
-                    <Picture
-                      src={"/icons/sliders.svg"}
-                      alt="filters"
-                      size={20}
-                    />
-                    <p className="text-[#344054] dark:text-darkText-2 text-base font-medium">
-                      Filters
-                    </p>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        {state === "grid" ? (
-          <AutoResizingGrid minWidth={350}>
-            {properties.slice(0, 6).map((p, idx) => (
+        <FilterBar
+          pageTitle="Edit Property"
+          searchInputPlaceholder="Search for Property"
+          filterWithOptionsWithDropdown={[]}
+          handleFilterApply={() => {}}
+          onStateSelect={() => {}}
+          gridView={isGridView}
+          setGridView={() => setIsGridView(true)}
+          setListView={() => setIsGridView(false)}
+        />
+        {isGridView ? (
+          <AutoResizingGrid minWidth={315}>
+            {/* {properties.slice(0, 6).map((p, idx) => (
               <PropertyCard key={idx} {...p} />
+            ))} */}
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Link
+                key={index}
+                href={`/management/properties/${index}/edit-property`}
+              >
+                <PropertyCard
+                  address="123 Main St"
+                  id={1}
+                  propertyId={1}
+                  images={[
+                    "/empty/SampleProperty.jpeg",
+                    "/empty/SampleProperty2.jpeg",
+                    "/empty/SampleProperty3.jpeg",
+                    "/empty/SampleProperty4.jpeg",
+                    "/empty/SampleProperty5.jpeg",
+                  ]}
+                  name="Property 1"
+                  units={1}
+                  price={1000}
+                  propertyType={index % 2 === 0 ? "rental" : "facility"}
+                  currency="Naira"
+                  isClickable={false}
+                />
+              </Link>
             ))}
           </AutoResizingGrid>
         ) : (
           <div className="custom-flex-col gap-4">
-            {properties.slice(0, 6).map((p, idx) => (
+            {/* {properties.slice(0, 6).map((p, idx) => (
               <BranchPropertyListItem key={idx} {...p} />
+            ))} */}
+
+            {Array.from({ length: 10 }).map((_, index) => (
+              <Link
+                key={index}
+                href={`/management/properties/${index}/edit-property`}
+                className="block"
+              >
+                <BranchPropertyListItem
+                  address="123 Main St"
+                  id={1}
+                  propertyId={1}
+                  images={[
+                    "/empty/empty.svg",
+                    "/empty/empty.svg",
+                    "/empty/empty.svg",
+                    "/empty/empty.svg",
+                    "/empty/empty.svg",
+                  ]}
+                  name="Property 1"
+                  units={1}
+                  price={1000}
+                  propertyType={index % 2 === 0 ? "rental" : "facility"}
+                  currency="Naira"
+                />
+              </Link>
             ))}
           </div>
         )}

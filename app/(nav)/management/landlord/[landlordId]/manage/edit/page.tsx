@@ -89,19 +89,10 @@ const EditLandlord = () => {
               <DeleteAccountModal />
             </ModalContent>
           </Modal>
-          <div className="flex gap-6">
-            <Button
-              href={`/management/landlord/${landlord.id}/manage`}
-              size="base_medium"
-              className="py-2 px-6 hidden md:block"
-              variant="sky_blue"
-            >
-              exit
-            </Button>
-            <Button size="base_medium" className="py-2 px-6">
-              save
-            </Button>
-          </div>
+
+          <Button size="base_medium" className="py-2 px-6">
+            save
+          </Button>
         </FixedFooter>
       </div>
     </LandlordEditContext.Provider>

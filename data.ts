@@ -93,8 +93,6 @@ export const propertyCategories = {
   "gated estate/facility": ["estate", "facility"],
 };
 
-export type PropertyCreation = keyof typeof propertyCategories;
-
 export const unitTypes = {
   residential: ["apartment", "flat", "house", "land"],
   "mixed use": ["apartment", "flat", "house", "land"],
@@ -164,7 +162,7 @@ export const unitSubtypes = {
       "others",
     ],
   },
-  "industry & Factory": [
+  "industry & factory": [
     "church",
     "industry",
     "filling station",
@@ -300,8 +298,6 @@ export const unitFacilities = {
   ],
 };
 
-
-
 export const rentPeriods = [
   "daily",
   "weekly",
@@ -319,8 +315,6 @@ export const rentPeriods = [
   "nonennial",
   "decennial",
 ];
-
-
 
 export const landlordTypes = [
   "Individual Landlord",

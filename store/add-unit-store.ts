@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import type { Categories } from "@/data";
 
+type PropertyType = "rental" | "facility";
+
 interface PropertyDetails {
   property_title: string;
   state: string;
@@ -26,6 +28,7 @@ interface PropertySettings {
 }
 
 interface AddUnitStore {
+  propertyType: PropertyType;
   propertyDetails: null | PropertyDetails;
   propertySettings: null | PropertySettings;
 
@@ -42,7 +45,7 @@ interface AddUnitStore {
 }
 
 export const useAddUnitStore = create<AddUnitStore>((set) => ({
-  // propertyCreation: "rental property",
+  propertyType: "facility",
   propertyDetails: null,
   propertySettings: null,
 

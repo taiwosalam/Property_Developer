@@ -211,6 +211,7 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
 
 button:disabled:not(.retain-opacity) {
   opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .skeleton {

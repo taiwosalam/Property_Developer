@@ -1,20 +1,21 @@
 "use client";
 
-import React from "react";
-
 // Imports
 import useStep from "@/hooks/useStep";
 import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 
-const DeleteAccountModal = () => {
+const DeleteAccountModal: React.FC<{
+  accountType?: string;
+}> = ({ accountType }) => {
   const { activeStep, changeStep } = useStep(2);
 
   return activeStep === 1 ? (
     <ModalPreset type="warning">
       <p className="text-text-disabled text-sm font-normal">
-        Are you certain you want to proceed with deleting this profile?
+        Are you certain you want to proceed with deleting this {accountType}{" "}
+        profile?
       </p>
       <div className="flex flex-col items-center gap-4">
         <Button onClick={() => changeStep("next")}>proceed</Button>
@@ -29,7 +30,8 @@ const DeleteAccountModal = () => {
   ) : (
     <ModalPreset type="success">
       <p className="text-text-disabled text-sm font-normal">
-        Payment has been successfully added to the receipt.
+        <span className="capitalize">{accountType}</span> Profile has been
+        successfully deleted.
       </p>
       <div className="flex justify-center">
         <ModalTrigger close asChild>

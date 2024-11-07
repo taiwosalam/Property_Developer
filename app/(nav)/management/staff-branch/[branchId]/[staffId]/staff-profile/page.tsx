@@ -17,7 +17,7 @@ import {
   LandlordTenantInfo,
   LandlordTenantInfoBox,
 } from "@/components/Management/landlord-tenant-info-components";
-
+import TruncatedText from "@/components/TruncatedText/truncated-text";
 import { secondaryFont } from "@/utils/fonts";
 import Button from "@/components/Form/Button/button";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
@@ -62,10 +62,10 @@ const StaffProfile = () => {
               <div className="custom-flex-col gap-2">
                 <div className="space-y-4">
                   <div>
-                    <span className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                      Barrister Abimbola Adedeji
+                    <div className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-center">
+                      Barrister Adedeji
                       <BadgeIcon color="blue" />
-                    </span>
+                    </div>
                     <p
                       className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-darkText-2`}
                     >

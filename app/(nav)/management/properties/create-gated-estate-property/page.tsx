@@ -18,7 +18,7 @@ const CreateGatedEstate = () => {
   return (
     <>
       {/* Back Button & Page Title */}
-      <BackButton className="mb-1">Create Gated Estate Property</BackButton>
+      <BackButton className="mb-1">Create Facility Property</BackButton>
       <PageProgressBar
         breakpoints={[25, 50, 75]}
         percentage={27}
