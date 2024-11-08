@@ -19,9 +19,6 @@ const UnitFeatures = () => {
 
   const areaUnits = ["sqm", "half plot", "plot", "acre", "hectare"];
 
-  const handleAreaUnitChange = (val: string) => {
-    setSelectedAreaUnit(val);
-  };
   const facilitiesOptions =
     unitType === "land" ? unitFacilities.lands : unitFacilities.buildings;
 
@@ -47,7 +44,7 @@ const UnitFeatures = () => {
             options={areaUnits}
             label="measurement"
             value={selectedAreaUnit}
-            onChange={handleAreaUnitChange}
+            onChange={(val) => setSelectedAreaUnit(val)}
             inputContainerClassName="bg-white"
             hiddenInputClassName="unit-form-input"
             resetKey={formResetKey}
@@ -62,8 +59,8 @@ const UnitFeatures = () => {
                 label="Total Area (m²)"
                 labelclassName="undo-text-transform"
                 inputClassName="bg-white unit-form-input"
-                type="number"
-                min={1}
+                formatNumber
+                endWith="sqm"
                 onChange={handleInputChange}
               />
               {/* Show second input only if selected unit is not "sqm" or "half plot" */}
@@ -74,9 +71,9 @@ const UnitFeatures = () => {
                     id="total_units" //confirm ID with backend
                     label={`Number of ${selectedAreaUnit}s`}
                     inputClassName="bg-white unit-form-input"
-                    type="number"
-                    min={1}
                     onChange={handleInputChange}
+                    formatNumber
+                    endWith={`${selectedAreaUnit}s`}
                   />
                 )}
             </>

@@ -1,5 +1,5 @@
 "use client";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 // Types
 import type { CheckboxProps } from "./types";
@@ -32,7 +32,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
 
   return (
     <button
-      className={clsx("flex items-center gap-2 relative", className)}
+      className={cn("flex items-center gap-2 relative", className)}
       onClick={handleCheckboxClick}
       type="button"
       {...(hoverContent && {

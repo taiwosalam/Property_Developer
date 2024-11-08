@@ -40,9 +40,11 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({ next }) => {
           <TextArea id="note" label="Attach note:" className="md:col-span-2" />
         </div>
         <div className="flex justify-end">
-          <div className="flex">
-            <DocumentCheckbox alignCheckboxCenter title="Create announcement" />
-          </div>
+          <DocumentCheckbox
+            alignCheckboxCenter
+            title="Create announcement"
+            className="w-fit"
+          />
         </div>
         <Button
           onClick={next}

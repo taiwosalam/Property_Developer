@@ -38,6 +38,7 @@ const Input: React.FC<InputProps> = ({
   maxLength,
   requiredNoStar,
   formatNumber,
+  endWith,
 }) => {
   // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -114,16 +115,26 @@ const Input: React.FC<InputProps> = ({
           onInput={() => setValidationError(null)}
           // Call onChange prop if provided when input value changes
           onChange={(event) => {
-            const { value } = event.target;
+            let { value } = event.target;
             if (type === "number" && maxLength && value.length > maxLength) {
-              event.target.value = value.slice(0, maxLength);
+              value = value.slice(0, maxLength);
             }
             if (formatNumber) {
-              event.target.value = formatCostInputValue(value);
+              value = formatCostInputValue(value);
             }
-            onChange && onChange(event.target.value);
+            if (endWith) {
+              const isBackspace =
+                (event?.nativeEvent as InputEvent).inputType ===
+                "deleteContentBackward";
+              value = value.replace(new RegExp(`${endWith}`), "").trim();
+              if (isBackspace && value.length > 0) {
+                value = value.slice(0, -1);
+              }
+              value = `${value} ${endWith}`;
+            }
+            event.target.value = value;
+            onChange?.(value, event);
           }}
-          // Conditionally change the input type based on password visibility state
           type={type === "password" && isPasswordVisible ? "text" : type}
           // Input styles
           className={clsx(
