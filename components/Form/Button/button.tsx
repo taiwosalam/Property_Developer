@@ -5,10 +5,10 @@ import type { ButtonProps } from "./types";
 
 // Imports
 
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import { button_variants } from "./data";
 
-const  Button: React.FC<ButtonProps> = ({
+const Button: React.FC<ButtonProps> = ({
   href,
   style,
   children,
@@ -20,7 +20,7 @@ const  Button: React.FC<ButtonProps> = ({
   return href ? (
     <Link
       href={href}
-      className={clsx(
+      className={cn(
         "rounded-[4px] capitalize flex items-center text-center",
         button_variants.size[size],
         button_variants.variant[variant],
@@ -33,7 +33,7 @@ const  Button: React.FC<ButtonProps> = ({
   ) : (
     <button
       type="button"
-      className={clsx(
+      className={cn(
         "rounded-[4px] capitalize",
         button_variants.size[size],
         button_variants.variant[variant],
