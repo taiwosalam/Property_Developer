@@ -8,7 +8,7 @@ import CheckboxChecked from "@/public/icons/checkbox-checked.svg";
 // Imports
 import Picture from "../../Picture/picture";
 import { DocumentCheckboxProps } from "./types";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
 const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
   title,
@@ -32,12 +32,12 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
 
   return (
     <button
-      className={clsx("flex gap-3 text-start w-full", className)}
+      className={cn("flex gap-3 text-start w-full", className)}
       onClick={handleClick}
       type="button"
     >
       <div
-        className={clsx("flex h-full", {
+        className={cn("flex h-full", {
           "items-center": alignCheckboxCenter,
           "items-start": !alignCheckboxCenter,
         })}
@@ -56,7 +56,7 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
         )}
         {children && (
           <p
-            className={clsx("text-sm font-normal", {
+            className={cn("text-sm font-normal", {
               "text-text-secondary dark:text-darkText-1": darkText,
               "text-text-disabled dark:text-darkText-disabled": !darkText,
             })}

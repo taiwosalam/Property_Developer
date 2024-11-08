@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import { CSSProperties } from "react";
 import Link from "next/link";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
@@ -15,7 +16,7 @@ export const LandlordTenantInfoBox: React.FC<{
   className?: string;
 }> = ({ style, children, className }) => (
   <div
-    className={clsx(
+    className={cn(
       "p-4 bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden",
       className
     )}

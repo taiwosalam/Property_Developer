@@ -1,6 +1,5 @@
 "use client";
 
-import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import Button from "@/components/Form/Button/button";
@@ -13,6 +12,8 @@ import { SectionContainer } from "@/components/Section/section-components";
 import DeleteExamineModal from "@/components/tasks/Examine/delete-examine-modal";
 
 const ManageExaminepage = () => {
+  const commonClasses =
+    "py-3 px-4 text-text-secondary text-base font-normal bg-neutral-3 rounded-[4px] flex-row-reverse justify-between";
   return (
     <div>
       <div className="flex flex-col gap-8 pb-24">
@@ -63,42 +64,19 @@ const ManageExaminepage = () => {
           </div>
         </div>
         <SectionContainer heading="Service connected to property">
-          <div className="flex flex-col gap-4 w-full">
-            <AutoResizingGrid minWidth={340}>
-              <ServiceCheckbox label="Electricity" />
-              <ServiceCheckbox label="Sewer" />
-              <ServiceCheckbox label="Gas" />
-            </AutoResizingGrid>
-            <AutoResizingGrid minWidth={340}>
-              <ServiceCheckbox label="Drainage" />
-              <ServiceCheckbox label="Water" />
-              <ServiceCheckbox label="Smoke Detector" />
-            </AutoResizingGrid>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[18px]">
+            <Checkbox className={commonClasses}>Electricity</Checkbox>
+            <Checkbox className={commonClasses}>Sewer</Checkbox>
+            <Checkbox className={commonClasses}>Gas</Checkbox>
+            <Checkbox className={commonClasses}>Drainage</Checkbox>
+            <Checkbox className={commonClasses}>Water</Checkbox>
+            <Checkbox className={commonClasses}>Smoke Detector</Checkbox>
           </div>
         </SectionContainer>
         <SectionContainer heading="Site Summary">
-          <div className="flex flex-col gap-4 w-full">
-            <AutoResizingGrid minWidth={340}>
-              {["Age of Building", "Construction Type", "Roof"].map(
-                (item, index) => (
-                  <Input
-                    placeholder="Input here"
-                    id={item + index}
-                    type="text"
-                    className="w-full"
-                    key={index}
-                    label={item}
-                  />
-                )
-              )}
-            </AutoResizingGrid>
-            <AutoResizingGrid minWidth={340}>
-              <Select
-                id="condition"
-                label="Condition"
-                options={["Good", "Bad"]}
-              />
-              {["Extension/ Renovation", "Out Buildings"].map((item, index) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[18px]">
+            {["Age of Building", "Construction Type", "Roof"].map(
+              (item, index) => (
                 <Input
                   placeholder="Input here"
                   id={item + index}
@@ -107,29 +85,42 @@ const ManageExaminepage = () => {
                   key={index}
                   label={item}
                 />
-              ))}
-            </AutoResizingGrid>
-            <AutoResizingGrid minWidth={340}>
-              {["Sub Floor", "Site"].map((item, index) => (
-                <Input
-                  placeholder="Input here"
-                  id={item + index}
-                  type="text"
-                  className="w-full"
-                  key={index}
-                  label={item}
-                />
-              ))}
-              <Select
-                id="compare"
-                label="Compare to others"
-                options={["Good", "Bad"]}
+              )
+            )}
+            <Select
+              id="condition"
+              label="Condition"
+              options={["Good", "Bad"]}
+            />
+            {["Extension/ Renovation", "Out Buildings"].map((item, index) => (
+              <Input
+                placeholder="Input here"
+                id={item + index}
+                type="text"
+                className="w-full"
+                key={index}
+                label={item}
               />
-            </AutoResizingGrid>
+            ))}
+            {["Sub Floor", "Site"].map((item, index) => (
+              <Input
+                placeholder="Input here"
+                id={item + index}
+                type="text"
+                className="w-full"
+                key={index}
+                label={item}
+              />
+            ))}
+            <Select
+              id="compare"
+              label="Compare to others"
+              options={["Good", "Bad"]}
+            />
           </div>
         </SectionContainer>
         <SectionContainer heading="Inspection Checklist">
-          <AutoResizingGrid minWidth={340} gap={18}>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[18px]">
             {[
               "Outdoor Steps and Sidewalk",
               "Dining Rooms",
@@ -176,31 +167,36 @@ const ManageExaminepage = () => {
                 options={["Good", "Bad"]}
               />
             ))}
-          </AutoResizingGrid>
+          </div>
         </SectionContainer>
         <SectionContainer heading="Inspection Summary Notes">
-          <TextArea id="ewf" />
+          <TextArea id="inspection_summary_notes" />
         </SectionContainer>
-        <FixedFooter>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              {["Send to Landlord", "Send to Tenant"].map((item, index) => (
-                <Checkbox key={index}>
-                  <span>{item}</span>
-                </Checkbox>
-              ))}
-            </div>
-            <div className="flex items-center gap-4">
-              <Modal>
-                <ModalTrigger>
-                  <Button variant="light_red">Delete</Button>
-                </ModalTrigger>
-                <ModalContent>
-                  <DeleteExamineModal />
-                </ModalContent>
-              </Modal>
-              <Button>Submit</Button>
-            </div>
+        <FixedFooter className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {["Send to Landlord", "Send to Tenant"].map((item, index) => (
+              <Checkbox key={index}>{item}</Checkbox>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-4">
+            <Modal>
+              <ModalTrigger>
+                <Button
+                  variant="light_red"
+                  size="base_medium"
+                  className="py-2 px-6"
+                >
+                  Delete
+                </Button>
+              </ModalTrigger>
+              <ModalContent>
+                <DeleteExamineModal />
+              </ModalContent>
+            </Modal>
+            <Button type="submit" size="base_medium" className="py-2 px-6">
+              Submit
+            </Button>
           </div>
         </FixedFooter>
       </div>
@@ -209,26 +205,3 @@ const ManageExaminepage = () => {
 };
 
 export default ManageExaminepage;
-
-interface ServiceCheckboxProps {
-  label: string;
-  checked?: boolean;
-  onChange?: (checked: boolean) => void;
-}
-
-const ServiceCheckbox: React.FC<ServiceCheckboxProps> = ({
-  label,
-  checked,
-  onChange,
-}) => {
-  return (
-    <div className="bg-neutral-3 py-3 px-4 w-full">
-      <div className="w-full flex items-center justify-between">
-        <span>{label}</span>
-        <Checkbox checked={checked} onChange={onChange}>
-          <span></span>
-        </Checkbox>
-      </div>
-    </div>
-  );
-};

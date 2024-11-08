@@ -17,7 +17,10 @@ export interface InputProps {
   style?: CSSProperties;
   type?: React.HTMLInputTypeAttribute;
   validationErrors?: ValidationErrors;
-  onChange?: (data: string) => void;
+  onChange?: (
+    data: string,
+    event?: React.ChangeEvent<HTMLInputElement>
+  ) => void;
   inputClassName?: string;
   CURRENCY_SYMBOL?: string;
   readOnly?: boolean;
@@ -28,4 +31,5 @@ export interface InputProps {
   maxLength?: number;
   requiredNoStar?: boolean;
   formatNumber?: boolean;
+  endWith?: string;
 }
