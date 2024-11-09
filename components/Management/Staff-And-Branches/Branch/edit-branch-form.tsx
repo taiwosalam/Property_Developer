@@ -133,7 +133,7 @@ const EditBranchForm = ({
           </div>
 
           <TextArea
-            className="bg-white dark:bg-darkText-primary"
+            inputSpaceClassName="bg-white dark:bg-darkText-primary"
             id="branch-description"
             defaultValue={somedata?.branch?.branch_description}
             label="branch description"

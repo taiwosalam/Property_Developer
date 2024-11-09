@@ -8,14 +8,12 @@ import { cn } from "@/lib/utils";
 
 import { ChevronLeft } from "@/public/icons/icons";
 
-// Imports
-import clsx from "clsx";
-
 const BackButton: React.FC<BackButtonProps> = ({
   children,
   className,
   bold,
   as: Component = "h1",
+  textClassName,
 }) => {
   const router = useRouter();
 
@@ -39,10 +37,14 @@ const BackButton: React.FC<BackButtonProps> = ({
         <ChevronLeft />
       </button>
       <Component
-        className={clsx("text-lg lg:text-xl", {
-          "font-bold": bold,
-          "font-medium": !bold,
-        })}
+        className={cn(
+          "text-lg lg:text-xl",
+          {
+            "font-bold": bold,
+            "font-medium": !bold,
+          },
+          textClassName
+        )}
       >
         {children}
       </Component>
