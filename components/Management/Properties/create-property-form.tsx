@@ -39,6 +39,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   formType,
 }) => {
   const [state, setState] = useState<StateType>(proerty_state_data);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const isDarkMode = useDarkMode();
   const accessToken = useAuthStore((state) => state.access_token);
@@ -298,6 +299,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           <span className="text-status-error-primary">*</span>
           {formType === "rental"
             ? "Property Details"
+            : selectedCategory?.toLocaleLowerCase() === "estate"
+            ? "Estate Details"
+            : selectedCategory?.toLocaleLowerCase() === "facility"
+            ? "Facility Details"
             : "Estate/Facility Details"}
         </p>
         <hr className="my-4" />
@@ -359,6 +364,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             resetKey={resetKey}
             requiredNoStar
             hiddenInputClassName="property-form-input"
+            onChange={(category) => setSelectedCategory(category)}
           />
           <Select
             id="branch_id"

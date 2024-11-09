@@ -13,9 +13,11 @@ const StaffProfilePortfolio: React.FC<StaffProfilePortfolioProps> = ({
   return (
     <div className="custom-flex-col gap-4">
       <div className="py-3 px-4 rounded-lg bg-brand-1">
-        <p className="text-text-label text-base font-medium capitalize">{title}</p>
+        <p className="text-text-label text-base font-medium capitalize">
+          {title}
+        </p>
       </div>
-      <div className="flex gap-4 flex-wrap">
+      <div className="flex gap-4 overflow-auto custom-round-scrollbar pb-2">
         {items.map((item, index) => (
           <StaffProfilePortfolioItem key={index} {...item} />
         ))}
