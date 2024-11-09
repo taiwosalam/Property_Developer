@@ -459,6 +459,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           <span className="text-status-error-primary">*</span>
           {formType === "rental"
             ? "Property Settings"
+            : selectedCategory?.toLocaleLowerCase() === "estate"
+            ? "Estate Settings"
+            : selectedCategory?.toLocaleLowerCase() === "facility"
+            ? "Facility Settings"
             : "Estate/Facility Settings"}
         </p>
 
