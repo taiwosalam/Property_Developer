@@ -12,11 +12,13 @@ export interface CalendarClassData {
   targetDate: Date;
   daysInWeek: number;
   calendarDays: CalendarDayProps[];
+  events: CalendarEventProps[];
 }
 
 export interface CalendarContextProps extends CalendarClassData {
   nextMonth: () => void;
   prevMonth: () => void;
+  setYear?: (year: number) => void;
 }
 // --------------------------------------------------
 

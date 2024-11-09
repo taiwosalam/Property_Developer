@@ -10,58 +10,58 @@ import TextArea from "@/components/Form/TextArea/textarea";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { SectionContainer } from "@/components/Section/section-components";
 import DeleteExamineModal from "@/components/tasks/Examine/delete-examine-modal";
+import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-info-components";
 
 const ManageExaminepage = () => {
   const commonClasses =
     "py-3 px-4 text-text-secondary text-base font-normal bg-neutral-3 rounded-[4px] flex-row-reverse justify-between";
+
+  const commonBoxStyle: React.CSSProperties = {
+    boxShadow:
+      "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
+  };
+  const commonBoxClassName = "py-6 px-4 rounded-lg space-y-2";
   return (
     <div>
       <div className="flex flex-col gap-8 pb-24">
         <BackButton>Examine Title (Rent Increase)</BackButton>
-        <div className="w-full flex items-stretch gap-8">
-          <div className="flex flex-col gap-8 w-full">
-            <div
-              className="py-6 px-4 flex flex-col gap-2 bg-white rounded-lg w-full flex-1"
-              style={{ boxShadow: "0px 2px 4px 0px 0px 1px 2px 0px #151E2B14" }}
-            >
-              <div className="w-full flex items-center justify-between">
-                <p className="text-text-tertiary text-[16px] font-medium">
-                  Date Picked:
-                </p>
-                <p className="text-sm font-medium text-text-secondary">
-                  8 -11th January 2024
-                </p>
-              </div>
-              <div className="w-full flex items-center justify-between">
-                <p className="text-text-tertiary text-[16px] font-medium">
-                  Added Guest:
-                </p>
-                <div className="text-end">
-                  <p className="text-text-tertiary text-[16px] font-medium">
-                    Landlord
-                  </p>
-                  <p className="text-sm font-medium text-text-secondary">
-                    Mr Ajadi David
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            className="py-6 px-4 flex flex-col gap-2 bg-white rounded-lg w-full"
-            style={{ boxShadow: "0px 2px 4px 0px 0px 1px 2px 0px #151E2B14" }}
+        <div className="grid md:grid-cols-2 gap-8">
+          <LandlordTenantInfoBox
+            className={`${commonBoxClassName}`}
+            style={commonBoxStyle}
           >
-            <div className="flex flex-col gap-4">
-              <p className="text-sm font-medium text-text-secondary">
-                Description
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                Inspected Date:
               </p>
-              <p className="text-sm font-medium text-text-secondary">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Praesent eget dictum sem, ut molestie eros. Morbi in dolor
-                augue. Sed aliquet ipsum fringilla sapien facilisis consectetur.
+              <p className="text-sm font-medium text-text-secondary dark:text-darkText-2 text-right">
+                8 -11th January 2024
               </p>
             </div>
-          </div>
+            <div className="flex items-start justify-between gap-2">
+              <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                Added Guest:
+              </p>
+              <p className="text-sm font-medium text-text-secondary dark:text-darkText-2 text-right">
+                Landlord
+                <br />
+                Mr Ajadi David
+              </p>
+            </div>
+          </LandlordTenantInfoBox>
+          <LandlordTenantInfoBox
+            className={`${commonBoxClassName}`}
+            style={commonBoxStyle}
+          >
+            <p className="text-base font-medium text-text-tertiary dark:text-darkText-1">
+              Description
+            </p>
+            <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
+              eget dictum sem, ut molestie eros. Morbi in dolor augue. Sed
+              aliquet ipsum fringilla sapien facilisis consectetur.
+            </p>
+          </LandlordTenantInfoBox>
         </div>
         <SectionContainer heading="Service connected to property">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[18px]">

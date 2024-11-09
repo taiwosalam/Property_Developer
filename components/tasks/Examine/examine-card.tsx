@@ -22,10 +22,7 @@ const ExamineCard: React.FC<ExamineCardProps> = ({ viewOnly }) => {
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div
-        className="h-[174px] flex items-center justify-center bg-[#00000033] dark:bg-white"
-        // style={{ backgroundColor: "rgba(0, 0, 0, 0.20) dark:bg-white" }}
-      >
+      <div className="h-[174px] flex items-center justify-center bg-[#00000033] dark:bg-white">
         <Picture src={ExamineIcon} alt="examine" size={100} />
       </div>
       <div className="custom-flex-col gap-[22px] px-[18px]">

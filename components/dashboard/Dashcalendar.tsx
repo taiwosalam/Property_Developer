@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   getYear,
   getMonth,
@@ -8,19 +8,23 @@ import {
   addMonths,
   startOfMonth,
   format,
+  isSameDay,
   setMonth,
 } from "date-fns";
 import { CalendarDay, CalendarWeekDays } from "../Calendar/calendar-components";
 import { Calendar } from "../Calendar/data";
+import { calendar_events } from "../Calendar/events";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const DashboarddCalendar = () => {
+  const [activeDate, setActiveDate] = useState(new Date());
   const [currentDate, setCurrentDate] = useState(startOfMonth(new Date()));
 
   // Initialize the Calendar instance with month and year
   const data = new Calendar({
     month: getMonth(currentDate),
     year: getYear(currentDate),
+    events: calendar_events,
   });
 
   const { calendarDays, month, year } = data;
@@ -56,7 +60,12 @@ const DashboarddCalendar = () => {
         <CalendarWeekDays type="short" />
         <div className="grid grid-cols-7 gap-3">
           {calendarDays.map((day, index) => (
-            <CalendarDay key={index} {...day} />
+            <CalendarDay
+              key={index}
+              onClick={() => setActiveDate(day.date)}
+              isActive={isSameDay(day.date, activeDate)}
+              {...day}
+            />
           ))}
         </div>
       </div>

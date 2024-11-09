@@ -26,6 +26,7 @@ export interface WalletModalPresetProps {
   back?: () => void;
   style?: CSSProperties;
   children: React.ReactNode;
+  headerClassName?: string;
 }
 
 export interface WalletFundsCardsHeadingProps {

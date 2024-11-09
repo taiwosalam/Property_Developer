@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   getYear,
@@ -28,16 +28,15 @@ import CalendarActivities from "./calendar-activities";
 import { calendar_events } from "./events";
 
 const CalendarComponent = () => {
-  const gap = 40;
   const today = new Date();
 
   // States
   const [activeDate, setActiveDate] = useState(today);
-  const [currentDate, setCurrentDate] = useState(startOfMonth(new Date()));
-
+  const [currentDate, setCurrentDate] = useState(startOfMonth(today));
+  const events = calendar_events;
   // Memos
   const { activities } = useMemo(() => {
-    const activities = calendar_events.filter((event) =>
+    const activities = events.filter((event) =>
       isSameDay(event.date, activeDate)
     );
 
@@ -48,6 +47,7 @@ const CalendarComponent = () => {
   const data = new Calendar({
     month: getMonth(currentDate),
     year: getYear(currentDate),
+    events,
   });
 
   const { calendarDays } = data;
@@ -63,17 +63,16 @@ const CalendarComponent = () => {
         prevMonth: () => setCurrentDate((prev) => subMonths(prev, 1)),
       }}
     >
-      <div className="flex gap-10">
+      <div className="flex flex-col lg:flex-row gap-x-10 gap-y-8">
         <div
-          className="w-full custom-flex-col gap-4 overflow-hidden rounded-lg bg-white dark:bg-black"
+          className="lg:flex-1 custom-flex-col gap-4 overflow-hidden rounded-lg bg-white dark:bg-darkText-primary"
           style={{
-            width: `calc(60% - ${gap}px)`,
             border: "1px solid rgba(193, 194, 195, 0.40)",
             boxShadow:
               "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
           }}
         >
-          <div className="p-[18px] pb-0 bg-[#eff6ff81] custom-flex-col gap-2">
+          <div className="p-[18px] pb-0 bg-brand-1 custom-flex-col gap-2">
             <CalendarHeader />
             <div className="w-full overflow-x-auto custom-round-scrollbar pb-[18px]">
               <CalendarEventsTags events={calendar_event_tags} />
@@ -107,7 +106,7 @@ const CalendarComponent = () => {
             </div>
           </div>
         </div>
-        <div style={{ width: "40%", maxHeight: "460px" }}>
+        <div style={{ maxHeight: "460px" }} className="lg:w-[40%]">
           <CalendarActivities date={activeDate} events={activities} />
         </div>
       </div>

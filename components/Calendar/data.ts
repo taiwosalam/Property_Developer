@@ -1,6 +1,9 @@
 // Types
-import { calendar_events } from "./events";
-import type { CalendarDayProps, CalendarClassData } from "./types";
+import type {
+  CalendarDayProps,
+  CalendarClassData,
+  CalendarEventProps,
+} from "./types";
 
 // Imports
 import {
@@ -42,16 +45,18 @@ export class Calendar implements CalendarClassData {
   targetDate: Date;
   daysInWeek: number;
   calendarDays: CalendarDayProps[];
+  events: CalendarEventProps[];
 
   constructor({
     month = getMonth(new Date()),
     year = getYear(new Date()),
+    events = [] as CalendarEventProps[],
   } = {}) {
     this.month = month;
     this.year = year;
     this.targetDate = new Date(year, month);
     this.daysInWeek = 7; // Standard week length
-
+    this.events = events;
     // Initialize the calendar days array
     this.calendarDays = this.generateDays();
   }
@@ -104,9 +109,7 @@ export class Calendar implements CalendarClassData {
 
   // Get detailed information for each date
   getDayDetails(date: Date): CalendarDayProps {
-    const events = calendar_events.filter((event) =>
-      isSameDay(event.date, date)
-    );
+    const events = this.events.filter((event) => isSameDay(event.date, date));
 
     return {
       date,
