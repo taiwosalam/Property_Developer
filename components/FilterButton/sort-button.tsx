@@ -1,9 +1,10 @@
+"use client";
 import { CalendarIcon } from "@/public/icons/icons";
-import { ArrowDownAZ, ArrowUpZA, CalendarDays } from "lucide-react";
+import { ArrowDownAZ, ArrowUpZA } from "lucide-react";
 import { useState } from "react";
 
 const SortButton = () => {
-  const [sort, setSort] = useState("asc");
+  const [sort, setSort] = useState<"asc" | "desc">("asc");
 
   const toggleSort = () => {
     setSort((current) => {
@@ -11,7 +12,7 @@ const SortButton = () => {
         case "asc":
           return "desc";
         case "desc":
-          return "date";
+          return "asc";
         default:
           return "asc";
       }
@@ -34,8 +35,6 @@ const SortButton = () => {
             className="text-[#344054] dark:text-darkText-1"
           />
         );
-      case "date":
-        return <CalendarIcon />;
       default:
         return null;
     }

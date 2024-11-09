@@ -13,7 +13,6 @@ import {
   articleOptions,
   propertyRequestOptions,
 } from "@/app/(nav)/tasks/inspections/data";
-import { SettingsOthersType } from "@/components/Settings/settings-components";
 
 const FilterModal: React.FC<FilterModalProps> = ({
   filterOptionsWithDropdown,
