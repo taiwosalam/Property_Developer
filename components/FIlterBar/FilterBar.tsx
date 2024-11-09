@@ -1,3 +1,4 @@
+"use client";
 import clsx from "clsx";
 import SearchInput from "../SearchInput/search-input";
 import { GridIcon, ListIcon } from "@/public/icons/icons";
@@ -25,11 +26,11 @@ type FilterOptionWithDropdown = {
 };
 
 interface FilterBarProps {
-  filterWithOptionsWithDropdown: FilterOptionWithDropdown[];
+  filterWithOptionsWithDropdown?: FilterOptionWithDropdown[];
   filterOptions?: FilterOption[];
   filterOptionsWithRadio?: FilterOptionWithRadio[];
   handleFilterApply: (filters: any) => void;
-  onStateSelect: (state: string) => void;
+  onStateSelect?: (state: string) => void;
   isDateTrue?: boolean;
   searchInputPlaceholder: string;
   pageTitle?: string;
@@ -50,6 +51,7 @@ interface FilterBarProps {
   iconOnly?: boolean;
   article?: boolean;
   propertyRequest?: boolean;
+  noExclamationMark?: boolean;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -73,12 +75,18 @@ const FilterBar: React.FC<FilterBarProps> = ({
   iconOnly,
   article,
   propertyRequest,
+  noExclamationMark,
 }) => {
   return (
     <div className="page-title-container ">
       {pageTitle && (
-        <PageTitle title={pageTitle} aboutPageModalData={aboutPageModalData} />
+        <PageTitle
+          title={pageTitle}
+          aboutPageModalData={aboutPageModalData}
+          noExclamationMark={noExclamationMark}
+        />
       )}
+
       <div
         className={clsx(
           "flex items-center gap-4 flex-wrap",

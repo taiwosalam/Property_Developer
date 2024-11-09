@@ -1,14 +1,18 @@
 "use client";
 import CustomTable from "@/components/Table/table";
+import type { DataItem } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
   reportsListingsFilterOptionsWithDropdown,
   trackingTableFields,
 } from "./data";
+import { useRouter } from "next/navigation";
 
 const TrackingReport = () => {
+  const router = useRouter();
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
+      id: index + 1,
       username: `User ${index + 1}`,
       page_visited: `Landlord Page ${index + 1}`,
       action_taken: `Login successful ${index + 1}`,
@@ -20,6 +24,10 @@ const TrackingReport = () => {
   };
 
   const tableData = generateTableData(10);
+
+  const handleSelectTableItem = (item: DataItem) => {
+    router.push(`/reports/tracking/${item.id}`);
+  };
 
   return (
     <div className="space-y-9">
@@ -44,6 +52,7 @@ const TrackingReport = () => {
         fields={trackingTableFields}
         data={tableData}
         tableHeadClassName="h-[45px]"
+        handleSelect={handleSelectTableItem}
       />
     </div>
   );

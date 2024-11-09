@@ -1,3 +1,4 @@
+"use client";
 import { FilterIcon } from "@/public/icons/icons";
 import { ButtonHTMLAttributes } from "react";
 

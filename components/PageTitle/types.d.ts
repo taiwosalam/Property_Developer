@@ -7,4 +7,5 @@ export interface PageTitleProps {
     video?: string;
     readingLink?: string;
   };
+  noExclamationMark?: boolean;
 }

@@ -5,7 +5,11 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { PageTitleProps } from "./types";
 import AboutPage from "../AboutPage/about-page";
 
-const PageTitle: React.FC<PageTitleProps> = ({ title, aboutPageModalData }) => {
+const PageTitle: React.FC<PageTitleProps> = ({
+  title,
+  aboutPageModalData,
+  noExclamationMark,
+}) => {
   return (
     <div className="flex items-center gap-1">
       <h1 className="text-xl font-medium text-[#101828] dark:text-darkText-1 capitalize">
@@ -27,11 +31,11 @@ const PageTitle: React.FC<PageTitleProps> = ({ title, aboutPageModalData }) => {
             />
           </ModalContent>
         </Modal>
-      ) : (
+      ) : !noExclamationMark ? (
         <button type="button" aria-label="Guide" className="p-1">
           <ExclamationMark />
         </button>
-      )}
+      ) : null}
     </div>
   );
 };

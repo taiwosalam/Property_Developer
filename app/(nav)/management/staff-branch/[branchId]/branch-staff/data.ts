@@ -9,7 +9,6 @@ export const branchStaffTableFields: Field[] = [
   { id: "6", accessor: "position", label: "Position" },
   { id: "7", accessor: "gender", label: "Gender" },
   { id: "8", accessor: "staff_id", label: "Staff ID" },
-  { id: "9", accessor: "action" },
 ];
 
 export const generateBranchStaffTableData = (numItems: number) => {

@@ -137,7 +137,10 @@ const StaffProfile = () => {
           <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
             Barrister Abimbola Adedeji Activities
           </h2>
-          <Link href={""} className="flex items-center gap-1">
+          <Link
+            href={`/management/staff-branch/${branchId}/branch-staff/${staffId}/activities`}
+            className="flex items-center gap-1"
+          >
             <p>See all</p>
             <ChevronRight size={16} color="#5A5D61" />
           </Link>
