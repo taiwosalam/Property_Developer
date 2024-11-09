@@ -208,6 +208,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       images: [],
       staff: [],
     }));
+    setSelectedCategory(null);
   };
 
   return (
