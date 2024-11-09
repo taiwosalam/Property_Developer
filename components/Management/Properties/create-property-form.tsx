@@ -307,6 +307,21 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         </p>
         <hr className="my-4" />
         <div className="mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 dark:bg-darkText-primary dark:p-4 dark:rounded-lg">
+          <Select
+            options={
+              formType === "rental"
+                ? propertyCategories["rental property"]
+                : propertyCategories["gated estate/facility"]
+            }
+            id="category"
+            label="Category"
+            isSearchable={false}
+            inputContainerClassName="bg-white"
+            resetKey={resetKey}
+            requiredNoStar
+            hiddenInputClassName="property-form-input"
+            onChange={(category) => setSelectedCategory(category)}
+          />
           <Input
             id="property_title"
             label={formType === "rental" ? "Property Title" : "Estate Name"}
@@ -351,21 +366,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             inputClassName="bg-white rounded-[8px] property-form-input"
             requiredNoStar
           />
-          <Select
-            options={
-              formType === "rental"
-                ? propertyCategories["rental property"]
-                : propertyCategories["gated estate/facility"]
-            }
-            id="category"
-            label="Category"
-            isSearchable={false}
-            inputContainerClassName="bg-white"
-            resetKey={resetKey}
-            requiredNoStar
-            hiddenInputClassName="property-form-input"
-            onChange={(category) => setSelectedCategory(category)}
-          />
+
           <Select
             id="branch_id"
             label="Branch"
