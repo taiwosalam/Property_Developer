@@ -11,6 +11,7 @@ import Pagination from "@/components/Pagination/pagination";
 import RentalPropertyCard from "@/components/Management/Rent And Unit/rental-property-card";
 import RentalPropertyListCard from "@/components/Management/Rent And Unit/rental-property-list";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const RentAndUnit = () => {
   const [state, setState] = useState<RentAndUnitState>({
@@ -96,7 +97,7 @@ const RentAndUnit = () => {
           </div>
         </div>
         {gridView ? (
-          <div className="grid xl:grid-cols-3 gap-7">
+          <AutoResizingGrid minWidth={315}>
             <RentalPropertyCard
               propertyType="rental"
               images={[
@@ -130,7 +131,7 @@ const RentAndUnit = () => {
               ]}
               unitId="3"
             />
-          </div>
+          </AutoResizingGrid>
         ) : (
           <div className="space-y-4">
             <RentalPropertyListCard propertyType="rental" unitId="1" />

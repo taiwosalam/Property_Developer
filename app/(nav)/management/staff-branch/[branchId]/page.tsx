@@ -228,7 +228,7 @@ const BranchDashboard = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="w-full h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <AutoResizingGrid gap={12} minWidth={215}>
             <AccountStatsCard
               title="Total Receipts"
               balance={1234535}
@@ -256,7 +256,7 @@ const BranchDashboard = () => {
               variant="blueIncoming"
               forBranch
             />
-          </div>
+          </AutoResizingGrid>
         </div>
         <div className="md:flex-1 space-y-7">
           <Link

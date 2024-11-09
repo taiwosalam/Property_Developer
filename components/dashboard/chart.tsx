@@ -19,7 +19,7 @@ import {
 import { DatePickerWithRange } from "./date-picker";
 import { Switch } from "../ui/switch";
 import { Label } from "../ui/label";
-import { DateRange } from "react-day-picker";
+import type { DateRange } from "react-day-picker";
 
 interface ChartDataPoint {
   date: string;
@@ -55,7 +55,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
   const [highestMetric, setHighestMetric] = React.useState<string | null>(null);
   const [primaryColor, setPrimaryColor] = React.useState<string | null>(null);
 
-  const calculateDateRange = (days: number) => {
+  const calculateDateRange = (days: number): DateRange => {
     const now = new Date();
     const fromDate = new Date();
     fromDate.setDate(now.getDate() - days);
@@ -258,7 +258,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
             <XAxis
               dataKey="date"
               tickLine={false}
-              axisLine={true}
+              axisLine
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {
@@ -273,7 +273,6 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
               content={
                 <ChartTooltipContent
                   className="w-[150px]"
-                  nameKey="views"
                   labelFormatter={(value) => {
                     return new Date(value).toLocaleDateString("en-US", {
                       month: "short",
