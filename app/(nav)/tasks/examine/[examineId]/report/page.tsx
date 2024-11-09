@@ -9,11 +9,11 @@ import { SectionContainer } from "@/components/Section/section-components";
 import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-info-components";
 
 const ExamineReportpage = () => {
-  const commonBoxStyle = {
+  const commonBoxStyle: React.CSSProperties = {
     boxShadow:
       "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
-    className: "py-6 px-4 rounded-lg",
   };
+  const commonBoxClassName = "py-6 px-4 rounded-lg space-y-2";
   return (
     <div className="space-y-8 pb-[100px]">
       <BackButton as="p">Back</BackButton>
@@ -29,8 +29,8 @@ const ExamineReportpage = () => {
       </h1>
       <div className="grid md:grid-cols-2 gap-8">
         <LandlordTenantInfoBox
-          className={`${commonBoxStyle.className} space-y-2`}
-          style={{ boxShadow: commonBoxStyle.boxShadow }}
+          className={`${commonBoxClassName}`}
+          style={commonBoxStyle}
         >
           <div className="flex items-center justify-between gap-2">
             <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
@@ -52,10 +52,10 @@ const ExamineReportpage = () => {
           </div>
         </LandlordTenantInfoBox>
         <LandlordTenantInfoBox
-          className={`${commonBoxStyle.className} space-y-2`}
-          style={{ boxShadow: commonBoxStyle.boxShadow }}
+          className={`${commonBoxClassName}`}
+          style={commonBoxStyle}
         >
-          <p className="text-sm font-medium text-text-tertiary dark:text-darkText-1">
+          <p className="text-base font-medium text-text-tertiary dark:text-darkText-1">
             Description
           </p>
           <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">

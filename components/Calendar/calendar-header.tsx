@@ -1,5 +1,4 @@
-import React from "react";
-import { format, setMonth } from "date-fns";
+import { format } from "date-fns";
 
 // Images
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -8,18 +7,18 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useCalendar } from "./calendar-context";
 
 const CalendarHeader = () => {
-  const { year, month, nextMonth, prevMonth } = useCalendar();
+  const { targetDate, nextMonth, prevMonth } = useCalendar();
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between gap-2">
       <p className="text-black text-base font-medium">
-        {format(setMonth(new Date(year, 0), month), "MMMM")} {year}
+        {format(targetDate, "MMMM yyyy")}
       </p>
       <div className="flex gap-3">
-        <button onClick={prevMonth} className="p-1">
+        <button type="button" onClick={prevMonth} className="p-1">
           <ArrowLeft size={18} color="#696B70" />
         </button>
-        <button onClick={nextMonth} className="p-1">
+        <button type="button" onClick={nextMonth} className="p-1">
           <ArrowRight size={18} color="#696B70" />
         </button>
       </div>

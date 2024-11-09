@@ -22,7 +22,7 @@ export const CalendarEventTagItem: React.FC<CalendarEventTagItemProps> = ({
     <div
       className={clsx("w-[5px] h-[5px]", { "rounded-full": rounded })}
       style={{ backgroundColor: color }}
-    ></div>
+    />
     <p className="text-text-label text-sm font-medium capitalize whitespace-nowrap">
       {title}
     </p>
@@ -60,7 +60,8 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({
     <p
       className={clsx("text-base font-normal", {
         "text-white": hasEvent && !isToday && isCurrentMonth,
-        "text-text-tertiary hover:text-black": (!hasEvent && !isToday) || !isCurrentMonth,
+        "text-text-tertiary hover:text-black":
+          (!hasEvent && !isToday) || !isCurrentMonth,
       })}
     >
       {date.getDate()}
@@ -113,7 +114,7 @@ export const CalendarActivity: React.FC<CalendarEventProps> = ({
     <div
       className="w-1"
       style={{ backgroundColor: calendar_event_tags[type] }}
-    ></div>
+    />
     <p className="p-1 text-text-primary text-sm font-normal">
       <span className="capitalize font-bold">{type}</span> || {desc}
     </p>
