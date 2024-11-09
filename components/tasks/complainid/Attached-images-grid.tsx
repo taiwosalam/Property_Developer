@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
-
+import clsx from "clsx";
 interface AttachedImagesGridProps {
   images: { src: string; isVideo: boolean }[];
 }
@@ -31,7 +31,12 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
           onClick={() => setShowImages(!showImages)}
         >
           <p>{showImages ? "Hide Images" : "Show Images"}</p>
-          <div className={showImages ? "-rotate-90" : "rotate-90"}>
+          <div
+            className={clsx(
+              showImages ? "-rotate-90" : "rotate-90",
+              "transition-transform"
+            )}
+          >
             <ChevronLeft fill="#5A5D61" />
           </div>
         </button>

@@ -3,4 +3,5 @@ export interface BackButtonProps {
   className?: string;
   bold?: boolean;
   as?: keyof JSX.IntrinsicElements;
+  textClassName?: string;
 }

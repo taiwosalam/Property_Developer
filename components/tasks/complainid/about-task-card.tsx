@@ -1,55 +1,80 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { ChevronLeft } from "@/public/icons/icons";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
+import { useState } from "react";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import BackButton from "@/components/BackButton/back-button";
 import clsx from "clsx";
+import { motion, AnimatePresence } from "framer-motion";
 
 const AboutTaskCard = () => {
-  const router = useRouter();
+  const [isVisible, setIsVisible] = useState(true);
+
+  const toggleVisibility = () => {
+    setIsVisible(!isVisible);
+  };
   return (
     <div className="w-full space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex gap-2 items-center">
-          <button type="button" className="w-fit" onClick={() => router.back()}>
-            <ChevronLeft />
-          </button>
-          <h1 className="text-base font-medium">About Complaints</h1>
-        </div>
-        <div className="flex items-center space-x-2 text-text-label text-sm font-medium">
-          <p>Hide Complaints</p>
-          <div className="-rotate-90">
+      <div className="flex items-center justify-between gap-2">
+        <BackButton textClassName="text-base lg:text-base">
+          About Complaint
+        </BackButton>
+        <button
+          type="button"
+          onClick={toggleVisibility}
+          className="flex items-center gap-2 text-text-label text-sm font-medium"
+        >
+          <p>{isVisible ? "Hide Complaints" : "Show Complaints"}</p>
+          <div
+            className={clsx(
+              isVisible ? "-rotate-90" : "rotate-90",
+              "transition-transform"
+            )}
+          >
             <ChevronLeft fill="#5A5D61" />
           </div>
-        </div>
+        </button>
       </div>
-      <div
-        className="bg-white dark:bg-darkText-primary p-6 rounded-lg"
-        style={{
-          boxShadow:
-            "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
-        }}
-      >
-        <div className="grid grid-cols-3 gap-4">
-          {details.map((detail, index) => (
-            <DetailItem key={index} label={detail.label} value={detail.value} />
-          ))}
-        </div>
-        <div className="my-2">
-          <p className="text-[16px] font-medium text-text-tertiary dark:text-darkText-1">
-            Description:
-          </p>
-          <TruncatedText
-            className="text-sm text-[16px] font-normal text-text-secondary dark:text-darkText-2"
-            lines={3}
+      <AnimatePresence initial={false}>
+        {isVisible && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            key="about-complaint"
+            className="bg-white dark:bg-darkText-primary p-6 rounded-lg"
+            style={{
+              boxShadow:
+                "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
+            }}
           >
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusamus
-            distinctio quaerat inventore temporibus. Eos adipisci maxime illum
-            repellendus minus praesentium harum natus corrupti itaque! Excepturi
-            possimus at totam? Tempora, non.
-          </TruncatedText>
-        </div>
-      </div>
+            <div className="grid grid-cols-3 gap-4">
+              {details.map((detail, index) => (
+                <DetailItem
+                  key={index}
+                  label={detail.label}
+                  value={detail.value}
+                />
+              ))}
+            </div>
+            <div className="my-2">
+              <p className="text-[16px] font-medium text-text-tertiary dark:text-darkText-1">
+                Description:
+              </p>
+              <TruncatedText
+                className="text-sm text-[16px] font-normal text-text-secondary dark:text-darkText-2"
+                lines={3}
+              >
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                Accusamus distinctio quaerat inventore temporibus. Eos adipisci
+                maxime illum repellendus minus praesentium harum natus corrupti
+                itaque! Excepturi possimus at totam? Tempora, non.
+              </TruncatedText>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -64,7 +89,9 @@ const DetailItem = ({
   value: string | number;
 }) => (
   <div className="w-full">
-    <p className="text-[16px] font-medium text-text-tertiary dark:text-white">{label}</p>
+    <p className="text-[16px] font-medium text-text-tertiary dark:text-white">
+      {label}
+    </p>
     <p
       className={clsx(
         "text-sm text-[16px] font-normal text-text-secondary dark:text-darkText-1",
