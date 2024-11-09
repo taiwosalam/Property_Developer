@@ -75,8 +75,6 @@ interface ManagementStatistcsCardProps {
   title: string;
   newData: number;
   className?: string;
-  // oldColor?: React.CSSProperties["color"];
-  // newColor?: React.CSSProperties["color"];
   colorScheme: 1 | 2 | 3 | 4;
 }
 
@@ -85,8 +83,6 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
   total,
   newData,
   className,
-  // oldColor,
-  // newColor,
   colorScheme,
 }) => {
   const old = total - newData;
@@ -108,7 +104,7 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
       break;
     case 4:
       oldColorScheme = colors.lightBlue;
-      newColorScheme = colors.green; //Leave as green. order from Mr Taiwo
+      newColorScheme = colors.green;
       break;
     default:
       oldColorScheme = colors.blue;

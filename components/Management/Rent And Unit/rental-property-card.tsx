@@ -9,6 +9,7 @@ import { ActionButton } from "./action-button";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import PropertyTag from "@/components/Tags/property-tag";
 import { useRouter } from "next/navigation";
+import ImageSlider from "@/components/ImageSlider/image-slider";
 
 export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
   images,
@@ -135,7 +136,8 @@ const RentalPropertyCard: React.FC<{
           propertyType={propertyType}
           className="absolute top-5 right-5 z-10"
         />
-        <PropertyImageSlider images={images} showOverlay={isHovered} />
+        {/* <PropertyImageSlider images={images} showOverlay={isHovered} /> */}
+        <ImageSlider images={images} className="h-full" />
       </div>
       <div
         role="button"

@@ -88,7 +88,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
           <Link
             href={
               sectionHeader === "Staffs"
-                ? `/management/staff-branch/${branchId}/${notification.staff_ID}/staff-profile`
+                ? `/management/staff-branch/${branchId}/staff-profile/${notification.staff_ID}`
                 : "#"
             }
             className="flex items-center gap-3"

@@ -12,14 +12,16 @@ import { useAuthStore } from "@/store/authstrore";
 import { useEffect, useState } from "react";
 import { getOneBranch } from "../../data";
 import { PageState } from "../data";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ResponseType } from "../types";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import type { DataItem } from "@/components/Table/types";
 import CustomTable from "@/components/Table/table";
 import { branchStaffTableFields, branchStaffTableData } from "./data";
 
 const BranchStaffPage = () => {
+  const router = useRouter();
   const BranchFilters = [{ label: "Alphabetically", value: "alphabetically" }];
 
   const branchFiltersWithOptions = [
@@ -101,6 +103,10 @@ const BranchStaffPage = () => {
     ),
   }));
 
+  const handleSelectTableItem = (item: DataItem) => {
+    router.push(`/management/staff-branch/${branchId}/branch-staff/${item.id}`);
+  };
+
   return (
     <div className="custom-flex-col gap-6">
       <div className="w-full gap-2 flex items-center justify-between flex-wrap">
@@ -153,7 +159,7 @@ const BranchStaffPage = () => {
           {Array.from({ length: 20 }).map((_, index) => (
             <Link
               key={index}
-              href={`/management/staff-branch/${branchId}/${1}/staff-profile`}
+              href={`/management/staff-branch/${branchId}/branch-staff/${index}`}
             >
               <UserCard
                 badge_color="black"
@@ -172,6 +178,7 @@ const BranchStaffPage = () => {
           data={transformedTableData}
           tableBodyCellSx={{ fontSize: "1rem" }}
           tableHeadCellSx={{ fontSize: "1rem", height: 70 }}
+          handleSelect={handleSelectTableItem}
         />
       )}
       <Pagination

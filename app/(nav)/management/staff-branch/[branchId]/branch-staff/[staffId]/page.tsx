@@ -17,7 +17,6 @@ import {
   LandlordTenantInfo,
   LandlordTenantInfoBox,
 } from "@/components/Management/landlord-tenant-info-components";
-import TruncatedText from "@/components/TruncatedText/truncated-text";
 import { secondaryFont } from "@/utils/fonts";
 import Button from "@/components/Form/Button/button";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
@@ -81,7 +80,7 @@ const StaffProfile = () => {
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <Button
-                    href={`/management/staff-branch/${branchId}/${staffId}/staff-profile/edit`}
+                    href={`/management/staff-branch/${branchId}/branch-staff/${staffId}/edit`}
                     size="base_medium"
                     className="py-2 px-8"
                   >

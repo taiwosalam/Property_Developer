@@ -228,7 +228,7 @@ const BranchDashboard = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="w-full h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <AutoResizingGrid gap={12} minWidth={215}>
             <AccountStatsCard
               title="Total Receipts"
               balance={1234535}
@@ -256,7 +256,7 @@ const BranchDashboard = () => {
               variant="blueIncoming"
               forBranch
             />
-          </div>
+          </AutoResizingGrid>
         </div>
         <div className="md:flex-1 space-y-7">
           <Link
@@ -276,14 +276,15 @@ const BranchDashboard = () => {
       <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 lg:items-start">
         <div className="overflow-x-auto flex lg:w-[68%] md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
           {dashboardCardData.map((card, index) => (
-            <Card
-              key={index}
-              title={card.title}
-              icon={<card.icon />}
-              value={card.value}
-              subvalue={card.subValue}
-              bg={card.bg}
-            />
+            <Link href={card.link} key={index} prefetch={false}>
+              <Card
+                title={card.title}
+                icon={<card.icon />}
+                value={card.value}
+                subvalue={card.subValue}
+                bg={card.bg}
+              />
+            </Link>
           ))}
         </div>
         <BranchActivitiesCard className="lg:flex-1" />

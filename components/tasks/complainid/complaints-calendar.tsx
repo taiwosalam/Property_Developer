@@ -35,7 +35,7 @@ const ComplaintsCalendar: React.FC<{
 
   const setYear = (year: number) => {
     const newDate = new Date(year, getMonth(currentDate));
-    setCurrentDate(startOfMonth(newDate)); // Update currentDate state
+    setCurrentDate(startOfMonth(newDate));
   };
 
   return (
