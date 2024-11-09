@@ -44,6 +44,27 @@ export const placeholder_portfolio_data: StaffProfilePortfolioProps[] = [
           location: "Street 23, All Avenue, Nigeria",
         },
       },
+      {
+        image: SampleProperty4,
+        property: {
+          name: "moniya apartment",
+          location: "Street 23, All Avenue, Nigeria",
+        },
+      },
+      {
+        image: SampleProperty4,
+        property: {
+          name: "moniya apartment",
+          location: "Street 23, All Avenue, Nigeria",
+        },
+      },
+      {
+        image: SampleProperty4,
+        property: {
+          name: "moniya apartment",
+          location: "Street 23, All Avenue, Nigeria",
+        },
+      },
     ],
   },
   {
@@ -81,6 +102,30 @@ export const placeholder_portfolio_data: StaffProfilePortfolioProps[] = [
           phone_number: "+2348123456789",
         },
       },
+      {
+        image: Avatar4,
+        user: {
+          name: "Ibironke Adebimpe",
+          email: "example@gmail.com",
+          phone_number: "+2348123456789",
+        },
+      },
+      {
+        image: Avatar4,
+        user: {
+          name: "Ibironke Adebimpe",
+          email: "example@gmail.com",
+          phone_number: "+2348123456789",
+        },
+      },
+      {
+        image: Avatar4,
+        user: {
+          name: "Ibironke Adebimpe",
+          email: "example@gmail.com",
+          phone_number: "+2348123456789",
+        },
+      },
     ],
   },
   {
@@ -91,6 +136,30 @@ export const placeholder_portfolio_data: StaffProfilePortfolioProps[] = [
         user: {
           name: "Abimbola Azeez Wasiu",
           email: "test@test.com",
+          phone_number: "+2348123456789",
+        },
+      },
+      {
+        image: Avatar2,
+        user: {
+          name: "Oloruntoba Morakinyo",
+          email: "test@testt.com",
+          phone_number: "+2348123456789",
+        },
+      },
+      {
+        image: Avatar2,
+        user: {
+          name: "Oloruntoba Morakinyo",
+          email: "test@testt.com",
+          phone_number: "+2348123456789",
+        },
+      },
+      {
+        image: Avatar2,
+        user: {
+          name: "Oloruntoba Morakinyo",
+          email: "test@testt.com",
           phone_number: "+2348123456789",
         },
       },

@@ -15,7 +15,7 @@ const StaffProfilePortfolioItem: React.FC<StaffProfilePortfolioItemProps> = ({
   property,
 }) => {
   return (
-    <div className="p-[18px] rounded-lg bg-white dark:bg-[#020617] flex items-center gap-2">
+    <div className="flex-shrink-0 p-[18px] rounded-lg bg-white dark:bg-[#020617] flex items-center gap-2">
       <Picture src={image} alt="preview" size={60} className="rounded-[4px]" />
       <div className="custom-flex-col gap-1">
         {property ? (
