@@ -127,7 +127,7 @@ const UnitForm: React.FC<UnitFormProps> = ({
       activeStep={0}
       inputClassName="unit-form-input"
       images={state.images}
-      imagesRequired={true}
+      imagesRequired={propertyType !== "facility"}
       showProgressBar={false}
     >
       <UnitFormContext.Provider
