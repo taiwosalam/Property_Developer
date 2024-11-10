@@ -15,8 +15,8 @@ const DeleteItemWarningModal: React.FC<{
     <ModalPreset type="warning">
       <p className="text-text-disabled text-sm font-normal">
         Are you sure you want to remove the{" "}
-        <span className="font-bold text-text-secondary">{item}</span> and its
-        amount <span className="font-bold text-text-secondary">₦{amount}</span>{" "}
+        <span className="font-bold text-text-tertiary">{item}</span> and its
+        amount <span className="font-bold text-text-tertiary">₦{amount}</span>{" "}
         from the {useCase} list?
       </p>
       <div className="flex flex-col items-center gap-4">
