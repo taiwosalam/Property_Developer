@@ -109,7 +109,7 @@ const UnitDetails = () => {
           label="Unit Number or Name"
           placeholder="Flat 1"
           inputClassName="bg-white rounded-[8px] unit-form-input"
-          requiredNoStar={!isFacility}
+          requiredNoStar
         />
         <Select
           id="unit_type"
