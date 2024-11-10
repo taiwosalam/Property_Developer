@@ -185,10 +185,8 @@ const ManageExpenses = () => {
                       }).format(payment.amount)}
                     </p>
                     <Modal>
-                      <ModalTrigger asChild>
-                        <button aria-label={`Delete ${payment.title}`}>
-                          <DeleteIconX />
-                        </button>
+                      <ModalTrigger aria-label={`Delete ${payment.title}`}>
+                        <DeleteIconX />
                       </ModalTrigger>
                       <ModalContent>
                         <DeleteItemWarningModal
@@ -264,12 +262,19 @@ const ManageExpenses = () => {
                           currency: "NGN",
                         }).format(deduction.amount)}
                       </p>
-                      <button
-                        onClick={() => handleDeleteDeduction(index)}
-                        aria-label={`Delete ${deduction.date}`}
-                      >
-                        <DeleteIconX />
-                      </button>
+                      <Modal>
+                        <ModalTrigger aria-label={`Delete ${deduction.date}`}>
+                          <DeleteIconX />
+                        </ModalTrigger>
+                        <ModalContent>
+                          <DeleteItemWarningModal
+                            item={deduction.date.toDate().toLocaleDateString()}
+                            amount={deduction.amount}
+                            handleDelete={() => handleDeleteDeduction(index)}
+                            useCase="deductions"
+                          />
+                        </ModalContent>
+                      </Modal>
                     </div>
                   </div>
                 ))}
