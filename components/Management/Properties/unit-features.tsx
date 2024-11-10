@@ -6,12 +6,12 @@ import { unitFacilities } from "@/data";
 import { useUnitForm } from "./unit-form-context";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { useAddUnitStore } from "@/store/add-unit-store";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const UnitFeatures = () => {
   const { handleInputChange } = useContext(FlowProgressContext);
-  const params = useParams();
-  const propertyType = params.propertyType as "rental" | "facility";
+  const params = useSearchParams();
+  const propertyType = params.get("propertyType") as "rental" | "facility";
   // const propertyType = useAddUnitStore((state) => state.propertyType);
   const { unitType, formResetKey } = useUnitForm();
 
@@ -40,7 +40,7 @@ const UnitFeatures = () => {
           {/* Select for choosing area unit */}
           <Select
             id="measurement" // Confirm ID with backend
-            required
+            required={!isFacility}
             options={areaUnits}
             label="measurement"
             value={selectedAreaUnit}
@@ -128,7 +128,7 @@ const UnitFeatures = () => {
           </>
         )}
       </div>
-      {unitType !== "land" && (
+      {(unitType !== "land" && !isFacility)(
         <div className="flex gap-4 md:gap-5 flex-wrap">
           <Select
             dropdownRefClassName="!w-[160px]"
