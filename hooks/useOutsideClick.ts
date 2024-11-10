@@ -15,11 +15,11 @@ export const useOutsideClick = (
     };
 
     // Add event listener
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
     // Cleanup function to remove event listener
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [ref, callback]); // Dependencies array
 };

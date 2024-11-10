@@ -9,7 +9,7 @@ const Details = () => {
       <h1 className="font-bold text-xl text-[#092C4C] dark:text-white">
         Details
       </h1>
-      <div className="h-[2px] w-3/4 bg-[#C0C2C8] bg-opacity-20" />
+      <div className="h-[2px] bg-[#C0C2C8] bg-opacity-20" />
       <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
         <KeyValueList
           data={{}}

@@ -27,6 +27,7 @@ const Select: React.FC<SelectProps> = ({
   dropdownRefClassName,
   resetKey,
   requiredNoStar,
+  disabled,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -76,6 +77,10 @@ const Select: React.FC<SelectProps> = ({
     return typeof options[0] === "object";
   };
 
+  useOutsideClick(dropdownRef, () => {
+    setState((x) => ({ ...x, isOpen: false, searchTerm: "" }));
+  });
+
   useEffect(() => {
     updateDropdownPosition();
     if (isOpen) {
@@ -99,10 +104,6 @@ const Select: React.FC<SelectProps> = ({
     });
   }, [searchTerm, options]);
 
-  useOutsideClick(dropdownRef, () => {
-    setState((x) => ({ ...x, isOpen: false, searchTerm: "" }));
-  });
-
   // Initialize
   useEffect(() => {
     setState((x) => ({ ...x, selectedValue: propValue || defaultValue }));
@@ -121,7 +122,15 @@ const Select: React.FC<SelectProps> = ({
   }, [validationErrors, id]);
 
   return (
-    <div className={clsx("custom-flex-col gap-2", className)}>
+    <div
+      className={clsx(
+        "custom-flex-col gap-2",
+        {
+          "pointer-events-none opacity-50": disabled,
+        },
+        className
+      )}
+    >
       {/* input for flow progress and holding the selected value for form submission */}
       <input
         name={id}
@@ -130,6 +139,7 @@ const Select: React.FC<SelectProps> = ({
         className={hiddenInputClassName}
         value={selectedValue || ""}
         required={required || requiredNoStar}
+        disabled={disabled}
       />
       {label && (
         <Label id={id} required={required}>
@@ -148,7 +158,8 @@ const Select: React.FC<SelectProps> = ({
             inputContainerClassName
           )}
           onClick={() => {
-            if (!selectedValue) setState((x) => ({ ...x, isOpen: !x.isOpen }));
+            if (!selectedValue && !disabled)
+              setState((x) => ({ ...x, isOpen: !x.isOpen }));
           }}
         >
           {/* Conditionally render the search icon */}

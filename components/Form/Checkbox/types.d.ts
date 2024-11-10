@@ -5,4 +5,6 @@ export interface CheckboxProps {
   sm?: boolean;
   className?: string;
   hoverContent?: React.ReactNode;
+  radio?: boolean;
+  defaultChecked?: boolean;
 }

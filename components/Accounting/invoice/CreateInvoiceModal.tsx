@@ -1,43 +1,45 @@
 import Button from "@/components/Form/Button/button";
-import Input from "@/components/Form/Input/input";
-import { ModalTrigger } from "@/components/Modal/modal";
-import { DeleteIconX } from "@/public/icons/icons";
+import Select from "@/components/Form/Select/select";
+import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import { useRouter } from "next/navigation";
 
 const CreateInvoiceModal = () => {
+  const router = useRouter();
   return (
-    <div className="w-[700px] max-w-[80%] max-h-[50vh] h-full rounded-[20px] bg-white overflow-y-auto custom-round-scrollbar">
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-solid border-[#B8B8B8] sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[30px] bg-white">
-        <div className="flex items-center gap-2">
-          <p className="text-primary-navy text-base md:text-lg lg:text-xl font-bold capitalize">
-            Add Property ID
-          </p>
+    <LandlordTenantModalPreset
+      heading="Add Property"
+      style={{ maxWidth: "600px", height: "400px" }}
+    >
+      <div className="space-y-5 max-w-[300px] mx-auto mt-5">
+        <Select
+          id=""
+          label={`Choose Property`}
+          options={[
+            { value: "1", label: "Option 1" },
+            { value: "2", label: "Option 2" },
+            { value: "3", label: "Option 3" },
+            { value: "3", label: "Option 3" },
+            { value: "3", label: "Option 3" },
+            { value: "3", label: "Option 3" },
+            { value: "3", label: "Option 3" },
+            { value: "3", label: "Option 3" },
+            { value: "3", label: "Option 3" },
+            { value: "3", label: "Option 3" },
+          ]}
+        />
+        <div className="w-full flex items-center justify-center">
+          <Button
+            onClick={() => {
+              router.push(`/accounting/invoice/create-invoice`);
+            }}
+            className="py-2 px-8"
+            size="base_medium"
+          >
+            Add
+          </Button>
         </div>
-        <ModalTrigger close className="p-2" type="button" aria-label="close">
-          <DeleteIconX size={34} />
-        </ModalTrigger>
       </div>
-      {/* body */}
-      <div className="flex items-center justify-center my-auto">
-        <div className="mt-28 space-y-5">
-          <Input
-            label="Choose Property"
-            type="text"
-            id="add_property_id"
-            className="min-w-[300px]"
-          />
-          <div className="w-full flex items-center justify-center">
-            <Button
-              onClick={() =>
-                (window.location.href = "/accounting/invoice/create-invoice")
-              }
-            >
-              Add
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+    </LandlordTenantModalPreset>
   );
 };
 
