@@ -32,7 +32,7 @@ interface FilterBarProps {
   handleFilterApply: (filters: any) => void;
   onStateSelect?: (state: string) => void;
   isDateTrue?: boolean;
-  searchInputPlaceholder: string;
+  searchInputPlaceholder?: string;
   pageTitle?: string;
   aboutPageModalData?: {
     title: string;
