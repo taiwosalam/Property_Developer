@@ -33,6 +33,9 @@ const TableMenu: React.FC<TableMenuProps> = (props) => {
               textTransform: "capitalize",
               color: isDarkMode ? "#E5E5E5" : "#3F4247",
             },
+            "& .MuiList-root": {
+              padding: 0,
+            },
           },
         },
       }}

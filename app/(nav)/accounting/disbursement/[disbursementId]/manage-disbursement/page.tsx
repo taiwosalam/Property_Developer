@@ -1,7 +1,6 @@
 "use client";
 
 // Imports
-import { useState } from "react";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
@@ -13,11 +12,8 @@ import ExportPageHeader from "@/components/reports/export-page-header";
 import DeleteDisbursementModal from "@/components/Accounting/Disbursement/delete-disbursement-modal";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import {
-  currencySymbols,
-  formatCostInputValue,
-} from "@/utils/number-formatter";
-import DateInput from "@/components/Form/DateInput/date-input";
+import { currencySymbols } from "@/utils/number-formatter";
+import TextArea from "@/components/Form/TextArea/textarea";
 
 const paymentModes = [
   "Bank Transfer",
@@ -29,8 +25,7 @@ const paymentModes = [
 
 const ManageDisbursement = () => {
   const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
-  const [amountDisburse, setAmountDisburse] = useState("");
-  const [amount, setAmount] = useState("");
+
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
@@ -42,7 +37,7 @@ const ManageDisbursement = () => {
           phoneNumbers={["09022312133", "07012133313", "0901212121"]}
           email="example@mail.com"
         />
-        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 md:gap-0 flex-col md:flex-row">
+        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
             data={{}}
             chunkSize={2}
@@ -57,56 +52,38 @@ const ManageDisbursement = () => {
             }}
           />
         </div>
-        <AccountingTitleSection title="Disbursement Break Down">
-          <div className="flex">
-            <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
-              <Select
-                id="disbursement-mode"
-                label="disbursement mode"
-                placeholder="Bank Transfer"
-                options={paymentModes}
-                inputContainerClassName="bg-white"
-              />
-              <Input
-                id="ammount-disburse"
-                label="ammount disburse"
-                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                placeholder="300,000"
-                inputClassName="bg-white"
-                value={amountDisburse}
-                onChange={(value) =>
-                  setAmountDisburse(formatCostInputValue(value))
-                }
-              />
-              <DateInput
-                id="transaction-date"
-                label="transaction date"
-                containerClassName="bg-white"
-              />
-              <Input
-                id="transaction-description"
-                label="transaction description"
-                placeholder="Property Rent for moniya house"
-                inputClassName="bg-white"
-              />
-            </div>
+        <AccountingTitleSection title="Transaction Details">
+          <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
+            <TextArea
+              id="transaction-description"
+              className="sm:col-span-2"
+              inputSpaceClassName="bg-white !h-[120px]"
+            />
+            <Select
+              id="disbursement-mode"
+              label="disbursement mode"
+              placeholder="Bank Transfer"
+              options={paymentModes}
+              className="self-end"
+              inputContainerClassName="bg-white"
+            />
           </div>
         </AccountingTitleSection>
-        <AccountingTitleSection title="Add Disburse">
+        <AccountingTitleSection title="Add Disbursement">
           <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
-              <Input
-                id="payment-title"
-                label="payment title"
-                placeholder="Security Fee"
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] max-w-[968px]">
+              <Select
+                id="tenant"
+                label="Tenant/Occupant"
+                required
+                placeholder="Select Options"
+                options={["tenant 1", "tenant 2"]}
               />
               <Input
                 id="amount"
                 label="amount"
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
-                value={amount}
-                onChange={(value) => setAmount(formatCostInputValue(value))}
               />
             </div>
             <div className="flex justify-end">
@@ -116,8 +93,51 @@ const ManageDisbursement = () => {
             </div>
           </div>
         </AccountingTitleSection>
+        <AccountingTitleSection title="Disbursement Details">
+          <div className="p-6 flex flex-col xl:flex-row xl:justify-between gap-4 bg-white dark:bg-darkText-primary rounded-lg">
+            <div className="xl:flex-1 xl:max-w-[968px] space-y-4">
+              <div className="flex flex-col lg:flex-row gap-4 lg:gap-0">
+                <KeyValueList
+                  data={{}}
+                  chunkSize={1}
+                  direction="column"
+                  referenceObject={{
+                    "tenant / occupant": "",
+                    "unit no/name": "",
+                    "amount disburse": "",
+                  }}
+                />
+              </div>
+              <div className="flex flex-col lg:flex-row gap-4 lg:gap-0">
+                <KeyValueList
+                  data={{}}
+                  chunkSize={1}
+                  direction="column"
+                  referenceObject={{
+                    "tenant / occupant": "",
+                    "unit no/name": "",
+                    "amount disburse": "",
+                  }}
+                />
+              </div>
+            </div>
+            <div className="space-y-2 self-end">
+              <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                Total Disbursement
+              </p>
+              <p className="font-bold text-xl text-brand-9">
+                {new Intl.NumberFormat("en-NG", {
+                  style: "currency",
+                  currency: "NGN",
+                })
+                  .format(1000000)
+                  .split(".")}
+              </p>
+            </div>
+          </div>
+        </AccountingTitleSection>
       </div>
-      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
+      <FixedFooter className="flex gap-4 items-center justify-between">
         <Modal>
           <ModalTrigger asChild>
             <Button size="base_bold" variant="light_red" className="py-2 px-8">

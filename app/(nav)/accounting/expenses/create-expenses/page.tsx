@@ -1,15 +1,13 @@
 "use client";
 
-import Breakdown from "@/components/Accounting/expenses/create-expense/Breakdown";
 import Details from "@/components/Accounting/invoice/create-invoice/Details";
 import BackButton from "@/components/BackButton/back-button";
 import Button from "@/components/Form/Button/button";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
-import Picture from "@/components/Picture/picture";
 import ExportPageHeader from "@/components/reports/export-page-header";
-import { LocationIcon } from "@/public/icons/icons";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const CreateExpensePage = () => {
   return (
@@ -24,14 +22,14 @@ const CreateExpensePage = () => {
       />
       <div className="space-y-8">
         <Details />
-        <div className="flex items-center justify-between w-3/5 gap-4 px-3">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-[968px]">
           <Select
             id="client_name"
             options={["Client Name", "Client Name 2"]}
             label="Client Name"
-            className="w-1/2"
           />
-          <Input id="unit_id" label="Unit ID" className="w-1/2" />
+          <Input id="unit_name" label="Unit Name" disabled />
+          <Input id="expenses_description" label="Expenses Description" />
         </div>
       </div>
       <div className="space-y-6">
@@ -39,22 +37,15 @@ const CreateExpensePage = () => {
           Add Expenses
         </h1>
         <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
-          <div className="flex items-center justify-between w-3/5 gap-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-[968px]">
+            <Input type="text" id="payment_title" label="Payment Title" />
             <Input
               type="text"
-              id="payment_title"
-              label="Payment Title"
-              className="w-1/2"
+              id="amount"
+              label="Amount"
+              className="w-full"
+              CURRENCY_SYMBOL={"₦"}
             />
-            <div className="w-1/2 relative">
-              <Input
-                type="text"
-                id="amount"
-                label="Amount"
-                className="w-full"
-                CURRENCY_SYMBOL={"₦"}
-              />
-            </div>
           </div>
           <div className="flex items-center justify-end">
             <Button
@@ -74,9 +65,10 @@ const CreateExpensePage = () => {
           Payment Added
         </h1>
         <section className="bg-white dark:bg-darkText-primary p-8 space-y-4">
-          <div className="flex gap-6 2xl:gap-0 flex-col 2xl:flex-row">
+          <div className="flex gap-6">
             <KeyValueList
               data={{}}
+              direction="column"
               referenceObject={{
                 "annual fee": "",
               }}
@@ -98,14 +90,14 @@ const CreateExpensePage = () => {
           </div>
         </section>
       </div>
-      <div className="fixed z-[3] w-screen left-0 h-[80px] bottom-0 py-5 px-[40px] bg-white dark:bg-darkText-primary flex items-center justify-end gap-4 [&>button]:rounded-[4px] font-semibold text-base">
+      <FixedFooter className="flex justify-end gap-4">
         <Button variant="border" size="sm_normal" className="py-2 px-8">
           Cancel
         </Button>
         <Button size="sm_normal" className="py-2 px-8">
           Create
         </Button>
-      </div>
+      </FixedFooter>
     </section>
   );
 };

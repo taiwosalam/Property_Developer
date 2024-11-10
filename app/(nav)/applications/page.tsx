@@ -44,7 +44,7 @@ const Applications = () => {
               "This page contains a list of Applications on the platform.",
             video: "",
           }}
-          searchInputPlaceholder="Search for units"
+          searchInputPlaceholder="Search application"
           handleFilterApply={() => {}}
           filterOptions={[]}
           filterWithOptionsWithDropdown={DocumentssFilterOptionsWithDropdown}

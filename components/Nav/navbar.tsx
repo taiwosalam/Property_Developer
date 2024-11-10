@@ -36,11 +36,8 @@ import {
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import useSettingsStore from "@/store/settings";
-import TopNav from "./topnav";
 
 const Header = () => {
-  const { selectedOptions } = useSettingsStore();
   const { loading, data: dashboardData, error } = useDashboardData();
   const { isMobile } = useWindowWidth();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
@@ -65,8 +62,9 @@ const Header = () => {
         break;
     }
   };
+  const lgIconsInteractionClasses =
+    "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
 
-  const navbar = selectedOptions.navbar;
   return (
     <header
       className={clsx(
@@ -236,16 +234,25 @@ const Header = () => {
           </div>
 
           <div className="flex gap-4 items-center text-[#5A5D61] dark:text-white">
-            <Link href="/messages" aria-label="messages">
+            <Link
+              href="/messages"
+              aria-label="messages"
+              className={lgIconsInteractionClasses}
+            >
               <MailIcon />
             </Link>
-            <Link href="/notifications" aria-label="notifications">
+            <Link
+              href="/notifications"
+              aria-label="notifications"
+              className={lgIconsInteractionClasses}
+            >
               <BellIcon />
             </Link>
             <button
               type="button"
               aria-label="theme-toggle"
               onClick={toggleTheme}
+              className={lgIconsInteractionClasses}
             >
               {theme === "dark" ? <SunIcon /> : <MoonIcon />}
             </button>

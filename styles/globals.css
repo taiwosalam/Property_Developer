@@ -242,7 +242,7 @@ button:disabled:not(.retain-opacity) {
 
 .quill-editor {
   height: 160px;
-  @apply rounded-t-lg;
+  @apply rounded-t-lg dark:bg-darkText-primary;
   border: 1px solid #c1c2c366;
   border-bottom: none;
   padding: 0.5rem;
