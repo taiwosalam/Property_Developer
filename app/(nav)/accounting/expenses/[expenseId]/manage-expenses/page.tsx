@@ -4,6 +4,7 @@
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import DateInput from "@/components/Form/DateInput/date-input";
+import { DeleteIconX } from "@/public/icons/icons";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
@@ -16,11 +17,96 @@ import { SectionSeparator } from "@/components/Section/section-components";
 import ModalPreset from "@/components/Modal/modal-preset";
 import { currencySymbols } from "@/utils/number-formatter";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Dayjs } from "dayjs";
+import { format } from "date-fns";
+import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
 
 const ManageExpenses = () => {
   const router = useRouter();
 
   const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
+
+  const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
+    [
+      {
+        title: "Annual Fee",
+        amount: 1000000,
+      },
+      {
+        title: "Service Charge",
+        amount: 1000000,
+      },
+      {
+        title: "Refundable Caution Fee",
+        amount: 1000000,
+      },
+      {
+        title: "Tax Charges",
+        amount: 1000000,
+      },
+      {
+        title: "Security Fee",
+        amount: 1000000,
+      },
+    ]
+  );
+  const [paymentTitle, setPaymentTitle] = useState("");
+  const [paymentAmount, setPaymentAmount] = useState("");
+  const handleAddPaymentClick = () => {
+    if (paymentTitle && paymentAmount) {
+      // Remove commas and parse the amount as a float
+      const parsedAmount = parseFloat(paymentAmount.replace(/,/g, ""));
+      if (!isNaN(parsedAmount)) {
+        setPayments([
+          ...payments,
+          { title: paymentTitle, amount: parsedAmount },
+        ]);
+        setPaymentTitle("");
+        setPaymentAmount("");
+      }
+    }
+  };
+  const handleDeletePayment = (index: number) => {
+    setPayments(payments.filter((_, i) => i !== index));
+  };
+
+  const totalExpenses = payments.reduce(
+    (total, payment) => total + payment.amount,
+    0
+  );
+
+  // deducted payment
+  const [deductions, setDeductions] = useState<
+    { date: Dayjs; amount: number }[]
+  >([]);
+  const [deductionDate, setDeductionDate] = useState<Dayjs | null>(null);
+  const [deductionAmount, setDeductionAmount] = useState<string>("");
+
+  const handleDeductClick = () => {
+    if (deductionDate && deductionAmount) {
+      const parsedAmount = parseFloat(deductionAmount.replace(/,/g, ""));
+      if (!isNaN(parsedAmount)) {
+        setDeductions([
+          ...deductions,
+          { date: deductionDate, amount: parsedAmount },
+        ]);
+        setDeductionDate(null);
+        setDeductionAmount("");
+      }
+    }
+  };
+  const handleDeleteDeduction = (index: number) => {
+    setDeductions(deductions.filter((_, i) => i !== index));
+  };
+
+  const totalDeductions = deductions.reduce(
+    (total, deduction) => total + deduction.amount,
+    0
+  );
+
+  const totalBalance = totalExpenses - totalDeductions;
+
   return (
     <div className="custom-flex-col gap-10 pb-[150px] sm:pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
@@ -55,7 +141,12 @@ const ManageExpenses = () => {
         <AccountingTitleSection title="Add Expense">
           <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
-              <Input id="payment-title" label="payment title" />
+              <Input
+                id="payment-title"
+                label="payment title"
+                value={paymentTitle}
+                onChange={(v) => setPaymentTitle(v)}
+              />
               <Input
                 id="payment_amount"
                 label="amount"
@@ -63,10 +154,16 @@ const ManageExpenses = () => {
                 placeholder="300,000"
                 inputClassName="bg-white"
                 formatNumber
+                value={paymentAmount}
+                onChange={(v) => setPaymentAmount(v)}
               />
             </div>
             <div className="flex justify-end">
-              <Button size="base_medium" className="py-2 px-14">
+              <Button
+                size="base_medium"
+                className="py-2 px-14"
+                onClick={handleAddPaymentClick}
+              >
                 add
               </Button>
             </div>
@@ -75,125 +172,47 @@ const ManageExpenses = () => {
         <AccountingTitleSection title="Expenses">
           <div className="space-y-8 bg-white dark:bg-darkText-primary w-full p-6 rounded-lg">
             <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
-              <div className="flex flex-col gap-4">
-                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                  Annual Fee
-                </p>
-                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                  {new Intl.NumberFormat("en-NG", {
-                    style: "currency",
-                    currency: "NGN",
-                  })
-                    .format(1000000)
-                    .split(".")}
-                </p>
-              </div>
-              <div className="flex flex-col gap-4">
-                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                  Service Charge
-                </p>
-                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                  {new Intl.NumberFormat("en-NG", {
-                    style: "currency",
-                    currency: "NGN",
-                  })
-                    .format(1000000)
-                    .split(".")}
-                </p>
-              </div>
-              <div className="flex flex-col gap-4">
-                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                  Refundable Caution Fee
-                </p>
-                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                  {new Intl.NumberFormat("en-NG", {
-                    style: "currency",
-                    currency: "NGN",
-                  })
-                    .format(1000000)
-                    .split(".")}
-                </p>
-              </div>
-              <div className="flex flex-col gap-4">
-                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                  Tax Charges
-                </p>
-                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                  {new Intl.NumberFormat("en-NG", {
-                    style: "currency",
-                    currency: "NGN",
-                  })
-                    .format(1000000)
-                    .split(".")}
-                </p>
-              </div>
-              <div className="flex flex-col gap-4">
-                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                  Security Fee
-                </p>
-                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                  {new Intl.NumberFormat("en-NG", {
-                    style: "currency",
-                    currency: "NGN",
-                  })
-                    .format(1000000)
-                    .split(".")}
-                </p>
-              </div>
-              {/* <Input
-                id="annual_fee"
-                label="Annual Fee"
-                required
-                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                placeholder="1,000,000"
-                inputClassName="bg-white"
-                formatNumber
-              />
-              <Input
-                id="service_charge"
-                label="service charge"
-                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                placeholder="300,000"
-                inputClassName="bg-white"
-                formatNumber
-              />
-              <Input
-                id="refundable_caution_fee"
-                label="refundable caution fee"
-                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                placeholder="300,000"
-                inputClassName="bg-white"
-                formatNumber
-              />
-              <Input
-                id="tax_charges"
-                label="tax charges"
-                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                placeholder="300,000"
-                inputClassName="bg-white"
-                formatNumber
-              />
-              <Input
-                id="security_fee"
-                label="security fee"
-                placeholder="300,000"
-                inputClassName="bg-white"
-                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                formatNumber
-              /> */}
+              {payments.map((payment, index) => (
+                <div key={index} className="flex flex-col gap-4">
+                  <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1 capitalize">
+                    {payment.title}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
+                      {new Intl.NumberFormat("en-NG", {
+                        style: "currency",
+                        currency: "NGN",
+                      }).format(payment.amount)}
+                    </p>
+                    <Modal>
+                      <ModalTrigger asChild>
+                        <button aria-label={`Delete ${payment.title}`}>
+                          <DeleteIconX />
+                        </button>
+                      </ModalTrigger>
+                      <ModalContent>
+                        <DeleteItemWarningModal
+                          item={payment.title}
+                          amount={payment.amount}
+                          handleDelete={() => handleDeletePayment(index)}
+                          useCase="expenses"
+                        />
+                      </ModalContent>
+                    </Modal>
+                  </div>
+                </div>
+              ))}
             </div>
             <SectionSeparator />
-            <div className="custom-flex-col gap-4">
+            <div className="flex flex-col gap-4">
               <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                Total Amount
+                Total Expenses
               </p>
               <p className="font-bold text-xl text-brand-9">
                 {new Intl.NumberFormat("en-NG", {
                   style: "currency",
                   currency: "NGN",
-                })
-                  .format(1000000)
-                  .split(".")}
+                }).format(totalExpenses)}
               </p>
             </div>
           </div>
@@ -201,7 +220,12 @@ const ManageExpenses = () => {
         <AccountingTitleSection title="Deduct Payment">
           <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
-              <DateInput id="payment-date" label="Select Date" />
+              <DateInput
+                id="payment-date"
+                label="Select Date"
+                value={deductionDate}
+                onChange={(date) => setDeductionDate(date)}
+              />
               <Input
                 id="amount"
                 label="amount"
@@ -209,87 +233,73 @@ const ManageExpenses = () => {
                 placeholder="300,000"
                 inputClassName="bg-white"
                 formatNumber
+                value={deductionAmount}
+                onChange={(value) => setDeductionAmount(value)}
               />
             </div>
             <div className="flex justify-end">
-              <Button size="base_medium" className="py-2 px-14">
+              <Button
+                size="base_medium"
+                className="py-2 px-14"
+                onClick={handleDeductClick}
+              >
                 deduct
               </Button>
             </div>
           </div>
         </AccountingTitleSection>
-        <AccountingTitleSection title="Payment">
-          <div className="flex bg-white dark:bg-darkText-primary w-full p-6 rounded-lg flex-col gap-8">
-            <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
-              <div className="flex flex-col gap-4">
-                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                  25 January 2024
-                </p>
-                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                  {new Intl.NumberFormat("en-NG", {
-                    style: "currency",
-                    currency: "NGN",
-                  })
-                    .format(1000000)
-                    .split(".")}
-                </p>
+        {deductions.length > 0 && (
+          <AccountingTitleSection title="Deducted Payment">
+            <div className="flex bg-white dark:bg-darkText-primary w-full p-6 rounded-lg flex-col gap-8">
+              <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
+                {deductions.map((deduction, index) => (
+                  <div key={index} className="flex flex-col gap-4">
+                    <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                      {format(deduction.date.toDate(), "dd MMMM yyyy")}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
+                        {new Intl.NumberFormat("en-NG", {
+                          style: "currency",
+                          currency: "NGN",
+                        }).format(deduction.amount)}
+                      </p>
+                      <button
+                        onClick={() => handleDeleteDeduction(index)}
+                        aria-label={`Delete ${deduction.date}`}
+                      >
+                        <DeleteIconX />
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
+              <SectionSeparator />
               <div className="flex flex-col gap-4">
                 <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                  25 January 2024
+                  Total Deductions
                 </p>
-                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
+                <p className="font-bold text-xl text-brand-9">
                   {new Intl.NumberFormat("en-NG", {
                     style: "currency",
                     currency: "NGN",
-                  })
-                    .format(1000000)
-                    .split(".")}
-                </p>
-              </div>
-              <div className="flex flex-col gap-4">
-                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                  25 January 2024
-                </p>
-                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                  {new Intl.NumberFormat("en-NG", {
-                    style: "currency",
-                    currency: "NGN",
-                  })
-                    .format(1000000)
-                    .split(".")}
+                  }).format(totalDeductions)}
                 </p>
               </div>
             </div>
-            <SectionSeparator />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 p-6">
               <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                Total Payment
+                Total Balance
               </p>
               <p className="font-bold text-xl text-brand-9">
                 {new Intl.NumberFormat("en-NG", {
                   style: "currency",
                   currency: "NGN",
-                })
-                  .format(1000000)
-                  .split(".")}
+                }).format(totalBalance)}
               </p>
             </div>
-          </div>
-          <div className="flex flex-col gap-4 p-6">
-            <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-              Total Balance
-            </p>
-            <p className="font-bold text-xl text-brand-9">
-              {new Intl.NumberFormat("en-NG", {
-                style: "currency",
-                currency: "NGN",
-              })
-                .format(1000000)
-                .split(".")}
-            </p>
-          </div>
-        </AccountingTitleSection>
+          </AccountingTitleSection>
+        )}
       </div>
       <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
         <Modal>

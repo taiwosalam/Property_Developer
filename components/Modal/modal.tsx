@@ -49,22 +49,26 @@ const ModalTrigger: React.FC<ModalTriggerProps> = ({
   close,
   asChild,
   children,
+  onClick,
   ...props
 }) => {
   const { setIsOpen } = useModal();
-  const isDarkMode = useDarkMode();
   // Handle click event to open or close the modal
   const handleClick: React.MouseEventHandler<HTMLElement> = (e) => {
     e.preventDefault();
     setIsOpen(close ? false : true);
+    onClick?.(e as React.MouseEvent<HTMLButtonElement, MouseEvent>);
   };
 
   // If asChild is true, clone the child element and pass the onClick handler
   if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children, {
+    // Ensure the child element can accept an onClick handler
+    const childProps = {
       onClick: handleClick,
       ...props,
-    });
+    };
+
+    return React.cloneElement(children as React.ReactElement<any>, childProps);
   }
 
   // Render a button with the onClick handler
