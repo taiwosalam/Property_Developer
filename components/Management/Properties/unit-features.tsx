@@ -128,7 +128,7 @@ const UnitFeatures = () => {
           </>
         )}
       </div>
-      {(unitType !== "land" && !isFacility)(
+      {unitType !== "land" && !isFacility && (
         <div className="flex gap-4 md:gap-5 flex-wrap">
           <Select
             dropdownRefClassName="!w-[160px]"
