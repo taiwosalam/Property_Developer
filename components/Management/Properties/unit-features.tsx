@@ -58,6 +58,7 @@ const UnitFeatures = () => {
                 id="area_sqm" //confirm ID with backend
                 label="Total Area (m²)"
                 labelclassName="undo-text-transform"
+                requiredNoStar={!isFacility}
                 inputClassName="bg-white unit-form-input"
                 formatNumber
                 endWith="sqm"
@@ -67,7 +68,7 @@ const UnitFeatures = () => {
               {selectedAreaUnit !== "sqm" &&
                 selectedAreaUnit !== "half plot" && (
                   <Input
-                    required
+                    required={!isFacility}
                     id="total_units" //confirm ID with backend
                     label={`Number of ${selectedAreaUnit}s`}
                     inputClassName="bg-white unit-form-input"
