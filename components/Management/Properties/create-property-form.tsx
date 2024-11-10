@@ -325,7 +325,13 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           />
           <Input
             id="property_title"
-            label={formType === "rental" ? "Property Title" : "Estate Name"}
+            label={
+              formType === "rental"
+                ? "Property Title"
+                : selectedCategory?.toLocaleLowerCase() === "estate"
+                ? "Estate Name"
+                : "Facility Name"
+            }
             placeholder="Design name or Decsription"
             inputClassName="bg-white dark:bg-darkText-primary rounded-[8px] property-form-input"
             requiredNoStar

@@ -14,7 +14,7 @@ import { useUnitForm } from "./unit-form-context";
 const UnitDetails = () => {
   // const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
   const propertyDetails: { category: Categories } = {
-    category: "facility", // for testing. remove this line and uncomment d line above
+    category: "estate", // for testing. remove this line and uncomment d line above
   };
 
   const {
