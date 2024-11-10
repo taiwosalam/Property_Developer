@@ -51,7 +51,7 @@ const ExportStatementPage = () => {
         </div>
       </div>
       <div className="custom-flex-col gap-6">
-        <h1 className="text-black dark:text-white text-2xl font-medium text-center mb-20">
+        <h1 className="text-black dark:text-white text-2xl font-medium text-center">
           Statement Summary
         </h1>
         <AutoResizingGrid minWidth={300} gap={24}>
