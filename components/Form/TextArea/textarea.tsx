@@ -122,10 +122,7 @@ const TextArea: React.FC<TextAreaProps> = ({
               id={id}
               value={editorValue || ""}
               required={required || requiredNoStar}
-              className={clsx(
-                "react-quill-hidden-input dark:bg-darkText-primary dark:border dark:border-[#2A2B26] dark:text-black",
-                hiddenInputClassName
-              )}
+              className={clsx("react-quill-hidden-input", hiddenInputClassName)}
             />
             {/* Hidden input field */}
 

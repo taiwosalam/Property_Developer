@@ -43,6 +43,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
     >
       <div className="relative w-full h-[180px]">
         <div
+          role="button"
           onClick={() => setIsOpened(true)}
           className="w-full h-full"
         >
@@ -54,9 +55,8 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
             className="object-cover"
           />
           <PopupImageModal
-            currentIndex={0}
             isOpen={isOpened}
-            images={[{ src: SampleProperty4, isVideo: false }]}
+            images={[{ src: SampleProperty4 }]}
             onClose={() => setIsOpened(false)}
           />
         </div>

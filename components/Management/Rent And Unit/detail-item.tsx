@@ -1,8 +1,10 @@
 import TruncatedText from "@/components/TruncatedText/truncated-text";
+import { cn } from "@/lib/utils";
 interface EstateDetailItemProps {
   label: string;
   value: string;
   style?: React.CSSProperties;
+  column?: boolean;
   truncate?: boolean;
 }
 
@@ -11,11 +13,20 @@ export const EstateDetailItem: React.FC<EstateDetailItemProps> = ({
   value,
   style,
   truncate,
+  column,
 }) => {
   return (
-    <div className="flex flex-col lg:flex-row gap-x-2 gap-y-1 font-normal text-base">
+    <div
+      className={cn(
+        "flex flex-col lg:flex-row gap-x-2 gap-y-1 font-normal text-base",
+        column && "lg:flex-col"
+      )}
+    >
       <p
-        className="text-[#747474] dark:text-white lg:w-1/3 capitalize"
+        className={cn(
+          "text-[#747474] dark:text-white lg:w-1/3 capitalize",
+          column && "lg:w-full"
+        )}
         style={style}
       >
         {label}

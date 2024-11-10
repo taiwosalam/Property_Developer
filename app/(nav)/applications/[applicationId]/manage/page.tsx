@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 // Images
 import Avatar3 from "@/public/empty/avatar-3.svg";
 
@@ -12,13 +10,13 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import UnitItem from "@/components/Management/Properties/unit-item";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { SectionSeparator } from "@/components/Section/section-components";
-
+import { useSearchParams } from "next/navigation";
 import {
   LandlordTenantInfo,
   LandlordTenantInfoSection,
+  LandlordTenantInfoBox,
 } from "@/components/Management/landlord-tenant-info-components";
 
-import { useRouter } from "next/navigation";
 import UserTag from "@/components/Tags/user-tag";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import Button from "@/components/Form/Button/button";
@@ -26,16 +24,12 @@ import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const ManageApplication = () => {
-  const router = useRouter();
-
   const isDarkMode = useDarkMode();
-
-  const back = () => {
-    router.back();
-  };
-
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type") as "flagged" | "unflagged";
+  const isFlagged = type === "flagged";
   return (
-    <div className="custom-flex-col gap-[88px] pb-[100px]">
+    <div className="custom-flex-col gap-[88px] pb-[150px] lg:pb-[100px]">
       <div className="custom-flex-col gap-6">
         <BackButton>Back</BackButton>
         <div
@@ -97,21 +91,28 @@ const ManageApplication = () => {
                 </p>
               </div>
             </div>
-            <div
-              className="py-3 px-6 rounded-2xl"
-              style={{
-                backgroundColor: isDarkMode
-                  ? "#3C3D37"
-                  : "var(--background-color, #fde9ea80)",
-              }}
-            >
-              <p className="text-status-error-2 text-xs font-medium">
-                The tenant has been flagged for owing rent and causing damages
-                by <span className="font-bold">David & Co Limited</span>. Please
-                instruct the applicant to settle with their previous manager so
-                that they can unflag the account using their ID.
+            {isFlagged ? (
+              <div
+                className="py-3 px-6 rounded-2xl"
+                style={{
+                  backgroundColor: isDarkMode
+                    ? "#3C3D37"
+                    : "var(--background-color, #fde9ea80)",
+                }}
+              >
+                <p className="text-status-error-2 text-xs font-medium">
+                  The tenant has been flagged for owing rent and causing damages
+                  by <span className="font-bold">David & Co Limited</span>.
+                  Please instruct the applicant to settle with their previous
+                  manager so that they can unflag the account using their ID.
+                </p>
+              </div>
+            ) : (
+              <p className="flex gap-4 items-center text-highlight text-base font-medium px-10">
+                <span>Applying for</span>
+                <span>5 Years</span>
               </p>
-            </div>
+            )}
           </div>
           <LandlordTenantInfo
             info={{
@@ -132,6 +133,24 @@ const ManageApplication = () => {
             }}
           />
           <LandlordTenantInfo
+            heading="Contact Address"
+            info={{
+              address: "",
+              city: "",
+              state: "",
+              "L.G": "",
+            }}
+          />
+          <LandlordTenantInfo
+            heading="Next of Kin"
+            info={{
+              namme: "",
+              address: "",
+              "phone number": "",
+              relationship: "",
+            }}
+          />
+          <LandlordTenantInfo
             heading="others"
             info={{
               occupation: "",
@@ -140,6 +159,44 @@ const ManageApplication = () => {
               xxxxxxxxxxxxx: "",
             }}
           />
+          <LandlordTenantInfo
+            heading="Guarantor 1"
+            info={{
+              name: "",
+              email: "",
+              "phone number": "",
+              address: "",
+            }}
+          />
+          <LandlordTenantInfo
+            heading="Guarantor 2"
+            info={{
+              name: "",
+              email: "",
+              "phone number": "",
+              address: "",
+            }}
+          />
+          <LandlordTenantInfoBox className="space-y-4">
+            <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
+              Proior Experience in Real Estate
+            </h3>
+            <p className="text-black dark:text-darkText-2 text-base font-normal">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
+              quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Quisquam, quos.
+            </p>
+          </LandlordTenantInfoBox>
+          <LandlordTenantInfoBox className="space-y-4">
+            <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
+              Jusification for clearing next rent
+            </h3>
+            <p className="text-black dark:text-darkText-2 text-base font-normal">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
+              quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Quisquam, quos.
+            </p>
+          </LandlordTenantInfoBox>
         </div>
       </div>
       <LandlordTenantInfoSection title="Current Rent">
@@ -163,20 +220,24 @@ const ManageApplication = () => {
         </div>
       </LandlordTenantInfoSection>
       <FixedFooter className="flex gap-6 flex-wrap items-center justify-between">
-        <Button variant="light_red" size="base_bold" className="py-2 px-8">
+        <Button
+          variant="light_red"
+          size="base_bold"
+          className="py-2 px-8"
+          disabled={isFlagged}
+        >
           reject application
         </Button>
         <div className="flex gap-6">
           <Button
-            onClick={back}
             size="base_bold"
             variant="sky_blue"
-            href="/applications"
             className="py-2 px-8"
+            disabled={isFlagged}
           >
-            exit
+            start rent
           </Button>
-          <Button size="base_bold" className="py-2 px-8">
+          <Button size="base_bold" className="py-2 px-8" disabled={isFlagged}>
             create invoice
           </Button>
         </div>

@@ -1,9 +1,9 @@
 "use client";
 
 // Imports
-import { useState } from "react";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
+import DateInput from "@/components/Form/DateInput/date-input";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
@@ -14,39 +14,11 @@ import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { SectionSeparator } from "@/components/Section/section-components";
 import ModalPreset from "@/components/Modal/modal-preset";
-import {
-  currencySymbols,
-  formatCostInputValue,
-} from "@/utils/number-formatter";
+import { currencySymbols } from "@/utils/number-formatter";
 import { useRouter } from "next/navigation";
-
-type MoneyField =
-  | "payment_amount"
-  | "annual_fee"
-  | "service_charge"
-  | "refundable_caution_fee"
-  | "tax_charges"
-  | "security_fee"
-  | "deduct_amount";
 
 const ManageExpenses = () => {
   const router = useRouter();
-  const [moneyValues, setMoneyValues] = useState<Record<MoneyField, string>>({
-    payment_amount: "",
-    annual_fee: "",
-    service_charge: "",
-    refundable_caution_fee: "",
-    tax_charges: "",
-    security_fee: "",
-    deduct_amount: "",
-  });
-
-  const handleMoneyInputChange = (field: MoneyField, value: string) => {
-    setMoneyValues((prevValues) => ({
-      ...prevValues,
-      [field]: formatCostInputValue(value),
-    }));
-  };
 
   const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
   return (
@@ -76,7 +48,7 @@ const ManageExpenses = () => {
           />
         </div>
         <AccountingTitleSection title="Description">
-          <p className="text-sm text-text-secondary">
+          <p className="text-sm text-text-secondary dark:text-darkText-2">
             New rent payment for 3 bedroom at Ajibade road 2, Lekki Lagos
           </p>
         </AccountingTitleSection>
@@ -90,10 +62,7 @@ const ManageExpenses = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
                 inputClassName="bg-white"
-                value={moneyValues.payment_amount}
-                onChange={(value) =>
-                  handleMoneyInputChange("payment_amount", value)
-                }
+                formatNumber
               />
             </div>
             <div className="flex justify-end">
@@ -104,19 +73,81 @@ const ManageExpenses = () => {
           </div>
         </AccountingTitleSection>
         <AccountingTitleSection title="Expenses">
-          <div className="flex bg-white w-full p-6 rounded-lg flex-col gap-8">
-            <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
-              <Input
+          <div className="space-y-8 bg-white dark:bg-darkText-primary w-full p-6 rounded-lg">
+            <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
+              <div className="flex flex-col gap-4">
+                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                  Annual Fee
+                </p>
+                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                  })
+                    .format(1000000)
+                    .split(".")}
+                </p>
+              </div>
+              <div className="flex flex-col gap-4">
+                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                  Service Charge
+                </p>
+                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                  })
+                    .format(1000000)
+                    .split(".")}
+                </p>
+              </div>
+              <div className="flex flex-col gap-4">
+                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                  Refundable Caution Fee
+                </p>
+                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                  })
+                    .format(1000000)
+                    .split(".")}
+                </p>
+              </div>
+              <div className="flex flex-col gap-4">
+                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                  Tax Charges
+                </p>
+                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                  })
+                    .format(1000000)
+                    .split(".")}
+                </p>
+              </div>
+              <div className="flex flex-col gap-4">
+                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                  Security Fee
+                </p>
+                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                  })
+                    .format(1000000)
+                    .split(".")}
+                </p>
+              </div>
+              {/* <Input
                 id="annual_fee"
                 label="Annual Fee"
                 required
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="1,000,000"
                 inputClassName="bg-white"
-                value={moneyValues.annual_fee}
-                onChange={(value) =>
-                  handleMoneyInputChange("annual_fee", value)
-                }
+                formatNumber
               />
               <Input
                 id="service_charge"
@@ -124,10 +155,7 @@ const ManageExpenses = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
                 inputClassName="bg-white"
-                value={moneyValues.service_charge}
-                onChange={(value) =>
-                  handleMoneyInputChange("service_charge", value)
-                }
+                formatNumber
               />
               <Input
                 id="refundable_caution_fee"
@@ -135,10 +163,7 @@ const ManageExpenses = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
                 inputClassName="bg-white"
-                value={moneyValues.refundable_caution_fee}
-                onChange={(value) =>
-                  handleMoneyInputChange("refundable_caution_fee", value)
-                }
+                formatNumber
               />
               <Input
                 id="tax_charges"
@@ -146,10 +171,7 @@ const ManageExpenses = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
                 inputClassName="bg-white"
-                value={moneyValues.tax_charges}
-                onChange={(value) =>
-                  handleMoneyInputChange("tax_charges", value)
-                }
+                formatNumber
               />
               <Input
                 id="security_fee"
@@ -157,14 +179,11 @@ const ManageExpenses = () => {
                 placeholder="300,000"
                 inputClassName="bg-white"
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                value={moneyValues.security_fee}
-                onChange={(value) =>
-                  handleMoneyInputChange("security_fee", value)
-                }
-              />
+                formatNumber
+              /> */}
             </div>
             <SectionSeparator />
-            <div>
+            <div className="custom-flex-col gap-4">
               <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
                 Total Amount
               </p>
@@ -182,17 +201,14 @@ const ManageExpenses = () => {
         <AccountingTitleSection title="Deduct Payment">
           <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
-              <Input id="payment-title" label="payment title" />
+              <DateInput id="payment-date" label="Select Date" />
               <Input
                 id="amount"
                 label="amount"
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
                 inputClassName="bg-white"
-                value={moneyValues.deduct_amount}
-                onChange={(value) =>
-                  handleMoneyInputChange("deduct_amount", value)
-                }
+                formatNumber
               />
             </div>
             <div className="flex justify-end">
@@ -203,13 +219,13 @@ const ManageExpenses = () => {
           </div>
         </AccountingTitleSection>
         <AccountingTitleSection title="Payment">
-          <div className="flex bg-white w-full p-6 rounded-lg flex-col gap-8">
+          <div className="flex bg-white dark:bg-darkText-primary w-full p-6 rounded-lg flex-col gap-8">
             <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
               <div className="flex flex-col gap-4">
                 <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
                   25 January 2024
                 </p>
-                <p className="font-bold text-[14px] text-brand-9">
+                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
                   {new Intl.NumberFormat("en-NG", {
                     style: "currency",
                     currency: "NGN",
@@ -222,7 +238,7 @@ const ManageExpenses = () => {
                 <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
                   25 January 2024
                 </p>
-                <p className="font-bold text-[14px] text-brand-9">
+                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
                   {new Intl.NumberFormat("en-NG", {
                     style: "currency",
                     currency: "NGN",
@@ -235,20 +251,7 @@ const ManageExpenses = () => {
                 <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
                   25 January 2024
                 </p>
-                <p className="font-bold text-[14px] text-brand-9">
-                  {new Intl.NumberFormat("en-NG", {
-                    style: "currency",
-                    currency: "NGN",
-                  })
-                    .format(1000000)
-                    .split(".")}
-                </p>
-              </div>
-              <div className="flex flex-col gap-4">
-                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                  Total Payment
-                </p>
-                <p className="font-bold text-xl text-brand-9">
+                <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
                   {new Intl.NumberFormat("en-NG", {
                     style: "currency",
                     currency: "NGN",
@@ -261,7 +264,7 @@ const ManageExpenses = () => {
             <SectionSeparator />
             <div className="flex flex-col gap-4">
               <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                Total Amount
+                Total Payment
               </p>
               <p className="font-bold text-xl text-brand-9">
                 {new Intl.NumberFormat("en-NG", {
@@ -309,7 +312,7 @@ const ManageExpenses = () => {
             <ModalContent>
               <ModalPreset className="w-full" type="success">
                 <div className="flex flex-col gap-8">
-                  <p className="text-[14px] text-text-secondary">
+                  <p className="text-[14px] text-text-secondary dark:text-darkText-2">
                     The expense has been successfully edited and updated
                   </p>
                   <Button
