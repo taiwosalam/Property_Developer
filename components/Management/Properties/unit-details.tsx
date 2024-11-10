@@ -1,5 +1,6 @@
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
+import { useSearchParams } from "next/navigation";
 import {
   type UnitTypeKey,
   type Categories,
@@ -13,9 +14,12 @@ import { useUnitForm } from "./unit-form-context";
 
 const UnitDetails = () => {
   // const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
+  const params = useSearchParams();
+  const propertyType = params.get("propertyType") as "rental" | "facility";
   const propertyDetails: { category: Categories } = {
-    category: "estate", // for testing. remove this line and uncomment d line above
+    category: propertyType === "rental" ? "estate" : "facility", // for testing. remove this line and uncomment d line above
   };
+  const isFacility = propertyType === "facility";
 
   const {
     unitType: selectedUnitType,
@@ -95,7 +99,7 @@ const UnitDetails = () => {
   return (
     <div>
       <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
-        <span className="text-status-error-primary">*</span>
+        {!isFacility && <span className="text-status-error-primary">*</span>}
         Unit Details
       </h4>
       <hr className="my-4" />
@@ -105,7 +109,7 @@ const UnitDetails = () => {
           label="Unit Number or Name"
           placeholder="Flat 1"
           inputClassName="bg-white rounded-[8px] unit-form-input"
-          requiredNoStar
+          requiredNoStar={!isFacility}
         />
         <Select
           id="unit_type"
@@ -115,7 +119,7 @@ const UnitDetails = () => {
           value={selectedUnitType}
           onChange={handleUnitTypeChange}
           hiddenInputClassName="unit-form-input"
-          requiredNoStar
+          requiredNoStar={!isFacility}
           resetKey={formResetKey}
         />
         {selectedUnitType?.toLowerCase() !== "land" && (
@@ -127,7 +131,7 @@ const UnitDetails = () => {
             value={selectedSubtype}
             onChange={handleSubtypeChange}
             hiddenInputClassName="unit-form-input"
-            requiredNoStar
+            requiredNoStar={!isFacility}
             resetKey={formResetKey}
           />
         )}
@@ -139,7 +143,7 @@ const UnitDetails = () => {
           value={selectedPreference}
           onChange={handlePreferenceChange}
           hiddenInputClassName="unit-form-input"
-          requiredNoStar
+          requiredNoStar={!isFacility}
           resetKey={formResetKey}
         />
       </div>
