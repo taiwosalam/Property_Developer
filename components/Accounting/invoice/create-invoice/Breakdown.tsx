@@ -1,22 +1,23 @@
 import KeyValueList from "@/components/KeyValueList/key-value-list";
+import { SectionSeparator } from "@/components/Section/section-components";
 
 const Breakdown = () => {
   return (
     <section className="bg-white dark:bg-darkText-primary p-8 space-y-4">
       <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
         <KeyValueList
-          chunkSize={2}
+          chunkSize={1}
           data={{}}
+          direction="column"
           referenceObject={{
             "annual fee": "",
             "service charge": "",
             "refundable caution fee": "",
-            "unit fee": "",
           }}
         />
       </div>
-      <div className="w-full h-[2px] bg-[#C0C2C8] bg-opacity-20" />
-      <div>
+      <SectionSeparator />
+      <div className="space-y-2">
         <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
           Total Package
         </p>

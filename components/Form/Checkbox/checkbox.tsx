@@ -3,7 +3,12 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 // Types
 import type { CheckboxProps } from "./types";
-import { CheckboxDefault, CheckboxChecked } from "@/public/icons/icons";
+import {
+  CheckboxDefault,
+  CheckboxChecked,
+  RadioUncheckedIcon,
+  RadioCheckedIcon,
+} from "@/public/icons/icons";
 
 const Checkbox: React.FC<CheckboxProps> = ({
   children,
@@ -12,16 +17,16 @@ const Checkbox: React.FC<CheckboxProps> = ({
   sm,
   className,
   hoverContent,
+  radio,
+  defaultChecked = false,
 }) => {
-  const [internalChecked, setInternalChecked] = useState(checked ?? false);
+  const [internalChecked, setInternalChecked] = useState(defaultChecked);
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleCheckboxClick = () => {
-    if (onChange) {
-      onChange(!internalChecked);
-    } else if (checked === undefined) {
-      setInternalChecked(!internalChecked);
-    }
+  const handleCheckboxClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const newCheckedState = !internalChecked;
+    setInternalChecked(newCheckedState);
+    onChange?.(newCheckedState);
   };
 
   useEffect(() => {
@@ -41,7 +46,13 @@ const Checkbox: React.FC<CheckboxProps> = ({
       })}
     >
       {internalChecked ? (
-        <CheckboxChecked size={sm ? 18 : 24} />
+        radio ? (
+          <RadioCheckedIcon />
+        ) : (
+          <CheckboxChecked size={sm ? 18 : 24} />
+        )
+      ) : radio ? (
+        <RadioUncheckedIcon />
       ) : (
         <CheckboxDefault size={sm ? 18 : 24} />
       )}

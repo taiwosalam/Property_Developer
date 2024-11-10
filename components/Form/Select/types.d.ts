@@ -22,4 +22,5 @@ export interface SelectProps {
   dropdownRefClassName?: string;
   resetKey?: number;
   requiredNoStar?: boolean;
+  disabled?: boolean;
 }
