@@ -13,7 +13,7 @@ import { UnitTypeKey } from "@/data";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
 import EditUnitActions from "./editUnitActions";
 import AddUntFooter from "./AddUnitFooter";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 export interface UnitFormState {
   isEditing?: boolean;
   images: string[];
@@ -44,8 +44,8 @@ const UnitForm: React.FC<UnitFormProps> = ({
   const editUnit = useAddUnitStore((s) => s.editUnit);
   const formRef = useRef<HTMLFormElement>(null);
   // const propertyType = useAddUnitStore((state) => state.propertyType);
-  const params = useParams();
-  const propertyType = params.propertyType as "rental" | "facility";
+  const params = useSearchParams();
+  const propertyType = params.get("propertyType") as "rental" | "facility";
   const [state, setState] = useState<UnitFormState>({
     isEditing: isEditing,
     images: empty ? [] : data.images,
