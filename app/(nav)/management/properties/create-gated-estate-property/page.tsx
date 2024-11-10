@@ -12,7 +12,9 @@ const CreateGatedEstate = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Post data to API
-    router.push("/management/properties/create-gated-estate-property/add-unit");
+    router.push(
+      "/management/properties/create-gated-estate-property/1/add-unit"
+    );
   };
 
   return (

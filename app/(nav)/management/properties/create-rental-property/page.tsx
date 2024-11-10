@@ -25,7 +25,7 @@ const CreateProperty = () => {
 
     // const isSuccess = await addProperty(data, accessToken);
     // Post data to API
-    router.push("/management/properties/create-rental-property/add-unit");
+    router.push("/management/properties/create-rental-property/1/add-unit");
   };
 
   return (
