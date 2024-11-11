@@ -32,6 +32,7 @@ import SettingsLegalDrawer from "@/components/Settings/Modals/settings-legal-dra
 import { CounterButton } from "@/components/Settings/SettingsEnrollment/settings-enrollment-components";
 import TableMenu from "@/components/Table/table-menu";
 import PaymentMethod from "@/components/Wallet/AddFunds/payment-method";
+import { ConfirmModal } from "./components";
 
 const style = {
   position: "absolute",
@@ -102,8 +103,11 @@ const Subscriptions = () => {
   };
 
   const [open, setOpen] = useState(false);
+  const [openConfirmBox, setOpenConfirmBox] = useState(false);
   const handleOpen = () => setOpen(true);
+  const handleOpenConfirmBox = () => setOpenConfirmBox(true)
   const handleClose = () => setOpen(false);
+  const handleCloseConfirmBox = () => setOpenConfirmBox(false)
 
   return (
     <>
@@ -152,7 +156,7 @@ const Subscriptions = () => {
                       <MenuItem onClick={handleOpen}>
                         <button type="button">Extend</button>
                       </MenuItem>
-                      <MenuItem onClick={() => {}}>
+                      <MenuItem onClick={handleOpenConfirmBox}>
                         <button type="button">Delete</button>
                       </MenuItem>
                       <MenuItem onClick={() => {}}>
@@ -171,6 +175,16 @@ const Subscriptions = () => {
                           price={2000}
                           counter={true}
                         />
+                     </Box>
+                    </Modal>
+                    <Modal
+                      open={openConfirmBox}
+                      onClose={handleCloseConfirmBox}
+                      aria-labelledby="modal-modal-title"
+                      aria-describedby="modal-modal-description"
+                    >
+                      <Box sx={style}>
+                       <ConfirmModal />
                       </Box>
                     </Modal>
                   </div>

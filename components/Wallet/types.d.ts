@@ -42,6 +42,8 @@ export interface WalletBankTransferCardProps {
 export interface WalletOnlineFundingCardProps {
   noInput?: boolean;
   proceed: () => void;
+  title: string;
+  price: number;
 }
 
 export interface FundingCardProps {
