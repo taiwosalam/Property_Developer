@@ -2,29 +2,78 @@ import Link from "next/link";
 
 // Images
 import { ChevronRight } from "lucide-react";
-import SendIcon from "@/public/icons/send.svg";
 import { ExclamationMark } from "@/public/icons/icons";
 
 // Imports
-import Picture from "@/components/Picture/picture";
+import clsx from "clsx";
 import { DashboardChart } from "@/components/dashboard/chart";
 import WalletAnalytics from "@/components/Wallet/wallet-analytics";
 import WalletBenefiary from "@/components/Wallet/wallet-benefiary";
 import BeneficiaryList from "@/components/Wallet/beneficiary-list";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import { walletChartConfig, walletChartData } from "./data";
+import {
+  walletChartConfig,
+  walletChartData,
+  walletTableData,
+  walletTableFields,
+} from "./data";
+import CustomTable from "@/components/Table/table";
+import {
+  RedOutgoingIcon,
+  GreenIncomingIcon,
+  BlueIncomingIcon,
+} from "@/components/Accounting/icons";
+import { BlueBuildingIcon } from "@/public/icons/dashboard-cards/icons";
 
 const Wallet = () => {
+  const transformedWalletTableData = walletTableData.map((t) => ({
+    ...t,
+    amount: (
+      <span
+        className={clsx("text-status-error-primary", {
+          "text-status-success-3":
+            t.transaction_type.toLowerCase() === "wallet top-up" ||
+            t.transaction_type.toLowerCase() === "received",
+        })}
+      >
+        {t.amount}
+      </span>
+    ),
+    icon: (
+      <div
+        className={clsx(
+          "flex items-center justify-center w-9 h-9 rounded-full",
+          {
+            "bg-status-error-1 text-status-error-primary":
+              t.transaction_type.toLowerCase() === "debit" ||
+              t.transaction_type.toLowerCase() === "withdrawal",
+            "bg-status-success-1 text-status-success-primary":
+              t.transaction_type.toLowerCase() === "wallet top-up" ||
+              t.transaction_type.toLowerCase() === "received",
+          }
+        )}
+      >
+        {t.transaction_type.toLowerCase() === "debit" ? (
+          <RedOutgoingIcon size={25} />
+        ) : t.transaction_type.toLowerCase() === "wallet top-up" ? (
+          <BlueIncomingIcon color="#01BA4C" size={25} />
+        ) : t.transaction_type.toLowerCase() === "withdrawal" ? (
+          <BlueBuildingIcon />
+        ) : t.transaction_type.toLowerCase() === "received" ? (
+          <GreenIncomingIcon size={25} />
+        ) : null}
+      </div>
+    ),
+  }));
+
   return (
     <div className="custom-flex-col gap-10">
       <div className="flex gap-1">
         <h1 className="text-black dark:text-white text-2xl font-medium">
           Wallet
         </h1>
-        <div className="flex items-center">
-          <ExclamationMark />
-        </div>
+        <ExclamationMark />
       </div>
       <div className="flex flex-col xl:flex-row gap-8">
         <div className="custom-flex-col gap-10 flex-1">
@@ -101,66 +150,27 @@ const Wallet = () => {
             Recent Transaction
           </h2>
           <Link
-            href={"/wallet/transaction-history"}
+            href="/wallet/transaction-history"
             className="flex items-center gap-1"
           >
             <p className="text-text-label dark:text-darkText-1">See all</p>
             <ChevronRight color="#5A5D61" size={16} />
           </Link>
         </div>
-        <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-          <table className="dash-table">
-            <colgroup>
-              <col className="w-[72px]" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th></th>
-                <th>transaction ID</th>
-                <th>source</th>
-                <th>description</th>
-                <th>amount</th>
-                <th>status</th>
-                <th>date</th>
-                <th>time</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array(5)
-                .fill(null)
-                .map((_, index) => (
-                  <tr key={index}>
-                    <td>
-                      <div className="w-9 h-9 rounded-full flex items-center justify-center bg-status-error-1">
-                        <Picture src={SendIcon} alt="send icon" size={20} />
-                      </div>
-                    </td>
-                    <td>
-                      <p>00001102332</p>
-                    </td>
-                    <td>
-                      <p>Debit</p>
-                    </td>
-                    <td>
-                      <p>Paid for services</p>
-                    </td>
-                    <td>
-                      <p className="text-status-error-2">-₦5,000.00</p>
-                    </td>
-                    <td>
-                      <p>Pending</p>
-                    </td>
-                    <td>
-                      <p>12/01/2024</p>
-                    </td>
-                    <td>
-                      <p>03:30pm</p>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
+        <CustomTable
+          fields={walletTableFields}
+          data={transformedWalletTableData}
+          tableBodyCellSx={{
+            paddingTop: "12px",
+            paddingBottom: "12px",
+            fontSize: "16px",
+          }}
+          tableHeadCellSx={{
+            paddingTop: "14px",
+            paddingBottom: "14px",
+            fontSize: "16px",
+          }}
+        />
       </div>
     </div>
   );
