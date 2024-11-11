@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import Xicon from '/icons/cancel-icon.svg'
 
 
 export const ConfirmModal = ()=> {
@@ -8,7 +7,7 @@ export const ConfirmModal = ()=> {
             <div className="wrap bg-red-500 rounded-full">
             <div className="text-center">
                 <Image
-                    src={Xicon}
+                    src='/icons/cancel-icon.svg'
                     width={35}
                     height={35}
                     alt='confirm'
