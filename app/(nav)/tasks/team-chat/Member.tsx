@@ -1,24 +1,18 @@
 "use client";
 
 import { ChevronLeftIcon } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef } from "react";
 import { useTeamChatStore } from "@/store/teamChatStore";
-import { ChevronLeft, PlusIcon, SearchIcon } from "@/public/icons/icons";
+import { PlusIcon, SearchIcon } from "@/public/icons/icons";
 import { team_chat_members_data } from "./data";
 import FilterModal from "./FilterModal";
 import FilterButton from "@/components/FilterButton/filter-button";
 import Avatar1 from "@/public/empty/avatar-1.svg";
-// Types
-// MODAL IMPORTS
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-// Images
 import CheckboxDefault from "@/public/icons/checkbox-default.svg";
 import CheckboxChecked from "@/public/icons/checkbox-checked.svg";
 import Image from "next/image";
-import SuccessModal from "./SuccessModal";
-import SaveIcon from "@/public/icons/save.svg";
 
 const style = {
   position: "absolute",
@@ -31,18 +25,19 @@ const style = {
 const MemberComponent = ({
   title,
   group,
+  nextStep,
 }: {
   title: string;
   group?: boolean;
+  nextStep: () => void;
 }) => {
   const [open, setOpen] = useState(false);
-  const [openSuccessModal, setOpenSuccessModal] = useState(false);
+
   const handleOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
-    console.log("close modal");
   };
 
   let selectedCount: number = 0;
@@ -296,7 +291,7 @@ const MemberComponent = ({
             </button>
             <button
               type="button"
-              onClick={() => setOpenSuccessModal(true)}
+              onClick={nextStep}
               className="bg-brand-9 text-sm text-white w-1/2 py-2 rounded-md"
             >
               Create
@@ -304,13 +299,6 @@ const MemberComponent = ({
           </div>
         </div>
       )}
-      <Modal open={openSuccessModal} onClose={() => setOpenSuccessModal(false)}>
-        <Box sx={style}>
-          <div className="w-full h-full flex items-center justify-center">
-            <SuccessModal />
-          </div>
-        </Box>
-      </Modal>
     </>
   );
 };

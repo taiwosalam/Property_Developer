@@ -6,12 +6,14 @@ import GroupImage from "@/public/empty/SampleLandlord.jpeg";
 import PencilIcon from "@/public/icons/pencil.svg";
 import PageTitle from "@/components/PageTitle/page-title";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import ModalPreset from "@/components/Modal/modal-preset";
+import { useState } from "react";
 import GroupChatCamera from "@/public/icons/group-camera.svg";
 import { team_chat_data, team_chat_members_data } from "./data";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import MemberComponent from "./Member";
+import useStep from "@/hooks/useStep";
 import SaveIcon from "@/public/icons/save.svg";
 
 const style = {
@@ -26,6 +28,7 @@ export const TeamChatHeader = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const { activeStep, changeStep } = useStep(2);
   return (
     <div className="flex items-center justify-between w-full mb-4">
       <div>
@@ -52,15 +55,37 @@ export const TeamChatHeader = () => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <div>
+          {activeStep === 1 ? (
             <Box sx={style}>
               <div className="w-full h-full flex items-center justify-center">
-                <div className="flex flex-col gap-4 bg-white h-[60vh] w-full lg:w-[35vw] dark:bg-darkText-primary rounded-lg overflow-y-auto custom-round-scrollbar">
-                  <MemberComponent title="New Group" group={true} />
+                <div className="flex flex-col gap-4 bg-white h-[500px] w-full dark:bg-darkText-primary rounded-lg overflow-y-auto custom-round-scrollbar">
+                  <MemberComponent
+                    title="New Group"
+                    group={true}
+                    nextStep={() => changeStep("next")}
+                  />
                 </div>
               </div>
             </Box>
-          </div>
+          ) : (
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <ModalPreset type="success">
+                <p className="text-text-disabled text-sm font-normal">
+                  You have successfully set up a group chat for the team.
+                </p>
+                <div className="flex justify-center">
+                  <Button onClick={handleClose}>ok</Button>
+                </div>
+              </ModalPreset>
+            </div>
+          )}
         </Modal>
       </div>
     </div>
