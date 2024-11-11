@@ -5,6 +5,5 @@ export interface SearchInputProps
   className?: string;
   placeholder?: string;
   textInputClassName?: string;
-
-  // onChange?: (data: string) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
