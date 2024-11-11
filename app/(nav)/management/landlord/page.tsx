@@ -278,7 +278,7 @@ const view = useView();
 
       <FilterBar
         azFilter
-        gridView={gridView}
+        gridView={view === 'grid' || gridView}
         setGridView={setGridView}
         setListView={setListView}
         onStateSelect={onStateSelect}
