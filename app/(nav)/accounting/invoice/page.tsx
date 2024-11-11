@@ -83,7 +83,6 @@ const AccountingInvoicePage = () => {
     e.stopPropagation();
     setSelectedItemId(String(item.id));
     setAnchorEl(e.currentTarget);
-    console.log(e.currentTarget);
   };
   const handleMenuClose = () => {
     setAnchorEl(null);

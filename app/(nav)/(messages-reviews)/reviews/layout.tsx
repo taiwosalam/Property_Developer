@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "next/navigation";
 
 // Types
@@ -17,11 +17,18 @@ import Button from "@/components/Form/Button/button";
 import ReviewCard from "@/components/Review/review-card";
 import { message_card_data } from "@/components/Message/data";
 import FilterButton from "@/components/FilterButton/filter-button";
+import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
 
 const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
   const { id } = useParams();
 
   const { isCustom } = useWindowWidth(900);
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <>
@@ -40,10 +47,20 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                 <div className="absolute top-2/4 right-0 -translate-y-2/4">
                   <FilterButton
                     noTitle
-                    style={{
-                      padding: "10px 16px",
-                      backgroundColor: "transparent",
-                    }}
+                    className="bg-transparent py-[10px] px-4"
+                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                  />
+                  <MessagesFilterMenu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    filterOptions={[
+                      { label: "Positive Review", bgColor: "#01BA4C" },
+                      { label: "Neutral Review", bgColor: "#FFBB53" },
+                      { label: "Negative Review", bgColor: "#E9212E" },
+                      { label: "New Review", bgColor: "#60A5FA" },
+                      { label: "Un-replied Review", bgColor: "#005623" },
+                    ]}
                   />
                 </div>
               </div>

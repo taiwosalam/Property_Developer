@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useState } from "react";
 
 // Types
 import type { MessagesLayoutProps } from "./types";
@@ -17,11 +18,18 @@ import Button from "@/components/Form/Button/button";
 import MessageCard from "@/components/Message/message-card";
 import { message_card_data } from "@/components/Message/data";
 import FilterButton from "@/components/FilterButton/filter-button";
+import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
 
 const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { id } = useParams();
 
   const { isCustom } = useWindowWidth(900);
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <>
@@ -40,10 +48,18 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                 <div className="absolute top-1/2 right-0 -translate-y-1/2">
                   <FilterButton
                     noTitle
-                    style={{
-                      padding: "10px 16px",
-                      backgroundColor: "transparent",
-                    }}
+                    className="bg-transparent py-[10px] px-4"
+                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                  />
+                  <MessagesFilterMenu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    filterOptions={[
+                      { label: "Inbox" },
+                      { label: "Groups" },
+                      { label: "Unread" },
+                    ]}
                   />
                 </div>
               </div>

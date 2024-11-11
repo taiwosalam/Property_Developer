@@ -6,6 +6,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   textInputClassName,
   className,
   placeholder = "Search",
+  onChange,
 }) => {
   return (
     <div
@@ -25,6 +26,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           textInputClassName
         )}
         placeholder={placeholder}
+        onChange={onChange}
       />
     </div>
   );
