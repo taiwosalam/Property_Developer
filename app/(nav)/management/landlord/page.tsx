@@ -26,11 +26,20 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { LandlordHelpInfo } from "./types";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import useView from "@/hooks/useView";
+import useSettingsStore from "@/store/settings";
 
 const Landlord = () => {
+const view = useView();
   const accessToken = useAuthStore((state) => state.access_token);
+  const { selectedOptions, setSelectedOption } = useSettingsStore();
+  const [selectedView, setSelectedView] = useState<string | null>(
+    selectedOptions.view
+  );
+  const grid = selectedView === "grid";
+
   const initialState: LandlordPageState = {
-    gridView: true,
+    gridView: grid,
     total_pages: 5,
     current_page: 1,
     loading: true,
@@ -63,12 +72,19 @@ const Landlord = () => {
     },
   } = state;
 
+  useEffect(() => {
+    setState((prevState) => ({
+      ...prevState,
+      gridView: selectedView === 'grid',
+    }));
+  }, [selectedView]);
+
   const setGridView = () => {
-    setState((state) => ({ ...state, gridView: true }));
+    setSelectedOption('view', 'grid');
   };
 
   const setListView = () => {
-    setState((state) => ({ ...state, gridView: false }));
+    setSelectedOption('view', 'list');
   };
 
   const [fetchedLandlordHelpInfo, setFetchedLandlordHelpInfo] =
@@ -220,6 +236,7 @@ const Landlord = () => {
 
   if (error) return <div>Error: {error.message}</div>;
 
+
   return (
     <div className="space-y-8">
       <div className="page-header-container">
@@ -279,7 +296,7 @@ const Landlord = () => {
         filterWithOptionsWithDropdown={landlordFiltersWithDropdown}
       />
       <section>
-        {gridView ? (
+        {view === 'grid' || gridView ? (
           <AutoResizingGrid minWidth={284} gap={16}>
             {landlords.map((l) => (
               <Link

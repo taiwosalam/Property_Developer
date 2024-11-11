@@ -130,6 +130,7 @@ const Appearance = () => {
         });
     }
   };
+
   let storedFont = "";
 
   const handleSelect = (type: keyof SelectedOptions, value: string) => {
@@ -141,6 +142,7 @@ const Appearance = () => {
         break;
       case "view":
         setSelectedView(value);
+        toast.success(`View set to ${value}`);
         break;
       case "navbar":
         setSelectedNavbar(value);
