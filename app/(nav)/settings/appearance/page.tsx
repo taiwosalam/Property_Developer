@@ -142,7 +142,7 @@ const Appearance = () => {
         break;
       case "view":
         setSelectedView(value);
-        toast.success(`View set to ${value}`);
+        toast.success(`Management card view set to ${value}`);
         break;
       case "navbar":
         setSelectedNavbar(value);
