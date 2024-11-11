@@ -6,7 +6,6 @@ import { SendMessageIcon } from "@/public/icons/icons";
 // Imports
 import { SVGType } from "../SVG/types";
 import Input from "../Form/Input/input";
-import Picture from "../Picture/picture";
 import { ModalTrigger } from "../Modal/modal";
 import { NavSearchTab } from "./nav-components";
 import { NavCloseIcon } from "@/public/icons/icons";

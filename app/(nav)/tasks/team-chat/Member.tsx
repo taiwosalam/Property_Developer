@@ -29,7 +29,7 @@ const MemberComponent = ({
 }: {
   title: string;
   group?: boolean;
-  nextStep: () => void;
+  nextStep?: () => void;
 }) => {
   const [open, setOpen] = useState(false);
 
