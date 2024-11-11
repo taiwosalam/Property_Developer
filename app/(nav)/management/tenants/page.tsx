@@ -25,11 +25,20 @@ import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import useView from "@/hooks/useView";
+import useSettingsStore from "@/store/settings";
 
 const Tenants = () => {
+  const view = useView();
   const accessToken = useAuthStore((state) => state.access_token);
+  const { selectedOptions, setSelectedOption } = useSettingsStore();
+  const [selectedView, setSelectedView] = useState<string | null>(
+    selectedOptions.view
+  );
+  const grid = selectedView === "grid";
+
   const initialState: TenantPageState = {
-    gridView: true,
+    gridView: grid,
     total_pages: 50,
     current_page: 1,
     loading: true,
@@ -53,6 +62,21 @@ const Tenants = () => {
       tenants,
     },
   } = state;
+
+  useEffect(() => {
+    setState((prevState) => ({
+      ...prevState,
+      gridView: selectedView === 'grid',
+    }));
+  }, [selectedView]);
+
+  const setGridView = () => {
+    setSelectedOption('view', 'grid');
+  };
+
+  const setListView = () => {
+    setSelectedOption('view', 'list');
+  };
 
   const fetchTenants = useCallback(async () => {
     try {
@@ -139,13 +163,7 @@ const Tenants = () => {
     console.log("Filter applied:", filters);
     // Add  logic here to filter tenant
   };
-
-  const setGridView = () => {
-    setState((state) => ({ ...state, gridView: true }));
-  };
-  const setListView = () => {
-    setState((state) => ({ ...state, gridView: false }));
-  };
+  
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
   };
@@ -252,7 +270,7 @@ const Tenants = () => {
         filterWithOptionsWithDropdown={tenantFilterOptionssWithDropdown}
       />
       <section>
-        {gridView ? (
+        {view === 'grid' || gridView ? (
           <AutoResizingGrid minWidth={284} gap={16}>
             {tenants.map((t) => (
               <Link
