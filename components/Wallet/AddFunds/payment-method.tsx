@@ -146,7 +146,7 @@ const AddFundsModalOptions: React.FC<
         </div>
       </div>
       <WalletBankTransferCard proceed={handleBankTransfer} />
-      <WalletFunding proceed={handleOnlineFunding} />
+      <WalletFunding proceed={handleOnlineFunding} title={title} price={price} />
     </div>
   );
 };
@@ -267,15 +267,14 @@ export const FundingCard: React.FC<FundingCardProps> = ({
   );
 };
 
-const WalletFunding: React.FC<WalletOnlineFundingCardProps> = ({ proceed }) => {
+const WalletFunding: React.FC<WalletOnlineFundingCardProps> = ({ proceed, title, price }) => {
   return (
     <div className="p-[18px] rounded-2xl overflow-hidden bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-[#3C3D37] custom-flex-col gap-2">
       <div className="w-full flex gap-2">
         <WalletLegalProcedureIcon />
         <div className="flex flex-col">
-          <h3>Legal Procedure Fee</h3>
+          <h3> { title } </h3>
           <p className="text-[12px] font-medium tracking-[0px]">
-            {" "}
             Wallet Balance: ₦ 50,000 (Sufficient funds){" "}
           </p>
         </div>
