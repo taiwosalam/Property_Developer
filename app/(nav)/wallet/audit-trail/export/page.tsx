@@ -1,17 +1,64 @@
-// Images
-import SendIcon from "@/public/icons/send.svg";
-
 // Imports
-import Picture from "@/components/Picture/picture";
-import Button from "@/components/Form/Button/button";
+import clsx from "clsx";
 import Signature from "@/components/Signature/signature";
 import WalletAnalytics from "@/components/Wallet/wallet-analytics";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
+import CustomTable from "@/components/Table/table";
+import { walletTableData, walletTableFields } from "../../data";
+import {
+  RedOutgoingIcon,
+  BlueIncomingIcon,
+  GreenIncomingIcon,
+} from "@/components/Accounting/icons";
+import BackButton from "@/components/BackButton/back-button";
+import { BlueBuildingIcon } from "@/public/icons/dashboard-cards/icons";
+import ExportPageFooter from "@/components/reports/export-page-footer";
 
 const ExportWallet = () => {
+  const transformedWalletTableData = walletTableData.map((t) => ({
+    ...t,
+    amount: (
+      <span
+        className={clsx("text-status-error-primary", {
+          "text-status-success-3":
+            t.transaction_type.toLowerCase() === "wallet top-up" ||
+            t.transaction_type.toLowerCase() === "received",
+        })}
+      >
+        {t.amount}
+      </span>
+    ),
+    icon: (
+      <div
+        className={clsx(
+          "flex items-center justify-center w-9 h-9 rounded-full",
+          {
+            "bg-status-error-1 text-status-error-primary":
+              t.transaction_type.toLowerCase() === "debit" ||
+              t.transaction_type.toLowerCase() === "withdrawal",
+            "bg-status-success-1 text-status-success-primary":
+              t.transaction_type.toLowerCase() === "wallet top-up" ||
+              t.transaction_type.toLowerCase() === "received",
+          }
+        )}
+      >
+        {t.transaction_type.toLowerCase() === "debit" ? (
+          <RedOutgoingIcon size={25} />
+        ) : t.transaction_type.toLowerCase() === "wallet top-up" ? (
+          <BlueIncomingIcon color="#01BA4C" size={25} />
+        ) : t.transaction_type.toLowerCase() === "withdrawal" ? (
+          <BlueBuildingIcon />
+        ) : t.transaction_type.toLowerCase() === "received" ? (
+          <GreenIncomingIcon size={25} />
+        ) : null}
+      </div>
+    ),
+  }));
+
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
+      <BackButton>Back</BackButton>
       <ExportPageHeader
         logo={empty}
         location="States and Local Govt"
@@ -22,7 +69,9 @@ const ExportWallet = () => {
       <div className="custom-flex-col gap-6">
         <div className="flex justify-center">
           <div className="custom-flex-col text-center gap-1">
-            <h1 className="text-black text-2xl font-medium dark:text-white">Summary</h1>
+            <h1 className="text-black text-2xl font-medium dark:text-white">
+              Summary
+            </h1>
             <p className="text-text-label text-xl font-normal">
               21st JAN -16th March
             </p>
@@ -58,75 +107,22 @@ const ExportWallet = () => {
           />
         </div>
       </div>
-      <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-        <table className="dash-table">
-          <colgroup>
-            <col className="w-[72px]" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th></th>
-              <th>transaction ID</th>
-              <th>source</th>
-              <th>description</th>
-              <th>amount</th>
-              <th>status</th>
-              <th>date</th>
-              <th>time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array(5)
-              .fill(null)
-              .map((_, index) => (
-                <tr key={index}>
-                  <td>
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center bg-status-error-1">
-                      <Picture src={SendIcon} alt="send icon" size={20} />
-                    </div>
-                  </td>
-                  <td>
-                    <p>00001102332</p>
-                  </td>
-                  <td>
-                    <p>Debit</p>
-                  </td>
-                  <td>
-                    <p>Paid for services</p>
-                  </td>
-                  <td>
-                    <p className="text-status-error-2">-₦5,000.00</p>
-                  </td>
-                  <td>
-                    <p>Pending</p>
-                  </td>
-                  <td>
-                    <p>12/01/2024</p>
-                  </td>
-                  <td>
-                    <p>03:30pm</p>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="flex justify-end">
-        <Signature />
-      </div>
-      <div className="fixed bottom-0 right-0 w-full bg-white py-5 px-[60px] flex gap-6 justify-end">
-        <Button variant="sky_blue" size="base_medium" className="py-2 px-8">
-          back
-        </Button>
-        <div className="flex gap-6">
-          <Button variant="sky_blue" size="base_medium" className="py-2 px-8">
-            download
-          </Button>
-          <Button size="base_medium" className="py-2 px-8">
-            print
-          </Button>
-        </div>
-      </div>
+      <CustomTable
+        fields={walletTableFields}
+        data={transformedWalletTableData}
+        tableBodyCellSx={{
+          paddingTop: "12px",
+          paddingBottom: "12px",
+          fontSize: "16px",
+        }}
+        tableHeadCellSx={{
+          paddingTop: "14px",
+          paddingBottom: "14px",
+          fontSize: "16px",
+        }}
+      />
+      <Signature />
+      <ExportPageFooter />
     </div>
   );
 };

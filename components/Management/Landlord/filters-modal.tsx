@@ -3,6 +3,7 @@ import { ModalTrigger } from "@/components/Modal/modal";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import DateInput from "@/components/Form/DateInput/date-input";
 import dayjs, { Dayjs } from "dayjs";
+import Button from "@/components/Form/Button/button";
 import {
   FilterModalProps,
   FilterOptionWithDropdown,
@@ -153,7 +154,11 @@ const FilterModal: React.FC<FilterModalProps> = ({
               {activeDropdownOption?.label}
             </h2>
           </div>
-          <button className="p-2" onClick={() => setActiveDropdownOption(null)}>
+          <button
+            type="button"
+            className="p-2"
+            onClick={() => setActiveDropdownOption(null)}
+          >
             <CancelIcon />
           </button>
         </div>
@@ -189,12 +194,13 @@ const FilterModal: React.FC<FilterModalProps> = ({
             </div>
           ))}
         </div>
-        <button
-          className="mt-4 w-full bg-brand-9 text-white py-2 rounded-lg"
+        <Button
+          size="base_medium"
+          className="mt-4 w-full py-2 rounded-lg"
           onClick={() => setActiveDropdownOption(null)}
         >
           OK
-        </button>
+        </Button>
       </>
     );
   };
@@ -219,7 +225,11 @@ const FilterModal: React.FC<FilterModalProps> = ({
               {activeRadioOption?.label}
             </h2>
           </div>
-          <button className="p-2" onClick={() => setActiveRadioOption(null)}>
+          <button
+            type="button"
+            className="p-2"
+            onClick={() => setActiveRadioOption(null)}
+          >
             <CancelIcon />
           </button>
         </div>
@@ -249,12 +259,13 @@ const FilterModal: React.FC<FilterModalProps> = ({
             </div>
           ))}
         </div>
-        <button
-          className="mt-4 w-full bg-brand-9 text-white py-2 rounded-lg"
+        <Button
+          size="base_medium"
+          className="mt-4 w-full py-2 rounded-lg"
           onClick={() => setActiveRadioOption(null)}
         >
           OK
-        </button>
+        </Button>
       </>
     );
   };
@@ -318,7 +329,11 @@ const FilterModal: React.FC<FilterModalProps> = ({
               Date
             </h2>
           </div>
-          <button className="p-2" onClick={() => setShowDatePicker(false)}>
+          <button
+            type="button"
+            className="p-2"
+            onClick={() => setShowDatePicker(false)}
+          >
             <CancelIcon />
           </button>
         </div>
@@ -350,12 +365,13 @@ const FilterModal: React.FC<FilterModalProps> = ({
             />
           </div>
         </div>
-        <button
-          className="mt-4 w-full bg-brand-9 text-white py-2 rounded-lg"
+        <Button
+          size="base_medium"
+          className="mt-4 w-full py-2 rounded-lg"
           onClick={() => setShowDatePicker(false)}
         >
           OK
-        </button>
+        </Button>
       </>
     );
   };
@@ -442,12 +458,13 @@ const FilterModal: React.FC<FilterModalProps> = ({
           </div>
         ))}
 
-      <button
-        className="w-full bg-brand-9 text-white py-2 rounded-lg mt-4"
+      <Button
+        className="w-full py-2 rounded-lg mt-4"
+        size="base_medium"
         onClick={handleApplyFilter}
       >
         Apply Filters
-      </button>
+      </Button>
     </>
   );
 

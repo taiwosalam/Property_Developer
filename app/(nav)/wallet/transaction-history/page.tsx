@@ -12,6 +12,7 @@ import {
 } from "@/components/Accounting/icons";
 import { BlueBuildingIcon } from "@/public/icons/dashboard-cards/icons";
 import { walletTableData, walletTableFields } from "../data";
+import { transactionHistoryFilterOptionsWithDropdown } from "./data";
 
 const TransactionHistory = () => {
   const transformedWalletTableData = walletTableData.map((t) => ({
@@ -62,6 +63,11 @@ const TransactionHistory = () => {
         handleFilterApply={() => {}}
         hiddenSearchInput
         exports
+        isDateTrue
+        exportHref="/wallet/audit-trail/export"
+        filterWithOptionsWithDropdown={
+          transactionHistoryFilterOptionsWithDropdown
+        }
       />
 
       <CustomTable

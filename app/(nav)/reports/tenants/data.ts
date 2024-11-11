@@ -26,6 +26,7 @@ export const reportsTenantsFilterOptionsWithDropdown = [
     ],
   },
 ];
+
 export const tenantsReportTableFields: Field[] = [
   { id: "0", label: "S/N", accessor: "S/N" },
   { id: "1", label: "Tenant / Occupant ID", accessor: "id" },
