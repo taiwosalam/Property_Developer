@@ -49,7 +49,7 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
             </p>
           </div>
           {content?.map(({ label, link, modal }, idx) => (
-            <div key={idx} className="py-3 pl-10 pr-5">
+            <div key={idx} className="py-3 px-5">
               {link ? (
                 <Link
                   href={link}

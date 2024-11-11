@@ -1,5 +1,3 @@
-import React from "react";
-import { SectionSeparator } from "../Section/section-components";
 import Button from "../Form/Button/button";
 import KeyValueList from "../KeyValueList/key-value-list";
 
@@ -14,13 +12,18 @@ const DocumentCard = () => {
     >
       <div className="custom-flex-col gap-4">
         <div className="flex items-center gap-1 font-medium">
-          <p className="text-text-tertiary dark:text-darkText-1 text-base">Document ID:</p>
-          <p className="text-text-secondary dark:text-darkText-2 text-sm">134678765</p>
+          <p className="text-text-tertiary dark:text-darkText-1 text-base">
+            Document ID:
+          </p>
+          <p className="text-text-secondary dark:text-darkText-2 text-sm">
+            134678765
+          </p>
         </div>
         <div className="h-[1px] border border-dashed border-brand-7 opacity-50"></div>
       </div>
       <div className="pb-6 overflow-x-auto custom-round-scrollbar">
-        <div className="min-w-[600px] custom-flex-col gap-4">
+        <div className="custom-flex-col gap-4">
+          {/* I removed min width from here */}
           <div className="flex">
             <KeyValueList
               data={{}}

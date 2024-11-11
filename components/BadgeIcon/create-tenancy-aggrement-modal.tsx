@@ -1,21 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
 import Button from "../Form/Button/button";
-import Input from "../Form/Input/input";
-// import { Checkbox } from "../Settings/Modals/settings-legal-drawer";
-import router, { useRouter } from "next/router";
-import { usePathname } from "next/navigation";
 import Select from "../Form/Select/select";
 import SettingsLegalDrawer, {
   Checkbox,
 } from "../Settings/Modals/settings-legal-drawer";
 import { Drawer } from "@mui/material";
-import { Modal, useModal } from "../Modal/modal";
+import { useModal } from "../Modal/modal";
 import Link from "next/link";
 import { useDrawerStore } from "@/store/drawerStore";
 
-const checkboxOptions = [
+export const checkboxOptions = [
   {
     title: "Tenancy Agreement (Free)",
     value: "tenancy_agreement",
@@ -53,8 +49,6 @@ const checkboxOptions = [
       "These are the additional legal procedures that govern tenants and occupants, aside from the ones listed above.",
   },
 ];
-
-// const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
 const CreateTenancyAggrementModal = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);

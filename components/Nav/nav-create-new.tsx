@@ -13,7 +13,7 @@ const NavCreateNew = () => {
       <div className="custom-flex-col gap-3">
         <div className="flex items-center justify-between">
           <h2 className="text-primary-navy dark:text-white text-xl font-bold uppercase">
-            create new
+            CREATE NEW
           </h2>
           <ModalTrigger close className="p-2">
             <NavCloseIcon />
