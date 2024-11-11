@@ -6,7 +6,7 @@ import AddTenantModal from "../Management/Tenants/add-tenant-modal";
 import AddLandlordModal from "../Management/Landlord/add-landlord-modal";
 import AddPropertyModal from "../Management/Properties/add-property-modal";
 import CreateReminderMOdal from "../tasks/calendars/create-reminder-modal";
-import CreateStaffModal from "../Management/Staff-And-Branches/create-staff-modal";
+// import CreateStaffModal from "../Management/Staff-And-Branches/create-staff-modal";
 import CreateBranchModal from "../Management/Staff-And-Branches/create-branch-modal";
 import NewDisbursementModal from "../Accounting/Disbursement/new-disbursement-modal";
 import CreateTenancyAggrementModal from "../BadgeIcon/create-tenancy-aggrement-modal";
