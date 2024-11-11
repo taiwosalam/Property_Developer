@@ -17,11 +17,19 @@ import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import useSettingsStore from "@/store/settings";
+import useView from "@/hooks/useView";
 
 const StaffAndBranches = () => {
+  const view = useView();
+  const { selectedOptions, setSelectedOption } = useSettingsStore();
+  const [selectedView, setSelectedView] = useState<string | null>(
+    selectedOptions.view
+  );
+  const grid = selectedView === "grid";
   const router = useRouter();
   const initialState: StaffAndBranchPageState = {
-    gridView: true,
+    gridView: grid,
     total_pages: 50,
     current_page: 1,
     selectedState: "",
@@ -60,12 +68,21 @@ const StaffAndBranches = () => {
     },
   } = state;
 
+  useEffect(() => {
+    setState((prevState) => ({
+      ...prevState,
+      gridView: selectedView === 'grid',
+    }));
+  }, [selectedView]);
+
   const setGridView = () => {
-    setState((state) => ({ ...state, gridView: true }));
+    setSelectedOption('view', 'grid');
   };
+
   const setListView = () => {
-    setState((state) => ({ ...state, gridView: false }));
+    setSelectedOption('view', 'list');
   };
+
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
   };
@@ -256,7 +273,7 @@ const StaffAndBranches = () => {
       />
 
       <section className="capitalize">
-        {gridView ? (
+        {view === 'grid' || gridView ? (
           <AutoResizingGrid minWidth={284}>
             {branches.map((b) => (
               <Link href={`/management/staff-branch/${b.id}`} key={b.id}>

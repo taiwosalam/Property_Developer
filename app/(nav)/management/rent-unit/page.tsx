@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import {
   RentAndUnitFilters,
@@ -12,22 +12,40 @@ import RentalPropertyCard from "@/components/Management/Rent And Unit/rental-pro
 import RentalPropertyListCard from "@/components/Management/Rent And Unit/rental-property-list";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import useView from "@/hooks/useView";
+import useSettingsStore from "@/store/settings";
 
 const RentAndUnit = () => {
+  const view = useView();
+  const { selectedOptions, setSelectedOption } = useSettingsStore();
+  const [selectedView, setSelectedView] = useState<string | null>(
+    selectedOptions.view
+  );
+  const grid = selectedView === "grid";
+
   const [state, setState] = useState<RentAndUnitState>({
-    gridView: true,
+    gridView: grid,
     total_pages: 5,
     current_page: 1,
   });
 
   const { gridView, total_pages, current_page } = state;
 
+  useEffect(() => {
+    setState((prevState) => ({
+      ...prevState,
+      gridView: selectedView === 'grid',
+    }));
+  }, [selectedView]);
+
   const setGridView = () => {
-    setState((state) => ({ ...state, gridView: true }));
+    setSelectedOption('view', 'grid');
   };
+
   const setListView = () => {
-    setState((state) => ({ ...state, gridView: false }));
+    setSelectedOption('view', 'list');
   };
+
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
   };
@@ -70,7 +88,7 @@ const RentAndUnit = () => {
       </div>
       <FilterBar
         azFilter
-        gridView={gridView}
+        gridView={view === 'grid' || gridView}
         setGridView={setGridView}
         setListView={setListView}
         onStateSelect={() => {}}
@@ -96,7 +114,7 @@ const RentAndUnit = () => {
             <StatusIndicator statusTitle="relocate" />
           </div>
         </div>
-        {gridView ? (
+        {view === 'grid' || gridView ? (
           <AutoResizingGrid minWidth={315}>
             <RentalPropertyCard
               propertyType="rental"

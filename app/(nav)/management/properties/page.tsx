@@ -14,24 +14,42 @@ import {
   propertyFilterOptionsRadio,
   propertyFilterOptionsWithDropdowns,
 } from "./data";
+import useSettingsStore from "@/store/settings";
+import useView from "@/hooks/useView";
 
 const Properties = () => {
   const acessToken = useAuthStore((state) => state.access_token);
-
+  const view = useView();
+  const accessToken = useAuthStore((state) => state.access_token);
+  const { selectedOptions, setSelectedOption } = useSettingsStore();
+  const [selectedView, setSelectedView] = useState<string | null>(
+    selectedOptions.view
+  );
+  const grid = selectedView === "grid";
   const initialState = {
-    gridView: true,
+    gridView: grid,
     total_pages: 20,
     current_page: 1,
     isModalOpen: false,
   };
   const [state, setState] = useState(initialState);
   const { gridView, total_pages, current_page } = state;
+
+  useEffect(() => {
+    setState((prevState) => ({
+      ...prevState,
+      gridView: selectedView === 'grid',
+    }));
+  }, [selectedView]);
+
   const setGridView = () => {
-    setState((state) => ({ ...state, gridView: true }));
+    setSelectedOption('view', 'grid');
   };
+
   const setListView = () => {
-    setState((state) => ({ ...state, gridView: false }));
+    setSelectedOption('view', 'list');
   };
+
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
   };
@@ -83,7 +101,7 @@ const Properties = () => {
       {/* Page Title with search */}
       <FilterBar
         azFilter
-        gridView={gridView}
+        gridView={view === 'grid' || gridView}
         setGridView={setGridView}
         setListView={setListView}
         onStateSelect={() => {}}
@@ -102,7 +120,7 @@ const Properties = () => {
 
       {/* Card / List View */}
       <section>
-        {gridView ? (
+        {view === 'grid' || gridView ? (
           <AutoResizingGrid minWidth={315}>
             {/* {properties.length >= 1 &&
                 properties.map((p) => <PropertyCard {...p} key={p.id} />)} */}
