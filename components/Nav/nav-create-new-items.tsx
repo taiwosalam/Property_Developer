@@ -9,7 +9,8 @@ import CreateReminderMOdal from "../tasks/calendars/create-reminder-modal";
 // import CreateStaffModal from "../Management/Staff-And-Branches/create-staff-modal";
 import CreateBranchModal from "../Management/Staff-And-Branches/create-branch-modal";
 import NewDisbursementModal from "../Accounting/Disbursement/new-disbursement-modal";
-import CreateTenancyAggrementModal from "../BadgeIcon/create-tenancy-aggrement-modal";
+// import CreateTenancyAggrementModal from "../BadgeIcon/create-tenancy-aggrement-modal";
+import LegalProcedureModal from "../Documents/legal-procedure-modal";
 import AddServiceProviderModal from "../tasks/service-providers/add-service-provider-modal";
 import CreateExamineModal from "../tasks/Examine/create-examine-modal";
 
@@ -57,7 +58,27 @@ export const create_new_items: CreateNewItemsProps = [
     content: [
       {
         label: "tenancy agreement",
-        modal: <CreateTenancyAggrementModal />,
+        modal: <LegalProcedureModal type="tenancy_agreement" />,
+      },
+      {
+        label: "quit notice",
+        modal: <LegalProcedureModal type="quit_notice" />,
+      },
+      {
+        label: "warning / reminder",
+        modal: <LegalProcedureModal type="warning_reminder" />,
+      },
+      {
+        label: "court processs",
+        modal: <LegalProcedureModal type="court_process" />,
+      },
+      {
+        label: "possession",
+        modal: <LegalProcedureModal type="possession" />,
+      },
+      {
+        label: "other legal processes",
+        modal: <LegalProcedureModal type="other" />,
       },
     ],
   },

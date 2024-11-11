@@ -1,13 +1,7 @@
 "use client";
-import React from "react";
-
-// Images
-import { ExclamationMark } from "@/public/icons/icons";
 
 // Imports
-import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
-import SearchInput from "@/components/SearchInput/search-input";
 import DocumentCard from "@/components/Documents/document-card";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
@@ -15,23 +9,21 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import CreateTenancyAggrementModal, {
   DrawerComponent,
 } from "@/components/BadgeIcon/create-tenancy-aggrement-modal";
-import SortButton from "@/components/FilterButton/sort-button";
-import FilterButton from "@/components/FilterButton/filter-button";
-import FilterModal from "@/components/Management/Landlord/filters-modal";
 import { DocumentssFilterOptionsWithDropdown } from "./data";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Documents = () => {
   return (
     <div className="custom-flex-col gap-8">
       <div className="page-header-container">
-        <AutoResizingGrid minWidth={240}>
+        <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Document"
             newData={34}
             total={657}
             colorScheme={1}
           />
-        </AutoResizingGrid>
+        </div>
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">
@@ -45,35 +37,15 @@ const Documents = () => {
         <DrawerComponent />
       </div>
       <div className="custom-flex-col gap-6">
-        <div className="page-title-container">
-          <div className="flex gap-1 items-center">
-            <h1 className="text-black text-2xl font-medium dark:text-white">
-              Document
-            </h1>
-            <ExclamationMark />
-          </div>
-          <div className="flex flex-wrap items-center gap-4">
-            <SearchInput placeholder="Document Search" />
-            <SortButton />
-            <Modal>
-              <ModalTrigger asChild>
-                <FilterButton />
-              </ModalTrigger>
-              <ModalContent>
-                <FilterModal
-                  filterOptionsWithDropdown={
-                    DocumentssFilterOptionsWithDropdown
-                  }
-                  filterOptions={[]}
-                  onApply={() => {}}
-                  onStateSelect={() => {}}
-                  date
-                />
-              </ModalContent>
-            </Modal>
-          </div>
-        </div>
-        <AutoResizingGrid minWidth={560}>
+        <FilterBar
+          handleFilterApply={() => {}}
+          pageTitle="Document"
+          searchInputPlaceholder="Document Search"
+          filterWithOptionsWithDropdown={DocumentssFilterOptionsWithDropdown}
+          azFilter
+          isDateTrue
+        />
+        <AutoResizingGrid minWidth={500}>
           {Array(6)
             .fill(null)
             .map((_, index) => (
