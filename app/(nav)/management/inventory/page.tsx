@@ -1,23 +1,57 @@
 "use client";
 
 // Imports
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@/components/Form/Button/button";
 import InventoryCard from "@/components/Management/Inventory/inventory-card";
 import InventoryList from "@/components/Management/Inventory/inventory-list";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import useView from "@/hooks/useView";
+import useSettingsStore from "@/store/settings";
 
 const Inventory = () => {
-  const [state, setState] = useState<"grid" | "list">("grid");
+  const view = useView();
+  const { selectedOptions, setSelectedOption } = useSettingsStore();
+  
+  const [selectedView, setSelectedView] = useState<string>(selectedOptions.view || "grid");
+
+  useEffect(() => {
+    // Sync selectedView with selectedOptions.view on mount
+    setSelectedView(selectedOptions.view || "grid");
+  }, [selectedOptions.view]);
 
   const setGridView = () => {
-    setState("grid");
+    setSelectedOption("view", "grid");
+    setSelectedView("grid"); // Update local state
   };
+
   const setListView = () => {
-    setState("list");
+    setSelectedOption("view", "list");
+    setSelectedView("list"); // Update local state
   };
+
+  // const [state, setState] = useState<"grid" | "list">("grid");
+
+  // useEffect(() => {
+  //   setState(selectedView === "grid" ? "grid" : "list");
+  // }, [selectedView]);
+
+  // const setGridView = () => {
+  //   setSelectedOption("view", "grid");
+  // };
+
+  // const setListView = () => {
+  //   setSelectedOption("view", "list");
+  // };
+
+  // const setGridView = () => {
+  //   setState("grid");
+  // };
+  // const setListView = () => {
+  //   setState("list");
+  // };
 
   const inventoryFiltersWithDropdown = [
     {
@@ -57,12 +91,12 @@ const Inventory = () => {
           + create new
         </Button>
       </div>
-      <FilterBar azFilter gridView={state === "grid"}
+      <FilterBar azFilter gridView={selectedView === "grid"}
         setGridView={setGridView}
         setListView={setListView} onStateSelect={() => { }} pageTitle="Inventory" aboutPageModalData={
           { title: "Inventory", description: "This page contains a list of inventory on the platform." }
         } searchInputPlaceholder="Search inventory" handleFilterApply={() => { }} isDateTrue filterOptionsWithRadio={[]} filterWithOptionsWithDropdown={inventoryFiltersWithDropdown} />
-      {state === "grid" ? (
+      {selectedView === "grid" ? (
         <AutoResizingGrid gap={28} minWidth={330}>
           {Array(6)
             .fill(null)
