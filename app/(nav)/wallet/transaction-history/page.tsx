@@ -1,22 +1,60 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-
-// Images
-import SendIcon from "@/public/icons/send.svg";
-import BankRed from "@/public/icons/bank-red.svg";
-import ReceiveIcon from "@/public/icons/receive.svg";
-import SquareTopUpGreen from "@/public/icons/square-top-up-green.svg";
-
 // Imports
-import Picture from "@/components/Picture/picture";
+import clsx from "clsx";
 import BackButton from "@/components/BackButton/back-button";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import CustomTable from "@/components/Table/table";
+import {
+  RedOutgoingIcon,
+  GreenIncomingIcon,
+  BlueIncomingIcon,
+} from "@/components/Accounting/icons";
+import { BlueBuildingIcon } from "@/public/icons/dashboard-cards/icons";
+import { walletTableData, walletTableFields } from "../data";
 
 const TransactionHistory = () => {
+  const transformedWalletTableData = walletTableData.map((t) => ({
+    ...t,
+    amount: (
+      <span
+        className={clsx("text-status-error-primary", {
+          "text-status-success-3":
+            t.transaction_type.toLowerCase() === "wallet top-up" ||
+            t.transaction_type.toLowerCase() === "received",
+        })}
+      >
+        {t.amount}
+      </span>
+    ),
+    icon: (
+      <div
+        className={clsx(
+          "flex items-center justify-center w-9 h-9 rounded-full",
+          {
+            "bg-status-error-1 text-status-error-primary":
+              t.transaction_type.toLowerCase() === "debit" ||
+              t.transaction_type.toLowerCase() === "withdrawal",
+            "bg-status-success-1 text-status-success-primary":
+              t.transaction_type.toLowerCase() === "wallet top-up" ||
+              t.transaction_type.toLowerCase() === "received",
+          }
+        )}
+      >
+        {t.transaction_type.toLowerCase() === "debit" ? (
+          <RedOutgoingIcon size={25} />
+        ) : t.transaction_type.toLowerCase() === "wallet top-up" ? (
+          <BlueIncomingIcon color="#01BA4C" size={25} />
+        ) : t.transaction_type.toLowerCase() === "withdrawal" ? (
+          <BlueBuildingIcon />
+        ) : t.transaction_type.toLowerCase() === "received" ? (
+          <GreenIncomingIcon size={25} />
+        ) : null}
+      </div>
+    ),
+  }));
   return (
-    <div className="custom-flex-col gap-16">
+    <div className="custom-flex-col gap-8">
       <BackButton>Transaction History</BackButton>
       <FilterBar
         pageTitle="Transaction History"
@@ -26,71 +64,20 @@ const TransactionHistory = () => {
         exports
       />
 
-      <div className="rounded-lg w-full overflow-x-scroll no-scrollbar">
-        <table className="dash-table">
-          <colgroup>
-            <col className="w-[72px]" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th></th>
-              <th>transaction ID</th>
-              <th>source</th>
-              <th>description</th>
-              <th>amount</th>
-              <th>status</th>
-              <th>date</th>
-              <th>time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array(5)
-              .fill(null)
-              .map((_, index) => (
-                <tr key={index}>
-                  <td>
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center bg-status-error-1">
-                      <Picture
-                        src={
-                          index === 0
-                            ? SendIcon
-                            : index === 1
-                            ? ReceiveIcon
-                            : index === 2
-                            ? BankRed
-                            : SquareTopUpGreen
-                        }
-                        alt="send icon"
-                        size={20}
-                      />
-                    </div>
-                  </td>
-                  <td>
-                    <p>00001102332</p>
-                  </td>
-                  <td>
-                    <p>Debit</p>
-                  </td>
-                  <td>
-                    <p>Paid for services</p>
-                  </td>
-                  <td>
-                    <p className="text-status-error-2">-₦5,000.00</p>
-                  </td>
-                  <td>
-                    <p>Pending</p>
-                  </td>
-                  <td>
-                    <p>12/01/2024</p>
-                  </td>
-                  <td>
-                    <p>03:30pm</p>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
+      <CustomTable
+        fields={walletTableFields}
+        data={transformedWalletTableData}
+        tableBodyCellSx={{
+          paddingTop: "12px",
+          paddingBottom: "12px",
+          fontSize: "16px",
+        }}
+        tableHeadCellSx={{
+          paddingTop: "14px",
+          paddingBottom: "14px",
+          fontSize: "16px",
+        }}
+      />
     </div>
   );
 };
