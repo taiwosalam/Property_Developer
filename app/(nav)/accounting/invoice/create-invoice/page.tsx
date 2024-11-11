@@ -13,6 +13,9 @@ import { empty } from "@/app/config";
 import { useState } from "react";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { DeleteIconX } from "@/public/icons/icons";
 
 const CreateInvoicePage = () => {
   const [isAddPaymentChecked, setIsAddPaymentChecked] = useState(true);
@@ -44,6 +47,9 @@ const CreateInvoicePage = () => {
     (total, payment) => total + payment.amount,
     0
   );
+  const handleDeletePayment = (index: number) => {
+    setPayments(payments.filter((_, i) => i !== index));
+  };
 
   return (
     <section className="space-y-7 pb-20">
@@ -160,12 +166,27 @@ const CreateInvoicePage = () => {
                   <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1 capitalize">
                     {payment.title}
                   </p>
-                  <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                    {new Intl.NumberFormat("en-NG", {
-                      style: "currency",
-                      currency: "NGN",
-                    }).format(payment.amount)}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
+                      {new Intl.NumberFormat("en-NG", {
+                        style: "currency",
+                        currency: "NGN",
+                      }).format(payment.amount)}
+                    </p>
+                    <Modal>
+                      <ModalTrigger aria-label={`Delete ${payment.title}`}>
+                        <DeleteIconX />
+                      </ModalTrigger>
+                      <ModalContent>
+                        <DeleteItemWarningModal
+                          item={payment.title}
+                          amount={payment.amount}
+                          handleDelete={() => handleDeletePayment(index)}
+                          useCase="invoices"
+                        />
+                      </ModalContent>
+                    </Modal>
+                  </div>
                 </div>
               ))}
             </div>
@@ -199,7 +220,7 @@ const CreateInvoicePage = () => {
         </p>
       </div>
       <FixedFooter className="flex items-center justify-end gap-4">
-        <Button className="py-2 px-8" size="base_medium">
+        <Button className="py-2 px-8" size="base_medium" variant="sky_blue">
           Cancel
         </Button>
         <Button type="submit" className="py-2 px-8" size="base_medium">

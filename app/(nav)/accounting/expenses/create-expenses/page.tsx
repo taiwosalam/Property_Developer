@@ -11,6 +11,9 @@ import { SectionSeparator } from "@/components/Section/section-components";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import TextArea from "@/components/Form/TextArea/textarea";
 import { useState } from "react";
+import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { DeleteIconX } from "@/public/icons/icons";
 
 const CreateExpensePage = () => {
   const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
@@ -36,6 +39,11 @@ const CreateExpensePage = () => {
     (total, payment) => total + payment.amount,
     0
   );
+
+  const handleDeletePayment = (index: number) => {
+    setPayments(payments.filter((_, i) => i !== index));
+  };
+
   return (
     <section className="space-y-7 pb-[100px]">
       <BackButton>Create New Expense</BackButton>
@@ -107,12 +115,27 @@ const CreateExpensePage = () => {
                   <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1 capitalize">
                     {payment.title}
                   </p>
-                  <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                    {new Intl.NumberFormat("en-NG", {
-                      style: "currency",
-                      currency: "NGN",
-                    }).format(payment.amount)}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
+                      {new Intl.NumberFormat("en-NG", {
+                        style: "currency",
+                        currency: "NGN",
+                      }).format(payment.amount)}
+                    </p>
+                    <Modal>
+                      <ModalTrigger aria-label={`Delete ${payment.title}`}>
+                        <DeleteIconX />
+                      </ModalTrigger>
+                      <ModalContent>
+                        <DeleteItemWarningModal
+                          item={payment.title}
+                          amount={payment.amount}
+                          handleDelete={() => handleDeletePayment(index)}
+                          useCase="expenses"
+                        />
+                      </ModalContent>
+                    </Modal>
+                  </div>
                 </div>
               ))}
             </div>
