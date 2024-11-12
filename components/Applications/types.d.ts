@@ -1,3 +1,4 @@
 export interface ApplicationCardProps {
-  type?: "guest" | "staff";
+  type?: "staff" | "guest";
+  status: "flagged" | "unflagged";
 }
