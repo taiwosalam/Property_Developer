@@ -6,7 +6,7 @@ import { useState } from "react";
 import type { AddLandlordModalOptions } from "./types";
 
 // Imports
-import { useRouter } from "next/router";
+import { useRouter, usePathname } from "next/navigation";
 import AddLandlordOptions from "./add-landlord-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
@@ -22,6 +22,7 @@ import { useModal } from "@/components/Modal/modal";
 const AddLandlordModal = () => {
   const { setIsOpen } = useModal();
   const router = useRouter();
+  const pathname = usePathname();
   // const { changeStep } = useNavCreateNewContext();
 
   const [activeStep, setActiveStep] =
@@ -41,7 +42,7 @@ const AddLandlordModal = () => {
   const handleBack = () => setActiveStep("options");
 
   const navigateToLandlordPage = () => {
-    if (router.pathname !== "/management/landlord") {
+    if (pathname !== "/management/landlord") {
       router.push("/management/landlord");
     }
   };
