@@ -12,6 +12,7 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
   data = [],
+  handleModalTrigger,
 }) => {
   const { setIsOpen } = useModal();
   const isDarkMode = useDarkMode();
@@ -20,7 +21,6 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
   const content = data.filter((item) =>
     options.includes(item.label.toLowerCase())
   );
-
   const class_styles = "flex items-center gap-4";
   const icon = (
     <SVG
@@ -62,15 +62,25 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
                   </p>
                 </Link>
               ) : (
-                <Modal>
-                  <ModalTrigger className={class_styles}>
-                    {icon}
-                    <p className="text-text-secondary dark:text-darkText-1 capitalize">
-                      {label}
-                    </p>
-                  </ModalTrigger>
-                  <ModalContent>{modal}</ModalContent>
-                </Modal>
+                // <Modal>
+                //   <ModalTrigger className={class_styles}>
+                //     {icon}
+                //     <p className="text-text-secondary dark:text-darkText-1 capitalize">
+                //       {label}
+                //     </p>
+                //   </ModalTrigger>
+                //   <ModalContent>{modal}</ModalContent>
+                // </Modal>
+
+                <button
+                  className={class_styles}
+                  onClick={() => handleModalTrigger(modal)}
+                >
+                  {icon}
+                  <p className="text-text-secondary dark:text-darkText-1 capitalize">
+                    {label}
+                  </p>
+                </button>
               )}
             </div>
           ))}

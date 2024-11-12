@@ -51,6 +51,7 @@ export type CreateNewItemsProps = {
 
 export interface NavCreateNewColumnProps {
   data: CreateNewItemsProps;
+  handleModalTrigger: (modal: React.ReactNode) => void;
 }
 
 export interface NavSearchTabProps {
