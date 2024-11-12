@@ -25,9 +25,10 @@ const Properties = () => {
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
   );
-  const grid = selectedView === "grid";
+  // const grid = selectedView === "grid";
+
   const initialState = {
-    gridView: grid,
+    gridView: selectedView === "grid",
     total_pages: 20,
     current_page: 1,
     isModalOpen: false,
@@ -44,10 +45,12 @@ const Properties = () => {
 
   const setGridView = () => {
     setSelectedOption('view', 'grid');
+    setSelectedView("grid");
   };
 
   const setListView = () => {
     setSelectedOption('view', 'list');
+    setSelectedView("list");
   };
 
   const handlePageChange = (page: number) => {

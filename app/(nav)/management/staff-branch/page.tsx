@@ -26,10 +26,10 @@ const StaffAndBranches = () => {
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
   );
-  const grid = selectedView === "grid";
+  // const grid = selectedView === "grid";
   const router = useRouter();
   const initialState: StaffAndBranchPageState = {
-    gridView: grid,
+    gridView: selectedView === 'grid',
     total_pages: 50,
     current_page: 1,
     selectedState: "",
@@ -77,10 +77,12 @@ const StaffAndBranches = () => {
 
   const setGridView = () => {
     setSelectedOption('view', 'grid');
+    setSelectedView("grid");
   };
 
   const setListView = () => {
     setSelectedOption('view', 'list');
+    setSelectedView("list");
   };
 
   const handlePageChange = (page: number) => {

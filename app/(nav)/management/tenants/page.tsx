@@ -35,10 +35,10 @@ const Tenants = () => {
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
   );
-  const grid = selectedView === "grid";
+  // const grid = selectedView === "grid";
 
   const initialState: TenantPageState = {
-    gridView: grid,
+    gridView: selectedView === "grid",
     total_pages: 50,
     current_page: 1,
     loading: true,
@@ -72,10 +72,12 @@ const Tenants = () => {
 
   const setGridView = () => {
     setSelectedOption('view', 'grid');
+    setSelectedView("grid");
   };
 
   const setListView = () => {
     setSelectedOption('view', 'list');
+    setSelectedView("list");
   };
 
   const fetchTenants = useCallback(async () => {
