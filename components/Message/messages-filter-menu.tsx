@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Menu, { MenuProps } from "@mui/material/Menu";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import {
@@ -46,6 +46,8 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
   const commonClasses =
     "flex items-center justify-between bg-neutral-3 rounded-[3px] py-2 px-4 w-full";
 
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+
   return (
     <Menu
       anchorOrigin={{
@@ -80,8 +82,8 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
       onClose={handleClose}
     >
       <div
-        className="sticky top-0 z-[2] flex items-center justify-between gap-4 mb-[10px] bg-white dark:bg-[#1C1C1C] px-4 pt-4"
-        tabIndex={-1}
+        className="sticky top-0 z-[2] flex items-center justify-between gap-4 mb-[10px] bg-white dark:bg-[#1C1C1C] px-4 pt-4 remove-tab-index"
+        // tabIndex={undefined}
       >
         <p className="text-base font-medium text-text-label dark:text-darkText-2 flex items-center gap-1">
           {activeStep !== 1 && (
@@ -111,6 +113,8 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
             commonClasses={commonClasses}
             hasSelectedBranches={selectedBranches.length > 0}
             filterOptions={filterOptions}
+            selectedFilters={selectedFilters}
+            setSelectedFilters={setSelectedFilters}
           />
         ) : (
           <Step2Menu
@@ -134,8 +138,16 @@ const Step1Menu: React.FC<{
   commonClasses: string;
   hasSelectedBranches: boolean;
   filterOptions: FilterOption[];
-}> = ({ changeStep, commonClasses, hasSelectedBranches, filterOptions }) => {
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  selectedFilters: string[];
+  setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>;
+}> = ({
+  changeStep,
+  commonClasses,
+  hasSelectedBranches,
+  filterOptions,
+  selectedFilters,
+  setSelectedFilters,
+}) => {
   const handleFilterToggle = (label: string) => {
     setSelectedFilters((prev) =>
       prev.includes(label)
@@ -161,7 +173,7 @@ const Step1Menu: React.FC<{
         <button
           type="button"
           className={`${commonClasses} ${
-            selectedFilters.includes(option.label) ? "bg-[#bfb3b3]" : ""
+            selectedFilters.includes(option.label) ? "!bg-[#bfb3b3]" : ""
           }`}
           key={index}
           onClick={() => handleFilterToggle(option.label)}
@@ -197,6 +209,13 @@ const Step2Menu: React.FC<{
         : [...prev, branch]
     );
   };
+
+  useEffect(() => {
+    const removeTabIndexDiv = document.querySelector(".remove-tab-index");
+    if (removeTabIndexDiv) {
+      removeTabIndexDiv.removeAttribute("tabIndex");
+    }
+  }, []);
 
   return (
     <>
