@@ -6,7 +6,7 @@ import { useState } from "react";
 import type { AddLandlordModalOptions } from "./types";
 
 // Imports
-
+import { useRouter } from "next/router";
 import AddLandlordOptions from "./add-landlord-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
@@ -14,19 +14,36 @@ import InvitationForm from "../invitation-form";
 import { addLandlord } from "./data";
 import { useAuthStore } from "@/store/authstrore";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
-import { formDataToString } from "@/components/Auth/auth-components";
 import { toast } from "sonner";
 import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
 import { useModal } from "@/components/Modal/modal";
+// import { useNavCreateNewContext } from "@/components/Nav/nav-create-new-context";
 
 const AddLandlordModal = () => {
   const { setIsOpen } = useModal();
+  const router = useRouter();
+  // const { changeStep } = useNavCreateNewContext();
 
   const [activeStep, setActiveStep] =
     useState<AddLandlordModalOptions>("options");
 
-  const handleBack = () => {
-    setActiveStep("options");
+  // const handleBack = () => {
+  //   if (changeStep && activeStep === "options") {
+  //     return {
+  //       handleBack: () => changeStep("prev"),
+  //     };
+  //   } else if (activeStep !== "options") {
+  //     return () => setActiveStep("options");
+  //   }
+  //   return undefined;
+  // };
+
+  const handleBack = () => setActiveStep("options");
+
+  const navigateToLandlordPage = () => {
+    if (router.pathname !== "/management/landlord") {
+      router.push("/management/landlord");
+    }
   };
 
   const accessToken = useAuthStore((state) => state.access_token);
@@ -50,6 +67,7 @@ const AddLandlordModal = () => {
 
     if (success) {
       setIsOpen(false);
+      navigateToLandlordPage();
     }
   };
 
@@ -104,6 +122,7 @@ const AddLandlordModal = () => {
   return (
     <LandlordTenantModalPreset
       heading={modal_states[activeStep].heading}
+      // back={handleBack()}
       back={activeStep !== "options" ? { handleBack } : undefined}
     >
       {modal_states[activeStep].content}
