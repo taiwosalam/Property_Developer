@@ -43,7 +43,7 @@ const useStep = (lastStep: number) => {
     });
   };
 
-  return { activeStep, changeStep };
+  return { activeStep, changeStep, setActiveStep };
 };
 
 export default useStep;

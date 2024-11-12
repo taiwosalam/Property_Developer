@@ -31,6 +31,12 @@ const validation_schemas = {
   code: z
     .string()
     .length(6, { message: "OTP must be exactly 6 characters long" }),
+  "new-pin": z
+    .string()
+    .length(4, { message: "PIN must be exactly 4 characters long" }),
+  "confirm-pin": z
+    .string()
+    .length(4, { message: "PIN must be exactly 4 characters long" }),
 };
 
 // Main validation function
@@ -73,6 +79,16 @@ export const validateData = (data: ValidateDataProps) => {
       if (data["confirm-password"] !== data["new-password"]) {
         output.invalidKeys["confirm-password"] = "Passwords do not match.";
       }
+    }
+  }
+
+  if (!output.invalidKeys["confirm-pin"]) {
+    if (
+      data["new-pin"] !== undefined &&
+      data["confirm-pin"] !== undefined &&
+      data["new-pin"] !== data["confirm-pin"]
+    ) {
+      output.invalidKeys["confirm-pin"] = "PINs do not match.";
     }
   }
   //----------------------------------

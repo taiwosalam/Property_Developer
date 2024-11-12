@@ -25,11 +25,12 @@ interface MessagesFilterMenuProps extends MenuProps {
 
 const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
   onClose,
+  open,
   filterOptions,
   ...props
 }) => {
   const isDarkMode = useDarkMode();
-  const { activeStep, changeStep } = useStep(2);
+  const { activeStep, changeStep, setActiveStep } = useStep(2);
   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
 
   const handleClose = (
@@ -40,7 +41,6 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
     if (onClose) {
       onClose(event, reason);
     }
-    changeStep("prev");
   };
 
   const commonClasses =
@@ -48,8 +48,15 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
 
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
+  useEffect(() => {
+    if (open) {
+      setActiveStep(1);
+    }
+  }, [open]);
+
   return (
     <Menu
+      open={open}
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "right",

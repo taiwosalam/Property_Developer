@@ -45,8 +45,7 @@ import {
 } from "@/public/icons/icons";
 import Picture from "../Picture/picture";
 import ImageBlue from "@/public/icons/image-blue.svg";
-import SettingsLegalDrawer from "./Modals/settings-legal-drawer";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const SettingsVerifiedBadge = () => (
   <div className="flex items-center py-[2px] px-2 rounded-full bg-status-success-1">
@@ -78,10 +77,12 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
   addMore,
   text = "update",
   type = "default",
+  submit,
 }) => {
   const button_props: ButtonProps = {
     size: "base_bold",
     className: "py-[10px] px-8",
+    ...(submit && { type: "submit" }),
   };
 
   const remove_props: ButtonProps = {
@@ -444,15 +445,16 @@ export const WebsiteColorSchemes: React.FC<{
       {websiteColorSchemes.map((color, index) => (
         <div
           key={index}
+          role="button"
           className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${
-            selectedColor === color
+            selectedColor?.toLowerCase() === color.toLowerCase()
               ? "border-2 border-blue-500 rounded-md h-[40px] w-[40px]"
               : ""
           }`}
           style={{ backgroundColor: color }}
           onClick={() => onColorSelect(color)}
         >
-          {selectedColor === color && (
+          {selectedColor?.toLowerCase() === color.toLowerCase() && (
             <div className="absolute inset-0 flex items-center justify-center">
               <Image
                 src="/icons/whitemark.svg"

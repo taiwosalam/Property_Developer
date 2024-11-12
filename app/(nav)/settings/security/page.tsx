@@ -13,11 +13,12 @@ import { industryOptions, titles } from "@/data";
 import Input from "@/components/Form/Input/input";
 import Picture from "@/components/Picture/picture";
 import Select from "@/components/Form/Select/select";
-import Button from "@/components/Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import FundingCard from "@/components/Wallet/AddFunds/funding-card";
 import SettingsSection from "@/components/Settings/settings-section";
 import { ProfileUpload } from "@/components/Settings/settings-components";
+import SettingsPasswordSection from "@/components/Settings/settings-password-section";
+import SettingsWalletSection from "@/components/Settings/settings-wallet-section";
 
 import {
   SettingsSectionTitle,
@@ -194,50 +195,8 @@ const Security = () => {
           <SettingsUpdateButton />
         </div>
       </SettingsSection>
-      <SettingsSection title="wallet">
-        <div className="custom-flex-col gap-8">
-          <SettingsSectionTitle
-            title="Wallet Pin"
-            desc="This PIN is necessary for bank withdrawals, wallet transfers, and other associated transactions."
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            <Input id="current_pin" label="current pin" className="w-full" />
-            <Input id="new_pin" label="new pin" className="w-full" />
-            <Input
-              id="re_enter_password"
-              label="re-enter password"
-              className="w-full"
-            />
-          </div>
-          <SettingsUpdateButton type="otp" />
-        </div>
-      </SettingsSection>
-      <SettingsSection title="password">
-        <div className="custom-flex-col gap-8">
-          <SettingsSectionTitle
-            title="Change Password"
-            desc="Use this section to reset your account password."
-          />
-          <div className="flex flex-col sm:flex-row gap-5">
-            <Input
-              id="current_password"
-              label="current password"
-              className="w-full sm:w-[277px]"
-            />
-            <Input
-              id="new_password"
-              label="new password"
-              className="w-full sm:w-[277px]"
-            />
-            <Input
-              id="re_enter_new_password"
-              label="re-enter new password"
-              className="w-full sm:w-[277px]"
-            />
-          </div>
-          <SettingsUpdateButton type="otp" />
-        </div>
-      </SettingsSection>
+      <SettingsWalletSection />
+      <SettingsPasswordSection />
       <SettingsSection title="Bank Details">
         <div className="custom-flex-col gap-8">
           <SettingsSectionTitle

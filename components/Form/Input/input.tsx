@@ -39,6 +39,7 @@ const Input: React.FC<InputProps> = ({
   requiredNoStar,
   formatNumber,
   endWith,
+  isPinField,
 }) => {
   // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -131,6 +132,9 @@ const Input: React.FC<InputProps> = ({
                 value = value.slice(0, -1);
               }
               value = `${value} ${endWith}`;
+            }
+            if (isPinField) {
+              value = value.replace(/\D/g, ""); // Remove non-numeric characters
             }
             event.target.value = value;
             onChange?.(value, event);

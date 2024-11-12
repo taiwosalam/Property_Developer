@@ -32,4 +32,5 @@ export interface InputProps {
   requiredNoStar?: boolean;
   formatNumber?: boolean;
   endWith?: string;
+  isPinField?: boolean;
 }
