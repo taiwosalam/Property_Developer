@@ -36,10 +36,11 @@ const view = useView();
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
   );
-  const grid = selectedView === "grid";
+
+  // const grid = selectedView === "grid";
 
   const initialState: LandlordPageState = {
-    gridView: grid,
+    gridView: selectedView === "grid",
     total_pages: 5,
     current_page: 1,
     loading: true,
@@ -81,10 +82,12 @@ const view = useView();
 
   const setGridView = () => {
     setSelectedOption('view', 'grid');
+    setSelectedView("grid");
   };
 
   const setListView = () => {
     setSelectedOption('view', 'list');
+    setSelectedView("list");
   };
 
   const [fetchedLandlordHelpInfo, setFetchedLandlordHelpInfo] =
