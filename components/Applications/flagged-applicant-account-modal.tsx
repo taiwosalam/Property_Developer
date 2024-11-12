@@ -51,7 +51,11 @@ const FlaggedApplicantAccountModal = () => {
           <Button size="base_bold" variant="light_red" className="py-2 px-8">
             reject application
           </Button>
-          <Button size="base_bold" className="py-2 px-8">
+          <Button
+            size="base_bold"
+            className="py-2 px-8"
+            href="/applications/1/manage"
+          >
             skip
           </Button>
         </div>
