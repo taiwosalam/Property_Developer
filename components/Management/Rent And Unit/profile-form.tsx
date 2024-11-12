@@ -139,7 +139,11 @@ export const ProfileForm: React.FC<{
           "SMS Alert",
           "Email Alert",
         ].map((option) => (
-          <Checkbox sm key={option}>
+          <Checkbox
+            sm
+            key={option}
+            defaultChecked={option === "Create Invoice"}
+          >
             {option}
           </Checkbox>
         ))}

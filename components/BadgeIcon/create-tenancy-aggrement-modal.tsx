@@ -52,8 +52,7 @@ export const checkboxOptions = [
 
 const CreateTenancyAggrementModal = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const { isDrawerOpen, openDrawer, closeDrawer, setSelectedLegalOption } =
-    useDrawerStore();
+  const { setSelectedLegalOption } = useDrawerStore();
 
   // HANDLE CHECKBOX CHANGE
   const handleCheckboxChange = (value: string) => {
@@ -166,11 +165,7 @@ const OtherAgreement = () => {
         />
       </div>
       <div className="flex items-end justify-end mt-4">
-        <Button
-          type="button"
-          className="bg-brand-9 rounded-md text-white"
-          onClick={handleOpenDrawer}
-        >
+        <Button type="button" className="rounded-md" onClick={handleOpenDrawer}>
           Proceed
         </Button>
       </div>
@@ -193,7 +188,7 @@ export const DrawerComponent = () => {
           borderTopLeftRadius: "32px",
           borderTopRightRadius: "32px",
           overflow: "auto",
-          height: "80vh",
+          height: "500px",
         },
         zIndex: 1,
       }}

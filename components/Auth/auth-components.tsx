@@ -56,34 +56,58 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   setValidationErrors,
   returnType = "string",
 }) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const data: Record<string, any> = {};
+
+    formData.forEach((value, key) => {
+      const inputElement = form.elements.namedItem(key) as HTMLInputElement;
+      const validationKey = inputElement?.getAttribute("data-validation-key");
+      const schemaKey = validationKey || key;
+      data[schemaKey] = value instanceof File ? value : value.toString();
+    });
+
+    const validation = validateData(data);
+
+    if (!objectLength(validation.invalidKeys)) {
+      onFormSubmit(returnType === "form-data" ? formData : data);
+    } else {
+      setValidationErrors(validation.invalidKeys);
+    }
+  };
+
   return (
     <form
       method="post"
       encType="multipart/form-data"
       id={id}
-      onSubmit={(e) => {
-        e.preventDefault();
+      onSubmit={handleSubmit}
+      // onSubmit={(e) => {
+      //   e.preventDefault();
 
-        const errors: string[] = [];
+      //   const errors: string[] = [];
 
-        const form = e.target as HTMLFormElement;
-        const formData = new FormData(form);
-        const data = formDataToString(formData);
-        const validation = validateData(data);
+      //   const form = e.target as HTMLFormElement;
+      //   const formData = new FormData(form);
+      //   const data = formDataToString(formData);
+      //   const validation = validateData(data);
 
-        if (!objectLength(validation.invalidKeys)) {
-          onFormSubmit(returnType === "form-data" ? formData : data);
-        } else {
-          Object.entries(validation.invalidKeys).forEach(([key, messge]) => {
-            errors.push(`${key}: ${messge}`);
-          });
+      //   if (!objectLength(validation.invalidKeys)) {
+      //     onFormSubmit(returnType === "form-data" ? formData : data);
+      //   } else {
+      //     Object.entries(validation.invalidKeys).forEach(([key, messge]) => {
+      //       errors.push(`${key}: ${messge}`);
+      //     });
 
-          if (errors.length > 0)
-            console.warn("Validation errors:\n•", errors.join(`\n• `));
+      //     if (errors.length > 0)
+      //       console.warn("Validation errors:\n•", errors.join(`\n• `));
 
-          setValidationErrors(validation.invalidKeys);
-        }
-      }}
+      //     setValidationErrors(validation.invalidKeys);
+      //   }
+      // }}
       className={className}
     >
       {children}
@@ -149,6 +173,8 @@ export const AuthPinField: React.FC<AuthPinFieldProps> = ({
 export const AuthNewPassword: React.FC<AuthNewPasswordProps> = ({
   setValue,
   validationErrors,
+  label = "password",
+  className,
 }) => {
   const empty_label = "empty"; // Default label when no conditions are met
   const empty_color = "#E8EDF1"; // Default color when no conditions are met
@@ -194,11 +220,11 @@ export const AuthNewPassword: React.FC<AuthNewPasswordProps> = ({
   };
 
   return (
-    <div className="custom-flex-col gap-2">
+    <div className={`custom-flex-col gap-2 ${className}`}>
       <Input
         id="new-password"
         type="password"
-        label="password"
+        label={label}
         placeholder="Write here"
         onChange={handleOnChange}
         validationErrors={validationErrors} // Uncomment this line if validation errors are being handled elsewhere

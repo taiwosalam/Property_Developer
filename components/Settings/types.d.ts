@@ -58,6 +58,7 @@ export interface SettingsUpdateButtonProps {
   text?: string;
   remove?: boolean;
   addMore?: boolean;
+  submit?: boolean;
   type?: "default" | "otp" | "add domain" | "purchase unit" | "feature";
 }
 

@@ -1,5 +1,4 @@
 "use client";
-import { setCSSVariables, defaultColorsMap,defaultColor } from "@/utils/updateBrandColors";
 import { useEffect } from "react";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 
@@ -18,7 +17,7 @@ const useThemeColors = () => {
         // const computedStyle = getComputedStyle(document.documentElement);
         // setColor(computedStyle.getPropertyValue("--primary-color").trim());
         // setCSSVariables(defaultColorsMap);
-        setColor(defaultColor);
+        setColor("#2563EB");
       }
     }
   }, [setColor]);

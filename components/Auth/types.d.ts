@@ -42,4 +42,6 @@ export type PasswordStrengthProps = Record<
 export interface AuthNewPasswordProps {
   setValue?: React.Dispatch<React.SetStateAction<string>>;
   validationErrors?: ValidationErrors;
+  label?: string;
+  className?: string;
 }

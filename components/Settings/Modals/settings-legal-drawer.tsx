@@ -1,8 +1,8 @@
 "use client";
 // Image
-import { Button } from "@mui/material";
-import React, { useEffect, useState } from "react";
 
+import React, { useEffect, useState } from "react";
+import Button from "@/components/Form/Button/button";
 // Imports
 import PaymentMethod from "@/components/Wallet/AddFunds/payment-method";
 import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-info-components";
@@ -90,7 +90,10 @@ const SettingsLegalDrawer: React.FC<SettingsLegalDrawerProps> = ({
             </div>
           )}
           <div className="cardWrapper mt-4 flex flex-col gap-4">
-            <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
+            <LandlordTenantInfoBox
+              className="custom-flex-col gap-[10px] bg-[#FAFAFA] dark:bg-darkText-primary"
+              style={{ boxShadow: "none" }}
+            >
               <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
                 Property Details
               </h2>
@@ -108,7 +111,10 @@ const SettingsLegalDrawer: React.FC<SettingsLegalDrawerProps> = ({
                 />
               </div>
             </LandlordTenantInfoBox>
-            <LandlordTenantInfoBox className="custom-flex-col gap-[10px] bg-red-500">
+            <LandlordTenantInfoBox
+              className="custom-flex-col gap-[10px] bg-[#FAFAFA] dark:bg-darkText-primary"
+              style={{ boxShadow: "none" }}
+            >
               <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
                 Landlord/Landlady Details
               </h2>
@@ -127,7 +133,10 @@ const SettingsLegalDrawer: React.FC<SettingsLegalDrawerProps> = ({
               </div>
             </LandlordTenantInfoBox>
 
-            <LandlordTenantInfoBox className="custom-flex-col gap-[10px] bg-red-500">
+            <LandlordTenantInfoBox
+              className="custom-flex-col gap-[10px] bg-[#FAFAFA] dark:bg-darkText-primary"
+              style={{ boxShadow: "none" }}
+            >
               <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
                 Tenant/Occupants Details
               </h2>
@@ -209,20 +218,22 @@ const DrawerHeader = ({ onClose }: { onClose: () => void }) => {
         </p>
       </div>
       <div className="btns flex flex-wrap gap-4">
-        <button
-          type="button"
-          className="bg-[#FDE9EA] text-brand-9 text-sm py-3 px-5 font-bold rounded-[8px]"
+        <Button
           onClick={onClose}
+          size="base_medium"
+          className="py-2 px-5"
+          variant="border"
         >
           Back
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
-          className="bg-brand-9 text-white text-sm py-3 px-5 font-bold rounded-[8px]"
+          size="base_medium"
+          className="py-2 px-5"
           onClick={handleOpen}
         >
           Submit
-        </button>
+        </Button>
         <Modal
           open={open}
           onClose={handleClose}

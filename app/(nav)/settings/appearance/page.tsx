@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 // Imports
 import SettingsSection from "@/components/Settings/settings-section";
@@ -70,6 +70,12 @@ const Appearance = () => {
       setColor(selectedColor);
     }
   }, [setColor, selectedColor]);
+
+  useEffect(() => {
+    if (primaryColor) {
+      setSelectedColor(primaryColor);
+    }
+  }, [primaryColor]);
 
   useEffect(() => {
     // Check if running in the browser
@@ -163,8 +169,8 @@ const Appearance = () => {
     if (!color) return;
     if (isDarkMode && color === "#000000") {
       toast.error("Unable to set primary color in dark mode.");
-      setSelectedColor("#0033c4"); // Set to the alternative color
-      setCustomColor("#0033c4");
+      setSelectedColor("#2563EB"); // Set to the alternative color
+      setCustomColor("#2563EB");
     } else {
       setSelectedColor(color);
       setCustomColor(color);
@@ -325,18 +331,15 @@ const Appearance = () => {
           desc="Choose Your Preferred Font Style for Your Company Profile Website"
         />
 
-        <div className="flex gap-2 items-center">
-          <div className="w-full sm:w-1/4 flex mb-5">
-            <Select
-              id="font"
-              label=""
-              placeholder={storedFont || "Select a font"}
-              onChange={(value) => handleFontSelect(value)}
-              options={modifiedGoogleFonts}
-              inputContainerClassName="bg-neutral-2 w-full mt-2 min-w-[250px]"
-            />
-          </div>
-        </div>
+        <Select
+          id="font"
+          placeholder={storedFont || "Select a font"}
+          onChange={(value) => handleFontSelect(value)}
+          options={modifiedGoogleFonts}
+          inputContainerClassName="bg-neutral-2"
+          className="max-w-[300px] mt-2 mb-4"
+        />
+
         <SettingsSectionTitle
           title="Dashboard Color Scheme"
           desc="Customize the default color to your preference from the available options listed below."
