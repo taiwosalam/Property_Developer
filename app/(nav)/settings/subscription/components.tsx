@@ -46,6 +46,6 @@ export const SuccessModal = () => {
 
 export const EditModal = ()=> {
     return (
-        <div>Edit modal</div>
+        <div className='bg-white w-[50vw] h-[50vh] rounded-md'>Edit modal Here</div>
     )
 }
