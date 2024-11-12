@@ -32,7 +32,8 @@ import SettingsLegalDrawer from "@/components/Settings/Modals/settings-legal-dra
 import { CounterButton } from "@/components/Settings/SettingsEnrollment/settings-enrollment-components";
 import TableMenu from "@/components/Table/table-menu";
 import PaymentMethod from "@/components/Wallet/AddFunds/payment-method";
-import { ConfirmModal } from "./components";
+import { ConfirmModal, EditModal, SuccessModal } from "./components";
+import useSubscriptionStore from "@/store/subscriptionStore";
 
 const style = {
   position: "absolute",
@@ -42,6 +43,7 @@ const style = {
 };
 
 const Subscriptions = () => {
+  const { openSuccessModal, openSuccess, openWarningModal, openWarning, closeWarning, closeSuccess, openEditModal, openEdit, closeEdit } = useSubscriptionStore();
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
   };
@@ -103,11 +105,8 @@ const Subscriptions = () => {
   };
 
   const [open, setOpen] = useState(false);
-  const [openConfirmBox, setOpenConfirmBox] = useState(false);
   const handleOpen = () => setOpen(true);
-  const handleOpenConfirmBox = () => setOpenConfirmBox(true)
   const handleClose = () => setOpen(false);
-  const handleCloseConfirmBox = () => setOpenConfirmBox(false)
 
   return (
     <>
@@ -156,10 +155,10 @@ const Subscriptions = () => {
                       <MenuItem onClick={handleOpen}>
                         <button type="button">Extend</button>
                       </MenuItem>
-                      <MenuItem onClick={handleOpenConfirmBox}>
+                      <MenuItem onClick={openWarning}>
                         <button type="button">Delete</button>
                       </MenuItem>
-                      <MenuItem onClick={() => {}}>
+                      <MenuItem onClick={openEdit}>
                         <button type="button">Edit</button>
                       </MenuItem>
                     </TableMenu>
@@ -178,13 +177,33 @@ const Subscriptions = () => {
                      </Box>
                     </Modal>
                     <Modal
-                      open={openConfirmBox}
-                      onClose={handleCloseConfirmBox}
+                      open={openWarningModal}
+                      onClose={closeWarning}
                       aria-labelledby="modal-modal-title"
                       aria-describedby="modal-modal-description"
                     >
                       <Box sx={style}>
                        <ConfirmModal />
+                      </Box>
+                    </Modal>
+                    <Modal
+                      open={openSuccessModal}
+                      onClose={closeSuccess}
+                      aria-labelledby="modal-modal-title"
+                      aria-describedby="modal-modal-description"
+                    >
+                      <Box sx={style}>
+                       <SuccessModal />
+                      </Box>
+                    </Modal>
+                    <Modal
+                      open={openEditModal}
+                      onClose={closeEdit}
+                      aria-labelledby="modal-modal-title"
+                      aria-describedby="modal-modal-description"
+                    >
+                      <Box sx={style}>
+                       <EditModal />
                       </Box>
                     </Modal>
                   </div>
