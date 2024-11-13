@@ -21,7 +21,7 @@ export const ConfirmModal = () => {
                     proceed
                 </Button>
                 <button
-                    onClick={closeSuccess}
+                    onClick={closeWarning}
                     className="text-brand-primary text-sm font-medium"
                 >
                     Back
