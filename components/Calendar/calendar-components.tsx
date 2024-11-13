@@ -40,6 +40,7 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({
   color = "#f5f5f5",
 }) => (
   <button
+    type="button"
     onClick={onClick}
     className={clsx(
       "relative w-8 h-8 m-auto rounded-sm flex items-center justify-center",
