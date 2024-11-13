@@ -1,5 +1,5 @@
 // store/propertyRequestStore.ts
-import create from 'zustand';
+import { create } from "zustand";
 
 interface PropertyRequestState {
   minBudget: number | null;
@@ -16,7 +16,7 @@ export const usePropertyRequestStore = create<PropertyRequestState>((set) => ({
   error: null, // Initialize error state
   setMinBudget: (value) => set({ minBudget: value }),
   setMaxBudget: (value) => set({ maxBudget: value }),
-  
+
   // Method to reset budgets
   resetBudgets: () => set({ minBudget: null, maxBudget: null, error: null }),
 }));

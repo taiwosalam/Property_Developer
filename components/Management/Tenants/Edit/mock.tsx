@@ -240,7 +240,7 @@ export const MockFunction = (a?: "landlord" | "tenant") => {
     }, 0); // Simulate a 2-second delay
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [returnValue]);
 
   return { data, id: "1", loading, error };
 };

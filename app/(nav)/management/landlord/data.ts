@@ -21,54 +21,9 @@ export interface LandlordPageState {
   landlordsPageData: LandlordsPageData;
 }
 
-export const getAllLandlords = async (
-  access_token: string | null
-): Promise<LandlordsPageData> => {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/landlords`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+export const getAllLandlords = async (): Promise<LandlordsPageData | any> => {};
 
-    if (!res.ok) {
-      throw new Error(`Error: ${res.status}`);
-    }
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching landlords:", error);
-    throw new Error(`Error: ${error}`);
-  }
-};
-
-export const getOneLandlord = async (
-  landlordId: string,
-  access_token: string
-) => {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/landlords/${landlordId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-
-    if (!res.ok) {
-      throw new Error(`Error: ${res.status}`);
-    }
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching landlord", error);
-  }
-};
+export const getOneLandlord = async (id: string) => {};
 
 export const getLandlordsHelpInfo = async () => {
   try {

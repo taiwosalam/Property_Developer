@@ -21,6 +21,7 @@ const NavSwitchUserSwitch: React.FC<{
   const handleSwitch = () => {
     setIsOpen((prev) => !prev);
 
+    // Track not allowed lol
     if (!isOpen) {
       trackOutsideClick(containerRef, () => setIsOpen(false));
     }

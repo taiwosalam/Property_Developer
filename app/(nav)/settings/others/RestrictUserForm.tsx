@@ -2,19 +2,18 @@
 import { useState } from "react";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import Select from "@/components/Form/Select/select";
-import { getAllStates, getLocalGovernments } from "@/utils/states";
+// import { getAllStates, getLocalGovernments } from "@/utils/states";
 import { tenantTypes, genderTypes, titles } from "@/data";
-import Input from "@/components/Form/Input/input";
-import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
+// import Input from "@/components/Form/Input/input";
+// import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import Button from "@/components/Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "@/components/Auth/auth-components";
 import type { ValidationErrors } from "@/utils/types";
-import { useAuthStore } from "@/store/authstrore";
-import Picture from "@/components/Picture/picture";
-import Avatars from "@/components/Avatars/avatars";
-import TextArea from "@/components/Form/TextArea/textarea";
-import { DirectorCard } from "@/components/Settings/settings-components";
+// import Picture from "@/components/Picture/picture";
+// import Avatars from "@/components/Avatars/avatars";
+// import TextArea from "@/components/Form/TextArea/textarea";
+// import { DirectorCard } from "@/components/Settings/settings-components";
 import UserCard from "@/components/Management/landlord-and-tenant-card";
 
 interface RestrictUserFormProps {
@@ -39,8 +38,6 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
   });
 
   const { selectedState, selectedLGA, activeAvatar, errorMsgs } = state;
-
-  const accessToken = useAuthStore((state) => state.access_token);
 
   return (
     <AuthForm

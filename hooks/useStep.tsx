@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // Types
 import type { FormSteps } from "@/app/(onboarding)/auth/types";

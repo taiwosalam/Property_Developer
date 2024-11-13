@@ -7,7 +7,6 @@ import {
 import { useEffect, useState } from "react";
 import { Dayjs } from "dayjs";
 import Button from "@/components/Form/Button/button";
-import { useAuthStore } from "@/store/authstrore";
 import {
   deleteMaintenance,
   getMaintenanceById,
@@ -16,7 +15,6 @@ import {
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
 
 const ManageMaintenanceModal = () => {
-  const accessToken = useAuthStore((state) => state.access_token);
   const CURRENCY_SYMBOL = currencySymbols["NAIRA"]; // Make this dynamic
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const handleStartDateChange = (date?: Dayjs | null) => {
@@ -26,39 +24,6 @@ const ManageMaintenanceModal = () => {
   const handleMaintenanceCostChange = (value: string) => {
     setMaintenanceCost(formatCostInputValue(value));
   };
-  const [ManageMaintenanceModalData, setManageMaintenanceModalData] = useState(
-    []
-  );
-
-  const handleUpdateMaintenance = ({
-    id,
-    data,
-  }: {
-    id: string;
-    data: any; //change to formdata later
-  }) => {
-    console.log(data);
-    updateMaintenance(accessToken, "2", data).then((res) => {
-      console.log(res);
-    });
-  };
-
-  const handleDeleteMaintenance = (id: string) => {
-    deleteMaintenance(accessToken, id).then((res) => {
-      console.log(res);
-    });
-  };
-
-  useEffect(() => {
-    const fetchManageMaintenanceModalData = async () => {
-      const response = await getMaintenanceById(accessToken, "2").then(
-        (res) => res
-      );
-      console.log(response);
-    };
-
-    fetchManageMaintenanceModalData();
-  }, [accessToken]);
 
   return (
     <ModalPreset title="Manage Maintenance">
@@ -188,25 +153,25 @@ const ManageMaintenanceModal = () => {
               variant="light_red"
               size="xs_normal"
               className="py-2 px-6"
-              onClick={() => handleDeleteMaintenance("2")}
+              // onClick={() => handleDeleteMaintenance("2")}
             >
               Delete
             </Button>
             <Button
               size="xs_normal"
               className="py-2 px-8"
-              onClick={() =>
-                handleUpdateMaintenance({
-                  id: "2",
-                  data: {
-                    details: "details",
-                    maintenance_quotation: "maintenance_quotation",
-                    start_date: startDate,
-                    end_date: startDate,
-                    maintenance_cost: maintenanceCost,
-                  },
-                })
-              }
+              // onClick={() =>
+              //   handleUpdateMaintenance({
+              //     id: "2",
+              //     data: {
+              //       details: "details",
+              //       maintenance_quotation: "maintenance_quotation",
+              //       start_date: startDate,
+              //       end_date: startDate,
+              //       maintenance_cost: maintenanceCost,
+              //     },
+              //   })
+              // }
             >
               Update
             </Button>

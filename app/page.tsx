@@ -7,7 +7,7 @@ const Home = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/auth/sign-in");
+    router.replace("/dashboard");
   }, [router]);
 
   return null;

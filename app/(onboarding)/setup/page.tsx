@@ -17,11 +17,8 @@ import CompanyLogo from "@/components/Setup/company-logo";
 import CompanyAddress from "@/components/Setup/company-address";
 import ProfilePicture from "@/components/Setup/profile-picture";
 import ProfileInformation from "@/components/Setup/profile-information";
-import { signupCompany } from "./data";
-import { useFormDataStore } from "@/store/formdatastore";
 import { AuthForm, formDataToString } from "@/components/Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
-import { useAuthStore } from "@/store/authstrore";
 
 const Setup = () => {
   // Define the index of the last step in the flow
@@ -29,17 +26,9 @@ const Setup = () => {
 
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
-  // Access the store's update function and userId
-  const updateFormData = useFormDataStore((state) => state.updateFormData);
-  const user_id = useAuthStore((state) => state.userId);
-
   // remove later
   const handleSubmit = async (data: FormData) => {
     const payload = formDataToString(data);
-
-    if (user_id) {
-      data.set("user_id", user_id);
-    }
 
     // Update the director_experience field to include "years"
     if (payload.director_experience) {
@@ -53,15 +42,6 @@ const Setup = () => {
     }
 
     console.log(data); // Debug log to see the modified data
-    try {
-      const response = await signupCompany(data);
-      if (response.error) {
-        console.log(response);
-        // setErrorMsgs(response.error);
-      }
-    } catch (error) {
-      console.error("Error signing up company:", error);
-    }
   };
 
   const requiredFields = [

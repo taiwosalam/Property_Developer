@@ -5,7 +5,6 @@ import type { VerifyEmailAddressProps } from "./types";
 import { resendOtp, verifyEmail } from "@/app/(onboarding)/auth/data";
 import Button from "@/components/Form/Button/button";
 import { objectLength } from "@/utils/object-length";
-import { useFormDataStore } from "@/store/formdatastore";
 import { AuthHeading, AuthPinField } from "../auth-components";
 import { checkValidatonError, validateData } from "@/utils/validation";
 import { ReloadIcon } from "@/public/icons/icons";
@@ -19,8 +18,6 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
   const [code, setCode] = useState("");
   const [countdown, setCountdown] = useState(40);
   const [canResend, setCanResend] = useState(false);
-
-  const email = useFormDataStore((state) => state.formData.email);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -43,13 +40,13 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
 
     if (!objectLength(validation.invalidKeys)) {
       const status = await verifyEmail(code);
-      if (status) {
-        if (type === "sign up") {
-          router.push("/setup");
-        } else if (type === "forgot password") {
-          changeStep("next");
-        }
-      }
+      // if (status) {
+      //   if (type === "sign up") {
+      //     router.push("/setup");
+      //   } else if (type === "forgot password") {
+      //     changeStep("next");
+      //   }
+      // }
     } else {
       setErrorMsgs(validation.invalidKeys);
     }
@@ -57,7 +54,7 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
 
   const handleResendCode = async () => {
     if (canResend) {
-      resendOtp(email);
+      // resendOtp(email);
       setCountdown(40);
       setCanResend(false);
     }
@@ -72,7 +69,7 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
     <div className="custom-flex-col gap-20">
       <AuthHeading title="Verify Email Address">
         An OTP code has been sent to your email (
-        <span className="text-supporting-1">{email}</span>) for verification
+        <span className="text-supporting-1">{"email"}</span>) for verification
       </AuthHeading>
 
       <div className="custom-flex-col gap-10">

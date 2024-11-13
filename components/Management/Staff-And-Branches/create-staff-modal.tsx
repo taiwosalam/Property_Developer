@@ -12,7 +12,6 @@ import CameraCircle from "@/public/icons/camera-circle.svg";
 // Imports
 import { toast } from "sonner";
 import { addStaff } from "./data";
-import { useAuthStore } from "@/store/authstrore";
 import Input from "@/components/Form/Input/input";
 import Avatars from "@/components/Avatars/avatars";
 import Picture from "@/components/Picture/picture";
@@ -36,8 +35,6 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
 
   const [activeAvatar, setActiveAvatar] = useState("");
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
-
-  const accessToken = useAuthStore((state) => state.access_token);
 
   const handleAvatarChange = (avatar: string) => {
     setPreview(avatar);
@@ -68,7 +65,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
     }
 
     // Proceed with form submission if validation passes
-    const isSuccess = await addStaff(data, accessToken);
+    const isSuccess = await addStaff(data);
 
     if (isSuccess) {
       setIsOpen(false);

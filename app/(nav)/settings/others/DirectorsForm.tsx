@@ -10,7 +10,6 @@ import Button from "@/components/Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "@/components/Auth/auth-components";
 import type { ValidationErrors } from "@/utils/types";
-import { useAuthStore } from "@/store/authstrore";
 import Picture from "@/components/Picture/picture";
 import Avatars from "@/components/Avatars/avatars";
 import TextArea from "@/components/Form/TextArea/textarea";
@@ -35,8 +34,6 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction }) => {
   });
 
   const { selectedState, selectedLGA, activeAvatar, errorMsgs } = state;
-
-  const accessToken = useAuthStore((state) => state.access_token);
 
   const handleAvatarChange = (avatar: string) => {
     setPreview(avatar);

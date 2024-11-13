@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 
 // Imports
-import Select from "@/components/Form/Select/select";
-import { useImageUploader } from "@/hooks/useImageUploader";
+// import Select from "@/components/Form/Select/select";
+// import { useImageUploader } from "@/hooks/useImageUploader";
 import SettingsSection from "@/components/Settings/settings-section";
 import {
-  DirectorCard,
+  // DirectorCard,
   SettingsOthersCheckBox,
   SettingsOthersType,
   SettingsSectionTitle,
@@ -29,10 +29,10 @@ import {
   UserEditIcon,
   UserTagIcon,
   ProfileCircleIcon,
-  ManageIcon,
-  MsgIcon,
-  BellIcon,
-  MoonIcon,
+ManageIcon,
+  // MsgIcon,
+  // BellIcon,
+  // MoonIcon,
   CogIcon,
   SettingsBellIcon,
   SettingsServiceIcon,

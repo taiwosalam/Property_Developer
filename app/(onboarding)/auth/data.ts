@@ -1,7 +1,5 @@
 // Types
 import type { AuthSliderContent } from "@/components/Auth/AuthSlider/types";
-import { postRequest } from "@/services/api";
-import { useAuthStoreSelectors } from "@/store/authstrore";
 import { toast } from "sonner";
 
 export const auth_slider_content: AuthSliderContent = [
@@ -26,106 +24,14 @@ export const login = async (
   rememberMe: boolean
 ) => {
   try {
-    const data = { email, password };
-    const response = await postRequest("/login", data, rememberMe);
-    console.log(response);
-
-    if (!response || response.error) {
-      return { error: response?.error || "Invalid Credentials" };
-    }
-
-    const { company_id, access_token, user_id } = response;
-
-    // Update Zustand state
-    useAuthStoreSelectors
-      .getState()
-      .setAuthState(true, access_token, user_id, company_id);
-
-    if (!company_id || !user_id) {
-      window.location.href = "/setup";
-    } else {
-      window.location.href = "/dashboard";
-    }
-  } catch (error) {
-    console.error("Error during sign-in:", error);
-    return { error: "An unexpected error occurred during sign-in." };
-  }
+  } catch (error) {}
 };
 
 // Signup function
-export const signup = async () => {
-  try {
-    const result = await postRequest("/initiate", {});
+export const signup = async () => {};
 
-    if (result?.user_id) {
-      const { user_id } = result;
-      // Update Zustand state with only the user_id
-      useAuthStoreSelectors.getState().setAuthState(false, null, user_id, null);
+export const verifyEmail = async (otp: string) => {};
 
-      return true;
-    } else {
-      console.error("Signup failed, user_id missing.");
-      return true;
-    }
-  } catch (error) {
-    console.error("Error during signup:", error);
-    return false;
-  }
-};
+export const resendOtp = async (email: string) => {};
 
-export const verifyEmail = async (otp: string) => {
-  try {
-    const result = await postRequest("/verify", { otp });
-
-    if (result?.user_id) {
-      const { user_id } = result;
-
-      useAuthStoreSelectors.getState().setAuthState(true, null, user_id, null);
-
-      return true;
-    } else {
-      console.error(
-        "Email verification failed, user_id missing or invalid response."
-      );
-      return false;
-    }
-  } catch (error) {
-    console.error("Error verifying email:", error);
-    return false;
-  }
-};
-
-export const resendOtp = async (email: string) => {
-  try {
-    const result = await postRequest("/resendOtp", { email });
-
-    if (result?.success) {
-      return true;
-    } else {
-      console.error("Resend OTP failed, success missing or invalid response.");
-      return false;
-    }
-  } catch (error) {
-    console.error("Error resending OTP:", error);
-    return false;
-  }
-};
-
-export const logout = async () => {
-  await useAuthStoreSelectors.getState().clearAuthState();
-  await toast.success("Logged out successfully.");
-  window.location.href = "/";
-};
-
-// Initialize auth state from localStorage
-export const initializeAuthState = () => {
-  // Zustand's persist middleware handles localStorage, so this may be redundant
-  // However, this can be useful to explicitly check and set initial state on app load
-  const { access_token, userId, companyId } = useAuthStoreSelectors.getState();
-
-  if (access_token && userId && companyId) {
-    useAuthStoreSelectors
-      .getState()
-      .setAuthState(true, access_token, userId, companyId);
-  }
-};
+export const logout = async () => {};

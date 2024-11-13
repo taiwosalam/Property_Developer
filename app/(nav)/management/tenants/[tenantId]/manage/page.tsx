@@ -18,7 +18,6 @@ import {
 } from "@/components/Management/landlord-tenant-info-components";
 import { ChevronLeft } from "@/public/icons/icons";
 import { ASSET_URL, empty } from "@/app/config";
-import useTenantData from "@/hooks/useTenantData";
 import UnitItem from "@/components/Management/Properties/unit-item";
 import { getObjectProperties } from "@/utils/get-object-properties";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -45,7 +44,7 @@ const ManageTenant = () => {
   // remove this search params stuff later
   const searchParams = useSearchParams();
   const user_tag = searchParams.get("user_tag");
-  // const { tenant, tenantId, loading, error } = useTenantData();
+
   const {
     data: a,
     id: tenantId,

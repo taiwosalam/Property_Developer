@@ -3,7 +3,6 @@ import PageTitle from "@/components/PageTitle/page-title";
 import CustomTable from "@/components/Table/table";
 import Pagination from "@/components/Pagination/pagination";
 import { useEffect, useState } from "react";
-import { useAuthStore } from "@/store/authstrore";
 import {
   calendarsrFilterOptionsWithDropdown,
   getAllEventsOnCalendar,
@@ -13,8 +12,6 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import CalendarComponent from "@/components/Calendar/calendar";
 
 const CalendarPage = () => {
-  const access_token = useAuthStore((state) => state.access_token);
-
   const [fetchedTabelData, setFetchedTableData] = useState([]);
 
   const generateTableData = (numItems: number) => {
@@ -32,13 +29,8 @@ const CalendarPage = () => {
   const tableData = generateTableData(10);
 
   useEffect(() => {
-    getAllEventsOnCalendar(access_token).then((response) => {
-      if (response.success) {
-        setFetchedTableData(response.data);
-        console.log(response.data, "fetched data");
-      }
-    });
-  }, [access_token]);
+    getAllEventsOnCalendar();
+  }, []);
 
   return (
     <div className="space-y-9">

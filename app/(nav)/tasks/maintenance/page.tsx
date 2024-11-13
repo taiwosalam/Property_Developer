@@ -5,7 +5,6 @@ import Button from "@/components/Form/Button/button";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import MaintenanceCard from "@/components/tasks/maintenance/maintenance-card";
-import { useAuthStore } from "@/store/authstrore";
 import { useEffect, useState } from "react";
 import {
   getALLMaintenance,
@@ -15,17 +14,11 @@ import {
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const Maintenance = () => {
-  const accessToken = useAuthStore((state) => state.access_token);
   const [maintenanceData, setMaintenanceData] = useState([]);
 
   useEffect(() => {
-    const fetchMaintenanceData = async () => {
-      const response = await getALLMaintenance(accessToken).then((res) => res);
-      console.log(response);
-    };
-
-    fetchMaintenanceData();
-  }, [accessToken]);
+    // getALLMaintenance;
+  }, []);
 
   return (
     <div className="custom-flex-col gap-8">

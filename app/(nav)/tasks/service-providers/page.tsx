@@ -8,7 +8,6 @@ import Button from "@/components/Form/Button/button";
 import ServiceProviderCard from "@/components/Management/landlord-and-tenant-card";
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import AddServiceProviderModal from "@/components/tasks/service-providers/add-service-provider-modal";
-import { useAuthStore } from "@/store/authstrore";
 import {
   getAllServiceProviders,
   serviceProviderFilterOptionsWithDropdown,
@@ -16,7 +15,6 @@ import {
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const ServiceProviders = () => {
-  const accessToken = useAuthStore((state) => state.access_token);
   const [state, setState] = useState({
     total_pages: 5,
     current_page: 1,
@@ -27,10 +25,8 @@ const ServiceProviders = () => {
   };
 
   useEffect(() => {
-    getAllServiceProviders(accessToken).then((response) => {
-      console.log(response);
-    });
-  }, [accessToken]);
+    // getAllServiceProviders
+  }, []);
 
   return (
     <div className="space-y-9">

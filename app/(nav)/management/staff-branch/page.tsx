@@ -13,7 +13,6 @@ import { getAllStates, getLocalGovernments } from "@/utils/states";
 import { type StaffAndBranchPageState, getAllBranches } from "./data";
 import Pagination from "@/components/Pagination/pagination";
 import CreateBranchModal from "@/components/Management/Staff-And-Branches/create-branch-modal";
-import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import CustomLoader from "@/components/Loader/CustomLoader";
@@ -29,7 +28,7 @@ const StaffAndBranches = () => {
   // const grid = selectedView === "grid";
   const router = useRouter();
   const initialState: StaffAndBranchPageState = {
-    gridView: selectedView === 'grid',
+    gridView: selectedView === "grid",
     total_pages: 50,
     current_page: 1,
     selectedState: "",
@@ -71,17 +70,17 @@ const StaffAndBranches = () => {
   useEffect(() => {
     setState((prevState) => ({
       ...prevState,
-      gridView: selectedView === 'grid',
+      gridView: selectedView === "grid",
     }));
   }, [selectedView]);
 
   const setGridView = () => {
-    setSelectedOption('view', 'grid');
+    setSelectedOption("view", "grid");
     setSelectedView("grid");
   };
 
   const setListView = () => {
-    setSelectedOption('view', 'list');
+    setSelectedOption("view", "list");
     setSelectedView("list");
   };
 
@@ -97,10 +96,6 @@ const StaffAndBranches = () => {
   };
 
   const allStates = getAllStates() || [];
-
-  const StaffAndBranchFilters = [
-    { label: "Alphabetically", value: "alphabetically" },
-  ];
 
   const handleFilterApply = (filters: any) => {
     console.log("Filter applied:", filters);
@@ -183,19 +178,6 @@ const StaffAndBranches = () => {
     router.push(`/management/staff-branch/${item.id}`);
   };
 
-  const accessToken = useAuthStore((state) => state.access_token);
-
-  const fetchLandlords = useCallback(async () => {
-    try {
-      const data = await getAllBranches(accessToken);
-      setState((x) => ({ ...x, branchesPageData: data }));
-    } catch (error) {
-      setState((x) => ({ ...x, error: error as Error }));
-    } finally {
-      setState((x) => ({ ...x, loading: false }));
-    }
-  }, [accessToken]);
-
   // Handle the selected state and update local governments
   useEffect(() => {
     if (selectedState) {
@@ -204,23 +186,16 @@ const StaffAndBranches = () => {
     }
   }, [selectedState]);
 
-  useEffect(() => {
-    // Fetch the landlords when the component mounts
-    fetchLandlords();
-  }, [fetchLandlords]);
+  // if (loading)
+  //   return (
+  //     <CustomLoader
+  //       layout="page"
+  //       pageTitle="Staff & Branch"
+  //       statsCardCount={3}
+  //     />
+  //   );
 
-  // console.log(branches);
-
-  if (loading)
-    return (
-      <CustomLoader
-        layout="page"
-        pageTitle="Staff & Branch"
-        statsCardCount={3}
-      />
-    );
-
-  if (error) return <div>Error: {error.message}</div>;
+  // if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div className="space-y-9">
@@ -275,7 +250,7 @@ const StaffAndBranches = () => {
       />
 
       <section className="capitalize">
-        {view === 'grid' || gridView ? (
+        {view === "grid" || gridView ? (
           <AutoResizingGrid minWidth={284}>
             {branches.map((b) => (
               <Link href={`/management/staff-branch/${b.id}`} key={b.id}>

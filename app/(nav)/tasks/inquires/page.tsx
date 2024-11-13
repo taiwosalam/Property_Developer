@@ -12,7 +12,6 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import RequestCallBackCard from "@/components/tasks/CallBack/RequestCard";
 import type { CallRequestCardProps } from "@/components/tasks/CallBack/types";
 import { useEffect, useState } from "react";
-import { useAuthStore } from "@/store/authstrore";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const transformToCallBackRequestCardProps = (
@@ -35,19 +34,10 @@ const Inquires = () => {
   const [requestCallBackCardData, setRequestCallBackCardData] = useState<
     RequestCallBackCardDataType[]
   >([]);
-  const accessToken = useAuthStore((state) => state.access_token);
+
   useEffect(() => {
-    const fetchRequestData = (): void => {
-      getAllCallbackRequests(accessToken)
-        .then((data) => {
-          setRequestCallBackCardData(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching examines:", error);
-        });
-    };
-    // fetchRequestData();
-  }, [accessToken]);
+    // getAllCallbackRequests;
+  }, []);
 
   return (
     <section className="space-y-9">

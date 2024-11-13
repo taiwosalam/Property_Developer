@@ -21,7 +21,6 @@ import {
   landlordTableFields,
   mockData,
 } from "./data";
-import { useAuthStore } from "@/store/authstrore";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { LandlordHelpInfo } from "./types";
@@ -30,8 +29,7 @@ import useView from "@/hooks/useView";
 import useSettingsStore from "@/store/settings";
 
 const Landlord = () => {
-const view = useView();
-  const accessToken = useAuthStore((state) => state.access_token);
+  const view = useView();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
@@ -76,17 +74,17 @@ const view = useView();
   useEffect(() => {
     setState((prevState) => ({
       ...prevState,
-      gridView: selectedView === 'grid',
+      gridView: selectedView === "grid",
     }));
   }, [selectedView]);
 
   const setGridView = () => {
-    setSelectedOption('view', 'grid');
+    setSelectedOption("view", "grid");
     setSelectedView("grid");
   };
 
   const setListView = () => {
-    setSelectedOption('view', 'list');
+    setSelectedOption("view", "list");
     setSelectedView("list");
   };
 
@@ -239,7 +237,6 @@ const view = useView();
 
   if (error) return <div>Error: {error.message}</div>;
 
-
   return (
     <div className="space-y-8">
       <div className="page-header-container">
@@ -281,7 +278,7 @@ const view = useView();
 
       <FilterBar
         azFilter
-        gridView={view === 'grid' || gridView}
+        gridView={view === "grid" || gridView}
         setGridView={setGridView}
         setListView={setListView}
         onStateSelect={onStateSelect}
@@ -299,7 +296,7 @@ const view = useView();
         filterWithOptionsWithDropdown={landlordFiltersWithDropdown}
       />
       <section>
-        {view === 'grid' || gridView ? (
+        {view === "grid" || gridView ? (
           <AutoResizingGrid minWidth={284} gap={16}>
             {landlords.map((l) => (
               <Link

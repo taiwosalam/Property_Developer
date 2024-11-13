@@ -20,7 +20,6 @@ import {
   tenantTableFields,
   mockData,
 } from "./data";
-import { useAuthStore } from "@/store/authstrore";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
@@ -30,7 +29,7 @@ import useSettingsStore from "@/store/settings";
 
 const Tenants = () => {
   const view = useView();
-  const accessToken = useAuthStore((state) => state.access_token);
+
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
@@ -66,17 +65,17 @@ const Tenants = () => {
   useEffect(() => {
     setState((prevState) => ({
       ...prevState,
-      gridView: selectedView === 'grid',
+      gridView: selectedView === "grid",
     }));
   }, [selectedView]);
 
   const setGridView = () => {
-    setSelectedOption('view', 'grid');
+    setSelectedOption("view", "grid");
     setSelectedView("grid");
   };
 
   const setListView = () => {
-    setSelectedOption('view', 'list');
+    setSelectedOption("view", "list");
     setSelectedView("list");
   };
 
@@ -165,7 +164,7 @@ const Tenants = () => {
     console.log("Filter applied:", filters);
     // Add  logic here to filter tenant
   };
-  
+
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
   };
@@ -272,7 +271,7 @@ const Tenants = () => {
         filterWithOptionsWithDropdown={tenantFilterOptionssWithDropdown}
       />
       <section>
-        {view === 'grid' || gridView ? (
+        {view === "grid" || gridView ? (
           <AutoResizingGrid minWidth={284} gap={16}>
             {tenants.map((t) => (
               <Link

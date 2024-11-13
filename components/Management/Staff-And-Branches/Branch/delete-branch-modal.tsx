@@ -5,28 +5,25 @@ import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import { useParams, useRouter } from "next/navigation";
 import { deleteBranch } from "@/app/(nav)/management/staff-branch/data";
-import { useAuthStore } from "@/store/authstrore";
 import { toast } from "sonner";
 
 const DeleteBranchModal = () => {
   const branchId = useParams().branchId as string;
-  const AccessToken = useAuthStore((state) => state.access_token);
   const { activeStep, changeStep } = useStep(2);
   const router = useRouter();
 
   const handleConfirmDelete = async () => {
-    const { res, success, message } = await deleteBranch(branchId, AccessToken);
-
-    if (success) {
-      // If the delete operation was successful, show success toast
-      toast.success(res?.message || "Branch deleted successfully");
-      // Proceed to the next step in your process
-      changeStep("next");
-      router.push("/management/staff-branch");
-    } else {
-      // If the delete operation failed, show an error toast
-      toast.error(message || "Failed to delete branch");
-    }
+    // await deleteBranch(branchId);
+    // if (success) {
+    //   // If the delete operation was successful, show success toast
+    //   toast.success(res?.message || "Branch deleted successfully");
+    //   // Proceed to the next step in your process
+    //   changeStep("next");
+    //   router.push("/management/staff-branch");
+    // } else {
+    //   // If the delete operation failed, show an error toast
+    //   toast.error(message || "Failed to delete branch");
+    // }
   };
 
   return activeStep === 1 ? (

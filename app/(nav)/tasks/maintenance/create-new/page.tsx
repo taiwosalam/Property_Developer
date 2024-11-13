@@ -14,13 +14,11 @@ import Button from "@/components/Form/Button/button";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { maintenanceTypes, priorityLevels } from "./data";
 import { createMaintenance } from "../data";
-import { useAuthStore } from "@/store/authstrore";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import BackButton from "@/components/BackButton/back-button";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 
 const CreateMaintenace = () => {
-  const accessToken = useAuthStore((state) => state.access_token);
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const handleStartDateChange = (date?: Dayjs | null) => {
     setStartDate(date || null);
@@ -34,7 +32,7 @@ const CreateMaintenace = () => {
   const handleSubmit = async (data: any) => {
     console.log(data);
     // BACKEND ERROR: METHOD NOT ALLOWED
-    const response = await createMaintenance(accessToken, data);
+    const response = await createMaintenance(data);
   };
 
   return (

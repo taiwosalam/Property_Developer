@@ -23,113 +23,13 @@ export interface StaffAndBranchPageState {
   branchesPageData: BranchesPageData;
 }
 
-export const getAllBranches = async (
-  access_token: string | null
-): Promise<BranchesPageData> => {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/branches`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
-    if (!res.ok) {
-      throw new Error(`Error: ${res.status}`);
-    }
-    const data = await res.json();
-    // console.log(data);
-    return data.data;
-  } catch (error) {
-    console.error("Error fetching tenants", error);
-    throw new Error(`Error: ${error}`);
-  }
-};
+export const getAllBranches = async (): Promise<BranchesPageData | any> => {};
 
-export const getOneBranch = async (
-  branchId: string,
-  access_token: string | null
-) => {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/branches/details/${branchId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
-          // Authorization: `Bearer ${"227|fO0vCGLsx556Kt1FquDwEJDg0EXXOKwr9mI1OTSdbe687fff"}`,
-        },
-      }
-    );
-    if (!res.ok) {
-      throw new Error(`Error: ${res.status}`);
-    }
-    const data = await res.json();
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error("Error fetching tenants", error);
-    throw new Error(`Error: ${error}`);
-  }
-};
+export const getOneBranch = async (branchId: string) => {};
 
-export const editBranch = async (
-  branchId: string,
-  data: FormData,
-  access_token: string | null
-) => {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/branches/${branchId}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-        body: data,
-      }
-    );
+export const editBranch = async (branchId: string, data: FormData) => {};
 
-    if (!res.ok) {
-      throw new Error(`Error: ${res.statusText}`);
-    }
-
-    return await res.json(); // Return parsed JSON data
-  } catch (error) {
-    console.error("Failed to update branch:", error);
-    return { error: error as Error };
-  }
-};
-
-export const deleteBranch = async (
-  branchId: string,
-  access_token: string | null
-) => {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/branches/${branchId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to delete branch");
-    }
-
-    return { res: data, success: true };
-  } catch (error: any) {
-    console.error("Error deleting branch:", error);
-    return { success: false, message: error.message || "Something went wrong" };
-  }
-};
+export const deleteBranch = async (branchId: string) => {};
 
 export const testBranches: BranchProps[] = [
   {

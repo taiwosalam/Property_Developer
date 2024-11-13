@@ -8,7 +8,6 @@ import Pagination from "@/components/Pagination/pagination";
 import PropertyListItem from "@/components/Management/Properties/property-list-item";
 import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import { useAuthStore } from "@/store/authstrore";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
   propertyFilterOptionsRadio,
@@ -18,9 +17,7 @@ import useSettingsStore from "@/store/settings";
 import useView from "@/hooks/useView";
 
 const Properties = () => {
-  const acessToken = useAuthStore((state) => state.access_token);
   const view = useView();
-  const accessToken = useAuthStore((state) => state.access_token);
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
@@ -39,31 +36,23 @@ const Properties = () => {
   useEffect(() => {
     setState((prevState) => ({
       ...prevState,
-      gridView: selectedView === 'grid',
+      gridView: selectedView === "grid",
     }));
   }, [selectedView]);
 
   const setGridView = () => {
-    setSelectedOption('view', 'grid');
+    setSelectedOption("view", "grid");
     setSelectedView("grid");
   };
 
   const setListView = () => {
-    setSelectedOption('view', 'list');
+    setSelectedOption("view", "list");
     setSelectedView("list");
   };
 
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
   };
-
-  // const [properties, setProperties] = useState<PropertyProps[]>([]);
-
-  useEffect(() => {
-    // getAllProperties(acessToken).then((data) => {
-    //   setProperties(data);
-    // });
-  }, [acessToken]);
 
   return (
     <div className="space-y-9">
@@ -104,7 +93,7 @@ const Properties = () => {
       {/* Page Title with search */}
       <FilterBar
         azFilter
-        gridView={view === 'grid' || gridView}
+        gridView={view === "grid" || gridView}
         setGridView={setGridView}
         setListView={setListView}
         onStateSelect={() => {}}
@@ -123,7 +112,7 @@ const Properties = () => {
 
       {/* Card / List View */}
       <section>
-        {view === 'grid' || gridView ? (
+        {view === "grid" || gridView ? (
           <AutoResizingGrid minWidth={315}>
             {/* {properties.length >= 1 &&
                 properties.map((p) => <PropertyCard {...p} key={p.id} />)} */}

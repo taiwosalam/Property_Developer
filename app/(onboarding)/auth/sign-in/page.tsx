@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 // Imports
@@ -14,7 +14,6 @@ import {
 } from "@/components/Auth/auth-components";
 import { ValidationErrors } from "@/utils/types";
 import { login } from "@/app/(onboarding)/auth/data";
-import { useFormDataStore } from "@/store/formdatastore";
 
 const SignIn = () => {
   // State for managing error messages
@@ -23,22 +22,9 @@ const SignIn = () => {
   // State for "Remember Me" checkbox
   const [rememberMe, setRememberMe] = useState(false);
 
-  // Access the store's update function
-  const updateFormData = useFormDataStore((state) => state.updateFormData);
-
-  const handleSignIn = async (data: any) => {
-    const { email, password } = data;
-    updateFormData(data);
-    try {
-      await login(email, password, rememberMe); // Pass the rememberMe state to the login function
-    } catch (error) {
-      console.error("Error during sign-in:", error);
-    }
-  };
-
   return (
     <AuthForm
-      onFormSubmit={handleSignIn}
+      onFormSubmit={() => {}}
       setValidationErrors={setErrorMsgs}
       className="custom-flex-col gap-10 pt-6"
     >
@@ -69,7 +55,7 @@ const SignIn = () => {
               remember me
             </Checkbox>
             <Link
-              href={"/auth/forgot-password"}
+              href="/auth/forgot-password"
               className="custom-primary-color text-sm font-medium"
             >
               Forgot Password?

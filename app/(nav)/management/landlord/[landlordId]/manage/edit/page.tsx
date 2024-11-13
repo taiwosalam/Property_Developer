@@ -8,8 +8,6 @@ import { LandlordEditContext } from "@/components/Management/Landlord/landlord-e
 
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
-import useLandlordData from "@/hooks/useLandlordData";
-import { useAuthStore } from "@/store/authstrore";
 import BackButton from "@/components/BackButton/back-button";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
@@ -25,12 +23,10 @@ import {
   LandlordEditNoteInfoSection,
   LandlordEditAvatarInfoSection,
 } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const EditLandlord = () => {
   // const { landlord, landlordId, error, loading } = useLandlordData();
-  const router = useRouter();
   const {
     data: landlord,
     error,
@@ -40,12 +36,11 @@ const EditLandlord = () => {
     error: Error | null;
     loading: boolean;
   };
-  const accessToken = useAuthStore((state) => state.access_token);
 
   if (loading)
     return <CustomLoader layout="edit-page" pageTitle="Edit Landlord" />;
   if (error) return <div>Error: {error.message}</div>;
-  if (!landlord) return null;
+  // if (!landlord) return null;
   // const s = { ...landlord, user_tag: "mobile" };
   // useEffect(() => {
   //   if (landlord?.user_tag === "mobile") {

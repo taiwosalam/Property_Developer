@@ -41,7 +41,7 @@ const CalendarComponent = () => {
     );
 
     return { activities };
-  }, [activeDate]);
+  }, [activeDate, events]);
 
   // Initialize the Calendar instance with month and year
   const data = new Calendar({

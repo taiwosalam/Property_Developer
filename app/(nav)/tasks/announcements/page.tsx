@@ -5,7 +5,6 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import Button from "@/components/Form/Button/button";
 import AnnouncementCard from "@/components/tasks/announcements/announcement-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import { useAuthStore } from "@/store/authstrore";
 import {
   announcementrFilterOptionsWithDropdown,
   getAllAnnouncements,
@@ -15,13 +14,6 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const { access_token } = useAuthStore();
-
-  useEffect(() => {
-    getAllAnnouncements(access_token).then((data) => {
-      setAnnouncements(data);
-    });
-  }, [access_token]);
 
   // console.log(announcements);
 

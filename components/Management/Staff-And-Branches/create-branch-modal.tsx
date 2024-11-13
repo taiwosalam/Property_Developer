@@ -6,8 +6,6 @@ import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
 import { useState } from "react";
 import Button from "@/components/Form/Button/button";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { useFormDataStore } from "@/store/formdatastore";
-import { useAuthStore } from "@/store/authstrore";
 import { createNewBranch } from "./Branch/data";
 import Avatars from "@/components/Avatars/avatars";
 import { useImageUploader } from "@/hooks/useImageUploader";
@@ -54,14 +52,12 @@ const CreateBranchModal = () => {
     }));
   };
 
-  const accessToken = useAuthStore((state) => state.access_token);
-
   const handleSubmit = async (data: FormData) => {
-    const res = await createNewBranch(data, accessToken);
+    const res = await createNewBranch(data);
 
-    if (res) {
-      setIsOpen(false);
-    }
+    // if (res) {
+    //   setIsOpen(false);
+    // }
   };
 
   return (

@@ -8,7 +8,6 @@ import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Pagination from "@/components/Pagination/pagination";
 import { LocationIcon } from "@/public/icons/icons";
-import { useAuthStore } from "@/store/authstrore";
 import { useEffect, useState } from "react";
 import { getOneBranch } from "../../data";
 import { PageState } from "../data";
@@ -22,7 +21,6 @@ import { branchStaffTableFields, branchStaffTableData } from "./data";
 
 const BranchStaffPage = () => {
   const router = useRouter();
-  const BranchFilters = [{ label: "Alphabetically", value: "alphabetically" }];
 
   const branchFiltersWithOptions = [
     {
@@ -73,21 +71,10 @@ const BranchStaffPage = () => {
   const setSelectedState = (selectedState: string) => {
     setState((state) => ({ ...state, selectedState }));
   };
-  const accessToken = useAuthStore((state) => state.access_token);
 
   useEffect(() => {
-    const fetchBranchData = async () => {
-      if (typeof branchId === "string") {
-        const data = await getOneBranch(branchId, accessToken);
-        setFetchedBranchData(data);
-        console.log(data);
-      } else {
-        console.error("Invalid branchId:", branchId);
-      }
-    };
-
-    fetchBranchData();
-  }, [accessToken, branchId]);
+    // await getOneBranch(branchId);
+  }, [branchId]);
 
   const transformedTableData = branchStaffTableData.map((item) => ({
     ...item,
@@ -113,13 +100,11 @@ const BranchStaffPage = () => {
         <div>
           <BackButton as="div" className="items-start">
             <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-              {fetchedBranchData?.branch?.branch_title || "Null"}
+              Null
             </h1>
             <div className="text-text-disabled flex items-center space-x-1">
               <LocationIcon />
-              <p className="text-sm font-medium">
-                {fetchedBranchData?.branch?.branch_full_address || "Null"}
-              </p>
+              <p className="text-sm font-medium">Null</p>
             </div>
           </BackButton>
         </div>
@@ -144,7 +129,7 @@ const BranchStaffPage = () => {
         pageTitle="Branch Staff"
         searchInputPlaceholder="Search within Branch"
         azFilter
-        filterOptions={BranchFilters}
+        // filterOptions={BranchFilters}
         filterWithOptionsWithDropdown={branchFiltersWithOptions}
         onStateSelect={(state: string) => setSelectedState(state)}
         handleFilterApply={handleFilterApply}

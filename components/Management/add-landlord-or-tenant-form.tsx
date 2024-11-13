@@ -10,7 +10,6 @@ import Button from "../Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "../Auth/auth-components";
 import type { ValidationErrors } from "@/utils/types";
-import { useAuthStore } from "@/store/authstrore";
 import Picture from "../Picture/picture";
 import Avatars from "../Avatars/avatars";
 
@@ -39,8 +38,6 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   });
 
   const { selectedState, selectedLGA, activeAvatar, errorMsgs } = state;
-
-  const accessToken = useAuthStore((state) => state.access_token);
 
   const handleAvatarChange = (avatar: string) => {
     setPreview(avatar);

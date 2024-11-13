@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 // Imports
 import Button from "@/components/Form/Button/button";
@@ -12,11 +12,9 @@ import EditBranchForm from "@/components/Management/Staff-And-Branches/Branch/ed
 import DeleteBranchModal from "@/components/Management/Staff-And-Branches/Branch/delete-branch-modal";
 import UpdateBranchModal from "@/components/Management/Staff-And-Branches/Branch/update-branch-modal";
 import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
-import { useAuthStore } from "@/store/authstrore";
 import { editBranch, getOneBranch } from "../../data";
 import { ResponseType } from "../types";
 import { useParams } from "next/navigation";
-import { toast } from "sonner";
 import LockBranchModal from "@/components/Management/Staff-And-Branches/Branch/lock-branch-modal";
 import UnLockBranchModal from "@/components/Management/Staff-And-Branches/Branch/unlock-branch-modal";
 import FilterBar from "@/components/FIlterBar/FilterBar";
@@ -27,40 +25,6 @@ const EditBranch = () => {
     useState<ResponseType | null>();
   const [isOpen, setOpen] = useState(false);
   const { branchId } = useParams() as { branchId: string };
-
-  const properties = fetchedBranchData?.property_list || [];
-
-  const accessToken = useAuthStore((state) => state.access_token);
-
-  useEffect(() => {
-    const fetchBranchData = async () => {
-      if (typeof branchId === "string") {
-        const data = await getOneBranch(branchId, accessToken);
-        setFetchedBranchData(data);
-        console.log(data);
-      } else {
-        console.error("Invalid branchId:", branchId);
-      }
-    };
-
-    fetchBranchData();
-  }, [accessToken, branchId]);
-
-  const handleUpdateBranch = async (data: FormData) => {
-    try {
-      const res = await editBranch(branchId, data, accessToken);
-
-      if (!res.error) {
-        setOpen(true); // Open your success modal/trigger here
-        toast.success("Branch updated successfully");
-      } else {
-        toast.error("An error occurred while updating branch: " + res.error);
-      }
-    } catch (error) {
-      console.error("Error in handleUpdateBranch:", error);
-      toast.error("An unexpected error occurred.");
-    }
-  };
 
   return (
     <div className="custom-flex-col gap-10">

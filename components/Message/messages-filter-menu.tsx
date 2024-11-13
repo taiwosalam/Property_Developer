@@ -52,7 +52,7 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
     if (open) {
       setActiveStep(1);
     }
-  }, [open]);
+  }, [open, setActiveStep]);
 
   return (
     <Menu

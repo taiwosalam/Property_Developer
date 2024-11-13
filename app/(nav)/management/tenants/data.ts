@@ -30,52 +30,9 @@ export interface TenantPageState {
   tenantsPageData: TenantPageData;
 }
 
-export const getAllTenants = async (
-  accessToken: string | null
-): Promise<TenantPageData> => {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/tenants`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    if (!res.ok) {
-      throw new Error(`Error: ${res.status}`);
-    }
-    const data = await res.json();
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error("Error fetching tenants", error);
-    throw new Error(`Error: ${error}`);
-  }
-};
+export const getAllTenants = async (): Promise<TenantPageData | any> => {};
 
-export const getOneTenant = async (tenantId: string, accessToken: string) => {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/tenants/${tenantId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-
-    if (!res.ok) {
-      throw new Error(`Error: ${res.status}`);
-    }
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching tenant", error);
-    return null;
-  }
-};
+export const getOneTenant = async (tenantId: string) => {};
 
 export const tenantTableFields: Field[] = [
   {

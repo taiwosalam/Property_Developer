@@ -33,12 +33,10 @@ import {
   SidebarIcon,
   NavCloseIcon,
 } from "@/public/icons/icons";
-import { useDashboardData } from "@/hooks/useDashboardData";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Header = () => {
-  const { loading, data: dashboardData, error } = useDashboardData();
   const { isMobile } = useWindowWidth();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
   const { theme, setTheme } = useTheme();
@@ -68,8 +66,8 @@ const Header = () => {
   return (
     <header
       className={clsx(
-        "sticky top-0 z-[4] w-full h-[100px] px-3 md:px-10 py-[12.5px] flex gap-4 md:gap-7 lg:gap-5 items-center border-b border-solid border-neutral-2 dark:border-[#292929] bg-white dark:bg-[#020617] flex-row-reverse md:flex-row",
-        loading && "skeleton"
+        "sticky top-0 z-[4] w-full h-[100px] px-3 md:px-10 py-[12.5px] flex gap-4 md:gap-7 lg:gap-5 items-center border-b border-solid border-neutral-2 dark:border-[#292929] bg-white dark:bg-[#020617] flex-row-reverse md:flex-row"
+        // loading && "skeleton"
       )}
     >
       <div className="flex-1 h-full flex gap-6 items-center">
@@ -79,24 +77,14 @@ const Header = () => {
             "hidden md:block w-[200px] h-full rounded-lg relative overflow-hidden"
           )}
         >
-          {loading ? (
-            <Skeleton
-              width={"100%"}
-              height={"100%"}
-              sx={{
-                transform: "none",
-              }}
-            />
-          ) : (
-            <Image
-              src={dashboardData?.logo || empty}
-              alt="logo"
-              fill
-              priority
-              sizes="auto"
-              className="object-contain"
-            />
-          )}
+          <Image
+            src={empty}
+            alt="logo"
+            fill
+            priority
+            sizes="auto"
+            className="object-contain"
+          />
         </div>
 
         {/*MD & Mobile Icons */}
@@ -201,9 +189,9 @@ const Header = () => {
         <div className="hidden lg:flex-1 lg:flex lg:justify-between lg:items-center lg:gap-4">
           <div className="flex-1 flex items-center gap-2">
             <NavSwitchUserSwitch
-              loading={loading}
-              error={error}
-              userType={dashboardData?.company_type || ""}
+              loading={false}
+              error={null}
+              userType="Property Manager"
             />
             <Modal>
               <ModalTrigger className="px-4 py-[12px] flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
@@ -277,7 +265,7 @@ const Header = () => {
                 {getGreeting()},
               </p>
               <p className="text-xs md:text-base font-medium dark:text-white">
-                {dashboardData?.director_name}
+                Taiwo Salam
               </p>
             </div>
           </div>
@@ -286,10 +274,7 @@ const Header = () => {
           position={isMobile ? "left" : "right"}
           className="custom-flex-col gap-2 pb-[10px] min-w-[300px] sm:min-w-[350px] text-sm sm:text-base font-normal capitalize"
         >
-          <NavProfileDropdown
-            name={dashboardData?.director_name || ""}
-            userId={dashboardData?.user_id || 0}
-          />
+          <NavProfileDropdown name={"Taiwo Salam"} userId={0} />
         </DropdownContent>
       </Dropdown>
     </header>

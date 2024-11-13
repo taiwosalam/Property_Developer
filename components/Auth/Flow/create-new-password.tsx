@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 // Types
 import type { ValidationErrors } from "@/utils/types";
@@ -14,7 +14,6 @@ import {
 } from "@/components/Auth/auth-components";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
-import { useFormDataStore } from "@/store/formdatastore";
 import { resetPassword } from "../data";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -24,22 +23,21 @@ const CreateNewPassword = () => {
   // State for managing error messages
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
-  // Handler for form submission
-  const email = useFormDataStore((state) => state.formData.email);
-
-  const handleCreatePassword = async (data: any) => {
-    const password = data["new-password"];
+  const handleCreatePassword = async (data: FormData) => {
+    const password = data.get("new-password") as string;
 
     try {
-      const res = await resetPassword(email, password);
+      const res = await resetPassword("email", password);
 
       if (res.success) {
         console.log(res.data?.message, "response message");
-        await toast.success(res.data?.message || "Password reset successfully.");
+        toast.success(res.data?.message || "Password reset successfully.");
         router.push("/auth/sign-in");
       } else {
         // Extract error message and provide feedback to the user
-        const errorMessage = res.error?.errors?.email?.[0] || "An error occurred. Please try again.";
+        const errorMessage =
+          res.error?.errors?.email?.[0] ||
+          "An error occurred. Please try again.";
         toast.error(errorMessage);
         console.error(res.error, "Error details");
       }
@@ -49,7 +47,6 @@ const CreateNewPassword = () => {
       console.error("Unexpected error:", error);
     }
   };
-
 
   return (
     <AuthForm

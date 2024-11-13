@@ -6,11 +6,9 @@ import { useState } from "react";
 import type { ValidationErrors } from "@/utils/types";
 
 // Imports
-import useTenantData from "@/hooks/useTenantData";
 
 import Button from "@/components/Form/Button/button";
 import { updateTenant } from "./data";
-import { useAuthStore } from "@/store/authstrore";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import { AuthForm, formDataToString } from "@/components/Auth/auth-components";
@@ -31,7 +29,6 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 import type { TenantData } from "../../../types";
 const EditTenant = () => {
-  // const { tenant, tenantId, error, loading } = useTenantData();
   const {
     data: tenant,
     error,
@@ -46,18 +43,8 @@ const EditTenant = () => {
 
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors | null>(null);
 
-  const accessToken = useAuthStore((state) => state.access_token);
-
   const handleUpdateTenant = async (formData: FormData) => {
     console.log("formData: ", formDataToString(formData));
-
-    const response = await updateTenant({
-      id: tenantId as string,
-      formData,
-      accessToken,
-    });
-
-    console.log(response);
   };
 
   if (loading)

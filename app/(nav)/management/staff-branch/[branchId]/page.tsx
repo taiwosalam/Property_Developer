@@ -33,7 +33,6 @@ import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/B
 import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-staff-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { getOneBranch } from "../data";
-import { useAuthStore } from "@/store/authstrore";
 import { ResponseType } from "./types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { DateRange } from "react-day-picker";
@@ -102,8 +101,6 @@ const BranchDashboard = () => {
     // Add filtering logic here for branches
   };
 
-  const accessToken = useAuthStore((state) => state.access_token);
-
   const [timeRange, setTimeRange] = useState("30d");
   // const [highestMetric, setHighestMetric] = useState<string | null>(null);
   // const [primaryColor, setPrimaryColor] = useState<string | null>(null);
@@ -141,20 +138,6 @@ const BranchDashboard = () => {
       setSelectedDateRange(calculateDateRange(days));
     }
   };
-
-  useEffect(() => {
-    const fetchBranchData = async () => {
-      if (typeof branchId === "string") {
-        const data = await getOneBranch(branchId, accessToken);
-        setFetchedBranchData(data);
-        console.log(data);
-      } else {
-        console.error("Invalid branchId:", branchId);
-      }
-    };
-
-    fetchBranchData();
-  }, [accessToken, branchId]);
 
   return (
     <div className="custom-flex-col gap-6">

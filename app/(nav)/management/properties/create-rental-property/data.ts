@@ -1,5 +1,4 @@
 // Imports
-import { toast } from "sonner";
 
 export interface StateType {
   state: string;
@@ -31,33 +30,4 @@ export const proerty_state_data: StateType = {
   resetKey: 0,
 };
 
-export const addProperty = async (
-  formData: FormData,
-  accessToken: string | null
-): Promise<boolean> => {
-  const isSuccess = false;
-
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/properties`,
-      {
-        method: "POST",
-        body: formData,
-        headers: { Authorization: `Bearer ${accessToken}` },
-      }
-    );
-
-    const data = await response.json();
-
-    console.log(data);
-
-    if (!response.ok) {
-      toast.error(`${data.message ?? ""}. ${data.error ?? ""}`);
-    }
-  } catch (error) {
-    console.log("Error adding property:", error);
-    toast.error("Failed to add property. Please try again.");
-  }
-
-  return isSuccess;
-};
+export const addProperty = async () => {};

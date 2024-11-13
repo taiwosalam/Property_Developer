@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 // Types
 import type { FlowComponentProps } from "./types";
@@ -12,7 +12,6 @@ import {
 } from "@/components/Auth/auth-components";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
-import { useFormDataStore } from "@/store/formdatastore";
 import { requestPasswordReset } from "../data";
 import { toast } from "sonner";
 
@@ -20,14 +19,9 @@ const ForgotPassword: React.FC<FlowComponentProps> = ({ changeStep }) => {
   // State for managing error messages
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
-  // Access the store's update function
-  const updateFormData = useFormDataStore((state) => state.updateFormData);
-
-  const handleForgotPassword = async (data: any) => {
-    // Update the form data in the store
-    updateFormData({ ...data, password: data["new-password"] });
+  const handleForgotPassword = async (data: FormData) => {
     try {
-      const res = await requestPasswordReset(data.email);
+      const res = await requestPasswordReset(data.get("email") as string);
 
       if (res.success) {
         console.log(res.data, "response data");
@@ -37,26 +31,23 @@ const ForgotPassword: React.FC<FlowComponentProps> = ({ changeStep }) => {
         changeStep("next");
       } else {
         // Handle the error message based on the new structure
-        const errorMessage = res.error?.errors?.email?.[0] || "An error occurred. Please try again.";
+        const errorMessage =
+          res.error?.errors?.email?.[0] ||
+          "An error occurred. Please try again.";
         toast.error(errorMessage);
         console.error(res.error, "Error details");
       }
     } catch (error) {
       // Handle unexpected errors
       toast.error("An unexpected error occurred. Please try again.");
-      console.error("Unexpected error:", error);
     }
-
   };
-
-
-
 
   return (
     <AuthForm
-      onFormSubmit={handleForgotPassword} // Callback function to handle form submission
-      setValidationErrors={setErrorMsgs} // Function to set validation error messages
-      className="custom-flex-col gap-10" // Additional class names for styling
+      onFormSubmit={handleForgotPassword}
+      setValidationErrors={setErrorMsgs}
+      className="custom-flex-col gap-10"
     >
       <AuthHeading title="Create New Password">
         Please provide the email address you used to set up your account.

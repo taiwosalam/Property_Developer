@@ -24,7 +24,6 @@ import DraggableImage from "./draggable-image";
 import { propertyCategories } from "@/data";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { getAllBranches } from "@/app/(nav)/management/staff-branch/data";
-import { useAuthStore } from "@/store/authstrore";
 import { getAllLandlords } from "@/app/(nav)/management/landlord/data";
 import { getAllStaffsByBranch } from "./data";
 import { currencySymbols } from "@/utils/number-formatter";
@@ -42,7 +41,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const isDarkMode = useDarkMode();
-  const accessToken = useAuthStore((state) => state.access_token);
 
   const {
     state: selectedState,
@@ -164,16 +162,16 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       const [branches, landlords] = await Promise.all([
-        getAllBranches(accessToken),
-        getAllLandlords(accessToken),
+        getAllBranches(),
+        getAllLandlords(),
       ]);
 
       setPropertyState({
-        branchOptions: branches.branches.map((branch) => ({
+        branchOptions: branches.branches.map((branch: any) => ({
           value: branch.id,
           label: branch.branch_title,
         })),
-        landlordOptions: landlords.landlords.map((landlord) => ({
+        landlordOptions: landlords.landlords.map((landlord: any) => ({
           value: landlord.id,
           label: `${landlord.first_name} ${landlord.last_name}`,
         })),
@@ -181,15 +179,15 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     };
 
     fetchData();
-  }, [accessToken]);
+  }, []);
 
   // Gets staffs by branch
   useEffect(() => {
     const fetchStaff = async () => {
-      const staff = await getAllStaffsByBranch(selectedBranch, accessToken);
+      const staff = await getAllStaffsByBranch(selectedBranch);
 
       setPropertyState({
-        staffOptions: staff.map((staff) => ({
+        staffOptions: staff.map((staff: any) => ({
           value: staff.id,
           label: staff.full_name,
         })),
@@ -197,7 +195,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     };
 
     if (selectedBranch) fetchStaff();
-  }, [accessToken, selectedBranch]);
+  }, [selectedBranch]);
 
   // Function to reset the state
   const handleReset = () => {
@@ -222,7 +220,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     >
       <AuthForm
         returnType="form-data"
-        onFormSubmit={handleSubmit}
+        // onFormSubmit={handleSubmit}
+        onFormSubmit={() => {}}
         setValidationErrors={() => {}}
         className="max-w-[970px] pb-[80px]"
       >

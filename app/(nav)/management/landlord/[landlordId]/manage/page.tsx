@@ -22,7 +22,6 @@ import { useRouter } from "next/navigation";
 import { ASSET_URL, empty } from "@/app/config";
 import UserTag from "@/components/Tags/user-tag";
 import CustomLoader from "@/components/Loader/CustomLoader";
-import useLandlordData from "@/hooks/useLandlordData";
 import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 import type { LandlordPageData } from "../../types";
 import useDarkMode from "@/hooks/useCheckDarkMode";

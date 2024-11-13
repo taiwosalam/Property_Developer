@@ -1,17 +1,12 @@
-"use client";
+// "use client";
 
 import Head from "next/head";
-import "@/styles/mobile.css";
 import "@/styles/globals.css";
 
 // Imports
 import { Toaster } from "sonner";
 import { primaryFont } from "@/utils/fonts";
 import ThemeProvider from "./theme-provider";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { getToken } from "@/utils/cookies";
-import { useAuthStoreSelectors } from "@/store/authstrore";
 import { Theme } from "@/components/theme";
 
 export default function RootLayout({
@@ -19,26 +14,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const router = useRouter();
-  const { isAuthenticated, setAuthState } = useAuthStoreSelectors.getState(); // Added setAuthState
-
-  useEffect(() => {
-    const handleRedirect = async () => {
-      const access_token = await getToken(); // Retrieve token from cookies/localStorage
-
-      if (!isAuthenticated && access_token) {
-        // If access_token exists but not authenticated, sync Zustand state
-        setAuthState(true, access_token, null, null);
-      } else if (isAuthenticated) {
-        // router.push("/dashboard"); // Redirect to dashboard if already authenticated
-      } else {
-        router.push("/auth/sign-in"); // Redirect to login if not authenticated
-      }
-    };
-
-    handleRedirect(); // Call the function on component mount
-  }, [isAuthenticated, router, setAuthState]); // Added setAuthState to the dependencies
-
   return (
     <html lang="en" suppressHydrationWarning>
       <Head>
