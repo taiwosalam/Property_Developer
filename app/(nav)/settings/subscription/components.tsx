@@ -1,12 +1,14 @@
 'use client'
 import Button from '@/components/Form/Button/button'
+import Input from '@/components/Form/Input/input'
 import ModalPreset from '@/components/Modal/modal-preset'
+import { XIcon } from '@/public/icons/icons'
 import useSubscriptionStore from '@/store/subscriptionStore'
 
 
 export const ConfirmModal = () => {
     const { openSuccessModal, openSuccess, closeWarning, closeSuccess } = useSubscriptionStore();
-    const handleSuccess = ()=> {
+    const handleSuccess = () => {
         closeWarning()
         openSuccess()
     }
@@ -44,8 +46,56 @@ export const SuccessModal = () => {
 }
 
 
-export const EditModal = ()=> {
+export const EditModal = () => {
+    const { openSuccessModal, openSuccess, closeWarning, closeSuccess, closeEdit } = useSubscriptionStore();
+
+    const handleSave = () => {
+        closeEdit()
+        openSuccess()
+    }
+
     return (
-        <div className='bg-white w-[50vw] h-[50vh] rounded-md'>Edit modal Here</div>
+        <div className='bg-white w-[35vw] h-[35vh] rounded-md'>
+            <div className="header w-full flex flex-col bg-[#eff6ff] h-20 rounded-md">
+                <button className='flex items-center justify-end mr-4 mt-4' onClick={closeEdit}>
+                    <XIcon />
+                </button>
+                <h3 className='text-center flex items-center justify-center'> Edit Personalized Domain </h3>
+            </div>
+            {/* Form */}
+            <div className="form p-4 flex flex-col gap-4">
+                <div className="flex gap-2">
+                    <Input
+                        id="domain_name"
+                        label="domain name"
+                        placeholder="yourdomainname.com"
+                        className="w-full"
+                    />
+                    <Input
+                        id="patch"
+                        label="patch"
+                        placeholder="e.g /listings"
+                        className="w-full"
+                    />
+                </div>
+                <div className="flex gap-2">
+                    <Input
+                        id="redirect_type"
+                        label="redirect type"
+                        placeholder="permanent (301)"
+                        className="w-full"
+                    />
+                    <Input
+                        id="redirect_to"
+                        label="redirect to"
+                        placeholder="ourproperty.ng/listings/user/6542"
+                        className="w-full"
+                    />
+                </div>
+                <div className="flex items-center justify-end w-full">
+                    <Button size='base_medium' className="py-2 px-8" onClick={handleSave}>Save</Button>
+                </div>
+            </div>
+        </div>
     )
 }
