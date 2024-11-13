@@ -1,5 +1,3 @@
-// "use client";
-
 import Head from "next/head";
 import "@/styles/globals.css";
 
@@ -24,7 +22,7 @@ export default function RootLayout({
       </Head>
       <body
         className={`${primaryFont.className} antialiased`}
-        suppressHydrationWarning
+        // suppressHydrationWarning
       >
         <Theme
           attribute="class"
