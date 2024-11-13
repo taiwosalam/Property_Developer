@@ -1,4 +1,3 @@
-import React from "react";
 
 // Imports
 import Button from "@/components/Form/Button/button";

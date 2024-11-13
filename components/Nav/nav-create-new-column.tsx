@@ -7,7 +7,7 @@ import type { NavCreateNewColumnProps } from "./types";
 
 // Imports
 import SVG from "../SVG/svg";
-import { Modal, ModalContent, ModalTrigger, useModal } from "../Modal/modal";
+import { useModal } from "../Modal/modal";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
@@ -62,17 +62,8 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
                   </p>
                 </Link>
               ) : (
-                // <Modal>
-                //   <ModalTrigger className={class_styles}>
-                //     {icon}
-                //     <p className="text-text-secondary dark:text-darkText-1 capitalize">
-                //       {label}
-                //     </p>
-                //   </ModalTrigger>
-                //   <ModalContent>{modal}</ModalContent>
-                // </Modal>
-
                 <button
+                  type="button"
                   className={class_styles}
                   onClick={() => handleModalTrigger(modal)}
                 >

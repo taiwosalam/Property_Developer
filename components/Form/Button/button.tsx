@@ -15,6 +15,7 @@ const Button: React.FC<ButtonProps> = ({
   className,
   size = "default",
   variant = "default",
+  onClick,
   ...props
 }) => {
   return href ? (
@@ -27,6 +28,7 @@ const Button: React.FC<ButtonProps> = ({
         className
       )}
       style={style}
+      onClick={onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>}
     >
       {children}
     </Link>
@@ -40,6 +42,7 @@ const Button: React.FC<ButtonProps> = ({
         className
       )}
       style={style}
+      onClick={onClick}
       {...props}
     >
       {children}

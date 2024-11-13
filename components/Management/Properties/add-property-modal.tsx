@@ -9,6 +9,7 @@ import AddPropertyOptionsView from "./add-property-options";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 
 const AddPropertyModal = () => {
+ 
   const [view, setView] = useState<AddPropertyModalViews>("options");
   const handleBack = () => {
     setView("options");
