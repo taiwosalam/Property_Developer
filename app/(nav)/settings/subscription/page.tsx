@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 
 // Types
 import type { CustomTableProps, DataItem } from "@/components/Table/types";
@@ -27,7 +27,7 @@ import Box from "@mui/material/Box";
 import Select from "@/components/Form/Select/select";
 import CustomTable from "@/components/Table/table";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
-import { Drawer, Link, MenuItem } from "@mui/material";
+import { Drawer, MenuItem } from "@mui/material";
 import SettingsLegalDrawer from "@/components/Settings/Modals/settings-legal-drawer";
 import { CounterButton } from "@/components/Settings/SettingsEnrollment/settings-enrollment-components";
 import TableMenu from "@/components/Table/table-menu";
@@ -43,7 +43,17 @@ const style = {
 };
 
 const Subscriptions = () => {
-  const { openSuccessModal, openSuccess, openWarningModal, openWarning, closeWarning, closeSuccess, openEditModal, openEdit, closeEdit } = useSubscriptionStore();
+  const {
+    openSuccessModal,
+    openSuccess,
+    openWarningModal,
+    openWarning,
+    closeWarning,
+    closeSuccess,
+    openEditModal,
+    openEdit,
+    closeEdit,
+  } = useSubscriptionStore();
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
   };
@@ -174,7 +184,7 @@ const Subscriptions = () => {
                           price={2000}
                           counter={true}
                         />
-                     </Box>
+                      </Box>
                     </Modal>
                     <Modal
                       open={openWarningModal}
@@ -183,7 +193,7 @@ const Subscriptions = () => {
                       aria-describedby="modal-modal-description"
                     >
                       <Box sx={style}>
-                       <ConfirmModal />
+                        <ConfirmModal />
                       </Box>
                     </Modal>
                     <Modal
@@ -193,7 +203,7 @@ const Subscriptions = () => {
                       aria-describedby="modal-modal-description"
                     >
                       <Box sx={style}>
-                       <SuccessModal />
+                        <SuccessModal />
                       </Box>
                     </Modal>
                     <Modal
@@ -203,7 +213,7 @@ const Subscriptions = () => {
                       aria-describedby="modal-modal-description"
                     >
                       <Box sx={style}>
-                       <EditModal />
+                        <EditModal />
                       </Box>
                     </Modal>
                   </div>
