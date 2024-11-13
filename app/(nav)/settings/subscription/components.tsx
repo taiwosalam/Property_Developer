@@ -47,11 +47,17 @@ export const SuccessModal = () => {
 
 
 export const EditModal = () => {
-    const { openSuccessModal, openSuccess, closeWarning, closeSuccess } = useSubscriptionStore();
+    const { openSuccessModal, openSuccess, closeWarning, closeSuccess, closeEdit } = useSubscriptionStore();
+
+    const handleSave = () => {
+        closeEdit()
+        openSuccess()
+    }
+
     return (
         <div className='bg-white w-[35vw] h-[35vh] rounded-md'>
             <div className="header w-full flex flex-col bg-[#eff6ff] h-20 rounded-md">
-                <button className='flex items-center justify-end mr-4 mt-4'>
+                <button className='flex items-center justify-end mr-4 mt-4' onClick={closeEdit}>
                     <XIcon />
                 </button>
                 <h3 className='text-center flex items-center justify-center'> Edit Personalized Domain </h3>
@@ -87,7 +93,7 @@ export const EditModal = () => {
                     />
                 </div>
                 <div className="flex items-center justify-end w-full">
-                    <Button size='base_medium' className="py-2 px-8" onClick={openSuccess}>Save</Button>
+                    <Button size='base_medium' className="py-2 px-8" onClick={handleSave}>Save</Button>
                 </div>
             </div>
         </div>
