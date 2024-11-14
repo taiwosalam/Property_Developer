@@ -171,6 +171,7 @@ const Subscriptions = () => {
                       <MenuItem onClick={openEdit}>
                         <button type="button">Edit</button>
                       </MenuItem>
+                      
                     </TableMenu>
                     <Modal
                       open={open}

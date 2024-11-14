@@ -35,6 +35,7 @@ import {
 } from "@/public/icons/icons";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { DrawerComponent } from "../BadgeIcon/create-tenancy-aggrement-modal";
 
 const Header = () => {
   const { isMobile } = useWindowWidth();
@@ -219,6 +220,7 @@ const Header = () => {
                 <NavCreateNew />
               </ModalContent>
             </Modal>
+            <DrawerComponent />
           </div>
 
           <div className="flex gap-4 items-center text-[#5A5D61] dark:text-white">
