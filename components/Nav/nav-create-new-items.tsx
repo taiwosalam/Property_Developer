@@ -58,27 +58,27 @@ export const create_new_items: CreateNewItemsProps = [
     content: [
       {
         label: "tenancy agreement",
-        modal: <LegalProcedureModal type="tenancy_agreement" />,
+        modal: <LegalProcedureModal type="tenancy_agreement" title="Tenancy Agreement" />,
       },
       {
         label: "quit notice",
-        modal: <LegalProcedureModal type="quit_notice" />,
+        modal: <LegalProcedureModal type="quit_notice" title="Quit Notice" />,
       },
       {
         label: "warning / reminder",
-        modal: <LegalProcedureModal type="warning_reminder" />,
+        modal: <LegalProcedureModal type="warning_reminder" title="Warning / Reminder" />,
       },
       {
         label: "court processs",
-        modal: <LegalProcedureModal type="court_process" />,
+        modal: <LegalProcedureModal type="court_process" title="Court Process" />,
       },
       {
         label: "possession",
-        modal: <LegalProcedureModal type="possession" />,
+        modal: <LegalProcedureModal type="possession" title="Possession" />,
       },
       {
         label: "other legal processes",
-        modal: <LegalProcedureModal type="other" />,
+        modal: <LegalProcedureModal type="other" title="Other Legal Processes" />,
       },
     ],
   },

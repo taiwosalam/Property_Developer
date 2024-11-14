@@ -14,7 +14,9 @@ const LegalProcedureModal: React.FC<{
     | "court_process"
     | "possession"
     | "other";
-}> = ({ type }) => {
+  title: string;
+}> = ({ type, title }) => {
+
   const { openDrawer } = useDrawerStore();
   const {setIsOpen} = useModal()
   const openLegalDrawer = ()=> {
@@ -23,7 +25,7 @@ const LegalProcedureModal: React.FC<{
   }
   return (
     <LandlordTenantModalPreset
-      heading={type}
+      heading={title}
       style={{ maxWidth: "600px", height: "400px" }}
     >
       <div className="space-y-5 max-w-[300px] mx-auto mt-5">
