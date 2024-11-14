@@ -73,7 +73,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
           value={image ? "filled" : ""}
         />
         <input
-          name="profile_pic"
+          name="director_profile_picture"
           type="file"
           accept="image/*"
           ref={fileInputRef}

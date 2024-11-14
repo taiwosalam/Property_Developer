@@ -5,6 +5,7 @@ import SingleCompany from "./single-company";
 
 import { SVGType } from "../SVG/types";
 export interface CompanyTypeItem {
+  id: number;
   iconType: SVGType;
   name: string;
   description: string;
@@ -12,18 +13,21 @@ export interface CompanyTypeItem {
 
 const companyTypes: CompanyTypeItem[] = [
   {
+    id: 1,
     iconType: "profile_circle",
     name: "Property Manager",
     description:
       "A company specializing in the management of tenants and overseeing occupants within gated estates.",
   },
   {
+    id: 2,
     iconType: "user_edit",
     name: "Hospitality Manager",
     description:
       "A company specializing in the management of short-stay apartments, holiday homes, and hotels, catering to occupants for brief durations.",
   },
   {
+    id: 3,
     iconType: "user_tag",
     name: "Property Developer",
     description:
@@ -32,15 +36,15 @@ const companyTypes: CompanyTypeItem[] = [
 ];
 
 const CompanyType = () => {
-  const [selectedType, setSelectedType] = useState<string>("");
+  const [selectedTypeId, setSelectedTypeId] = useState<number | null>(null);
   const { handleInputChange } = useContext(FlowProgressContext);
-  const handleSelect = (name: string) => {
-    setSelectedType(name);
+  const handleSelect = (id: number) => {
+    setSelectedTypeId(id);
   };
   // Use useEffect to call handleInputChange after selectedType has been updated
   useEffect(() => {
     handleInputChange();
-  }, [selectedType, handleInputChange]);
+  }, [selectedTypeId, handleInputChange]);
 
   return (
     <Section separatorStyles="max-w-[1200px]">
@@ -52,15 +56,16 @@ const CompanyType = () => {
         <div className="flex gap-5 overflow-x-auto custom-round-scrollbar">
           <input
             type="hidden"
-            name="type"
-            value={selectedType}
+            name="company_type_id"
+            required
+            value={selectedTypeId || ""}
             className="setup-f"
           />
           {companyTypes.map((c) => (
             <SingleCompany
-              key={c.name}
-              onClick={() => handleSelect(c.name)}
-              selected={c.name === selectedType}
+              key={c.id}
+              onClick={() => handleSelect(c.id)}
+              selected={c.id === selectedTypeId}
               {...c}
             />
           ))}

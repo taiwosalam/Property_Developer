@@ -11,11 +11,10 @@ import { z } from "zod";
 // Validation schemas for each field
 const validation_schemas = {
   email: z.string().email({ message: "Please enter a valid email address" }),
-  "confirm-password": z
+  password_confirmation: z
     .string()
-    .min(1, { message: "Confirm password cannot be empty" }),
-  password: z.string().min(1, { message: "Password cannot be empty" }),
-  "new-password": z
+    .min(1, { message: "Password Confirmation cannot be empty" }),
+  password: z
     .string()
     .min(8, { message: "Password must be at least 8 characters long" })
     .regex(/[A-Z]/, {
@@ -71,13 +70,13 @@ export const validateData = (data: ValidateDataProps) => {
 
   // Check exceptions only if there are no existing errors
   //----------------------------------
-  if (!output.invalidKeys["confirm-password"]) {
+  if (!output.invalidKeys["password_confirmation"]) {
     if (
-      data["confirm-password"] !== undefined &&
-      data["new-password"] !== undefined
+      data["password_confirmation"] !== undefined &&
+      data["password"] !== undefined
     ) {
-      if (data["confirm-password"] !== data["new-password"]) {
-        output.invalidKeys["confirm-password"] = "Passwords do not match.";
+      if (data["password_confirmation"] !== data["password"]) {
+        output.invalidKeys["password_confirmation"] = "Passwords do not match.";
       }
     }
   }

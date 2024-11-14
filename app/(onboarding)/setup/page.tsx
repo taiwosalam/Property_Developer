@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Imports
 import SetupHeader from "@/components/Setup/setup-header";
@@ -17,42 +17,43 @@ import CompanyLogo from "@/components/Setup/company-logo";
 import CompanyAddress from "@/components/Setup/company-address";
 import ProfilePicture from "@/components/Setup/profile-picture";
 import ProfileInformation from "@/components/Setup/profile-information";
-import { AuthForm, formDataToString } from "@/components/Auth/auth-components";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { transformFormData, createCompany } from "./data";
 import { ValidationErrors } from "@/utils/types";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/authStore";
 
 const Setup = () => {
+  const router = useRouter();
+  const setRole = useAuthStore((state) => state.setRole);
+  const role = useAuthStore((state) => state.role);
   // Define the index of the last step in the flow
   const last_step = 0;
 
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
   // remove later
-  const handleSubmit = async (data: FormData) => {
-    const payload = formDataToString(data);
-
-    // Update the director_experience field to include "years"
-    if (payload.director_experience) {
-      // Check if the experience is exactly 1
-      if (parseInt(payload.director_experience, 10) === 1) {
-        payload.director_experience = "1 year";
-      } else {
-        // For any other value, append "years"
-        payload.director_experience = `${payload.director_experience} years`;
-      }
+  const handleSubmit = async (formData: FormData) => {
+    const data = transformFormData(formData);
+    // console.log(data);
+    const status = await createCompany(data);
+    if (status) {
+      setRole("Director Administrator"); //Backend should return this role
+      // router.push("/dashboard");
     }
-
-    console.log(data); // Debug log to see the modified data
   };
 
   const requiredFields = [
-    "type",
-    "company_name",
-    "cac_date",
-    "cac_number",
+    "date_of_registration",
     "cac_certificate",
-    "logo",
-    "director_name",
+    "company_logo",
   ];
+
+  useEffect(() => {
+    if (role && role !== "user") {
+      router.replace("/dashboard");
+    }
+  }, [role, router]);
 
   return (
     <FlowProgress

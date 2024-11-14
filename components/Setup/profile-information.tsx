@@ -11,14 +11,14 @@ const ProfileInformation = () => {
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <Input
           required
-          id="director_name"
+          id="director_full_name"
           label="full name"
           placeholder="Write here"
           inputClassName="rounded-[8px] setup-f bg-white"
           className="lg:col-span-2"
         />
         <Select
-          id="director_title"
+          id="director_personal_title"
           label="personal title / qualification"
           options={titles}
           hiddenInputClassName="setup-f"
@@ -39,14 +39,14 @@ const ProfileInformation = () => {
           inputClassName="rounded-[8px] setup-f bg-white"
         />
         <PhoneNumberInput
-          id="director_phone"
+          id="director_phone_number"
           label="phone number"
           placeholder="800 0000 000"
           inputClassName="setup-f"
         />
       </div>
       <TextArea
-        id="director_about"
+        id="about_director"
         label="About Director"
         placeholder="Write about the director"
         hiddenInputClassName="setup-f"

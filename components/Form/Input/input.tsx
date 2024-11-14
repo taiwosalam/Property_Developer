@@ -40,6 +40,7 @@ const Input: React.FC<InputProps> = ({
   formatNumber,
   endWith,
   isPinField,
+  minLength,
 }) => {
   // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -108,6 +109,7 @@ const Input: React.FC<InputProps> = ({
           disabled={disabled}
           placeholder={placeholder}
           defaultValue={defaultValue ? defaultValue : undefined}
+          minLength={minLength}
           // Add min and max attributes for number type
           min={type === "number" ? min : undefined}
           max={type === "number" ? max : undefined}

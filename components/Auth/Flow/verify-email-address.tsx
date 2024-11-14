@@ -40,13 +40,13 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
 
     if (!objectLength(validation.invalidKeys)) {
       const status = await verifyEmail(code);
-      // if (status) {
-      //   if (type === "sign up") {
-      //     router.push("/setup");
-      //   } else if (type === "forgot password") {
-      //     changeStep("next");
-      //   }
-      // }
+      if (status) {
+        if (type === "sign up") {
+          router.push("/setup");
+        } else if (type === "forgot password") {
+          changeStep("next");
+        }
+      }
     } else {
       setErrorMsgs(validation.invalidKeys);
     }
@@ -54,9 +54,11 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
 
   const handleResendCode = async () => {
     if (canResend) {
-      // resendOtp(email);
-      setCountdown(40);
-      setCanResend(false);
+      const status = await resendOtp();
+      if (status) {
+        setCountdown(40);
+        setCanResend(false);
+      }
     }
   };
 

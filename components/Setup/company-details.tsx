@@ -20,7 +20,7 @@ const CompanyDetails = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-[950px] specific-grid">
         <DateInput
           required
-          id="cac_date"
+          id="date_of_registration"
           label="date of registration"
           onChange={handleInputChange}
           inputClassName="setup-f"
@@ -29,7 +29,7 @@ const CompanyDetails = () => {
         <Input
           required
           label="CAC Registration Number"
-          id="cac_number"
+          id="cac_registration_number"
           placeholder="Write here"
           inputClassName="rounded-[8px] setup-f bg-white"
         />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // Imports
 import Input from "../Form/Input/input";
@@ -11,53 +11,18 @@ import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 
 const CompanyAddress = () => {
   // State to hold selected values
-  const [selectedState, setSelectedState] = useState("");
-  const [selectedLGA, setSelectedLGA] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [localGovernments, setLocalGovernments] = useState<string[]>([]);
-  const [cities, setCities] = useState<string[]>([]);
-
-  // Update local governments when state changes
-  useEffect(() => {
-    if (selectedState) {
-      const lgas = getLocalGovernments(selectedState);
-      setLocalGovernments(lgas);
-      setSelectedLGA(""); // Clear LGA selection
-      setCities([]); // Clear cities when state changes
-      setSelectedCity(""); // Clear city selection
-    } else {
-      setLocalGovernments([]);
-      setSelectedLGA(""); // Clear LGA selection
-      setCities([]); // Clear cities
-      setSelectedCity(""); // Clear city selection
-    }
-  }, [selectedState]);
-
-  // Update cities when LGA changes
-  useEffect(() => {
-    if (selectedLGA && selectedState) {
-      const cityList = getCities(selectedState, selectedLGA);
-      setCities(cityList);
-      setSelectedCity(""); // Clear city selection
-    } else {
-      setCities([]);
-      setSelectedCity(""); // Clear city selection
-    }
-  }, [selectedLGA, selectedState]);
-
-  // Handle state change
-  const handleStateChange = (value: string) => {
-    setSelectedState(value);
-  };
-
-  // Handle LGA change
-  const handleLGAChange = (value: string) => {
-    setSelectedLGA(value);
-  };
-
-  // Handle city change
-  const handleCityChange = (value: string) => {
-    setSelectedCity(value);
+  const [address, setAddress] = useState({
+    state: "",
+    lga: "",
+    city: "",
+  });
+  const handleAddressChange = (key: keyof typeof address, value: string) => {
+    setAddress((prev) => ({
+      ...prev,
+      [key]: value,
+      ...(key === "state" && { lga: "", city: "" }),
+      ...(key === "lga" && { city: "" }),
+    }));
   };
 
   return (
@@ -73,45 +38,49 @@ const CompanyAddress = () => {
           options={getAllStates()}
           id="state"
           label="state"
-          value={selectedState}
+          value={address.state}
           hiddenInputClassName="setup-f"
-          onChange={handleStateChange} // Update handler
+          onChange={(value) => handleAddressChange("state", value)} // Update handler
+          required
         />
 
         {/* Local Government Selector */}
         <Select
-          options={localGovernments}
+          options={getLocalGovernments(address.state)}
           id="local_government"
           label="local government"
           hiddenInputClassName="setup-f"
-          onChange={handleLGAChange} // Update handler
-          value={selectedLGA} // Controlled value
+          onChange={(value) => handleAddressChange("lga", value)} // Update handler
+          value={address.lga} // Controlled value
+          required
         />
 
         {/* City Selector */}
         <Select
-          options={cities}
+          options={getCities(address.state, address.lga)}
           id="city"
           label="City / Area"
           allowCustom={true}
           hiddenInputClassName="setup-f"
-          onChange={handleCityChange} // Update handler
-          value={selectedCity} // Controlled value
+          onChange={(value) => handleAddressChange("city", value)} // Update handler
+          value={address.city} // Controlled value
+          required
         />
 
         <Input
           label="head office address"
-          id="address"
+          id="head_office_address"
           placeholder="Write here"
           className="lg:col-span-2"
           inputClassName="rounded-[8px] setup-f bg-white"
+          required
         />
 
         <FileInput
-          id="utility-document"
+          id="utility_document"
           label="utility document"
           fileType="pdf"
-          size={5}
+          size={2}
           sizeUnit="MB"
           placeholder="utility"
           buttonName="Document"

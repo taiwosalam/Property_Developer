@@ -13,7 +13,7 @@ export interface AuthFormProps {
   id?: string;
   onFormSubmit: (data: any) => void;
   returnType?: "form-data" | "string";
-  setValidationErrors:
+  setValidationErrors?:
     | React.Dispatch<React.SetStateAction<ValidationErrors>>
     | ((errors: ValidationErrors) => void);
 }
