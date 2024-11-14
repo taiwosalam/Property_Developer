@@ -55,16 +55,16 @@ export const EditModal = () => {
     }
 
     return (
-        <div className='bg-white w-[35vw] h-[35vh] rounded-md'>
-            <div className="header w-full flex flex-col bg-[#eff6ff] h-20 rounded-md">
-                <button className='flex items-center justify-end mr-4 mt-4' onClick={closeEdit}>
+        <div className='flex flex-col bg-white w-full md:w-[35vw] h-fit rounded-md'>
+            <div className="header w-full flex flex-col bg-[#eff6ff] h-20 rounded-md p-4">
+                <button className='flex items-center justify-end' onClick={closeEdit}>
                     <XIcon />
                 </button>
                 <h3 className='text-center flex items-center justify-center'> Edit Personalized Domain </h3>
             </div>
             {/* Form */}
             <div className="form p-4 flex flex-col gap-4">
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                     <Input
                         id="domain_name"
                         label="domain name"
@@ -78,7 +78,7 @@ export const EditModal = () => {
                         className="w-full"
                     />
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                     <Input
                         id="redirect_type"
                         label="redirect type"
