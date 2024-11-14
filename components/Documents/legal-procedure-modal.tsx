@@ -3,6 +3,8 @@ import Select from "@/components/Form/Select/select";
 import Button from "@/components/Form/Button/button";
 import { useDrawerStore } from "@/store/drawerStore";
 import { DrawerComponent } from "../BadgeIcon/create-tenancy-aggrement-modal";
+import { useModal } from "../Modal/modal"; 
+
 
 const LegalProcedureModal: React.FC<{
   type:
@@ -14,6 +16,11 @@ const LegalProcedureModal: React.FC<{
     | "other";
 }> = ({ type }) => {
   const { openDrawer } = useDrawerStore();
+  const {setIsOpen} = useModal()
+  const openLegalDrawer = ()=> {
+    setIsOpen(false)
+    openDrawer()
+  }
   return (
     <LandlordTenantModalPreset
       heading={type}
@@ -62,14 +69,13 @@ const LegalProcedureModal: React.FC<{
               ? { href: "/documents/create-tenancy-agreement" }
               : {})}
             onClick={
-              type !== "tenancy_agreement" ? () => openDrawer() : undefined
+              type !== "tenancy_agreement" ? () => openLegalDrawer() : undefined
             }
           >
             Proceed
           </Button>
         </div>
       </div>
-      <DrawerComponent />
     </LandlordTenantModalPreset>
   );
 };
