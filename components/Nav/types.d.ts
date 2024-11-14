@@ -44,8 +44,8 @@ export type CreateNewItemsProps = {
   type: SVGType;
   label: string;
   content: (
-    | { label: string; link: string; modal?: never }
-    | { label: string; modal: React.ReactNode; link?: never }
+    | { label: string; link: string; modal?: never; title?: never }
+    | { label: string; modal: React.ReactNode; link?: never; title?: never }
   )[];
 }[];
 

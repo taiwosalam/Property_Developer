@@ -60,7 +60,7 @@ export const EditModal = () => {
                 <button className='flex items-center justify-end' onClick={closeEdit}>
                     <XIcon />
                 </button>
-                <h3 className='text-center flex items-center justify-center'> Edit Personalized Domain </h3>
+                <h3 className='text-center flex items-center justify-center'> Edit Personalized Domain</h3>
             </div>
             {/* Form */}
             <div className="form p-4 flex flex-col gap-4">
