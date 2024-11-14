@@ -1,4 +1,6 @@
+"use client";
 import Head from "next/head";
+import { useRouter } from "next/navigation";
 import "@/styles/globals.css";
 
 // Imports
@@ -6,14 +8,50 @@ import { Toaster } from "sonner";
 import { primaryFont } from "@/utils/fonts";
 import ThemeProvider from "./theme-provider";
 import { Theme } from "@/components/theme";
+import { useAuthStore } from "@/store/authStore";
+import { useEffect } from "react";
+import { getLocalStorage } from "@/utils/local-storage";
+import api from "@/services/api";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const router = useRouter();
+  const authToken = getLocalStorage("authToken");
+  const setToken = useAuthStore((state) => state.setToken);
+  const setRole = useAuthStore((state) => state.setRole);
+  const role = useAuthStore((state) => state.role);
+  useEffect(() => {
+    if (!authToken) {
+      router.replace("/auth/sign-in");
+    }
+    // else {
+    //   setToken(authToken);
+    //   if (!role) {
+    //     const fetchUserRole = async () => {
+    //       try {
+    //         const { data } = await api.get("/user/role");
+    //         const userRole = data.role;
+    //         setRole(userRole);
+    //         if (userRole === "user") {
+    //           router.replace("/setup");
+    //         }
+    //       } catch (error) {
+    //         console.error("Failed to fetch user role:", error);
+    //         router.replace("/auth/sign-in");
+    //       }
+    //     };
+    //     fetchUserRole();
+    //   } else if (role === "user") {
+    //     router.replace("/setup");
+    //   }
+    // }
+  }, [role, router, setToken, setRole]);
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <Head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

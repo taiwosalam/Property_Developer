@@ -1,6 +1,11 @@
 // Types
 import type { AuthSliderContent } from "@/components/Auth/AuthSlider/types";
 import { toast } from "sonner";
+import axios, { AxiosError } from "axios";
+// import
+import { useAuthStore } from "@/store/authStore";
+
+const base_url = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const auth_slider_content: AuthSliderContent = [
   {
@@ -18,20 +23,129 @@ export const auth_slider_content: AuthSliderContent = [
 ];
 
 // Login function
-export const login = async (
-  email: string,
-  password: string,
-  rememberMe: boolean
-) => {
+export const login = async (formData: Record<string, any>) => {
   try {
-  } catch (error) {}
+    const { data } = await axios.post(`${base_url}/login`, formData);
+    // console.log(data.status);
+    if (data.status) {
+      const token = data.access_token;
+      useAuthStore.getState().setToken(token);
+      const message = data?.message || "Login successful!";
+      toast.success(message);
+      const emailVerified = data.data.details["email-verification"];
+      const role = data.data.details.role;
+
+      if (!emailVerified) {
+        return "redirect to verify email";
+      } else if (role === "user") {
+        return "redirect to setup";
+      } else {
+        return "redirect to dashboard";
+      }
+      // if (data["remember-me"] === "true") {
+      //   localStorage.setItem("authToken", token);
+      // } else {
+      //   sessionStorage.setItem("authToken", token);
+      // }
+
+      // Update the auth store with the new token
+      // useAuthStore.getState().setToken(token);
+    } else {
+      toast.error("Login failed. Please try again.");
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      const errorMessage =
+        error.response.data?.message || "Login failed. Please try again.";
+      toast.error(errorMessage);
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+  }
 };
 
 // Signup function
-export const signup = async () => {};
+export const signup = async (
+  formData: Record<string, any>
+): Promise<boolean> => {
+  try {
+    const { data } = await axios.post(`${base_url}/register`, formData);
+    console.log(data);
+    // console.log(data.status);
+    // console.log(data.message);
+    const token = data.access_token;
+    useAuthStore.getState().setToken(token);
+    // useAuthStore.getState().setEmail(formData.email);
+    toast.success(data?.message || "Signup successful!");
+    return true;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      const errorData = error.response.data.errors;
+      const errorMessages = Object.values(errorData.messages).flat().join(" ");
+      toast.error(errorMessages || "Signup failed. Please try again.");
+      return false;
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+      return false;
+    }
+  }
+};
 
-export const verifyEmail = async (otp: string) => {};
+export const verifyEmail = async (otp: string): Promise<boolean> => {
+  const token = useAuthStore.getState().token;
+  try {
+    const response = await axios.post(
+      `${base_url}/verify-email`,
+      { otp },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // console.log(response);
+    // console.log(response.status);
 
-export const resendOtp = async (email: string) => {};
+    const message = response.data?.message;
+
+    if (response.status === 200) {
+      toast.success(message || "Email verified successfully!");
+      return true;
+    } else {
+      toast.error("Verification failed. Please try again.");
+      return false;
+    }
+  } catch (error) {
+    toast.error("An unexpected error occurred. Please try again.");
+    return false;
+  }
+};
+
+export const resendOtp = async (): Promise<boolean> => {
+  const token = useAuthStore.getState().token;
+  try {
+    const response = await axios.post(
+      `${base_url}/resend-otp`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const message = response.data?.message;
+
+    if (response.status === 200) {
+      toast.success(message || "OTP resent successfully!");
+      return true;
+    } else {
+      toast.error(message || "Failed to resend OTP. Please try again.");
+      return false;
+    }
+  } catch (error) {
+    toast.error("An unexpected error occurred. Please try again.");
+    return false;
+  }
+};
 
 export const logout = async () => {};

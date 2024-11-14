@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 // Imports
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
@@ -12,19 +12,27 @@ import {
   AuthForm,
   AuthHeading,
 } from "@/components/Auth/auth-components";
-import { ValidationErrors } from "@/utils/types";
 import { login } from "@/app/(onboarding)/auth/data";
+import { ValidationErrors } from "@/utils/types";
 
 const SignIn = () => {
-  // State for managing error messages
+  const router = useRouter();
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
-  // State for "Remember Me" checkbox
-  const [rememberMe, setRememberMe] = useState(false);
+  const handleSubmit = async (formData: Record<string, any>) => {
+    const a = await login(formData);
+    if (a === "redirect to verify email") {
+      router.push(`/auth/sign-up?email=${formData.email}`);
+    } else if (a === "redirect to dashboard") {
+      router.push("/dashboard");
+    } else if (a === "redirect to setup") {
+      router.push("/setup");
+    }
+  };
 
   return (
     <AuthForm
-      onFormSubmit={() => {}}
+      onFormSubmit={handleSubmit}
       setValidationErrors={setErrorMsgs}
       className="custom-flex-col gap-10 pt-6"
     >
@@ -37,6 +45,7 @@ const SignIn = () => {
           type="email"
           label="email"
           placeholder="Email address"
+          requiredNoStar
           validationErrors={errorMsgs}
         />
         <div className="custom-flex-col gap-4">
@@ -44,13 +53,17 @@ const SignIn = () => {
             id="password"
             type="password"
             label="password"
-            placeholder="Write here"
-            validationErrors={errorMsgs}
+            placeholder="Enter your password"
+            requiredNoStar
+            minLength={8}
+            // validationErrors={errorMsgs}
           />
           <div className="flex items-center justify-between">
             <Checkbox
-              checked={rememberMe}
-              onChange={() => setRememberMe(!rememberMe)}
+              inputName="remember-me"
+              defaultChecked
+              // checked={rememberMe}
+              // onChange={() => setRememberMe(!rememberMe)}
             >
               remember me
             </Checkbox>

@@ -22,21 +22,16 @@ const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
   // Function to handle form submission
   const handleSignUp = async (data: FormData) => {
     // Call the signup function from the API service
-    const status = await signup();
-    console.log(status, "signup status");
-
-    // if (status === true) {
-    //   changeStep("next");
-    //   console.log("Step changed to next");
-    // } else {
-    //   console.error("Signup failed or did not return true");
-    // }
+    const status = await signup(data);
+    // console.log(status, "signup status");
+    if (status) {
+      changeStep("next");
+    }
   };
 
   return (
     <AuthForm
-      // onFormSubmit={handleSignUp}
-      onFormSubmit={() => {}}
+      onFormSubmit={handleSignUp}
       setValidationErrors={setErrorMsgs}
       className="custom-flex-col gap-10"
     >
@@ -59,7 +54,7 @@ const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
           {/* Component to handle password input and strength validation */}
           <AuthNewPassword validationErrors={errorMsgs} />
           <Input
-            id="confirm-password"
+            id="password_confirmation"
             type="password"
             label="confirm password"
             placeholder="Write here"

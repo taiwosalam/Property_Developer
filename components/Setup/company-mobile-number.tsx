@@ -13,7 +13,7 @@ const CompanyMobileNumber = () => {
         {Array.from({ length: 4 }).map((_, index: number) => (
           <PhoneNumberInput
             key={index}
-            id={`company_phone${index === 0 ? "" : `${index + 1}`}`}
+            id={`phone_number_${index + 1}`}
             placeholder="800 0000 000"
             inputClassName="setup-f"
           />

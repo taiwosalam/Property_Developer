@@ -71,7 +71,7 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ hiddenInputClassName }) => {
           value={image ? "filled" : ""}
         />
         <input
-          name="logo"
+          name="company_logo"
           type="file"
           accept="image/*"
           ref={fileInputRef}

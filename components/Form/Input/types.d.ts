@@ -33,4 +33,5 @@ export interface InputProps {
   formatNumber?: boolean;
   endWith?: string;
   isPinField?: boolean;
+  minLength?: number;
 }

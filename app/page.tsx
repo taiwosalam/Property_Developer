@@ -1,25 +1,7 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { getLocalStorage } from "@/utils/local-storage";
-import { useAuthStore } from "@/store/authStore";
+import { redirect } from "next/navigation";
 
 const Home = () => {
-  const router = useRouter();
-  const setToken = useAuthStore((state) => state.setToken);
-  useEffect(() => {
-    const authToken = getLocalStorage("authToken");
-
-    if (authToken) {
-      setToken(authToken);
-      router.replace("/dashboard");
-    } else {
-      router.replace("/auth/sign-in");
-    }
-  }, [router, setToken]);
-
-  return null;
+  redirect("/dashboard");
 };
 
 export default Home;

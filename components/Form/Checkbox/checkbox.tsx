@@ -19,6 +19,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   hoverContent,
   radio,
   defaultChecked = false,
+  inputName,
 }) => {
   const [internalChecked, setInternalChecked] = useState(defaultChecked);
   const [isHovered, setIsHovered] = useState(false);
@@ -45,6 +46,11 @@ const Checkbox: React.FC<CheckboxProps> = ({
         onMouseLeave: () => setIsHovered(false),
       })}
     >
+      <input
+        type="hidden"
+        name={inputName}
+        value={internalChecked ? "true" : "false"}
+      />
       {internalChecked ? (
         radio ? (
           <RadioCheckedIcon />
