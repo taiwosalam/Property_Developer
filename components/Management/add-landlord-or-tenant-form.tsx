@@ -72,6 +72,8 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
     >
       <input type="hidden" name="avatar" value={avatar || ""} />
 
+      <input type="hidden" name="agent" value="web" />
+
       <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <Input
           required

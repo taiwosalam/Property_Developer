@@ -7,6 +7,7 @@ import type { AddLandlordModalOptions } from "./types";
 
 // Imports
 import { useRouter, usePathname } from "next/navigation";
+import { toast } from "sonner";
 import AddLandlordOptions from "./add-landlord-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
@@ -41,7 +42,10 @@ const AddLandlordModal = () => {
   };
 
   const handleAddLandlord = (data: Record<string, any>) => {
-    console.log(data);
+    if (!checkFormDataForImageOrAvatar(data)) {
+      toast.warning("Please upload a picture or choose an avatar.");
+      return;
+    }
   };
 
   const modal_states: Record<
