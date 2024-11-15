@@ -13,14 +13,15 @@ import {
   AuthHeading,
 } from "@/components/Auth/auth-components";
 import { login } from "@/app/(onboarding)/auth/data";
-// import { ValidationErrors } from "@/utils/types";
 import { useAuthStore } from "@/store/authStore";
 
 const SignIn = () => {
   const router = useRouter();
   const token = useAuthStore((state) => state.token);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (formData: Record<string, any>) => {
+    setIsLoading(true);
     const a = await login(formData);
     if (a === "redirect to verify email") {
       router.push(`/auth/sign-up?email=${formData.email}`);
@@ -29,11 +30,12 @@ const SignIn = () => {
     } else if (a === "redirect to setup") {
       router.push("/setup");
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
     if (token) {
-      router.replace("/dashboard");
+      router.replace("/");
     }
   }, [token, router]);
 
@@ -53,7 +55,6 @@ const SignIn = () => {
           label="email"
           placeholder="Email address"
           requiredNoStar
-          // validationErrors={errorMsgs}
         />
         <div className="custom-flex-col gap-4">
           <Input
@@ -63,7 +64,6 @@ const SignIn = () => {
             placeholder="Enter your password"
             requiredNoStar
             minLength={8}
-            // validationErrors={errorMsgs}
           />
           <div className="flex items-center justify-between">
             <Checkbox
@@ -87,7 +87,9 @@ const SignIn = () => {
         <AuthAction href="/auth/sign-up" linkText="sign up">
           No account yet?
         </AuthAction>
-        <Button type="submit">sign in</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "signing in..." : "sign in"}
+        </Button>
       </div>
     </AuthForm>
   );

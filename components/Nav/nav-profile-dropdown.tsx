@@ -11,18 +11,24 @@ import { logout } from "@/app/(onboarding)/auth/data";
 import { profile_actions } from "@/components/Nav/options";
 import { SectionSeparator } from "../Section/section-components";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import { useRouter } from "next/navigation";
 
-const NavProfileDropdown = ({
-  name,
-  userId,
-}: {
+const NavProfileDropdown: React.FC<{
   name: string;
   userId: number;
-}) => {
+}> = ({ name, userId }) => {
+  const router = useRouter();
   const { isMobile } = useWindowWidth();
 
   const class_styles =
     "py-2 px-5 sm:py-3 sm:px-[30px] text-start text-text-primary dark:text-darkText-1 hover:bg-neutral-2 dark:hover:bg-[#3C3D37]";
+
+  const handleLogout = async () => {
+    const status = await logout();
+    if (status) {
+      router.push("/auth/sign-in");
+    }
+  };
 
   return (
     <>
@@ -64,9 +70,7 @@ const NavProfileDropdown = ({
       <button
         type="button"
         className="flex gap-2 py-2 px-5 sm:py-3 sm:px-[30px] text-status-error-primary hover:bg-neutral-2"
-        onClick={() => {
-          logout();
-        }}
+        onClick={handleLogout}
       >
         <LogoutIcon />
         logout

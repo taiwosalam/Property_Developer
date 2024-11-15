@@ -2,7 +2,7 @@
 import type { AuthSliderContent } from "@/components/Auth/AuthSlider/types";
 import { toast } from "sonner";
 import axios from "axios";
-// import
+import api from "@/services/api";
 import { useAuthStore } from "@/store/authStore";
 
 const base_url = `${process.env.NEXT_PUBLIC_BASE_URL}api/v1/`;
@@ -70,9 +70,6 @@ export const signup = async (
 ): Promise<boolean> => {
   try {
     const { data } = await axios.post(`${base_url}register`, formData);
-    // console.log(data);
-    // console.log(data.status);
-    // console.log(data.message);
     const token = data.access_token;
     useAuthStore.getState().setToken(token);
     useAuthStore.getState().setEmail(formData.email);
@@ -112,11 +109,18 @@ export const verifyEmail = async (otp: string): Promise<boolean> => {
       toast.success(message || "Email verified successfully!");
       return true;
     } else {
-      toast.error("Verification failed. Please try again.");
+      toast.error(message || "Verification failed. Please try again.");
       return false;
     }
   } catch (error) {
-    toast.error("An unexpected error occurred. Please try again.");
+    if (axios.isAxiosError(error) && error.response) {
+      const errorMessage =
+        error.response.data?.message ||
+        "Verification failed. Please try again.";
+      toast.error(errorMessage);
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
     return false;
   }
 };
@@ -143,9 +147,39 @@ export const resendOtp = async (): Promise<boolean> => {
       return false;
     }
   } catch (error) {
-    toast.error("An unexpected error occurred. Please try again.");
+    if (axios.isAxiosError(error) && error.response) {
+      const errorMessage =
+        error.response.data?.message ||
+        "Failed to resend OTP. Please try again.";
+      toast.error(errorMessage);
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
     return false;
   }
 };
 
-export const logout = async () => {};
+export const logout = async (): Promise<boolean> => {
+  const setToken = useAuthStore.getState().setToken;
+  try {
+    const response = await api.post("logout");
+    const message = response.data?.message;
+    if (response.status === 200) {
+      setToken(null);
+      toast.success(message || "Successfully logged out");
+      return true;
+    } else {
+      toast.error(message || "Logout failed. Please try again.");
+      return false;
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      const errorMessage =
+        error.response.data?.message || "Logout failed. Please try again.";
+      toast.error(errorMessage);
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+    return false;
+  }
+};
