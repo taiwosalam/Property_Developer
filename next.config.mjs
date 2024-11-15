@@ -19,6 +19,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "assets.ourproperty.ng",
       },
+      {
+        protocol: "https",
+        hostname: "pubassets.ourproperty.ng",
+        pathname: "/**", 
+      },
     ],
   },
   // reactStrictMode: false

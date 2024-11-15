@@ -43,7 +43,6 @@ const CreateBranchModal:React.FC = () => {
   type CreateBranchModalOptions =
     | "options"
     | "choose-avatar" 
-    | "create-branch";
 
   const modal_states: Record<
   CreateBranchModalOptions,
@@ -67,15 +66,11 @@ const CreateBranchModal:React.FC = () => {
         <Avatars
           onClick={(avatarUrl) => {
             setSelectedAvatar(avatarUrl);
-            setActiveStep("create-branch");
+            setActiveStep("options");
           }}
         />
       ),
     },
-    "create-branch": {
-      heading: "Create Branch",
-      content: null
-    }
   }
   return (
     <LandlordTenantModalPreset 
