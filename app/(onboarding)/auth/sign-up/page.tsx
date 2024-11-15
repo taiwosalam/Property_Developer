@@ -9,11 +9,11 @@ import type { FormSteps } from "../types";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
 import SignUp from "@/components/Auth/Flow/create-your-account";
 import VerifyEmailAddress from "@/components/Auth/Flow/verify-email-address";
-import { useSearchParams } from "next/navigation";
+// import { useSearchParams } from "next/navigation";
 
 const SignUpFlow = () => {
-  const searchParams = useSearchParams();
-  const email = searchParams.get("email");
+  // const searchParams = useSearchParams();
+  // const email = searchParams.get("email");
   // Define the index of the last step in the flow
   const last_step = 1;
 
