@@ -63,7 +63,7 @@ export const createCompany = async (
 ): Promise<boolean> => {
   //   console.log(formData);
   try {
-    const { data } = await api.post("/companies", formData);
+    const { data } = await api.post("companies", formData);
     // console.log(data);
     // console.log(data.status);
     // console.log(data.message);
