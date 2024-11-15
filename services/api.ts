@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { getLocalStorage } from "@/utils/local-storage";
+import { useAuthStore } from "@/store/authStore";
 
 // Create axios instance
 const api = axios.create({
@@ -38,13 +39,12 @@ api.interceptors.response.use(
     return response;
   },
   async (error: AxiosError) => {
-    // if (error.response?.status === 401) {
-    //   // Clear cached token and localStorage
-    //   cachedToken = null;
-    //   localStorage.removeItem("authToken");
-    //   // Redirect to login
-    //   window.location.href = "/auth/sign-in"; // Adjust the login route as needed
-    // }
+    if (error.response?.status === 401) {
+      // Clear cached token and localStorage
+      cachedToken = null;
+      useAuthStore.getState().setToken(null);
+      window.location.href = "/auth/sign-in";
+    }
     return Promise.reject(error);
   }
 );
