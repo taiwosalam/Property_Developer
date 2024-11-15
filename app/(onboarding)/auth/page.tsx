@@ -1,16 +1,7 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 const Auth = () => {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace("/auth/sign-in");
-  }, [router]);
-
-  return null;
+  redirect("/auth/sign-in");
 };
 
 export default Auth;

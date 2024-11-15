@@ -26,28 +26,27 @@ export default function RootLayout({
   useEffect(() => {
     if (!authToken) {
       router.replace("/auth/sign-in");
+    } else {
+      setToken(authToken);
+      // if (!role) {
+      //   const fetchUserRole = async () => {
+      //     try {
+      //       const { data } = await api.get("/user/role");
+      //       const userRole = data.role;
+      //       setRole(userRole);
+      //       if (userRole === "user") {
+      //         router.replace("/setup");
+      //       }
+      //     } catch (error) {
+      //       console.error("Failed to fetch user role:", error);
+      //       router.replace("/auth/sign-in");
+      //     }
+      //   };
+      //   fetchUserRole();
+      // } else if (role === "user") {
+      //   router.replace("/setup");
+      // }
     }
-    // else {
-    //   setToken(authToken);
-    //   if (!role) {
-    //     const fetchUserRole = async () => {
-    //       try {
-    //         const { data } = await api.get("/user/role");
-    //         const userRole = data.role;
-    //         setRole(userRole);
-    //         if (userRole === "user") {
-    //           router.replace("/setup");
-    //         }
-    //       } catch (error) {
-    //         console.error("Failed to fetch user role:", error);
-    //         router.replace("/auth/sign-in");
-    //       }
-    //     };
-    //     fetchUserRole();
-    //   } else if (role === "user") {
-    //     router.replace("/setup");
-    //   }
-    // }
   }, [role, router, setToken, setRole]);
 
   return (
