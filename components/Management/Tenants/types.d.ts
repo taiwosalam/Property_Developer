@@ -5,7 +5,6 @@ export type AddTenantModalOptions =
   | "options"
   | "add-tenant"
   | "add-multiple-users"
-  | "choose-avatar"
   | "invite-single-user"
   | "invite-multiple-users"
   | "add-user-with-id";
