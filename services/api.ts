@@ -40,6 +40,7 @@ api.interceptors.response.use(
   },
   async (error: AxiosError) => {
     if (error.response?.status === 401) {
+      console.log("401 error from interceptor");
       // Clear cached token and localStorage
       cachedToken = null;
       useAuthStore.getState().setToken(null);
