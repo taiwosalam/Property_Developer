@@ -10,17 +10,17 @@ import { useRouter, usePathname } from "next/navigation";
 import AddLandlordOptions from "./add-landlord-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
+import Avatars from "@/components/Avatars/avatars";
 import InvitationForm from "../invitation-form";
 import { addLandlord } from "./data";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
-import { useModal } from "@/components/Modal/modal";
 // import { useNavCreateNewContext } from "@/components/Nav/nav-create-new-context";
 
 const AddLandlordModal = () => {
-  const { setIsOpen } = useModal();
   const router = useRouter();
   const pathname = usePathname();
+  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   // const { changeStep } = useNavCreateNewContext();
 
   const [activeStep, setActiveStep] =
@@ -45,6 +45,10 @@ const AddLandlordModal = () => {
     }
   };
 
+  const handleAddLandlord = (data: Record<string, any>) => {
+    console.log(data);
+  };
+
   const modal_states: Record<
     AddLandlordModalOptions,
     {
@@ -59,7 +63,13 @@ const AddLandlordModal = () => {
     "add-landlord": {
       heading: "Add landlord/landlady Profile",
       content: (
-        <AddLandLordOrTenantForm type="landlord" submitAction={() => {}} />
+        <AddLandLordOrTenantForm
+          chooseAvatar={() => setActiveStep("choose-avatar")}
+          type="landlord"
+          submitAction={handleAddLandlord}
+          avatar={selectedAvatar}
+          setAvatar={setSelectedAvatar}
+        />
       ),
     },
     "add-multiple-owners": {
@@ -88,13 +98,30 @@ const AddLandlordModal = () => {
       heading: "Add Landlord/Landlady with ID",
       content: <InvitationForm method="id" submitAction={() => {}} />,
     },
+    "choose-avatar": {
+      heading: "Choose Avatar",
+      content: (
+        <Avatars
+          onClick={(avatarUrl) => {
+            setSelectedAvatar(avatarUrl);
+            setActiveStep("add-landlord");
+          }}
+        />
+      ),
+    },
   };
 
   return (
     <LandlordTenantModalPreset
       heading={modal_states[activeStep].heading}
       // back={handleBack()}
-      back={activeStep !== "options" ? { handleBack } : undefined}
+      back={
+        activeStep === "choose-avatar"
+          ? { handleBack: () => setActiveStep("add-landlord") }
+          : activeStep !== "options"
+          ? { handleBack }
+          : undefined
+      }
     >
       {modal_states[activeStep].content}
     </LandlordTenantModalPreset>
