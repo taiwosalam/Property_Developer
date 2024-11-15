@@ -3,12 +3,12 @@ import { toast } from "sonner";
 export const addTenant = async (
   formData: FormData
 ): Promise<boolean | any> => {
-  
+
   if(!(formData instanceof FormData)) {
     console.error('Invalid input: data must be a FormData instance');
     return false;
   }
-  console.log('Form Data -',formData instanceof FormData);
+  console.log('Form Data -', formData instanceof FormData);
 
   const image = formData.get('picture') as File | null;
   const avatar = formData.get('avatar') as string | null;

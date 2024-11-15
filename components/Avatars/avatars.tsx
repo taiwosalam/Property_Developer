@@ -10,7 +10,8 @@ import { empty } from "@/app/config";
 import { getAvatarsList } from "./data";
 import Picture from "../Picture/picture";
 
-const Avatars: React.FC<AvatarsProps> = ({
+const 
+Avatars: React.FC<AvatarsProps> = ({
   type,
   onClick,
   size = 40,

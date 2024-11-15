@@ -12,6 +12,8 @@ import { AuthForm } from "../Auth/auth-components";
 import type { ValidationErrors } from "@/utils/types";
 import Picture from "../Picture/picture";
 import Avatars from "../Avatars/avatars";
+import AvatarBtnIcon from "@/public/icons/user-btn.svg";
+import Image from "next/image";
 
 interface AddLandLordOrTenantFormProps {
   type: "landlord" | "tenant";
@@ -154,19 +156,12 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
               />
               <input type="hidden" name="avatar" value={activeAvatar} />
             </label>
-            <label htmlFor="picture" className="relative cursor-pointer">
-              <Picture src={preview} alt="camera" size={70} rounded />
-              <input
-                type="file"
-                id="avatar"
-                name="avatar"
-                accept="image/*"
-                className="hidden pointer-events-none"
-                onChange={handleImageChange}
-                ref={inputFileRef}
-              />
-              <input type="hidden" name="avatar" value={activeAvatar} />
-            </label>
+
+            <button  className="relative cursor-pointer p-4 bg-[#787878] rounded-full">
+              {/* <Picture src={} alt="camera" size={70} rounded /> */}
+              <Image src={AvatarBtnIcon} alt="camera" width={30} height={30} />
+              {/* <input type="hidden" name="avatar" value={activeAvatar} /> */}
+            </button>
             {/* <Avatars type="avatars" onClick={handleAvatarChange} /> */}
           </div>
         </div>
