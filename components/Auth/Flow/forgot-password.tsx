@@ -20,27 +20,28 @@ const ForgotPassword: React.FC<FlowComponentProps> = ({ changeStep }) => {
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
   const handleForgotPassword = async (data: FormData) => {
-    try {
-      const res = await requestPasswordReset(data.get("email") as string);
+    changeStep("next");
+    // try {
+    //   // const res = await requestPasswordReset(data.get("email") as string);
 
-      if (res.success) {
-        console.log(res.data, "response data");
-        // Optionally: Show a success message to the user
-        toast.success("Password reset request sent successfully.");
-        // Change the form step to the next step in the flow
-        changeStep("next");
-      } else {
-        // Handle the error message based on the new structure
-        const errorMessage =
-          res.error?.errors?.email?.[0] ||
-          "An error occurred. Please try again.";
-        toast.error(errorMessage);
-        console.error(res.error, "Error details");
-      }
-    } catch (error) {
-      // Handle unexpected errors
-      toast.error("An unexpected error occurred. Please try again.");
-    }
+    //   if (res.success) {
+    //     console.log(res.data, "response data");
+    //     // Optionally: Show a success message to the user
+    //     toast.success("Password reset request sent successfully.");
+    //     // Change the form step to the next step in the flow
+
+    //   } else {
+    //     // Handle the error message based on the new structure
+    //     const errorMessage =
+    //       res.error?.errors?.email?.[0] ||
+    //       "An error occurred. Please try again.";
+    //     toast.error(errorMessage);
+    //     console.error(res.error, "Error details");
+    //   }
+    // } catch (error) {
+    //   // Handle unexpected errors
+    //   toast.error("An unexpected error occurred. Please try again.");
+    // }
   };
 
   return (

@@ -8,6 +8,7 @@ import { objectLength } from "@/utils/object-length";
 import { AuthHeading, AuthPinField } from "../auth-components";
 import { checkValidatonError, validateData } from "@/utils/validation";
 import { ReloadIcon } from "@/public/icons/icons";
+import { useAuthStore } from "@/store/authStore";
 
 const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
   type,
@@ -15,6 +16,7 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
 }) => {
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
   const router = useRouter();
+  const email = useAuthStore((state) => state.email);
   const [code, setCode] = useState("");
   const [countdown, setCountdown] = useState(40);
   const [canResend, setCanResend] = useState(false);
@@ -71,7 +73,7 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
     <div className="custom-flex-col gap-20">
       <AuthHeading title="Verify Email Address">
         An OTP code has been sent to your email (
-        <span className="text-supporting-1">{"email"}</span>) for verification
+        <span className="text-supporting-1">{email}</span>) for verification
       </AuthHeading>
 
       <div className="custom-flex-col gap-10">
