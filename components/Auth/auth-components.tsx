@@ -55,6 +55,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   onFormSubmit,
   setValidationErrors,
   returnType = "string",
+  skipValidation,
 }) => {
   return (
     <form
@@ -69,6 +70,13 @@ export const AuthForm: React.FC<AuthFormProps> = ({
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
         const data = formDataToString(formData);
+
+        if (skipValidation) {
+          // Directly submit the form data if validation is skipped
+          onFormSubmit(returnType === "form-data" ? formData : data);
+          return;
+        }
+
         const validation = validateData(data);
 
         if (!objectLength(validation.invalidKeys)) {
