@@ -1,7 +1,7 @@
 // Types
 import type { AuthSliderContent } from "@/components/Auth/AuthSlider/types";
 import { toast } from "sonner";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 // import
 import { useAuthStore } from "@/store/authStore";
 
@@ -25,7 +25,7 @@ export const auth_slider_content: AuthSliderContent = [
 // Login function
 export const login = async (formData: Record<string, any>) => {
   try {
-    const { data } = await axios.post(`${base_url}/login`, formData);
+    const { data } = await axios.post(`${base_url}login`, formData);
     // console.log(data.status);
     if (data.status) {
       const token = data.access_token;
@@ -69,7 +69,7 @@ export const signup = async (
   formData: Record<string, any>
 ): Promise<boolean> => {
   try {
-    const { data } = await axios.post(`${base_url}/register`, formData);
+    const { data } = await axios.post(`${base_url}register`, formData);
     console.log(data);
     // console.log(data.status);
     // console.log(data.message);
@@ -95,7 +95,7 @@ export const verifyEmail = async (otp: string): Promise<boolean> => {
   const token = useAuthStore.getState().token;
   try {
     const response = await axios.post(
-      `${base_url}/verify-email`,
+      `${base_url}verify-email`,
       { otp },
       {
         headers: {
@@ -125,7 +125,7 @@ export const resendOtp = async (): Promise<boolean> => {
   const token = useAuthStore.getState().token;
   try {
     const response = await axios.post(
-      `${base_url}/resend-otp`,
+      `${base_url}resend-otp`,
       {},
       {
         headers: {
