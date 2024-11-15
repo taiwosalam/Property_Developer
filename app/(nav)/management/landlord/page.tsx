@@ -110,7 +110,7 @@ const Landlord = () => {
   const fetchLandlordHelp = useCallback(async () => {
     try {
       const data = await getLandlordsHelpInfo();
-      console.log(data.res[0]);
+      // console.log(data.res[0]);
       setFetchedLandlordHelpInfo(data.res[0]);
     } catch (error) {
       console.error("Error fetching landlord help info:", error);
