@@ -153,7 +153,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction }) => {
             />
             <input type="hidden" name="avatar" value={activeAvatar} />
           </label>
-          <Avatars type="avatars" onClick={handleAvatarChange} />
+          <Avatars onClick={handleAvatarChange} />
           <div className="flex w-full items-end justify-end">
             <Button
               type="submit"

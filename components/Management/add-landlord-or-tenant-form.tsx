@@ -182,7 +182,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
                     alt="selected avatar"
                     width={70}
                     height={70}
-                    className="object-cover object-center w-[70px] h-[70px] rounded-full"
+                    className="object-cover object-center w-[70px] h-[70px] rounded-full bg-brand-9"
                   />
                   <div
                     role="button"

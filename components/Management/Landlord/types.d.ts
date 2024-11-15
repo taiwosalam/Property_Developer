@@ -13,6 +13,15 @@ export type AddLandlordModalOptions =
   | "invite-multiple-owners"
   | "add-landlord-with-id";
 
+
+export type CreateBranchModalOptions =
+  | "options"
+  | "choose-avatar"
+  | "create-branch"
+  | "invite-owner"
+  | "invite-multiple-owners"
+  | "add-landlord-with-id";
+
 export interface AddLandlordOptionsProps {
   showForm: React.Dispatch<React.SetStateAction<AddLandlordModalOptions>>;
 }

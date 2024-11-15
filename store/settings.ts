@@ -1,4 +1,4 @@
-import create, { StateCreator } from "zustand";
+import {create, StateCreator } from "zustand";
 import { persist, PersistOptions } from "zustand/middleware";
 
 // Define the shape of your settings state
