@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -14,10 +14,12 @@ import {
 } from "@/components/Auth/auth-components";
 import { login } from "@/app/(onboarding)/auth/data";
 import { ValidationErrors } from "@/utils/types";
+import { useAuthStore } from "@/store/authStore";
 
 const SignIn = () => {
   const router = useRouter();
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
+  const token = useAuthStore((state) => state.token);
 
   const handleSubmit = async (formData: Record<string, any>) => {
     const a = await login(formData);
@@ -29,6 +31,12 @@ const SignIn = () => {
       router.push("/setup");
     }
   };
+
+  useEffect(() => {
+    if (token) {
+      router.replace("/dashboard");
+    }
+  }, [token, router]);
 
   return (
     <AuthForm
