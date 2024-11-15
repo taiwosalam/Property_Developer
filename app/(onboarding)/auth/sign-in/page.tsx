@@ -18,8 +18,10 @@ import { useAuthStore } from "@/store/authStore";
 const SignIn = () => {
   const router = useRouter();
   const token = useAuthStore((state) => state.token);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (formData: Record<string, any>) => {
+    setIsLoading(true);
     const a = await login(formData);
     if (a === "redirect to verify email") {
       router.push(`/auth/sign-up?email=${formData.email}`);
@@ -28,6 +30,7 @@ const SignIn = () => {
     } else if (a === "redirect to setup") {
       router.push("/setup");
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -84,7 +87,9 @@ const SignIn = () => {
         <AuthAction href="/auth/sign-up" linkText="sign up">
           No account yet?
         </AuthAction>
-        <Button type="submit">sign in</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "signing in..." : "sign in"}
+        </Button>
       </div>
     </AuthForm>
   );
