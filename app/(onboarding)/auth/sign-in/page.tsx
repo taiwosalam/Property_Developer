@@ -13,7 +13,6 @@ import {
   AuthHeading,
 } from "@/components/Auth/auth-components";
 import { login } from "@/app/(onboarding)/auth/data";
-// import { ValidationErrors } from "@/utils/types";
 import { useAuthStore } from "@/store/authStore";
 
 const SignIn = () => {
@@ -33,7 +32,7 @@ const SignIn = () => {
 
   useEffect(() => {
     if (token) {
-      router.replace("/dashboard");
+      router.replace("/");
     }
   }, [token, router]);
 
@@ -53,7 +52,6 @@ const SignIn = () => {
           label="email"
           placeholder="Email address"
           requiredNoStar
-          // validationErrors={errorMsgs}
         />
         <div className="custom-flex-col gap-4">
           <Input
@@ -63,7 +61,6 @@ const SignIn = () => {
             placeholder="Enter your password"
             requiredNoStar
             minLength={8}
-            // validationErrors={errorMsgs}
           />
           <div className="flex items-center justify-between">
             <Checkbox
