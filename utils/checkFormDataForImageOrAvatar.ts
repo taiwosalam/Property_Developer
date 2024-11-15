@@ -3,14 +3,6 @@ export function checkFormDataForImageOrAvatar(
   pictureField: string = "picture",
   avatarField: string = "avatar"
 ): boolean {
-
-  console.log('is form Data check-',data instanceof FormData);
-    // Validate that data is actually a FormData instance
-    if (!(data instanceof FormData)) {
-      console.error('Invalid input: data must be a FormData instance');
-      return false;
-    }
-
   // Get picture and avatar fields from FormData
   const pictureFile = data.get(pictureField) as File | null;
   const avatarValue = data.get(avatarField) as string | null;

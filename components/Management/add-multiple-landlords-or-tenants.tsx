@@ -55,35 +55,36 @@ const AddMultipleLandlordsOrTenants: React.FC<
 
   return (
     <>
-      <div className={`flex justify-center mb-5 md:mb-10 lg:mb-16`}>
-        <div className="border-4 border-dotted dark:border-darkText-2 py-8 md:py-12 px-28">
-          <button
-            type="button"
-            aria-label="Import"
-            className={`flex justify-center mx-auto ${
-              isDragging ? "border-blue-500" : "border-black"
-            }`}
-            onClick={handleFileUploadClick}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-          >
-
-            <span className="dark:bg-darkText-primary bg-neutral-2 dark:text-white rounded-full">
+      <div className="max-w-[570px] mx-auto mb-5 md:mb-8 lg:mb-12 border-4 border-dotted dark:border-darkText-2 py-8 md:py-12">
+        <button
+          type="button"
+          aria-label="Import"
+          className={`flex justify-center mx-auto ${
+            isDragging ? "border-blue-500" : "border-black"
+          }`}
+          onClick={handleFileUploadClick}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          <span className="dark:bg-darkText-primary bg-neutral-2 dark:text-white rounded-full">
             <ImportCircle />
-            </span>
-          </button>
-          <div className="custom-flex-col gap-[10px] text-center">
-            <p className="text-base md:text-xl lg:text-2xl font-bold">
-              Import XLS or CSV file
-            </p>
-            <p className="text-[#6C6D6D] text-[10px] font-medium">
-              Please click to select a file or drag it into the designated area
-              to upload.
-            </p>
-          </div>
+          </span>
+        </button>
+        <div className="custom-flex-col gap-[10px] text-center">
+          <p className="text-base md:text-xl lg:text-2xl font-bold">
+            Import XLS or CSV file
+          </p>
+          <p className="text-[#6C6D6D] text-sm font-medium">
+            Please click to select a file{" "}
+            <span className="hidden md:inline">
+              or drag it into the designated area
+            </span>{" "}
+            to upload.
+          </p>
         </div>
       </div>
+
       <input
         type="file"
         ref={fileInputRef}
@@ -91,7 +92,7 @@ const AddMultipleLandlordsOrTenants: React.FC<
         accept=".xls,.xlsx,.csv"
         onChange={handleFileChange}
       />
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between gap-4 items-center">
         <p className="text-sm font-normal">
           How it works:{" "}
           <a

@@ -1,36 +1,30 @@
-// Types
-import type { AvatarType } from "./types";
+// import api from "@/services/api";
+import axios from "axios";
 
-const avatars: Partial<Record<AvatarType, string[]>> = {};
+let cachedAvatars: string[] = [];
 
-export const getAvatarsList = async (
-  type: AvatarType,
-  access_token: string | null
-): Promise<string[]> => {
-  // Check if the avatars data already exists
-  if (avatars[type]) {
-    return avatars[type]!;
+export const getAvatarsList = async (): Promise<string[]> => {
+  if (cachedAvatars.length > 0) {
+    return cachedAvatars;
   }
 
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/files-list`,
+    // const { data } = await api.get("/avatars");
+    // cachedAvatars = data.avatars;
+    // return cachedAvatars;
+    const { data } = await axios.get(
+      "https://staging.ourproperty.ng/api/files-list",
       {
-        method: "GET",
-        headers: { Authorization: `Bearer ${access_token}` },
+        headers: {
+          Authorization:
+            "Bearer 798|Rl5sySkgjC1HLSI4BG5FJSVpzRIIgxLL7RuA67Apa88a543f",
+        },
       }
-    ).then((res) => res.json());
-
-    // Ensure the response contains data for the requested type
-    if (response[type] && Array.isArray(response[type])) {
-      avatars[type] = response[type];
-      return avatars[type]!;
-    } else {
-      console.error(`No data found for type: ${type}`);
-      return [];
-    }
+    );
+    cachedAvatars = [...data.avatars, ...data.avatars, ...data.avatars];
+    return cachedAvatars;
   } catch (error) {
-    console.error(error, "An error occurred while fetching avatars list.");
+    console.error("Failed to fetch avatars:", error);
     return [];
   }
 };

@@ -15,8 +15,10 @@ import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { useModal } from "@/components/Modal/modal";
 import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
+import Avatars from "@/components/Avatars/avatars";
 
 const AddTenantModal = () => {
+  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const { setIsOpen } = useModal();
 
   const [activeStep, setActiveStep] =
@@ -41,6 +43,7 @@ const AddTenantModal = () => {
     // }
   };
 
+
   const modal_states: Record<
     AddTenantModalOptions,
     {
@@ -55,7 +58,13 @@ const AddTenantModal = () => {
     "add-tenant": {
       heading: "Add Tenant/Occupant Profile",
       content: (
-        <AddLandLordOrTenantForm type="tenant" submitAction={handleAddTenant} />
+        <AddLandLordOrTenantForm 
+        chooseAvatar={() => setActiveStep("choose-avatar")}
+        type="tenant"
+        submitAction={handleAddTenant}
+        avatar={selectedAvatar}
+        setAvatar={setSelectedAvatar} 
+        />
       ),
     },
     "add-multiple-users": {
@@ -77,6 +86,17 @@ const AddTenantModal = () => {
     "add-user-with-id": {
       heading: "Add Landlord/Landlady with ID",
       content: <InvitationForm method="id" submitAction={() => {}} />,
+    },
+    "choose-avatar": {
+      heading: "Choose Avatar",
+      content: (
+        <Avatars
+          onClick={(avatarUrl) => {
+            setSelectedAvatar(avatarUrl);
+            setActiveStep("add-tenant");
+          }}
+        />
+      ),
     },
   };
 
