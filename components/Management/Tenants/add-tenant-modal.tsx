@@ -28,12 +28,10 @@ const AddTenantModal = () => {
 
   const handleAddTenant = async (data: FormData) => {
     // If neither picture nor avatar is valid, show a warning
-    if (!checkFormDataForImageOrAvatar(data)) {
-      toast.warning("Please upload a picture or select an avatar.");
-      return;
-    }
+    console.log('Data -',data);
+    console.log('Data instanceof FormData -',data instanceof FormData);
 
-    const success = await addTenant(data);
+    const success = await addTenant(data)
 
     // if (success) {
     //   setIsOpen(false);

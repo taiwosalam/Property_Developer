@@ -24,10 +24,11 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   type,
   submitAction,
 }) => {
-  const { preview, setPreview, inputFileRef, handleImageChange } =
+    const { preview, setPreview, inputFileRef, handleImageChange } =
     useImageUploader({
       placeholder: CameraCircle,
     });
+
 
   const [state, setState] = useState({
     selectedState: "",
@@ -153,10 +154,23 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
               />
               <input type="hidden" name="avatar" value={activeAvatar} />
             </label>
-            <Avatars type="avatars" onClick={handleAvatarChange} />
+            <label htmlFor="picture" className="relative cursor-pointer">
+              <Picture src={preview} alt="camera" size={70} rounded />
+              <input
+                type="file"
+                id="avatar"
+                name="avatar"
+                accept="image/*"
+                className="hidden pointer-events-none"
+                onChange={handleImageChange}
+                ref={inputFileRef}
+              />
+              <input type="hidden" name="avatar" value={activeAvatar} />
+            </label>
+            {/* <Avatars type="avatars" onClick={handleAvatarChange} /> */}
           </div>
         </div>
-        <Button type="submit" size="base_medium" className="py-2 px-8 ml-auto">
+        <Button onClick={submitAction} type="submit" size="base_medium" className="py-2 px-8 ml-auto">
           create
         </Button>
       </div>
