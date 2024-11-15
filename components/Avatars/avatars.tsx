@@ -9,46 +9,41 @@ import type { AvatarsProps } from "./types";
 import { empty } from "@/app/config";
 import { getAvatarsList } from "./data";
 import Picture from "../Picture/picture";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
-const Avatars: React.FC<AvatarsProps> = ({
-  type,
-  onClick,
-  size = 40,
-  maxSize = 5,
-}) => {
+const Avatars: React.FC<AvatarsProps> = ({ onClick, maxNumber = 15 }) => {
+  const { isMobile } = useWindowWidth();
   const [avatars, setAvatars] = useState<string[] | null>(null);
 
   useEffect(() => {
     const fetchAvatars = async () => {
-      const data = await getAvatarsList(type, "");
-
+      const data = await getAvatarsList();
       setAvatars(data);
     };
-
     fetchAvatars();
-  }, [type]);
+  }, []);
 
   return (
-    <div className="flex gap-2 flex-wrap">
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-10">
       {avatars
-        ? avatars.slice(0, maxSize).map((avatar, idx) => (
+        ? avatars.slice(0, maxNumber).map((avatar, idx) => (
             <button
               type="button"
               key={idx}
               onClick={() => {
-                onClick && onClick(avatar);
+                onClick?.(avatar);
               }}
+              className="w-fit mx-auto"
             >
               <Picture
                 rounded
-                size={size}
+                size={isMobile ? 70 : 110}
                 alt="avatar"
                 src={avatar}
-                resolutionMultiplier={3}
               />
             </button>
           ))
-        : Array(maxSize)
+        : Array(maxNumber)
             .fill(null)
             .map((_, idx) => (
               <Picture
@@ -56,8 +51,8 @@ const Avatars: React.FC<AvatarsProps> = ({
                 key={idx}
                 alt="empty"
                 src={empty}
-                size={size}
-                className="skeleton-elem"
+                size={isMobile ? 70 : 110}
+                className="skeleton-elem mx-auto"
               />
             ))}
     </div>

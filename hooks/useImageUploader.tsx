@@ -7,7 +7,6 @@ import type { useImageUploaderProps } from "./types";
 
 // Imports
 import { toast } from "sonner";
-import { empty } from "@/app/config";
 
 /**
  * Custom hook to manage image file input and display image preview.
@@ -25,7 +24,8 @@ export const useImageUploader = ({
   placeholder,
 }: useImageUploaderProps = {}) => {
   // State to store the image preview URL
-  const [preview, setPreview] = useState<string>(placeholder || empty);
+
+  const [preview, setPreview] = useState<string | null>(null);
 
   // Ref to hold reference to the file input element
   const inputFileRef = useRef<HTMLInputElement | null>(null);
@@ -63,11 +63,19 @@ export const useImageUploader = ({
 
         e.target.files = dataTransfer.files; // Assign the previous file to the input's files
       } else {
-        setPreview(placeholder || empty); // Reset the preview to the placeholder if no previous file
+        // setPreview(placeholder || empty); // Reset the preview to the placeholder if no previous file
+        setPreview(null);
         toast.warning("No file selected."); // Show a warning toast
       }
     } else {
       toast.warning("Selected file is not a valid image type."); // Warn if the selected file is not an image
+    }
+  };
+
+  const clearSelection = () => {
+    setPreview(null); // Clear the image preview
+    if (inputFileRef.current) {
+      inputFileRef.current.value = ""; // Clear the file input
     }
   };
 
@@ -76,5 +84,6 @@ export const useImageUploader = ({
     setPreview, // Function to set the image preview URL
     inputFileRef, // Reference to the input element
     handleImageChange, // The handler for file input changes
+    clearSelection, // Function to clear the image selection
   };
 };
