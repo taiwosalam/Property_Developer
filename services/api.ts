@@ -3,7 +3,7 @@ import { getLocalStorage } from "@/utils/local-storage";
 
 // Create axios instance
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+  baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}api/v1/`,
   headers: {
     "Content-Type": "multipart/form-data",
   },

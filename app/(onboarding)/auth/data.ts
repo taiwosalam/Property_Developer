@@ -5,7 +5,7 @@ import axios from "axios";
 // import
 import { useAuthStore } from "@/store/authStore";
 
-const base_url = process.env.NEXT_PUBLIC_BASE_URL;
+const base_url = `${process.env.NEXT_PUBLIC_BASE_URL}api/v1/`;
 
 export const auth_slider_content: AuthSliderContent = [
   {
@@ -70,7 +70,7 @@ export const signup = async (
 ): Promise<boolean> => {
   try {
     const { data } = await axios.post(`${base_url}register`, formData);
-    console.log(data);
+    // console.log(data);
     // console.log(data.status);
     // console.log(data.message);
     const token = data.access_token;
