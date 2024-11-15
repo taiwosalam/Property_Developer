@@ -13,12 +13,11 @@ import {
   AuthHeading,
 } from "@/components/Auth/auth-components";
 import { login } from "@/app/(onboarding)/auth/data";
-import { ValidationErrors } from "@/utils/types";
+// import { ValidationErrors } from "@/utils/types";
 import { useAuthStore } from "@/store/authStore";
 
 const SignIn = () => {
   const router = useRouter();
-  const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
   const token = useAuthStore((state) => state.token);
 
   const handleSubmit = async (formData: Record<string, any>) => {
@@ -41,7 +40,7 @@ const SignIn = () => {
   return (
     <AuthForm
       onFormSubmit={handleSubmit}
-      setValidationErrors={setErrorMsgs}
+      skipValidation
       className="custom-flex-col gap-10 pt-6"
     >
       <AuthHeading title="welcome!">
@@ -54,7 +53,7 @@ const SignIn = () => {
           label="email"
           placeholder="Email address"
           requiredNoStar
-          validationErrors={errorMsgs}
+          // validationErrors={errorMsgs}
         />
         <div className="custom-flex-col gap-4">
           <Input

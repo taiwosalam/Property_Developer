@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 
 interface TeamChatState {
   isAddMember: boolean;
@@ -18,6 +18,7 @@ export const useTeamChatStore = create<TeamChatState>((set) => ({
   openAddMember: () => set({ isAddMember: true }),
   closeAddMember: () => set({ isAddMember: false }),
   openDeleteMember: () => set({ isDeleteMember: true }),
-  closeDeleteMember: () => set({ isDeleteMember: false, userNameToDelete: null }),
+  closeDeleteMember: () =>
+    set({ isDeleteMember: false, userNameToDelete: null }),
   setUserNameToDelete: (name) => set({ userNameToDelete: name }),
 }));

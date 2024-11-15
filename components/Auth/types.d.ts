@@ -16,6 +16,7 @@ export interface AuthFormProps {
   setValidationErrors?:
     | React.Dispatch<React.SetStateAction<ValidationErrors>>
     | ((errors: ValidationErrors) => void);
+  skipValidation?: boolean;
 }
 
 export interface AuthActionProps {
