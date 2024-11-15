@@ -75,7 +75,7 @@ export const signup = async (
     // console.log(data.message);
     const token = data.access_token;
     useAuthStore.getState().setToken(token);
-    // useAuthStore.getState().setEmail(formData.email);
+    useAuthStore.getState().setEmail(formData.email);
     toast.success(data?.message || "Signup successful!");
     return true;
   } catch (error) {
