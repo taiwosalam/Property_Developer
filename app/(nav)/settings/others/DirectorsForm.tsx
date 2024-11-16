@@ -10,21 +10,33 @@ import Button from "@/components/Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "@/components/Auth/auth-components";
 import type { ValidationErrors } from "@/utils/types";
-import Picture from "@/components/Picture/picture";
+import {
+  CameraIcon2,
+  PersonIcon,
+  DeleteIconOrange,
+} from "@/public/icons/icons";
 import Avatars from "@/components/Avatars/avatars";
 import TextArea from "@/components/Form/TextArea/textarea";
+import Image from "next/image";
 
 interface DirectorsFormProps {
   submitAction: (data: any) => void;
+  chooseAvatar: () => void;
+  avatar: string | null;
+  setAvatar: React.Dispatch<React.SetStateAction<string | null>>;
+  // setFormStep: React.Dispatch<React.SetStateAction<number>>;
+  // formStep: number;
 }
 
 type Address = "selectedState" | "selectedLGA" | "selectedCity";
 
-const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction }) => {
-  const { preview, setPreview, inputFileRef, handleImageChange } =
-    useImageUploader({
-      placeholder: CameraCircle,
-    });
+const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction, chooseAvatar, avatar, setAvatar}) => {
+  const {
+    preview: imagePreview,
+    inputFileRef,
+    handleImageChange: originalHandleImageChange,
+    clearSelection: clearImageSelection,
+  } = useImageUploader();
 
   const [state, setState] = useState({
     selectedState: "",
@@ -35,11 +47,16 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction }) => {
 
   const { selectedState, selectedLGA, activeAvatar, errorMsgs } = state;
 
-  const handleAvatarChange = (avatar: string) => {
-    setPreview(avatar);
-    setState((prevState) => ({ ...prevState, activeAvatar: avatar }));
-    inputFileRef.current?.value && (inputFileRef.current.value = "");
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAvatar(null); // Clear the avatar when an image is selected
+    originalHandleImageChange(e);
   };
+
+  // const handleAvatarSelection = (avatarUrl: string) => {
+  //   clearImageSelection();
+  //   setAvatar(avatarUrl);
+  //   setFormStep(1);
+  // };
 
   const handleAddressChange = (field: Address, value: string) => {
     setState((prevState) => ({
@@ -135,35 +152,87 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction }) => {
           />
         </div>
       </div>
-      <div className="custom-flex-col gap-3 mt-3">
-        <p className="text-black dark:text-darkText-1 text-base font-medium">
-          Upload picture or choose an avatar.
-        </p>
-        <div className="flex items-between justify-between w-full gap-3">
-          <label htmlFor="picture" className="relative cursor-pointer">
-            <Picture src={preview} alt="camera" size={70} rounded />
-            <input
-              type="file"
-              id="picture"
-              name="picture"
-              accept="image/*"
-              className="hidden pointer-events-none"
-              onChange={handleImageChange}
-              ref={inputFileRef}
-            />
-            <input type="hidden" name="avatar" value={activeAvatar} />
-          </label>
-          <Avatars onClick={handleAvatarChange} />
-          <div className="flex w-full items-end justify-end">
-            <Button
-              type="submit"
-              size="base_medium"
-              className="py-2 px-8 ml-auto"
+      <div className="flex justify-between items-end flex-wrap gap-4 md:gap-5">
+        <div className="custom-flex-col gap-3">
+          <p className="text-black dark:text-darkText-1 text-base font-medium">
+            Upload picture or select an avatar.
+          </p>
+          <div className="flex items-end gap-3">
+            <button
+              type="button"
+              className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
+              aria-label="upload picture"
+              onClick={() => inputFileRef.current?.click()}
             >
-              create
-            </Button>
+              {imagePreview ? (
+                <>
+                  <Image
+                    src={imagePreview}
+                    alt="avatar"
+                    width={70}
+                    height={70}
+                    className="object-cover object-center w-[70px] h-[70px] rounded-full"
+                  />
+                  <div
+                    role="button"
+                    aria-label="remove image"
+                    className="absolute top-0 right-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      clearImageSelection();
+                    }}
+                  >
+                    <DeleteIconOrange size={20} />
+                  </div>
+                </>
+              ) : (
+                <CameraIcon2 />
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={chooseAvatar}
+              className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
+              aria-label="choose avatar"
+            >
+              {avatar ? (
+                <>
+                  <Image
+                    src={avatar}
+                    alt="selected avatar"
+                    width={70}
+                    height={70}
+                    className="object-cover object-center w-[70px] h-[70px] rounded-full bg-brand-9"
+                  />
+                  <div
+                    role="button"
+                    aria-label="remove avatar"
+                    className="absolute top-0 right-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setAvatar(null);
+                    }}
+                  >
+                    <DeleteIconOrange size={20} />
+                  </div>
+                </>
+              ) : (
+                <PersonIcon />
+              )}
+            </button>
           </div>
         </div>
+        <input
+          type="file"
+          ref={inputFileRef}
+          name="picture"
+          style={{ display: "none" }}
+          accept="image/*"
+          onChange={handleImageChange}
+        />
+        <Button type="submit" size="base_medium" className="py-2 px-8 ml-auto">
+          create
+        </Button>
       </div>
     </AuthForm>
   );

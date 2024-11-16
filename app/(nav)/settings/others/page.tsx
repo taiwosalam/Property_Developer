@@ -29,7 +29,7 @@ import {
   UserEditIcon,
   UserTagIcon,
   ProfileCircleIcon,
-ManageIcon,
+  ManageIcon,
   // MsgIcon,
   // BellIcon,
   // MoonIcon,
@@ -38,6 +38,7 @@ ManageIcon,
   SettingsServiceIcon,
   SettingsAppearanceIcon,
 } from "@/public/icons/icons";
+import Avatars from "@/components/Avatars/avatars";
 
 const companyTypes = [
   {
@@ -136,9 +137,54 @@ const resetSettingsOptions = [
 
 const Others = () => {
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+  const [activeStep, setActiveStep] = useState<DirectorsFormOptions>("options");
+  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
+  const handleBack = () => setActiveStep("options");
   const [checkedStates, setCheckedStates] = useState<{
     [key: string]: boolean;
   }>({});
+
+  type DirectorsFormOptions = "options" | "choose-avatar";
+  
+    const handleSubmit = async (data: FormData) => {
+      console.log(data);
+      // if (res) {
+      //   setIsOpen(false);
+      // }
+  };
+
+
+  const modal_states: Record<
+    DirectorsFormOptions,
+    {
+      heading: string;
+      content: React.ReactNode;
+    }
+  > = {
+    options: {
+      heading: "Create New Director",
+      content: <DirectorsForm 
+      submitAction={handleSubmit}
+      chooseAvatar={() => setActiveStep("choose-avatar")}
+      avatar={selectedAvatar}
+      setAvatar={setSelectedAvatar}
+        />,
+    },
+    "choose-avatar": {
+      heading: "Choose Avatar",
+      content: (
+        <Avatars
+          onClick={(avatarUrl) => {
+            setSelectedAvatar(avatarUrl);
+            setActiveStep("options");
+          }}
+        />
+      ),
+    },
+  };
+
+  
+
   return (
     <>
       {/* COMPANY TYPE SETTINGS */}
@@ -194,8 +240,10 @@ const Others = () => {
                 </ModalTrigger>
               </div>
               <ModalContent>
-                <LandlordTenantModalPreset heading="Create New Director">
-                  <DirectorsForm submitAction={() => {}} />
+                <LandlordTenantModalPreset heading={modal_states[activeStep].heading}
+                  back={activeStep !== "options" ? { handleBack } : undefined}
+                >
+                  {modal_states[activeStep].content}
                 </LandlordTenantModalPreset>
               </ModalContent>
             </Modal>
@@ -258,7 +306,7 @@ const Others = () => {
               <div className="w-[00px]">
                 <ModalContent>
                   <LandlordTenantModalPreset heading="Restrict User">
-                    <RestrictUserForm submitAction={() => {}} />
+                    <RestrictUserForm submitAction={() => { }} />
                   </LandlordTenantModalPreset>
                 </ModalContent>
               </div>
