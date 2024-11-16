@@ -31,7 +31,7 @@
 
 
 
-const avatarLinks = [
+export const avatarLinks = [
   'https://pubassets.ourproperty.ng/uploads/gBTaZYUXOch2qrKq5k5F2EdShRihQjYGuxDwOuu6.png',
   'https://pubassets.ourproperty.ng/uploads/7M10IKK6OGULqivpfmJ7AMYWNb1BAzpboSLtHffM.png',
   'https://pubassets.ourproperty.ng/uploads/es2Oy2BoX9CmUjhJMfXS2ILNRkrelzY8aGIKddz1.png',
@@ -112,20 +112,3 @@ const avatarLinks = [
   'https://pubassets.ourproperty.ng/uploads/J67ed2N0zsiOhxmr9iIn1TcyXE40hEDY0Fbkxuv0.png',
   'https://pubassets.ourproperty.ng/uploads/dlpaYTEJAPSSnfmOzHieGbepXkPXJ6XZdrupHDv1.png',
 ];
-
-let cachedAvatars: string[] = [];
-
-export const getAvatarsList = async (): Promise<string[]> => {
-  if (cachedAvatars.length > 0) {
-    return cachedAvatars;
-  }
-
-  try {
-    // Initialize cache with static avatar links (without triplication)
-    cachedAvatars = avatarLinks;
-    return cachedAvatars;
-  } catch (error) {
-    console.error("Failed to load avatars:", error);
-    return [];
-  }
-};
