@@ -11,7 +11,7 @@ import { Theme } from "@/components/theme";
 import { useAuthStore } from "@/store/authStore";
 import { useEffect } from "react";
 import { getLocalStorage } from "@/utils/local-storage";
-import api from "@/services/api";
+import { getUserProfile } from "./(onboarding)/auth/data";
 
 export default function RootLayout({
   children,
@@ -21,34 +21,31 @@ export default function RootLayout({
   const router = useRouter();
   const authToken = getLocalStorage("authToken");
   const setToken = useAuthStore((state) => state.setToken);
-  const setRole = useAuthStore((state) => state.setRole);
-  const role = useAuthStore((state) => state.role);
-  
+  // const setRole = useAuthStore((state) => state.setRole);
+  // const role = useAuthStore((state) => state.role);
+
   useEffect(() => {
     if (!authToken) {
       router.replace("/auth/sign-in");
     } else {
       setToken(authToken);
-      // if (!role) {
-      //   const fetchUserRole = async () => {
-      //     try {
-      //       const { data } = await api.get("/user/role");
-      //       const userRole = data.role;
-      //       setRole(userRole);
-      //       if (userRole === "user") {
-      //         router.replace("/setup");
-      //       }
-      //     } catch (error) {
-      //       console.error("Failed to fetch user role:", error);
-      //       router.replace("/auth/sign-in");
-      //     }
-      //   };
-      //   fetchUserRole();
-      // } else if (role === "user") {
-      //   router.replace("/setup");
-      // }
+      setTimeout(async () => {
+        const status = await getUserProfile();
+        if (status === "redirect to verify email") {
+          router.replace("/auth/sign-up");
+        }
+        if (status === "redirect to setup") {
+          router.replace("/setup");
+        }
+        if (status === "redirect to dashboard") {
+          router.replace("/dashboard");
+        }
+        if (status === "redirect to sign in") {
+          router.replace("/auth/sign-in");
+        }
+      }, 0);
     }
-  }, [role, router, setToken, setRole]);
+  }, [router, setToken, authToken]);
 
   return (
     <html lang="en">

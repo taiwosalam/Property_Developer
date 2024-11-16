@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Types
 import type { FormSteps } from "../types";
@@ -9,17 +9,15 @@ import type { FormSteps } from "../types";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
 import SignUp from "@/components/Auth/Flow/create-your-account";
 import VerifyEmailAddress from "@/components/Auth/Flow/verify-email-address";
-// import { useSearchParams } from "next/navigation";
+import { useAuthStore } from "@/store/authStore";
 
 const SignUpFlow = () => {
-  // const searchParams = useSearchParams();
-  // const email = searchParams.get("email");
   // Define the index of the last step in the flow
   const last_step = 1;
 
   // State to track the current step in the flow
   const [activeStep, setActiveStep] = useState(0);
-
+  const emailVerified = useAuthStore((state) => state.emailVerified);
   // Function to handle changing steps
   const handleStepChange = (step: FormSteps) => {
     setActiveStep((num) => {
@@ -32,6 +30,12 @@ const SignUpFlow = () => {
       }
     });
   };
+
+  useEffect(() => {
+    if (emailVerified === false) {
+      handleStepChange("next");
+    }
+  }, [emailVerified]);
 
   return (
     <FlowProgress
