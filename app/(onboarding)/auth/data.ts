@@ -192,19 +192,13 @@ export const logout = async (): Promise<boolean> => {
   }
 };
 
-export const getUserProfile = async () => {
-  usePersonalInfoStore.getState().setIsLoading(true);
-  try {
+
+
+export const getUserStatus = async () => {
+try {
     const { data } = await api.get("/user");
-    const {
-      name,
-      role,
-      id,
-      profile_picture,
-      "email-verification": emailVerified,
-    } = data.data.user;
-    const { company_name, company_logo } = data.data.company;
-    useAuthStore.getState().setRole(role[0]);
+    const { role, "email-verification": emailVerified } = data.data.details;
+    useAuthStore.getState().setRole(role);
     if (!emailVerified) {
       useAuthStore.getState().setEmailVerified(false);
       return "redirect to verify email";
@@ -212,16 +206,6 @@ export const getUserProfile = async () => {
     if (role === "user") {
       return "redirect to setup";
     }
-    usePersonalInfoStore.getState().setProfileInfo({
-      name,
-      id,
-      profile_picture,
-    });
-    usePersonalInfoStore.getState().setCompanyInfo({
-      company_name,
-      company_logo,
-    });
-    usePersonalInfoStore.getState().setIsLoading(false);
   } catch (error) {
     return "redirect to sign in";
   }

@@ -1,5 +1,9 @@
 // Types
 import type { NavItemsProps } from "./types";
+// import api from "@/services/api";
+// import { useAuthStore } from "@/store/auth-store";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import useFetch from "@/hooks/useFetch";
 
 export const nav_items: NavItemsProps = [
   {
@@ -104,3 +108,17 @@ export const getGreeting = () => {
     return "Good Evening";
   }
 };
+
+export interface ProfileResponse {
+  data: {
+    user: {
+      // id: string;
+      name: string | null;
+      // profile_picture: string | null;
+    };
+    company: {
+      company_name: string;
+      company_logo: string;
+    };
+  };
+}

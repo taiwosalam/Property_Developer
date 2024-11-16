@@ -3,15 +3,15 @@
 import { useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-
+import { empty } from "@/app/config";
 // Types
 import type { SideNavProps } from "./types";
 
 // Imports
 import { nav_items } from "./data";
-import { empty } from "@/app/config";
 import NavDropdown from "./nav-dropdown";
 import { NavButton } from "./nav-components";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
   const pathname = usePathname();
@@ -22,12 +22,14 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
     setActiveDropdown((prevActive) => (prevActive === label ? null : label));
   };
 
+  const company_logo = usePersonalInfoStore((state) => state.company_logo);
+
   return (
     <div className="custom-flex-col pb-3">
       <div className="flex md:hidden justify-center p-3 pt-0">
         <Image
-          src={empty}
-          alt="logo"
+          src={company_logo || empty}
+          alt="company logo"
           width={200}
           height={55}
           className="w-full h-[55px] object-cover"

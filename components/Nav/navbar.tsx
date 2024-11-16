@@ -20,7 +20,7 @@ import { NavIcon } from "@/components/Nav/nav-components";
 import NavSwitchUserSwitch from "./nav-switch-user-switch";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import NavProfileDropdown from "@/components/Nav/nav-profile-dropdown";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   SearchIcon,
   MailIcon,
@@ -37,10 +37,10 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { DrawerComponent } from "../BadgeIcon/create-tenancy-aggrement-modal";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import useFetch from "@/hooks/useFetch";
+import { ProfileResponse } from "./data";
 
 const Header = () => {
-  const { isLoading, name, profile_picture, company_logo } =
-    usePersonalInfoStore();
   const { isMobile } = useWindowWidth();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
   const { theme, setTheme } = useTheme();
@@ -67,11 +67,33 @@ const Header = () => {
   const lgIconsInteractionClasses =
     "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
 
+  const { data, loading, error } = useFetch<ProfileResponse>("/user/profile");
+  const setProfileInfo = usePersonalInfoStore((state) => state.setProfileInfo);
+  const setCompanyInfo = usePersonalInfoStore((state) => state.setCompanyInfo);
+  const { name, company_logo } = usePersonalInfoStore();
+
+  useEffect(() => {
+    if (data?.data) {
+      const { user, company } = data.data;
+
+      setProfileInfo({
+        // id: user.id,
+        name: user.name || "",
+        // profile_picture: user.profile_picture || "",
+      });
+
+      setCompanyInfo({
+        company_name: company.company_name,
+        company_logo: company.company_logo,
+      });
+    }
+  }, [data, setProfileInfo, setCompanyInfo]);
+
   return (
     <header
       className={clsx(
         "sticky top-0 z-[4] w-full h-[100px] px-3 md:px-10 py-[12.5px] flex gap-4 md:gap-7 lg:gap-5 items-center border-b border-solid border-neutral-2 dark:border-[#292929] bg-white dark:bg-[#020617] flex-row-reverse md:flex-row",
-        isLoading && "skeleton"
+        loading && "skeleton"
       )}
     >
       <div className="flex-1 h-full flex gap-6 items-center">
@@ -81,7 +103,7 @@ const Header = () => {
             "hidden md:block w-[200px] h-full rounded-lg relative overflow-hidden"
           )}
         >
-          {isLoading ? (
+          {loading ? (
             <Skeleton
               width="100%"
               height="100%"
@@ -269,7 +291,7 @@ const Header = () => {
         <DropdownTrigger>
           <div className="flex items-center gap-4">
             <Picture
-              src={profile_picture || Avatar}
+              src={Avatar}
               alt="profile picture"
               status
               size={isMobile ? 50 : 60}

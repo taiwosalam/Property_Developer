@@ -1,9 +1,9 @@
 import { create } from "zustand";
 
 interface PersonalInfoProps {
-  id: string;
+  //   id: string;
   name: string;
-  profile_picture: string;
+  //   profile_picture: string;
 }
 
 interface CompanyInfoProps {
@@ -12,12 +12,9 @@ interface CompanyInfoProps {
 }
 
 interface PersonalInfoState {
-  isLoading: boolean;
-  setIsLoading: (isLoading: boolean) => void;
-  // Personal Info
-  id: string | null;
+  //   id: string | null;
   name: string | null;
-  profile_picture: string | null;
+  //   profile_picture: string | null;
   setProfileInfo: (info: PersonalInfoProps) => void;
 
   // Company Info
@@ -28,16 +25,14 @@ interface PersonalInfoState {
 
 export const usePersonalInfoStore = create<PersonalInfoState>((set) => ({
   // Personal Info
-  isLoading: false,
-  setIsLoading: (isLoading) => set({ isLoading }),
-  id: null,
+  //   id: null,
   name: null,
-  profile_picture: null,
+  //   profile_picture: null,
   setProfileInfo: (info: PersonalInfoProps) =>
     set({
-      id: info.id,
+      //   id: info.id,
       name: info.name,
-      profile_picture: info.profile_picture,
+      //   profile_picture: info.profile_picture,
     }),
 
   // Company Info
