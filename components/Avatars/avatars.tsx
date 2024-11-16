@@ -11,7 +11,7 @@ import { getAvatarsList } from "./data";
 import Picture from "../Picture/picture";
 import useWindowWidth from "@/hooks/useWindowWidth";
 
-const Avatars: React.FC<AvatarsProps> = ({ onClick, maxNumber = 15 }) => {
+const Avatars: React.FC<AvatarsProps> = ({ onClick, maxNumber = 200 }) => {
   const { isMobile } = useWindowWidth();
   const [avatars, setAvatars] = useState<string[] | null>(null);
 
