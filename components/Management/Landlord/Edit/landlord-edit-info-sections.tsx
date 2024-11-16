@@ -572,12 +572,12 @@ export const LandlordEditAvatarInfoSection = () => {
       </div>
       <div className="custom-flex-col gap-3">
         <p className="text-black text-base font-medium">Choose Avatar</p>
-        <Avatars
+        {/* <Avatars
           type="avatars"
           size={40}
           maxSize={4}
           onClick={setProfilePicture}
-        />
+        /> */}
       </div>
       <Button size="base_medium" className="py-2 px-6">
         Save
