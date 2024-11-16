@@ -67,13 +67,16 @@ export const PropertyRequestSecondSection = () => {
 
   // Handle minimum budget change
   const handleMinChange = (value: string) => {
-    const numValue = parseFloat(value) || null; // Convert input to number or set to null
+    // Remove any non-numeric characters except decimal point
+    const cleanValue = value.replace(/[^\d.]/g, '');
+    const numValue = parseFloat(cleanValue) || null;
     setMinBudget(numValue);
   };
 
   // Handle maximum budget change
   const handleMaxChange = (value: string) => {
-    const numValue = parseFloat(value) || null; // Convert input to number or set to null
+    const cleanValue = value.replace(/[^\d.]/g, '');
+    const numValue = parseFloat(cleanValue) || null;
     setMaxBudget(numValue);
   };
 
@@ -112,7 +115,7 @@ export const PropertyRequestSecondSection = () => {
           </h3>
           <Input
             required
-            id="minimum"
+            id="min_budget"
             placeholder=""
             label="Minimum Budget"
             formatNumber
@@ -123,7 +126,7 @@ export const PropertyRequestSecondSection = () => {
           />
           <Input
             required
-            id="maximum"
+            id="max_budget"
             placeholder=""
             label="Maximum Budget"
             formatNumber
@@ -140,7 +143,7 @@ export const PropertyRequestSecondSection = () => {
               Valid Till
             </h3>
             <DatePickerWithRange
-              id="valid-till"
+              id="valid_till"
               className="w-full border border-gray-200 rounded-md"
               selectedRange={selectedDateRange}
               onDateChange={handleDateChange}
@@ -163,13 +166,13 @@ export const ManagePropertiesComments = () => {
 };
 
 export const StateAndLocalGovt = () => {
-  type Address = "selectedState" | "selectedLGA" | "selectedCity";
-  const [state, setState] = useState({
-    selectedState: "",
-    selectedLGA: "",
-    activeAvatar: "",
-    errorMsgs: {} as ValidationErrors,
-  });
+  // type Address = "selectedState" | "selectedLGA" | "selectedCity";
+  // const [state, setState] = useState({
+  //   selectedState: "",
+  //   selectedLGA: "",
+  //   activeAvatar: "",
+  //   errorMsgs: {} as ValidationErrors,
+  // });
 
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
 
@@ -196,7 +199,7 @@ export const StateAndLocalGovt = () => {
         }
         maxSelections={selectedStates.includes("All States") ? 1 : 10}
         id="target_audience"
-        label="Select States (Maximum of 10)"
+        label="Select States"
         required
         onSelectionChange={handleStateSelection}
       />

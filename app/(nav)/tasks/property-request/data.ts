@@ -1,3 +1,5 @@
+import api from "@/services/api";
+
 export interface PropertyRequestDataType {
   userName: string;
   requestDate: string;
@@ -14,6 +16,16 @@ export interface PropertyRequestDataType {
   minBudget: string;
   maxBudget: string;
 } // Check with backend if this is the correct data type
+
+export const getPropertyRequestData = async () => {
+  try {
+    const response = await api.get("/property_request");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching property request data:", error);
+    throw error;
+  }
+}
 
 export const PropertyRequestData: PropertyRequestDataType[] = [
   {

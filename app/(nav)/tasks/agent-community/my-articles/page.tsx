@@ -2,15 +2,16 @@
 
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import React from "react";
+import { useEffect, useState } from "react";
 import Button from "@/components/Form/Button/button";
-import ThreadCard from "@/components/Community/ThreadCard";
+import ThreadCard, { ThreadSkeleton } from "@/components/Community/ThreadCard";
 import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
-import { threadData } from "../data";
+import { getLoggedInUserThreads, threadData } from "../data";
 import { useRouter } from "next/navigation";
 import { PlusIcon } from "@/public/icons/icons";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 const lists = [
   {
@@ -32,9 +33,36 @@ const lists = [
 
 const MyArticlePage = () => {
   const router = useRouter();
+  const [isFetching, setIsFetching] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [threads, setThreads] = useState<any[]>([]);
+  const [userInfo, setUserInfo] = useState<any>(null);
+
+
+  useEffect(() => {
+    const fetchThreads = async () => {
+      setIsFetching(true);
+      setError(null);
+      try {
+        const { data } = await getLoggedInUserThreads();
+        console.log('Threads data:', data.original.data);
+        setThreads(data.original.data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch threads');
+        console.error('Error fetching threads:', err);
+      } finally {
+        setIsFetching(false);
+      }
+    };
+
+    fetchThreads();
+  }, []);
+
+
   const handleCreateMyArticleClick = () => {
     router.push("/tasks/agent-community/my-articles/create");
   };
+
   return (
     <div className="space-y-7">
       <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
@@ -47,7 +75,7 @@ const MyArticlePage = () => {
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">
-              + Community Board
+              + Community Board 
             </Button>
           </ModalTrigger>
           <ModalContent>
@@ -58,7 +86,7 @@ const MyArticlePage = () => {
       <FilterBar
         hasGridListToggle={false}
         azFilter
-        onStateSelect={() => {}}
+        onStateSelect={() => { }}
         pageTitle="My Articles"
         aboutPageModalData={{
           title: "My Articles",
@@ -66,36 +94,42 @@ const MyArticlePage = () => {
             "This page contains a list of My Articles on the platform.",
         }}
         searchInputPlaceholder="Search Articles"
-        handleFilterApply={() => {}}
+        handleFilterApply={() => { }}
         isDateTrue
         filterOptions={[]}
         filterWithOptionsWithDropdown={[]}
       />
 
-      <div className="thread_card grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {threadData.map(
-          (
-            { name, picture_url, role, time, title, desc, comments, user_pics },
-            index
-          ) => (
+      <AutoResizingGrid minWidth={300}>
+        {isFetching ? (
+          Array(threads?.length || 3).fill(null).map((_, index) => (
+            <ThreadSkeleton key={index} />
+          ))
+        ) : threads && threads.length > 0 ? (
+          threads.map((thread, index) => (
             <ThreadCard
               key={index}
-              name={name}
-              picture_url={picture_url}
-              role={role}
-              time={time}
-              title={title}
-              desc={desc}
-              comments={comments}
-              user_pics={user_pics}
-              myArticle={true}
-              id={index}
+              id={thread.post.id}
+              name={thread.user.name}
+              picture_url={thread.user.picture_url}
+              role={thread.user.role}
+              time={thread.post.created_at}
+              title={thread.post.title}
+              desc={thread.post.content}
+              comments={thread.post.comments_count}
+              user_pics={thread.user.picture}
+              likes={thread.post.likes_up}
+              dislikes={thread.post.likes_down}
             />
-          )
+          ))
+        ) : (
+          <div className="text-center text-brand-9 w-full h-full flex items-center justify-center">
+            <p>No articles found {threads.length}</p>
+          </div>
         )}
-      </div>
+      </AutoResizingGrid>
       <div className="pagination">
-        <Pagination totalPages={5} currentPage={1} onPageChange={() => {}} />
+        <Pagination totalPages={5} currentPage={1} onPageChange={() => { }} />
       </div>
       <div className="top-80 right-4 fixed rounded-full">
         <button

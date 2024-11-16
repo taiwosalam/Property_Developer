@@ -5,20 +5,32 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import {
   PropertyRequestFirstSection,
-  PropertyRequestSecondSection,
   StateAndLocalGovt,
 } from "@/components/Community/ManageRequest";
 import AddPhotoAndVideo from "@/components/Community/AddPhotoAndVideo";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { createArticle } from "../data";
+import { toast } from "sonner";
 
 const CreateArticle = () => {
   const router = useRouter();
+  const [isCreating, setIsCreating] = useState(false);
 
   const handleSubmit = async (data: FormData) => {
-    const res = await createArticle(data);
-  }
+    setIsCreating(true);
+    try {
+      const res = await createArticle(data);
+      if (res) {
+      toast.success("Article created successfully");
+      router.push("/tasks/agent-community/my-articles");
+      }
+    } catch (error) {
+      toast.error("Failed to create article");
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
   return (
     <>
@@ -39,7 +51,7 @@ const CreateArticle = () => {
           </div>
         </div>
         <AuthForm
-          // returnType="form-data"
+          returnType="form-data"
           className="custom-flex-col gap-5"
           onFormSubmit={handleSubmit}
           setValidationErrors={() => { }}
@@ -56,9 +68,10 @@ const CreateArticle = () => {
           <FixedFooter className="flex gap-6 justify-end">
             <button
               type="submit"
+              disabled={isCreating}
               className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
             >
-              Create
+             { isCreating ? "Creating..." : "Create" }
             </button>
           </FixedFooter>
         </AuthForm>

@@ -10,24 +10,42 @@ import {
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { toast } from "sonner";
 import { usePropertyRequestStore } from "@/store/createPropertyStore";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { createPropertyRequest } from "../data";
 
 const CreateMyPropertyRequest = () => {
   const router = useRouter();
+  const [isCreating, setIsCreating] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { minBudget, maxBudget, resetBudgets } = usePropertyRequestStore();
 
-  const handleCreateClick = () => {
-    // Validate budgets here when the create button is clicked
-    if (minBudget !== null && maxBudget !== null && minBudget > maxBudget) {
-      toast.error("Maximum budget cannot be less than minimum budget.");
-      resetBudgets(); // Reset inputs to 0 or null
-    } else {
-      // Proceed with the request creation logic
-      console.log("Property request created successfully");
+  const handleCreateClick = async (data: Record<string, any>) => {
+    setIsCreating(true);
+    try {
+      if (minBudget !== null && maxBudget !== null && minBudget > maxBudget) {
+        toast.error("Maximum budget cannot be less than minimum budget.");
+        resetBudgets();
+        return;
+      }
+      const result = await createPropertyRequest(data);
+      if (result) {
+        toast.success("Property request created successfully");
+        router.push("/tasks/agent-community/my-properties-request");
+      }
+    } catch (error) {
+      toast.error("Failed to create property request. Please try again.");
+    } finally {
+      setIsCreating(false);
     }
   };
 
   return (
     <>
+    <AuthForm 
+    // setValidationErrors={() => {}}
+     onFormSubmit={handleCreateClick}
+     returnType="form-data"
+    >
       <div className="wra mb-16">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-1 mb-1">
@@ -62,13 +80,13 @@ const CreateMyPropertyRequest = () => {
           Delete
         </button>
         <button
-          onClick={handleCreateClick}
-          type="button"
+          type="submit"
           className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
         >
-          Create
+          { isCreating ? "Creating..." : "Create" }
         </button>
-      </FixedFooter>
+        </FixedFooter>
+      </AuthForm>
     </>
   );
 };

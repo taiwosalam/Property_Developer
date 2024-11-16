@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import Select from "@/components/Form/Select/select";
 import {
   unitTypes,
   unitSubtypes,
@@ -8,6 +7,7 @@ import {
   UnitTypeKey,
   Categories,
 } from "@/data";
+import Select from "./select";
 
 const PropertyRequestUnitType = () => {
   const propertyDetails: { category: Categories } = {
@@ -104,7 +104,7 @@ const PropertyRequestUnitType = () => {
     ""
   );
   const [unitTypeOptions, setUnitTypeOptions] = useState<string[]>(
-    unitTypes[propertyDetails.category]
+    unitTypes[propertyDetails.category] || []
   );
   const [unitSubtypeOptions, setUnitSubtypeOptions] = useState<string[]>([]);
   const [selectedSubtype, setSelectedSubtype] = useState<string>("");
@@ -142,7 +142,7 @@ const PropertyRequestUnitType = () => {
     <>
       <Select
         required
-        id="property-category"
+        id="property_category"
         label="Property Categories"
         options={propertyCategories}
         onChange={(val) =>
