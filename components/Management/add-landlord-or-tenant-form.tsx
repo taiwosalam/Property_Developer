@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
@@ -8,7 +8,6 @@ import Input from "../Form/Input/input";
 import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
 import Button from "../Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
-import Picture from "../Picture/picture";
 import { AuthForm } from "../Auth/auth-components";
 import {
   CameraIcon2,
@@ -170,7 +169,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
             <button
               type="button"
               onClick={chooseAvatar}
-              className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white"
+              className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
               aria-label="choose avatar"
             >
               {avatar ? (

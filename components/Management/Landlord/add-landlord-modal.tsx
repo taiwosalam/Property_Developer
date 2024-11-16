@@ -45,8 +45,9 @@ const AddLandlordModal = () => {
     }
   };
 
-  const handleAddLandlord = (data: Record<string, any>) => {
-    console.log(data);
+  const handleAddLandlord = async (data: Record<string, any>) => {
+    console.log("data", data);
+    await addLandlord(data);
   };
 
   const modal_states: Record<
