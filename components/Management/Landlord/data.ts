@@ -1,6 +1,10 @@
 // Imports
 import api from "@/services/api";
 export const addLandlord = async (formData: FormData) => {
-  const { data } = await api.post("/landlord", formData);
-  return data;
+  try {
+    const { data } = await api.post("/landlord", formData);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
