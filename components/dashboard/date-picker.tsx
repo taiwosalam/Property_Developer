@@ -46,6 +46,11 @@ export function DatePickerWithRange({
 
   return (
     <div className={cn(className)}>
+      <input
+        type="hidden"
+        name="valid_till"
+        value={date?.from && date?.to ? `${format(date.from, 'yyyy-MM-dd')} - ${format(date.to, 'yyyy-MM-dd')}` : ''}
+      />
       <Popover>
         <PopoverTrigger asChild>
           <button

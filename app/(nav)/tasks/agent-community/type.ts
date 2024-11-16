@@ -11,6 +11,8 @@ export type ThreadCardProps = {
   myArticle?: boolean;
   id: string | number;
   comments: string;
+  likes: string;
+  dislikes: string;
 };
 
 export interface CommentProps {

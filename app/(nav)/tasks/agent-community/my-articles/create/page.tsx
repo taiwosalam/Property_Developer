@@ -39,7 +39,7 @@ const CreateArticle = () => {
           </div>
         </div>
         <AuthForm
-          // returnType="form-data"
+          returnType="form-data"
           className="custom-flex-col gap-5"
           onFormSubmit={handleSubmit}
           setValidationErrors={() => { }}

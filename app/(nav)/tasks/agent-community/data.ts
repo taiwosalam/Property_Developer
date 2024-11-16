@@ -1,6 +1,27 @@
 import { empty } from "@/app/config";
 import { title } from "process";
 import { CommentProps } from "./type";
+import api from "@/services/api";
+
+export const getThreads = async () => {
+  try {
+    const response = await api.get("/agent_community");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching threads:", error);
+    throw error;
+  }
+};
+
+export const getLoggedInUserThreads = async () => {
+  try {
+    const response = await api.get("/agent_community/user/posts");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching threads:", error);
+    throw error;
+  }
+};
 
 export const threadData = [
   {
@@ -95,7 +116,16 @@ export const threadData = [
   },
 ];
 
-
+export const getAllPropertyRequests = async () => {
+  try {
+    const response = await api.get("/agent_community/property-requests/all");
+    console.log('Property requests data:', response.data);  
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching property requests:", error);
+    throw error;
+  }
+};
 
 export const threadArticle = [
     '#Commercial and retail real estate fundamentals are expected to remain strong due to the scarcity of new construction deliveries, prompting compelling opportunities for investors amid high interest rates and inflation in the market, writes CHINEDUM UWAEGBULAM.',

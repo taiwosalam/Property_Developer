@@ -15,6 +15,8 @@ import Pagination from "@/components/Pagination/pagination";
 import { PlusIcon } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
 import { propertyRequestOptions, stateOptions } from "../../inspections/data";
+import { useEffect, useState } from "react";
+import { getAllPropertyRequests, getThreads } from "../data";
 
 const lists = [
   {
@@ -53,9 +55,34 @@ const transformToPropertyRequestCardProps = (
 
 const PropertyRequest = () => {
   const router = useRouter();
+  const [propertyRequests, setPropertyRequests] = useState<PropertyRequestDataType[]>([]);
+  const [isFetching, setIsFetching] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  
   const handleCreatePropertyRequestClick = () => {
     router.push("/tasks/agent-community/my-properties-request/create");
   };
+
+  useEffect(() => {
+    const fetchPropertyRequests = async () => {
+      setIsFetching(true);  
+      setError(null);
+      try {
+        const data = await getAllPropertyRequests();
+        // setPropertyRequests(data?.posts);
+        console.log('Property requests data:', data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch property requests');
+        console.error('Error fetching property requests:', err);
+      } finally {
+        setIsFetching(false);
+      }
+    };
+
+    fetchPropertyRequests();
+  }, []);
+
   return (
     <div className="space-y-9">
       <div className="flex gap-5 flex-wrap items-center justify-between">
