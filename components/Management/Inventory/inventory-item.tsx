@@ -88,7 +88,7 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
           </div>
           <div className="relative h-full min-h-[165px] aspect-square rounded-2xl overflow-hidden">
             <Image
-              src={preview}
+              src={preview || ""}
               alt="property"
               fill
               sizes="200px"

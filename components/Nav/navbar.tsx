@@ -36,8 +36,11 @@ import {
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { DrawerComponent } from "../BadgeIcon/create-tenancy-aggrement-modal";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const Header = () => {
+  const { isLoading, name, profile_picture, company_logo } =
+    usePersonalInfoStore();
   const { isMobile } = useWindowWidth();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
   const { theme, setTheme } = useTheme();
@@ -67,8 +70,8 @@ const Header = () => {
   return (
     <header
       className={clsx(
-        "sticky top-0 z-[4] w-full h-[100px] px-3 md:px-10 py-[12.5px] flex gap-4 md:gap-7 lg:gap-5 items-center border-b border-solid border-neutral-2 dark:border-[#292929] bg-white dark:bg-[#020617] flex-row-reverse md:flex-row"
-        // loading && "skeleton"
+        "sticky top-0 z-[4] w-full h-[100px] px-3 md:px-10 py-[12.5px] flex gap-4 md:gap-7 lg:gap-5 items-center border-b border-solid border-neutral-2 dark:border-[#292929] bg-white dark:bg-[#020617] flex-row-reverse md:flex-row",
+        isLoading && "skeleton"
       )}
     >
       <div className="flex-1 h-full flex gap-6 items-center">
@@ -78,14 +81,25 @@ const Header = () => {
             "hidden md:block w-[200px] h-full rounded-lg relative overflow-hidden"
           )}
         >
-          <Image
-            src={empty}
-            alt="logo"
-            fill
-            priority
-            sizes="auto"
-            className="object-contain"
-          />
+          {isLoading ? (
+            <Skeleton
+              width="100%"
+              height="100%"
+              animation="wave"
+              sx={{
+                transform: "none",
+              }}
+            />
+          ) : (
+            <Image
+              src={company_logo || empty}
+              alt="company logo"
+              fill
+              priority
+              sizes="auto"
+              className="object-contain"
+            />
+          )}
         </div>
 
         {/*MD & Mobile Icons */}
@@ -255,7 +269,7 @@ const Header = () => {
         <DropdownTrigger>
           <div className="flex items-center gap-4">
             <Picture
-              src={Avatar}
+              src={profile_picture || Avatar}
               alt="profile picture"
               status
               size={isMobile ? 50 : 60}
@@ -267,7 +281,7 @@ const Header = () => {
                 {getGreeting()},
               </p>
               <p className="text-xs md:text-base font-medium dark:text-white">
-                Taiwo Salam
+                {name}
               </p>
             </div>
           </div>
