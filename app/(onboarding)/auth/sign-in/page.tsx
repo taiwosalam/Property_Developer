@@ -24,7 +24,7 @@ const SignIn = () => {
     setIsLoading(true);
     const a = await login(formData);
     if (a === "redirect to verify email") {
-      router.push(`/auth/sign-up?email=${formData.email}`);
+      router.push("/auth/sign-up");
     } else if (a === "redirect to dashboard") {
       router.push("/dashboard");
     } else if (a === "redirect to setup") {

@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { ValidationErrors } from "@/utils/types";
 import type { VerifyEmailAddressProps } from "./types";
-import { resendOtp, verifyEmail } from "@/app/(onboarding)/auth/data";
+import {
+  resendOtp,
+  verifyEmail,
+  verifyOtpAndResetPassword,
+} from "@/app/(onboarding)/auth/data";
 import Button from "@/components/Form/Button/button";
 import { objectLength } from "@/utils/object-length";
 import { AuthHeading, AuthPinField } from "../auth-components";
@@ -16,20 +20,12 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
 }) => {
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const email = useAuthStore((state) => state.email);
+  const emailVerified = useAuthStore((state) => state.emailVerified);
   const [code, setCode] = useState("");
   const [countdown, setCountdown] = useState(40);
   const [canResend, setCanResend] = useState(false);
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (countdown > 0) {
-      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-    } else {
-      setCanResend(true);
-    }
-    return () => clearTimeout(timer);
-  }, [countdown]);
 
   const handlePinChange = (pin: string) => {
     setCode(pin);
@@ -41,7 +37,14 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
     const validation = validateData(data);
 
     if (!objectLength(validation.invalidKeys)) {
-      const status = await verifyEmail(code);
+      setIsLoading(true);
+
+      // Choose verification function based on type
+      const status =
+        type === "sign up"
+          ? await verifyEmail(code)
+          : await verifyOtpAndResetPassword(code);
+
       if (status) {
         if (type === "sign up") {
           router.push("/setup");
@@ -49,6 +52,7 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
           changeStep("next");
         }
       }
+      setIsLoading(false);
     } else {
       setErrorMsgs(validation.invalidKeys);
     }
@@ -69,6 +73,29 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
     key: "code",
   });
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    } else {
+      setCanResend(true);
+    }
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
+  useEffect(() => {
+    if (type === "sign up" && emailVerified === false) {
+      const sendInitialOtp = async () => {
+        const status = await resendOtp();
+        if (status) {
+          setCountdown(40);
+          setCanResend(false);
+        }
+      };
+      sendInitialOtp();
+    }
+  }, [emailVerified, type]);
+
   return (
     <div className="custom-flex-col gap-20">
       <AuthHeading title="Verify Email Address">
@@ -85,7 +112,9 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
             </p>
           )}
         </div>
-        <Button onClick={handleCodeSubmit}>verify</Button>
+        <Button onClick={handleCodeSubmit} disabled={isLoading}>
+          {isLoading ? "Please wait..." : "verify"}
+        </Button>
       </div>
 
       <div className="flex items-center justify-between">
