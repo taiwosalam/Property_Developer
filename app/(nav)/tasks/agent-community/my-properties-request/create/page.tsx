@@ -15,11 +15,12 @@ import { createPropertyRequest } from "../data";
 
 const CreateMyPropertyRequest = () => {
   const router = useRouter();
+  const [isCreating, setIsCreating] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { minBudget, maxBudget, resetBudgets } = usePropertyRequestStore();
 
   const handleCreateClick = async (data: Record<string, any>) => {
-    setIsLoading(true);
+    setIsCreating(true);
     try {
       if (minBudget !== null && maxBudget !== null && minBudget > maxBudget) {
         toast.error("Maximum budget cannot be less than minimum budget.");
@@ -34,7 +35,7 @@ const CreateMyPropertyRequest = () => {
     } catch (error) {
       toast.error("Failed to create property request. Please try again.");
     } finally {
-      setIsLoading(false);
+      setIsCreating(false);
     }
   };
 
@@ -81,9 +82,8 @@ const CreateMyPropertyRequest = () => {
         <button
           type="submit"
           className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
-          disabled={isLoading}
         >
-          {isLoading ? "Creating..." : "Create"}
+          { isCreating ? "Creating..." : "Create" }
         </button>
         </FixedFooter>
       </AuthForm>

@@ -36,6 +36,7 @@ const MyArticlePage = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [threads, setThreads] = useState<any[]>([]);
+  const [userInfo, setUserInfo] = useState<any>(null);
 
 
   useEffect(() => {
@@ -44,8 +45,8 @@ const MyArticlePage = () => {
       setError(null);
       try {
         const { data } = await getLoggedInUserThreads();
-        // console.log('Threads data:', data.original.data[0].post);
-        setThreads(data.original.data[0].post);
+        console.log('Threads data:', data.original.data);
+        setThreads(data.original.data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch threads');
         console.error('Error fetching threads:', err);
@@ -57,10 +58,11 @@ const MyArticlePage = () => {
     fetchThreads();
   }, []);
 
+
   const handleCreateMyArticleClick = () => {
     router.push("/tasks/agent-community/my-articles/create");
   };
-  
+
   return (
     <div className="space-y-7">
       <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
@@ -73,7 +75,7 @@ const MyArticlePage = () => {
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">
-              + Community Board
+              + Community Board 
             </Button>
           </ModalTrigger>
           <ModalContent>
@@ -107,7 +109,7 @@ const MyArticlePage = () => {
           threads.map((thread, index) => (
             <ThreadCard
               key={index}
-              id={index}
+              id={thread.post.id}
               name={thread.user.name}
               picture_url={thread.user.picture_url}
               role={thread.user.role}
@@ -122,7 +124,7 @@ const MyArticlePage = () => {
           ))
         ) : (
           <div className="text-center text-brand-9 w-full h-full flex items-center justify-center">
-            <p>No articles found</p>
+            <p>No articles found {threads.length}</p>
           </div>
         )}
       </AutoResizingGrid>

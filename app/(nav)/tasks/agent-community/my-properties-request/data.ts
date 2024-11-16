@@ -7,14 +7,16 @@ export const transformFormData = (
     const transformedData: Record<string, any> = {};
 
     Array.from(formData.entries()).forEach(([key, value]) => {
-    //   console.log('Processing key:', key);
-    //   console.log('KeyMap contains key?', key in keyMap);
+      console.log('Processing key:', key);
+      console.log('KeyMap contains key?', key in keyMap);
+      
       const mappedKey = keyMap[key] || key;
       transformedData[mappedKey] = value;
     });
     return transformedData;
-};
-export const createPropertyRequest = async (data: FormData | Record<string, any>) => {
+  };
+
+  export const createPropertyRequest = async (data: FormData | Record<string, any>) => {
     const keyMapping: Record<string, string> = {
         'content': 'description',
         'propertyCategory': 'property_category',
@@ -42,15 +44,19 @@ export const createPropertyRequest = async (data: FormData | Record<string, any>
         property_category: transformedData.property_category || '',
         property_type: transformedData.property_type || '',
         property_sub_type: transformedData.property_sub_type || '',
-        target_audience: Array.isArray(transformedData.target_audience)
-            ? transformedData.target_audience
-            : transformedData.target_audience ? [transformedData.target_audience] : [],
+        target_audience: transformedData.target_audience 
+            ? (typeof transformedData.target_audience === 'string' 
+                ? transformedData.target_audience.split(',') 
+                : Array.isArray(transformedData.target_audience)
+                    ? transformedData.target_audience
+                    : [transformedData.target_audience])
+            : [],
         min_budget: transformedData.min_budget?.toString() || '',
         max_budget: transformedData.max_budget?.toString() || '',
         valid_till: transformedData.valid_till || ''
     };
     
-    console.log('Payload to be sent to API:', formattedData);
+    // console.log('Payload to be sent to API:', formattedData);
     
     try {
         const response = await api.post("/agent_community/property-requests/create", formattedData);
@@ -60,3 +66,5 @@ export const createPropertyRequest = async (data: FormData | Record<string, any>
         throw error;
     }
 }
+
+// DONE WITH CREATEPROPERTYREQUEST 

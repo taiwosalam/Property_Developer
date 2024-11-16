@@ -102,7 +102,10 @@ const ThreadBody = ({
       <h2 className="text-black text-5 dark:text-white leading-5 truncate font-bold mt-4">
         {title}
       </h2>
-      <p className="text-sm line-clamp-3"> {desc} </p>
+      <div 
+        className="text-sm line-clamp-3"
+        dangerouslySetInnerHTML={{ __html: desc }}
+      />
       <div className="imagWrapper">
         <Image
           src={picture_url || empty}

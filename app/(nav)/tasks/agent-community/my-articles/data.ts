@@ -8,13 +8,18 @@ export const createArticle = async (formData: any) => {
     const formDataObject: any = {};
     formData.forEach((value: FormDataEntryValue, key: string) => {
       if (key !== 'picture') {
-        formDataObject[key] = value;
+        // Convert target_audience to array if it exists
+        if (key === 'target_audience') {
+          formDataObject[key] = value.toString().split(',').map(item => item.trim());
+        } else {
+          formDataObject[key] = value;
+        }
       }
     });
 
     console.log("formDataObject", formDataObject);
-    const { data } = await api.post("/agent_community", formDataObject);
-    return data;
+    const response = await api.post("/agent_community", formDataObject);
+    return response.status === 200 || response.status === 201;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       const messages = error.response.data?.errors?.messages;
