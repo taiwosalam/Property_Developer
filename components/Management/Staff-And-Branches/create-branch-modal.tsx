@@ -33,6 +33,7 @@ const CreateBranchModal:React.FC = () => {
   const handleBack = () => setActiveStep("options");
 
   const handleSubmit = async (data: FormData) => {
+    console.log("Branch data", data);
     const res = await createNewBranch(data);
 
     // if (res) {

@@ -6,12 +6,7 @@ import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
 import { useState } from "react";
 import Button from "@/components/Form/Button/button";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { createNewBranch } from "./Branch/data";
-import Avatars from "@/components/Avatars/avatars";
 import { useImageUploader } from "@/hooks/useImageUploader";
-import Picture from "@/components/Picture/picture";
-import CameraCircle from "@/public/icons/camera-circle.svg";
-import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 
 import {
   CameraIcon2,
@@ -19,6 +14,7 @@ import {
   DeleteIconOrange,
 } from "@/public/icons/icons";
 import Image from "next/image";
+import { sub } from "date-fns";
 
 interface CreateBranchFormProps {
     chooseAvatar: () => void;
@@ -69,7 +65,7 @@ const CreateBranchForm:React.FC<CreateBranchFormProps> = ({
       
     return (
         <AuthForm
-        returnType="form-data"
+        // returnType="form-data"
         className="custom-flex-col gap-5"
         onFormSubmit={submitAction}
         setValidationErrors={() => {}}
@@ -167,7 +163,7 @@ const CreateBranchForm:React.FC<CreateBranchFormProps> = ({
               <button
                 type="button"
                 onClick={chooseAvatar}
-                className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white"
+                className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
                 aria-label="choose avatar"
               >
                 {avatar ? (
@@ -210,6 +206,7 @@ const CreateBranchForm:React.FC<CreateBranchFormProps> = ({
         <Button
           type="submit"
           size="base_medium"
+          onClick={submitAction}
           className="py-2 px-8 ml-auto !w-fit"
         >
           create

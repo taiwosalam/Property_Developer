@@ -80,7 +80,7 @@ const AddPhotoAndVideo = ({ editing }: { editing?: boolean }) => {
           ))}
         {images.length < MAX_IMAGES && (
           <label
-            htmlFor="upload"
+            htmlFor="picture"
             className="px-4 w-full h-[110px] rounded-lg border-2 border-dashed border-[#626262] bg-white dark:bg-darkText-primary flex flex-col items-center justify-center cursor-pointer text-[#626262] dark:text-darkText-1"
           >
             <PlusIcon />
@@ -88,7 +88,8 @@ const AddPhotoAndVideo = ({ editing }: { editing?: boolean }) => {
               Add Photo
             </span>
             <input
-              id="upload"
+              id="picture"
+              name="picture"
               type="file"
               accept="image/*"
               multiple

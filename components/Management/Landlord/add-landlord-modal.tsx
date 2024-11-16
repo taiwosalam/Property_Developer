@@ -40,11 +40,14 @@ const AddLandlordModal = () => {
     }
   };
 
-  const handleAddLandlord = (data: Record<string, any>) => {
+  const handleAddLandlord = async (data: FormData) => {
+    console.log(data);
     if (!checkFormDataForImageOrAvatar(data)) {
       toast.warning("Please upload a picture or choose an avatar.");
       return;
     }
+    const res = await addLandlord(data);
+    console.log(res);
   };
 
   const modal_states: Record<

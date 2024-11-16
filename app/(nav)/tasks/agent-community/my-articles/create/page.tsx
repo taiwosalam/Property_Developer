@@ -10,9 +10,16 @@ import {
 } from "@/components/Community/ManageRequest";
 import AddPhotoAndVideo from "@/components/Community/AddPhotoAndVideo";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { createArticle } from "../data";
 
 const CreateArticle = () => {
   const router = useRouter();
+
+  const handleSubmit = async (data: FormData) => {
+    const res = await createArticle(data);
+  }
+
   return (
     <>
       <div className="wra mb-16">
@@ -31,25 +38,31 @@ const CreateArticle = () => {
             </h1>
           </div>
         </div>
-
-        <div className="body w-full flex flex-col lg:flex-row justify-between mt-10 gap-10">
-          <div className="first flex flex-col w-full lg:w-[60%]">
-            <PropertyRequestFirstSection placeholderText="Please be aware that you are responsible for all posts or uploads you make. Post Real Estate, Property related Articles and stay on topic." />
-          </div>
-
-          <div className="second flex flex-col w-full lg:w-[40%]">
-            <SecondSection />
-          </div>
-        </div>
-      </div>
-      <FixedFooter className="flex gap-6 justify-end">
-        <button
-          type="button"
-          className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
+        <AuthForm
+          // returnType="form-data"
+          className="custom-flex-col gap-5"
+          onFormSubmit={handleSubmit}
+          setValidationErrors={() => { }}
         >
-          Create
-        </button>
-      </FixedFooter>
+          <div className="body w-full flex flex-col lg:flex-row justify-between mt-10 gap-10">
+            <div className="first flex flex-col w-full lg:w-[60%]">
+              <PropertyRequestFirstSection placeholderText="Please be aware that you are responsible for all posts or uploads you make. Post Real Estate, Property related Articles and stay on topic." />
+            </div>
+
+            <div className="second flex flex-col w-full lg:w-[40%]">
+              <SecondSection />
+            </div>
+          </div>
+          <FixedFooter className="flex gap-6 justify-end">
+            <button
+              type="submit"
+              className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
+            >
+              Create
+            </button>
+          </FixedFooter>
+        </AuthForm>
+      </div>
     </>
   );
 };

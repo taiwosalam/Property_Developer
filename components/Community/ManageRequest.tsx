@@ -18,7 +18,7 @@ import { DatePickerWithRange } from "../dashboard/date-picker";
 import { DateRange } from "react-day-picker";
 
 export const PropertyRequestFirstSection = ({
-  inputValue: initialInputValue,
+  inputValue: initialInputValue = '',
   title,
   placeholderText,
   desc,
@@ -35,17 +35,18 @@ export const PropertyRequestFirstSection = ({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4">
-        <label htmlFor="property-title"> Title </label>
+        <label htmlFor="title"> Title </label>
         <input
           type="text"
-          id="property-title"
+          id="title"
+          name="title"
           className="bg-white rounded-md dark:bg-darkText-primary dark:text-darkText-1 py-2 px-3 w-full text-text-secondary"
-          value={inputValue}
+          value={inputValue || ''}
           onChange={onChange}
         />
       </div>
       <TextArea
-        id="property-description"
+        id="content"
         label=""
         placeholder={desc ? desc : placeholderText}
         className="w-full mt-4 min-h-[300px]"
@@ -187,13 +188,14 @@ export const StateAndLocalGovt = () => {
         Target Audience
       </h3>
       <MultiSelect
+        name="target_audience"
         options={
           selectedStates.includes("All States")
             ? ["All States"] // Only show "All States" when it’s selected
             : ["All States", ...getAllStates()]
         }
         maxSelections={selectedStates.includes("All States") ? 1 : 10}
-        id="states"
+        id="target_audience"
         label="Select States (Maximum of 10)"
         required
         onSelectionChange={handleStateSelection}
