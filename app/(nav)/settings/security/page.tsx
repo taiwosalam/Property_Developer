@@ -81,7 +81,7 @@ const Security = () => {
             />
             <div className="custom-flex-col gap-[18px]">
               <ProfileUpload
-                preview={preview}
+                preview={preview || ""}
                 onChange={handleImageChange}
                 inputFileRef={inputFileRef}
                 onClick={changeImage}
