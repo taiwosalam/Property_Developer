@@ -23,6 +23,7 @@ export default function RootLayout({
   const setToken = useAuthStore((state) => state.setToken);
   const setRole = useAuthStore((state) => state.setRole);
   const role = useAuthStore((state) => state.role);
+  
   useEffect(() => {
     if (!authToken) {
       router.replace("/auth/sign-in");
@@ -59,7 +60,7 @@ export default function RootLayout({
       </Head>
       <body
         className={`${primaryFont.className} antialiased`}
-        // suppressHydrationWarning
+        suppressHydrationWarning
       >
         <Theme
           attribute="class"
