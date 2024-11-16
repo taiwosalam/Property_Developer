@@ -30,18 +30,25 @@ export const login = async (formData: Record<string, any>) => {
     if (data.status) {
       const token = data.access_token;
       useAuthStore.getState().setToken(token);
+      const email = data.data.details?.email || formData.email;
+      useAuthStore.getState().setEmail(email);
       const message = data?.message || "Login successful!";
-      toast.success(message);
       const emailVerified = data.data.details["email-verification"];
       const role = data.data.details.role;
-
-      if (!emailVerified) {
-        return "redirect to verify email";
-      } else if (role === "user") {
-        return "redirect to setup";
-      } else {
-        return "redirect to dashboard";
+      if (emailVerified) {
+        toast.success(message);
+        if (role === "user") {
+          return "redirect to setup";
+        } else {
+          return "redirect to dashboard";
+        }
       }
+      if (!emailVerified) {
+        useAuthStore.getState().setEmailVerified(false);
+        toast.warning("Please verify your email to continue");
+        return "redirect to verify email";
+      }
+
       // if (data["remember-me"] === "true") {
       //   localStorage.setItem("authToken", token);
       // } else {
@@ -181,5 +188,89 @@ export const logout = async (): Promise<boolean> => {
       toast.error("An unexpected error occurred. Please try again.");
     }
     return false;
+  }
+};
+
+export const getUserProfile = async () => {
+  try {
+    const { data } = await api.get("/user");
+    const role = data.data.details.role;
+    useAuthStore.getState().setRole(role);
+    const emailVerified = data.data.details["email-verification"];
+    if (!emailVerified) {
+      useAuthStore.getState().setEmailVerified(false);
+      return "redirect to verify email";
+    }
+    if (role === "user") {
+      return "redirect to setup";
+    }
+    return "redirect to dashboard";
+  } catch (error) {
+    return "redirect to sign in";
+  }
+};
+
+export const requestPasswordReset = async (formData: FormData) => {
+  try {
+    const { data } = await axios.post(`${base_url}password/reset`, formData);
+    const message = data?.message || "Password reset OTP sent successfully!";
+    toast.success(message);
+    useAuthStore.getState().reset(formData.get("email") as string);
+    return true;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      const errorMessage =
+        error.response.data?.message || "Failed to send password reset OTP.";
+      toast.error(errorMessage);
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+    return false;
+  }
+};
+
+export const verifyOtpAndResetPassword = async (otp: string) => {
+  const email = useAuthStore.getState().email;
+  try {
+    const { data } = await axios.post(`${base_url}password/reset/verify`, {
+      identifier: email,
+      code: otp,
+    });
+    const message = data?.message || "OTP validated successfully!";
+    toast.success(message);
+    return true;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      const errorMessage =
+        error.response.data?.message || "Failed to validate OTP.";
+      toast.error(errorMessage);
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+    return false;
+  }
+};
+
+export const updatePassword = async (formData: FormData) => {
+  const email = useAuthStore.getState().email;
+  try {
+    const { data } = await axios.put(`${base_url}password/reset/update`, {
+      identifier: email,
+      password: formData.get("password"),
+      password_confirmation: formData.get("password_confirmation"),
+    });
+    const message = data?.message || "Password updated successfully!";
+    toast.success(message);
+    return true;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      const errorData = error.response.data.errors;
+      const errorMessages = Object.values(errorData.messages).flat().join(" ");
+      toast.error(errorMessages || "Failed to update password.");
+      return false;
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+      return false;
+    }
   }
 };
