@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import AddLandlordOptions from "./add-landlord-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
-import Avatars from "@/components/Avatars/avatars";
 import InvitationForm from "../invitation-form";
 import { addLandlord } from "./data";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
