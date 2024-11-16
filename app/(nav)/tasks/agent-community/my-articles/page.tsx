@@ -44,7 +44,7 @@ const MyArticlePage = () => {
       setError(null);
       try {
         const { data } = await getLoggedInUserThreads();
-        console.log('Threads data:', data.original.data[0].post);
+        // console.log('Threads data:', data.original.data[0].post);
         setThreads(data.original.data[0].post);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch threads');
@@ -56,9 +56,11 @@ const MyArticlePage = () => {
 
     fetchThreads();
   }, []);
+
   const handleCreateMyArticleClick = () => {
     router.push("/tasks/agent-community/my-articles/create");
   };
+  
   return (
     <div className="space-y-7">
       <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
