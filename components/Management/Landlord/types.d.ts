@@ -7,7 +7,6 @@ export interface AddLandlordCardProps {
 
 export type AddLandlordModalOptions =
   | "options"
-  | "choose-avatar"
   | "add-landlord"
   | "add-multiple-owners"
   | "invite-owner"

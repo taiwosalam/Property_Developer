@@ -29,8 +29,6 @@
 //   }
 // };
 
-
-
 export const avatarLinks = [
   'https://pubassets.ourproperty.ng/uploads/gBTaZYUXOch2qrKq5k5F2EdShRihQjYGuxDwOuu6.png',
   'https://pubassets.ourproperty.ng/uploads/7M10IKK6OGULqivpfmJ7AMYWNb1BAzpboSLtHffM.png',

@@ -7,37 +7,22 @@ import type { AddLandlordModalOptions } from "./types";
 
 // Imports
 import { useRouter, usePathname } from "next/navigation";
+import { toast } from "sonner";
 import AddLandlordOptions from "./add-landlord-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
-import Avatars from "@/components/Avatars/avatars";
 import InvitationForm from "../invitation-form";
 import { addLandlord } from "./data";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
-// import { useNavCreateNewContext } from "@/components/Nav/nav-create-new-context";
 
 const AddLandlordModal = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
-  // const { changeStep } = useNavCreateNewContext();
 
   const [activeStep, setActiveStep] =
     useState<AddLandlordModalOptions>("options");
-
-  // const handleBack = () => {
-  //   if (changeStep && activeStep === "options") {
-  //     return {
-  //       handleBack: () => changeStep("prev"),
-  //     };
-  //   } else if (activeStep !== "options") {
-  //     return () => setActiveStep("options");
-  //   }
-  //   return undefined;
-  // };
-
-  const handleBack = () => setActiveStep("options");
+  const [formStep, setFormStep] = useState(1);
 
   const navigateToLandlordPage = () => {
     if (pathname !== "/management/landlord") {
@@ -45,9 +30,21 @@ const AddLandlordModal = () => {
     }
   };
 
-  const handleAddLandlord = async (data: Record<string, any>) => {
-    console.log("data", data);
-    await addLandlord(data);
+  // Modify handleBack to handle both modal and form steps
+  const handleBack = () => {
+    if (activeStep === "add-landlord" && formStep === 2) {
+      setFormStep(1);
+    } else {
+      setActiveStep("options");
+      setFormStep(1);
+    }
+  };
+
+  const handleAddLandlord = (data: Record<string, any>) => {
+    if (!checkFormDataForImageOrAvatar(data)) {
+      toast.warning("Please upload a picture or choose an avatar.");
+      return;
+    }
   };
 
   const modal_states: Record<
@@ -58,18 +55,18 @@ const AddLandlordModal = () => {
     }
   > = {
     options: {
-      heading: "Add Landlord/Landlady Profile",
+      heading: "Add landlord/landlady Profile",
       content: <AddLandlordOptions showForm={setActiveStep} />,
     },
     "add-landlord": {
-      heading: "Add landlord/landlady Profile",
+      heading:
+        formStep === 2 ? "Choose Avatar" : "Add landlord/landlady Profile",
       content: (
         <AddLandLordOrTenantForm
-          chooseAvatar={() => setActiveStep("choose-avatar")}
           type="landlord"
           submitAction={handleAddLandlord}
-          avatar={selectedAvatar}
-          setAvatar={setSelectedAvatar}
+          setFormStep={setFormStep}
+          formStep={formStep}
         />
       ),
     },
@@ -99,30 +96,12 @@ const AddLandlordModal = () => {
       heading: "Add Landlord/Landlady with ID",
       content: <InvitationForm method="id" submitAction={() => {}} />,
     },
-    "choose-avatar": {
-      heading: "Choose Avatar",
-      content: (
-        <Avatars
-          onClick={(avatarUrl) => {
-            setSelectedAvatar(avatarUrl);
-            setActiveStep("add-landlord");
-          }}
-        />
-      ),
-    },
   };
 
   return (
     <LandlordTenantModalPreset
       heading={modal_states[activeStep].heading}
-      // back={handleBack()}
-      back={
-        activeStep === "choose-avatar"
-          ? { handleBack: () => setActiveStep("add-landlord") }
-          : activeStep !== "options"
-          ? { handleBack }
-          : undefined
-      }
+      back={activeStep !== "options" ? { handleBack } : undefined}
     >
       {modal_states[activeStep].content}
     </LandlordTenantModalPreset>

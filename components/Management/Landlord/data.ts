@@ -1,5 +1,6 @@
 // Imports
 import api from "@/services/api";
+<<<<<<< HEAD
 // impoe
 
 export const addLandlord = async (data: Record<string, any>) => {
@@ -10,4 +11,9 @@ export const addLandlord = async (data: Record<string, any>) => {
   } catch (error) {
     throw error;
   }
+=======
+export const addLandlord = async (formData: FormData) => {
+  const { data } = await api.post("/landlord", formData);
+  return data;
+>>>>>>> 21dcc30e08eeb9b618c637ddac669fa6488bbcc6
 };

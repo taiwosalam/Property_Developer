@@ -14,29 +14,28 @@ import {
   PersonIcon,
   DeleteIconOrange,
 } from "@/public/icons/icons";
+import Avatars from "@/components/Avatars/avatars";
 
 interface AddLandLordOrTenantFormProps {
   type: "landlord" | "tenant";
   submitAction: (data: any) => void;
-  chooseAvatar: () => void;
-  avatar: string | null;
-  setAvatar: (avatar: string | null) => void;
+  setFormStep: React.Dispatch<React.SetStateAction<number>>;
+  formStep: number;
 }
 
 const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   type,
   submitAction,
-  chooseAvatar,
-  avatar,
-  setAvatar,
+  setFormStep,
+  formStep,
 }) => {
   const {
     preview: imagePreview,
     inputFileRef,
-    handleImageChange,
-    clearSelection,
+    handleImageChange: originalHandleImageChange,
+    clearSelection: clearImageSelection,
   } = useImageUploader();
-
+  const [avatar, setAvatar] = useState<string | null>(null);
   const [address, setAddress] = useState({
     selectedState: "",
     selectedLGA: "",
@@ -44,13 +43,6 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   });
 
   const { selectedState, selectedLGA } = address;
-
-  // const handleAvatarChange = (avatar: string) => {
-  //   setPreview(avatar);
-  //   setState((prevState) => ({ ...prevState, activeAvatar: avatar }));
-  //   inputFileRef.current?.value && (inputFileRef.current.value = "");
-  // };
-
   const handleAddressChange = (field: keyof typeof address, value: string) => {
     setAddress((prevState) => ({
       ...prevState,
@@ -60,17 +52,28 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
     }));
   };
 
-  const clearAvatarSelection = () => {
-    setAvatar(null);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAvatar(null); // Clear the avatar when an image is selected
+    originalHandleImageChange(e);
   };
 
-  return (
+  const handleAvatarSelection = (avatarUrl: string) => {
+    clearImageSelection();
+    setAvatar(avatarUrl);
+    setFormStep(1);
+  };
+
+  return formStep === 1 ? (
     <AuthForm
       // returnType="form-data"
       skipValidation
       onFormSubmit={submitAction}
       className="custom-flex-col gap-5"
     >
+      <input type="hidden" name="avatar" value={avatar || ""} />
+
+      <input type="hidden" name="agent" value="web" />
+
       <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <Input
           required
@@ -156,7 +159,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
                     className="absolute top-0 right-0"
                     onClick={(e) => {
                       e.stopPropagation();
-                      clearSelection();
+                      clearImageSelection();
                     }}
                   >
                     <DeleteIconOrange size={20} />
@@ -168,7 +171,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
             </button>
             <button
               type="button"
-              onClick={chooseAvatar}
+              onClick={() => setFormStep(2)}
               className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
               aria-label="choose avatar"
             >
@@ -187,7 +190,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
                     className="absolute top-0 right-0"
                     onClick={(e) => {
                       e.stopPropagation();
-                      clearAvatarSelection();
+                      setAvatar(null);
                     }}
                   >
                     <DeleteIconOrange size={20} />
@@ -212,6 +215,8 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         </Button>
       </div>
     </AuthForm>
+  ) : (
+    <Avatars onClick={handleAvatarSelection} />
   );
 };
 
