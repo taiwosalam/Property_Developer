@@ -158,7 +158,7 @@ const EditBranchForm = ({
             />
             <input type="hidden" name="avatar" value={activeAvatar} />
           </label>
-          <Avatars type="avatars" onClick={handleAvatarChange} />
+          {/* <Avatars type="avatars" onClick={handleAvatarChange} /> */}
         </div>
       </div>
     </AuthForm>

@@ -38,7 +38,7 @@ const Setup = () => {
     // console.log(data);
     const status = await createCompany(data);
     if (status) {
-      setRole("Director Administrator"); //Backend should return this role
+      setRole("director"); //Backend should return this role
       // router.push("/dashboard");
     }
   };

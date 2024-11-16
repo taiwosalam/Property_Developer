@@ -141,7 +141,7 @@ const AddServiceProviderForm = ({
               />
               <input type="hidden" name="avatar" value={activeAvatar} />
             </label>
-            <Avatars type="avatars" onClick={handleAvatarChange} />
+            {/* <Avatars type="avatars" onClick={handleAvatarChange} /> */}
           </div>
         </div>
         <Button type="submit" size="base_medium" className="ml-auto py-2 px-8">

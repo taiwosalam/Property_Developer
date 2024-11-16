@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import api from "@/services/api";
 import { useAuthStore } from "@/store/authStore";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const base_url = `${process.env.NEXT_PUBLIC_BASE_URL}api/v1/`;
 
@@ -191,12 +192,13 @@ export const logout = async (): Promise<boolean> => {
   }
 };
 
-export const getUserProfile = async () => {
-  try {
+
+
+export const getUserStatus = async () => {
+try {
     const { data } = await api.get("/user");
-    const role = data.data.details.role;
+    const { role, "email-verification": emailVerified } = data.data.details;
     useAuthStore.getState().setRole(role);
-    const emailVerified = data.data.details["email-verification"];
     if (!emailVerified) {
       useAuthStore.getState().setEmailVerified(false);
       return "redirect to verify email";
@@ -204,7 +206,6 @@ export const getUserProfile = async () => {
     if (role === "user") {
       return "redirect to setup";
     }
-    return "redirect to dashboard";
   } catch (error) {
     return "redirect to sign in";
   }

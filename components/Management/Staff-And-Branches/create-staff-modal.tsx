@@ -175,11 +175,11 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
                 />
                 <input type="hidden" name="avatar" value={activeAvatar} />
               </label>
-              <Avatars
+              {/* <Avatars
                 type="avatars"
                 maxSize={4}
                 onClick={handleAvatarChange}
-              />
+              /> */}
             </div>
           </div>
           <Button
