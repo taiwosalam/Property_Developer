@@ -7,7 +7,7 @@ export interface UserCardProps {
   picture_url?: string;
   name: string;
   email: string;
-  phone_number: string;
+  phone_number?: string;
   user_tag: string;
   badge_color?: BadgeIconColors;
   other_info?: string;

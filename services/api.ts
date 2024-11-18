@@ -48,12 +48,19 @@ export const handleAxiosError = (
   error: any,
   defaultMessage: string = "An unexpected error occurred"
 ) => {
-  if (axios.isAxiosError(error) && error.response?.data) {
+  if (axios.isAxiosError(error)) {
+    // Check for CORS error
+    if (!error.response) {
+      toast.error("Network error");
+      return;
+    }
+
     // Check for error in data.message
     if (error.response.data.message) {
       toast.error(error.response.data.message);
       return;
     }
+
     // Check for error in data.errors.messages
     if (error.response.data.errors?.messages) {
       const errorMessages = Object.values(error.response.data.errors.messages)

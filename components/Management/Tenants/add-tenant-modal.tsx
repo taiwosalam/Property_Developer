@@ -12,13 +12,21 @@ import AddTenantOptions from "./add-tenant-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
-import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
-import { toast } from "sonner";
-import Avatars from "@/components/Avatars/avatars";
+import { useModal } from "@/components/Modal/modal";
+import { useRouter, usePathname } from "next/navigation";
 
 const AddTenantModal = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { setIsOpen } = useModal();
   const [activeStep, setActiveStep] =
     useState<AddTenantModalOptions>("options");
+
+  const navigateToTenantsPage = () => {
+    if (pathname !== "/management/tenants") {
+      router.push("/management/tenants");
+    }
+  };
 
   const handleBack = () => {
     if (activeStep === "add-tenant" && formStep === 2) {
@@ -30,14 +38,35 @@ const AddTenantModal = () => {
   };
 
   const [formStep, setFormStep] = useState(1);
-  const handleAddTenant = async (data: FormData) => {
-    // If neither picture nor avatar is valid, show a warning
-    // const success = await addTenant(data);
+  const closeModalAndRefresh = () => {
+    setIsOpen(false);
+    navigateToTenantsPage();
+    setTimeout(() => {
+      window.dispatchEvent(new Event("refetchTenants"));
+    }, 0);
+    // setTimeout(() => {
+    //   location.reload();
+    // }, 1500);
+  };
+
+  const handleAddTenant = async (data: Record<string, any>) => {
+    const success = await addTenant(data);
+    if (success) {
+      closeModalAndRefresh();
+    }
+  };
+
+  const handleInviteTenantEmail = async (data: any) => {
+    // const success = await inviteTenantEmail(data);
     // if (success) {
-    //   setIsOpen(false);
-    //   setTimeout(() => {
-    //     location.reload();
-    //   }, 1500);
+    //   closeModalAndRefresh();
+    // }
+  };
+
+  const handleInviteTenantId = async (data: any) => {
+    // const success = await inviteTenantId(data);
+    // if (success) {
+    //   closeModalAndRefresh();
     // }
   };
 
@@ -53,7 +82,7 @@ const AddTenantModal = () => {
       content: <AddTenantOptions showForm={setActiveStep} />,
     },
     "add-tenant": {
-      heading: "Add Tenant/Occupant Profile",
+      heading: formStep === 2 ? "Choose Avatar" : "Add Tenant/Occupant Profile",
       content: (
         <AddLandLordOrTenantForm
           type="tenant"
@@ -77,11 +106,15 @@ const AddTenantModal = () => {
     },
     "invite-single-user": {
       heading: "Invite Tenant/Occupant with Email",
-      content: <InvitationForm method="email" submitAction={() => {}} />,
+      content: (
+        <InvitationForm method="email" submitAction={handleInviteTenantEmail} />
+      ),
     },
     "add-user-with-id": {
       heading: "Add Landlord/Landlady with ID",
-      content: <InvitationForm method="id" submitAction={() => {}} />,
+      content: (
+        <InvitationForm method="id" submitAction={handleInviteTenantId} />
+      ),
     },
   };
 

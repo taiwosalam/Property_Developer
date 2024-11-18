@@ -7,7 +7,14 @@ const SearchInput: React.FC<SearchInputProps> = ({
   className,
   placeholder = "Search",
   onChange,
+  onEnterPress,
+  searchQuery,
 }) => {
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && onEnterPress) {
+      onEnterPress(event.currentTarget.value);
+    }
+  };
   return (
     <div
       className={cn(
@@ -27,6 +34,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
         )}
         placeholder={placeholder}
         onChange={onChange}
+        onKeyDown={handleKeyPress}
+        defaultValue={searchQuery}
       />
     </div>
   );

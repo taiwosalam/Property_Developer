@@ -7,18 +7,18 @@ import type { AddLandlordModalOptions } from "./types";
 
 // Imports
 import { useRouter, usePathname } from "next/navigation";
-import { toast } from "sonner";
 import AddLandlordOptions from "./add-landlord-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
 import InvitationForm from "../invitation-form";
-import { addLandlord } from "./data";
+import { addLandlord, inviteLandlordEmail } from "./data";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
-import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
+import { useModal } from "@/components/Modal/modal";
 
 const AddLandlordModal = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { setIsOpen } = useModal();
 
   const [activeStep, setActiveStep] =
     useState<AddLandlordModalOptions>("options");
@@ -40,14 +40,27 @@ const AddLandlordModal = () => {
     }
   };
 
+  const closeModalAndRefresh = () => {
+    setIsOpen(false);
+    navigateToLandlordPage();
+    setTimeout(() => {
+      window.dispatchEvent(new Event("refetchLandlords"));
+    }, 0);
+  };
+
   const handleAddLandlord = async (data: FormData) => {
-    console.log(data);
-    if (!checkFormDataForImageOrAvatar(data)) {
-      toast.warning("Please upload a picture or choose an avatar.");
-      return;
+    // console.log(data);
+    const status = await addLandlord(data);
+    if (status) {
+      closeModalAndRefresh();
     }
-    const res = await addLandlord(data);
-    console.log(res);
+  };
+
+  const handleInviteLandlordEmail = async (data: any) => {
+    const status = await inviteLandlordEmail(data);
+    if (status) {
+      closeModalAndRefresh();
+    }
   };
 
   const modal_states: Record<
@@ -93,11 +106,16 @@ const AddLandlordModal = () => {
     },
     "invite-owner": {
       heading: "Invite Landlord/Landlady with Email",
-      content: <InvitationForm method="email" submitAction={() => {}} />,
+      content: (
+        <InvitationForm
+          method="email"
+          submitAction={handleInviteLandlordEmail}
+        />
+      ),
     },
     "add-landlord-with-id": {
       heading: "Add Landlord/Landlady with ID",
-      content: <InvitationForm method="id" submitAction={() => {}} />,
+      content: <InvitationForm method="id" submitAction={async () => {}} />,
     },
   };
 

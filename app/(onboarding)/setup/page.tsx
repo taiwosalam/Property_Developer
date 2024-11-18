@@ -73,6 +73,7 @@ const Setup = () => {
         returnType="form-data"
         onFormSubmit={handleSubmit}
         setValidationErrors={setErrorMsgs}
+        cleanEmptyPhoneNumber={false}
       >
         <SetupHeader />
         <div className="relative z-[1] custom-flex-col gap-6 pt-6 pb-20 px-10">

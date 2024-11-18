@@ -1,10 +1,25 @@
 // Imports
-import api from "@/services/api";
+import api, { handleAxiosError } from "@/services/api";
+import { toast } from "sonner";
+
 export const addLandlord = async (formData: FormData) => {
   try {
-    const { data } = await api.post("/landlord", formData);
-    return data;
+    const { data } = await api.post("landlords", formData);
+    toast.success(data?.message || "Landlord created successfully");
+    return true;
   } catch (error) {
-    console.log(error);
+    handleAxiosError(error, "Failed to create landlord");
+    return false;
+  }
+};
+
+export const inviteLandlordEmail = async (formData: any) => {
+  try {
+    const { data } = await api.post("landlord/invitation", formData);
+    toast.success(data?.message || "Landlord invited successfully");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to invite landlord");
+    return false;
   }
 };

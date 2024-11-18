@@ -1,7 +1,6 @@
 // import moment from "moment";
 import dayjs from "dayjs";
-import api from "@/services/api";
-import axios from "axios";
+import api, { handleAxiosError } from "@/services/api";
 import { toast } from "sonner";
 
 export const transformFormData = (formData: FormData) => {
@@ -71,14 +70,7 @@ export const createCompany = async (
     toast.success(message);
     return true;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      const errorData = error.response.data.errors;
-      const errorMessages = Object.values(errorData.messages).flat().join(" ");
-      //   console.log(errorMessages);
-      toast.error(errorMessages || "Failed to create company");
-    } else {
-      toast.error("Failed to create company");
-    }
+    handleAxiosError(error, "Failed to create company");
     return false;
   }
 };

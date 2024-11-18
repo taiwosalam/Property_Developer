@@ -1,6 +1,17 @@
 // data.ts
-import { LandlordProps } from "@/components/Management/Landlord/types";
 import type { Field } from "@/components/Table/types";
+import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
+import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
+
+interface LandlordCardProps {
+  id: string;
+  name: string;
+  email: string;
+  user_tag: "mobile" | "web";
+  phone_number: string | null;
+  picture_url: string | null;
+  badge_color: BadgeIconColors;
+}
 
 export interface LandlordsPageData {
   total_landlords: number;
@@ -9,19 +20,15 @@ export interface LandlordsPageData {
   new_mobile_landlords_this_month: number;
   web_landlords: number;
   new_web_landlords_this_month: number;
-  landlords: LandlordProps[];
+  total_pages: number;
+  current_page: number;
+  landlords: LandlordCardProps[];
 }
 
 export interface LandlordPageState {
   gridView: boolean;
-  total_pages: number;
-  current_page: number;
-  loading: boolean;
-  error: Error | null;
   landlordsPageData: LandlordsPageData;
 }
-
-export const getAllLandlords = async (): Promise<LandlordsPageData | any> => {};
 
 export const getOneLandlord = async (id: string) => {};
 
@@ -83,18 +90,92 @@ export const landlordTableFields: Field[] = [
   { id: "6", accessor: "manage/chat" },
 ];
 
-const generateMockdata = (numItems: number) => {
-  const colors = ["red", "green", "black", "blue", "yellow", "gray"];
+const generateMockdata = (numItems: number): LandlordCardProps[] => {
   return Array.from({ length: numItems }, (_, index) => ({
     id: `${index + 1}`,
     picture_url: "/empty/SampleLandlord.jpeg",
-    first_name: `first_name${index + 1}`,
-    last_name: `last_name${index + 1}`,
+    name: "Sample name",
     user_tag: index % 2 === 0 ? "mobile" : "web",
     email: `test${index + 1}@test.com`,
     phone_number: `08012345678`,
-    badge_color: colors[index % colors.length],
-  })) as LandlordProps[];
+    badge_color: tierColorMap[index % Object.keys(tierColorMap).length],
+  }));
 };
 
 export const mockData = generateMockdata(10);
+
+// export const landlordFiltersWithDropdown = [
+//   {
+//     label: "Branch",
+//     value: [
+//       { label: "Branch 1", value: "branch1" },
+//       { label: "Branch 2", value: "branch2" },
+//       { label: "Branch 3", value: "branch3" },
+//     ],
+//   },
+//   {
+//     label: "Account Officer",
+//     value: [
+//       { label: "Account Officer 1", value: "account_officer1" },
+//       { label: "Account Officer 2", value: "account_officer2" },
+//       { label: "Account Officer 3", value: "account_officer3" },
+//     ],
+//   },
+//   {
+//     label: "State",
+//     value: states.map((state) => ({
+//       label: state,
+//       value: state.toLowerCase(),
+//     })),
+//   },
+// ];
+
+export interface LandlordApiResponse {
+  status: string;
+  statusCode: number;
+  data: {
+    current_page: number;
+    data: Array<{
+      id: number;
+      name: string;
+      email: string;
+      phone: string | null;
+      tier_id: number;
+      picture: string | null;
+      agent: string;
+    }>;
+    last_page: number;
+    total: number;
+  };
+  total_landlords: number;
+  new_landlords_this_month: number;
+  mobile_landlord_count: number;
+  new_mobile_landlords_this_month: number;
+  web_landlord_count: number;
+  new_web_landlords_this_month: number;
+  message: string;
+}
+
+export const transformLandlordApiResponse = (
+  data: LandlordApiResponse
+): LandlordsPageData => {
+  return {
+    total_landlords: data.total_landlords,
+    new_landlords_this_month: data.new_landlords_this_month,
+    mobile_landlords: data.mobile_landlord_count,
+    new_mobile_landlords_this_month: data.new_mobile_landlords_this_month,
+    web_landlords: data.web_landlord_count,
+    new_web_landlords_this_month: data.new_web_landlords_this_month,
+    total_pages: data.data.last_page,
+    current_page: data.data.current_page,
+    landlords: data.data.data.map((landlord) => ({
+      id: String(landlord.id),
+      name: landlord.name,
+      email: landlord.email,
+      phone_number: landlord.phone,
+      user_tag: landlord.agent.toLowerCase() === "mobile" ? "mobile" : "web",
+      picture_url: landlord.picture,
+      badge_color: tierColorMap[landlord.tier_id] || "red",
+    })),
+  };
+};

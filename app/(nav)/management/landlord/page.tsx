@@ -8,18 +8,18 @@ import LandlordCard from "@/components/Management/landlord-and-tenant-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Link from "next/link";
 import CustomTable from "@/components/Table/table";
-import type { LandlordProps } from "@/components/Management/Landlord/types";
 import UserTag from "@/components/Tags/user-tag";
 import Pagination from "@/components/Pagination/pagination";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Button from "@/components/Form/Button/button";
 import {
-  getAllLandlords,
   getLandlordsHelpInfo,
   LandlordPageState,
   landlordTableFields,
-  mockData,
+  type LandlordApiResponse,
+  transformLandlordApiResponse,
+  // landlordFiltersWithDropdown,
 } from "./data";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
@@ -27,6 +27,7 @@ import { LandlordHelpInfo } from "./types";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useView from "@/hooks/useView";
 import useSettingsStore from "@/store/settings";
+import useFetch from "@/hooks/useFetch";
 
 const Landlord = () => {
   const view = useView();
@@ -35,15 +36,11 @@ const Landlord = () => {
     selectedOptions.view
   );
 
-  // const grid = selectedView === "grid";
-
   const initialState: LandlordPageState = {
     gridView: selectedView === "grid",
-    total_pages: 5,
-    current_page: 1,
-    loading: true,
-    error: null,
     landlordsPageData: {
+      total_pages: 1,
+      current_page: 1,
       total_landlords: 0,
       new_landlords_this_month: 0,
       mobile_landlords: 0,
@@ -53,14 +50,13 @@ const Landlord = () => {
       landlords: [],
     },
   };
+
   const [state, setState] = useState<LandlordPageState>(initialState);
   const {
     gridView,
-    total_pages,
-    current_page,
-    loading,
-    error,
     landlordsPageData: {
+      total_pages,
+      current_page,
       total_landlords,
       new_landlords_this_month,
       mobile_landlords,
@@ -70,6 +66,7 @@ const Landlord = () => {
       landlords,
     },
   } = state;
+  console.log(landlords);
 
   useEffect(() => {
     setState((prevState) => ({
@@ -91,22 +88,6 @@ const Landlord = () => {
   const [fetchedLandlordHelpInfo, setFetchedLandlordHelpInfo] =
     useState<LandlordHelpInfo>();
 
-  // Fetch the landlords when the component mounts
-  const fetchLandlords = useCallback(async () => {
-    try {
-      // const data = await getAllLandlords(accessToken);
-      // setState((x) => ({ ...x, landlordsPageData: data }));
-      setState((x) => ({
-        ...x,
-        landlordsPageData: { ...x.landlordsPageData, landlords: mockData },
-      }));
-    } catch (error) {
-      setState((x) => ({ ...x, error: error as Error }));
-    } finally {
-      setState((x) => ({ ...x, loading: false }));
-    }
-  }, []);
-
   const fetchLandlordHelp = useCallback(async () => {
     try {
       const data = await getLandlordsHelpInfo();
@@ -118,63 +99,31 @@ const Landlord = () => {
   }, []);
 
   useEffect(() => {
-    fetchLandlords();
     fetchLandlordHelp();
-  }, [fetchLandlords, fetchLandlordHelp]);
+  }, [fetchLandlordHelp]);
 
-  const handlePageChange = (page: number) => {
-    setState((state) => ({ ...state, current_page: page }));
-  };
-
-  const onClickChat = (landlord: LandlordProps) => {
-    console.log("Chat clicked for:", landlord);
-    // Add your logic here to chat with the landlord
-  };
+  // const onClickChat = () => {
+  //   console.log("Chat clicked for:", landlord);
+  // };
 
   const states = getAllStates();
 
-  const onStateSelect = (selectedState: string) => {
-    const localGovernments = getLocalGovernments(selectedState);
+  // const onStateSelect = (selectedState: string) => {
+  //   const localGovernments = getLocalGovernments(selectedState);
 
-    const updatedFilters = landlordFiltersWithDropdown.map((filter) => {
-      if (filter.label === "Local Government") {
-        return {
-          ...filter,
-          value: localGovernments.map((lg) => ({
-            label: lg,
-            value: lg.toLowerCase(),
-          })),
-        };
-      }
-      return filter;
-    });
-  };
-
-  const landlordFiltersWithDropdown = [
-    {
-      label: "Branch",
-      value: [
-        { label: "Branch 1", value: "branch1" },
-        { label: "Branch 2", value: "branch2" },
-        { label: "Branch 3", value: "branch3" },
-      ],
-    },
-    {
-      label: "Account Officer",
-      value: [
-        { label: "Account Officer 1", value: "account_officer1" },
-        { label: "Account Officer 2", value: "account_officer2" },
-        { label: "Account Officer 3", value: "account_officer3" },
-      ],
-    },
-    {
-      label: "State",
-      value: states.map((state) => ({
-        label: state,
-        value: state.toLowerCase(),
-      })),
-    },
-  ];
+  //   const updatedFilters = landlordFiltersWithDropdown.map((filter) => {
+  //     if (filter.label === "Local Government") {
+  //       return {
+  //         ...filter,
+  //         value: localGovernments.map((lg) => ({
+  //           label: lg,
+  //           value: lg.toLowerCase(),
+  //         })),
+  //       };
+  //     }
+  //     return filter;
+  //   });
+  // };
 
   const landlordFiltersRadio = [
     {
@@ -187,28 +136,74 @@ const Landlord = () => {
     },
   ];
 
+  const [searchQuery, setSearchQuery] = useState("");
+
   const handleFilterApply = (filters: any) => {
     console.log("Filter applied:", filters);
     // Add  logic here to filter landlords
   };
 
+  const handlePageChange = (page: number) => {
+    setSearchQuery("");
+    setState((prevState) => ({
+      ...prevState,
+      landlordsPageData: {
+        ...prevState.landlordsPageData,
+        current_page: page,
+      },
+    }));
+  };
+
+  const handleSearch = async (query: string) => {
+    if (!query && !searchQuery) return;
+    setSearchQuery(query);
+  };
+
+  const {
+    data: apiData,
+    loading,
+    error,
+    refetch,
+  } = useFetch<LandlordApiResponse>(
+    `landlords?page=${current_page}&search=${searchQuery}`,
+    undefined,
+    "Failed to fetch landlords"
+  );
+
+  useEffect(() => {
+    if (apiData) {
+      setState((x) => ({
+        ...x,
+        landlordsPageData: transformLandlordApiResponse(apiData),
+      }));
+    }
+  }, [apiData]);
+
+  // Listen for the refetch event
+  useEffect(() => {
+    const handleRefetch = () => {
+      refetch();
+    };
+
+    window.addEventListener("refetchLandlords", handleRefetch);
+    return () => {
+      window.removeEventListener("refetchLandlords", handleRefetch);
+    };
+  }, [refetch]);
+
   const transformedLandlords = landlords.map((l) => ({
     ...l,
     full_name: (
       <p className="flex items-center">
-        <span className="text-ellipsis line-clamp-1">{`${l.first_name} ${l.last_name}`}</span>
-        <BadgeIcon color="red" />
+        <span className="text-ellipsis line-clamp-1">{l.name}</span>
+        <BadgeIcon color={l.badge_color} />
       </p>
     ),
     user_tag: <UserTag type={l.user_tag} />,
     "manage/chat": (
       <div className="flex gap-x-[4%] items-center w-full">
         <Button
-          // href={`/management/landlord/${l.id}/manage`}
-          href={{
-            pathname: `/management/landlord/${l.id}/manage`,
-            query: { user_tag: l.user_tag },
-          }}
+          href={`/management/landlord/${l.id}/manage`}
           size="sm_medium"
           className="px-8 py-2"
         >
@@ -218,7 +213,7 @@ const Landlord = () => {
           variant="sky_blue"
           size="sm_medium"
           className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white"
-          onClick={() => onClickChat(l)}
+          // onClick={() => onClickChat(l)}
         >
           Chat
         </Button>
@@ -235,7 +230,7 @@ const Landlord = () => {
       />
     );
 
-  if (error) return <div>Error: {error.message}</div>;
+  // if (error) return <div>{error}</div>;
 
   return (
     <div className="space-y-8">
@@ -281,7 +276,7 @@ const Landlord = () => {
         gridView={view === "grid" || gridView}
         setGridView={setGridView}
         setListView={setListView}
-        onStateSelect={onStateSelect}
+        // onStateSelect={onStateSelect}
         pageTitle="Landlords/Landladies (Owners)"
         aboutPageModalData={{
           title: fetchedLandlordHelpInfo?.slug || "",
@@ -292,28 +287,23 @@ const Landlord = () => {
         searchInputPlaceholder="Search for Landlords"
         handleFilterApply={handleFilterApply}
         isDateTrue
-        filterOptionsWithRadio={landlordFiltersRadio}
-        filterWithOptionsWithDropdown={landlordFiltersWithDropdown}
+        handleSearch={handleSearch}
+        searchQuery={searchQuery}
+        // filterOptionsWithRadio={landlordFiltersRadio}
+        // filterWithOptionsWithDropdown={landlordFiltersWithDropdown}
       />
       <section>
         {view === "grid" || gridView ? (
           <AutoResizingGrid minWidth={284} gap={16}>
             {landlords.map((l) => (
-              <Link
-                // href={`/management/landlord/${l.id}/manage`}
-                href={{
-                  pathname: `/management/landlord/${l.id}/manage`,
-                  query: { user_tag: l.user_tag },
-                }}
-                key={l.id}
-              >
+              <Link href={`/management/landlord/${l.id}/manage`} key={l.id}>
                 <LandlordCard
-                  picture_url={l.picture_url || l.avatar}
-                  name={`${l.first_name} ${l.last_name}`}
+                  picture_url={l.picture_url || undefined}
+                  name={l.name}
                   user_tag={l.user_tag}
-                  badge_color="red"
                   email={l.email}
-                  phone_number={l.phone_number}
+                  phone_number={l.phone_number || undefined}
+                  badge_color={l.badge_color}
                 />
               </Link>
             ))}

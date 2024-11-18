@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import api from "@/services/api";
-import { AxiosError, AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 interface UseFetchResult<T> {
   data: T | null;
@@ -11,7 +11,8 @@ interface UseFetchResult<T> {
 
 function useFetch<T>(
   url: string,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
+  defaultMessage: string = "Something went wrong"
 ): UseFetchResult<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -24,11 +25,15 @@ function useFetch<T>(
       const { data } = await api.get<T>(url, config);
       setData(data);
     } catch (err) {
-      const error = err as AxiosError;
-      setError(
-        // error.response?.data?.message || error.message || "Something went wrong"
-        "Something went wrong"
-      );
+      // setError(err.response.data.message);
+      // console.log(err.response.data.message);
+      if (defaultMessage) {
+        setError(defaultMessage);
+      } else if (axios.isAxiosError(err) && err.response?.data) {
+        setError(err.response.data?.message || defaultMessage);
+      } else {
+        setError((err as Error)?.message || defaultMessage);
+      }
     } finally {
       setLoading(false);
     }
