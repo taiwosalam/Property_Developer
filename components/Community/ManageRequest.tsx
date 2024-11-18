@@ -32,14 +32,16 @@ export const PropertyRequestFirstSection = ({
   placeholderText,
   desc,
   loading,
+  inputValue: initialValue,
 }: {
   data?: any;
   desc?: string;
   title?: string;
   placeholderText: string;
   loading?: boolean;
+  inputValue?: string;
 }) => {
-  const [inputValue, setInputValue] = useState(data?.title || '');
+  const [inputValue, setInputValue] = useState(initialValue || data?.title || '');
   
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
