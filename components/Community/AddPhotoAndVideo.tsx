@@ -6,11 +6,11 @@ const Image1 = "/empty/SampleLandlord.jpeg";
 const Image2 = "/empty/SampleLandlord.jpeg";
 const Image3 = "/empty/SampleLandlord.jpeg";
 
-const AddPhotoAndVideo = ({ editing }: { editing?: boolean }) => {
+const AddPhotoAndVideo = ({ editing, data }: { editing?: boolean, data?: any }) => {
   // HANDLE IMAGES UPLOAD
   const MAX_FILE_SIZE_MB = 2;
   const [images, setImages] = useState<string[]>(
-    editing ? [Image1, Image2, Image3] : []
+    editing ? (data?.media || []) : [Image1, Image2, Image3]
   );
   const MAX_IMAGES = 4;
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,6 +105,7 @@ const AddPhotoAndVideo = ({ editing }: { editing?: boolean }) => {
         type="url"
         placeholder="https://www.youtube.com/video"
         inputClassName="bg-white"
+        value={data?.video_link || ''}
       />
     </div>
   );

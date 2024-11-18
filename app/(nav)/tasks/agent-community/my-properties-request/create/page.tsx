@@ -65,7 +65,9 @@ const CreateMyPropertyRequest = () => {
 
         <div className="body w-full flex flex-col lg:flex-row justify-between mt-10 gap-10">
           <div className="first flex flex-col w-full lg:w-[60%]">
-            <PropertyRequestFirstSection placeholderText="Please be aware that you are responsible for all posts. Post Real Estate, Property request only." />
+            <PropertyRequestFirstSection 
+              placeholderText="Please be aware that you are responsible for all posts. Post Real Estate, Property request only." 
+            />
           </div>
           <div className="second flex flex-col w-full lg:w-[40%]">
             <PropertyRequestSecondSection />

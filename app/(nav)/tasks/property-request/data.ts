@@ -1,6 +1,7 @@
 import api from "@/services/api";
 
 export interface PropertyRequestDataType {
+  isLoading: boolean;
   userName: string;
   requestDate: string;
   pictureSrc: string;
@@ -14,7 +15,9 @@ export interface PropertyRequestDataType {
   category: string;
   subType: string;
   minBudget: string;
+  propertyTitle: string;
   maxBudget: string;
+
 } // Check with backend if this is the correct data type
 
 export const getPropertyRequestData = async () => {
@@ -43,6 +46,8 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     requestType: "Web",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     phoneNumber: "08012345678",
+    isLoading: false,
+    propertyTitle: "Property Title",
   },
   {
     requestId: "1344567901",
@@ -59,6 +64,8 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     phoneNumber: "08012345678",
     minBudget: "₦75,000,000",
     maxBudget: "₦200,000,000",
+    isLoading: false,
+    propertyTitle: "Property Title",
   },
   {
     requestId: "1344567901",
@@ -75,6 +82,8 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     phoneNumber: "08012345678",
     minBudget: "₦75,000,000",
     maxBudget: "₦200,000,000",
+    isLoading: false,
+    propertyTitle: "Property Title",
   },
   {
     requestId: "1344567901",
@@ -91,6 +100,8 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     phoneNumber: "08012345678",
     minBudget: "₦75,000,000",
     maxBudget: "₦200,000,000",
+    isLoading: false,
+    propertyTitle: "Property Title",
   },
   {
     requestId: "1344567901",
@@ -107,6 +118,8 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     phoneNumber: "08012345678",
     minBudget: "₦75,000,000",
     maxBudget: "₦200,000,000",
+    isLoading: false,
+    propertyTitle: "Property Title",
   },
   {
     requestId: "1344567901",
@@ -123,5 +136,7 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     phoneNumber: "08012345678",
     minBudget: "₦75,000,000",
     maxBudget: "₦200,000,000",
+    isLoading: false,
+    propertyTitle: "Property Title",
   },
 ];

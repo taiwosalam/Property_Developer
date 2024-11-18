@@ -33,3 +33,34 @@ export const createArticle = async (formData: any) => {
     }
   }
 };
+
+export const toggleLike = async (slug: string, type: 1 | -1) => {
+  try {
+    const response = await api.post(`/agent_community/${slug}/toggle-like`, { type });
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    return false;
+  }
+};
+
+export const getMyArticlesDetails = async (slug: string) => {
+  try {
+    const response = await api.get(`/agent_community/${slug}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching my articles details:", error);
+    throw error;
+  }
+};
+
+
+export const deleteMyArticle = async (slug: string) => {
+  try {
+    const response = await api.delete(`/agent_community/${slug}`);
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    console.error("Error deleting my article:", error);
+    return false;
+  }
+};
