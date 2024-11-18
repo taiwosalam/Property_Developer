@@ -1,6 +1,5 @@
-"use client";
+// "use client";
 import Head from "next/head";
-import { useRouter } from "next/navigation";
 import "@/styles/globals.css";
 
 // Imports
@@ -8,50 +7,13 @@ import { Toaster } from "sonner";
 import { primaryFont } from "@/utils/fonts";
 import ThemeProvider from "./theme-provider";
 import { Theme } from "@/components/theme";
-import { useAuthStore } from "@/store/authStore";
-import { useEffect, useState } from "react";
-import { getLocalStorage } from "@/utils/local-storage";
-import { getUserStatus } from "./(onboarding)/auth/data";
+// import { getUserStatus } from "./(onboarding)/auth/data";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const router = useRouter();
-  const authToken = getLocalStorage("authToken");
-  const setToken = useAuthStore((state) => state.setToken);
-  // const [isAuthChecking, setIsAuthChecking] = useState(true);
-
-  useEffect(() => {
-    // const checkAuth = async () => {
-    if (!authToken) {
-      router.replace("/auth/sign-in");
-    } else {
-      setToken(authToken);
-      setTimeout(async () => {
-        const status = await getUserStatus();
-        if (status === "redirect to verify email") {
-          router.replace("/auth/sign-up");
-        }
-        if (status === "redirect to setup") {
-          router.replace("/setup");
-        }
-        if (status === "redirect to sign in") {
-          router.replace("/auth/sign-in");
-        }
-      }, 0);
-    }
-    // setIsAuthChecking(false);
-    // };
-    // checkAuth();
-  }, [router, setToken, authToken]);
-
-  // Show nothing while checking auth
-  // if (isAuthChecking) {
-  //   return null;
-  // }
-
   return (
     <html lang="en">
       <Head>

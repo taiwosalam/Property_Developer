@@ -1,18 +1,26 @@
 // Imports
 import Input from "../Form/Input/input";
+import { useState } from "react";
 import Button from "../Form/Button/button";
+import { AuthForm } from "../Auth/auth-components";
 
 interface InvitationFormProps {
   method: "id" | "email";
-  submitAction: () => void;
+  submitAction: (data: any) => Promise<void>;
 }
 
 const InvitationForm: React.FC<InvitationFormProps> = ({
   submitAction,
   method,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const handleSubmit = async (data: any) => {
+    setIsLoading(true);
+    await submitAction(data);
+    setIsLoading(false);
+  };
   return (
-    <form className="flex justify-center" onSubmit={submitAction}>
+    <AuthForm className="flex justify-center" onFormSubmit={handleSubmit}>
       <div className="custom-flex-col gap-5 w-[300px]">
         {method === "email" ? (
           <>
@@ -36,12 +44,17 @@ const InvitationForm: React.FC<InvitationFormProps> = ({
           />
         )}
         <div className="flex justify-center">
-          <Button type="submit" size="base_medium" className="py-2 px-8">
-            invite
+          <Button
+            type="submit"
+            size="base_medium"
+            className="py-2 px-8"
+            disabled={isLoading}
+          >
+            {isLoading ? "inviting..." : "invite"}
           </Button>
         </div>
       </div>
-    </form>
+    </AuthForm>
   );
 };
 

@@ -52,6 +52,8 @@ interface FilterBarProps {
   article?: boolean;
   propertyRequest?: boolean;
   noExclamationMark?: boolean;
+  handleSearch?: (query: string) => void;
+  searchQuery?: string;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -76,6 +78,8 @@ const FilterBar: React.FC<FilterBarProps> = ({
   article,
   propertyRequest,
   noExclamationMark,
+  handleSearch,
+  searchQuery,
 }) => {
   return (
     <div className="page-title-container ">
@@ -98,6 +102,8 @@ const FilterBar: React.FC<FilterBarProps> = ({
           className={`max-w-[250px] md:max-w-max ${
             hiddenSearchInput && "hidden"
           }`}
+          onEnterPress={handleSearch}
+          searchQuery={searchQuery}
         />
         {hasGridListToggle && (
           <div className="flex items-center gap-3">

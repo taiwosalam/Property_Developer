@@ -26,3 +26,24 @@ export function checkFormDataForImageOrAvatar(
   // Return true if either picture or avatar exists and is valid
   return hasPicture || hasAvatar;
 }
+
+export function cleanPhoneNumber(
+  data: InputData,
+  phoneNumberFields: string[] = ["phone_number"]
+): void {
+  phoneNumberFields.forEach((phoneNumberField) => {
+    let phoneNumber: string | null | undefined;
+
+    if (data instanceof FormData) {
+      phoneNumber = data.get(phoneNumberField) as string | null;
+      if (phoneNumber && phoneNumber.length <= 4) {
+        data.delete(phoneNumberField);
+      }
+    } else {
+      phoneNumber = data[phoneNumberField];
+      if (phoneNumber && phoneNumber.length <= 4) {
+        delete data[phoneNumberField];
+      }
+    }
+  });
+}

@@ -1,7 +1,7 @@
 "use client";
 
 // Imports
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Button from "@/components/Form/Button/button";
 import TenantCard from "@/components/Management/landlord-and-tenant-card";
 import type { TenantProps } from "@/components/Management/Tenants/types";
@@ -15,16 +15,18 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import {
   defaultTenantPageData,
-  getAllTenants,
   TenantPageState,
   tenantTableFields,
-  mockData,
+  type TenantApiResponse,
+  TenantPageData,
+  transformTenantApiResponse,
 } from "./data";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useView from "@/hooks/useView";
+import useFetch from "@/hooks/useFetch";
 import useSettingsStore from "@/store/settings";
 
 const Tenants = () => {
@@ -38,20 +40,15 @@ const Tenants = () => {
 
   const initialState: TenantPageState = {
     gridView: selectedView === "grid",
-    total_pages: 50,
-    current_page: 1,
-    loading: true,
-    error: null,
     tenantsPageData: defaultTenantPageData,
   };
+
   const [state, setState] = useState<TenantPageState>(initialState);
   const {
     gridView,
-    total_pages,
-    current_page,
-    loading,
-    error,
     tenantsPageData: {
+      total_pages,
+      current_page,
       total_tenants,
       new_tenants_this_month,
       mobile_tenants,
@@ -78,25 +75,6 @@ const Tenants = () => {
     setSelectedOption("view", "list");
     setSelectedView("list");
   };
-
-  const fetchTenants = useCallback(async () => {
-    try {
-      // const data = await getAllTenants(accessToken);
-      // setState((x) => ({ ...x, tenantsPageData: data }));
-      setState((x) => ({
-        ...x,
-        tenantsPageData: { ...x.tenantsPageData, tenants: mockData },
-      }));
-    } catch (error) {
-      setState((x) => ({ ...x, error: error as Error }));
-    } finally {
-      setState((x) => ({ ...x, loading: false }));
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchTenants();
-  }, [fetchTenants]);
 
   const states = getAllStates();
 
@@ -165,32 +143,64 @@ const Tenants = () => {
     // Add  logic here to filter tenant
   };
 
+  const [searchQuery, setSearchQuery] = useState("");
+
   const handlePageChange = (page: number) => {
-    setState((state) => ({ ...state, current_page: page }));
+    setSearchQuery("");
+    setState((state) => ({
+      ...state,
+      tenantsPageData: { ...state.tenantsPageData, current_page: page },
+    }));
   };
 
-  const onClickChat = (tenant: TenantProps) => {
-    console.log("Chat clicked for:", tenant);
-    // Add your logic here to chat with the landlord
+  const handleSearch = async (query: string) => {
+    if (!query && !searchQuery) return;
+    setSearchQuery(query);
   };
+
+  const {
+    data: apiData,
+    loading,
+    error,
+    refetch,
+  } = useFetch<TenantApiResponse>(
+    `tenants?page=${current_page}&search=${searchQuery}`
+  );
+
+  useEffect(() => {
+    if (apiData) {
+      setState((prevState) => ({
+        ...prevState,
+        tenantsPageData: transformTenantApiResponse(apiData),
+      }));
+    }
+  }, [apiData]);
+
+  // Listen for the refetch event
+  useEffect(() => {
+    const handleRefetch = () => {
+      refetch();
+    };
+
+    window.addEventListener("refetchTenants", handleRefetch);
+    return () => {
+      window.removeEventListener("refetchTenants", handleRefetch);
+    };
+  }, [refetch]);
 
   const transformedTenants = tenants.map((t) => ({
     ...t,
     full_name: (
       <p className="flex items-center">
-        <span className="text-ellipsis line-clamp-1">{`${t.first_name} ${t.last_name}`}</span>
-        <BadgeIcon color="yellow" />
+        <span className="text-ellipsis line-clamp-1">{t.name}</span>
+        <BadgeIcon color={t.badge_color} />
       </p>
     ),
     user_tag: <UserTag type={t.user_tag} />,
     "manage/chat": (
       <div className="flex gap-x-[4%] items-center w-full">
         <Button
-          // href={`/management/tenants/${t.id}/manage`}
-          href={{
-            pathname: `/management/tenants/${t.id}/manage`,
-            query: { user_tag: t.user_tag },
-          }}
+          href={`/management/tenants/${t.id}/manage`}
           size="sm_medium"
           className="px-8 py-2"
         >
@@ -200,7 +210,7 @@ const Tenants = () => {
           variant="sky_blue"
           size="sm_medium"
           className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white"
-          onClick={() => onClickChat(t)}
+          // onClick={() => onClickChat(t)}
         >
           Chat
         </Button>
@@ -216,7 +226,8 @@ const Tenants = () => {
         statsCardCount={3}
       />
     );
-  if (error) return <div>Error: {error.message}</div>;
+
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="space-y-8">
@@ -269,25 +280,20 @@ const Tenants = () => {
         isDateTrue
         filterOptionsWithRadio={tenantFiltersRadio}
         filterWithOptionsWithDropdown={tenantFilterOptionssWithDropdown}
+        searchQuery={searchQuery}
+        handleSearch={handleSearch}
       />
       <section>
         {view === "grid" || gridView ? (
           <AutoResizingGrid minWidth={284} gap={16}>
             {tenants.map((t) => (
-              <Link
-                // href={`/management/tenants/${t.id}/manage`}
-                href={{
-                  pathname: `/management/tenants/${t.id}/manage`,
-                  query: { user_tag: t.user_tag },
-                }}
-                key={t.id}
-              >
+              <Link href={`/management/tenants/${t.id}/manage`} key={t.id}>
                 <TenantCard
                   key={t.id}
-                  picture_url={t.picture_url || t.avatar}
-                  name={`${t.first_name} ${t.last_name}`}
+                  picture_url={t.picture_url}
+                  name={t.name}
                   user_tag={t.user_tag}
-                  badge_color="yellow"
+                  badge_color={t.badge_color}
                   email={t.email}
                   phone_number={t.phone_number}
                 />

@@ -21,6 +21,7 @@ import { objectLength } from "@/utils/object-length";
 import { password_conditions, password_strength } from "./data";
 import FlowProgressBar from "../FlowProgress/flow-progress-bar";
 
+
 // AuthHeading Component: Displays the heading and subheading for the auth form
 export const AuthHeading: React.FC<AuthHeadingProps> = ({
   title,

@@ -6,4 +6,6 @@ export interface SearchInputProps
   placeholder?: string;
   textInputClassName?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onEnterPress?: (value: string) => void;
+  searchQuery?: string;
 }
