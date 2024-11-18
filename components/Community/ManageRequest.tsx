@@ -39,6 +39,12 @@ export const PropertyRequestFirstSection = ({
   placeholderText: string;
   loading?: boolean;
 }) => {
+  const [inputValue, setInputValue] = useState(data?.title || '');
+  
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col gap-4">
@@ -51,11 +57,6 @@ export const PropertyRequestFirstSection = ({
     );
   }
 
-  const [inputValue, setInputValue] = useState(data?.title || '');
-  
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4">
@@ -82,6 +83,11 @@ export const PropertyRequestFirstSection = ({
 };
 
 export const PropertyRequestSecondSection = ({ loading }: { loading?: boolean }) => {
+  const [selectedDateRange, setSelectedDateRange] = useState<DateRange | undefined>();
+  const { minBudget, maxBudget, setMinBudget, setMaxBudget } = usePropertyRequestStore();
+  const [timeRange, setTimeRange] = useState("90d");
+  const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
+
   if (loading) {
     return (
       <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
@@ -118,13 +124,6 @@ export const PropertyRequestSecondSection = ({ loading }: { loading?: boolean })
     );
   }
 
-  const [selectedDateRange, setSelectedDateRange] = useState<
-    DateRange | undefined
-  >();
-  const { minBudget, maxBudget, setMinBudget, setMaxBudget } =
-    usePropertyRequestStore();
-  const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
-
   // Handle minimum budget change
   const handleMinChange = (value: string) => {
     // Remove any non-numeric characters except decimal point
@@ -139,8 +138,6 @@ export const PropertyRequestSecondSection = ({ loading }: { loading?: boolean })
     const numValue = parseFloat(cleanValue) || null;
     setMaxBudget(numValue);
   };
-
-  const [timeRange, setTimeRange] = useState("90d");
 
   const handleDateChange = (range: DateRange | undefined) => {
     setSelectedDateRange(range);
