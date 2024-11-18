@@ -13,6 +13,7 @@ interface MultiSelectProps {
   className?: string;
   resetKey?: number;
   onSelectionChange?: (selectedItems: string[]) => void; // Callback to send selected items to parent
+  defaultValue?: string[];
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
@@ -25,9 +26,10 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   inputTextClassName,
   resetKey,
   onSelectionChange, // Receive callback from parent
+  defaultValue = [],
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [selectedItems, setSelectedItems] = useState<string[]>(defaultValue);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleToggleDropdown = () => {
@@ -76,8 +78,11 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   }, []);
 
   useEffect(() => {
-    setSelectedItems([]);
-  }, [resetKey]);
+    setSelectedItems(defaultValue);
+    if (onSelectionChange && JSON.stringify(defaultValue) !== JSON.stringify(selectedItems)) {
+      onSelectionChange(defaultValue);
+    }
+  }, [defaultValue, onSelectionChange, selectedItems]);
 
   return (
     <div className={clsx("flex flex-col gap-2", className)}>

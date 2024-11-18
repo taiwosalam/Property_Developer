@@ -418,3 +418,10 @@ button:disabled:not(.retain-opacity) {
 .dark-text-2 {
   color: #9ca3af;
 }
+
+
+  @keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+  }

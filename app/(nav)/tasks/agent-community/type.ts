@@ -11,6 +11,10 @@ export type ThreadCardProps = {
   myArticle?: boolean;
   id: string | number;
   comments: string;
+  slug: string;
+  likes: string;
+  dislikes: string;
+  shareLink: string;
 };
 
 export interface CommentProps {

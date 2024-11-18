@@ -3,8 +3,8 @@
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import Button from "@/components/Form/Button/button";
-import ThreadCard from "@/components/Community/ThreadCard";
-import { threadData } from "./data";
+import ThreadCard, { ThreadSkeleton } from "@/components/Community/ThreadCard";
+import { getThreads } from "./data";
 import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
@@ -12,6 +12,7 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import { PlusIcon } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
 import { stateOptions } from "../inspections/data";
+import { useEffect, useState } from "react";
 
 const lists = [
   {
@@ -33,9 +34,33 @@ const lists = [
 
 const AgentCommunityPage = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [threads, setThreads] = useState<any[]>([]);
   const handleCreateArticleClick = () => {
     router.push("/tasks/agent-community/my-articles/create");
   };
+
+  useEffect(() => {
+    const fetchThreads = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const {data} = await getThreads();
+        setThreads(data);
+        console.log('Threads data:', data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch threads');
+        console.error('Error fetching threads:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchThreads();
+  }, []);
+
+  console.log("threads", threads);
   return (
     <div className="space-y-7">
       <div className="flex gap-5 flex-wrap items-center justify-between">
@@ -78,24 +103,33 @@ const AgentCommunityPage = () => {
       />
 
       <AutoResizingGrid minWidth={300}>
-        {threadData.map(
-          (
-            { name, picture_url, role, time, title, desc, comments, user_pics },
-            index
-          ) => (
+        {isLoading ? (
+          Array(threads.length || 3).fill(null).map((_, index) => (
+            <ThreadSkeleton key={index} />
+          ))
+        ) : threads.length === 0 ? (
+          <div className="col-span-full text-center py-8 text-gray-500">
+            No Thread found
+          </div>
+        ) : (
+          threads.map((thread, index) => (
             <ThreadCard
               key={index}
               id={index}
-              name={name}
-              picture_url={picture_url}
-              role={role}
-              time={time}
-              title={title}
-              desc={desc}
-              comments={comments}
-              user_pics={user_pics}
+              name={thread.user.name}
+              picture_url={thread.user.picture_url}
+              role={thread.user.role}
+              time={thread.post.created_at}
+              title={thread.post.title}
+              desc={thread.post.content}
+              comments={thread.post.comments_count}
+              user_pics={thread.user.picture}
+              likes={thread.post.likes_up}
+              dislikes={thread.post.likes_down}
+              slug={thread.post.slug}
+              shareLink={thread.post.share_link}
             />
-          )
+          ))
         )}
       </AutoResizingGrid>
       <div className="pagination">

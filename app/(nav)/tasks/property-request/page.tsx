@@ -1,15 +1,10 @@
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import PageTitle from "@/components/PageTitle/page-title";
-import FilterButton from "@/components/FilterButton/filter-button";
-import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
-import SearchInput from "@/components/SearchInput/search-input";
 import PropertyRequestCard from "@/components/tasks/CallBack/RequestCard";
 import { PropertyRequestData, type PropertyRequestDataType } from "./data";
 import { type PropertyRequestCardProps } from "@/components/tasks/CallBack/types";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import Button from "@/components/Form/Button/button";
 
 const transformToPropertyRequestCardProps = (
   data: PropertyRequestDataType

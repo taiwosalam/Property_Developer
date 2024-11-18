@@ -1,6 +1,47 @@
 import { empty } from "@/app/config";
 import { title } from "process";
 import { CommentProps } from "./type";
+import api from "@/services/api";
+
+export const getThreads = async () => {
+  try {
+    const response = await api.get("/agent_community");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching threads:", error);
+    throw error;
+  }
+};
+
+export const getThreadById = async (id: string) => {
+  try {
+    const response = await api.get(`/agent_community/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching thread:", error);
+    throw error;
+  }
+};
+
+export const getLoggedInUserThreads = async () => {
+  try {
+    const response = await api.get("/agent_community/user/posts");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching threads:", error);
+    throw error;
+  }
+};
+
+export const getAllPropertyRequests = async () => {
+  try {
+    const response = await api.get("/agent_community/property-requests/all");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching property requests:", error);
+    throw error;
+  }
+};
 
 export const threadData = [
   {
@@ -94,7 +135,6 @@ export const threadData = [
     comments: '30 Comments',
   },
 ];
-
 
 
 export const threadArticle = [

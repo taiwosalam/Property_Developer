@@ -12,6 +12,7 @@ import VisitorRequestModal from "../visitors-requests/visitor-request-modal";
 import PropertyRequestModal from "../property-requests/property-request-modal";
 import DepositRequestModal from "../deposit-requests/deposit-request-modal";
 import Link from "next/link";
+import { RequestCardSkeleton } from "@/app/(nav)/tasks/agent-community/components";
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   <div>
@@ -37,6 +38,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     requestId,
     pictureSrc,
     cardViewDetails,
+    isLoading,
     user,
   } = props;
 
@@ -159,7 +161,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             : cardType === "property"
             ? "Property Request"
             : cardType === "agent-community"
-            ? "Property Title"
+            ? `${props.propertyTitle}`
             : cardType === "deposit"
             ? "Caution Deposit Request"
             : ""}
@@ -168,7 +170,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
         {cardType !== "property" && cardType !== "agent-community" && (
           <p>ID: {requestId}</p>
         )}
-        {cardType === "agent-community" && <p>12/05/2024</p>}
+        {cardType === "agent-community" && <p>{requestDate}</p>}
       </div>
       <div className="px-[18px] grid grid-cols-2 sm:grid-cols-3 gap-x-5 gap-y-4">
         {cardType === "callback"
