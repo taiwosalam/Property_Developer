@@ -2,7 +2,7 @@ import Image from "next/image";
 import SampleUser from "@/public/empty/sample-user.svg";
 import { empty } from "@/app/config";
 
-export const ContributorDetails = ({ title, loading, post, contributors }: { title: string, loading: boolean, post: any, contributors: any }) => {
+export const ContributorDetails = ({ title, loading, post, contributors }: { title: string, loading?: boolean, post?: any, contributors?: any }) => {
   if (loading) {
     return (
       <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">

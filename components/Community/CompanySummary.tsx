@@ -13,7 +13,7 @@ import { companyStats } from "@/app/(nav)/tasks/agent-community/data";
 import Image from "next/image";
 import { CompanySummarySkeleton } from "@/app/(nav)/tasks/agent-community/components";
 
-const CompanySummary = ({ loading, companySummary }: { loading: boolean, companySummary: any }) => {
+const CompanySummary = ({ loading, companySummary }: { loading?: boolean, companySummary?: any }) => {
   
   if (loading) {
     return <CompanySummarySkeleton />;
