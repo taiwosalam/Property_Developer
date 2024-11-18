@@ -34,7 +34,7 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
           height={55}
           className="w-full h-[55px] object-cover"
         />
-      </div>
+      </div>  
 
       {nav_items.map((item, idx) =>
         item.content ? (

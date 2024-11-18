@@ -2,9 +2,8 @@
 import type { AuthSliderContent } from "@/components/Auth/AuthSlider/types";
 import { toast } from "sonner";
 import axios from "axios";
-import api from "@/services/api";
+import api, { handleAxiosError } from "@/services/api";
 import { useAuthStore } from "@/store/authStore";
-import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const base_url = `${process.env.NEXT_PUBLIC_BASE_URL}api/v1/`;
 
@@ -25,50 +24,45 @@ export const auth_slider_content: AuthSliderContent = [
 
 // Login function
 export const login = async (formData: Record<string, any>) => {
+  // const token = "ah";
+  // useAuthStore.getState().setToken(token);
+  // return "redirect to dashboard";
+
   try {
     const { data } = await axios.post(`${base_url}login`, formData);
-    // console.log(data.status);
-    if (data.status) {
-      const token = data.access_token;
-      useAuthStore.getState().setToken(token);
-      const email = data.data.details?.email || formData.email;
-      useAuthStore.getState().setEmail(email);
-      const message = data?.message || "Login successful!";
-      const emailVerified = data.data.details["email-verification"];
-      const role = data.data.details.role;
-      if (emailVerified) {
-        toast.success(message);
-        if (role === "user") {
-          return "redirect to setup";
-        } else {
-          return "redirect to dashboard";
-        }
+    useAuthStore.getState().reset();
+    const token = data.access_token;
+    useAuthStore.getState().setToken(token);
+    const email = data.data.details?.email || formData.email;
+    useAuthStore.getState().setEmail(email);
+    const message = data?.message || "Login successful!";
+    const emailVerified = data.data.details["email-verification"];
+    const role = data.data.details.role;
+    useAuthStore.getState().setRole(role);
+    if (emailVerified) {
+      toast.success(message);
+      if (role === "user") {
+        return "redirect to setup";
+      } else {
+        return "redirect to dashboard";
       }
-      if (!emailVerified) {
-        useAuthStore.getState().setEmailVerified(false);
-        toast.warning("Please verify your email to continue");
-        return "redirect to verify email";
-      }
-
-      // if (data["remember-me"] === "true") {
-      //   localStorage.setItem("authToken", token);
-      // } else {
-      //   sessionStorage.setItem("authToken", token);
-      // }
-
-      // Update the auth store with the new token
-      // useAuthStore.getState().setToken(token);
-    } else {
-      toast.error("Login failed. Please try again.");
     }
+    if (!emailVerified) {
+      useAuthStore.getState().setEmailVerified(false);
+      toast.warning("Please verify your email to continue");
+      return "redirect to verify email";
+    }
+
+    // if (data["remember-me"] === "true") {
+    //   localStorage.setItem("authToken", token);
+    // } else {
+    //   sessionStorage.setItem("authToken", token);
+    // }
+
+    // Update the auth store with the new token
+    // useAuthStore.getState().setToken(token);
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      const errorMessage =
-        error.response.data?.message || "Login failed. Please try again.";
-      toast.error(errorMessage);
-    } else {
-      toast.error("An unexpected error occurred. Please try again.");
-    }
+    handleAxiosError(error, "Login failed. Please try again.");
   }
 };
 
@@ -84,22 +78,15 @@ export const signup = async (
     toast.success(data?.message || "Signup successful!");
     return true;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      const errorData = error.response.data.errors;
-      const errorMessages = Object.values(errorData.messages).flat().join(" ");
-      toast.error(errorMessages || "Signup failed. Please try again.");
-      return false;
-    } else {
-      toast.error("An unexpected error occurred. Please try again.");
-      return false;
-    }
+    handleAxiosError(error, "Signup failed. Please try again.");
+    return false;
   }
 };
 
 export const verifyEmail = async (otp: string): Promise<boolean> => {
   const token = useAuthStore.getState().token;
   try {
-    const response = await axios.post(
+    const { data } = await axios.post(
       `${base_url}verify-email`,
       { otp },
       {
@@ -108,27 +95,11 @@ export const verifyEmail = async (otp: string): Promise<boolean> => {
         },
       }
     );
-    // console.log(response);
-    // console.log(response.status);
-
-    const message = response.data?.message;
-
-    if (response.status === 200) {
-      toast.success(message || "Email verified successfully!");
-      return true;
-    } else {
-      toast.error(message || "Verification failed. Please try again.");
-      return false;
-    }
+    const message = data?.message || "Email verified successfully!";
+    toast.success(message);
+    return true;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      const errorMessage =
-        error.response.data?.message ||
-        "Verification failed. Please try again.";
-      toast.error(errorMessage);
-    } else {
-      toast.error("An unexpected error occurred. Please try again.");
-    }
+    handleAxiosError(error, "Verification failed. Please try again.");
     return false;
   }
 };
@@ -136,7 +107,7 @@ export const verifyEmail = async (otp: string): Promise<boolean> => {
 export const resendOtp = async (): Promise<boolean> => {
   const token = useAuthStore.getState().token;
   try {
-    const response = await axios.post(
+    const { data } = await axios.post(
       `${base_url}resend-otp`,
       {},
       {
@@ -145,69 +116,26 @@ export const resendOtp = async (): Promise<boolean> => {
         },
       }
     );
-    const message = response.data?.message;
-
-    if (response.status === 200) {
-      toast.success(message || "OTP resent successfully!");
-      return true;
-    } else {
-      toast.error(message || "Failed to resend OTP. Please try again.");
-      return false;
-    }
+    const message = data?.message || "OTP resent successfully!";
+    toast.success(message);
+    return true;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      const errorMessage =
-        error.response.data?.message ||
-        "Failed to resend OTP. Please try again.";
-      toast.error(errorMessage);
-    } else {
-      toast.error("An unexpected error occurred. Please try again.");
-    }
+    handleAxiosError(error, "Failed to resend OTP. Please try again.");
     return false;
   }
 };
 
 export const logout = async (): Promise<boolean> => {
-  const setToken = useAuthStore.getState().setToken;
+  const reset = useAuthStore.getState().reset;
   try {
-    const response = await api.post("logout");
-    const message = response.data?.message;
-    if (response.status === 200) {
-      setToken(null);
-      toast.success(message || "Successfully logged out");
-      return true;
-    } else {
-      toast.error(message || "Logout failed. Please try again.");
-      return false;
-    }
+    const { data } = await api.post("logout");
+    const message = data?.message || "Successfully logged out";
+    reset();
+    toast.success(message);
+    return true;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      const errorMessage =
-        error.response.data?.message || "Logout failed. Please try again.";
-      toast.error(errorMessage);
-    } else {
-      toast.error("An unexpected error occurred. Please try again.");
-    }
+    handleAxiosError(error, "Logout failed. Please try again.");
     return false;
-  }
-};
-
-
-
-export const getUserStatus = async () => {
-try {
-    const { data } = await api.get("/user");
-    const { role, "email-verification": emailVerified } = data.data.details;
-    useAuthStore.getState().setRole(role);
-    if (!emailVerified) {
-      useAuthStore.getState().setEmailVerified(false);
-      return "redirect to verify email";
-    }
-    if (role === "user") {
-      return "redirect to setup";
-    }
-  } catch (error) {
-    return "redirect to sign in";
   }
 };
 
@@ -219,13 +147,7 @@ export const requestPasswordReset = async (formData: FormData) => {
     useAuthStore.getState().reset(formData.get("email") as string);
     return true;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      const errorMessage =
-        error.response.data?.message || "Failed to send password reset OTP.";
-      toast.error(errorMessage);
-    } else {
-      toast.error("An unexpected error occurred. Please try again.");
-    }
+    handleAxiosError(error, "Failed to send password reset OTP.");
     return false;
   }
 };
@@ -241,13 +163,7 @@ export const verifyOtpAndResetPassword = async (otp: string) => {
     toast.success(message);
     return true;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      const errorMessage =
-        error.response.data?.message || "Failed to validate OTP.";
-      toast.error(errorMessage);
-    } else {
-      toast.error("An unexpected error occurred. Please try again.");
-    }
+    handleAxiosError(error, "Failed to validate OTP.");
     return false;
   }
 };
@@ -264,14 +180,7 @@ export const updatePassword = async (formData: FormData) => {
     toast.success(message);
     return true;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      const errorData = error.response.data.errors;
-      const errorMessages = Object.values(errorData.messages).flat().join(" ");
-      toast.error(errorMessages || "Failed to update password.");
-      return false;
-    } else {
-      toast.error("An unexpected error occurred. Please try again.");
-      return false;
-    }
+    handleAxiosError(error, "Failed to update password.");
+    return false;
   }
 };

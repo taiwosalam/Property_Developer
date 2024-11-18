@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
-import { getLocalStorage } from "@/utils/local-storage";
 import { useAuthStore } from "@/store/authStore";
+import { toast } from "sonner";
 
 // Create axios instance
 const api = axios.create({
@@ -10,20 +10,12 @@ const api = axios.create({
   },
 });
 
-let cachedToken: string | null = getLocalStorage("authToken");
-
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    if (cachedToken) {
-      config.headers.Authorization = `Bearer ${cachedToken}`;
-    } else {
-      // Get token from localStorage
-      const token = getLocalStorage("authToken");
-      if (token) {
-        cachedToken = token;
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+    const token = useAuthStore.getState().token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -41,13 +33,36 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     if (error.response?.status === 401) {
       console.log("401 error from interceptor");
-      // Clear cached token and localStorage
-      cachedToken = null;
-      useAuthStore.getState().setToken(null);
+      useAuthStore.getState().reset();
       window.location.href = "/auth/sign-in";
     }
+
     return Promise.reject(error);
   }
 );
 
 export default api;
+
+// Generic error handler function
+export const handleAxiosError = (
+  error: any,
+  defaultMessage: string = "An unexpected error occurred"
+) => {
+  if (axios.isAxiosError(error) && error.response?.data) {
+    // Check for error in data.message
+    if (error.response.data.message) {
+      toast.error(error.response.data.message);
+      return;
+    }
+    // Check for error in data.errors.messages
+    if (error.response.data.errors?.messages) {
+      const errorMessages = Object.values(error.response.data.errors.messages)
+        .flat()
+        .join(" ");
+      toast.error(errorMessages);
+      return;
+    }
+  }
+  // Default error message
+  toast.error(defaultMessage);
+};
