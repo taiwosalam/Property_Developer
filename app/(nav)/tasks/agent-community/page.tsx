@@ -46,8 +46,8 @@ const AgentCommunityPage = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const data = await getThreads();
-        setThreads(data?.posts);
+        const {data} = await getThreads();
+        setThreads(data);
         console.log('Threads data:', data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch threads');
@@ -60,6 +60,7 @@ const AgentCommunityPage = () => {
     fetchThreads();
   }, []);
 
+  console.log("threads", threads);
   return (
     <div className="space-y-7">
       <div className="flex gap-5 flex-wrap items-center justify-between">
@@ -106,6 +107,10 @@ const AgentCommunityPage = () => {
           Array(threads.length || 3).fill(null).map((_, index) => (
             <ThreadSkeleton key={index} />
           ))
+        ) : threads.length === 0 ? (
+          <div className="col-span-full text-center py-8 text-gray-500">
+            No Thread found
+          </div>
         ) : (
           threads.map((thread, index) => (
             <ThreadCard
@@ -121,6 +126,8 @@ const AgentCommunityPage = () => {
               user_pics={thread.user.picture}
               likes={thread.post.likes_up}
               dislikes={thread.post.likes_down}
+              slug={thread.post.slug}
+              shareLink={thread.post.share_link}
             />
           ))
         )}

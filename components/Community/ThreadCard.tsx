@@ -11,7 +11,10 @@ import {
   ThumbsDown,
   ThumbsUp,
 } from "@/public/icons/icons";
+import { toggleLike } from "@/app/(nav)/tasks/agent-community/my-articles/data";
 import { empty } from "@/app/config";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const link = "/tasks/agent-community/";
 
@@ -28,11 +31,13 @@ const ThreadCard = ({
   id,
   likes,
   dislikes,
+  slug,
+  shareLink,
 }: ThreadCardProps) => {
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md">
       <Link
-        href={`${link}${myArticle ? "my-articles" : "threads"}/${id}/preview`}
+        href={`${link}${myArticle ? "my-articles" : "threads"}/${slug}/preview`}
       >
         <ThreadHeader
           user_pics={user_pics}
@@ -42,7 +47,7 @@ const ThreadCard = ({
         />
         <ThreadBody title={title} picture_url={picture_url} desc={desc} />
       </Link>
-      <ThreadFooter comments={comments} likes={likes} dislikes={dislikes} />
+      <ThreadFooter comments={comments} likes={likes} dislikes={dislikes} slug={slug} shareLink={shareLink} />
     </div>
   );
 };
@@ -120,17 +125,87 @@ const ThreadBody = ({
   );
 };
 
-const ThreadFooter = ({ comments, likes, dislikes }: { comments: string, likes: string, dislikes: string }) => {
+const ThreadFooter = ({ comments, likes, dislikes, slug, shareLink }: { comments: string, likes: string, dislikes: string, slug: string, shareLink: string }) => {
+  const [likeCount, setLikeCount] = useState(likes ? parseInt(likes) : 0);
+  const [dislikeCount, setDislikeCount] = useState(dislikes ? parseInt(dislikes) : 0);
+  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLike = async () => {
+    if (isLoading || userAction === 'like') return;
+    setIsLoading(true);
+    
+    try {
+      await toggleLike(slug, 1);
+      if (userAction === 'dislike') {
+        setDislikeCount(prev => prev - 1);
+      }
+      setLikeCount(prev => prev + 1);
+      setUserAction('like');
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDislike = async () => {
+    if (isLoading || userAction === 'dislike') return;
+    setIsLoading(true);
+
+    try { 
+      await toggleLike(slug, -1);
+      if (userAction === 'like') {
+        setLikeCount(prev => prev - 1);
+      }
+      setDislikeCount(prev => prev + 1);
+      setUserAction('dislike');
+    } catch (error) {
+      console.error('Error toggling dislike:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Share Thread',
+          url: shareLink
+        });
+      } catch (error) {
+        console.log('Error sharing:', error);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareLink);
+        // You might want to add a toast notification here
+        toast.success('Link copied to clipboard!');
+      } catch (error) {
+        console.error('Error copying to clipboard:', error);
+      }
+    }
+  };
+
   return (
     <div className="flex items-center justify-between mt-2">
       <div className="like-dislike flex gap-2">
-        <button className="flex items-center gap-1">
+        <button 
+          className={`flex items-center gap-1 ${userAction === 'like' ? 'text-blue-500' : ''}`} 
+          onClick={handleLike}
+          disabled={isLoading}
+        >
           <ThumbsUp />
-          <p> {likes} </p>
+          <p>{likeCount}</p>
         </button>
-        <button className="flex items-center gap-1">
+        <button 
+          className={`flex items-center gap-1 ${userAction === 'dislike' ? 'text-red-500' : ''}`} 
+          onClick={handleDislike}
+          disabled={isLoading}
+        >
           <ThumbsDown />
-          <p> {dislikes} </p>
+          <p>{dislikeCount}</p>
         </button>
       </div>
 
@@ -139,14 +214,13 @@ const ThreadFooter = ({ comments, likes, dislikes }: { comments: string, likes: 
         <span className="text-sm dark:text:darkText-1">{comments}</span>
       </button>
 
-      <button className="flex items-center gap-1">
+      <button className="flex items-center gap-1" onClick={handleShare}>
         <ShareIcon />
         <span>share</span>
       </button>
     </div>
   );
 };
-
 
 export const ThreadSkeleton = () => {
   return (

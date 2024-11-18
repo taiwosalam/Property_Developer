@@ -109,6 +109,7 @@ const MyArticlePage = () => {
           threads.map((thread, index) => (
             <ThreadCard
               key={index}
+              slug={thread.post.slug}
               id={thread.post.id}
               name={thread.user.name}
               picture_url={thread.user.picture_url}
@@ -120,11 +121,13 @@ const MyArticlePage = () => {
               user_pics={thread.user.picture}
               likes={thread.post.likes_up}
               dislikes={thread.post.likes_down}
+              shareLink={thread.post.share_link}
+              myArticle={true}
             />
           ))
         ) : (
-          <div className="text-center text-brand-9 w-full h-full flex items-center justify-center">
-            <p>No articles found {threads.length}</p>
+          <div className="col-span-full text-center py-8 text-gray-500">
+            No Article found
           </div>
         )}
       </AutoResizingGrid>

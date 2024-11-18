@@ -1,21 +1,26 @@
 import {
-  ChevronLeft,
   FbIcon,
   InstagramIcon,
   Mail,
   MapIcon,
   PhoneIcon,
   SocialWebIcon,
-  ThumbsDown,
-  ThumbsUp,
   TwitterIcon,
   WebsiteIcon,
 } from "@/public/icons/icons";
 import CompanyLogo from "@/public/empty/company-logo.svg";
 import { companyStats } from "@/app/(nav)/tasks/agent-community/data";
 import Image from "next/image";
+import { CompanySummarySkeleton } from "@/app/(nav)/tasks/agent-community/components";
 
-const CompanySummary = () => {
+const CompanySummary = ({ loading, companySummary }: { loading: boolean, companySummary: any }) => {
+  
+  if (loading) {
+    return <CompanySummarySkeleton />;
+  }
+
+  // const state_lga = companySummary?.addresses?.city + ", " + companySummary?.addresses?.local_government + ", " + companySummary?.addresses?.state;
+
   return (
     <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
       <h2 className="text-black font-semibold text-lg dark:text-white">
@@ -34,13 +39,11 @@ const CompanySummary = () => {
       </div>
       <div className="details mt-3">
         <h3 className="text-black leading-50 font-bold text-6 dark:text-white">
-          {" "}
-          Pat Onukwuli & Co.{" "}
+          {companySummary?.name}
         </h3>
         <div className="service flex flex-col gap-1 mt-1">
           <p> Services </p>
           <p className="text-sm text-text-disabled">
-            {" "}
             Sales, Purchase, Rent of Resident Property & Commercial Property{" "}
           </p>
         </div>
@@ -48,7 +51,7 @@ const CompanySummary = () => {
           <p> Contacts </p>
           <div className="flex gap-2 text-sm text-text-disabled">
             <MapIcon />
-            <span> States and Local Govt. </span>
+            <span> {companySummary?.addresses?.head_office_address} </span>
           </div>
           <div className="flex gap-2 text-sm text-text-disabled">
             <WebsiteIcon />

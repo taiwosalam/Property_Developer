@@ -17,18 +17,42 @@ import { usePropertyRequestStore } from "@/store/createPropertyStore";
 import { DatePickerWithRange } from "../dashboard/date-picker";
 import { DateRange } from "react-day-picker";
 
+
+
+const SkeletonBox = ({ className }: { className: string }) => (
+  <div 
+    className={`bg-gray-200 dark:bg-gray-700 rounded animate-pulse ${className}`}
+    style={{ animation: 'pulse 1.5s ease-in-out infinite' }}
+  />
+);
+
 export const PropertyRequestFirstSection = ({
-  inputValue: initialInputValue = '',
+  data,
   title,
   placeholderText,
   desc,
+  loading,
 }: {
-  inputValue?: string;
+  data?: any;
   desc?: string;
   title?: string;
   placeholderText: string;
+  loading?: boolean;
 }) => {
-  const [inputValue, setInputValue] = useState(initialInputValue);
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
+          <SkeletonBox className="h-6 w-16" />
+          <SkeletonBox className="h-10 w-full" /> 
+        </div>
+        <SkeletonBox className="w-full h-[400px]" /> 
+      </div>
+    );
+  }
+
+  const [inputValue, setInputValue] = useState(data?.title || '');
+  
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
@@ -40,8 +64,8 @@ export const PropertyRequestFirstSection = ({
           type="text"
           id="title"
           name="title"
-          className="bg-white rounded-md dark:bg-darkText-primary dark:text-darkText-1 py-2 px-3 w-full text-text-secondary"
-          value={inputValue || ''}
+          className="bg-white border border-solid border-[#C1C2C366] rounded-md dark:bg-darkText-primary dark:text-darkText-1 py-2 px-3 w-full text-text-secondary"
+          value={inputValue}
           onChange={onChange}
         />
       </div>
@@ -50,14 +74,50 @@ export const PropertyRequestFirstSection = ({
         label=""
         placeholder={desc ? desc : placeholderText}
         className="w-full mt-4 min-h-[300px]"
-        value={desc}
+        value={data?.content || ''}
         inputSpaceClassName="!min-h-[400px] text-text-secondary no-italic !leading-60 dark:text-darkText-2"
       />
     </div>
   );
 };
 
-export const PropertyRequestSecondSection = () => {
+export const PropertyRequestSecondSection = ({ loading }: { loading?: boolean }) => {
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
+        {/* Request Types section */}
+        <SkeletonBox className="h-6 w-24" />
+        <div className="flex flex-wrap gap-3">
+          {[1, 2, 3].map((i) => (
+            <SkeletonBox key={i} className="h-10 w-24" />
+          ))}
+        </div>
+
+        {/* Budget section */}
+        <div className="budget flex flex-col gap-2">
+          <SkeletonBox className="h-6 w-16" />
+          <div className="space-y-4">
+            <SkeletonBox className="h-[72px] w-full" />
+            <SkeletonBox className="h-[72px] w-full" />
+          </div>
+        </div>
+
+        {/* Target Audience & Valid Till section */}
+        <div className="flex flex-col gap-2">
+          <div className="space-y-4">
+            <SkeletonBox className="h-6 w-32" />
+            <SkeletonBox className="h-10 w-full" />
+          </div>
+          
+          <div className="space-y-4 mt-4">
+            <SkeletonBox className="h-6 w-20" />
+            <SkeletonBox className="h-10 w-full" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >();
@@ -165,25 +225,24 @@ export const ManagePropertiesComments = () => {
   );
 };
 
-export const StateAndLocalGovt = () => {
-  // type Address = "selectedState" | "selectedLGA" | "selectedCity";
-  // const [state, setState] = useState({
-  //   selectedState: "",
-  //   selectedLGA: "",
-  //   activeAvatar: "",
-  //   errorMsgs: {} as ValidationErrors,
-  // });
-
-  const [selectedStates, setSelectedStates] = useState<string[]>([]);
+export const StateAndLocalGovt = ({ data }: { data?: any }) => {
+  const [selectedStates, setSelectedStates] = useState<string[]>(
+    data?.target_audience ? JSON.parse(data.target_audience) : []
+  );
 
   const handleStateSelection = (selected: string[]) => {
-    // Update selectedStates based on selection
     if (selected.includes("All States")) {
-      setSelectedStates(["All States"]);
+      setSelectedStates(["All States"]); // Only "All States" can be selected
     } else {
       setSelectedStates(selected);
     }
   };
+
+  const allOptions = selectedStates.includes("All States")
+    ? ["All States"] // Limit options to "All States" when selected
+    : ["All States", ...getAllStates()].filter(
+        (option, index, self) => self.indexOf(option) === index // Remove duplicates
+      );
 
   return (
     <div className="audience flex flex-col gap-2">
@@ -191,12 +250,9 @@ export const StateAndLocalGovt = () => {
         Target Audience
       </h3>
       <MultiSelect
+        defaultValue={selectedStates} // Pass current state as defaultValue
         name="target_audience"
-        options={
-          selectedStates.includes("All States")
-            ? ["All States"] // Only show "All States" when it’s selected
-            : ["All States", ...getAllStates()]
-        }
+        options={allOptions}
         maxSelections={selectedStates.includes("All States") ? 1 : 10}
         id="target_audience"
         label="Select States"
