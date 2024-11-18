@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Input from "@/components/Form/Input/input";
 import { DeleteIconOrange, PlusIcon } from "@/public/icons/icons";
@@ -10,7 +10,7 @@ const AddPhotoAndVideo = ({ editing, data }: { editing?: boolean, data?: any }) 
   // HANDLE IMAGES UPLOAD
   const MAX_FILE_SIZE_MB = 2;
   const [images, setImages] = useState<string[]>(
-    editing ? (data?.media || []) : [Image1, Image2, Image3]
+    editing && data?.media ? data.media || [Image1, Image2] : []
   );
   const MAX_IMAGES = 4;
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,9 +47,16 @@ const AddPhotoAndVideo = ({ editing, data }: { editing?: boolean, data?: any }) 
         `Some images were rejected due to exceeding the maximum size: ${MAX_FILE_SIZE_MB} MB`
       );
     }
-
+    
     e.target.value = "";
   };
+
+  const [videoLink, setVideoLink] = useState(
+    editing && data?.video_link ? data.video_link : ''
+  );
+
+  // console.log('videoLink', data.video_link);
+  // console.log('images', images);
 
   return (
     <div className="lg:flex-1 space-y-4">
@@ -105,7 +112,8 @@ const AddPhotoAndVideo = ({ editing, data }: { editing?: boolean, data?: any }) 
         type="url"
         placeholder="https://www.youtube.com/video"
         inputClassName="bg-white"
-        value={data?.video_link || ''}
+        value={videoLink}
+        onChange={(data) => setVideoLink(data)}
       />
     </div>
   );

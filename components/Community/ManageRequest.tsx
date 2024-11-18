@@ -4,7 +4,7 @@ import { comments } from "@/app/(nav)/tasks/agent-community/data";
 import TextArea from "../Form/TextArea/textarea";
 import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ValidationErrors } from "@/utils/types";
 import MultiSelect from "./multi-select";
 import Comment from "@/app/(nav)/tasks/agent-community/threads/[threadId]/preview/comment";
@@ -32,20 +32,26 @@ export const PropertyRequestFirstSection = ({
   placeholderText,
   desc,
   loading,
-  inputValue: initialValue,
 }: {
   data?: any;
   desc?: string;
   title?: string;
   placeholderText: string;
   loading?: boolean;
-  inputValue?: string;
 }) => {
-  const [inputValue, setInputValue] = useState(initialValue || data?.title || '');
+  const [inputValue, setInputValue] = useState(data?.title ?? '');
   
+  useEffect(() => {
+    if (data?.title) {
+      setInputValue(data.title);
+    }
+  }, [data?.title]);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
+
+// console.log('data', data?.title);
 
   if (loading) {
     return (

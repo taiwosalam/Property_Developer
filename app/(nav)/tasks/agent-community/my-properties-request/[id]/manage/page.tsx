@@ -55,7 +55,6 @@ const ManageMyArticle = () => {
           <PropertyRequestFirstSection
             placeholderText="Rent Increase & Maintenance"
             desc={desc}
-            inputValue="Rent Increase & Maintenance"
           />
           <ThreadComments />
         </div>

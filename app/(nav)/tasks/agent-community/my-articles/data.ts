@@ -64,3 +64,41 @@ export const deleteMyArticle = async (slug: string) => {
     return false;
   }
 };
+
+export const updateMyArticle = async (slug: string, formData: any) => {
+  try {
+    let formDataObject: any = {};
+    
+    // Check if formData is a FormData object
+    if (formData instanceof FormData) {
+      formData.forEach((value: FormDataEntryValue, key: string) => {
+        if (key === 'target_audience') {
+          formDataObject[key] = value.toString().split(',').map(item => item.trim());
+        } else {
+          formDataObject[key] = value;
+        }
+      });
+    } else {
+      // If formData is already an object, process it directly
+      formDataObject = { ...formData };
+      if (formDataObject.target_audience && typeof formDataObject.target_audience === 'string') {
+        formDataObject.target_audience = formDataObject.target_audience.split(',').map((item: string) => item.trim());
+      }
+    }
+    
+    console.log('formDataObject', formDataObject);
+    const response = await api.put(`/agent_community/${slug}`, formDataObject);
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      const messages = error.response.data?.errors?.messages;
+      const messagesArray = messages ? Object.values(messages) as string[][] : [];
+      const firstErrorMessage = messagesArray[0]?.[0];
+      console.log("error message:", firstErrorMessage);
+      const errorMessage = firstErrorMessage || "Failed to update article. Please try again.";
+      toast.error(errorMessage);
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+  }
+}

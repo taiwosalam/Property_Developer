@@ -9,7 +9,7 @@ import {
 } from "@/components/Community/ManageRequest";
 import AddPhotoAndVideo from "@/components/Community/AddPhotoAndVideo";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { deleteMyArticle, getMyArticlesDetails } from "../../data";
+import { deleteMyArticle, getMyArticlesDetails, updateMyArticle } from "../../data";
 import { toast } from "sonner";
 import useFetch from "@/hooks/useFetch";
 import { CommentProps } from "@/components/tasks/announcements/comment";
@@ -31,6 +31,7 @@ const ManageMyArticle = () => {
   const slug = myArticleId as string;
   const { data, error, loading } = useFetch<ArticleResponse>(`/agent_community/${slug}`);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [article, setArticle] = useState(null)
 
   const handleDeleteMyArticle = async ({ slug }: { slug: string }) => {
@@ -53,7 +54,19 @@ const ManageMyArticle = () => {
   }, [data]);
 
   const handleUpdate = async (data: any) => {
-    console.log(data);
+    setIsUpdating(true);
+    try {
+      const response = await updateMyArticle(slug, data);
+      if (response) {
+        toast.success("Article updated successfully");
+      } else {
+        toast.error("Failed to update article");
+      }
+    } catch (error) {
+      console.error("Error updating my article:", error);
+    } finally {
+      setIsUpdating(false);
+    }
   }
 
   return (
