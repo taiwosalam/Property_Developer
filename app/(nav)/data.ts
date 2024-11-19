@@ -13,5 +13,6 @@ export const getUserStatus = async () => {
     if (role === "user") {
       return "redirect to setup";
     }
+    // return "redirect to dashboard";
   } catch (error) {}
 };

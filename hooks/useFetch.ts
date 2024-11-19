@@ -11,8 +11,7 @@ interface UseFetchResult<T> {
 
 function useFetch<T>(
   url: string,
-  config?: AxiosRequestConfig,
-  defaultMessage: string = "Something went wrong"
+  config?: AxiosRequestConfig
 ): UseFetchResult<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -27,12 +26,10 @@ function useFetch<T>(
     } catch (err) {
       // setError(err.response.data.message);
       // console.log(err.response.data.message);
-      if (defaultMessage) {
-        setError(defaultMessage);
-      } else if (axios.isAxiosError(err) && err.response?.data) {
-        setError(err.response.data?.message || defaultMessage);
+      if (axios.isAxiosError(err) && err.response?.data) {
+        setError(err.response.data?.message);
       } else {
-        setError((err as Error)?.message || defaultMessage);
+        setError((err as Error)?.message);
       }
     } finally {
       setLoading(false);

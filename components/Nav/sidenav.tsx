@@ -32,9 +32,9 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
           alt="company logo"
           width={200}
           height={55}
-          className="w-full h-[55px] object-cover"
+          className="w-full h-[55px] object-contain"
         />
-      </div>  
+      </div>
 
       {nav_items.map((item, idx) =>
         item.content ? (

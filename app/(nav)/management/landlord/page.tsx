@@ -165,9 +165,7 @@ const Landlord = () => {
     error,
     refetch,
   } = useFetch<LandlordApiResponse>(
-    `landlords?page=${current_page}&search=${searchQuery}`,
-    undefined,
-    "Failed to fetch landlords"
+    `landlords?page=${current_page}&search=${searchQuery}`
   );
 
   useEffect(() => {

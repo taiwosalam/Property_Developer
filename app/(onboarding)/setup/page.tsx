@@ -19,12 +19,15 @@ import ProfilePicture from "@/components/Setup/profile-picture";
 import ProfileInformation from "@/components/Setup/profile-information";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { transformFormData, createCompany } from "./data";
+import { getUserStatus } from "@/app/(nav)/data";
 import { ValidationErrors } from "@/utils/types";
+import { getLocalStorage } from "@/utils/local-storage";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 
 const Setup = () => {
   const router = useRouter();
+  const authStoreToken = useAuthStore((state) => state.token);
   const setRole = useAuthStore((state) => state.setRole);
   const role = useAuthStore((state) => state.role);
   // Define the index of the last step in the flow
@@ -54,6 +57,27 @@ const Setup = () => {
       router.replace("/dashboard");
     }
   }, [role, router]);
+
+  useEffect(() => {
+    if (!authStoreToken) {
+      const localAuthToken = getLocalStorage("authToken");
+      if (!localAuthToken) {
+        router.replace("/auth/sign-in");
+        return;
+      }
+      useAuthStore.getState().setToken(localAuthToken);
+    }
+    setTimeout(async () => {
+      const status = await getUserStatus();
+      if (status === "redirect to setup") {
+        return;
+      }
+      if (status === "redirect to verify email") {
+        router.replace("/auth/sign-up");
+        return;
+      }
+    }, 0);
+  }, [router, authStoreToken]);
 
   return (
     <FlowProgress
