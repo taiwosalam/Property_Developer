@@ -6,7 +6,7 @@ interface UseFetchResult<T> {
   data: T | null;
   loading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
+  refetch: (options?: { silent?: boolean }) => Promise<void>;
 }
 
 function useFetch<T>(
@@ -17,30 +17,41 @@ function useFetch<T>(
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const { data } = await api.get<T>(url, config);
-      setData(data);
-    } catch (err) {
-      // setError(err.response.data.message);
-      // console.log(err.response.data.message);
-      if (axios.isAxiosError(err) && err.response?.data) {
-        setError(err.response.data?.message);
-      } else {
-        setError((err as Error)?.message);
+  const fetchData = useCallback(
+    async (options: { silent?: boolean } = {}) => {
+      const { silent = false } = options;
+      try {
+        if (!silent) {
+          setLoading(true);
+        }
+        setError(null);
+        const { data } = await api.get<T>(url, config);
+        setData(data);
+      } catch (err) {
+        if (axios.isAxiosError(err) && err.response?.data) {
+          setError(err.response.data?.message);
+        } else {
+          setError((err as Error)?.message);
+        }
+      } finally {
+        if (!silent) {
+          setLoading(false);
+        }
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [url, config]);
+    },
+    [url, config]
+  );
 
   useEffect(() => {
     fetchData();
   }, [fetchData]); // Re-fetch when URL changes
 
-  return { data, loading, error, refetch: fetchData };
+  return {
+    data,
+    loading,
+    error,
+    refetch: (options) => fetchData(options),
+  };
 }
 
 export default useFetch;

@@ -9,15 +9,20 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Pagination from "@/components/Pagination/pagination";
 import { LocationIcon } from "@/public/icons/icons";
 import { useEffect, useState } from "react";
-import { getOneBranch } from "../../data";
-import { PageState } from "../data";
 import { useParams, useRouter } from "next/navigation";
-import { ResponseType } from "../types";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import type { DataItem } from "@/components/Table/types";
 import CustomTable from "@/components/Table/table";
 import { branchStaffTableFields, branchStaffTableData } from "./data";
+
+interface PageState {
+  gridView: boolean;
+  total_pages: number;
+  current_page: number;
+  selectedState: string;
+  localGovernments: string[];
+}
 
 const BranchStaffPage = () => {
   const router = useRouter();
@@ -47,14 +52,12 @@ const BranchStaffPage = () => {
   };
   const initialState = {
     gridView: true,
-    total_pages: 50,
+    total_pages: 1,
     current_page: 1,
     selectedState: "",
     localGovernments: [],
   };
   const [state, setState] = useState<PageState>(initialState);
-  const [fetchedBranchData, setFetchedBranchData] =
-    useState<ResponseType | null>();
 
   const { gridView, total_pages, current_page } = state;
   const { branchId } = useParams();

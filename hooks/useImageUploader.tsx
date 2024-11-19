@@ -26,6 +26,7 @@ export const useImageUploader = ({
   // State to store the image preview URL
 
   const [preview, setPreview] = useState<string | null>(null);
+  // const [preview, setPreview] = useState(placeholder || empty);
 
   // Ref to hold reference to the file input element
   const inputFileRef = useRef<HTMLInputElement | null>(null);
@@ -63,7 +64,6 @@ export const useImageUploader = ({
 
         e.target.files = dataTransfer.files; // Assign the previous file to the input's files
       } else {
-        // setPreview(placeholder || empty); // Reset the preview to the placeholder if no previous file
         setPreview(null);
         toast.warning("No file selected."); // Show a warning toast
       }
@@ -74,6 +74,7 @@ export const useImageUploader = ({
 
   const clearSelection = () => {
     setPreview(null); // Clear the image preview
+    previousFileRef.current = null;
     if (inputFileRef.current) {
       inputFileRef.current.value = ""; // Clear the file input
     }

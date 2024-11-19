@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
 import CustomTable from "@/components/Table/table";
-import type { Field, DataItem } from "@/components/Table/types";
+import type { DataItem } from "@/components/Table/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
@@ -24,6 +24,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import useSettingsStore from "@/store/settings";
 import useView from "@/hooks/useView";
 import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const StaffAndBranches = () => {
   const view = useView();
@@ -85,10 +86,6 @@ const StaffAndBranches = () => {
     setSelectedView("list");
   };
 
-  const handlePageChange = (page: number) => {
-    setState((state) => ({ ...state, current_page: page }));
-  };
-
   const setLocalGovernments = (array: string[]) => {
     setState((state) => ({ ...state, localGovernments: array }));
   };
@@ -134,12 +131,34 @@ const StaffAndBranches = () => {
     }
   }, [selectedState]);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handlePageChange = (page: number) => {
+    setSearchQuery("");
+    setState((prevState) => ({
+      ...prevState,
+      branchesPageData: {
+        ...prevState.branchesPageData,
+        current_page: page,
+      },
+    }));
+  };
+
+  const handleSearch = async (query: string) => {
+    if (!query && !searchQuery) return;
+    setSearchQuery(query);
+  };
+
   const {
     data: apiData,
     loading,
     error,
     refetch,
-  } = useFetch<BranchApiResponse>(`branches?page=${current_page}`);
+  } = useFetch<BranchApiResponse>(
+    `branches?page=${current_page}&search=${searchQuery}`
+  );
+
+  useRefetchOnEvent("refetchBranches", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {
@@ -159,7 +178,7 @@ const StaffAndBranches = () => {
       />
     );
 
-  if (error) return <div>Error: {error}</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="space-y-9">
@@ -211,6 +230,8 @@ const StaffAndBranches = () => {
         handleFilterApply={handleFilterApply}
         isDateTrue
         filterWithOptionsWithDropdown={StaffAndBranchFiltersWithDropdown}
+        handleSearch={handleSearch}
+        searchQuery={searchQuery}
       />
 
       <section className="capitalize">

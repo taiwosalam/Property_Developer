@@ -83,36 +83,39 @@ export interface BranchApiResponse {
       id: number;
       branch_name: string;
       branch_address: string;
+      state: string;
+      local_government: string;
+      city: string;
       branch_manager: string; // to be added
       picture: string;
-      staff_count: number;
+      staffs_count: number;
       property_count: number;
       unit_count: number;
     }[];
   };
 }
 
-export const transformBranchApiResponse = (
-  data: BranchApiResponse
-): BranchesPageData => {
+export const transformBranchApiResponse = ({
+  data,
+}: BranchApiResponse): BranchesPageData => {
   return {
-    total_pages: data.data.last_page,
-    current_page: data.data.current_page,
-    total_branches: data.data.total,
+    total_pages: data.last_page,
+    current_page: data.current_page,
+    total_branches: data.total,
     new_branches_count: 0, // to be added
     total_properties: 0, // to be added
     new_properties_count: 0, // to be added
     total_staffs: 0, // to be added
     new_staffs_count: 0, // to be added
-    branches: data.data.data.map((branch) => ({
+    branches: data.data.map((branch) => ({
       id: String(branch.id),
       branch_title: branch.branch_name,
-      branch_full_address: branch.branch_address,
+      branch_full_address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
       manager_name: branch.branch_manager,
       branch_picture: branch.picture,
-      staff_count: branch.staff_count,
-      property_count: branch.property_count,
-      unit_count: branch.unit_count,
+      staff_count: branch.staffs_count,
+      property_count: branch.property_count || 0, // to be added
+      unit_count: branch.unit_count || 0, // to be added
       manager_picture: "", // to be added
     })),
   };

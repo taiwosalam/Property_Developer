@@ -28,11 +28,17 @@ type Staff = any[]; // Assuming the structure of staff is unknown. Change `any` 
 
 type PropertyList = any[]; // Assuming the structure of property_list is unknown. Change `any` to a specific type if needed.
 
-export type ResponseType = {
-  branch: Branch | null | undefined;
-  properties: Properties;
-  landlords: Landlords;
-  tenants: Tenants;
-  staff: Staff;
-  property_list: PropertyList;
+export type SingleBranchResponseType = {
+  data: {
+    branch: {
+      id: number;
+      branch_name: string;
+      state: string;
+      local_government: string;
+      city: string;
+      branch_address: string;
+      // branch_image: string | null; //to be added later
+      branch_desc: string;
+    };
+  };
 };
