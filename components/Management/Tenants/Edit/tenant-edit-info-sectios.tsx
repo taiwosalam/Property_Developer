@@ -525,10 +525,10 @@ export const TenantEditAvatarInfoSection = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (data) {
-      setProfilePicture(data.picture || data.avatar || CameraCircle);
+    if (data?.picture) {
+      setProfilePicture(data.picture || CameraCircle);
     }
-  }, [data?.picture, data?.avatar]);
+  }, [data?.picture]);
 
   return (
     <LandlordTenantInfoEditSection title="edit avatar">
