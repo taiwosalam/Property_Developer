@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Form/Button/button";
@@ -10,7 +10,12 @@ import type { Field, DataItem } from "@/components/Table/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
-import { type StaffAndBranchPageState, getAllBranches } from "./data";
+import {
+  type StaffAndBranchPageState,
+  branchTableFields,
+  type BranchApiResponse,
+  transformBranchApiResponse,
+} from "./data";
 import Pagination from "@/components/Pagination/pagination";
 import CreateBranchModal from "@/components/Management/Staff-And-Branches/create-branch-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
@@ -18,6 +23,7 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useSettingsStore from "@/store/settings";
 import useView from "@/hooks/useView";
+import useFetch from "@/hooks/useFetch";
 
 const StaffAndBranches = () => {
   const view = useView();
@@ -25,18 +31,15 @@ const StaffAndBranches = () => {
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
   );
-  // const grid = selectedView === "grid";
   const router = useRouter();
   const initialState: StaffAndBranchPageState = {
     gridView: selectedView === "grid",
-    total_pages: 50,
-    current_page: 1,
     selectedState: "",
     selectedLGA: "",
     localGovernments: [],
-    loading: true,
-    error: null,
     branchesPageData: {
+      total_pages: 1,
+      current_page: 1,
       total_branches: 0,
       new_branches_count: 0,
       total_properties: 0,
@@ -49,14 +52,12 @@ const StaffAndBranches = () => {
   const [state, setState] = useState<StaffAndBranchPageState>(initialState);
   const {
     gridView,
-    total_pages,
-    current_page,
     selectedState,
     selectedLGA,
     localGovernments,
-    loading,
-    error,
     branchesPageData: {
+      total_pages,
+      current_page,
       total_branches,
       new_branches_count,
       total_properties,
@@ -121,59 +122,6 @@ const StaffAndBranches = () => {
     },
   ];
 
-  const tableFields: Field[] = [
-    { id: "1", label: "S/N", accessor: "S/N" },
-    { id: "2", label: "", accessor: "avatar", isImage: true },
-    { id: "3", label: "Branch Name", accessor: "branch_title" },
-    { id: "4", label: "Branch Address", accessor: "branch_full_address" },
-    { id: "5", label: "Branch Manager", accessor: "manager_name" },
-    {
-      id: "6",
-      label: "Total Staff",
-      accessor: "staff_count",
-      contentStyle: {
-        color: "#fff",
-        padding: "4px",
-        borderRadius: "8px",
-        backgroundColor: "#8C62FF",
-        display: "grid",
-        placeItems: "center",
-        width: "32px",
-        margin: "auto",
-      },
-    },
-    {
-      id: "7",
-      label: "Properties",
-      accessor: "property_count",
-      contentStyle: {
-        color: "#fff",
-        padding: "4px",
-        borderRadius: "8px",
-        backgroundColor: "#2DD4BF",
-        display: "grid",
-        placeItems: "center",
-        width: "32px",
-        margin: "auto",
-      },
-    },
-    {
-      id: "8",
-      label: "Units",
-      accessor: "unit_count",
-      contentStyle: {
-        color: "#fff",
-        padding: "4px",
-        borderRadius: "8px",
-        backgroundColor: "#38BDF8",
-        display: "grid",
-        placeItems: "center",
-        width: "32px",
-        margin: "auto",
-      },
-    },
-  ];
-
   const handleSelectTableItem = (item: DataItem) => {
     router.push(`/management/staff-branch/${item.id}`);
   };
@@ -186,16 +134,32 @@ const StaffAndBranches = () => {
     }
   }, [selectedState]);
 
-  // if (loading)
-  //   return (
-  //     <CustomLoader
-  //       layout="page"
-  //       pageTitle="Staff & Branch"
-  //       statsCardCount={3}
-  //     />
-  //   );
+  const {
+    data: apiData,
+    loading,
+    error,
+    refetch,
+  } = useFetch<BranchApiResponse>(`branches?page=${current_page}`);
 
-  // if (error) return <div>Error: {error.message}</div>;
+  useEffect(() => {
+    if (apiData) {
+      setState((x) => ({
+        ...x,
+        branchesPageData: transformBranchApiResponse(apiData),
+      }));
+    }
+  }, [apiData]);
+
+  if (loading)
+    return (
+      <CustomLoader
+        layout="page"
+        pageTitle="Staff & Branch"
+        statsCardCount={3}
+      />
+    );
+
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="space-y-9">
@@ -254,13 +218,13 @@ const StaffAndBranches = () => {
           <AutoResizingGrid minWidth={284}>
             {branches.map((b) => (
               <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
-                <BranchCard key={b.id} {...b} />
+                <BranchCard {...b} />
               </Link>
             ))}
           </AutoResizingGrid>
         ) : (
           <CustomTable
-            fields={tableFields}
+            fields={branchTableFields}
             data={branches}
             tableHeadClassName="bg-brand-5 h-[76px]"
             tableHeadStyle={{

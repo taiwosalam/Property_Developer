@@ -131,8 +131,6 @@ export const mockData = generateMockdata(10);
 // ];
 
 export interface LandlordApiResponse {
-  status: string;
-  statusCode: number;
   data: {
     current_page: number;
     data: Array<{
@@ -153,7 +151,6 @@ export interface LandlordApiResponse {
   new_mobile_landlords_this_month: number;
   web_landlord_count: number;
   new_web_landlords_this_month: number;
-  message: string;
 }
 
 export const transformLandlordApiResponse = (

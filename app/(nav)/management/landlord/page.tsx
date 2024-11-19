@@ -66,7 +66,6 @@ const Landlord = () => {
       landlords,
     },
   } = state;
-  console.log(landlords);
 
   useEffect(() => {
     setState((prevState) => ({
