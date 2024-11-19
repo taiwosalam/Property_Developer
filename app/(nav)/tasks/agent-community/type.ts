@@ -29,6 +29,7 @@ export interface CommentProps {
 
 export interface AgentCommunityRequestCardProps extends RequestCardBaseProps {
   cardType: "agent-community";
+  targetAudience?: string;
   state: string;
   lga: string;
   propertyType: string;

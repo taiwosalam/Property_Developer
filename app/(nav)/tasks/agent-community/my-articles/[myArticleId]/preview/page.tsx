@@ -51,8 +51,8 @@ const ThreadPreview = () => {
     }
   }, [data]);
 
-  console.log(comments);
-  console.log(post?.title);
+  // console.log(comments);
+  // console.log(post?.title);
 
   return (
     <div>

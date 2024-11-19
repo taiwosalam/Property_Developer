@@ -37,8 +37,20 @@ const AgentCommunityPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [threads, setThreads] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
   const handleCreateArticleClick = () => {
     router.push("/tasks/agent-community/my-articles/create");
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    // Filter threads based on title or content
+    const filteredThreads = threads.filter(thread => 
+      thread.post.title.toLowerCase().includes(query.toLowerCase()) ||
+      thread.post.content.toLowerCase().includes(query.toLowerCase())
+    );
+    setThreads(filteredThreads);
   };
 
   useEffect(() => {
@@ -100,6 +112,8 @@ const AgentCommunityPage = () => {
         filterOptions={[]}
         filterWithOptionsWithDropdown={stateOptions}
         article={true}
+        handleSearch={handleSearch} 
+        searchQuery={searchQuery}    
       />
 
       <AutoResizingGrid minWidth={300}>

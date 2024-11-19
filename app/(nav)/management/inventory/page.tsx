@@ -10,12 +10,29 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import useView from "@/hooks/useView";
 import useSettingsStore from "@/store/settings";
+import { toast } from "sonner";
+import { createInventory } from "../data";
 
 const Inventory = () => {
   const view = useView();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
-  
+
   const [selectedView, setSelectedView] = useState<string>(selectedOptions.view || "grid");
+  const [isCreating, setIsCreating] = useState(false);
+
+  const handleSubmit = async (data: FormData) => {
+    setIsCreating(true);
+    try {
+      const success = await createInventory(data);
+      if (success) {
+        toast.success("Inventory created successfully");
+      }
+    } catch (error) {
+      toast.error("Failed to create inventory");
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
   useEffect(() => {
     // Sync selectedView with selectedOptions.view on mount
@@ -93,9 +110,15 @@ const Inventory = () => {
       </div>
       <FilterBar azFilter gridView={selectedView === "grid"}
         setGridView={setGridView}
-        setListView={setListView} onStateSelect={() => { }} pageTitle="Inventory" aboutPageModalData={
-          { title: "Inventory", description: "This page contains a list of inventory on the platform." }
-        } searchInputPlaceholder="Search inventory" handleFilterApply={() => { }} isDateTrue filterOptionsWithRadio={[]} filterWithOptionsWithDropdown={inventoryFiltersWithDropdown} />
+        setListView={setListView}
+        onStateSelect={() => { }}
+        pageTitle="Inventory"
+        aboutPageModalData={{ title: "Inventory", description: "This page contains a list of inventory on the platform." }}
+        searchInputPlaceholder="Search inventory"
+        handleFilterApply={() => { }}
+        isDateTrue
+        filterOptionsWithRadio={[]}
+        filterWithOptionsWithDropdown={inventoryFiltersWithDropdown} />
       {selectedView === "grid" ? (
         <AutoResizingGrid gap={28} minWidth={330}>
           {Array(6)

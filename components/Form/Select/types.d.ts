@@ -5,6 +5,7 @@ export interface SelectOptionObject {
 
 export interface SelectProps {
   id: string;
+  name?: string;
   defaultValue?: string;
   options: string[] | SelectOptionObject[];
   value?: string;

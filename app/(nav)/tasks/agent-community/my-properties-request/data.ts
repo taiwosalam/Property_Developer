@@ -16,7 +16,7 @@ export const transformFormData = (
     return transformedData;
   };
 
-  export const createPropertyRequest = async (data: FormData | Record<string, any>) => {
+export const createPropertyRequest = async (data: FormData | Record<string, any>) => {
     const keyMapping: Record<string, string> = {
         'content': 'description',
         'propertyCategory': 'property_category',
@@ -38,25 +38,37 @@ export const transformFormData = (
           );
     
     // Format the data to match the required structure
+    // const formattedData = {
+    //     title: transformedData.title || '',
+    //     description: transformedData.description || '',
+    //     property_category: transformedData.property_category || '',
+    //     property_type: transformedData.property_type || '',
+    //     property_sub_type: transformedData.property_sub_type || '',
+    //     target_audience: transformedData.target_audience 
+    //         ? (typeof transformedData.target_audience === 'string' 
+    //             ? transformedData.target_audience.split(',') 
+    //             : Array.isArray(transformedData.target_audience)
+    //                 ? transformedData.target_audience
+    //                 : [transformedData.target_audience])
+    //         : [],
+    //     min_budget: transformedData.min_budget?.toString() || '',
+    //     max_budget: transformedData.max_budget?.toString() || '',
+    //     valid_till: transformedData.valid_till || ''
+    // };
+
     const formattedData = {
-        title: transformedData.title || '',
-        description: transformedData.description || '',
-        property_category: transformedData.property_category || '',
-        property_type: transformedData.property_type || '',
-        property_sub_type: transformedData.property_sub_type || '',
-        target_audience: transformedData.target_audience 
-            ? (typeof transformedData.target_audience === 'string' 
-                ? transformedData.target_audience.split(',') 
-                : Array.isArray(transformedData.target_audience)
-                    ? transformedData.target_audience
-                    : [transformedData.target_audience])
-            : [],
-        min_budget: transformedData.min_budget?.toString() || '',
-        max_budget: transformedData.max_budget?.toString() || '',
-        valid_till: transformedData.valid_till || ''
-    };
+        "title": "A Property  request ",
+        "description": " this is a test Property request",
+        "property_category": "Residential", //{from dropdown ['Residential', 'Commercial', 'Mixed Use']}
+        "property_type": "Flat", //{from dropdown ['Apartment', 'Flat', 'House', 'Land']}
+        "property_sub_type": "rent", 
+        "target_audience": ["Lagos", "Oyo", "Abuja"],
+       "min_budget": "300000",
+       "max_budget": "550000",
+        "valid_till": "2024-11-10 - 2024-12-20" 
+      }
     
-    // console.log('Payload to be sent to API:', formattedData);
+    console.log('Payload to be sent to API:', formattedData);
     
     try {
         const response = await api.post("/agent_community/property-requests/create", formattedData);

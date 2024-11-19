@@ -17,7 +17,8 @@ export interface PropertyRequestDataType {
   minBudget: string;
   propertyTitle: string;
   maxBudget: string;
-
+  userTitle: string;
+  targetAudience?: string;
 } // Check with backend if this is the correct data type
 
 export const getPropertyRequestData = async () => {
@@ -48,6 +49,7 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     phoneNumber: "08012345678",
     isLoading: false,
     propertyTitle: "Property Title",
+    userTitle: "Property Title",
   },
   {
     requestId: "1344567901",
@@ -66,6 +68,7 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     maxBudget: "₦200,000,000",
     isLoading: false,
     propertyTitle: "Property Title",
+    userTitle: "Property Title",
   },
   {
     requestId: "1344567901",
@@ -84,6 +87,7 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     maxBudget: "₦200,000,000",
     isLoading: false,
     propertyTitle: "Property Title",
+    userTitle: "Property Title",
   },
   {
     requestId: "1344567901",
@@ -102,6 +106,7 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     maxBudget: "₦200,000,000",
     isLoading: false,
     propertyTitle: "Property Title",
+    userTitle: "Property Title",
   },
   {
     requestId: "1344567901",
@@ -120,6 +125,7 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     maxBudget: "₦200,000,000",
     isLoading: false,
     propertyTitle: "Property Title",
+    userTitle: "Property Title",
   },
   {
     requestId: "1344567901",
@@ -138,5 +144,6 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     maxBudget: "₦200,000,000",
     isLoading: false,
     propertyTitle: "Property Title",
+    userTitle: "Property Title",
   },
 ];

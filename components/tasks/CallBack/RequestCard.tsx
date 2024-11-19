@@ -13,6 +13,7 @@ import PropertyRequestModal from "../property-requests/property-request-modal";
 import DepositRequestModal from "../deposit-requests/deposit-request-modal";
 import Link from "next/link";
 import { RequestCardSkeleton } from "@/app/(nav)/tasks/agent-community/components";
+import { empty } from "@/app/config";
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   <div>
@@ -39,6 +40,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     pictureSrc,
     cardViewDetails,
     isLoading,
+    userTitle,
     user,
   } = props;
 
@@ -94,7 +96,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     >
       <div className="px-[18px] flex items-center justify-between flex-wrap gap-2">
         <div className="flex gap-2">
-          <Picture size={50} src={pictureSrc || samplePicture} rounded />
+          <Picture size={50} src={pictureSrc || empty} rounded />
           <div className="space-y-1">
             <div className="flex items-center gap-0.5">
               <span className="text-[16px] font-medium">{userName}</span>
@@ -111,7 +113,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             {cardType === "agent-community" && (
               <div className="flelx items-center space-x-1 mb-2">
                 <span className="text-sm font-medium text-brand-9">
-                  Legal Practitioner
+                 {userTitle}
                 </span>
               </div>
             )}

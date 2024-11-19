@@ -60,10 +60,25 @@ const PropertyRequest = () => {
   const [propertyRequestUser, setPropertyRequestUser] = useState<any>(null);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   
   const handleCreatePropertyRequestClick = () => {
     router.push("/tasks/agent-community/my-properties-request/create");
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    
+    if (!Array.isArray(propertyRequests)) {
+      return; 
+    }
+
+    const filteredPropertyRequests = propertyRequests.filter((request: PropertyRequestDataType) => 
+      request.propertyTitle.toLowerCase().includes(query.toLowerCase()) ||
+      request.description.toLowerCase().includes(query.toLowerCase())
+    );
+    setPropertyRequests(filteredPropertyRequests);
   };
 
   useEffect(() => {
@@ -89,27 +104,35 @@ const PropertyRequest = () => {
     fetchPropertyRequests();
   }, []);
 
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "___";
+    try {
+      const date = new Date(dateString);
+      return date.toISOString().split('T')[0];
+    } catch {
+      return "___";
+    }
+  };
 
-  const propertyRequestData:PropertyRequestDataType[] = [
-    {
+  const propertyRequestData: PropertyRequestDataType[] = [{
       requestId: propertyRequests?.id,
-      userName: propertyRequestUser?.name || "name here",
-      requestDate: propertyRequests?.created_at || "date here",
+      userName: propertyRequestUser?.name || "__",
+      requestDate: formatDate(propertyRequests?.created_at) || "__",
       pictureSrc: propertyRequestUser?.picture || empty,
-      state: propertyRequests?.state || "state here",
-      lga: propertyRequests?.lga || "lga here",
-      propertyType: propertyRequests?.property_type || "property type here",
-      category: propertyRequests?.category || "category here",
-      subType: propertyRequests?.sub_type || "sub type here",
-      minBudget: propertyRequests?.min_budget || "₦75,000,000",
-      maxBudget: propertyRequests?.max_budget || "₦200,000,000",
+      state: propertyRequests?.state || "__",
+      lga: propertyRequests?.lga || "__",
+      propertyType: propertyRequests?.property_type || "__",
+      category: propertyRequests?.category || "__",
+      subType: propertyRequests?.sub_type || "__",
+      minBudget: propertyRequests?.min_budget || "__",
+      maxBudget: propertyRequests?.max_budget || "__",
       requestType: "Web",
-      description: propertyRequests?.description || "description here",
-      phoneNumber: propertyRequestUser?.phone || "phone number here",
-      propertyTitle: propertyRequests?.title || "property title here",
+      description: propertyRequests?.description || "__",
+      phoneNumber: propertyRequestUser?.phone || "__",
+      propertyTitle: propertyRequests?.title || "__",
       isLoading: isFetching,
-    },
-  ];
+      userTitle: propertyRequestUser?.title || "__",
+  }];
 
   return (
     <div className="space-y-9">
@@ -150,6 +173,8 @@ const PropertyRequest = () => {
         hasGridListToggle={false}
         propertyRequest={true}
         filterWithOptionsWithDropdown={stateOptions}
+        handleSearch={handleSearch}
+        searchQuery={searchQuery}
       />
       {propertyRequestData.length === 0 ? (
         <div className="flex justify-center items-center min-h-[200px] text-gray-500">

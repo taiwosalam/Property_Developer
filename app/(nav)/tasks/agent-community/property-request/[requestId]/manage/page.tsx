@@ -36,7 +36,6 @@ const ManagePropertyRequest = () => {
         <div className="lg:w-[60%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <PropertyRequestFirstSection
             placeholderText="Rent Increase & Maintenance"
-            inputValue="Rent Increase & Maintenance"
             desc={textareaValue}
           />
           <ManagePropertiesComments />

@@ -37,7 +37,8 @@ const MyArticlePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [threads, setThreads] = useState<any[]>([]);
   const [userInfo, setUserInfo] = useState<any>(null);
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredThreads, setFilteredThreads] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchThreads = async () => {
@@ -58,6 +59,19 @@ const MyArticlePage = () => {
     fetchThreads();
   }, []);
 
+  useEffect(() => {
+    if (!threads) return;
+    
+    const filtered = threads.filter((thread) =>
+      thread.post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      thread.post.content.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredThreads(filtered);
+  }, [searchQuery, threads]);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
 
   const handleCreateMyArticleClick = () => {
     router.push("/tasks/agent-community/my-articles/create");
@@ -94,10 +108,9 @@ const MyArticlePage = () => {
             "This page contains a list of My Articles on the platform.",
         }}
         searchInputPlaceholder="Search Articles"
-        handleFilterApply={() => { }}
-        isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={[]}
+        handleSearch={handleSearch}
+        handleFilterApply={() => {}}
+        searchQuery={searchQuery}
       />
 
       <AutoResizingGrid minWidth={300}>
@@ -105,8 +118,8 @@ const MyArticlePage = () => {
           Array(threads?.length || 3).fill(null).map((_, index) => (
             <ThreadSkeleton key={index} />
           ))
-        ) : threads && threads.length > 0 ? (
-          threads.map((thread, index) => (
+        ) : filteredThreads && filteredThreads.length > 0 ? (
+          filteredThreads.map((thread, index) => (
             <ThreadCard
               key={index}
               slug={thread.post.slug}
