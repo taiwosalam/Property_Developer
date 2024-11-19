@@ -48,7 +48,6 @@ interface AttachedDocument extends AttachedDocumentCard {
 }
 
 export type LandlordPageData = {
-  avatar: string;
   picture: string;
   first_name: string;
   last_name: string;
@@ -107,3 +106,5 @@ export type LandlordHelpInfo = {
 };
 
 export type LandlordHelpInfoList = LandlordHelpInfo[];
+
+

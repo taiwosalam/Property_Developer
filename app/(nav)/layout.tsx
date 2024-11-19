@@ -24,8 +24,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const authStoreToken = useAuthStore((state) => state.token);
-  // console.log(authStoreToken, "authStoreToken navLayout");
+const authStoreToken = useAuthStore((state) => state.token);
 
   const { selectedOptions } = useSettingsStore();
   const sideNavRef = useRef<HTMLDivElement>(null);
