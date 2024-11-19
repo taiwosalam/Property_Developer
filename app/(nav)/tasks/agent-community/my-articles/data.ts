@@ -65,7 +65,8 @@ export const deleteMyArticle = async (slug: string) => {
   }
 };
 
-export const updateMyArticle = async (slug: string, formData: any) => {
+export const updateMyArticle = async (id: number, formData: any) => {
+ console.log("id", id);
   try {
     let formDataObject: any = {};
     
@@ -87,7 +88,7 @@ export const updateMyArticle = async (slug: string, formData: any) => {
     }
     
     console.log('formDataObject', formDataObject);
-    const response = await api.put(`/agent_community/${slug}`, formDataObject);
+    const response = await api.put(`/agent_community/${id}`, formDataObject);
     return response.status === 200 || response.status === 201;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

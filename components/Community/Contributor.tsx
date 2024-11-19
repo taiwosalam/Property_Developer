@@ -34,16 +34,20 @@ export const ContributorDetails = ({ title, loading, post, contributors }: { tit
       <div className="flex flex-col mt-4 gap-2">
         <div className="flex gap-4">
           <p className="text-[#747474] text-sm"> Posted Date </p>
-          <p className="dark:text-white text-black text-sm"> {post?.created_at} </p>
+          <p className="dark:text-white text-black text-sm">
+            {post?.created_at || <div className="w-24 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse inline-block" />}
+          </p>
         </div>
         <div className="flex gap-4">
           <p className="text-[#747474] text-sm"> Last Updated </p>
-          <p className="dark:text-white text-black text-sm"> {post?.updated_at} </p>
+          <p className="dark:text-white text-black text-sm">
+            {post?.updated_at || <div className="w-24 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse inline-block" />}
+          </p>
         </div>
         <div className="flex gap-4">
           <p className="text-[#747474] text-sm"> Target Audience </p>
           <p className="dark:text-white text-black text-sm">
-            {post?.target_audience ? JSON.parse(post.target_audience).join(', ') : ''}
+            {post?.target_audience ? JSON.parse(post.target_audience).join(', ') : <div className="w-32 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse inline-block" />}
           </p>
         </div>
       </div>
@@ -53,6 +57,10 @@ export const ContributorDetails = ({ title, loading, post, contributors }: { tit
 };
 
 const ContributorUser = ({ contributors }: { contributors: any }) => {
+  if (!contributors?.name || !contributors?.title || !contributors?.role || !contributors?.phone || !contributors?.email) {
+    return <ContributorUserSkeleton />;
+  }
+
   return (
     <div className="flex flex-col mt-6 gap-4">
       <div className="flex flex-col md:flex-row gap-4">
@@ -61,16 +69,16 @@ const ContributorUser = ({ contributors }: { contributors: any }) => {
         </div>
         <div className="userDetails flex flex-col gap-1">
           <p className="dark:text-white text-black text-[25px] font-bold">
-            {contributors?.name || 'No Name'}
+            {contributors?.name}
           </p>
           <div className="flex flex-row lg:flex-col gap-2">
-            <p className="text-brand-9 text-sm"> {contributors?.title || 'No Title'} </p>
+            <p className="text-brand-9 text-sm"> {contributors?.title} </p>
             <p className="text-white bg-[#003DAD] px-2 py-1 text-xs w-fit rounded-lg">
-              {contributors?.role || 'No Role'}
+              {contributors?.role}
             </p>
           </div>
-          <p className="text-sm"> Contact : {contributors?.phone || 'No Phone'} </p>
-          <p className="text-sm"> Email Address: {contributors?.email || 'No Email'} </p>
+          <p className="text-sm"> Contact : {contributors?.phone} </p>
+          <p className="text-sm"> Email Address: {contributors?.email} </p>
         </div>
       </div>
       <div className="desc text-sm">

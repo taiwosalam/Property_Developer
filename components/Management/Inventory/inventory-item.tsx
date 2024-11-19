@@ -1,7 +1,7 @@
-"use client";
+// "use client";
 
 import Image from "next/image";
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useState } from "react";
 
 // Types
 import type { InventoryItemProps } from "./types";
@@ -20,22 +20,33 @@ import { InventoryField } from "./inventory-components";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { ImageIcon } from "@/public/icons/icons";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import { CounterButton } from "@/components/Settings/SettingsEnrollment/settings-enrollment-components";
 
-const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
+
+const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({ data, edit, index }) => {
   const isDarkMode = useDarkMode();
-  const { preview, inputFileRef, handleImageChange } = useImageUploader({
-    placeholder: data?.image,
-  });
+  const [count, setCount] = useState<number>(1);
+   const { preview, inputFileRef, handleImageChange } = useImageUploader({
+     placeholder: data?.image,
+   });
 
-  const input_styles: CSSProperties = {
-    backgroundColor: isDarkMode ? "#020617" : "white",
+   const handleIncrement = () => {
+    setCount((prevCount) => (prevCount + 1));
   };
 
-  const selectImage = () => {
-    if (inputFileRef.current) {
-      inputFileRef.current.click();
-    }
+  const handleDecrement = () => {
+    setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : prevCount));
   };
+  
+   const input_styles: CSSProperties = {
+     backgroundColor: isDarkMode ? "#020617" : "white",
+   };
+  
+   const selectImage = () => {
+     if (inputFileRef.current) {
+       inputFileRef.current.click();
+     }
+   };
 
   return (
     <div
@@ -51,7 +62,8 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
             <div className="custom-flex-col gap-2 flex-1">
               {edit ? (
                 <Input
-                  id="inventory-name"
+                  id={`item-name-${index}`}
+                  name={`item-name-${index}`}
                   label="Inventory name"
                   className="flex-1"
                   style={input_styles}
@@ -63,15 +75,31 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
             <div className="flex gap-4">
               {edit ? (
                 <>
-                  <Input
-                    id="inventory-quantity"
-                    placeholder="Quantity / Unit"
+                                  <div className="flex justify-between max-w-[150px] px-2 items-center gap-2 border-2 border-text-disabled dark:border-[#3C3D37] rounded-md">
+                  <input
                     type="number"
-                    className="flex-1"
-                    style={input_styles}
+                    id={`quantity-${index}`}
+                    name={`quantity-${index}`}
+                    value={count}
+                    onChange={(e) => setCount(Number(e.target.value))}
+                    className="w-2/3 px-2 py-2 border-transparent focus:outline-none"
                   />
+                  <div className="btn flex flex-col items-end justify-end">
+                    <CounterButton
+                      onClick={handleIncrement}
+                      icon="/icons/plus.svg"
+                      alt="plus"
+                    />
+                    <CounterButton
+                      onClick={handleDecrement}
+                      icon="/icons/minus.svg"
+                      alt="minus"
+                    />
+                  </div>
+                  </div>
                   <Select
-                    id="inventory-condition"
+                    id={`condition-${index}`}
+                    name={`condition-${index}`}
                     placeholder="Condition"
                     options={inventory_conditions}
                     className="flex-1"
@@ -94,37 +122,67 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
               sizes="200px"
               className="object-cover"
             />
-            {edit && (
-              <div
-                className="absolute inset-0 flex items-center justify-center"
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
-              >
-                <input
-                  type="file"
-                  id="picture"
-                  name="picture"
-                  accept="image/*"
-                  ref={inputFileRef}
-                  className="hidden pointer-events-none"
-                  onChange={handleImageChange}
-                />
-                <div className="custom-flex-col gap-6">
-                  <div className="flex flex-col items-center gap-2 custom-primary-color">
-                    <ImageIcon />
-                    <p className="text-brand-9 text-sm font-semibold">
-                      Set picture
-                    </p>
-                  </div>
-                  <Button
-                    onClick={selectImage}
-                    size="base_medium"
-                    className="py-1 px-6"
-                  >
-                    select
-                  </Button>
-                </div>
-              </div>
-            )}
+             {edit && (
+               <div
+                 className="absolute inset-0 flex items-center justify-center"
+                 style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
+               >
+                 <input
+                   type="file"
+                   id="picture"
+                   name={`image-${index}`}
+                   accept="image/*"
+                   ref={inputFileRef}
+                   className="hidden pointer-events-none"
+                   onChange={handleImageChange}
+                 />
+                 <div className="custom-flex-col gap-6">
+                   <div className="flex flex-col items-center gap-2 custom-primary-color">
+                     <ImageIcon />
+                     <p className="text-brand-9 text-sm font-semibold">
+                       Set picture
+                     </p>
+                   </div>
+                   <Button
+                     onClick={selectImage}
+                     size="base_medium"
+                     className="py-1 px-6"
+                   >
+                     select
+                   </Button>
+                 </div>
+               </div>
+             )} {edit && (
+               <div
+                 className="absolute inset-0 flex items-center justify-center"
+                 style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
+               >
+                 <input
+                   type="file"
+                   id="picture"
+                   name={`image-${index}`}
+                   accept="image/*"
+                   ref={inputFileRef}
+                   className="hidden pointer-events-none"
+                   onChange={handleImageChange}
+                 />
+                 <div className="custom-flex-col gap-6">
+                   <div className="flex flex-col items-center gap-2 custom-primary-color">
+                     <ImageIcon />
+                     <p className="text-brand-9 text-sm font-semibold">
+                       Set picture
+                     </p>
+                   </div>
+                   <Button
+                     onClick={selectImage}
+                     size="base_medium"
+                     className="py-1 px-6"
+                   >
+                     select
+                   </Button>
+                 </div>
+               </div>
+             )}
           </div>
         </div>
       </div>

@@ -14,13 +14,30 @@ import user3 from "@/public/empty/user3.svg";
 import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import ThreadComments from "@/components/Community/ThreadComments";
-import { ContributorDetails } from "@/components/Community/Contributor";
-import CompanySummary from "@/components/Community/CompanySummary";
 import ReadyByCard from "@/components/Community/ReadByCard";
+import { useEffect, useState } from "react";
+import useFetch from "@/hooks/useFetch";
+
+interface PropertyRequestResponse {
+  data: {
+    propertyRequest: any; 
+  };
+}
 
 const PreviewPage = () => {
   const router = useRouter();
   const { id } = useParams();
+  const [propertyRequest, setPropertyRequest] = useState<any>(null);
+  const { data, loading, error } = useFetch<PropertyRequestResponse>(`/agent_community/property-requests/${id}`);
+  
+  useEffect(() => {
+    if (data) {
+      setPropertyRequest(data.data.propertyRequest);
+    }
+  }, [data]);
+
+  console.log(propertyRequest);
+  
   return (
     <div>
       <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
@@ -34,7 +51,7 @@ const PreviewPage = () => {
             <ChevronLeft />
           </button>
           <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
-            Property Title
+            {propertyRequest?.title || "___"}
           </h1>
         </div>
         <Button
@@ -47,12 +64,12 @@ const PreviewPage = () => {
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <ThreadArticle />
+          <ThreadArticle propertyRequest={propertyRequest} />
           <ThreadComments />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <SummaryCard />
-          <MoreDetailsCard />
+          <MoreDetailsCard propertyRequest={propertyRequest} />
           <ReadyByCard />
         </div>
       </div>
@@ -62,14 +79,10 @@ const PreviewPage = () => {
 
 export default PreviewPage;
 
-const ThreadArticle = () => {
+const ThreadArticle = ({ propertyRequest }: { propertyRequest: any }) => {
   return (
     <div className="">
-      {threadArticle.map((article, index) => (
-        <p key={index} className="text-sm text-darkText-secondary mt-2">
-          {article}
-        </p>
-      ))}
+      <div dangerouslySetInnerHTML={{ __html: propertyRequest?.description || "___" }} />
       <div className="flex justify-between mt-6">
         <div className="text-black font-semibold">Comments</div>
 
@@ -137,7 +150,16 @@ const SummaryCard = () => {
   );
 };
 
-const MoreDetailsCard = () => {
+const MoreDetailsCard = ({ propertyRequest }: { propertyRequest: any }) => {
+  const propertyMoreDetails = [
+    { label: "Location:", value: propertyRequest?.location || "___" },
+    { label: "Category:", value: propertyRequest?.property_category || "___"},
+    { label: "Property Type:", value: propertyRequest?.property_type || "___" },
+    { label: "Sub Type:", value: propertyRequest?.property_sub_type || "___"},
+    { label: "Min Budget:", value: `₦${propertyRequest?.min_budget}` || "___" },
+    { label: "Max Budget:", value: `₦${propertyRequest?.max_budget}` || "___" },
+    { label: "Date Range:", value: propertyRequest?.created_at || "___" },
+  ];
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-lg p-4">
       <div className="flex flex-col mt-4 gap-2">

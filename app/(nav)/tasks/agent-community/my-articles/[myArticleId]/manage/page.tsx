@@ -33,6 +33,7 @@ const ManageMyArticle = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [article, setArticle] = useState(null)
+  const [id, setId] = useState<number | null>(null);
 
   const handleDeleteMyArticle = async ({ slug }: { slug: string }) => {
     setIsDeleting(true);
@@ -46,21 +47,24 @@ const ManageMyArticle = () => {
     setIsDeleting(false);
   };
 
-
+  
   useEffect(() => {
     if (data) {
       setArticle(data.post.post);
+      setId(data.post.post.id)
     }
   }, [data]);
-
+  
   const handleUpdate = async (data: any) => {
     setIsUpdating(true);
     try {
-      const response = await updateMyArticle(slug, data);
+      if (!id) {
+        toast.error("Article ID not found");
+        return;
+      }
+      const response = await updateMyArticle(id, data);
       if (response) {
         toast.success("Article updated successfully");
-      } else {
-        toast.error("Failed to update article");
       }
     } catch (error) {
       console.error("Error updating my article:", error);
@@ -115,7 +119,7 @@ const ManageMyArticle = () => {
           type="submit"
           className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
         >
-          Update
+          {isUpdating ? "Updating..." : "Update"}
         </button>
       </FixedFooter>
       </AuthForm>

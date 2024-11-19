@@ -9,11 +9,7 @@ import {
 } from "@/data";
 import Select from "./select";
 
-const PropertyRequestUnitType = () => {
-  const propertyDetails: { category: Categories } = {
-    category: "residential",
-  };
-
+const PropertyRequestUnitType = ({data}: {data?: any}) => {
   const propertyCategories = ["residential", "mixed use", "commercial"];
   const unitTypes = {
     residential: ["apartment", "flat", "house", "land"],
@@ -23,6 +19,19 @@ const PropertyRequestUnitType = () => {
     facility: ["land", "industry & factory"],
   };
 
+  // Now we can use unitTypes in our state initialization
+  console.log('data', data);  
+  const [category, setCategory] = useState(data?.property_category || "");
+  const [selectedUnitType, setSelectedUnitType] = useState<UnitTypeKey | "">(
+    data?.property_type || ""
+  );
+  const [unitTypeOptions, setUnitTypeOptions] = useState<string[]>(
+    unitTypes[data?.property_category as keyof typeof unitTypes || "residential"] || []
+  );
+  const [selectedSubtype, setSelectedSubtype] = useState<string>(
+    data?.property_sub_type || ""
+  );
+  
   const unitSubtypes = {
     apartment: [
       "room & parlor",
@@ -100,14 +109,7 @@ const PropertyRequestUnitType = () => {
     ],
   };
   // Local state for selected unit type, subtypes, and other select options
-  const [selectedUnitType, setSelectedUnitType] = useState<UnitTypeKey | "">(
-    ""
-  );
-  const [unitTypeOptions, setUnitTypeOptions] = useState<string[]>(
-    unitTypes[propertyDetails.category] || []
-  );
   const [unitSubtypeOptions, setUnitSubtypeOptions] = useState<string[]>([]);
-  const [selectedSubtype, setSelectedSubtype] = useState<string>("");
 
   // Update the unit subtypes based on selected unit type
   const handleUnitTypeChange = (val: string) => {
@@ -145,9 +147,11 @@ const PropertyRequestUnitType = () => {
         id="property_category"
         label="Property Categories"
         options={propertyCategories}
-        onChange={(val) =>
-          setUnitTypeOptions(unitTypes[val as keyof typeof unitTypes])
-        }
+        value={category}
+        onChange={(val) => {
+          setCategory(val);
+          setUnitTypeOptions(unitTypes[val as keyof typeof unitTypes]);
+        }}
       />
       <Select
         required
