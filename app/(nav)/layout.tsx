@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { SidenavArrow } from "@/public/icons/icons";
 
@@ -14,16 +14,24 @@ import { useThemeStoreSelectors } from "@/store/themeStore";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import Header from "@/components/Nav/navbar";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
+import { useAuthStore } from "@/store/authStore";
 import useSettingsStore from "@/store/settings";
 import TopNav from "@/components/Nav/topnav";
+import { getUserStatus } from "./data";
+import { getLocalStorage } from "@/utils/local-storage";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const router = useRouter();
   const pathname = usePathname();
+
+const authStoreToken = useAuthStore((state) => state.token);
+
   const { selectedOptions } = useSettingsStore();
   const sideNavRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowWidth();
   const [isSideNavOpen, setIsSideNavOpen] = useState(true);
 
+  const navbar = selectedOptions.navbar;
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
 
   useOutsideClick(sideNavRef, () => {
@@ -36,7 +44,27 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     setIsSideNavOpen(!isMobile);
   }, [isMobile]);
 
-  const navbar = selectedOptions.navbar;
+  useEffect(() => {
+    if (!authStoreToken) {
+      const localAuthToken = getLocalStorage("authToken");
+      if (!localAuthToken) {
+        router.replace("/auth/sign-in");
+        return;
+      }
+      useAuthStore.getState().setToken(localAuthToken);
+    }
+    setTimeout(async () => {
+      const status = await getUserStatus();
+      if (status === "redirect to setup") {
+        router.replace("/setup");
+        return;
+      }
+      if (status === "redirect to verify email") {
+        router.replace("/auth/sign-up");
+        return;
+      }
+    }, 0);
+  }, [router, authStoreToken]);
 
   return (
     <LayoutContext.Provider value={{ isSideNavOpen }}>

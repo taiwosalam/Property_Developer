@@ -22,56 +22,36 @@ import { useRouter } from "next/navigation";
 import { ASSET_URL, empty } from "@/app/config";
 import UserTag from "@/components/Tags/user-tag";
 import CustomLoader from "@/components/Loader/CustomLoader";
-import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
-import type { LandlordPageData } from "../../types";
-import useDarkMode from "@/hooks/useCheckDarkMode";
+// import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { LandlordEditAttachmentInfoSection } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
 import CustomTable from "@/components/Table/table";
-import { statementTableFields, statementTableData } from "./data";
-import { useSearchParams } from "next/navigation";
+import {
+  statementTableFields,
+  statementTableData,
+  transformIndividualLandlordAPIResponse,
+  type IndividualLandlordAPIResponse,
+} from "./data";
+import { groupDocumentsByType } from "@/utils/group-documents";
+import useFetch from "@/hooks/useFetch";
 
-const ManageLandlord = () => {
-  // remove this search params stuff later
-  const searchParams = useSearchParams();
-  const user_tag = searchParams.get("user_tag");
-  // const {
-  //   landlord: LandlordPageData,
-  //   landlordId,
-  //   loading,
-  //   error,
-  // } = useLandlordData();
-
-  // Stressing myself
-  const isDarkMode = useDarkMode();
-  const {
-    // data: LandlordPageData,
-    data: a,
-    loading,
-    error,
-  } = MockFunction("landlord") as {
-    data: LandlordPageData;
-    loading: boolean;
-    error: Error | null;
-  };
-
+const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
+  const { landlordId } = params;
   const router = useRouter();
+  const {
+    data: apiData,
+    error,
+    loading,
+  } = useFetch<IndividualLandlordAPIResponse>(`landlord/${landlordId}`);
 
-  const LandlordPageData = { ...a, user_tag } as LandlordPageData;
-  const groupDocumentsByType = (documents: LandlordPageData["documents"]) => {
-    return documents.reduce((acc, document) => {
-      if (!acc[document.document_type]) {
-        acc[document.document_type] = [];
-      }
-      acc[document.document_type].push(document);
-      return acc;
-    }, {} as Record<string, LandlordPageData["documents"]>);
-  };
+  const landlordData = apiData
+    ? transformIndividualLandlordAPIResponse(apiData)
+    : null;
 
   if (loading) return <CustomLoader layout="profile" />;
-  if (error) return <div>Error: {error.message}</div>;
-  if (!LandlordPageData) return null;
-  const groupedDocuments = groupDocumentsByType(LandlordPageData?.documents);
+  if (error) return <div>{error}</div>;
+  if (!landlordData) return null;
+  const groupedDocuments = groupDocumentsByType(landlordData?.documents);
 
   const transformedTableData = statementTableData.map((item) => ({
     ...item,
@@ -105,8 +85,8 @@ const ManageLandlord = () => {
             </button>
             <Picture
               src={
-                LandlordPageData.picture
-                  ? `${ASSET_URL}${LandlordPageData.picture}`
+                landlordData.picture
+                  ? `${ASSET_URL}${landlordData.picture}`
                   : empty
               }
               alt="profile picture"
@@ -118,33 +98,27 @@ const ManageLandlord = () => {
               <div className="custom-flex-col">
                 <div className="flex items-center">
                   <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                    {LandlordPageData?.first_name} {LandlordPageData?.last_name}
+                    {landlordData?.first_name} {landlordData?.last_name}
                   </p>
                   <BadgeIcon color="blue" />
                 </div>
                 <p
-                  style={{
-                    color: isDarkMode
-                      ? "rgba(255, 255, 255, 0.70)"
-                      : "rgba(21, 21, 21, 0.70)",
-                  }}
-                  className={`${secondaryFont.className} text-sm font-normal`}
+                  className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-[#FFFFFFB2]`}
                 >
-                  {LandlordPageData?.email}
+                  {landlordData?.email}
                 </p>
               </div>
               <div className="custom-flex-col gap-2">
-                <UserTag type={LandlordPageData.user_tag} />
+                <UserTag type={landlordData.user_tag} />
                 <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
-                  {/* ID: {LandlordPageData?.id || landlordId} */}
-                  ID: {LandlordPageData?.id}
+                  ID: {landlordData?.id}
                 </p>
               </div>
             </div>
           </div>
 
           <div className="w-fit mx-auto flex flex-wrap gap-4">
-            {LandlordPageData?.user_tag === "mobile" ? (
+            {landlordData?.user_tag === "mobile" ? (
               <>
                 <Button size="base_medium" className="py-2 px-8">
                   message
@@ -167,14 +141,14 @@ const ManageLandlord = () => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <MobileNotesModal notes={LandlordPageData.notes} />
+                    <MobileNotesModal notes={landlordData.notes} />
                   </ModalContent>
                 </Modal>
               </>
             ) : (
               <>
                 <Button
-                  href={`/management/landlord/${LandlordPageData?.id}/manage/edit`}
+                  href={`/management/landlord/${landlordId}/manage/edit`}
                   size="base_medium"
                   className="py-2 px-8"
                 >
@@ -188,13 +162,13 @@ const ManageLandlord = () => {
           </div>
         </LandlordTenantInfoBox>
 
-        {LandlordPageData?.user_tag === "mobile" ? (
+        {landlordData?.user_tag === "mobile" ? (
           <LandlordTenantInfo
             info={{
               gender: "LandlordPageData.gender",
               birthday: "LandlordPageData.birthday",
               religion: "LandlordPageData.religion",
-              phone: LandlordPageData.phone_number,
+              phone: landlordData.phone_number,
               marital_status: "LandlordPageData.marital_status",
             }}
           />
@@ -202,12 +176,12 @@ const ManageLandlord = () => {
           <LandlordTenantInfo
             heading="Contact Address"
             info={
-              LandlordPageData?.contact_address
+              landlordData?.contact_address
                 ? {
-                    address: LandlordPageData.contact_address.address,
-                    city: LandlordPageData.contact_address.city,
-                    state: LandlordPageData.contact_address.state,
-                    "L.G": LandlordPageData.contact_address.local_govt,
+                    address: landlordData.contact_address.address,
+                    city: landlordData.contact_address.city,
+                    state: landlordData.contact_address.state,
+                    "L.G": landlordData.contact_address.local_govt,
                   }
                 : {}
             }
@@ -218,29 +192,28 @@ const ManageLandlord = () => {
           containerClassName="flex flex-col justify-center"
           heading="bank details"
           info={
-            LandlordPageData?.bank_details
+            landlordData?.bank_details
               ? {
-                  bank: LandlordPageData.bank_details.bank_name,
-                  "account name": LandlordPageData.bank_details.account_name,
-                  "account number":
-                    LandlordPageData.bank_details.account_number,
-                  "wallet ID": LandlordPageData.bank_details.wallet_id,
+                  bank: landlordData.bank_details.bank_name,
+                  "account name": landlordData.bank_details.account_name,
+                  "account number": landlordData.bank_details.account_number,
+                  "wallet ID": landlordData.bank_details.wallet_id,
                 }
               : {}
           }
         />
 
-        {LandlordPageData?.user_tag === "mobile" ? (
+        {landlordData?.user_tag === "mobile" ? (
           <LandlordTenantInfo
             heading="Contact Address"
             containerClassName="flex flex-col justify-center"
             info={
-              LandlordPageData?.contact_address
+              landlordData?.contact_address
                 ? {
-                    address: LandlordPageData.contact_address.address,
-                    city: LandlordPageData.contact_address.city,
-                    state: LandlordPageData.contact_address.state,
-                    "L.G": LandlordPageData.contact_address.local_govt,
+                    address: landlordData.contact_address.address,
+                    city: landlordData.contact_address.city,
+                    state: landlordData.contact_address.state,
+                    "L.G": landlordData.contact_address.local_govt,
                   }
                 : {}
             }
@@ -267,8 +240,8 @@ const ManageLandlord = () => {
             relationship: "LandlordPageData.next_of_kin.relationship",
           }}
         />
-        {LandlordPageData?.user_tag === "web" ? (
-          <NotesInfoBox notes={LandlordPageData.notes} />
+        {landlordData?.user_tag === "web" ? (
+          <NotesInfoBox notes={landlordData.notes} />
         ) : (
           <>
             <LandlordTenantInfo
@@ -306,7 +279,7 @@ const ManageLandlord = () => {
       </div>
       <LandlordTenantInfoSection title="Property Managed">
         <AutoResizingGrid minWidth={315}>
-          {LandlordPageData?.properties_managed?.map((property) => (
+          {landlordData?.properties_managed?.map((property) => (
             <PropertyCard
               key={property.id}
               images={property.images}
@@ -318,7 +291,6 @@ const ManageLandlord = () => {
               price={property.rental_value}
               currency={property.currency}
               propertyType="facility"
-
             />
           ))}
         </AutoResizingGrid>
@@ -334,7 +306,7 @@ const ManageLandlord = () => {
       <LandlordTenantInfoSection title="previous property">
         <div className="flex gap-8"></div>
       </LandlordTenantInfoSection>
-      {LandlordPageData?.user_tag === "mobile" && (
+      {landlordData?.user_tag === "mobile" && (
         <LandlordEditAttachmentInfoSection useContext={false} />
       )}
       <LandlordTenantInfoSection title="shared documents">

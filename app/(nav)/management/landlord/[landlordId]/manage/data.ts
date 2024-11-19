@@ -1,4 +1,5 @@
 import type { Field } from "@/components/Table/types";
+import type { LandlordPageData } from "../../types";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
@@ -49,3 +50,78 @@ const generateTableData = (numItems: number) => {
 };
 
 export const statementTableData = generateTableData(10);
+
+export interface IndividualLandlordAPIResponse {
+  data: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone_number: string;
+    tier_id: number;
+    picture: string;
+    gender: string;
+    notes: {
+      last_updated: string;
+      write_up: string;
+    };
+    land_lord: {
+      owner_type: string;
+      agent: string;
+    };
+  };
+}
+
+export const transformIndividualLandlordAPIResponse = ({
+  data,
+}: IndividualLandlordAPIResponse): LandlordPageData => {
+  return {
+    picture: data.picture,
+    first_name: data.first_name,
+    last_name: data.last_name,
+    email: data.email,
+    phone_number: data.phone_number,
+    gender: data.gender,
+    notes: data.notes,
+    user_tag:
+      data.land_lord.agent.toLowerCase() === "mobile" ? "mobile" : "web",
+    id: data.id,
+    type: data.land_lord.owner_type,
+    contact_address: { address: "", city: "", state: "", local_govt: "" },
+    next_of_kin: {
+      name: "",
+      email: "",
+      address: "",
+      phone: "",
+      relationship: "",
+    },
+    guarantor1: {
+      name: "",
+      relationship: "",
+      email: "",
+      phone_number: "",
+      address: "",
+    },
+    guarantor2: {
+      name: "",
+      relationship: "",
+      email: "",
+      phone_number: "",
+      address: "",
+    },
+    bank_details: {
+      bank_name: "",
+      account_name: "",
+      account_number: "",
+      wallet_id: "",
+    },
+    others: {
+      occupation: "",
+      type: "",
+      family_type: "",
+      note: "",
+    },
+    documents: [],
+    properties_managed: [],
+  };
+};

@@ -24,7 +24,7 @@ import DraggableImage from "./draggable-image";
 import { propertyCategories } from "@/data";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { getAllBranches } from "@/app/(nav)/management/staff-branch/data";
-import { getAllLandlords } from "@/app/(nav)/management/landlord/data";
+// import { getAllLandlords } from "@/app/(nav)/management/landlord/data";
 import { getAllStaffsByBranch } from "./data";
 import { currencySymbols } from "@/utils/number-formatter";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
@@ -159,27 +159,27 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   };
 
   // Get primary data from the backend
-  useEffect(() => {
-    const fetchData = async () => {
-      const [branches, landlords] = await Promise.all([
-        getAllBranches(),
-        getAllLandlords(),
-      ]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const [branches, landlords] = await Promise.all([
+  //       getAllBranches(),
+  //       getAllLandlords(),
+  //     ]);
 
-      setPropertyState({
-        branchOptions: branches.branches.map((branch: any) => ({
-          value: branch.id,
-          label: branch.branch_title,
-        })),
-        landlordOptions: landlords.landlords.map((landlord: any) => ({
-          value: landlord.id,
-          label: `${landlord.first_name} ${landlord.last_name}`,
-        })),
-      });
-    };
+  //     setPropertyState({
+  //       branchOptions: branches.branches.map((branch: any) => ({
+  //         value: branch.id,
+  //         label: branch.branch_title,
+  //       })),
+  //       landlordOptions: landlords.landlords.map((landlord: any) => ({
+  //         value: landlord.id,
+  //         label: `${landlord.first_name} ${landlord.last_name}`,
+  //       })),
+  //     });
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   // Gets staffs by branch
   useEffect(() => {

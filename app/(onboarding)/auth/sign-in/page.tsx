@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -12,12 +12,12 @@ import {
   AuthForm,
   AuthHeading,
 } from "@/components/Auth/auth-components";
+
 import { login } from "@/app/(onboarding)/auth/data";
-import { useAuthStore } from "@/store/authStore";
 
 const SignIn = () => {
   const router = useRouter();
-  const token = useAuthStore((state) => state.token);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (formData: Record<string, any>) => {
@@ -33,12 +33,6 @@ const SignIn = () => {
     setIsLoading(false);
   };
 
-  useEffect(() => {
-    if (token) {
-      router.replace("/");
-    }
-  }, [token, router]);
-
   return (
     <AuthForm
       onFormSubmit={handleSubmit}
@@ -50,7 +44,7 @@ const SignIn = () => {
       </AuthHeading>
       <div className="custom-flex-col gap-6">
         <Input
-          id="email"
+          id="identifier"
           type="email"
           label="email"
           placeholder="Email address"

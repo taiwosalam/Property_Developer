@@ -14,16 +14,51 @@ const Pagination: React.FC<PaginationProps> = ({
 
   const generatePageButtons = () => {
     const pages = [];
+    const maxVisibleButtons = 5;
+    const halfVisible = Math.floor(maxVisibleButtons / 2);
 
-    // Show pages 1-5
-    for (let i = 1; i <= Math.min(5, totalPages); i++) {
+    let startPage = Math.max(1, currentPage - halfVisible);
+    let endPage = Math.min(totalPages, currentPage + halfVisible);
+
+    // Adjust start and end if they exceed the total pages
+    if (endPage - startPage < maxVisibleButtons - 1) {
+      if (startPage === 1) {
+        endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
+      } else if (endPage === totalPages) {
+        startPage = Math.max(1, endPage - maxVisibleButtons + 1);
+      }
+    }
+
+    // Add first page and ellipsis if needed
+    if (startPage > 1) {
+      pages.push(
+        <button
+          key={1}
+          type="button"
+          className={clsx(buttonClasses, {
+            "bg-brand-9 text-white font-normal": 1 === currentPage,
+            "bg-white font-light": 1 !== currentPage,
+          })}
+          onClick={() => onPageChange(1)}
+          aria-label={`Page 1`}
+          disabled={1 === currentPage}
+        >
+          1
+        </button>
+      );
+      if (startPage > 2) {
+        pages.push(<span key="start-ellipsis">...</span>);
+      }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
       pages.push(
         <button
           key={i}
           type="button"
           className={clsx(buttonClasses, {
             "bg-brand-9 text-white font-normal": i === currentPage,
-            "bg-white dark:bg-darkText-primary font-light": i !== currentPage,
+            "bg-white font-light": i !== currentPage,
           })}
           onClick={() => onPageChange(i)}
           aria-label={`Page ${i}`}
@@ -34,49 +69,26 @@ const Pagination: React.FC<PaginationProps> = ({
       );
     }
 
-    // If there are more than 7 pages, show ellipsis and the last two pages
-    if (totalPages > 7) {
-      pages.push(<span key="ellipsis">...</span>);
-
-      // Show the last two pages
-      for (let i = totalPages - 1; i <= totalPages; i++) {
-        pages.push(
-          <button
-            key={i}
-            type="button"
-            className={clsx(buttonClasses, {
-              "bg-brand-9 text-white font-normal": i === currentPage,
-              "bg-white font-light": i !== currentPage,
-            })}
-            onClick={() => onPageChange(i)}
-            aria-label={`Page ${i}`}
-            disabled={i === currentPage}
-          >
-            {i}
-          </button>
-        );
+    // Add last page and ellipsis if needed
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pages.push(<span key="end-ellipsis">...</span>);
       }
-    }
-
-    // If there are 7 or fewer pages, just show all the pages without ellipsis
-    if (totalPages <= 7) {
-      for (let i = 6; i <= totalPages; i++) {
-        pages.push(
-          <button
-            key={i}
-            type="button"
-            className={clsx(buttonClasses, {
-              "bg-brand-9 text-white font-normal": 6 === currentPage,
-              "bg-white font-light": 6 !== currentPage,
-            })}
-            onClick={() => onPageChange(i)}
-            aria-label={`Page ${i}`}
-            disabled={i === currentPage}
-          >
-            {i}
-          </button>
-        );
-      }
+      pages.push(
+        <button
+          key={totalPages}
+          type="button"
+          className={clsx(buttonClasses, {
+            "bg-brand-9 text-white font-normal": totalPages === currentPage,
+            "bg-white font-light": totalPages !== currentPage,
+          })}
+          onClick={() => onPageChange(totalPages)}
+          aria-label={`Page ${totalPages}`}
+          disabled={totalPages === currentPage}
+        >
+          {totalPages}
+        </button>
+      );
     }
 
     return pages;
@@ -89,9 +101,13 @@ const Pagination: React.FC<PaginationProps> = ({
         className
       )}
     >
-      <p className={clsx("hidden md:block", currentPage === 1 && "opacity-50")}>
+      <button
+        className={clsx("hidden md:block", currentPage === 1 && "opacity-50")}
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
         Previous Page
-      </p>
+      </button>
       <div className="flex gap-1 items-center">
         <button
           type="button"
@@ -113,14 +129,16 @@ const Pagination: React.FC<PaginationProps> = ({
           <ChevronRight opacity={currentPage === totalPages ? "0.2" : 1} />
         </button>
       </div>
-      <p
+      <button
         className={clsx(
           "hidden md:block",
           currentPage === totalPages && "opacity-50"
         )}
+        disabled={currentPage === totalPages}
+        onClick={() => onPageChange(currentPage + 1)}
       >
         Next Page
-      </p>
+      </button>
     </div>
   );
 };
