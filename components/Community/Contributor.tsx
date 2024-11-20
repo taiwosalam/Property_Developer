@@ -1,6 +1,7 @@
 import Image from "next/image";
 import SampleUser from "@/public/empty/sample-user.svg";
 import { empty } from "@/app/config";
+import { TextSkeleton } from "@/app/(nav)/tasks/agent-community/components";
 
 export const ContributorDetails = ({ title, loading, post, contributors }: { title: string, loading?: boolean, post?: any, contributors?: any }) => {
   if (loading) {
@@ -57,39 +58,30 @@ export const ContributorDetails = ({ title, loading, post, contributors }: { tit
 };
 
 const ContributorUser = ({ contributors }: { contributors: any }) => {
-  if (!contributors?.name || !contributors?.title || !contributors?.role || !contributors?.phone || !contributors?.email) {
-    return <ContributorUserSkeleton />;
-  }
-
+  
   return (
     <div className="flex flex-col mt-6 gap-4">
       <div className="flex flex-col md:flex-row gap-4">
         <div className="imgWrapper h-[154px] w-[154px] mx-auto md:mx-0">
-          <Image src={contributors?.picture || empty} alt="user" width={300} height={300} />
+          <Image src={contributors?.picture || empty} alt="user" width={300} height={300} className="w-full h-full object-cover" />
         </div>
         <div className="userDetails flex flex-col gap-1">
           <p className="dark:text-white text-black text-[25px] font-bold">
-            {contributors?.name}
+            {contributors?.name || "___"}
           </p>
           <div className="flex flex-row lg:flex-col gap-2">
-            <p className="text-brand-9 text-sm"> {contributors?.title} </p>
+            <p className="text-brand-9 text-sm"> {contributors?.title || "___"} </p>
             <p className="text-white bg-[#003DAD] px-2 py-1 text-xs w-fit rounded-lg">
-              {contributors?.role}
+              {contributors?.role || "___"}
             </p>
           </div>
-          <p className="text-sm"> Contact : {contributors?.phone} </p>
-          <p className="text-sm"> Email Address: {contributors?.email} </p>
+          <p className="text-sm"> Contact : {contributors?.phone_number || "___"} </p>
+          <p className="text-sm"> Email Address: {contributors?.email || "___"} </p>
         </div>
       </div>
       <div className="desc text-sm">
         <p>
-          A multi-family home, also know as a duplex, triplex, or multi-unit
-          building, is a residential property that living read more. They want
-          to work with their budget in booking an appointment. They wants to
-          ease themselves of the stress of having to que, and also reduce the
-          time spent searching for something new. They wants to ease themselves
-          of the stress of having to que, and also reduce the time spent
-          searching for something new.
+          { contributors?.bio || <TextSkeleton />  }
         </p>
       </div>
       <div className="btn flex items-center justify-center w-full">

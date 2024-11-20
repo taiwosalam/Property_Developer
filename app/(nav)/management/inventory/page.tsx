@@ -10,29 +10,15 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import useView from "@/hooks/useView";
 import useSettingsStore from "@/store/settings";
-import { toast } from "sonner";
-import { createInventory } from "../data";
+import { BranchApiResponse } from "../staff-branch/data";
+import { useFetchInventoryAndBranch } from "../data";
 
 const Inventory = () => {
   const view = useView();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
-
   const [selectedView, setSelectedView] = useState<string>(selectedOptions.view || "grid");
-  const [isCreating, setIsCreating] = useState(false);
+  const { branches, inventory, loading, error } = useFetchInventoryAndBranch();
 
-  const handleSubmit = async (data: FormData) => {
-    setIsCreating(true);
-    try {
-      const success = await createInventory(data);
-      if (success) {
-        toast.success("Inventory created successfully");
-      }
-    } catch (error) {
-      toast.error("Failed to create inventory");
-    } finally {
-      setIsCreating(false);
-    }
-  };
 
   useEffect(() => {
     // Sync selectedView with selectedOptions.view on mount
@@ -48,27 +34,6 @@ const Inventory = () => {
     setSelectedOption("view", "list");
     setSelectedView("list"); // Update local state
   };
-
-  // const [state, setState] = useState<"grid" | "list">("grid");
-
-  // useEffect(() => {
-  //   setState(selectedView === "grid" ? "grid" : "list");
-  // }, [selectedView]);
-
-  // const setGridView = () => {
-  //   setSelectedOption("view", "grid");
-  // };
-
-  // const setListView = () => {
-  //   setSelectedOption("view", "list");
-  // };
-
-  // const setGridView = () => {
-  //   setState("grid");
-  // };
-  // const setListView = () => {
-  //   setState("list");
-  // };
 
   const inventoryFiltersWithDropdown = [
     {

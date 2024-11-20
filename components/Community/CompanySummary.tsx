@@ -8,19 +8,29 @@ import {
   TwitterIcon,
   WebsiteIcon,
 } from "@/public/icons/icons";
-import CompanyLogo from "@/public/empty/company-logo.svg";
-import { companyStats } from "@/app/(nav)/tasks/agent-community/data";
 import Image from "next/image";
 import { CompanySummarySkeleton, TextSkeleton } from "@/app/(nav)/tasks/agent-community/components";
 import { empty } from "@/app/config";
+import { calculateYearsInIndustry } from "@/app/(nav)/tasks/agent-community/data";
 
 const CompanySummary = ({ loading, companySummary }: { loading?: boolean, companySummary?: any }) => {
   
+ const companyStats = [
+    { label: "Joined ourproperty.ng", value: companySummary?.join_ourproperty },
+    { label: "Years in Industry", value: calculateYearsInIndustry(companySummary?.details?.date_of_registration) },
+    { label: "Total Branch", value: companySummary?.total_branch },
+    { label: "Total Staff", value: companySummary?.total_staff },
+    { label: "Property for sale", value: companySummary?.property_for_sale },
+    { label: "Property for Rent", value: companySummary?.property_for_rent },
+    { label: "Hospitality Property", value: companySummary?.hospitality_property },
+    { label: "Total Unit Managing", value: companySummary?.total_unit },
+    { label: "Total Reviews", value: companySummary?.total_review },
+    { label: "Completed Transaction", value: companySummary?.completed_transaction },
+  ];
+
   if (loading) {
     return <CompanySummarySkeleton />;
   }
-
-  // const state_lga = companySummary?.addresses?.city + ", " + companySummary?.addresses?.local_government + ", " + companySummary?.addresses?.state;
 
   return (
     <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
@@ -60,7 +70,7 @@ const CompanySummary = ({ loading, companySummary }: { loading?: boolean, compan
           </div>
           <div className="flex gap-2 text-sm text-text-disabled">
             <PhoneIcon />
-            <span> {companySummary?.phone || <TextSkeleton />} </span>
+            <span> {companySummary?.contact_details?.[0]?.phone_number || <TextSkeleton />} </span>
           </div>
           <div className="flex gap-2 text-sm text-text-disabled">
             <Mail />
@@ -93,7 +103,7 @@ const CompanySummary = ({ loading, companySummary }: { loading?: boolean, compan
             >
               <p className="text-sm text-text-label">{stat.label}</p>
               <p className="text-sm text-text-primary dark:text-white">
-                {stat.value || <TextSkeleton />}
+                {stat.value === 0 ? '0' : (stat.value || <TextSkeleton />)}
               </p>
             </div>
           ))}

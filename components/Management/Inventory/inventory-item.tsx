@@ -75,7 +75,7 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({ data,
             <div className="flex gap-4">
               {edit ? (
                 <>
-                                  <div className="flex justify-between max-w-[150px] px-2 items-center gap-2 border-2 border-text-disabled dark:border-[#3C3D37] rounded-md">
+                <div className="flex justify-between max-w-[150px] px-2 items-center gap-2 border-2 border-text-disabled dark:border-[#3C3D37] rounded-md">
                   <input
                     type="number"
                     id={`quantity-${index}`}
@@ -163,7 +163,7 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({ data,
                    name={`image-${index}`}
                    accept="image/*"
                    ref={inputFileRef}
-                   className="hidden pointer-events-none"
+                   className="hidden pointer-events-none"   
                    onChange={handleImageChange}
                  />
                  <div className="custom-flex-col gap-6">

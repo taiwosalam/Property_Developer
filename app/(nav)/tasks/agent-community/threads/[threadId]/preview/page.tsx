@@ -23,7 +23,8 @@ import { ContributorDetails } from "@/components/Community/Contributor";
 import CompanySummary from "@/components/Community/CompanySummary";
 import useFetch from "@/hooks/useFetch";
 import { ThreadArticleSkeleton } from "../../../components";
-import { toggleLike } from "../../../my-articles/data";
+import { sendMyArticleComment, toggleLike } from "../../../my-articles/data";
+import { toast } from "sonner";
 
 interface ThreadResponse {
   post: any;
@@ -52,6 +53,7 @@ const ThreadPreview = () => {
   }, [data]);
 
   console.log("data", data);
+  console.log("slug", slug);
   console.log("companySummary", companySummary);
 
   const sampleImages: StaticImageData[] = [
@@ -103,7 +105,7 @@ const ThreadPreview = () => {
             )}
           </div>
           <ThreadArticle post={post} slug={slug}  />
-          <ThreadComments />
+          <ThreadComments slug={slug} />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <ContributorDetails title="Contributor Details" loading={loading} post={post} contributors={contributors} />
@@ -217,12 +219,56 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
   );
 };
 
-const ThreadComments = () => {
+const ThreadComments = ({ slug }: { slug: string }) => {
+  const [localComments, setLocalComments] = useState<CommentProps[]>(comments);
+  const [showInput, setShowInput] = useState(true);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const content = formData.get('message');
+    console.log("form submitted with message:", content);
+    try {
+      if (content) {
+        const response = await sendMyArticleComment(slug, content as string);
+        toast.success("Comment sent successfully");
+        
+        // Reset form and fetch updated comments
+        (e.target as HTMLFormElement).reset();
+        setShowInput(false);
+        
+        // Fetch updated comments or update local state
+        // const updatedComments = await fetchComments(slug); 
+        // setLocalComments(updatedComments as CommentProps[]);
+      }
+    } catch (error) {
+      console.error("Error sending comment:", error);
+      toast.error("Failed to send comment");
+    }
+  };
+
+  const handleLike = async (commentId: string | number) => {
+    // await likeComment(commentId);
+  };    
+
+  const handleDislike = async (commentId: string | number) => {
+    // await dislikeComment(commentId);
+  };
+
+
   return (
-    <div className="mt-4">
-      {comments.map((comment, index) => (
-        <Comment key={comment.id} {...comment} />
+    <form className="mt-4" onSubmit={handleSubmit}> 
+      {localComments.map((comment, index) => (
+        <Comment 
+          key={comment.id} 
+          {...comment} 
+          onSubmit={handleSubmit}
+          showInput={showInput}
+          setShowInput={setShowInput}
+          handleLike={handleLike}
+          handleDislike={handleDislike}
+        />
       ))}
-    </div>
+    </form>
   );
 };

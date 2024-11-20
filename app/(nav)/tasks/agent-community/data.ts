@@ -3,7 +3,16 @@ import { title } from "process";
 import { CommentProps } from "./type";
 import api from "@/services/api";
 import { transformFormData } from "./my-properties-request/data";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 
+export const calculateYearsInIndustry = (dateString: string) => {
+  if (!dateString) return null;
+  const registrationDate = new Date(dateString);
+  const today = new Date();
+  const years = today.getFullYear() - registrationDate.getFullYear();
+  return `${years}+ years`;
+};
 export const getThreads = async () => {
   try {
     const response = await api.get("/agent_community");
@@ -225,8 +234,8 @@ export const threadArticle = [
 export const comments: CommentProps[] = [
   {
     id: 1,
-    name: "Oloruntoba Morakinyo",
-    text: "It is expected that cities and other states’ capitals without many security challenges will witness refinements. Many urban centres will witness positive changes in real estate",
+    name: "Salam AIshat",
+    text: "I disagree with the above statemen",
     likes: 1,
     dislikes: 0,
     replies: [

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { CSSProperties, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -10,16 +10,28 @@ import BackButton from "@/components/BackButton/back-button";
 import InventoryItem from "@/components/Management/Inventory/inventory-item";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { toast } from "sonner";
+import { getBranches } from "../../data";
 
 const CreateInventory = () => {
   const isDarkMode = useDarkMode();
+  const [branches, setBranches] = useState<any[]>([]);
+  const [inventoryItems, setInventoryItems] = useState<number>(2);
   const input_styles: CSSProperties = {
     padding: "12px 14px",
     backgroundColor: isDarkMode ? "#020617" : "white",
   };
 
-  const [inventoryItems, setInventoryItems] = useState<number>(2);
+  useEffect(() => {
+    const fetchBranches = async () => {
+      const branchesResponse = await getBranches();
+      if (branchesResponse) {
+        setBranches(branchesResponse.data.data);
+      }
+    };
+    fetchBranches();
+  }, []);
 
+  // console.log("branches", branches);
   const convertImageToBase64 = async (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -108,7 +120,10 @@ const CreateInventory = () => {
               id="branch-name"
               name="branch-name"
               placeholder="Branch Name"
-              options={["branch 1", "branch 2", "branch 3"]}
+              options={branches.map((branch) => ({
+                label: branch.branch_name,
+                value: branch.id,
+              }))}
               isSearchable={false}
               className="bg-white dark:bg-darkText-primary flex-1"
             />

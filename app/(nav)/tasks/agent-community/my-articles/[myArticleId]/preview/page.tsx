@@ -22,14 +22,20 @@ import useFetch from "@/hooks/useFetch";
 import { useEffect } from "react";
 import { useState } from "react";
 import { empty } from "@/app/config";
-import { toggleLike } from "../../data";
+import { sendMyArticleComment, sendMyArticleReply, toggleLike } from "../../data";
 import { ThreadArticleSkeleton } from "../../../components";
+import { toast } from "sonner";
 
 interface ArticleResponse {
   post: any;
   company_summary: any;
   contributor: any;
   comments: CommentProps[];
+}
+
+interface CommentsResponse {
+  message: string;
+  data: CommentProps[];
 }
 
 const ThreadPreview = () => {
@@ -50,9 +56,6 @@ const ThreadPreview = () => {
       setComments(data.post.comments);
     }
   }, [data]);
-
-  // console.log(comments);
-  // console.log(post?.title);
 
   return (
     <div>
@@ -96,7 +99,7 @@ const ThreadPreview = () => {
             )}
           </div>
           <ThreadArticle post={post} slug={slug} />
-          <ThreadComments />
+          <ThreadComments slug={slug} />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <Summary post={post} loading={loading} />
@@ -117,7 +120,6 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLike = async () => {
-    console.log('like clicked');
     if (isLoading || userAction === 'like') return;
     setIsLoading(true);
     
@@ -136,7 +138,6 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
   };
 
   const handleDislike = async () => {
-    console.log('dislike clicked');
     if (isLoading || userAction === 'dislike') return;
     setIsLoading(true);
 
@@ -211,96 +212,132 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
   );
 };
 
-const ThreadComments = () => {
-  const comments: CommentProps[] = [
-    {
-      id: 1,
-      name: "Oloruntoba Morakinyo",
-      text: "It is expected that cities and other states’ capitals without many security challenges will witness refinements. Many urban centres will witness positive changes in real estate",
-      likes: 1,
-      dislikes: 0,
-      replies: [
-        {
-          id: 2,
-          name: "John Doe",
-          text: "It is expected that cities and other states capitals without many security challenges",
-          likes: 4,
-          dislikes: 2,
-          replies: [
-            {
-              id: 12,
-              name: "Star Trek",
-              text: "Just making things complicated",
-              likes: 0,
-              dislikes: 0,
-            },
-          ],
-        },
-        {
-          id: 3,
-          name: "Amada Okeke",
-          text: "I disagree with the above statement",
+const ThreadComments = ({ slug }: { slug: string }) => {
+  const [showInput, setShowInput] = useState(true);
+  const [commenting, setCommenting] = useState(false);
+  const [comments, setComments] = useState<CommentProps[]>([]);
+
+  const { data, error, loading } = useFetch<CommentsResponse>(`/agent_community/${slug}/comments`);
+
+  const handleLike = (commentId: string | number) => {
+    console.log('Like comment:', commentId);
+  };
+
+  const handleDislike = (commentId: string | number) => {
+    console.log('Dislike comment:', commentId);
+  };
+
+  useEffect(() => {
+    if (data?.data) {
+      const commentsData = data.data.map((comment) => ({
+        ...comment,
+        replies: comment.replies || [],
+      }));
+      setComments(commentsData);
+    }
+  }, [data]);
+
+
+
+  const sendComment = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setShowInput(false);
+    const formData = new FormData(e.target as HTMLFormElement);
+    const message = formData.get('message');
+    const reply = formData.get('reply');
+    
+    try {
+      setCommenting(true);
+      
+      if (reply) {
+        const replyInput = (e.target as HTMLFormElement).querySelector('input[name="reply"]');
+        const commentId = Number(replyInput?.id);
+        
+        if (commentId) {
+          // Optimistically update UI
+          const newReply: CommentProps = {
+            id: Date.now(),
+            name: "You",
+            text: reply as string,
+            likes: 0,
+            dislikes: 0,
+            handleSubmit: () => {},
+            commenting: false,
+            replies: []
+          };
+
+          setComments(prevComments => 
+            prevComments.map(comment => 
+              comment.id === commentId
+                ? { ...comment, replies: [...(comment.replies || []), newReply] }
+                : comment
+            )
+          );
+
+          // Send to server
+          await sendMyArticleReply(slug, commentId.toString(), reply as string);
+        }
+      } else if (message) {
+        // Optimistically update UI
+        const newComment: CommentProps = {
+          id: Date.now(),
+          name: "You",
+          text: message as string,
           likes: 0,
-          dislikes: 12,
-        },
-        {
-          id: 4,
-          name: "John Doe",
-          text: "I agree with the above statement",
-          likes: 4,
           dislikes: 0,
-        },
-      ],
-    },
-    {
-      id: 5,
-      name: "Cythia Mordi",
-      text: "What are the way we can reduce the rate of unemployment in Nigeria?",
-      likes: 0,
-      dislikes: 0,
-    },
-    {
-      id: 6,
-      name: "Copland Marker",
-      text: "Have you watched Squid Game?",
-      likes: 5,
-      dislikes: 0,
-      replies: [
-        {
-          id: 7,
-          name: "Dont Check My Name",
-          text: "I dont watch boring movies. Hahaha",
-          likes: 500,
-          dislikes: 0,
-        },
-      ],
-    },
-  ];
-  return (
-    <div className="mt-4">
-      {comments.map((comment, index) => (
-        <Comment key={comment.id} {...comment} />
-      ))}
-    </div>
+          replies: [],
+          handleSubmit: () => {},
+          commenting: false
+        };
+
+        setComments(prev => [...prev, newComment]);
+
+        // Send to server
+        await sendMyArticleComment(slug, message as string);
+      }
+
+      // Fetch latest comments in background
+      const response = await fetch(`/agent_community/${slug}/comments`);
+      const newData = await response.json();
+      setComments(newData.data);
+
+      (e.target as HTMLFormElement).reset();
+      setShowInput(false);
+      toast.success(reply ? "Reply sent successfully" : "Comment sent successfully");
+      
+    } catch (error) {
+      console.error("Error sending comment/reply:", error);
+      // Revert optimistic update by re-fetching
+      const response = await fetch(`/agent_community/${slug}/comments`);
+      const newData = await response.json();
+      setComments(newData.data);
+      toast.error("Failed to send comment");
+    } finally {
+      setCommenting(false);
+    }
+  };
+
+  return (    
+  <form onSubmit={sendComment}>
+      <div className="mt-4">
+        {comments.map((comment) => (
+          <div key={comment.id} data-comment-id={comment.id}>
+            <Comment 
+              {...comment} 
+              handleLike={handleLike} 
+              handleDislike={handleDislike} 
+              commenting={commenting}
+              handleSubmit={sendComment}
+            />
+          </div>
+        ))}
+      </div>
+    </form>
   );
 };
 
 // SECOND SIDE
-const SummarySkeleton = () => {
-  return (
-    <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg animate-pulse">
-      <div className="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-4" />
-      <div className="flex flex-col gap-2">
-        {[1, 2, 3, 4, 5].map((item) => (
-          <div key={item} className="flex gap-4 justify-between w-full items-start">
-            <div className="h-4 w-1/3 bg-gray-200 dark:bg-gray-700 rounded" />
-            <div className="h-4 w-1/2 bg-gray-200 dark:bg-gray-700 rounded" />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+
 
 const Summary = ({ post, loading }: { post: any; loading: boolean }) => {
   if (loading) {
@@ -333,6 +370,23 @@ const Summary = ({ post, loading }: { post: any; loading: boolean }) => {
             <p className="dark:text-white text-black text-sm flex items-start w-1/2">
               {item.value}
             </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
+const SummarySkeleton = () => {
+  return (
+    <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg animate-pulse">
+      <div className="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-4" />
+      <div className="flex flex-col gap-2">
+        {[1, 2, 3, 4, 5].map((item) => (
+          <div key={item} className="flex gap-4 justify-between w-full items-start">
+            <div className="h-4 w-1/3 bg-gray-200 dark:bg-gray-700 rounded" />
+            <div className="h-4 w-1/2 bg-gray-200 dark:bg-gray-700 rounded" />
           </div>
         ))}
       </div>
