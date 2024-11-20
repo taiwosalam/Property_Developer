@@ -22,9 +22,15 @@ const AddTenantModal = () => {
   const [activeStep, setActiveStep] =
     useState<AddTenantModalOptions>("options");
 
-  const navigateToTenantsPage = () => {
+  const closeModalAndRefresh = () => {
+    setIsOpen(false);
     if (pathname !== "/management/tenants") {
       router.push("/management/tenants");
+    } else {
+      // location.reload();
+      setTimeout(() => {
+        window.dispatchEvent(new Event("refetchTenants"));
+      }, 0);
     }
   };
 
@@ -38,16 +44,6 @@ const AddTenantModal = () => {
   };
 
   const [formStep, setFormStep] = useState(1);
-  const closeModalAndRefresh = () => {
-    setIsOpen(false);
-    navigateToTenantsPage();
-    setTimeout(() => {
-      window.dispatchEvent(new Event("refetchTenants"));
-    }, 0);
-    // setTimeout(() => {
-    //   location.reload();
-    // }, 1500);
-  };
 
   const handleAddTenant = async (data: Record<string, any>) => {
     const success = await addTenant(data);

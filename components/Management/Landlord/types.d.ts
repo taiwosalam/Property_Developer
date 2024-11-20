@@ -13,7 +13,6 @@ export type AddLandlordModalOptions =
   | "invite-multiple-owners"
   | "add-landlord-with-id";
 
-
 export type CreateBranchModalOptions =
   | "options"
   | "choose-avatar"
@@ -24,18 +23,6 @@ export type CreateBranchModalOptions =
 
 export interface AddLandlordOptionsProps {
   showForm: React.Dispatch<React.SetStateAction<AddLandlordModalOptions>>;
-}
-
-export interface LandlordProps {
-  id: string | number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  user_tag: "web" | "mobile";
-  phone_number: string;
-  picture?: string;
-  avatar?: string;
-  picture_url: string;
 }
 
 export type FilterOption = {

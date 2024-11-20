@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 // Imports
 import Card from "@/components/dashboard/card";
 import Button from "@/components/Form/Button/button";
@@ -19,87 +18,33 @@ import {
 } from "@/app/(nav)/dashboard/data";
 import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
-
 import { LocationIcon } from "@/public/icons/icons";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import { branchIdChartConfig, branchIdChartData, PageState } from "./data";
-import Pagination from "@/components/Pagination/pagination";
+import { branchIdChartConfig, branchIdChartData } from "./data";
 import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
 import BranchActivitiesCard from "@/components/Management/Staff-And-Branches/Branch/branch-activity-card";
 import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch/branch-balance-card";
-import PropertyCard from "@/components/Management/Properties/property-card";
-import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
 import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-staff-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import { getOneBranch } from "../data";
-import { ResponseType } from "./types";
-import FilterBar from "@/components/FIlterBar/FilterBar";
+import BranchPropertiesSection from "@/components/Management/Staff-And-Branches/Branch/branch-properties-section";
+// import { getOneBranch } from "../data";
+import { SingleBranchResponseType } from "./types";
 import { DateRange } from "react-day-picker";
 import BackButton from "@/components/BackButton/back-button";
-import { getAllStates } from "@/utils/states";
+import useFetch from "@/hooks/useFetch";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
-const BranchDashboard = () => {
-  const initialState = {
-    gridView: true,
-    total_pages: 50,
-    current_page: 1,
-    selectedState: "",
-    localGovernments: [],
-  };
-  const [state, setState] = useState<PageState>(initialState);
-  const [fetchedBranchData, setFetchedBranchData] =
-    useState<ResponseType | null>();
+const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
+  const { branchId } = params;
 
-  const {
-    gridView,
-    total_pages,
-    current_page,
-    selectedState,
-    localGovernments,
-  } = state;
-  const { branchId } = useParams();
+  const { data, error, loading } = useFetch<SingleBranchResponseType>(
+    `branch/${branchId}`
+  );
 
-  const setGridView = () => {
-    setState((state) => ({ ...state, gridView: true }));
-  };
-  const setListView = () => {
-    setState((state) => ({ ...state, gridView: false }));
-  };
-  const handlePageChange = (page: number) => {
-    setState((state) => ({ ...state, current_page: page }));
-  };
-  const setSelectedState = (selectedState: string) => {
-    setState((state) => ({ ...state, selectedState }));
-  };
+  const fetchedBranchData = data?.data;
 
-  const properties = fetchedBranchData?.property_list || [];
-
-  const allStates = getAllStates() || [];
-
-  const branchFiltersWithOptions = [
-    {
-      label: "State",
-      value: allStates.map((state) => ({
-        label: state,
-        value: state,
-      })),
-    },
-    {
-      label: "Local Government",
-      value: selectedState
-        ? localGovernments.map((lga) => ({
-            label: lga,
-            value: lga,
-          }))
-        : [],
-    },
-  ];
-
-  const handleFilterApply = (filters: any) => {
-    console.log("Filter applied:", filters);
-    // Add filtering logic here for branches
-  };
+  const branchAddress = `${fetchedBranchData?.branch.branch_address}, ${fetchedBranchData?.branch.city}, ${fetchedBranchData?.branch.local_government}, ${fetchedBranchData?.branch.state}`;
 
   const [timeRange, setTimeRange] = useState("30d");
   // const [highestMetric, setHighestMetric] = useState<string | null>(null);
@@ -139,18 +84,21 @@ const BranchDashboard = () => {
     }
   };
 
+  if (loading) return <CustomLoader layout="dasboard" />;
+
+  if (error) return <div>{error}</div>;
+  // if (!fetchedBranchData) return null;
+
   return (
     <div className="custom-flex-col gap-6">
       <div className="w-full gap-2 flex items-center justify-between flex-wrap">
         <BackButton as="div" className="items-start">
           <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-            {fetchedBranchData?.branch?.branch_title || "Null"}
+            {fetchedBranchData?.branch.branch_name}
           </h1>
           <div className="text-text-disabled flex items-center space-x-1">
             <LocationIcon />
-            <p className="text-sm font-medium">
-              {fetchedBranchData?.branch?.branch_full_address || "Null"}
-            </p>
+            <p className="text-sm font-medium">{branchAddress}</p>
           </div>
         </BackButton>
 
@@ -166,7 +114,7 @@ const BranchDashboard = () => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <CreateStaffModal branchId={branchId as string} />
+              <CreateStaffModal branchId={branchId} />
             </ModalContent>
           </Modal>
           <Button
@@ -283,108 +231,13 @@ const BranchDashboard = () => {
         <NotificationCard
           sectionHeader="Staffs"
           seeAllLink={`/management/staff-branch/${branchId}/branch-staff`}
-          notifications={fetchedBranchData?.staff || []}
-          branchId={branchId as string}
+          // notifications={fetchedBranchData?.staff || []}
+          notifications={[]}
+          branchId={branchId}
           className="md:flex-1 lg:h-[380px]"
         />
       </div>
-
-      <FilterBar
-        searchInputPlaceholder="Search for Branch properties"
-        azFilter
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={branchFiltersWithOptions}
-        onStateSelect={(state: string) => setSelectedState(state)}
-        handleFilterApply={handleFilterApply}
-        isDateTrue
-        gridView={gridView}
-        setGridView={setGridView}
-        setListView={setListView}
-      />
-
-      {/* Property cards */}
-      <section>
-        {gridView ? (
-          <AutoResizingGrid minWidth={315}>
-            {/* {properties.map((p) => (
-              <Link
-                href={`/management/staff-branch/${branchId}/property/${p.id}`}
-                key={p.id}
-              >
-                <PropertyCard {...p} isClickable={false} />
-              </Link>
-            ))} */}
-            {Array.from({ length: 5 }).map((_, index) => (
-              <Link
-                key={index}
-                href={`/management/staff-branch/${branchId}/property/${index}`}
-              >
-                <PropertyCard
-                  address="123 Main St"
-                  id={1}
-                  propertyId={1}
-                  images={[
-                    "/empty/SampleProperty.jpeg",
-                    "/empty/SampleProperty2.jpeg",
-                    "/empty/SampleProperty3.jpeg",
-                    "/empty/SampleProperty4.jpeg",
-                    "/empty/SampleProperty5.jpeg",
-                  ]}
-                  name="Property 1"
-                  units={1}
-                  price={1000}
-                  propertyType={index % 2 === 0 ? "rental" : "facility"}
-                  currency="Naira"
-                  isClickable={false}
-                />
-              </Link>
-            ))}
-          </AutoResizingGrid>
-        ) : (
-          <div className="space-y-4">
-            {/* {properties.map((p) => (
-              <Link
-                href={`/management/staff-branch/${branchId}/property/${p.id}`}
-                key={p.id}
-                className="block"
-              >
-                <BranchPropertyListItem {...p} />
-              </Link>
-            ))} */}
-            {Array.from({ length: 10 }).map((_, index) => (
-              <Link
-                key={index}
-                href={`/management/staff-branch/${branchId}/property/${index}`}
-                className="block"
-              >
-                <BranchPropertyListItem
-                  address="123 Main St"
-                  id={1}
-                  propertyId={1}
-                  images={[
-                    "/empty/empty.svg",
-                    "/empty/empty.svg",
-                    "/empty/empty.svg",
-                    "/empty/empty.svg",
-                    "/empty/empty.svg",
-                  ]}
-                  name="Property 1"
-                  units={1}
-                  price={1000}
-                  propertyType={index % 2 === 0 ? "rental" : "facility"}
-                  currency="Naira"
-                />
-              </Link>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <Pagination
-        totalPages={total_pages}
-        currentPage={current_page}
-        onPageChange={handlePageChange}
-      />
+      <BranchPropertiesSection branchId={branchId} />
     </div>
   );
 };

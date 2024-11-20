@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 // Imports
 import Button from "@/components/Form/Button/button";
@@ -12,19 +12,27 @@ import EditBranchForm from "@/components/Management/Staff-And-Branches/Branch/ed
 import DeleteBranchModal from "@/components/Management/Staff-And-Branches/Branch/delete-branch-modal";
 import UpdateBranchModal from "@/components/Management/Staff-And-Branches/Branch/update-branch-modal";
 import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
-import { editBranch, getOneBranch } from "../../data";
-import { ResponseType } from "../types";
-import { useParams } from "next/navigation";
 import LockBranchModal from "@/components/Management/Staff-And-Branches/Branch/lock-branch-modal";
 import UnLockBranchModal from "@/components/Management/Staff-And-Branches/Branch/unlock-branch-modal";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import useFetch from "@/hooks/useFetch";
+import { SingleBranchResponseType } from "../types";
 
-const EditBranch = () => {
-  const [isGridView, setIsGridView] = useState<boolean>(true);
-  const [fetchedBranchData, setFetchedBranchData] =
-    useState<ResponseType | null>();
+const EditBranch = ({ params }: { params: { branchId: string } }) => {
+  const { branchId } = params;
+  const [isGridView, setIsGridView] = useState(true);
+
   const [isOpen, setOpen] = useState(false);
-  const { branchId } = useParams() as { branchId: string };
+
+  const {
+    data: fetchedBranchData,
+    error,
+    loading,
+  } = useFetch<SingleBranchResponseType>(`branch/${branchId}`);
+
+  if (loading) return "Loading";
+
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="custom-flex-col gap-10">
@@ -99,12 +107,7 @@ const EditBranch = () => {
             </Modal>
           </div>
         </div>
-        {fetchedBranchData && (
-          <EditBranchForm
-            somedata={fetchedBranchData}
-            handleSubmit={() => {}}
-          />
-        )}
+        <EditBranchForm somedata={fetchedBranchData} handleSubmit={() => {}} />
       </div>
       <div className="custom-flex-col gap-8">
         <FilterBar

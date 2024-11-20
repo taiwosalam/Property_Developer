@@ -1,18 +1,28 @@
-import type { BranchProps } from "./types";
 import { empty } from "@/app/config";
 import DefaultBranchManagerAvatar from "@/public/icons/contact.svg";
 import Image from "next/image";
 
-const BranchCard: React.FC<BranchProps> = ({
+export interface BranchCardProps {
+  id: string;
+  branch_picture: string;
+  branch_title: string;
+  branch_full_address: string;
+  manager_name: string;
+  manager_picture: string;
+  staff_count: number;
+  property_count: number;
+  unit_count: number;
+}
+
+const BranchCard: React.FC<BranchCardProps> = ({
   branch_title,
   branch_full_address,
-  avatar,
+  branch_picture,
   manager_name,
-  manager_avatar,
+  manager_picture,
   staff_count,
   property_count,
   unit_count,
-  id,
 }) => {
   return (
     <div className="relative mt-[3rem]">
@@ -24,7 +34,7 @@ const BranchCard: React.FC<BranchProps> = ({
       />
       <div className="absolute left-[50%] translate-x-[-50%] top-[-2.8rem] bg-white dark:bg-darkText-primary rounded-full w-[95px] h-[95px] overflow-hidden border-[3px] border-transparent">
         <Image
-          src={avatar || empty}
+          src={branch_picture || empty}
           alt={branch_title || ""}
           fill
           className="rounded-full object-cover"
@@ -40,7 +50,7 @@ const BranchCard: React.FC<BranchProps> = ({
         <div className="flex items-center gap-2 justify-center mb-5">
           <Image
             alt={`${manager_name} avatar`}
-            src={manager_avatar || DefaultBranchManagerAvatar}
+            src={manager_picture || DefaultBranchManagerAvatar}
             width={20}
             height={20}
             className="w-5 h-5 rounded-full object-cover"

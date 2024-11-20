@@ -4,7 +4,6 @@
 import { useEffect, useState } from "react";
 import Button from "@/components/Form/Button/button";
 import TenantCard from "@/components/Management/landlord-and-tenant-card";
-import type { TenantProps } from "@/components/Management/Tenants/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import CustomTable from "@/components/Table/table";
@@ -28,6 +27,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import useView from "@/hooks/useView";
 import useFetch from "@/hooks/useFetch";
 import useSettingsStore from "@/store/settings";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const Tenants = () => {
   const view = useView();
@@ -177,16 +177,7 @@ const Tenants = () => {
   }, [apiData]);
 
   // Listen for the refetch event
-  useEffect(() => {
-    const handleRefetch = () => {
-      refetch();
-    };
-
-    window.addEventListener("refetchTenants", handleRefetch);
-    return () => {
-      window.removeEventListener("refetchTenants", handleRefetch);
-    };
-  }, [refetch]);
+  useRefetchOnEvent("refetchTenants", () => refetch({ silent: true }));
 
   const transformedTenants = tenants.map((t) => ({
     ...t,

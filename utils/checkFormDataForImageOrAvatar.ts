@@ -47,3 +47,25 @@ export function cleanPhoneNumber(
     }
   });
 }
+
+export function convertYesNoToBoolean(data: InputData, fields: string[]): void {
+  fields.forEach((field) => {
+    let value: string | null | undefined;
+
+    if (data instanceof FormData) {
+      value = data.get(field) as string | null;
+      if (value === "yes") {
+        data.set(field, "1");
+      } else if (value === "no") {
+        data.set(field, "0");
+      }
+    } else {
+      value = data[field];
+      if (value === "yes") {
+        data[field] = 1;
+      } else if (value === "no") {
+        data[field] = 0;
+      }
+    }
+  });
+}

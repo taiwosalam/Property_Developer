@@ -49,7 +49,7 @@ export const handleAxiosError = (
   defaultMessage: string = "An unexpected error occurred"
 ) => {
   if (axios.isAxiosError(error)) {
-    // Check for CORS error
+    // Check for CORS error or network error
     if (!error.response) {
       toast.error("Network error");
       return;

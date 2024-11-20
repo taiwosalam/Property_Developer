@@ -28,6 +28,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import useView from "@/hooks/useView";
 import useSettingsStore from "@/store/settings";
 import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const Landlord = () => {
   const view = useView();
@@ -66,7 +67,6 @@ const Landlord = () => {
       landlords,
     },
   } = state;
-  console.log(landlords);
 
   useEffect(() => {
     setState((prevState) => ({
@@ -178,16 +178,7 @@ const Landlord = () => {
   }, [apiData]);
 
   // Listen for the refetch event
-  useEffect(() => {
-    const handleRefetch = () => {
-      refetch();
-    };
-
-    window.addEventListener("refetchLandlords", handleRefetch);
-    return () => {
-      window.removeEventListener("refetchLandlords", handleRefetch);
-    };
-  }, [refetch]);
+  useRefetchOnEvent("refetchLandlords", () => refetch({ silent: true }));
 
   const transformedLandlords = landlords.map((l) => ({
     ...l,
