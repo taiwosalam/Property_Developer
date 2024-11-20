@@ -5,6 +5,19 @@ import axios from "axios";
 import api, { handleAxiosError } from "@/services/api";
 import { useAuthStore } from "@/store/authStore";
 
+interface LoginResponse {
+  status: boolean;
+  message: string;
+  data: {
+    details: {
+      id: string; //actually number but fuck it
+      email: string;
+      role: [string];
+      "email-verification": boolean;
+    };
+  };
+}
+
 const base_url = `${process.env.NEXT_PUBLIC_BASE_URL}api/v1/`;
 
 export const auth_slider_content: AuthSliderContent = [
@@ -24,10 +37,6 @@ export const auth_slider_content: AuthSliderContent = [
 
 // Login function
 export const login = async (formData: Record<string, any>) => {
-  // const token = "ah";
-  // useAuthStore.getState().setToken(token);
-  // return "redirect to dashboard";
-
   try {
     const { data } = await axios.post(`${base_url}login`, formData);
     useAuthStore.getState().reset();
@@ -37,7 +46,7 @@ export const login = async (formData: Record<string, any>) => {
     useAuthStore.getState().setEmail(email);
     const message = data?.message || "Login successful!";
     const emailVerified = data.data.details["email-verification"];
-    const role = data.data.details.role;
+    const role = data.data.details.role[0];
     useAuthStore.getState().setRole(role);
     if (emailVerified) {
       toast.success(message);

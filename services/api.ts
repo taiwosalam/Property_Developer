@@ -51,13 +51,19 @@ export const handleAxiosError = (
   if (axios.isAxiosError(error)) {
     // Check for CORS error or network error
     if (!error.response) {
-      toast.error("Network error");
+      toast.error(error.message || "Network error");
       return;
     }
 
     // Check for error in data.message
     if (error.response.data.message) {
       toast.error(error.response.data.message);
+      return;
+    }
+
+    // Check for error in data.error
+    if (typeof error.response.data.error === "string") {
+      toast.error(error.response.data.error);
       return;
     }
 
