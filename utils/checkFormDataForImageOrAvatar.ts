@@ -1,4 +1,4 @@
-type InputData = FormData | Record<string, any>;
+export type InputData = FormData | Record<string, any>;
 
 export function checkFormDataForImageOrAvatar(
   data: InputData,

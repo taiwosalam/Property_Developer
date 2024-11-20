@@ -13,12 +13,9 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import Avatars from "@/components/Avatars/avatars";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import CameraCircle from "@/public/icons/camera-circle.svg";
+import Picture from "@/components/Picture/picture";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
-import {
-  CameraIcon2,
-  PersonIcon,
-  DeleteIconOrange,
-} from "@/public/icons/icons";
+import { PersonIcon, DeleteIconOrange } from "@/public/icons/icons";
 import {
   checkFormDataForImageOrAvatar,
   convertYesNoToBoolean,
@@ -33,7 +30,7 @@ const CreateBranchModal = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const {
-    preview: imagePreview,
+    preview,
     inputFileRef,
     handleImageChange: originalHandleImageChange,
     clearSelection: clearImageSelection,
@@ -166,37 +163,32 @@ const CreateBranchModal = () => {
                 Upload picture or select an avatar.
               </p>
               <div className="flex items-end gap-3">
-                <button
-                  type="button"
-                  className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
-                  aria-label="upload picture"
-                  onClick={() => inputFileRef.current?.click()}
-                >
-                  {imagePreview ? (
-                    <>
-                      <Image
-                        src={imagePreview}
-                        alt="avatar"
-                        width={70}
-                        height={70}
-                        className="object-cover object-center w-[70px] h-[70px] rounded-full"
-                      />
-                      <div
-                        role="button"
-                        aria-label="remove image"
-                        className="absolute top-0 right-0"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          clearImageSelection();
-                        }}
-                      >
-                        <DeleteIconOrange size={20} />
-                      </div>
-                    </>
-                  ) : (
-                    <CameraIcon2 />
+                <label htmlFor="picture" className="cursor-pointer relative">
+                  <Picture src={preview} alt="Camera" size={70} rounded />
+                  {preview && preview !== CameraCircle && (
+                    <div
+                      role="button"
+                      aria-label="remove image"
+                      className="absolute top-0 right-0"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        clearImageSelection();
+                      }}
+                    >
+                      <DeleteIconOrange size={20} />
+                    </div>
                   )}
-                </button>
+                  <input
+                    type="file"
+                    id="picture"
+                    name="picture"
+                    accept="image/*"
+                    className="hidden pointer-events-none"
+                    onChange={handleImageChange}
+                    ref={inputFileRef}
+                  />
+                </label>
+
                 <button
                   type="button"
                   onClick={() => setFormStep(2)}

@@ -11,11 +11,7 @@ import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "../Auth/auth-components";
 import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
-import {
-  CameraIcon2,
-  PersonIcon,
-  DeleteIconOrange,
-} from "@/public/icons/icons";
+import { PersonIcon, DeleteIconOrange } from "@/public/icons/icons";
 import Avatars from "@/components/Avatars/avatars";
 import Picture from "@/components/Picture/picture";
 import CameraCircle from "@/public/icons/camera-circle.svg";

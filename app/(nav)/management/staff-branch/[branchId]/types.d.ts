@@ -31,13 +31,13 @@ type PropertyList = any[]; // Assuming the structure of property_list is unknown
 export type SingleBranchResponseType = {
   data: {
     branch: {
-      id: number;
+      id: string;
       branch_name: string;
       state: string;
       local_government: string;
       city: string;
       branch_address: string;
-      // branch_image: string | null; //to be added later
+      branch_image: string | null; //to be added later
       // branch_wallet: string; //to be added later
       branch_desc: string;
     };

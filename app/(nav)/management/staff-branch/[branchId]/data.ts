@@ -30,10 +30,10 @@ export const branchIdChartData = [
 export const transformSingleBranchAPIResponse = ({
   data,
 }: SingleBranchResponseType) => {
-  // return data.branch;
-  return {
-    ...data.branch,
-    branch_image:
-      "https://pubassets.ourproperty.ng/uploads/gBTaZYUXOch2qrKq5k5F2EdShRihQjYGuxDwOuu6.png",
-  };
+  return data.branch;
+  // return {
+  //   ...data.branch,
+  //   branch_image:
+  //     "https://pubassets.ourproperty.ng/uploads/gBTaZYUXOch2qrKq5k5F2EdShRihQjYGuxDwOuu6.png",
+  // };
 };
