@@ -1,6 +1,6 @@
 "use client";
 
-import React, { CSSProperties, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -10,15 +10,27 @@ import BackButton from "@/components/BackButton/back-button";
 import InventoryItem from "@/components/Management/Inventory/inventory-item";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { toast } from "sonner";
+import { getBranches } from "../../data";
 
 const CreateInventory = () => {
   const isDarkMode = useDarkMode();
+  const [branches, setBranches] = useState<any[]>([]);
+  const [inventoryItems, setInventoryItems] = useState<number>(2);
   const input_styles: CSSProperties = {
     padding: "12px 14px",
     backgroundColor: isDarkMode ? "#020617" : "white",
   };
 
-  const [inventoryItems, setInventoryItems] = useState<number>(2);
+  useEffect(() => {
+    const fetchBranches = async () => {
+      const branches = await getBranches();
+      if (branches) {
+        setBranches(branches.data);
+        console.log(branches.data.data);
+      }
+    };
+    fetchBranches();
+  }, []);
 
   const convertImageToBase64 = async (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {

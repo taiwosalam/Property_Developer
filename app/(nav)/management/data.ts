@@ -5,6 +5,26 @@ import api from "@/services/api";
 import axios from "axios";
 import { toast } from "sonner";
 
+export const getBranches = async () => {
+  try { 
+    const response = await api.get("/branches");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching branches:", error);
+    return [];
+  }
+};
+
+export const getInventory = async () => {
+  try { 
+    const response = await api.get("/inventories");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching inventory:", error);
+    return [];
+  }
+};
+
 export const createInventory = async (formData: FormData) => {
   console.log('formData - ', formData)
   try {
@@ -65,7 +85,7 @@ export const createInventory = async (formData: FormData) => {
 };
 
 // Helper function to convert File to base64
-const convertFileToBase64 = (file: File): Promise<string> => {
+export const convertFileToBase64 = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
