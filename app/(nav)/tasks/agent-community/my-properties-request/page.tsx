@@ -4,19 +4,16 @@ import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import PropertyRequestCard from "@/components/tasks/CallBack/RequestCard";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import {
-  PropertyRequestDataType,
-} from "@/app/(nav)/tasks/property-request/data";
+import { type PropertyRequestDataType } from "../property-request/data";
 import Button from "@/components/Form/Button/button";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
-import { AgentCommunityRequestCardProps } from "../type";
+import type { AgentCommunityRequestCardProps } from "@/components/tasks/CallBack/types";
 import Pagination from "@/components/Pagination/pagination";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getLoggedInUserPropertyRequests } from "../data";
 import { RequestCardSkeleton } from "../components";
-
 
 const lists = [
   {
@@ -64,7 +61,6 @@ const MyPropertiesRequestPage = () => {
   const [propertyRequestUser, setPropertyRequestUser] = useState<any>(null);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
 
   const handleCreatePropertyRequestClick = () => {
     router.push("/tasks/agent-community/my-properties-request/create");
@@ -72,19 +68,27 @@ const MyPropertiesRequestPage = () => {
 
   useEffect(() => {
     const fetchPropertyRequests = async (): Promise<void> => {
-      setIsFetching(true);  
+      setIsFetching(true);
       setError(null);
       try {
-        const {data} = await getLoggedInUserPropertyRequests();
-        const propertyRequests = data.map((item: PropertyRequestItem) => item.propertyRequest);
-        const propertyRequestUsers = data.map((item: PropertyRequestItem) => item.user);
+        const { data } = await getLoggedInUserPropertyRequests();
+        const propertyRequests = data.map(
+          (item: PropertyRequestItem) => item.propertyRequest
+        );
+        const propertyRequestUsers = data.map(
+          (item: PropertyRequestItem) => item.user
+        );
         setPropertyRequests(propertyRequests);
         setPropertyRequestUser(propertyRequestUsers);
-        console.log('Property requests:', propertyRequests);
-        console.log('Property request users:', propertyRequestUsers);
+        console.log("Property requests:", propertyRequests);
+        console.log("Property request users:", propertyRequestUsers);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch property requests');
-        console.error('Error fetching property requests:', err);
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to fetch property requests"
+        );
+        console.error("Error fetching property requests:", err);
       } finally {
         setIsFetching(false);
       }
@@ -98,33 +102,35 @@ const MyPropertiesRequestPage = () => {
     if (!dateString) return "___";
     try {
       const date = new Date(dateString);
-      return date.toISOString().split('T')[0];
+      return date.toISOString().split("T")[0];
     } catch {
       return "___";
     }
   };
 
-  const propertyRequestData: PropertyRequestDataType[] = propertyRequests.map((request: any, index: number) => ({
-    requestId: request?.id || "__",
-    targetAudience: request?.target_audience || "___",
-    userName: propertyRequestUser[index]?.name || "___",
-    requestDate: formatDate(request?.created_at) || "___",
-    pictureSrc: propertyRequestUser[index]?.picture,
-    state: request?.state || "___",
-    lga: request?.lga || "___",
-    propertyType: request?.property_type || "___",
-    category: request?.property_category || "___",
-    subType: request?.sub_type || "___",
-    minBudget: `₦${request?.min_budget}` || "___",
-    maxBudget: `₦${request?.max_budget}` || "___",
-    requestType: "Web",
-    description: request?.description || "___",
-    phoneNumber: propertyRequestUser[index]?.phone || "___",
-    propertyTitle: request?.title || "___",
-    isLoading: isFetching,
-    userTitle: propertyRequestUser[index]?.profile_title || "___",
-  }));
-  
+  const propertyRequestData: PropertyRequestDataType[] = propertyRequests.map(
+    (request: any, index: number) => ({
+      requestId: request?.id || "__",
+      targetAudience: request?.target_audience || "___",
+      userName: propertyRequestUser[index]?.name || "___",
+      requestDate: formatDate(request?.created_at) || "___",
+      pictureSrc: propertyRequestUser[index]?.picture,
+      state: request?.state || "___",
+      lga: request?.lga || "___",
+      propertyType: request?.property_type || "___",
+      category: request?.property_category || "___",
+      subType: request?.sub_type || "___",
+      minBudget: `₦${request?.min_budget}` || "___",
+      maxBudget: `₦${request?.max_budget}` || "___",
+      requestType: "Web",
+      description: request?.description || "___",
+      phoneNumber: propertyRequestUser[index]?.phone || "___",
+      propertyTitle: request?.title || "___",
+      isLoading: isFetching,
+      userTitle: propertyRequestUser[index]?.profile_title || "___",
+    })
+  );
+
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
@@ -161,12 +167,14 @@ const MyPropertiesRequestPage = () => {
         filterWithOptionsWithDropdown={[]}
         hasGridListToggle={false}
       />
-      
+
       {isFetching ? (
         <AutoResizingGrid gap={28} minWidth={400}>
-          {Array(3).fill(null).map((_, index) => (
-            <RequestCardSkeleton key={index} />
-          ))}
+          {Array(3)
+            .fill(null)
+            .map((_, index) => (
+              <RequestCardSkeleton key={index} />
+            ))}
         </AutoResizingGrid>
       ) : propertyRequestData.length === 0 ? (
         <div className="flex justify-center items-center min-h-[200px] text-gray-500">
@@ -176,11 +184,10 @@ const MyPropertiesRequestPage = () => {
         <AutoResizingGrid gap={28} minWidth={400}>
           {propertyRequestData.map((details, index) => (
             <PropertyRequestCard
-              isLoading={isFetching}
               key={index}
               {...transformToPropertyRequestCardProps(details)}
               cardType="agent-community"
-              user={true}
+              user
             />
           ))}
         </AutoResizingGrid>

@@ -32,8 +32,8 @@ const PreviewInventory = () => {
           Added Inventory
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <InventoryItem />
-          <InventoryItem />
+          {/* <InventoryItem />
+          <InventoryItem /> */}
         </div>
       </div>
       <FixedFooter className="flex gap-6 justify-end">

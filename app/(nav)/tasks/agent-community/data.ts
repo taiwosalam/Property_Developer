@@ -6,6 +6,13 @@ import { transformFormData } from "./my-properties-request/data";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
+export const calculateYearsInIndustry = (dateString: string) => {
+  if (!dateString) return null;
+  const registrationDate = new Date(dateString);
+  const today = new Date();
+  const years = today.getFullYear() - registrationDate.getFullYear();
+  return `${years}+ years`;
+};
 export const getThreads = async () => {
   try {
     const response = await api.get("/agent_community");
@@ -46,7 +53,6 @@ export const getAllPropertyRequests = async () => {
   }
 };
 
-
 export const getLoggedInUserPropertyRequests = async () => {
   try {
     const response = await api.get("/agent_community/property-requests/user");
@@ -59,33 +65,33 @@ export const getLoggedInUserPropertyRequests = async () => {
 
 export const updatePropertyRequest = async (id: string, data: any) => {
   const keyMapping: Record<string, string> = {
-    'title': 'title',
-    'content': 'description',
-    'property_category': 'property_category',
-    'property_type': 'property_type',
-    'property_sub_type': 'property_sub_type',
-    'target_audience': 'target_audience',
-    'min_budget': 'min_budget',
-    'max_budget': 'max_budget',
-    'valid_till': 'valid_till'
+    title: "title",
+    content: "description",
+    property_category: "property_category",
+    property_type: "property_type",
+    property_sub_type: "property_sub_type",
+    target_audience: "target_audience",
+    min_budget: "min_budget",
+    max_budget: "max_budget",
+    valid_till: "valid_till",
   };
-  
+
   const formattedData = {
-    title: data.title || '',
-    description: data.content || '',
-    property_category: data.property_category || '',
-    property_type: data.property_type || '',
-    property_sub_type: data.property_sub_type || '',
-    target_audience: data.target_audience 
-      ? (typeof data.target_audience === 'string' 
-          ? [data.target_audience]
-          : Array.isArray(data.target_audience)
-              ? data.target_audience
-              : [data.target_audience])
+    title: data.title || "",
+    description: data.content || "",
+    property_category: data.property_category || "",
+    property_type: data.property_type || "",
+    property_sub_type: data.property_sub_type || "",
+    target_audience: data.target_audience
+      ? typeof data.target_audience === "string"
+        ? [data.target_audience]
+        : Array.isArray(data.target_audience)
+        ? data.target_audience
+        : [data.target_audience]
       : [],
-    min_budget: data.min_budget?.toString() || '',
-    max_budget: data.max_budget?.toString() || '',
-    valid_till: data.valid_till || ''
+    min_budget: data.min_budget?.toString() || "",
+    max_budget: data.max_budget?.toString() || "",
+    valid_till: data.valid_till || "",
   };
 
   // const formattedData = {
@@ -100,173 +106,130 @@ export const updatePropertyRequest = async (id: string, data: any) => {
   //   valid_till: 'valid_till'
   // };
 
-
-  console.log('formattedData', formattedData);
+  console.log("formattedData", formattedData);
   try {
-    const response = await api.put(`/agent_community/property-requests/${id}`, formattedData);
+    const response = await api.put(
+      `/agent_community/property-requests/${id}`,
+      formattedData
+    );
     return response.data;
   } catch (error) {
     console.error("Error updating property request:", error);
     throw error;
   }
-} 
-
+};
 export const deletePropertyRequest = async (id: string) => {
   try {
-    const response = await api.delete(`/agent_community/property-requests/${id}`);
+    const response = await api.delete(
+      `/agent_community/property-requests/${id}`
+    );
     return response.data;
   } catch (error) {
     console.error("Error deleting property request:", error);
     throw error;
   }
-}
-
-export const sendComment = async (slug: string, content: string) => {
-  try {
-    const response = await api.post(`/agent_community/${slug}/comment`, { content });
-    return response.data;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      toast.error(error.response?.data.message);
-    } else {
-      toast.error("Error sending comment:");
-    }
-    console.error("Error sending comment:", error);
-    throw error;
-  }
-}
-
-export const calculateYearsInIndustry = (dateString: string) => {
-  if (!dateString) return null;
-  const registrationDate = new Date(dateString);
-  const today = new Date();
-  const years = today.getFullYear() - registrationDate.getFullYear();
-  return `${years}+ years`;
 };
-
-export const fetchComments = async (slug: string) => {
-  try {
-    const response = await api.get(`/agent_community/${slug}/comments`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching comments:", error);
-    throw error;
-  }
-};
-
-export const toggleArticleLike = async (commentId: string, action: number) => {
-  try { 
-    const response = await api.post(`/agent_community/agent_comment/${commentId}/toggle-like`, { action });
-    return response.data;
-  } catch (error) {
-    console.error("Error liking comment:", error);
-    throw error;
-  }
-};
-
 export const threadData = [
   {
-    picture_url: "/empty/thread.png" || empty,
-    user_pics: "/empty/thread.svg" || empty,
+    picture_url: "/empty/thread.png",
+    user_pics: "/empty/thread.svg",
     name: "Esq Salam AIshat",
     role: "Legal Practitioner",
-    time: '3 mins ago',
-    title: 'Rent Increase & Maintenance',
-    desc: 'Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...',
-    comments: '30 Comments',
+    time: "3 mins ago",
+    title: "Rent Increase & Maintenance",
+    desc: "Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...",
+    comments: "30 Comments",
   },
   {
-    picture_url: "/empty/thread.png" || empty,
-    user_pics: "/empty/thread.svg" || empty,
+    picture_url: "/empty/thread.png",
+    user_pics: "/empty/thread.svg",
     name: "Esq Salam AIshat",
     role: "Legal Practitioner",
-    time: '3 mins ago',
-    title: 'Rent Increase & Maintenance',
-    desc: 'Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...',
-    comments: '30 Comments',
+    time: "3 mins ago",
+    title: "Rent Increase & Maintenance",
+    desc: "Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...",
+    comments: "30 Comments",
   },
   {
-    picture_url: "/empty/thread.png" || empty,
-    user_pics: "/empty/thread.svg" || empty,
+    picture_url: "/empty/thread.png",
+    user_pics: "/empty/thread.svg",
     name: "Esq Salam AIshat",
     role: "Legal Practitioner",
-    time: '3 mins ago',
-    title: 'Rent Increase & Maintenance',
-    desc: 'Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...',
-    comments: '30 Comments',
+    time: "3 mins ago",
+    title: "Rent Increase & Maintenance",
+    desc: "Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...",
+    comments: "30 Comments",
   },
   {
-    picture_url: "/empty/thread.png" || empty,
-    user_pics: "/empty/thread.svg" || empty,
+    picture_url: "/empty/thread.png",
+    user_pics: "/empty/thread.svg",
     name: "Esq Salam AIshat",
     role: "Legal Practitioner",
-    time: '3 mins ago',
-    title: 'Rent Increase & Maintenance',
-    desc: 'Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...',
-    comments: '30 Comments',
+    time: "3 mins ago",
+    title: "Rent Increase & Maintenance",
+    desc: "Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...",
+    comments: "30 Comments",
   },
   {
-    picture_url: "/empty/thread.png" || empty,
-    user_pics: "/empty/thread.svg" || empty,
+    picture_url: "/empty/thread.png",
+    user_pics: "/empty/thread.svg",
     name: "Esq Salam AIshat",
     role: "Legal Practitioner",
-    time: '3 mins ago',
-    title: 'Rent Increase & Maintenance',
-    desc: 'Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...',
-    comments: '30 Comments',
+    time: "3 mins ago",
+    title: "Rent Increase & Maintenance",
+    desc: "Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...",
+    comments: "30 Comments",
   },
   {
-    picture_url: "/empty/thread.png" || empty,
-    user_pics: "/empty/thread.svg" || empty,
+    picture_url: "/empty/thread.png",
+    user_pics: "/empty/thread.svg",
     name: "Esq Salam AIshat",
     role: "Legal Practitioner",
-    time: '3 mins ago',
-    title: 'Rent Increase & Maintenance',
-    desc: 'Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...',
-    comments: '30 Comments',
+    time: "3 mins ago",
+    title: "Rent Increase & Maintenance",
+    desc: "Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...",
+    comments: "30 Comments",
   },
   {
-    picture_url: "/empty/thread.png" || empty,
-    user_pics: "/empty/thread.svg" || empty,
+    picture_url: "/empty/thread.png",
+    user_pics: "/empty/thread.svg",
     name: "Esq Salam AIshat",
     role: "Legal Practitioner",
-    time: '3 mins ago',
-    title: 'Rent Increase & Maintenance',
-    desc: 'Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...',
-    comments: '30 Comments',
+    time: "3 mins ago",
+    title: "Rent Increase & Maintenance",
+    desc: "Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...",
+    comments: "30 Comments",
   },
   {
-    picture_url: "/empty/thread.png" || empty,
-    user_pics: "/empty/thread.svg" || empty,
+    picture_url: "/empty/thread.png",
+    user_pics: "/empty/thread.svg",
     name: "Esq Salam AIshat",
     role: "Legal Practitioner",
-    time: '3 mins ago',
-    title: 'Rent Increase & Maintenance',
-    desc: 'Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...',
-    comments: '30 Comments',
+    time: "3 mins ago",
+    title: "Rent Increase & Maintenance",
+    desc: "Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...",
+    comments: "30 Comments",
   },
   {
-    picture_url: "/empty/thread.png" || empty,
-    user_pics: "/empty/thread.svg" || empty,
+    picture_url: "/empty/thread.png",
+    user_pics: "/empty/thread.svg",
     name: "Esq Salam AIshat",
     role: "Legal Practitioner",
-    time: '3 mins ago',
-    title: 'Rent Increase & Maintenance',
-    desc: 'Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...',
-    comments: '30 Comments',
+    time: "3 mins ago",
+    title: "Rent Increase & Maintenance",
+    desc: "Lorem ipsum dolor sit amet consectetur. Id dolor consectetur amet eget at accumsan. Vulputate aenean justo tellus egestas vestibulum phasejsjdbksjbskbllus...",
+    comments: "30 Comments",
   },
 ];
 
-
 export const threadArticle = [
-    '#Commercial and retail real estate fundamentals are expected to remain strong due to the scarcity of new construction deliveries, prompting compelling opportunities for investors amid high interest rates and inflation in the market, writes CHINEDUM UWAEGBULAM.',
-    'Despite economic headwinds and challenges with obtaining building permits, experts predict that the demand for housing will remain strong, and the market will see a steady increase in property values this year.',
-    'There are also opportunities available for high-quality properties that meet the needs of investors and tenants, while low mortgage rates and government incentives will likely contribute to this optimistic outlook as inflation may remain a concern in 2024, affecting both home prices and mortgage rates.',
-    'The Guardian gathered that one of the key factors that will shape the real estate market in 2024 is technology, as virtual reality property tours, blockchain in real estate transactions, and Artificial Intelligence (AI)-driven market analysis tools will make the buying and selling process more efficient and accessible ',
-    'Besides, with high demand and limited supply, sellers can anticipate competitive offers and faster sales. They anticipate primary markets becoming more competitive and expensive, secondary markets offering attractive opportunities for buyers and investors looking for affordable properties.',
-    'It is expected that cities and other states’ capitals without many security challenges will witness refinements. Many urban centres will witness positive changes in real estate, but the most prominent among them are Lagos, being the economic hub of the country; Abuja- the political heart of Nigeria; Port Harcourt- the oil and gas industry; Ibadan as a growing metropolis; Abeokuta being the emerging economic centre; Uyo as a blossoming urban centre; and Kano metropolis.',
-]
-
+  "#Commercial and retail real estate fundamentals are expected to remain strong due to the scarcity of new construction deliveries, prompting compelling opportunities for investors amid high interest rates and inflation in the market, writes CHINEDUM UWAEGBULAM.",
+  "Despite economic headwinds and challenges with obtaining building permits, experts predict that the demand for housing will remain strong, and the market will see a steady increase in property values this year.",
+  "There are also opportunities available for high-quality properties that meet the needs of investors and tenants, while low mortgage rates and government incentives will likely contribute to this optimistic outlook as inflation may remain a concern in 2024, affecting both home prices and mortgage rates.",
+  "The Guardian gathered that one of the key factors that will shape the real estate market in 2024 is technology, as virtual reality property tours, blockchain in real estate transactions, and Artificial Intelligence (AI)-driven market analysis tools will make the buying and selling process more efficient and accessible ",
+  "Besides, with high demand and limited supply, sellers can anticipate competitive offers and faster sales. They anticipate primary markets becoming more competitive and expensive, secondary markets offering attractive opportunities for buyers and investors looking for affordable properties.",
+  "It is expected that cities and other states’ capitals without many security challenges will witness refinements. Many urban centres will witness positive changes in real estate, but the most prominent among them are Lagos, being the economic hub of the country; Abuja- the political heart of Nigeria; Port Harcourt- the oil and gas industry; Ibadan as a growing metropolis; Abeokuta being the emerging economic centre; Uyo as a blossoming urban centre; and Kano metropolis.",
+];
 
 export const comments: CommentProps[] = [
   {
@@ -333,60 +296,18 @@ export const comments: CommentProps[] = [
   },
 ];
 
-
-export interface PropertyRequestDataType {
-  userName: string;
-  requestDate: string;
-  pictureSrc: string;
-  requestId: string;
-  state: string;
-  lga: string;
-  propertyType: string;
-  description: string;
-  phoneNumber: string;
-  requestType: string;
-  category: string;
-  subType: string;
-  minBudget: string;
-  maxBudget: string;
-} // Check with backend if this is the correct data type
-
-export const PropertyRequestData: PropertyRequestDataType[] = [
-  {
-    requestId: "1234567890",
-    userName: "Salam AIshat",
-    requestDate: "01/01/2024",
-    pictureSrc: "/empty/SampleLandlord.jpeg",
-    state: "Lagos",
-    lga: "Mushin",
-    propertyType: "Apartment",
-    category: "For Rent",
-    subType: "Block of Flats",
-    minBudget: "₦75,000,000",
-    maxBudget: "₦200,000,000",
-    requestType: "Web",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    phoneNumber: "08012345678",
-  },
-  {
-    requestId: "1344567901",
-    userName: "Joe Wanu",
-    requestDate: "01/01/2024",
-    pictureSrc: "/empty/SampleLandlord.jpeg",
-    state: "Lagos",
-    lga: "Mushin",
-    subType: "Bungalow",
-    propertyType: "Duplex",
-    category: "For Sale",
-    requestType: "Mobile",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    phoneNumber: "08012345678",
-    minBudget: "₦75,000,000",
-    maxBudget: "₦200,000,000",
-  },
+export const companyStats = [
+  { label: "Joined ourproperty.ng", value: "2 Months Ago" },
+  { label: "Years in Industry", value: "6 Years+" },
+  { label: "Total Branch", value: "23" },
+  { label: "Total Staff", value: "234" },
+  { label: "Property for sale", value: "23234" },
+  { label: "Property for Rent", value: "63234" },
+  { label: "Hospitality Property", value: "74234" },
+  { label: "Total Unit Managing", value: "734" },
+  { label: "Total Reviews", value: "54" },
+  { label: "Completed Transaction", value: "74" },
 ];
-
-
 
 export const propertySummaryData = [
   { label: "Posted Date", value: "12/10/2024" },
@@ -394,7 +315,6 @@ export const propertySummaryData = [
   { label: "Total Seen", value: "2341" },
   { label: "Total Comment", value: "23414" },
 ];
-
 
 export const propertyMoreDetails = [
   { label: "Location:", value: "Oyo State" },
@@ -406,19 +326,41 @@ export const propertyMoreDetails = [
   { label: "Date Range:", value: "12/10/2024 - 12/10/2024" },
 ];
 
-
 export const readyByData = [
-  { name: "Salam AIshat", picture: '/empty/user1.svg', verified: true, time: '12/10/2024 (02:30pm)' },
-  { name: "Salam AIshat", picture: '/empty/user1.svg', verified: true, time: '12/10/2024 (02:30pm)' },
-  { name: "Salam AIshat", picture: '/empty/user1.svg', verified: true, time: '12/10/2024 (02:30pm)' },
-  { name: "Salam AIshat", picture: '/empty/user2.svg', verified: false, time: '12/10/2024 (02:30pm)' },
-  { name: "Salam AIshat", picture: '/empty/user3.svg', verified: true, time: '12/10/2024 (02:30pm)' },
+  {
+    name: "Salam AIshat",
+    picture: "/empty/user1.svg",
+    verified: true,
+    time: "12/10/2024 (02:30pm)",
+  },
+  {
+    name: "Salam AIshat",
+    picture: "/empty/user1.svg",
+    verified: true,
+    time: "12/10/2024 (02:30pm)",
+  },
+  {
+    name: "Salam AIshat",
+    picture: "/empty/user1.svg",
+    verified: true,
+    time: "12/10/2024 (02:30pm)",
+  },
+  {
+    name: "Salam AIshat",
+    picture: "/empty/user2.svg",
+    verified: false,
+    time: "12/10/2024 (02:30pm)",
+  },
+  {
+    name: "Salam AIshat",
+    picture: "/empty/user3.svg",
+    verified: true,
+    time: "12/10/2024 (02:30pm)",
+  },
 ];
 
-
-
-export const textareaValue = '#Commercial and retail real estate fundamentals are expected to remain strong due to the scarcity of new construction deliveries, prompting compelling opportunities for investors amid high interest rates and inflation in the market, writes CHINEDUM UWAEGBULAM. Despite economic headwinds and challenges with obtaining building permits, experts predict that the demand for housing will remain strong, and the market will see a steady increase in property values this year. There are also opportunities available for high-quality properties that meet the needs of investors and tenants, while low mortgage rates and government incentives will likely contribute to this optimistic outlook as inflation may remain a concern in 2024, affecting both home prices and mortgage rates.'
-
+export const textareaValue =
+  "#Commercial and retail real estate fundamentals are expected to remain strong due to the scarcity of new construction deliveries, prompting compelling opportunities for investors amid high interest rates and inflation in the market, writes CHINEDUM UWAEGBULAM. Despite economic headwinds and challenges with obtaining building permits, experts predict that the demand for housing will remain strong, and the market will see a steady increase in property values this year. There are also opportunities available for high-quality properties that meet the needs of investors and tenants, while low mortgage rates and government incentives will likely contribute to this optimistic outlook as inflation may remain a concern in 2024, affecting both home prices and mortgage rates.";
 
 export const MyArticleSummaryData = [
   { label: "Posted Date", value: "12/10/2024" },

@@ -1,4 +1,5 @@
 import { ChartConfig } from "@/components/ui/chart";
+import type { SingleBranchResponseType } from "./types";
 
 export const branchIdChartConfig = {
   sales: {
@@ -25,3 +26,14 @@ export const branchIdChartData = [
   { date: "2024-08-28", profits: 80, sales: 100, expenses: 60 },
   { date: "2024-09-30", profits: 120, sales: 140, expenses: 100 },
 ];
+
+export const transformSingleBranchAPIResponse = ({
+  data,
+}: SingleBranchResponseType) => {
+  return data.branch;
+  // return {
+  //   ...data.branch,
+  //   branch_image:
+  //     "https://pubassets.ourproperty.ng/uploads/gBTaZYUXOch2qrKq5k5F2EdShRihQjYGuxDwOuu6.png",
+  // };
+};

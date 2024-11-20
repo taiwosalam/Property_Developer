@@ -28,12 +28,12 @@ import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch
 import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-staff-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import BranchPropertiesSection from "@/components/Management/Staff-And-Branches/Branch/branch-properties-section";
-// import { getOneBranch } from "../data";
 import { SingleBranchResponseType } from "./types";
 import { DateRange } from "react-day-picker";
 import BackButton from "@/components/BackButton/back-button";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import { transformSingleBranchAPIResponse } from "./data";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -42,9 +42,9 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     `branch/${branchId}`
   );
 
-  const fetchedBranchData = data?.data;
+  const branchData = data ? transformSingleBranchAPIResponse(data) : null;
 
-  const branchAddress = `${fetchedBranchData?.branch.branch_address}, ${fetchedBranchData?.branch.city}, ${fetchedBranchData?.branch.local_government}, ${fetchedBranchData?.branch.state}`;
+  const branchAddress = `${branchData?.branch_address}, ${branchData?.city}, ${branchData?.local_government}, ${branchData?.state}`;
 
   const [timeRange, setTimeRange] = useState("30d");
   // const [highestMetric, setHighestMetric] = useState<string | null>(null);
@@ -87,14 +87,14 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   if (loading) return <CustomLoader layout="dasboard" />;
 
   if (error) return <div>{error}</div>;
-  // if (!fetchedBranchData) return null;
+  if (!branchData) return null;
 
   return (
     <div className="custom-flex-col gap-6">
       <div className="w-full gap-2 flex items-center justify-between flex-wrap">
         <BackButton as="div" className="items-start">
           <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-            {fetchedBranchData?.branch.branch_name}
+            {branchData.branch_name}
           </h1>
           <div className="text-text-disabled flex items-center space-x-1">
             <LocationIcon />

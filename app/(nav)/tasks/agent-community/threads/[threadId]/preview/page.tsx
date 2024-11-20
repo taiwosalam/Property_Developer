@@ -17,13 +17,13 @@ import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
 import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
-import { comments, fetchComments, sendComment } from "../../../data";
+import { comments } from "../../../data";
 import Comment, { CommentProps } from "@/components/tasks/announcements/comment";
 import { ContributorDetails } from "@/components/Community/Contributor";
 import CompanySummary from "@/components/Community/CompanySummary";
 import useFetch from "@/hooks/useFetch";
 import { ThreadArticleSkeleton } from "../../../components";
-import { toggleLike } from "../../../my-articles/data";
+import { sendMyArticleComment, toggleLike } from "../../../my-articles/data";
 import { toast } from "sonner";
 
 interface ThreadResponse {
@@ -162,9 +162,9 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
     }
   };
 
-  // if (!post) {
-  //   return <ThreadArticleSkeleton />;
-  // }
+  if (!post) {
+    return <ThreadArticleSkeleton />;
+  }
   
   return (
     <div className="mt-4">
@@ -230,7 +230,7 @@ const ThreadComments = ({ slug }: { slug: string }) => {
     console.log("form submitted with message:", content);
     try {
       if (content) {
-        const response = await sendComment(slug, content as string);
+        const response = await sendMyArticleComment(slug, content as string);
         toast.success("Comment sent successfully");
         
         // Reset form and fetch updated comments

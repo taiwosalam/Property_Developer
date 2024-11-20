@@ -1,7 +1,9 @@
 import { useContext } from "react";
 import { FlowProgressContext } from "../FlowProgress/flow-progress";
 import Button from "../Form/Button/button";
-const SetupHeader = () => {
+const SetupHeader: React.FC<{ requestLoading: boolean }> = ({
+  requestLoading,
+}) => {
   const { canSubmit } = useContext(FlowProgressContext);
 
   return (
@@ -17,10 +19,10 @@ const SetupHeader = () => {
       </div>
       <Button
         type="submit"
-        disabled={!canSubmit}
+        disabled={!canSubmit || requestLoading}
         style={{ opacity: canSubmit ? 1 : "0.5" }}
       >
-        Submit
+        {requestLoading ? "Please wait..." : "Submit"}
       </Button>
     </div>
   );

@@ -4,13 +4,10 @@ import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import PropertyRequestCard from "@/components/tasks/CallBack/RequestCard";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import {
-  PropertyRequestData,
-  PropertyRequestDataType,
-} from "@/app/(nav)/tasks/property-request/data";
+import { PropertyRequestDataType } from "./data";
+import { AgentCommunityRequestCardProps } from "@/components/tasks/CallBack/types";
 import Button from "@/components/Form/Button/button";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
-import { AgentCommunityRequestCardProps } from "../type";
 import Pagination from "@/components/Pagination/pagination";
 import { PlusIcon } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
@@ -60,30 +57,30 @@ const PropertyRequest = () => {
   const [propertyRequestUser, setPropertyRequestUser] = useState<any>(null);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
-  
   const handleCreatePropertyRequestClick = () => {
     router.push("/tasks/agent-community/my-properties-request/create");
   };
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    
+
     if (!Array.isArray(propertyRequests)) {
-      return; 
+      return;
     }
 
-    const filteredPropertyRequests = propertyRequests.filter((request: PropertyRequestDataType) => 
-      request.propertyTitle.toLowerCase().includes(query.toLowerCase()) ||
-      request.description.toLowerCase().includes(query.toLowerCase())
+    const filteredPropertyRequests = propertyRequests.filter(
+      (request: PropertyRequestDataType) =>
+        request.propertyTitle.toLowerCase().includes(query.toLowerCase()) ||
+        request.description.toLowerCase().includes(query.toLowerCase())
     );
     setPropertyRequests(filteredPropertyRequests);
   };
 
   useEffect(() => {
     const fetchPropertyRequests = async () => {
-      setIsFetching(true);  
+      setIsFetching(true);
       setError(null);
       try {
         const data = await getAllPropertyRequests();
@@ -91,11 +88,15 @@ const PropertyRequest = () => {
         const propertyRequestUser = data.property_requests[0].user;
         setPropertyRequests(propertyRequests);
         setPropertyRequestUser(propertyRequestUser);
-        console.log('Property request:', propertyRequests);
-        console.log('Property request user:', propertyRequestUser);
+        console.log("Property request:", propertyRequests);
+        console.log("Property request user:", propertyRequestUser);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch property requests');
-        console.error('Error fetching property requests:', err);
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to fetch property requests"
+        );
+        console.error("Error fetching property requests:", err);
       } finally {
         setIsFetching(false);
       }
@@ -108,13 +109,14 @@ const PropertyRequest = () => {
     if (!dateString) return "___";
     try {
       const date = new Date(dateString);
-      return date.toISOString().split('T')[0];
+      return date.toISOString().split("T")[0];
     } catch {
       return "___";
     }
   };
 
-  const propertyRequestData: PropertyRequestDataType[] = [{
+  const propertyRequestData: PropertyRequestDataType[] = [
+    {
       requestId: propertyRequests?.id,
       userName: propertyRequestUser?.name || "__",
       requestDate: formatDate(propertyRequests?.created_at) || "__",
@@ -130,9 +132,11 @@ const PropertyRequest = () => {
       description: propertyRequests?.description || "__",
       phoneNumber: propertyRequestUser?.phone || "__",
       propertyTitle: propertyRequests?.title || "__",
-      isLoading: isFetching,
+      // isLoading: isFetching,
       userTitle: propertyRequestUser?.title || "__",
-  }];
+      targetAudience: [],
+    },
+  ];
 
   return (
     <div className="space-y-9">
@@ -182,19 +186,17 @@ const PropertyRequest = () => {
         </div>
       ) : (
         <AutoResizingGrid gap={28} minWidth={400}>
-          {isFetching ? (
-            Array(3).fill(null).map((_, index) => (
-              <RequestCardSkeleton key={index} />
-            ))
-          ) : (
-            propertyRequestData.map((details, index) => (
-              <PropertyRequestCard
-                isLoading={isFetching}
-                key={index}
-                {...transformToPropertyRequestCardProps(details)}
-              />
-            ))
-          )}
+          {isFetching
+            ? Array(3)
+                .fill(null)
+                .map((_, index) => <RequestCardSkeleton key={index} />)
+            : propertyRequestData.map((details, index) => (
+                <PropertyRequestCard
+                  // isLoading={isFetching}
+                  key={index}
+                  {...transformToPropertyRequestCardProps(details)}
+                />
+              ))}
         </AutoResizingGrid>
       )}
       <div className="pagination">

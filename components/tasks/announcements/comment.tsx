@@ -23,6 +23,7 @@ export interface CommentProps {
   onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
   showInput?: boolean;
   setShowInput?: (show: boolean) => void;
+  handleSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
 interface CommentHandlers {
@@ -44,7 +45,7 @@ const Comment: React.FC<CommentProps & CommentHandlers> = ({
   setShowInput: propSetShowInput,
   handleLike,
   handleDislike,
-  replying,
+  
 }) => {
   const [localShowInput, setLocalShowInput] = useState(false);
   const [localCommenting, setLocalCommenting] = useState(false);
@@ -65,11 +66,11 @@ const Comment: React.FC<CommentProps & CommentHandlers> = ({
         <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium mb-4">
           Be the first to comment
         </p>
-        <div className="flex items-center justify-between gap-3">
+        <form onSubmit={onSubmit} className="flex items-center justify-between gap-3">
           <Input
-            id={replying ? `reply-${id}` : "message"}
-            name={replying ? "reply" : "message"}
-            placeholder={replying ? "Type your reply here" : "Type your message here"}
+            id="message"
+            name="message"
+            placeholder="Type your message here"
             className="w-full"
             inputClassName="border-none bg-neutral-3"
           />
@@ -78,13 +79,11 @@ const Comment: React.FC<CommentProps & CommentHandlers> = ({
             className="bg-brand-9 p-2 rounded grid place-items-center"
             aria-label="send message"
           >
-           {commenting ? <span className="text-white"> ... </span> 
-           :
-            <span className="text-white">
-              <SendMessageIcon />
-            </span>}
+            {commenting ? <span className="text-white"> ... </span> 
+              : <span className="text-white"><SendMessageIcon /></span>
+            }
           </button>
-        </div>
+        </form>
       </div>
     );
   }
@@ -131,9 +130,9 @@ const Comment: React.FC<CommentProps & CommentHandlers> = ({
       {showInput && (
         <div className="mt-6 mb-4 flex items-center justify-between gap-3">
           <Input
-            id={replying ? `reply-${id}` : "message"}
-            name={replying ? "reply" : "message"}
-            placeholder={replying ? "Type your reply here" : "Type your message here"}
+            id={localCommenting ? `${id}` : `comment-${id}`}
+            name={localCommenting ? "reply" : "message"}
+            placeholder={localCommenting ? "Type your reply here" : "Type your message here"}
             className="w-full"
             inputClassName="border-none bg-neutral-3"
           />
@@ -142,8 +141,10 @@ const Comment: React.FC<CommentProps & CommentHandlers> = ({
             className="bg-brand-9 p-2 rounded grid place-items-center"
             aria-label="send message"
           >
-            {commenting ? (
-              <span className="text-white"> ... </span>
+            {localCommenting ? (
+              <span className="text-white">
+               <SendMessageIcon />
+             </span>
             ) : (
               <span className="text-white">
                 <SendMessageIcon />
@@ -160,10 +161,14 @@ const Comment: React.FC<CommentProps & CommentHandlers> = ({
           </p>
           <div className="relative ml-10 pl-5 border-l border-neutral-300">
             {replies.map((r) => (
-              <>
-              <p> {r.id} </p>
-              <Comment key={r.id} {...r} handleLike={handleLike} handleDislike={handleDislike} replying={true} id={id} />
-              </>
+              <Comment 
+                key={r.id} 
+                {...r} 
+                handleLike={handleLike} 
+                handleDislike={handleDislike} 
+                replying={true} 
+                id={id} 
+              />
             ))}
           </div>
         </>

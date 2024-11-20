@@ -241,32 +241,76 @@ const ThreadComments = ({ slug }: { slug: string }) => {
 
   const sendComment = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setShowInput(false);
     const formData = new FormData(e.target as HTMLFormElement);
     const message = formData.get('message');
     const reply = formData.get('reply');
     
-    // Find the closest parent element with data-comment-id
-    const commentElement = (e.target as HTMLElement).closest('[data-comment-id]');
-    const commentId = commentElement?.getAttribute('data-comment-id');
-
     try {
       setCommenting(true);
       
-      if (reply && commentId) {
-        console.log('reply', commentId);
-        // await sendMyArticleReply(slug, commentId, reply as string);
-        toast.success("Reply sent successfully");
+      if (reply) {
+        const replyInput = (e.target as HTMLFormElement).querySelector('input[name="reply"]');
+        const commentId = Number(replyInput?.id);
+        
+        if (commentId) {
+          // Optimistically update UI
+          const newReply: CommentProps = {
+            id: Date.now(),
+            name: "You",
+            text: reply as string,
+            likes: 0,
+            dislikes: 0,
+            handleSubmit: () => {},
+            commenting: false,
+            replies: []
+          };
+
+          setComments(prevComments => 
+            prevComments.map(comment => 
+              comment.id === commentId
+                ? { ...comment, replies: [...(comment.replies || []), newReply] }
+                : comment
+            )
+          );
+
+          // Send to server
+          await sendMyArticleReply(slug, commentId.toString(), reply as string);
+        }
       } else if (message) {
-        // await sendMyArticleComment(slug, message as string);
-        // toast.success("Comment sent successfully");
+        // Optimistically update UI
+        const newComment: CommentProps = {
+          id: Date.now(),
+          name: "You",
+          text: message as string,
+          likes: 0,
+          dislikes: 0,
+          replies: [],
+          handleSubmit: () => {},
+          commenting: false
+        };
+
+        setComments(prev => [...prev, newComment]);
+
+        // Send to server
+        await sendMyArticleComment(slug, message as string);
       }
 
-      // Reset form and fetch updated comments
+      // Fetch latest comments in background
+      const response = await fetch(`/agent_community/${slug}/comments`);
+      const newData = await response.json();
+      setComments(newData.data);
+
       (e.target as HTMLFormElement).reset();
       setShowInput(false);
+      toast.success(reply ? "Reply sent successfully" : "Comment sent successfully");
       
     } catch (error) {
       console.error("Error sending comment/reply:", error);
+      // Revert optimistic update by re-fetching
+      const response = await fetch(`/agent_community/${slug}/comments`);
+      const newData = await response.json();
+      setComments(newData.data);
       toast.error("Failed to send comment");
     } finally {
       setCommenting(false);
@@ -283,6 +327,7 @@ const ThreadComments = ({ slug }: { slug: string }) => {
               handleLike={handleLike} 
               handleDislike={handleDislike} 
               commenting={commenting}
+              handleSubmit={sendComment}
             />
           </div>
         ))}

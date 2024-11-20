@@ -31,7 +31,7 @@ const CompanySummary = ({ loading, companySummary }: { loading?: boolean, compan
   if (loading) {
     return <CompanySummarySkeleton />;
   }
-  
+
   return (
     <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
       <h2 className="text-black font-semibold text-lg dark:text-white">

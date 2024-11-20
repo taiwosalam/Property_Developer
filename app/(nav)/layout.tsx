@@ -17,15 +17,10 @@ import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { useAuthStore } from "@/store/authStore";
 import useSettingsStore from "@/store/settings";
 import TopNav from "@/components/Nav/topnav";
-import { getUserStatus } from "./data";
-import { getLocalStorage } from "@/utils/local-storage";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const router = useRouter();
   const pathname = usePathname();
-
-const authStoreToken = useAuthStore((state) => state.token);
-
   const { selectedOptions } = useSettingsStore();
   const sideNavRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowWidth();
@@ -44,27 +39,7 @@ const authStoreToken = useAuthStore((state) => state.token);
     setIsSideNavOpen(!isMobile);
   }, [isMobile]);
 
-  useEffect(() => {
-    if (!authStoreToken) {
-      const localAuthToken = getLocalStorage("authToken");
-      if (!localAuthToken) {
-        router.replace("/auth/sign-in");
-        return;
-      }
-      useAuthStore.getState().setToken(localAuthToken);
-    }
-    setTimeout(async () => {
-      const status = await getUserStatus();
-      if (status === "redirect to setup") {
-        router.replace("/setup");
-        return;
-      }
-      if (status === "redirect to verify email") {
-        router.replace("/auth/sign-up");
-        return;
-      }
-    }, 0);
-  }, [router, authStoreToken]);
+  useAuthRedirect();
 
   return (
     <LayoutContext.Provider value={{ isSideNavOpen }}>

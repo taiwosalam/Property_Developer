@@ -38,14 +38,12 @@ import useFetch from "@/hooks/useFetch";
 const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
   const router = useRouter();
-  const {
-    data: apiData,
-    error,
-    loading,
-  } = useFetch<IndividualLandlordAPIResponse>(`landlord/${landlordId}`);
+  const { data, error, loading } = useFetch<IndividualLandlordAPIResponse>(
+    `landlord/${landlordId}`
+  );
 
-  const landlordData = apiData
-    ? transformIndividualLandlordAPIResponse(apiData)
+  const landlordData = data
+    ? transformIndividualLandlordAPIResponse(data)
     : null;
 
   if (loading) return <CustomLoader layout="profile" />;

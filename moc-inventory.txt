@@ -269,6 +269,51 @@
 
 
 
+  const sendComment = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const message = formData.get('message');
+    const reply = formData.get('reply');
+    
+    // Find the closest parent element with data-comment-id
+    const commentElement = (e.target as HTMLElement).closest('[data-comment-id]');
+    const commentId = commentElement?.getAttribute('data-comment-id');
+
+    try {
+      setCommenting(true);
+      
+      if (reply && commentId) {
+        console.log('reply', commentId);
+        // await sendMyArticleReply(slug, commentId, reply as string);
+        toast.success("Reply sent successfully");
+      } else if (message) {
+        // await sendMyArticleComment(slug, message as string);
+        // toast.success("Comment sent successfully");
+      }
+
+      // Reset form and fetch updated comments
+      (e.target as HTMLFormElement).reset();
+      setShowInput(false);
+      
+    } catch (error) {
+      console.error("Error sending comment/reply:", error);
+      toast.error("Failed to send comment");
+    } finally {
+      setCommenting(false);
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

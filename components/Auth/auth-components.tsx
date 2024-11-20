@@ -21,7 +21,6 @@ import { objectLength } from "@/utils/object-length";
 import { password_conditions, password_strength } from "./data";
 import FlowProgressBar from "../FlowProgress/flow-progress-bar";
 
-
 // AuthHeading Component: Displays the heading and subheading for the auth form
 export const AuthHeading: React.FC<AuthHeadingProps> = ({
   title,
@@ -35,8 +34,7 @@ export const AuthHeading: React.FC<AuthHeadingProps> = ({
   </div>
 );
 
-export const formDataToString = (formData: any) => {
-  //change to FormData
+export const formDataToString = (formData: FormData) => {
   const data: Record<string, any> = {};
   formData.forEach((value: { toString: () => any }, key: string | number) => {
     if (value instanceof File) {
