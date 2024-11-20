@@ -7,7 +7,6 @@ import type { LandlordPageData } from "@/app/(nav)/management/landlord/types";
 
 export const hardcodedTenantData: TenantData = {
   id: 1,
-  avatar: "/empty/avatar-1.svg",
   picture: "/empty/SampleLandlord.jpeg",
   first_name: "John",
   last_name: "Doe",
@@ -114,7 +113,6 @@ export const hardcodedTenantData: TenantData = {
 };
 
 export const hardcodedLandlordData: LandlordPageData = {
-  avatar: "/empty/avatar-1.svg",
   picture: "/empty/SampleLandlord.jpeg",
   first_name: "John",
   last_name: "Doe",
