@@ -63,8 +63,8 @@ const ManageInventory = () => {
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <InventoryItem edit />
-        <InventoryItem edit />
+        <InventoryItem edit index={0} />
+        <InventoryItem edit index={1} />
       </div>
       <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
         <Modal>

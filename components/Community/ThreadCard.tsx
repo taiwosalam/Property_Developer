@@ -35,9 +35,10 @@ const ThreadCard = ({
   shareLink,
 }: ThreadCardProps) => {
   return (
-    <div className="bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md">
+    <div className="bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md flex flex-col h-full">
       <Link
         href={`${link}${myArticle ? "my-articles" : "threads"}/${slug}/preview?id=${id}`}
+        className="flex-1"
       >
         <ThreadHeader
           user_pics={user_pics}
@@ -76,18 +77,20 @@ const ThreadHeader = ({
           height={20}
           className="w-10 h-10 object-cover"
         />
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-1 min-w-0">
           <div className="flex gap-2 items-center">
-            <p className="dark:text-white flex items-center gap-1">
-              {name || '__'}
+            <div className="flex items-center gap-1 max-w-[70%]">
+              <p className="dark:text-white truncate">
+                {name || '__'}
+              </p>
               <BadgeIcon color="gray" />
-            </p>
+            </div>
           </div>
           <p className="text-brand-9 text-sm"> {role || '__'} </p>
         </div>
       </div>
-      <div className="time">
-        <p className="text-sm text-[#6083ED]"> {time || '__'} </p>
+      <div className="time w-[30%]">
+        <p className="text-xs text-[#6083ED]"> {time || '__'} </p>
       </div>
     </div>
   );

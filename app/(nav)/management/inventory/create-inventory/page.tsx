@@ -23,15 +23,15 @@ const CreateInventory = () => {
 
   useEffect(() => {
     const fetchBranches = async () => {
-      const branches = await getBranches();
-      if (branches) {
-        setBranches(branches.data);
-        console.log(branches.data.data);
+      const branchesResponse = await getBranches();
+      if (branchesResponse) {
+        setBranches(branchesResponse.data.data);
       }
     };
     fetchBranches();
   }, []);
 
+  // console.log("branches", branches);
   const convertImageToBase64 = async (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -120,7 +120,10 @@ const CreateInventory = () => {
               id="branch-name"
               name="branch-name"
               placeholder="Branch Name"
-              options={["branch 1", "branch 2", "branch 3"]}
+              options={branches.map((branch) => ({
+                label: branch.branch_name,
+                value: branch.id,
+              }))}
               isSearchable={false}
               className="bg-white dark:bg-darkText-primary flex-1"
             />

@@ -10,25 +10,15 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import useView from "@/hooks/useView";
 import useSettingsStore from "@/store/settings";
-import useFetch from "@/hooks/useFetch";
-import { getInventory } from "../data";
+import { BranchApiResponse } from "../staff-branch/data";
+import { useFetchInventoryAndBranch } from "../data";
 
 const Inventory = () => {
   const view = useView();
-  const [inventory, setInventory] = useState<any[]>([]);
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const [selectedView, setSelectedView] = useState<string>(selectedOptions.view || "grid");
+  const { branches, inventory, loading, error } = useFetchInventoryAndBranch();
 
-  useEffect(() => {
-    const fetchInventory = async () => {
-      const inventory = await getInventory();
-      if (inventory) {
-        setInventory(inventory.data);
-        console.log(inventory.data);
-      }
-    };
-    fetchInventory();
-  }, []);
 
   useEffect(() => {
     // Sync selectedView with selectedOptions.view on mount

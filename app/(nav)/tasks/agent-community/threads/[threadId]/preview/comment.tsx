@@ -34,6 +34,7 @@ const Comment: React.FC<CommentProps> = ({
   const handleReplyClick = () => {
     setShowInput((prev) => !prev);
   };
+  
   return (
     <div>
       <div className="flex items-center gap-1">

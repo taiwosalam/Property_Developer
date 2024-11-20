@@ -73,6 +73,8 @@ const MyArticlePage = () => {
     setSearchQuery(query);
   };
 
+  // console.log()
+
   const handleCreateMyArticleClick = () => {
     router.push("/tasks/agent-community/my-articles/create");
   };
@@ -125,7 +127,9 @@ const MyArticlePage = () => {
               slug={thread.post.slug}
               id={thread.post.id}
               name={thread.user.name}
-              picture_url={thread.user.picture_url}
+              picture_url={thread.post.media && thread.post.media.length > 0 
+                ? thread.post.media[0].path 
+                : undefined}
               role={thread.user.role}
               time={thread.post.created_at}
               title={thread.post.title}

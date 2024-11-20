@@ -1,91 +1,108 @@
-import { useEffect, useState } from "react";
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import Input from "@/components/Form/Input/input";
 import { DeleteIconOrange, PlusIcon } from "@/public/icons/icons";
-const Image1 = "/empty/SampleLandlord.jpeg";
-const Image2 = "/empty/SampleLandlord.jpeg";
-const Image3 = "/empty/SampleLandlord.jpeg";
 
-const AddPhotoAndVideo = ({ editing, data }: { editing?: boolean, data?: any }) => {
-  // HANDLE IMAGES UPLOAD
+const AddPhotoAndVideo = ({
+  editing,
+  data,
+  onFilesChange,
+}: {
+  editing?: boolean;
+  data?: any;
+  onFilesChange?: (files: File[]) => void;
+}) => {
   const MAX_FILE_SIZE_MB = 2;
-  const [images, setImages] = useState<string[]>(
-    editing && data?.media ? data.media || [Image1, Image2] : []
-  );
   const MAX_IMAGES = 4;
+
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>(
+    editing && data?.media ? data.media : []
+  );
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let files = Array.from(e.target.files || []);
-    files = files.slice(0, MAX_IMAGES - images.length);
-    const validImages: string[] = [];
+    files = files.slice(0, MAX_IMAGES - imagePreviews.length);
+
+    const validFiles: File[] = [];
     const oversizeImages: string[] = [];
-    for (const file of files) {
+
+    files.forEach((file) => {
       if (!file.type.startsWith("image/")) {
         alert("Upload only image files.");
         return;
       }
+
       if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
         oversizeImages.push(file.name);
-        continue;
+        return;
       }
-      try {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          validImages.push(reader.result as string);
-          if (validImages.length + oversizeImages.length === files.length) {
-            setImages((prevImages) => [...prevImages, ...validImages]);
-          }
-        };
-        reader.readAsDataURL(file);
-      } catch (error) {
-        console.error("Error processing image:", error);
-        alert("There was an error processing your image. Please try again.");
-      }
-    }
+
+      validFiles.push(file);
+    });
+
+    validFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviews((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    setImageFiles((prev) => {
+      const updatedFiles = [...prev, ...validFiles];
+      onFilesChange?.(updatedFiles); // Notify parent component
+      return updatedFiles;
+    });
 
     if (oversizeImages.length > 0) {
       alert(
         `Some images were rejected due to exceeding the maximum size: ${MAX_FILE_SIZE_MB} MB`
       );
     }
-    
+
     e.target.value = "";
   };
 
   const [videoLink, setVideoLink] = useState(
-    editing && data?.video_link ? data.video_link : ''
+    editing && data?.video_link ? data.video_link : ""
   );
-
-  // console.log('videoLink', data.video_link);
-  // console.log('images', images);
 
   return (
     <div className="lg:flex-1 space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
-        {images.length > 0 &&
-          images.map((src, index) => (
-            <div
-              key={index}
-              className="relative overflow-hidden rounded-lg w-full h-[110px]"
+        {imagePreviews.map((src, index) => (
+          <div
+            key={index}
+            className="relative overflow-hidden rounded-lg w-full h-[110px]"
+          >
+            <Image
+              src={src}
+              alt={`Uploaded ${index}`}
+              fill
+              className="object-cover"
+            />
+            <button
+              type="button"
+              aria-label="Remove Image"
+              onClick={() => {
+                setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+                setImageFiles((prev) =>
+                  prev.filter((_, i) => i !== index)
+                );
+                onFilesChange?.(
+                  imageFiles.filter((_, i) => i !== index) // Update parent
+                );
+              }}
+              className="absolute top-1 right-1 z-[2]"
             >
-              <Image
-                src={src}
-                alt={`Uploaded ${index}`}
-                fill
-                className="object-cover"
-              />
-              <button
-                type="button"
-                aria-label="Remove Image"
-                onClick={() => {
-                  setImages(images.filter((_, i) => i !== index));
-                }}
-                className="absolute top-1 right-1 z-[2]"
-              >
-                <DeleteIconOrange size={20} />
-              </button>
-            </div>
-          ))}
-        {images.length < MAX_IMAGES && (
+              <DeleteIconOrange size={20} />
+            </button>
+          </div>
+        ))}
+        {imagePreviews.length < MAX_IMAGES && (
           <label
             htmlFor="picture"
             className="px-4 w-full h-[110px] rounded-lg border-2 border-dashed border-[#626262] bg-white dark:bg-darkText-primary flex flex-col items-center justify-center cursor-pointer text-[#626262] dark:text-darkText-1"
@@ -96,7 +113,7 @@ const AddPhotoAndVideo = ({ editing, data }: { editing?: boolean, data?: any }) 
             </span>
             <input
               id="picture"
-              name="picture"
+              name="pictures"
               type="file"
               accept="image/*"
               multiple

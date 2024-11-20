@@ -3,6 +3,8 @@ import { title } from "process";
 import { CommentProps } from "./type";
 import api from "@/services/api";
 import { transformFormData } from "./my-properties-request/data";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 
 export const getThreads = async () => {
   try {
@@ -108,6 +110,7 @@ export const updatePropertyRequest = async (id: string, data: any) => {
     throw error;
   }
 } 
+
 export const deletePropertyRequest = async (id: string) => {
   try {
     const response = await api.delete(`/agent_community/property-requests/${id}`);
@@ -117,6 +120,50 @@ export const deletePropertyRequest = async (id: string) => {
     throw error;
   }
 }
+
+export const sendComment = async (slug: string, content: string) => {
+  try {
+    const response = await api.post(`/agent_community/${slug}/comment`, { content });
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      toast.error(error.response?.data.message);
+    } else {
+      toast.error("Error sending comment:");
+    }
+    console.error("Error sending comment:", error);
+    throw error;
+  }
+}
+
+export const calculateYearsInIndustry = (dateString: string) => {
+  if (!dateString) return null;
+  const registrationDate = new Date(dateString);
+  const today = new Date();
+  const years = today.getFullYear() - registrationDate.getFullYear();
+  return `${years}+ years`;
+};
+
+export const fetchComments = async (slug: string) => {
+  try {
+    const response = await api.get(`/agent_community/${slug}/comments`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    throw error;
+  }
+};
+
+export const toggleArticleLike = async (commentId: string, action: number) => {
+  try { 
+    const response = await api.post(`/agent_community/agent_comment/${commentId}/toggle-like`, { action });
+    return response.data;
+  } catch (error) {
+    console.error("Error liking comment:", error);
+    throw error;
+  }
+};
+
 export const threadData = [
   {
     picture_url: "/empty/thread.png" || empty,
@@ -224,8 +271,8 @@ export const threadArticle = [
 export const comments: CommentProps[] = [
   {
     id: 1,
-    name: "Oloruntoba Morakinyo",
-    text: "It is expected that cities and other states’ capitals without many security challenges will witness refinements. Many urban centres will witness positive changes in real estate",
+    name: "Salam AIshat",
+    text: "I disagree with the above statemen",
     likes: 1,
     dislikes: 0,
     replies: [
@@ -284,21 +331,6 @@ export const comments: CommentProps[] = [
       },
     ],
   },
-];
-
-
-
-export const companyStats = [
-  { label: "Joined ourproperty.ng", value: "2 Months Ago" },
-  { label: "Years in Industry", value: "6 Years+" },
-  { label: "Total Branch", value: "23" },
-  { label: "Total Staff", value: "234" },
-  { label: "Property for sale", value: "23234" },
-  { label: "Property for Rent", value: "63234" },
-  { label: "Hospitality Property", value: "74234" },
-  { label: "Total Unit Managing", value: "734" },
-  { label: "Total Reviews", value: "54" },
-  { label: "Completed Transaction", value: "74" },
 ];
 
 

@@ -14,7 +14,7 @@ export interface ActionButtonProps {
 }
 
 interface PropertyImageSliderProps {
-  images: StaticImageData[] | string[];
+  images: { path: string }[];
   showOverlay?: boolean;
   thread?: boolean;
 }

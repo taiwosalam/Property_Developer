@@ -10,27 +10,45 @@ import {
 import AddPhotoAndVideo from "@/components/Community/AddPhotoAndVideo";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { createArticle } from "../data";
+import { createArticle, transformFormArticleData } from "../data";
 import { toast } from "sonner";
 
 const CreateArticle = () => {
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
 
-  const handleSubmit = async (data: FormData) => {
-    setIsCreating(true);
+  const handleSubmit = async (formData: FormData) => {
+    // Parse and append target_audience as an array
+    const targetAudience = formData.get("target_audience");
+    if (typeof targetAudience === "string") {
+      const audienceArray = targetAudience.split(",").slice(0, 60); // Split into an array and limit to 60 items
+      audienceArray.forEach((audience) => formData.append("target_audience[]", audience.trim()));
+    }
+
+    imageFiles.forEach((file) => formData.append("pictures[]", file));
+  
+    const transformedData = transformFormArticleData(formData);
+    console.log("Submitting:", transformedData);
+  
+    setIsCreating(true); 
     try {
-      const res = await createArticle(data);
-      if (res) {
-      toast.success("Article created successfully");
-      router.push("/tasks/agent-community/my-articles");
+      const success = await createArticle(formData);
+      if (success) {
+        toast.success("Article created successfully!");
+        router.push("/tasks/agent-community/my-articles");
+      } else {
+        toast.error("Failed to create the article.");
       }
     } catch (error) {
-      toast.error("Failed to create article");
+      toast.error("An error occurred while creating the article.");
+      console.error(error);
     } finally {
       setIsCreating(false);
     }
   };
+  
+  
 
   return (
     <>
@@ -51,9 +69,9 @@ const CreateArticle = () => {
           </div>
         </div>
         <AuthForm
-          returnType="form-data"
+       returnType="form-data"
+       onFormSubmit={handleSubmit}
           className="custom-flex-col gap-5"
-          onFormSubmit={handleSubmit}
           setValidationErrors={() => { }}
         >
           <div className="body w-full flex flex-col lg:flex-row justify-between mt-10 gap-10">
@@ -62,7 +80,7 @@ const CreateArticle = () => {
             </div>
 
             <div className="second flex flex-col w-full lg:w-[40%]">
-              <SecondSection />
+              <SecondSection setImageFiles={setImageFiles} />
             </div>
           </div>
           <FixedFooter className="flex gap-6 justify-end">
@@ -82,10 +100,10 @@ const CreateArticle = () => {
 
 export default CreateArticle;
 
-const SecondSection = () => {
+const SecondSection = ({setImageFiles}: {setImageFiles: (files: File[]) => void}) => {
   return (
     <div className="bg-white dark:bg-darkText-primary p-4 rounded-lg flex flex-col gap-4">
-      <AddPhotoAndVideo />
+    <AddPhotoAndVideo onFilesChange={(files) => setImageFiles(files)} />
       <StateAndLocalGovt />
     </div>
   );

@@ -29,12 +29,14 @@ export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
     },
   });
 
+  console.log("images", images)
+
   return (
     <div ref={sliderRef} className="keen-slider relative h-full w-full">
       {images.map((image, index) => (
         <div key={index} className="keen-slider__slide h-full relative w-full">
           <Image
-            src={image}
+            src={image.path}
             alt={`Property image ${index + 1}`}
             fill
             sizes="auto"

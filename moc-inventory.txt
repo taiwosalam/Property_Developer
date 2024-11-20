@@ -257,3 +257,222 @@
 // };
 
 // export default CreateInventory;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   let files = Array.from(e.target.files || []);
+  //   files = files.slice(0, MAX_IMAGES - images.length);
+  //   const validImages: string[] = [];
+  //   const oversizeImages: string[] = [];
+  //   for (const file of files) {
+  //     if (!file.type.startsWith("image/")) {
+  //       alert("Upload only image files.");
+  //       return;
+  //     }
+  //     if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+  //       oversizeImages.push(file.name);
+  //       continue;
+  //     }
+  //     try {
+  //       const reader = new FileReader();
+  //       reader.onloadend = () => {
+  //         validImages.push(reader.result as string);
+  //         if (validImages.length + oversizeImages.length === files.length) {
+  //           setImages((prevImages) => [...prevImages, ...validImages]);
+  //         }
+  //       };
+  //       reader.readAsDataURL(file);
+  //     } catch (error) {
+  //       console.error("Error processing image:", error);
+  //       alert("There was an error processing your image. Please try again.");
+  //     }
+  //   }
+
+  //   if (oversizeImages.length > 0) {
+  //     alert(
+  //       `Some images were rejected due to exceeding the maximum size: ${MAX_FILE_SIZE_MB} MB`
+  //     );
+  //   }
+    
+  //   // e.target.value = "";
+  // };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { useEffect, useState } from "react";
+// import Image from "next/image";
+// import Input from "@/components/Form/Input/input";
+// import { DeleteIconOrange, PlusIcon } from "@/public/icons/icons";
+// const Image1 = "/empty/SampleLandlord.jpeg";
+// const Image2 = "/empty/SampleLandlord.jpeg";
+// const Image3 = "/empty/SampleLandlord.jpeg";
+
+// const AddPhotoAndVideo = ({ editing, data }: { editing?: boolean, data?: any }) => {
+//   const MAX_FILE_SIZE_MB = 2;
+//   const MAX_IMAGES = 4;
+  
+//   // Add new state for File objects
+//   const [imageFiles, setImageFiles] = useState<File[]>([]);
+//   // Keep preview state for displaying images
+//   const [imagePreviews, setImagePreviews] = useState<string[]>(
+//     editing && data?.media ? data.media : []
+//   );
+
+//   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     let files = Array.from(e.target.files || []);
+//     files = files.slice(0, MAX_IMAGES - imagePreviews.length);
+    
+//     const validFiles: File[] = [];
+//     const oversizeImages: string[] = [];
+
+//     files.forEach(file => {
+//       if (!file.type.startsWith("image/")) {
+//         alert("Upload only image files.");
+//         return;
+//       }
+      
+//       if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+//         oversizeImages.push(file.name);
+//         return;
+//       }
+
+//       validFiles.push(file);
+//     });
+
+//     // Create preview URLs for valid files
+//     validFiles.forEach(file => {
+//       const reader = new FileReader();
+//       reader.onloadend = () => {
+//         setImagePreviews(prev => [...prev, reader.result as string]);
+//       };
+//       reader.readAsDataURL(file);
+//     });
+
+//     // Store the actual File objects
+//     setImageFiles(prev => [...prev, ...validFiles]);
+
+//     if (oversizeImages.length > 0) {
+//       alert(
+//         `Some images were rejected due to exceeding the maximum size: ${MAX_FILE_SIZE_MB} MB`
+//       );
+//     }
+    
+//     // Add hidden input for FormData
+//     const input = document.createElement('input');
+//     input.type = 'file';
+//     input.style.display = 'none';
+//     input.name = 'pictures';
+//     validFiles.forEach(file => {
+//       const dataTransfer = new DataTransfer();
+//       dataTransfer.items.add(file);
+//       input.files = dataTransfer.files;
+//     });
+//     document.body.appendChild(input);
+    
+//     e.target.value = "";
+//   };
+
+//   const [videoLink, setVideoLink] = useState(
+//     editing && data?.video_link ? data.video_link : ''
+//   );
+
+//   // console.log('videoLink', data.video_link);
+//   // console.log('images', images);
+
+//   return (
+//     <div className="lg:flex-1 space-y-4">
+//       <div className="grid gap-4 md:grid-cols-2">
+//         {imagePreviews.length > 0 &&
+//           imagePreviews.map((src, index) => (
+//             <div
+//               key={index}
+//               className="relative overflow-hidden rounded-lg w-full h-[110px]"
+//             >
+//               <Image
+//                 src={src}
+//                 alt={`Uploaded ${index}`}
+//                 fill
+//                 className="object-cover"
+//               />
+//               <button
+//                 type="button"
+//                 aria-label="Remove Image"
+//                 onClick={() => {
+//                   setImagePreviews(prev => prev.filter((_, i) => i !== index));
+//                   setImageFiles(prev => prev.filter((_, i) => i !== index));
+//                 }}
+//                 className="absolute top-1 right-1 z-[2]"
+//               >
+//                 <DeleteIconOrange size={20} />
+//               </button>
+//             </div>
+//           ))}
+//         {imagePreviews.length < MAX_IMAGES && (
+//           <label
+//             htmlFor="picture"
+//             className="px-4 w-full h-[110px] rounded-lg border-2 border-dashed border-[#626262] bg-white dark:bg-darkText-primary flex flex-col items-center justify-center cursor-pointer text-[#626262] dark:text-darkText-1"
+//           >
+//             <PlusIcon />
+//             <span className="text-black dark:text-darkText-1 text-base font-normal mt-2 text-center">
+//               Add Photo
+//             </span>
+//             <input
+//               id="picture"
+//               name="pictures"
+//               type="file"
+//               accept="image/*"
+//               multiple
+//               onChange={handleFileChange}
+//               className="hidden"
+//             />
+//           </label>
+//         )}
+//       </div>
+//       <Input
+//         id="video_link"
+//         label="Video Link"
+//         type="url"
+//         placeholder="https://www.youtube.com/video"
+//         inputClassName="bg-white"
+//         value={videoLink}
+//         onChange={(data) => setVideoLink(data)}
+//       />
+//     </div>
+//   );
+// };
+
+// export default AddPhotoAndVideo;
+
+
+
+
+
+
