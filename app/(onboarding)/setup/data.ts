@@ -2,9 +2,18 @@
 import dayjs from "dayjs";
 import api, { handleAxiosError } from "@/services/api";
 import { toast } from "sonner";
+import { cleanPhoneNumber } from "@/utils/checkFormDataForImageOrAvatar";
 
 export const transformFormData = (formData: FormData) => {
   const data: Record<string, any> = {};
+
+  cleanPhoneNumber(formData, [
+    "phone_number_1",
+    "phone_number_2",
+    "phone_number_3",
+    "phone_number_4",
+    "director_phone_number",
+  ]);
 
   // Extract and organize data into the required structure
   data.company_name = formData.get("company_name");
@@ -36,7 +45,7 @@ export const transformFormData = (formData: FormData) => {
         formData.get("phone_number_2"),
         formData.get("phone_number_3"),
         formData.get("phone_number_4"),
-      ].filter((number) => typeof number === "string" && number.length > 4),
+      ].filter(Boolean),
     },
   ];
 
@@ -46,10 +55,7 @@ export const transformFormData = (formData: FormData) => {
       email: formData.get("director_email"),
       personal_title: formData.get("director_personal_title"),
       years_in_business: formData.get("director_experience"),
-      phone_number:
-        (formData.get("director_phone_number") as string)?.length > 4
-          ? formData.get("director_phone_number")
-          : null,
+      phone_number: formData.get("director_phone_number"),
       about_director: formData.get("about_director"),
       profile_picture: formData.get("director_profile_picture"),
     },
@@ -63,11 +69,7 @@ export const createCompany = async (
   //   console.log(formData);
   try {
     const { data } = await api.post("companies", formData);
-    // console.log(data);
-    // console.log(data.status);
-    // console.log(data.message);
-    const message = data?.message || "Company created successfully";
-    toast.success(message);
+    toast.success(data?.message || "Company created successfully");
     return true;
   } catch (error) {
     handleAxiosError(error, "Failed to create company");

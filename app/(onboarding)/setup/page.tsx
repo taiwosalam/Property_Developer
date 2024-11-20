@@ -20,30 +20,30 @@ import ProfileInformation from "@/components/Setup/profile-information";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { transformFormData, createCompany } from "./data";
 import { getUserStatus } from "@/app/(nav)/data";
-import { ValidationErrors } from "@/utils/types";
 import { getLocalStorage } from "@/utils/local-storage";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const Setup = () => {
   const router = useRouter();
   const authStoreToken = useAuthStore((state) => state.token);
   const setRole = useAuthStore((state) => state.setRole);
   const role = useAuthStore((state) => state.role);
+  const [requestLoading, setRequestLoading] = useState(false);
   // Define the index of the last step in the flow
   const last_step = 0;
 
-  const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
-
   // remove later
   const handleSubmit = async (formData: FormData) => {
+    setRequestLoading(true);
     const data = transformFormData(formData);
-    // console.log(data);
     const status = await createCompany(data);
     if (status) {
       setRole("director"); //Backend should return this role
       // router.push("/dashboard");
     }
+    setRequestLoading(false);
   };
 
   const requiredFields = [
@@ -58,26 +58,7 @@ const Setup = () => {
     }
   }, [role, router]);
 
-  useEffect(() => {
-    if (!authStoreToken) {
-      const localAuthToken = getLocalStorage("authToken");
-      if (!localAuthToken) {
-        router.replace("/auth/sign-in");
-        return;
-      }
-      useAuthStore.getState().setToken(localAuthToken);
-    }
-    setTimeout(async () => {
-      const status = await getUserStatus();
-      if (status === "redirect to setup") {
-        return;
-      }
-      if (status === "redirect to verify email") {
-        router.replace("/auth/sign-up");
-        return;
-      }
-    }, 0);
-  }, [router, authStoreToken]);
+  useAuthRedirect({ skipSetupRedirect: true });
 
   return (
     <FlowProgress
@@ -94,11 +75,11 @@ const Setup = () => {
       requiredFields={requiredFields}
     >
       <AuthForm
+        skipValidation
         returnType="form-data"
         onFormSubmit={handleSubmit}
-        setValidationErrors={setErrorMsgs}
       >
-        <SetupHeader />
+        <SetupHeader requestLoading={requestLoading} />
         <div className="relative z-[1] custom-flex-col gap-6 pt-6 pb-20 px-10">
           <CompanyType />
           <Section separatorStyles="max-w-[1200px]">

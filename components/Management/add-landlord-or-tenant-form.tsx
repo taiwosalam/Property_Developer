@@ -17,6 +17,8 @@ import {
   DeleteIconOrange,
 } from "@/public/icons/icons";
 import Avatars from "@/components/Avatars/avatars";
+import Picture from "@/components/Picture/picture";
+import CameraCircle from "@/public/icons/camera-circle.svg";
 import { cleanPhoneNumber } from "@/utils/checkFormDataForImageOrAvatar";
 
 interface AddLandLordOrTenantFormProps {
@@ -34,11 +36,14 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const {
-    preview: imagePreview,
+    preview,
     inputFileRef,
     handleImageChange: originalHandleImageChange,
     clearSelection: clearImageSelection,
-  } = useImageUploader();
+  } = useImageUploader({
+    placeholder: CameraCircle,
+  });
+
   const [avatar, setAvatar] = useState<string | null>(null);
   const [address, setAddress] = useState({
     selectedState: "",
@@ -81,7 +86,6 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   return (
     <div className="relative">
       <AuthForm
-        // returnType="form-data"
         skipValidation
         onFormSubmit={handleSubmit}
         className={`custom-flex-col gap-5 transition-opacity duration-150 ${
@@ -154,37 +158,31 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
               Upload picture or select an avatar.
             </p>
             <div className="flex items-end gap-3">
-              <button
-                type="button"
-                className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
-                aria-label="upload picture"
-                onClick={() => inputFileRef.current?.click()}
-              >
-                {imagePreview ? (
-                  <>
-                    <Image
-                      src={imagePreview}
-                      alt="avatar"
-                      width={70}
-                      height={70}
-                      className="object-cover object-center w-[70px] h-[70px] rounded-full"
-                    />
-                    <div
-                      role="button"
-                      aria-label="remove image"
-                      className="absolute top-0 right-0"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        clearImageSelection();
-                      }}
-                    >
-                      <DeleteIconOrange size={20} />
-                    </div>
-                  </>
-                ) : (
-                  <CameraIcon2 />
+              <label htmlFor="picture" className="cursor-pointer relative">
+                <Picture src={preview} alt="Camera" size={70} rounded />
+                {preview && preview !== CameraCircle && (
+                  <div
+                    role="button"
+                    aria-label="remove image"
+                    className="absolute top-0 right-0"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      clearImageSelection();
+                    }}
+                  >
+                    <DeleteIconOrange size={20} />
+                  </div>
                 )}
-              </button>
+                <input
+                  type="file"
+                  id="picture"
+                  name="picture"
+                  accept="image/*"
+                  className="hidden pointer-events-none"
+                  onChange={handleImageChange}
+                  ref={inputFileRef}
+                />
+              </label>
               <button
                 type="button"
                 onClick={() => setFormStep(2)}
@@ -218,14 +216,6 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
               </button>
             </div>
           </div>
-          <input
-            type="file"
-            ref={inputFileRef}
-            name="picture"
-            style={{ display: "none" }}
-            accept="image/*"
-            onChange={handleImageChange}
-          />
           <Button
             type="submit"
             size="base_medium"

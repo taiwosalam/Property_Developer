@@ -7,7 +7,7 @@ import type { AvatarsProps } from "./types";
 
 // Imports
 // import { empty } from "@/app/config";
-import {  avatarLinks } from "./data";
+import { avatarLinks } from "./data";
 import Picture from "../Picture/picture";
 import useWindowWidth from "@/hooks/useWindowWidth";
 
@@ -55,21 +55,21 @@ const Avatars: React.FC<AvatarsProps> = ({ onClick, maxNumber = 200 }) => {
                 className="skeleton-elem mx-auto"
               />
             ))} */}
-      {avatarLinks.map((avatar, idx) => (
+      {avatarLinks.slice(0, maxNumber).map((avatar, idx) => (
         <button
           type="button"
-              key={idx}
-              onClick={() => {
-                onClick?.(avatar);
-              }}
-              className="w-fit mx-auto"
-            >
-              <Picture
-                rounded
-                size={isMobile ? 70 : 110}
-                alt="avatar"
-                src={avatar}
-              />
+          key={idx}
+          onClick={() => {
+            onClick?.(avatar);
+          }}
+          className="w-fit mx-auto"
+        >
+          <Picture
+            rounded
+            size={isMobile ? 70 : 110}
+            alt="avatar"
+            src={avatar}
+          />
         </button>
       ))}
     </div>

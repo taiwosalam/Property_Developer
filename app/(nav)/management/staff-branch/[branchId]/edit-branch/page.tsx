@@ -16,7 +16,9 @@ import LockBranchModal from "@/components/Management/Staff-And-Branches/Branch/l
 import UnLockBranchModal from "@/components/Management/Staff-And-Branches/Branch/unlock-branch-modal";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import useFetch from "@/hooks/useFetch";
-import { SingleBranchResponseType } from "../types";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import type { SingleBranchResponseType } from "../types";
+import { transformSingleBranchAPIResponse } from "../data";
 
 const EditBranch = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -24,13 +26,13 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
 
   const [isOpen, setOpen] = useState(false);
 
-  const {
-    data: fetchedBranchData,
-    error,
-    loading,
-  } = useFetch<SingleBranchResponseType>(`branch/${branchId}`);
+  const { data, error, loading } = useFetch<SingleBranchResponseType>(
+    `branch/${branchId}`
+  );
 
-  if (loading) return "Loading";
+  const branchData = data ? transformSingleBranchAPIResponse(data) : null;
+
+  if (loading) return <PageCircleLoader />;
 
   if (error) return <div>{error}</div>;
 
@@ -107,7 +109,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
             </Modal>
           </div>
         </div>
-        <EditBranchForm somedata={fetchedBranchData} handleSubmit={() => {}} />
+        <EditBranchForm somedata={branchData} handleSubmit={() => {}} />
       </div>
       <div className="custom-flex-col gap-8">
         <FilterBar
@@ -153,10 +155,6 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
           </AutoResizingGrid>
         ) : (
           <div className="custom-flex-col gap-4">
-            {/* {properties.slice(0, 6).map((p, idx) => (
-              <BranchPropertyListItem key={idx} {...p} />
-            ))} */}
-
             {Array.from({ length: 10 }).map((_, index) => (
               <Link
                 key={index}

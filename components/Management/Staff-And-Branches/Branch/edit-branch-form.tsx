@@ -10,28 +10,50 @@ import { useImageUploader } from "@/hooks/useImageUploader";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { useState, useEffect } from "react";
-import { SingleBranchResponseType } from "@/app/(nav)/management/staff-branch/[branchId]/types";
 import Avatars from "@/components/Avatars/avatars";
+import { transformSingleBranchAPIResponse } from "@/app/(nav)/management/staff-branch/[branchId]/data";
+import LandlordTenantModalPreset from "../../landlord-tenant-modal-preset";
+import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
+import Image from "next/image";
+import {
+  // CameraIcon2,
+  PersonIcon,
+  DeleteIconOrange,
+} from "@/public/icons/icons";
+
+type BranchData = ReturnType<typeof transformSingleBranchAPIResponse>;
 
 const EditBranchForm = ({
   somedata,
   handleSubmit,
 }: {
-  somedata: SingleBranchResponseType | null;
+  somedata: BranchData | null;
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }) => {
-  const { preview, setPreview, handleImageChange, inputFileRef } =
-    useImageUploader({
-      placeholder: CameraCircle,
-    });
+  const [branchImage, setBranchImage] = useState("");
 
-  const handleAvatarChange = (avatar: string) => {
-    setPreview(avatar);
-    setActiveAvatar(avatar);
-    inputFileRef.current?.value && (inputFileRef.current.value = "");
+  const {
+    preview,
+    handleImageChange: originalHandleImageChange,
+    inputFileRef,
+    clearSelection: clearImageSelection,
+  } = useImageUploader({
+    placeholder: branchImage || CameraCircle,
+  });
+
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState("");
+
+  const handleAvatarSelection = (avatarUrl: string) => {
+    clearImageSelection();
+    setSelectedAvatar(avatarUrl);
+    setAvatarModalOpen(false);
   };
 
-  // console.log(somedata);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedAvatar("");
+    originalHandleImageChange(e);
+  };
 
   const [address, setAddress] = useState({
     state: "",
@@ -49,15 +71,16 @@ const EditBranchForm = ({
   };
 
   useEffect(() => {
-    if (somedata?.branch?.branch_full_address) {
+    if (somedata) {
       setAddress((prev) => ({
         ...prev,
-        state: somedata?.branch?.state || "",
-        local_govt: somedata?.branch?.local_government || "",
-        city: somedata?.branch?.city || "",
+        state: somedata.state || "",
+        local_govt: somedata.local_government || "",
+        city: somedata.city || "",
       }));
+      setBranchImage(somedata.branch_image);
     }
-  }, [somedata?.branch?.branch_full_address]);
+  }, [somedata]);
 
   return (
     <AuthForm
@@ -66,6 +89,7 @@ const EditBranchForm = ({
       skipValidation
       onFormSubmit={handleSubmit}
     >
+      <input type="hidden" name="avatar" value={selectedAvatar} />
       <div className="custom-flex-col gap-4">
         <h2 className="text-brand-10 text-base font-bold">Branch Details</h2>
         <SectionSeparator />
@@ -76,7 +100,7 @@ const EditBranchForm = ({
               label="branch title"
               placeholder="Moniya Branch"
               inputClassName="bg-white"
-              defaultValue={somedata?.branch?.branch_title}
+              defaultValue={somedata?.branch_name}
             />
             <Select
               id="state"
@@ -110,21 +134,21 @@ const EditBranchForm = ({
               label="full address"
               placeholder="U4 Joke Plaza, Bodija ibadan"
               inputClassName="bg-white"
-              defaultValue={somedata?.branch?.branch_full_address}
+              defaultValue={somedata?.branch_address}
             />
             <Select
               id="branch-wallet"
               label="branch wallet"
               options={["yes", "no"]}
               inputContainerClassName="bg-white"
-              defaultValue={somedata?.branch?.branch_wallet}
+              // defaultValue={somedata?.branch?.branch_wallet}
             />
           </div>
 
           <TextArea
             inputSpaceClassName="bg-white dark:bg-darkText-primary"
             id="branch-description"
-            defaultValue={somedata?.branch?.branch_description}
+            defaultValue={somedata?.branch_desc}
             label="branch description"
           />
         </div>
@@ -134,8 +158,21 @@ const EditBranchForm = ({
           Upload Branch picture or choose from options.
         </p>
         <div className="flex gap-3 items-center">
-          <label htmlFor="picture" className="cursor-pointer">
+          <label htmlFor="picture" className="cursor-pointer relative">
             <Picture src={preview} alt="Camera" size={40} rounded />
+            {preview && preview !== CameraCircle && (
+              <div
+                role="button"
+                aria-label="remove image"
+                className="absolute top-0 right-0"
+                onClick={(e) => {
+                  e.preventDefault();
+                  clearImageSelection();
+                }}
+              >
+                <DeleteIconOrange size={20} />
+              </div>
+            )}
             <input
               type="file"
               id="picture"
@@ -145,9 +182,45 @@ const EditBranchForm = ({
               onChange={handleImageChange}
               ref={inputFileRef}
             />
-            <input type="hidden" name="avatar" value={activeAvatar} />
           </label>
-          <Avatars onClick={handleAvatarChange} />
+          <Modal
+            state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
+          >
+            <ModalTrigger
+              className="bg-[rgba(42,42,42,0.63)] w-[40px] h-[40px] rounded-full flex items-center justify-center text-white relative"
+              aria-label="choose avatar"
+            >
+              {selectedAvatar ? (
+                <>
+                  <Image
+                    src={selectedAvatar}
+                    alt="selected avatar"
+                    width={40}
+                    height={40}
+                    className="object-cover object-center w-[40px] h-[40px] rounded-full bg-brand-9"
+                  />
+                  <div
+                    role="button"
+                    aria-label="remove avatar"
+                    className="absolute top-0 right-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedAvatar("");
+                    }}
+                  >
+                    <DeleteIconOrange size={20} />
+                  </div>
+                </>
+              ) : (
+                <PersonIcon size={18} />
+              )}
+            </ModalTrigger>
+            <ModalContent>
+              <LandlordTenantModalPreset heading="Choose Avatar">
+                <Avatars onClick={handleAvatarSelection} />
+              </LandlordTenantModalPreset>
+            </ModalContent>
+          </Modal>
         </div>
       </div>
     </AuthForm>

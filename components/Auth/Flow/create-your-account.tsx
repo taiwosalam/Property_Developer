@@ -16,15 +16,18 @@ import Button from "@/components/Form/Button/button";
 import { signup } from "@/app/(onboarding)/auth/data";
 
 const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
+  const [requestLoading, setRequestLoading] = useState(false);
   // State for managing error messages
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors>({});
 
   // Function to handle form submission
   const handleSignUp = async (data: FormData) => {
+    setRequestLoading(true);
     const status = await signup(data);
     if (status) {
       changeStep("next");
     }
+    setRequestLoading(false);
   };
 
   return (
@@ -66,7 +69,9 @@ const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
           Got an account?
         </AuthAction>
         {/* Button to submit the form */}
-        <Button type="submit">continue</Button>
+        <Button type="submit" disabled={requestLoading}>
+          {requestLoading ? "Please wait..." : "continue"}
+        </Button>
       </div>
     </AuthForm>
   );

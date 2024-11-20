@@ -38,6 +38,7 @@ export type SingleBranchResponseType = {
       city: string;
       branch_address: string;
       // branch_image: string | null; //to be added later
+      // branch_wallet: string; //to be added later
       branch_desc: string;
     };
   };
