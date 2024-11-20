@@ -3,7 +3,7 @@ import type { FormSteps } from "@/app/(onboarding)/auth/types";
 
 // Imports
 import { BadgeIconColors } from "../BadgeIcon/badge-icon";
-
+import { StaticImageData } from "next/image";
 import {
   settings_link_tabs,
   tenant_occupant_tiers,
@@ -211,7 +211,7 @@ export interface SettingsEnrollmentCardProps {
 
 
 export interface ProfileUploadProps {
-  preview: string;
+  preview: string | StaticImageData;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   inputFileRef: MutableRefObject<HTMLInputElement | null>; // Add this line
   onClick: () => void;

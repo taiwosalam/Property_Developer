@@ -1,11 +1,8 @@
-import React from "react";
-
-// IMports
 import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 
-const UpdateBranchModal = () => {
+const UpdateBranchModalSuccess = () => {
   return (
     <ModalPreset type="success">
       <p className="text-text-disabled text-sm font-normal">
@@ -20,4 +17,4 @@ const UpdateBranchModal = () => {
   );
 };
 
-export default UpdateBranchModal;
+export default UpdateBranchModalSuccess;

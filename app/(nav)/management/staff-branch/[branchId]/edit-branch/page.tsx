@@ -10,37 +10,38 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import EditBranchForm from "@/components/Management/Staff-And-Branches/Branch/edit-branch-form";
 import DeleteBranchModal from "@/components/Management/Staff-And-Branches/Branch/delete-branch-modal";
-import UpdateBranchModal from "@/components/Management/Staff-And-Branches/Branch/update-branch-modal";
 import BranchPropertyListItem from "@/components/Management/Staff-And-Branches/Branch/branch-property-list-item";
 import LockBranchModal from "@/components/Management/Staff-And-Branches/Branch/lock-branch-modal";
 import UnLockBranchModal from "@/components/Management/Staff-And-Branches/Branch/unlock-branch-modal";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import useFetch from "@/hooks/useFetch";
-import { SingleBranchResponseType } from "../types";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import type { SingleBranchResponseType } from "../types";
+import { transformSingleBranchAPIResponse } from "../data";
 
 const EditBranch = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
   const [isGridView, setIsGridView] = useState(true);
 
-  const [isOpen, setOpen] = useState(false);
+  const [updateRequestLoading, setUpdateRequestLoading] = useState(false);
 
-  const {
-    data: fetchedBranchData,
-    error,
-    loading,
-  } = useFetch<SingleBranchResponseType>(`branch/${branchId}`);
+  const { data, error, loading } = useFetch<SingleBranchResponseType>(
+    `branch/${branchId}`
+  );
 
-  if (loading) return "Loading";
+  const branchData = data ? transformSingleBranchAPIResponse(data) : null;
+
+  if (loading) return <PageCircleLoader />;
 
   if (error) return <div>{error}</div>;
 
   return (
     <div className="custom-flex-col gap-10">
       <div className="flex flex-col gap-8">
-        <div className="flex gap-8 flex-col sm:flex-row justify-between">
+        <div className="flex gap-8 flex-col md:flex-row justify-between flex-wrap">
           <BackButton>Edit Branch</BackButton>
           <div className="flex gap-3">
-            <Modal>
+            {/* <Modal>
               <ModalTrigger asChild>
                 <Button
                   type="button"
@@ -54,7 +55,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
               <ModalContent>
                 <LockBranchModal />
               </ModalContent>
-            </Modal>
+            </Modal> */}
             <Modal>
               <ModalTrigger asChild>
                 <Button
@@ -85,29 +86,21 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
                 <DeleteBranchModal />
               </ModalContent>
             </Modal>
-            <Modal
-              state={{
-                isOpen: isOpen,
-                setIsOpen: setOpen,
-              }}
+            <Button
+              type="submit"
+              size="sm_medium"
+              className="py-2 px-8"
+              form="edit-branch-form"
+              disabled={updateRequestLoading}
             >
-              <ModalTrigger asChild>
-                <Button
-                  type="submit"
-                  size="sm_medium"
-                  className="py-2 px-8"
-                  form="edit-branch-form"
-                >
-                  update
-                </Button>
-              </ModalTrigger>
-              <ModalContent>
-                <UpdateBranchModal />
-              </ModalContent>
-            </Modal>
+              {updateRequestLoading ? "Updating..." : "Update"}
+            </Button>
           </div>
         </div>
-        <EditBranchForm somedata={fetchedBranchData} handleSubmit={() => {}} />
+        <EditBranchForm
+          somedata={branchData}
+          setUpdateRequestLoading={setUpdateRequestLoading}
+        />
       </div>
       <div className="custom-flex-col gap-8">
         <FilterBar
@@ -153,10 +146,6 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
           </AutoResizingGrid>
         ) : (
           <div className="custom-flex-col gap-4">
-            {/* {properties.slice(0, 6).map((p, idx) => (
-              <BranchPropertyListItem key={idx} {...p} />
-            ))} */}
-
             {Array.from({ length: 10 }).map((_, index) => (
               <Link
                 key={index}

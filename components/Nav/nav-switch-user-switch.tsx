@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from "react";
 
 // Images
 import { ChevronDown } from "lucide-react";
-import { trackOutsideClick } from "@/utils/track-outside-click";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const NavSwitchUserSwitch: React.FC<{
@@ -18,13 +18,12 @@ const NavSwitchUserSwitch: React.FC<{
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
+  useOutsideClick(containerRef, () => {
+    if (isOpen) setIsOpen(false);
+  });
+
   const handleSwitch = () => {
     setIsOpen((prev) => !prev);
-
-    // Track not allowed lol
-    if (!isOpen) {
-      trackOutsideClick(containerRef, () => setIsOpen(false));
-    }
   };
 
   const handleModuleSwitch = (val: string) => {

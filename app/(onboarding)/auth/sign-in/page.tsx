@@ -44,7 +44,7 @@ const SignIn = () => {
       </AuthHeading>
       <div className="custom-flex-col gap-6">
         <Input
-          id="identifier"
+          id="username"
           type="email"
           label="email"
           placeholder="Email address"
