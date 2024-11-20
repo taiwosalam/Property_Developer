@@ -23,7 +23,7 @@ import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import DraggableImage from "./draggable-image";
 import { propertyCategories } from "@/data";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { getAllBranches } from "@/app/(nav)/management/staff-branch/data";
+// import { getAllBranches } from "@/app/(nav)/management/staff-branch/data";
 // import { getAllLandlords } from "@/app/(nav)/management/landlord/data";
 import { getAllStaffsByBranch } from "./data";
 import { currencySymbols } from "@/utils/number-formatter";

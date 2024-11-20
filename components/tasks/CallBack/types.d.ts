@@ -7,10 +7,9 @@ export interface UserDetailItemsProp {
 export interface RequestCardBaseProps {
   cardType: "callback" | "visitor" | "property" | "deopsit" | "agent-community";
   requestDate: string;
-  requestId: string;
   pictureSrc: string;
-  userTitle: string;
   userName: string;
+  requestId: string;
 }
 
 export interface CallRequestCardProps extends RequestCardBaseProps {
@@ -47,7 +46,6 @@ export interface VisitorRequestCardProps extends RequestCardBaseProps {
 
 export interface PropertyRequestCardProps extends RequestCardBaseProps {
   cardType: "property";
-  targetAudience: string[];
   state: string;
   lga: string;
   propertyType: string;
@@ -78,13 +76,34 @@ export interface DepositRequestCardProps extends RequestCardBaseProps {
   }[];
 }
 
+export interface AgentCommunityRequestCardProps extends RequestCardBaseProps {
+  cardType: "agent-community";
+  userTitle: string;
+  propertyTitle: string;
+  targetAudience: string[];
+  state: string;
+  lga: string;
+  propertyType: string;
+  category: string;
+  minBudget: string;
+  maxBudget: string;
+  subType: string;
+  requestType: string;
+  description: string;
+  phoneNumber: string;
+  user?: boolean;
+  cardViewDetails: {
+    label: string;
+    accessor: keyof AgentCommunityRequestCardProps;
+  }[];
+}
+
 export type RequestCardProps =
   | CallRequestCardProps
   | VisitorRequestCardProps
   | PropertyRequestCardProps
-  | AgentCommunityRequestCardProps
-  | DepositRequestCardProps;
-
+  | DepositRequestCardProps
+  | AgentCommunityRequestCardProps;
 
 export interface CallRequestModalProps {
   branch: string;

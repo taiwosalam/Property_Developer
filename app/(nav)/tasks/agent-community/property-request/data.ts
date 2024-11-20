@@ -1,3 +1,5 @@
+import api from "@/services/api";
+
 export interface PropertyRequestDataType {
   userName: string;
   requestDate: string;
@@ -12,8 +14,21 @@ export interface PropertyRequestDataType {
   category: string;
   subType: string;
   minBudget: string;
+  propertyTitle: string;
   maxBudget: string;
+  userTitle: string;
+  targetAudience: string[];
 } // Check with backend if this is the correct data type
+
+export const getPropertyRequestData = async () => {
+  try {
+    const response = await api.get("/property_request");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching property request data:", error);
+    throw error;
+  }
+};
 
 export const PropertyRequestData: PropertyRequestDataType[] = [
   {
@@ -31,6 +46,9 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     requestType: "Web",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     phoneNumber: "08012345678",
+    propertyTitle: "Property Title",
+    userTitle: "Property Title",
+    targetAudience: [],
   },
   {
     requestId: "1344567901",
@@ -47,6 +65,9 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     phoneNumber: "08012345678",
     minBudget: "₦75,000,000",
     maxBudget: "₦200,000,000",
+    propertyTitle: "Property Title",
+    userTitle: "Property Title",
+    targetAudience: [],
   },
   {
     requestId: "1344567901",
@@ -63,6 +84,9 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     phoneNumber: "08012345678",
     minBudget: "₦75,000,000",
     maxBudget: "₦200,000,000",
+    propertyTitle: "Property Title",
+    userTitle: "Property Title",
+    targetAudience: [],
   },
   {
     requestId: "1344567901",
@@ -79,37 +103,8 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     phoneNumber: "08012345678",
     minBudget: "₦75,000,000",
     maxBudget: "₦200,000,000",
-  },
-  {
-    requestId: "1344567901",
-    userName: "Joe Wanu",
-    requestDate: "01/01/2024",
-    pictureSrc: "/empty/SampleLandlord.jpeg",
-    state: "Lagos",
-    lga: "Mushin",
-    subType: "Bungalow",
-    propertyType: "Duplex",
-    category: "For Sale",
-    requestType: "Mobile",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    phoneNumber: "08012345678",
-    minBudget: "₦75,000,000",
-    maxBudget: "₦200,000,000",
-  },
-  {
-    requestId: "1344567901",
-    userName: "Joe Wanu",
-    requestDate: "01/01/2024",
-    pictureSrc: "/empty/SampleLandlord.jpeg",
-    state: "Lagos",
-    lga: "Mushin",
-    subType: "Bungalow",
-    propertyType: "Duplex",
-    category: "For Sale",
-    requestType: "Mobile",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    phoneNumber: "08012345678",
-    minBudget: "₦75,000,000",
-    maxBudget: "₦200,000,000",
+    propertyTitle: "Property Title",
+    userTitle: "Property Title",
+    targetAudience: [],
   },
 ];

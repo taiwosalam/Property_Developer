@@ -12,7 +12,6 @@ import VisitorRequestModal from "../visitors-requests/visitor-request-modal";
 import PropertyRequestModal from "../property-requests/property-request-modal";
 import DepositRequestModal from "../deposit-requests/deposit-request-modal";
 import Link from "next/link";
-import { RequestCardSkeleton } from "@/app/(nav)/tasks/agent-community/components";
 import { empty } from "@/app/config";
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
@@ -26,22 +25,14 @@ const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   </div>
 );
 
-type CardViewDetail = {
-  label: string;
-  accessor: keyof RequestCardProps;
-};
-
 const RequestCard: React.FC<RequestCardProps> = (props) => {
   const {
     cardType,
     userName,
     requestDate,
-    requestId,
     pictureSrc,
     cardViewDetails,
-    isLoading,
-    userTitle,
-    user,
+    requestId,
   } = props;
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -99,28 +90,25 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           <Picture size={50} src={pictureSrc || empty} rounded />
           <div className="space-y-1">
             <div className="flex items-center gap-0.5">
-              <span className="text-[16px] font-medium">{userName}</span>
+              <span className="text-base font-medium">{userName}</span>
               <BadgeIcon color="blue" />
             </div>
-            {cardType !== "agent-community" && (
-              <div className="flelx items-center space-x-1">
-                <span className="text-[16px] font-medium text-text-tertiary">
+            {cardType !== "agent-community" ? (
+              <div className="flex items-center gap-1">
+                <span className="text-base font-medium text-text-tertiary">
                   Date of Request:
                 </span>
-                <span className="text-[16px] font-medium">{requestDate}</span>
+                <span className="text-base font-medium">{requestDate}</span>
               </div>
-            )}
-            {cardType === "agent-community" && (
-              <div className="flelx items-center space-x-1 mb-2">
-                <span className="text-sm font-medium text-brand-9">
-                 {userTitle}
-                </span>
-              </div>
+            ) : (
+              <p className="text-base font-medium text-brand-9">
+                {props.userTitle}
+              </p>
             )}
           </div>
         </div>
         {/* I noticed that the property request card has no status */}
-        {cardType !== "property" && props.status && (
+        {cardType !== "property" && cardType !== "agent-community" && (
           <p
             className={clsx(
               "p-2 font-normal text-xs border capitalize ml-auto w-[85px] text-center",
@@ -141,18 +129,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
       </div>
       <div
         className={clsx(
-          "py-2 px-[18px] flex items-center justify-between text-base font-medium custom-secondary-bg",
-          cardType === "callback"
-            ? "text-text-secondary dark:text-white"
-            : cardType === "visitor"
-            ? "text-text-secondary dark:text-white"
-            : cardType === "property"
-            ? "text-text-secondary dark:text-white"
-            : cardType === "agent-community"
-            ? "text-text-secondary dark:text-white"
-            : cardType === "deposit"
-            ? "text-text-secondary dark:text-white"
-            : ""
+          "py-2 px-[18px] flex items-center justify-between text-base font-medium custom-secondary-bg text-text-secondary dark:text-white"
         )}
       >
         <p>
@@ -168,7 +145,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             ? "Caution Deposit Request"
             : ""}
         </p>
-        {/* Property card has no ID on display */}
+        {/* Property card and agent community card has no ID on display */}
         {cardType !== "property" && cardType !== "agent-community" && (
           <p>ID: {requestId}</p>
         )}
@@ -176,69 +153,64 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
       </div>
       <div className="px-[18px] grid grid-cols-2 sm:grid-cols-3 gap-x-5 gap-y-4">
         {cardType === "callback"
-          ? cardViewDetails.map(
-              ({ label, accessor }: CardViewDetail, index: number) => {
-                return (
-                  <UserDetailItems
-                    key={index}
-                    label={label}
-                    value={String(props[accessor])}
-                  />
-                );
-              }
-            )
+          ? cardViewDetails.map(({ label, accessor }, index) => {
+              return (
+                <UserDetailItems
+                  key={index}
+                  label={label}
+                  value={String(props[accessor])}
+                />
+              );
+            })
           : cardType === "visitor"
-          ? cardViewDetails.map(
-              ({ label, accessor }: CardViewDetail, index: number) => {
-                const value =
-                  accessor === "secretQuestion" || accessor === "purpose"
-                    ? "attached"
-                    : String(props[accessor]);
-                return (
-                  <UserDetailItems key={index} label={label} value={value} />
-                );
-              }
-            )
+          ? cardViewDetails.map(({ label, accessor }, index) => {
+              const value =
+                accessor === "secretQuestion" || accessor === "purpose"
+                  ? "attached"
+                  : String(props[accessor]);
+              return (
+                <UserDetailItems key={index} label={label} value={value} />
+              );
+            })
           : cardType === "property"
-          ? cardViewDetails.map(
-              ({ label, accessor }: CardViewDetail, index: number) => {
-                return (
-                  <UserDetailItems
-                    key={index}
-                    label={label}
-                    value={String(props[accessor])}
-                  />
-                );
-              }
-            )
+          ? cardViewDetails.map(({ label, accessor }, index) => {
+              return (
+                <UserDetailItems
+                  key={index}
+                  label={label}
+                  value={String(props[accessor])}
+                />
+              );
+            })
           : cardType === "agent-community"
-          ? cardViewDetails.map(
-              ({ label, accessor }: CardViewDetail, index: number) => {
-                return (
-                  <UserDetailItems
-                    key={index}
-                    label={label}
-                    value={String(props[accessor])}
-                  />
-                );
-              }
-            )
+          ? cardViewDetails.map(({ label, accessor }, index) => {
+              return (
+                <UserDetailItems
+                  key={index}
+                  label={label}
+                  value={String(props[accessor])}
+                />
+              );
+            })
           : cardType === "deposit"
-          ? cardViewDetails.map(
-              ({ label, accessor }: CardViewDetail, index: number) => {
-                return (
-                  <UserDetailItems
-                    key={index}
-                    label={label}
-                    value={String(props[accessor])}
-                  />
-                );
-              }
-            )
+          ? cardViewDetails.map(({ label, accessor }, index) => {
+              return (
+                <UserDetailItems
+                  key={index}
+                  label={label}
+                  value={String(props[accessor])}
+                />
+              );
+            })
           : null}
       </div>
       <div className="flex justify-end px-[18px]">
-        {cardType === "agent-community" && (
+        {(cardType === "property" || cardType === "deposit") && (
+          <button type="button" aria-label="Message" className="mr-4">
+            <ReplyIcon2 />
+          </button>
+        )}
+        {cardType === "agent-community" ? (
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -250,20 +222,14 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
 
             <Link
               href={`/tasks/agent-community/${
-                user ? "my-properties-request" : "property-request"
+                props.user ? "my-properties-request" : "property-request"
               }/${requestId}/preview`}
               className="mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1"
             >
               Preview
             </Link>
           </div>
-        )}
-        {(cardType === "property" || cardType === "deposit") && (
-          <button type="button" aria-label="Message" className="mr-4">
-            <ReplyIcon2 />
-          </button>
-        )}
-        {cardType !== "agent-community" && (
+        ) : (
           <Button
             size="sm_medium"
             className="py-2 px-8"
