@@ -6,6 +6,7 @@ import type { ValidationErrors } from "@/utils/types";
 
 export interface InputProps {
   id: string;
+  name?: string;
   value?: string | number | readonly string[] | undefined;
   label?: string;
   leftIcon?: string | StaticImageData;

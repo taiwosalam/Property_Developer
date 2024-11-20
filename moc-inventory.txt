@@ -1,0 +1,259 @@
+// const InventoryItem: React.FC<InventoryItemProps> = ({ data, edit }) => {
+//   const isDarkMode = useDarkMode();
+//   const { preview, inputFileRef, handleImageChange } = useImageUploader({
+//     placeholder: data?.image,
+//   });
+
+//   const input_styles: CSSProperties = {
+//     backgroundColor: isDarkMode ? "#020617" : "white",
+//   };
+
+//   const selectImage = () => {
+//     if (inputFileRef.current) {
+//       inputFileRef.current.click();
+//     }
+//   };
+
+//   return (
+//     <div
+//       className="w-full p-[18px] pb-0 flex-1 bg-white dark:bg-darkText-primary rounded-lg"
+//       style={{
+//         boxShadow:
+//           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
+//       }}
+//     >
+//       <div className="pb-[18px]">
+//         <div className="flex flex-wrap-reverse items-center gap-5 2xl:gap-[66px]">
+//           <div className="custom-flex-col gap-6 flex-1 py-2 min-w-[240px]">
+//             <div className="custom-flex-col gap-2 flex-1">
+//               {edit ? (
+//                 <Input
+//                   id="inventory-name"
+//                   label="Inventory name"
+//                   className="flex-1"
+//                   style={input_styles}
+//                 />
+//               ) : (
+//                 <InventoryField>{data?.name}</InventoryField>
+//               )}
+//             </div>
+//             <div className="flex gap-4">
+//               {edit ? (
+//                 <>
+//                   <Input
+//                     id="inventory-quantity"
+//                     placeholder="Quantity / Unit"
+//                     type="number"
+//                     className="flex-1"
+//                     style={input_styles}
+//                   />
+//                   <Select
+//                     id="inventory-condition"
+//                     placeholder="Condition"
+//                     options={inventory_conditions}
+//                     className="flex-1"
+//                     isSearchable={false}
+//                   />
+//                 </>
+//               ) : (
+//                 <>
+//                   <InventoryField>{data?.quantity}</InventoryField>
+//                   <InventoryField>{data?.condition}</InventoryField>
+//                 </>
+//               )}
+//             </div>
+//           </div>
+//           <div className="relative h-full min-h-[165px] aspect-square rounded-2xl overflow-hidden">
+//             <Image
+//               src={preview || ""}
+//               alt="property"
+//               fill
+//               sizes="200px"
+//               className="object-cover"
+//             />
+//             {edit && (
+//               <div
+//                 className="absolute inset-0 flex items-center justify-center"
+//                 style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
+//               >
+//                 <input
+//                   type="file"
+//                   id="picture"
+//                   name="picture"
+//                   accept="image/*"
+//                   ref={inputFileRef}
+//                   className="hidden pointer-events-none"
+//                   onChange={handleImageChange}
+//                 />
+//                 <div className="custom-flex-col gap-6">
+//                   <div className="flex flex-col items-center gap-2 custom-primary-color">
+//                     <ImageIcon />
+//                     <p className="text-brand-9 text-sm font-semibold">
+//                       Set picture
+//                     </p>
+//                   </div>
+//                   <Button
+//                     onClick={selectImage}
+//                     size="base_medium"
+//                     className="py-1 px-6"
+//                   >
+//                     select
+//                   </Button>
+//                 </div>
+//               </div>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default InventoryItem;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { CSSProperties, useState } from "react";
+
+// // Imports
+// import Input from "@/components/Form/Input/input";
+// import Button from "@/components/Form/Button/button";
+// import Select from "@/components/Form/Select/select";
+// import BackButton from "@/components/BackButton/back-button";
+// import InventoryItem from "@/components/Management/Inventory/inventory-item";
+// import useDarkMode from "@/hooks/useCheckDarkMode";
+// import { AuthForm } from "@/components/Auth/auth-components";
+// import { createInventory } from "../../data";
+// import { toast } from "sonner";
+
+// const CreateInventory = () => {
+//   const isDarkMode = useDarkMode();
+//   const input_styles: CSSProperties = {
+//     padding: "12px 14px",
+//     backgroundColor: isDarkMode ? "#020617" : "white",
+//   };
+
+//   const [inventoryItems, setInventoryItems] = useState<number>(2);
+
+//   const handleAddInventory = async (formData: FormData) => {
+//     console.log("formData", formData)
+//     const inventoryData = [];
+    
+//     // Get all form entries and filter inventory items
+//     const formEntries = Array.from(formData.entries());
+//     const itemEntries = formEntries.filter(([key]) => 
+//       key.startsWith('item-name') || 
+//       key.startsWith('quantity') || 
+//       key.startsWith('condition')
+//     );
+    
+//     console.log("Filtered entries:", itemEntries); // Debug log for filtered entries
+    
+//     // Group elements into inventory items
+//     for (let i = 0; i < itemEntries.length; i += 3) {
+//       const itemData = {
+//         name: itemEntries[i][1],
+//         quantity: itemEntries[i + 1][1],
+//         condition: itemEntries[i + 2][1],
+//       };
+//       inventoryData.push(itemData);
+//     }
+
+//     console.log("inventoryData", inventoryData)
+    
+//     // try {
+//     //   const success = await createInventory({
+//     //     title: formData.get('inventory-title'),
+//     //     videoLink: formData.get('video-link'),
+//     //     branchName: formData.get('branch-name'),
+//     //     items: inventoryData
+//     //   });
+
+//     //   if (success) {
+//     //     toast.success("Inventory created successfully");
+//     //   }
+//     // } catch (error) {
+//     //   console.error("Error creating inventory:", error);
+//     //   toast.error("Failed to create inventory");
+//     // }
+//   };
+
+//   const handleAddMoreInventory = () => {
+//     setInventoryItems(prev => prev + 1);
+//   };
+
+//   return (
+//     <div className="custom-flex-col gap-10 pb-[100px]">
+//       <form onSubmit={handleAddInventory}>
+//         <div className="custom-flex-col gap-4">
+//           <BackButton>Create Inventory</BackButton>
+//           <div className="flex flex-col md:flex-row gap-8">
+//             <Input
+//             id="inventory-title"
+//             placeholder="Add Title"
+//             className="flex-1 dark:bg-darkText-primary"
+//             style={input_styles}
+//           />
+//           <Input
+//             id="video-link"
+//             placeholder="Video Link"
+//             className="flex-1"
+//             style={input_styles}
+//           />
+//           <Select
+//             id="branch-name"
+//             placeholder="Branch Name"
+//             options={["branch 1", "branch 2", "branch 3"]}
+//             isSearchable={false}
+//             className="bg-white dark:bg-darkText-primary flex-1"
+//           />
+//           </div>
+//       </div>
+//       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
+//         {[...Array(inventoryItems)].map((_, index) => (
+//           <InventoryItem key={index} edit />
+//         ))}
+//       </div>
+//       <div className="fixed bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[60px] flex gap-6 justify-end">
+//         <Button
+//           size="sm_medium"
+//           variant="blank"
+//           className="py-2 px-7 text-brand-9 bg-brand-1"
+//           onClick={() => setInventoryItems(2)}
+//         >
+//           Clear all
+//         </Button>
+//         <div className="flex gap-6">
+//           <Button
+//             size="sm_medium"
+//             variant="blank"
+//             className="py-2 px-7 text-brand-9 bg-brand-1"
+//             onClick={handleAddMoreInventory}
+//           >
+//             Add more to inventory
+//           </Button>
+//           <Button type="submit" size="sm_medium" className="py-2 px-7">
+//             save
+//           </Button>
+//           </div>
+//         </div>
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default CreateInventory;

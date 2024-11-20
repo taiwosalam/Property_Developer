@@ -11,7 +11,8 @@ import {
 import CompanyLogo from "@/public/empty/company-logo.svg";
 import { companyStats } from "@/app/(nav)/tasks/agent-community/data";
 import Image from "next/image";
-import { CompanySummarySkeleton } from "@/app/(nav)/tasks/agent-community/components";
+import { CompanySummarySkeleton, TextSkeleton } from "@/app/(nav)/tasks/agent-community/components";
+import { empty } from "@/app/config";
 
 const CompanySummary = ({ loading, companySummary }: { loading?: boolean, companySummary?: any }) => {
   
@@ -29,7 +30,7 @@ const CompanySummary = ({ loading, companySummary }: { loading?: boolean, compan
       <div className="flex items-center justify-center w-full mt-4">
         <div className="flex items-center justify-center w-[260px] h-[70px] border border-brand-9 py-2 rounded-lg">
           <Image
-            src={CompanyLogo}
+            src={companySummary?.logo || empty}
             alt="company logo"
             width={500}
             height={500}
@@ -39,31 +40,31 @@ const CompanySummary = ({ loading, companySummary }: { loading?: boolean, compan
       </div>
       <div className="details mt-3">
         <h3 className="text-black leading-50 font-bold text-6 dark:text-white">
-          {companySummary?.name}
+          {companySummary?.name || <TextSkeleton />}
         </h3>
         <div className="service flex flex-col gap-1 mt-1">
           <p> Services </p>
           <p className="text-sm text-text-disabled">
-            Sales, Purchase, Rent of Resident Property & Commercial Property{" "}
+            {companySummary?.services || <TextSkeleton />}
           </p>
         </div>
         <div className="contacts-details flex flex-col gap-3 mt-4">
           <p> Contacts </p>
           <div className="flex gap-2 text-sm text-text-disabled">
             <MapIcon />
-            <span> {companySummary?.addresses?.head_office_address} </span>
+            <span> {companySummary?.addresses?.head_office_address || <TextSkeleton />} </span>
           </div>
           <div className="flex gap-2 text-sm text-text-disabled">
             <WebsiteIcon />
-            <span> https://www.hprealestate.co.in </span>
+            <span> {companySummary?.website || <TextSkeleton />} </span>
           </div>
           <div className="flex gap-2 text-sm text-text-disabled">
             <PhoneIcon />
-            <span>08132086958 || 09123435487 || 9848848488 </span>
+            <span> {companySummary?.phone || <TextSkeleton />} </span>
           </div>
           <div className="flex gap-2 text-sm text-text-disabled">
             <Mail />
-            <span> emailaddress@gmail.com </span>
+            <span> {companySummary?.email || <TextSkeleton />} </span>
           </div>
         </div>
       </div>
@@ -92,7 +93,7 @@ const CompanySummary = ({ loading, companySummary }: { loading?: boolean, compan
             >
               <p className="text-sm text-text-label">{stat.label}</p>
               <p className="text-sm text-text-primary dark:text-white">
-                {stat.value}
+                {stat.value || <TextSkeleton />}
               </p>
             </div>
           ))}

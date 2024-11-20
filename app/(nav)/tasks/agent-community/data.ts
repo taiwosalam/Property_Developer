@@ -2,6 +2,7 @@ import { empty } from "@/app/config";
 import { title } from "process";
 import { CommentProps } from "./type";
 import api from "@/services/api";
+import { transformFormData } from "./my-properties-request/data";
 
 export const getThreads = async () => {
   try {
@@ -43,6 +44,79 @@ export const getAllPropertyRequests = async () => {
   }
 };
 
+
+export const getLoggedInUserPropertyRequests = async () => {
+  try {
+    const response = await api.get("/agent_community/property-requests/user");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching property requests:", error);
+    throw error;
+  }
+};
+
+export const updatePropertyRequest = async (id: string, data: any) => {
+  const keyMapping: Record<string, string> = {
+    'title': 'title',
+    'content': 'description',
+    'property_category': 'property_category',
+    'property_type': 'property_type',
+    'property_sub_type': 'property_sub_type',
+    'target_audience': 'target_audience',
+    'min_budget': 'min_budget',
+    'max_budget': 'max_budget',
+    'valid_till': 'valid_till'
+  };
+  
+  const formattedData = {
+    title: data.title || '',
+    description: data.content || '',
+    property_category: data.property_category || '',
+    property_type: data.property_type || '',
+    property_sub_type: data.property_sub_type || '',
+    target_audience: data.target_audience 
+      ? (typeof data.target_audience === 'string' 
+          ? [data.target_audience]
+          : Array.isArray(data.target_audience)
+              ? data.target_audience
+              : [data.target_audience])
+      : [],
+    min_budget: data.min_budget?.toString() || '',
+    max_budget: data.max_budget?.toString() || '',
+    valid_till: data.valid_till || ''
+  };
+
+  // const formattedData = {
+  //  title:  'title',
+  //   description: 'content',
+  //   property_category: 'property_category',
+  //   property_type: 'property_type',
+  //   property_sub_type: 'property_sub_type',
+  //   target_audience: ['lagos', 'ogun'],
+  //   min_budget: 'min_budget',
+  //   max_budget: 'max_budget',
+  //   valid_till: 'valid_till'
+  // };
+
+
+  console.log('formattedData', formattedData);
+  try {
+    const response = await api.put(`/agent_community/property-requests/${id}`, formattedData);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating property request:", error);
+    throw error;
+  }
+} 
+export const deletePropertyRequest = async (id: string) => {
+  try {
+    const response = await api.delete(`/agent_community/property-requests/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting property request:", error);
+    throw error;
+  }
+}
 export const threadData = [
   {
     picture_url: "/empty/thread.png" || empty,
@@ -215,7 +289,7 @@ export const comments: CommentProps[] = [
 
 
 export const companyStats = [
-  { label: "Join ourproperty.ng", value: "2 Months Ago" },
+  { label: "Joined ourproperty.ng", value: "2 Months Ago" },
   { label: "Years in Industry", value: "6 Years+" },
   { label: "Total Branch", value: "23" },
   { label: "Total Staff", value: "234" },

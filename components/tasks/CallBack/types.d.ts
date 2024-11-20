@@ -9,6 +9,7 @@ export interface RequestCardBaseProps {
   requestDate: string;
   requestId: string;
   pictureSrc: string;
+  userTitle: string;
   userName: string;
 }
 
@@ -46,6 +47,7 @@ export interface VisitorRequestCardProps extends RequestCardBaseProps {
 
 export interface PropertyRequestCardProps extends RequestCardBaseProps {
   cardType: "property";
+  targetAudience: string[];
   state: string;
   lga: string;
   propertyType: string;

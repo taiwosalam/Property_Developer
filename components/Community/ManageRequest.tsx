@@ -4,7 +4,7 @@ import { comments } from "@/app/(nav)/tasks/agent-community/data";
 import TextArea from "../Form/TextArea/textarea";
 import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ValidationErrors } from "@/utils/types";
 import MultiSelect from "./multi-select";
 import Comment from "@/app/(nav)/tasks/agent-community/threads/[threadId]/preview/comment";
@@ -28,24 +28,29 @@ const SkeletonBox = ({ className }: { className: string }) => (
 
 export const PropertyRequestFirstSection = ({
   data,
-  title,
   placeholderText,
   desc,
   loading,
-  inputValue: initialValue,
 }: {
   data?: any;
   desc?: string;
   title?: string;
   placeholderText: string;
   loading?: boolean;
-  inputValue?: string;
 }) => {
-  const [inputValue, setInputValue] = useState(initialValue || data?.title || '');
+  const [inputValue, setInputValue] = useState(data?.title ?? '');
   
+  useEffect(() => {
+    if (data?.title) {
+      setInputValue(data.title);
+    }
+  }, [data?.title]);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
+
+  // console.log('data', data)
 
   if (loading) {
     return (
@@ -77,14 +82,14 @@ export const PropertyRequestFirstSection = ({
         label=""
         placeholder={desc ? desc : placeholderText}
         className="w-full mt-4 min-h-[300px]"
-        value={data?.content || ''}
+        value={data?.content || data?.description || ''}
         inputSpaceClassName="!min-h-[400px] text-text-secondary no-italic !leading-60 dark:text-darkText-2"
       />
     </div>
   );
 };
 
-export const PropertyRequestSecondSection = ({ loading }: { loading?: boolean }) => {
+export const PropertyRequestSecondSection = ({ loading, data }: { loading?: boolean, data?: any }) => {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange | undefined>();
   const { minBudget, maxBudget, setMinBudget, setMaxBudget } = usePropertyRequestStore();
   const [timeRange, setTimeRange] = useState("90d");
@@ -92,6 +97,7 @@ export const PropertyRequestSecondSection = ({ loading }: { loading?: boolean })
 
   if (loading) {
     return (
+      <>
       <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
         {/* Request Types section */}
         <SkeletonBox className="h-6 w-24" />
@@ -123,6 +129,7 @@ export const PropertyRequestSecondSection = ({ loading }: { loading?: boolean })
           </div>
         </div>
       </div>
+      </>
     );
   }
 
@@ -167,7 +174,7 @@ export const PropertyRequestSecondSection = ({ loading }: { loading?: boolean })
     >
       <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
         <h2>Request Types</h2>
-        <PropertyRequestUnitType />
+        <PropertyRequestUnitType data={data} />
         <div className="budget flex flex-col gap-2">
           <h3 className="text-black dark:text-white font-semibold mb-2">
             Budget
@@ -181,7 +188,7 @@ export const PropertyRequestSecondSection = ({ loading }: { loading?: boolean })
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}
             inputClassName="bg-white"
             onChange={handleMinChange}
-            value={minBudget !== null ? minBudget.toString() : ""}
+            value={minBudget !== null ? minBudget.toString() : data?.min_budget || ""}
           />
           <Input
             required
@@ -192,7 +199,7 @@ export const PropertyRequestSecondSection = ({ loading }: { loading?: boolean })
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}
             inputClassName="bg-white"
             onChange={handleMaxChange}
-            value={maxBudget !== null ? maxBudget.toString() : ""}
+            value={maxBudget !== null ? maxBudget.toString() : data?.max_budget || ""}
           />
         </div>
         <div className="flex flex-col gap-2">

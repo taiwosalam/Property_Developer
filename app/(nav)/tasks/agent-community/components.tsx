@@ -152,3 +152,8 @@ export const RequestCardSkeleton = () => {
     </div>
   );
 };
+
+
+export const TextSkeleton = () => {
+  return <div className="w-24 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse inline-block" />;
+};

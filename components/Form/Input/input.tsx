@@ -41,6 +41,7 @@ const Input: React.FC<InputProps> = ({
   endWith,
   isPinField,
   minLength,
+  name,
 }) => {
   // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -101,7 +102,7 @@ const Input: React.FC<InputProps> = ({
 
         <input
           id={id}
-          name={id}
+          name={name ? name : id}
           value={value}
           ref={inputRef}
           required={required || requiredNoStar}

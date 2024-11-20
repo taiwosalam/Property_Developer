@@ -248,7 +248,7 @@ export const CounterButton: React.FC<{
   icon: string;
   alt: string;
 }> = ({ onClick = () => {}, disabled = false, icon, alt }) => (
-  <button className="text-white rounded-md" onClick={onClick}>
+  <button className="text-white rounded-md" onClick={onClick} type="button">
     <Image src={icon} alt={alt} width={20} height={20} />
   </button>
 );

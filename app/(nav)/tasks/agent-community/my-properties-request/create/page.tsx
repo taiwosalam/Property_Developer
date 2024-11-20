@@ -79,7 +79,7 @@ const CreateMyPropertyRequest = () => {
           type="button"
           className="py-2 px-7 bg-[#FDE9EA] text-[#E9212E] rounded-[4px] text-sm font-medium"
         >
-          Delete
+          Cancel
         </button>
         <button
           type="submit"

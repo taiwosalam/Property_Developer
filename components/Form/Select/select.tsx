@@ -10,6 +10,7 @@ import { useOutsideClick } from "@/hooks/useOutsideClick";
 
 const Select: React.FC<SelectProps> = ({
   id,
+  name,
   label,
   defaultValue,
   value: propValue,
@@ -133,7 +134,7 @@ const Select: React.FC<SelectProps> = ({
     >
       {/* input for flow progress and holding the selected value for form submission */}
       <input
-        name={id}
+        name={name ? name : id}
         id={id}
         type="hidden"
         className={hiddenInputClassName}

@@ -37,7 +37,7 @@ const ThreadCard = ({
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md">
       <Link
-        href={`${link}${myArticle ? "my-articles" : "threads"}/${slug}/preview`}
+        href={`${link}${myArticle ? "my-articles" : "threads"}/${slug}/preview?id=${id}`}
       >
         <ThreadHeader
           user_pics={user_pics}
@@ -79,15 +79,15 @@ const ThreadHeader = ({
         <div className="flex flex-col">
           <div className="flex gap-2 items-center">
             <p className="dark:text-white flex items-center gap-1">
-              {name || 'username'}
+              {name || '__'}
               <BadgeIcon color="gray" />
             </p>
           </div>
-          <p className="text-brand-9 text-sm"> {role || 'role'} </p>
+          <p className="text-brand-9 text-sm"> {role || '__'} </p>
         </div>
       </div>
       <div className="time">
-        <p className="text-sm text-[#6083ED]"> {time} </p>
+        <p className="text-sm text-[#6083ED]"> {time || '__'} </p>
       </div>
     </div>
   );
@@ -108,8 +108,8 @@ const ThreadBody = ({
         {title}
       </h2>
       <div 
-        className="text-sm line-clamp-3"
-        dangerouslySetInnerHTML={{ __html: desc }}
+        className="text-sm line-clamp-2 max-h-[3lh]"
+        dangerouslySetInnerHTML={{ __html: desc || '__' }}
       />
       <div className="imagWrapper">
         <Image
@@ -180,7 +180,6 @@ const ThreadFooter = ({ comments, likes, dislikes, slug, shareLink }: { comments
     } else {
       try {
         await navigator.clipboard.writeText(shareLink);
-        // You might want to add a toast notification here
         toast.success('Link copied to clipboard!');
       } catch (error) {
         console.error('Error copying to clipboard:', error);
