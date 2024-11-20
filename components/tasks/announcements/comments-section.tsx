@@ -9,7 +9,7 @@ const CommentsSection = () => {
       </h3>
       {comments.map((comment, index) => (
         <div key={comment.id}>
-          <Comment {...comment} />
+          <Comment {...comment} handleLike={() => {}} handleDislike={() => {}} />
           {index < comments.length - 1 && <SectionSeparator className="my-4" />}
         </div>
       ))}
