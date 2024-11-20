@@ -84,7 +84,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         // returnType="form-data"
         skipValidation
         onFormSubmit={handleSubmit}
-        className={`custom-flex-col gap-5 transition-opacity duration-300 ${
+        className={`custom-flex-col gap-5 transition-opacity duration-150 ${
           formStep === 2 ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
       >

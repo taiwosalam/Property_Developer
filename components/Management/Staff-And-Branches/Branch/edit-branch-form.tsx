@@ -1,5 +1,3 @@
-"use client";
-
 // Images
 import CameraCircle from "@/public/icons/camera-circle.svg";
 // Imports
@@ -10,31 +8,22 @@ import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { SectionSeparator } from "@/components/Section/section-components";
-import { ResponseType } from "@/app/(nav)/management/staff-branch/[branchId]/types";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { ValidationErrors } from "@/utils/types";
 import { useState, useEffect } from "react";
+import { SingleBranchResponseType } from "@/app/(nav)/management/staff-branch/[branchId]/types";
 import Avatars from "@/components/Avatars/avatars";
 
 const EditBranchForm = ({
   somedata,
   handleSubmit,
 }: {
-  somedata: ResponseType;
+  somedata: SingleBranchResponseType | null;
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }) => {
   const { preview, setPreview, handleImageChange, inputFileRef } =
     useImageUploader({
       placeholder: CameraCircle,
     });
-  const [activeAvatar, setActiveAvatar] = useState(
-    somedata?.branch?.branch_image || ""
-  );
-
-  const setValidationErrors = (errors: ValidationErrors) => {
-    // Handle validation errors
-    console.error(errors);
-  };
 
   const handleAvatarChange = (avatar: string) => {
     setPreview(avatar);
@@ -74,8 +63,8 @@ const EditBranchForm = ({
     <AuthForm
       className="custom-flex-col w-full max-w-[968px] gap-8"
       id="edit-branch-form"
+      skipValidation
       onFormSubmit={handleSubmit}
-      setValidationErrors={setValidationErrors}
     >
       <div className="custom-flex-col gap-4">
         <h2 className="text-brand-10 text-base font-bold">Branch Details</h2>
@@ -158,7 +147,7 @@ const EditBranchForm = ({
             />
             <input type="hidden" name="avatar" value={activeAvatar} />
           </label>
-          {/* <Avatars type="avatars" onClick={handleAvatarChange} /> */}
+          <Avatars onClick={handleAvatarChange} />
         </div>
       </div>
     </AuthForm>

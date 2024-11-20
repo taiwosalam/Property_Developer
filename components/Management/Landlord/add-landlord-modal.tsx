@@ -24,12 +24,6 @@ const AddLandlordModal = () => {
     useState<AddLandlordModalOptions>("options");
   const [formStep, setFormStep] = useState(1);
 
-  const navigateToLandlordPage = () => {
-    if (pathname !== "/management/landlord") {
-      router.push("/management/landlord");
-    }
-  };
-
   // Modify handleBack to handle both modal and form steps
   const handleBack = () => {
     if (activeStep === "add-landlord" && formStep === 2) {
@@ -42,14 +36,16 @@ const AddLandlordModal = () => {
 
   const closeModalAndRefresh = () => {
     setIsOpen(false);
-    navigateToLandlordPage();
-    setTimeout(() => {
-      window.dispatchEvent(new Event("refetchLandlords"));
-    }, 0);
+    if (pathname !== "/management/landlord") {
+      router.push("/management/landlord");
+    } else {
+      setTimeout(() => {
+        window.dispatchEvent(new Event("refetchLandlords"));
+      }, 0);
+    }
   };
 
   const handleAddLandlord = async (data: FormData) => {
-    // console.log(data);
     const status = await addLandlord(data);
     if (status) {
       closeModalAndRefresh();
