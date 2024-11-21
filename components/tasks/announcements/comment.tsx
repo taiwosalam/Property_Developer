@@ -1,55 +1,65 @@
+"use client"
 import Image from "next/image";
 import { empty } from "@/app/config";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ReplyIcon,
-  LikeIcon,
-  DislikeIcon,
   SendMessageIcon,
   ThumbsDown,
   ThumbsUp,
 } from "@/public/icons/icons";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Input from "@/components/Form/Input/input";
+import { Loader2 } from "lucide-react";
 
-export interface CommentProps {
+// Base comment data structure
+export interface CommentData {
   id: string | number;
   name: string;
   text: string;
   likes: number;
   dislikes: number;
-  replies?: CommentProps[];
-  commenting?: boolean;
-  onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
-  showInput?: boolean;
-  setShowInput?: (show: boolean) => void;
-  handleSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
+  replies?: CommentData[];
+  likeCount: number;
+  dislikeCount: number;
+  commentsCount: number;
+  parentId?: string | number;
 }
 
+// Handler functions interface
 interface CommentHandlers {
   handleLike: (id: string | number) => void;
   handleDislike: (id: string | number) => void;
-  replying?: boolean;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
-const Comment: React.FC<CommentProps & CommentHandlers> = ({
+// Props for the Comment component
+type CommentProps = CommentData & CommentHandlers & {
+  showInput?: boolean;
+  setShowInput?: (show: boolean) => void;
+}
+
+const Comment: React.FC<CommentProps> = ({
   id,
   name,
   text,
   likes,
   dislikes,
   replies,
-  onSubmit,
-  commenting,
+  handleSubmit,
   showInput: propShowInput,
   setShowInput: propSetShowInput,
   handleLike,
   handleDislike,
-  
+  likeCount,
+  dislikeCount,
+  commentsCount,
+  parentId,
 }) => {
   const [localShowInput, setLocalShowInput] = useState(false);
   const [localCommenting, setLocalCommenting] = useState(false);
   const [localCommentId, setLocalCommentId] = useState<number>(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const showInput = propShowInput ?? localShowInput;
   const setShowInput = propSetShowInput ?? setLocalShowInput;
@@ -59,34 +69,23 @@ const Comment: React.FC<CommentProps & CommentHandlers> = ({
     setLocalCommenting(true);
     setLocalCommentId(Number(id));
   };
-  
-  if (!name && !text) {
-    return (
-      <div>
-        <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium mb-4">
-          Be the first to comment
-        </p>
-        <form onSubmit={onSubmit} className="flex items-center justify-between gap-3">
-          <Input
-            id="message"
-            name="message"
-            placeholder="Type your message here"
-            className="w-full"
-            inputClassName="border-none bg-neutral-3"
-          />
-          <button
-            type="submit"
-            className="bg-brand-9 p-2 rounded grid place-items-center"
-            aria-label="send message"
-          >
-            {commenting ? <span className="text-white"> ... </span> 
-              : <span className="text-white"><SendMessageIcon /></span>
-            }
-          </button>
-        </form>
-      </div>
-    );
-  }
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      const formData = new FormData(e.target as HTMLFormElement);
+      formData.append('parentId', parentId?.toString() || id.toString());
+      
+      await handleSubmit?.(e);
+      setShowInput(false);
+    } catch (error) {
+      console.error('Failed to submit:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div data-comment-id={id}>
@@ -110,7 +109,7 @@ const Comment: React.FC<CommentProps & CommentHandlers> = ({
         </div>
       </div>
       <div className="flex items-center gap-3 justify-end mt-2">
-        <button
+      <button
           type="button"
           onClick={() => handleReplyClick(id)}
           className="text-text-quaternary dark:text-darkText-1 flex items-center gap-1"
@@ -120,38 +119,46 @@ const Comment: React.FC<CommentProps & CommentHandlers> = ({
         </button>
         <button className="flex items-center gap-1" onClick={() => handleLike(id)}>
           <ThumbsUp />
-          <span className="text-xs font-normal text-[#010A23]">{likes}</span>
+          <span className="text-xs font-normal text-[#010A23]">{likeCount}</span>
         </button>
         <button className="flex items-center gap-1 text-text-disabled" onClick={() => handleDislike(id)}>
           <ThumbsDown />
-          <span className="text-xs font-normal">{dislikes}</span>
+          <span className="text-xs font-normal">{dislikeCount}</span>
         </button>
       </div>
-      {showInput && (
-        <div className="mt-6 mb-4 flex items-center justify-between gap-3">
+      {(showInput || commentsCount === 0) && (
+        <form 
+          onSubmit={handleFormSubmit}
+          className="mt-6 mb-4 flex items-center justify-between gap-3"
+        >
+          <input 
+            type="hidden" 
+            name="parentId" 
+            value={parentId || id} 
+          />
           <Input
-            id={localCommenting ? `${id}` : `comment-${id}`}
-            name={localCommenting ? "reply" : "message"}
-            placeholder={localCommenting ? "Type your reply here" : "Type your message here"}
+            id={`${id}`}
+            name="reply"
+            placeholder="Type your reply here"
             className="w-full"
             inputClassName="border-none bg-neutral-3"
+            disabled={isSubmitting}
           />
           <button
             type="submit"
             className="bg-brand-9 p-2 rounded grid place-items-center"
             aria-label="send message"
+            disabled={isSubmitting}
           >
-            {localCommenting ? (
-              <span className="text-white">
-               <SendMessageIcon />
-             </span>
-            ) : (
-              <span className="text-white">
+            <span className="text-white">
+              {isSubmitting ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
                 <SendMessageIcon />
-              </span>
-            )}
+              )}
+            </span>
           </button>
-        </div>
+        </form>
       )}
 
       {replies && replies.length > 0 && (
@@ -165,9 +172,9 @@ const Comment: React.FC<CommentProps & CommentHandlers> = ({
                 key={r.id} 
                 {...r} 
                 handleLike={handleLike} 
-                handleDislike={handleDislike} 
-                replying={true} 
-                id={id} 
+                handleDislike={handleDislike}
+                handleSubmit={handleSubmit}
+                parentId={r.id}
               />
             ))}
           </div>

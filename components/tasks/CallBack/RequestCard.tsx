@@ -162,6 +162,25 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
                 />
               );
             })
+          : cardType === "agent-community"
+          ? cardViewDetails.map(({ label, accessor }, index) => {
+              return (
+                <div
+                  key={index}
+                  className={clsx(
+                    "col-span-1",
+                    index === 0 && "sm:col-span-2",
+                    index === 1 && "sm:col-span-1",
+                    index < 2 && "row-span-1"
+                  )}
+                >
+                  <UserDetailItems
+                    label={label}
+                    value={String(props[accessor])}
+                  />
+                </div>
+              );
+            })
           : cardType === "visitor"
           ? cardViewDetails.map(({ label, accessor }, index) => {
               const value =
@@ -173,16 +192,6 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               );
             })
           : cardType === "property"
-          ? cardViewDetails.map(({ label, accessor }, index) => {
-              return (
-                <UserDetailItems
-                  key={index}
-                  label={label}
-                  value={String(props[accessor])}
-                />
-              );
-            })
-          : cardType === "agent-community"
           ? cardViewDetails.map(({ label, accessor }, index) => {
               return (
                 <UserDetailItems

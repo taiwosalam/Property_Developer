@@ -1,4 +1,79 @@
-import clsx from "clsx";
+import Input from "@/components/Form/Input/input";
+import { SendMessageIcon, ThumbsUp } from "@/public/icons/icons";
+import { ThumbsDown } from "@/public/icons/icons";
+import { CommentData } from "@/components/tasks/announcements/comment";
+
+interface ThreadResponse {
+  post: any;
+  company_summary: any;
+  contributor: any;
+  comments: CommentData[];
+}
+interface Props {
+  likeCount: number;
+  dislikeCount: number;
+  handleLike: () => void;
+  handleDislike: () => void;
+  userAction?: 'like' | 'dislike' | null;
+  isLoading: boolean;
+  commentCount: number;
+  slug: string;
+}
+
+// export const NewComment = ({ onSubmit, commenting, commentCount, slug }: { onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>, commenting?: boolean, commentCount?: number, slug: string }) => {
+//   const { data, error, loading, refetch: refetchComments } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     setIsSubmitting(true);
+    
+//     const formData = new FormData(e.target as HTMLFormElement);
+//     const message = formData.get("message") as string;
+//     try {
+//       console.log("event triggered for comment");
+//       const status = await sendMyArticleComment(slug, message);
+//       if (status) {
+//         window.dispatchEvent(new Event("refetchComments"));
+//         console.log("event triggered for comment");
+//       }
+//       (e.target as HTMLFormElement).reset();
+//     } catch (error) {
+//       console.error('Failed to submit:', error);
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   return (
+//     <div className="mt-6">
+//     <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium mb-4">
+//       {commentCount === 0 ? "Be the first to comment" : "Add a comment"}
+//     </p>
+//     <form onSubmit={handleFormSubmit} className="flex items-center justify-between gap-3">
+//       <Input
+//         id="message"
+//         name="message"
+//         placeholder="Type your message here"
+//         disabled={isSubmitting}
+//         className="w-full"
+//         inputClassName="border-none bg-neutral-3"
+//       />
+//       <button
+//         type="submit"
+//         className="bg-brand-9 p-2 rounded grid place-items-center text-white"
+//         aria-label="send message"
+//         disabled={isSubmitting}
+//       >
+//          {commenting ? (
+//                 <Loader2 className="h-5 w-5 animate-spin" />
+//               ) : (
+//           <SendMessageIcon />
+//         )}
+//       </button>
+//     </form>
+//   </div>
+// );
+// }
 
 export const ThreadArticleSkeleton = () => {
     return (
@@ -43,10 +118,7 @@ export const ThreadArticleSkeleton = () => {
     );
   };
 
-
-  export // ... existing imports ...
-
-  const CompanySummarySkeleton = () => {
+ export const CompanySummarySkeleton = () => {
     return (
       <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg animate-pulse">
         {/* Title skeleton */}
@@ -103,7 +175,6 @@ export const ThreadArticleSkeleton = () => {
   };
 
 
-
 export const RequestCardSkeleton = () => {
   return (
     <div
@@ -157,3 +228,38 @@ export const RequestCardSkeleton = () => {
 export const TextSkeleton = () => {
   return <div className="w-24 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse inline-block" />;
 };
+
+
+export const Loader = ({ className }: { className?: string }) => (
+  <div className={`bg-gray-200 dark:bg-gray-700 rounded animate-pulse ${className}`} />
+);
+
+
+export const LikeDislikeButtons = ({
+  likeCount,
+  dislikeCount,
+  handleLike,
+  handleDislike,
+  userAction,
+  isLoading,
+}: Props) => (
+  <div className="flex gap-2">
+    <button
+      className={`flex items-center gap-1 ${userAction === 'like' ? 'text-blue-500' : ''}`}
+      onClick={handleLike}
+      disabled={isLoading}
+    >
+      <ThumbsUp />
+      <p>{likeCount}</p>
+    </button>
+    <button
+      className={`flex items-center gap-1 ${userAction === 'dislike' ? 'text-red-500' : ''}`}
+      onClick={handleDislike}
+      disabled={isLoading}
+    >
+      <ThumbsDown />
+      <p>{dislikeCount}</p>
+    </button>
+  </div>
+);
+  

@@ -2,8 +2,25 @@ import Image from "next/image";
 import SampleUser from "@/public/empty/sample-user.svg";
 import { empty } from "@/app/config";
 import { TextSkeleton } from "@/app/(nav)/tasks/agent-community/components";
+import { formatDate } from "@/app/(nav)/tasks/agent-community/property-request/data";
 
-export const ContributorDetails = ({ title, loading, post, contributors }: { title: string, loading?: boolean, post?: any, contributors?: any }) => {
+export const ContributorDetails = ({ 
+  title, 
+  loading, 
+  post, 
+  contributors, 
+  targetAudience, 
+  postedDate, 
+  updatedDate 
+}: { 
+  title: string, 
+  loading?: boolean, 
+  post?: any, 
+  contributors?: any, 
+  targetAudience?: string, 
+  postedDate?: string, 
+  updatedDate?: string 
+}) => {
   if (loading) {
     return (
       <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
@@ -48,7 +65,7 @@ export const ContributorDetails = ({ title, loading, post, contributors }: { tit
         <div className="flex gap-4">
           <p className="text-[#747474] text-sm"> Target Audience </p>
           <p className="dark:text-white text-black text-sm">
-            {post?.target_audience ? JSON.parse(post.target_audience).join(', ') : <div className="w-32 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse inline-block" />}
+            {targetAudience || <div className="w-32 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse inline-block" />}
           </p>
         </div>
       </div>

@@ -1,5 +1,29 @@
 import api from "@/services/api";
 
+
+export const formatDateRange = (startDate: string, endDate: string) => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  if (!startDate || !endDate) return '';
+  return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+};
+
+export const formatDate = (dateString: string) => {
+  if (!dateString) return "___";
+  try {
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];
+  } catch {
+    return "___";
+  }
+};
 export interface PropertyRequestDataType {
   userName: string;
   requestDate: string;

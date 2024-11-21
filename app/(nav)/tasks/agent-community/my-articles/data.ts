@@ -1,4 +1,5 @@
 // Imports
+import { CommentData } from "@/components/tasks/announcements/comment";
 import api from "@/services/api";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
@@ -101,15 +102,17 @@ export const updateMyArticle = async (id: number, formData: any) => {
 export const sendMyArticleComment = async (slug: string, content: string) => {
   try {
     const response = await api.post(`/agent_community/${slug}/comment`, { content });
-    return response.data;
+    // return response.data;
+    return true
   } catch (error) {
     if (error instanceof AxiosError) {
       toast.error(error.response?.data.message);
     } else {
       toast.error("Error sending comment:");
     }
-    console.error("Error sending comment:", error);
-    throw error;
+    // console.error("Error sending comment:", error);
+    return false
+    // throw error;
   }
 }
 
@@ -117,10 +120,12 @@ export const sendMyArticleComment = async (slug: string, content: string) => {
 export const sendMyArticleReply = async (slug: string, commentId: string, content: string) => {
   try {
     const response = await api.post(`/agent_community/${slug}/comment/${commentId}/reply`, { content });
-    return response.data;
+    return true
+    // return response.data;
   } catch (error) {
-    console.error("Error sending reply:", error);
-    throw error;
+    return false
+    // console.error("Error sending reply:", error);
+    // throw error;
   }
 }
 

@@ -12,7 +12,7 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { deleteMyArticle, getMyArticlesDetails, updateMyArticle } from "../../data";
 import { toast } from "sonner";
 import useFetch from "@/hooks/useFetch";
-import { CommentProps } from "@/components/tasks/announcements/comment";
+import { CommentData } from "@/components/tasks/announcements/comment";
 import { AuthForm } from "@/components/Auth/auth-components";
 
 const desc =
@@ -22,7 +22,7 @@ const desc =
     post: any;
     company_summary: any;
     contributor: any;
-    comments: CommentProps[];
+    comments: CommentData[];
   }
   
 const ManageMyArticle = () => {
@@ -33,7 +33,7 @@ const ManageMyArticle = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [article, setArticle] = useState(null)
-  const [id, setId] = useState<number | null>(null);
+  const [id, setId] = useState(null)
 
   const handleDeleteMyArticle = async ({ slug }: { slug: string }) => {
     setIsDeleting(true);
