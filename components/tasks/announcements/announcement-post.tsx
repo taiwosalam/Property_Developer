@@ -81,7 +81,7 @@ const AnnouncementPost = () => {
           </div>
         </div>
       </div>
-      <CommentsSection />
+      <CommentsSection comments={[]} />
     </div>
   );
 };
