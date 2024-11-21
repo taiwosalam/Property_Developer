@@ -13,7 +13,7 @@ import user3 from "@/public/empty/user3.svg";
 import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import { comments } from "../../../data";
-import Comment, { CommentProps } from "@/components/tasks/announcements/comment";
+import Comment, { CommentData } from "@/components/tasks/announcements/comment";
 import { ContributorDetails } from "@/components/Community/Contributor";
 import CompanySummary from "@/components/Community/CompanySummary";
 import useFetch from "@/hooks/useFetch";
@@ -25,7 +25,7 @@ interface ThreadResponse {
   post: any;
   company_summary: any;
   contributor: any;
-  comments: CommentProps[];
+  comments: CommentData[];
 }
 
 const ThreadPreview = () => {
@@ -35,7 +35,7 @@ const ThreadPreview = () => {
   const [post, setPost] = useState<any>(null);
   const [companySummary, setCompanySummary] = useState<any>(null);
   const [contributors, setContributors] = useState<any>(null);
-  const [comments, setComments] = useState<CommentProps[]>([]);
+  const [comments, setComments] = useState<CommentData[]>([]);
   const { data, error, loading } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
 
   useEffect(() => {
@@ -225,11 +225,11 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
 
 interface ThreadCommentProps {
   slug: string;
-  comments: CommentProps[] & {
+  comments: CommentData[] & {
     likes?: string | number;
     dislikes?: string | number;
   };
-  setComments: React.Dispatch<React.SetStateAction<CommentProps[]>>;
+  setComments: React.Dispatch<React.SetStateAction<CommentData[]>>;
 }
 
 const ThreadComments = ({
@@ -289,29 +289,6 @@ const ThreadComments = ({
       console.error("Error fetching comments:", error);
     }
   };
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   const formData = new FormData(e.target as HTMLFormElement);
-  //   const content = formData.get('message');
-  //   console.log("form submitted with message:", content);
-  //   try {
-  //     if (content) {
-  //       const response = await sendMyArticleComment(slug, content as string);
-  //       toast.success("Comment sent successfully");
-        
-  //       // Reset form and fetch updated comments
-  //       (e.target as HTMLFormElement).reset();
-  //       setShowInput(false);
-        
-  //       // Fetch updated comments or update local state
-  //       // const updatedComments = await fetchComments(slug); 
-  //       // setLocalComments(updatedComments as CommentProps[]);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error sending comment:", error);
-  //     toast.error("Failed to send comment");
-  //   }
-  // };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -327,7 +304,7 @@ const ThreadComments = ({
       setCommenting(true);
   
       // Optimistic Update: New comment/reply
-      const newComment: CommentProps = {
+      const newComment: CommentData = {
         id: Date.now(),
         text: reply || message,
         name: "You", // Authenticated user's name
@@ -336,10 +313,7 @@ const ThreadComments = ({
         replies: [],
         likeCount: 0,
         dislikeCount: 0,
-        onSubmit: handleSubmit,
         commentsCount: 0,
-        handleLike: handleLike,
-        handleDislike: handleDislike
       };
   
       if (reply && parentId) {

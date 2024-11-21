@@ -10,7 +10,7 @@ import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
 import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
-import Comment, { CommentProps } from "@/components/tasks/announcements/comment";
+import Comment, { CommentData } from "@/components/tasks/announcements/comment";
 import ReadyByCard from "@/components/Community/ReadByCard";
 import useFetch from "@/hooks/useFetch";
 import { useEffect } from "react";
@@ -23,12 +23,12 @@ interface ArticleResponse {
   post: any;
   company_summary: any;
   contributor: any;
-  comments: CommentProps[];
+  comments: CommentData[];
 }
 
 interface CommentsResponse {
   message: string;
-  data: CommentProps[];
+  data: CommentData[];
 }
 
 const ThreadPreview = () => {
@@ -38,7 +38,7 @@ const ThreadPreview = () => {
   const [post, setPost] = useState<any>(null);
   const [companySummary, setCompanySummary] = useState<any>(null);
   const [contributors, setContributors] = useState<any>(null);
-  const [comments, setComments] = useState<CommentProps[]>([]);
+  const [comments, setComments] = useState<CommentData[]>([]);
   const { data, error, loading } = useFetch<ArticleResponse>(`/agent_community/${slug}`);
 
   useEffect(() => {
@@ -216,8 +216,8 @@ const ThreadComments = ({
   setComments,
 }: {
   slug: string;
-  comments: CommentProps[];
-  setComments: React.Dispatch<React.SetStateAction<CommentProps[]>>;
+  comments: CommentData[];
+  setComments: React.Dispatch<React.SetStateAction<CommentData[]>>;
 }) => {
   const [commenting, setCommenting] = useState(false);
 
@@ -230,65 +230,6 @@ const ThreadComments = ({
       console.error("Error fetching comments:", error);
     }
   };
-
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   const formData = new FormData(e.target as HTMLFormElement);
-  //   const message = formData.get("message") as string;
-  //   const reply = formData.get("reply") as string;
-  //   const parentId = formData.get("parentId") as string;
-
-  //   if (!message && !reply) return;
-
-  //   try {
-  //     setCommenting(true);
-      
-  //     // Optimistic update
-  //     const newComment = {
-  //       id: Date.now(), // Temporary ID
-  //       text: reply || message,
-  //       name: "You", // Or get from user context
-  //       likes: 0,
-  //       dislikes: 0,
-  //       replies: []
-  //     };
-
-  //     if (reply && parentId) {
-  //       // Optimistically update replies
-  //       setComments(prevComments => 
-  //         prevComments.map(comment => {
-  //           if (comment.id.toString() === parentId) {
-  //             return {
-  //               ...comment,
-  //               replies: [...(comment.replies || []), newComment]
-  //             };
-  //           }
-  //           return comment;
-  //         })
-  //       );
-        
-  //       await sendMyArticleReply(slug, parentId, reply);
-  //     } else if (message) {
-  //       // Optimistically add new comment
-  //       setComments(prev => [...prev, newComment]);
-  //       await sendMyArticleComment(slug, message);
-  //     }
-      
-  //     toast.success(reply ? "Reply added successfully" : "Comment added successfully");
-      
-  //     // Background refetch to sync with server
-  //     fetchComments();
-      
-  //   } catch (error) {
-  //     toast.error("Failed to add comment/reply");
-  //     console.error(error);
-  //     // Revert optimistic update on error
-  //     fetchComments();
-  //   } finally {
-  //     setCommenting(false);
-  //   }
-  // };
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -304,19 +245,16 @@ const ThreadComments = ({
       setCommenting(true);
   
       // Optimistic Update: New comment/reply
-      const newComment: CommentProps = {
-        id: Date.now(), // Temporary ID for the new comment/reply
+      const newComment: CommentData = {
+        id: Date.now(),
         text: reply || message,
-        name: "You", // Replace with authenticated user's name
+        name: "You", // Authenticated user's name
         likes: 0,
         dislikes: 0,
+        replies: [],
         likeCount: 0,
         dislikeCount: 0,
-        replies: [],
-        commentsCount: 0,
-        onSubmit: handleSubmit,
-        handleLike: () => {},
-        handleDislike: () => {}
+        commentsCount: 0
       };
   
       if (reply && parentId) {
@@ -356,6 +294,9 @@ const ThreadComments = ({
       setCommenting(false);
     }
   };
+
+  const handleLike = () => {};
+  const handleDislike = () => {};
   
   return (
     <div>
@@ -370,8 +311,8 @@ const ThreadComments = ({
           <Comment
             key={comment.id}
             {...comment}
-            handleLike={() => { }}
-            handleDislike={() => { }}
+            handleLike={handleLike}
+            handleDislike={handleDislike}
             handleSubmit={handleSubmit}
           />
         ))}

@@ -12,32 +12,34 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Input from "@/components/Form/Input/input";
 import { Loader2 } from "lucide-react";
 
-export interface CommentProps {
+// Base comment data structure
+export interface CommentData {
   id: string | number;
   name: string;
   text: string;
   likes: number;
   dislikes: number;
-  replies?: CommentProps[];
+  replies?: CommentData[];
   likeCount: number;
   dislikeCount: number;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  showInput?: boolean;
-  setShowInput?: (show: boolean) => void;
-  handleSubmit?: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   commentsCount: number;
   parentId?: string | number;
-  handleLike: (id: string | number) => void;
-  handleDislike: (id: string | number) => void;
 }
 
+// Handler functions interface
 interface CommentHandlers {
   handleLike: (id: string | number) => void;
   handleDislike: (id: string | number) => void;
-  replying?: boolean;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
-const Comment: React.FC<CommentProps & CommentHandlers> = ({
+// Props for the Comment component
+type CommentProps = CommentData & CommentHandlers & {
+  showInput?: boolean;
+  setShowInput?: (show: boolean) => void;
+}
+
+const Comment: React.FC<CommentProps> = ({
   id,
   name,
   text,
