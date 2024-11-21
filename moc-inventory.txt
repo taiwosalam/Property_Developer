@@ -753,3 +753,73 @@ const ThreadComments = ({
       setCommenting(false);
     }
   };
+
+
+
+
+
+
+
+   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  
+    const formData = new FormData(e.target as HTMLFormElement);
+    const message = formData.get("message") as string;
+    const reply = formData.get("reply") as string;
+    const parentId = formData.get("parentId") as string;
+  
+    if (!message && !reply) return;
+  
+    try {
+      setCommenting(true);
+  
+      // Optimistic Update: New comment/reply
+      const newComment: CommentData = {
+        id: Date.now(),
+        text: reply || message,
+        name: "You", // Authenticated user's name
+        likes: 0,
+        dislikes: 0,
+        replies: [],
+        likeCount: 0,
+        dislikeCount: 0,
+        commentsCount: 0
+      };
+  
+      if (reply && parentId) {
+        // Add reply to the specific parent comment
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment.id.toString() === parentId
+              ? {
+                  ...comment,
+                  replies: [...(comment.replies || []), newComment],
+                }
+              : comment
+          )
+        );
+  
+        // Send reply to the server
+        await sendMyArticleReply(slug, parentId, reply);
+      } else if (message) {
+        // Add new top-level comment
+        setComments((prev) => [...prev, newComment]);
+  
+        // Send comment to the server
+        await sendMyArticleComment(slug, message);
+      }
+  
+      toast.success(reply ? "Reply added successfully" : "Comment added successfully");
+  
+      // Fetch updated comments from the server for synchronization
+      fetchComments();
+    } catch (error) {
+      toast.error("Failed to add comment/reply");
+      console.error("Error adding comment/reply:", error);
+  
+      // Revert optimistic updates by re-fetching comments
+      fetchComments();
+    } finally {
+      setCommenting(false);
+    }
+  };

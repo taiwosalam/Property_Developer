@@ -16,8 +16,10 @@ import useFetch from "@/hooks/useFetch";
 import { useEffect } from "react";
 import { useState } from "react";
 import { sendMyArticleComment, sendMyArticleReply, toggleLike } from "../../data";
-import { LikeDislikeButtons, Loader, NewComment, ThreadArticleSkeleton } from "../../../components";
+import { LikeDislikeButtons, Loader, ThreadArticleSkeleton } from "../../../components";
 import { toast } from "sonner";
+import NewComment from "../../../NewComment";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 interface ArticleResponse {
   post: any;
@@ -39,7 +41,9 @@ const ThreadPreview = () => {
   const [companySummary, setCompanySummary] = useState<any>(null);
   const [contributors, setContributors] = useState<any>(null);
   const [comments, setComments] = useState<CommentData[]>([]);
-  const { data, error, loading } = useFetch<ArticleResponse>(`/agent_community/${slug}`);
+  const { data, error, loading, refetch: refetchComments } = useFetch<ArticleResponse>(`/agent_community/${slug}`);
+  
+  useRefetchOnEvent("refetchComments", ()=> refetchComments({silent:true}));
 
   useEffect(() => {
     if (data) {
@@ -162,10 +166,15 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
         dangerouslySetInnerHTML={{ __html: post?.content }}
       />
       <div className="flex justify-between mt-6">
-        <div className="text-black font-semibold">Comments {post?.comments_count}</div>
+      <div className="flex items-center gap-2">
+          <span className="text-text-secondary">Comments</span>
+          <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">{post?.comments_count}</p>
+        </div>
 
         <div className="flex gap-2">
           <LikeDislikeButtons
+            commentCount={post?.comments_count}
+            slug={slug}
             likeCount={likeCount}
             dislikeCount={dislikeCount}
             handleLike={handleLike}
@@ -210,24 +219,62 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
 // SECOND SIDE
 
 
+interface ThreadCommentProps {
+  slug: string;
+  comments: CommentData[] & {
+    likes?: string | number;
+    dislikes?: string | number;
+  };
+  setComments: React.Dispatch<React.SetStateAction<CommentData[]>>;
+}
+
 const ThreadComments = ({
   slug,
   comments,
-  setComments,
-}: {
-  slug: string;
-  comments: CommentData[];
-  setComments: React.Dispatch<React.SetStateAction<CommentData[]>>;
-}) => {
+  // setComments,
+}: ThreadCommentProps) => {
+  const [likeCount, setLikeCount] = useState('likes' in comments ? parseInt(comments.likes as string) : 0);
   const [commenting, setCommenting] = useState(false);
+  const [dislikeCount, setDislikeCount] = useState('dislikes' in comments ? parseInt(comments.dislikes as string) : 0);
+  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchComments = async () => {
+  const handleLike = async () => {
+    console.log('like clicked');
+    if (isLoading || userAction === 'like') return;
+    setIsLoading(true);
+    
     try {
-      const response = await fetch(`/agent_community/${slug}/comments`);
-      const data = await response.json();
-      setComments(data.data);
+      await toggleLike(slug, 1);
+      if (userAction === 'dislike') {
+        setDislikeCount(prev => prev - 1);
+      }
+      setLikeCount(prev => prev + 1);
+      setUserAction('like');
     } catch (error) {
-      console.error("Error fetching comments:", error);
+      console.error('Error toggling like:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+  const handleDislike = async () => {
+    console.log('dislike clicked');
+    if (isLoading || userAction === 'dislike') return;
+    setIsLoading(true);
+
+    try { 
+      await toggleLike(slug, -1);
+      if (userAction === 'like') {
+        setLikeCount(prev => prev - 1);
+      }
+      setDislikeCount(prev => prev + 1);
+      setUserAction('dislike');
+    } catch (error) {
+      console.error('Error toggling dislike:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -243,69 +290,40 @@ const ThreadComments = ({
   
     try {
       setCommenting(true);
-  
-      // Optimistic Update: New comment/reply
-      const newComment: CommentData = {
-        id: Date.now(),
-        text: reply || message,
-        name: "You", // Authenticated user's name
-        likes: 0,
-        dislikes: 0,
-        replies: [],
-        likeCount: 0,
-        dislikeCount: 0,
-        commentsCount: 0
-      };
-  
       if (reply && parentId) {
-        // Add reply to the specific parent comment
-        setComments((prevComments) =>
-          prevComments.map((comment) =>
-            comment.id.toString() === parentId
-              ? {
-                  ...comment,
-                  replies: [...(comment.replies || []), newComment],
-                }
-              : comment
-          )
-        );
-  
         // Send reply to the server
-        await sendMyArticleReply(slug, parentId, reply);
+        const status = await sendMyArticleReply(slug, parentId, reply);
+        if (status) {
+          window.dispatchEvent(new Event("refetchComments"));
+          console.log("event triggered for reply");
+        }
       } else if (message) {
-        // Add new top-level comment
-        setComments((prev) => [...prev, newComment]);
-  
         // Send comment to the server
-        await sendMyArticleComment(slug, message);
+        const status = await sendMyArticleComment(slug, message);
+        if (status) {
+          window.dispatchEvent(new Event("refetchComments"));
+          console.log("event triggered for commentx");
+        }
       }
-  
-      toast.success(reply ? "Reply added successfully" : "Comment added successfully");
-  
-      // Fetch updated comments from the server for synchronization
-      fetchComments();
     } catch (error) {
       toast.error("Failed to add comment/reply");
       console.error("Error adding comment/reply:", error);
-  
-      // Revert optimistic updates by re-fetching comments
-      fetchComments();
     } finally {
       setCommenting(false);
     }
   };
-
-  const handleLike = () => {};
-  const handleDislike = () => {};
   
   return (
     <div>
-      {comments.length === 0 && (
-        <NewComment
-          onSubmit={handleSubmit}
-          commenting={commenting}
-        />
-      )}
+      <NewComment
+        commentCount={comments.length}
+        slug={slug}
+        likeCount={likeCount}
+        dislikeCount={dislikeCount}
+        handleLike={handleLike}
+        handleDislike={handleDislike}
+        isLoading={isLoading}
+      /> 
       <div className="mt-4">
         {comments.map((comment) => (
           <Comment

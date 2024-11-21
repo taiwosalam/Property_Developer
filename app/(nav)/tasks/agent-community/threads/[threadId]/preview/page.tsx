@@ -12,14 +12,15 @@ import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
 import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
-import { comments } from "../../../data";
 import Comment, { CommentData } from "@/components/tasks/announcements/comment";
 import { ContributorDetails } from "@/components/Community/Contributor";
 import CompanySummary from "@/components/Community/CompanySummary";
 import useFetch from "@/hooks/useFetch";
-import { NewComment, ThreadArticleSkeleton } from "../../../components";
+import { ThreadArticleSkeleton } from "../../../components";
 import { sendMyArticleComment, sendMyArticleReply, toggleLike } from "../../../my-articles/data";
 import { toast } from "sonner";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import NewComment from "../../../NewComment";
 
 interface ThreadResponse {
   post: any;
@@ -36,7 +37,9 @@ const ThreadPreview = () => {
   const [companySummary, setCompanySummary] = useState<any>(null);
   const [contributors, setContributors] = useState<any>(null);
   const [comments, setComments] = useState<CommentData[]>([]);
-  const { data, error, loading } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
+  const { data, error, loading, refetch: refetchComments } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
+
+  useRefetchOnEvent("refetchComments", ()=> refetchComments({silent:true}));
 
   useEffect(() => {
     if (data) {
@@ -45,12 +48,12 @@ const ThreadPreview = () => {
       setContributors(data.post.contributor);
       setComments(data.post.comments);
     }
-    console.log("data", post);
+    // console.log("comements", data?.post.comments);
   }, [data]);
 
   // console.log("slug", slug);
   // console.log("companySummary", companySummary);
-  console.log("comments", comments);
+  // console.log("comments", comments);
   return (
     <div className="mb-16">
       <div className="flex items-center justify-between flex-wrap gap-2">
@@ -177,7 +180,10 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
         dangerouslySetInnerHTML={{ __html: post?.content }}
       />
       <div className="flex justify-between mt-6">
-        <div className="text-black font-semibold">Comments {comments.length}</div>
+        <div className="flex items-center gap-2">
+          <span className="text-text-secondary">Comments</span>
+          <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">{post?.comments_count}</p>
+        </div>
 
         <div className="flex gap-2">
           <button className={`flex items-center gap-1 ${userAction === 'like' ? 'text-blue-500' : ''}`} disabled={isLoading} onClick={handleLike}>
@@ -235,9 +241,10 @@ interface ThreadCommentProps {
 const ThreadComments = ({
   slug,
   comments,
-  setComments,
+  // setComments,
 }: ThreadCommentProps) => {
   const [likeCount, setLikeCount] = useState('likes' in comments ? parseInt(comments.likes as string) : 0);
+  const [commenting, setCommenting] = useState(false);
   const [dislikeCount, setDislikeCount] = useState('dislikes' in comments ? parseInt(comments.dislikes as string) : 0);
   const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -279,16 +286,7 @@ const ThreadComments = ({
       setIsLoading(false);
     }
   };
-  const [commenting, setCommenting] = useState(false);
-  const fetchComments = async () => {
-    try {
-      const response = await fetch(`/agent_community/${slug}/comments`);
-      const data = await response.json();
-      setComments(data.data);
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-    }
-  };
+  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -302,53 +300,24 @@ const ThreadComments = ({
   
     try {
       setCommenting(true);
-  
-      // Optimistic Update: New comment/reply
-      const newComment: CommentData = {
-        id: Date.now(),
-        text: reply || message,
-        name: "You", // Authenticated user's name
-        likes: 0,
-        dislikes: 0,
-        replies: [],
-        likeCount: 0,
-        dislikeCount: 0,
-        commentsCount: 0,
-      };
-  
       if (reply && parentId) {
-        // Add reply to the specific parent comment
-        setComments((prevComments) =>
-          prevComments.map((comment) =>
-            comment.id.toString() === parentId
-              ? {
-                  ...comment,
-                  replies: [...(comment.replies || []), newComment],
-                }
-              : comment
-          )
-        );
-  
         // Send reply to the server
-        await sendMyArticleReply(slug, parentId, reply);
+        const status = await sendMyArticleReply(slug, parentId, reply);
+        if (status) {
+          window.dispatchEvent(new Event("refetchComments"));
+          console.log("event triggered for reply");
+        }
       } else if (message) {
-        // Add new top-level comment
-        setComments((prev) => [...prev, newComment]);
-  
         // Send comment to the server
-        await sendMyArticleComment(slug, message);
+        const status = await sendMyArticleComment(slug, message);
+        if (status) {
+          window.dispatchEvent(new Event("refetchComments"));
+          console.log("event triggered for commentx");
+        }
       }
-  
-      toast.success(reply ? "Reply added successfully" : "Comment added successfully");
-  
-      // Fetch updated comments from the server for synchronization
-      fetchComments();
     } catch (error) {
       toast.error("Failed to add comment/reply");
       console.error("Error adding comment/reply:", error);
-  
-      // Revert optimistic updates by re-fetching comments
-      fetchComments();
     } finally {
       setCommenting(false);
     }
@@ -356,12 +325,15 @@ const ThreadComments = ({
 
   return (
     <div>
-      {comments.length === 0 && (
         <NewComment
-          onSubmit={handleSubmit}
-          commenting={commenting}
-        />
-      )}
+          commentCount={comments.length}
+          slug={slug}
+          likeCount={likeCount}
+          dislikeCount={dislikeCount}
+          handleLike={handleLike}
+          handleDislike={handleDislike}
+          isLoading={isLoading}
+        /> 
       <div className="mt-4">
         {comments.map((comment) => (
           <Comment
