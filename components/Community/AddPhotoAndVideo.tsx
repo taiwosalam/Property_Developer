@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Input from "@/components/Form/Input/input";
 import { DeleteIconOrange, PlusIcon } from "@/public/icons/icons";
@@ -12,15 +12,29 @@ const AddPhotoAndVideo = ({
 }: {
   editing?: boolean;
   data?: any;
-  onFilesChange?: (files: File[]) => void;
+  onFilesChange?: (files: File[], videoLink?: string) => void;
 }) => {
   const MAX_FILE_SIZE_MB = 2;
   const MAX_IMAGES = 4;
 
   const [imageFiles, setImageFiles] = useState<File[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>(
-    editing && data?.media ? data.media : []
-  );
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [videoLink, setVideoLink] = useState("");
+
+  useEffect(() => {
+    if (editing && data) {
+      if (data.media) {
+        const paths = data.media.map((item: { path: string }) => item.path);
+        setImagePreviews(paths);
+      }
+      if (data.video_link) {
+        setVideoLink(data.video_link);
+      }
+    }
+  }, [data, editing]);
+
+  console.log(imagePreviews);
+  console.log(data);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let files = Array.from(e.target.files || []);
@@ -53,7 +67,7 @@ const AddPhotoAndVideo = ({
 
     setImageFiles((prev) => {
       const updatedFiles = [...prev, ...validFiles];
-      onFilesChange?.(updatedFiles); // Notify parent component
+      onFilesChange?.(updatedFiles, videoLink); // Notify parent component
       return updatedFiles;
     });
 
@@ -65,11 +79,6 @@ const AddPhotoAndVideo = ({
 
     e.target.value = "";
   };
-
-  const [videoLink, setVideoLink] = useState(
-    editing && data?.video_link ? data.video_link : ""
-  );
-
   return (
     <div className="lg:flex-1 space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
@@ -93,8 +102,9 @@ const AddPhotoAndVideo = ({
                   prev.filter((_, i) => i !== index)
                 );
                 onFilesChange?.(
-                  imageFiles.filter((_, i) => i !== index) // Update parent
-                );
+                  imageFiles.filter((_, i) => i !== index),
+                  videoLink
+                ); // Update parent
               }}
               className="absolute top-1 right-1 z-[2]"
             >

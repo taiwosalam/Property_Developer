@@ -131,7 +131,9 @@ const AgentCommunityPage = () => {
               key={index}
               id={index}
               name={thread.user.name}
-              picture_url={thread.user.picture_url}
+              picture_url={thread.post.media && thread.post.media.length > 0 
+                ? thread.post.media[0].path 
+                : undefined}
               role={thread.user.role}
               time={thread.post.created_at}
               title={thread.post.title}

@@ -17,6 +17,7 @@ import ThreadComments from "@/components/Community/ThreadComments";
 import ReadyByCard from "@/components/Community/ReadByCard";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
+import { formatDate, formatDateRange } from "../../../property-request/data";
 
 interface PropertyRequestResponse {
   data: {
@@ -68,7 +69,7 @@ const PreviewPage = () => {
           <ThreadComments />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <SummaryCard />
+          <SummaryCard propertyRequest={propertyRequest} />
           <MoreDetailsCard propertyRequest={propertyRequest} />
           <ReadyByCard />
         </div>
@@ -131,7 +132,13 @@ const ThreadArticle = ({ propertyRequest }: { propertyRequest: any }) => {
 };
 
 // SECOND SIDE
-const SummaryCard = () => {
+const SummaryCard = ({ propertyRequest }: { propertyRequest: any }) => {
+  const propertySummaryData = [
+    { label: "Posted Date", value: formatDate(propertyRequest?.created_at)},
+    { label: "Last Updated", value: formatDate(propertyRequest?.updated_at)},
+    { label: "Total Seen", value: propertyRequest?.total_seen},
+    { label: "Total Comment", value: propertyRequest?.total_comments},
+  ];
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-lg p-4">
       <h3> Summary </h3>
@@ -141,8 +148,8 @@ const SummaryCard = () => {
             key={index}
             className="flex gap-4 items-start justify-between w-full"
           >
-            <p className="text-[#747474] text-sm">{item.label}</p>
-            <p className="dark:text-white text-black text-sm">{item.value}</p>
+            <p className="text-[#747474] text-sm">{item.label || '__'}</p>
+            <p className="dark:text-white text-black text-sm">{item.value || '__'}</p>
           </div>
         ))}
       </div>
@@ -152,13 +159,13 @@ const SummaryCard = () => {
 
 const MoreDetailsCard = ({ propertyRequest }: { propertyRequest: any }) => {
   const propertyMoreDetails = [
-    { label: "Location:", value: propertyRequest?.location || "___" },
+    { label: "Target Audience:", value: propertyRequest?.target_audience?.join(', ') || "___" },
     { label: "Category:", value: propertyRequest?.property_category || "___"},
     { label: "Property Type:", value: propertyRequest?.property_type || "___" },
     { label: "Sub Type:", value: propertyRequest?.property_sub_type || "___"},
     { label: "Min Budget:", value: `₦${propertyRequest?.min_budget}` || "___" },
     { label: "Max Budget:", value: `₦${propertyRequest?.max_budget}` || "___" },
-    { label: "Date Range:", value: propertyRequest?.created_at || "___" },
+    { label: "Date Range:", value: formatDateRange(propertyRequest?.start_date, propertyRequest?.end_date) || "___" },
   ];
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-lg p-4">

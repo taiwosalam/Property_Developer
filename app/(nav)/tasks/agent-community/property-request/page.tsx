@@ -40,7 +40,7 @@ const transformToPropertyRequestCardProps = (
   return {
     cardType: "agent-community",
     cardViewDetails: [
-      { label: "Location (State)", accessor: "state" },
+      { label: "Target Audience", accessor: "targetAudience" },
       { label: "Local Government", accessor: "lga" },
       { label: "Property Type", accessor: "propertyType" },
       { label: "Category", accessor: "category" },
@@ -51,10 +51,11 @@ const transformToPropertyRequestCardProps = (
   };
 };
 
+
 const PropertyRequest = () => {
   const router = useRouter();
   const [propertyRequests, setPropertyRequests] = useState<any>([]);
-  const [propertyRequestUser, setPropertyRequestUser] = useState<any>(null);
+  const [propertyRequestUsers, setPropertyRequestUsers] = useState<any[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -84,12 +85,12 @@ const PropertyRequest = () => {
       setError(null);
       try {
         const data = await getAllPropertyRequests();
-        const propertyRequests = data.property_requests[0].propertyRequest;
-        const propertyRequestUser = data.property_requests[0].user;
+        const propertyRequests = data.property_requests;
+        const users = propertyRequests.map((item: any) => item.user);
         setPropertyRequests(propertyRequests);
-        setPropertyRequestUser(propertyRequestUser);
-        console.log("Property request:", propertyRequests);
-        console.log("Property request user:", propertyRequestUser);
+        setPropertyRequestUsers(users);
+        console.log("Property requests:", propertyRequests);
+        console.log("Property request users:", users);
       } catch (err) {
         setError(
           err instanceof Error
@@ -115,28 +116,25 @@ const PropertyRequest = () => {
     }
   };
 
-  const propertyRequestData: PropertyRequestDataType[] = [
-    {
-      requestId: propertyRequests?.id,
-      userName: propertyRequestUser?.name || "__",
-      requestDate: formatDate(propertyRequests?.created_at) || "__",
-      pictureSrc: propertyRequestUser?.picture || empty,
-      state: propertyRequests?.state || "__",
-      lga: propertyRequests?.lga || "__",
-      propertyType: propertyRequests?.property_type || "__",
-      category: propertyRequests?.category || "__",
-      subType: propertyRequests?.sub_type || "__",
-      minBudget: propertyRequests?.min_budget || "__",
-      maxBudget: propertyRequests?.max_budget || "__",
-      requestType: "Web",
-      description: propertyRequests?.description || "__",
-      phoneNumber: propertyRequestUser?.phone || "__",
-      propertyTitle: propertyRequests?.title || "__",
-      // isLoading: isFetching,
-      userTitle: propertyRequestUser?.title || "__",
-      targetAudience: [],
-    },
-  ];
+  const propertyRequestData: PropertyRequestDataType[] = propertyRequests.map((request: any) => ({
+    requestId: request.propertyRequest.id,
+    userName: request.user?.name || "__",
+    requestDate: formatDate(request.propertyRequest.created_at) || "__",
+    pictureSrc: request.user?.picture || empty,
+    state: request.propertyRequest.state || "__",
+    lga: request.propertyRequest.lga || "__",
+    propertyType: request.propertyRequest.property_type || "__",
+    category: request.propertyRequest.property_category || "__",
+    subType: request.propertyRequest.sub_type || "__",
+    minBudget: `₦${request.propertyRequest.min_budget}` || "__",
+    maxBudget: `₦${request.propertyRequest.max_budget}` || "__",
+    requestType: "Web",
+    description: request.propertyRequest.description || "__",
+    phoneNumber: request.user?.phone || "__",
+    propertyTitle: request.propertyRequest.title || "__",
+    userTitle: request.user?.title || "__",
+    targetAudience: request.propertyRequest.target_audience,
+  })) || [];
 
   return (
     <div className="space-y-9">
@@ -192,7 +190,6 @@ const PropertyRequest = () => {
                 .map((_, index) => <RequestCardSkeleton key={index} />)
             : propertyRequestData.map((details, index) => (
                 <PropertyRequestCard
-                  // isLoading={isFetching}
                   key={index}
                   {...transformToPropertyRequestCardProps(details)}
                 />

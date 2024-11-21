@@ -16,10 +16,31 @@ import Button from "@/components/Form/Button/button";
 import ThreadComments from "@/components/Community/ThreadComments";
 import { ContributorDetails } from "@/components/Community/Contributor";
 import CompanySummary from "@/components/Community/CompanySummary";
+import useFetch from "@/hooks/useFetch";
+import { useState, useEffect } from "react";
+import { formatDateRange } from "../../data";
+
+interface PropertyRequestResponse {
+  data: {
+    propertyRequest: any; 
+  };
+}
 
 const PreviewPage = () => {
   const router = useRouter();
   const { requestId } = useParams();
+  const [propertyRequest, setPropertyRequest] = useState<any>(null);
+  const [user, setUser] = useState<any>(null);
+  const { data, loading, error } = useFetch<PropertyRequestResponse>(`/agent_community/property-requests/${requestId}`);
+
+  useEffect(() => {
+    if (data) {
+      setPropertyRequest(data.data.propertyRequest);
+      setUser(data.data.propertyRequest.user);
+    }
+  }, [data]);
+  // console.log(data?.data.propertyRequest);
+  // console.log(data?.data.user);
   return (
     <div>
       <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
@@ -33,7 +54,7 @@ const PreviewPage = () => {
             <ChevronLeft />
           </button>
           <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
-            Property Title
+            {propertyRequest?.title}
           </h1>
         </div>
         <Button
@@ -46,12 +67,19 @@ const PreviewPage = () => {
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <MoreDetailsCard />
-          <ThreadArticle />
+          <MoreDetailsCard propertyRequest={propertyRequest} user={user} />
+          <ThreadArticle propertyRequest={propertyRequest} />
           <ThreadComments />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <ContributorDetails title="Requester Details" />
+          <ContributorDetails
+            title="Requester Details"
+            contributors={user}
+            post={propertyRequest}
+            targetAudience={propertyRequest?.target_audience?.join(', ')}
+            postedDate={propertyRequest?.created_at}
+            updatedDate={propertyRequest?.updated_at}
+          />
           <CompanySummary />
         </div>
       </div>
@@ -61,14 +89,10 @@ const PreviewPage = () => {
 
 export default PreviewPage;
 
-const ThreadArticle = () => {
+const ThreadArticle = ({ propertyRequest }: { propertyRequest: any }) => {
   return (
     <div className="">
-      {threadArticle.map((article, index) => (
-        <p key={index} className="text-sm text-darkText-secondary mt-2">
-          {article}
-        </p>
-      ))}
+        <div dangerouslySetInnerHTML={{ __html: propertyRequest?.description }} className="text-sm text-darkText-secondary mt-6" />
       <div className="flex justify-between mt-6">
         <div className="text-black font-semibold">Comments</div>
 
@@ -136,7 +160,16 @@ const SummaryCard = () => {
   );
 };
 
-const MoreDetailsCard = () => {
+const MoreDetailsCard = ({ propertyRequest, user }: { propertyRequest: any, user: any }) => {
+  const propertyMoreDetails = [
+    { label: "Location:", value: propertyRequest?.target_audience?.join(', ') },
+    { label: "Category:", value: propertyRequest?.property_category },
+    { label: "Property Type:", value: propertyRequest?.property_type },
+    { label: "Sub Type:", value: propertyRequest?.sub_type },
+    { label: "Min Budget:", value: `₦${propertyRequest?.min_budget}` },
+    { label: "Max Budget:", value: `₦${propertyRequest?.max_budget}` },
+    { label: "Date Range:", value: formatDateRange(propertyRequest?.start_date, propertyRequest?.end_date) },
+  ];
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-lg p-4">
       <div className="flex flex-col mt-4 gap-2">
@@ -145,8 +178,8 @@ const MoreDetailsCard = () => {
             key={index}
             className="flex gap-4 items-start justify-between w-full"
           >
-            <p className="text-[#747474] text-sm">{item.label}</p>
-            <p className="dark:text-white text-black text-sm">{item.value}</p>
+            <p className="text-[#747474] text-sm">{item.label || '__'}</p>
+            <p className="dark:text-white text-black text-sm">{item.value || '__'}</p>
           </div>
         ))}
       </div>
