@@ -4,4 +4,5 @@ export interface BackButtonProps {
   bold?: boolean;
   as?: keyof JSX.IntrinsicElements;
   textClassName?: string;
+  reducePaddingTop?: boolean;
 }

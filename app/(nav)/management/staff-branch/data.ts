@@ -89,7 +89,7 @@ export interface BranchApiResponse {
       branch_manager: string; // to be added
       picture: string;
       staffs_count: number;
-      property_count: number;
+      properties_count: number;
       unit_count: number;
     }[];
   };
@@ -114,7 +114,7 @@ export const transformBranchApiResponse = ({
       manager_name: branch.branch_manager,
       branch_picture: branch.picture,
       staff_count: branch.staffs_count,
-      property_count: branch.property_count || 0, // to be added
+      property_count: branch.properties_count,
       unit_count: branch.unit_count || 0, // to be added
       manager_picture: "", // to be added
     })),

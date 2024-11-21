@@ -8,6 +8,7 @@ import { useAuthStore } from "@/store/authStore";
 interface LoginResponse {
   status: boolean;
   message: string;
+  access_token: string;
   data: {
     details: {
       id: string; //actually number but fuck it
@@ -38,7 +39,10 @@ export const auth_slider_content: AuthSliderContent = [
 // Login function
 export const login = async (formData: Record<string, any>) => {
   try {
-    const { data } = await axios.post(`${base_url}login`, formData);
+    const { data } = await axios.post<LoginResponse>(
+      `${base_url}login`,
+      formData
+    );
     useAuthStore.getState().reset();
     const token = data.access_token;
     useAuthStore.getState().setToken(token);
@@ -161,12 +165,12 @@ export const requestPasswordReset = async (formData: FormData) => {
   }
 };
 
-export const verifyOtpAndResetPassword = async (otp: string) => {
+export const verifyOtpAndResetPassword = async (code: string) => {
   const email = useAuthStore.getState().email;
   try {
     const { data } = await axios.post(`${base_url}password/reset/verify`, {
       identifier: email,
-      code: otp,
+      code,
     });
     const message = data?.message || "OTP validated successfully!";
     toast.success(message);

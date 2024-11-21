@@ -30,7 +30,7 @@ export interface UnitCardProps {
 
 export interface CreatePropertyFormProps {
   formType: "rental" | "facility";
-  handleSubmit: (a?: any) => void;
+  handleSubmit: (data: Record<string, any>) => Promise<void>;
   editMode?: boolean;
 }
 
@@ -52,4 +52,83 @@ export interface StaffData {
   created_at: string; // Could be `Date` if you're converting it into a date object
   updated_at: string; // Could be `Date` if you're converting it into a date object
   picture_url: string | null;
+}
+
+export interface PropertyFormStateType {
+  state: string;
+  city: string;
+  lga: string;
+  selectedBranch: string;
+  staff: { id: string; label: string }[];
+  staffOptions: { value: string; label: string }[];
+  branchOptions: { value: string; label: string }[];
+  inventoryOptions: { value: string; label: string }[];
+  landlordOptions: { value: string; label: string }[];
+  accountOfficerOptions: { value: string; label: string }[];
+  resetKey: number;
+}
+
+export interface AllBranchesResponse {
+  data: {
+    id: string;
+    branch_name: string;
+  }[];
+}
+
+export interface AllLandlordsResponse {
+  data: {
+    id: string;
+    full_name: string;
+  }[];
+}
+
+export interface AllInventoryResponse {
+  data: {
+    id: string;
+    inventory_name: string;
+  }[];
+}
+
+export interface AllStaffResponse {
+  data: {
+    id: string;
+    full_name: string;
+    position: string;
+  }[];
+}
+
+export interface PropertyFormPayload {
+  property: {
+    title: string;
+    state: string;
+    local_government: string;
+    city_area: string;
+    full_address: string;
+    category: string;
+    description: string;
+    video_link?: string | null;
+    property_type: string;
+    branch_id: string;
+    inventory_id?: string | null;
+    land_lord_id?: string | null;
+    company_id: string;
+  };
+  images: File[];
+  settings: {
+    agency_fee?: number | null;
+    management_fee?: number | null;
+    who_to_charge_new_tenant?: string | null;
+    who_to_charge_renew_tenant?: string | null;
+    caution_deposit?: string | null;
+    group_chat: (0 | 1) | boolean;
+    rent_penalty?: (0 | 1) | boolean | null;
+    fee_penalty?: (0 | 1) | boolean | null;
+    request_call_back: (0 | 1) | boolean;
+    book_visitors: (0 | 1) | boolean;
+    vehicle_record: (0 | 1) | boolean;
+    active_vat: (0 | 1) | boolean;
+    currency?: string | null;
+    coordinate?: string | null;
+  };
+  staff: string[];
 }

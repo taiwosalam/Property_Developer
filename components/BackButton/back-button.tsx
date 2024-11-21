@@ -14,6 +14,7 @@ const BackButton: React.FC<BackButtonProps> = ({
   bold,
   as: Component = "h1",
   textClassName,
+  reducePaddingTop,
 }) => {
   const router = useRouter();
 
@@ -32,7 +33,7 @@ const BackButton: React.FC<BackButtonProps> = ({
         onClick={handleBack}
         type="button"
         aria-label="Go Back"
-        className="p-2"
+        className={cn("p-2", reducePaddingTop && "pt-[0.1rem]")}
       >
         <ChevronLeft />
       </button>

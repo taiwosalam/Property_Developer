@@ -92,7 +92,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   return (
     <div className="custom-flex-col gap-6">
       <div className="w-full gap-2 flex items-center justify-between flex-wrap">
-        <BackButton as="div" className="items-start">
+        <BackButton reducePaddingTop as="div" className="items-start">
           <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
             {branchData.branch_name}
           </h1>

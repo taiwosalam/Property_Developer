@@ -37,7 +37,7 @@ export type SingleBranchResponseType = {
       local_government: string;
       city: string;
       branch_address: string;
-      branch_image: string | null; //to be added later
+      picture: string | null;
       // branch_wallet: string; //to be added later
       branch_desc: string;
     };

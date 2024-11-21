@@ -11,14 +11,14 @@ import { logout } from "@/app/(onboarding)/auth/data";
 import { profile_actions } from "@/components/Nav/options";
 import { SectionSeparator } from "../Section/section-components";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { useRouter } from "next/navigation";
 
-const NavProfileDropdown: React.FC<{
-  name: string;
-  userId: number;
-}> = ({ name, userId }) => {
+const NavProfileDropdown = () => {
   const router = useRouter();
   const { isMobile } = useWindowWidth();
+  const name = usePersonalInfoStore((state) => state.name);
+  const userId = usePersonalInfoStore((state) => state.user_id);
 
   const class_styles =
     "py-2 px-5 sm:py-3 sm:px-[30px] text-start text-text-primary dark:text-darkText-1 hover:bg-neutral-2 dark:hover:bg-[#3C3D37]";
@@ -42,7 +42,7 @@ const NavProfileDropdown: React.FC<{
           />
           <div className="custom-flex-col text-text-secondary font-medium">
             <p className="text-xs font-normal dark:text-darkText-2">
-              {getGreeting()},
+              {getGreeting()}
             </p>
             <p className="dark:text-white">{name}</p>
             <p className="dark:text-darkText-2">ID: {userId}</p>

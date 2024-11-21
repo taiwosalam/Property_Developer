@@ -33,7 +33,7 @@ export const transformSingleBranchAPIResponse = ({
   return data.branch;
   // return {
   //   ...data.branch,
-  //   branch_image:
+  //   picture:
   //     "https://pubassets.ourproperty.ng/uploads/gBTaZYUXOch2qrKq5k5F2EdShRihQjYGuxDwOuu6.png",
   // };
 };

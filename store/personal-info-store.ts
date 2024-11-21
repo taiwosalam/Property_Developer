@@ -1,46 +1,31 @@
 import { create } from "zustand";
 
-interface PersonalInfoProps {
-  //   id: string;
-  name: string;
-  //   profile_picture: string;
-}
-
-interface CompanyInfoProps {
-  company_name: string;
-  company_logo: string;
-}
-
-interface PersonalInfoState {
-  //   id: string | null;
+interface PersonalInfoStoreState {
+  user_id: string | null;
   name: string | null;
-  //   profile_picture: string | null;
-  setProfileInfo: (info: PersonalInfoProps) => void;
+  profile_picture: string | null;
 
   // Company Info
-  company_name: string | null;
+  company_id: string | null;
+  // company_name: string | null;
   company_logo: string | null;
-  setCompanyInfo: (info: CompanyInfoProps) => void;
+  setPersonalInfo: <
+    K extends keyof Omit<PersonalInfoStoreState, "setPersonalInfo">
+  >(
+    key: K,
+    value: PersonalInfoStoreState[K]
+  ) => void;
 }
 
-export const usePersonalInfoStore = create<PersonalInfoState>((set) => ({
+export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
   // Personal Info
-  //   id: null,
+  user_id: null,
   name: null,
-  //   profile_picture: null,
-  setProfileInfo: (info: PersonalInfoProps) =>
-    set({
-      //   id: info.id,
-      name: info.name,
-      //   profile_picture: info.profile_picture,
-    }),
+  profile_picture: null,
 
   // Company Info
-  company_name: null,
+  company_id: null,
+  // company_name: null,
   company_logo: null,
-  setCompanyInfo: (info: CompanyInfoProps) =>
-    set({
-      company_name: info.company_name,
-      company_logo: info.company_logo,
-    }),
+  setPersonalInfo: (key, value) => set({ [key]: value }),
 }));

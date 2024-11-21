@@ -112,13 +112,16 @@ export const getGreeting = () => {
 export interface ProfileResponse {
   data: {
     user: {
-      // id: string;
+      id: string;
       name: string | null;
-      // profile_picture: string | null;
     };
     company: {
+      company_id: string;
       company_name: string;
       company_logo: string;
+    };
+    profile: {
+      picture: string | null;
     };
   };
 }

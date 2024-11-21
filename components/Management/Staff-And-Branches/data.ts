@@ -13,4 +13,13 @@ export const createBranch = async (formData: any) => {
   }
 };
 
-export const addStaff = async (formData: FormData): Promise<any> => {};
+export const addStaff = async (formData: FormData): Promise<any> => {
+  try {
+    const { data } = await api.post("staffs", formData);
+    toast.success(data?.message || "Staff created successfully");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to create staff");
+    return false;
+  }
+};

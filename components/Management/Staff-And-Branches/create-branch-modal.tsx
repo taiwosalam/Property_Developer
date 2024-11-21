@@ -34,7 +34,9 @@ const CreateBranchModal = () => {
     inputFileRef,
     handleImageChange: originalHandleImageChange,
     clearSelection: clearImageSelection,
-  } = useImageUploader();
+  } = useImageUploader({
+    placeholder: CameraCircle,
+  });
 
   const [activeAvatar, setActiveAvatar] = useState("");
 
@@ -66,7 +68,6 @@ const CreateBranchModal = () => {
     setFormStep(1);
   };
   const handleFormSubmit = async (data: Record<string, any>) => {
-    // console.log(data);
     if (!checkFormDataForImageOrAvatar(data)) {
       toast.warning("Please upload a picture or choose an avatar.");
       return;
@@ -93,7 +94,7 @@ const CreateBranchModal = () => {
   return (
     <LandlordTenantModalPreset
       heading={formStep === 2 ? "Choose Avatar" : "Create New Branch"}
-      star
+      star={formStep === 1}
       back={formStep === 2 ? { handleBack: () => setFormStep(1) } : undefined}
     >
       <div className="relative">
@@ -104,7 +105,7 @@ const CreateBranchModal = () => {
           }`}
           onFormSubmit={handleFormSubmit}
         >
-          <input type="hidden" name="avatar" value={activeAvatar} />
+          <input type="hidden" name="avater" value={activeAvatar} />
           <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             <Input
               label="Branch Name/Title"
@@ -222,14 +223,6 @@ const CreateBranchModal = () => {
                 </button>
               </div>
             </div>
-            <input
-              type="file"
-              ref={inputFileRef}
-              name="picture"
-              style={{ display: "none" }}
-              accept="image/*"
-              onChange={handleImageChange}
-            />
             <Button
               type="submit"
               size="base_medium"
