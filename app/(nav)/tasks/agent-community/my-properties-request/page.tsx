@@ -4,7 +4,7 @@ import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import PropertyRequestCard from "@/components/tasks/CallBack/RequestCard";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { type PropertyRequestDataType } from "../property-request/data";
+import { formatDate, type PropertyRequestDataType } from "../property-request/data";
 import Button from "@/components/Form/Button/button";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
 import type { AgentCommunityRequestCardProps } from "@/components/tasks/CallBack/types";
@@ -97,23 +97,13 @@ const MyPropertiesRequestPage = () => {
     fetchPropertyRequests();
   }, []);
 
-  // Using vanilla JavaScript
-  const formatDate = (dateString: string) => {
-    if (!dateString) return "___";
-    try {
-      const date = new Date(dateString);
-      return date.toISOString().split("T")[0];
-    } catch {
-      return "___";
-    }
-  };
 
   const propertyRequestData: PropertyRequestDataType[] = propertyRequests.map(
     (request: any, index: number) => ({
       requestId: request?.id || "__",
       targetAudience: request?.target_audience || "___",
       userName: propertyRequestUser[index]?.name || "___",
-      requestDate: formatDate(request?.created_at) || "___",
+        requestDate: formatDate(request?.created_at) || "___",
       pictureSrc: propertyRequestUser[index]?.picture,
       state: request?.state || "___",
       lga: request?.lga || "___",

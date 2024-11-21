@@ -2,15 +2,9 @@
 
 // import BackButton from "@/components/BackButton/back-button";
 import Image, { StaticImageData } from "next/image";
-// import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
-import Sample from "@/public/empty/SampleProperty.jpeg";
-import Sample2 from "@/public/empty/SampleProperty2.jpeg";
-import Sample3 from "@/public/empty/SampleProperty3.jpeg";
-import Sample4 from "@/public/empty/SampleProperty4.png";
-import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import { PropertyImageSlider } from "@/components/Management/Rent And Unit/rental-property-card";
-import { ChevronLeft, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
+import { ChevronLeft } from "@/public/icons/icons";
 import user1 from "@/public/empty/user1.svg";
 import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
@@ -21,9 +15,8 @@ import ReadyByCard from "@/components/Community/ReadByCard";
 import useFetch from "@/hooks/useFetch";
 import { useEffect } from "react";
 import { useState } from "react";
-import { empty } from "@/app/config";
 import { sendMyArticleComment, sendMyArticleReply, toggleLike } from "../../data";
-import { ThreadArticleSkeleton } from "../../../components";
+import { LikeDislikeButtons, Loader, NewComment, ThreadArticleSkeleton } from "../../../components";
 import { toast } from "sonner";
 
 interface ArticleResponse {
@@ -69,13 +62,7 @@ const ThreadPreview = () => {
           >
             <ChevronLeft />
           </button>
-          {loading ? (
-            <div className="h-7 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
-          ) : (
-            <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
-              {post?.title}
-            </h1>
-          )}
+          {loading ? <Loader className="h-7 w-48" /> : <h1>{post?.title}</h1>}
         </div>
         <Button
           href={`/tasks/agent-community/my-articles/${slug}/manage`}
@@ -98,8 +85,15 @@ const ThreadPreview = () => {
               </div>
             )}
           </div>
-          <ThreadArticle post={post} slug={slug} />
-          <ThreadComments slug={slug} />
+          <ThreadArticle 
+            post={post} 
+            slug={slug} 
+          />
+          <ThreadComments 
+            slug={slug} 
+            comments={comments} 
+            setComments={setComments} 
+          />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <Summary post={post} loading={loading} />
@@ -122,7 +116,7 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
   const handleLike = async () => {
     if (isLoading || userAction === 'like') return;
     setIsLoading(true);
-    
+
     try {
       await toggleLike(slug, 1);
       if (userAction === 'dislike') {
@@ -131,6 +125,7 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
       setLikeCount(prev => prev + 1);
       setUserAction('like');
     } catch (error) {
+      toast.error('Error toggling like');
       console.error('Error toggling like:', error);
     } finally {
       setIsLoading(false);
@@ -141,7 +136,7 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
     if (isLoading || userAction === 'dislike') return;
     setIsLoading(true);
 
-    try { 
+    try {
       await toggleLike(slug, -1);
       if (userAction === 'like') {
         setLikeCount(prev => prev - 1);
@@ -149,6 +144,7 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
       setDislikeCount(prev => prev + 1);
       setUserAction('dislike');
     } catch (error) {
+      toast.error('Error toggling dislike');
       console.error('Error toggling dislike:', error);
     } finally {
       setIsLoading(false);
@@ -158,26 +154,25 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
   if (!post) {
     return <ThreadArticleSkeleton />;
   }
-  
+
   return (
     <div className="mt-4">
-      <div 
-        className="text-sm text-darkText-secondary mt-2" 
+      <div
+        className="text-sm text-darkText-secondary mt-2"
         dangerouslySetInnerHTML={{ __html: post?.content }}
       />
       <div className="flex justify-between mt-6">
-        <div className="text-black font-semibold">Comments</div>
+        <div className="text-black font-semibold">Comments {post?.comments_count}</div>
 
         <div className="flex gap-2">
-          <button className={`flex items-center gap-1 ${userAction === 'like' ? 'text-blue-500' : ''}`} disabled={isLoading} onClick={handleLike}>
-            <ThumbsUp />
-            <p>{likeCount}</p>
-          </button>
-          <button className={`flex items-center gap-1 ${userAction === 'dislike' ? 'text-red-500' : ''}`} onClick={handleDislike} disabled={isLoading}>
-            <ThumbsDown />
-            <p>{dislikeCount}</p>
-          </button>
-
+          <LikeDislikeButtons
+            likeCount={likeCount}
+            dislikeCount={dislikeCount}
+            handleLike={handleLike}
+            handleDislike={handleDislike}
+            userAction={userAction}
+            isLoading={isLoading}
+          />
           <div className="flex">
             <div className="images flex z-30">
               <Image
@@ -212,131 +207,178 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
   );
 };
 
-const ThreadComments = ({ slug }: { slug: string }) => {
-  const [showInput, setShowInput] = useState(true);
+// SECOND SIDE
+
+
+const ThreadComments = ({
+  slug,
+  comments,
+  setComments,
+}: {
+  slug: string;
+  comments: CommentProps[];
+  setComments: React.Dispatch<React.SetStateAction<CommentProps[]>>;
+}) => {
   const [commenting, setCommenting] = useState(false);
-  const [comments, setComments] = useState<CommentProps[]>([]);
 
-  const { data, error, loading } = useFetch<CommentsResponse>(`/agent_community/${slug}/comments`);
-
-  const handleLike = (commentId: string | number) => {
-    console.log('Like comment:', commentId);
-  };
-
-  const handleDislike = (commentId: string | number) => {
-    console.log('Dislike comment:', commentId);
-  };
-
-  useEffect(() => {
-    if (data?.data) {
-      const commentsData = data.data.map((comment) => ({
-        ...comment,
-        replies: comment.replies || [],
-      }));
-      setComments(commentsData);
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(`/agent_community/${slug}/comments`);
+      const data = await response.json();
+      setComments(data.data);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
     }
-  }, [data]);
+  };
+
+  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   const formData = new FormData(e.target as HTMLFormElement);
+  //   const message = formData.get("message") as string;
+  //   const reply = formData.get("reply") as string;
+  //   const parentId = formData.get("parentId") as string;
+
+  //   if (!message && !reply) return;
+
+  //   try {
+  //     setCommenting(true);
+      
+  //     // Optimistic update
+  //     const newComment = {
+  //       id: Date.now(), // Temporary ID
+  //       text: reply || message,
+  //       name: "You", // Or get from user context
+  //       likes: 0,
+  //       dislikes: 0,
+  //       replies: []
+  //     };
+
+  //     if (reply && parentId) {
+  //       // Optimistically update replies
+  //       setComments(prevComments => 
+  //         prevComments.map(comment => {
+  //           if (comment.id.toString() === parentId) {
+  //             return {
+  //               ...comment,
+  //               replies: [...(comment.replies || []), newComment]
+  //             };
+  //           }
+  //           return comment;
+  //         })
+  //       );
+        
+  //       await sendMyArticleReply(slug, parentId, reply);
+  //     } else if (message) {
+  //       // Optimistically add new comment
+  //       setComments(prev => [...prev, newComment]);
+  //       await sendMyArticleComment(slug, message);
+  //     }
+      
+  //     toast.success(reply ? "Reply added successfully" : "Comment added successfully");
+      
+  //     // Background refetch to sync with server
+  //     fetchComments();
+      
+  //   } catch (error) {
+  //     toast.error("Failed to add comment/reply");
+  //     console.error(error);
+  //     // Revert optimistic update on error
+  //     fetchComments();
+  //   } finally {
+  //     setCommenting(false);
+  //   }
+  // };
 
 
-
-  const sendComment = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setShowInput(false);
+  
     const formData = new FormData(e.target as HTMLFormElement);
-    const message = formData.get('message');
-    const reply = formData.get('reply');
-    
+    const message = formData.get("message") as string;
+    const reply = formData.get("reply") as string;
+    const parentId = formData.get("parentId") as string;
+  
+    if (!message && !reply) return;
+  
     try {
       setCommenting(true);
-      
-      if (reply) {
-        const replyInput = (e.target as HTMLFormElement).querySelector('input[name="reply"]');
-        const commentId = Number(replyInput?.id);
-        
-        if (commentId) {
-          // Optimistically update UI
-          const newReply: CommentProps = {
-            id: Date.now(),
-            name: "You",
-            text: reply as string,
-            likes: 0,
-            dislikes: 0,
-            handleSubmit: () => {},
-            commenting: false,
-            replies: []
-          };
-
-          setComments(prevComments => 
-            prevComments.map(comment => 
-              comment.id === commentId
-                ? { ...comment, replies: [...(comment.replies || []), newReply] }
-                : comment
-            )
-          );
-
-          // Send to server
-          await sendMyArticleReply(slug, commentId.toString(), reply as string);
-        }
+  
+      // Optimistic Update: New comment/reply
+      const newComment: CommentProps = {
+        id: Date.now(), // Temporary ID for the new comment/reply
+        text: reply || message,
+        name: "You", // Replace with authenticated user's name
+        likes: 0,
+        dislikes: 0,
+        likeCount: 0,
+        dislikeCount: 0,
+        replies: [],
+        commentsCount: 0,
+        onSubmit: handleSubmit,
+        handleLike: () => {},
+        handleDislike: () => {}
+      };
+  
+      if (reply && parentId) {
+        // Add reply to the specific parent comment
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment.id.toString() === parentId
+              ? {
+                  ...comment,
+                  replies: [...(comment.replies || []), newComment],
+                }
+              : comment
+          )
+        );
+  
+        // Send reply to the server
+        await sendMyArticleReply(slug, parentId, reply);
       } else if (message) {
-        // Optimistically update UI
-        const newComment: CommentProps = {
-          id: Date.now(),
-          name: "You",
-          text: message as string,
-          likes: 0,
-          dislikes: 0,
-          replies: [],
-          handleSubmit: () => {},
-          commenting: false
-        };
-
-        setComments(prev => [...prev, newComment]);
-
-        // Send to server
-        await sendMyArticleComment(slug, message as string);
+        // Add new top-level comment
+        setComments((prev) => [...prev, newComment]);
+  
+        // Send comment to the server
+        await sendMyArticleComment(slug, message);
       }
-
-      // Fetch latest comments in background
-      const response = await fetch(`/agent_community/${slug}/comments`);
-      const newData = await response.json();
-      setComments(newData.data);
-
-      (e.target as HTMLFormElement).reset();
-      setShowInput(false);
-      toast.success(reply ? "Reply sent successfully" : "Comment sent successfully");
-      
+  
+      toast.success(reply ? "Reply added successfully" : "Comment added successfully");
+  
+      // Fetch updated comments from the server for synchronization
+      fetchComments();
     } catch (error) {
-      console.error("Error sending comment/reply:", error);
-      // Revert optimistic update by re-fetching
-      const response = await fetch(`/agent_community/${slug}/comments`);
-      const newData = await response.json();
-      setComments(newData.data);
-      toast.error("Failed to send comment");
+      toast.error("Failed to add comment/reply");
+      console.error("Error adding comment/reply:", error);
+  
+      // Revert optimistic updates by re-fetching comments
+      fetchComments();
     } finally {
       setCommenting(false);
     }
   };
-
-  return (    
-  <form onSubmit={sendComment}>
+  
+  return (
+    <div>
+      {comments.length === 0 && (
+        <NewComment
+          onSubmit={handleSubmit}
+          commenting={commenting}
+        />
+      )}
       <div className="mt-4">
         {comments.map((comment) => (
-          <div key={comment.id} data-comment-id={comment.id}>
-            <Comment 
-              {...comment} 
-              handleLike={handleLike} 
-              handleDislike={handleDislike} 
-              commenting={commenting}
-              handleSubmit={sendComment}
-            />
-          </div>
+          <Comment
+            key={comment.id}
+            {...comment}
+            handleLike={() => { }}
+            handleDislike={() => { }}
+            handleSubmit={handleSubmit}
+          />
         ))}
       </div>
-    </form>
+    </div>
   );
 };
-
-// SECOND SIDE
 
 
 const Summary = ({ post, loading }: { post: any; loading: boolean }) => {
@@ -348,11 +390,11 @@ const Summary = ({ post, loading }: { post: any; loading: boolean }) => {
     { label: "Last Updated", value: post?.updated_at },
     { label: "Total Seen", value: post?.views_count },
     { label: "Total Comments", value: post?.comments_count },
-    { 
-      label: "Target Audience", 
-      value: post?.target_audience ? 
-        JSON.parse(post.target_audience).join(', ') : 
-        '' 
+    {
+      label: "Target Audience",
+      value: post?.target_audience ?
+        JSON.parse(post.target_audience).join(', ') :
+        ''
     },
   ];
   return (

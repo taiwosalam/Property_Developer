@@ -5,11 +5,6 @@ import { useEffect, useState } from "react";
 import Image, { StaticImageData } from "next/image";
 // import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
-import Sample from "@/public/empty/SampleProperty.jpeg";
-import Sample2 from "@/public/empty/SampleProperty2.jpeg";
-import Sample3 from "@/public/empty/SampleProperty3.jpeg";
-import Sample4 from "@/public/empty/SampleProperty4.png";
-import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import { PropertyImageSlider } from "@/components/Management/Rent And Unit/rental-property-card";
 import { ChevronLeft, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
 import user1 from "@/public/empty/user1.svg";
@@ -22,8 +17,8 @@ import Comment, { CommentProps } from "@/components/tasks/announcements/comment"
 import { ContributorDetails } from "@/components/Community/Contributor";
 import CompanySummary from "@/components/Community/CompanySummary";
 import useFetch from "@/hooks/useFetch";
-import { ThreadArticleSkeleton } from "../../../components";
-import { sendMyArticleComment, toggleLike } from "../../../my-articles/data";
+import { NewComment, ThreadArticleSkeleton } from "../../../components";
+import { sendMyArticleComment, sendMyArticleReply, toggleLike } from "../../../my-articles/data";
 import { toast } from "sonner";
 
 interface ThreadResponse {
@@ -50,19 +45,12 @@ const ThreadPreview = () => {
       setContributors(data.post.contributor);
       setComments(data.post.comments);
     }
+    console.log("data", post);
   }, [data]);
 
-  console.log("data", data);
-  console.log("slug", slug);
-  console.log("companySummary", companySummary);
-
-  const sampleImages: StaticImageData[] = [
-    Sample,
-    Sample2,
-    Sample3,
-    Sample4,
-    Sample5,
-  ];
+  // console.log("slug", slug);
+  // console.log("companySummary", companySummary);
+  console.log("comments", comments);
   return (
     <div className="mb-16">
       <div className="flex items-center justify-between flex-wrap gap-2">
@@ -104,12 +92,28 @@ const ThreadPreview = () => {
               </div>
             )}
           </div>
-          <ThreadArticle post={post} slug={slug}  />
-          <ThreadComments slug={slug} />
+          <ThreadArticle 
+            post={post} 
+            slug={slug} 
+          />
+          <ThreadComments 
+            slug={slug} 
+            comments={comments}
+            setComments={setComments}
+          />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <ContributorDetails title="Contributor Details" loading={loading} post={post} contributors={contributors} />
-          <CompanySummary loading={loading} companySummary={companySummary} />
+          <ContributorDetails 
+            title="Contributor Details" 
+            loading={loading} 
+            post={post} 
+            contributors={contributors} 
+            targetAudience={Array.isArray(post?.target_audience) ? post.target_audience.join(', ') : ''} 
+          />
+          <CompanySummary 
+            loading={loading} 
+            companySummary={companySummary} 
+          />
         </div>
       </div>
     </div>
@@ -173,7 +177,7 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
         dangerouslySetInnerHTML={{ __html: post?.content }}
       />
       <div className="flex justify-between mt-6">
-        <div className="text-black font-semibold">Comments</div>
+        <div className="text-black font-semibold">Comments {comments.length}</div>
 
         <div className="flex gap-2">
           <button className={`flex items-center gap-1 ${userAction === 'like' ? 'text-blue-500' : ''}`} disabled={isLoading} onClick={handleLike}>
@@ -219,56 +223,184 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
   );
 };
 
-const ThreadComments = ({ slug }: { slug: string }) => {
-  const [localComments, setLocalComments] = useState<CommentProps[]>(comments);
-  const [showInput, setShowInput] = useState(true);
+interface ThreadCommentProps {
+  slug: string;
+  comments: CommentProps[] & {
+    likes?: string | number;
+    dislikes?: string | number;
+  };
+  setComments: React.Dispatch<React.SetStateAction<CommentProps[]>>;
+}
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const content = formData.get('message');
-    console.log("form submitted with message:", content);
+const ThreadComments = ({
+  slug,
+  comments,
+  setComments,
+}: ThreadCommentProps) => {
+  const [likeCount, setLikeCount] = useState('likes' in comments ? parseInt(comments.likes as string) : 0);
+  const [dislikeCount, setDislikeCount] = useState('dislikes' in comments ? parseInt(comments.dislikes as string) : 0);
+  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLike = async () => {
+    console.log('like clicked');
+    if (isLoading || userAction === 'like') return;
+    setIsLoading(true);
+    
     try {
-      if (content) {
-        const response = await sendMyArticleComment(slug, content as string);
-        toast.success("Comment sent successfully");
-        
-        // Reset form and fetch updated comments
-        (e.target as HTMLFormElement).reset();
-        setShowInput(false);
-        
-        // Fetch updated comments or update local state
-        // const updatedComments = await fetchComments(slug); 
-        // setLocalComments(updatedComments as CommentProps[]);
+      await toggleLike(slug, 1);
+      if (userAction === 'dislike') {
+        setDislikeCount(prev => prev - 1);
       }
+      setLikeCount(prev => prev + 1);
+      setUserAction('like');
     } catch (error) {
-      console.error("Error sending comment:", error);
-      toast.error("Failed to send comment");
+      console.error('Error toggling like:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleLike = async (commentId: string | number) => {
-    // await likeComment(commentId);
-  };    
+  const handleDislike = async () => {
+    console.log('dislike clicked');
+    if (isLoading || userAction === 'dislike') return;
+    setIsLoading(true);
 
-  const handleDislike = async (commentId: string | number) => {
-    // await dislikeComment(commentId);
+    try { 
+      await toggleLike(slug, -1);
+      if (userAction === 'like') {
+        setLikeCount(prev => prev - 1);
+      }
+      setDislikeCount(prev => prev + 1);
+      setUserAction('dislike');
+    } catch (error) {
+      console.error('Error toggling dislike:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const [commenting, setCommenting] = useState(false);
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(`/agent_community/${slug}/comments`);
+      const data = await response.json();
+      setComments(data.data);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   const formData = new FormData(e.target as HTMLFormElement);
+  //   const content = formData.get('message');
+  //   console.log("form submitted with message:", content);
+  //   try {
+  //     if (content) {
+  //       const response = await sendMyArticleComment(slug, content as string);
+  //       toast.success("Comment sent successfully");
+        
+  //       // Reset form and fetch updated comments
+  //       (e.target as HTMLFormElement).reset();
+  //       setShowInput(false);
+        
+  //       // Fetch updated comments or update local state
+  //       // const updatedComments = await fetchComments(slug); 
+  //       // setLocalComments(updatedComments as CommentProps[]);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error sending comment:", error);
+  //     toast.error("Failed to send comment");
+  //   }
+  // };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  
+    const formData = new FormData(e.target as HTMLFormElement);
+    const message = formData.get("message") as string;
+    const reply = formData.get("reply") as string;
+    const parentId = formData.get("parentId") as string;
+  
+    if (!message && !reply) return;
+  
+    try {
+      setCommenting(true);
+  
+      // Optimistic Update: New comment/reply
+      const newComment: CommentProps = {
+        id: Date.now(),
+        text: reply || message,
+        name: "You", // Authenticated user's name
+        likes: 0,
+        dislikes: 0,
+        replies: [],
+        likeCount: 0,
+        dislikeCount: 0,
+        onSubmit: handleSubmit,
+        commentsCount: 0,
+        handleLike: handleLike,
+        handleDislike: handleDislike
+      };
+  
+      if (reply && parentId) {
+        // Add reply to the specific parent comment
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment.id.toString() === parentId
+              ? {
+                  ...comment,
+                  replies: [...(comment.replies || []), newComment],
+                }
+              : comment
+          )
+        );
+  
+        // Send reply to the server
+        await sendMyArticleReply(slug, parentId, reply);
+      } else if (message) {
+        // Add new top-level comment
+        setComments((prev) => [...prev, newComment]);
+  
+        // Send comment to the server
+        await sendMyArticleComment(slug, message);
+      }
+  
+      toast.success(reply ? "Reply added successfully" : "Comment added successfully");
+  
+      // Fetch updated comments from the server for synchronization
+      fetchComments();
+    } catch (error) {
+      toast.error("Failed to add comment/reply");
+      console.error("Error adding comment/reply:", error);
+  
+      // Revert optimistic updates by re-fetching comments
+      fetchComments();
+    } finally {
+      setCommenting(false);
+    }
   };
 
-
   return (
-    <form className="mt-4" onSubmit={handleSubmit}> 
-      {localComments.map((comment, index) => (
-        <Comment 
-          key={comment.id} 
-          {...comment} 
+    <div>
+      {comments.length === 0 && (
+        <NewComment
           onSubmit={handleSubmit}
-          showInput={showInput}
-          setShowInput={setShowInput}
-          handleLike={handleLike}
-          handleDislike={handleDislike}
+          commenting={commenting}
         />
-      ))}
-    </form>
+      )}
+      <div className="mt-4">
+        {comments.map((comment) => (
+          <Comment
+            key={comment.id}
+            {...comment}
+            handleLike={handleLike}
+            handleDislike={handleDislike}
+            handleSubmit={handleSubmit}
+            likeCount={likeCount}
+            dislikeCount={dislikeCount}
+          />
+        ))}
+      </div>
+    </div>
   );
 };

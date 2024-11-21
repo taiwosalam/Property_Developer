@@ -40,7 +40,7 @@ const CompanySummary = ({ loading, companySummary }: { loading?: boolean, compan
       <div className="flex items-center justify-center w-full mt-4">
         <div className="flex items-center justify-center w-[260px] h-[70px] border border-brand-9 py-2 rounded-lg">
           <Image
-            src={companySummary?.logo || empty}
+            src={companySummary?.company_logo || empty}
             alt="company logo"
             width={500}
             height={500}

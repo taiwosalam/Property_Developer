@@ -365,6 +365,148 @@
 
 
 
+// const ThreadComments = ({ slug, commentsCount }: { slug: string, commentsCount: number }) => {
+//   const [showInput, setShowInput] = useState(true);
+//   const [commenting, setCommenting] = useState(false);
+//   const [comments, setComments] = useState<CommentProps[]>([]);
+
+//   const { data, error, loading } = useFetch<CommentsResponse>(`/agent_community/${slug}/comments`);
+
+//   const handleLike = (commentId: string | number) => {
+//     console.log('Like comment:', commentId);
+//   };
+
+//   const handleDislike = (commentId: string | number) => {
+//     console.log('Dislike comment:', commentId);
+//   };
+
+//   useEffect(() => {
+//     if (data?.data) {
+//       const commentsData = data.data.map((comment) => ({
+//         ...comment,
+//         replies: comment.replies || [],
+//       }));
+//       setComments(commentsData);
+//     }
+//   }, [data]);
+  
+//   // console.log('Comments data:', { data, comments });
+
+
+//   const sendComment = async (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     // setShowInput(false);
+//     const formData = new FormData(e.target as HTMLFormElement);
+//     const message = formData.get('message');
+//     const reply = formData.get('reply');
+    
+//     try {
+//       setCommenting(true);
+      
+//       if (reply) {
+//         const replyInput = (e.target as HTMLFormElement).querySelector('input[name="reply"]');
+//         const commentId = Number(replyInput?.id);
+        
+//         if (commentId) {
+//           // Optimistically update UI
+//           const newReply: CommentProps = {
+//             id: Date.now(),
+//             name: "You",
+//             text: reply as string,
+//             likes: 0,
+//             dislikes: 0,
+//             handleSubmit: () => {},
+//             commenting: false,
+//             replies: []
+//           };
+
+//           setComments(prevComments => 
+//             prevComments.map(comment => 
+//               comment.id === commentId
+//                 ? { ...comment, replies: [...(comment.replies || []), newReply] }
+//                 : comment
+//             )
+//           );
+
+//           // Send to server
+//           await sendMyArticleReply(slug, commentId.toString(), reply as string);
+//         }
+//       } else if (message) {
+//         // Optimistically update UI
+//         const newComment: CommentProps = {
+//           id: Date.now(),
+//           name: "You",
+//           text: message as string,
+//           likes: 0,
+//           dislikes: 0,
+//           replies: [],
+//           handleSubmit: () => {},
+//           commenting: false
+//         };
+
+//         setComments(prev => [...prev, newComment]);
+
+//         // Send to server
+//         await sendMyArticleComment(slug, message as string);
+//       }
+
+//       // Fetch latest comments in background
+//       const response = await fetch(`/agent_community/${slug}/comments`);
+//       const newData = await response.json();
+//       setComments(newData.data);
+
+//       (e.target as HTMLFormElement).reset();
+//       setShowInput(false);
+//       toast.success(reply ? "Reply sent successfully" : "Comment sent successfully");
+      
+//     } catch (error) {
+//       console.error("Error sending comment/reply:", error);
+//       // Revert optimistic update by re-fetching
+//       const response = await fetch(`/agent_community/${slug}/comments`);
+//       const newData = await response.json();
+//       setComments(newData.data);
+//       toast.error("Failed to send comment");
+//     } finally {
+//       setCommenting(false);
+//     }
+//   };
+
+
+//   return (    
+//     <div>
+//       {commentsCount === 0 && showInput ? (
+//         <NewComment 
+//         onSubmit={(e) => {
+//           sendComment(e);
+//           // setShowInput(true);
+//         }} 
+//           commenting={commenting} 
+//         />
+//       ) : (
+//         <form onSubmit={sendComment}>
+//           <div className="mt-4">
+//             {comments.map((comment) => (
+//               <div key={comment.id} data-comment-id={comment.id}>
+//                 <Comment
+//                   {...comment} 
+//                   handleLike={handleLike} 
+//                   handleDislike={handleDislike} 
+//                   commenting={commenting}
+//                   handleSubmit={sendComment}
+//                   commentsCount={commentsCount}
+//                 />
+//               </div>
+//             ))}
+//           </div>
+//         </form>
+//       )}
+//     </div>
+//   );
+// };
+
+
+
+
 
 
 
@@ -521,3 +663,93 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+const ThreadComments = ({
+  slug,
+  comments,
+  setComments,
+}: {
+  slug: string;
+  comments: CommentProps[];
+  setComments: React.Dispatch<React.SetStateAction<CommentProps[]>>;
+}) => {
+  const [commenting, setCommenting] = useState(false);
+
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(`/agent_community/${slug}/comments`);
+      const data = await response.json();
+      setComments(data.data);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const message = formData.get("message") as string;
+    const reply = formData.get("reply") as string;
+    const parentId = formData.get("parentId") as string;
+
+    if (!message && !reply) return;
+
+    try {
+      setCommenting(true);
+      
+      // Optimistic update
+      const newComment = {
+        id: Date.now(), // Temporary ID
+        text: reply || message,
+        name: "You", // Or get from user context
+        likes: 0,
+        dislikes: 0,
+        replies: []
+      };
+
+      if (reply && parentId) {
+        // Optimistically update replies
+        setComments(prevComments => 
+          prevComments.map(comment => {
+            if (comment.id.toString() === parentId) {
+              return {
+                ...comment,
+                replies: [...(comment.replies || []), newComment]
+              };
+            }
+            return comment;
+          })
+        );
+        
+        await sendMyArticleReply(slug, parentId, reply);
+      } else if (message) {
+        // Optimistically add new comment
+        setComments(prev => [...prev, newComment]);
+        await sendMyArticleComment(slug, message);
+      }
+      
+      toast.success(reply ? "Reply added successfully" : "Comment added successfully");
+      
+      // Background refetch to sync with server
+      fetchComments();
+      
+    } catch (error) {
+      toast.error("Failed to add comment/reply");
+      console.error(error);
+      // Revert optimistic update on error
+      fetchComments();
+    } finally {
+      setCommenting(false);
+    }
+  };

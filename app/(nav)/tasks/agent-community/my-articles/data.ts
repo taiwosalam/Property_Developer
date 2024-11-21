@@ -1,4 +1,5 @@
 // Imports
+import { CommentProps } from "@/components/tasks/announcements/comment";
 import api from "@/services/api";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
