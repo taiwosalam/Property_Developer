@@ -7,14 +7,10 @@ import { ChevronDown } from "lucide-react";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 
-const NavSwitchUserSwitch: React.FC<{
-  userType: string;
-  loading: boolean;
-  error: Error | null;
-}> = ({ userType, loading, error }) => {
+const NavSwitchUserSwitch = () => {
   const isDarkMode = useDarkMode();
   const [isOpen, setIsOpen] = useState(false);
-  const [active, setActive] = useState(userType);
+  // const [active, setActive] = useState("Property Manager");
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -27,13 +23,9 @@ const NavSwitchUserSwitch: React.FC<{
   };
 
   const handleModuleSwitch = (val: string) => {
-    setActive(val);
+    // setActive(val);
     setIsOpen(false);
   };
-
-  useEffect(() => {
-    setActive(userType);
-  }, [userType]);
 
   return (
     <div ref={containerRef} className="relative flex-1 max-w-[240px]">
@@ -44,7 +36,7 @@ const NavSwitchUserSwitch: React.FC<{
         className="w-full h-full px-4 py-[12px] flex items-center justify-between gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]"
       >
         <span className="text-[#0a132ea6] dark:text-white text-base font-semibold capitalize custom-truncated">
-          {loading ? "loading..." : error ? "Property Manager" : userType}
+          Property Manager
         </span>
         <ChevronDown size={20} color={isDarkMode ? "#fff" : "#0a132ea6"} />
       </button>

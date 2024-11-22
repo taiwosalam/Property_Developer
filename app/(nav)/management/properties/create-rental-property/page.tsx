@@ -10,9 +10,11 @@ import { addProperty } from "./data";
 const CreateProperty = () => {
   const router = useRouter();
 
-  const handleSubmit = async (data: FormData) => {
-    // Post data to API
-    router.push("/management/properties/create-rental-property/1/add-unit");
+  const handleSubmit = async (data: Record<string, any>) => {
+    const status = await addProperty(data);
+    if (status) {
+      router.push(`/management/properties/create-rental-property/1/add-unit"`);
+    }
   };
 
   return (

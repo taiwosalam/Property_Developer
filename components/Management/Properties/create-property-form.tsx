@@ -1,19 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
 // Types
-import type { CreatePropertyFormProps } from "./types";
-import type { PropertyStateDataKeys } from "@/app/(nav)/management/properties/create-rental-property/types";
-import {
-  proerty_state_data,
-  type StateType,
-} from "@/app/(nav)/management/properties/create-rental-property/data";
-
-// Images
+import type { CreatePropertyFormProps, PropertyFormStateType } from "./types";
+import { convertYesNoToBoolean } from "@/utils/checkFormDataForImageOrAvatar";
+import { useState, useEffect } from "react";
 import { PlusIcon, DeleteIconX } from "@/public/icons/icons";
-
-// Imports
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
@@ -21,26 +12,39 @@ import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import { v4 as uuidv4 } from "uuid";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import DraggableImage from "./draggable-image";
-import { propertyCategories } from "@/data";
+import { propertyCategories, MAX_FILE_SIZE_MB } from "@/data";
 import { AuthForm } from "@/components/Auth/auth-components";
-// import { getAllBranches } from "@/app/(nav)/management/staff-branch/data";
-// import { getAllLandlords } from "@/app/(nav)/management/landlord/data";
-import { getAllStaffsByBranch } from "./data";
+import {
+  getAllBranches,
+  getAllLandlords,
+  getAllInventory,
+  getAllStaffByBranch,
+  property_form_state_data,
+  transformPropertyFormData,
+} from "./data";
 import { currencySymbols } from "@/utils/number-formatter";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
 import PropertyFormFooter from "./property-form-footer.tsx";
-import useDarkMode from "@/hooks/useCheckDarkMode";
-import { MAX_FILE_SIZE_MB } from "@/data";
+import { useMultipleImageUpload } from "@/hooks/useMultipleImageUpload";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+
+const maxNumberOfImages = 6;
+
+type SetPropertyStateChanges = Partial<{
+  [K in keyof PropertyFormStateType]: PropertyFormStateType[K];
+}>;
 
 const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   editMode,
   handleSubmit,
   formType,
 }) => {
-  const [state, setState] = useState<StateType>(proerty_state_data);
+  const [requestLoading, setRequestLoading] = useState(false);
+  const companyId = usePersonalInfoStore((state) => state.company_id) || "";
+  const [state, setState] = useState<PropertyFormStateType>(
+    property_form_state_data
+  );
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  const isDarkMode = useDarkMode();
 
   const {
     state: selectedState,
@@ -49,7 +53,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     selectedBranch,
     staff,
     staffOptions,
-    images,
     branchOptions,
     inventoryOptions,
     landlordOptions,
@@ -57,15 +60,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     resetKey,
   } = state;
 
-  const sortableImages = images.map((image, index) => ({
-    id: uuidv4(),
-    index,
-    image,
-  }));
-
-  const setPropertyState = (
-    changes: Partial<Record<PropertyStateDataKeys, any>>
-  ) => {
+  const setPropertyState = (changes: SetPropertyStateChanges) => {
     setState((x) => {
       const newState = { ...x, ...changes };
       if ("state" in changes) {
@@ -78,74 +73,43 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []).slice(0, 6 - images.length);
-    const validImages: string[] = [];
-    const oversizeImages: string[] = [];
-    for (const file of files) {
-      if (!file.type.startsWith("image/")) {
-        alert("Upload only image files.");
-        return;
-      }
-      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-        oversizeImages.push(file.name);
-        continue;
-      }
-      try {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          validImages.push(reader.result as string);
-          if (validImages.length + oversizeImages.length === files.length) {
-            setState((x) => ({
-              ...x,
-              images: [...x.images, ...validImages].slice(0, 6),
-            }));
-          }
-        };
-        reader.readAsDataURL(file);
-      } catch (error) {
-        console.error("Error processing image:", error);
-        alert("There was an error processing your image. Please try again.");
-      }
-    }
+  const {
+    images,
+    imageFiles,
+    fileInputRef,
+    handleFileChange,
+    removeImage,
+    handleImageReorder,
+    resetImages,
+  } = useMultipleImageUpload({
+    maxImages: maxNumberOfImages,
+    maxFileSizeMB: MAX_FILE_SIZE_MB,
+  });
 
-    if (oversizeImages.length > 0) {
-      alert(
-        `Some files were not uploaded due to exceeding the maximum size: ${MAX_FILE_SIZE_MB} MB`
-      );
-    }
-    e.target.value = ""; // Reset input value to allow re-uploading the same file
-  };
+  const sortableImages = images.map((image, index) => ({
+    id: uuidv4(),
+    index,
+    image,
+  }));
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
     const { source, destination } = result;
     if (source.index === destination.index) return;
-
-    const newImages = Array.from(images);
-    const [movedImage] = newImages.splice(source.index, 1);
-    newImages.splice(destination.index, 0, movedImage);
-
-    setState((x) => ({ ...x, images: newImages }));
-  };
-
-  const removeImage = (index: number) => {
-    const updatedImages = images.filter((_, i) => i !== index);
-    setState((x) => ({ ...x, images: updatedImages }));
+    handleImageReorder(source.index, destination.index);
   };
 
   const addStaff = () => {
     if (staff.length < 3) {
-      setState((x) => ({
-        ...x,
+      setPropertyState({
         staff: [
-          ...x.staff,
+          ...staff,
           {
-            id: `staff${x.staff.length + 1}_id`,
-            label: `Staff ${x.staff.length + 1}`,
+            id: `staff${staff.length + 1}_id`,
+            label: `Staff ${staff.length + 1}`,
           },
         ],
-      }));
+      });
     }
   };
 
@@ -155,47 +119,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       staffMember.id = `staff${index + 1}`;
       staffMember.label = `Staff ${index + 1}`;
     });
-    setState((x) => ({ ...x, staff: updatedStaff }));
+    setPropertyState({ staff: updatedStaff });
   };
-
-  // Get primary data from the backend
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const [branches, landlords] = await Promise.all([
-  //       getAllBranches(),
-  //       getAllLandlords(),
-  //     ]);
-
-  //     setPropertyState({
-  //       branchOptions: branches.branches.map((branch: any) => ({
-  //         value: branch.id,
-  //         label: branch.branch_title,
-  //       })),
-  //       landlordOptions: landlords.landlords.map((landlord: any) => ({
-  //         value: landlord.id,
-  //         label: `${landlord.first_name} ${landlord.last_name}`,
-  //       })),
-  //     });
-  //   };
-
-  //   fetchData();
-  // }, []);
-
-  // Gets staffs by branch
-  useEffect(() => {
-    const fetchStaff = async () => {
-      const staff = await getAllStaffsByBranch(selectedBranch);
-
-      setPropertyState({
-        staffOptions: staff.map((staff: any) => ({
-          value: staff.id,
-          label: staff.full_name,
-        })),
-      });
-    };
-
-    if (selectedBranch) fetchStaff();
-  }, [selectedBranch]);
 
   // Function to reset the state
   const handleReset = () => {
@@ -203,10 +128,80 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       ...x,
       resetKey: x.resetKey + 1,
       state: "",
+      lga: "",
+      city: "",
       images: [],
       staff: [],
     }));
+    resetImages();
     setSelectedCategory(null);
+  };
+
+  // Get primary data from the backend
+  useEffect(() => {
+    const fetchData = async () => {
+      const [branches, landlords, inventory] = await Promise.all([
+        getAllBranches(),
+        getAllLandlords(),
+        getAllInventory(),
+      ]);
+
+      setPropertyState({
+        branchOptions: branches.map((branch) => ({
+          value: branch.id,
+          label: branch.branch_name,
+        })),
+        landlordOptions: landlords.map((landlord) => ({
+          value: landlord.id,
+          label: landlord.full_name,
+        })),
+        inventoryOptions: inventory.map((inventory) => ({
+          value: inventory.id,
+          label: inventory.inventory_name,
+        })),
+      });
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedBranch) return;
+    const fetchStaff = async () => {
+      const staffMembers = await getAllStaffByBranch(selectedBranch);
+      setPropertyState({
+        staffOptions: staffMembers
+          .filter((staff) => staff.position.toLowerCase() !== "account officer")
+          .map((staff) => ({
+            value: staff.id,
+            label: staff.full_name,
+          })),
+        accountOfficerOptions: staffMembers
+          .filter((staff) => staff.position.toLowerCase() === "account officer")
+          .map((staff) => ({
+            value: staff.id,
+            label: staff.full_name,
+          })),
+      });
+    };
+    fetchStaff();
+  }, [selectedBranch]);
+
+  const yesNoFields = [
+    "group_chat",
+    "rent_penalty",
+    "request_call_back",
+    "book_visitors",
+    "vehicle_record",
+    "active_vat",
+  ];
+
+  const handleFormSubmit = async (data: Record<string, any>) => {
+    setRequestLoading(true);
+    convertYesNoToBoolean(data, yesNoFields);
+    const payload = transformPropertyFormData(data, imageFiles, companyId);
+    await handleSubmit(payload);
+    setRequestLoading(false);
   };
 
   return (
@@ -214,31 +209,26 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       steps={1}
       activeStep={0}
       inputClassName="property-form-input"
-      images={state.images}
+      images={images}
       imagesRequired={true}
       showProgressBar={false}
     >
       <AuthForm
-        returnType="form-data"
-        // onFormSubmit={handleSubmit}
-        onFormSubmit={() => {}}
-        setValidationErrors={() => {}}
-        className="max-w-[970px] pb-[80px]"
+        // returnType="form-data"
+        onFormSubmit={handleFormSubmit}
+        className="max-w-[970px] pb-[100px]"
       >
-        {/* Backend is Looking for it */}
         <input
-          name="property_tag"
+          name="property_type"
           type="hidden"
-          value={formType}
-          readOnly
-          required
+          value={formType === "rental" ? "rental" : "gated_estate"}
         />
         <div className="mb-5 lg:mb-8">
           <p className="mb-5 text-text-secondary dark:text-darkText-1 text-base font-normal">
             Set {formType === "rental" ? "property" : "Estate/Facility"}{" "}
-            pictures for easy recognition (maximum of 6 images). Please drag
-            your preferred image and place it in the first position to make it
-            the primary display.
+            pictures for easy recognition (maximum of {maxNumberOfImages}{" "}
+            images). Please drag your preferred image and place it in the first
+            position to make it the primary display.
           </p>
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="property-images" direction="horizontal">
@@ -246,7 +236,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className="flex gap-4 overflow-x-auto custom-round-scrollbar overflow-y-hidden"
+                  className="flex gap-4 overflow-x-auto custom-round-scrollbar overflow-y-hidden pb-2"
                 >
                   {sortableImages.map((s) => (
                     <DraggableImage
@@ -274,6 +264,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                         multiple
                         onChange={handleFileChange}
                         className="hidden"
+                        ref={fileInputRef}
                       />
                     </label>
                   )}
@@ -296,7 +287,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         )}
         {/* Property Details */}
         <p className="text-primary-navy dark:text-white font-bold text-lg lg:text-xl">
-          <span className="text-status-error-primary">*</span>
           {formType === "rental"
             ? "Property Details"
             : selectedCategory?.toLocaleLowerCase() === "estate"
@@ -318,12 +308,12 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             isSearchable={false}
             inputContainerClassName="bg-white"
             resetKey={resetKey}
-            requiredNoStar
+            required
             hiddenInputClassName="property-form-input"
             onChange={(category) => setSelectedCategory(category)}
           />
           <Input
-            id="property_title"
+            id="title"
             label={
               formType === "rental"
                 ? "Property Title"
@@ -331,9 +321,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 ? "Estate Name"
                 : "Facility Name"
             }
-            placeholder="Design name or Decsription"
+            placeholder="name"
             inputClassName="bg-white dark:bg-darkText-primary rounded-[8px] property-form-input"
-            requiredNoStar
+            required
           />
           <Select
             id="state"
@@ -342,35 +332,35 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             value={selectedState}
             inputContainerClassName="bg-white"
             onChange={(state) => setPropertyState({ state })}
-            requiredNoStar
+            required
             hiddenInputClassName="property-form-input"
           />
           <Select
             options={getLocalGovernments(selectedState)}
-            id="local_govt"
+            id="local_government"
             label="local government"
             value={lga}
             inputContainerClassName="bg-white"
             onChange={(lga) => setPropertyState({ lga })}
-            requiredNoStar
+            required
             hiddenInputClassName="property-form-input"
           />
           <Select
             options={getCities(selectedState, lga)}
-            id="city"
+            id="city_area"
             label="City / Area"
             allowCustom={true}
             value={city}
             onChange={(city) => setPropertyState({ city })}
             inputContainerClassName="bg-white"
-            requiredNoStar
+            required
             hiddenInputClassName="property-form-input"
           />
           <Input
             id="full_address"
             label="Full Address"
             inputClassName="bg-white rounded-[8px] property-form-input"
-            requiredNoStar
+            required
           />
 
           <Select
@@ -380,7 +370,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             options={branchOptions}
             inputContainerClassName="bg-white"
             onChange={(selectedBranch) => setPropertyState({ selectedBranch })}
-            requiredNoStar
             hiddenInputClassName="property-form-input"
           />
           {formType === "rental" && (
@@ -389,19 +378,16 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 options={inventoryOptions}
                 id="inventory_id"
                 label="Inventory"
-                value="1" // NOTE: Remove this later
                 inputContainerClassName="bg-white"
                 resetKey={resetKey}
-                requiredNoStar
                 hiddenInputClassName="property-form-input"
               />
               <Select
                 options={landlordOptions}
-                id="landlord_id"
+                id="land_lord_id"
                 label="Landlord"
                 inputContainerClassName="bg-white"
                 resetKey={resetKey}
-                requiredNoStar
                 hiddenInputClassName="property-form-input"
               />
             </>
@@ -410,10 +396,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             options={accountOfficerOptions}
             id="account_officer_id"
             label="Account Officer"
-            value="10" // NOTE: Remove this later
             inputContainerClassName="bg-white"
             resetKey={resetKey}
-            requiredNoStar
             hiddenInputClassName="property-form-input"
           />
           {staff.map(({ id, label }) => (
@@ -444,7 +428,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             </button>
           )}
           <TextArea
-            id="property_description"
+            id="description"
             label={
               formType === "rental"
                 ? "Property Description"
@@ -453,11 +437,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             className="md:col-span-2 lg:col-span-3 dark:text-white !dark:bg-transparent"
             placeholder="Write here"
             resetKey={resetKey}
-            requiredNoStar
+            required
             hiddenInputClassName="property-form-input"
-            inputSpaceClassName={`${
-              isDarkMode ? "bg-transparent" : "bg-white"
-            }`}
+            inputSpaceClassName="bg-white dark:bg-transparent"
           />
         </div>
         {/* Property Settings */}
@@ -479,18 +461,18 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             id={formType === "rental" ? "agency_fee" : "management_fee"}
             label={formType === "rental" ? "Agency Fee" : "Management Fee"}
             options={[
-              { value: 1, label: "1%" },
-              { value: 2, label: "2%" },
-              { value: 2.5, label: "2.5%" },
-              { value: 3, label: "3%" },
-              { value: 3.5, label: "3.5%" },
-              { value: 5, label: "5%" },
-              { value: 6, label: "6%" },
-              { value: 7, label: "7%" },
-              { value: 7.5, label: "7.5%" },
-              { value: 8, label: "8%" },
-              { value: 9, label: "9%" },
-              { value: 10, label: "10%" },
+              "1%",
+              "2%",
+              "2.5%",
+              "3%",
+              "3.5%",
+              "5%",
+              "6%",
+              "7%",
+              "7.5%",
+              "8%",
+              "9%",
+              "10%",
             ]}
             isSearchable={false}
             inputContainerClassName="bg-white"
@@ -501,7 +483,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           {formType === "rental" && (
             <>
               <Select
-                id="who_to_charge_new"
+                id="who_to_charge_new_tenant"
                 options={["landlord", "tenants", "both", "none"]}
                 label="Who to Charge (New Tenant)"
                 isSearchable={false}
@@ -511,7 +493,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 hiddenInputClassName="property-form-input"
               />
               <Select
-                id="who_to_charge_renewal"
+                id="who_to_charge_renew_tenant"
                 options={["landlord", "tenants", "both", "none"]}
                 label="Who to Charge (Renewal Tenant)"
                 isSearchable={false}
@@ -525,10 +507,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           {formType === "rental" && (
             <Select
               options={[
-                { value: "landlord", label: "Keep with Landlord" },
-                { value: "manager", label: "Keep with Manager" },
-                { value: "escrow", label: "Escrow it" },
-                { value: "none", label: "None" },
+                "Keep with Landlord",
+                "Keep with Manager",
+                "Escrow it",
+                "None",
               ]}
               isSearchable={false}
               id="caution_deposit"
@@ -551,7 +533,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           />
           <Select
             options={["yes", "no"]}
-            id="fee_penalty"
+            id={formType === "rental" ? "rent_penalty" : "fee_penalty"}
             label={formType === "rental" ? "Rent Penalty" : "Fee Penalty"}
             isSearchable={false}
             inputContainerClassName="bg-white"
@@ -561,7 +543,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           />
           <Select
             options={["yes", "no"]}
-            id="request_callback"
+            id="request_call_back"
             label="Request Call Back"
             isSearchable={false}
             inputContainerClassName="bg-white"
@@ -581,7 +563,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           />
           <Select
             options={["yes", "no"]}
-            id="vehicle_records"
+            id="vehicle_record"
             label="Vehicle Records"
             isSearchable={false}
             inputContainerClassName="bg-white"
@@ -591,7 +573,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           />
           <Select
             options={["yes", "no"]}
-            id="activate_vat"
+            id="active_vat"
             label="Activate 7.5% VAT"
             isSearchable={false}
             inputContainerClassName="bg-white"
@@ -626,7 +608,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             </>
           )}
         </div>
-        <PropertyFormFooter editMode={editMode} handleReset={handleReset} />
+        <PropertyFormFooter
+          editMode={editMode}
+          handleReset={handleReset}
+          requestLoading={requestLoading}
+        />
       </AuthForm>
     </FlowProgress>
   );

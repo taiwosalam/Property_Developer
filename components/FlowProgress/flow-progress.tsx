@@ -120,9 +120,7 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
   }, [activeStep, handleInputChange, inputClassName]);
 
   return (
-    <FlowProgressContext.Provider
-      value={{ handleInputChange, canSubmit: canSubmit }}
-    >
+    <FlowProgressContext.Provider value={{ handleInputChange, canSubmit }}>
       <div ref={containerRef} className={className}>
         {showProgressBar && (
           <div className="flex gap-[10px] bg-white" style={style}>

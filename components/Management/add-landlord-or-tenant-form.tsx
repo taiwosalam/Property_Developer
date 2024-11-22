@@ -40,7 +40,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
     placeholder: CameraCircle,
   });
 
-  const [avatar, setAvatar] = useState<string | null>(null);
+  const [avatar, setAvatar] = useState("");
   const [address, setAddress] = useState({
     selectedState: "",
     selectedLGA: "",
@@ -58,7 +58,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAvatar(null); // Clear the avatar when an image is selected
+    setAvatar("");
     originalHandleImageChange(e);
   };
 
@@ -88,7 +88,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
           formStep === 2 ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
       >
-        <input type="hidden" name="avatar" value={avatar || ""} />
+        <input type="hidden" name="avater" value={avatar} />
 
         <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           <Input
@@ -200,7 +200,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
                       className="absolute top-0 right-0"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setAvatar(null);
+                        setAvatar("");
                       }}
                     >
                       <DeleteIconOrange size={20} />

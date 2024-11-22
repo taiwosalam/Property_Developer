@@ -75,13 +75,14 @@ const EditBranchForm = ({
   };
 
   const handleFormSubmit = async (data: FormData) => {
-    if (!checkFormDataForImageOrAvatar(data)) {
-      if (preview && preview !== CameraCircle) {
-        data.append("picture", somedata?.branch_image || "");
-      } else {
+    if (somedata?.picture && preview !== somedata.picture) {
+      if (!checkFormDataForImageOrAvatar(data)) {
         toast.warning("Please upload a picture or choose an avatar.");
         return;
       }
+    } else {
+      // Remove picture field if it wasn't changed cos its partial update on d backend
+      data.delete("picture");
     }
     setUpdateRequestLoading(true);
     convertYesNoToBoolean(data, ["branch_wallet"]);
@@ -103,10 +104,10 @@ const EditBranchForm = ({
         city: somedata.city || "",
       }));
     }
-    if (somedata?.branch_image) {
-      setPreview(somedata.branch_image);
+    if (somedata?.picture) {
+      setPreview(somedata.picture);
     }
-  }, [somedata]);
+  }, [somedata, setPreview]);
 
   return (
     <>
