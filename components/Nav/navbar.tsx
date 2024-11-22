@@ -67,27 +67,26 @@ const Header = () => {
   const lgIconsInteractionClasses =
     "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
 
-  const { data, loading, error } = useFetch<ProfileResponse>("/user/profile");
-  const setProfileInfo = usePersonalInfoStore((state) => state.setProfileInfo);
-  const setCompanyInfo = usePersonalInfoStore((state) => state.setCompanyInfo);
-  const { name, company_logo } = usePersonalInfoStore();
+  const { data, loading } = useFetch<ProfileResponse>("/user/profile");
+  const setPersonalInfo = usePersonalInfoStore(
+    (state) => state.setPersonalInfo
+  );
+  const name = usePersonalInfoStore((state) => state.name);
+  const company_logo = usePersonalInfoStore((state) => state.company_logo);
+  const profile_picture = usePersonalInfoStore(
+    (state) => state.profile_picture
+  );
 
   useEffect(() => {
     if (data?.data) {
-      const { user, company } = data.data;
-
-      setProfileInfo({
-        // id: user.id,
-        name: user.name || "",
-        // profile_picture: user.profile_picture || "",
-      });
-
-      setCompanyInfo({
-        company_name: company.company_name,
-        company_logo: company.company_logo,
-      });
+      const { user, company, profile } = data.data;
+      setPersonalInfo("user_id", user.id);
+      setPersonalInfo("name", user.name);
+      setPersonalInfo("profile_picture", profile.picture);
+      setPersonalInfo("company_id", company.company_id);
+      setPersonalInfo("company_logo", company.company_logo);
     }
-  }, [data, setProfileInfo, setCompanyInfo]);
+  }, [data, setPersonalInfo]);
 
   return (
     <header
@@ -225,11 +224,7 @@ const Header = () => {
         {/* Nav Switch User & Other buttons for LG & above */}
         <div className="hidden lg:flex-1 lg:flex lg:justify-between lg:items-center lg:gap-4">
           <div className="flex-1 flex items-center gap-2">
-            <NavSwitchUserSwitch
-              loading={false}
-              error={null}
-              userType="Property Manager"
-            />
+            <NavSwitchUserSwitch />
             <Modal>
               <ModalTrigger className="px-4 py-[12px] flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
                 <SearchIcon size={24} />
@@ -291,7 +286,7 @@ const Header = () => {
         <DropdownTrigger>
           <div className="flex items-center gap-4">
             <Picture
-              src={Avatar}
+              src={profile_picture || Avatar}
               alt="profile picture"
               status
               size={isMobile ? 50 : 60}
@@ -312,7 +307,7 @@ const Header = () => {
           position={isMobile ? "left" : "right"}
           className="custom-flex-col gap-2 pb-[10px] min-w-[300px] sm:min-w-[350px] text-sm sm:text-base font-normal capitalize"
         >
-          <NavProfileDropdown name={"Taiwo Salam"} userId={0} />
+          <NavProfileDropdown />
         </DropdownContent>
       </Dropdown>
     </header>

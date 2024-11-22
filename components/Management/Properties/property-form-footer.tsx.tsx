@@ -8,8 +8,9 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const PropertyFormFooter: React.FC<{
   editMode?: boolean;
+  requestLoading: boolean;
   handleReset: () => void;
-}> = ({ editMode, handleReset }) => {
+}> = ({ editMode, requestLoading, handleReset }) => {
   const { canSubmit } = useContext(FlowProgressContext);
   return (
     <FixedFooter
@@ -66,11 +67,11 @@ const PropertyFormFooter: React.FC<{
           </Button>
           <Button
             type="submit"
-            disabled={!canSubmit}
+            disabled={!canSubmit || requestLoading}
             size="base_medium"
             className="py-2 px-6"
           >
-            Add Unit
+            {requestLoading ? "Please Wait." : "Add Unit"}
           </Button>
         </Fragment>
       )}
