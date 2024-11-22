@@ -21,12 +21,13 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
   const [branchName, setBranchName ] = useState<string | null>(null);
 
     useEffect(() => {
-    // console.log("data inventory", data);
+    // console.log("data branch id", data.branch_id);
     const fetchBranch = async () => {
       if (data.branch_id) {
-        const branch = await getBranch(data.branch_id);
+        const branch = await getBranch(data.branch_id.toString());
         if (branch) {
           setBranchName(branch.data.data.branch.branch_name);
+          // console.log("branch name", branch.data.data.branch.branch_name);
         }
       } else {
         console.warn("branch_id is not available in data");

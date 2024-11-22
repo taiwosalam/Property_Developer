@@ -118,7 +118,9 @@ const Inventory = () => {
     }));
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
+    <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+    </div>;
 
   const inventoryFiltersWithDropdown = [
     {
