@@ -43,6 +43,8 @@ const AgentCommunityPage = () => {
     router.push("/tasks/agent-community/my-articles/create");
   };
 
+  const [state, setState] = useState<string | null>(null);
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     // Filter threads based on title or content

@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 
 // Imports
 import Button from "@/components/Form/Button/button";
@@ -6,12 +7,71 @@ import BackButton from "@/components/BackButton/back-button";
 import InventoryItem from "@/components/Management/Inventory/inventory-item";
 import { InventoryListInfo } from "@/components/Management/Inventory/inventory-components";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { useParams } from "next/navigation";
+import useFetch from "@/hooks/useFetch";
+import { getBranch } from "@/components/Management/Inventory/data";
+
+interface InventoryData {
+  title: string;
+  inventory_id: string;
+  created_date: string;
+  edited_date: string;
+  property_name: string;
+  branch_name: string;
+  account_officer: string;
+  branch_id: string;
+}
+
+//  Type for the data object
+interface FetchData {
+  id: string;
+  title: string;
+  created_date: string;
+  edited_date: string;
+  property_name: string;
+  branch_name: string;
+  account_officer: string;
+  inventory: {
+    title: string;
+    id: string;
+    items: any[];
+    branch_id: string;
+  };
+}
 
 const PreviewInventory = () => {
+  const { inventoryId } = useParams();
+  const [inventoryItems, setInventoryItems] = useState<any>([]);
+  const [inventoryData, setInventoryData] = useState<InventoryData | null>(null);
+  const { data, loading, error } = useFetch<FetchData>(`/inventory/${inventoryId}`);
+
+  useEffect(() => {
+    const fetchBranchData = async () => {
+      if (data) {
+        console.log("data - ", data);
+
+        const updatedInventoryData: InventoryData = {
+          title: data.inventory.title || "",
+          inventory_id: data.inventory.id || "",
+          created_date: data.created_date || "",
+          edited_date: data.edited_date || "",
+          property_name: data.property_name || "",
+          branch_name: data.branch_name || "",
+          account_officer: data.account_officer || "",
+          branch_id: data.inventory.branch_id || "",
+        };
+        setInventoryData(updatedInventoryData);
+        setInventoryItems(data.inventory.items);
+      }
+    };
+
+    fetchBranchData();
+  }, [data]);
+
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-4">
-        <BackButton>Olalomi Cottage</BackButton>
+        <BackButton>{inventoryData?.title}</BackButton>
         <div
           className="p-6 bg-white dark:bg-darkText-primary rounded-lg custom-flex-col gap-4"
           style={{
@@ -23,7 +83,7 @@ const PreviewInventory = () => {
             Details
           </p>
           <div className="flex flex-col gap-4 lg:gap-0 lg:flex-row lg:items-center">
-            <InventoryListInfo data={{}} chunkSize={2} />
+            <InventoryListInfo data={inventoryData || {}} chunkSize={2} />
           </div>
         </div>
       </div>
@@ -32,13 +92,14 @@ const PreviewInventory = () => {
           Added Inventory
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* <InventoryItem />
-          <InventoryItem /> */}
+          {inventoryItems?.map((item: any, index: number) => (
+            <InventoryItem key={index} index={index} data={item} />
+          ))}
         </div>
       </div>
       <FixedFooter className="flex gap-6 justify-end">
         <Button
-          href={"/management/inventory/1/manage"}
+          href={`/management/inventory/${inventoryData?.inventory_id}/manage`}
           size="sm_medium"
           className="py-2 px-7"
         >

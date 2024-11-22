@@ -6,6 +6,7 @@ import Input from "@/components/Form/Input/input";
 import { useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface ThreadResponse {
   post: any;
@@ -17,25 +18,25 @@ interface ThreadResponse {
 interface Props {
   likeCount: number;
   dislikeCount: number;
-  handleLike: () => void;
-  handleDislike: () => void;
   userAction?: 'like' | 'dislike' | null;
-  isLoading: boolean;
   commentCount: number;
   slug: string;
 }
 
 const NewComment = ({ commentCount, slug }: Props) => {
-    const { data, error, loading, refetch: refetchComments } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const { data, error, loading, refetch: refetchComments } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
+
+
+    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
     const formData = new FormData(e.target as HTMLFormElement);
     const message = formData.get("message") as string;
+    
+    if (!message) return;
     try {
-      console.log("event triggered for comment");
+      setIsSubmitting(true);
       const status = await sendMyArticleComment(slug, message);
       if (status) {
         window.dispatchEvent(new Event("refetchComments"));
@@ -44,11 +45,13 @@ const NewComment = ({ commentCount, slug }: Props) => {
       (e.target as HTMLFormElement).reset();
     } catch (error) {
       console.error('Failed to submit:', error);
+      toast.error("Failed to add comment");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  
   return (
     <div className="mt-6">
     <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium mb-4">

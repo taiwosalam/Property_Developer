@@ -117,6 +117,16 @@ export const sendMyArticleComment = async (slug: string, content: string) => {
 }
 
 
+export const toggleCommentLike = async ( commentId: string, type: 1 | -1) => {
+  try {
+    const response = await api.post(`/agent_community/agent_comment/${commentId}/toggle-like`, { type });
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    console.error("Error toggling comment like:", error);
+    return false;
+  }
+}
+
 export const sendMyArticleReply = async (slug: string, commentId: string, content: string) => {
   try {
     const response = await api.post(`/agent_community/${slug}/comment/${commentId}/reply`, { content });

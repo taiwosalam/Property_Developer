@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // Types
 import type { InventoryListProps } from "./types";
@@ -16,8 +16,17 @@ import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { SectionSeparator } from "@/components/Section/section-components";
 
-const InventoryList: React.FC<InventoryListProps> = ({ data = {} }) => {
+const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
   const [isOpened, setIsOpened] = useState(false);
+
+  useEffect(() => {
+    console.log("data - ", data);
+  }, [data]);
+
+  // Ensure data is not null or undefined
+  if (!data) {
+    return <div>No data available</div>;
+  }
 
   return (
     <div
@@ -49,7 +58,7 @@ const InventoryList: React.FC<InventoryListProps> = ({ data = {} }) => {
           </div>
           <KeyValueList
             referenceObject={{
-              inventory_id: "",
+              inventory_id: data.id || "",
               edited_date: "",
               property_name: "",
               created_date: "",
@@ -64,14 +73,14 @@ const InventoryList: React.FC<InventoryListProps> = ({ data = {} }) => {
               variant="border"
               size="xs_medium"
               className="py-2 px-10"
-              href={"/management/inventory/1/manage"}
+              href={`/management/inventory/${data.id}/manage`}
             >
               manage
             </Button>
             <Button
               size="xs_medium"
               className="py-2 px-10"
-              href={"/management/inventory/1/preview"}
+              href={`/management/inventory/${data.id}/preview`}
             >
               preview
             </Button>

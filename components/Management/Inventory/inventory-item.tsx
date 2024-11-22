@@ -1,14 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import React, { CSSProperties, useState } from "react";
+import React, { CSSProperties, useState, useRef, useEffect } from "react";
 
 // Types
 import type { InventoryItemProps } from "./types";
-
-// Images
-import ImageBlue from "@/public/icons/image-blue.svg";
-import SampleProperty6 from "@/public/empty/SampleProperty6.jpg";
 
 // Imports
 import { inventory_conditions } from "./data";
@@ -21,16 +17,19 @@ import { useImageUploader } from "@/hooks/useImageUploader";
 import { ImageIcon } from "@/public/icons/icons";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { CounterButton } from "@/components/Settings/SettingsEnrollment/settings-enrollment-components";
-
+import { toast } from "sonner";
 
 const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({ data, edit, index }) => {
   const isDarkMode = useDarkMode();
   const [count, setCount] = useState<number>(1);
-   const { preview, inputFileRef, handleImageChange } = useImageUploader({
-     placeholder: data?.image,
-   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-   const handleIncrement = () => {
+  useEffect(() => {
+    console.log("data inventory item item - ", data);
+  }, [data]);
+
+  const handleIncrement = () => {
     setCount((prevCount) => (prevCount + 1));
   };
 
@@ -43,10 +42,38 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({ data,
    };
   
    const selectImage = () => {
-     if (inputFileRef.current) {
-       inputFileRef.current.click();
+     if (fileInputRef.current) {
+       fileInputRef.current.click();
      }
    };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
+        toast.error('Please select a valid image file (JPG, JPEG, or PNG)');
+        e.target.value = ''; // Clear the input
+        setSelectedFile(null);
+        return;
+      }
+      
+      // Validate file size
+      if (file.size === 0) {
+        toast.error('The selected file is empty');
+        e.target.value = ''; // Clear the input
+        setSelectedFile(null);
+        return;
+      }
+
+      setSelectedFile(file);
+      console.log('File selected:', file);
+    }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <div
@@ -69,7 +96,7 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({ data,
                   style={input_styles}
                 />
               ) : (
-                <InventoryField>{data?.name}</InventoryField>
+                <InventoryField>{data?.name || data?.description || "---"}</InventoryField>
               )}
             </div>
             <div className="flex gap-4">
@@ -108,15 +135,15 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({ data,
                 </>
               ) : (
                 <>
-                  <InventoryField>{data?.quantity}</InventoryField>
-                  <InventoryField>{data?.condition}</InventoryField>
+                  <InventoryField>{data?.quantity || data?.unit || "---"}</InventoryField>
+                  <InventoryField>{data?.condition || "---"}</InventoryField>
                 </>
               )}
             </div>
           </div>
           <div className="relative h-full min-h-[165px] aspect-square rounded-2xl overflow-hidden">
             <Image
-              src={preview || ""}
+              src={selectedFile ? URL.createObjectURL(selectedFile) : data?.image ? data?.image : ""}
               alt="property"
               fill
               sizes="200px"
@@ -128,13 +155,13 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({ data,
                  style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
                >
                  <input
+                   ref={fileInputRef}
                    type="file"
-                   id="picture"
                    name={`image-${index}`}
                    accept="image/*"
-                   ref={inputFileRef}
-                   className="hidden pointer-events-none"
-                   onChange={handleImageChange}
+                   onChange={handleFileChange}
+                   className="hidden"
+                   aria-label="Upload image"
                  />
                  <div className="custom-flex-col gap-6">
                    <div className="flex flex-col items-center gap-2 custom-primary-color">
@@ -144,37 +171,7 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({ data,
                      </p>
                    </div>
                    <Button
-                     onClick={selectImage}
-                     size="base_medium"
-                     className="py-1 px-6"
-                   >
-                     select
-                   </Button>
-                 </div>
-               </div>
-             )} {edit && (
-               <div
-                 className="absolute inset-0 flex items-center justify-center"
-                 style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
-               >
-                 <input
-                   type="file"
-                   id="picture"
-                   name={`image-${index}`}
-                   accept="image/*"
-                   ref={inputFileRef}
-                   className="hidden pointer-events-none"   
-                   onChange={handleImageChange}
-                 />
-                 <div className="custom-flex-col gap-6">
-                   <div className="flex flex-col items-center gap-2 custom-primary-color">
-                     <ImageIcon />
-                     <p className="text-brand-9 text-sm font-semibold">
-                       Set picture
-                     </p>
-                   </div>
-                   <Button
-                     onClick={selectImage}
+                     onClick={handleUploadClick}
                      size="base_medium"
                      className="py-1 px-6"
                    >
@@ -191,3 +188,4 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({ data,
 };
 
 export default InventoryItem;
+

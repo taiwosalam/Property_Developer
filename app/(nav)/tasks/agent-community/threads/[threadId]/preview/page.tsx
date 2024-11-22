@@ -21,6 +21,7 @@ import { sendMyArticleComment, sendMyArticleReply, toggleLike } from "../../../m
 import { toast } from "sonner";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import NewComment from "../../../NewComment";
+import CommunityComments from "@/components/Community/CommunityComments";
 
 interface ThreadResponse {
   post: any;
@@ -99,7 +100,7 @@ const ThreadPreview = () => {
             post={post} 
             slug={slug} 
           />
-          <ThreadComments 
+          <CommunityComments 
             slug={slug} 
             comments={comments}
             setComments={setComments}
@@ -229,124 +230,119 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
   );
 };
 
-interface ThreadCommentProps {
-  slug: string;
-  comments: CommentData[] & {
-    likes?: string | number;
-    dislikes?: string | number;
-  };
-  setComments: React.Dispatch<React.SetStateAction<CommentData[]>>;
-}
+// interface ThreadCommentProps {
+//   slug: string;
+//   comments: CommentData[] & {
+//     likes?: string | number;
+//     dislikes?: string | number;
+//   };
+//   setComments: React.Dispatch<React.SetStateAction<CommentData[]>>;
+// }
 
-const ThreadComments = ({
-  slug,
-  comments,
-  // setComments,
-}: ThreadCommentProps) => {
-  const [likeCount, setLikeCount] = useState('likes' in comments ? parseInt(comments.likes as string) : 0);
-  const [commenting, setCommenting] = useState(false);
-  const [dislikeCount, setDislikeCount] = useState('dislikes' in comments ? parseInt(comments.dislikes as string) : 0);
-  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+// const ThreadComments = ({
+//   slug,
+//   comments,
+//   // setComments,
+// }: ThreadCommentProps) => {
+//   const [likeCount, setLikeCount] = useState('likes' in comments ? parseInt(comments.likes as string) : 0);
+//   const [commenting, setCommenting] = useState(false);
+//   const [dislikeCount, setDislikeCount] = useState('dislikes' in comments ? parseInt(comments.dislikes as string) : 0);
+//   const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
+//   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLike = async () => {
-    console.log('like clicked');
-    if (isLoading || userAction === 'like') return;
-    setIsLoading(true);
+//   const handleLike = async () => {
+//     console.log('like clicked');
+//     if (isLoading || userAction === 'like') return;
+//     setIsLoading(true);
     
-    try {
-      await toggleLike(slug, 1);
-      if (userAction === 'dislike') {
-        setDislikeCount(prev => prev - 1);
-      }
-      setLikeCount(prev => prev + 1);
-      setUserAction('like');
-    } catch (error) {
-      console.error('Error toggling like:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+//     try {
+//       await toggleLike(slug, 1);
+//       if (userAction === 'dislike') {
+//         setDislikeCount(prev => prev - 1);
+//       }
+//       setLikeCount(prev => prev + 1);
+//       setUserAction('like');
+//     } catch (error) {
+//       console.error('Error toggling like:', error);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
 
-  const handleDislike = async () => {
-    console.log('dislike clicked');
-    if (isLoading || userAction === 'dislike') return;
-    setIsLoading(true);
+//   const handleDislike = async () => {
+//     console.log('dislike clicked');
+//     if (isLoading || userAction === 'dislike') return;
+//     setIsLoading(true);
 
-    try { 
-      await toggleLike(slug, -1);
-      if (userAction === 'like') {
-        setLikeCount(prev => prev - 1);
-      }
-      setDislikeCount(prev => prev + 1);
-      setUserAction('dislike');
-    } catch (error) {
-      console.error('Error toggling dislike:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+//     try { 
+//       await toggleLike(slug, -1);
+//       if (userAction === 'like') {
+//         setLikeCount(prev => prev - 1);
+//       }
+//       setDislikeCount(prev => prev + 1);
+//       setUserAction('dislike');
+//     } catch (error) {
+//       console.error('Error toggling dislike:', error);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
   
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
   
-    const formData = new FormData(e.target as HTMLFormElement);
-    const message = formData.get("message") as string;
-    const reply = formData.get("reply") as string;
-    const parentId = formData.get("parentId") as string;
+//     const formData = new FormData(e.target as HTMLFormElement);
+//     const message = formData.get("message") as string;
+//     const reply = formData.get("reply") as string;
+//     const parentId = formData.get("parentId") as string;
   
-    if (!message && !reply) return;
+//     if (!message && !reply) return;
   
-    try {
-      setCommenting(true);
-      if (reply && parentId) {
-        // Send reply to the server
-        const status = await sendMyArticleReply(slug, parentId, reply);
-        if (status) {
-          window.dispatchEvent(new Event("refetchComments"));
-          console.log("event triggered for reply");
-        }
-      } else if (message) {
-        // Send comment to the server
-        const status = await sendMyArticleComment(slug, message);
-        if (status) {
-          window.dispatchEvent(new Event("refetchComments"));
-          console.log("event triggered for commentx");
-        }
-      }
-    } catch (error) {
-      toast.error("Failed to add comment/reply");
-      console.error("Error adding comment/reply:", error);
-    } finally {
-      setCommenting(false);
-    }
-  };
+//     try {
+//       setCommenting(true);
+//       if (reply && parentId) {
+//         // Send reply to the server
+//         const status = await sendMyArticleReply(slug, parentId, reply);
+//         if (status) {
+//           window.dispatchEvent(new Event("refetchComments"));
+//           console.log("event triggered for reply");
+//         }
+//       } else if (message) {
+//         // Send comment to the server
+//         const status = await sendMyArticleComment(slug, message);
+//         if (status) {
+//           window.dispatchEvent(new Event("refetchComments"));
+//           console.log("event triggered for commentx");
+//         }
+//       }
+//     } catch (error) {
+//       toast.error("Failed to add comment/reply");
+//       console.error("Error adding comment/reply:", error);
+//     } finally {
+//       setCommenting(false);
+//     }
+//   };
 
-  return (
-    <div>
-        <NewComment
-          commentCount={comments.length}
-          slug={slug}
-          likeCount={likeCount}
-          dislikeCount={dislikeCount}
-          handleLike={handleLike}
-          handleDislike={handleDislike}
-          isLoading={isLoading}
-        /> 
-      <div className="mt-4">
-        {comments.map((comment) => (
-          <Comment
-            key={comment.id}
-            {...comment}
-            handleLike={handleLike}
-            handleDislike={handleDislike}
-            handleSubmit={handleSubmit}
-            likeCount={likeCount}
-            dislikeCount={dislikeCount}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div>
+//         <NewComment
+//           commentCount={comments.length}
+//           slug={slug}
+//           likeCount={likeCount}
+//           dislikeCount={dislikeCount}
+//         /> 
+//       <div className="mt-4">
+//         {comments.map((comment) => (
+//           <Comment
+//             key={comment.id}
+//             {...comment}
+//             handleLike={handleLike}
+//             handleDislike={handleDislike}
+//             handleSubmit={handleSubmit}
+//           />
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };

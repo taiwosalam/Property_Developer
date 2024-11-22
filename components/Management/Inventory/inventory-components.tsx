@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+// Imports
+import React, { useState, useEffect } from "react";
 
 // Types
 import type {
@@ -8,18 +10,44 @@ import type {
 } from "./types";
 
 // Imports
-import { inventory_data_props } from "./data";
+import { getBranch } from "./data";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 
 // Component
 export const InventoryListInfo: React.FC<InventoryListInfoProps> = ({
-  data = {},
+  data,
   chunkSize = 3,
 }) => {
+  const [branchName, setBranchName] = useState<string | null>(null);
+  useEffect(() => {
+    // console.log("branch id", data.branch_id);
+    const fetchBranch = async () => {
+      if (data.branch_id) {
+        const branch = await getBranch(data.branch_id);
+        if (branch) {
+          setBranchName(branch.data.data.branch.branch_name);
+        }
+      } else {
+        console.warn("branch_id is not available in data");
+      }
+    }
+    fetchBranch();
+  }, [data]);
+
+
+  const inventory_data_props: InventoryCardDataProps = {
+    inventory_id: data.inventory_id || "",
+    created_date: data.created_date || "",
+    edited_date: data.edited_date || "",
+    property_name: data.property_name || "",
+    branch_name: branchName || "",
+    account_officer: data.account_officer || "",
+  };
+
   return (
     <KeyValueList
       referenceObject={inventory_data_props}
-      data={data}
+      data={inventory_data_props}
       chunkSize={chunkSize}
     />
   );
