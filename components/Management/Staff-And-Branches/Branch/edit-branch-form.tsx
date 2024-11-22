@@ -107,7 +107,7 @@ const EditBranchForm = ({
     if (somedata?.picture) {
       setPreview(somedata.picture);
     }
-  }, [somedata]);
+  }, [somedata, setPreview]);
 
   return (
     <>

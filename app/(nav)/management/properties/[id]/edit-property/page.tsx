@@ -8,7 +8,7 @@ import BackButton from "@/components/BackButton/back-button";
 import { useSearchParams } from "next/navigation";
 
 const EditProperty = () => {
-  const handleSubmit = () => {};
+  const handleSubmit = async () => {};
   const searchParams = useSearchParams();
   const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
 
