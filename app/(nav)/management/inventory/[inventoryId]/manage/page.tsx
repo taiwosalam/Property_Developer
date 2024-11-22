@@ -1,5 +1,5 @@
 "use client";
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -12,6 +12,36 @@ import { InventoryListInfo } from "@/components/Management/Inventory/inventory-c
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import Select from "@/components/Form/Select/select";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import useFetch from "@/hooks/useFetch";
+import { useParams } from "next/dist/client/components/navigation";
+
+
+interface InventoryData {
+  title: string;
+  inventory_id: string;
+  created_date: string;
+  edited_date: string;
+  property_name: string;
+  branch_name: string;
+  account_officer: string;
+}
+
+//  Type for the data object
+interface FetchData {
+  id: string;
+  title: string;
+  created_date: string;
+  edited_date: string;
+  property_name: string;
+  branch_name: string;
+  account_officer: string;
+  inventory: {
+    title: string;
+    id: string;
+    items: any[];
+  };
+}
+
 
 const ManageInventory = () => {
   const isDarkMode = useDarkMode();
@@ -19,6 +49,33 @@ const ManageInventory = () => {
     padding: "12px 14px",
     backgroundColor: isDarkMode ? "#020617" : "white",
   };
+
+  const { inventoryId } = useParams();
+  const [inventoryItems, setInventoryItems] = useState<any>([]);
+  const [inventoryData, setInventoryData] = useState<InventoryData | null>(null);
+  const { data, loading, error } = useFetch<FetchData>(`/inventory/${inventoryId}`);
+
+  useEffect(() => {
+    const fetchBranchData = async () => {
+      if (data) {
+        console.log("data - ", data);
+
+        const updatedInventoryData: InventoryData = {
+          title: data.inventory.title || "",
+          inventory_id: data.inventory.id || "",
+          created_date: data.created_date || "",
+          edited_date: data.edited_date || "",
+          property_name: data.property_name || "",
+          branch_name: data.branch_name || "",
+          account_officer: data.account_officer || "",
+        };
+        setInventoryData(updatedInventoryData);
+        setInventoryItems(data.inventory.items);
+      }
+    };
+
+    fetchBranchData();
+  }, [data]);
 
   return (
     <div className="custom-flex-col gap-10 min-h-[80vh] pb-[150px] lg:pb-[100px]">
@@ -57,7 +114,7 @@ const ManageInventory = () => {
               Details
             </p>
             <div className="flex flex-col gap-4 lg:gap-0 lg:flex-row lg:items-center">
-              <InventoryListInfo data={{}} chunkSize={2} />
+              <InventoryListInfo data={inventoryData || {}} chunkSize={2} />
             </div>
           </div>
         </div>

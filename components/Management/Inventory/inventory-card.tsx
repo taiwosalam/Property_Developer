@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // Types
 import type { InventoryCardDataProps, InventoryCardProps } from "./types";
@@ -10,7 +10,7 @@ import ClipboardCheck from "@/public/icons/clipboard-check.svg";
 
 // Imports
 import { empty } from "@/app/config";
-import { inventory_data_props } from "./data";
+import { getBranch } from "./data";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import { SectionSeparator } from "@/components/Section/section-components";
@@ -18,6 +18,31 @@ import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 
 const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
   const [isOpened, setIsOpened] = useState(false);
+  const [branchName, setBranchName ] = useState<string | null>(null);
+
+    useEffect(() => {
+    // console.log("data inventory", data);
+    const fetchBranch = async () => {
+      if (data.branch_id) {
+        const branch = await getBranch(data.branch_id);
+        if (branch) {
+          setBranchName(branch.data.data.branch.branch_name);
+        }
+      } else {
+        console.warn("branch_id is not available in data");
+      }
+    }
+    fetchBranch();
+  }, [data]);
+
+  const inventory_data_props: InventoryCardDataProps = {
+    inventory_id: data.id || "",
+    created_date: data.created_date || "",
+    edited_date: data.edited_date || "",
+    property_name: data.property_name || "",
+    branch_name: branchName || "",
+    account_officer: data.account_officer || "",
+  };
 
   return (
     <div className="custom-flex-col gap-4 pb-5 rounded-lg bg-white dark:bg-darkText-primary overflow-hidden">
@@ -39,14 +64,14 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
       </div>
       <div className="px-4 custom-flex-col gap-1">
         <p className="text-black dark:text-white text-base font-medium capitalize text-center">
-          Abiola Apartment
+          {data.title}
         </p>
         <SectionSeparator />
         <div className="custom-flex-col gap-6">
           <div className="custom-flex-col gap-2 capitalize">
             {Object.keys(inventory_data_props).map((key) => {
               const field = key as keyof InventoryCardDataProps;
-              const value = data[field] || "---";
+              const value = inventory_data_props[field] || "---";
 
               return (
                 <div key={field} className="flex justify-between font-medium">
@@ -61,7 +86,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
           {!viewOnly && (
             <div className="flex gap-2 justify-end">
               <Button
-                href={"/management/inventory/1/manage"}
+                href={`/management/inventory/${data.id}/manage`}
                 variant="border"
                 size="xs_medium"
                 className="py-2 px-7"
@@ -69,7 +94,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
                 manage
               </Button>
               <Button
-                href={"/management/inventory/1/preview"}
+                href={`/management/inventory/${data.id}/preview`}
                 size="xs_medium"
                 className="py-2 px-7"
               >

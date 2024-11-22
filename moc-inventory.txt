@@ -823,3 +823,44 @@ const ThreadComments = ({
       setCommenting(false);
     }
   };
+
+
+
+
+
+
+
+  const inventoryFiltersWithDropdown = [
+    {
+      label: "Account Officer",
+      value: [
+        { label: "Account Officer 1", value: "account_officer1" },
+        { label: "Account Officer 2", value: "account_officer2" },
+        { label: "Account Officer 3", value: "account_officer3" },
+      ],
+    },
+    {
+      label: "Branch",
+      value: [
+        { label: "Branch 1", value: "branch1" },
+        { label: "Branch 2", value: "branch2" },
+        { label: "Branch 3", value: "branch3" },
+      ],
+    },
+  ]
+
+
+        {selectedView === "grid" ? (
+        <AutoResizingGrid gap={28} minWidth={330}>
+          {inventory.map((item, idx) => (
+            <InventoryCard key={idx} data={item} />
+          ))}
+        </AutoResizingGrid>
+      ) : (
+        <div className="custom-flex-col gap-[18px]">
+          {inventory.map((item, idx) => (
+            <InventoryList key={idx} data={item} />
+          ))}
+        </div>
+      )}
+    </div>

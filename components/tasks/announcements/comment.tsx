@@ -11,6 +11,7 @@ import {
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Input from "@/components/Form/Input/input";
 import { Loader2 } from "lucide-react";
+import { toggleCommentLike } from "@/app/(nav)/tasks/agent-community/my-articles/data";
 
 // Base comment data structure
 export interface CommentData {
@@ -20,8 +21,6 @@ export interface CommentData {
   likes: number;
   dislikes: number;
   replies?: CommentData[];
-  likeCount: number;
-  dislikeCount: number;
   commentsCount: number;
   parentId?: string | number;
 }
@@ -51,8 +50,6 @@ const Comment: React.FC<CommentProps> = ({
   setShowInput: propSetShowInput,
   handleLike,
   handleDislike,
-  likeCount,
-  dislikeCount,
   commentsCount,
   parentId,
 }) => {
@@ -60,6 +57,7 @@ const Comment: React.FC<CommentProps> = ({
   const [localCommenting, setLocalCommenting] = useState(false);
   const [localCommentId, setLocalCommentId] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
   const showInput = propShowInput ?? localShowInput;
   const setShowInput = propSetShowInput ?? setLocalShowInput;
@@ -86,6 +84,30 @@ const Comment: React.FC<CommentProps> = ({
       setIsSubmitting(false);
     }
   };
+
+  const handleCommentLike = async () => {
+    setIsLoading(true);
+  
+    try {
+      handleLike(parentId || id);
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const handleCommentDislike = async () => {
+    setIsLoading(true);
+    try {
+      handleDislike(parentId || id);
+    } catch (error) {
+      console.error('Error toggling dislike:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
 
   return (
     <div data-comment-id={id}>
@@ -117,13 +139,19 @@ const Comment: React.FC<CommentProps> = ({
           <ReplyIcon />
           <span className="text-[10px] font-normal">Reply</span>
         </button>
-        <button className="flex items-center gap-1" onClick={() => handleLike(id)}>
+        <button 
+          className={`flex items-center gap-1 ${isLoading ? "text-blue-500" : "text-black"}`} 
+          onClick={handleCommentLike}
+        >
           <ThumbsUp />
-          <span className="text-xs font-normal text-[#010A23]">{likeCount}</span>
+          <span className="text-xs font-normal">{likes}</span>
         </button>
-        <button className="flex items-center gap-1 text-text-disabled" onClick={() => handleDislike(id)}>
+        <button 
+          className="flex items-center gap-1 text-text-disabled" 
+          onClick={handleCommentDislike}
+        >
           <ThumbsDown />
-          <span className="text-xs font-normal">{dislikeCount}</span>
+          <span className="text-xs font-normal">{dislikes}</span>
         </button>
       </div>
       {(showInput || commentsCount === 0) && (

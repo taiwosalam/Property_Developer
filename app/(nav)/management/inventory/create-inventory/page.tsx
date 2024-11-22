@@ -10,11 +10,14 @@ import BackButton from "@/components/BackButton/back-button";
 import InventoryItem from "@/components/Management/Inventory/inventory-item";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { toast } from "sonner";
-import { getBranches } from "../../data";
+import { createInventory, getBranches } from "../data";
+import { useRouter } from "next/navigation";
 
 const CreateInventory = () => {
   const isDarkMode = useDarkMode();
+  const router = useRouter();
   const [branches, setBranches] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [inventoryItems, setInventoryItems] = useState<number>(2);
   const input_styles: CSSProperties = {
     padding: "12px 14px",
@@ -32,66 +35,61 @@ const CreateInventory = () => {
   }, []);
 
   // console.log("branches", branches);
-  const convertImageToBase64 = async (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-  };
+// const convertImageToBase64 = async (file: File): Promise<string> => {
+//     return new Promise((resolve, reject) => {
+//       const reader = new FileReader();
+//       reader.readAsDataURL(file);
+//       reader.onload = () => resolve(reader.result as string);
+//       reader.onerror = (error) => reject(error);
+//     });
+//   };
 
-  const handleAddInventory = async (event: React.FormEvent<HTMLFormElement>) => {
+
+const handleAddInventory = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading(true);
     const formData = new FormData(event.currentTarget);
     const inventoryData = [];
 
-    // Extract inventory items with base64 image conversion
+    // Build inventory items array
     for (let i = 0; i < inventoryItems; i++) {
       const imageFile = formData.get(`image-${i}`) as File;
-      let base64Image = null;
-      
-      if (imageFile && imageFile instanceof File) {
-        try {
-          base64Image = await convertImageToBase64(imageFile);
-        } catch (error) {
-          console.error(`Error converting image ${i} to base64:`, error);
-          toast.error(`Failed to process image ${i}`);
-          return;
-        }
-      }
-
-      const item = {
+      inventoryData.push({
         description: formData.get(`item-name-${i}`),
-        quantity: formData.get(`quantity-${i}`),
+        unit: formData.get(`quantity-${i}`),
         condition: formData.get(`condition-${i}`),
-        image: base64Image,
-      };
-      inventoryData.push(item);
+        image: imageFile
+      });
     }
 
-    // Prepare API payload
-    const payload = {
-      title: formData.get("inventory-title"),
-      video_link: formData.get("video-link"),
-      branchName: formData.get("branch-name"),
-      items: inventoryData,
-    };
-
-    console.log("Payload with base64 images:", payload);
-
     try {
-      // Mock API call
-      const success = true; // Replace with actual API call
+      const payload = new FormData();
+      payload.append('title', formData.get('inventory-title') as string);
+      payload.append('video_link', formData.get('video_link') as string);
+      payload.append('branch_id', String(formData.get('branch_id')));
+      
+      // Append each item separately with proper indexing
+      inventoryData.forEach((item, index) => {
+        if (item.image) {
+          payload.append(`items[${index}][image]`, item.image);
+        }
+        payload.append(`items[${index}][description]`, item.description as string);
+        payload.append(`items[${index}][unit]`, item.unit as string);
+        payload.append(`items[${index}][condition]`, item.condition as string);
+      });
+
+      const success = await createInventory(payload);
       if (success) {
+        router.push("/management/inventory");
         toast.success("Inventory created successfully");
       }
     } catch (error) {
       console.error("Error creating inventory:", error);
       toast.error("Failed to create inventory");
+    } finally {
+      setIsLoading(false);
     }
-  };
-
+};
   const handleAddMoreInventory = () => {
     setInventoryItems((prev) => prev + 1);
   };
@@ -117,12 +115,12 @@ const CreateInventory = () => {
               style={input_styles}
             />
             <Select
-              id="branch-name"
-              name="branch-name"
+              id="branch_id"
+              name="branch_id"
               placeholder="Branch Name"
               options={branches.map((branch) => ({
                 label: branch.branch_name,
-                value: branch.id,
+                value: String(branch.id),
               }))}
               isSearchable={false}
               className="bg-white dark:bg-darkText-primary flex-1"
@@ -152,8 +150,8 @@ const CreateInventory = () => {
             >
               Add more to inventory
             </Button>
-            <Button type="submit" size="sm_medium" className="py-2 px-7">
-              Save
+            <Button type="submit" size="sm_medium" className="py-2 px-7" disabled={isLoading}>
+              {isLoading ? "Saving..." : "Save"}
             </Button>
           </div>
         </div>

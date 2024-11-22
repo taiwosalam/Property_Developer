@@ -8,6 +8,9 @@ export interface InventoryCardDataProps {
   property_name: string;
   branch_name: string;
   account_officer: string;
+  branch_id?: string;
+  title?: string;
+  id?: string;
 }
 
 export interface InventoryCardProps {
@@ -29,8 +32,10 @@ export interface InventoryItemProps {
   data?: {
     name: string;
     quantity: number;
+    description?: string;
     condition: InventoryConditions;
     image: string;
+    unit?: string;
   };
 }
 
