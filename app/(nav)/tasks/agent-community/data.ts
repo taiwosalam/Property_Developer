@@ -55,7 +55,7 @@ export const getAllPropertyRequests = async () => {
 
 export const getLoggedInUserPropertyRequests = async () => {
   try {
-    const response = await api.get("/agent_community/property-requests/user");
+    const response = await api.get("/agent-community/property-requests/user");
     return response.data;
   } catch (error) {
     console.error("Error fetching property requests:", error);
