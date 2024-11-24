@@ -24,7 +24,7 @@ const validation_schemas = {
       message: "Password must contain at least one lowercase letter",
     })
     .regex(/\d/, { message: "Password must contain at least one number" })
-    .regex(/[@$!%*?&]/, {
+    .regex(/[~`!@#$%^&*()\-_=+{}\[\]|;:"<>,.\/?]/, {
       message: "Password must contain at least one special character",
     }),
   code: z

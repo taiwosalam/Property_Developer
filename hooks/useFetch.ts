@@ -25,7 +25,8 @@ function useFetch<T>(
           setLoading(true);
         }
         setError(null);
-        const { data } = await api.get<T>(url, config);
+        const { data } = await api<T>(url, config);
+        // const { data } = await axios<T>(url, config);
         setData(data);
       } catch (err) {
         if (axios.isAxiosError(err) && err.response?.data) {
