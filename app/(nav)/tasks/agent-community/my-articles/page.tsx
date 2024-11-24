@@ -46,7 +46,7 @@ const MyArticlePage = () => {
       setError(null);
       try {
         const { data } = await getLoggedInUserThreads();
-        console.log('Threads data:', data.original.data);
+        console.log('Threads data:', data);
         setThreads(data.original.data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch threads');

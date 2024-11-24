@@ -9,7 +9,7 @@ import {
 } from "@/components/Community/ManageRequest";
 import AddPhotoAndVideo from "@/components/Community/AddPhotoAndVideo";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { deleteMyArticle, getMyArticlesDetails, updateMyArticle } from "../../data";
+import { deleteMyArticle, getMyArticlesDetails, transformFormUpdateArticleData, updateMyArticle } from "../../data";
 import { toast } from "sonner";
 import useFetch from "@/hooks/useFetch";
 import { CommentData } from "@/components/tasks/announcements/comment";
@@ -34,6 +34,8 @@ const ManageMyArticle = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [article, setArticle] = useState(null)
   const [id, setId] = useState(null)
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [retainMedia, setRetainMedia] = useState<string[]>([])
 
   const handleDeleteMyArticle = async ({ slug }: { slug: string }) => {
     setIsDeleting(true);
@@ -54,20 +56,35 @@ const ManageMyArticle = () => {
       setId(data.post.post.id)
     }
   }, [data]);
-  
-  const handleUpdate = async (data: any) => {
-    setIsUpdating(true);
+
+  const handleUpdate = async (formData: FormData) => {
+    // console.log("formData before processing:", formData)
+    const targetAudience = formData.get("target_audience");
+    if (typeof targetAudience === "string") {
+      const audienceArray = targetAudience.split(",").slice(0, 60); // Split into an array and limit to 60 items
+      audienceArray.forEach((audience) => formData.append("target_audience[]", audience.trim()));
+    }
+    // console.log("retainMedia", retainMedia)
+    // console.log("imageFiles", imageFiles)
+    retainMedia.forEach((media) => formData.append("retain_media[]", media));
+
+    imageFiles.forEach((file) => formData.append("pictures[]", file));
+    formData.append("_method", "patch");
+    // console.log("FormData after appending images:", formData.getAll("pictures[]"));
+    const transformedData = transformFormUpdateArticleData(formData);
+    // console.log("Submitting:", transformedData);
+    setIsUpdating(true); 
     try {
-      if (!id) {
-        toast.error("Article ID not found");
-        return;
-      }
-      const response = await updateMyArticle(id, data);
-      if (response) {
-        toast.success("Article updated successfully");
+      const success = await updateMyArticle(formData, slug);
+      if (success) {
+        toast.success("Article updated successfully!");
+        router.push(`/tasks/agent-community/my-articles`);
+      } else {
+        toast.error("Failed to update the article.");
       }
     } catch (error) {
-      console.error("Error updating my article:", error);
+      toast.error("An error occurred while updating the article.");
+      console.error(error);
     } finally {
       setIsUpdating(false);
     }
@@ -91,9 +108,12 @@ const ManageMyArticle = () => {
         </div>
       </div>
 
-    <AuthForm onFormSubmit={handleUpdate}>
-      <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
-        <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
+      <AuthForm 
+        onFormSubmit={handleUpdate} 
+        returnType="form-data"
+      >
+        <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
+          <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <PropertyRequestFirstSection
             placeholderText="Rent Increase & Maintenance"
             desc={desc}
@@ -103,7 +123,13 @@ const ManageMyArticle = () => {
         </div>
 
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <SecondSection data={article} loading={loading} />
+          <SecondSection 
+            retainMedia={retainMedia} 
+            setRetainMedia={setRetainMedia} 
+            data={article} 
+            loading={loading} 
+            setImageFiles={setImageFiles} 
+          />
         </div>
       </div>
       <FixedFooter className="flex gap-6 justify-end">
@@ -129,7 +155,19 @@ const ManageMyArticle = () => {
 
 export default ManageMyArticle;
 
-const SecondSection = ({ data, loading }: { data: any, loading: boolean }) => {
+const SecondSection = ({ 
+  data, 
+  loading, 
+  setImageFiles, 
+  retainMedia, 
+  setRetainMedia 
+}: { 
+  data: any, 
+  loading: boolean, 
+  setImageFiles: (files: File[]) => void, 
+  retainMedia: string[], 
+  setRetainMedia: (media: string[]) => void 
+}) => {
   if (loading) {
     return (
       <div className="bg-white dark:bg-darkText-primary p-4 rounded-lg flex flex-col gap-4">
@@ -157,8 +195,16 @@ const SecondSection = ({ data, loading }: { data: any, loading: boolean }) => {
 
   return (
     <div className="bg-white dark:bg-darkText-primary p-4 rounded-lg flex flex-col gap-4">
-      <AddPhotoAndVideo editing={true} data={data} />
-      <StateAndLocalGovt data={data} />
+      <AddPhotoAndVideo 
+        editing={true} 
+        data={data} 
+        onFilesChange={(files) => setImageFiles(files)} 
+        retainMedia={retainMedia} 
+        setRetainMedia={setRetainMedia} 
+      />
+      <StateAndLocalGovt 
+        data={data} 
+      />
     </div>
   );
 };

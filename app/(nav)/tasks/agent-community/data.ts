@@ -45,7 +45,7 @@ export const getLoggedInUserThreads = async () => {
 
 export const getAllPropertyRequests = async () => {
   try {
-    const response = await api.get("/agent_community/property-requests/all");
+    const response = await api.get("/agent-community/property-requests/all");
     return response.data;
   } catch (error) {
     console.error("Error fetching property requests:", error);
@@ -55,7 +55,7 @@ export const getAllPropertyRequests = async () => {
 
 export const getLoggedInUserPropertyRequests = async () => {
   try {
-    const response = await api.get("/agent_community/property-requests/user");
+    const response = await api.get("/agent-community/property-requests/user");
     return response.data;
   } catch (error) {
     console.error("Error fetching property requests:", error);

@@ -48,7 +48,7 @@ export const KeyValueList = <T extends object>({
                   </p>
                   <p className="text-black dark:text-darkText-2" style={styles?.[key]?.value}>
                     {/* Safely render the value or placeholder */}
-                    {data[key] !== undefined ? String(data[key]) : "---"}
+                    {data && data[key] !== undefined ? String(data[key]) : "---"}
                   </p>
                 </div>
               ))}
@@ -74,7 +74,7 @@ export const KeyValueList = <T extends object>({
                     style={styles?.[key]?.value}
                   >
                     {/* Safely render the value or placeholder */}
-                    {data[key] !== undefined ? String(data[key]) : "---"}
+                    {data && data[key] !== undefined ? String(data[key]) : "---"}
                   </p>
                 ))}
               </div>

@@ -4,6 +4,21 @@ import api from "@/services/api";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 
+
+export const transformFormUpdateArticleData = (formData: FormData) => {
+  const data: Record<string, any> = {
+    title: formData.get("title"),
+    content: formData.get("content"),
+    target_audience: [formData.get("target_audience")], 
+    pictures: formData.getAll("pictures[]"),
+    retain_media: formData.getAll("retain_media[]"),
+    video_link: formData.get("video_link"),
+    _method: "patch",
+  };
+  return data;
+};
+
+
 export const transformFormArticleData = (formData: FormData) => {
   const data: Record<string, any> = {
     title: formData.get("title"),
@@ -18,6 +33,19 @@ export const transformFormArticleData = (formData: FormData) => {
 export const createArticle = async (formData: FormData) => {
   try {
     const response = await api.post("/agent_community", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    console.error("Error creating article:", error);
+    return false;
+  }
+};
+export const updateMyArticle = async (formData: FormData, slug: string) => {
+  try {
+    const response = await api.post(`/agent_community/${slug}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -60,7 +88,7 @@ export const deleteMyArticle = async (slug: string) => {
   }
 };
 
-export const updateMyArticle = async (id: number, formData: any) => {
+export const updateMyArticlesNot = async (id: number, formData: any) => {
  console.log("id", id);
   try {
     let formDataObject: any = {};
@@ -116,6 +144,16 @@ export const sendMyArticleComment = async (slug: string, content: string) => {
   }
 }
 
+
+export const toggleCommentLike = async ( commentId: string, type: 1 | -1) => {
+  try {
+    const response = await api.post(`/agent_community/agent_comment/${commentId}/toggle-like`, { type });
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    console.error("Error toggling comment like:", error);
+    return false;
+  }
+}
 
 export const sendMyArticleReply = async (slug: string, commentId: string, content: string) => {
   try {

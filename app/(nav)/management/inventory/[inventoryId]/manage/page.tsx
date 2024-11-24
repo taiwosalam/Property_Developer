@@ -1,5 +1,5 @@
 "use client";
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -12,12 +12,100 @@ import { InventoryListInfo } from "@/components/Management/Inventory/inventory-c
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import Select from "@/components/Form/Select/select";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import useFetch from "@/hooks/useFetch";
+import { useParams } from "next/dist/client/components/navigation";
+import { getBranches } from "../../data";
+import { getBranch } from "@/components/Management/Inventory/data";
+
+
+interface InventoryData {
+  title: string;
+  inventory_id: string;
+  created_date: string;
+  edited_date: string;
+  property_name: string;
+  branch_name: string;
+  account_officer: string;
+  video?: string;
+}
+
+//  Type for the data object
+interface FetchData {
+  id: string;
+  title: string;
+  created_date: string;
+  edited_date: string;
+  property_name: string;
+  branch_name: string;
+  account_officer: string;
+  video?: string;
+  inventory: {
+    title: string;
+    id: string;
+    items: any[];
+    branch_id: string;
+  };
+}
+
 
 const ManageInventory = () => {
   const isDarkMode = useDarkMode();
   const input_styles: CSSProperties = {
     padding: "12px 14px",
     backgroundColor: isDarkMode ? "#020617" : "white",
+  };
+
+  const { inventoryId } = useParams();
+  const [inventoryItems, setInventoryItems] = useState<any>([]);
+  const [moreInventory, setMoreInventory] = useState<number>(0);
+  const [branch, setBranch] = useState<any>(null);
+  const [inventoryData, setInventoryData] = useState<InventoryData | null>(null);
+  const { data, loading, error } = useFetch<FetchData>(`/inventory/${inventoryId}`);
+  const [allBranches, setAllBranches] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchBranchData = async () => {
+      if (data) {
+        // console.log("data - ", data.inventory.branch_id);
+
+        const updatedInventoryData: InventoryData = {
+          title: data.inventory.title || "",
+          inventory_id: data.inventory.id || "",
+          created_date: data.created_date || "",
+          edited_date: data.edited_date || "",
+          property_name: data.property_name || "",
+          branch_name: data.branch_name || "",
+          account_officer: data.account_officer || "",
+        };
+        setInventoryData(updatedInventoryData);
+        setInventoryItems(data.inventory.items);
+
+        try {
+          const { data: branch } = await getBranch(data.inventory.branch_id);
+          setBranch(branch.data.branch.branch_name);
+          console.log("branches", branch.data.branch.branch_name);
+        } catch (error) {
+          console.error("Error fetching branch:", error);
+        }
+      }
+    };
+
+    const fetchAllBranches = async () => {
+      try {
+        const { data: branches } = await getBranches();
+        setAllBranches(branches.data);
+        console.log("all branches", branches.data);
+      } catch (error) {
+        console.error("Error fetching all branches:", error);
+      }
+    };
+
+    fetchBranchData();
+    fetchAllBranches();
+  }, [data]);
+
+  const handleAddMoreInventory = () => {
+    setMoreInventory((prev) => prev + 1);
   };
 
   return (
@@ -28,20 +116,25 @@ const ManageInventory = () => {
           <div className="flex flex-col md:flex-row gap-8">
             <Input
               id="inventory-title"
-              value="Olalomi Cottage"
+              defaultValue={inventoryData?.title || ""}
               className="flex-1 dark:bg-darkText-primary dark:text-darkText-1"
               style={input_styles}
             />
             <Input
               id="video-link"
               placeholder="Video Link"
+              defaultValue={inventoryData?.video || ""}
               className="flex-1"
               style={input_styles}
             />
             <Select
               id="branch-name"
               placeholder="Branch Name"
-              options={["branch 1", "branch 2", "branch 3"]}
+              options={allBranches.map((branch) => ({
+                label: branch.branch_name,
+                value: String(branch.id),
+              }))}
+              defaultValue={branch}
               isSearchable={false}
               className="bg-white dark:bg-darkText-primary flex-1"
             />
@@ -57,14 +150,19 @@ const ManageInventory = () => {
               Details
             </p>
             <div className="flex flex-col gap-4 lg:gap-0 lg:flex-row lg:items-center">
-              <InventoryListInfo data={{}} chunkSize={2} />
+              <InventoryListInfo data={inventoryData || {}} chunkSize={2} />
             </div>
           </div>
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* <InventoryItem edit index={0} />
-        <InventoryItem edit index={1} /> */}
+        {inventoryItems.map((item: any, index: number) => (
+          <InventoryItem key={index} index={index} data={item} edit={true} />
+        ))}
+
+        {[...Array(moreInventory)].map((_, index) => (
+          <InventoryItem key={index} edit index={index} />
+        ))}
       </div>
       <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
         <Modal>
@@ -85,6 +183,8 @@ const ManageInventory = () => {
           <Button
             size="sm_medium"
             variant="blank"
+            onClick={handleAddMoreInventory}
+            type="button"
             className="py-2 px-7 text-brand-9 bg-brand-1"
           >
             Add more to inventory
