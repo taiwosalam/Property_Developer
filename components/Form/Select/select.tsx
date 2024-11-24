@@ -1,5 +1,6 @@
 "use client";
 import clsx from "clsx";
+import { v4 as uuidv4 } from "uuid";
 import Label from "../Label/label";
 import { useEffect, useRef, useState, useContext } from "react";
 import type { SelectOptionObject, SelectProps } from "./types";
@@ -7,6 +8,7 @@ import { DeleteIconX, ArrowDownIcon, SearchIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { checkValidatonError } from "@/utils/validation";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
+import { debounce } from "@/utils/debounce";
 
 const Select: React.FC<SelectProps> = ({
   id,
@@ -29,25 +31,38 @@ const Select: React.FC<SelectProps> = ({
   resetKey,
   requiredNoStar,
   disabled,
+  fetchMoreOptions,
+  hasMoreOptions,
+  isFetchingMore,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const inputRef = useRef<HTMLInputElement>(null);
   const initialState: {
+    showAbove: boolean;
     isOpen: boolean;
     searchTerm: string;
     filteredOptions: string[] | SelectOptionObject[];
     selectedValue?: string | number;
+    // isFetchingMore: boolean;
   } = {
+    showAbove: false,
     isOpen: false,
     searchTerm: "",
     filteredOptions: options,
     selectedValue: defaultValue,
+    // isFetchingMore: false,
   };
   const [state, setState] = useState(initialState);
-  const { isOpen, searchTerm, filteredOptions, selectedValue } = state;
+  const {
+    isOpen,
+    searchTerm,
+    filteredOptions,
+    selectedValue,
+    showAbove,
+    // isFetchingMore,
+  } = state;
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [showAbove, setShowAbove] = useState(false);
-
+  const listRef = useRef<HTMLDivElement>(null);
   // State to store validation error message
   const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -57,7 +72,7 @@ const Select: React.FC<SelectProps> = ({
       const dropdownHeight = 240; // max-h-60 = 15rem = 240px
       const windowHeight = window.innerHeight;
       const bottomSpace = windowHeight - dropdownRect.bottom;
-      setShowAbove(bottomSpace < dropdownHeight);
+      setState((x) => ({ ...x, showAbove: bottomSpace < dropdownHeight }));
     }
   };
 
@@ -77,6 +92,12 @@ const Select: React.FC<SelectProps> = ({
   ): options is SelectOptionObject[] => {
     return typeof options[0] === "object";
   };
+
+  const handleFetchMore = debounce(() => {
+    if (fetchMoreOptions && hasMoreOptions && !isFetchingMore) {
+      fetchMoreOptions();
+    }
+  }, 1000);
 
   useOutsideClick(dropdownRef, () => {
     setState((x) => ({ ...x, isOpen: false, searchTerm: "" }));
@@ -121,6 +142,46 @@ const Select: React.FC<SelectProps> = ({
       checkValidatonError({ errors: validationErrors, key: id })
     );
   }, [validationErrors, id]);
+
+  // useEffect(() => {
+  //   if (!hasMoreOptions || isFetchingMore || !isOpen || !fetchMoreOptions)
+  //     return;
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((entry) => {
+  //         if (entry.isIntersecting) {
+  //           console.log("fetching more options");
+  //           fetchMoreOptions();
+  //         }
+  //       });
+  //     },
+  //     {
+  //       root: listRef.current,
+  //       threshold: 0.1,
+  //     }
+  //   );
+
+  //   const targetIndex = Math.floor(filteredOptions.length * 0.7);
+  //   const targetElement = listRef.current?.children[targetIndex];
+  //   console.log(targetElement);
+
+  //   if (targetElement) {
+  //     observer.observe(targetElement);
+  //     console.log("observing target element");
+  //   } else {
+  //     console.log("target element not found");
+  //   }
+
+  //   return () => {
+  //     observer.disconnect();
+  //   };
+  // }, [
+  //   fetchMoreOptions,
+  //   filteredOptions,
+  //   hasMoreOptions,
+  //   isFetchingMore,
+  //   isOpen,
+  // ]);
 
   return (
     <div
@@ -254,7 +315,18 @@ const Select: React.FC<SelectProps> = ({
               showAbove ? "bottom-full mb-2" : "top-full mt-2"
             )}
           >
-            <div className="max-h-60 overflow-y-auto">
+            <div
+              // ref={listRef}
+              className="max-h-60 overflow-y-auto"
+              onScroll={(e) => {
+                const target = e.currentTarget as HTMLDivElement;
+                const scrollPosition = target.scrollTop + target.clientHeight;
+                // const threshold = target.scrollHeight * 0.75; // 75% of the total height
+                if (scrollPosition >= target.scrollHeight) {
+                  handleFetchMore();
+                }
+              }}
+            >
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => {
                   const optionLabel =
@@ -264,8 +336,9 @@ const Select: React.FC<SelectProps> = ({
 
                   return (
                     <div
-                      key={optionValue}
-                      className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-darkText-2 capitalize"
+                      role="button"
+                      key={uuidv4()}
+                      className="p-2 hover:bg-gray-100 dark:hover:bg-darkText-2 capitalize"
                       onClick={() => handleSelection(optionValue)}
                     >
                       {optionLabel}
@@ -289,6 +362,9 @@ const Select: React.FC<SelectProps> = ({
                   )}
                 </div>
               ) : null}
+              {isFetchingMore && (
+                <div className="p-2 text-center">Loading more...</div>
+              )}
             </div>
           </div>
         )}

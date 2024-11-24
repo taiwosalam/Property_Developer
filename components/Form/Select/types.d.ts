@@ -24,4 +24,7 @@ export interface SelectProps {
   resetKey?: number;
   requiredNoStar?: boolean;
   disabled?: boolean;
+  fetchMoreOptions?: () => void;
+  hasMoreOptions?: boolean;
+  isFetchingMore?: boolean;
 }

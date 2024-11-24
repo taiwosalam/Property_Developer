@@ -21,7 +21,7 @@ export const password_conditions: PasswordConditionsProps = {
   },
   specialCharacter: {
     text: "one special character",
-    condition: /[@$!%*?&]/,
+    condition: /[~`!@#$%^&*()\-_=+{}\[\]|;:"<>,.\/?]/,
   },
 };
 

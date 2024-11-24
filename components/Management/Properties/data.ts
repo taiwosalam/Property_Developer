@@ -1,14 +1,12 @@
 // Imports
-import {
+import type {
   PropertyFormStateType,
-  AllBranchesResponse,
-  AllLandlordsResponse,
   AllInventoryResponse,
   AllStaffResponse,
   PropertyFormPayload,
+  PaginatedOptions,
 } from "./types";
 import api from "@/services/api";
-
 import { toast } from "sonner";
 
 export const unit_card_data_props = {
@@ -27,31 +25,37 @@ export const property_form_state_data: PropertyFormStateType = {
   selectedBranch: "",
   staff: [],
   staffOptions: [],
-  branchOptions: [],
+  branchOptions: {
+    currentPage: 1,
+    totalPages: 1,
+    options: [],
+  },
   inventoryOptions: [],
-  landlordOptions: [],
+  landlordOptions: {
+    currentPage: 1,
+    totalPages: 1,
+    options: [],
+  },
   accountOfficerOptions: [],
   resetKey: 0,
 };
 
-export const getAllBranches = async () => {
-  try {
-    const { data } = await api.get<AllBranchesResponse>("/branches/all");
-    return data.data;
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
-};
+interface ApiResponse {
+  data: {
+    current_page: number;
+    last_page: number;
+    data: { id: string; [key: string]: any }[];
+  };
+}
 
-export const getAllLandlords = async () => {
-  try {
-    const { data } = await api.get<AllLandlordsResponse>("/landlords/all");
-    return data.data;
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
+export const transformApiResponseToPaginatedOptions = ({
+  data,
+}: ApiResponse): PaginatedOptions => {
+  return {
+    currentPage: data.current_page,
+    options: data.data.map((item) => ({ value: item.id, label: item.name })),
+    totalPages: data.last_page,
+  };
 };
 
 export const getAllInventory = async () => {
