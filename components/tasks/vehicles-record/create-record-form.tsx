@@ -13,8 +13,16 @@ const CreateRecordForm = () => {
   const searchParams = useSearchParams();
   const type = searchParams.get("type") as "manual" | "id" | null;
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+    console.log(data);
+    // TODO: Add form submission logic here
+  };
+
   return (
-    <form className="bg-white dark:bg-darkText-primary rounded-[20px] p-10 space-y-6">
+    <form className="bg-white dark:bg-darkText-primary rounded-[20px] p-10 space-y-6" onSubmit={handleSubmit}>
       <div className="space-y-4">
         <BackButton className="text-primary-navy" bold>
           Profile

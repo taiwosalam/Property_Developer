@@ -144,6 +144,23 @@ export const sendMyArticleComment = async (slug: string, content: string) => {
   }
 }
 
+export const sendMyPropertyRequestComment = async (id: string, content: string) => {
+  try {
+    const response = await api.post(`/agent-community/property-requests/${id}/comment`, { content });
+    // return response.data;
+    return true
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      toast.error(error.response?.data.message);
+    } else {
+      toast.error("Error sending comment:");
+    }
+    // console.error("Error sending comment:", error);
+    return false
+    // throw error;
+  }
+}
+
 
 export const toggleCommentLike = async ( commentId: string, type: 1 | -1) => {
   try {
@@ -155,9 +172,31 @@ export const toggleCommentLike = async ( commentId: string, type: 1 | -1) => {
   }
 }
 
+export const togglePropertyRequestCommentLike = async ( id: string, commentId: string, type: 1 | -1) => {
+  try {
+    const response = await api.post(`/agent-community/property-requests/${id}/comment/${commentId}/toggle-like`, { type });
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    console.error("Error toggling comment like:", error);
+    return false;
+  }
+}
+
 export const sendMyArticleReply = async (slug: string, commentId: string, content: string) => {
   try {
     const response = await api.post(`/agent_community/${slug}/comment/${commentId}/reply`, { content });
+    return true
+    // return response.data;
+  } catch (error) {
+    return false
+    // console.error("Error sending reply:", error);
+    // throw error;
+  }
+}
+  
+export const sendMyPropertyRequestReply = async (id: string, commentId: string, content: string) => {
+  try {
+    const response = await api.post(`/agent-community/property-requests/${id}/comment/${commentId}/reply`, { content });
     return true
     // return response.data;
   } catch (error) {

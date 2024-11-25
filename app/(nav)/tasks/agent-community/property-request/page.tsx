@@ -66,7 +66,6 @@ const PropertyRequest = () => {
   const router = useRouter();
   const [propertyRequests, setPropertyRequests] = useState<any>([]);
   const [propertyRequestUsers, setPropertyRequestUsers] = useState<any[]>([]);
-  const [isFetching, setIsFetching] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -76,6 +75,7 @@ const PropertyRequest = () => {
     error,
     refetch,
   } = useFetch<PropertyRequestApiData>(`/agent-community/property-requests/all?page=${currentPage}&query=${searchQuery}`);
+  
   useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
   const handleCreatePropertyRequestClick = () => {
@@ -84,8 +84,8 @@ const PropertyRequest = () => {
 
   useEffect(() => {
     if (apiData) {
-      setPropertyRequests(apiData?.property_requests);  
-      setPropertyRequestUsers(apiData?.users);  
+      setPropertyRequests(apiData?.property_requests);
+      setPropertyRequestUsers(apiData?.users);
       console.log('api data', apiData);
     }
   }, [apiData]);
@@ -137,6 +137,10 @@ const PropertyRequest = () => {
     setCurrentPage(1); // Reset to first page on new search
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   const formatDate = (dateString: string) => {
     if (!dateString) return "___";
     try {
@@ -145,10 +149,6 @@ const PropertyRequest = () => {
     } catch {
       return "___";
     }
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
   };
 
   const propertyRequestData: PropertyRequestDataType[] = propertyRequests.map((request: any) => ({
@@ -172,7 +172,7 @@ const PropertyRequest = () => {
   })) || [];
 
   if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
-  <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+    <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
   </div>;
 
   return (
@@ -204,8 +204,7 @@ const PropertyRequest = () => {
         pageTitle="Property Request"
         aboutPageModalData={{
           title: "Property Request",
-          description:
-            "This page contains a list of Property Request on the platform.",
+          description: "This page contains a list of Property Request on the platform.",
         }}
         searchInputPlaceholder="Search Property Request"
         handleFilterApply={() => {}}
@@ -223,22 +222,18 @@ const PropertyRequest = () => {
         </div>
       ) : (
         <AutoResizingGrid gap={28} minWidth={400}>
-          {isFetching
-            ? Array(3)
-                .fill(null)
-                .map((_, index) => <RequestCardSkeleton key={index} />)
-            : propertyRequestData.map((details, index) => (
-                <PropertyRequestCard
-                  key={index}
-                  {...transformToPropertyRequestCardProps(details)}
-                />
-              ))}
+          {propertyRequestData.map((details, index) => (
+            <PropertyRequestCard
+              key={index}
+              {...transformToPropertyRequestCardProps(details)}
+            />
+          ))}
         </AutoResizingGrid>
       )}
       <div className="pagination">
         <Pagination 
-          totalPages={5} 
-          currentPage={1} 
+          totalPages={apiData?.total_pages ?? 0} 
+          currentPage={currentPage} 
           onPageChange={handlePageChange} 
         />
       </div>

@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { formatDate, formatDateRange } from "../../../property-request/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import CommunityComments from "@/components/Community/CommunityComments";
+import PropertyRequestComments from "@/components/Community/PropertyRequestComments";
 
 interface PropertyRequestResponse {
   data: {
@@ -36,7 +36,7 @@ const PreviewPage = () => {
   const [readBy, setReadBy] = useState<any>(null);
   const [comments, setComments] = useState<any>([]);
   const { data, loading, error, refetch } = useFetch<PropertyRequestResponse>(`/agent-community/property-requests/${id}`);
-  useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
+  useRefetchOnEvent("refetchComments", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (data) {
@@ -84,8 +84,8 @@ const PreviewPage = () => {
             propertyRequest={propertyRequest} 
           />
           {/* <ThreadComments /> */}
-          <CommunityComments 
-            slug={id as string} 
+          <PropertyRequestComments 
+            id={id as string} 
             comments={comments} 
             setComments={setComments} 
           />
