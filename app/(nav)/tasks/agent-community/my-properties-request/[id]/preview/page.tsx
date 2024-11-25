@@ -18,10 +18,14 @@ import ReadyByCard from "@/components/Community/ReadByCard";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { formatDate, formatDateRange } from "../../../property-request/data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import CommunityComments from "@/components/Community/CommunityComments";
 
 interface PropertyRequestResponse {
   data: {
-    propertyRequest: any; 
+    PropertyRequest: any; 
+    readByData: any;
+    comments: any;  
   };
 }
 
@@ -29,16 +33,27 @@ const PreviewPage = () => {
   const router = useRouter();
   const { id } = useParams();
   const [propertyRequest, setPropertyRequest] = useState<any>(null);
-  const { data, loading, error } = useFetch<PropertyRequestResponse>(`/agent_community/property-requests/${id}`);
-  
+  const [readBy, setReadBy] = useState<any>(null);
+  const [comments, setComments] = useState<any>([]);
+  const { data, loading, error, refetch } = useFetch<PropertyRequestResponse>(`/agent-community/property-requests/${id}`);
+  useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
+
   useEffect(() => {
     if (data) {
-      setPropertyRequest(data.data.propertyRequest);
+      console.log('data', data.data);
+      setPropertyRequest(data.data.PropertyRequest);
+      setReadBy(data.data.readByData);
+      setComments(data.data.comments);
+      console.log('comments', comments);
+      console.log('readBy', readBy);
     }
   }, [data]);
 
   console.log(propertyRequest);
-  
+  if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
+  <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+  </div>;
+
   return (
     <div>
       <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
@@ -65,13 +80,26 @@ const PreviewPage = () => {
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <ThreadArticle propertyRequest={propertyRequest} />
-          <ThreadComments />
+          <ThreadArticle 
+            propertyRequest={propertyRequest} 
+          />
+          {/* <ThreadComments /> */}
+          <CommunityComments 
+            slug={id as string} 
+            comments={comments} 
+            setComments={setComments} 
+          />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <SummaryCard propertyRequest={propertyRequest} />
-          <MoreDetailsCard propertyRequest={propertyRequest} />
-          <ReadyByCard />
+          <SummaryCard 
+            propertyRequest={propertyRequest} 
+          />
+          <MoreDetailsCard 
+            propertyRequest={propertyRequest} 
+          />
+          <ReadyByCard 
+            data={readBy} 
+          />
         </div>
       </div>
     </div>
@@ -85,16 +113,19 @@ const ThreadArticle = ({ propertyRequest }: { propertyRequest: any }) => {
     <div className="">
       <div dangerouslySetInnerHTML={{ __html: propertyRequest?.description || "___" }} />
       <div className="flex justify-between mt-6">
-        <div className="text-black font-semibold">Comments</div>
+      <div className="flex items-center gap-2">
+          <span className="text-text-secondary">Comments</span>
+          <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">{propertyRequest?.comments_count}</p>
+        </div>
 
         <div className="flex gap-2">
           <button className="flex items-center gap-1">
             <ThumbsUp />
-            <p>57</p>
+            <p>{propertyRequest?.likes_up}</p>
           </button>
           <button className="flex items-center gap-1">
             <ThumbsDown />
-            <p>11</p>
+            <p>{propertyRequest?.likes_down}</p>
           </button>
 
           <div className="flex">
@@ -122,7 +153,7 @@ const ThreadArticle = ({ propertyRequest }: { propertyRequest: any }) => {
               />
             </div>
             <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-              +122
+             {propertyRequest?.likes_up}
             </div>
           </div>
         </div>
@@ -134,10 +165,10 @@ const ThreadArticle = ({ propertyRequest }: { propertyRequest: any }) => {
 // SECOND SIDE
 const SummaryCard = ({ propertyRequest }: { propertyRequest: any }) => {
   const propertySummaryData = [
-    { label: "Posted Date", value: formatDate(propertyRequest?.created_at)},
-    { label: "Last Updated", value: formatDate(propertyRequest?.updated_at)},
-    { label: "Total Seen", value: propertyRequest?.total_seen},
-    { label: "Total Comment", value: propertyRequest?.total_comments},
+    { label: "Posted Date", value: propertyRequest?.created_at},
+    { label: "Last Updated", value: propertyRequest?.updated_at},
+    { label: "Total Seen", value: propertyRequest?.views_count},
+    { label: "Total Comment", value: propertyRequest?.comments_count},
   ];
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-lg p-4">
@@ -148,8 +179,8 @@ const SummaryCard = ({ propertyRequest }: { propertyRequest: any }) => {
             key={index}
             className="flex gap-4 items-start justify-between w-full"
           >
-            <p className="text-[#747474] text-sm">{item.label || '__'}</p>
-            <p className="dark:text-white text-black text-sm">{item.value || '__'}</p>
+            <p className="text-[#747474] text-sm">{item.label}</p>
+            <p className="dark:text-white text-black text-sm">{item.value}</p>
           </div>
         ))}
       </div>

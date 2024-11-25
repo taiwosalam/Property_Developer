@@ -27,6 +27,18 @@ import { SelectedOptions } from "@/components/Settings/types";
 const Appearance = () => {
   const googleFonts = useGoogleFonts();
 
+  function debounce(func: (...args: any[]) => any, wait: number) {
+    let timeout: NodeJS.Timeout;
+    return function executedFunction(...args: any[]) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+  
   // Ensure 'Lato' is the first font in the array
   const modifiedGoogleFonts = ["Lato", ...googleFonts];
 
@@ -203,6 +215,9 @@ const Appearance = () => {
     }
   };
 
+  const debouncedHandleColorSelect = debounce(handleColorSelect, 300);
+  const debouncedHandleCustomColorChange = debounce(handleCustomColorChange, 300);
+
   return (
     <>
       {/* DASHBOARD THEMES */}
@@ -348,7 +363,7 @@ const Appearance = () => {
         <WebsiteColorSchemes
           websiteColorSchemes={website_color_schemes as unknown as string[]}
           selectedColor={selectedColor}
-          onColorSelect={handleColorSelect}
+          onColorSelect={debouncedHandleColorSelect}
         />
 
         <div className="">
@@ -393,7 +408,7 @@ const Appearance = () => {
             <ModalContent>
               <CustomColorPicker
                 color={customColor}
-                onChange={handleCustomColorChange}
+                onChange={debouncedHandleCustomColorChange}
                 onClose={() => {
                   setCustomColor(customColor);
                   setModalOpen(false);

@@ -13,7 +13,7 @@ import { CompanySummarySkeleton, TextSkeleton } from "@/app/(nav)/tasks/agent-co
 import { empty } from "@/app/config";
 import { calculateYearsInIndustry } from "@/app/(nav)/tasks/agent-community/data";
 
-const CompanySummary = ({ loading, companySummary }: { loading?: boolean, companySummary?: any }) => {
+const CompanySummary = ({ loading, companySummary }: { loading?: boolean, companySummary: any }) => {
   
  const companyStats = [
     { label: "Joined ourproperty.ng", value: companySummary?.join_ourproperty },

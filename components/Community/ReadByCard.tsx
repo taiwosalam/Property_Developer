@@ -2,19 +2,27 @@ import { readyByData } from "@/app/(nav)/tasks/agent-community/data";
 import Image from "next/image";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import user2 from "@/public/empty/user2.svg";
+import { empty } from "@/app/config";
+import { TextSkeleton } from "@/app/(nav)/tasks/agent-community/components";
+import { useEffect } from "react";
 
-const ReadyByCard = () => {
+const ReadyByCard = ({data}: {data: any}) => {
+  useEffect(() => {
+    console.log("data", data);
+  }, [data]);
+
+  const isArray = Array.isArray(data);
   return (
     <div className="bg-[#EFF6FF] dark:bg-darkText-primary rounded-lg p-4">
       <h4 className="text-black dark:text-white font-semibold text-sm">
         Ready By
       </h4>
-      {readyByData.map((item, index) => (
+      {isArray ? data.map((item: any, index: number) => (
         <div key={index} className="flex w-full gap-3 mt-3 justify-between">
           <div className="flex gap-1 items-center">
             <div className="imgWrapper h-10 w-10">
               <Image
-                src={user2}
+                src={item.profile_picture || empty}
                 alt="user"
                 width={100}
                 height={100}
@@ -22,13 +30,14 @@ const ReadyByCard = () => {
               />
             </div>
             <p className="text-black dark:text-white text-md font-semibold">
-              {item.name}
+              {item.name || <TextSkeleton />}
             </p>
-            <BadgeIcon color="blue" />
+            {item.email_verified && <BadgeIcon color="blue" />}
+            {/* <BadgeIcon color="blue" /> */}
           </div>
-          <p className="text-black dark:text-white text-sm"> {item.time} </p>
+          <p className="text-black dark:text-white text-sm"> {item.viewed_at || <TextSkeleton />} </p>
         </div>
-      ))}
+      )) : null}
     </div>
   );
 };

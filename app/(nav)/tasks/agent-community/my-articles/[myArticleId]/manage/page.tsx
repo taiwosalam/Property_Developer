@@ -14,6 +14,9 @@ import { toast } from "sonner";
 import useFetch from "@/hooks/useFetch";
 import { CommentData } from "@/components/tasks/announcements/comment";
 import { AuthForm } from "@/components/Auth/auth-components";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import Button from "@/components/Form/Button/button";
+import { DeleteArticleModal, DeleteArticleModalSuccess, DeleteInventoryModal, DeleteInventoryModalSuccess } from "@/components/Modal/delete-inventory";
 
 const desc =
   "#Commercial and retail real estate fundamentals are expected to remain strong due to the scarcity of new construction deliveries, prompting compelling opportunities for investors amid high interest rates and inflation in the market, writes CHINEDUM UWAEGBULAM. Despite economic headwinds and challenges with obtaining building permits, experts predict that the demand for housing will remain strong, and the market will see a steady increase in property values this year. There are also opportunities available for high-quality properties that meet the needs of investors and tenants, while low mortgage rates and government incentives will likely contribute to this optimistic outlook as inflation may remain a concern in 2024, affecting both home prices and mortgage rates.";
@@ -36,17 +39,23 @@ const ManageMyArticle = () => {
   const [id, setId] = useState(null)
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [retainMedia, setRetainMedia] = useState<string[]>([])
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleDeleteMyArticle = async ({ slug }: { slug: string }) => {
     setIsDeleting(true);
     const response = await deleteMyArticle(slug);
     if (response) {
       toast.success("Article deleted successfully");
-      router.push("/tasks/agent-community/my-articles");
+      setShowSuccessModal(true);
     } else {
       toast.error("Failed to delete article");
     }
     setIsDeleting(false);
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+    router.push("/tasks/agent-community/my-articles");
   };
 
   
@@ -133,14 +142,27 @@ const ManageMyArticle = () => {
         </div>
       </div>
       <FixedFooter className="flex gap-6 justify-end">
-        <button
-          type="button"
-          className="py-2 px-7 bg-[#FDE9EA] text-[#E9212E] rounded-[4px] text-sm font-medium"
-          onClick={() => handleDeleteMyArticle({ slug })}
-          disabled={isDeleting}
-        >
-          {isDeleting ? "Deleting..." : "Delete"}
-        </button>
+        <Modal>
+          <ModalTrigger asChild>
+            <Button
+              size="sm_medium"
+              variant="blank"
+              className="py-2 px-7 text-status-error-primary bg-status-error-1"
+            >
+              delete
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <DeleteArticleModal 
+              handleDelete={()=> handleDeleteMyArticle({ slug })} 
+            />
+          </ModalContent>
+        </Modal>
+        {showSuccessModal && 
+        <DeleteArticleModalSuccess 
+          open={showSuccessModal} 
+          handleClose={handleCloseSuccessModal} 
+        />}
         <button
           type="submit"
           className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"

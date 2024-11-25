@@ -19,10 +19,15 @@ import CompanySummary from "@/components/Community/CompanySummary";
 import useFetch from "@/hooks/useFetch";
 import { useState, useEffect } from "react";
 import { formatDateRange } from "../../data";
+import CommunityComments from "@/components/Community/CommunityComments";
 
 interface PropertyRequestResponse {
   data: {
-    propertyRequest: any; 
+    PropertyRequest: any; 
+    contributor: any;
+    readByData: any;
+    comments: any;
+    company_summary: any;
   };
 }
 
@@ -31,16 +36,28 @@ const PreviewPage = () => {
   const { requestId } = useParams();
   const [propertyRequest, setPropertyRequest] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
-  const { data, loading, error } = useFetch<PropertyRequestResponse>(`/agent_community/property-requests/${requestId}`);
+  const [readByData, setReadByData] = useState<any>(null);
+  const [companySummary, setCompanySummary] = useState<any>(null);
+  const [comments, setComments] = useState<any>(null);
+  const { data, loading, error } = useFetch<PropertyRequestResponse>(`/agent-community/property-requests/${requestId}`);
 
   useEffect(() => {
     if (data) {
-      setPropertyRequest(data.data.propertyRequest);
-      setUser(data.data.propertyRequest.user);
+      setPropertyRequest(data.data.PropertyRequest);
+      setUser(data.data.contributor);
+      setReadByData(data.data.readByData);
+      setComments(data.data.comments);
+      setCompanySummary(data.data.company_summary);
+      // console.log("data", data.data);
     }
   }, [data]);
-  // console.log(data?.data.propertyRequest);
-  // console.log(data?.data.user);
+  // console.log(data?.data.PropertyRequest);
+  // console.log('comments', comments);
+
+  if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
+  <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+  </div>;
+
   return (
     <div>
       <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
@@ -67,9 +84,19 @@ const PreviewPage = () => {
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <MoreDetailsCard propertyRequest={propertyRequest} user={user} />
-          <ThreadArticle propertyRequest={propertyRequest} />
-          <ThreadComments />
+          <MoreDetailsCard 
+            propertyRequest={propertyRequest} 
+            user={user} 
+          />
+          <ThreadArticle 
+            propertyRequest={propertyRequest} 
+          />
+          {/* <ThreadComments /> */}
+          <CommunityComments 
+            slug={propertyRequest?.slug}
+            comments={data?.data.comments}
+            setComments={setComments}
+          />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <ContributorDetails
@@ -80,7 +107,9 @@ const PreviewPage = () => {
             postedDate={propertyRequest?.created_at}
             updatedDate={propertyRequest?.updated_at}
           />
-          <CompanySummary />
+          <CompanySummary
+            companySummary={companySummary}
+          />
         </div>
       </div>
     </div>
@@ -90,20 +119,26 @@ const PreviewPage = () => {
 export default PreviewPage;
 
 const ThreadArticle = ({ propertyRequest }: { propertyRequest: any }) => {
+  useEffect(() => {
+    console.log("propertyRequest", propertyRequest);
+  }, [propertyRequest]);
   return (
     <div className="">
         <div dangerouslySetInnerHTML={{ __html: propertyRequest?.description }} className="text-sm text-darkText-secondary mt-6" />
       <div className="flex justify-between mt-6">
-        <div className="text-black font-semibold">Comments</div>
+      <div className="flex items-center gap-2">
+          <span className="text-text-secondary">Comments</span>
+          <p className="text-white text-xs text-center font-semibold rounded-full bg-brand-9 px-3 py-[2px]">{propertyRequest?.comments_count }</p>
+        </div>
 
         <div className="flex gap-2">
           <button className="flex items-center gap-1">
             <ThumbsUp />
-            <p>57</p>
+            <p>{propertyRequest?.likes_up}</p>
           </button>
           <button className="flex items-center gap-1">
             <ThumbsDown />
-            <p>11</p>
+            <p>{propertyRequest?.likes_down}</p>
           </button>
 
           <div className="flex">
