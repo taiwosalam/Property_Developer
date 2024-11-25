@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import api from "@/services/api";
 import axios, { AxiosRequestConfig } from "axios";
 
@@ -7,6 +7,7 @@ interface UseFetchResult<T> {
   loading: boolean;
   silentLoading: boolean;
   error: string | null;
+  isNetworkError: boolean;
   refetch: (options?: { silent?: boolean }) => Promise<void>;
 }
 
@@ -18,6 +19,8 @@ function useFetch<T>(
   const [loading, setLoading] = useState(true);
   const [silentLoading, setSilentLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isNetworkError, setIsNetworkError] = useState(false);
+  const isInitialLoad = useRef(true);
 
   const fetchData = useCallback(
     async (options: { silent?: boolean } = {}) => {
@@ -29,12 +32,22 @@ function useFetch<T>(
           setLoading(true);
         }
         setError(null);
-        const { data } = await api<T>(url, config);
-        // const { data } = await axios<T>(url, config);
+        setIsNetworkError(false);
+        const { data } = await api.get<T>(url, config);
         setData(data);
       } catch (err) {
-        if (axios.isAxiosError(err) && err.response?.data) {
-          setError(err.response.data?.message);
+        if (axios.isAxiosError(err)) {
+          if (!err.response) {
+            // This indicates a network error or cors error (no response received)
+            setIsNetworkError(true);
+            setError(err.message || "Network Error");
+          } else {
+            setError(
+              err.response.data?.message ||
+                err.response?.data?.error ||
+                "Something went wrong"
+            );
+          }
         } else {
           setError((err as Error)?.message);
         }
@@ -50,14 +63,18 @@ function useFetch<T>(
   );
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]); // Re-fetch when URL changes
+    fetchData({ silent: !isInitialLoad.current });
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false;
+    }
+  }, [fetchData]);
 
   return {
     data,
     loading,
     silentLoading,
     error,
+    isNetworkError,
     refetch: (options) => fetchData(options),
   };
 }

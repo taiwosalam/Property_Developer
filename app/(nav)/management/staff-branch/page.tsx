@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Form/Button/button";
@@ -21,9 +21,12 @@ import CreateBranchModal from "@/components/Management/Staff-And-Branches/create
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import TableLoading from "@/components/Loader/TableLoading";
+import CardsLoading from "@/components/Loader/CardsLoading";
 import useSettingsStore from "@/store/settings";
 import useView from "@/hooks/useView";
 import useFetch from "@/hooks/useFetch";
+import NetworkError from "@/components/Error/NetworkError";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const StaffAndBranches = () => {
@@ -142,23 +145,28 @@ const StaffAndBranches = () => {
         current_page: page,
       },
     }));
-    // refetch({ silent: true });
   };
 
   const handleSearch = async (query: string) => {
     if (!query && !searchQuery) return;
     setSearchQuery(query);
-    // refetch({ silent: true });
   };
+
+  const config = useMemo(
+    () => ({
+      params: { page: current_page, search: searchQuery },
+    }),
+    [current_page, searchQuery]
+  );
 
   const {
     data: apiData,
     loading,
+    silentLoading,
+    isNetworkError,
     error,
     refetch,
-  } = useFetch<BranchApiResponse>(
-    `branches?page=${current_page}&search=${searchQuery}`
-  );
+  } = useFetch<BranchApiResponse>("branches", config);
 
   useRefetchOnEvent("refetchBranches", () => refetch({ silent: true }));
 
@@ -179,6 +187,8 @@ const StaffAndBranches = () => {
         statsCardCount={3}
       />
     );
+
+  if (isNetworkError) return <NetworkError />;
 
   if (error) return <div>{error}</div>;
 
@@ -239,12 +249,18 @@ const StaffAndBranches = () => {
       <section className="capitalize">
         {view === "grid" || gridView ? (
           <AutoResizingGrid minWidth={284}>
-            {branches.map((b) => (
-              <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
-                <BranchCard {...b} />
-              </Link>
-            ))}
+            {silentLoading ? (
+              <CardsLoading />
+            ) : (
+              branches.map((b) => (
+                <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
+                  <BranchCard {...b} />
+                </Link>
+              ))
+            )}
           </AutoResizingGrid>
+        ) : silentLoading ? (
+          <TableLoading />
         ) : (
           <CustomTable
             fields={branchTableFields}
