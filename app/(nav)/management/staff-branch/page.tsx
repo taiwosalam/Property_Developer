@@ -142,11 +142,13 @@ const StaffAndBranches = () => {
         current_page: page,
       },
     }));
+    // refetch({ silent: true });
   };
 
   const handleSearch = async (query: string) => {
     if (!query && !searchQuery) return;
     setSearchQuery(query);
+    // refetch({ silent: true });
   };
 
   const {
