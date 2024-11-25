@@ -5,6 +5,7 @@ import axios, { AxiosRequestConfig } from "axios";
 interface UseFetchResult<T> {
   data: T | null;
   loading: boolean;
+  silentLoading: boolean;
   error: string | null;
   refetch: (options?: { silent?: boolean }) => Promise<void>;
 }
@@ -14,18 +15,22 @@ function useFetch<T>(
   config?: AxiosRequestConfig
 ): UseFetchResult<T> {
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
+  const [silentLoading, setSilentLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = useCallback(
     async (options: { silent?: boolean } = {}) => {
       const { silent = false } = options;
       try {
-        if (!silent) {
+        if (silent) {
+          setSilentLoading(true);
+        } else {
           setLoading(true);
         }
         setError(null);
-        const { data } = await api.get<T>(url, config);
+        const { data } = await api<T>(url, config);
+        // const { data } = await axios<T>(url, config);
         setData(data);
       } catch (err) {
         if (axios.isAxiosError(err) && err.response?.data) {
@@ -34,7 +39,9 @@ function useFetch<T>(
           setError((err as Error)?.message);
         }
       } finally {
-        if (!silent) {
+        if (silent) {
+          setSilentLoading(false);
+        } else {
           setLoading(false);
         }
       }
@@ -49,6 +56,7 @@ function useFetch<T>(
   return {
     data,
     loading,
+    silentLoading,
     error,
     refetch: (options) => fetchData(options),
   };

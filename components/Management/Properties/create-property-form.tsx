@@ -15,18 +15,19 @@ import DraggableImage from "./draggable-image";
 import { propertyCategories, MAX_FILE_SIZE_MB } from "@/data";
 import { AuthForm } from "@/components/Auth/auth-components";
 import {
-  getAllBranches,
-  getAllLandlords,
   getAllInventory,
   getAllStaffByBranch,
   property_form_state_data,
   transformPropertyFormData,
+  transformApiResponseToPaginatedOptions,
 } from "./data";
+import { LandlordApiResponse } from "@/app/(nav)/management/landlord/data";
 import { currencySymbols } from "@/utils/number-formatter";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
 import PropertyFormFooter from "./property-form-footer.tsx";
 import { useMultipleImageUpload } from "@/hooks/useMultipleImageUpload";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import useFetch from "@/hooks/useFetch";
 
 const maxNumberOfImages = 6;
 
@@ -137,24 +138,52 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     setSelectedCategory(null);
   };
 
+  const fetchBranches = useFetch<{
+    data: { id: string; branch_name: string }[];
+  }>(`branches?page=${branchOptions.currentPage}`);
+
+  const {
+    data: landlordData,
+    loading: landlordLoading,
+    refetch: refetchLandlord,
+  } = useFetch<LandlordApiResponse>(
+    `landlords?page=${landlordOptions.currentPage}`
+    // `http://localhost:3000/properties?page=${state.landlordOptions.currentPage}`
+  );
+
+  useEffect(() => {
+    if (landlordData) {
+      const transformedData =
+        transformApiResponseToPaginatedOptions(landlordData);
+      setState((x) => ({
+        ...x,
+        landlordOptions: {
+          currentPage: transformedData.currentPage,
+          options: [...x.landlordOptions.options, ...transformedData.options],
+          totalPages: transformedData.totalPages,
+        },
+      }));
+    }
+  }, [landlordData]);
+
   // Get primary data from the backend
   useEffect(() => {
     const fetchData = async () => {
-      const [branches, landlords, inventory] = await Promise.all([
-        getAllBranches(),
-        getAllLandlords(),
+      const [inventory] = await Promise.all([
+        // getAllBranches(),
+        // getAllLandlords(),
         getAllInventory(),
       ]);
 
       setPropertyState({
-        branchOptions: branches.map((branch) => ({
-          value: branch.id,
-          label: branch.branch_name,
-        })),
-        landlordOptions: landlords.map((landlord) => ({
-          value: landlord.id,
-          label: landlord.full_name,
-        })),
+        // branchOptions: branches.map((branch) => ({
+        //   value: branch.id,
+        //   label: branch.branch_name,
+        // })),
+        // landlordOptions: landlords.map((landlord) => ({
+        //   value: landlord.id,
+        //   label: landlord.full_name,
+        // })),
         inventoryOptions: inventory.map((inventory) => ({
           value: inventory.id,
           label: inventory.inventory_name,
@@ -190,6 +219,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const yesNoFields = [
     "group_chat",
     "rent_penalty",
+    "fee_penalty",
     "request_call_back",
     "book_visitors",
     "vehicle_record",
@@ -367,7 +397,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             id="branch_id"
             label="Branch"
             resetKey={resetKey}
-            options={branchOptions}
+            options={branchOptions.options}
             inputContainerClassName="bg-white"
             onChange={(selectedBranch) => setPropertyState({ selectedBranch })}
             hiddenInputClassName="property-form-input"
@@ -383,12 +413,29 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 hiddenInputClassName="property-form-input"
               />
               <Select
-                options={landlordOptions}
+                options={landlordOptions.options}
                 id="land_lord_id"
                 label="Landlord"
                 inputContainerClassName="bg-white"
                 resetKey={resetKey}
                 hiddenInputClassName="property-form-input"
+                isFetchingMore={landlordLoading}
+                hasMoreOptions={
+                  landlordOptions.currentPage < landlordOptions.totalPages
+                }
+                fetchMoreOptions={() => {
+                  if (
+                    landlordOptions.currentPage < landlordOptions.totalPages
+                  ) {
+                    setState((prevState) => ({
+                      ...prevState,
+                      landlordOptions: {
+                        ...prevState.landlordOptions,
+                        currentPage: prevState.landlordOptions.currentPage + 1,
+                      },
+                    }));
+                  }
+                }}
               />
             </>
           )}
