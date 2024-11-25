@@ -16,6 +16,9 @@ import { useEffect, useState } from "react";
 import { getAllPropertyRequests, getThreads } from "../data";
 import { empty } from "@/app/config";
 import { RequestCardSkeleton } from "../components";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+
 const lists = [
   {
     title: "All Community Articles",
@@ -34,6 +37,14 @@ const lists = [
   },
 ];
 
+interface PropertyRequestApiData {
+  total_pages: number;
+  total: number;
+  property_requests: PropertyRequestDataType[];
+  data: PropertyRequestDataType[];
+  users: any[];
+}
+
 const transformToPropertyRequestCardProps = (
   data: PropertyRequestDataType
 ): AgentCommunityRequestCardProps => {
@@ -51,60 +62,80 @@ const transformToPropertyRequestCardProps = (
   };
 };
 
-
 const PropertyRequest = () => {
   const router = useRouter();
   const [propertyRequests, setPropertyRequests] = useState<any>([]);
   const [propertyRequestUsers, setPropertyRequestUsers] = useState<any[]>([]);
   const [isFetching, setIsFetching] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const {
+    data: apiData,
+    loading,
+    error,
+    refetch,
+  } = useFetch<PropertyRequestApiData>(`/agent-community/property-requests/all?page=${currentPage}&query=${searchQuery}`);
+  useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
   const handleCreatePropertyRequestClick = () => {
     router.push("/tasks/agent-community/my-properties-request/create");
   };
 
+  useEffect(() => {
+    if (apiData) {
+      setPropertyRequests(apiData?.property_requests);  
+      setPropertyRequestUsers(apiData?.users);  
+      console.log('api data', apiData);
+    }
+  }, [apiData]);
+
+  // const handleSearch = (query: string) => {
+  //   setSearchQuery(query);
+
+  //   if (!Array.isArray(propertyRequests)) {
+  //     return;
+  //   }
+
+  //   const filteredPropertyRequests = propertyRequests.filter(
+  //     (request: PropertyRequestDataType) =>
+  //       request.propertyTitle.toLowerCase().includes(query.toLowerCase()) ||
+  //       request.description.toLowerCase().includes(query.toLowerCase())
+  //   );
+  //   setPropertyRequests(filteredPropertyRequests);
+  // };
+
+  // useEffect(() => {
+  //   const fetchPropertyRequests = async () => {
+  //     setIsFetching(true);
+  //     setError(null);
+  //     try {
+  //       const data = await getAllPropertyRequests();
+  //       const propertyRequests = data.property_requests;
+  //       const users = propertyRequests.map((item: any) => item.user);
+  //       setPropertyRequests(propertyRequests);
+  //       setPropertyRequestUsers(users);
+  //       console.log("Property requests:", propertyRequests);
+  //       console.log("Property request users:", users);
+  //     } catch (err) {
+  //       setError(
+  //         err instanceof Error
+  //           ? err.message
+  //           : "Failed to fetch property requests"
+  //       );
+  //       console.error("Error fetching property requests:", err);
+  //     } finally {
+  //       setIsFetching(false);
+  //     }
+  //   };
+
+  //   fetchPropertyRequests();
+  // }, []);
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-
-    if (!Array.isArray(propertyRequests)) {
-      return;
-    }
-
-    const filteredPropertyRequests = propertyRequests.filter(
-      (request: PropertyRequestDataType) =>
-        request.propertyTitle.toLowerCase().includes(query.toLowerCase()) ||
-        request.description.toLowerCase().includes(query.toLowerCase())
-    );
-    setPropertyRequests(filteredPropertyRequests);
+    setCurrentPage(1); // Reset to first page on new search
   };
-
-  useEffect(() => {
-    const fetchPropertyRequests = async () => {
-      setIsFetching(true);
-      setError(null);
-      try {
-        const data = await getAllPropertyRequests();
-        const propertyRequests = data.property_requests;
-        const users = propertyRequests.map((item: any) => item.user);
-        setPropertyRequests(propertyRequests);
-        setPropertyRequestUsers(users);
-        console.log("Property requests:", propertyRequests);
-        console.log("Property request users:", users);
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to fetch property requests"
-        );
-        console.error("Error fetching property requests:", err);
-      } finally {
-        setIsFetching(false);
-      }
-    };
-
-    fetchPropertyRequests();
-  }, []);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "___";
@@ -114,6 +145,10 @@ const PropertyRequest = () => {
     } catch {
       return "___";
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const propertyRequestData: PropertyRequestDataType[] = propertyRequests.map((request: any) => ({
@@ -135,6 +170,10 @@ const PropertyRequest = () => {
     userTitle: request.user?.title || "__",
     targetAudience: request.propertyRequest.target_audience,
   })) || [];
+
+  if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
+  <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+  </div>;
 
   return (
     <div className="space-y-9">
@@ -197,7 +236,11 @@ const PropertyRequest = () => {
         </AutoResizingGrid>
       )}
       <div className="pagination">
-        <Pagination totalPages={5} currentPage={1} onPageChange={() => {}} />
+        <Pagination 
+          totalPages={5} 
+          currentPage={1} 
+          onPageChange={handlePageChange} 
+        />
       </div>
 
       <div className="top-80 right-4 fixed rounded-full">

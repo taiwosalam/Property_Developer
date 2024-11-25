@@ -17,34 +17,50 @@ import { toast } from "sonner";
 import useFetch from "@/hooks/useFetch";
 import { deletePropertyRequest, updatePropertyRequest } from "../../../data";
 import { AuthForm } from "@/components/Auth/auth-components";
+import CommunityComments from "@/components/Community/CommunityComments";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { DeletePropertyRequestModal, DeletePropertyRequestModalSuccess } from "@/components/Modal/delete-inventory";
+import Button from "@/components/Form/Button/button";
 
 const desc =
   "#Commercial and retail real estate fundamentals are expected to remain strong due to the scarcity of new construction deliveries, prompting compelling opportunities for investors amid high interest rates and inflation in the market, writes CHINEDUM UWAEGBULAM. Despite economic headwinds and challenges with obtaining building permits, experts predict that the demand for housing will remain strong, and the market will see a steady increase in property values this year. There are also opportunities available for high-quality properties that meet the needs of investors and tenants, while low mortgage rates and government incentives will likely contribute to this optimistic outlook as inflation may remain a concern in 2024, affecting both home prices and mortgage rates.";
 
-const ManageMyArticle = () => {
+const ManageMyPropertyRequest = () => {
   const router = useRouter();
   const { id } = useParams();
 
   const { data, loading, error } = useFetch<{
     data: {
-      propertyRequest: any;
+      PropertyRequest: any;
+      comments: any;
     };
-  }>(`/agent_community/property-requests/${id}`);
+  }>(`/agent-community/property-requests/${id}`);
+
   const [propertyRequests, setPropertyRequests] = useState<any>([]);
+  const [comments, setComments] = useState<any>([]);
   const [propertyRequestUser, setPropertyRequestUser] = useState<any>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+
   useEffect(() => {
-    if (data?.data?.propertyRequest) {
-      setPropertyRequests(data.data.propertyRequest);
+    console.log('data', data?.data);
+    if (data?.data?.PropertyRequest) {
+      setPropertyRequests(data.data.PropertyRequest);
+      setComments(data.data.comments);
     }
   }, [data]);
 
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
-      await deletePropertyRequest(id as string);
-      toast.success("Property request deleted successfully");
+      const response = await deletePropertyRequest(id as string);
+      if (response) {
+        setShowSuccessModal(true);
+        toast.success("Property request deleted successfully");
+      } else {
+        toast.error("Failed to delete property request");
+      }
       router.push("/tasks/agent-community/my-properties-request");
     } catch (error) {
       toast.error("Failed to delete property request");
@@ -53,10 +69,15 @@ const ManageMyArticle = () => {
     }
   };
 
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+    router.push("/tasks/agent-community/my-properties-request");
+  };
+
 
   const { minBudget, maxBudget, resetBudgets } = usePropertyRequestStore();
 
-  const handleCreateClick = async (data: any) => {
+  const handleUpdateMyProperty = async (data: any) => {
     console.log("FORM data", data);
     // Validate budgets here when the create button is clicked
     if (minBudget !== null && maxBudget !== null && minBudget > maxBudget) {
@@ -64,10 +85,12 @@ const ManageMyArticle = () => {
       resetBudgets(); // Reset inputs to 0 or null
     } else {
       // Proceed with the request creation logic
+      const updatedData = { ...data, _method: 'patch' };
       try {
         setIsUpdating(true);
-        await updatePropertyRequest(id as string, data);
+        await updatePropertyRequest(id as string, updatedData);
         toast.success("Property request updated successfully");
+        router.push(`/tasks/agent-community/my-properties-request/${id}/preview`);
       } catch (error) {
         toast.error("Failed to update property request");
       } finally {
@@ -94,29 +117,50 @@ const ManageMyArticle = () => {
         </div>
       </div>
 
-    <AuthForm onFormSubmit={handleCreateClick}>  
+    <AuthForm onFormSubmit={handleUpdateMyProperty}>  
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <PropertyRequestFirstSection
             placeholderText=""
             data={propertyRequests}
           />
-          <ThreadComments />
+          {/* <ThreadComments /> */}
+          <CommunityComments 
+            comments={comments} 
+            slug={id as string}
+            setComments={setComments}
+            edit
+            />
         </div>
 
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <PropertyRequestSecondSection data={propertyRequests} />
+          <PropertyRequestSecondSection 
+            data={propertyRequests} 
+          />
         </div>
       </div>
       <FixedFooter className="flex gap-6 justify-end">
-        <button
-          type="button"
-          onClick={handleDelete}
-          disabled={isDeleting}
-          className="py-2 px-7 bg-[#FDE9EA] text-[#E9212E] rounded-[4px] text-sm font-medium"
-        >
-          {isDeleting ? "Deleting..." : "Delete"}
-        </button>
+         <Modal>
+          <ModalTrigger asChild>
+            <Button
+              size="sm_medium"
+              variant="blank"
+              className="py-2 px-7 text-status-error-primary bg-status-error-1"
+            >
+              delete
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <DeletePropertyRequestModal 
+              handleDelete={handleDelete} 
+            />
+          </ModalContent>
+        </Modal>
+        {showSuccessModal && 
+        <DeletePropertyRequestModalSuccess 
+          open={showSuccessModal} 
+          handleClose={handleCloseSuccessModal} 
+        />}
         <button
           type="submit"
           className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
@@ -128,5 +172,4 @@ const ManageMyArticle = () => {
     </div>
   );
 };
-
-export default ManageMyArticle;
+export default ManageMyPropertyRequest;

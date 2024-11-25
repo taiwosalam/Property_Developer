@@ -81,7 +81,7 @@ const Inventory = () => {
     useEffect(() => {
       console.log("Fetching inventory data...");
       if (apiData) {
-        console.log("Inventory data received here - :", apiData.data);
+        console.log("Inventory data received here - :", apiData);
         setState((x) => ({
           ...x,
           inventoryPageData: {

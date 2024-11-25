@@ -3,6 +3,7 @@ import SampleUser from "@/public/empty/sample-user.svg";
 import { empty } from "@/app/config";
 import { TextSkeleton } from "@/app/(nav)/tasks/agent-community/components";
 import { formatDate } from "@/app/(nav)/tasks/agent-community/property-request/data";
+import { useEffect } from "react";
 
 export const ContributorDetails = ({ 
   title, 
@@ -21,6 +22,11 @@ export const ContributorDetails = ({
   postedDate?: string, 
   updatedDate?: string 
 }) => {
+
+  useEffect(() => {
+    console.log("post", post);
+  }, [post]);
+
   if (loading) {
     return (
       <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">

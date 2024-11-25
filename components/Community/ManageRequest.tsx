@@ -203,7 +203,9 @@ export const PropertyRequestSecondSection = ({ loading, data }: { loading?: bool
           />
         </div>
         <div className="flex flex-col gap-2">
-          <StateAndLocalGovt />
+          <StateAndLocalGovt
+            data={data}
+          />
           <div className="flex flex-col gap-2">
             <h3 className="text-black dark:text-white font-semibold mb-2">
               Valid Till
@@ -232,9 +234,32 @@ export const ManagePropertiesComments = () => {
 };
 
 export const StateAndLocalGovt = ({ data }: { data?: any }) => {
-  const [selectedStates, setSelectedStates] = useState<string[]>(
-    data?.target_audience ? JSON.parse(data.target_audience) : []
-  );
+  const [selectedStates, setSelectedStates] = useState<string[]>([]);
+
+  useEffect(() => {
+    console.log('Original target_audience:', data?.target_audience);
+
+    const initialSelectedStates = (() => {
+      if (typeof data?.target_audience === 'string') {
+        try {
+          // Attempt to parse as JSON
+          const parsed = JSON.parse(data.target_audience);
+          if (Array.isArray(parsed)) {
+            return parsed.map((state: string) => state.trim());
+          }
+        } catch (e) {
+          // If parsing fails, fall back to splitting by commas
+          return data.target_audience.split(',').map((state: string) => state.trim());
+        }
+      } else if (Array.isArray(data?.target_audience)) {
+        return data.target_audience.map((state: string) => state.trim());
+      }
+      return [];
+    })();
+
+    console.log('Processed initialSelectedStates:', initialSelectedStates);
+    setSelectedStates(initialSelectedStates);
+  }, [data?.target_audience]);
 
   const handleStateSelection = (selected: string[]) => {
     if (selected.includes("All States")) {
@@ -256,7 +281,7 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
         Target Audience
       </h3>
       <MultiSelect
-        defaultValue={selectedStates} // Pass current state as defaultValue
+        defaultValue={selectedStates}
         name="target_audience"
         options={allOptions}
         maxSelections={selectedStates.includes("All States") ? 1 : 10}
