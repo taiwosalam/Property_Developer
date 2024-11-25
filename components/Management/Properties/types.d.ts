@@ -54,12 +54,6 @@ export interface StaffData {
   picture_url: string | null;
 }
 
-export interface PaginatedOptions {
-  currentPage: number;
-  totalPages: number;
-  options: { value: string; label: string }[];
-}
-
 export interface PropertyFormStateType {
   state: string;
   city: string;
@@ -67,17 +61,26 @@ export interface PropertyFormStateType {
   selectedBranch: string;
   staff: { id: string; label: string }[];
   staffOptions: { value: string; label: string }[];
-  branchOptions: PaginatedOptions;
-  inventoryOptions: { value: string; label: string }[];
-  landlordOptions: PaginatedOptions;
   accountOfficerOptions: { value: string; label: string }[];
   resetKey: number;
 }
 
+export interface AllLandlordsResponse {
+  data: {
+    id: string;
+    full_name: string;
+  }[];
+}
+export interface AllBranchesResponse {
+  data: {
+    id: string;
+    branch_name: string;
+  }[];
+}
 export interface AllInventoryResponse {
   data: {
     id: string;
-    inventory_name: string;
+    title: string;
   }[];
 }
 

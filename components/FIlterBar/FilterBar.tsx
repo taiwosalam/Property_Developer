@@ -102,7 +102,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
           className={`max-w-[250px] md:max-w-max ${
             hiddenSearchInput && "hidden"
           }`}
-          onEnterPress={handleSearch}
+          onSearch={handleSearch}
           searchQuery={searchQuery}
         />
         {hasGridListToggle && (

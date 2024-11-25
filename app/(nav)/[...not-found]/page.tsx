@@ -29,12 +29,12 @@ const NotFound = () => {
       </div>
       <div className="flex flex-col gap-[15px]">
         <div>
-          <p className="text-[#092C4C] font-bold text-xl">
+          <p className="text-[#092C4C] dark:text-darkText-1 font-bold text-xl">
             Error: Page Not Found
           </p>
         </div>
         <div className="h-[2px] bg-[#C0C2C8] bg-opacity-20 w-full" />
-        <div className="flex flex-col gap-7 text-text-secondary font-normal text-sm">
+        <div className="flex flex-col gap-7 text-text-secondary dark:text-darkText-2 font-normal text-sm">
           <div className="flex flex-col gap-5">
             <p>
               The page you are trying to access encountered an error due to one

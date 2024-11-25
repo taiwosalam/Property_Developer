@@ -75,6 +75,7 @@ export const branchTableFields: Field[] = [
 ];
 
 export interface BranchApiResponse {
+  branch_count: number;
   data: {
     current_page: number;
     last_page: number;
@@ -95,13 +96,14 @@ export interface BranchApiResponse {
   };
 }
 
-export const transformBranchApiResponse = ({
-  data,
-}: BranchApiResponse): BranchesPageData => {
+export const transformBranchApiResponse = (
+  response: BranchApiResponse
+): BranchesPageData => {
+  const { data, branch_count } = response;
   return {
     total_pages: data.last_page,
     current_page: data.current_page,
-    total_branches: data.total,
+    total_branches: branch_count,
     new_branches_count: 0, // to be added
     total_properties: 0, // to be added
     new_properties_count: 0, // to be added

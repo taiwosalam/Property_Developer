@@ -1,20 +1,34 @@
 import { cn } from "@/lib/utils";
 import { Search } from "lucide-react";
 import { SearchInputProps } from "./types";
+import { useCallback } from "react";
+import { debounce } from "@/utils/debounce";
 
 const SearchInput: React.FC<SearchInputProps> = ({
   textInputClassName,
   className,
   placeholder = "Search",
   onChange,
-  onEnterPress,
+  onSearch,
   searchQuery,
 }) => {
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && onEnterPress) {
-      onEnterPress(event.currentTarget.value);
+  // Create a debounced search function
+  const debouncedSearch = debounce((value: string) => {
+    if (onSearch) onSearch(value);
+  }, 500);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // If there's an onChange handler, call it immediately
+    if (onChange) {
+      onChange(event);
+    }
+
+    // If there's an onSearch handler, use the debounced version
+    if (onSearch) {
+      debouncedSearch(event.target.value);
     }
   };
+
   return (
     <div
       className={cn(
@@ -33,8 +47,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           textInputClassName
         )}
         placeholder={placeholder}
-        onChange={onChange}
-        onKeyDown={handleKeyPress}
+        onChange={handleChange}
         defaultValue={searchQuery}
       />
     </div>
