@@ -27,6 +27,7 @@ interface ArticleResponse {
   company_summary: any;
   contributor: any;
   comments: CommentData[];
+  readByData: any;
 }
 
 interface CommentsResponse {
@@ -42,6 +43,7 @@ const ThreadPreview = () => {
   const [companySummary, setCompanySummary] = useState<any>(null);
   const [contributors, setContributors] = useState<any>(null);
   const [comments, setComments] = useState<CommentData[]>([]);
+  const [readyBy, setReadyBy] = useState<any>(null);
   const { data, error, loading, refetch: refetchComments } = useFetch<ArticleResponse>(`/agent_community/${slug}`);
   
   useRefetchOnEvent("refetchComments", ()=> refetchComments({silent:true}));
@@ -52,8 +54,16 @@ const ThreadPreview = () => {
       setCompanySummary(data.post.company_summary);
       setContributors(data.post.contributor);
       setComments(data.post.comments);
+      setReadyBy(data.post.readByData);
     }
   }, [data]);
+
+  // console.log("data", data);
+  // console.log("read by data", data?.post.readByData);
+
+  if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
+  <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+  </div>;
 
   return (
     <div>
@@ -101,8 +111,13 @@ const ThreadPreview = () => {
           />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <Summary post={post} loading={loading} />
-          <ReadyByCard />
+          <Summary 
+           post={post} 
+           loading={loading} 
+          />
+          <ReadyByCard 
+            data={readyBy} 
+          />
         </div>
       </div>
     </div>

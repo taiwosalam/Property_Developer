@@ -16,7 +16,9 @@ import useFetch from "@/hooks/useFetch";
 import { useParams } from "next/dist/client/components/navigation";
 import { getBranches } from "../../data";
 import { getBranch } from "@/components/Management/Inventory/data";
+import { DeleteInventoryModal } from "@/components/Modal/delete-inventory";
 
+// TODO: HandleDelete Fnx & SuccessModal
 
 interface InventoryData {
   title: string;
@@ -176,7 +178,7 @@ const ManageInventory = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <DeleteAccountModal />
+            <DeleteInventoryModal handleDelete={()=> {}} />
           </ModalContent>
         </Modal>
         <div className="flex gap-6">

@@ -53,6 +53,7 @@ const ThreadPreview = () => {
   }, [data]);
 
   // console.log("slug", slug);
+  console.log("data", data);
   // console.log("companySummary", companySummary);
   // console.log("comments", comments);
   return (

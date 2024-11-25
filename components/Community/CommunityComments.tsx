@@ -14,15 +14,28 @@ interface ThreadCommentProps {
       dislikes?: string | number;
     };
     setComments: React.Dispatch<React.SetStateAction<CommentData[]>>;
+    edit?: boolean;
 }
 
 const CommunityComments = ({
     slug,
     comments,
+    edit,
   }: ThreadCommentProps) => {
-    const [likeCount, setLikeCount] = useState('likes' in comments ? parseInt(comments.likes as string) : 0);
+    console.log("comments", comments);
+    const [likeCount, setLikeCount] = useState(() => {
+      if (comments && 'likes' in comments) {
+        return parseInt(comments.likes as string);
+      }
+      return 0;
+    });
     const [commenting, setCommenting] = useState(false);
-    const [dislikeCount, setDislikeCount] = useState('dislikes' in comments ? parseInt(comments.dislikes as string) : 0);
+    const [dislikeCount, setDislikeCount] = useState(() => {
+      if (comments && 'dislikes' in comments) {
+        return parseInt(comments.dislikes as string);
+      }
+      return 0;
+    });
     const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
     const [isLoading, setIsLoading] = useState(false);
   
@@ -105,12 +118,12 @@ const CommunityComments = ({
   
     return (
       <div>
-        <NewComment
-          commentCount={comments.length}
+       {!edit && <NewComment
+          commentCount={comments.length || 0}
           slug={slug}
           likeCount={likeCount}
           dislikeCount={dislikeCount}
-        /> 
+        />}
         <div className="mt-4">
           {comments.map((comment) => (
             <Comment

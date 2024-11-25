@@ -57,8 +57,12 @@ const Comment: React.FC<CommentProps> = ({
   const [localCommenting, setLocalCommenting] = useState(false);
   const [localCommentId, setLocalCommentId] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [localLikes, setLocalLikes] = useState(likes);
+  const [localDislikes, setLocalDislikes] = useState(dislikes);
+  const [hasLiked, setHasLiked] = useState(false);
+  const [hasDisliked, setHasDisliked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const showInput = propShowInput ?? localShowInput;
   const setShowInput = propSetShowInput ?? setLocalShowInput;
 
@@ -71,11 +75,11 @@ const Comment: React.FC<CommentProps> = ({
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       const formData = new FormData(e.target as HTMLFormElement);
       formData.append('parentId', parentId?.toString() || id.toString());
-      
+
       await handleSubmit?.(e);
       setShowInput(false);
     } catch (error) {
@@ -86,28 +90,79 @@ const Comment: React.FC<CommentProps> = ({
   };
 
   const handleCommentLike = async () => {
+    if (isLoading) return;
     setIsLoading(true);
-  
+
     try {
-      handleLike(parentId || id);
+
+      if (hasDisliked) {
+        // If previously disliked, remove the dislike first
+        setHasDisliked(false);
+        setLocalDislikes((prev) => prev - 1);
+        await new Promise<void>((resolve) => {
+          handleDislike(parentId || id);
+          resolve();
+        });
+      }
+
+      if (hasLiked) {
+        // If already liked, remove the like
+        setHasLiked(false);
+        setLocalLikes((prev) => prev - 1);
+        await new Promise<void>((resolve) => {
+          handleLike(parentId || id);
+          resolve();
+        }); // Sync removing like with the server
+      } else {
+        // Otherwise, add a like
+        setHasLiked(true);
+        setLocalLikes((prev) => prev + 1);
+        await new Promise<void>((resolve) => {
+          handleLike(parentId || id);
+          resolve();
+        }); // Sync adding like with the server
+      }
     } catch (error) {
       console.error('Error toggling like:', error);
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   const handleCommentDislike = async () => {
+    if (isLoading) return;
     setIsLoading(true);
+    
     try {
-      handleDislike(parentId || id);
+      if (hasLiked) {
+        // If previously liked, remove the like first
+        setHasLiked(false);
+        setLocalLikes((prev) => prev - 1);
+        await handleLike(parentId || id); // Sync removing like with the server
+      }
+
+      if (hasDisliked) {
+        setHasDisliked(false);
+        setLocalDislikes((prev) => prev - 1);
+        await new Promise<void>((resolve) => {
+          handleDislike(parentId || id);
+          resolve();
+        });
+      } else {
+        // Otherwise, add a dislike
+        setHasDisliked(true);
+        setLocalDislikes((prev) => prev + 1);
+        await new Promise<void>((resolve) => {
+          handleDislike(parentId || id);
+          resolve();
+        });
+      }
     } catch (error) {
       console.error('Error toggling dislike:', error);
     } finally {
       setIsLoading(false);
     }
   };
-  
 
   return (
     <div data-comment-id={id}>
@@ -131,7 +186,7 @@ const Comment: React.FC<CommentProps> = ({
         </div>
       </div>
       <div className="flex items-center gap-3 justify-end mt-2">
-      <button
+        <button
           type="button"
           onClick={() => handleReplyClick(id)}
           className="text-text-quaternary dark:text-darkText-1 flex items-center gap-1"
@@ -139,30 +194,34 @@ const Comment: React.FC<CommentProps> = ({
           <ReplyIcon />
           <span className="text-[10px] font-normal">Reply</span>
         </button>
-        <button 
-          className={`flex items-center gap-1 ${isLoading ? "text-blue-500" : "text-black"}`} 
+        <button
+          className={`flex items-center gap-1 ${isLoading || hasLiked ? "text-green-600" : "text-gray-500"
+            }`}
+          disabled={isLoading || hasLiked}
           onClick={handleCommentLike}
         >
           <ThumbsUp />
-          <span className="text-xs font-normal">{likes}</span>
+          <span className="text-xs font-normal">{localLikes}</span>
         </button>
-        <button 
-          className="flex items-center gap-1 text-text-disabled" 
+        <button
+          className={`flex items-center gap-1 ${isLoading || hasDisliked ? "text-red-500" : "text-gray-500"
+            }`}
           onClick={handleCommentDislike}
+          disabled={isLoading || hasDisliked}
         >
           <ThumbsDown />
-          <span className="text-xs font-normal">{dislikes}</span>
+          <span className="text-xs font-normal">{localDislikes}</span>
         </button>
       </div>
       {(showInput || commentsCount === 0) && (
-        <form 
+        <form
           onSubmit={handleFormSubmit}
           className="mt-6 mb-4 flex items-center justify-between gap-3"
         >
-          <input 
-            type="hidden" 
-            name="parentId" 
-            value={parentId || id} 
+          <input
+            type="hidden"
+            name="parentId"
+            value={parentId || id}
           />
           <Input
             id={`${id}`}
@@ -196,10 +255,10 @@ const Comment: React.FC<CommentProps> = ({
           </p>
           <div className="relative ml-10 pl-5 border-l border-neutral-300">
             {replies.map((r) => (
-              <Comment 
-                key={r.id} 
-                {...r} 
-                handleLike={handleLike} 
+              <Comment
+                key={r.id}
+                {...r}
+                handleLike={handleLike}
                 handleDislike={handleDislike}
                 handleSubmit={handleSubmit}
                 parentId={r.id}

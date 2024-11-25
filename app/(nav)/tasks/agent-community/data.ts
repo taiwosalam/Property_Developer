@@ -92,24 +92,13 @@ export const updatePropertyRequest = async (id: string, data: any) => {
     min_budget: data.min_budget?.toString() || "",
     max_budget: data.max_budget?.toString() || "",
     valid_till: data.valid_till || "",
+    _method: 'patch'
   };
-
-  // const formattedData = {
-  //  title:  'title',
-  //   description: 'content',
-  //   property_category: 'property_category',
-  //   property_type: 'property_type',
-  //   property_sub_type: 'property_sub_type',
-  //   target_audience: ['lagos', 'ogun'],
-  //   min_budget: 'min_budget',
-  //   max_budget: 'max_budget',
-  //   valid_till: 'valid_till'
-  // };
 
   console.log("formattedData", formattedData);
   try {
-    const response = await api.put(
-      `/agent_community/property-requests/${id}`,
+    const response = await api.post(
+      `/agent-community/property-requests/${id}`,
       formattedData
     );
     return response.data;
@@ -118,17 +107,21 @@ export const updatePropertyRequest = async (id: string, data: any) => {
     throw error;
   }
 };
+
+
 export const deletePropertyRequest = async (id: string) => {
   try {
-    const response = await api.delete(
-      `/agent_community/property-requests/${id}`
+    await api.delete(
+      `/agent-community/property-requests/${id}`
     );
-    return response.data;
+    return true;
   } catch (error) {
     console.error("Error deleting property request:", error);
-    throw error;
+    return false;
   }
 };
+
+
 export const threadData = [
   {
     picture_url: "/empty/thread.png",

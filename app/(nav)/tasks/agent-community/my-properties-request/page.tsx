@@ -14,6 +14,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getLoggedInUserPropertyRequests } from "../data";
 import { RequestCardSkeleton } from "../components";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const lists = [
   {
@@ -32,6 +34,14 @@ const lists = [
     link: "/tasks/agent-community/property-request",
   },
 ];
+
+interface PropertyRequestApiData {
+  total_pages: number;
+  total: number;
+  property_requests: PropertyRequestDataType[];
+  data: PropertyRequestDataType[];
+  users: any[];
+}
 
 const transformToPropertyRequestCardProps = (
   data: PropertyRequestDataType
@@ -57,53 +67,49 @@ interface PropertyRequestItem {
 
 const MyPropertiesRequestPage = () => {
   const router = useRouter();
+  const [propertyData, setPropertyData] = useState<any>(null);
   const [propertyRequests, setPropertyRequests] = useState<any>([]);
   const [propertyRequestUser, setPropertyRequestUser] = useState<any>(null);
   const [isFetching, setIsFetching] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const {
+    data: apiData,
+    loading,
+    error,
+    refetch,
+  } = useFetch<PropertyRequestApiData>(`/agent-community/property-requests/all?page=${currentPage}&query=${searchQuery}`);
+  useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
+
 
   const handleCreatePropertyRequestClick = () => {
     router.push("/tasks/agent-community/my-properties-request/create");
   };
 
   useEffect(() => {
-    const fetchPropertyRequests = async (): Promise<void> => {
-      setIsFetching(true);
-      setError(null);
-      try {
-        const { data } = await getLoggedInUserPropertyRequests();
-        const propertyRequests = data.map(
-          (item: PropertyRequestItem) => item.propertyRequest
-        );
-        const propertyRequestUsers = data.map(
-          (item: PropertyRequestItem) => item.user
-        );
-        setPropertyRequests(propertyRequests);
-        setPropertyRequestUser(propertyRequestUsers);
-        console.log("Property requests:", propertyRequests);
-        console.log("Property request users:", propertyRequestUsers);
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to fetch property requests"
-        );
-        console.error("Error fetching property requests:", err);
-      } finally {
-        setIsFetching(false);
-      }
-    };
-
-    fetchPropertyRequests();
-  }, []);
-
+    if (apiData) {
+      const data = apiData.property_requests;
+      const propertyRequests = data.map(
+        (item: any) => item.propertyRequest
+      );
+      const propertyRequestUsers = data.map(
+        (item: any) => item.user
+      );
+      setPropertyRequests(propertyRequests);
+      setPropertyRequestUser(propertyRequestUsers);
+      console.log("Property requests:", propertyRequests);
+      console.log("Property request users:", propertyRequestUsers);
+      console.log('api data', apiData.property_requests);
+    }
+  }, [apiData]);
 
   const propertyRequestData: PropertyRequestDataType[] = propertyRequests.map(
     (request: any, index: number) => ({
       requestId: request?.id || "__",
       targetAudience: request?.target_audience || "___",
       userName: propertyRequestUser[index]?.name || "___",
-        requestDate: formatDate(request?.created_at) || "___",
+      requestDate: formatDate(request?.created_at) || "___",
       pictureSrc: propertyRequestUser[index]?.picture,
       state: request?.state || "___",
       lga: request?.lga || "___",
@@ -121,6 +127,10 @@ const MyPropertiesRequestPage = () => {
     })
   );
 
+  if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
+  <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+  </div>;
+  
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">

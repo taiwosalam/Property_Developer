@@ -112,19 +112,19 @@ const Select: React.FC<SelectProps> = ({
 
   // Filter options based on the search term
   useEffect(() => {
-    setState((x) => {
+    setState((prevState) => {
       const filteredOptions =
         typeof options[0] === "string"
-          ? (options as string[]).filter((o) =>
-              o.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-          : (options as SelectOptionObject[]).filter((o) =>
-              o.label.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+          ? (options as string[]).filter((o) => o.includes(searchTerm))
+          : options;
 
-      return { ...x, filteredOptions };
+      // Only update state if filteredOptions has changed
+      if (JSON.stringify(prevState.filteredOptions) !== JSON.stringify(filteredOptions)) {
+        return { ...prevState, filteredOptions };
+      }
+      return prevState;
     });
-  }, [searchTerm, options]);
+  }, [options, searchTerm]);
 
   // Initialize
   useEffect(() => {

@@ -147,6 +147,7 @@ const PropertyRequestUnitType = ({data}: {data?: any}) => {
         id="property_category"
         label="Property Categories"
         options={propertyCategories}
+        defaultValue={data?.property_category}
         value={category}
         onChange={(val) => {
           setCategory(val);
@@ -157,6 +158,7 @@ const PropertyRequestUnitType = ({data}: {data?: any}) => {
         required
         id="property_type"
         options={unitTypeOptions}
+        defaultValue={data?.property_type}
         label="Property Type"
         inputContainerClassName="bg-white"
         value={selectedUnitType}
@@ -170,6 +172,7 @@ const PropertyRequestUnitType = ({data}: {data?: any}) => {
         id="property_sub_type"
         label="Property Sub Type"
         inputContainerClassName="bg-white"
+        defaultValue={data?.property_sub_type}
         value={selectedSubtype}
         onChange={handleSubtypeChange}
         hiddenInputClassName="unit-form-input"
