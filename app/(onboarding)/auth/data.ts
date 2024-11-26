@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import api, { handleAxiosError } from "@/services/api";
 import { useAuthStore } from "@/store/authStore";
+import { InputData } from "@/utils/checkFormDataForImageOrAvatar";
 
 interface LoginResponse {
   status: boolean;
@@ -14,7 +15,7 @@ interface LoginResponse {
       id: string; //actually number but fuck it
       email: string;
       role: [string];
-      "email-verification": boolean;
+      email_verification: boolean;
     };
   };
 }
@@ -49,7 +50,7 @@ export const login = async (formData: Record<string, any>) => {
     const email = data.data.details?.email || formData.email;
     useAuthStore.getState().setEmail(email);
     const message = data?.message || "Login successful!";
-    const emailVerified = data.data.details["email-verification"];
+    const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
     useAuthStore.getState().setRole(role);
     if (emailVerified) {
@@ -152,12 +153,15 @@ export const logout = async (): Promise<boolean> => {
   }
 };
 
-export const requestPasswordReset = async (formData: FormData) => {
+export const requestPasswordReset = async (formData: InputData) => {
   try {
     const { data } = await axios.post(`${base_url}password/reset`, formData);
-    const message = data?.message || "Password reset OTP sent successfully!";
-    toast.success(message);
-    useAuthStore.getState().reset(formData.get("email") as string);
+    toast.success(data?.message || "Password reset OTP sent successfully!");
+    const email =
+      formData instanceof FormData
+        ? (formData.get("email") as string)
+        : formData.email;
+    useAuthStore.getState().reset(email);
     return true;
   } catch (error) {
     handleAxiosError(error, "Failed to send password reset OTP.");

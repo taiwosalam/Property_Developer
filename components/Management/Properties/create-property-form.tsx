@@ -621,7 +621,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               <Select
                 options={Object.entries(currencySymbols).map(
                   ([key, symbol]) => ({
-                    value: key,
+                    value: key.toLowerCase(),
                     label: `${symbol} ${
                       key.charAt(0) + key.slice(1).toLowerCase()
                     }`,

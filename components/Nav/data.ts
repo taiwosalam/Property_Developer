@@ -112,7 +112,7 @@ export const getGreeting = () => {
 export interface ProfileResponse {
   data: {
     user: {
-      id: string;
+      userid: string;
       name: string | null;
     };
     company: {

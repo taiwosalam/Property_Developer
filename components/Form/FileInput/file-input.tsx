@@ -127,7 +127,7 @@ const FileInput: React.FC<FileInputProps> = ({
             fileName ? "bg-neutral-2" : "bg-none"
           )}
         >
-          {!settingsPage && (
+          {!settingsPage ? (
             <span
               className={clsx(
                 "flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
@@ -139,12 +139,12 @@ const FileInput: React.FC<FileInputProps> = ({
                     placeholder || "file"
                   }`}
             </span>
-          )}
-          {settingsPage && (
+          ) : (
             <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
               Click to upload document
             </span>
           )}
+
           {fileName && (
             <div className="flex items-center gap-2">
               <button
@@ -176,18 +176,16 @@ const FileInput: React.FC<FileInputProps> = ({
               !settingsPage ? "hidden lg:block" : "block"
             } absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2`}
           >
-            {!settingsPage && (
-              <Button
-                variant="change"
-                size="sm"
-                className="whitespace-nowrap text-ellipsis"
-                style={{ background: fileName ? "" : "none" }}
-                type="button"
-                onClick={handleClick}
-              >
-                {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
-              </Button>
-            )}
+            <Button
+              variant="change"
+              size="sm"
+              className="whitespace-nowrap text-ellipsis"
+              style={{ background: fileName ? "" : "none" }}
+              type="button"
+              onClick={handleClick}
+            >
+              {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
+            </Button>
           </div>
         )}
       </div>

@@ -80,7 +80,7 @@ const Header = () => {
   useEffect(() => {
     if (data?.data) {
       const { user, company, profile } = data.data;
-      setPersonalInfo("user_id", user.id);
+      setPersonalInfo("user_id", user.userid);
       setPersonalInfo("name", user.name);
       setPersonalInfo("profile_picture", profile.picture);
       setPersonalInfo("company_id", company.company_id);

@@ -130,17 +130,30 @@ const PropertyRequest = () => {
     loading,
     error,
     refetch,
+<<<<<<< HEAD
   } = useFetch<PropertyRequestApiData>(`/agent-community/property-requests/all`, config);
+=======
+  } = useFetch<PropertyRequestApiData>(
+    `/agent-community/property-requests/all?page=${currentPage}&query=${searchQuery}`
+  );
+  useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
+>>>>>>> b11eff01f45890dbb08b13e804fe554dc2c69b5c
 
   useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {
+<<<<<<< HEAD
       setState(prevState => ({
         ...prevState,
         data: apiData.data,
         meta: apiData.meta
       }))
+=======
+      setPropertyRequests(apiData?.property_requests);
+      setPropertyRequestUsers(apiData?.users);
+      console.log("api data", apiData);
+>>>>>>> b11eff01f45890dbb08b13e804fe554dc2c69b5c
     }
   }, [apiData])
 
@@ -159,6 +172,7 @@ const PropertyRequest = () => {
     }
   };
 
+<<<<<<< HEAD
   const propertyRequestData: PropertyRequestDataType[] = data.map((request: any) => ({
     requestId: request.propertyRequest.id,
     userName: request.user?.name || "__",
@@ -182,6 +196,39 @@ const PropertyRequest = () => {
   if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
     <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
   </div>;
+=======
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const propertyRequestData: PropertyRequestDataType[] =
+    propertyRequests.map((request: any) => ({
+      requestId: request.propertyRequest.id,
+      userName: request.user?.name || "__",
+      requestDate: formatDate(request.propertyRequest.created_at) || "__",
+      pictureSrc: request.user?.picture || empty,
+      state: request.propertyRequest.state || "__",
+      lga: request.propertyRequest.lga || "__",
+      propertyType: request.propertyRequest.property_type || "__",
+      category: request.propertyRequest.property_category || "__",
+      subType: request.propertyRequest.sub_type || "__",
+      minBudget: `₦${request.propertyRequest.min_budget}` || "__",
+      maxBudget: `₦${request.propertyRequest.max_budget}` || "__",
+      requestType: "Web",
+      description: request.propertyRequest.description || "__",
+      phoneNumber: request.user?.phone || "__",
+      propertyTitle: request.propertyRequest.title || "__",
+      userTitle: request.user?.title || "__",
+      targetAudience: request.propertyRequest.target_audience,
+    })) || [];
+
+  if (loading)
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
+    );
+>>>>>>> b11eff01f45890dbb08b13e804fe554dc2c69b5c
 
   return (
     <div className="space-y-9">
@@ -222,7 +269,6 @@ const PropertyRequest = () => {
         propertyRequest={true}
         filterWithOptionsWithDropdown={stateOptions}
         handleSearch={handleSearch}
-        searchQuery={searchQuery}
       />
       {propertyRequestData.length === 0 ? (
         <div className="flex justify-center items-center min-h-[200px] text-gray-500">
@@ -240,8 +286,13 @@ const PropertyRequest = () => {
       )}
       <div className="pagination">
         <Pagination
+<<<<<<< HEAD
           totalPages={total}
           currentPage={current_page}
+=======
+          totalPages={5}
+          currentPage={1}
+>>>>>>> b11eff01f45890dbb08b13e804fe554dc2c69b5c
           onPageChange={handlePageChange}
         />
       </div>

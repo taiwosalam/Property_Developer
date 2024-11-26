@@ -140,7 +140,7 @@ export const AuthPinField: React.FC<AuthPinFieldProps> = ({
         validate prop ensures that only numeric inputs are allowed.
       */}
       <PinField
-        length={length || 6} // Defines the length of the pin (number of inputs)
+        length={length || 4} // Defines the length of the pin (number of inputs)
         ref={pinFieldRef} // Attach the ref to the PinField
         inputMode="numeric" // Ensure that the input is numeric
         onChange={onChange} // Handle input changes

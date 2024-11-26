@@ -6,6 +6,7 @@ import {
   resendOtp,
   verifyEmail,
   verifyOtpAndResetPassword,
+  requestPasswordReset,
 } from "@/app/(onboarding)/auth/data";
 import Button from "@/components/Form/Button/button";
 import { objectLength } from "@/utils/object-length";
@@ -60,7 +61,10 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
 
   const handleResendCode = async () => {
     if (canResend) {
-      const status = await resendOtp();
+      const status =
+        type === "sign up"
+          ? await resendOtp()
+          : await requestPasswordReset({ email });
       if (status) {
         setCountdown(40);
         setCanResend(false);

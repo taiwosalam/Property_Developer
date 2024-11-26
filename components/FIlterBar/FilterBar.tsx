@@ -53,7 +53,8 @@ interface FilterBarProps {
   propertyRequest?: boolean;
   noExclamationMark?: boolean;
   handleSearch?: (query: string) => void;
-  searchQuery?: string;
+  // searchQuery?: string;
+  onSort?: (order: "asc" | "desc") => void;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -79,7 +80,8 @@ const FilterBar: React.FC<FilterBarProps> = ({
   propertyRequest,
   noExclamationMark,
   handleSearch,
-  searchQuery,
+  // searchQuery,
+  onSort,
 }) => {
   return (
     <div className="page-title-container ">
@@ -103,7 +105,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
             hiddenSearchInput && "hidden"
           }`}
           onSearch={handleSearch}
-          searchQuery={searchQuery}
+          // searchQuery={searchQuery}
         />
         {hasGridListToggle && (
           <div className="flex items-center gap-3">
@@ -135,7 +137,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
             </button>
           </div>
         )}
-        {azFilter && <SortButton />}
+        {azFilter && <SortButton onSort={onSort} />}
         <Modal>
           <ModalTrigger asChild>
             <FilterButton noTitle={iconOnly} />

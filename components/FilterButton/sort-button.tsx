@@ -1,22 +1,24 @@
 "use client";
-import { CalendarIcon } from "@/public/icons/icons";
 import { ArrowDownAZ, ArrowUpZA } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { debounce } from "@/utils/debounce";
 
-const SortButton = () => {
+const SortButton: React.FC<{
+  onSort?: (order: "asc" | "desc") => void;
+}> = ({ onSort }) => {
   const [sort, setSort] = useState<"asc" | "desc">("asc");
 
+  const debouncedSort = useCallback(
+    debounce((order: "asc" | "desc") => {
+      onSort?.(order);
+    }, 500),
+    []
+  );
+
   const toggleSort = () => {
-    setSort((current) => {
-      switch (current) {
-        case "asc":
-          return "desc";
-        case "desc":
-          return "asc";
-        default:
-          return "asc";
-      }
-    });
+    const newSort = sort === "asc" ? "desc" : "asc";
+    setSort(newSort);
+    debouncedSort(newSort);
   };
 
   const getIcon = () => {

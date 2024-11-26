@@ -39,36 +39,51 @@ export const propertyFilterOptionsRadio = [
   },
 ];
 
-const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
-export const getAllProperties = async (accessToken: string | null) => {
-  try {
-    const response = await fetch(`${baseURL}/properties`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
-      },
-    }).then((res) => res.json());
-    console.log(response);
-    return response;
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
-};
+export interface Property {
+  id: number;
+  propertyId: number;
+  address: string;
+}
 
-export const createProperty = async (accessToken: string | null, data: any) => {
-  try {
-    const response = await fetch(`${baseURL}/properties`, {
-      method: "POST",
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
-    }).then((res) => res.json());
-    console.log(response);
-    return response;
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+export interface PropertiesPageState {
+  total_pages: number;
+  current_page: number;
+  total_properties: number;
+  new_properties_count: number;
+  total_rental_properties: number;
+  new_rental_properties_count: number;
+  total_facility_properties: number;
+  new_facility_properties_count: number;
+  properties: any[];
+}
+
+export interface PropertiesApiResponse {
+  // property_count: number;
+  // new_properties_count: number;
+  // total_rental_properties: number;
+  // new_rental_properties_count: number;
+  // total_facility_properties: number;
+  // new_facility_properties_count: number;
+  data: {
+    current_page: number;
+    last_page: number;
+    data: any[];
+  };
+}
+
+export const transformPropertiesApiResponse = (
+  response: PropertiesApiResponse
+): PropertiesPageState => {
+  const { data } = response;
+  return {
+    total_pages: data.last_page,
+    current_page: data.current_page,
+    total_properties: 0, // to be added
+    new_properties_count: 0, // to be added
+    total_rental_properties: 0, // to be added
+    new_rental_properties_count: 0, // to be added
+    total_facility_properties: 0, // to be added
+    new_facility_properties_count: 0, // to be added
+    properties: data.data,
+  };
 };
