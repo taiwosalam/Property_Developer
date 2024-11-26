@@ -71,7 +71,7 @@ export const createPropertyRequest = async (data: FormData | Record<string, any>
     console.log('Payload to be sent to API:', formattedData);
     
     try {
-        const response = await api.post("/agent_community/property-requests/create", formattedData);
+        const response = await api.post("/agent-community/property-requests/create", formattedData);
         return response.status === 200 || response.status === 201;
     } catch (error) {
         console.error("Error creating property request:", error);

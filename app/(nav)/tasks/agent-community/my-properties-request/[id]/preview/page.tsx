@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { formatDate, formatDateRange } from "../../../property-request/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import CommunityComments from "@/components/Community/CommunityComments";
+import PropertyRequestComments from "@/components/Community/PropertyRequestComments";
 
 interface PropertyRequestResponse {
   data: {
@@ -35,21 +35,24 @@ const PreviewPage = () => {
   const [propertyRequest, setPropertyRequest] = useState<any>(null);
   const [readBy, setReadBy] = useState<any>(null);
   const [comments, setComments] = useState<any>([]);
+  const [slug, setSlug] = useState("") 
   const { data, loading, error, refetch } = useFetch<PropertyRequestResponse>(`/agent-community/property-requests/${id}`);
-  useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
+  useRefetchOnEvent("refetchComments", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (data) {
       console.log('data', data.data);
       setPropertyRequest(data.data.PropertyRequest);
       setReadBy(data.data.readByData);
+      setSlug(data.data.PropertyRequest.slug);
       setComments(data.data.comments);
       console.log('comments', comments);
       console.log('readBy', readBy);
     }
+    console.log("slug", slug)
   }, [data]);
 
-  console.log(propertyRequest);
+  // console.log(propertyRequest);
   if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
   <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
   </div>;
@@ -84,8 +87,9 @@ const PreviewPage = () => {
             propertyRequest={propertyRequest} 
           />
           {/* <ThreadComments /> */}
-          <CommunityComments 
-            slug={id as string} 
+          <PropertyRequestComments 
+            id={id as string} 
+            slug={slug}
             comments={comments} 
             setComments={setComments} 
           />

@@ -10,6 +10,10 @@ import Avatars from "@/components/Avatars/avatars";
 import { visitorCategories } from "@/data";
 import { vehicleData } from "./data";
 import Button from "@/components/Form/Button/button";
+import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
+import Image from "next/image";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 
 export interface VehicleDataProps {
   plate_number: string;
@@ -39,29 +43,33 @@ type BaseFieldProps = {
 type VehicleFieldProps = BaseFieldProps &
   (
     | {
-        editMode: true;
-        data: VehicleDataProps;
-      }
+      editMode: true;
+      data: VehicleDataProps;
+      loading?: boolean;
+    }
     | {
-        editMode?: false;
-      }
+      editMode?: false;
+      loading?: boolean;
+    }
   );
 
 type PersonalFieldProps = BaseFieldProps &
   (
     | {
-        editMode: true;
-        data: PersonalDataProps;
-      }
+      editMode: true;
+      data: PersonalDataProps;
+      loading?: boolean;
+    }
     | {
-        editMode?: false;
-      }
+      editMode?: false;
+      loading?: boolean;
+    }
   );
 
 export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
   props
 ) => {
-  const { editMode, showSubmitButton } = props;
+  const { editMode, showSubmitButton, loading } = props;
   const [activeAvatar, setActiveAvatar] = useState(
     editMode ? props.data.avatar : ""
   );
@@ -71,14 +79,27 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
     city: editMode ? props.data.city : "",
   });
 
-  const { preview, setPreview, inputFileRef, handleImageChange } =
-    useImageUploader({
-      placeholder: editMode ? props.data.avatar || CameraCircle : CameraCircle,
-    });
-  const handleAvatarChange = (avatar: string) => {
-    setPreview(avatar);
-    setActiveAvatar(avatar);
-    inputFileRef.current?.value && (inputFileRef.current.value = "");
+  const {
+    preview,
+    setPreview,
+    inputFileRef,
+    handleImageChange: originalHandleImageChange,
+    clearSelection: clearImageSelection,
+  } = useImageUploader({
+    placeholder: editMode ? props.data.avatar || CameraCircle : CameraCircle,
+  });
+
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+
+  const handleAvatarSelection = (avatarUrl: string) => {
+    clearImageSelection();
+    setActiveAvatar(avatarUrl);
+    setAvatarModalOpen(false);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setActiveAvatar("");
+    originalHandleImageChange(e);
   };
 
   return (
@@ -87,7 +108,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
         <Input
           required
           label="Full Name"
-          id="full_name"
+          id="name"
           inputClassName="rounded-lg"
           defaultValue={editMode ? props.data.full_name : undefined}
         />
@@ -108,7 +129,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
         />
         <Select
           label="Local Government"
-          id="local_government"
+          id="lga"
           options={getLocalGovernments(address.state)}
           inputContainerClassName="bg-neutral-2"
           value={address.local_government}
@@ -139,7 +160,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
         />
         <PhoneNumberInput
           required
-          id="phone_number"
+          id="phone"
           label="Phone Number"
           inputContainerClassName="bg-neutral-2"
           defaultValue={editMode ? props.data.phone_number : undefined}
@@ -152,6 +173,19 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
             className="relative cursor-pointer flex-shrink-0"
           >
             <Picture src={preview} alt="camera" size={40} rounded />
+            {preview && preview !== CameraCircle && (
+              <div
+                role="button"
+                aria-label="remove image"
+                className="absolute top-0 right-0"
+                onClick={(e) => {
+                  e.preventDefault();
+                  clearImageSelection();
+                }}
+              >
+                <DeleteIconOrange size={20} />
+              </div>
+            )}
             <input
               type="file"
               id="picture"
@@ -163,7 +197,44 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
             />
             <input type="hidden" name="avatar" value={activeAvatar} />
           </label>
-          {/* <Avatars type="avatars" onClick={handleAvatarChange} /> */}
+          <Modal
+            state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
+          >
+            <ModalTrigger
+              className="bg-[rgba(42,42,42,0.63)] w-[40px] h-[40px] rounded-full flex items-center justify-center text-white relative"
+              aria-label="choose avatar"
+            >
+              {activeAvatar ? (
+                <>
+                  <Image
+                    src={activeAvatar}
+                    alt="selected avatar"
+                    width={40}
+                    height={40}
+                    className="object-cover object-center w-[40px] h-[40px] rounded-full bg-brand-9"
+                  />
+                  <div
+                    role="button"
+                    aria-label="remove avatar"
+                    className="absolute top-0 right-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveAvatar("");
+                    }}
+                  >
+                    <DeleteIconOrange size={20} />
+                  </div>
+                </>
+              ) : (
+                <PersonIcon size={18} />
+              )}
+            </ModalTrigger>
+            <ModalContent>
+              <LandlordTenantModalPreset heading="Choose Avatar">
+                <Avatars onClick={handleAvatarSelection} />
+              </LandlordTenantModalPreset>
+            </ModalContent>
+          </Modal>
         </div>
         {showSubmitButton && (
           <Button
@@ -171,7 +242,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
             size="16_bold"
             className="ml-auto rounded-lg py-2 px-8"
           >
-            {editMode ? "Update" : "Create"}
+            {loading ? "Loading..." : editMode ? "Update" : "Create"}
           </Button>
         )}
       </div>
@@ -226,7 +297,7 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
       <Select
         required
         label="Vehicle Brand Name"
-        id="vehicle_brand_name"
+        id="vehicle_brand"
         options={
           vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.brands ||
           []
@@ -241,22 +312,22 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
       />
       {vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.colors
         ?.length > 0 && (
-        <Select
-          label="Color"
-          id="vehicle_color"
-          options={
-            vehicleData[vehicleRecord.type as keyof typeof vehicleData]
-              ?.colors || []
-          }
-          value={vehicleRecord.color}
-          onChange={(option) =>
-            setVehicleRecord((prev) => ({ ...prev, color: option }))
-          }
-        />
-      )}
+          <Select
+            label="Color"
+            id="vehicle_color"
+            options={
+              vehicleData[vehicleRecord.type as keyof typeof vehicleData]
+                ?.colors || []
+            }
+            value={vehicleRecord.color}
+            onChange={(option) =>
+              setVehicleRecord((prev) => ({ ...prev, color: option }))
+            }
+          />
+        )}
       <Select
         label="Manufacture Year"
-        id="vehicle_year"
+        id="manufacture_year"
         options={
           vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.years ||
           []
@@ -268,7 +339,7 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
       />
       <Input
         label="Model"
-        id="vehicle_model"
+        id="model"
         inputClassName="rounded-lg"
         defaultValue={editMode ? props.data.model : undefined}
       />

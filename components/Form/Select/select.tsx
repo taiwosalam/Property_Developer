@@ -101,16 +101,19 @@ const Select: React.FC<SelectProps> = ({
       }
       const filteredOptions =
         typeof options[0] === "string"
-          ? (options as string[]).filter((o) =>
-              o.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-          : (options as SelectOptionObject[]).filter((o) =>
-              o.label.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+          ? (options as string[]).filter((o) => o.includes(searchTerm))
+          : options;
 
-      return { ...x, filteredOptions };
+       // if (JSON.stringify(prevState.filteredOptions) !== JSON.stringify(filteredOptions)) {
+      //   return { ...prevState, filteredOptions };
+      // }
+      // return prevState;
+      if (JSON.stringify(x.filteredOptions) !== JSON.stringify(filteredOptions)) {
+        return { ...x, filteredOptions };
+      }
+      return x; // Ensure a state object is always returned
     });
-  }, [searchTerm, options]);
+  }, [options, searchTerm]);
 
   // Initialize
   useEffect(() => {

@@ -20,13 +20,13 @@ const ReadyByCard = ({data}: {data: any}) => {
       {isArray ? data.map((item: any, index: number) => (
         <div key={index} className="flex w-full gap-3 mt-3 justify-between">
           <div className="flex gap-1 items-center">
-            <div className="imgWrapper h-10 w-10">
+            <div className="imgWrapper h-10 w-10 rounded-full overflow-hidden">
               <Image
                 src={item.profile_picture || empty}
                 alt="user"
                 width={100}
                 height={100}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover rounded-full"
               />
             </div>
             <p className="text-black dark:text-white text-md font-semibold">

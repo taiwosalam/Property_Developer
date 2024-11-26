@@ -36,7 +36,7 @@ const EmptyList: React.FC<{
           {body}
         </div>
       </div>
-    </div>
+    </div>  
   );
 };
 

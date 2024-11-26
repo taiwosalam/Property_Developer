@@ -19,7 +19,8 @@ import CompanySummary from "@/components/Community/CompanySummary";
 import useFetch from "@/hooks/useFetch";
 import { useState, useEffect } from "react";
 import { formatDateRange } from "../../data";
-import CommunityComments from "@/components/Community/CommunityComments";
+import PropertyRequestComments from "@/components/Community/PropertyRequestComments";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 interface PropertyRequestResponse {
   data: {
@@ -39,16 +40,19 @@ const PreviewPage = () => {
   const [readByData, setReadByData] = useState<any>(null);
   const [companySummary, setCompanySummary] = useState<any>(null);
   const [comments, setComments] = useState<any>(null);
-  const { data, loading, error } = useFetch<PropertyRequestResponse>(`/agent-community/property-requests/${requestId}`);
+  const [slug, setSlug] = useState<string>("");
+  const { data, loading, error, refetch: refetchComments } = useFetch<PropertyRequestResponse>(`/agent-community/property-requests/${requestId}`);
+  useRefetchOnEvent("refetchComments", ()=> refetchComments({silent:true}));
 
   useEffect(() => {
     if (data) {
       setPropertyRequest(data.data.PropertyRequest);
+      setSlug(data.data.PropertyRequest.slug);
       setUser(data.data.contributor);
       setReadByData(data.data.readByData);
       setComments(data.data.comments);
       setCompanySummary(data.data.company_summary);
-      // console.log("data", data.data);
+      console.log("data here - ", data);
     }
   }, [data]);
   // console.log(data?.data.PropertyRequest);
@@ -91,9 +95,9 @@ const PreviewPage = () => {
           <ThreadArticle 
             propertyRequest={propertyRequest} 
           />
-          {/* <ThreadComments /> */}
-          <CommunityComments 
-            slug={propertyRequest?.slug}
+          <PropertyRequestComments 
+            id={requestId as string}
+            slug={slug}
             comments={data?.data.comments}
             setComments={setComments}
           />
