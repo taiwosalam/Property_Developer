@@ -281,13 +281,14 @@ const Landlord = () => {
               title="The landlord and landlady files are empty"
               body={
                 <p>
-                  You can create a property by clicking on the "Add Property"
-                  button. You can create two types of properties: rental and
-                  facility properties. Rental properties are mainly tailored for
-                  managing properties for rent, including landlord and tenant
-                  management processes. Facility properties are designed for
-                  managing occupants in gated estates, overseeing their due
-                  payments, visitor access, and vehicle records. <br />
+                  You can create a property by clicking on the &quot;Add
+                  Property&quot; button. You can create two types of properties:
+                  rental and facility properties. Rental properties are mainly
+                  tailored for managing properties for rent, including landlord
+                  and tenant management processes. Facility properties are
+                  designed for managing occupants in gated estates, overseeing
+                  their due payments, visitor access, and vehicle records.{" "}
+                  <br />
                   <br />
                   Once a property is added to this page, this guide will
                   disappear. To learn more about this page in the future, you

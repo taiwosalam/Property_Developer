@@ -29,7 +29,7 @@ const validation_schemas = {
     }),
   code: z
     .string()
-    .length(6, { message: "OTP must be exactly 6 characters long" }),
+    .length(4, { message: "OTP must be exactly 4 characters long" }),
   "new-pin": z
     .string()
     .length(4, { message: "PIN must be exactly 4 characters long" }),

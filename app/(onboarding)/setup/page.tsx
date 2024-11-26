@@ -27,7 +27,6 @@ import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const Setup = () => {
   const router = useRouter();
-  const authStoreToken = useAuthStore((state) => state.token);
   const setRole = useAuthStore((state) => state.setRole);
   const role = useAuthStore((state) => state.role);
   const [requestLoading, setRequestLoading] = useState(false);

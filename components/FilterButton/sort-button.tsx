@@ -12,7 +12,7 @@ const SortButton: React.FC<{
     debounce((order: "asc" | "desc") => {
       onSort?.(order);
     }, 500),
-    [onSort]
+    []
   );
 
   const toggleSort = () => {
