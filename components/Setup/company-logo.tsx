@@ -1,61 +1,35 @@
 // imports
 import { SectionHeading } from "../Section/section-components";
 import Button from "../Form/Button/button";
-import { useState, useRef, useEffect, useContext } from "react";
+import { useContext } from "react";
 import Image from "next/image";
 import { FlowProgressContext } from "../FlowProgress/flow-progress";
 import { DeleteIconOrange, UploadImageIcon } from "@/public/icons/icons";
+import { useImageUploader } from "@/hooks/useImageUploader";
 
-interface CompanyLogoProps {
-  hiddenInputClassName?: string;
-}
-
-const CompanyLogo: React.FC<CompanyLogoProps> = ({ hiddenInputClassName }) => {
+const CompanyLogo = () => {
   const { handleInputChange } = useContext(FlowProgressContext);
-  const [image, setImage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { preview, inputFileRef, handleImageChange, clearSelection } =
+    useImageUploader({
+      maxSize: { unit: "MB", value: 2 },
+    });
 
   const handleButtonClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+    if (inputFileRef.current) {
+      inputFileRef.current.click();
     }
   };
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
-      // Check image size (max 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        alert("The image size should not exceed 2 MB.");
-        return;
-      }
-
-      try {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImage(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      } catch (error) {
-        console.error("Error resizing image:", error);
-        alert("There was an error processing your image. Please try again.");
-      }
-    } else {
-      alert("Please select a valid image file.");
-    }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleImageChange(e);
+    handleInputChange();
   };
 
   const handleDeleteImage = () => {
-    setImage(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-  useEffect(() => {
+    clearSelection();
     handleInputChange();
-  }, [image, handleInputChange]);
+  };
+
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading required title="company logo">
@@ -64,23 +38,16 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ hiddenInputClassName }) => {
         ideally 160px x 450px.
       </SectionHeading>
       <div className="flex gap-2">
-        {/* input for flow progress */}
-        <input
-          type="hidden"
-          className={hiddenInputClassName}
-          value={image ? "filled" : ""}
-        />
         <input
           name="company_logo"
           type="file"
           accept="image/*"
-          ref={fileInputRef}
+          ref={inputFileRef}
           onChange={handleFileChange}
-          className="hidden"
+          className="hidden setup-f required"
         />
-        {image ? (
+        {preview ? (
           <div className="w-[375px] h-[150px] relative rounded-xl flex items-center justify-center">
-            {/* Delete icon positioned at the top-right corner */}
             <button
               type="button"
               onClick={handleDeleteImage}
@@ -91,7 +58,7 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ hiddenInputClassName }) => {
             </button>
             <div className="relative w-full h-full rounded-md overflow-hidden">
               <Image
-                src={image}
+                src={preview}
                 alt="Company Logo"
                 fill
                 style={{ objectFit: "contain" }}
@@ -111,7 +78,7 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ hiddenInputClassName }) => {
             </span>
           </button>
         )}
-        {image && (
+        {preview && (
           <div className="flex items-end">
             <Button variant="change" size="sm" onClick={handleButtonClick}>
               Change logo

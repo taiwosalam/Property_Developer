@@ -23,7 +23,7 @@ const CompanyDetails = () => {
           id="date_of_registration"
           label="date of registration"
           onChange={handleInputChange}
-          inputClassName="setup-f"
+          inputClassName="setup-f required"
           disableFuture
         />
         <Input

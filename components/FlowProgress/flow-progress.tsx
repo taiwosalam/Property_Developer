@@ -38,7 +38,11 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
   const [canSubmit, setCanSubmit] = useState(false);
 
   // Helper function to check if an input is filled
-  const isInputFilled = (input: HTMLInputElement | HTMLTextAreaElement) => {
+  const isInputFilled = (input: HTMLInputElement) => {
+    if (input.type === "file") {
+      return input.files && input.files.length > 0 && input.files[0].size > 0;
+    }
+
     let value = input.value.trim();
 
     if (input.type === "tel") {
@@ -68,7 +72,7 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     const selector = inputClassName ? `.${inputClassName}` : "input";
     const inputs = Array.from(
       containerRef.current?.querySelectorAll(selector) || []
-    ) as (HTMLInputElement | HTMLTextAreaElement)[];
+    ) as HTMLInputElement[];
 
     const stepValue = 100 / inputs.length;
     const filledInputs = inputs.filter(isInputFilled);

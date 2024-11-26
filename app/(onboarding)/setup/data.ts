@@ -66,7 +66,6 @@ export const transformFormData = (formData: FormData) => {
 export const createCompany = async (
   formData: Record<string, any>
 ): Promise<boolean> => {
-  //   console.log(formData);
   try {
     const { data } = await api.post("companies", formData);
     toast.success(data?.message || "Company created successfully");
