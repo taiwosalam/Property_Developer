@@ -50,7 +50,7 @@ const PreviewPage = () => {
       setReadByData(data.data.readByData);
       setComments(data.data.comments);
       setCompanySummary(data.data.company_summary);
-      // console.log("data", data.data);
+      // console.log("data", data);
     }
   }, [data]);
   // console.log(data?.data.PropertyRequest);
@@ -93,7 +93,6 @@ const PreviewPage = () => {
           <ThreadArticle 
             propertyRequest={propertyRequest} 
           />
-          {/* <ThreadComments /> */}
           <PropertyRequestComments 
             id={requestId as string}
             comments={data?.data.comments}

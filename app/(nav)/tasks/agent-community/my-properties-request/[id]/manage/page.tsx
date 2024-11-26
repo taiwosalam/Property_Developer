@@ -45,12 +45,13 @@ const ManageMyPropertyRequest = () => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    console.log('data', data?.data);
+    // console.log('data', data?.data);
     if (data?.data?.PropertyRequest) {
       setPropertyRequests(data.data.PropertyRequest);
       setComments(data.data.comments);
     }
   }, [data]);
+
 
   const handleDelete = async () => {
     try {
@@ -79,13 +80,10 @@ const ManageMyPropertyRequest = () => {
   const { minBudget, maxBudget, resetBudgets } = usePropertyRequestStore();
 
   const handleUpdateMyProperty = async (data: any) => {
-    console.log("FORM data", data);
-    // Validate budgets here when the create button is clicked
     if (minBudget !== null && maxBudget !== null && minBudget > maxBudget) {
       toast.error("Maximum budget cannot be less than minimum budget.");
       resetBudgets(); // Reset inputs to 0 or null
     } else {
-      // Proceed with the request creation logic
       const updatedData = { ...data, _method: 'patch' };
       try {
         setIsUpdating(true);
@@ -125,7 +123,6 @@ const ManageMyPropertyRequest = () => {
             placeholderText=""
             data={propertyRequests}
           />
-          {/* <ThreadComments /> */}
           <PropertyRequestComments 
             id={id as string}
             comments={comments} 

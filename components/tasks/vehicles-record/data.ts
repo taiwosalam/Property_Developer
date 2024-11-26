@@ -1,3 +1,35 @@
+import api from "@/services/api";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+
+export const createVehicleRecord = async (data: any) => {
+  try {
+    const response = await api.post("/vehicle-record", data);
+    if (response.status >= 200 && response.status < 300) {
+      toast.success("Vehicle record created successfully.");
+    } else {
+      toast.error("Unexpected response from the server.");
+    }
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      toast.error(`Error: ${error.response?.data?.message || error.message}`);
+    } else {
+      console.error(error);
+      toast.error("An unexpected error occurred.");
+    }
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
 export const vehicleData = {
   Cars: {
     brands: [

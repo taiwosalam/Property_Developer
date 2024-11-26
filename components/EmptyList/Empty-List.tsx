@@ -12,8 +12,8 @@ const EmptyList = () => {
         </p>
         <div className="h-[2px] bg-[#C0C2C8] bg-opacity-20 w-full" />
         <div className="flex flex-col gap-7 text-text-secondary dark:text-darkText-2 font-normal text-sm">
-          You don't have any profiles for tenants and occupants yet. You can
-          create them manually by clicking on the "Create New User" button or
+          You don&apos;t have any profiles for tenants and occupants yet. You can
+          create them manually by clicking on the &quot;Create New User&quot; button or
           add them using their profile ID. Tenant profiles are for rental
           properties, while occupant profiles are for residents in gated
           estates. Once you add profiles to this page, this guide will no longer
@@ -26,7 +26,7 @@ const EmptyList = () => {
           have their list, you can add them in bulk using an XML file.
         </div>
       </div>
-    </div>
+    </div>  
   );
 };
 

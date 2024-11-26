@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 // Types
-import type { InventoryListProps } from "./types";
+import type { InventoryCardDataProps, InventoryListProps } from "./types";
 
 // Images
 import ClipboardCheck from "@/public/icons/clipboard-check.svg";
@@ -15,13 +15,36 @@ import Button from "@/components/Form/Button/button";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { SectionSeparator } from "@/components/Section/section-components";
+import { getBranch } from "./data";
 
 const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
   const [isOpened, setIsOpened] = useState(false);
+  const [branchName, setBranchName ] = useState<string | null>(null);
 
-  useEffect(() => {
-    console.log("data - ", data);
+    useEffect(() => {
+      console.log('data -',data)
+    const fetchBranch = async () => {
+      if (data.branch_id) {
+        const branch = await getBranch(data.branch_id.toString());
+        if (branch) {
+          setBranchName(branch.data.data.branch.branch_name);
+          // console.log("branch name", branch.data.data.branch.branch_name);
+        }
+      } else {
+        console.warn("branch_id is not available in data");
+      }
+    }
+    fetchBranch();
   }, [data]);
+
+    const inventoryData: InventoryCardDataProps = {
+    inventory_id: data.id || "",
+    created_date: data.created_date || "",
+    edited_date: data.edited_date || "",
+    property_name: data.property_name || "",
+    branch_name: branchName || "",
+    account_officer: data.account_officer || "",
+  };
 
   // Ensure data is not null or undefined
   if (!data) {
@@ -33,7 +56,7 @@ const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
       className="w-full p-[18px] pb-0 custom-flex-col gap-3 rounded-2xl bg-white dark:bg-darkText-primary overflow-hidden"
     >
-      <p className="px-2 text-brand-10 text-base font-bold">Abiola Apartment</p>
+      <p className="px-2 text-brand-10 text-base font-bold"> {data.title}</p>
       <SectionSeparator />
       <div className="pb-[18px] overflow-x-auto custom-round-scrollbar">
         <div className="flex items-center min-w-[800px]">
@@ -62,10 +85,10 @@ const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
               edited_date: "",
               property_name: "",
               created_date: "",
-              branch_name: "",
+              branch_name: branchName,
               account_officer: "",
             }}
-            data={data}
+            data={inventoryData}
             chunkSize={3}
           />
           <div className="flex-1 flex flex-col gap-4 items-end">

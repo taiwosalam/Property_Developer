@@ -293,7 +293,7 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
       <Select
         required
         label="Vehicle Brand Name"
-        id="vehicle_brand_name"
+        id="vehicle_brand"
         options={
           vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.brands ||
           []
@@ -323,7 +323,7 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
         )}
       <Select
         label="Manufacture Year"
-        id="vehicle_year"
+        id="manufacture_year"
         options={
           vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.years ||
           []
@@ -335,7 +335,7 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
       />
       <Input
         label="Model"
-        id="vehicle_model"
+        id="model"
         inputClassName="rounded-lg"
         defaultValue={editMode ? props.data.model : undefined}
       />

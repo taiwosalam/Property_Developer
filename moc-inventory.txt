@@ -114,6 +114,35 @@
 
 
 
+  // const handleSearch = async (query: string) => {
+  //   if (!query && !searchQuery) return;
+  //   setSearchQuery(query);
+  // };
+
+
+  // useEffect(() => {
+  //   const fetchThreads = async () => {
+
+  //     setIsLoading(true);
+  //     setError(null);
+  //     try {
+  //       const data = await getThreads();
+  //       console.log('data', data);
+  //       setThreads(data.data);
+  //       console.log('Threads data:', data);
+  //     } catch (err) {
+  //       setError(err instanceof Error ? err.message : 'Failed to fetch threads');
+  //       console.error('Error fetching threads:', err);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   fetchThreads();
+  // }, []);
+
+  
+
 
 
 

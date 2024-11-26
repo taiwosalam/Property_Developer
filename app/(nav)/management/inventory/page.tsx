@@ -1,7 +1,7 @@
 "use client";
 
 // Imports
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Button from "@/components/Form/Button/button";
 import InventoryCard from "@/components/Management/Inventory/inventory-card";
 import InventoryList from "@/components/Management/Inventory/inventory-list";
@@ -14,6 +14,7 @@ import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { InventoryCardDataProps } from "@/components/Management/Inventory/types";
 import Pagination from "@/components/Pagination/pagination";
+import NetworkError from "@/components/Error/NetworkError";
 
 //  Expected structure of apiData
 interface InventoryApiData {
@@ -25,6 +26,7 @@ interface InventoryApiData {
     new_inventory_this_month: number;
     data: InventoryCardDataProps[];
   };
+  searchQuery: string;
 }
 
 const Inventory = () => {
@@ -34,6 +36,7 @@ const Inventory = () => {
 
   const initialState = {
     gridView: selectedView === "grid",
+    searchQuery: "",
     inventoryPageData: {
       total_pages: 1,
       current_page: 1,
@@ -53,6 +56,7 @@ const Inventory = () => {
       new_inventory_this_month,
       inventory,
     },
+    searchQuery,
   } = state;
 
   useEffect(() => {
@@ -71,13 +75,34 @@ const Inventory = () => {
     setSelectedOption("view", "list");
     setSelectedView("list");
   };
+
+  const config = useMemo(
+    () => ({
+      params: { 
+        page: current_page,
+        search: searchQuery 
+      },
+    }),
+    [current_page, searchQuery]
+  );
+
+  const handleSearch = async (query: string) => {
+    if (!query && !searchQuery) return;
+    setState((prevState) => ({
+      ...prevState,
+      searchQuery: query,
+    }));
+  };
+
   const {
     data: apiData,
     loading,
     error,
     refetch,
-  } = useFetch<InventoryApiData>(`/inventories?page=${current_page}`);
-  
+    isNetworkError,
+  } = useFetch<InventoryApiData>(`inventories`, config);
+  useRefetchOnEvent("refetchInventory", () => refetch({ silent: true }));
+
     useEffect(() => {
       console.log("Fetching inventory data...");
       if (apiData) {
@@ -98,17 +123,13 @@ const Inventory = () => {
       }
     }, [apiData, error]);
 
-  useRefetchOnEvent("refetchInventory", () => refetch({ silent: true }));
 
   const handleFilterApply = (filters: any) => {
     console.log("Filter applied:", filters);
     // Add  logic here to filter landlords
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
-
   const handlePageChange = (page: number) => {
-    setSearchQuery("");
     setState((prevState) => ({
       ...prevState,
       inventoryPageData: {
@@ -118,9 +139,13 @@ const Inventory = () => {
     }));
   };
 
-  if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
+  if (loading) return( <div className="min-h-[80vh] flex justify-center items-center">
     <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-    </div>;
+    </div>
+  )
+
+  if (isNetworkError) return <NetworkError />;
+
 
   const inventoryFiltersWithDropdown = [
     {
@@ -172,6 +197,7 @@ const Inventory = () => {
         }}
         searchInputPlaceholder="Search inventory"
         handleFilterApply={() => {}}
+        handleSearch={handleSearch}
         isDateTrue
         filterOptionsWithRadio={[]}
         filterWithOptionsWithDropdown={inventoryFiltersWithDropdown}

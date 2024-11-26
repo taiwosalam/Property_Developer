@@ -104,11 +104,14 @@ const Select: React.FC<SelectProps> = ({
           ? (options as string[]).filter((o) => o.includes(searchTerm))
           : options;
 
-      // Only update state if filteredOptions has changed
-      if (JSON.stringify(prevState.filteredOptions) !== JSON.stringify(filteredOptions)) {
-        return { ...prevState, filteredOptions };
+       // if (JSON.stringify(prevState.filteredOptions) !== JSON.stringify(filteredOptions)) {
+      //   return { ...prevState, filteredOptions };
+      // }
+      // return prevState;
+      if (JSON.stringify(x.filteredOptions) !== JSON.stringify(filteredOptions)) {
+        return { ...x, filteredOptions };
       }
-      return prevState;
+      return x; // Ensure a state object is always returned
     });
   }, [options, searchTerm]);
 

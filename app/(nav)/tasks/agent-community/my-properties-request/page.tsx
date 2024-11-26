@@ -11,7 +11,7 @@ import type { AgentCommunityRequestCardProps } from "@/components/tasks/CallBack
 import Pagination from "@/components/Pagination/pagination";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getLoggedInUserPropertyRequests } from "../data";
 import { RequestCardSkeleton } from "../components";
 import useFetch from "@/hooks/useFetch";
@@ -36,11 +36,15 @@ const lists = [
 ];
 
 interface PropertyRequestApiData {
-  total_pages: number;
-  total: number;
-  property_requests: PropertyRequestDataType[];
   data: PropertyRequestDataType[];
-  users: any[];
+  meta: {
+    current_month_requests: number;
+    total_requests: number;
+    pagination: {
+      current_page: number;
+      total: number;
+    }
+  }
 }
 
 const transformToPropertyRequestCardProps = (
@@ -62,42 +66,86 @@ const transformToPropertyRequestCardProps = (
 
 const MyPropertiesRequestPage = () => {
   const router = useRouter();
-  const [propertyRequests, setPropertyRequests] = useState<any>([]);
-  const [propertyRequestUsers, setPropertyRequestUsers] = useState<any[]>([]);
+  const initialState: PropertyRequestApiData = {
+    data: [],
+    meta: {
+      current_month_requests: 0,
+      total_requests: 0,
+      pagination: {
+        current_page: 0,
+        total: 0,
+      }
+    }
+  }
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [state, setState] = useState<PropertyRequestApiData>(initialState);
+  const {
+    data,
+    meta: {
+      current_month_requests,
+      total_requests,
+      pagination: {
+        current_page,
+        total
+      }
+    }
+  } = state
+
+  const handleCreatePropertyRequestClick = () => {
+    router.push("/tasks/agent-community/my-properties-request/create");
+  };
+
+  const handlePageChange = (page: number) => {
+    setSearchQuery("");
+    setState((prevState) => ({
+      ...prevState,
+      meta: {
+        ...prevState.meta,
+        pagination: {
+          ...prevState.meta.pagination,
+          current_page: page,
+        },
+      },
+    }));
+  };
+
+  const handleSearch = async (query: string) => {
+    if (!query && !searchQuery) return;
+    setSearchQuery(query);
+  };
+
+  const config = useMemo(
+    () => ({
+      params: { page: current_page, search: searchQuery },
+    }),
+    [current_page, searchQuery]
+  );
 
   const {
     data: apiData,
     loading,
     error,
     refetch,
-  } = useFetch<PropertyRequestApiData>(`/agent-community/property-requests/all?page=${currentPage}&query=${searchQuery}`);
-  
-  useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
+  } = useFetch<PropertyRequestApiData>(`/agent-community/property-requests/all`, config);
 
-  const handleCreatePropertyRequestClick = () => {
-    router.push("/tasks/agent-community/my-properties-request/create");
-  };
+  useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {
-      setPropertyRequests(apiData?.property_requests);
-      setPropertyRequestUsers(apiData?.users);
-      console.log('api data', apiData);
+      setState(prevState => ({
+        ...prevState,
+        data: apiData.data,
+        meta: apiData.meta
+      }))
     }
-  }, [apiData]);
+  }, [apiData])
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setCurrentPage(1); // Reset to first page on new search
+  const handleFilterApply = (filters: any) => {
+    console.log("Filter applied:", filters);
+    // Add filtering logic here for branches
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const propertyRequestData: PropertyRequestDataType[] = propertyRequests.map((request: any) => ({
+  const propertyRequestData: PropertyRequestDataType[] = data.map((request: any) => ({
     requestId: request.propertyRequest.id,
     userName: request.user?.name || "__",
     requestDate: formatDate(request.propertyRequest.created_at) || "__",
@@ -126,9 +174,9 @@ const MyPropertiesRequestPage = () => {
       <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
         <ManagementStatistcsCard
           title="Total Request"
-          newData={34}
+          newData={current_month_requests}
           colorScheme={1}
-          total={657}
+          total={total_requests}
         />
         <Modal>
           <ModalTrigger asChild>
@@ -143,7 +191,7 @@ const MyPropertiesRequestPage = () => {
       </div>
       <FilterBar
         azFilter
-        onStateSelect={() => {}}
+        onStateSelect={() => { }}
         pageTitle="My Properties Request"
         aboutPageModalData={{
           title: "My Properties Request",
@@ -151,7 +199,7 @@ const MyPropertiesRequestPage = () => {
             "This page contains a list of My Properties Request on the platform.",
         }}
         searchInputPlaceholder="Search My Properties Request"
-        handleFilterApply={() => {}}
+        handleFilterApply={() => { }}
         isDateTrue
         filterOptions={[]}
         filterWithOptionsWithDropdown={[]}
@@ -177,10 +225,10 @@ const MyPropertiesRequestPage = () => {
         </AutoResizingGrid>
       )}
       <div className="pagination">
-        <Pagination 
-          totalPages={apiData?.total_pages ?? 0} 
-          currentPage={currentPage} 
-          onPageChange={handlePageChange} 
+        <Pagination
+          totalPages={total}
+          currentPage={current_page}
+          onPageChange={handlePageChange}
         />
       </div>
       <div className="top-80 right-4 fixed rounded-full">

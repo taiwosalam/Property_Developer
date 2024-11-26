@@ -12,7 +12,7 @@ import Pagination from "@/components/Pagination/pagination";
 import { PlusIcon } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
 import { propertyRequestOptions, stateOptions } from "../../inspections/data";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getAllPropertyRequests, getThreads } from "../data";
 import { empty } from "@/app/config";
 import { RequestCardSkeleton } from "../components";
@@ -38,11 +38,15 @@ const lists = [
 ];
 
 interface PropertyRequestApiData {
-  total_pages: number;
-  total: number;
-  property_requests: PropertyRequestDataType[];
   data: PropertyRequestDataType[];
-  users: any[];
+  meta: {
+    current_month_requests: number;
+    total_requests: number;
+    pagination: {
+      current_page: number;
+      total: number;
+    }
+  }
 }
 
 const transformToPropertyRequestCardProps = (
@@ -64,81 +68,85 @@ const transformToPropertyRequestCardProps = (
 
 const PropertyRequest = () => {
   const router = useRouter();
-  const [propertyRequests, setPropertyRequests] = useState<any>([]);
-  const [propertyRequestUsers, setPropertyRequestUsers] = useState<any[]>([]);
+  const initialState: PropertyRequestApiData = {
+    data: [],
+    meta: {
+      current_month_requests: 0,
+      total_requests: 0,
+      pagination: {
+        current_page: 0,
+        total: 0,
+      }
+    }
+  }
+  const [state, setState] = useState<PropertyRequestApiData>(initialState);
+  const {
+    data,
+    meta: {
+      current_month_requests,
+      total_requests,
+      pagination: {
+        current_page,
+        total
+      }
+    }
+  } = state
+
+
+  const handleCreatePropertyRequestClick = () => {
+    router.push("/tasks/agent-community/my-properties-request/create");
+  };
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChange = (page: number) => {
+    setSearchQuery("");
+    setState((prevState) => ({
+      ...prevState,
+      meta: {
+        ...prevState.meta,
+        pagination: {
+          ...prevState.meta.pagination,
+          current_page: page,
+        },
+      },
+    }));
+  };
+
+  const handleSearch = async (query: string) => {
+    if (!query && !searchQuery) return;
+    setSearchQuery(query);
+  };
+
+  const config = useMemo(
+    () => ({
+      params: { page: current_page, search: searchQuery },
+    }),
+    [current_page, searchQuery]
+  );
 
   const {
     data: apiData,
     loading,
     error,
     refetch,
-  } = useFetch<PropertyRequestApiData>(`/agent-community/property-requests/all?page=${currentPage}&query=${searchQuery}`);
-  
-  useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
+  } = useFetch<PropertyRequestApiData>(`/agent-community/property-requests/all`, config);
 
-  const handleCreatePropertyRequestClick = () => {
-    router.push("/tasks/agent-community/my-properties-request/create");
-  };
+  useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {
-      setPropertyRequests(apiData?.property_requests);
-      setPropertyRequestUsers(apiData?.users);
-      console.log('api data', apiData);
+      setState(prevState => ({
+        ...prevState,
+        data: apiData.data,
+        meta: apiData.meta
+      }))
     }
-  }, [apiData]);
+  }, [apiData])
 
-  // const handleSearch = (query: string) => {
-  //   setSearchQuery(query);
-
-  //   if (!Array.isArray(propertyRequests)) {
-  //     return;
-  //   }
-
-  //   const filteredPropertyRequests = propertyRequests.filter(
-  //     (request: PropertyRequestDataType) =>
-  //       request.propertyTitle.toLowerCase().includes(query.toLowerCase()) ||
-  //       request.description.toLowerCase().includes(query.toLowerCase())
-  //   );
-  //   setPropertyRequests(filteredPropertyRequests);
-  // };
-
-  // useEffect(() => {
-  //   const fetchPropertyRequests = async () => {
-  //     setIsFetching(true);
-  //     setError(null);
-  //     try {
-  //       const data = await getAllPropertyRequests();
-  //       const propertyRequests = data.property_requests;
-  //       const users = propertyRequests.map((item: any) => item.user);
-  //       setPropertyRequests(propertyRequests);
-  //       setPropertyRequestUsers(users);
-  //       console.log("Property requests:", propertyRequests);
-  //       console.log("Property request users:", users);
-  //     } catch (err) {
-  //       setError(
-  //         err instanceof Error
-  //           ? err.message
-  //           : "Failed to fetch property requests"
-  //       );
-  //       console.error("Error fetching property requests:", err);
-  //     } finally {
-  //       setIsFetching(false);
-  //     }
-  //   };
-
-  //   fetchPropertyRequests();
-  // }, []);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setCurrentPage(1); // Reset to first page on new search
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+  const handleFilterApply = (filters: any) => {
+    console.log("Filter applied:", filters);
+    // Add filtering logic here for branches
   };
 
   const formatDate = (dateString: string) => {
@@ -151,7 +159,7 @@ const PropertyRequest = () => {
     }
   };
 
-  const propertyRequestData: PropertyRequestDataType[] = propertyRequests.map((request: any) => ({
+  const propertyRequestData: PropertyRequestDataType[] = data.map((request: any) => ({
     requestId: request.propertyRequest.id,
     userName: request.user?.name || "__",
     requestDate: formatDate(request.propertyRequest.created_at) || "__",
@@ -180,8 +188,8 @@ const PropertyRequest = () => {
       <div className="flex gap-5 flex-wrap items-center justify-between">
         <ManagementStatistcsCard
           title="Total Request"
-          newData={34}
-          total={657}
+          newData={current_month_requests}
+          total={total_requests}
           colorScheme={1}
           className="hidden md:block"
         />
@@ -200,14 +208,14 @@ const PropertyRequest = () => {
       </div>
       <FilterBar
         azFilter
-        onStateSelect={() => {}}
+        onStateSelect={() => { }}
         pageTitle="Property Request"
         aboutPageModalData={{
           title: "Property Request",
           description: "This page contains a list of Property Request on the platform.",
         }}
         searchInputPlaceholder="Search Property Request"
-        handleFilterApply={() => {}}
+        handleFilterApply={() => { }}
         isDateTrue
         filterOptions={[]}
         hasGridListToggle={false}
@@ -231,10 +239,10 @@ const PropertyRequest = () => {
         </AutoResizingGrid>
       )}
       <div className="pagination">
-        <Pagination 
-          totalPages={apiData?.total_pages ?? 0} 
-          currentPage={currentPage} 
-          onPageChange={handlePageChange} 
+        <Pagination
+          totalPages={total}
+          currentPage={current_page}
+          onPageChange={handlePageChange}
         />
       </div>
 

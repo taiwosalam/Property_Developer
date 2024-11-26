@@ -2,7 +2,7 @@
 
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Button from "@/components/Form/Button/button";
 import ThreadCard, { ThreadSkeleton } from "@/components/Community/ThreadCard";
 import Pagination from "@/components/Pagination/pagination";
@@ -12,6 +12,9 @@ import { getLoggedInUserThreads, threadData } from "../data";
 import { useRouter } from "next/navigation";
 import { PlusIcon } from "@/public/icons/icons";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import NetworkError from "@/components/Error/NetworkError";
 
 const lists = [
   {
@@ -30,50 +33,92 @@ const lists = [
     link: "/tasks/agent-community/my-properties-request",
   },
 ];
-
+interface ThreadApiResponse {
+  data:any[];
+  meta: {
+    total_pages: number;
+    current_page: number;
+    total_posts: number;
+    recent_posts: number;
+    total: number;
+  };
+  isLoading: boolean;
+  searchQuery: string;
+}
 const MyArticlePage = () => {
   const router = useRouter();
+  const initialState:ThreadApiResponse = {
+    data: [],
+    meta: {
+      total_pages: 1,
+      current_page: 1,
+      total_posts: 0,
+      recent_posts: 0,
+      total: 0,
+    },
+    isLoading: false,
+    searchQuery: '',
+}
+  const [state, setState] = useState(initialState);
+  const { data, isLoading, searchQuery, meta } = state;
   const [isFetching, setIsFetching] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [threads, setThreads] = useState<any[]>([]);
-  const [userInfo, setUserInfo] = useState<any>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredThreads, setFilteredThreads] = useState<any[]>([]);
+  // const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchThreads = async () => {
-      setIsFetching(true);
-      setError(null);
-      try {
-        const { data } = await getLoggedInUserThreads();
-        console.log('Threads data:', data);
-        setThreads(data.original.data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch threads');
-        console.error('Error fetching threads:', err);
-      } finally {
-        setIsFetching(false);
-      }
-    };
+  const config = useMemo(
+    () => ({
+      params: { 
+        page: meta?.current_page,
+        search: searchQuery 
+      },
+    }),
+    [meta?.current_page, searchQuery]
+  );
 
-    fetchThreads();
-  }, []);
-
-  useEffect(() => {
-    if (!threads) return;
-    
-    const filtered = threads.filter((thread) =>
-      thread.post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      thread.post.content.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredThreads(filtered);
-  }, [searchQuery, threads]);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
+  const handleSearch = async (query: string) => {
+    if (!query && !searchQuery) return;
+    setState((prevState) => ({
+      ...prevState,
+      searchQuery: query,
+    }));
   };
 
-  // console.log()
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<ThreadApiResponse>("/agent_community/user/posts", config);
+  useRefetchOnEvent("refetchThreads", () => refetch({ silent: true }));
+  
+  useEffect(() => {
+    if (apiData) {
+      console.log('apiData', apiData);
+      setState((x) => ({
+        ...x,
+        data: apiData.data,
+        meta: apiData.meta,
+        // total_pages: apiData.meta.total_pages,
+        total_pages: 1,
+        // current_page: apiData.meta.current_page,
+        current_page: 1,
+        total_posts: apiData.meta.total_posts,
+        
+      }));
+    }
+  }, [apiData]);
+
+  if (loading) return(
+    <div className="min-h-[80vh] flex justify-center items-center">
+      <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+    </div>
+  )
+  
+  if (isNetworkError) return <NetworkError />;
+
+  if (error) return <div>{error}</div>;
+  
 
   const handleCreateMyArticleClick = () => {
     router.push("/tasks/agent-community/my-articles/create");
@@ -84,8 +129,8 @@ const MyArticlePage = () => {
       <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
         <ManagementStatistcsCard
           title="Total Thread"
-          newData={34}
-          total={657}
+          newData={meta.recent_posts}
+          total={meta.total_posts}
           colorScheme={1}
         />
         <Modal>
@@ -116,12 +161,14 @@ const MyArticlePage = () => {
       />
 
       <AutoResizingGrid minWidth={300}>
-        {isFetching ? (
-          Array(threads?.length || 3).fill(null).map((_, index) => (
-            <ThreadSkeleton key={index} />
-          ))
-        ) : filteredThreads && filteredThreads.length > 0 ? (
-          filteredThreads.map((thread, index) => (
+        {loading ? (
+          <div className="flex">
+            {Array(data?.length || 3).fill(null).map((_, index) => (
+              <ThreadSkeleton key={index} />
+            ))}
+          </div>
+        ) : data && data.length > 0 ? (
+          data.map((thread, index) => (
             <ThreadCard
               key={index}
               slug={thread.post.slug}
@@ -149,7 +196,10 @@ const MyArticlePage = () => {
         )}
       </AutoResizingGrid>
       <div className="pagination">
-        <Pagination totalPages={5} currentPage={1} onPageChange={() => { }} />
+        <Pagination 
+        totalPages={meta?.total_pages || 1} 
+        currentPage={meta?.current_page || 1} 
+        onPageChange={() => { }} />
       </div>
       <div className="top-80 right-4 fixed rounded-full">
         <button

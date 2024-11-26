@@ -62,6 +62,7 @@ const Comment: React.FC<CommentProps> = ({
   const [hasLiked, setHasLiked] = useState(false);
   const [hasDisliked, setHasDisliked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showReplies, setShowReplies] = useState(false);
 
   const showInput = propShowInput ?? localShowInput;
   const setShowInput = propSetShowInput ?? setLocalShowInput;
@@ -250,21 +251,26 @@ const Comment: React.FC<CommentProps> = ({
 
       {replies && replies.length > 0 && (
         <>
-          <p className="ml-10 my-2 text-neutral-4 text-[10px] font-medium">
-            Replies
-          </p>
-          <div className="relative ml-10 pl-5 border-l border-neutral-300">
-            {replies.map((r) => (
-              <Comment
-                key={r.id}
-                {...r}
-                handleLike={handleLike}
-                handleDislike={handleDislike}
-                handleSubmit={handleSubmit}
-                parentId={r.id}
-              />
-            ))}
-          </div>
+          <button
+            onClick={() => setShowReplies(!showReplies)}
+            className="ml-10 my-2 text-neutral-4 text-[10px] font-medium"
+          >
+            {showReplies ? 'Hide replies' : `View replies - (${replies.length})`}
+          </button>
+          {showReplies && (
+            <div className="relative ml-10 pl-5 border-l border-neutral-300">
+              {replies.map((r) => (
+                <Comment
+                  key={r.id}
+                  {...r}
+                  handleLike={handleLike}
+                  handleDislike={handleDislike}
+                  handleSubmit={handleSubmit}
+                   parentId={r.id}
+                />
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>
