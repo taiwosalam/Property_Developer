@@ -112,7 +112,6 @@ const MyArticlePage = () => {
         searchInputPlaceholder="Search Articles"
         handleSearch={handleSearch}
         handleFilterApply={() => {}}
-        searchQuery={searchQuery}
       />
 
       <AutoResizingGrid minWidth={300}>

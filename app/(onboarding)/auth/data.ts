@@ -15,7 +15,7 @@ interface LoginResponse {
       id: string; //actually number but fuck it
       email: string;
       role: [string];
-      "email-verification": boolean;
+      email_verification: boolean;
     };
   };
 }
@@ -50,7 +50,7 @@ export const login = async (formData: Record<string, any>) => {
     const email = data.data.details?.email || formData.email;
     useAuthStore.getState().setEmail(email);
     const message = data?.message || "Login successful!";
-    const emailVerified = data.data.details["email-verification"];
+    const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
     useAuthStore.getState().setRole(role);
     if (emailVerified) {
