@@ -21,15 +21,17 @@ interface Props {
   userAction?: 'like' | 'dislike' | null;
   commentCount: number;
   id: string;
+  slug: string;
 }
 
-const NewComment = ({ commentCount, id }: Props) => {
+const NewComment = ({ commentCount, id, slug }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { data, error, loading, refetch: refetchComments } = useFetch<ThreadResponse>(`/agent_community/${id}`);
 
 
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("id -", id)
     
     const formData = new FormData(e.target as HTMLFormElement);
     const message = formData.get("message") as string;
@@ -37,7 +39,7 @@ const NewComment = ({ commentCount, id }: Props) => {
     if (!message) return;
     try {
       setIsSubmitting(true);
-      const status = await sendMyPropertyRequestComment(id, message);
+      const status = await sendMyPropertyRequestComment(slug, message);
       if (status) {
         window.dispatchEvent(new Event("refetchComments"));
         console.log("event triggered for comment");

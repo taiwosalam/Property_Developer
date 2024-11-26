@@ -2,8 +2,7 @@
 import BackButton from "@/components/BackButton/back-button";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
-import { useSearchParams } from "next/navigation";
-
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   PersonalDetailsFormFields,
   VehicleDetailsFormFields,
@@ -11,37 +10,47 @@ import {
 import useVehicleRecordStore from "@/store/vehicle-record";
 import { createVehicleRecord } from "./data";
 import { toast } from "sonner";
+import { useState } from "react";
+
+
+
 const CreateRecordForm = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const type = searchParams.get("type") as "manual" | "id" | null;
   const { selectedProperty } = useVehicleRecordStore();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log('selectedProperty', selectedProperty);
     const formData = new FormData(e.currentTarget);
     formData.append("property", selectedProperty);
 
     // Get the values of avatar and picture
     const avatar = formData.get("avatar") as string;
     const picture = formData.get("picture") as string;
-
     // Set avatar based on the conditions
     if (!avatar && picture) {
       formData.set("avatar", picture);
     }
-
-    // Remove picture from formData
     formData.delete("picture");
-
     // Convert formData to an object
     const data = Object.fromEntries(formData.entries());
     console.log(data);
     try {
-      await createVehicleRecord(data);
-      toast.success("Vehicle record created successfully");
+      setLoading(true);
+      const res = await createVehicleRecord(data);
+      if (res) {
+        toast.success("Vehicle record created successfully");
+        useVehicleRecordStore.setState({ selectedProperty: '' });
+        router.push("/tasks/vehicles-record");
+      }
     } catch (error) {
       console.error(error);
       toast.error("An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,7 +64,7 @@ const CreateRecordForm = () => {
           Profile
         </BackButton>
         {type === "manual" ? (
-          <PersonalDetailsFormFields />
+          <PersonalDetailsFormFields loading={loading} />
         ) : (
           <Input
             required
@@ -69,7 +78,7 @@ const CreateRecordForm = () => {
         <h2 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
           Vehicle Details
         </h2>
-        <VehicleDetailsFormFields showSubmitButton />
+        <VehicleDetailsFormFields showSubmitButton loading={loading} />
       </div>
     </form>
   );

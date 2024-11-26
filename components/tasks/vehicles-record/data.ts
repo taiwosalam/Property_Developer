@@ -5,18 +5,32 @@ import { toast } from "sonner";
 export const createVehicleRecord = async (data: any) => {
   try {
     const response = await api.post("/vehicle-record", data);
-    if (response.status >= 200 && response.status < 300) {
-      toast.success("Vehicle record created successfully.");
-    } else {
-      toast.error("Unexpected response from the server.");
-    }
+    return response.status === 200 || response.status === 201;
   } catch (error) {
     if (error instanceof AxiosError) {
-      toast.error(`Error: ${error.response?.data?.message || error.message}`);
+        const errorMessage = error.response?.data?.message || error.message;
+        const additionalErrors = error.response?.data?.errors.messages;
+        const idError = error?.response?.data.error;
+        console.log('idError', idError);
+        if (idError) {
+          if (typeof idError === 'string' && idError.trim() !== '') {
+            toast.error(`Error: ${idError}`);
+          }
+        }else {
+          toast.error(`Error: ${errorMessage}`);
+        }
+        if (additionalErrors) {
+          Object.keys(additionalErrors).forEach((key) => {
+            additionalErrors[key].forEach((msg: string) => {
+              toast.error(`Error: ${msg}`);
+            });
+        });
+      }
     } else {
       console.error(error);
       toast.error("An unexpected error occurred.");
     }
+    return false;
   }
 };
 

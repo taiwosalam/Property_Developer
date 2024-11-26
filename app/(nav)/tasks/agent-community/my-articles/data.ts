@@ -144,9 +144,9 @@ export const sendMyArticleComment = async (slug: string, content: string) => {
   }
 }
 
-export const sendMyPropertyRequestComment = async (id: string, content: string) => {
+export const sendMyPropertyRequestComment = async (slug: string, content: string) => {
   try {
-    const response = await api.post(`/agent-community/property-requests/${id}/comment`, { content });
+    const response = await api.post(`/agent-community/property-requests/${slug}/comment`, { content });
     // return response.data;
     return true
   } catch (error) {

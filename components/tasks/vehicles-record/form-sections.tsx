@@ -45,9 +45,11 @@ type VehicleFieldProps = BaseFieldProps &
     | {
       editMode: true;
       data: VehicleDataProps;
+      loading?: boolean;
     }
     | {
       editMode?: false;
+      loading?: boolean;
     }
   );
 
@@ -56,16 +58,18 @@ type PersonalFieldProps = BaseFieldProps &
     | {
       editMode: true;
       data: PersonalDataProps;
+      loading?: boolean;
     }
     | {
       editMode?: false;
+      loading?: boolean;
     }
   );
 
 export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
   props
 ) => {
-  const { editMode, showSubmitButton } = props;
+  const { editMode, showSubmitButton, loading } = props;
   const [activeAvatar, setActiveAvatar] = useState(
     editMode ? props.data.avatar : ""
   );
@@ -104,7 +108,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
         <Input
           required
           label="Full Name"
-          id="full_name"
+          id="name"
           inputClassName="rounded-lg"
           defaultValue={editMode ? props.data.full_name : undefined}
         />
@@ -125,7 +129,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
         />
         <Select
           label="Local Government"
-          id="local_government"
+          id="lga"
           options={getLocalGovernments(address.state)}
           inputContainerClassName="bg-neutral-2"
           value={address.local_government}
@@ -156,7 +160,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
         />
         <PhoneNumberInput
           required
-          id="phone_number"
+          id="phone"
           label="Phone Number"
           inputContainerClassName="bg-neutral-2"
           defaultValue={editMode ? props.data.phone_number : undefined}
@@ -238,7 +242,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
             size="16_bold"
             className="ml-auto rounded-lg py-2 px-8"
           >
-            {editMode ? "Update" : "Create"}
+            {loading ? "Loading..." : editMode ? "Update" : "Create"}
           </Button>
         )}
       </div>

@@ -10,6 +10,7 @@ import PropertyRequestNewComment from "./PropertyRequestNewComment";
 
 interface ThreadCommentProps {
     id: string;
+    slug: string;
     comments: CommentData[] & {
       likes?: string | number;
       dislikes?: string | number;
@@ -20,6 +21,7 @@ interface ThreadCommentProps {
 
 const PropertyRequestComments = ({
     id,
+    slug,
     comments,
     edit,
   }: ThreadCommentProps) => {
@@ -98,14 +100,14 @@ const PropertyRequestComments = ({
         setCommenting(true);
         if (reply && parentId) {
           // Send reply to the server
-          const status = await sendMyPropertyRequestReply(id, parentId, reply);
+          const status = await sendMyPropertyRequestReply(slug, parentId, reply);
           if (status) {
             window.dispatchEvent(new Event("refetchComments"));
             console.log("event triggered for reply");
           }
         } else if (message) {
           // Send comment to the server
-          const status = await sendMyPropertyRequestComment(id, message);
+          const status = await sendMyPropertyRequestComment(slug, message);
           if (status) {
             window.dispatchEvent(new Event("refetchComments"));
             console.log("event triggered for commentx");
@@ -125,6 +127,7 @@ const PropertyRequestComments = ({
         <PropertyRequestNewComment
           commentCount={comments.length || 0}
           id={id}
+          slug={slug}
           likeCount={likeCount}
           dislikeCount={dislikeCount}
         />}

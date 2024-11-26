@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Button from "@/components/Form/Button/button";
 import CustomTable from "@/components/Table/table";
@@ -15,6 +15,8 @@ import {
   veicleRecordTablefields,
 } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const VehiclesRecordPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -22,6 +24,66 @@ const VehiclesRecordPage = () => {
     null
   );
 
+  const initialState = {
+    current_page: 1,
+    searchQuery: "",
+    sortOrder: "asc",
+  };
+
+  const [state, setState] = useState(initialState);
+   const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+    // const handleSort = (order: "asc" | "desc") => {
+    //   setSortOrder(order);
+    // };
+
+    // const handlePageChange = (page: number) => {
+    //   setSearchQuery("");
+    //   setState((prevState) => ({
+    //     ...prevState,
+    //     branchesPageData: {
+    //       ...prevState.branchesPageData,
+    //       current_page: page,
+    //     },
+    //   }));
+    // };
+
+    // const handleSearch = async (query: string) => {
+    //   setSearchQuery(query);
+    // };
+
+    const config = useMemo(
+      () => ({
+        params: {
+          page: state.current_page,
+          search: state.searchQuery,
+          sort_order: state.sortOrder,
+        },
+      }),
+      [state.current_page, state.searchQuery, state.sortOrder]
+    );
+
+    const {
+      data: apiData,
+      loading,
+      silentLoading,
+      isNetworkError,
+      error,
+      refetch,
+    } = useFetch("vehicle-record", config);
+    useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
+
+    useEffect(() => {
+      if (apiData) {
+        console.log("apiData", apiData);
+        setState((x) => ({
+          ...x,
+        }));
+      }
+    }, [apiData]);
+
+    
   const handleActionClick = (record: DataItem) => {
     setSelectedRecord(record as VehicleRecord);
     setModalOpen(true);

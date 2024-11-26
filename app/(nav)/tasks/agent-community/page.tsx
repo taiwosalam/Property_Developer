@@ -36,7 +36,6 @@
     },
   ];
 
-<<<<<<< HEAD
   interface ThreadApiResponse {
       data: any[];
       meta: {
@@ -49,14 +48,6 @@
       isLoading: boolean;
       searchQuery: string;
   }
-=======
-const AgentCommunityPage = () => {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [threads, setThreads] = useState<any[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
->>>>>>> b11eff01f45890dbb08b13e804fe554dc2c69b5c
 
   const AgentCommunityPage = () => {
     const router = useRouter();
@@ -75,7 +66,6 @@ const AgentCommunityPage = () => {
     const [state, setState] = useState(initialState);
     const { data, isLoading, searchQuery, meta } = state;
 
-<<<<<<< HEAD
     const config = useMemo(
       () => ({
         params: { 
@@ -84,44 +74,14 @@ const AgentCommunityPage = () => {
         },
       }),
       [meta?.current_page, searchQuery]
-=======
-  const [state, setState] = useState<string | null>(null);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    // Filter threads based on title or content
-    const filteredThreads = threads.filter(
-      (thread) =>
-        thread.post.title.toLowerCase().includes(query.toLowerCase()) ||
-        thread.post.content.toLowerCase().includes(query.toLowerCase())
->>>>>>> b11eff01f45890dbb08b13e804fe554dc2c69b5c
     );
 
-<<<<<<< HEAD
     const handleSearch = async (query: string) => {
       if (!query && !searchQuery) return;
       setState((prevState) => ({
         ...prevState,
         searchQuery: query,
       }));
-=======
-  useEffect(() => {
-    const fetchThreads = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const { data } = await getThreads();
-        setThreads(data);
-        console.log("Threads data:", data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch threads"
-        );
-        console.error("Error fetching threads:", err);
-      } finally {
-        setIsLoading(false);
-      }
->>>>>>> b11eff01f45890dbb08b13e804fe554dc2c69b5c
     };
 
     
@@ -205,7 +165,6 @@ const AgentCommunityPage = () => {
           filterWithOptionsWithDropdown={stateOptions}
           article={true}
           handleSearch={handleSearch} 
-          searchQuery={searchQuery}    
         />
 
         <AutoResizingGrid minWidth={300}>
@@ -256,79 +215,7 @@ const AgentCommunityPage = () => {
           </button>
         </div>
       </div>
-<<<<<<< HEAD
     );
   };
 
-  export default AgentCommunityPage;
-=======
-      <FilterBar
-        hasGridListToggle={false}
-        azFilter
-        onStateSelect={() => {}}
-        pageTitle="Agent Community"
-        aboutPageModalData={{
-          title: "Agent Community",
-          description:
-            "This page contains a list of Agent Community on the platform.",
-        }}
-        searchInputPlaceholder="Search for Agent Community"
-        handleFilterApply={() => {}}
-        isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={stateOptions}
-        article={true}
-        handleSearch={handleSearch}
-      />
-
-      <AutoResizingGrid minWidth={300}>
-        {isLoading ? (
-          Array(threads.length || 3)
-            .fill(null)
-            .map((_, index) => <ThreadSkeleton key={index} />)
-        ) : threads.length === 0 ? (
-          <div className="col-span-full text-center py-8 text-gray-500">
-            No Thread found
-          </div>
-        ) : (
-          threads.map((thread, index) => (
-            <ThreadCard
-              key={index}
-              id={index}
-              name={thread.user.name}
-              picture_url={
-                thread.post.media && thread.post.media.length > 0
-                  ? thread.post.media[0].path
-                  : undefined
-              }
-              role={thread.user.role}
-              time={thread.post.created_at}
-              title={thread.post.title}
-              desc={thread.post.content}
-              comments={thread.post.comments_count}
-              user_pics={thread.user.picture}
-              likes={thread.post.likes_up}
-              dislikes={thread.post.likes_down}
-              slug={thread.post.slug}
-              shareLink={thread.post.share_link}
-            />
-          ))
-        )}
-      </AutoResizingGrid>
-      <div className="pagination">
-        <Pagination totalPages={5} currentPage={1} onPageChange={() => {}} />
-      </div>
-      <div className="top-80 right-5 fixed rounded-full">
-        <button
-          onClick={handleCreateArticleClick}
-          className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
-        >
-          <PlusIcon />
-        </button>
-      </div>
-    </div>
-  );
-};
-
 export default AgentCommunityPage;
->>>>>>> b11eff01f45890dbb08b13e804fe554dc2c69b5c

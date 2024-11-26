@@ -37,15 +37,13 @@ const lists = [
 
 interface PropertyRequestApiData {
   data: PropertyRequestDataType[];
-  meta: {
     current_month_requests: number;
     total_requests: number;
-    pagination: {
+    meta: {
       current_page: number;
       total: number;
     }
   }
-}
 
 const transformToPropertyRequestCardProps = (
   data: PropertyRequestDataType
@@ -66,29 +64,27 @@ const transformToPropertyRequestCardProps = (
 
 const MyPropertiesRequestPage = () => {
   const router = useRouter();
+
   const initialState: PropertyRequestApiData = {
     data: [],
+    current_month_requests: 0,
+    total_requests: 0,
     meta: {
-      current_month_requests: 0,
-      total_requests: 0,
-      pagination: {
-        current_page: 0,
-        total: 0,
-      }
-    }
-  }
+      current_page: 0,
+      total: 0,
+    },
+  };
+
   const [searchQuery, setSearchQuery] = useState("");
   const [state, setState] = useState<PropertyRequestApiData>(initialState);
   const {
-    data,
-    meta: {
+      data,
       current_month_requests,
       total_requests,
-      pagination: {
+      meta: {
         current_page,
         total
       }
-    }
   } = state
 
   const handleCreatePropertyRequestClick = () => {
@@ -100,11 +96,8 @@ const MyPropertiesRequestPage = () => {
     setState((prevState) => ({
       ...prevState,
       meta: {
-        ...prevState.meta,
-        pagination: {
-          ...prevState.meta.pagination,
-          current_page: page,
-        },
+        current_page: page,
+        total: total,
       },
     }));
   };
@@ -126,16 +119,24 @@ const MyPropertiesRequestPage = () => {
     loading,
     error,
     refetch,
-  } = useFetch<PropertyRequestApiData>(`/agent-community/property-requests/all`, config);
+  } = useFetch<PropertyRequestApiData>(`/agent-community/property-requests/user`, config);
 
   useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
   useEffect(() => {
+    console.log("apiData", apiData)
+    console.log('apiData meta -', apiData?.meta);
     if (apiData) {
       setState(prevState => ({
         ...prevState,
         data: apiData.data,
-        meta: apiData.meta
+        meta: {
+          ...prevState.meta,
+          meta: {
+            current_page: apiData.meta.current_page,
+            total: apiData.meta.total,
+          }
+        }
       }))
     }
   }, [apiData])
@@ -146,23 +147,23 @@ const MyPropertiesRequestPage = () => {
   };
 
   const propertyRequestData: PropertyRequestDataType[] = data.map((request: any) => ({
-    requestId: request.propertyRequest.id,
+    requestId: request.id,
     userName: request.user?.name || "__",
-    requestDate: formatDate(request.propertyRequest.created_at) || "__",
+    requestDate: formatDate(request.created_at) || "__",
     pictureSrc: request.user?.picture || "",
-    state: request.propertyRequest.state || "__",
-    lga: request.propertyRequest.lga || "__",
-    propertyType: request.propertyRequest.property_type || "__",
-    category: request.propertyRequest.property_category || "__",
-    subType: request.propertyRequest.sub_type || "__",
-    minBudget: `₦${request.propertyRequest.min_budget}` || "__",
-    maxBudget: `₦${request.propertyRequest.max_budget}` || "__",
+    state: request.state || "__",
+    lga: request.lga || "__",
+    propertyType: request.property_type || "__",
+    category: request.property_category || "__",
+    subType: request.sub_type || "__",
+    minBudget: `₦${request.min_budget}` || "__",
+    maxBudget: `₦${request.max_budget}` || "__",
     requestType: "Web",
-    description: request.propertyRequest.description || "__",
+    description: request.description || "__",
     phoneNumber: request.user?.phone || "__",
-    propertyTitle: request.propertyRequest.title || "__",
+    propertyTitle: request.title || "__",
     userTitle: request.user?.title || "__",
-    targetAudience: request.propertyRequest.target_audience,
+    targetAudience: request.target_audience,
   })) || [];
 
   if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
@@ -205,7 +206,6 @@ const MyPropertiesRequestPage = () => {
         filterWithOptionsWithDropdown={[]}
         hasGridListToggle={false}
         handleSearch={handleSearch}
-        searchQuery={searchQuery}
       />
 
       {propertyRequestData.length === 0 ? (

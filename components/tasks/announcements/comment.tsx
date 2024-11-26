@@ -22,6 +22,7 @@ export interface CommentData {
   dislikes: number;
   replies?: CommentData[];
   commentsCount: number;
+  profile_picture: string;
   parentId?: string | number;
 }
 
@@ -43,6 +44,7 @@ const Comment: React.FC<CommentProps> = ({
   name,
   text,
   likes,
+  profile_picture,
   dislikes,
   replies,
   handleSubmit,
@@ -170,7 +172,7 @@ const Comment: React.FC<CommentProps> = ({
       <div className="flex items-center gap-1">
         <div className="flex-shrink-0 relative w-9 h-9 rounded-full bg-neutral-2 overflow-hidden">
           <Image
-            src={empty}
+            src={profile_picture || empty}
             alt="user-real-info-from-props"
             fill
             className="object-cover"
@@ -217,7 +219,7 @@ const Comment: React.FC<CommentProps> = ({
       {(showInput || commentsCount === 0) && (
         <form
           onSubmit={handleFormSubmit}
-          className="mt-6 mb-4 flex items-center justify-between gap-3"
+          className="mt-6 mb-2 flex items-center justify-between gap-3"
         >
           <input
             type="hidden"
@@ -253,7 +255,7 @@ const Comment: React.FC<CommentProps> = ({
         <>
           <button
             onClick={() => setShowReplies(!showReplies)}
-            className="ml-10 my-2 text-neutral-4 text-[10px] font-medium"
+            className="ml-10 mb-2 text-neutral-4 text-[10px] font-medium"
           >
             {showReplies ? 'Hide replies' : `View replies - (${replies.length})`}
           </button>

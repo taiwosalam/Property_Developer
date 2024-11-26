@@ -47,6 +47,15 @@ const CreateRecordModal = () => {
     }
   };
 
+  const handleCreateWithID = () => {
+    if (!selectedProperty) {
+      toast.error("Please select a property before proceeding.");
+      setStep(1);
+    } else {
+      window.location.href = "/tasks/vehicles-record/create?type=id";
+    }
+  };
+
   return (
     <>
       {/* Step 1 */}
@@ -131,7 +140,7 @@ const CreateRecordModal = () => {
                   Create Manually
                 </Button>
                 <Button
-                  href="/tasks/vehicles-record/create?type=id"
+                  onClick={handleCreateWithID}
                   size="sm_medium"
                   className="py-2 px-4 rounded-lg"
                 >
