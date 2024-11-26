@@ -17,11 +17,7 @@ const SetupHeader: React.FC<{ requestLoading: boolean }> = ({
           account and company profile.
         </p>
       </div>
-      <Button
-        type="submit"
-        disabled={!canSubmit || requestLoading}
-        style={{ opacity: canSubmit ? 1 : "0.5" }}
-      >
+      <Button type="submit" disabled={!canSubmit || requestLoading}>
         {requestLoading ? "Please wait..." : "Submit"}
       </Button>
     </div>

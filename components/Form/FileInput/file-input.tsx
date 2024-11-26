@@ -1,13 +1,12 @@
 "use client";
-import Image from "next/image";
 import { useState, useEffect, useRef, useContext } from "react";
+import { toast } from "sonner";
 import type { FileInputProps } from "./types";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import clsx from "clsx";
 import Label from "../Label/label";
 import Button from "../Button/button";
-import { DeleteIconX } from "@/public/icons/icons";
-import eyeShowIcon from "@/public/icons/eye-show.svg";
+import { DeleteIconX, EyeShowIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 
 const FileInput: React.FC<FileInputProps> = ({
@@ -17,7 +16,6 @@ const FileInput: React.FC<FileInputProps> = ({
   hiddenInputClassName,
   textStyles,
   required,
-  onChange,
   placeholder,
   buttonName,
   fileType,
@@ -32,7 +30,8 @@ const FileInput: React.FC<FileInputProps> = ({
   const { width } = useWindowDimensions();
   const [isLgScreen, setIsLgScreen] = useState(true);
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const previousFileRef = useRef<File | null>(null);
 
   const handleClick = () => {
     if (fileInputRef.current) {
@@ -40,28 +39,59 @@ const FileInput: React.FC<FileInputProps> = ({
     }
   };
 
-  const handleSetFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const fileExtension = file.name.split(".").pop()?.toLowerCase();
-    if (
-      !file.type.startsWith("image/") &&
-      fileExtension !== fileType?.toLowerCase()
-    ) {
-      alert(`Please upload a ${fileType} or image file.`);
-      event.target.value = ""; // Clear the input field
+  const restorePreviousFile = () => {
+    if (previousFileRef.current) {
+      if (fileInputRef.current) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(previousFileRef.current);
+        fileInputRef.current.files = dataTransfer.files;
+        handleInputChange?.();
+        return;
+      }
+    } else {
+      if (fileInputRef.current) {
+        setFile(null);
+        fileInputRef.current.value = "";
+        handleInputChange?.();
+        return;
+      }
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newFile = event.target.files?.[0];
+    if (!newFile) {
+      restorePreviousFile();
       return;
+    }
+    if (!fileType) {
+      if (!newFile.type.startsWith("image/")) {
+        toast.warning("Please upload an image file.");
+        restorePreviousFile();
+        return;
+      }
+    } else {
+      // If fileType is provided, allow both images and the specified file type
+      const fileExtension = newFile.name.split(".").pop()?.toLowerCase();
+      if (
+        !newFile.type.startsWith("image/") &&
+        fileExtension !== fileType.toLowerCase()
+      ) {
+        toast.warning(`Please upload a ${fileType} or image file.`);
+        restorePreviousFile();
+        return;
+      }
     }
     // Convert size to bytes based on sizeUnit
     const sizeInBytes = sizeUnit === "MB" ? size * 1024 * 1024 : size * 1024;
 
     // Validate file size
-    if (file.size > sizeInBytes) {
-      alert(`File size should not exceed ${size} ${sizeUnit}.`);
-      event.target.value = ""; // Clear the input field
+    if (newFile.size > sizeInBytes) {
+      toast.warning(`File size should not exceed ${size} ${sizeUnit}.`);
+      restorePreviousFile();
       return;
     }
-    setFile(file);
+    setFile(newFile);
   };
 
   const handleViewFile = () => {
@@ -73,7 +103,7 @@ const FileInput: React.FC<FileInputProps> = ({
   const handleDeleteFile = () => {
     setFile(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // Reset the input value to allow reselecting the same file
+      fileInputRef.current.value = "";
     }
   };
 
@@ -85,24 +115,16 @@ const FileInput: React.FC<FileInputProps> = ({
     if (file) {
       setFileURL(URL.createObjectURL(file));
       setFileName(file.name);
-      onChange && onChange(file); // Call onChange if provided
     } else {
       setFileURL("");
       setFileName("");
-      onChange && onChange(null);
     }
-    handleInputChange && handleInputChange();
-  }, [file, handleInputChange, onChange]);
+    handleInputChange?.();
+    previousFileRef.current = file;
+  }, [file, handleInputChange]);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
-      {/* input for flow progress dont give it name or ID*/}
-      <input
-        type="hidden"
-        className={hiddenInputClassName}
-        value={file?.name || ""}
-      />
-      {/* Render the label if provided */}
       {label && (
         <Label id={id} required={required}>
           {label}
@@ -113,9 +135,13 @@ const FileInput: React.FC<FileInputProps> = ({
           id={id}
           name={id}
           type="file"
-          className="hidden"
+          // required={required}
+          className={clsx(
+            "absolute w-0 h-0 opacity-0 pointer-events-none",
+            hiddenInputClassName
+          )}
           ref={fileInputRef}
-          onChange={handleSetFile}
+          onChange={handleFileChange}
         />
         <div
           role="button"
@@ -155,7 +181,7 @@ const FileInput: React.FC<FileInputProps> = ({
                   e.stopPropagation();
                 }}
               >
-                <Image src={eyeShowIcon} alt="View File" />
+                <EyeShowIcon />
               </button>
               <button
                 type="button"
@@ -171,11 +197,7 @@ const FileInput: React.FC<FileInputProps> = ({
           )}
         </div>
         {!settingsPage && (
-          <div
-            className={`${
-              !settingsPage ? "hidden lg:block" : "block"
-            } absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2`}
-          >
+          <div className="hidden lg:block absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2">
             <Button
               variant="change"
               size="sm"

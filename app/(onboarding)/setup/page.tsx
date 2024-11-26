@@ -19,8 +19,6 @@ import ProfilePicture from "@/components/Setup/profile-picture";
 import ProfileInformation from "@/components/Setup/profile-information";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { transformFormData, createCompany } from "./data";
-import { getUserStatus } from "@/app/(nav)/data";
-import { getLocalStorage } from "@/utils/local-storage";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
@@ -33,23 +31,16 @@ const Setup = () => {
   // Define the index of the last step in the flow
   const last_step = 0;
 
-  // remove later
   const handleSubmit = async (formData: FormData) => {
     setRequestLoading(true);
     const data = transformFormData(formData);
-    const status = await createCompany(data);
-    if (status) {
-      setRole("director"); //Backend should return this role
-      // router.push("/dashboard");
-    }
+    console.log(data);
+    // const status = await createCompany(data);
+    // if (status) {
+    //   setRole("director");
+    // }
     setRequestLoading(false);
   };
-
-  const requiredFields = [
-    "date_of_registration",
-    "cac_certificate",
-    "company_logo",
-  ];
 
   useEffect(() => {
     if (role && role !== "user") {
@@ -71,7 +62,6 @@ const Setup = () => {
         zIndex: 3,
       }}
       inputClassName="setup-f"
-      requiredFields={requiredFields}
     >
       <AuthForm
         skipValidation
@@ -104,11 +94,11 @@ const Setup = () => {
               <CompanyMobileNumber />
             </div>
           </Section>
-          <CompanyLogo hiddenInputClassName="setup-f required" />
+          <CompanyLogo />
           <SectionHeading title="directors details">
             Fill the details below to add a director to your company
           </SectionHeading>
-          <ProfilePicture hiddenInputClassName="setup-f" />
+          <ProfilePicture />
           <ProfileInformation />
         </div>
       </AuthForm>

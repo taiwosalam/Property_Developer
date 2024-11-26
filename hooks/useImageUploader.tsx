@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 
 // Types
-import type { useImageUploaderProps } from "./types";
+import type { UseImageUploaderProps } from "./types";
 
 // Imports
 import { toast } from "sonner";
@@ -22,15 +22,24 @@ import { toast } from "sonner";
  */
 export const useImageUploader = ({
   placeholder,
-}: useImageUploaderProps = {}) => {
-  // State to store the image preview URL
+  maxSize,
+}: UseImageUploaderProps = {}) => {
   const [preview, setPreview] = useState(placeholder || null);
-
-  // Ref to hold reference to the file input element
   const inputFileRef = useRef<HTMLInputElement | null>(null);
-
-  // Ref to store the last selected file
   const previousFileRef = useRef<File | null>(null);
+
+  const restorePreviousFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (previousFileRef.current && inputFileRef.current) {
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(previousFileRef.current);
+      e.target.files = dataTransfer.files;
+      return;
+    }
+    if (!previousFileRef.current && inputFileRef.current) {
+      inputFileRef.current.value = "";
+      setPreview(placeholder || null);
+    }
+  };
 
   /**
    * Handles the change event when a file is selected from the file input.
@@ -40,33 +49,35 @@ export const useImageUploader = ({
    * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event from the file input element.
    */
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]; // Grab the first file selected
+    const file = e.target.files?.[0];
 
-    // Check if the selected file is an image
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader(); // Create a FileReader to read the file
+      if (maxSize) {
+        const sizeInBytes =
+          maxSize.unit === "MB"
+            ? maxSize.value * 1024 * 1024
+            : maxSize.value * 1024;
+        if (file.size > sizeInBytes) {
+          toast.warning(
+            `File size should not exceed ${maxSize.value} ${maxSize.unit}.`
+          );
+          restorePreviousFile(e);
+          return;
+        }
+      }
 
-      // Set the preview once the image file has been read
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result as string); // Set image preview with the result
-        previousFileRef.current = file; // Update the previous file ref with the new file
+        setPreview(reader.result as string);
+        previousFileRef.current = file;
       };
 
-      reader.readAsDataURL(file); // Read the file as a data URL for the preview
+      reader.readAsDataURL(file);
     } else if (!file) {
-      // No file selected
-      if (previousFileRef.current) {
-        // If there was a previous file, create a DataTransfer object
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(previousFileRef.current); // Add the previous file to the DataTransfer
-
-        e.target.files = dataTransfer.files; // Assign the previous file to the input's files
-      } else {
-        setPreview(placeholder || null);
-        toast.warning("No file selected."); // Show a warning toast
-      }
+      restorePreviousFile(e);
     } else {
-      toast.warning("Selected file is not a valid image type."); // Warn if the selected file is not an image
+      toast.warning("Selected file is not a valid image type.");
+      restorePreviousFile(e);
     }
   };
 
