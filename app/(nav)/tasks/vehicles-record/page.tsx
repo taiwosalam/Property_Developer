@@ -10,6 +10,9 @@ import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-recor
 import CreateRecordModal from "@/components/tasks/vehicles-record/create-record-modal";
 import type { VehicleRecord } from "@/components/tasks/vehicles-record/types";
 import {
+  transformVehicleRecordApiResponse,
+  VehicleData,
+  VehicleRecordApiResponse,
   VehicleRecordData,
   vehicleRecordFIltersOptionsWithDropdown,
   veicleRecordTablefields,
@@ -17,77 +20,102 @@ import {
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import NetworkError from "@/components/Error/NetworkError";
 
 const VehiclesRecordPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<VehicleRecord | null>(
-    null
-  );
+  const [selectedRecord, setSelectedRecord] = useState<VehicleRecord | null>(null);
 
   const initialState = {
-    current_page: 1,
-    searchQuery: "",
-    sortOrder: "asc",
+    total_records: 0,
+    newly_created: 0,
+    vehicle_records: {
+      data: [] as VehicleData[],
+      current_page: 1,
+      total: 0,
+    },
   };
 
   const [state, setState] = useState(initialState);
-   const [searchQuery, setSearchQuery] = useState("");
+  const {
+    total_records,
+    newly_created,
+    vehicle_records: { data, current_page, total },
+  } = state;
+
+  const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  
+  
+  const handleSort = (order: "asc" | "desc") => {
+    setSortOrder(order);
+  };
 
-    // const handleSort = (order: "asc" | "desc") => {
-    //   setSortOrder(order);
-    // };
+  const handlePageChange = (page: number) => {
+    setSearchQuery("");
+    setState((prevState) => ({
+      ...prevState,
+      current_page: page,
+    }));
+  };
 
-    // const handlePageChange = (page: number) => {
-    //   setSearchQuery("");
-    //   setState((prevState) => ({
-    //     ...prevState,
-    //     branchesPageData: {
-    //       ...prevState.branchesPageData,
-    //       current_page: page,
-    //     },
-    //   }));
-    // };
+  const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+  };
 
-    // const handleSearch = async (query: string) => {
-    //   setSearchQuery(query);
-    // };
+  const config = useMemo(
+    () => ({
+      params: {
+        page: current_page,
+        search: searchQuery,
+        sort_order: sortOrder,
+      },
+    }),
+    [current_page, searchQuery, sortOrder]
+  );
 
-    const config = useMemo(
-      () => ({
-        params: {
-          page: state.current_page,
-          search: state.searchQuery,
-          sort_order: state.sortOrder,
-        },
-      }),
-      [state.current_page, state.searchQuery, state.sortOrder]
-    );
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<VehicleRecordApiResponse>("vehicle-record", config);
 
-    const {
-      data: apiData,
-      loading,
-      silentLoading,
-      isNetworkError,
-      error,
-      refetch,
-    } = useFetch("vehicle-record", config);
-    useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
+  useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
-    useEffect(() => {
-      if (apiData) {
-        console.log("apiData", apiData);
-        setState((x) => ({
-          ...x,
-        }));
-      }
-    }, [apiData]);
+  useEffect(() => {
+    if (apiData) {
+      setState((x) => ({
+        ...x,
+        ...transformVehicleRecordApiResponse(apiData)
+      }));
+      console.log("Updated state", state);
+    }
+  }, [apiData]);
 
-    
+  
   const handleActionClick = (record: DataItem) => {
     setSelectedRecord(record as VehicleRecord);
     setModalOpen(true);
   };
+
+    if (loading)
+      return (
+        <CustomLoader
+          layout="page"
+          pageTitle="Vehicle Records"
+          statsCardCount={3}
+        />
+      );
+
+    if (isNetworkError) return <NetworkError />;
+
+    if (error)
+      return <p className="text-base text-red-500 font-medium">{error}</p>;
+
 
   return (
     <div className="space-y-9">
@@ -95,8 +123,8 @@ const VehiclesRecordPage = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Check In"
-            newData={657}
-            total={34}
+            newData={newly_created}
+            total={total_records}
             colorScheme={1}
           />
           <ManagementStatistcsCard
@@ -138,10 +166,12 @@ const VehiclesRecordPage = () => {
         filterOptions={[]}
         filterWithOptionsWithDropdown={vehicleRecordFIltersOptionsWithDropdown}
         hasGridListToggle={false}
+        handleSearch={handleSearch}
+        onSort={handleSort}
       />
       <CustomTable
         fields={veicleRecordTablefields}
-        data={VehicleRecordData}
+        data={data}
         tableHeadClassName="h-[76px]"
         tableHeadCellSx={{
           fontSize: "16px",
@@ -163,10 +193,13 @@ const VehiclesRecordPage = () => {
         </ModalContent>
       </Modal>
       <Pagination
-        totalPages={3}
-        currentPage={1}
-        onPageChange={() => alert("function not implemented!")}
+        totalPages={Math.ceil(total / 10)}
+        currentPage={current_page}
+        onPageChange={handlePageChange}
       />
+      {data.length === 0 && (
+        <p className="text-base text-red-500 font-medium">No data found</p>
+      )}
     </div>
   );
 };
