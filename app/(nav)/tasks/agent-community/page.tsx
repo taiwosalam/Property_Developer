@@ -37,7 +37,7 @@ const AgentCommunityPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [threads, setThreads] = useState<any[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleCreateArticleClick = () => {
     router.push("/tasks/agent-community/my-articles/create");
@@ -48,9 +48,10 @@ const AgentCommunityPage = () => {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     // Filter threads based on title or content
-    const filteredThreads = threads.filter(thread => 
-      thread.post.title.toLowerCase().includes(query.toLowerCase()) ||
-      thread.post.content.toLowerCase().includes(query.toLowerCase())
+    const filteredThreads = threads.filter(
+      (thread) =>
+        thread.post.title.toLowerCase().includes(query.toLowerCase()) ||
+        thread.post.content.toLowerCase().includes(query.toLowerCase())
     );
     setThreads(filteredThreads);
   };
@@ -60,12 +61,14 @@ const AgentCommunityPage = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const {data} = await getThreads();
+        const { data } = await getThreads();
         setThreads(data);
-        console.log('Threads data:', data);
+        console.log("Threads data:", data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch threads');
-        console.error('Error fetching threads:', err);
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch threads"
+        );
+        console.error("Error fetching threads:", err);
       } finally {
         setIsLoading(false);
       }
@@ -114,15 +117,14 @@ const AgentCommunityPage = () => {
         filterOptions={[]}
         filterWithOptionsWithDropdown={stateOptions}
         article={true}
-        handleSearch={handleSearch} 
-        searchQuery={searchQuery}    
+        handleSearch={handleSearch}
       />
 
       <AutoResizingGrid minWidth={300}>
         {isLoading ? (
-          Array(threads.length || 3).fill(null).map((_, index) => (
-            <ThreadSkeleton key={index} />
-          ))
+          Array(threads.length || 3)
+            .fill(null)
+            .map((_, index) => <ThreadSkeleton key={index} />)
         ) : threads.length === 0 ? (
           <div className="col-span-full text-center py-8 text-gray-500">
             No Thread found
@@ -133,9 +135,11 @@ const AgentCommunityPage = () => {
               key={index}
               id={index}
               name={thread.user.name}
-              picture_url={thread.post.media && thread.post.media.length > 0 
-                ? thread.post.media[0].path 
-                : undefined}
+              picture_url={
+                thread.post.media && thread.post.media.length > 0
+                  ? thread.post.media[0].path
+                  : undefined
+              }
               role={thread.user.role}
               time={thread.post.created_at}
               title={thread.post.title}

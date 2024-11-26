@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { ExclamationMark } from "@/public/icons/icons";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { ModalContent, ModalTrigger, Modal } from "@/components/Modal/modal";
@@ -8,51 +9,108 @@ import Pagination from "@/components/Pagination/pagination";
 import PropertyListItem from "@/components/Management/Properties/property-list-item";
 import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import NetworkError from "@/components/Error/NetworkError";
+import EmptyList from "@/components/EmptyList/Empty-List";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import TableLoading from "@/components/Loader/TableLoading";
 import {
   propertyFilterOptionsRadio,
   propertyFilterOptionsWithDropdowns,
+  transformPropertiesApiResponse,
+  type PropertiesPageState,
+  type PropertiesApiResponse,
 } from "./data";
-import useSettingsStore from "@/store/settings";
 import useView from "@/hooks/useView";
+import useFetch from "@/hooks/useFetch";
 
 const Properties = () => {
-  const view = useView();
-  const { selectedOptions, setSelectedOption } = useSettingsStore();
-  const [selectedView, setSelectedView] = useState<string | null>(
-    selectedOptions.view
-  );
-  // const grid = selectedView === "grid";
+  const storedView = useView();
+  const [view, setView] = useState<string | null>(storedView);
 
-  const initialState = {
-    gridView: selectedView === "grid",
-    total_pages: 20,
+  const initialState: PropertiesPageState = {
+    total_pages: 1,
     current_page: 1,
-    isModalOpen: false,
-  };
-  const [state, setState] = useState(initialState);
-  const { gridView, total_pages, current_page } = state;
-
-  useEffect(() => {
-    setState((prevState) => ({
-      ...prevState,
-      gridView: selectedView === "grid",
-    }));
-  }, [selectedView]);
-
-  const setGridView = () => {
-    setSelectedOption("view", "grid");
-    setSelectedView("grid");
+    total_properties: 0,
+    new_properties_count: 0,
+    total_rental_properties: 0,
+    new_rental_properties_count: 0,
+    total_facility_properties: 0,
+    new_facility_properties_count: 0,
+    properties: [],
   };
 
-  const setListView = () => {
-    setSelectedOption("view", "list");
-    setSelectedView("list");
-  };
+  const [pageData, setPageData] = useState<PropertiesPageState>(initialState);
+
+  const {
+    total_pages,
+    current_page,
+    total_properties,
+    new_properties_count,
+    total_rental_properties,
+    new_rental_properties_count,
+    total_facility_properties,
+    new_facility_properties_count,
+    properties,
+  } = pageData;
 
   const handlePageChange = (page: number) => {
-    setState((state) => ({ ...state, current_page: page }));
+    setPageData((state) => ({ ...state, current_page: page }));
   };
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  const handleSort = (order: "asc" | "desc") => {
+    setSortOrder(order);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  useEffect(() => {
+    setView(storedView);
+  }, [storedView]);
+
+  const config = useMemo(
+    () => ({
+      params: {
+        page: current_page,
+        search: searchQuery,
+        sort_order: sortOrder,
+      },
+    }),
+    [current_page, searchQuery, sortOrder]
+  );
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+  } = useFetch<PropertiesApiResponse>("property/list", config);
+
+  useEffect(() => {
+    if (apiData) {
+      setPageData((x) => ({
+        ...x,
+        ...transformPropertiesApiResponse(apiData),
+      }));
+    }
+  }, [apiData]);
+
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Properties" statsCardCount={3} />
+    );
+
+  if (isNetworkError) return <NetworkError />;
+
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-9">
@@ -61,20 +119,20 @@ const Properties = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Properties"
-            newData={30}
-            total={657}
+            newData={new_properties_count}
+            total={total_properties}
             colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Rental Properties"
-            newData={2000}
-            total={6570}
+            newData={new_rental_properties_count}
+            total={total_rental_properties}
             colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Facility Properties"
-            newData={200}
-            total={657}
+            newData={new_facility_properties_count}
+            total={total_facility_properties}
             colorScheme={3}
           />
         </div>
@@ -93,9 +151,9 @@ const Properties = () => {
       {/* Page Title with search */}
       <FilterBar
         azFilter
-        gridView={view === "grid" || gridView}
-        setGridView={setGridView}
-        setListView={setListView}
+        gridView={view === "grid"}
+        setGridView={() => setView("grid")}
+        setListView={() => setView("list")}
         onStateSelect={() => {}}
         pageTitle="Properties"
         aboutPageModalData={{
@@ -108,67 +166,113 @@ const Properties = () => {
         isDateTrue
         filterOptionsWithRadio={propertyFilterOptionsRadio}
         filterWithOptionsWithDropdown={propertyFilterOptionsWithDropdowns}
+        onSort={handleSort}
+        handleSearch={handleSearch}
       />
 
-      {/* Card / List View */}
-      <section>
-        {view === "grid" || gridView ? (
-          <AutoResizingGrid minWidth={315}>
-            {/* {properties.length >= 1 &&
-                properties.map((p) => <PropertyCard {...p} key={p.id} />)} */}
-            {Array.from({ length: 10 }).map((_, index) => (
-              <PropertyCard
-                key={index}
-                address="123 Main St"
-                id={1}
-                propertyId={1}
-                images={[
-                  "/empty/SampleProperty.jpeg",
-                  "/empty/SampleProperty2.jpeg",
-                  "/empty/SampleProperty3.jpeg",
-                  "/empty/SampleProperty4.jpeg",
-                  "/empty/SampleProperty5.jpeg",
-                ]}
-                name="Property 1"
-                units={1}
-                price={1000}
-                propertyType={index % 2 === 0 ? "rental" : "facility"}
-                currency="Naira"
-              />
-            ))}
-          </AutoResizingGrid>
+      <section className="capitalize">
+        {properties.length === 0 && !silentLoading ? (
+          searchQuery ? (
+            "No Search Found"
+          ) : (
+            <EmptyList
+              buttonText="+ Add Property"
+              modalContent={<AddPropertyModal />}
+              title="You have not creared any properties yet"
+              body={
+                <p>
+                  You can create a property by clicking on the &quot;Add
+                  Property&quot; button. You can create two types of properties:
+                  rental and facility properties. Rental properties are mainly
+                  tailored for managing properties for rent, including landlord
+                  and tenant management processes. Facility properties are
+                  designed for managing occupants in gated estates, overseeing
+                  their due payments, visitor access, and vehicle records.{" "}
+                  <br />
+                  <br />
+                  Once a property is added to this page, this guide will
+                  disappear. To learn more about this page in the future, you
+                  can click on this icon{" "}
+                  <span className="inline-block text-brand-10 align-text-top">
+                    <ExclamationMark />
+                  </span>{" "}
+                  at the top left of the dashboard page.
+                  <br />
+                  <br />
+                  Property creation involves several segments: property
+                  settings, details, what to showcase on the dashboard or user
+                  app, unit creation, permissions, and assigning staff.
+                </p>
+              }
+            />
+          )
         ) : (
-          <div className="space-y-4">
-            {/* {properties.length >= 1 &&
-              properties.map((p) => <PropertyListItem key={p.id} {...p} />)} */}
-            {Array.from({ length: 10 }).map((_, index) => (
-              <PropertyListItem
-                key={index}
-                address="123 Main St"
-                id={1}
-                propertyId={1}
-                images={[
-                  "/empty/empty.svg",
-                  "/empty/empty.svg",
-                  "/empty/empty.svg",
-                  "/empty/empty.svg",
-                  "/empty/empty.svg",
-                ]}
-                name="Property 1"
-                units={1}
-                price={1000}
-                propertyType={index % 2 === 0 ? "rental" : "facility"}
-                currency="Naira"
-              />
-            ))}
-          </div>
+          <>
+            {view === "grid" ? (
+              <AutoResizingGrid minWidth={284}>
+                {silentLoading ? (
+                  <CardsLoading />
+                ) : (
+                  properties.map((b) => (
+                    <PropertyCard
+                      key={b.id}
+                      address="123 Main St"
+                      id={1}
+                      propertyId={1}
+                      images={[
+                        "/empty/SampleProperty.jpeg",
+                        "/empty/SampleProperty2.jpeg",
+                        "/empty/SampleProperty3.jpeg",
+                        "/empty/SampleProperty4.jpeg",
+                        "/empty/SampleProperty5.jpeg",
+                      ]}
+                      name="Property 1"
+                      units={1}
+                      price={1000}
+                      propertyType={"facility"}
+                      currency="Naira"
+                    />
+                  ))
+                )}
+              </AutoResizingGrid>
+            ) : (
+              <>
+                {silentLoading ? (
+                  <TableLoading />
+                ) : (
+                  <div className="space-y-4">
+                    {properties.map((p) => (
+                      <PropertyListItem
+                        key={p.id}
+                        address="123 Main St"
+                        id={1}
+                        propertyId={1}
+                        images={[
+                          "/empty/empty.svg",
+                          "/empty/empty.svg",
+                          "/empty/empty.svg",
+                          "/empty/empty.svg",
+                          "/empty/empty.svg",
+                        ]}
+                        name="Property 1"
+                        units={1}
+                        price={1000}
+                        propertyType={"facility"}
+                        currency="Naira"
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+            <Pagination
+              totalPages={total_pages}
+              currentPage={current_page}
+              onPageChange={handlePageChange}
+            />
+          </>
         )}
       </section>
-      <Pagination
-        totalPages={total_pages}
-        currentPage={current_page}
-        onPageChange={handlePageChange}
-      />
     </div>
   );
 };

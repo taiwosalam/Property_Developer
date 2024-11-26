@@ -71,7 +71,7 @@ export const transformPropertyFormData = (
   // Base settings object
   const settings = {
     agency_fee: isNaN(parseFloat(data.agency_fee))
-      ? null
+      ? 2
       : parseFloat(data.agency_fee),
     management_fee: isNaN(parseFloat(data.management_fee))
       ? null

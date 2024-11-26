@@ -75,7 +75,9 @@ const PropertyRequest = () => {
     loading,
     error,
     refetch,
-  } = useFetch<PropertyRequestApiData>(`/agent-community/property-requests/all?page=${currentPage}&query=${searchQuery}`);
+  } = useFetch<PropertyRequestApiData>(
+    `/agent-community/property-requests/all?page=${currentPage}&query=${searchQuery}`
+  );
   useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
   const handleCreatePropertyRequestClick = () => {
@@ -84,9 +86,9 @@ const PropertyRequest = () => {
 
   useEffect(() => {
     if (apiData) {
-      setPropertyRequests(apiData?.property_requests);  
-      setPropertyRequestUsers(apiData?.users);  
-      console.log('api data', apiData);
+      setPropertyRequests(apiData?.property_requests);
+      setPropertyRequestUsers(apiData?.users);
+      console.log("api data", apiData);
     }
   }, [apiData]);
 
@@ -151,29 +153,33 @@ const PropertyRequest = () => {
     setCurrentPage(page);
   };
 
-  const propertyRequestData: PropertyRequestDataType[] = propertyRequests.map((request: any) => ({
-    requestId: request.propertyRequest.id,
-    userName: request.user?.name || "__",
-    requestDate: formatDate(request.propertyRequest.created_at) || "__",
-    pictureSrc: request.user?.picture || empty,
-    state: request.propertyRequest.state || "__",
-    lga: request.propertyRequest.lga || "__",
-    propertyType: request.propertyRequest.property_type || "__",
-    category: request.propertyRequest.property_category || "__",
-    subType: request.propertyRequest.sub_type || "__",
-    minBudget: `₦${request.propertyRequest.min_budget}` || "__",
-    maxBudget: `₦${request.propertyRequest.max_budget}` || "__",
-    requestType: "Web",
-    description: request.propertyRequest.description || "__",
-    phoneNumber: request.user?.phone || "__",
-    propertyTitle: request.propertyRequest.title || "__",
-    userTitle: request.user?.title || "__",
-    targetAudience: request.propertyRequest.target_audience,
-  })) || [];
+  const propertyRequestData: PropertyRequestDataType[] =
+    propertyRequests.map((request: any) => ({
+      requestId: request.propertyRequest.id,
+      userName: request.user?.name || "__",
+      requestDate: formatDate(request.propertyRequest.created_at) || "__",
+      pictureSrc: request.user?.picture || empty,
+      state: request.propertyRequest.state || "__",
+      lga: request.propertyRequest.lga || "__",
+      propertyType: request.propertyRequest.property_type || "__",
+      category: request.propertyRequest.property_category || "__",
+      subType: request.propertyRequest.sub_type || "__",
+      minBudget: `₦${request.propertyRequest.min_budget}` || "__",
+      maxBudget: `₦${request.propertyRequest.max_budget}` || "__",
+      requestType: "Web",
+      description: request.propertyRequest.description || "__",
+      phoneNumber: request.user?.phone || "__",
+      propertyTitle: request.propertyRequest.title || "__",
+      userTitle: request.user?.title || "__",
+      targetAudience: request.propertyRequest.target_audience,
+    })) || [];
 
-  if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
-  <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-  </div>;
+  if (loading)
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
+    );
 
   return (
     <div className="space-y-9">
@@ -215,7 +221,6 @@ const PropertyRequest = () => {
         propertyRequest={true}
         filterWithOptionsWithDropdown={stateOptions}
         handleSearch={handleSearch}
-        searchQuery={searchQuery}
       />
       {propertyRequestData.length === 0 ? (
         <div className="flex justify-center items-center min-h-[200px] text-gray-500">
@@ -236,10 +241,10 @@ const PropertyRequest = () => {
         </AutoResizingGrid>
       )}
       <div className="pagination">
-        <Pagination 
-          totalPages={5} 
-          currentPage={1} 
-          onPageChange={handlePageChange} 
+        <Pagination
+          totalPages={5}
+          currentPage={1}
+          onPageChange={handlePageChange}
         />
       </div>
 

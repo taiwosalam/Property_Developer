@@ -14,7 +14,6 @@ export interface BranchesPageData {
 }
 
 export interface StaffAndBranchPageState {
-  gridView: boolean;
   selectedState: string;
   selectedLGA: string;
   localGovernments: string[];
