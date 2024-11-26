@@ -3,10 +3,10 @@ import { persist, PersistOptions } from "zustand/middleware";
 
 // Define the shape of your settings state
 interface SelectedOptions {
-  theme: string | null;
-  view: string | null;
-  navbar: string | null;
-  mode: string | null;
+  theme: "theme1" | "theme2" | "theme3" | null;
+  view: "grid" | "list" | null;
+  navbar: "column" | "row" | null;
+  mode: "light" | "dark" | null;
   font: string | null;
 }
 

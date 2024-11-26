@@ -1,3 +1,49 @@
+import api from "@/services/api";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+
+export const createVehicleRecord = async (data: any) => {
+  try {
+    const response = await api.post("/vehicle-record", data);
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+        const errorMessage = error.response?.data?.message || error.message;
+        const additionalErrors = error.response?.data?.errors.messages;
+        const idError = error?.response?.data.error;
+        console.log('idError', idError);
+        if (idError) {
+          if (typeof idError === 'string' && idError.trim() !== '') {
+            toast.error(`Error: ${idError}`);
+          }
+        }else {
+          toast.error(`Error: ${errorMessage}`);
+        }
+        if (additionalErrors) {
+          Object.keys(additionalErrors).forEach((key) => {
+            additionalErrors[key].forEach((msg: string) => {
+              toast.error(`Error: ${msg}`);
+            });
+        });
+      }
+    } else {
+      console.error(error);
+      toast.error("An unexpected error occurred.");
+    }
+    return false;
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
 export const vehicleData = {
   Cars: {
     brands: [

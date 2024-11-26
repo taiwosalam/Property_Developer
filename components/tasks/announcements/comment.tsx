@@ -22,6 +22,7 @@ export interface CommentData {
   dislikes: number;
   replies?: CommentData[];
   commentsCount: number;
+  profile_picture: string;
   parentId?: string | number;
 }
 
@@ -43,6 +44,7 @@ const Comment: React.FC<CommentProps> = ({
   name,
   text,
   likes,
+  profile_picture,
   dislikes,
   replies,
   handleSubmit,
@@ -62,6 +64,7 @@ const Comment: React.FC<CommentProps> = ({
   const [hasLiked, setHasLiked] = useState(false);
   const [hasDisliked, setHasDisliked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showReplies, setShowReplies] = useState(false);
 
   const showInput = propShowInput ?? localShowInput;
   const setShowInput = propSetShowInput ?? setLocalShowInput;
@@ -169,7 +172,7 @@ const Comment: React.FC<CommentProps> = ({
       <div className="flex items-center gap-1">
         <div className="flex-shrink-0 relative w-9 h-9 rounded-full bg-neutral-2 overflow-hidden">
           <Image
-            src={empty}
+            src={profile_picture || empty}
             alt="user-real-info-from-props"
             fill
             className="object-cover"
@@ -216,7 +219,7 @@ const Comment: React.FC<CommentProps> = ({
       {(showInput || commentsCount === 0) && (
         <form
           onSubmit={handleFormSubmit}
-          className="mt-6 mb-4 flex items-center justify-between gap-3"
+          className="mt-6 mb-2 flex items-center justify-between gap-3"
         >
           <input
             type="hidden"
@@ -250,21 +253,26 @@ const Comment: React.FC<CommentProps> = ({
 
       {replies && replies.length > 0 && (
         <>
-          <p className="ml-10 my-2 text-neutral-4 text-[10px] font-medium">
-            Replies
-          </p>
-          <div className="relative ml-10 pl-5 border-l border-neutral-300">
-            {replies.map((r) => (
-              <Comment
-                key={r.id}
-                {...r}
-                handleLike={handleLike}
-                handleDislike={handleDislike}
-                handleSubmit={handleSubmit}
-                parentId={r.id}
-              />
-            ))}
-          </div>
+          <button
+            onClick={() => setShowReplies(!showReplies)}
+            className="ml-10 mb-2 text-neutral-4 text-[10px] font-medium"
+          >
+            {showReplies ? 'Hide replies' : `View replies - (${replies.length})`}
+          </button>
+          {showReplies && (
+            <div className="relative ml-10 pl-5 border-l border-neutral-300">
+              {replies.map((r) => (
+                <Comment
+                  key={r.id}
+                  {...r}
+                  handleLike={handleLike}
+                  handleDislike={handleDislike}
+                  handleSubmit={handleSubmit}
+                   parentId={r.id}
+                />
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>
