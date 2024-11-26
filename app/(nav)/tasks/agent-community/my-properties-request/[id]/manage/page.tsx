@@ -43,12 +43,14 @@ const ManageMyPropertyRequest = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [slug, setSlug] = useState<string>("");
 
   useEffect(() => {
     // console.log('data', data?.data);
     if (data?.data?.PropertyRequest) {
       setPropertyRequests(data.data.PropertyRequest);
       setComments(data.data.comments);
+      setSlug(data.data.PropertyRequest.slug);
     }
   }, [data]);
 
@@ -124,6 +126,7 @@ const ManageMyPropertyRequest = () => {
             data={propertyRequests}
           />
           <PropertyRequestComments 
+            slug={slug}
             id={id as string}
             comments={comments} 
             setComments={setComments}
