@@ -25,11 +25,6 @@ export interface LandlordsPageData {
   landlords: LandlordCardProps[];
 }
 
-export interface LandlordPageState {
-  gridView: boolean;
-  landlordsPageData: LandlordsPageData;
-}
-
 export const getOneLandlord = async (id: string) => {};
 
 export const getLandlordsHelpInfo = async () => {

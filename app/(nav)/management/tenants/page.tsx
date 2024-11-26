@@ -271,7 +271,6 @@ const Tenants = () => {
         isDateTrue
         filterOptionsWithRadio={tenantFiltersRadio}
         filterWithOptionsWithDropdown={tenantFilterOptionssWithDropdown}
-        searchQuery={searchQuery}
         handleSearch={handleSearch}
       />
       <section>

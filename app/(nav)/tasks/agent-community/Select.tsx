@@ -107,6 +107,7 @@ const Select: React.FC<SelectProps> = ({
           : []; // Provide a fallback to an empty array if options is undefined or empty
 
       return { ...x, filteredOptions };
+      
     });
   }, [searchTerm, options]);
 

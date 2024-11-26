@@ -6,5 +6,5 @@ export interface SearchInputProps
   textInputClassName?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onSearch?: (value: string) => void;
-  searchQuery?: string;
+  // searchQuery?: string;
 }

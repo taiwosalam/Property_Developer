@@ -15,75 +15,53 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Button from "@/components/Form/Button/button";
 import {
   getLandlordsHelpInfo,
-  LandlordPageState,
   landlordTableFields,
   type LandlordApiResponse,
+  type LandlordsPageData,
   transformLandlordApiResponse,
   // landlordFiltersWithDropdown,
 } from "./data";
+import NetworkError from "@/components/Error/NetworkError";
+import EmptyList from "@/components/EmptyList/Empty-List";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { LandlordHelpInfo } from "./types";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useView from "@/hooks/useView";
-import useSettingsStore from "@/store/settings";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { ExclamationMark } from "@/public/icons/icons";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import TableLoading from "@/components/Loader/TableLoading";
 
 const Landlord = () => {
-  const view = useView();
-  const { selectedOptions, setSelectedOption } = useSettingsStore();
-  const [selectedView, setSelectedView] = useState<string | null>(
-    selectedOptions.view
-  );
+  const storedView = useView();
+  const [view, setView] = useState<string | null>(storedView);
 
-  const initialState: LandlordPageState = {
-    gridView: selectedView === "grid",
-    landlordsPageData: {
-      total_pages: 1,
-      current_page: 1,
-      total_landlords: 0,
-      new_landlords_this_month: 0,
-      mobile_landlords: 0,
-      new_mobile_landlords_this_month: 0,
-      web_landlords: 0,
-      new_web_landlords_this_month: 0,
-      landlords: [],
-    },
+  const initialState: LandlordsPageData = {
+    total_pages: 1,
+    current_page: 1,
+    total_landlords: 0,
+    new_landlords_this_month: 0,
+    mobile_landlords: 0,
+    new_mobile_landlords_this_month: 0,
+    web_landlords: 0,
+    new_web_landlords_this_month: 0,
+    landlords: [],
   };
 
-  const [state, setState] = useState<LandlordPageState>(initialState);
+  const [pageData, setPageData] = useState<LandlordsPageData>(initialState);
   const {
-    gridView,
-    landlordsPageData: {
-      total_pages,
-      current_page,
-      total_landlords,
-      new_landlords_this_month,
-      mobile_landlords,
-      new_mobile_landlords_this_month,
-      web_landlords,
-      new_web_landlords_this_month,
-      landlords,
-    },
-  } = state;
-
-  useEffect(() => {
-    setState((prevState) => ({
-      ...prevState,
-      gridView: selectedView === "grid",
-    }));
-  }, [selectedView]);
-
-  const setGridView = () => {
-    setSelectedOption("view", "grid");
-    setSelectedView("grid");
-  };
-
-  const setListView = () => {
-    setSelectedOption("view", "list");
-    setSelectedView("list");
-  };
+    total_pages,
+    current_page,
+    total_landlords,
+    new_landlords_this_month,
+    mobile_landlords,
+    new_mobile_landlords_this_month,
+    web_landlords,
+    new_web_landlords_this_month,
+    landlords,
+  } = pageData;
 
   const [fetchedLandlordHelpInfo, setFetchedLandlordHelpInfo] =
     useState<LandlordHelpInfo>();
@@ -101,6 +79,10 @@ const Landlord = () => {
   useEffect(() => {
     fetchLandlordHelp();
   }, [fetchLandlordHelp]);
+
+  useEffect(() => {
+    setView(storedView);
+  }, [storedView]);
 
   // const onClickChat = () => {
   //   console.log("Chat clicked for:", landlord);
@@ -137,6 +119,7 @@ const Landlord = () => {
   ];
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const handleFilterApply = (filters: any) => {
     console.log("Filter applied:", filters);
@@ -145,13 +128,14 @@ const Landlord = () => {
 
   const handlePageChange = (page: number) => {
     setSearchQuery("");
-    setState((prevState) => ({
+    setPageData((prevState) => ({
       ...prevState,
-      landlordsPageData: {
-        ...prevState.landlordsPageData,
-        current_page: page,
-      },
+      current_page: page,
     }));
+  };
+
+  const handleSort = (order: "asc" | "desc") => {
+    setSortOrder(order);
   };
 
   const handleSearch = async (query: string) => {
@@ -162,17 +146,19 @@ const Landlord = () => {
   const {
     data: apiData,
     loading,
+    silentLoading,
+    isNetworkError,
     error,
     refetch,
   } = useFetch<LandlordApiResponse>(
-    `landlords?page=${current_page}&search=${searchQuery}`
+    `landlords?page=${current_page}&search=${searchQuery}&sort_order=${sortOrder}`
   );
 
   useEffect(() => {
     if (apiData) {
-      setState((x) => ({
+      setPageData((x) => ({
         ...x,
-        landlordsPageData: transformLandlordApiResponse(apiData),
+        ...transformLandlordApiResponse(apiData),
       }));
     }
   }, [apiData]);
@@ -219,7 +205,10 @@ const Landlord = () => {
       />
     );
 
-  // if (error) return <div>{error}</div>;
+  if (isNetworkError) return <NetworkError />;
+
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-8">
@@ -262,9 +251,9 @@ const Landlord = () => {
 
       <FilterBar
         azFilter
-        gridView={view === "grid" || gridView}
-        setGridView={setGridView}
-        setListView={setListView}
+        gridView={view === "grid"}
+        setGridView={() => setView("grid")}
+        setListView={() => setView("list")}
         // onStateSelect={onStateSelect}
         pageTitle="Landlords/Landladies (Owners)"
         aboutPageModalData={{
@@ -277,39 +266,90 @@ const Landlord = () => {
         handleFilterApply={handleFilterApply}
         isDateTrue
         handleSearch={handleSearch}
-        searchQuery={searchQuery}
+
         // filterOptionsWithRadio={landlordFiltersRadio}
         // filterWithOptionsWithDropdown={landlordFiltersWithDropdown}
       />
       <section>
-        {view === "grid" || gridView ? (
-          <AutoResizingGrid minWidth={284} gap={16}>
-            {landlords.map((l) => (
-              <Link href={`/management/landlord/${l.id}/manage`} key={l.id}>
-                <LandlordCard
-                  picture_url={l.picture_url || undefined}
-                  name={l.name}
-                  user_tag={l.user_tag}
-                  email={l.email}
-                  phone_number={l.phone_number || undefined}
-                  badge_color={l.badge_color}
-                />
-              </Link>
-            ))}
-          </AutoResizingGrid>
+        {landlords.length === 0 && !silentLoading ? (
+          searchQuery ? (
+            "No Search Found"
+          ) : (
+            <EmptyList
+              buttonText="+ Create New Landlord"
+              modalContent={<AddLandlordModal />}
+              title="The landlord and landlady files are empty"
+              body={
+                <p>
+                  You can create a property by clicking on the "Add Property"
+                  button. You can create two types of properties: rental and
+                  facility properties. Rental properties are mainly tailored for
+                  managing properties for rent, including landlord and tenant
+                  management processes. Facility properties are designed for
+                  managing occupants in gated estates, overseeing their due
+                  payments, visitor access, and vehicle records. <br />
+                  <br />
+                  Once a property is added to this page, this guide will
+                  disappear. To learn more about this page in the future, you
+                  can click on this icon{" "}
+                  <span className="inline-block text-brand-10 align-text-top">
+                    <ExclamationMark />
+                  </span>{" "}
+                  at the top left of the dashboard page.
+                  <br />
+                  <br />
+                  Property creation involves several segments: property
+                  settings, details, what to showcase on the dashboard or user
+                  app, unit creation, permissions, and assigning staff.
+                </p>
+              }
+            />
+          )
         ) : (
-          <CustomTable
-            displayTableHead={false}
-            fields={landlordTableFields}
-            data={transformedLandlords}
-            tableBodyCellSx={{ color: "#3F4247" }}
-          />
+          <>
+            {view === "grid" ? (
+              <AutoResizingGrid minWidth={284} gap={16}>
+                {silentLoading ? (
+                  <CardsLoading />
+                ) : (
+                  landlords.map((l) => (
+                    <Link
+                      href={`/management/landlord/${l.id}/manage`}
+                      key={l.id}
+                    >
+                      <LandlordCard
+                        picture_url={l.picture_url || undefined}
+                        name={l.name}
+                        user_tag={l.user_tag}
+                        email={l.email}
+                        phone_number={l.phone_number || undefined}
+                        badge_color={l.badge_color}
+                      />
+                    </Link>
+                  ))
+                )}
+              </AutoResizingGrid>
+            ) : (
+              <>
+                {silentLoading ? (
+                  <TableLoading />
+                ) : (
+                  <CustomTable
+                    displayTableHead={false}
+                    fields={landlordTableFields}
+                    data={transformedLandlords}
+                    tableBodyCellSx={{ color: "#3F4247" }}
+                  />
+                )}
+              </>
+            )}
+            <Pagination
+              totalPages={total_pages}
+              currentPage={current_page}
+              onPageChange={handlePageChange}
+            />
+          </>
         )}
-        <Pagination
-          totalPages={total_pages}
-          currentPage={current_page}
-          onPageChange={handlePageChange}
-        />
       </section>
     </div>
   );

@@ -23,21 +23,17 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import TableLoading from "@/components/Loader/TableLoading";
 import CardsLoading from "@/components/Loader/CardsLoading";
-import useSettingsStore from "@/store/settings";
 import useView from "@/hooks/useView";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
+import EmptyList from "@/components/EmptyList/Empty-List";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const StaffAndBranches = () => {
-  const view = useView();
-  const { selectedOptions, setSelectedOption } = useSettingsStore();
-  const [selectedView, setSelectedView] = useState<string | null>(
-    selectedOptions.view
-  );
+  const storedView = useView();
+  const [view, setView] = useState<string | null>(storedView);
   const router = useRouter();
   const initialState: StaffAndBranchPageState = {
-    gridView: selectedView === "grid",
     selectedState: "",
     selectedLGA: "",
     localGovernments: [],
@@ -55,7 +51,6 @@ const StaffAndBranches = () => {
   };
   const [state, setState] = useState<StaffAndBranchPageState>(initialState);
   const {
-    gridView,
     selectedState,
     selectedLGA,
     localGovernments,
@@ -73,21 +68,8 @@ const StaffAndBranches = () => {
   } = state;
 
   useEffect(() => {
-    setState((prevState) => ({
-      ...prevState,
-      gridView: selectedView === "grid",
-    }));
-  }, [selectedView]);
-
-  const setGridView = () => {
-    setSelectedOption("view", "grid");
-    setSelectedView("grid");
-  };
-
-  const setListView = () => {
-    setSelectedOption("view", "list");
-    setSelectedView("list");
-  };
+    setView(storedView);
+  }, [storedView]);
 
   const setLocalGovernments = (array: string[]) => {
     setState((state) => ({ ...state, localGovernments: array }));
@@ -135,6 +117,11 @@ const StaffAndBranches = () => {
   }, [selectedState]);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  const handleSort = (order: "asc" | "desc") => {
+    setSortOrder(order);
+  };
 
   const handlePageChange = (page: number) => {
     setSearchQuery("");
@@ -148,15 +135,18 @@ const StaffAndBranches = () => {
   };
 
   const handleSearch = async (query: string) => {
-    if (!query && !searchQuery) return;
     setSearchQuery(query);
   };
 
   const config = useMemo(
     () => ({
-      params: { page: current_page, search: searchQuery },
+      params: {
+        page: current_page,
+        search: searchQuery,
+        sort_order: sortOrder,
+      },
     }),
-    [current_page, searchQuery]
+    [current_page, searchQuery, sortOrder]
   );
 
   const {
@@ -190,7 +180,8 @@ const StaffAndBranches = () => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error) return <div>{error}</div>;
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-9">
@@ -228,9 +219,9 @@ const StaffAndBranches = () => {
       </div>
       <FilterBar
         azFilter
-        gridView={gridView}
-        setGridView={setGridView}
-        setListView={setListView}
+        gridView={view === "grid"}
+        setGridView={() => setView("grid")}
+        setListView={() => setView("list")}
         onStateSelect={(state: string) => setSelectedState(state)}
         pageTitle="Staff & Branch"
         aboutPageModalData={{
@@ -243,40 +234,54 @@ const StaffAndBranches = () => {
         isDateTrue
         filterWithOptionsWithDropdown={StaffAndBranchFiltersWithDropdown}
         handleSearch={handleSearch}
-        searchQuery={searchQuery}
+        onSort={handleSort}
       />
 
       <section className="capitalize">
-        {view === "grid" || gridView ? (
-          <AutoResizingGrid minWidth={284}>
-            {silentLoading ? (
-              <CardsLoading />
-            ) : (
-              branches.map((b) => (
-                <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
-                  <BranchCard {...b} />
-                </Link>
-              ))
-            )}
-          </AutoResizingGrid>
-        ) : silentLoading ? (
-          <TableLoading />
+        {branches.length === 0 && !silentLoading ? (
+          searchQuery ? (
+            "No Search Found"
+          ) : (
+            <EmptyList />
+          )
         ) : (
-          <CustomTable
-            fields={branchTableFields}
-            data={branches}
-            tableHeadClassName="bg-brand-5 h-[76px]"
-            tableHeadStyle={{
-              borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
-            }}
-            handleSelect={handleSelectTableItem}
-          />
+          <>
+            {view === "grid" ? (
+              <AutoResizingGrid minWidth={284}>
+                {silentLoading ? (
+                  <CardsLoading />
+                ) : (
+                  branches.map((b) => (
+                    <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
+                      <BranchCard {...b} />
+                    </Link>
+                  ))
+                )}
+              </AutoResizingGrid>
+            ) : (
+              <>
+                {silentLoading ? (
+                  <TableLoading />
+                ) : (
+                  <CustomTable
+                    fields={branchTableFields}
+                    data={branches}
+                    tableHeadClassName="bg-brand-5 h-[76px]"
+                    tableHeadStyle={{
+                      borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
+                    }}
+                    handleSelect={handleSelectTableItem}
+                  />
+                )}
+              </>
+            )}
+            <Pagination
+              totalPages={total_pages}
+              currentPage={current_page}
+              onPageChange={handlePageChange}
+            />
+          </>
         )}
-        <Pagination
-          totalPages={total_pages}
-          currentPage={current_page}
-          onPageChange={handlePageChange}
-        />
       </section>
     </div>
   );

@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Search } from "lucide-react";
 import { SearchInputProps } from "./types";
-import { useCallback } from "react";
 import { debounce } from "@/utils/debounce";
 
 const SearchInput: React.FC<SearchInputProps> = ({
@@ -10,11 +9,11 @@ const SearchInput: React.FC<SearchInputProps> = ({
   placeholder = "Search",
   onChange,
   onSearch,
-  searchQuery,
+  // searchQuery,
 }) => {
   // Create a debounced search function
   const debouncedSearch = debounce((value: string) => {
-    if (onSearch) onSearch(value);
+    onSearch?.(value);
   }, 500);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +47,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
         )}
         placeholder={placeholder}
         onChange={handleChange}
-        defaultValue={searchQuery}
+        // defaultValue={searchQuery}
       />
     </div>
   );
