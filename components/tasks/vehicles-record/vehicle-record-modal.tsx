@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Picture from "@/components/Picture/picture";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Button from "@/components/Form/Button/button";
@@ -7,6 +7,9 @@ import type { VehicleRecord } from "./types";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import CheckInOutForm from "../visitors-requests/check-in-out-form";
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { checkOutVehicle } from "./data";
+import { toast } from "sonner";
 // import ModalPreset from "@/components/Modal/modal-preset";
 
 const VehicleRecordModal: React.FC<
@@ -24,12 +27,45 @@ const VehicleRecordModal: React.FC<
   checkOut,
   showOpenRecordsButton = true,
 }) => {
+
+    const handleCheckOut = async (event: React.FormEvent) => {
+      event.preventDefault();
+      const form = event.target as HTMLFormElement;
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      if (data.passenger) {
+        data.passengers_out = data.passenger;
+        delete data.passenger;
+      }
+
+      console.log("data", id);
+      try{
+        const response = await checkOutVehicle(data, Number(id));
+        if (response) {
+          toast.success("Vehicle checked out successfully");
+          setActiveStep("success-action");
+        } else {
+          toast.error("Failed to check out vehicle");
+        }
+      }catch(error){
+        console.error(error);
+      }
+    };
+
+    useEffect(() => {
+      console.log("checkOut", checkOut);
+      console.log("checkIn", checkIn);
+    }, [checkOut, checkIn]);
+
+
   const [activeStep, setActiveStep] = useState<
     "default" | "check-out" | "success-action"
   >("default");
   const handleBack = () => {
     setActiveStep("default");
   };
+
 
   if (activeStep === "default") {
     return (
@@ -105,7 +141,8 @@ const VehicleRecordModal: React.FC<
             <p className="text-text-label dark:text-white font-normal mb-1">
               Inventory
             </p>
-            <TruncatedText lines={2}>{checkIn.inventory}</TruncatedText>
+            <div dangerouslySetInnerHTML={{ __html: checkIn.inventory }} />
+            {/* <TruncatedText lines={2}>{checkIn.inventory}</TruncatedText> */}
           </div>
           {/* Check Out */}
           <div>
@@ -173,6 +210,8 @@ const VehicleRecordModal: React.FC<
   
   if (activeStep === "check-out") {
     return (
+      <>
+      <form onSubmit={handleCheckOut}>
       <CheckInOutForm
         type="check-out"
         useCase="vehicle"
@@ -181,8 +220,10 @@ const VehicleRecordModal: React.FC<
         userName={name}
         id={id}
         category={category}
-        registrationDate={registrationDate}
-      />
+          registrationDate={registrationDate}
+        />  
+      </form>
+      </>
     );
   }
   return <div></div>;

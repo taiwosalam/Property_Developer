@@ -92,7 +92,6 @@ const VehiclesRecordPage = () => {
     error,
     refetch,
   } = useFetch<VehicleRecordApiResponse>("vehicle-record", config);
-
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
   useEffect(() => {
@@ -201,11 +200,6 @@ const VehiclesRecordPage = () => {
           <VehicleRecordModal {...(selectedRecord as VehicleRecord)} />
         </ModalContent>
       </Modal>
-      {/* <Pagination
-        totalPages={Math.ceil(total / 10)}
-        currentPage={current_page}
-        onPageChange={handlePageChange}
-      /> */}
       {data.length === 0 && (
         <p className="text-base text-red-500 font-medium">No data found</p>
       )}

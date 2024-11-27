@@ -104,7 +104,7 @@ export const transformVehicleRecordApiResponse = (
         state: record.state,
         name: record.name,
         model: record.model,
-        status: record.status || "N/A", //TODO: remove this & add the actual status
+        status: record.status || "pending", //TODO: remove this & add the actual status
         category: record.visitor_category,
         visitor_category: record.visitor_category,
         vehicle_state: record.vehicle_state,

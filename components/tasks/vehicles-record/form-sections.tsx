@@ -16,6 +16,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 
 export interface VehicleDataProps {
+  id: number;
   plate_number: string;
   state: string;
   vehicle_type: string;

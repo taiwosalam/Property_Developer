@@ -43,14 +43,8 @@ const PreviousRecord: React.FC<checkInOutData & { pictureSrc: string }> = (props
   const { pictureSrc, ...record } = props;
   const [status, setStatus] = useState<string>("");
   const [recordData, setRecordData] = useState<checkInOutData>(record);
-  console.log("record", record);
-  useEffect(() => {
-    console.log("record -", record);
-    setRecordData(record);
-    setStatus(record.status);
-  }, [record]);
 
-  console.log("recordData", recordData);
+
   const checkIn = {
     date: formatDate(recordData.check_in_time),
     name: recordData.in_by,
@@ -59,15 +53,16 @@ const PreviousRecord: React.FC<checkInOutData & { pictureSrc: string }> = (props
   }
 
   const checkOut = {
-    date: recordData.check_out_time,
+    date: formatDate(recordData.check_out_time),
     name: recordData.out_by,
     passenger: recordData.passengers_out,
     inventory: recordData.inventory_out,
   }
 
-  // console.log("checkIn", checkIn);
-  // console.log("checkOut", checkOut);
-
+  useEffect(() => {
+    console.log("checkOut", checkOut);
+  }, [recordData]);
+    
   return (
     <InfoBox>
       <div className="flex gap-2 items-center justify-between">

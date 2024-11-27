@@ -194,8 +194,8 @@ const CreateRecordModal = ({ data }: { data: any }) => {
                     </div>
                   </div>
                   <div className="custom-flex-col gap-4 w-1/2">
-                    {vehicleDetails.map((detail) => (
-                      <div className="flex items-center justify-between">
+                    {vehicleDetails.map((detail, index) => (
+                      <div className="flex items-center justify-between" key={index}>
                         <h4 className="text-text-label dark:text-darkText-2 font-normal min-w-[90px] md:min-w-[unset]">
                           {detail.label}
                         </h4>
