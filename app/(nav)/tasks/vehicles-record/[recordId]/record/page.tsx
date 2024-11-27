@@ -35,6 +35,22 @@ import {
 } from "./data";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
+import { checkInVehicle } from "@/components/tasks/vehicles-record/data";
+import { toast } from "sonner";
+import { Box as MuiBox, Modal as MuiModal } from "@mui/material";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  border: "none",
+  p: 4,
+  borderRadius: "16px",
+};
 
 interface TransformedData {
   userData: UserData | null;
@@ -62,6 +78,7 @@ interface Notes {
 
 const RecordPage = () => {
   const router = useRouter();
+  const [modalOpen, setModalOpen] = useState(false);
   const { recordId } = useParams();
 
   const initialState: TransformedData = {
@@ -85,7 +102,7 @@ const RecordPage = () => {
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
   useEffect(() => {
-    console.log("apiData", apiData);
+    // console.log("apiData", apiData);
     if (apiData && "data" in apiData && apiData.data) {
       try {
         const transformed = transformSingleVehicleRecordApiResponse(apiData);
@@ -96,7 +113,7 @@ const RecordPage = () => {
           webContactInfo: transformed.webContactInfo,
           checkInsOutData: transformed.checkInsOutData,
         }));
-        // console.log("transformed", transformed);  
+        console.log("transformed", transformed);  
       } catch (error) {
         console.error("Transformation error:", error, apiData);
       }
@@ -107,14 +124,14 @@ const RecordPage = () => {
 
   const { userData, vehicleDetails, webContactInfo, checkInsOutData } = states;
 
+
   if (loading)
     return (
-      <CustomLoader
-        layout="page"
-        pageTitle="Vehicle Records"
-        statsCardCount={3}
-      />
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-12 h-12 border-4 border-brand-9 border-t-transparent rounded-full animate-spin"></div>
+      </div>
     );
+
   if (isNetworkError) return <NetworkError />;
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
@@ -147,6 +164,38 @@ const RecordPage = () => {
     manufacture_year,
     vehicle_type,
   } = vehicleDetails;
+
+    const handleCheckIn = async (event: React.FormEvent) => {
+      event.preventDefault();
+      const form = event.target as HTMLFormElement;
+      const formData = new FormData(form);
+
+      // Modify keys in formData
+      const data = Object.fromEntries(formData.entries());
+      data.passengers_in = data.passenger;
+      delete data.passenger;
+      data.inventory_in = data.inventory;
+      delete data.inventory;
+
+      // Add vehicle_record to requestId
+      data.vehicle_record_id = `${recordId}`;
+
+      console.log("data", data);
+
+      try {
+        const response = await checkInVehicle(data);
+        if (response) {
+          toast.success("Vehicle checked in successfully");
+          setModalOpen(false);
+          // setActiveStep("success-action");
+        } else {
+          toast.error("Failed to check in vehicle");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
   return (
     <div className="space-y-5 pb-[100px]">
       <BackButton>Vehicle Record</BackButton>
@@ -297,6 +346,7 @@ const RecordPage = () => {
             <ModalContent>
               <EditVehicleDetailsFormModal
                 data={{
+                  id: vehicleDetails.id,
                   brand_name: brand,
                   plate_number: plate_number,
                   state: vehicleState,
@@ -330,22 +380,24 @@ const RecordPage = () => {
       </div>
       <Pagination totalPages={10} currentPage={1} onPageChange={() => {}} />
       <FixedFooter className="flex items-center justify-end">
-        <Modal>
+        <Modal state={{isOpen: modalOpen, setIsOpen: setModalOpen}}>
           <ModalTrigger asChild>
             <Button size="sm_normal" className="py-2 px-8">
               Create New Record
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <CheckInOutForm
-              useCase="vehicle"
-              type="check-in"
-              pictureSrc={pictureSrc}
-              userName={full_name}
-              id={userId}
-              category={category}
-              registrationDate="12/01/2024 (08:09pm)" // Replace with dynamic data if available
-            />
+            <form onSubmit={handleCheckIn}>
+              <CheckInOutForm
+                useCase="vehicle"
+                type="check-in"
+                pictureSrc={pictureSrc}
+                userName={full_name}
+                id={userId}
+                category={category}
+                registrationDate="12/01/2024 (08:09pm)" // Replace with dynamic data if available
+              />
+            </form>
           </ModalContent>
         </Modal>
       </FixedFooter>

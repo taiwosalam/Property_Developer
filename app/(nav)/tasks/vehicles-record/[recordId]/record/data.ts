@@ -51,6 +51,7 @@ export interface SingleVehicleRecordApiResponse {
 }
 
 export interface VehicleDetails {
+  id: number;
   brand: string;
   plate_number: string;
   category: string;
@@ -143,6 +144,7 @@ export const transformSingleVehicleRecordApiResponse = (
         : undefined,
     },
     vehicleDetails: {
+      id: vehicleRecord.id,
       brand: vehicleRecord.vehicle_brand,
       plate_number: vehicleRecord.plate_number,
       category: vehicleRecord.visitor_category,
