@@ -1,10 +1,27 @@
 import clsx from "clsx";
 import { LandlordTenantInfoBox as InfoBox } from "@/components/Management/landlord-tenant-info-components";
 import { SectionSeparator } from "@/components/Section/section-components";
-import type { VehicleRecord } from "./types";
 import Button from "@/components/Form/Button/button";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import VehicleRecordModal from "./vehicle-record-modal";
+import { useEffect, useState } from "react";
+import { formatDate } from "@/app/(nav)/tasks/agent-community/property-request/data";
+
+interface checkInOutData {
+  check_in_time: string;
+  in_by: string;
+  passengers_in: string;
+  check_out_time: string;
+  out_by: string;
+  passengers_out: string;
+  status: string;
+  inventory_in: string;
+  inventory_out: string;
+  inventory_id: number;
+  category?: string;
+  plate_number?: string;
+  last_update?: string;
+}
 
 const Detail: React.FC<{
   label: string;
@@ -22,12 +39,39 @@ const Detail: React.FC<{
   );
 };
 
-const PreviousRecord: React.FC<VehicleRecord> = (record) => {
-  const { status, checkIn, checkOut } = record;
+const PreviousRecord: React.FC<checkInOutData & { pictureSrc: string }> = (props) => {
+  const { pictureSrc, ...record } = props;
+  const [status, setStatus] = useState<string>("");
+  const [recordData, setRecordData] = useState<checkInOutData>(record);
+  console.log("record", record);
+  useEffect(() => {
+    console.log("record -", record);
+    setRecordData(record);
+    setStatus(record.status);
+  }, [record]);
+
+  console.log("recordData", recordData);
+  const checkIn = {
+    date: formatDate(recordData.check_in_time),
+    name: recordData.in_by,
+    passenger: recordData.passengers_in,
+    inventory: recordData.inventory_in,
+  }
+
+  const checkOut = {
+    date: recordData.check_out_time,
+    name: recordData.out_by,
+    passenger: recordData.passengers_out,
+    inventory: recordData.inventory_out,
+  }
+
+  // console.log("checkIn", checkIn);
+  // console.log("checkOut", checkOut);
+
   return (
     <InfoBox>
       <div className="flex gap-2 items-center justify-between">
-        <p className="text-brand-5 font-bold text-base">ID: 123456</p>
+        <p className="text-brand-5 font-bold text-base">ID: {recordData?.inventory_id?.toString() || ""}</p>
         <p
           className={clsx(
             "p-2 font-normal text-xs border capitalize",
@@ -59,7 +103,19 @@ const PreviousRecord: React.FC<VehicleRecord> = (record) => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <VehicleRecordModal {...record} showOpenRecordsButton={false} />
+            <VehicleRecordModal 
+                pictureSrc={pictureSrc}
+                name={checkIn.name}
+                id={recordData?.inventory_id?.toString() || ""}
+                category={recordData?.category as "guest" | "visitor"}
+                registrationDate={""}
+                checkIn={checkIn}
+                checkOut={checkOut}
+                status={"completed"}
+                showOpenRecordsButton={false}
+                plate_number={recordData?.plate_number || ""}
+                last_update={recordData?.last_update || ""}
+              />
           </ModalContent>
         </Modal>
       </div>

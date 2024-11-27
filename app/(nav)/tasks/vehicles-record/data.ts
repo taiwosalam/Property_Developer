@@ -20,6 +20,7 @@ export interface VehicleData {
   plate_number: string;
   created_at: string;
   updated_at: string;
+  brand: string;
   // avatar: string;
   city: string;
   address: string;
@@ -42,15 +43,18 @@ export interface VehicleData {
     name: string;
     passenger: string;
     date: string;
-    inventory: string;
   };
   // check_in: string;
   // check_out: string;
 }
 
 export interface VehicleRecordApiResponse {
-  total_records: number;
-  newly_created: number;
+  check_ins: number;
+  check_ins_pending: number;
+  check_ins_this_month: number;
+  check_outs: number;
+  check_outs_pending: number;
+  check_outs_this_month: number;
   vehicle_records: {
     data: VehicleData[];
     current_page: number;
@@ -59,8 +63,12 @@ export interface VehicleRecordApiResponse {
 }
 
 export interface VehicleRecordPageData {
-  total_records: number;
-  newly_created: number;
+  check_ins: number;
+  check_ins_pending: number;
+  check_ins_this_month: number;
+  check_outs: number;
+  check_outs_pending: number;
+  check_outs_this_month: number;
   vehicle_records: {
     data: VehicleData[];
     current_page: number;
@@ -71,12 +79,18 @@ export interface VehicleRecordPageData {
 export const transformVehicleRecordApiResponse = (
   response: VehicleRecordApiResponse
 ): VehicleRecordPageData => {
+  console.log("response", response);
   return {
-    total_records: response.total_records,
-    newly_created: response.newly_created,
+    check_ins: response.check_ins,
+    check_ins_pending: response.check_ins_pending,
+    check_ins_this_month: response.check_ins_this_month,
+    check_outs: response.check_outs,
+    check_outs_pending: response.check_outs_pending,
+    check_outs_this_month: response.check_outs_this_month,
     vehicle_records: {
       data: response.vehicle_records.data.map((record) => ({
         id: record.id,
+        brand: record.brand,
         user_id: record.user_id,
         property_id: record.property_id,
         plate_number: record.plate_number,
@@ -90,7 +104,7 @@ export const transformVehicleRecordApiResponse = (
         state: record.state,
         name: record.name,
         model: record.model,
-        status: "pending", //TODO: remove this & add the actual status
+        status: record.status || "N/A", //TODO: remove this & add the actual status
         category: record.visitor_category,
         visitor_category: record.visitor_category,
         vehicle_state: record.vehicle_state,
@@ -102,61 +116,13 @@ export const transformVehicleRecordApiResponse = (
           name: record.name,
           passenger: "3",
           date: formatDate(record.created_at),
-          inventory:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
         },
-        // check_in: record.check_in,
-        // check_out: record.check_out,
       })),
       current_page: response.vehicle_records.current_page,
       total: response.vehicle_records.total,
     },
   };
 };
-
-export const VehicleRecordData: VehicleRecord[] = [
-  {
-    id: "12345",
-    status: "pending",
-    pictureSrc: "/empty/SampleLandlord.jpeg",
-    name: "John Doe",
-    category: "guest",
-    registrationDate: "01/01/2024",
-    plate_number: "XD9400AA",
-    last_update: "02/03/2024 3:30PM",
-    checkIn: {
-      name: "John Doe",
-      passenger: "3",
-      date: "01/01/2024",
-      inventory:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-    },
-  },
-  {
-    status: "completed",
-    pictureSrc: "/empty/SampleLandlord.jpeg",
-    name: "John Doe",
-    id: "123456",
-    category: "visitor",
-    registrationDate: "01/01/2024",
-    plate_number: "KrD2000AA",
-    last_update: "02/03/2024 3:30PM",
-    checkIn: {
-      name: "John Doe",
-      passenger: "4",
-      date: "01/01/2024",
-      inventory:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-    },
-    checkOut: {
-      name: "John Doe",
-      passenger: "2",
-      date: "01/01/2024",
-      inventory:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-    },
-  },
-];
 
 export const veicleRecordTablefields: Field[] = [
   { id: "1", accessor: "pictureSrc", isImage: true, picSize: 40 },

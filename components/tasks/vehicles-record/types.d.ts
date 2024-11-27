@@ -15,6 +15,7 @@ interface BaseVehicleRecord {
   checkIn: CheckInOut;
   plate_number: string;
   last_update: string;
+  category: string;
 }
 
 interface PendingVehicleRecord extends BaseVehicleRecord {

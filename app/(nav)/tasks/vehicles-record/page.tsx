@@ -13,7 +13,6 @@ import {
   transformVehicleRecordApiResponse,
   VehicleData,
   VehicleRecordApiResponse,
-  VehicleRecordData,
   vehicleRecordFIltersOptionsWithDropdown,
   veicleRecordTablefields,
 } from "./data";
@@ -28,8 +27,13 @@ const VehiclesRecordPage = () => {
   const [selectedRecord, setSelectedRecord] = useState<VehicleRecord | null>(null);
 
   const initialState = {
+    check_ins: 0,
+    check_ins_pending: 0,
+    check_ins_this_month: 0,
+    check_outs: 0,
+    check_outs_pending: 0,
+    check_outs_this_month: 0,
     total_records: 0,
-    newly_created: 0,
     vehicle_records: {
       data: [] as VehicleData[],
       current_page: 1,
@@ -39,8 +43,13 @@ const VehiclesRecordPage = () => {
 
   const [state, setState] = useState(initialState);
   const {
+    check_ins,
+    check_outs,
+    check_ins_pending,
+    check_outs_pending,
+    check_ins_this_month,
+    check_outs_this_month,
     total_records,
-    newly_created,
     vehicle_records: { data, current_page, total },
   } = state;
 
@@ -123,20 +132,20 @@ const VehiclesRecordPage = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Check In"
-            newData={newly_created}
-            total={total_records}
+            newData={check_ins_this_month}
+            total={check_ins}
             colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Check Out"
-            newData={657}
-            total={34}
+            newData={check_outs_this_month}
+            total={check_outs}
             colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Pending"
-            newData={657}
-            total={34}
+            newData={check_ins_pending}
+            total={check_ins_pending}
             colorScheme={3}
           />
         </div>
@@ -147,7 +156,7 @@ const VehiclesRecordPage = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <CreateRecordModal />
+            <CreateRecordModal data={data} />
           </ModalContent>
         </Modal>
       </div>
@@ -192,11 +201,11 @@ const VehiclesRecordPage = () => {
           <VehicleRecordModal {...(selectedRecord as VehicleRecord)} />
         </ModalContent>
       </Modal>
-      <Pagination
+      {/* <Pagination
         totalPages={Math.ceil(total / 10)}
         currentPage={current_page}
         onPageChange={handlePageChange}
-      />
+      /> */}
       {data.length === 0 && (
         <p className="text-base text-red-500 font-medium">No data found</p>
       )}
