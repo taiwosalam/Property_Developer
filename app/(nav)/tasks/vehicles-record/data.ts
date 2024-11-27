@@ -38,6 +38,7 @@ export interface VehicleData {
   status: string;
   avatar?: string;
   category: string;
+  registrationDate: string;
   last_update: string;
   checkIn: {
     name: string;
@@ -106,6 +107,7 @@ export const transformVehicleRecordApiResponse = (
         model: record.model,
         status: record.status || "pending", //TODO: remove this & add the actual status
         category: record.visitor_category,
+        registrationDate: formatDate(record.created_at),
         visitor_category: record.visitor_category,
         vehicle_state: record.vehicle_state,
         vehicle_type: record.vehicle_type,
@@ -113,9 +115,9 @@ export const transformVehicleRecordApiResponse = (
         manufacture_year: record.manufacture_year,
         last_update: formatDate(record.updated_at),
         checkIn: {
-          name: record.name,
-          passenger: "3",
-          date: formatDate(record.created_at),
+          name: 'N/A',
+          passenger: "N/A",
+          date: "N/A",
         },
       })),
       current_page: response.vehicle_records.current_page,

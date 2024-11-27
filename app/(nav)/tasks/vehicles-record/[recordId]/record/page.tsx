@@ -121,7 +121,7 @@ const RecordPage = () => {
       console.error("Invalid API data format:", apiData);
     }
   }, [apiData, loading]);
-
+  
   const { userData, vehicleDetails, webContactInfo, checkInsOutData } = states;
 
 
@@ -185,6 +185,7 @@ const RecordPage = () => {
       try {
         const response = await checkInVehicle(data);
         if (response) {
+          window.dispatchEvent(new Event("refetchVehicleRecord"));
           toast.success("Vehicle checked in successfully");
           setModalOpen(false);
           // setActiveStep("success-action");
