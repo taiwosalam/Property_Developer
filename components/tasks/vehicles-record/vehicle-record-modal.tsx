@@ -170,6 +170,7 @@ const VehicleRecordModal: React.FC<
       </ModalPreset>
     );
   }
+  
   if (activeStep === "check-out") {
     return (
       <CheckInOutForm
