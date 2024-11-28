@@ -46,17 +46,17 @@ export interface LatestCheckInData {
   id: number;
   vehicle_record_id: number;
   in_by: string;
-  out_by: string | null;
-  passengers_in: number;
-  passengers_out: number | null;
+  out_by: string | '';
+  passengers_in: string;
+  passengers_out: string;
   inventory_in: string;
-  inventory_out: string | null;
+  inventory_out: string | '';
   check_in_time: string;
-  check_out_time: string | null;
+  check_out_time: string | '';
   status: string;
   created_at: string;
   updated_at: string;
-  deleted_at: string | null;
+  deleted_at: string | '';
 }
 
 export interface VehicleRecordApiResponse {

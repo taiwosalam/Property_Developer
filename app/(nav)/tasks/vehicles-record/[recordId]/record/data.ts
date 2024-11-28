@@ -20,7 +20,7 @@ export interface SingleVehicleRecordApiResponse {
       vehicle_state: string;
       vehicle_type: string;
       visitor_category: string;
-      deleted_at: string | null;
+      deleted_at: string | "";
       color?: string;
       notes: {
         last_updated: string;
@@ -33,7 +33,7 @@ export interface SingleVehicleRecordApiResponse {
         check_in_time: string;
         check_out_time: string;
         created_at: string;
-        deleted_at: string | null;
+        deleted_at: string | "";
         id: number;
         in_by: string;
         inventory_in: string;
@@ -100,7 +100,7 @@ export interface checkInsOutData {
     check_in_time: string;
     check_out_time: string;
     created_at: string;
-    deleted_at: string | null;
+    deleted_at: string | "";
     id: number;
     in_by: string;
     inventory_in: string;
@@ -181,7 +181,7 @@ export const transformSingleVehicleRecordApiResponse = (
         check_in_time: checkIn.check_in_time,
         check_out_time: checkIn.check_out_time,
         created_at: checkIn.created_at,
-        deleted_at: checkIn.deleted_at,
+        deleted_at: checkIn?.deleted_at || "",
         id: checkIn.id,
         in_by: checkIn.in_by,
         inventory_in: checkIn.inventory_in,

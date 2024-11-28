@@ -7,12 +7,13 @@ import VehicleRecordModal from "./vehicle-record-modal";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/app/(nav)/tasks/agent-community/property-request/data";
 import { format_date_time } from "@/app/(nav)/tasks/vehicles-record/data";
+import { CheckInOut } from "./types";
 
 interface checkInOutData {
   id: number;
   check_in_time: string;
   in_by: string;
-  passengers_in: number;
+  passengers_in: string;
   check_out_time: string;
   out_by: string;
   passengers_out: string;
@@ -110,7 +111,7 @@ const PreviousRecord: React.FC<checkInOutData & { pictureSrc: string, category?:
                 id={recordData?.inventory_id?.toString() || userId?.toString() || ""}
                 category={category as "guest" | "visitor"}
                 registrationDate={format_date_time(registrationDate || "")}
-                latest_check_in={recordData}
+                latest_check_in={recordData as CheckInOut}
                 showOpenRecordsButton={false}
                 plate_number={recordData?.plate_number || ""}
                 last_update={recordData?.last_update || ""}
