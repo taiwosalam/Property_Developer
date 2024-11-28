@@ -339,7 +339,7 @@ const Profile = () => {
               />
               <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
                 <FileInput
-                  onChange={handleUploadMembership}
+                  // onChange={handleUploadMembership}
                   required
                   id="membership_document"
                   label="Membership document"
@@ -420,7 +420,7 @@ const Profile = () => {
                 sizeUnit="MB"
                 hiddenInputClassName="setup-f required w-full sm:w-[250px]"
                 settingsPage={true}
-                onChange={handleUploadUtility}
+                // onChange={handleUploadUtility}
               />
               {uploadingUtility && (
                 <button className="w-1/2 sm:w-auto py-2 px-3 mt-2 sm:mt-0 text-brand-9  ">
