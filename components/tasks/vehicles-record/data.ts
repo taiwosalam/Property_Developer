@@ -46,15 +46,17 @@ export const updateVehicleDetails = async (data: any, id: number) => {
 };
 
 
-export const checkOutVehicle = async (data: any, id: number) => {
+  export const checkOutVehicle = async (data: any, id: number) => {
   try {
     const response = await api.post(`/vehicle-record/check-out/${id}`, data);
-    return response.status === 200 || response.status === 201;
+    return response.data;
   } catch (error) {
     console.error(error);
     return false;
   }
 };
+
+// /vehicle-record/check-out/1
 
 export const checkInVehicle = async (data: any) => {
   try {

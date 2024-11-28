@@ -128,6 +128,7 @@ const Enrollment = () => {
       </h4>
 
       <div className="flex mb-4 flex-nowrap overflow-x-auto custom-round-scrollbar gap-4 pricingWrapper mt-4">
+        
         <SettingsEnrollmentCard
           planTitle="FREE PLAN"
           desc="Free plans offer a reduced set of features in comparison to paid alternatives, but provide users with trial options to explore the software without time constraints."

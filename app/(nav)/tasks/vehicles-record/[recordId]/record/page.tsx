@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Picture from "@/components/Picture/picture";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
@@ -39,18 +39,6 @@ import { checkInVehicle } from "@/components/tasks/vehicles-record/data";
 import { toast } from "sonner";
 import { Box as MuiBox, Modal as MuiModal } from "@mui/material";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  border: "none",
-  p: 4,
-  borderRadius: "16px",
-};
 
 interface TransformedData {
   userData: UserData | null;
@@ -80,6 +68,7 @@ const RecordPage = () => {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
   const { recordId } = useParams();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const initialState: TransformedData = {
     userData: null,
@@ -90,6 +79,36 @@ const RecordPage = () => {
 
   const [states, setStates] = useState<TransformedData>(initialState);
 
+    const handlePageChange = (page: number) => {
+      setSearchQuery("");
+      setStates((prevState) => ({
+        ...prevState,
+        checkInsOutData: {
+          ...prevState.checkInsOutData,
+          current_page: page,
+          check_ins: prevState.checkInsOutData?.check_ins || [],
+          total: prevState.checkInsOutData?.total || 0,
+          prev_page_url: prevState.checkInsOutData?.prev_page_url || "",
+          next_page_url: prevState.checkInsOutData?.next_page_url || "",
+          first_page_url: prevState.checkInsOutData?.first_page_url || "",
+          last_page_url: prevState.checkInsOutData?.last_page_url || "",
+          per_page: prevState.checkInsOutData?.per_page || 0,
+        },
+      }));
+    };
+
+
+
+  const config = useMemo(
+    () => ({
+      params: {
+        page: states.checkInsOutData?.current_page || 1,
+        search: searchQuery,
+      },
+    }),
+    [states.checkInsOutData?.current_page, searchQuery]
+  );
+
   const {
     data: apiData,
     loading,
@@ -97,12 +116,12 @@ const RecordPage = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<SingleVehicleRecordApiResponse>(`vehicle-record/${recordId}/show-details`);
+  } = useFetch<SingleVehicleRecordApiResponse>(`vehicle-record/${recordId}/show-details`, config);
 
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
   useEffect(() => {
-    // console.log("apiData", apiData);
+    console.log("apiData", apiData);
     if (apiData && "data" in apiData && apiData.data) {
       try {
         const transformed = transformSingleVehicleRecordApiResponse(apiData);
@@ -114,6 +133,7 @@ const RecordPage = () => {
           checkInsOutData: transformed.checkInsOutData,
         }));
         console.log("transformed", transformed);  
+        console.log("checkInsOutData", transformed.checkInsOutData);
       } catch (error) {
         console.error("Transformation error:", error, apiData);
       }
@@ -373,13 +393,20 @@ const RecordPage = () => {
           {checkInsOutData?.check_ins?.map((record) => (
             <PreviousRecord 
               key={record.id} 
-              {...record} 
+              category={category}
+              userId={Number(userId)}
+              registrationDate={record.created_at}
               pictureSrc={pictureSrc}
+              {...record} 
             />
           ))}
         </div>
       </div>
-      <Pagination totalPages={10} currentPage={1} onPageChange={() => {}} />
+      <Pagination 
+        totalPages={checkInsOutData?.total || 1} 
+        currentPage={checkInsOutData?.current_page || 1} 
+        onPageChange={handlePageChange} 
+      />
       <FixedFooter className="flex items-center justify-end">
         <Modal state={{isOpen: modalOpen, setIsOpen: setModalOpen}}>
           <ModalTrigger asChild>

@@ -1,8 +1,18 @@
 interface CheckInOut {
-  name: string;
-  passenger: string;
-  date: string;
-  inventory: string;
+  id: number;
+  vehicle_record_id: number;
+  in_by: string;
+  out_by: string;
+  passengers_in: string;
+  passengers_out: string;
+  inventory_in: string;
+  inventory_out: string;
+  check_in_time: string;
+  check_out_time: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string;
 }
 
 interface BaseVehicleRecord {
@@ -12,7 +22,7 @@ interface BaseVehicleRecord {
   id: string | number;
   category: "guest" | "visitor";
   registrationDate: string;
-  checkIn: CheckInOut;
+  latest_check_in: CheckInOut;
   plate_number: string;
   last_update: string;
   category: string;
@@ -20,12 +30,12 @@ interface BaseVehicleRecord {
 
 interface PendingVehicleRecord extends BaseVehicleRecord {
   status: "pending";
-  checkOut?: null;
+  latest_check_out?: null;
 }
 
 interface CompletedVehicleRecord extends BaseVehicleRecord {
   status: "completed";
-  checkOut: CheckInOut;
+  checkOut?: CheckInOut;
 }
 
 export type VehicleRecord = PendingVehicleRecord | CompletedVehicleRecord;

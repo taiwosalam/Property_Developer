@@ -21,7 +21,6 @@ export interface VehicleData {
   created_at: string;
   updated_at: string;
   brand: string;
-  // avatar: string;
   city: string;
   address: string;
   phone: string;
@@ -40,13 +39,24 @@ export interface VehicleData {
   category: string;
   registrationDate: string;
   last_update: string;
-  checkIn: {
-    name: string;
-    passenger: string;
-    date: string;
-  };
-  // check_in: string;
-  // check_out: string;
+  latest_check_in: LatestCheckInData;
+}
+
+export interface LatestCheckInData {
+  id: number;
+  vehicle_record_id: number;
+  in_by: string;
+  out_by: string | '';
+  passengers_in: string;
+  passengers_out: string;
+  inventory_in: string;
+  inventory_out: string | '';
+  check_in_time: string;
+  check_out_time: string | '';
+  status: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | '';
 }
 
 export interface VehicleRecordApiResponse {
@@ -105,7 +115,12 @@ export const transformVehicleRecordApiResponse = (
         state: record.state,
         name: record.name,
         model: record.model,
-        status: record.status || "pending", //TODO: remove this & add the actual status
+        // status: record.status || "pending",
+        status: !record.latest_check_in
+          ? "no_record"
+          : Object.keys(record.latest_check_in).length === 0
+          ? "completed"
+          : "pending",
         category: record.visitor_category,
         registrationDate: formatDate(record.created_at),
         visitor_category: record.visitor_category,
@@ -114,10 +129,8 @@ export const transformVehicleRecordApiResponse = (
         vehicle_brand: record.vehicle_brand,
         manufacture_year: record.manufacture_year,
         last_update: formatDate(record.updated_at),
-        checkIn: {
-          name: 'N/A',
-          passenger: "N/A",
-          date: "N/A",
+        latest_check_in: {
+          ...record.latest_check_in,
         },
       })),
       current_page: response.vehicle_records.current_page,
@@ -135,3 +148,16 @@ export const veicleRecordTablefields: Field[] = [
   { id: "6", label: "Status", accessor: "status" },
   { id: "7", accessor: "action" },
 ];
+
+
+export const format_date_time = (dateString: string) => {
+    const date = new Date(dateString);
+
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = date.getUTCFullYear();
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+
+    return `${day}-${month}-${year} ${hours}:${minutes}`;
+}

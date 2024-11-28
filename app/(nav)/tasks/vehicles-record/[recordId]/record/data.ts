@@ -20,7 +20,7 @@ export interface SingleVehicleRecordApiResponse {
       vehicle_state: string;
       vehicle_type: string;
       visitor_category: string;
-      deleted_at: string | null;
+      deleted_at: string | "";
       color?: string;
       notes: {
         last_updated: string;
@@ -33,7 +33,7 @@ export interface SingleVehicleRecordApiResponse {
         check_in_time: string;
         check_out_time: string;
         created_at: string;
-        deleted_at: string | null;
+        deleted_at: string | "";
         id: number;
         in_by: string;
         inventory_in: string;
@@ -46,6 +46,13 @@ export interface SingleVehicleRecordApiResponse {
         updated_at: string;
         vehicle_record_id: number;
       }>;
+      current_page: number;
+      total: number;
+      prev_page_url: string;
+      next_page_url: string;
+      first_page_url: string;
+      last_page_url: string;
+      per_page: number;
     };
   };
 }
@@ -93,7 +100,7 @@ export interface checkInsOutData {
     check_in_time: string;
     check_out_time: string;
     created_at: string;
-    deleted_at: string | null;
+    deleted_at: string | "";
     id: number;
     in_by: string;
     inventory_in: string;
@@ -106,6 +113,13 @@ export interface checkInsOutData {
     updated_at: string;
     vehicle_record_id: number;
   }>;
+  current_page: number;
+  total: number;
+  prev_page_url: string;
+  next_page_url: string;
+  first_page_url: string;
+  last_page_url: string;
+  per_page: number;
 }
 
 export const transformSingleVehicleRecordApiResponse = (
@@ -167,7 +181,7 @@ export const transformSingleVehicleRecordApiResponse = (
         check_in_time: checkIn.check_in_time,
         check_out_time: checkIn.check_out_time,
         created_at: checkIn.created_at,
-        deleted_at: checkIn.deleted_at,
+        deleted_at: checkIn?.deleted_at || "",
         id: checkIn.id,
         in_by: checkIn.in_by,
         inventory_in: checkIn.inventory_in,
@@ -180,6 +194,13 @@ export const transformSingleVehicleRecordApiResponse = (
         updated_at: checkIn.updated_at,
         vehicle_record_id: checkIn.vehicle_record_id,
       })),
+      current_page: response.data.check_ins.current_page,
+      total: response.data.check_ins.total,
+      prev_page_url: response.data.check_ins.prev_page_url,
+      next_page_url: response.data.check_ins.next_page_url,
+      first_page_url: response.data.check_ins.first_page_url,
+      last_page_url: response.data.check_ins.last_page_url,
+      per_page: response.data.check_ins.per_page,
     },
   };
 };
