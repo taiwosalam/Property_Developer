@@ -13,7 +13,7 @@ import WebsiteTemplate3 from "@/public/website template/template-3.svg";
 
 // Imports
 import { industryOptions } from "@/data";
-import { getAllStates } from "@/utils/states";
+import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
@@ -47,6 +47,10 @@ import CompanyLogo from "@/components/Setup/company-logo";
 import CopyText from "@/components/CopyText/copy-text";
 import useGoogleFonts from "@/hooks/useFonts";
 import Picture from "@/components/Picture/picture";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { companyData, profileData, ProfileSettingsApiResponse, ProfileSettingsPageState, transformProfileApiResponse, userData } from "./data";
+import NetworkError from "@/components/Error/NetworkError";
 
 const websiteOptions = [
   {
@@ -75,9 +79,91 @@ const Profile = () => {
   const [selectedFont, setSelectedFont] = useState<string | null>(null);
   const [customDomain, setCustomDomain] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  
   const [checkedStates, setCheckedStates] = useState<{
     [key: string]: boolean;
   }>({});
+
+  const [address, setAddress] = useState({
+      state: "",
+      lga: "",
+      city: "",
+    });
+  const handleAddressChange = (key: keyof typeof address, value: string) => {
+     setAddress((prev) => ({
+        ...prev,
+        [key]: value,
+        ...(key === "state" && { lga: "", city: "" }),
+        ...(key === "lga" && { city: "" }),
+      }));
+    };
+
+  const [state, setState] = useState<ProfileSettingsPageState>({
+    profileData: {
+      phone: "",
+      picture: "",
+      title: "",
+      gender: "",
+      address: "",
+      state: "",
+      lga: "",
+      city: "",
+      bio: "",
+      dob: "",
+      religion: "",
+      marital_status: "",
+      occupation: "",
+      job_type: "",
+      family_type: "",
+      note: "",
+    },
+    companyData: {
+      company_name: "",
+      company_id: 0,
+      company_logo: "",
+      is_verified: 0,
+      date_of_registration: "",
+      cac_registration_number: "",
+      industry: null,
+      membership_number: null,
+      head_office_address: "",
+      state: "",
+      local_government: "",
+      city: "",
+      phone_numbers: [],
+    },
+    userData: {
+      id: 0,
+      userid: "",
+      name: "",
+      email: "",
+      role: [],
+      email_verification: false,
+      tier: 0,
+      account_level: "",
+    },
+  });
+
+  // FETCH API DATA
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch("/user/profile");
+  useRefetchOnEvent("refetchProfile", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (apiData) {
+      console.log(apiData);
+      const transformedData: ProfileSettingsPageState = transformProfileApiResponse(apiData as ProfileSettingsApiResponse);
+      setState(transformedData);
+      console.log("transformedData", transformedData);
+      console.log("state", state);
+    }
+  }, [apiData]);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
@@ -156,6 +242,20 @@ const Profile = () => {
     }
   };
 
+  if(loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    )
+  }
+
+   if (isNetworkError) return <NetworkError />;
+
+   if (error)
+     return <p className="text-base text-red-500 font-medium">{error}</p>;
+
+
   return (
     <>
       <SettingsSection title="company profile and details">
@@ -167,7 +267,7 @@ const Profile = () => {
                   required
                   id="company_name"
                   label="company name"
-                  placeholder="Taiwo Salam & Co. Properties Ltd"
+                  placeholder={state.companyData.company_name}
                   className="w-full"
                   disabled
                 />
@@ -196,7 +296,7 @@ const Profile = () => {
                 required
                 id="cac_date"
                 label="date of registration"
-                value={dayjs("2024")}
+                value={dayjs(state.companyData.date_of_registration)}
                 onChange={() => {}}
                 disabled
               />
@@ -206,7 +306,7 @@ const Profile = () => {
                 id="cac_number"
                 placeholder="Write here"
                 inputClassName="rounded-[8px] setup-f bg-white"
-                value={"RC43464333"}
+                value={state.companyData.cac_registration_number}
                 disabled
               />
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
@@ -228,12 +328,14 @@ const Profile = () => {
                 label="industry"
                 options={industryOptions}
                 inputContainerClassName="bg-neutral-2 w-full"
+                defaultValue={state.companyData.industry ?? ""}
               />
               <Input
                 id="membership_number"
                 label="membership number"
                 placeholder="write here"
                 className="w-full"
+                defaultValue={state.companyData.membership_number}
               />
               <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
                 <FileInput
@@ -266,22 +368,36 @@ const Profile = () => {
               options={getAllStates()}
               id="state"
               label="state"
-              placeholder="Select options"
-              inputContainerClassName="bg-neutral-2"
+              value={address.state}
+              hiddenInputClassName="setup-f"
+              defaultValue={state.companyData.state}
+              onChange={(value) => handleAddressChange("state", value)} // Update handler
+              required
             />
+
+            {/* Local Government Selector */}
             <Select
+              options={getLocalGovernments(address.state)}
               id="local_government"
-              options={["lga 1", "lga 2"]}
               label="local government"
-              placeholder="Select options"
-              inputContainerClassName="bg-neutral-2"
+              hiddenInputClassName="setup-f"
+              onChange={(value) => handleAddressChange("lga", value)} // Update handler
+              value={address.lga} // Controlled value
+              required
+              defaultValue={state.companyData.local_government}
             />
+
+            {/* City Selector */}
             <Select
-              id="city_town"
-              options={["City", "Town"]}
-              label="City/Town"
-              placeholder="Select options"
-              inputContainerClassName="bg-neutral-2"
+              options={getCities(address.state, address.lga)}
+              id="city"
+              label="City / Area"
+              allowCustom={true}
+              hiddenInputClassName="setup-f"
+              onChange={(value) => handleAddressChange("city", value)} // Update handler
+              value={address.city} // Controlled value
+              required
+              defaultValue={state.companyData.city}
             />
           </div>
           <div className="w-full flex flex-col lg:flex-row gap-4">
@@ -290,6 +406,7 @@ const Profile = () => {
               label="Head Office Address"
               placeholder=""
               className="w-full lg:w-[500px]"
+              defaultValue={state.companyData.head_office_address}
             />
             <div className="flex flex-col sm:flex-row items-start sm:items-end gap-2 w-full lg:w-auto">
               <FileInput
@@ -312,8 +429,11 @@ const Profile = () => {
               )}
             </div>
           </div>
-          <CompanyMobileNumber />
-          <CompanyLogo hiddenInputClassName="setup-f required" />
+          <CompanyMobileNumber phoneNumbers={state.companyData.phone_numbers} />
+          <CompanyLogo
+            hiddenInputClassName="setup-f required"
+            logo={state.companyData.company_logo}
+          />
         </div>
       </SettingsSection>
       <SettingsSection title="about company and social links">

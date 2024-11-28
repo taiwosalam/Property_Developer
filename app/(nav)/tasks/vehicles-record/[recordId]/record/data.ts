@@ -46,6 +46,13 @@ export interface SingleVehicleRecordApiResponse {
         updated_at: string;
         vehicle_record_id: number;
       }>;
+      current_page: number;
+      total: number;
+      prev_page_url: string;
+      next_page_url: string;
+      first_page_url: string;
+      last_page_url: string;
+      per_page: number;
     };
   };
 }
@@ -106,6 +113,13 @@ export interface checkInsOutData {
     updated_at: string;
     vehicle_record_id: number;
   }>;
+  current_page: number;
+  total: number;
+  prev_page_url: string;
+  next_page_url: string;
+  first_page_url: string;
+  last_page_url: string;
+  per_page: number;
 }
 
 export const transformSingleVehicleRecordApiResponse = (
@@ -180,6 +194,13 @@ export const transformSingleVehicleRecordApiResponse = (
         updated_at: checkIn.updated_at,
         vehicle_record_id: checkIn.vehicle_record_id,
       })),
+      current_page: response.data.check_ins.current_page,
+      total: response.data.check_ins.total,
+      prev_page_url: response.data.check_ins.prev_page_url,
+      next_page_url: response.data.check_ins.next_page_url,
+      first_page_url: response.data.check_ins.first_page_url,
+      last_page_url: response.data.check_ins.last_page_url,
+      per_page: response.data.check_ins.per_page,
     },
   };
 };

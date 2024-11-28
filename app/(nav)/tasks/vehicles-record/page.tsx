@@ -104,9 +104,24 @@ const VehiclesRecordPage = () => {
     }
   }, [apiData]);
 
-  
   const handleActionClick = (record: DataItem) => {
-    setSelectedRecord(record as VehicleRecord);
+    const vehicleRecord = record as VehicleRecord;
+    console.log("vehicle record passed -", vehicleRecord)
+    const updatedRecord = {
+      ...data,
+      latest_check_in: vehicleRecord.latest_check_in,
+      pictureSrc: vehicleRecord.pictureSrc,
+      status: vehicleRecord.status,
+      name: vehicleRecord.name,
+      id: vehicleRecord.id,
+      category: vehicleRecord.category,
+      registrationDate: vehicleRecord.registrationDate,
+      checkOut: vehicleRecord.latest_check_in,
+      plate_number: vehicleRecord.plate_number,
+      last_update: vehicleRecord.last_update,
+    };
+    setSelectedRecord(updatedRecord);
+    console.log("updatedRecord", updatedRecord)
     setModalOpen(true);
   };
 

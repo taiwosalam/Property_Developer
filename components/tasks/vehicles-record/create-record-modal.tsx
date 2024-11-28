@@ -68,6 +68,7 @@ const CreateRecordModal = ({ data }: { data: any }) => {
   };
 
   const handleCreateManually = () => {
+    console.log("selected property", selectedProperty);
     if (!selectedProperty) {
       toast.error("Please select a property before proceeding.");
       setStep(1);

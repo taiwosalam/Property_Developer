@@ -8,11 +8,15 @@ import { DeleteIconOrange, UploadImageIcon } from "@/public/icons/icons";
 
 interface CompanyLogoProps {
   hiddenInputClassName?: string;
+  logo: string | null;
 }
 
-const CompanyLogo: React.FC<CompanyLogoProps> = ({ hiddenInputClassName }) => {
+const CompanyLogo: React.FC<CompanyLogoProps> = ({
+  hiddenInputClassName,
+  logo,
+}) => {
   const { handleInputChange } = useContext(FlowProgressContext);
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string | null>(logo);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleButtonClick = () => {
