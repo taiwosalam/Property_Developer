@@ -94,6 +94,7 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({ data,
                   label="Inventory name"
                   className="flex-1"
                   style={input_styles}
+                  defaultValue={data?.name || data?.description || ""}
                 />
               ) : (
                 <InventoryField>{data?.name || data?.description || "---"}</InventoryField>
@@ -107,7 +108,7 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({ data,
                     type="number"
                     id={`quantity-${index}`}
                     name={`quantity-${index}`}
-                    value={count}
+                    value={data?.quantity || data?.unit || count}
                     onChange={(e) => setCount(Number(e.target.value))}
                     className="w-2/3 px-2 py-2 border-transparent focus:outline-none"
                   />
@@ -131,11 +132,12 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({ data,
                     options={inventory_conditions}
                     className="flex-1"
                     isSearchable={false}
+                    defaultValue={data?.condition}
                   />
                 </>
               ) : (
                 <>
-                  <InventoryField>{data?.quantity || data?.unit || "---"}</InventoryField>
+                  <InventoryField>{data?.unit || data?.quantity || "---"}</InventoryField>
                   <InventoryField>{data?.condition || "---"}</InventoryField>
                 </>
               )}

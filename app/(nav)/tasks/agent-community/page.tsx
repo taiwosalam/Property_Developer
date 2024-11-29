@@ -66,6 +66,17 @@
     const [state, setState] = useState(initialState);
     const { data, isLoading, searchQuery, meta } = state;
 
+  const handlePageChange = (page: number) => {
+    setState((prevState) => ({
+      ...prevState,
+      searchQuery: "",
+      meta: {
+        ...prevState.meta,
+        current_page: page,
+      },
+    }));
+  };
+
     const config = useMemo(
       () => ({
         params: { 
@@ -203,7 +214,7 @@
           <Pagination 
             totalPages={meta?.total_pages} 
             currentPage={meta?.current_page} 
-            onPageChange={() => {}} 
+            onPageChange={handlePageChange} 
           />
         </div>
         <div className="top-80 right-5 fixed rounded-full">

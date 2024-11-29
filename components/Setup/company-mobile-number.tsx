@@ -2,7 +2,7 @@
 import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
 import { SectionHeading } from "../Section/section-components";
 
-const CompanyMobileNumber = () => {
+const CompanyMobileNumber = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading title="Company Mobile Number">
@@ -16,6 +16,7 @@ const CompanyMobileNumber = () => {
             id={`phone_number_${index + 1}`}
             placeholder="800 0000 000"
             inputClassName="setup-f"
+            defaultValue={phoneNumbers[index]}
           />
         ))}
       </div>

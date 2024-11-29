@@ -1,13 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Picture from "@/components/Picture/picture";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Button from "@/components/Form/Button/button";
 import type { VehicleRecord } from "./types";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import CheckInOutForm from "../visitors-requests/check-in-out-form";
-import ModalPreset from "@/components/Wallet/wallet-modal-preset";
-// import ModalPreset from "@/components/Modal/modal-preset";
+import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { checkOutVehicle } from "./data";
+import { toast } from "sonner";
+import { format_date_time } from "@/app/(nav)/tasks/vehicles-record/data";
+import ModalPreset from "@/components/Modal/modal-preset";
 
 const VehicleRecordModal: React.FC<
   VehicleRecord & {
@@ -20,10 +24,69 @@ const VehicleRecordModal: React.FC<
   id,
   category,
   registrationDate,
-  checkIn,
-  checkOut,
+  latest_check_in,
   showOpenRecordsButton = true,
 }) => {
+    
+    const checkIn = {
+      id: latest_check_in?.id,
+      name: latest_check_in?.in_by || "---",
+      passenger: latest_check_in?.passengers_in || "---",
+      date: latest_check_in?.check_in_time
+        ? format_date_time(latest_check_in?.check_in_time)
+        : "---",
+      inventory: latest_check_in?.inventory_in || "---",
+    };
+
+    const [checkOut, setCheckOut] = useState({
+      id: latest_check_in?.id,
+      name: latest_check_in?.out_by || "---",
+      passenger: latest_check_in?.passengers_out || "---",
+      date: latest_check_in?.check_out_time
+        ? format_date_time(latest_check_in?.check_out_time)
+        : "---",
+      inventory: latest_check_in?.inventory_out || "---",
+    });
+
+    const handleCheckOut = async (event: React.FormEvent) => {
+      event.preventDefault();
+      const form = event.target as HTMLFormElement;
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      if (data.passenger) {
+        data.passengers_out = data.passenger;
+        delete data.passenger;
+      }
+
+      if (data.inventory) {
+        data.inventory_out = data.inventory;
+        delete data.inventory;
+      }
+
+      try {
+        const response = await checkOutVehicle(data, checkIn.id);
+        if (response) {
+          console.log("response", response);
+          setCheckOut({
+            id: response.id || checkOut.id,
+            name: response.data.out_by || checkOut.name,
+            passenger: response.data.passengers_out || checkOut.passenger,
+            date: response.data.check_out_time ? format_date_time(response.data.check_out_time) : checkOut.date,
+            inventory: response.data.inventory_out || checkOut.inventory,
+          });
+          window.dispatchEvent(new Event("refetchVehicleRecord"));
+          toast.success("Vehicle checked out successfully");
+          setActiveStep("success-action");
+        } else {
+          toast.error("Failed to check out vehicle");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+
   const [activeStep, setActiveStep] = useState<
     "default" | "check-out" | "success-action"
   >("default");
@@ -31,9 +94,10 @@ const VehicleRecordModal: React.FC<
     setActiveStep("default");
   };
 
+
   if (activeStep === "default") {
     return (
-      <ModalPreset title="Vehicle Record">
+      <WalletModalPreset title="Vehicle Record">
         <div className="flex flex-col md:flex-row items-center justify-between font-medium gap-2">
           <div className="flex items-center gap-2">
             <Picture size={80} src={pictureSrc} rounded />
@@ -105,7 +169,8 @@ const VehicleRecordModal: React.FC<
             <p className="text-text-label dark:text-white font-normal mb-1">
               Inventory
             </p>
-            <TruncatedText lines={2}>{checkIn.inventory}</TruncatedText>
+            <div dangerouslySetInnerHTML={{ __html: checkIn.inventory }} />
+            {/* <TruncatedText lines={2}>{checkIn.inventory}</TruncatedText> */}
           </div>
           {/* Check Out */}
           <div>
@@ -141,9 +206,7 @@ const VehicleRecordModal: React.FC<
             <p className="text-text-label dark:text-white font-normal mb-1">
               Inventory
             </p>
-            <TruncatedText lines={2}>
-              {checkOut?.inventory ? checkOut.inventory : "---"}
-            </TruncatedText>
+            <div dangerouslySetInnerHTML={{ __html: checkOut.inventory }} />
           </div>
         </div>
         {/* Buttons */}
@@ -167,11 +230,14 @@ const VehicleRecordModal: React.FC<
             </Button>
           )}
         </div>
-      </ModalPreset>
+      </WalletModalPreset>
     );
   }
+  
   if (activeStep === "check-out") {
     return (
+      <>
+      <form onSubmit={handleCheckOut}>
       <CheckInOutForm
         type="check-out"
         useCase="vehicle"
@@ -181,9 +247,31 @@ const VehicleRecordModal: React.FC<
         id={id}
         category={category}
         registrationDate={registrationDate}
-      />
+        />  
+      </form>
+      </>
     );
   }
+
+  if (activeStep === "success-action") {
+    return (
+      <ModalPreset type="success">
+        <div className="flex flex-col items-center justify-center text-center">
+          <p className="text-lg font-bold text-text-primary dark:text-white">
+            Vehicle checked out successfully!
+          </p>
+          <Button
+            size="sm_bold"
+            className="mt-4 py-[10px] px-6 rounded-lg"
+            onClick={() => setActiveStep("default")}
+          >
+            Close
+          </Button>
+        </div>
+      </ModalPreset>
+    );
+  }
+
   return <div></div>;
 };
 

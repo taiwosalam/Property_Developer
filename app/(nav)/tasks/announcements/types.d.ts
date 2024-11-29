@@ -8,6 +8,6 @@ export interface Announcement {
   image_paths: string[];
   created_at: string; // ISO date string
   updated_at: string; // ISO date string
-  deleted_at: string | null;
+  deleted_at: string | '';
   image_urls: string[];
 }

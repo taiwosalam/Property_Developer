@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 import Picture from "@/components/Picture/picture";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { secondaryFont } from "@/utils/fonts";
@@ -13,7 +14,6 @@ import {
 import PreviousRecord from "@/components/tasks/vehicles-record/previous-record";
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
 import { SectionSeparator } from "@/components/Section/section-components";
-import { VehicleRecordData } from "@/app/(nav)/tasks/vehicles-record/data";
 import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import CheckInOutForm from "@/components/tasks/visitors-requests/check-in-out-form";
@@ -23,66 +23,200 @@ import {
 } from "@/components/tasks/vehicles-record/edit-vehicle-details";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import {
+  transformSingleVehicleRecordApiResponse,
+  UserData,
+  VehicleDetails,
+  WebContactInfo,
+  checkInsOutData,
+  SingleVehicleRecordApiResponse,
+} from "./data";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import NetworkError from "@/components/Error/NetworkError";
+import { checkInVehicle } from "@/components/tasks/vehicles-record/data";
+import { toast } from "sonner";
+import { Box as MuiBox, Modal as MuiModal } from "@mui/material";
 
-interface UserData {
-  user_tag: "web" | "mobile";
-  id: string | number;
-  pictureSrc: string;
-  full_name: string;
-  state: string;
-  local_government: string;
-  city: string;
-  address: string;
-  phone_number: string;
-  avatar: string;
-  notes: {
-    last_updated: string;
-    write_up: string;
-  };
+
+interface TransformedData {
+  userData: UserData | null;
+  vehicleDetails: VehicleDetails | null;
+  webContactInfo: WebContactInfo | null;
+  checkInsOutData: checkInsOutData | null;
 }
 
-const Detail: React.FC<{
+interface DetailProps {
   label: string;
   value: string;
-}> = ({ label, value }) => {
-  return (
-    <div className="flex flex-col sm:flex-row gap-x-4 gap-y-1">
-      <p className="text-[#747474] dark:text-darkText-2 w-[135px]">{label}</p>
-      <p className="text-black dark:text-white capitalize">{value}</p>
-    </div>
-  );
-};
+}
+
+const Detail: React.FC<DetailProps> = ({ label, value }) => (
+  <div className="flex flex-col sm:flex-row gap-x-4 gap-y-1">
+    <p className="text-[#747474] dark:text-darkText-2 w-[135px]">{label}</p>
+    <p className="text-black dark:text-white capitalize">{value}</p>
+  </div>
+);
+
+interface Notes {
+  last_updated: string;
+  write_up?: string;
+}
 
 const RecordPage = () => {
-  const [userData, setUserData] = useState<UserData | null>({
-    user_tag: Math.random() > 0.5 ? "web" : "mobile",
-    pictureSrc: "/empty/landlord-avatar.png",
-    full_name: "Abimbola Adedeji",
-    state: "Oyo",
-    local_government: "Ibadan North Central",
-    city: "Ibadan",
-    address: "U4 Joke Plaza Bodija Ibadan",
-    phone_number: "2348132086958",
-    avatar: "/empty/avatar-1.svg",
-    id: "22132876554444",
-    notes: {
-      last_updated: "22/12/2022",
-      write_up:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. building, is a residential property that living read more. They want to work with their budget in booking an appointment. They wants to ease themselves the stress having to que, and also reduce the time spent searching for something new.for something new. A multi-family home, also know as a duplex, triplex, or multi-unit building, is a residential property that living read more. They want to work with their budget in booking an appointment. ime spent searching",
-    },
-  });
-  if (!userData) return null;
+  const router = useRouter();
+  const [modalOpen, setModalOpen] = useState(false);
+  const { recordId } = useParams();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const initialState: TransformedData = {
+    userData: null,
+    vehicleDetails: null,
+    webContactInfo: null,
+    checkInsOutData: null,
+  };
+
+  const [states, setStates] = useState<TransformedData>(initialState);
+
+    const handlePageChange = (page: number) => {
+      setSearchQuery("");
+      setStates((prevState) => ({
+        ...prevState,
+        checkInsOutData: {
+          ...prevState.checkInsOutData,
+          current_page: page,
+          check_ins: prevState.checkInsOutData?.check_ins || [],
+          total: prevState.checkInsOutData?.total || 0,
+          prev_page_url: prevState.checkInsOutData?.prev_page_url || "",
+          next_page_url: prevState.checkInsOutData?.next_page_url || "",
+          first_page_url: prevState.checkInsOutData?.first_page_url || "",
+          last_page_url: prevState.checkInsOutData?.last_page_url || "",
+          per_page: prevState.checkInsOutData?.per_page || 0,
+        },
+      }));
+    };
+
+
+
+  const config = useMemo(
+    () => ({
+      params: {
+        page: states.checkInsOutData?.current_page || 1,
+        search: searchQuery,
+      },
+    }),
+    [states.checkInsOutData?.current_page, searchQuery]
+  );
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<SingleVehicleRecordApiResponse>(`vehicle-record/${recordId}/show-details`, config);
+
+  useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    console.log("apiData", apiData);
+    if (apiData && "data" in apiData && apiData.data) {
+      try {
+        const transformed = transformSingleVehicleRecordApiResponse(apiData);
+        setStates((prevState) => ({
+          ...prevState,
+          userData: transformed.userData,
+          vehicleDetails: transformed.vehicleDetails,
+          webContactInfo: transformed.webContactInfo,
+          checkInsOutData: transformed.checkInsOutData,
+        }));
+        console.log("transformed", transformed);  
+        console.log("checkInsOutData", transformed.checkInsOutData);
+      } catch (error) {
+        console.error("Transformation error:", error, apiData);
+      }
+    } else if (!loading) {
+      console.error("Invalid API data format:", apiData);
+    }
+  }, [apiData, loading]);
+  
+  const { userData, vehicleDetails, webContactInfo, checkInsOutData } = states;
+
+
+  if (loading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-12 h-12 border-4 border-brand-9 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+
+  if (isNetworkError) return <NetworkError />;
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
+
+  if (!userData || !vehicleDetails || !webContactInfo) {
+    return <div>No data available.</div>;
+  }
+
   const {
     user_tag,
     notes,
     full_name,
-    state,
+    state: userState,
     address,
     avatar,
     local_government,
     city,
     phone_number,
+    id: userId,
+    pictureSrc,
   } = userData;
+
+  const {
+    brand,
+    plate_number,
+    category,
+    model,
+    state: vehicleState,
+    color,
+    manufacture_year,
+    vehicle_type,
+  } = vehicleDetails;
+
+    const handleCheckIn = async (event: React.FormEvent) => {
+      event.preventDefault();
+      const form = event.target as HTMLFormElement;
+      const formData = new FormData(form);
+
+      // Modify keys in formData
+      const data = Object.fromEntries(formData.entries());
+      data.passengers_in = data.passenger;
+      delete data.passenger;
+      data.inventory_in = data.inventory;
+      delete data.inventory;
+
+      // Add vehicle_record to requestId
+      data.vehicle_record_id = `${recordId}`;
+
+      console.log("data", data);
+
+      try {
+        const response = await checkInVehicle(data);
+        if (response) {
+          window.dispatchEvent(new Event("refetchVehicleRecord"));
+          toast.success("Vehicle checked in successfully");
+          setModalOpen(false);
+          // setActiveStep("success-action");
+        } else {
+          toast.error("Failed to check in vehicle");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
   return (
     <div className="space-y-5 pb-[100px]">
       <BackButton>Vehicle Record</BackButton>
@@ -93,7 +227,7 @@ const RecordPage = () => {
         >
           <div className="flex flex-col xl:flex-row gap-5">
             <Picture
-              src={DefaultLandlordAvatar}
+              src={avatar || DefaultLandlordAvatar}
               alt="profile picture"
               size={120}
               rounded
@@ -102,21 +236,21 @@ const RecordPage = () => {
               <div className="custom-flex-col">
                 <div className="flex items-center">
                   <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                    Abimbola Ayodeji
+                    {full_name}
                   </p>
                   <BadgeIcon color="blue" />
                 </div>
                 <p
                   className={`${secondaryFont.className} text-sm dark:text-darkText-2 font-normal`}
                 >
-                  ayo@gmail.com
+                  {phone_number}
                 </p>
               </div>
               <div className="custom-flex-col gap-2">
                 <UserTag type={user_tag} />
                 {user_tag === "mobile" && (
                   <p className="text-neutral-800 dark:text-darkText-2 text-base font-medium">
-                    ID: 22132876554444
+                    ID: {userId}
                   </p>
                 )}
               </div>
@@ -126,7 +260,7 @@ const RecordPage = () => {
             {user_tag === "mobile" ? (
               <>
                 <Button size="base_medium" className="py-2 px-8">
-                  message
+                  Message
                 </Button>
               </>
             ) : (
@@ -141,7 +275,7 @@ const RecordPage = () => {
                     <EditPersonalDetailsFormModal
                       data={{
                         full_name,
-                        state,
+                        state: userState,
                         address,
                         avatar,
                         local_government,
@@ -167,7 +301,12 @@ const RecordPage = () => {
                 </Button>
               </ModalTrigger>
               <ModalContent>
-                <MobileNotesModal notes={notes} />
+                <MobileNotesModal 
+                  notes={{
+                    last_updated: notes?.last_updated || "",
+                    write_up: notes?.write_up ?? ""
+                  }} 
+                />
               </ModalContent>
             </Modal>
           </div>
@@ -176,19 +315,19 @@ const RecordPage = () => {
         {user_tag === "mobile" && (
           <ContactInfo
             info={{
-              Gender: "Male",
+              Gender: "Male", 
               Religion: "Christianity",
-              Phone: "08132086958",
+              Phone: phone_number,
             }}
           />
         )}
         <ContactInfo
           heading="Contact Address"
           info={{
-            Address: "U4 Joke Plaza Bodija Ibadan",
-            city: "Ibadan",
-            State: "Oyo State",
-            "L.G": "Ibadan North Central",
+            Address: address,
+            City: city,
+            State: userState,
+            "L.G": local_government,
           }}
         />
         {user_tag === "mobile" && (
@@ -198,25 +337,26 @@ const RecordPage = () => {
             info={{
               Name: "Abimbola Adedeji",
               email: "abimbola@gmail.com",
-              "Phone Number": "08132086958",
+              "Phone Number": phone_number,
               relationship: "Father",
             }}
           />
         )}
       </div>
-      {/* <VehicleDetails /> */}
+
+      {/* Vehicle Details */}
       <InfoBox className="text-black dark:text-white text-lg lg:text-xl font-bold">
         <h3>Vehicle Details</h3>
         <SectionSeparator className="my-4" />
         <div className="flex flex-wrap gap-4 lg:gap-16 text-sm lg:text-base font-normal capitalize">
           <div className="grid gap-y-4 gap-x-8 grid-cols-2 lg:grid-cols-3">
-            <Detail label="Brand Name" value="Toyota" />
-            <Detail label="Plate Number" value="OS102DR" />
-            <Detail label="Category" value="Guest" />
-            <Detail label="Model" value="Corolla" />
-            <Detail label="State" value="Lagos" />
-            <Detail label="Color" value="Black" />
-            <Detail label="Manufacture Year" value="2002" />
+            <Detail label="Brand Name" value={brand} />
+            <Detail label="Plate Number" value={plate_number} />
+            <Detail label="Category" value={category} />
+            <Detail label="Model" value={model} />
+            <Detail label="State" value={vehicleState} />
+            <Detail label="Color" value={color || "N/A"} />
+            <Detail label="Manufacture Year" value={manufacture_year} />
           </div>
           <Modal>
             <ModalTrigger asChild>
@@ -227,14 +367,15 @@ const RecordPage = () => {
             <ModalContent>
               <EditVehicleDetailsFormModal
                 data={{
-                  brand_name: "Volvo",
-                  plate_number: "OS102DR",
-                  state: "Lagos",
-                  model: "Corolla",
-                  vehicle_type: "Cars",
-                  color: "Black",
-                  manufacturer_year: "2022 - 2026",
-                  visitor_category: "Guest",
+                  id: vehicleDetails.id,
+                  brand_name: brand,
+                  plate_number: plate_number,
+                  state: vehicleState,
+                  model: model,
+                  vehicle_type: vehicle_type,
+                  color: color || "N/A",
+                  manufacturer_year: manufacture_year,
+                  visitor_category: category,
                 }}
               />
             </ModalContent>
@@ -249,29 +390,42 @@ const RecordPage = () => {
         </h2>
         <SectionSeparator />
         <div className="space-y-4">
-          {VehicleRecordData.map((record) => (
-            <PreviousRecord key={record.id} {...record} />
+          {checkInsOutData?.check_ins?.map((record) => (
+            <PreviousRecord 
+              key={record.id} 
+              category={category}
+              userId={Number(userId)}
+              registrationDate={record.created_at}
+              pictureSrc={pictureSrc}
+              {...record} 
+            />
           ))}
         </div>
       </div>
-      <Pagination totalPages={10} currentPage={1} onPageChange={() => {}} />
+      <Pagination 
+        totalPages={checkInsOutData?.total || 1} 
+        currentPage={checkInsOutData?.current_page || 1} 
+        onPageChange={handlePageChange} 
+      />
       <FixedFooter className="flex items-center justify-end">
-        <Modal>
+        <Modal state={{isOpen: modalOpen, setIsOpen: setModalOpen}}>
           <ModalTrigger asChild>
             <Button size="sm_normal" className="py-2 px-8">
               Create New Record
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <CheckInOutForm
-              useCase="vehicle"
-              type="check-in"
-              pictureSrc={userData.pictureSrc}
-              userName={userData.full_name}
-              id={userData.id}
-              category="Guest"
-              registrationDate="12/01/2024 (08:09pm)"
-            />
+            <form onSubmit={handleCheckIn}>
+              <CheckInOutForm
+                useCase="vehicle"
+                type="check-in"
+                pictureSrc={pictureSrc}
+                userName={full_name}
+                id={userId}
+                category={category}
+                registrationDate="12/01/2024 (08:09pm)" // Replace with dynamic data if available
+              />
+            </form>
           </ModalContent>
         </Modal>
       </FixedFooter>

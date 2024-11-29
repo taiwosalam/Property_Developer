@@ -150,7 +150,8 @@ const CustomTable: React.FC<CustomTableProps> = ({
         <TableBody className="capitalize">
           {data.map((x, index) => (
             <TableRow
-              key={getUniqueKey(x)}
+              // key={getUniqueKey(x)}
+              key={index}
               onClick={handleSelect ? (e) => handleSelect(x, e) : undefined}
               className="cursor-pointer"
               sx={{

@@ -1,18 +1,28 @@
 // imports
 import { SectionHeading } from "../Section/section-components";
 import Button from "../Form/Button/button";
-import { useContext } from "react";
+import { useContext, useRef, useState } from "react";
 import Image from "next/image";
 import { FlowProgressContext } from "../FlowProgress/flow-progress";
 import { DeleteIconOrange, UploadImageIcon } from "@/public/icons/icons";
 import { useImageUploader } from "@/hooks/useImageUploader";
 
-const CompanyLogo = () => {
+interface CompanyLogoProps {
+  hiddenInputClassName?: string;
+  logo: string | null;
+}
+
+const CompanyLogo: React.FC<CompanyLogoProps> = ({
+  hiddenInputClassName,
+  logo,
+}) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const { preview, inputFileRef, handleImageChange, clearSelection } =
     useImageUploader({
       maxSize: { unit: "MB", value: 2 },
     });
+  const [image, setImage] = useState<string | null>(logo);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleButtonClick = () => {
     if (inputFileRef.current) {
