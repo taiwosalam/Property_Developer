@@ -14,9 +14,9 @@ export const getUserStatus = async () => {
   try {
     const { data } = await api.get<UserResponse>("/user");
     const { role, email_verification } = data.data.details;
-    useAuthStore.getState().setRole(role[0]);
+    useAuthStore.getState().setAuthState("role", role[0]);
     if (!email_verification) {
-      useAuthStore.getState().setEmailVerified(false);
+      useAuthStore.getState().setAuthState("emailVerified", false);
       return "redirect to verify email";
     }
     if (role[0] === "user") {

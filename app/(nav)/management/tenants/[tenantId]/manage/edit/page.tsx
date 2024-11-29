@@ -26,20 +26,8 @@ import {
 } from "@/components/Management/Tenants/Edit/tenant-edit-info-sectios";
 import BackButton from "@/components/BackButton/back-button";
 import CustomLoader from "@/components/Loader/CustomLoader";
-import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 import type { TenantData } from "../../../types";
 const EditTenant = () => {
-  const {
-    data: tenant,
-    error,
-    loading,
-    id: tenantId,
-  } = MockFunction("tenant") as {
-    data: TenantData;
-    error: Error | null;
-    loading: boolean;
-    id: string;
-  };
 
   const [errorMsgs, setErrorMsgs] = useState<ValidationErrors | null>(null);
 

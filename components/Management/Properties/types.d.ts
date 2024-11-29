@@ -127,3 +127,59 @@ export interface PropertyFormPayload {
   };
   staff: string[];
 }
+
+
+export interface AddUnitPayload {
+  unit: {
+    unit_name: string;
+    unit_type: string;
+    unit_sub_type: string;
+    unit_preference: string;
+  };
+  images: File[];
+  features: {
+    measurement: string;
+    // total_sqm: string
+    // number_of: number
+    bedroom: string;
+    bathroom: string;
+    toilet: number;
+    facilities: '{"swimming_pool": true, "gym": true}';
+    en_suit: boolean;
+    prepaid: boolean;
+    wardrobe: boolean;
+    pet_allowed: boolean;
+  };
+
+  // means 
+  unit_fee_news: {
+    fee_period: "monthly";
+    fee_amount: number;
+    service_charge: 300;
+    agency_fee: 1500;
+    legal_fee: 500;
+    caution_fee: 1000;
+    inspection_fee: 200;
+    other_charge: 50;
+    negotiation: boolean;
+    total_package: number;
+  };
+
+  unit_fee_renews: {
+    fee_period: "yearly";
+    fee_amount: 4500;
+    service_charge: 300;
+    other_charge: 50;
+    total_package: 4850;
+  };
+
+  unit_fee: {
+    fee_period: "monthly";
+    // fee_amount: number
+    security_fee: 200;
+    service_fee: 150;
+    other_charge: 25;
+    total_package: 375;
+    // annual_fee: 4500; ???
+  };
+}

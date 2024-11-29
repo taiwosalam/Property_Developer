@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import type { TenantData } from "@/app/(nav)/management/tenants/types";
 import type { LandlordPageData } from "@/app/(nav)/management/landlord/types";
 
-export const hardcodedTenantData: TenantData = {
+export const hardcodedTenantData = {
   id: 1,
   picture: "/empty/SampleLandlord.jpeg",
   first_name: "John",
@@ -112,7 +112,7 @@ export const hardcodedTenantData: TenantData = {
   ],
 };
 
-export const hardcodedLandlordData: LandlordPageData = {
+export const hardcodedLandlordData = {
   picture: "/empty/SampleLandlord.jpeg",
   first_name: "John",
   last_name: "Doe",
@@ -216,29 +216,4 @@ export const hardcodedLandlordData: LandlordPageData = {
     },
   ],
   properties_managed: [],
-};
-
-export const MockFunction = (a?: "landlord" | "tenant") => {
-  const [data, setData] = useState<TenantData | LandlordPageData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const returnValue =
-    a === "landlord"
-      ? hardcodedLandlordData
-      : a === "tenant"
-      ? hardcodedTenantData
-      : null;
-
-  useEffect(() => {
-    // Simulate a delay before setting the hardcoded data
-    const timer = setTimeout(() => {
-      setData(returnValue);
-      setLoading(false);
-    }, 0); // Simulate a 2-second delay
-
-    return () => clearTimeout(timer);
-  }, [returnValue]);
-
-  return { data, id: "1", loading, error };
 };

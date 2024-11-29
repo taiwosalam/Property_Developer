@@ -16,6 +16,7 @@ interface LoginResponse {
       email: string;
       role: [string];
       email_verification: boolean;
+      wallet_pin_status: boolean;
     };
   };
 }
@@ -46,23 +47,26 @@ export const login = async (formData: Record<string, any>) => {
     );
     useAuthStore.getState().reset();
     const token = data.access_token;
-    useAuthStore.getState().setToken(token);
+    useAuthStore.getState().setAuthState("token", token);
     const email = data.data.details?.email || formData.email;
-    useAuthStore.getState().setEmail(email);
-    const message = data?.message || "Login successful!";
+    useAuthStore.getState().setAuthState("email", email);
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
-    useAuthStore.getState().setRole(role);
+    useAuthStore.getState().setAuthState("role", role);
+    const walletPinStatus = data.data.details.wallet_pin_status;
     if (emailVerified) {
-      toast.success(message);
+      toast.success(data?.message || "Login successful!");
       if (role === "user") {
         return "redirect to setup";
       } else {
+        useAuthStore
+          .getState()
+          .setAuthState("walletPinStatus", walletPinStatus);
         return "redirect to dashboard";
       }
     }
     if (!emailVerified) {
-      useAuthStore.getState().setEmailVerified(false);
+      useAuthStore.getState().setAuthState("emailVerified", false);
       toast.warning("Please verify your email to continue");
       return "redirect to verify email";
     }
@@ -87,8 +91,8 @@ export const signup = async (
   try {
     const { data } = await axios.post(`${base_url}register`, formData);
     const token = data.access_token;
-    useAuthStore.getState().setToken(token);
-    useAuthStore.getState().setEmail(formData.email);
+    useAuthStore.getState().setAuthState("token", token);
+    useAuthStore.getState().setAuthState("email", formData.email);
     toast.success(data?.message || "Signup successful!");
     return true;
   } catch (error) {
@@ -130,8 +134,7 @@ export const resendOtp = async (): Promise<boolean> => {
         },
       }
     );
-    const message = data?.message || "OTP resent successfully!";
-    toast.success(message);
+    toast.success(data?.message || "OTP resent successfully!");
     return true;
   } catch (error) {
     handleAxiosError(error, "Failed to resend OTP. Please try again.");
@@ -140,11 +143,11 @@ export const resendOtp = async (): Promise<boolean> => {
 };
 
 export const logout = async (): Promise<boolean> => {
-  const reset = useAuthStore.getState().reset;
+  const resetAuthStore = useAuthStore.getState().reset;
   try {
     const { data } = await api.post("logout");
     const message = data?.message || "Successfully logged out";
-    reset();
+    resetAuthStore();
     toast.success(message);
     return true;
   } catch (error) {

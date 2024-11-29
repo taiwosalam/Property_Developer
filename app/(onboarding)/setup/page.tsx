@@ -91,10 +91,10 @@ const Setup = () => {
               </div>
               <CompanyDetails />
               <CompanyAddress />
-              <CompanyMobileNumber phoneNumbers={[]} />
+              <CompanyMobileNumber />
             </div>
           </Section>
-          <CompanyLogo logo={null} />
+          <CompanyLogo />
           <SectionHeading title="directors details">
             Fill the details below to add a director to your company
           </SectionHeading>

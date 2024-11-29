@@ -19,10 +19,8 @@ import PropertyCard from "@/components/Management/Properties/property-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { ChevronLeft } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
-import { ASSET_URL, empty } from "@/app/config";
 import UserTag from "@/components/Tags/user-tag";
 import CustomLoader from "@/components/Loader/CustomLoader";
-// import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { LandlordEditAttachmentInfoSection } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
 import CustomTable from "@/components/Table/table";
@@ -82,11 +80,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               <ChevronLeft />
             </button>
             <Picture
-              src={
-                landlordData.picture
-                  ? `${ASSET_URL}${landlordData.picture}`
-                  : empty
-              }
+              src={landlordData.picture}
               alt="profile picture"
               size={120}
               rounded
@@ -96,7 +90,8 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               <div className="custom-flex-col">
                 <div className="flex items-center">
                   <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                    {landlordData?.first_name} {landlordData?.last_name}
+                    {/* {landlordData?.first_name} {landlordData?.last_name} */}
+                    {landlordData.name}
                   </p>
                   <BadgeIcon color="blue" />
                 </div>
@@ -128,6 +123,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 >
                   unflag
                 </Button>
+
                 <Modal>
                   <ModalTrigger asChild>
                     <Button
@@ -317,7 +313,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               key={documentType}
             >
               <div className="flex flex-wrap gap-4">
-                {documents.map((document) => (
+                {documents?.map((document) => (
                   <LandlordTenantInfoDocument key={document.id} {...document} />
                 ))}
               </div>

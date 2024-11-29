@@ -2,7 +2,6 @@
 
 // Imports
 import Card from "@/components/dashboard/card";
-
 import {
   complaintsData,
   dashboardCardData,

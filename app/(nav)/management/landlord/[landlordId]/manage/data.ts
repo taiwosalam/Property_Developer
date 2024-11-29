@@ -54,20 +54,19 @@ export const statementTableData = generateTableData(10);
 export interface IndividualLandlordAPIResponse {
   data: {
     id: number;
-    first_name: string;
-    last_name: string;
+    // first_name: string;
+    // last_name: string;
+    name: string;
     email: string;
-    phone_number: string;
-    tier_id: number;
+    phone: string;
+    tier_id?: 1 | 2 | 3 | 4 | 5;
     picture: string;
     gender: string;
-    notes: {
+    agent: string;
+    // owner_type: string;
+    notes?: {
       last_updated: string;
       write_up: string;
-    };
-    land_lord: {
-      owner_type: string;
-      agent: string;
     };
   };
 }
@@ -76,17 +75,17 @@ export const transformIndividualLandlordAPIResponse = ({
   data,
 }: IndividualLandlordAPIResponse): LandlordPageData => {
   return {
+    id: data.id,
     picture: data.picture,
-    first_name: data.first_name,
-    last_name: data.last_name,
+    // first_name: data.first_name,
+    // last_name: data.last_name,
+    name: data.name,
     email: data.email,
-    phone_number: data.phone_number,
+    phone_number: data.phone,
     gender: data.gender,
     notes: data.notes,
-    user_tag:
-      data.land_lord.agent.toLowerCase() === "mobile" ? "mobile" : "web",
-    id: data.id,
-    type: data.land_lord.owner_type,
+    user_tag: data.agent.toLowerCase() === "mobile" ? "mobile" : "web",
+    type: "backend error",
     contact_address: { address: "", city: "", state: "", local_govt: "" },
     next_of_kin: {
       name: "",

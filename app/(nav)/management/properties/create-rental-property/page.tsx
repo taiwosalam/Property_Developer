@@ -11,9 +11,11 @@ const CreateProperty = () => {
   const router = useRouter();
 
   const handleSubmit = async (data: Record<string, any>) => {
-    const status = await addProperty(data);
-    if (status) {
-      router.push(`/management/properties/create-rental-property/1/add-unit"`);
+    const propertyId = await addProperty(data);
+    if (propertyId) {
+      router.push(
+        `/management/properties/create-rental-property/${propertyId}/add-unit`
+      );
     }
   };
 

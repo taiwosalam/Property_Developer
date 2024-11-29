@@ -8,21 +8,15 @@ import { DeleteIconOrange, UploadImageIcon } from "@/public/icons/icons";
 import { useImageUploader } from "@/hooks/useImageUploader";
 
 interface CompanyLogoProps {
-  hiddenInputClassName?: string;
-  logo: string | null;
+  logo?: string | null;
 }
 
-const CompanyLogo: React.FC<CompanyLogoProps> = ({
-  hiddenInputClassName,
-  logo,
-}) => {
+const CompanyLogo: React.FC<CompanyLogoProps> = ({ logo }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const { preview, inputFileRef, handleImageChange, clearSelection } =
     useImageUploader({
       maxSize: { unit: "MB", value: 2 },
     });
-  const [image, setImage] = useState<string | null>(logo);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleButtonClick = () => {
     if (inputFileRef.current) {

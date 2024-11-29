@@ -68,3 +68,5 @@ export interface FundsBeneficiaryProps {
   remove?: () => void;
   seeMore?: () => void;
 }
+
+export type ActivateWalletOptions = "setup-pin" | "confirm-pin" | "enter-otp";

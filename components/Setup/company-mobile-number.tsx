@@ -2,7 +2,9 @@
 import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
 import { SectionHeading } from "../Section/section-components";
 
-const CompanyMobileNumber = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
+const CompanyMobileNumber: React.FC<{ phoneNumbers?: string[] }> = ({
+  phoneNumbers,
+}) => {
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading title="Company Mobile Number">
@@ -16,7 +18,7 @@ const CompanyMobileNumber = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
             id={`phone_number_${index + 1}`}
             placeholder="800 0000 000"
             inputClassName="setup-f"
-            defaultValue={phoneNumbers[index]}
+            defaultValue={phoneNumbers?.[index]}
           />
         ))}
       </div>

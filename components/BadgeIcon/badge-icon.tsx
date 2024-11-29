@@ -12,13 +12,13 @@ export const badgeIconColors = {
 
 export type BadgeIconColors = keyof typeof badgeIconColors;
 
-export const tierColorMap: Record<number, BadgeIconColors> = {
+export const tierColorMap = {
   1: "red",
   2: "yellow",
   3: "blue",
   4: "green",
   5: "black",
-};
+} as const;
 
 interface BadgeIconProps {
   color: BadgeIconColors;
