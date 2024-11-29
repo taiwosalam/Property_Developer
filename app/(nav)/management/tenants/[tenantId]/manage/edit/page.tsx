@@ -27,33 +27,36 @@ import {
 import BackButton from "@/components/BackButton/back-button";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import type { TenantData } from "../../../types";
-const EditTenant = () => {
+import {
+  transformIndividualTenantAPIResponse,
+  type IndividualTenantAPIResponse,
+} from "../data";
+import useFetch from "@/hooks/useFetch";
 
-  const [errorMsgs, setErrorMsgs] = useState<ValidationErrors | null>(null);
-
+const EditTenant = ({ params }: { params: { tenantId: string } }) => {
+  const { tenantId } = params;
   const handleUpdateTenant = async (formData: FormData) => {
     console.log("formData: ", formDataToString(formData));
   };
+
+  const { data, error, loading } = useFetch<IndividualTenantAPIResponse>(
+    `tenant/${tenantId}`
+  );
+
+  const tenant = data ? transformIndividualTenantAPIResponse(data) : null;
 
   if (loading)
     return (
       <CustomLoader layout="edit-page" pageTitle="Edit Tenants & Occupant" />
     );
-  if (error) return <div>Error: {error.message}</div>;
+  if (error) return <div>{error}</div>;
   if (!tenant) return null;
-
-  // useEffect(() => {
-  //   if (tenant?.user_tag === "mobile") {
-  //     router.push(`/management/tenants/${tenant.id}/manage`);
-  //   }
-  // }, [tenant?.user_tag, router]);
 
   return (
     <TenantEditContext.Provider value={{ data: tenant }}>
       <AuthForm
         returnType="form-data"
         onFormSubmit={handleUpdateTenant}
-        setValidationErrors={setErrorMsgs}
         className="custom-flex-col gap-6 lg:gap-10 pb-[100px]"
       >
         <BackButton>Edit Tenants & Occupant</BackButton>

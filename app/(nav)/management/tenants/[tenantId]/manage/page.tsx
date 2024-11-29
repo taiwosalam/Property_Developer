@@ -204,7 +204,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               key={documentType}
             >
               <div className="flex flex-wrap gap-4">
-                {documents.map((document) => (
+                {documents?.map((document) => (
                   <LandlordTenantInfoDocument key={document.id} {...document} />
                 ))}
               </div>
