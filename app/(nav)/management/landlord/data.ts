@@ -65,7 +65,6 @@ export const landlordTableFields: Field[] = [
     cellStyle: {
       paddingLeft: "4px",
       fontWeight: 700,
-      minWidth: 150,
       color: "#000",
     },
   },
@@ -73,13 +72,15 @@ export const landlordTableFields: Field[] = [
     id: "3",
     accessor: "email",
     cellStyle: {
-      maxWidth: 200,
-      wordBreak: "break-all",
+      whiteSpace: "nowrap",
     },
   },
   {
     id: "4",
     accessor: "phone_number",
+    cellStyle: {
+      whiteSpace: "nowrap",
+    },
   },
   { id: "5", accessor: "user_tag" },
   { id: "6", accessor: "manage/chat" },
