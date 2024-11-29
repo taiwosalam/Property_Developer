@@ -171,7 +171,7 @@ const Landlord = () => {
     full_name: (
       <p className="flex items-center">
         <span className="text-ellipsis line-clamp-1">{l.name}</span>
-        <BadgeIcon color={l.badge_color} />
+        {l.badge_color && <BadgeIcon color={l.badge_color} />}
       </p>
     ),
     user_tag: <UserTag type={l.user_tag} />,
@@ -266,6 +266,7 @@ const Landlord = () => {
         handleFilterApply={handleFilterApply}
         isDateTrue
         handleSearch={handleSearch}
+        onSort={handleSort}
 
         // filterOptionsWithRadio={landlordFiltersRadio}
         // filterWithOptionsWithDropdown={landlordFiltersWithDropdown}
@@ -319,11 +320,11 @@ const Landlord = () => {
                       key={l.id}
                     >
                       <LandlordCard
-                        picture_url={l.picture_url || undefined}
+                        picture_url={l.picture_url}
                         name={l.name}
                         user_tag={l.user_tag}
                         email={l.email}
-                        phone_number={l.phone_number || undefined}
+                        phone_number={l.phone_number}
                         badge_color={l.badge_color}
                       />
                     </Link>

@@ -49,8 +49,9 @@ interface AttachedDocument extends AttachedDocumentCard {
 
 export type LandlordPageData = {
   picture: string;
-  first_name: string;
-  last_name: string;
+  // first_name: string;
+  // last_name: string;
+  name: string;
   email: string;
   gender: string;
   phone_number: string;
@@ -62,13 +63,13 @@ export type LandlordPageData = {
   guarantor1: Guarantor;
   guarantor2: Guarantor;
   bank_details: BankDetails;
-  notes: {
+  notes?: {
     last_updated: string;
     write_up: string;
   };
   others: Others;
-  documents: AttachedDocument[];
-  properties_managed: PropertyManaged[];
+  documents?: AttachedDocument[];
+  properties_managed?: PropertyManaged[];
 };
 
 export type LandlordHelpInfo = {

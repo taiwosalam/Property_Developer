@@ -119,21 +119,11 @@ const UnitBreakdownNewTenant = () => {
           onChange={(value) => handleInputChange("serviceCharge", value)}
           type="text"
         />
-        {/* <Input
-          id="agency_fee"
-          label="Agency Fee"
-          inputClassName="bg-white"
-          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={agencyFee}
-          readOnly
-          disabled
-          type="text"
-        /> */}
 
         {otherChargesInput && (
           <div className="relative">
             <Input
-              id="other_charges"
+              id="other_charge"
               label="Other Charges"
               inputClassName="bg-white"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}

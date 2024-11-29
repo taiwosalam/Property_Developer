@@ -1,18 +1,17 @@
 "use client";
 
-// Images
-
 import Button from "@/components/Form/Button/button";
 
 import { LandlordEditContext } from "@/components/Management/Landlord/landlord-edit-context";
-
+import {
+  type IndividualLandlordAPIResponse,
+  transformIndividualLandlordAPIResponse,
+} from "../data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import BackButton from "@/components/BackButton/back-button";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
-import type { LandlordPageData } from "@/app/(nav)/management/landlord/types";
 import {
   LandlordEditProfileInfoSection,
   LandlordEditNextOfKinInfoSection,
@@ -23,30 +22,21 @@ import {
   LandlordEditNoteInfoSection,
   LandlordEditAvatarInfoSection,
 } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; //only web can edit profile
+import useFetch from "@/hooks/useFetch";
 
-const EditLandlord = () => {
-  // const { landlord, landlordId, error, loading } = useLandlordData();
-  const {
-    data: landlord,
-    error,
-    loading,
-  } = MockFunction("landlord") as {
-    data: LandlordPageData;
-    error: Error | null;
-    loading: boolean;
-  };
+const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
+  const { landlordId } = params;
+  const { data, error, loading } = useFetch<IndividualLandlordAPIResponse>(
+    `landlord/${landlordId}`
+  );
+
+  const landlord = data ? transformIndividualLandlordAPIResponse(data) : null;
 
   if (loading)
     return <CustomLoader layout="edit-page" pageTitle="Edit Landlord" />;
-  if (error) return <div>Error: {error.message}</div>;
-  // if (!landlord) return null;
-  // const s = { ...landlord, user_tag: "mobile" };
-  // useEffect(() => {
-  //   if (landlord?.user_tag === "mobile") {
-  //     router.push(`/management/landlord/${landlord.id}/manage`);
-  //   }
-  // }, [landlord?.user_tag, router]);
+  if (error) return <div>{error}</div>;
+  if (!landlord) return null;
 
   return (
     <LandlordEditContext.Provider value={{ data: landlord }}>

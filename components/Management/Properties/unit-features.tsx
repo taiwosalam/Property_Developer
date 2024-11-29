@@ -133,7 +133,7 @@ const UnitFeatures = () => {
         <div className="flex gap-4 md:gap-5 flex-wrap">
           <Select
             dropdownRefClassName="!w-[160px]"
-            required={!isFacility}
+            required
             options={["yes", "no"]}
             id="en_suit"
             label="En-Suit"
@@ -144,7 +144,7 @@ const UnitFeatures = () => {
           />
           <Select
             dropdownRefClassName="!w-[160px]"
-            required={!isFacility}
+            required
             options={["yes", "no"]}
             id="prepaid"
             label="Prepaid"
@@ -155,7 +155,7 @@ const UnitFeatures = () => {
           />
           <Select
             dropdownRefClassName="!w-[160px]"
-            required={!isFacility}
+            required
             options={["yes", "no"]}
             id="wardrobe"
             label="Wardrobe"
@@ -166,7 +166,7 @@ const UnitFeatures = () => {
           />
           <Select
             dropdownRefClassName="!w-[160px]"
-            required={!isFacility}
+            required
             options={["yes", "no"]}
             id="pets_allowed"
             label="Pets Allowed"

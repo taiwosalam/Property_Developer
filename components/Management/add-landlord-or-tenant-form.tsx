@@ -75,6 +75,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
     }
     setIsLoading(true);
     cleanPhoneNumber(data);
+    data.append("agent", "Web");
     await submitAction(data);
     setIsLoading(false);
   };
@@ -82,6 +83,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   return (
     <div className="relative">
       <AuthForm
+        returnType="form-data"
         skipValidation
         onFormSubmit={handleSubmit}
         className={`custom-flex-col gap-5 transition-opacity duration-150 ${
@@ -89,7 +91,6 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         }`}
       >
         <input type="hidden" name="avater" value={avatar} />
-
         <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           <Input
             required

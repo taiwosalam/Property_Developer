@@ -6,11 +6,11 @@ import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 interface LandlordCardProps {
   id: string;
   name: string;
-  email: string;
+  email: string | null;
   user_tag: "mobile" | "web";
   phone_number: string | null;
   picture_url: string | null;
-  badge_color: BadgeIconColors;
+  badge_color?: BadgeIconColors;
 }
 
 export interface LandlordsPageData {
@@ -93,7 +93,7 @@ const generateMockdata = (numItems: number): LandlordCardProps[] => {
     user_tag: index % 2 === 0 ? "mobile" : "web",
     email: `test${index + 1}@test.com`,
     phone_number: `08012345678`,
-    badge_color: tierColorMap[index % Object.keys(tierColorMap).length],
+    badge_color: index % 5 === 0 ? "black" : "red",
   }));
 };
 
@@ -127,47 +127,61 @@ export const mockData = generateMockdata(10);
 
 export interface LandlordApiResponse {
   data: {
-    current_page: number;
-    data: Array<{
+    landlords: {
       id: string;
       name: string;
-      email: string;
+      email: string | null;
       phone: string | null;
-      tier_id: number;
-      picture: string | null;
+      username: string | null;
+      picture: string;
       agent: string;
-    }>;
-    last_page: number;
-    total: number;
+      tier_id?: 1 | 2 | 3 | 4 | 5;
+    }[];
+    pagination: {
+      current_page: number;
+      per_page: number;
+      total_pages: number;
+    };
   };
-  total_landlords: number;
-  new_landlords_this_month: number;
   mobile_landlord_count: number;
-  new_mobile_landlords_this_month: number;
   web_landlord_count: number;
-  new_web_landlords_this_month: number;
+  mobile_monthly_count: number;
+  web_monthly_count: number;
+  total_count_monthly: number;
+  total_data_count: number;
 }
 
 export const transformLandlordApiResponse = (
-  data: LandlordApiResponse
+  response: LandlordApiResponse
 ): LandlordsPageData => {
+  const {
+    data: { landlords, pagination },
+    mobile_landlord_count,
+    web_landlord_count,
+    mobile_monthly_count,
+    web_monthly_count,
+    total_count_monthly,
+    total_data_count,
+  } = response;
   return {
-    total_landlords: data.total_landlords,
-    new_landlords_this_month: data.new_landlords_this_month,
-    mobile_landlords: data.mobile_landlord_count,
-    new_mobile_landlords_this_month: data.new_mobile_landlords_this_month,
-    web_landlords: data.web_landlord_count,
-    new_web_landlords_this_month: data.new_web_landlords_this_month,
-    total_pages: data.data.last_page,
-    current_page: data.data.current_page,
-    landlords: data.data.data.map((landlord) => ({
-      id: String(landlord.id),
+    total_landlords: total_data_count,
+    new_landlords_this_month: total_count_monthly,
+    mobile_landlords: mobile_landlord_count,
+    new_mobile_landlords_this_month: mobile_monthly_count,
+    web_landlords: web_landlord_count,
+    new_web_landlords_this_month: web_monthly_count,
+    total_pages: pagination.total_pages,
+    current_page: pagination.current_page,
+    landlords: landlords.map((landlord) => ({
+      id: landlord.id,
       name: landlord.name,
       email: landlord.email,
       phone_number: landlord.phone,
       user_tag: landlord.agent.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: landlord.picture,
-      badge_color: tierColorMap[landlord.tier_id] || "red",
+      badge_color: landlord.tier_id
+        ? tierColorMap[landlord.tier_id]
+        : undefined,
     })),
   };
 };

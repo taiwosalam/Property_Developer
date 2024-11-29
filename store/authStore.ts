@@ -6,10 +6,11 @@ interface AuthState {
   token: string | null;
   role: string | null;
   emailVerified?: boolean;
-  setToken: (token: string | null) => void;
-  setEmail: (email: string | null) => void;
-  setRole: (role: string | null) => void;
-  setEmailVerified: (emailVerified: boolean) => void;
+  walletPinStatus?: boolean;
+  setAuthState: <K extends keyof Omit<AuthState, "setAuthState" | "reset">>(
+    key: K,
+    value: AuthState[K]
+  ) => void;
   reset: (email?: string | null) => void;
 }
 
@@ -17,17 +18,14 @@ export const useAuthStore = create<AuthState>((set) => ({
   email: null,
   token: null,
   role: null,
-  setToken: (token) => {
-    if (token) {
-      saveLocalStorage("authToken", token);
-    } else {
+  setAuthState: (key, value) => {
+    if (key === "token" && value) {
+      saveLocalStorage("authToken", value as string);
+    } else if (key === "token" && !value) {
       localStorage.removeItem("authToken");
     }
-    set({ token });
+    set({ [key]: value });
   },
-  setEmail: (email) => set({ email }),
-  setRole: (role) => set({ role }),
-  setEmailVerified: (emailVerified) => set({ emailVerified }),
   reset: (email) => {
     localStorage.removeItem("authToken");
     set({
@@ -35,6 +33,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       token: null,
       role: null,
       emailVerified: undefined,
+      walletPinStatus: undefined,
     });
   },
 }));

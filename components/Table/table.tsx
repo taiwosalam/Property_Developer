@@ -84,7 +84,7 @@ const renderValue = (
 };
 
 const getUniqueKey = (item: DataItem) => {
-  return item.id || item._id;
+  return item._id || item.id;
 };
 
 const CustomTable: React.FC<CustomTableProps> = ({

@@ -4,13 +4,13 @@ import BadgeIcon, { BadgeIconColors } from "../BadgeIcon/badge-icon";
 import { empty } from "@/app/config";
 
 export interface UserCardProps {
-  picture_url?: string;
+  picture_url?: string | null;
   name: string;
-  email: string;
-  phone_number?: string;
+  email?: string | null;
+  phone_number?: string | null;
   user_tag: string;
   badge_color?: BadgeIconColors;
-  other_info?: string;
+  other_info?: string | null;
 }
 
 const UserCard: React.FC<UserCardProps> = ({

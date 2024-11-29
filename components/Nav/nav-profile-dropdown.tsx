@@ -11,6 +11,7 @@ import { logout } from "@/app/(onboarding)/auth/data";
 import { profile_actions } from "@/components/Nav/options";
 import { SectionSeparator } from "../Section/section-components";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import { useState } from "react";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { useRouter } from "next/navigation";
 
@@ -19,15 +20,18 @@ const NavProfileDropdown = () => {
   const { isMobile } = useWindowWidth();
   const name = usePersonalInfoStore((state) => state.name);
   const userId = usePersonalInfoStore((state) => state.user_id);
+  const [requestLoading, setRequestLoading] = useState(false);
 
   const class_styles =
     "py-2 px-5 sm:py-3 sm:px-[30px] text-start text-text-primary dark:text-darkText-1 hover:bg-neutral-2 dark:hover:bg-[#3C3D37]";
 
   const handleLogout = async () => {
+    setRequestLoading(true);
     const status = await logout();
     if (status) {
       router.push("/auth/sign-in");
     }
+    setRequestLoading(false);
   };
 
   return (
@@ -65,15 +69,17 @@ const NavProfileDropdown = () => {
             <ModalTrigger className={class_styles}>{label}</ModalTrigger>
             <ModalContent>{modal}</ModalContent>
           </Modal>
+          
         ) : null
       )}
       <button
         type="button"
         className="flex gap-2 py-2 px-5 sm:py-3 sm:px-[30px] text-status-error-primary hover:bg-neutral-2"
         onClick={handleLogout}
+        disabled={requestLoading}
       >
         <LogoutIcon />
-        logout
+        {requestLoading ? "logging out..." : "logout"}
       </button>
     </>
   );

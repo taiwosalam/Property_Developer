@@ -20,7 +20,7 @@ export const useAuthRedirect = (options: UseAuthRedirectOptions = {}) => {
           router.replace("/auth/sign-in");
           return;
         }
-        useAuthStore.getState().setToken(localAuthToken);
+        useAuthStore.getState().setAuthState("token", localAuthToken);
       }
 
       const status = await getUserStatus();

@@ -53,7 +53,7 @@ export const LandlordTenantInfo: React.FC<{
         <div className="custom-flex-col gap-4">
           {Object.values(info).map((value, idx) => (
             <p key={idx} className="text-black dark:text-darkText-2">
-              {value?.split("_").join(" ") ?? "N/A"}
+              {value?.split("_").join(" ") || "N/A"}
             </p>
           ))}
         </div>
@@ -167,7 +167,7 @@ export const LandlordTenantInfoEditGrid: React.FC<{
 );
 
 export const NotesInfoBox: React.FC<{
-  notes: { last_updated: string; write_up: string };
+  notes?: { last_updated: string; write_up: string };
 }> = ({ notes }) => {
   return (
     <LandlordTenantInfoBox className="custom-flex-col gap-4">
@@ -175,7 +175,7 @@ export const NotesInfoBox: React.FC<{
         <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
           <span>Note</span>
           <sub className="text-sm font-normal bottom-[unset]">
-            <span className="font-bold">Last Updated</span> {notes.last_updated}
+            <span className="font-bold">Last Updated</span> {notes?.last_updated}
           </sub>
         </h3>
       </div>
@@ -183,20 +183,20 @@ export const NotesInfoBox: React.FC<{
         lines={7}
         className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
       >
-        {notes.write_up}
+        {notes?.write_up}
       </TruncatedText>
     </LandlordTenantInfoBox>
   );
 };
 
 export const MobileNotesModal: React.FC<{
-  notes: { last_updated: string; write_up: string };
+  notes?: { last_updated: string; write_up: string };
 }> = ({ notes }) => {
   const [editNote, setEditNote] = useState(false);
-  const [note, setNote] = useState(notes.write_up);
+  const [note, setNote] = useState(notes?.write_up);
 
   useEffect(() => {
-    setNote(notes.write_up);
+    setNote(notes?.write_up);
   }, [notes]);
 
   return (
@@ -207,7 +207,7 @@ export const MobileNotesModal: React.FC<{
             <span>Note</span>
             <sub className="text-sm font-normal bottom-[unset]">
               <span className="font-bold">Last Updated</span>{" "}
-              {notes.last_updated}
+              {notes?.last_updated}
             </sub>
           </h3>
           <div className="flex items-center gap-2">
@@ -258,7 +258,7 @@ export const MobileNotesModal: React.FC<{
             lines={7}
             className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
           >
-            {notes.write_up}
+            {notes?.write_up}
           </TruncatedText>
         )}
       </div>
