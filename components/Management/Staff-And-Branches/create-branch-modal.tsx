@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
-import { useModal } from "@/components/Modal/modal";
+import { Modal, ModalContent, ModalTrigger, useModal } from "@/components/Modal/modal";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
@@ -21,6 +21,7 @@ import {
   convertYesNoToBoolean,
 } from "@/utils/checkFormDataForImageOrAvatar";
 import { createBranch } from "./data";
+import VerifyEmailModal from "./verify-email-modal";
 
 const CreateBranchModal = () => {
   const { setIsOpen } = useModal();
@@ -107,6 +108,33 @@ const CreateBranchModal = () => {
         >
           <input type="hidden" name="avater" value={activeAvatar} />
           <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {/* <Select
+              label="Branch Wallet"
+              id="branch_wallet"
+              options={["yes", "no"]}
+              isSearchable={false}
+              inputContainerClassName="bg-neutral-2"
+            /> */}
+            <div className="custom-flex-col gap-2">
+              <label>Branch Email</label>
+              <div className="flex items-center gap-2 max-h-[50px] bg-neutral-2 border border-neutral-3 w-full rounded-[8px] justify-between px-4">
+                <input
+                  id="branch_email"
+                  className="h-[50px] outline-none bg-transparent"
+                  placeholder="Write Here"
+              />
+              <Modal> 
+                  <ModalTrigger>
+                    <button type="button" className="text-white px-3 py-[3px] text-sm items-center flex bg-brand-9 rounded-md">
+                      Verify
+                    </button>
+                  </ModalTrigger>
+                  <ModalContent>  
+                    <VerifyEmailModal />
+                  </ModalContent>
+                </Modal>
+              </div>
+            </div>
             <Input
               label="Branch Name/Title"
               id="branch_name"
@@ -142,13 +170,6 @@ const CreateBranchModal = () => {
               label="Branch Full Address"
               id="branch_address"
               inputClassName="rounded-[8px]"
-            />
-            <Select
-              label="Branch Wallet"
-              id="branch_wallet"
-              options={["yes", "no"]}
-              isSearchable={false}
-              inputContainerClassName="bg-neutral-2"
             />
             <TextArea
               id="branch_description"

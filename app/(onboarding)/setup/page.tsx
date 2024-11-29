@@ -25,7 +25,8 @@ import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const Setup = () => {
   const router = useRouter();
-  const setRole = useAuthStore((state) => state.setRole);
+  // const setRole = useAuthStore((state) => state.setRole);
+  const setAuthState = useAuthStore((state) => state.setAuthState);
   const role = useAuthStore((state) => state.role);
   const [requestLoading, setRequestLoading] = useState(false);
   // Define the index of the last step in the flow
@@ -35,10 +36,11 @@ const Setup = () => {
     setRequestLoading(true);
     const data = transformFormData(formData);
     console.log(data);
-    // const status = await createCompany(data);
-    // if (status) {
-    //   setRole("director");
-    // }
+    const status = await createCompany(data);
+    if (status) {
+      // setRole("director");
+      setAuthState("role", "director"); 
+    }
     setRequestLoading(false);
   };
 

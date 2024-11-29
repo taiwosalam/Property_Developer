@@ -69,14 +69,14 @@ export const LandlordEditProfileInfoSection = () => {
           label="first name"
           required
           inputClassName="rounded-lg"
-          defaultValue={landlord?.first_name}
+          defaultValue={landlord?.name.split(" ")[0]}
         />
         <Input
           id="landlord-lastname"
           label="last name"
           required
           inputClassName="rounded-lg"
-          defaultValue={landlord?.last_name}
+          defaultValue={landlord?.name.split(" ")[1]}
         />
         <Input
           id="landlord-email"
@@ -395,7 +395,7 @@ export const LandlordEditAttachmentInfoSection = ({ useContext = true }) => {
         link: URL.createObjectURL(file),
       }));
 
-      setDocuments((prevDocuments) => [...newFiles, ...prevDocuments]);
+      setDocuments((prevDocuments) => [...newFiles, ...(prevDocuments || [])]); // NB: - I change this cuz i have to push some things to main & this throw ts err
       setDocumentType("");
     }
     if (fileInputRef.current) {
@@ -414,7 +414,7 @@ export const LandlordEditAttachmentInfoSection = ({ useContext = true }) => {
 
   const handleDeleteDocument = (fileId: string | number) => {
     setDocuments((prevDocuments) =>
-      prevDocuments.filter((document) => document.id !== fileId)
+      prevDocuments?.filter((document) => document.id !== fileId) // NB: - I added ? check this cuz i have to push some things to main & this throw ts err
     );
   };
 
