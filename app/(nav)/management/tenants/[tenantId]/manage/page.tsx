@@ -195,9 +195,10 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
         <TenantEditAttachmentSection useContext={false} />
       )}
       <LandlordTenantInfoSection title="shared documents">
-        {Object.entries(groupedDocuments).map(([documentType, documents]) => {
-          if (documentType === "other document") return null; // Skip "other document" for now
-          return (
+        {Object.entries(groupedDocuments || {}).map(
+          ([documentType, documents]) => {
+            if (documentType === "other document") return null; // Skip "other document" for now
+            return (
             <LandlordTenantInfoSection
               minimized
               title={documentType}
@@ -211,14 +212,14 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
             </LandlordTenantInfoSection>
           );
         })}
-        {groupedDocuments["other document"] && (
+        {groupedDocuments?.["other document"] && (
           <LandlordTenantInfoSection
             minimized
             title="other documents"
             key="other document"
           >
             <div className="flex flex-wrap gap-4">
-              {groupedDocuments["other document"].map((document) => (
+              {groupedDocuments?.["other document"]?.map((document) => (
                 <LandlordTenantInfoDocument key={document.id} {...document} />
               ))}
             </div>
