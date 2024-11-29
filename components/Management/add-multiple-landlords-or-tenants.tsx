@@ -1,21 +1,30 @@
-import Image from "next/image";
-import { useRef, useState } from "react";
-
 // Images
 import Button from "../Form/Button/button";
-import { ImportCircle } from "@/public/icons/icons";
-// import ImportCircle from "@/public/icons/import-circle.svg";
+import { ImportCircle, DeleteIconOrange } from "@/public/icons/icons";
+import { useFileUploader } from "@/hooks/useFileUploader";
+import { toast } from "sonner";
+import { LandlordTenantInfoDocument } from "./landlord-tenant-info-components";
 
 interface AddMultipleLandlordsOrTenantsProps {
   type: "landlord" | "tenant";
+  method: "import" | "invite";
   submitAction: (file: File) => void;
 }
 
 const AddMultipleLandlordsOrTenants: React.FC<
   AddMultipleLandlordsOrTenantsProps
-> = ({ type, submitAction }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
+> = ({ type, method, submitAction }) => {
+  const {
+    file,
+    fileName,
+    fileInputRef,
+    handleFileChange,
+    handleDrop,
+    clearFile,
+  } = useFileUploader({
+    maxSize: { unit: "MB", value: 5 },
+    acceptedExtensions: ["xls", "xlsx", "csv"],
+  });
 
   const handleFileUploadClick = () => {
     if (fileInputRef.current) {
@@ -23,66 +32,65 @@ const AddMultipleLandlordsOrTenants: React.FC<
     }
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-
-    const file = e.dataTransfer.files[0];
+  const handleSubmit = () => {
     if (file) {
       submitAction(file);
+    } else {
+      toast.warning("Please select a file to upload.");
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      submitAction(file);
-    }
-  };
+  const downloadLink =
+    method === "invite"
+      ? "bulk-invite-template.xlsx"
+      : type === "landlord"
+      ? "bulk-landlord-import-template.xlsx"
+      : "bulk-tenant-import-template.xlsx";
 
   return (
     <>
-      <div className="max-w-[570px] mx-auto mb-5 md:mb-8 lg:mb-12 border-4 border-dotted dark:border-darkText-2 py-8 md:py-12">
-        <button
-          type="button"
-          aria-label="Import"
-          className={`flex justify-center mx-auto ${
-            isDragging ? "border-blue-500" : "border-black"
-          }`}
-          onClick={handleFileUploadClick}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-        >
-          <span className="dark:bg-darkText-primary bg-neutral-2 dark:text-white rounded-full">
-            <ImportCircle />
-          </span>
-        </button>
-        <div className="custom-flex-col gap-[10px] text-center">
-          <p className="text-base md:text-xl lg:text-2xl font-bold">
-            Import XLS or CSV file
-          </p>
-          <p className="text-[#6C6D6D] text-sm font-medium">
-            Please click to select a file{" "}
-            <span className="hidden md:inline">
-              or drag it into the designated area
-            </span>{" "}
-            to upload.
-          </p>
-        </div>
+      <div
+        className="max-w-[570px] mx-auto mb-5 md:mb-8 lg:mb-12 border-4 border-dotted dark:border-darkText-2 py-8 md:py-12"
+        onDrop={handleDrop}
+        onDragOver={(e) => e.preventDefault()}
+      >
+        {!file ? (
+          <>
+            <button
+              type="button"
+              aria-label="Import"
+              className="flex justify-center mx-auto"
+              onClick={handleFileUploadClick}
+            >
+              <span className="dark:bg-darkText-primary bg-neutral-2 dark:text-white rounded-full">
+                <ImportCircle />
+              </span>
+            </button>
+            <div className="custom-flex-col gap-[10px] text-center">
+              <p className="text-base md:text-xl lg:text-2xl font-bold">
+                Import XLS or CSV file
+              </p>
+              <p className="text-[#6C6D6D] text-sm font-medium">
+                Please click to select a file{" "}
+                <span className="hidden md:inline">
+                  or drag it into the designated area
+                </span>{" "}
+                to upload.
+              </p>
+            </div>
+          </>
+        ) : (
+          <div className="relative w-fit mx-auto">
+            <button
+              aria-label="remove file"
+              className="absolute top-0 right-0"
+              onClick={clearFile}
+            >
+              <DeleteIconOrange size={20} />
+            </button>
+            <LandlordTenantInfoDocument name={fileName} id="uploaded-file" />
+          </div>
+        )}
       </div>
 
       <input
@@ -96,7 +104,7 @@ const AddMultipleLandlordsOrTenants: React.FC<
         <p className="text-sm font-normal">
           How it works:{" "}
           <a
-            href="/path-to-template-download" // Replace with the actual path
+            href={`/templates/${downloadLink}`}
             className="text-brand-9 font-bold"
             download
           >
@@ -108,11 +116,11 @@ const AddMultipleLandlordsOrTenants: React.FC<
         </p>
         <Button
           type="button"
-          onClick={handleFileUploadClick}
+          onClick={handleSubmit}
           size="base_medium"
           className="py-2 px-8"
         >
-          Choose
+          Submit
         </Button>
       </div>
     </>
