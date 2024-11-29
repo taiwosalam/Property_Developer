@@ -111,7 +111,7 @@ const TenancyRecord = () => {
               <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
                 Shared Documents
               </h4>
-              {Object.entries(groupedDocuments).map(
+              {Object?.entries(groupedDocuments || {}).map(
                 ([documentType, documents]) => {
                   if (documentType === "other document") return null; // Skip "other document" for now
                   return (
@@ -131,13 +131,13 @@ const TenancyRecord = () => {
                   );
                 }
               )}
-              {groupedDocuments["other document"] && (
+              {groupedDocuments?.["other document"] && (
                 <div className="space-y-[6px]">
                   <h6 className="text-text-secondary text-base font-medium">
                     Other Documents
                   </h6>
                   <div className="flex flex-wrap gap-4">
-                    {groupedDocuments["other document"].map((document) => (
+                    {groupedDocuments?.["other document"]?.map((document) => (
                       <LandlordTenantInfoDocument
                         key={document.id}
                         {...document}
