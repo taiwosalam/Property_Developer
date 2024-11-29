@@ -9,14 +9,33 @@ import Button from "@/components/Form/Button/button";
 import obfuscateEmail from "@/utils/obfuscateEmail";
 import { getOtpToActivateWallet, setWalletPin } from "@/components/Wallet/data";
 import { toast } from "sonner";
-import { useModal } from "@/components/Modal/modal";
+import useBranchStore from "@/store/branchStore";
+import { verifyEmailOTP } from "./data";
 
-const VerifyEmailModal = () => {
-  const { setIsOpen } = useModal();
+
+const VerifyEmailModal = ({
+  setOpenVerifyModal,
+  modalOpen,
+  setModalOpen,
+  setEmailStatus,
+}: {
+  setOpenVerifyModal: (value: boolean) => void;
+  modalOpen: boolean;
+  setModalOpen: (value: boolean) => void;
+  setEmailStatus: (value: "pending" | "verified") => void;
+}) => {
   const [requestLoading, setRequestLoading] = useState(false);
+  const { branchEmail } = useBranchStore();
+  const [verifyEmailLoading, setVerifyEmailLoading] = useState(false);
   const email = useAuthStore((state) => state.email);
   const [confirmPin, setConfirmPin] = useState("");
   const [otp, setOtp] = useState("");
+
+  const handleChangeEmail = () => {
+    setModalOpen(true);
+    setOpenVerifyModal(false);
+  };
+
   const activeStep = "confirm-email";
 
   const flow = {
@@ -26,12 +45,13 @@ const VerifyEmailModal = () => {
         <>
           <p>
             To create a branch, you will need to attach an email, we have sent a
-            one-time (OTP) to your email address ({obfuscateEmail(email || "")}).
-            Please enter the OTP to complete the validation process.
+            one-time (OTP) to your email address (
+            {obfuscateEmail(branchEmail || "")}). Please enter the OTP to
+            complete the validation process.
           </p>
           <p className=""> 02:00 </p>
-          <AuthPinField onChange={setConfirmPin} key="confirm-email" />
-          <button className="text-brand-9" onClick={() => setIsOpen(false)}>
+          <AuthPinField onChange={setOtp} key="confirm-email" />
+          <button className="text-brand-9" onClick={handleChangeEmail}>
             Change Email
           </button>
         </>
@@ -40,13 +60,15 @@ const VerifyEmailModal = () => {
   };
 
   const handleNext = async () => {
-    setRequestLoading(true);
-    // const status = await setWalletPin(confirmPin, otp);
+    setVerifyEmailLoading(true);
+    const status = await verifyEmailOTP(otp);
     if (status) {
-      toast.success("Email confirmed successfully!");
-      setIsOpen(false);
+      toast.success("Email verified successfully");
+      setModalOpen(true);
+      setOpenVerifyModal(false);
+      setEmailStatus("verified");
     }
-    setRequestLoading(false);
+    setVerifyEmailLoading(false);
   };
 
   return (
@@ -62,9 +84,9 @@ const VerifyEmailModal = () => {
         onClick={handleNext}
         size="sm_medium"
         className="mt-[90px] w-full py-2 px-8"
-        disabled={requestLoading}
+        disabled={verifyEmailLoading}
       >
-        {requestLoading ? "Please wait..." : "Proceed"}
+        {verifyEmailLoading ? "Please wait..." : "Proceed"}
       </Button>
     </WalletModalPreset>
   );
