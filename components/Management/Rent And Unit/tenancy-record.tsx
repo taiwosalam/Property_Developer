@@ -120,7 +120,7 @@ const TenancyRecord = () => {
                         {documentType}
                       </h6>
                       <div className="flex flex-wrap gap-4">
-                        {documents.map((document) => (
+                        {documents?.map((document) => (
                           <LandlordTenantInfoDocument
                             key={document.id}
                             {...document}
