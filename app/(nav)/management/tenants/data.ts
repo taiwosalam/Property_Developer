@@ -55,7 +55,6 @@ export const tenantTableFields: Field[] = [
     cellStyle: {
       paddingLeft: "4px",
       fontWeight: 700,
-      minWidth: 150,
       color: "#000",
     },
   },
@@ -63,13 +62,15 @@ export const tenantTableFields: Field[] = [
     id: "3",
     accessor: "email",
     cellStyle: {
-      maxWidth: 200,
-      wordBreak: "break-all",
+      whiteSpace: "nowrap",
     },
   },
   {
     id: "4",
     accessor: "phone_number",
+    cellStyle: {
+      whiteSpace: "nowrap",
+    },
   },
   { id: "5", accessor: "user_tag" },
   { id: "6", accessor: "manage/chat" },
@@ -137,9 +138,7 @@ export const transformTenantApiResponse = (
       picture_url: tenant.picture,
       // badge_color: tierColorMap[tenant.tier_id] || "red", NB: - I comment this cuz i have to push some things to main & this throw ts err
       badge_color:
-        tierColorMap[
-          tenant.tier_id as keyof typeof tierColorMap
-        ] || "red",
+        tierColorMap[tenant.tier_id as keyof typeof tierColorMap] || "red",
     })),
   };
 };

@@ -182,8 +182,8 @@ const Tenants = () => {
   const transformedTenants = tenants.map((t) => ({
     ...t,
     full_name: (
-      <p className="flex items-center">
-        <span className="text-ellipsis line-clamp-1">{t.name}</span>
+      <p className="flex items-center whitespace-nowrap">
+        <span >{t.name}</span>
         <BadgeIcon color={t.badge_color} />
       </p>
     ),
@@ -197,14 +197,16 @@ const Tenants = () => {
         >
           Manage
         </Button>
-        <Button
-          variant="sky_blue"
-          size="sm_medium"
-          className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white"
-          // onClick={() => onClickChat(t)}
-        >
-          Chat
-        </Button>
+        {t.user_tag === "mobile" && (
+          <Button
+            variant="sky_blue"
+            size="sm_medium"
+            className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white"
+            // onClick={() => onClickChat(t)}
+          >
+            Chat
+          </Button>
+        )}
       </div>
     ),
   }));

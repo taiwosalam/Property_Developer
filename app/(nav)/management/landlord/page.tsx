@@ -169,8 +169,8 @@ const Landlord = () => {
   const transformedLandlords = landlords.map((l) => ({
     ...l,
     full_name: (
-      <p className="flex items-center">
-        <span className="text-ellipsis line-clamp-1">{l.name}</span>
+      <p className="flex items-center whitespace-nowrap">
+        <span>{l.name}</span>
         {l.badge_color && <BadgeIcon color={l.badge_color} />}
       </p>
     ),
@@ -184,14 +184,16 @@ const Landlord = () => {
         >
           Manage
         </Button>
-        <Button
-          variant="sky_blue"
-          size="sm_medium"
-          className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white"
-          // onClick={() => onClickChat(l)}
-        >
-          Chat
-        </Button>
+        {l.user_tag === "mobile" && (
+          <Button
+            variant="sky_blue"
+            size="sm_medium"
+            className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white"
+            // onClick={() => onClickChat(l)}
+          >
+            Chat
+          </Button>
+        )}
       </div>
     ),
   }));
