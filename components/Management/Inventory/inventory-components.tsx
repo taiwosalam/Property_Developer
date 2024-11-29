@@ -20,12 +20,16 @@ export const InventoryListInfo: React.FC<InventoryListInfoProps> = ({
 }) => {
   const [branchName, setBranchName] = useState<string | null>(null);
   useEffect(() => {
-    // console.log("branch id", data.branch_id);
+    console.log("data", data);
     const fetchBranch = async () => {
       if (data.branch_id) {
+        console.log("Fetching branch for ID:", data.branch_id);
         const branch = await getBranch(data.branch_id);
         if (branch) {
+          console.log("Branch fetched:", branch);
           setBranchName(branch.data.data.branch.branch_name);
+        } else {
+          console.warn("Branch not found for ID:", data.branch_id);
         }
       } else {
         console.warn("branch_id is not available in data");

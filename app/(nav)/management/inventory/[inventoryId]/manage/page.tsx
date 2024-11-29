@@ -28,6 +28,7 @@ interface InventoryData {
   property_name: string;
   branch_name: string;
   account_officer: string;
+  branch_id: string;
   video?: string;
 }
 
@@ -67,6 +68,7 @@ const ManageInventory = () => {
 
   useEffect(() => {
     const fetchBranchData = async () => {
+      console.log("inventory data - ", data);
       if (data) {
         // console.log("data - ", data.inventory.branch_id);
 
@@ -78,13 +80,14 @@ const ManageInventory = () => {
           property_name: data.property_name || "",
           branch_name: data.branch_name || "",
           account_officer: data.account_officer || "",
+          branch_id: data.inventory.branch_id || "",
         };
         setInventoryData(updatedInventoryData);
         setInventoryItems(data.inventory.items);
 
         try {
           const { data: branch } = await getBranch(data.inventory.branch_id);
-          setBranch(branch.data.branch.branch_name);
+          setBranch(data.inventory.branch_id);
           console.log("branches", branch.data.branch.branch_name);
         } catch (error) {
           console.error("Error fetching branch:", error);
@@ -92,7 +95,7 @@ const ManageInventory = () => {
       }
     };
 
-    const fetchAllBranches = async () => {
+    const fetchAllBranches = async () => {  
       try {
         const { data: branches } = await getBranches();
         setAllBranches(branches.data);
