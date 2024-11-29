@@ -1,17 +1,13 @@
 // imports
 import { SectionHeading } from "../Section/section-components";
 import Button from "../Form/Button/button";
-import { useContext, useRef, useState } from "react";
+import { useContext } from "react";
 import Image from "next/image";
 import { FlowProgressContext } from "../FlowProgress/flow-progress";
 import { DeleteIconOrange, UploadImageIcon } from "@/public/icons/icons";
 import { useImageUploader } from "@/hooks/useImageUploader";
 
-interface CompanyLogoProps {
-  logo?: string | null;
-}
-
-const CompanyLogo: React.FC<CompanyLogoProps> = ({ logo }) => {
+const CompanyLogo = () => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const { preview, inputFileRef, handleImageChange, clearSelection } =
     useImageUploader({

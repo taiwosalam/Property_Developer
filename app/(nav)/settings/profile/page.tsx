@@ -42,8 +42,8 @@ import Link from "next/link";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 import DateInput from "@/components/Form/DateInput/date-input";
 import FileInput from "@/components/Form/FileInput/file-input";
-import CompanyMobileNumber from "@/components/Setup/company-mobile-number";
-import CompanyLogo from "@/components/Setup/company-logo";
+import CompanyMobileNumber from "@/components/Setup/company-mobile-number"; 
+import CompanyLogo from "./company-logo";
 import CopyText from "@/components/CopyText/copy-text";
 import useGoogleFonts from "@/hooks/useFonts";
 import Picture from "@/components/Picture/picture";
@@ -431,10 +431,11 @@ const Profile = () => {
           </div>
           <CompanyMobileNumber phoneNumbers={state.companyData.phone_numbers} />
           <CompanyLogo
-            hiddenInputClassName="setup-f required"
-            logo={state.companyData.company_logo}
+            lightLogo={state.companyData.company_logo}
+            darkLogo={""}
           />
         </div>
+        <SettingsUpdateButton />
       </SettingsSection>
       <SettingsSection title="about company and social links">
         <div className="custom-flex-col gap-8">
