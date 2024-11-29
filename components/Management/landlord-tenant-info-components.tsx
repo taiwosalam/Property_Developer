@@ -104,7 +104,7 @@ export interface AttachedDocumentCard {
   name: string;
   date?: string;
   thumbnail?: string;
-  link: string;
+  link?: string;
 }
 
 export const LandlordTenantInfoDocument: React.FC<AttachedDocumentCard> = ({
@@ -112,31 +112,42 @@ export const LandlordTenantInfoDocument: React.FC<AttachedDocumentCard> = ({
   date,
   thumbnail,
   link,
-}) => (
-  <Link
-    href={link}
-    className="w-[160px] h-[168px] rounded-2xl overflow-hidden bg-text-disabled custom-flex-col"
-    rel="noopener noreferrer"
-    target="_blank"
-  >
-    <div className="flex-1">
-      <div
-        className="w-full h-full bg-text-disabled"
-        style={{
-          backgroundImage: thumbnail ? `url(${thumbnail})` : undefined,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      ></div>
+}) => {
+  const content = (
+    <>
+      <div className="flex-1">
+        <div
+          className="w-full h-full bg-text-disabled"
+          style={{
+            backgroundImage: thumbnail ? `url(${thumbnail})` : undefined,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        ></div>
+      </div>
+      <div className="p-4 bg-brand-primary text-white text-sm lg:text-base font-medium">
+        <p className="w-full whitespace-nowrap overflow-hidden text-ellipsis">
+          {name}
+        </p>
+        <p>{date}</p>
+      </div>
+    </>
+  );
+  return link ? (
+    <Link
+      href={link}
+      className="w-[160px] h-[168px] rounded-2xl overflow-hidden bg-text-disabled custom-flex-col"
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      {content}
+    </Link>
+  ) : (
+    <div className="w-[160px] h-[168px] rounded-2xl overflow-hidden bg-text-disabled custom-flex-col">
+      {content}
     </div>
-    <div className="p-4 bg-brand-primary text-white text-sm lg:text-base font-medium">
-      <p className="w-full whitespace-nowrap overflow-hidden text-ellipsis">
-        {name}
-      </p>
-      <p>{date}</p>
-    </div>
-  </Link>
-);
+  );
+};
 
 export const LandlordTenantInfoEditSection: React.FC<{
   title: string;
@@ -175,7 +186,8 @@ export const NotesInfoBox: React.FC<{
         <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
           <span>Note</span>
           <sub className="text-sm font-normal bottom-[unset]">
-            <span className="font-bold">Last Updated</span> {notes?.last_updated}
+            <span className="font-bold">Last Updated</span>{" "}
+            {notes?.last_updated}
           </sub>
         </h3>
       </div>
