@@ -29,6 +29,16 @@ export const createInventory = async (formData: FormData) => {
     }
 }
 
+export const updateInventory = async (formData: FormData, id: string) => {
+  try {
+    const response = await api.put(`/inventory/${id}`, formData);
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    console.error("Error in updateInventory:", error);
+    return false;
+  }
+}
+
 export const getInventory = async () => {
     try { 
       const response = await api.get("/inventories");

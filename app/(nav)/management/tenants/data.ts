@@ -83,7 +83,11 @@ const generateMockdata = (numItems: number) => {
     user_tag: index % 2 === 0 ? "mobile" : "web",
     email: `test${index + 1}@test.com`,
     phone_number: `08012345678`,
-    badge_color: tierColorMap[index % Object.keys(tierColorMap).length],
+    // badge_color: tierColorMap[index % Object.keys(tierColorMap).length], NB: - I comment this cuz i have to push some things to main & this throw ts err
+    badge_color:
+      tierColorMap[
+        (index % Object.keys(tierColorMap).length) as keyof typeof tierColorMap
+      ],
   })) as TenantCardProps[];
 };
 
@@ -131,7 +135,11 @@ export const transformTenantApiResponse = (
       phone_number: tenant.phone,
       user_tag: tenant.agent.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: tenant.picture,
-      badge_color: tierColorMap[tenant.tier_id] || "red",
+      // badge_color: tierColorMap[tenant.tier_id] || "red", NB: - I comment this cuz i have to push some things to main & this throw ts err
+      badge_color:
+        tierColorMap[
+          tenant.tier_id as keyof typeof tierColorMap
+        ] || "red",
     })),
   };
 };
