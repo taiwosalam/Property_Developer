@@ -23,3 +23,28 @@ export const addStaff = async (formData: FormData): Promise<any> => {
     return false;
   }
 };
+
+
+export const verifyEmail = async (email: string) => {
+  try {
+    const { data } = await api.post(
+      `/branch/send-email-verification?email=${email}`
+    );
+    return data;
+  } catch (error) {
+    // handleAxiosError(error, "Failed to verify email");
+    toast.error('Failed to verify email');
+    return false;
+  }
+}
+
+export const verifyEmailOTP = async (code: string) => {
+  try {
+    const { data } = await api.post(`/branch/email-verification?code=${code}`);
+    return data;
+  } catch (error) {
+    handleAxiosError(error, "Failed to verify email OTP");
+    return false;
+  }
+}
+

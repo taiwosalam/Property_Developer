@@ -43,8 +43,8 @@ const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
         <Input
           id="email"
           type="email"
-          label="email"
-          placeholder="Email Address"
+          label="Company Email"
+          placeholder="Use a company email for this process"
           validationErrors={errorMsgs}
         />
         <p className="text-text-label text-base font-normal">

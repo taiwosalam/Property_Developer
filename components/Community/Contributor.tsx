@@ -24,7 +24,7 @@ export const ContributorDetails = ({
 }) => {
 
   useEffect(() => {
-    console.log("post", post);
+    console.log("post g=here", post);
   }, [post]);
 
   if (loading) {
@@ -81,7 +81,7 @@ export const ContributorDetails = ({
 };
 
 const ContributorUser = ({ contributors }: { contributors: any }) => {
-  
+  console.log("contributors here", contributors);
   return (
     <div className="flex flex-col mt-6 gap-4">
       <div className="flex flex-col md:flex-row gap-4">

@@ -420,6 +420,17 @@ button:disabled:not(.retain-opacity) {
 }
 
 
+.modal-transition {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.modal-transition.open {
+  opacity: 1;
+  transform: scale(1);
+}
+
   @keyframes pulse {
     0% { opacity: 0.6; }
     50% { opacity: 1; }
