@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import NewComment from "../../../NewComment";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import CommunityComments from "@/components/Community/CommunityComments";
+import { CommunitySlider } from "@/components/Community/CommunitySlider";
 
 interface ArticleResponse {
   post: any;
@@ -93,7 +94,11 @@ const ThreadPreview = () => {
             {loading ? (
               <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
             ) : post?.media?.length > 0 ? (
-              <PropertyImageSlider images={post?.media} thread />
+              <CommunitySlider 
+                images={post?.media} 
+                video_link={post?.video_link} 
+                thread 
+              />
             ) : (
               <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
                 <p className="text-gray-500 dark:text-gray-400">No image</p>

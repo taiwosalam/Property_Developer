@@ -1,6 +1,6 @@
 // Imports
 import { CommentData } from "@/components/tasks/announcements/comment";
-import api from "@/services/api";
+import api, { handleAxiosError } from "@/services/api";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 
@@ -39,7 +39,8 @@ export const createArticle = async (formData: FormData) => {
     });
     return response.status === 200 || response.status === 201;
   } catch (error) {
-    console.error("Error creating article:", error);
+    // console.error("Error creating article:", error);
+    handleAxiosError(error);
     return false;
   }
 };

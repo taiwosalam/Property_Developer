@@ -12,6 +12,7 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { createArticle, transformFormArticleData } from "../data";
 import { toast } from "sonner";
+import { handleAxiosError } from "@/services/api";
 
 const CreateArticle = () => {
   const router = useRouter();
@@ -19,6 +20,19 @@ const CreateArticle = () => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
 
   const handleSubmit = async (formData: FormData) => {
+    // Check the lenght of the content char
+    const content = formData.get("content");
+    if (typeof content === "string" && content.length < 200) {
+      toast.error("Content must be at least 200 characters long.");
+      return; 
+    }
+
+    // Check if the user has uploaded at least one picture
+    if (imageFiles.length === 0) {
+      toast.error("Please upload at least one picture.");
+       return;
+     }
+    
     // Parse and append target_audience as an array
     const targetAudience = formData.get("target_audience");
     if (typeof targetAudience === "string") {
@@ -37,12 +51,11 @@ const CreateArticle = () => {
       if (success) {
         toast.success("Article created successfully!");
         router.push("/tasks/agent-community/my-articles");
-      } else {
-        toast.error("Failed to create the article.");
       }
     } catch (error) {
-      toast.error("An error occurred while creating the article.");
+      // toast.error("An error occurred while creating the article.");
       console.error(error);
+      handleAxiosError(error);
     } finally {
       setIsCreating(false);
     }

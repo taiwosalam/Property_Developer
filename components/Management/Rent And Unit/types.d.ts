@@ -17,6 +17,7 @@ interface PropertyImageSliderProps {
   images: { path: string }[];
   showOverlay?: boolean;
   thread?: boolean;
+  video_link?: string;
 }
 export interface UnitDetails {
   //   id: string;

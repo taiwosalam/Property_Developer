@@ -21,7 +21,7 @@ export const create_new_items: CreateNewItemsProps = [
     content: [
       { label: "landlord / landlady", modal: <AddLandlordModal /> },
       { label: "tenants / occupants", modal: <AddTenantModal /> },
-      { label: "branch", modal: <CreateBranchModal  /> },
+      { label: "branch", modal: <CreateBranchModal isOpen={false} setIsOpen={() => {}} /> },
       //   { label: "staff", modal: <CreateStaffModal /> }, // NOTE: This modal require a branch id, thats why its commented out
       { label: "inventory", link: "/management/inventory/create-inventory" },
       { label: "property", modal: <AddPropertyModal /> },
