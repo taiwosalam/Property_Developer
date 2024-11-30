@@ -83,7 +83,7 @@ const ThreadHeader = ({
               <p className="dark:text-white truncate">
                 {name || '__'}
               </p>
-              <BadgeIcon color="gray" />
+              {/* <BadgeIcon color="gray" /> */}
             </div>
           </div>
           <p className="text-brand-9 text-sm"> {role || '__'} </p>
@@ -224,13 +224,10 @@ const ThreadFooter = ({ comments, likes, dislikes, slug, shareLink }: { comments
   );
 };
 
-export const ThreadSkeleton = ({ count = 1 }: { count?: number }) => {
+export const ThreadSkeleton = () => {
   return (
-    <div className="flex flex-wrap gap-4">
-      {Array.from({ length: count }).map((_, index) => (
         <div
-          key={index}
-          className="bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md animate-pulse flex-1 min-w-[300px] max-w-[400px]"
+          className="bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md animate-pulse flex-1 min-w-[300px] max-w-[400px] flex-row"
         >
           {/* Header Skeleton */}
           <div className="flex items-center justify-between w-full">
@@ -264,7 +261,5 @@ export const ThreadSkeleton = ({ count = 1 }: { count?: number }) => {
             <div className="w-16 h-4 bg-gray-200 dark:bg-gray-700 rounded" />
           </div>
         </div>
-      ))}
-    </div>
   );
 };

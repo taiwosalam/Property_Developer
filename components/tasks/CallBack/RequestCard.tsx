@@ -91,7 +91,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           <div className="space-y-1">
             <div className="flex items-center gap-0.5">
               <span className="text-base font-medium">{userName}</span>
-              <BadgeIcon color="blue" />
+              {/* <BadgeIcon color="blue" /> */}
             </div>
             {cardType !== "agent-community" ? (
               <div className="flex items-center gap-1">

@@ -42,8 +42,8 @@ const CreateBranchModal = ({
   setIsOpen: (value: boolean) => void;
   openVerifyModal?: boolean;
   setOpenVerifyModal?: (value: boolean) => void;
-  emailStatus: "pending" | "verified";
-  setEmailStatus: (value: "pending" | "verified") => void;
+  emailStatus?: "pending" | "verified";
+  setEmailStatus?: (value: "pending" | "verified") => void;
 }) => {
   const router = useRouter();
   const { branchEmail, setBranchEmail } = useBranchStore();
