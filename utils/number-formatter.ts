@@ -21,7 +21,7 @@ export const formatCostInputValue = (value: string): string => {
 };
 
 export const currencySymbols = {
-  NAIRA: "₦",
-  DOLLAR: "$",
-  POUND: "£",
+  naira: "₦",
+  dollar: "$",
+  pound: "£",
 } as const;

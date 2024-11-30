@@ -93,7 +93,7 @@ export const PropertyRequestSecondSection = ({ loading, data }: { loading?: bool
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange | undefined>();
   const { minBudget, maxBudget, setMinBudget, setMaxBudget } = usePropertyRequestStore();
   const [timeRange, setTimeRange] = useState("90d");
-  const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
+  const CURRENCY_SYMBOL = currencySymbols.naira;
 
   if (loading) {
     return (

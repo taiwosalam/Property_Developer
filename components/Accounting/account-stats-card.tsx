@@ -96,7 +96,7 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
             {title}
           </p>
           <p className="font-bold text-[24px] xl:text-[28px] text-[#202224] dark:text-white">
-            {`${currencySymbols.NAIRA}${formatNumber(balance)}`}
+            {`${currencySymbols.naira}${formatNumber(balance)}`}
           </p>
         </div>
         <div

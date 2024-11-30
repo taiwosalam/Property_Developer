@@ -24,7 +24,7 @@ const paymentModes = [
 ];
 
 const ManageDisbursement = () => {
-  const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
+  const CURRENCY_SYMBOL = currencySymbols.naira;
 
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">

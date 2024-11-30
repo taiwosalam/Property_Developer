@@ -2,18 +2,20 @@
 import Button from "../Form/Button/button";
 import { ImportCircle, DeleteIconOrange } from "@/public/icons/icons";
 import { useFileUploader } from "@/hooks/useFileUploader";
+import { useState } from "react";
 import { toast } from "sonner";
 import { LandlordTenantInfoDocument } from "./landlord-tenant-info-components";
 
 interface AddMultipleLandlordsOrTenantsProps {
   type: "landlord" | "tenant";
   method: "import" | "invite";
-  submitAction: (file: File) => void;
+  submitAction: (file: File) => Promise<void>;
 }
 
 const AddMultipleLandlordsOrTenants: React.FC<
   AddMultipleLandlordsOrTenantsProps
 > = ({ type, method, submitAction }) => {
+  const [requestLoading, setRequestLoading] = useState(false);
   const {
     file,
     fileName,
@@ -32,9 +34,11 @@ const AddMultipleLandlordsOrTenants: React.FC<
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (file) {
-      submitAction(file);
+      setRequestLoading(true);
+      await submitAction(file);
+      setRequestLoading(false);
     } else {
       toast.warning("Please select a file to upload.");
     }
@@ -119,8 +123,9 @@ const AddMultipleLandlordsOrTenants: React.FC<
           onClick={handleSubmit}
           size="base_medium"
           className="py-2 px-8"
+          disabled={requestLoading}
         >
-          Submit
+          {requestLoading ? "Hang on..." : "Submit"}
         </Button>
       </div>
     </>

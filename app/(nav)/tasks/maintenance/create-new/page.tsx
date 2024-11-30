@@ -24,7 +24,7 @@ const CreateMaintenace = () => {
     setStartDate(date || null);
   };
   const [maintenanceCost, setMaintenanceCost] = useState("");
-  const currencySymbol = currencySymbols["NAIRA"]; // TODO: Make this dynamic
+  const currencySymbol = currencySymbols.naira; // TODO: Make this dynamic
   const handleMaintenanceCostChange = (value: string) => {
     setMaintenanceCost(formatCostInputValue(value));
   };

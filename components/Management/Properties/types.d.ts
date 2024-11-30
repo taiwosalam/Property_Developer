@@ -1,19 +1,5 @@
 import { unit_card_data_props } from "./data";
 
-export interface PropertyProps {
-  images: string[];
-  id: string | number;
-  propertyId: string | number;
-  name: string;
-  units: number;
-  address: string;
-  price: number;
-  propertyType: "rental" | "facility";
-  annualReturns?: number;
-  annualIncome?: number;
-  currency: string;
-}
-
 export type AddPropertyModalViews = "options" | "add-property-with-id";
 
 export interface AddPropertyOptionsViewProps {
@@ -128,7 +114,6 @@ export interface PropertyFormPayload {
   staff: string[];
 }
 
-
 export interface AddUnitPayload {
   unit: {
     unit_name: string;
@@ -151,35 +136,33 @@ export interface AddUnitPayload {
     pet_allowed: boolean;
   };
 
-  // means 
   unit_fee_news: {
     fee_period: "monthly";
     fee_amount: number;
-    service_charge: 300;
-    agency_fee: 1500;
-    legal_fee: 500;
-    caution_fee: 1000;
-    inspection_fee: 200;
-    other_charge: 50;
+    service_charge: number;
+    agency_fee: number;
+    legal_fee: number;
+    caution_fee: number;
+    inspection_fee: number;
+    other_charge: number;
     negotiation: boolean;
     total_package: number;
   };
 
   unit_fee_renews: {
     fee_period: "yearly";
-    fee_amount: 4500;
-    service_charge: 300;
-    other_charge: 50;
-    total_package: 4850;
+    fee_amount: number;
+    service_charge: number;
+    other_charge: number;
+    total_package: number;
   };
 
   unit_fee: {
     fee_period: "monthly";
-    // fee_amount: number
-    security_fee: 200;
-    service_fee: 150;
-    other_charge: 25;
-    total_package: 375;
-    // annual_fee: 4500; ???
+    fee_amount: number;
+    security_fee: number;
+    service_fee: number;
+    other_charge: number;
+    total_package: number;
   };
 }

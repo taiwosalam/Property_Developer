@@ -1,30 +1,25 @@
+"use client";
 import PropertyPreview from "@/components/Management/Properties/property-preview";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import useFetch from "@/hooks/useFetch";
+import {
+  type SinglePropertyResponse,
+  transformSinglePropertyData,
+} from "./data";
+import NetworkError from "@/components/Error/NetworkError";
 
-const PropertyPreviewPage = ({
-  params,
-}: {
-  params: { type: "rental" | "facility" };
-}) => {
-  // TODO: Get the property info from the database
-  return (
-    <PropertyPreview
-      propertyType={params.type}
-      images={[
-        "/empty/SampleProperty.jpeg",
-        "/empty/SampleProperty2.jpeg",
-        "/empty/SampleProperty3.jpeg",
-        "/empty/SampleProperty4.png",
-        "/empty/SampleProperty5.jpg",
-      ]}
-      address="123 Main St"
-      id={1}
-      propertyId={1}
-      name="Property 1"
-      units={1}
-      price={1000}
-      currency="Naira"
-    />
-  );
+const PropertyPreviewPage = ({ params }: { params: { id: string } }) => {
+  const { data, loading, error, isNetworkError } =
+    useFetch<SinglePropertyResponse>(`property/${params.id}/view`);
+
+  const propertyData = data ? transformSinglePropertyData(data) : null;
+
+  if (loading) return <PageCircleLoader />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <div>{error}</div>;
+  if (!propertyData) return <div>No property data found</div>;
+
+  return <PropertyPreview {...propertyData} />;
 };
 
 export default PropertyPreviewPage;
