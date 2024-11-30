@@ -100,8 +100,7 @@ const BranchPropertiesSection: React.FC<{ branchId: string }> = ({
               >
                 <PropertyCard
                   address="123 Main St"
-                  id={1}
-                  propertyId={1}
+                  id={"1"}
                   images={[
                     "/empty/SampleProperty.jpeg",
                     "/empty/SampleProperty2.jpeg",
@@ -109,12 +108,21 @@ const BranchPropertiesSection: React.FC<{ branchId: string }> = ({
                     "/empty/SampleProperty4.jpeg",
                     "/empty/SampleProperty5.jpeg",
                   ]}
-                  name="Property 1"
-                  units={1}
-                  price={1000}
-                  propertyType={index % 2 === 0 ? "rental" : "facility"}
-                  currency="Naira"
+                  property_name="Property 1"
+                  total_units={1}
+                  total_unit_pictures={5}
+                  hasVideo={true}
+                  property_type={index % 2 === 0 ? "rental" : "facility"}
+                  currency="naira"
                   isClickable={false}
+                  annualReturns={1000000}
+                  annualIncome={1000000}
+                  accountOfficer="John Doe"
+                  last_updated="2021-01-01"
+                  mobile_tenants={1}
+                  web_tenants={1}
+                  owing_units={1}
+                  available_units={1}
                 />
               </Link>
             ))}
@@ -127,23 +135,7 @@ const BranchPropertiesSection: React.FC<{ branchId: string }> = ({
                 href={`/management/staff-branch/${branchId}/property/${index}`}
                 className="block"
               >
-                <BranchPropertyListItem
-                  address="123 Main St"
-                  id={1}
-                  propertyId={1}
-                  images={[
-                    "/empty/empty.svg",
-                    "/empty/empty.svg",
-                    "/empty/empty.svg",
-                    "/empty/empty.svg",
-                    "/empty/empty.svg",
-                  ]}
-                  name="Property 1"
-                  units={1}
-                  price={1000}
-                  propertyType={index % 2 === 0 ? "rental" : "facility"}
-                  currency="Naira"
-                />
+                <BranchPropertyListItem />
               </Link>
             ))}
           </div>

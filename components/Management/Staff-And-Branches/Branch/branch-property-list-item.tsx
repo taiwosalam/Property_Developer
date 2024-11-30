@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { PropertyProps } from "../../Properties/types";
 import { useState } from "react";
 import { VideoIcon, CameraIcon } from "@/public/icons/icons";
 import Sample from "@/public/empty/SampleProperty.jpeg";
@@ -9,15 +8,7 @@ import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 
-const BranchPropertyListItem: React.FC<PropertyProps> = ({
-  images,
-  propertyId,
-  name,
-  units,
-  address,
-  price,
-  propertyType,
-}) => {
+const BranchPropertyListItem = () => {
   const [screenModal, setScreenModal] = useState(false);
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   return (
@@ -61,7 +52,7 @@ const BranchPropertyListItem: React.FC<PropertyProps> = ({
         </div>
         <Image
           src={Sample}
-          alt={name}
+          alt={""}
           fill
           objectFit="cover"
           objectPosition="center"

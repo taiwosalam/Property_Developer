@@ -12,12 +12,18 @@ const BranchPPropertyPreview = () => {
         // "/empty/SampleProperty5.jpg",
       ]}
       address="123 Main St"
-      id={1}
-      propertyId={1}
-      name="Property 1"
-      units={1}
-      price={1000}
-      currency="Naira"
+      annual_income={1000000}
+      annual_returns={1000000}
+      total_units={1}
+      property_name="Property 1"
+      category="facility"
+      currency="naira"
+      state="Lagos"
+      local_government="Ikeja"
+      fee_period="Monthly"
+      isRental={false}
+      id="22"
+      units={[]}
     />
   );
 };

@@ -94,16 +94,30 @@ const eventToComponentMap = {
   Property: (
     <div className="min-w-[335px] max-w-full dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
       <PropertyCard
+        address="123 Main St"
+        id={"1"}
+        images={[
+          "/empty/SampleProperty.jpeg",
+          "/empty/SampleProperty2.jpeg",
+          "/empty/SampleProperty3.jpeg",
+          "/empty/SampleProperty4.jpeg",
+          "/empty/SampleProperty5.jpeg",
+        ]}
+        property_name="Property 1"
+        total_units={1}
+        total_unit_pictures={5}
+        hasVideo={true}
+        property_type="facility"
+        currency="naira"
         isClickable={false}
-        address="123 Main St, Anytown, USA"
-        id="1"
-        images={[empty, empty, empty, empty]}
-        name="Property 1"
-        propertyId="1"
-        price={1000}
-        propertyType="facility"
-        units={10}
-        currency="Naira"
+        annualReturns={1000000}
+        annualIncome={1000000}
+        accountOfficer="John Doe"
+        last_updated="2021-01-01"
+        mobile_tenants={1}
+        web_tenants={1}
+        owing_units={1}
+        available_units={1}
       />
     </div>
   ),
