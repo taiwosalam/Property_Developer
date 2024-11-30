@@ -159,11 +159,11 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         {landlordData?.user_tag === "mobile" ? (
           <LandlordTenantInfo
             info={{
-              gender: "LandlordPageData.gender",
-              birthday: "LandlordPageData.birthday",
-              religion: "LandlordPageData.religion",
+              gender: landlordData.gender,
+              birthday: landlordData.birthday,
+              religion: landlordData.religion,
               phone: landlordData.phone_number,
-              marital_status: "LandlordPageData.marital_status",
+              marital_status: landlordData.marital_status,
             }}
           />
         ) : (
@@ -217,9 +217,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
             containerClassName="flex flex-col justify-center"
             heading="Others"
             info={{
-              occupation: "LandlordPageData?.occupation",
-              employment_title: "LandlordPageData?.employment_title",
-              "family type": "LandlordPageData?.family_type",
+              occupation: landlordData.others.occupation,
+              employment_title: landlordData.others.type,
+              "family type": landlordData.others.family_type,
               xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
             }}
           />
@@ -228,10 +228,10 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         <LandlordTenantInfo
           heading="Next of Kin"
           info={{
-            name: "LandlordPageData.next_of_kin.name",
-            address: "LandlordPageData.next_of_kin.address",
-            "phone number": "LandlordPageData.next_of_kin.phone_number",
-            relationship: "LandlordPageData.next_of_kin.relationship",
+            name: landlordData.next_of_kin.name,
+            address: landlordData.next_of_kin.address,
+            "phone number": landlordData.next_of_kin.phone,
+            relationship: landlordData.next_of_kin.relationship,
           }}
         />
         {landlordData?.user_tag === "web" ? (
@@ -242,9 +242,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               containerClassName="flex flex-col justify-center"
               heading="Others"
               info={{
-                occupation: "LandlordPageData?.occupation",
-                employment_title: "LandlordPageData?.employment_title",
-                "family type": "LandlordPageData?.family_type",
+                occupation: landlordData.others.occupation,
+                employment_title: landlordData.others.type,
+                "family type": landlordData.others.family_type,
                 xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
               }}
             />

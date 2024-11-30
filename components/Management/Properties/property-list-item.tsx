@@ -24,6 +24,8 @@ interface PropertyListItemProps {
   currency?: keyof typeof currencySymbols;
   branch?: string;
   property_type: "rental" | "facility";
+  total_unit_pictures: number;
+  hasVideo: boolean;
 }
 
 const PropertyListItem: React.FC<PropertyListItemProps> = ({
@@ -43,6 +45,8 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
   currency,
   branch,
   property_type,
+  total_unit_pictures,
+  hasVideo,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   const isRental = property_type === "rental";
@@ -128,11 +132,15 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
             <div className="flex items-stretch gap-[10px] absolute z-[1] left-[35%] bottom-4">
               <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
                 <CameraIcon />
-                <p className="text-black font-medium text-[10px]">+23</p>
+                <p className="text-black font-medium text-[10px]">
+                  +{total_unit_pictures}
+                </p>
               </div>
-              <div className="bg-brand-1 rounded py-1 px-1.5 grid place-items-center">
-                <VideoIcon />
-              </div>
+              {hasVideo && (
+                <div className="bg-brand-1 rounded py-1 px-1.5 grid place-items-center">
+                  <VideoIcon />
+                </div>
+              )}
             </div>
           </div>
           <Image
@@ -149,7 +157,7 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
         <div className="flex items-center gap-2">
           <PropertyTag propertyType={property_type} />
           <p className="font-bold text-sm md:text-base text-brand-10">
-            ID: 123456776342
+            ID: {id}
           </p>
         </div>
         <div className="flex items-center gap-2">

@@ -235,7 +235,7 @@ export const LandlordEditGuarantorInfoSection = () => {
           id={`guarantor${index}_full_name`}
           label="full name"
           placeholder="Placeholder"
-          defaultValue={guarantor.name}
+          defaultValue={guarantor?.name}
           inputClassName="rounded-lg"
         />
         <Input
@@ -243,14 +243,14 @@ export const LandlordEditGuarantorInfoSection = () => {
           type="email"
           label="email"
           placeholder="Placeholder"
-          defaultValue={guarantor.email}
+          defaultValue={guarantor?.email}
           inputClassName="rounded-lg"
         />
         <PhoneNumberInput
           id={`guarantor${index}_phone_number`}
           label="phone number"
           placeholder="Placeholder"
-          defaultValue={guarantor.phone_number || ""}
+          defaultValue={guarantor?.phone_number || ""}
           inputContainerClassName="bg-neutral-2"
         />
         <Select
@@ -258,14 +258,14 @@ export const LandlordEditGuarantorInfoSection = () => {
           label="relationship"
           placeholder="Select options"
           options={guarantorRelationships}
-          defaultValue={guarantor.relationship || ""}
+          defaultValue={guarantor?.relationship || ""}
           inputContainerClassName="bg-neutral-2"
         />
         <Input
           id={`guarantor${index}_address`}
           label="address"
           placeholder="Placeholder"
-          defaultValue={guarantor.address}
+          defaultValue={guarantor?.address}
           inputClassName="rounded-lg"
         />
         <div className="flex items-end justify-end">
