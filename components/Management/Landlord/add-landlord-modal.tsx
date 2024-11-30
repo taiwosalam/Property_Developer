@@ -87,7 +87,8 @@ const AddLandlordModal = () => {
       content: (
         <AddMultipleLandlordsOrTenants
           type="landlord"
-          submitAction={() => {}}
+          method="import"
+          submitAction={async () => {}}
         />
       ),
     },
@@ -96,7 +97,8 @@ const AddLandlordModal = () => {
       content: (
         <AddMultipleLandlordsOrTenants
           type="landlord"
-          submitAction={() => {}}
+          method="invite"
+          submitAction={async () => {}}
         />
       ),
     },

@@ -14,10 +14,9 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import {
   defaultTenantPageData,
-  TenantPageState,
   tenantTableFields,
   type TenantApiResponse,
-  TenantPageData,
+  type TenantPageData,
   transformTenantApiResponse,
 } from "./data";
 import Link from "next/link";
@@ -26,55 +25,35 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useView from "@/hooks/useView";
 import useFetch from "@/hooks/useFetch";
-import useSettingsStore from "@/store/settings";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import NetworkError from "@/components/Error/NetworkError";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import { ExclamationMark } from "@/public/icons/icons";
+import TableLoading from "@/components/Loader/TableLoading";
+import CardsLoading from "@/components/Loader/CardsLoading";
 
 const Tenants = () => {
-  const view = useView();
+  const storedView = useView();
+  const [view, setView] = useState<string | null>(storedView);
 
-  const { selectedOptions, setSelectedOption } = useSettingsStore();
-  const [selectedView, setSelectedView] = useState<string | null>(
-    selectedOptions.view
-  );
-  // const grid = selectedView === "grid";
+  const initialState: TenantPageData = defaultTenantPageData;
 
-  const initialState: TenantPageState = {
-    gridView: selectedView === "grid",
-    tenantsPageData: defaultTenantPageData,
-  };
-
-  const [state, setState] = useState<TenantPageState>(initialState);
+  const [pageData, setPageData] = useState<TenantPageData>(initialState);
   const {
-    gridView,
-    tenantsPageData: {
-      total_pages,
-      current_page,
-      total_tenants,
-      new_tenants_this_month,
-      mobile_tenants,
-      new_mobile_tenants_this_month,
-      web_tenants,
-      new_web_tenants_this_month,
-      tenants,
-    },
-  } = state;
+    total_pages,
+    current_page,
+    total_tenants,
+    new_tenants_this_month,
+    mobile_tenants,
+    new_mobile_tenants_this_month,
+    web_tenants,
+    new_web_tenants_this_month,
+    tenants,
+  } = pageData;
 
   useEffect(() => {
-    setState((prevState) => ({
-      ...prevState,
-      gridView: selectedView === "grid",
-    }));
-  }, [selectedView]);
-
-  const setGridView = () => {
-    setSelectedOption("view", "grid");
-    setSelectedView("grid");
-  };
-
-  const setListView = () => {
-    setSelectedOption("view", "list");
-    setSelectedView("list");
-  };
+    setView(storedView);
+  }, [storedView]);
 
   const states = getAllStates();
 
@@ -147,9 +126,9 @@ const Tenants = () => {
 
   const handlePageChange = (page: number) => {
     setSearchQuery("");
-    setState((state) => ({
-      ...state,
-      tenantsPageData: { ...state.tenantsPageData, current_page: page },
+    setPageData((prevState) => ({
+      ...prevState,
+      current_page: page,
     }));
   };
 
@@ -161,6 +140,8 @@ const Tenants = () => {
   const {
     data: apiData,
     loading,
+    silentLoading,
+    isNetworkError,
     error,
     refetch,
   } = useFetch<TenantApiResponse>(
@@ -169,9 +150,9 @@ const Tenants = () => {
 
   useEffect(() => {
     if (apiData) {
-      setState((prevState) => ({
-        ...prevState,
-        tenantsPageData: transformTenantApiResponse(apiData),
+      setPageData((x) => ({
+        ...x,
+        ...transformTenantApiResponse(apiData),
       }));
     }
   }, [apiData]);
@@ -182,9 +163,9 @@ const Tenants = () => {
   const transformedTenants = tenants.map((t) => ({
     ...t,
     full_name: (
-      <p className="flex items-center">
-        <span className="text-ellipsis line-clamp-1">{t.name}</span>
-        <BadgeIcon color={t.badge_color} />
+      <p className="flex items-center whitespace-nowrap">
+        <span>{t.name}</span>
+        {t.badge_color && <BadgeIcon color={t.badge_color} />}
       </p>
     ),
     user_tag: <UserTag type={t.user_tag} />,
@@ -197,14 +178,16 @@ const Tenants = () => {
         >
           Manage
         </Button>
-        <Button
-          variant="sky_blue"
-          size="sm_medium"
-          className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white"
-          // onClick={() => onClickChat(t)}
-        >
-          Chat
-        </Button>
+        {t.user_tag === "mobile" && (
+          <Button
+            variant="sky_blue"
+            size="sm_medium"
+            className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white"
+            // onClick={() => onClickChat(t)}
+          >
+            Chat
+          </Button>
+        )}
       </div>
     ),
   }));
@@ -217,6 +200,8 @@ const Tenants = () => {
         statsCardCount={3}
       />
     );
+
+  if (isNetworkError) return <NetworkError />;
 
   if (error) return <div>{error}</div>;
 
@@ -257,9 +242,9 @@ const Tenants = () => {
 
       <FilterBar
         azFilter
-        gridView={gridView}
-        setGridView={setGridView}
-        setListView={setListView}
+        gridView={view === "grid"}
+        setGridView={() => setView("grid")}
+        setListView={() => setView("list")}
         onStateSelect={onStateSelect}
         pageTitle="Tenants/Occupants (Users)"
         aboutPageModalData={{
@@ -274,35 +259,85 @@ const Tenants = () => {
         handleSearch={handleSearch}
       />
       <section>
-        {view === "grid" || gridView ? (
-          <AutoResizingGrid minWidth={284} gap={16}>
-            {tenants.map((t) => (
-              <Link href={`/management/tenants/${t.id}/manage`} key={t.id}>
-                <TenantCard
-                  key={t.id}
-                  picture_url={t.picture_url}
-                  name={t.name}
-                  user_tag={t.user_tag}
-                  badge_color={t.badge_color}
-                  email={t.email}
-                  phone_number={t.phone_number}
-                />
-              </Link>
-            ))}
-          </AutoResizingGrid>
+        {tenants.length === 0 && !silentLoading ? (
+          searchQuery ? (
+            "No Search Found"
+          ) : (
+            <EmptyList
+              buttonText="+ Create New Tenant"
+              modalContent={<AddTenantModal />}
+              title="The tenants and occupants profile files are empty."
+              body={
+                <p>
+                  You don&apos;t have any profiles for tenants and occupants
+                  yet. You can create them manually by clicking on the
+                  &quot;Create New User&quot; button or add them using their
+                  profile ID. Tenant profiles are for rental properties, while
+                  occupant profiles are for residents in gated estates. Once you
+                  add profiles to this page, this guide will no longer show. To
+                  learn more about this page later, you can click on this icon{" "}
+                  <span className="inline-block text-brand-10 align-text-top">
+                    <ExclamationMark />
+                  </span>{" "}
+                  at the top left of the dashboard page.
+                  <br />
+                  <br />
+                  Occupants and tenants can be onboarded manually which creates
+                  two types of users: web and mobile profile types. When
+                  creating or managing a rental or gated estate property, adding
+                  tenants and occupants comes last. You can invite them using
+                  their email and phone number for registration. If you already
+                  have their list, you can add them in bulk using an XML file.
+                </p>
+              }
+            />
+          )
         ) : (
-          <CustomTable
-            displayTableHead={false}
-            fields={tenantTableFields}
-            data={transformedTenants}
-            tableBodyCellSx={{ color: "#3F4247" }}
-          />
+          <>
+            {view === "grid" ? (
+              <AutoResizingGrid minWidth={284} gap={16}>
+                {silentLoading ? (
+                  <CardsLoading />
+                ) : (
+                  tenants.map((t) => (
+                    <Link
+                      href={`/management/tenants/${t.id}/manage`}
+                      key={t.id}
+                    >
+                      <TenantCard
+                        key={t.id}
+                        picture_url={t.picture_url}
+                        name={t.name}
+                        user_tag={t.user_tag}
+                        badge_color={t.badge_color}
+                        email={t.email}
+                        phone_number={t.phone_number}
+                      />
+                    </Link>
+                  ))
+                )}
+              </AutoResizingGrid>
+            ) : (
+              <>
+                {silentLoading ? (
+                  <TableLoading />
+                ) : (
+                  <CustomTable
+                    displayTableHead={false}
+                    fields={tenantTableFields}
+                    data={transformedTenants}
+                    tableBodyCellSx={{ color: "#3F4247" }}
+                  />
+                )}
+              </>
+            )}
+            <Pagination
+              totalPages={total_pages}
+              currentPage={current_page}
+              onPageChange={handlePageChange}
+            />
+          </>
         )}
-        <Pagination
-          totalPages={total_pages}
-          currentPage={current_page}
-          onPageChange={handlePageChange}
-        />
       </section>
     </div>
   );

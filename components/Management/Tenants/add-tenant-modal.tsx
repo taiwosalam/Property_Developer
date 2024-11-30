@@ -91,13 +91,21 @@ const AddTenantModal = () => {
     "add-multiple-users": {
       heading: "Import bulk Tenants/Occupants list",
       content: (
-        <AddMultipleLandlordsOrTenants type="tenant" submitAction={() => {}} />
+        <AddMultipleLandlordsOrTenants
+          type="tenant"
+          method="import"
+          submitAction={async () => {}}
+        />
       ),
     },
     "invite-multiple-users": {
       heading: "Invite Multiple Tenants/Occupants with Email",
       content: (
-        <AddMultipleLandlordsOrTenants type="tenant" submitAction={() => {}} />
+        <AddMultipleLandlordsOrTenants
+          type="tenant"
+          method="invite"
+          submitAction={async () => {}}
+        />
       ),
     },
     "invite-single-user": {

@@ -69,54 +69,61 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
         </>
       )}
       {/* Top left corner */}
-      <div
-        className={cn(
-          "absolute z-[2] top-2 left-2 bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1",
-          {
-            "opacity-0 group-hover:opacity-100 transition-opacity duration-300":
-              showImageIndexOnHover,
-          }
-        )}
-      >
-        <CameraIcon width={16} height={16} />
-        <span className="text-sm font-medium">
-          {`${imageIndex + 1}/${images.length}`}
-        </span>
-      </div>
-
-      <AnimatePresence initial={false} custom={direction}>
-        <motion.div
-          key={page}
-          custom={direction}
-          variants={variants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{
-            x: { type: "spring", stiffness: 300, damping: 30 },
-          }}
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={1}
-          onDragEnd={(e, { offset, velocity }) => {
-            e.preventDefault();
-            const swipe = swipePower(offset.x, velocity.x);
-            if (swipe < -swipeConfidenceThreshold) {
-              paginate(e, 1);
-            } else if (swipe > swipeConfidenceThreshold) {
-              paginate(e, -1);
+      {images.length > 0 && (
+        <div
+          className={cn(
+            "absolute z-[2] top-2 left-2 bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1",
+            {
+              "opacity-0 group-hover:opacity-100 transition-opacity duration-300":
+                showImageIndexOnHover,
             }
-          }}
-          className="absolute inset-0"
+          )}
         >
-          <Image
-            src={images[imageIndex]}
-            alt={`image-${imageIndex + 1}`}
-            fill
-            className="object-cover"
-          />
-        </motion.div>
-      </AnimatePresence>
+          <CameraIcon width={16} height={16} />
+          <span className="text-sm font-medium">
+            {`${imageIndex + 1}/${images.length}`}
+          </span>
+        </div>
+      )}
+      {images.length > 0 ? (
+        <AnimatePresence initial={false} custom={direction}>
+          <motion.div
+            key={page}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+            }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={1}
+            onDragEnd={(e, { offset, velocity }) => {
+              e.preventDefault();
+              const swipe = swipePower(offset.x, velocity.x);
+              if (swipe < -swipeConfidenceThreshold) {
+                paginate(e, 1);
+              } else if (swipe > swipeConfidenceThreshold) {
+                paginate(e, -1);
+              }
+            }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={images[imageIndex]}
+              alt={`image-${imageIndex + 1}`}
+              fill
+              className="object-cover"
+            />
+          </motion.div>
+        </AnimatePresence>
+      ) : (
+        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+          <p className="text-gray-500">No images available</p>
+        </div>
+      )}
       {children}
     </div>
   );

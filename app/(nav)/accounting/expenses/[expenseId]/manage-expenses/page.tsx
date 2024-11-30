@@ -25,7 +25,7 @@ import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item
 const ManageExpenses = () => {
   const router = useRouter();
 
-  const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
+  const CURRENCY_SYMBOL = currencySymbols.naira;
 
   const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
     [

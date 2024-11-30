@@ -29,7 +29,7 @@ export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
     },
   });
 
-  console.log("images", images)
+  // console.log("images", images)
 
   return (
     <div ref={sliderRef} className="keen-slider relative h-full w-full">
@@ -89,7 +89,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   cautionDeposit,
   serviceCharge,
 }) => {
-  const CURRENCY = currencySymbols["NAIRA"];
+  const CURRENCY = currencySymbols["naira"];
   return (
     <div className="flex items-center justify-between flex-wrap space-y-1">
       <div>

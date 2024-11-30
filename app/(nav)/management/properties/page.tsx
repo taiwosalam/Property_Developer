@@ -19,6 +19,7 @@ import {
   propertyFilterOptionsRadio,
   propertyFilterOptionsWithDropdowns,
   transformPropertiesApiResponse,
+  initialState,
   type PropertiesPageState,
   type PropertiesApiResponse,
 } from "./data";
@@ -28,19 +29,6 @@ import useFetch from "@/hooks/useFetch";
 const Properties = () => {
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
-
-  const initialState: PropertiesPageState = {
-    total_pages: 1,
-    current_page: 1,
-    total_properties: 0,
-    new_properties_count: 0,
-    total_rental_properties: 0,
-    new_rental_properties_count: 0,
-    total_facility_properties: 0,
-    new_facility_properties_count: 0,
-    properties: [],
-  };
-
   const [pageData, setPageData] = useState<PropertiesPageState>(initialState);
 
   const {
@@ -213,26 +201,7 @@ const Properties = () => {
                 {silentLoading ? (
                   <CardsLoading />
                 ) : (
-                  properties.map((b) => (
-                    <PropertyCard
-                      key={b.id}
-                      address="123 Main St"
-                      id={1}
-                      propertyId={1}
-                      images={[
-                        "/empty/SampleProperty.jpeg",
-                        "/empty/SampleProperty2.jpeg",
-                        "/empty/SampleProperty3.jpeg",
-                        "/empty/SampleProperty4.jpeg",
-                        "/empty/SampleProperty5.jpeg",
-                      ]}
-                      name="Property 1"
-                      units={1}
-                      price={1000}
-                      propertyType={"facility"}
-                      currency="Naira"
-                    />
-                  ))
+                  properties.map((p) => <PropertyCard key={p.id} {...p} />)
                 )}
               </AutoResizingGrid>
             ) : (
@@ -242,24 +211,7 @@ const Properties = () => {
                 ) : (
                   <div className="space-y-4">
                     {properties.map((p) => (
-                      <PropertyListItem
-                        key={p.id}
-                        address="123 Main St"
-                        id={1}
-                        propertyId={1}
-                        images={[
-                          "/empty/empty.svg",
-                          "/empty/empty.svg",
-                          "/empty/empty.svg",
-                          "/empty/empty.svg",
-                          "/empty/empty.svg",
-                        ]}
-                        name="Property 1"
-                        units={1}
-                        price={1000}
-                        propertyType={"facility"}
-                        currency="Naira"
-                      />
+                      <PropertyListItem key={p.id} {...p} />
                     ))}
                   </div>
                 )}

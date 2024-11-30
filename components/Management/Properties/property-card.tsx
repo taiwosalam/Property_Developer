@@ -1,7 +1,5 @@
 "use client";
-import { PropertyProps } from "./types";
 import ImageSlider from "@/components/ImageSlider/image-slider";
-import clsx from "clsx";
 import PropertyTag from "@/components/Tags/property-tag";
 import { useState, useRef } from "react";
 import Button from "@/components/Form/Button/button";
@@ -10,7 +8,26 @@ import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import { LocationIcon, CameraIcon, VideoIcon } from "@/public/icons/icons";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 
-interface PropertyCardProps extends PropertyProps {
+export interface PropertyCardProps {
+  id: string;
+  images: string[];
+  property_name: string;
+  total_units: number;
+  address: string;
+  total_unit_pictures: number;
+  hasVideo: boolean;
+  property_type: "rental" | "facility";
+  annualReturns: number;
+  annualIncome: number;
+  branch?: string;
+  accountOfficer?: string;
+  last_updated?: string;
+  mobile_tenants?: number;
+  web_tenants?: number;
+  owing_units?: number;
+  available_units?: number;
+  currency?: keyof typeof currencySymbols;
+
   isClickable?: boolean;
   viewOnly?: boolean;
 }
@@ -18,16 +35,28 @@ interface PropertyCardProps extends PropertyProps {
 const PropertyCard: React.FC<PropertyCardProps> = ({
   id,
   images,
-  propertyId,
-  name,
-  units,
+  property_name,
+  total_units,
   address,
-  price,
-  propertyType,
-  isClickable = true,
+  total_unit_pictures,
+  hasVideo,
+  property_type,
+  annualReturns,
+  annualIncome,
+  branch,
+  accountOfficer,
+  last_updated,
+  mobile_tenants,
+  web_tenants,
+  owing_units,
+  available_units,
+  currency,
+  isClickable,
   viewOnly,
 }) => {
-  const isRental = propertyType === "rental";
+  const isRental = property_type === "rental";
+  const symbol =
+    isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
   const modalRef = useRef<HTMLDivElement>(null);
   const [isModalActive, setIsModalActive] = useState(false);
 
@@ -79,12 +108,14 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />
             <p className="text-black dark:text-darkText-1 font-medium text-[10px]">
-              +23
+              +{total_unit_pictures}
             </p>
           </div>
-          <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 grid place-items-center">
-            <VideoIcon />
-          </div>
+          {hasVideo && (
+            <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 grid place-items-center">
+              <VideoIcon />
+            </div>
+          )}
         </div>
       </ImageSlider>
 
@@ -95,29 +126,27 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           isClickable && !viewOnly ? () => setIsModalActive(true) : undefined
         }
       >
-        <p className="text-brand-5 text-xs lg:text-sm font-bold">
-          ID: {propertyId}
-        </p>
+        <p className="text-brand-5 text-xs lg:text-sm font-bold">ID: {id}</p>
         <p className="text-[#374151] dark:text-white text-lg md:text-xl lg:text-2xl font-bold">
-          {name} <br />({units} Units)
+          {property_name} <br />({total_units} Units)
         </p>
         <p className="flex items-center gap-1 text-brand-tertiary text-xs lg:text-sm font-normal">
           <LocationIcon />
           {address}
         </p>
         <div className="flex flex-wrap justify-between items-end mt-1">
-          <PropertyTag propertyType={propertyType} sm />
+          <PropertyTag propertyType={property_type} sm />
           <div className="text-right">
-            <p className="text-brand-primary text-lg lg:text-xl font-bold">{`${
-              currencySymbols["NAIRA"]
-            }${formatNumber(price)}`}</p>
+            <p className="text-brand-primary text-lg lg:text-xl font-bold">{`${symbol}${formatNumber(
+              annualReturns
+            )}`}</p>
             <p className="text-[#606060] dark:text-darkText-1 font-normal text-xs">
               Annual Returns
             </p>
             <p className="text-text-disabled font-medium text-sm">
-              <span className="text-highlight">{`${
-                currencySymbols["NAIRA"]
-              }${formatNumber(700000)}`}</span>{" "}
+              <span className="text-highlight">{`${symbol}${formatNumber(
+                annualIncome
+              )}`}</span>{" "}
               / Annual Income
             </p>
           </div>
@@ -135,33 +164,35 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           >
             <div>
               <p className="text-label font-normal">Branch</p>
-              <p className="text-brand-9 font-bold">Joke Plaza Bodija</p>
+              <p className="text-brand-9 font-bold">{branch}</p>
             </div>
             <div>
               <p className="text-label font-normal">Total Unit</p>
-              <p className="text-brand-9 font-bold">12</p>
+              <p className="text-brand-9 font-bold">{total_units}</p>
             </div>
             <div>
               <p className="text-label font-normal">
                 {isRental ? "Available" : "Owing"} Units
               </p>
-              <p className="text-brand-9 font-bold">5</p>
+              <p className="text-brand-9 font-bold">
+                {isRental ? available_units : owing_units}
+              </p>
             </div>
             <div>
               <p className="text-label font-normal">Account Officer</p>
-              <p className="text-brand-9 font-bold">Anikulapo Jesus</p>
+              <p className="text-brand-9 font-bold">{accountOfficer}</p>
             </div>
             <div>
               <p className="text-label font-normal">Mobile Tenants</p>
-              <p className="text-brand-9 font-bold">12</p>
+              <p className="text-brand-9 font-bold">{mobile_tenants}</p>
             </div>
             <div>
               <p className="text-label font-normal">Web Tenants</p>
-              <p className="text-brand-9 font-bold">5</p>
+              <p className="text-brand-9 font-bold">{web_tenants}</p>
             </div>
             <div>
               <p className="text-label font-normal">Last Updated</p>
-              <p className="text-brand-9 font-bold">5 hours ago</p>
+              <p className="text-brand-9 font-bold">{last_updated}</p>
             </div>
           </motion.div>
         )}
