@@ -62,19 +62,36 @@ const MyArticlePage = () => {
   const [state, setState] = useState(initialState);
   const { data, isLoading, searchQuery, meta } = state;
   const [isFetching, setIsFetching] = useState(false);
-  // const [error, setError] = useState<string | null>(null);
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-  const config = useMemo(
-    () => ({
-      params: { 
-        page: meta?.current_page,
-        search: searchQuery 
+    const handleSort = (order: "asc" | "desc") => {
+      setSortOrder(order);
+    };
+
+
+  const handlePageChange = (page: number) => {
+    setState((prevState) => ({
+      ...prevState,
+      searchQuery: "",
+      meta: {
+        ...prevState.meta,
+        current_page: page,
       },
-    }),
-    [meta?.current_page, searchQuery]
-  );
+    }));
+  };
 
-  const handleSearch = async (query: string) => {
+    const config = useMemo(
+      () => ({
+        params: {
+          page: meta?.current_page,
+          search: searchQuery,
+          sort_order: sortOrder,
+        },
+      }),
+      [meta?.current_page, searchQuery, sortOrder]
+    );
+
+  const handleSearch = async (query: string): Promise<void> => {
     if (!query && !searchQuery) return;
     setState((prevState) => ({
       ...prevState,
@@ -136,7 +153,7 @@ const MyArticlePage = () => {
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">
-              + Community Board 
+              + Community Board
             </Button>
           </ModalTrigger>
           <ModalContent>
@@ -147,7 +164,7 @@ const MyArticlePage = () => {
       <FilterBar
         hasGridListToggle={false}
         azFilter
-        onStateSelect={() => { }}
+        onStateSelect={() => {}}
         pageTitle="My Articles"
         aboutPageModalData={{
           title: "My Articles",
@@ -157,14 +174,17 @@ const MyArticlePage = () => {
         searchInputPlaceholder="Search Articles"
         handleSearch={handleSearch}
         handleFilterApply={() => {}}
+        onSort={handleSort}
       />
 
       <AutoResizingGrid minWidth={300}>
         {loading ? (
           <div className="flex">
-            {Array(data?.length || 3).fill(null).map((_, index) => (
-              <ThreadSkeleton key={index} />
-            ))}
+            {Array(data?.length || 3)
+              .fill(null)
+              .map((_, index) => (
+                <ThreadSkeleton key={index} />
+              ))}
           </div>
         ) : data && data.length > 0 ? (
           data.map((thread, index) => (
@@ -173,9 +193,11 @@ const MyArticlePage = () => {
               slug={thread.post.slug}
               id={thread.post.id}
               name={thread.user.name}
-              picture_url={thread.post.media && thread.post.media.length > 0 
-                ? thread.post.media[0].path 
-                : undefined}
+              picture_url={
+                thread.post.media && thread.post.media.length > 0
+                  ? thread.post.media[0].path
+                  : undefined
+              }
               role={thread.user.role}
               time={thread.post.created_at}
               title={thread.post.title}
@@ -194,12 +216,15 @@ const MyArticlePage = () => {
           </div>
         )}
       </AutoResizingGrid>
-      <div className="pagination">
-        <Pagination 
-        totalPages={meta?.total_pages || 1} 
-        currentPage={meta?.current_page || 1} 
-        onPageChange={() => { }} />
-      </div>
+      {meta?.total_pages > 1 && (
+        <div className="pagination">
+          <Pagination
+            totalPages={meta?.total_pages}
+            currentPage={meta?.current_page}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      )}
       <div className="top-80 right-4 fixed rounded-full">
         <button
           onClick={handleCreateMyArticleClick}

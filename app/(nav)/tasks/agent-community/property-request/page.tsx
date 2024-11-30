@@ -18,6 +18,8 @@ import { empty } from "@/app/config";
 import { RequestCardSkeleton } from "../components";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import NetworkError from "@/components/Error/NetworkError";
 
 const lists = [
   {
@@ -130,6 +132,8 @@ const PropertyRequest = () => {
     loading,
     error,
     refetch,
+    silentLoading,
+    isNetworkError,
   } = useFetch<PropertyRequestApiData>(`/agent-community/property-requests/all`, config);
 
   useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
@@ -183,6 +187,11 @@ const PropertyRequest = () => {
     <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
   </div>;
 
+  if (isNetworkError) return <NetworkError />;
+
+  if (error)
+     return <p className="text-base text-red-500 font-medium">{error}</p>;
+
   return (
     <div className="space-y-9">
       <div className="flex gap-5 flex-wrap items-center justify-between">
@@ -223,18 +232,33 @@ const PropertyRequest = () => {
         filterWithOptionsWithDropdown={stateOptions}
         handleSearch={handleSearch}
       />
-      {propertyRequestData.length === 0 ? (
-        <div className="flex justify-center items-center min-h-[200px] text-gray-500">
-          No property requests found
-        </div>
+      {propertyRequestData.length === 0 && !silentLoading ? (
+        searchQuery ? (
+          "No Search Found"
+        ) : (
+          <section>
+            <EmptyList
+              buttonText="+ Create New Property Request"
+              buttonLink="/tasks/agent-community/my-properties-request/create"
+              title="The property request files are empty"
+              body={
+                <p>Create a property request by clicking on the &quot;Create New Property Request&quot; button.</p>
+              }
+            />
+          </section>
+        )
       ) : (
         <AutoResizingGrid gap={28} minWidth={400}>
-          {propertyRequestData.map((details, index) => (
-            <PropertyRequestCard
+          {silentLoading ? (
+            <RequestCardSkeleton />
+          ) : (
+            propertyRequestData.map((details, index) => (
+              <PropertyRequestCard
               key={index}
               {...transformToPropertyRequestCardProps(details)}
-            />
-          ))}
+              />
+            ))
+          )}
         </AutoResizingGrid>
       )}
       <div className="pagination">

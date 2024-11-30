@@ -34,6 +34,7 @@ const ThreadCard = ({
   slug,
   shareLink,
 }: ThreadCardProps) => {
+  const link = `/tasks/agent-community/${myArticle ? "my-articles" : "threads"}/${slug}/preview?id=${id}`;
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md flex flex-col h-full">
       <Link
@@ -48,7 +49,7 @@ const ThreadCard = ({
         />
         <ThreadBody title={title} picture_url={picture_url} desc={desc} />
       </Link>
-      <ThreadFooter comments={comments} likes={likes} dislikes={dislikes} slug={slug} shareLink={shareLink} />
+      <ThreadFooter comments={comments} likes={likes} dislikes={dislikes} slug={slug} shareLink={link} />
     </div>
   );
 };
@@ -79,7 +80,7 @@ const ThreadHeader = ({
         />
         <div className="flex flex-col flex-1 min-w-0">
           <div className="flex gap-2 items-center">
-            <div className="flex items-center gap-1 max-w-[70%]">
+            <div className="flex items-center gap-1 max-w-[100%]">
               <p className="dark:text-white truncate">
                 {name || '__'}
               </p>
@@ -110,18 +111,18 @@ const ThreadBody = ({
       <h2 className="text-black text-5 dark:text-white leading-5 truncate font-bold mt-4">
         {title}
       </h2>
-      <div 
-        className="text-sm line-clamp-2 max-h-[3lh]"
-        dangerouslySetInnerHTML={{ __html: desc || '__' }}
+      <div
+        className="text-sm line-clamp-3 max-h-[3lh]"
+        dangerouslySetInnerHTML={{ __html: desc || "__" }}
       />
-      <div className="imagWrapper">
+      <div className="imagWrapper overflow-hidden max-h-[195px]">
         <Image
           src={picture_url || empty}
           alt="Thread"
           priority
-          width={200}
-          height={200}
-          className="w-full h-full object-contain"
+          width={300}
+          height={300}
+          className="w-full h-[195px] object-cover"
         />
       </div>
     </div>
@@ -213,7 +214,7 @@ const ThreadFooter = ({ comments, likes, dislikes, slug, shareLink }: { comments
 
       <button className="flex items-center gap-2">
         <CommentIcon />
-        <span className="text-sm dark:text:darkText-1">{comments}</span>
+        <span className="text-sm dark:text:darkText-1">{comments} Comments</span>
       </button>
 
       <button className="flex items-center gap-1" onClick={handleShare}>
@@ -224,13 +225,10 @@ const ThreadFooter = ({ comments, likes, dislikes, slug, shareLink }: { comments
   );
 };
 
-export const ThreadSkeleton = ({ count = 1 }: { count?: number }) => {
+export const ThreadSkeleton = () => {
   return (
-    <div className="flex flex-wrap gap-4">
-      {Array.from({ length: count }).map((_, index) => (
         <div
-          key={index}
-          className="bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md animate-pulse flex-1 min-w-[300px] max-w-[400px]"
+          className="bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md animate-pulse flex-1 min-w-[300px] max-w-[400px] flex-row"
         >
           {/* Header Skeleton */}
           <div className="flex items-center justify-between w-full">
@@ -264,7 +262,5 @@ export const ThreadSkeleton = ({ count = 1 }: { count?: number }) => {
             <div className="w-16 h-4 bg-gray-200 dark:bg-gray-700 rounded" />
           </div>
         </div>
-      ))}
-    </div>
   );
 };

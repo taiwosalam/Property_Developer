@@ -17,6 +17,7 @@
   import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
   import CustomLoader from "@/components/Loader/CustomLoader";
   import NetworkError from "@/components/Error/NetworkError";
+import EmptyList from "@/components/EmptyList/Empty-List";
 
   const lists = [
     {
@@ -51,6 +52,12 @@
 
   const AgentCommunityPage = () => {
     const router = useRouter();
+     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+       const handleSort = (order: "asc" | "desc") => {
+         setSortOrder(order);
+       };
+       
     const initialState:ThreadApiResponse = {
         data: [],
         meta: {
@@ -81,10 +88,11 @@
       () => ({
         params: { 
           page: meta?.current_page,
-          search: searchQuery 
+          search: searchQuery,
+          sort_order: sortOrder,
         },
       }),
-      [meta?.current_page, searchQuery]
+      [meta?.current_page, searchQuery, sortOrder]
     );
 
     const handleSearch = async (query: string) => {
@@ -176,17 +184,42 @@
           filterWithOptionsWithDropdown={stateOptions}
           article={true}
           handleSearch={handleSearch} 
+          onSort={handleSort}
         />
-
-        <AutoResizingGrid minWidth={300}>
-          {loading ? (
-            <div className="flex">
-              <ThreadSkeleton count={data.length || 3} />
+        {data.length === 0 && !silentLoading ? (
+          searchQuery ? (
+            "No Search Found"
+          ) : (
+            <section>
+              <EmptyList
+                buttonText="+ Create New Article"
+                buttonLink="/tasks/agent-community/my-articles/create"
+                title="You do not have any articles"
+                body={
+                  <p>Create an article by clicking on the &quot;Create New Article&quot; button.</p>
+                }
+              />
+            </section>
+          )
+        ) : (
+          <AutoResizingGrid minWidth={300}>
+            {silentLoading ? (
+            <div className="flex w-full gap-2 bg-red-500 flex-wrap">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <ThreadSkeleton key={index} />
+              ))}
             </div>
           ) : data.length === 0 ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Thread found
-            </div>
+            <section>
+              <EmptyList
+                buttonText="+ Create New Article"
+                buttonLink="/tasks/agent-community/my-articles/create"
+                title="You do not have any articles"
+                body={
+                  <p>Create an article by clicking on the &quot;Create New Article&quot; button.</p>
+                }
+              />
+            </section>
           ) : (
             data.map((thread, index) => (
               <ThreadCard
@@ -208,15 +241,18 @@
                 shareLink={thread.post.share_link}
               />
             ))
-          )}
-        </AutoResizingGrid>
-        <div className="pagination">
-          <Pagination 
-            totalPages={meta?.total_pages} 
+            )}
+          </AutoResizingGrid>
+        )}
+        {meta?.total_pages > 1 && (
+          <div className="pagination">
+            <Pagination 
+              totalPages={meta?.total_pages} 
             currentPage={meta?.current_page} 
             onPageChange={handlePageChange} 
-          />
-        </div>
+            />
+          </div>
+        )}
         <div className="top-80 right-5 fixed rounded-full">
           <button
             onClick={handleCreateArticleClick}
