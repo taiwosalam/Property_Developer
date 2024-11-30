@@ -50,7 +50,6 @@ export const PropertyRequestFirstSection = ({
     setInputValue(e.target.value);
   };
 
-  // console.log('data', data)
 
   if (loading) {
     return (
@@ -83,6 +82,7 @@ export const PropertyRequestFirstSection = ({
         placeholder={desc ? desc : placeholderText}
         className="w-full mt-4 min-h-[300px]"
         value={data?.content || data?.description || ''}
+        // minChar={200}
         inputSpaceClassName="!min-h-[400px] text-text-secondary no-italic !leading-60 dark:text-darkText-2"
       />
     </div>

@@ -52,6 +52,12 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 
   const AgentCommunityPage = () => {
     const router = useRouter();
+     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+       const handleSort = (order: "asc" | "desc") => {
+         setSortOrder(order);
+       };
+       
     const initialState:ThreadApiResponse = {
         data: [],
         meta: {
@@ -82,10 +88,11 @@ import EmptyList from "@/components/EmptyList/Empty-List";
       () => ({
         params: { 
           page: meta?.current_page,
-          search: searchQuery 
+          search: searchQuery,
+          sort_order: sortOrder,
         },
       }),
-      [meta?.current_page, searchQuery]
+      [meta?.current_page, searchQuery, sortOrder]
     );
 
     const handleSearch = async (query: string) => {
@@ -177,6 +184,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
           filterWithOptionsWithDropdown={stateOptions}
           article={true}
           handleSearch={handleSearch} 
+          onSort={handleSort}
         />
         {data.length === 0 && !silentLoading ? (
           searchQuery ? (
@@ -236,13 +244,15 @@ import EmptyList from "@/components/EmptyList/Empty-List";
             )}
           </AutoResizingGrid>
         )}
-        <div className="pagination">
-          <Pagination 
-            totalPages={meta?.total_pages} 
+        {meta?.total_pages > 1 && (
+          <div className="pagination">
+            <Pagination 
+              totalPages={meta?.total_pages} 
             currentPage={meta?.current_page} 
             onPageChange={handlePageChange} 
-          />
-        </div>
+            />
+          </div>
+        )}
         <div className="top-80 right-5 fixed rounded-full">
           <button
             onClick={handleCreateArticleClick}

@@ -16,6 +16,9 @@ import ReactQuill, { type ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { UndoIcon, RedoIcon } from "@/public/icons/icons";
 
+import { useCallback } from "react";
+import { toast } from "sonner";
+
 // Dynamically import ReactQuill with SSR option set to false
 const DynamicReactQuill = dynamic(
   async () => {
@@ -48,17 +51,33 @@ const TextArea: React.FC<TextAreaProps> = ({
   onChange,
   resetKey,
   requiredNoStar,
+  minChar,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [mounted, setMounted] = useState(false);
   const quillRef = useRef<ReactQuill>(null);
   const [editorValue, setEditorValue] = useState(defaultValue);
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const handleChange = (content: string) => {
     setEditorValue(content); // Update editorValue state
     if (onChange) {
       onChange(content);
     }
+
+    // Clear previous timeout if typing continues
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+
+    // Set a new timeout to check minChar after user stops typing
+    const newTimeout = setTimeout(() => {
+      if (minChar && content.length < minChar) {
+        toast.error(`Please enter at least ${minChar} characters.`); // Show toast notification
+      }
+    }, 500); // Adjust the delay as needed (500ms in this case)
+
+    setTypingTimeout(newTimeout); // Store the new timeout
   };
 
   // Handle undo and redo

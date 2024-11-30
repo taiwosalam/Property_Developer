@@ -11,4 +11,5 @@ export interface TextAreaProps {
   onChange?: (data: string) => void;
   resetKey?: number;
   requiredNoStar?: boolean;
+  minChar?: number;
 }
