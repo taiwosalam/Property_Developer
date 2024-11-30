@@ -18,14 +18,13 @@ export const ContributorDetails = ({
   loading?: boolean, 
   post?: any, 
   contributors?: any, 
-  targetAudience?: string, 
+  targetAudience?: string[], 
   postedDate?: string, 
   updatedDate?: string 
 }) => {
 
-  useEffect(() => {
-    console.log("post g=here", post);
-  }, [post]);
+    console.log("post here", post);
+    console.log("target_audience", typeof targetAudience);
 
   if (loading) {
     return (
@@ -59,19 +58,23 @@ export const ContributorDetails = ({
         <div className="flex gap-4">
           <p className="text-[#747474] text-sm"> Posted Date </p>
           <p className="dark:text-white text-black text-sm">
-            {post?.created_at || <div className="w-24 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse inline-block" />}
+            {post?.created_at || "___"}
           </p>
         </div>
         <div className="flex gap-4">
           <p className="text-[#747474] text-sm"> Last Updated </p>
           <p className="dark:text-white text-black text-sm">
-            {post?.updated_at || <div className="w-24 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse inline-block" />}
+            {post?.updated_at || "___"}
           </p>
         </div>
         <div className="flex gap-4">
           <p className="text-[#747474] text-sm"> Target Audience </p>
           <p className="dark:text-white text-black text-sm">
-            {targetAudience || <div className="w-32 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse inline-block" />}
+            {typeof targetAudience === 'string' 
+              ? targetAudience 
+              : targetAudience && targetAudience.length > 0 
+                ? targetAudience.join(", ") 
+                : "___"}
           </p>
         </div>
       </div>

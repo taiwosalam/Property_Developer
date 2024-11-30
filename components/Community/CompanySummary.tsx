@@ -12,8 +12,15 @@ import Image from "next/image";
 import { CompanySummarySkeleton, TextSkeleton } from "@/app/(nav)/tasks/agent-community/components";
 import { empty } from "@/app/config";
 import { calculateYearsInIndustry } from "@/app/(nav)/tasks/agent-community/data";
+import { useEffect } from "react";
 
 const CompanySummary = ({ loading, companySummary }: { loading?: boolean, companySummary: any }) => {
+  useEffect(() => {
+    const details = companySummary;
+    console.log("details", details);
+    const phone_numbers = companySummary?.contact_details?.phone_numbers;
+    // console.log("phone_numbers", phone_numbers);
+  }, [companySummary]);
   
  const companyStats = [
     { label: "Joined ourproperty.ng", value: companySummary?.join_ourproperty },
@@ -50,31 +57,35 @@ const CompanySummary = ({ loading, companySummary }: { loading?: boolean, compan
       </div>
       <div className="details mt-3">
         <h3 className="text-black leading-50 font-bold text-6 dark:text-white">
-          {companySummary?.name || <TextSkeleton />}
+          {companySummary?.name || "___"}
         </h3>
         <div className="service flex flex-col gap-1 mt-1">
           <p> Services </p>
           <p className="text-sm text-text-disabled">
-            {companySummary?.services || <TextSkeleton />}
+            {companySummary?.services || "___"}
           </p>
         </div>
         <div className="contacts-details flex flex-col gap-3 mt-4">
           <p> Contacts </p>
           <div className="flex gap-2 text-sm text-text-disabled">
             <MapIcon />
-            <span> {companySummary?.addresses?.head_office_address || <TextSkeleton />} </span>
+            <span> {companySummary?.addresses?.head_office_address || "___"} </span>
           </div>
           <div className="flex gap-2 text-sm text-text-disabled">
             <WebsiteIcon />
-            <span> {companySummary?.website || <TextSkeleton />} </span>
+            <span> {companySummary?.website || "___"} </span>
           </div>
           <div className="flex gap-2 text-sm text-text-disabled">
             <PhoneIcon />
-            <span> {companySummary?.contact_details?.[0]?.phone_number || <TextSkeleton />} </span>
+            <span>
+              {companySummary?.contact_details?.[0]?.phone_number || 
+              (companySummary?.contact_details?.phone_numbers?.length > 0 ? 
+                companySummary.contact_details.phone_numbers.join(", ") : "___")}
+            </span>
           </div>
           <div className="flex gap-2 text-sm text-text-disabled">
             <Mail />
-            <span> {companySummary?.email || <TextSkeleton />} </span>
+            <span> {companySummary?.email || "___"} </span>
           </div>
         </div>
       </div>
@@ -103,7 +114,7 @@ const CompanySummary = ({ loading, companySummary }: { loading?: boolean, compan
             >
               <p className="text-sm text-text-label">{stat.label}</p>
               <p className="text-sm text-text-primary dark:text-white">
-                {stat.value === 0 ? '0' : (stat.value || <TextSkeleton />)}
+                {stat.value === 0 ? '0' : (stat.value || "___")}
               </p>
             </div>
           ))}
