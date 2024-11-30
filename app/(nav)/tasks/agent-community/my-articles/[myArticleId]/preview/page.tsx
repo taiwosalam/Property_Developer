@@ -59,7 +59,7 @@ const ThreadPreview = () => {
     }
   }, [data]);
 
-  // console.log("data", data);
+  console.log("data", data);
   // console.log("read by data", data?.post.readByData);
 
   if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
@@ -108,6 +108,7 @@ const ThreadPreview = () => {
           <ThreadArticle 
             post={post} 
             slug={slug} 
+            comments={comments}
           />
           <CommunityComments 
             slug={slug} 
@@ -132,7 +133,7 @@ const ThreadPreview = () => {
 export default ThreadPreview;
 
 
-const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element => {
+const ThreadArticle = ({ post, slug, comments }: { post: any, slug: string, comments: CommentData[] }): JSX.Element => {
   const [likeCount, setLikeCount] = useState(post?.likes_up ? parseInt(post?.likes_up) : 0);
   const [dislikeCount, setDislikeCount] = useState(post?.likes_down ? parseInt(post?.likes_down) : 0);
   const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
@@ -187,9 +188,11 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
         dangerouslySetInnerHTML={{ __html: post?.content }}
       />
       <div className="flex justify-between mt-6">
-      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <span className="text-text-secondary">Comments</span>
-          <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">{post?.comments_count}</p>
+            {/* <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">
+              {post?.comments_count}
+            </p> */}
         </div>
 
         <div className="flex gap-2">
@@ -203,32 +206,21 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
             userAction={userAction}
             isLoading={isLoading}
           />
-          <div className="flex">
+          <div className="flex items-center">
             <div className="images flex z-30">
-              <Image
-                src={user1}
-                alt="blog"
-                width={23}
-                height={23}
-                className="-mr-2"
-              />
-              <Image
-                src={user2}
-                alt="blog"
-                width={23}
-                height={23}
-                className="-mr-2"
-              />
-              <Image
-                src={user3}
-                alt="blog"
-                width={23}
-                height={23}
-                className="-mr-2"
-              />
+              {comments.slice(0, 3).map((comment, index) => (
+                <Image
+                  key={index}
+                  src={comment.profile_picture}
+                  alt={`commenter ${index + 1}`}
+                  width={300}
+                  height={300}
+                  className="-mr-2 h-[30px] w-[30px] object-cover rounded-full"
+                />
+              ))}
             </div>
             <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-              +{likeCount}
+              +{post?.comments_count}
             </div>
           </div>
         </div>

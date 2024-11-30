@@ -36,11 +36,13 @@ const lists = [
 interface ThreadApiResponse {
   data:any[];
   meta: {
-    total_pages: number;
-    current_page: number;
+    pagination: {
+      total_pages: number;
+      current_page: number;
+      total: number;
+    };
     total_posts: number;
     recent_posts: number;
-    total: number;
   };
   isLoading: boolean;
   searchQuery: string;
@@ -50,11 +52,13 @@ const MyArticlePage = () => {
   const initialState:ThreadApiResponse = {
     data: [],
     meta: {
-      total_pages: 1,
-      current_page: 1,
+      pagination: {
+        total_pages: 1,
+        current_page: 1,
+        total: 0,
+      },
       total_posts: 0,
       recent_posts: 0,
-      total: 0,
     },
     isLoading: false,
     searchQuery: '',
@@ -66,6 +70,7 @@ const MyArticlePage = () => {
 
     const handleSort = (order: "asc" | "desc") => {
       setSortOrder(order);
+      console.log('sortOrder', order);
     };
 
 
@@ -83,15 +88,17 @@ const MyArticlePage = () => {
     const config = useMemo(
       () => ({
         params: {
-          page: meta?.current_page,
+          page: meta?.pagination.current_page,
           search: searchQuery,
-          sort_order: sortOrder,
+          sort: sortOrder,
         },
       }),
-      [meta?.current_page, searchQuery, sortOrder]
+      [meta?.pagination.current_page, searchQuery, sortOrder]
     );
 
   const handleSearch = async (query: string): Promise<void> => {
+    console.log('query', query);
+    console.log('total_pages', meta?.pagination.total_pages);
     if (!query && !searchQuery) return;
     setState((prevState) => ({
       ...prevState,
@@ -116,13 +123,14 @@ const MyArticlePage = () => {
         ...x,
         data: apiData.data,
         meta: apiData.meta,
-        // total_pages: apiData.meta.total_pages,
-        total_pages: 1,
+        total_pages: apiData.meta.pagination.total_pages,
+        // total_pages: 1,
         // current_page: apiData.meta.current_page,
-        current_page: 1,
-        total_posts: apiData.meta.total_posts,
+        current_page: apiData.meta.pagination.current_page,
+        total_posts: apiData.meta.pagination.total,
         
       }));
+      console.log('state', state);
     }
   }, [apiData]);
 
@@ -153,7 +161,7 @@ const MyArticlePage = () => {
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">
-              + Community Board
+              + Community Board 
             </Button>
           </ModalTrigger>
           <ModalContent>
@@ -216,11 +224,11 @@ const MyArticlePage = () => {
           </div>
         )}
       </AutoResizingGrid>
-      {meta?.total_pages > 1 && (
+      {meta?.pagination.total > 1 && (
         <div className="pagination">
           <Pagination
-            totalPages={meta?.total_pages}
-            currentPage={meta?.current_page}
+            totalPages={meta?.pagination.total}
+            currentPage={meta?.pagination.current_page}
             onPageChange={handlePageChange}
           />
         </div>

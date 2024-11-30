@@ -40,6 +40,15 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
 import { ProfileResponse } from "./data";
 
+const NotificationBadge = ({ count,color }: { count: number,color:string }) => {
+  if (count === 0) return null; // Don't render if count is 0
+  return (
+    <span className={`absolute top-0 right-0 bg-${color}-500 text-white text-xs rounded-full px-1`}>
+      {count}
+    </span>
+  );
+};
+
 const Header = () => {
   const { isMobile } = useWindowWidth();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
@@ -255,20 +264,26 @@ const Header = () => {
           </div>
 
           <div className="flex gap-4 items-center text-[#5A5D61] dark:text-white">
-            <Link
-              href="/messages"
-              aria-label="messages"
-              className={lgIconsInteractionClasses}
-            >
-              <MailIcon />
-            </Link>
-            <Link
-              href="/notifications"
-              aria-label="notifications"
-              className={lgIconsInteractionClasses}
-            >
-              <BellIcon />
-            </Link>
+            <div className="relative">
+              <Link
+                href="/messages"
+                aria-label="messages"
+                className={lgIconsInteractionClasses}
+              >
+                <MailIcon />
+                <NotificationBadge count={2} color="red" />
+              </Link>
+            </div>
+            <div className="relative">
+              <Link
+                href="/notifications"
+                aria-label="notifications"
+                className={lgIconsInteractionClasses}
+              >
+                <BellIcon />
+                <NotificationBadge count={3} color="green" />
+              </Link>
+            </div>
             <button
               type="button"
               aria-label="theme-toggle"

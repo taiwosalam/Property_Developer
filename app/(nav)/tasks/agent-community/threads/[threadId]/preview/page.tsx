@@ -39,6 +39,7 @@ const ThreadPreview = () => {
   const [companySummary, setCompanySummary] = useState<any>(null);
   const [contributors, setContributors] = useState<any>(null);
   const [comments, setComments] = useState<CommentData[]>([]);
+  const [targetAudience, setTargetAudience] = useState<string[]>([]);
   const { data, error, loading, refetch: refetchComments } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
 
   useRefetchOnEvent("refetchComments", ()=> refetchComments({silent:true}));
@@ -50,11 +51,19 @@ const ThreadPreview = () => {
       setCompanySummary(data.post.company_summary);
       setContributors(data.post.contributor);
       setComments(data.post.comments);
+      
+      // Parse target_audience if it's a string
+      const audience = typeof data.post.post.target_audience === 'string' 
+        ? JSON.parse(data.post.post.target_audience) 
+        : data.post.post.target_audience;
+
+      setTargetAudience(Array.isArray(audience) ? audience : []); // Ensure it's an array
     }
+    console.log("target_audience", targetAudience.join(", ")); // This should now work correctly
   }, [data]);
 
   // console.log("slug", slug);
-  console.log("data", data);
+
   // console.log("companySummary", companySummary);
   // console.log("comments", comments);
   return (
@@ -88,13 +97,13 @@ const ThreadPreview = () => {
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start my-4">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <div className="slider h-[250px] md:h-[300px] lg:h-[350px] w-full relative px-[20px] md:px-[35px]">
-          {loading ? (
+            {loading ? (
               <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
             ) : post?.media?.length > 0 ? (
-              <CommunitySlider 
-                images={post?.media} 
+              <CommunitySlider
+                images={post?.media}
                 video_link={post?.video_link}
-                thread 
+                thread
               />
             ) : (
               <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
@@ -105,25 +114,23 @@ const ThreadPreview = () => {
           <ThreadArticle 
             post={post} 
             slug={slug} 
+            comments={comments}
           />
-          <CommunityComments 
-            slug={slug} 
+          <CommunityComments
+            slug={slug}
             comments={comments}
             setComments={setComments}
           />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <ContributorDetails 
-            title="Contributor Details" 
-            loading={loading} 
-            post={post} 
-            contributors={contributors} 
-            targetAudience={Array.isArray(post?.target_audience) ? post.target_audience.join(', ') : ''} 
+          <ContributorDetails
+            title="Contributor Details"
+            loading={loading}
+            post={post}
+            contributors={contributors}
+            targetAudience={targetAudience}
           />
-          <CompanySummary 
-            loading={loading} 
-            companySummary={companySummary} 
-          />
+          <CompanySummary loading={loading} companySummary={companySummary} />
         </div>
       </div>
     </div>
@@ -132,11 +139,13 @@ const ThreadPreview = () => {
 
 export default ThreadPreview;
 
-const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element => {
+const ThreadArticle = ({ post, slug, comments }: { post: any, slug: string, comments: CommentData[] }): JSX.Element => {
   const [likeCount, setLikeCount] = useState(post?.likes_up ? parseInt(post?.likes_up) : 0);
   const [dislikeCount, setDislikeCount] = useState(post?.likes_down ? parseInt(post?.likes_down) : 0);
   const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  
+  console.log("comments", comments);
 
   const handleLike = async () => {
     console.log('like clicked');
@@ -182,52 +191,53 @@ const ThreadArticle = ({ post, slug }: { post: any, slug: string }): JSX.Element
   
   return (
     <div className="mt-4">
-      <div 
-        className="text-sm text-darkText-secondary mt-2" 
+      <div
+        className="text-sm text-darkText-secondary mt-2"
         dangerouslySetInnerHTML={{ __html: post?.content }}
       />
       <div className="flex justify-between mt-6">
         <div className="flex items-center gap-2">
           <span className="text-text-secondary">Comments</span>
-          <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">{post?.comments_count}</p>
+          {/* <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">{post?.comments_count}</p> */}
         </div>
 
         <div className="flex gap-2">
-          <button className={`flex items-center gap-1 ${userAction === 'like' ? 'text-blue-500' : ''}`} disabled={isLoading} onClick={handleLike}>
+          <button
+            className={`flex items-center gap-1 ${
+              userAction === "like" ? "text-blue-500" : ""
+            }`}
+            disabled={isLoading}
+            onClick={handleLike}
+          >
             <ThumbsUp />
             <p>{likeCount}</p>
           </button>
-          <button className={`flex items-center gap-1 ${userAction === 'dislike' ? 'text-red-500' : ''}`} onClick={handleDislike} disabled={isLoading}>
+          <button
+            className={`flex items-center gap-1 ${
+              userAction === "dislike" ? "text-red-500" : ""
+            }`}
+            onClick={handleDislike}
+            disabled={isLoading}
+          >
             <ThumbsDown />
             <p>{dislikeCount}</p>
           </button>
 
-          <div className="flex">
+          <div className="flex items-center">
             <div className="images flex z-30">
-              <Image
-                src={user1}
-                alt="blog"
-                width={23}
-                height={23}
-                className="-mr-2"
-              />
-              <Image
-                src={user2}
-                alt="blog"
-                width={23}
-                height={23}
-                className="-mr-2"
-              />
-              <Image
-                src={user3}
-                alt="blog"
-                width={23}
-                height={23}
-                className="-mr-2"
-              />
+              {comments.slice(0, 3).map((comment, index) => (
+                <Image
+                  key={index}
+                  src={comment.profile_picture}
+                  alt={`commenter ${index + 1}`}
+                  width={300}
+                  height={300}
+                  className="-mr-2 h-[30px] w-[30px] object-cover rounded-full"
+                />
+              ))}
             </div>
             <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-              +{likeCount}
+              +{post?.comments_count}
             </div>
           </div>
         </div>

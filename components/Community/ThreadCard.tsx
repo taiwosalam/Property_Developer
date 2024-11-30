@@ -74,9 +74,9 @@ const ThreadHeader = ({
           src={user_pics || empty}
           alt={name}
           priority
-          width={20}
-          height={20}
-          className="w-10 h-10 object-cover"
+          width={500}
+          height={500}
+          className="w-10 h-10 object-cover rounded-full"
         />
         <div className="flex flex-col flex-1 min-w-0">
           <div className="flex gap-2 items-center">

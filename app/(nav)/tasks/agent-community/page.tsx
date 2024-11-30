@@ -183,12 +183,14 @@ import EmptyList from "@/components/EmptyList/Empty-List";
           filterOptions={[]}
           filterWithOptionsWithDropdown={stateOptions}
           article={true}
-          handleSearch={handleSearch} 
+          handleSearch={handleSearch}
           onSort={handleSort}
         />
         {data.length === 0 && !silentLoading ? (
           searchQuery ? (
-            "No Search Found"
+            <div className="col-span-full text-center py-8 text-gray-500">
+              No Article found
+            </div>
           ) : (
             <section>
               <EmptyList
@@ -196,7 +198,10 @@ import EmptyList from "@/components/EmptyList/Empty-List";
                 buttonLink="/tasks/agent-community/my-articles/create"
                 title="You do not have any articles"
                 body={
-                  <p>Create an article by clicking on the &quot;Create New Article&quot; button.</p>
+                  <p>
+                    Create an article by clicking on the &quot;Create New
+                    Article&quot; button.
+                  </p>
                 }
               />
             </section>
@@ -204,52 +209,55 @@ import EmptyList from "@/components/EmptyList/Empty-List";
         ) : (
           <AutoResizingGrid minWidth={300}>
             {silentLoading ? (
-            <div className="flex w-full gap-2 bg-red-500 flex-wrap">
-              {Array.from({ length: 3 }).map((_, index) => (
-                <ThreadSkeleton key={index} />
-              ))}
-            </div>
-          ) : data.length === 0 ? (
-            <section>
-              <EmptyList
-                buttonText="+ Create New Article"
-                buttonLink="/tasks/agent-community/my-articles/create"
-                title="You do not have any articles"
-                body={
-                  <p>Create an article by clicking on the &quot;Create New Article&quot; button.</p>
-                }
-              />
-            </section>
-          ) : (
-            data.map((thread, index) => (
-              <ThreadCard
-                key={index}
-                id={index}
-                name={thread.user.name}
-                picture_url={thread.post.media && thread.post.media.length > 0 
-                  ? thread.post.media[0].path 
-                  : undefined}
-                role={thread.user.role}
-                time={thread.post.created_at}
-                title={thread.post.title}
-                desc={thread.post.content}
-                comments={thread.post.comments_count}
-                user_pics={thread.user.picture}
-                likes={thread.post.likes_up}
-                dislikes={thread.post.likes_down}
-                slug={thread.post.slug}
-                shareLink={thread.post.share_link}
-              />
-            ))
+              <div className="min-h-[60vh] flex justify-center items-center w-full">
+                <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+              </div>
+            ) : data.length === 0 ? (
+              <section>
+                <EmptyList
+                  buttonText="+ Create New Article"
+                  buttonLink="/tasks/agent-community/my-articles/create"
+                  title="You do not have any articles"
+                  body={
+                    <p>
+                      Create an article by clicking on the &quot;Create New
+                      Article&quot; button.
+                    </p>
+                  }
+                />
+              </section>
+            ) : (
+              data.map((thread, index) => (
+                <ThreadCard
+                  key={index}
+                  id={index}
+                  name={thread.user.name}
+                  picture_url={
+                    thread.post.media && thread.post.media.length > 0
+                      ? thread.post.media[0].path
+                      : undefined
+                  }
+                  role={thread.user.role}
+                  time={thread.post.created_at}
+                  title={thread.post.title}
+                  desc={thread.post.content}
+                  comments={thread.post.comments_count}
+                  user_pics={thread.user.picture}
+                  likes={thread.post.likes_up}
+                  dislikes={thread.post.likes_down}
+                  slug={thread.post.slug}
+                  shareLink={thread.post.share_link}
+                />
+              ))
             )}
           </AutoResizingGrid>
         )}
         {meta?.total_pages > 1 && (
           <div className="pagination">
-            <Pagination 
-              totalPages={meta?.total_pages} 
-            currentPage={meta?.current_page} 
-            onPageChange={handlePageChange} 
+            <Pagination
+              totalPages={meta?.total_pages}
+              currentPage={meta?.current_page}
+              onPageChange={handlePageChange}
             />
           </div>
         )}
