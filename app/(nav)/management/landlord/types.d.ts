@@ -35,7 +35,6 @@ interface Others {
   occupation: string | null;
   type: string | null;
   family_type: string | null;
-  note: string | null;
 }
 
 interface PropertyManaged extends PropertyProps {
@@ -58,11 +57,14 @@ export type LandlordPageData = {
   user_tag: "web" | "mobile";
   id: number | string;
   type: string;
+  marital_status?: string;
+  birthday?: string;
+  religion?: string;
   contact_address: ContactAddress;
   next_of_kin: NextOfKin;
-  guarantor1: Guarantor;
-  guarantor2: Guarantor;
   bank_details: BankDetails;
+  guarantor1?: Guarantor;
+  guarantor2?: Guarantor;
   notes?: {
     last_updated: string;
     write_up: string;

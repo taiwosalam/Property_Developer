@@ -174,7 +174,7 @@ const Tenants = () => {
         <Button
           href={`/management/tenants/${t.id}/manage`}
           size="sm_medium"
-          className="px-8 py-2"
+          className="px-8 py-2 mx-auto"
         >
           Manage
         </Button>
@@ -182,7 +182,7 @@ const Tenants = () => {
           <Button
             variant="sky_blue"
             size="sm_medium"
-            className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white"
+            className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
             // onClick={() => onClickChat(t)}
           >
             Chat

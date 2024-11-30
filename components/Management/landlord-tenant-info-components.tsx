@@ -29,7 +29,7 @@ export const LandlordTenantInfoBox: React.FC<{
 export const LandlordTenantInfo: React.FC<{
   heading?: string;
   separator?: boolean;
-  info: Record<string, string | null>;
+  info: Record<string, string | null | undefined>;
   containerClassName?: string;
 }> = ({ info, heading, separator, containerClassName }) => (
   <LandlordTenantInfoBox className={containerClassName}>

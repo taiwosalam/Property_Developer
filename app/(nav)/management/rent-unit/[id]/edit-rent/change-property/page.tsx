@@ -94,7 +94,19 @@ const ChangePropertyPage: React.FC = () => {
           )}
         </div>
         <div className="lg:flex-1 space-y-4">
-          <PropeertyDetailsSettingsCard isRental={isRental} />
+          {/* <PropeertyDetailsSettingsCard
+            isRental={isRental}
+            annual_income={1000000}
+            property_name="Moniya Apartment"
+            category="Apartment"
+            state="Lagos"
+            local_government="Ikeja"
+            fee_period="Monthly"
+            total_units={14}
+            annual_returns={1000000}
+            total_unit_pictures={5}
+            hasVideo={true}
+          /> */}
         </div>
       </div>
 

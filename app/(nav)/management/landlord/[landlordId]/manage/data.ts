@@ -94,20 +94,6 @@ export const transformIndividualLandlordAPIResponse = ({
       phone: "",
       relationship: "",
     },
-    guarantor1: {
-      name: "",
-      relationship: "",
-      email: "",
-      phone_number: "",
-      address: "",
-    },
-    guarantor2: {
-      name: "",
-      relationship: "",
-      email: "",
-      phone_number: "",
-      address: "",
-    },
     bank_details: {
       bank_name: "",
       account_name: "",
@@ -118,7 +104,6 @@ export const transformIndividualLandlordAPIResponse = ({
       occupation: "",
       type: "",
       family_type: "",
-      note: "",
     },
     documents: [],
     properties_managed: [],
