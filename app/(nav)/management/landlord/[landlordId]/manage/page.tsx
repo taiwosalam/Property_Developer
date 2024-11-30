@@ -274,18 +274,19 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
       <LandlordTenantInfoSection title="Property Managed">
         <AutoResizingGrid minWidth={315}>
           {landlordData?.properties_managed?.map((property) => (
-            <PropertyCard
-              key={property.id}
-              images={property.images}
-              id={property.id.toString()}
-              propertyId={property.id.toString()}
-              name={property.name}
-              units={property.units}
-              address={property.address}
-              price={property.rental_value}
-              currency={property.currency}
-              propertyType="facility"
-            />
+            <></>
+            // <PropertyCard
+            //   key={property.id}
+            //   images={property.images}
+            //   id={property.id.toString()}
+            //   propertyId={property.id.toString()}
+            //   name={property.name}
+            //   units={property.units}
+            //   address={property.address}
+            //   price={property.rental_value}
+            //   currency={property.currency}
+            //   propertyType="facility"
+            // />
           ))}
         </AutoResizingGrid>
       </LandlordTenantInfoSection>
@@ -304,22 +305,27 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         <LandlordEditAttachmentInfoSection useContext={false} />
       )}
       <LandlordTenantInfoSection title="shared documents">
-        {Object.entries(groupedDocuments || {}).map(([documentType, documents]) => {
-          if (documentType === "other document") return null; // Skip "other document" for now
-          return (
-            <LandlordTenantInfoSection
-              minimized
-              title={documentType}
-              key={documentType}
-            >
-              <div className="flex flex-wrap gap-4">
-                {documents?.map((document) => (
-                  <LandlordTenantInfoDocument key={document.id} {...document} />
-                ))}
-              </div>
-            </LandlordTenantInfoSection>
-          );
-        })}
+        {Object.entries(groupedDocuments || {}).map(
+          ([documentType, documents]) => {
+            if (documentType === "other document") return null; // Skip "other document" for now
+            return (
+              <LandlordTenantInfoSection
+                minimized
+                title={documentType}
+                key={documentType}
+              >
+                <div className="flex flex-wrap gap-4">
+                  {documents?.map((document) => (
+                    <LandlordTenantInfoDocument
+                      key={document.id}
+                      {...document}
+                    />
+                  ))}
+                </div>
+              </LandlordTenantInfoSection>
+            );
+          }
+        )}
         {groupedDocuments?.["other document"] && (
           <LandlordTenantInfoSection
             minimized

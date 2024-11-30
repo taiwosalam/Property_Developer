@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+"use client";
+import { useState, useEffect, useCallback, useRef } from "react";
 import api from "@/services/api";
 import axios, { AxiosRequestConfig } from "axios";
 

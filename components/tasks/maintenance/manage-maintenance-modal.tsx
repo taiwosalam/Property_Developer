@@ -15,7 +15,7 @@ import {
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
 
 const ManageMaintenanceModal = () => {
-  const CURRENCY_SYMBOL = currencySymbols["NAIRA"]; // Make this dynamic
+  const CURRENCY_SYMBOL = currencySymbols.naira; // Make this dynamic
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const handleStartDateChange = (date?: Dayjs | null) => {
     setStartDate(date || null);

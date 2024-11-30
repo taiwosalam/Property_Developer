@@ -45,7 +45,7 @@ export const RentDetails: React.FC<{
 export const EditCurrentRent: React.FC<{
   isRental: boolean;
 }> = ({ isRental }) => {
-  const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
+  const CURRENCY_SYMBOL = currencySymbols.naira;
   return (
     <div>
       <RentSectionTitle>{`Edit Current ${
@@ -93,7 +93,7 @@ export const EditCurrentRent: React.FC<{
 };
 
 export const AddPartPayment = () => {
-  const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
+  const CURRENCY_SYMBOL = currencySymbols.naira;
   const [createInvoice, setCreateInvoice] = useState(false);
   return (
     <div>

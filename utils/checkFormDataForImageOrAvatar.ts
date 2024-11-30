@@ -69,3 +69,11 @@ export function convertYesNoToBoolean(data: InputData, fields: string[]): void {
     }
   });
 }
+
+export const mapNumericToYesNo = (value?: 1 | 0) => {
+  const mapping = {
+    1: "Yes",
+    0: "No",
+  } as const;
+  return value !== undefined ? mapping[value] : undefined;
+};

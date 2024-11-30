@@ -14,7 +14,7 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { currencySymbols } from "@/utils/number-formatter";
 
 const ManageInvoice = () => {
-  const CURRENCY_SYMBOL = currencySymbols["NAIRA"];
+  const CURRENCY_SYMBOL = currencySymbols.naira;
 
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">

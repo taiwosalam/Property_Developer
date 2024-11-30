@@ -1,19 +1,40 @@
 import Image from "next/image";
 import { LocationIcon, PlayIconButton } from "@/public/icons/icons";
-import { PropertyProps } from "./types";
 import UnitItem from "./unit-item";
 import PropeertyDetailsSettingsCard from "./property-details-settings-others-card";
 import BackButton from "@/components/BackButton/back-button";
 import ImageSlider from "@/components/ImageSlider/image-slider";
+import { type PropertyDetailsSettingsOthersCardProps } from "./property-details-settings-others-card";
 
-const PropertyPreview: React.FC<PropertyProps> = ({ images, propertyType }) => {
-  const colors = {
-    vacant: "#FFBB53",
-    occupied: "#01BA4C",
-    active: "#0033C4",
-    expired: "#E9212E",
-    relocate: "#620E13",
-  };
+const colors = {
+  vacant: "#FFBB53",
+  occupied: "#01BA4C",
+  active: "#0033C4",
+  expired: "#E9212E",
+  relocate: "#620E13",
+};
+
+export interface PropertyPreviewProps extends PropertyDetailsSettingsOthersCardProps {
+  id: string;
+  property_name: string;
+  address: string;
+  propertyType: "rental" | "facility";
+  total_units: number;
+  images: string[];
+  units: any[]; // TODO: Add type
+}
+
+const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
+  const {
+    id,
+    property_name,
+    address,
+    images,
+    propertyType,
+    total_units,
+    units,
+    ...others
+  } = props;
   const isRental = propertyType === "rental";
 
   return (
@@ -24,15 +45,13 @@ const PropertyPreview: React.FC<PropertyProps> = ({ images, propertyType }) => {
 
       {/* Heading */}
       <div className="text-black dark:text-white">
-        <p className="text-base font-medium dark:text-darkText-1">
-          ID: 123456789
-        </p>
+        <p className="text-base font-medium dark:text-darkText-1">ID: {id}</p>
         <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
-          Moniya Apartment (14Units)
+          {property_name} ({total_units} Units)
         </h1>
         <p className="text-sm text-text-label font-normal flex items-center gap-1">
           <LocationIcon />
-          Street 23, All Avenue, Nigeria
+          {address}
         </p>
       </div>
 
@@ -45,7 +64,7 @@ const PropertyPreview: React.FC<PropertyProps> = ({ images, propertyType }) => {
           {isRental && (
             <div className="space-y-6">
               <p className="text-black text-lg md:text-xl lg:text-2xl font-bold">
-                Videos
+                Video
               </p>
               <div className="relative aspect-[1.85] overflow-hidden rounded-xl max-w-[330px] max-h-[180px]">
                 <div
@@ -73,7 +92,11 @@ const PropertyPreview: React.FC<PropertyProps> = ({ images, propertyType }) => {
         </div>
 
         <div className="lg:flex-1 space-y-4">
-          <PropeertyDetailsSettingsCard isRental={isRental} />
+          <PropeertyDetailsSettingsCard
+            property_name={property_name}
+            total_units={total_units}
+            {...others}
+          />
           <div className="flex items-center justify-between flex-wrap gap-y-2">
             {Object.entries(colors).map(([status, color]) => (
               <div key={status} className="flex items-center gap-2">
@@ -91,10 +114,10 @@ const PropertyPreview: React.FC<PropertyProps> = ({ images, propertyType }) => {
       </div>
 
       <section className="space-y-4">
-        {[...Array(4)].map((_, index) => (
+        {units.map((unit, index) => (
           <UnitItem
             key={index}
-            type={index % 2 === 0 ? "rental" : "facility"}
+            type={propertyType}
           />
         ))}
       </section>

@@ -17,7 +17,7 @@ import {
 const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
   nextStep,
 }) => {
-  const CURRENCY_SYMBOL = currencySymbols["NAIRA"]; // Make this dynamic
+  const CURRENCY_SYMBOL = currencySymbols.naira; // Make this dynamic
   const [amountDisburse, setAmountDisburse] = useState("");
   const handleAmountDisburseChange = (value: string) => {
     setAmountDisburse(formatCostInputValue(value));

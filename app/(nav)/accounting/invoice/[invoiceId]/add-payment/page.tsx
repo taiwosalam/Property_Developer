@@ -25,7 +25,7 @@ type MoneyField =
   | "amount";
 
 const PreviewExpenses = () => {
-  const CURRENCY_SYMBOL = currencySymbols["NAIRA"]; // to be dynamic
+  const CURRENCY_SYMBOL = currencySymbols.naira; // to be dynamic
 
   const [inputValues, setInputValues] = useState<Record<MoneyField, string>>({
     annualRent: "",

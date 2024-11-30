@@ -22,7 +22,7 @@ const emptyStateValues = {
 
 const UnitBreakdownNewTenant = () => {
   const { formResetKey } = useUnitForm();
-  const CURRENCY_SYMBOL = currencySymbols["NAIRA"]; // Should be gotten from store from API
+  const CURRENCY_SYMBOL = currencySymbols.naira; // Should be gotten from store from API
   const [otherChargesInput, setOtherChargesInput] = useState(false);
   const [formValues, setFormValues] = useState(emptyStateValues);
   const {
