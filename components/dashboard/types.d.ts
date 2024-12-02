@@ -13,8 +13,6 @@ export interface cardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export interface walletBalanceCardProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  mainBalance: number;
-  cautionDeposit: number;
   noHeader?: boolean;
 }
 

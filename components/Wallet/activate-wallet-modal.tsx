@@ -18,6 +18,8 @@ const ActivateWalletModal = () => {
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
   const [otp, setOtp] = useState("");
+  const [countdown, setCountdown] = useState(120);
+  const [canResend, setCanResend] = useState(false);
   const [activeStep, setActiveStep] =
     useState<ActivateWalletOptions>("setup-pin");
   const flow: Record<

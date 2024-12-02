@@ -64,10 +64,7 @@ const Dashboard = () => {
         </div>
 
         <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
-          <WalletBalanceCard
-            mainBalance={walletBalanceCardData.mainBalance}
-            cautionDeposit={walletBalanceCardData.cautionDeposit}
-          />
+          <WalletBalanceCard />
           <DashboarddCalendar />
           <NotificationCard
             className="h-[358px]"

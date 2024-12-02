@@ -125,7 +125,7 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
         <button
           type="button"
           onClick={handleResendCode}
-          className="flex gap-1 custom-secondary-color text-base font-medium"
+          className="flex gap-1 custom-primary-color text-base font-medium"
           disabled={!canResend}
         >
           <span className="custom-primary-color">
@@ -137,7 +137,7 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
         <button
           type="button"
           onClick={() => changeStep("prev")}
-          className="custom-secondary-color text-base font-medium"
+          className="custom-primary-color text-base font-medium"
         >
           Change email
         </button>

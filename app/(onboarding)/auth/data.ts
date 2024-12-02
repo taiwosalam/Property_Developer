@@ -4,10 +4,10 @@ import { toast } from "sonner";
 import axios from "axios";
 import api, { handleAxiosError } from "@/services/api";
 import { useAuthStore } from "@/store/authStore";
+import { useWalletStore } from "@/store/wallet-store";
 import { InputData } from "@/utils/checkFormDataForImageOrAvatar";
 
 interface LoginResponse {
-  status: boolean;
   message: string;
   access_token: string;
   data: {
@@ -19,6 +19,8 @@ interface LoginResponse {
       wallet_pin_status: boolean;
     };
   };
+  wallet_pin_status: boolean;
+  wallet_id: string | null;
 }
 
 const base_url = `${process.env.NEXT_PUBLIC_BASE_URL}api/v1/`;
@@ -53,15 +55,15 @@ export const login = async (formData: Record<string, any>) => {
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
     useAuthStore.getState().setAuthState("role", role);
-    const walletPinStatus = data.data.details.wallet_pin_status;
     if (emailVerified) {
       toast.success(data?.message || "Login successful!");
       if (role === "user") {
         return "redirect to setup";
       } else {
-        useAuthStore
+        useWalletStore
           .getState()
-          .setAuthState("walletPinStatus", walletPinStatus);
+          .setWalletStore("walletPinStatus", data.wallet_pin_status);
+        useWalletStore.getState().setWalletStore("walletId", data.wallet_id);
         return "redirect to dashboard";
       }
     }
