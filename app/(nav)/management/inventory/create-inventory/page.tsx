@@ -12,8 +12,6 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 import { toast } from "sonner";
 import { createInventory, getBranches } from "../data";
 import { useRouter } from "next/navigation";
-import { MAX_FILE_SIZE_MB } from "@/data";
-import { useMultipleImageUpload } from "@/hooks/useMultipleImageUpload";
 
 const CreateInventory = () => {
   const isDarkMode = useDarkMode();
@@ -22,7 +20,7 @@ const CreateInventory = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [inventoryItems, setInventoryItems] = useState<number>(2);
   const [inventoryFiles, setInventoryFiles] = useState<File[][]>([]);
-
+  const [showRemoveButton, setShowRemoveButton] = useState(false);
 
   const input_styles: CSSProperties = {
     padding: "12px 14px",
@@ -90,6 +88,7 @@ const handleAddInventory = async (event: React.FormEvent<HTMLFormElement>) => {
 };
   const handleAddMoreInventory = () => {
     setInventoryItems((prev) => prev + 1);
+    setShowRemoveButton(true);
   };
 
   return (
@@ -137,32 +136,40 @@ const handleAddInventory = async (event: React.FormEvent<HTMLFormElement>) => {
           ))}
         </div>
         <div className="fixed bottom-0 right-0 w-full bg-white dark:bg-darkText-primary py-5 px-[60px] flex gap-6 justify-end">
-          <Button
-            size="sm_medium"
-            variant="blank"
-            className="py-2 px-7 text-brand-9 bg-brand-1"
-            onClick={() => setInventoryItems(2)}
-          >
-            Clear all
-          </Button>
+          {showRemoveButton && ( // Conditional rendering of the Remove button
+            <Button
+              size="sm_medium"
+              variant="blank"
+              className="py-2 px-7 text-brand-9 bg-brand-1"
+              onClick={() => {
+                if (inventoryItems > 2) {
+                  setInventoryItems((prev) => prev - 1); 
+                }
+              }}
+            >
+              Remove Record
+            </Button>
+          )}
           <div className="flex gap-6">
             <Button
               size="sm_medium"
               variant="blank"
               className="py-2 px-7 text-brand-9 bg-brand-1"
-              onClick={handleAddMoreInventory}
+              onClick={() => {
+                handleAddMoreInventory();
+              }}
             >
-              Add more to inventory
-            </Button>
-            <Button
-              type="submit"
-              size="sm_medium"
-              className="py-2 px-7"
-              disabled={isLoading}
-            >
-              {isLoading ? "Saving..." : "Save"}
+              Add More
             </Button>
           </div>
+          <Button
+            type="submit"
+            size="sm_medium"
+            className="py-2 px-7"
+            disabled={isLoading}
+          >
+            {isLoading ? "Saving..." : "Save"}
+          </Button>
         </div>
       </form>
     </div>

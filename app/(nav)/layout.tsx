@@ -39,7 +39,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     setIsSideNavOpen(!isMobile);
   }, [isMobile]);
 
-  // useAuthRedirect();
+  useAuthRedirect();
 
   return (
     <LayoutContext.Provider value={{ isSideNavOpen }}>
@@ -146,7 +146,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
           }}
           className={clsx(
-            "p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300",
+            "p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300 min-h-[calc(100vh-200px)]",
             {
               "w-full md:ml-0 lg:ml-0": navbar === "row",
               "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen && navbar !== "row",
