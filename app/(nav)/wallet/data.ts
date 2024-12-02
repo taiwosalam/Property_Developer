@@ -1,5 +1,6 @@
 import { ChartConfig } from "@/components/ui/chart";
 import type { Field } from "@/components/Table/types";
+import api, { handleAxiosError } from "@/services/api";
 
 export const walletChartConfig = {
   totalfunds: {
@@ -70,3 +71,14 @@ const generateWalletTableData = (numRows: number) =>
   }));
 
 export const walletTableData = generateWalletTableData(10);
+
+export interface WalletDataResponse {
+  data: {
+    wallet_id: string;
+    my_balance: string;
+    escrow_balance: string;
+    // earned_bonus: "0.00";
+    recent_transactions: any[]; //confirm with backend
+    beneficiaries: any[]; //confirm with backend
+  };
+}

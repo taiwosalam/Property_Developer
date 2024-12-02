@@ -1,5 +1,6 @@
 import api, { handleAxiosError } from "@/services/api";
 import { toast } from "sonner";
+import { useWalletStore } from "@/store/wallet-store";
 
 export const getOtpToActivateWallet = async () => {
   try {
@@ -14,19 +15,23 @@ export const getOtpToActivateWallet = async () => {
 
 export const setWalletPin = async (
   pin: string,
-  confirmPin: string,
-  otp: string
+  pin_confirmation: string,
+  otp_code: string
 ) => {
   try {
-    const { data } = await api.post("security/set_pin", {
+    //  first confirm otp
+    await api.post("security/confirm_otp", { otp_code });
+    //  then set pin
+    const wallet_id = useWalletStore.getState().walletId;
+    await api.post("security/set_pin", {
+      wallet_id,
       pin,
-      pin_confirmation: confirmPin,
-      otp_code: otp,
+      pin_confirmation,
     });
-    toast.success(data?.message || "OTP sent successfully!");
+    useWalletStore.getState().setWalletStore("walletPinStatus", true);
     return true;
   } catch (error) {
-    handleAxiosError(error, "Failed to send OTP. Please try again.");
+    handleAxiosError(error, "Failed to set PIN. Please try again.");
     return false;
   }
 };

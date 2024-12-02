@@ -6,7 +6,6 @@ interface AuthState {
   token: string | null;
   role: string | null;
   emailVerified?: boolean;
-  walletPinStatus?: boolean;
   setAuthState: <K extends keyof Omit<AuthState, "setAuthState" | "reset">>(
     key: K,
     value: AuthState[K]
@@ -33,7 +32,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       token: null,
       role: null,
       emailVerified: undefined,
-      walletPinStatus: undefined,
     });
   },
 }));

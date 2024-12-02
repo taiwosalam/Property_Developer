@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 // Images
@@ -25,8 +27,11 @@ import {
   BlueIncomingIcon,
 } from "@/components/Accounting/icons";
 import { BlueBuildingIcon } from "@/public/icons/dashboard-cards/icons";
+import { useWalletStore } from "@/store/wallet-store";
 
 const Wallet = () => {
+  const walletId = useWalletStore((state) => state.walletId);
+
   const transformedWalletTableData = walletTableData.map((t) => ({
     ...t,
     amount: (
@@ -69,7 +74,7 @@ const Wallet = () => {
 
   return (
     <div className="custom-flex-col gap-10">
-      <div className="flex gap-1">
+      <div className="flex items-center gap-1">
         <h1 className="text-black dark:text-white text-2xl font-medium">
           Wallet
         </h1>
@@ -116,9 +121,9 @@ const Wallet = () => {
         <div className="custom-flex-col gap-5 w-full xl:w-[315px]">
           <div className="flex items-center justify-between text-neutral-800 font-medium">
             <p className="text-sm dark:text-darkText-1">Wallet ID</p>
-            <p className="text-xs dark:text-darkText-1">6564567689787</p>
+            <p className="text-xs dark:text-darkText-1">{walletId}</p>
           </div>
-          <WalletBalanceCard noHeader mainBalance={1000} cautionDeposit={200} />
+          <WalletBalanceCard noHeader />
           <div className="custom-flex-col gap-4 p-4 rounded-lg bg-white dark:bg-darkText-primary max-h-[339px] overflow-hidden">
             <div className="flex items-center justify-between text-base font-medium">
               <p className="text-black dark:text-white">Beneficiary</p>

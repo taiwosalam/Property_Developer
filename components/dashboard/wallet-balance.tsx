@@ -25,26 +25,19 @@ import ActivateWalletModal from "../Wallet/activate-wallet-modal";
 import SendFundsModal from "../Wallet/SendFunds/send-funds-modal";
 import WithdrawFundsModal from "../Wallet/Withdraw/withdraw-funds-modal";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
-import { useAuthStore } from "@/store/authStore";
+import { useWalletStore } from "@/store/wallet-store";
+import useFetch from "@/hooks/useFetch";
+import { formatNumber } from "@/utils/number-formatter";
+import { WalletDataResponse } from "@/app/(nav)/wallet/data";
 
 const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
-  mainBalance,
-  cautionDeposit,
-  className,
   noHeader,
-  ...props
+  className,
 }) => {
-  const walletPinStatus = useAuthStore((state) => state.walletPinStatus);
+  const walletPinStatus = useWalletStore((state) => state.walletPinStatus);
   const [hideBalance, setHideBalance] = useState(false);
-  const balance = walletPinStatus ? mainBalance : 0;
-  const deposit = walletPinStatus ? cautionDeposit : 0;
-
-  useEffect(() => {
-    const storedHideBalance = getLocalStorage("hideBalance");
-    if (storedHideBalance !== null && storedHideBalance !== undefined) {
-      setHideBalance(storedHideBalance);
-    }
-  }, []);
+  // const balance = walletPinStatus ? mainBalance : 0;
+  // const deposit = walletPinStatus ? cautionDeposit : 0;
 
   const hideWalletBalance = () => {
     setHideBalance((prevHideBalance) => {
@@ -52,10 +45,6 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
       saveLocalStorage("hideBalance", newHideBalance);
       return newHideBalance;
     });
-  };
-
-  const formatNumber = (number: number) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   const options = [
@@ -75,6 +64,16 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
       action: walletPinStatus ? <WithdrawFundsModal /> : null,
     },
   ];
+
+  const { data, loading, error } =
+    useFetch<WalletDataResponse>("/wallets/dashboard");
+
+  useEffect(() => {
+    const storedHideBalance = getLocalStorage("hideBalance");
+    if (storedHideBalance !== null && storedHideBalance !== undefined) {
+      setHideBalance(storedHideBalance);
+    }
+  }, []);
 
   return (
     <div className={clsx("space-y-2", className)}>
@@ -118,12 +117,12 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
             </button>
           </div>
           <p className="font-medium text-xl text-white">
-            {hideBalance ? "*******" : "₦ " + formatNumber(balance)}
+            {hideBalance ? "*******" : "₦ " + formatNumber(1)}
           </p>
           <div className="text-white text-xs font-medium capitalize flex items-center space-x-1">
             <p className="text-text-white-secondary ">caution deposit</p>
             <span className="text-white ml-2">
-              {hideBalance ? "*******" : "₦ " + formatNumber(deposit)}
+              {hideBalance ? "*******" : "₦ " + formatNumber(1)}
             </span>
             <CautionIcon />
           </div>

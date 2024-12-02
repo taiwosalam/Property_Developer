@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-// Imports
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
