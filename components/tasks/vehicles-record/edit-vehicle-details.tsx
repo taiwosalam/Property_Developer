@@ -4,8 +4,9 @@ import {
   PersonalDetailsFormFields,
 } from "./form-sections";
 import type { VehicleDataProps, PersonalDataProps } from "./form-sections";
-import { updateVehicleDetails } from "./data";
+import { updateUserProfile, updateVehicleDetails } from "./data";
 import { toast } from "sonner";
+import { useState } from "react";
 
 export const EditVehicleDetailsFormModal = ({
   data,
@@ -43,18 +44,41 @@ export const EditVehicleDetailsFormModal = ({
 
 export const EditPersonalDetailsFormModal = ({
   data,
+  isOpen,
+  setIsOpen,
 }: {
   data: PersonalDataProps;
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
 }) => {
-  const handleUpdateProfile = (event: React.FormEvent) => {
+
+  const [loading, setLoading] = useState(false)
+  const handleUpdateProfile = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log("Form data:", data);
-    
+    console.log("Form data here - :", data);
+
+    try {
+      setLoading(true);
+      const res = await updateUserProfile(data);
+      if(res){
+        toast.success("Profile Updated Successfully")
+        setIsOpen(false)
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
+  
   return (
     <ModalPreset heading="Edit Profile">
-        <form onSubmit={handleUpdateProfile}>  
-        <PersonalDetailsFormFields editMode data={data} showSubmitButton />
+      <form onSubmit={handleUpdateProfile}>  
+        <PersonalDetailsFormFields 
+          editMode data={data} 
+          showSubmitButton 
+          loading={loading}
+        />
       </form> 
     </ModalPreset>
   );

@@ -67,6 +67,7 @@ interface Notes {
 const RecordPage = () => {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
+  const [updateUserModal, setUpdateUserModal] = useState(false)
   const { recordId } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -185,6 +186,7 @@ const RecordPage = () => {
     vehicle_type,
   } = vehicleDetails;
 
+
     const handleCheckIn = async (event: React.FormEvent) => {
       event.preventDefault();
       const form = event.target as HTMLFormElement;
@@ -265,7 +267,12 @@ const RecordPage = () => {
               </>
             ) : (
               <>
-                <Modal>
+                <Modal
+                  state={{
+                    isOpen: updateUserModal,
+                    setIsOpen: setUpdateUserModal,
+                  }}
+                >
                   <ModalTrigger asChild>
                     <Button size="base_medium" className="py-2 px-8">
                       Edit
@@ -282,6 +289,8 @@ const RecordPage = () => {
                         city,
                         phone_number,
                       }}
+                      isOpen={updateUserModal}
+                      setIsOpen={setUpdateUserModal}
                     />
                   </ModalContent>
                 </Modal>
@@ -301,11 +310,11 @@ const RecordPage = () => {
                 </Button>
               </ModalTrigger>
               <ModalContent>
-                <MobileNotesModal 
+                <MobileNotesModal
                   notes={{
                     last_updated: notes?.last_updated || "",
-                    write_up: notes?.write_up ?? ""
-                  }} 
+                    write_up: notes?.write_up ?? "",
+                  }}
                 />
               </ModalContent>
             </Modal>
@@ -315,7 +324,7 @@ const RecordPage = () => {
         {user_tag === "mobile" && (
           <ContactInfo
             info={{
-              Gender: "Male", 
+              Gender: "Male",
               Religion: "Christianity",
               Phone: phone_number,
             }}
@@ -391,24 +400,24 @@ const RecordPage = () => {
         <SectionSeparator />
         <div className="space-y-4">
           {checkInsOutData?.check_ins?.map((record) => (
-            <PreviousRecord 
-              key={record.id} 
+            <PreviousRecord
+              key={record.id}
               category={category}
               userId={Number(userId)}
               registrationDate={record.created_at}
               pictureSrc={pictureSrc}
-              {...record} 
+              {...record}
             />
           ))}
         </div>
       </div>
-      <Pagination 
-        totalPages={checkInsOutData?.total || 1} 
-        currentPage={checkInsOutData?.current_page || 1} 
-        onPageChange={handlePageChange} 
+      <Pagination
+        totalPages={checkInsOutData?.total || 1}
+        currentPage={checkInsOutData?.current_page || 1}
+        onPageChange={handlePageChange}
       />
       <FixedFooter className="flex items-center justify-end">
-        <Modal state={{isOpen: modalOpen, setIsOpen: setModalOpen}}>
+        <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
           <ModalTrigger asChild>
             <Button size="sm_normal" className="py-2 px-8">
               Create New Record

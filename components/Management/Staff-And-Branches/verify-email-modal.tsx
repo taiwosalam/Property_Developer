@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import type { ActivateWalletOptions } from "@/components/Wallet/types";
 import { useAuthStore } from "@/store/authStore";
@@ -10,7 +10,7 @@ import obfuscateEmail from "@/utils/obfuscateEmail";
 import { getOtpToActivateWallet, setWalletPin } from "@/components/Wallet/data";
 import { toast } from "sonner";
 import useBranchStore from "@/store/branchStore";
-import { verifyEmailOTP } from "./data";
+import { verifyEmail, verifyEmailOTP } from "./data";
 
 
 const VerifyEmailModal = ({
@@ -26,6 +26,7 @@ const VerifyEmailModal = ({
 }) => {
   const [requestLoading, setRequestLoading] = useState(false);
   const { branchEmail } = useBranchStore();
+  const [countdown, setCountdown] = useState(60);
   const [verifyEmailLoading, setVerifyEmailLoading] = useState(false);
   const email = useAuthStore((state) => state.email);
   const [confirmPin, setConfirmPin] = useState("");
@@ -35,6 +36,27 @@ const VerifyEmailModal = ({
     setModalOpen(true);
     setOpenVerifyModal(false);
   };
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [countdown]);
+
+  const handleResendEmail = async () => {
+    // Logic to resend the email
+    setVerifyEmailLoading(true);
+    const status = await verifyEmail(branchEmail || "");
+    if (status) {
+      toast.success("Check your email for OTP");
+    }
+    setVerifyEmailLoading(false);
+    setCountdown(60); // Reset countdown
+  };
+
 
   const activeStep = "confirm-email";
 
@@ -49,7 +71,18 @@ const VerifyEmailModal = ({
             {obfuscateEmail(branchEmail || "")}). Please enter the OTP to
             complete the validation process.
           </p>
-          <p className=""> 02:00 </p>
+          <button
+            className="text-brand-9"
+            onClick={handleResendEmail}
+            disabled={countdown > 0}
+          >
+            {countdown > 0
+              ? `${String(Math.floor(countdown / 60)).padStart(
+                  2,
+                  "0"
+                )}:${String(countdown % 60).padStart(2, "0")}`
+              : "Resend Email"}
+          </button>
           <AuthPinField onChange={setOtp} key="confirm-email" />
           <button className="text-brand-9" onClick={handleChangeEmail}>
             Change Email

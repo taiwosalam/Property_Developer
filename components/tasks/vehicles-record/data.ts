@@ -1,4 +1,4 @@
-import api from "@/services/api";
+import api, { handleAxiosError } from "@/services/api";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 
@@ -46,7 +46,7 @@ export const updateVehicleDetails = async (data: any, id: number) => {
 };
 
 
-  export const checkOutVehicle = async (data: any, id: number) => {
+export const checkOutVehicle = async (data: any, id: number) => {
   try {
     const response = await api.post(`/vehicle-record/check-out/${id}`, data);
     return response.data;
@@ -83,6 +83,15 @@ export function formatCustomDateTime(dateTimeString: string): string {
 }
 
 
+export const updateUserProfile = async (data: any) => {
+  try {
+    const response = await api.patch(`user/update`, data);
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    console.error(error)
+    handleAxiosError(error)
+  }
+}
 
 
 

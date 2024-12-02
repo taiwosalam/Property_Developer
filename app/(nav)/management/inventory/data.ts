@@ -49,6 +49,17 @@ export const getInventory = async () => {
     }
   };
 
+
+export const deleteInventory = async (id: string) => {
+  try {
+    const response = await api.delete(`/inventory/${id}`);
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    console.error("Error deleting inventory:", error);
+    return false;
+  }
+}
+
 export const getBranches = async () => {
     try { 
       const response = await api.get("/branches");
