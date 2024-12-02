@@ -2892,11 +2892,11 @@ export const StatsChartIcon = () => {
   );
 };
 
-export const EditPencilIcon = () => {
+export const EditPencilIcon = ({ size }: { size?: number }) => {
   return (
     <svg
-      width="24"
-      height="24"
+      width={size || 24}
+      height={size || 24}
       viewBox="0 0 26 26"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

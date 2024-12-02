@@ -398,8 +398,8 @@ export const CustomColorPicker: React.FC<{
     <div className="bg-white rounded-lg shadow-xl pb-6 w-[390px] flex flex-col items-center justify-center">
       <div className="w-full">
         <HexColorPicker
-          // color={color}
-          // onChange={onChange}
+          color={color}
+          onChange={onChange}
           className="w-full"
           style={{ width: "390px" }}
         />
@@ -409,7 +409,7 @@ export const CustomColorPicker: React.FC<{
           <p className="text-sm text-text-primary">Hex</p>
           <input
             type="text"
-            defaultValue={color}
+            value={color}
             // onChange={(e) => onChange(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded mb-4 mt-4"
             placeholder="Enter hex color code"
@@ -417,7 +417,9 @@ export const CustomColorPicker: React.FC<{
         </div>
         <div className="flex justify-center items-center w-full px-6">
           <button
-            onClick={}
+            onClick={() => {
+              onChange(color);
+            }}
             className={`w-full py-2 text-white rounded hover:opacity-90 transition-colors`}
             style={{ backgroundColor: color }}
           >

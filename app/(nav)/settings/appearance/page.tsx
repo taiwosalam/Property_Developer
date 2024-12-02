@@ -30,6 +30,10 @@ const Appearance = () => {
   const setColor = useThemeStoreSelectors.getState().setColor;
   const primaryColor = useThemeStore((state) => state.primaryColor);
 
+  const googleFonts = useGoogleFonts();
+  // Ensure 'Lato' is the first font in the array
+  const modifiedGoogleFonts = ["Lato", ...googleFonts];
+
   // State variables for managing selected options
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const [selectedTheme, setSelectedTheme] = useState<string | null>(
@@ -56,7 +60,7 @@ const Appearance = () => {
   const resetZoom = useZoomStore((state) => state.resetZoom);
   const setZoom = useZoomStore((state) => state.setZoom);
 
-  // const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
   const { theme, setTheme } = useTheme();
   const [fullScreen, setFullScreen] = useState(false);
@@ -175,8 +179,10 @@ const Appearance = () => {
 
   const handleCustomColorChange = (color: string) => {
     if (!color) return; // Added check to prevent setting undefined colors
+    console.log("color = ", color);
     setCustomColor(color);
     setSelectedColor(color);
+    setModalOpen(false);
     // console.log("selected color = ", color);
   };
 
@@ -333,14 +339,14 @@ const Appearance = () => {
           desc="Choose Your Preferred Font Style for Your Company Profile Website"
         />
 
-        {/* <Select
+        <Select
           id="font"
           placeholder={storedFont || "Select a font"}
           onChange={(value) => handleFontSelect(value)}
           options={modifiedGoogleFonts}
           inputContainerClassName="bg-neutral-2"
           className="max-w-[300px] mt-2 mb-4"
-        /> */}
+        />
 
         <SettingsSectionTitle
           title="Dashboard Color Scheme"
@@ -379,12 +385,7 @@ const Appearance = () => {
               )}
             </div>
           )}
-          <Modal
-          // state={{
-          //   isOpen: modalOpen,
-          //   setIsOpen: setModalOpen,
-          // }}
-          >
+          <Modal>
             <ModalTrigger className="h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white dark:bg-darkText-primary flex items-center justify-center cursor-pointer">
               +
             </ModalTrigger>
@@ -392,10 +393,6 @@ const Appearance = () => {
               <CustomColorPicker
                 color={customColor}
                 onChange={debouncedHandleCustomColorChange}
-                // onClose={() => {
-                //   setCustomColor(customColor);
-                //   setModalOpen(false);
-                // }}
               />
             </ModalContent>
           </Modal>

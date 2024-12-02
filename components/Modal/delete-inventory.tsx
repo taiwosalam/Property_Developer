@@ -23,14 +23,15 @@ const style = {
 export const DeleteInventoryModal: React.FC<{
     handleDelete: () => void
     desc?: string
-}> = ({ handleDelete, desc }) => {
+    isDeleting: boolean
+}> = ({ handleDelete, desc, isDeleting }) => {
     return (
         <ModalPreset type="warning">
             <p className="text-text-disabled text-sm font-normal">
                 {desc || "Are you sure you want to proceed with deleting this inventory list? *Please note that you can only delete inventory that has not yet been linked with a property."}
             </p>
             <div className="flex flex-col items-center gap-4">
-                <Button onClick={handleDelete}>proceed</Button>
+                <Button onClick={handleDelete} disabled={isDeleting}>{isDeleting ? "Deleting..." : "Proceed"}</Button>
                 <ModalTrigger
                     close
                     className="text-brand-primary text-sm font-medium px-3"
@@ -101,7 +102,7 @@ export const DeleteInventoryModalSuccess = () => {
             </p>
             <div className="flex justify-center">
                 <ModalTrigger close asChild>
-                    <Button>ok</Button>
+                    <Button href={"/management/inventory"}>ok</Button>
                 </ModalTrigger>
             </div>
         </ModalPreset>

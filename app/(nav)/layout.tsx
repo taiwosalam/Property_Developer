@@ -39,7 +39,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     setIsSideNavOpen(!isMobile);
   }, [isMobile]);
 
-  useAuthRedirect();
+  // useAuthRedirect();
 
   return (
     <LayoutContext.Provider value={{ isSideNavOpen }}>

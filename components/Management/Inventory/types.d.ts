@@ -29,6 +29,9 @@ export type InventoryConditions = (typeof inventory_conditions)[number];
 
 export interface InventoryItemProps {
   edit?: boolean;
+  index?: number;
+  inventoryFiles?: File[][];
+  setInventoryFiles?: (files: File[][]) => void;
   data?: {
     name: string;
     quantity: number;
