@@ -32,10 +32,10 @@ api.interceptors.response.use(
   },
   async (error: AxiosError) => {
     if (error.response?.status === 401) {
-      toast.error("You are not authenticated");
+      // toast.error("You are not authenticated");
       // console.log("401 error from interceptor");
-      useAuthStore.getState().reset();
-      window.location.href = "/auth/sign-in";
+      // useAuthStore.getState().reset();
+      // window.location.href = "/auth/sign-in";
     }
 
     return Promise.reject(error);

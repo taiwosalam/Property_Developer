@@ -14,9 +14,9 @@ import Select from "@/components/Form/Select/select";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import useFetch from "@/hooks/useFetch";
 import { useParams } from "next/dist/client/components/navigation";
-import { getBranches, updateInventory } from "../../data";
+import { deleteInventory, getBranches, updateInventory } from "../../data";
 import { getBranch } from "@/components/Management/Inventory/data";
-import { DeleteInventoryModal } from "@/components/Modal/delete-inventory";
+import { DeleteInventoryModal, DeleteInventoryModalSuccess } from "@/components/Modal/delete-inventory";
 import { toast } from "sonner";
 
 // TODO: HandleDelete Fnx & SuccessModal
@@ -67,6 +67,8 @@ const ManageInventory = () => {
   const { data, loading, error } = useFetch<FetchData>(`/inventory/${inventoryId}`);
   const [allBranches, setAllBranches] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [deleteInventoryModal, setDeleteInventoryModal] = useState<boolean>(false); 
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     const fetchBranchData = async () => {
@@ -165,6 +167,21 @@ const ManageInventory = () => {
     setMoreInventory((prev) => prev + 1);
   };
 
+  const handleDeleteInventory = async () => {
+    setIsDeleting(true)
+    try {
+      const success = await deleteInventory(inventoryId as string);
+      if (success) {
+        setDeleteInventoryModal(true);
+        toast.success("Inventory deleted successfully");
+      }
+    } catch (error) {
+      console.error("Error deleting inventory:", error);
+    } finally {
+      setIsDeleting(false)
+    }
+  };
+
   return (
     <div className="custom-flex-col gap-10 min-h-[80vh] pb-[150px] lg:pb-[100px]">
       <form onSubmit={handleUpdateInventory}> 
@@ -235,7 +252,20 @@ const ManageInventory = () => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <DeleteInventoryModal handleDelete={() => {}} />
+              <DeleteInventoryModal 
+                handleDelete={handleDeleteInventory}
+                isDeleting={isDeleting} 
+              />
+            </ModalContent>
+          </Modal>
+          <Modal
+            state={{
+              isOpen: deleteInventoryModal,
+              setIsOpen: setDeleteInventoryModal,
+            }}
+          >
+            <ModalContent>
+              <DeleteInventoryModalSuccess />
             </ModalContent>
           </Modal>
           <div className="flex gap-6">
