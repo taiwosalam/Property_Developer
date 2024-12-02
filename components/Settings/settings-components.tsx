@@ -392,14 +392,14 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
 export const CustomColorPicker: React.FC<{
   color: string;
   onChange: (color: string) => void;
-  onClose: () => void;
-}> = ({ color, onChange, onClose }) => {
+  // onClose: () => void;
+}> = ({ color, onChange }) => {
   return (
     <div className="bg-white rounded-lg shadow-xl pb-6 w-[390px] flex flex-col items-center justify-center">
       <div className="w-full">
         <HexColorPicker
-          color={color}
-          onChange={onChange}
+          // color={color}
+          // onChange={onChange}
           className="w-full"
           style={{ width: "390px" }}
         />
@@ -409,15 +409,15 @@ export const CustomColorPicker: React.FC<{
           <p className="text-sm text-text-primary">Hex</p>
           <input
             type="text"
-            value={color}
-            onChange={(e) => onChange(e.target.value)}
+            defaultValue={color}
+            // onChange={(e) => onChange(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded mb-4 mt-4"
             placeholder="Enter hex color code"
           />
         </div>
         <div className="flex justify-center items-center w-full px-6">
           <button
-            onClick={onClose}
+            onClick={}
             className={`w-full py-2 text-white rounded hover:opacity-90 transition-colors`}
             style={{ backgroundColor: color }}
           >

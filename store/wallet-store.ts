@@ -1,8 +1,15 @@
 import { create } from "zustand";
 
+interface Beneficiary {
+  name: string;
+  picture: string;
+  wallet_id: string;
+}
+
 interface WalletStore {
   walletId: string | null;
   walletPinStatus: boolean;
+  beneficiaries: Beneficiary[];
   setWalletStore: <K extends keyof Omit<WalletStore, "setWalletStore">>(
     key: K,
     value: WalletStore[K]
@@ -10,7 +17,8 @@ interface WalletStore {
 }
 
 export const useWalletStore = create<WalletStore>((set) => ({
-  walletId: "w3",
+  walletId: null,
   walletPinStatus: true,
+  beneficiaries: [],
   setWalletStore: (key, value) => set({ [key]: value }),
 }));

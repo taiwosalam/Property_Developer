@@ -35,6 +35,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   className,
 }) => {
   const walletPinStatus = useWalletStore((state) => state.walletPinStatus);
+  const setWalletStore = useWalletStore((state) => state.setWalletStore);
   const [hideBalance, setHideBalance] = useState(false);
   // const balance = walletPinStatus ? mainBalance : 0;
   // const deposit = walletPinStatus ? cautionDeposit : 0;
@@ -74,6 +75,12 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
       setHideBalance(storedHideBalance);
     }
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      setWalletStore("beneficiaries", data.data.beneficiaries);
+    }
+  }, [data, setWalletStore]);
 
   return (
     <div className={clsx("space-y-2", className)}>

@@ -13,7 +13,7 @@ import {
 } from "@/components/Settings/settings-components";
 import { website_color_schemes } from "@/components/Settings/data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import { useThemeStoreSelectors } from "@/store/themeStore";
+import { useThemeStoreSelectors, useThemeStore } from "@/store/themeStore";
 import Image from "next/image";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { toast } from "sonner";
@@ -23,28 +23,12 @@ import { useTheme } from "next-themes";
 import useSettingsStore from "@/store/settings";
 import { useZoomStore } from "@/store/zoomStore";
 import { SelectedOptions } from "@/components/Settings/types";
+import { debounce } from "@/utils/debounce";
 
 const Appearance = () => {
-  const googleFonts = useGoogleFonts();
-
-  function debounce(func: (...args: any[]) => any, wait: number) {
-    let timeout: NodeJS.Timeout;
-    return function executedFunction(...args: any[]) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  }
-  
-  // Ensure 'Lato' is the first font in the array
-  const modifiedGoogleFonts = ["Lato", ...googleFonts];
-
   const isDarkMode = useDarkMode();
   const setColor = useThemeStoreSelectors.getState().setColor;
-  const primaryColor = useThemeStoreSelectors.getState().primaryColor;
+  const primaryColor = useThemeStore((state) => state.primaryColor);
 
   // State variables for managing selected options
   const { selectedOptions, setSelectedOption } = useSettingsStore();
@@ -72,7 +56,7 @@ const Appearance = () => {
   const resetZoom = useZoomStore((state) => state.resetZoom);
   const setZoom = useZoomStore((state) => state.setZoom);
 
-  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
   const [customColor, setCustomColor] = useState("#ffffff");
   const { theme, setTheme } = useTheme();
   const [fullScreen, setFullScreen] = useState(false);
@@ -216,7 +200,10 @@ const Appearance = () => {
   };
 
   const debouncedHandleColorSelect = debounce(handleColorSelect, 300);
-  const debouncedHandleCustomColorChange = debounce(handleCustomColorChange, 300);
+  const debouncedHandleCustomColorChange = debounce(
+    handleCustomColorChange,
+    300
+  );
 
   return (
     <>
@@ -346,14 +333,14 @@ const Appearance = () => {
           desc="Choose Your Preferred Font Style for Your Company Profile Website"
         />
 
-        <Select
+        {/* <Select
           id="font"
           placeholder={storedFont || "Select a font"}
           onChange={(value) => handleFontSelect(value)}
           options={modifiedGoogleFonts}
           inputContainerClassName="bg-neutral-2"
           className="max-w-[300px] mt-2 mb-4"
-        />
+        /> */}
 
         <SettingsSectionTitle
           title="Dashboard Color Scheme"
@@ -375,7 +362,7 @@ const Appearance = () => {
         </div>
 
         <div className="flex gap-2">
-          {customColor && !modalOpen && (
+          {customColor && (
             <div
               className={`h-[40px] w-[40px] my-2 rounded-md text-base border border-gray-300 flex items-center justify-center cursor-pointer relative`}
               style={{ backgroundColor: customColor }}
@@ -393,26 +380,22 @@ const Appearance = () => {
             </div>
           )}
           <Modal
-            state={{
-              isOpen: modalOpen,
-              setIsOpen: setModalOpen,
-            }}
+          // state={{
+          //   isOpen: modalOpen,
+          //   setIsOpen: setModalOpen,
+          // }}
           >
-            <ModalTrigger
-              className={`h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white dark:bg-darkText-primary flex items-center justify-center cursor-pointer ${
-                modalOpen ? "border-2 border-blue-500" : ""
-              }`}
-            >
+            <ModalTrigger className="h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white dark:bg-darkText-primary flex items-center justify-center cursor-pointer">
               +
             </ModalTrigger>
             <ModalContent>
               <CustomColorPicker
                 color={customColor}
                 onChange={debouncedHandleCustomColorChange}
-                onClose={() => {
-                  setCustomColor(customColor);
-                  setModalOpen(false);
-                }}
+                // onClose={() => {
+                //   setCustomColor(customColor);
+                //   setModalOpen(false);
+                // }}
               />
             </ModalContent>
           </Modal>
