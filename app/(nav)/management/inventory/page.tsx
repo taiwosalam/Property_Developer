@@ -15,6 +15,10 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { InventoryCardDataProps } from "@/components/Management/Inventory/types";
 import Pagination from "@/components/Pagination/pagination";
 import NetworkError from "@/components/Error/NetworkError";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import { ExclamationMark } from "@/public/icons/icons";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import TableLoading from "@/components/Loader/TableLoading";
 
 //  Expected structure of apiData
 interface InventoryApiData {
@@ -100,6 +104,7 @@ const Inventory = () => {
     error,
     refetch,
     isNetworkError,
+    silentLoading
   } = useFetch<InventoryApiData>(`inventories`, config);
   useRefetchOnEvent("refetchInventory", () => refetch({ silent: true }));
 
@@ -146,6 +151,9 @@ const Inventory = () => {
 
   if (isNetworkError) return <NetworkError />;
 
+  // if (inventory.length === 0) {
+  //   return <EmptyList title="You have not created any inventory yet" buttonText="+ create inventory" buttonLink="/management/inventory/create-inventory" />;
+  // }
 
   const inventoryFiltersWithDropdown = [
     {
@@ -193,7 +201,8 @@ const Inventory = () => {
         pageTitle="Inventory"
         aboutPageModalData={{
           title: "Inventory",
-          description: "This page contains a list of inventory on the platform.",
+          description:
+            "This page contains a list of inventory on the platform.",
         }}
         searchInputPlaceholder="Search inventory"
         handleFilterApply={() => {}}
@@ -202,24 +211,60 @@ const Inventory = () => {
         filterOptionsWithRadio={[]}
         filterWithOptionsWithDropdown={inventoryFiltersWithDropdown}
       />
-      {selectedView === "grid" ? (
-        <AutoResizingGrid gap={28} minWidth={330}>
-          {inventory && inventory.map((item, idx) => (
-            <InventoryCard key={idx} data={item} />
-          ))}
-        </AutoResizingGrid>
-      ) : (
-        <div className="custom-flex-col gap-[18px]">
-          {inventory && inventory.map((item, idx) => (
-            <InventoryList key={idx} data={item} />
-          ))}
-        </div>
-      )}
-      <Pagination
-        totalPages={total_pages}
-        currentPage={current_page}
-        onPageChange={handlePageChange}
-      />
+
+      <section className="capitalize">
+        {inventory.length === 0 && !silentLoading ? (
+          searchQuery ? (
+            "No Search Found"
+          ) : (
+            <EmptyList
+              buttonText="+ create new"
+              buttonLink="/management/inventory/create-inventory"
+              title="You have not created any inventory yet"
+              body={
+                <p>
+                  This section consists of records of all items in the property
+                  before renting it out to tenants. These records should be
+                  created before creating the property itself. You can create
+                  records by clicking on the "Create New" button. To learn more
+                  about this page later, you can click on this icon. <span className="inline-block text-brand-10 align-text-top">
+                    <ExclamationMark />
+                  </span> at the top left of the dashboard page.
+                </p>
+              }
+            />
+          )
+        ) : (
+          <>
+            {view === "grid" ? (
+              <AutoResizingGrid minWidth={284}>
+                {silentLoading ? (
+                  <CardsLoading />
+                ) : (
+                  inventory.map((item, idx) => (
+                    <InventoryCard key={idx} data={item} />
+                  ))
+                )}
+              </AutoResizingGrid>
+            ) : (
+              <>
+                {silentLoading ? (
+                  <TableLoading />
+                ) : (
+                  inventory.map((item, idx) => (
+                    <InventoryList key={idx} data={item} />
+                  ))
+                )}
+              </>
+            )}
+            <Pagination
+              totalPages={total_pages}
+              currentPage={current_page}
+              onPageChange={handlePageChange}
+            />
+          </>
+        )}
+      </section>
     </div>
   );
 };

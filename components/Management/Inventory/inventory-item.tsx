@@ -13,7 +13,6 @@ import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import { InventoryField } from "./inventory-components";
-import { useImageUploader } from "@/hooks/useImageUploader";
 import {
   CameraIcon,
   EditPencilIcon,
@@ -24,7 +23,6 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 import { CounterButton } from "@/components/Settings/SettingsEnrollment/settings-enrollment-components";
 import { toast } from "sonner";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import ModalPreset from "@/components/Modal/modal-preset";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { v4 as uuidv4 } from "uuid";
@@ -207,12 +205,12 @@ useEffect(() => {
               role="button"
               onClick={() => setScreenModal(true)}
             >
-              <Image
+            {images.length > 0 && <Image
                 src={images[0] || data?.image || ""}
                 alt={`Inventory Image ${index + 1}`}
                 fill
                 className="object-cover"
-              />
+              />}
             </div>
             {edit && (
               <div
@@ -221,17 +219,8 @@ useEffect(() => {
                     ? "items-center justify-center"
                     : "flex-col items-end justify-between mr-4 my-4"
                 }`}
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
+                style={{ backgroundColor: "rgba(0, 0, 0, 0.1)" }}
               >
-                {/* <input
-                  ref={fileInputRef}
-                  type="file"
-                  name={`image-${index}`}
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  aria-label="Upload image"
-                /> */}
                 {edit && images.length > 0 && (
                   <div
                     className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5"
@@ -359,3 +348,17 @@ const AddPictureModal = ({
     </div>
   );
 };
+
+
+
+                {
+                  /* <input
+                  ref={fileInputRef}
+                  type="file"
+                  name={`image-${index}`}
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  aria-label="Upload image"
+                /> */
+                }
