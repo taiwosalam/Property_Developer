@@ -20,6 +20,9 @@ const NavProfileDropdown = () => {
   const { isMobile } = useWindowWidth();
   const name = usePersonalInfoStore((state) => state.name);
   const userId = usePersonalInfoStore((state) => state.user_id);
+  const profile_picture = usePersonalInfoStore(
+    (state) => state.profile_picture
+  );
   const [requestLoading, setRequestLoading] = useState(false);
 
   const class_styles =
@@ -39,10 +42,11 @@ const NavProfileDropdown = () => {
       <div className="custom-flex-col">
         <div className="flex items-center gap-4 p-4">
           <Picture
-            src={Avatar}
+            src={profile_picture || Avatar}
             alt="profile picture"
             size={isMobile ? 50 : 60}
             status
+            rounded
           />
           <div className="custom-flex-col text-text-secondary font-medium">
             <p className="text-xs font-normal dark:text-darkText-2">
@@ -69,7 +73,6 @@ const NavProfileDropdown = () => {
             <ModalTrigger className={class_styles}>{label}</ModalTrigger>
             <ModalContent>{modal}</ModalContent>
           </Modal>
-          
         ) : null
       )}
       <button

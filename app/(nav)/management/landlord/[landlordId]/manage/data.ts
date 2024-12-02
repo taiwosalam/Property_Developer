@@ -59,6 +59,7 @@ export interface IndividualLandlordAPIResponse {
     name: string;
     email: string;
     phone: string;
+    user_id: string;
     tier_id?: 1 | 2 | 3 | 4 | 5;
     picture: string;
     gender: string;
@@ -68,6 +69,20 @@ export interface IndividualLandlordAPIResponse {
       last_updated: string;
       write_up: string;
     };
+    bank_details: {
+      bank_name: string;
+      account_name: string;
+      account_number: string;
+      // wallet_id: string;
+    };
+    next_of_kin: {
+      name: string;
+      phone: string;
+      email: string;
+      address: string;
+      relationship: string;
+    };
+    documents: any[]; //confirm structure
   };
 }
 
@@ -84,6 +99,7 @@ export const transformIndividualLandlordAPIResponse = ({
     phone_number: data.phone,
     gender: data.gender,
     notes: data.notes,
+    user_id: data.user_id,
     user_tag: data.agent.toLowerCase() === "mobile" ? "mobile" : "web",
     type: "backend error",
     contact_address: { address: "", city: "", state: "", local_govt: "" },

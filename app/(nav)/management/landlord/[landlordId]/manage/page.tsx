@@ -104,7 +104,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               <div className="custom-flex-col gap-2">
                 <UserTag type={landlordData.user_tag} />
                 <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
-                  ID: {landlordData?.id}
+                  ID: {landlordData?.user_id}
                 </p>
               </div>
             </div>

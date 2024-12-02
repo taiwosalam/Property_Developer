@@ -40,10 +40,18 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
 import { ProfileResponse } from "./data";
 
-const NotificationBadge = ({ count,color }: { count: number,color:string }) => {
+const NotificationBadge = ({
+  count,
+  color,
+}: {
+  count: number;
+  color: string;
+}) => {
   if (count === 0) return null; // Don't render if count is 0
   return (
-    <span className={`absolute top-0 right-0 bg-${color}-500 text-white text-xs rounded-full px-1`}>
+    <span
+      className={`absolute top-0 right-0 bg-${color}-500 text-white text-xs rounded-full px-1`}
+    >
       {count}
     </span>
   );

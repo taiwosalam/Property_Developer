@@ -65,8 +65,12 @@ export interface WalletModalDefaultProps<
 }
 
 export interface FundsBeneficiaryProps {
+  picture: string;
+  name: string;
+  wallet_id: string;
+  onClick?: () => void;
+  seeMore?: boolean;
   remove?: () => void;
-  seeMore?: () => void;
 }
 
 export type ActivateWalletOptions = "setup-pin" | "confirm-pin" | "enter-otp";
