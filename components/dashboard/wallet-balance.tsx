@@ -27,7 +27,6 @@ import WithdrawFundsModal from "../Wallet/Withdraw/withdraw-funds-modal";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import { useWalletStore } from "@/store/wallet-store";
 import useFetch from "@/hooks/useFetch";
-import { formatNumber } from "@/utils/number-formatter";
 import { WalletDataResponse } from "@/app/(nav)/wallet/data";
 
 const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
@@ -35,10 +34,10 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   className,
 }) => {
   const walletPinStatus = useWalletStore((state) => state.walletPinStatus);
+  const balance = useWalletStore((state) => state.balance);
+  const caution_deposit = useWalletStore((state) => state.caution_deposit);
   const setWalletStore = useWalletStore((state) => state.setWalletStore);
   const [hideBalance, setHideBalance] = useState(false);
-  // const balance = walletPinStatus ? mainBalance : 0;
-  // const deposit = walletPinStatus ? cautionDeposit : 0;
 
   const hideWalletBalance = () => {
     setHideBalance((prevHideBalance) => {
@@ -78,7 +77,12 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
 
   useEffect(() => {
     if (data) {
-      setWalletStore("beneficiaries", data.data.beneficiaries);
+      const { my_balance, escrow_balance, beneficiaries, wallet_id } =
+        data.data;
+      setWalletStore("balance", my_balance);
+      setWalletStore("walletId", wallet_id);
+      setWalletStore("caution_deposit", escrow_balance);
+      setWalletStore("beneficiaries", beneficiaries);
     }
   }, [data, setWalletStore]);
 
@@ -124,12 +128,12 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
             </button>
           </div>
           <p className="font-medium text-xl text-white">
-            {hideBalance ? "*******" : "₦ " + formatNumber(1)}
+            {hideBalance ? "*******" : "₦ " + balance}
           </p>
           <div className="text-white text-xs font-medium capitalize flex items-center space-x-1">
             <p className="text-text-white-secondary ">caution deposit</p>
             <span className="text-white ml-2">
-              {hideBalance ? "*******" : "₦ " + formatNumber(1)}
+              {hideBalance ? "*******" : "₦ " + caution_deposit}
             </span>
             <CautionIcon />
           </div>

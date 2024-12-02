@@ -1,4 +1,4 @@
-import { PropertyProps } from "@/components/Management/Properties/types";
+
 import type { AttachedDocumentCard } from "@/components/Management/landlord-tenant-info-components";
 
 interface ContactAddress {
@@ -28,7 +28,7 @@ interface BankDetails {
   bank_name: string | null;
   account_name: string | null;
   account_number: string | null;
-  wallet_id: string | null;
+  wallet_id?: string | null;
 }
 
 interface Others {
@@ -37,7 +37,7 @@ interface Others {
   family_type: string | null;
 }
 
-interface PropertyManaged extends PropertyProps {
+interface PropertyManaged  {
   rental_value: number;
   account_officer: string;
 }
@@ -57,6 +57,7 @@ export type LandlordPageData = {
   user_tag: "web" | "mobile";
   id: number | string;
   type: string;
+  user_id: string;
   marital_status?: string;
   birthday?: string;
   religion?: string;

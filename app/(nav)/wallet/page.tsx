@@ -31,6 +31,7 @@ import { useWalletStore } from "@/store/wallet-store";
 
 const Wallet = () => {
   const walletId = useWalletStore((state) => state.walletId);
+  const beneficiaries = useWalletStore((state) => state.beneficiaries);
 
   const transformedWalletTableData = walletTableData.map((t) => ({
     ...t,
@@ -124,7 +125,7 @@ const Wallet = () => {
             <p className="text-xs dark:text-darkText-1">{walletId}</p>
           </div>
           <WalletBalanceCard noHeader />
-          <div className="custom-flex-col gap-4 p-4 rounded-lg bg-white dark:bg-darkText-primary max-h-[339px] overflow-hidden">
+          <div className="custom-flex-col gap-4 p-4 rounded-lg bg-white dark:bg-darkText-primary h-[339px] overflow-hidden">
             <div className="flex items-center justify-between text-base font-medium">
               <p className="text-black dark:text-white">Beneficiary</p>
               <Modal>
@@ -140,11 +141,9 @@ const Wallet = () => {
               </Modal>
             </div>
             <div className="custom-flex-col gap-2 h-full overflow-y-scroll custom-round-scrollbar">
-              {Array(6)
-                .fill(null)
-                .map((_, idx) => (
-                  <WalletBenefiary key={idx} />
-                ))}
+              {beneficiaries.map((beneficiary, idx) => (
+                <WalletBenefiary key={idx} {...beneficiary} />
+              ))}
             </div>
           </div>
         </div>

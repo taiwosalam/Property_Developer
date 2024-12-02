@@ -35,3 +35,17 @@ export const setWalletPin = async (
     return false;
   }
 };
+
+export const getUserInfoFromWalletId = async (wallet_id: string) => {
+  try {
+    const { data } = await api.get<{
+      name: string;
+      picture: string;
+      wallet_id: string;
+    }>(`wallet/user/${wallet_id}`); //confirm if this is correct
+    return data;
+  } catch (error) {
+    handleAxiosError(error, "Failed to retrieve info. Please try again.");
+    return null;
+  }
+};

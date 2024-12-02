@@ -417,7 +417,7 @@ export const CustomColorPicker: React.FC<{
         </div>
         <div className="flex justify-center items-center w-full px-6">
           <button
-            onClick={}
+            // onClick={}
             className={`w-full py-2 text-white rounded hover:opacity-90 transition-colors`}
             style={{ backgroundColor: color }}
           >
