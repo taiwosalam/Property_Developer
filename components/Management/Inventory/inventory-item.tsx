@@ -223,11 +223,11 @@ useEffect(() => {
               >
                 {edit && images.length > 0 && (
                   <div
-                    className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5"
+                    className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5 cursor-pointer"
                     onClick={() => setScreenModal(true)}
                   >
                     <CameraIcon />
-                    <p className="text-black font-medium text-[10px]">
+                    <p className="text-black font-medium text-[10px] cursor-pointer">
                       +{images.length}
                     </p>
                   </div>

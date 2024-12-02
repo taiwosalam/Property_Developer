@@ -237,7 +237,7 @@ const VehicleRecordModal: React.FC<
   if (activeStep === "check-out") {
     return (
       <>
-      <form onSubmit={handleCheckOut}>
+      {/* <form onSubmit={handleCheckOut}> */}
       <CheckInOutForm
         type="check-out"
         useCase="vehicle"
@@ -247,8 +247,9 @@ const VehicleRecordModal: React.FC<
         id={id}
         category={category}
         registrationDate={registrationDate}
+        onSubmit={handleCheckOut}
         />  
-      </form>
+      {/* </form> */}
       </>
     );
   }

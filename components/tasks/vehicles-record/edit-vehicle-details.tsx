@@ -53,23 +53,46 @@ export const EditPersonalDetailsFormModal = ({
 }) => {
 
   const [loading, setLoading] = useState(false)
-  const handleUpdateProfile = async (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log("Form data here - :", data);
+  // const handleUpdateProfile = async (event: React.FormEvent) => {
+  //   event.preventDefault();
+  //   console.log("Form data here - :", data);
 
-    try {
-      setLoading(true);
-      const res = await updateUserProfile(data);
-      if(res){
-        toast.success("Profile Updated Successfully")
-        setIsOpen(false)
+  //   try {
+  //     setLoading(true);
+  //     const res = await updateUserProfile(data);
+  //     if(res){
+  //       toast.success("Profile Updated Successfully")
+  //       setIsOpen(false)
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  
+    const handleUpdateProfile = async (event: React.FormEvent) => {
+      event.preventDefault();
+      const form = event.target as HTMLFormElement;
+      const formData = new FormData(form);
+
+      console.log("form data here - :", formData)
+
+      try {
+        setLoading(true);
+        // Collect all form data into an object
+        const profileData = Object.fromEntries(formData.entries());
+        const res = await updateUserProfile(profileData); 
+        if (res) {
+          toast.success("Profile Updated Successfully");
+          setIsOpen(false);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
   
   return (
     <ModalPreset heading="Edit Profile">

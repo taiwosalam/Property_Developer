@@ -111,6 +111,7 @@ const CreateBranchModal = ({
   };
 
   const handleFormSubmit = async (data: Record<string, any>) => {
+    console.log("data here - :", data)
     if (!checkFormDataForImageOrAvatar(data)) {
       toast.warning("Please upload a picture or choose an avatar.");
       return;

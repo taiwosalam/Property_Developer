@@ -21,6 +21,11 @@ import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import { ExclamationMark } from "@/public/icons/icons";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import TableLoading from "@/components/Loader/TableLoading";
+import CardsLoading from "@/components/Loader/CardsLoading";
 
 const VehiclesRecordPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -121,7 +126,7 @@ const VehiclesRecordPage = () => {
       last_update: vehicleRecord.last_update,
     };
     setSelectedRecord(updatedRecord);
-    console.log("updatedRecord", updatedRecord)
+    // console.log("updatedRecord", updatedRecord)
     setModalOpen(true);
   };
 
@@ -192,32 +197,68 @@ const VehiclesRecordPage = () => {
         handleSearch={handleSearch}
         onSort={handleSort}
       />
-      <CustomTable
-        fields={veicleRecordTablefields}
-        data={data}
-        tableHeadClassName="h-[76px]"
-        tableHeadCellSx={{
-          fontSize: "16px",
-        }}
-        tableBodyCellSx={{
-          fontSize: "15px",
-          padding: "18px 16px",
-        }}
-        handleSelect={handleActionClick}
-      />
-      <Modal
-        state={{
-          isOpen: modalOpen,
-          setIsOpen: setModalOpen,
-        }}
-      >
-        <ModalContent>
-          <VehicleRecordModal {...(selectedRecord as VehicleRecord)} />
-        </ModalContent>
-      </Modal>
-      {data.length === 0 && (
-        <p className="text-base text-red-500 font-medium">No data found</p>
-      )}
+      <section className="capitalize">
+        {data.length === 0 && !silentLoading ? (
+          searchQuery ? (
+            "No Search Found"
+          ) : (
+            <EmptyList
+              buttonText="+ create new"
+              modalContent={
+                <CreateRecordModal data={data} />
+              }
+              title="You have not created any vehicle records yet"
+              body={
+                <p>
+                  You can create profiles for all your branches and assign staff
+                  and properties to them by clicking on the &quot;Create
+                  Branch&quot; button. Branch managers will have the same access
+                  to their branch as you do, while you will have access to all
+                  staff accounts and branches created. To learn more about this
+                  page later, you can click on this icon{" "}
+                  <span className="inline-block text-brand-10 align-text-top">
+                    <ExclamationMark />
+                  </span>{" "}
+                  at the top left of the dashboard page.
+                </p>
+              }
+            />
+          )
+        ) : (
+          <>
+            {silentLoading ? (
+              <TableLoading />
+            ) : (
+              <CustomTable
+                fields={veicleRecordTablefields}
+                data={data}
+                tableHeadClassName="h-[76px]"
+                tableHeadCellSx={{
+                  borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
+                }}
+                handleSelect={handleActionClick}
+              />
+            )}
+            <Modal
+              state={{
+                isOpen: modalOpen,
+                setIsOpen: setModalOpen,
+              }}
+            >
+              <ModalContent>
+                <VehicleRecordModal 
+                  {...(selectedRecord as VehicleRecord)} 
+                />
+              </ModalContent>
+            </Modal>
+            <Pagination
+              totalPages={total}
+              currentPage={current_page}
+              onPageChange={handlePageChange}
+            />
+          </>
+        )}
+      </section>
     </div>
   );
 };

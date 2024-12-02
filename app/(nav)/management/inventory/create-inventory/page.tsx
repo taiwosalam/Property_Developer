@@ -66,7 +66,7 @@ const handleAddInventory = async (event: React.FormEvent<HTMLFormElement>) => {
     inventoryData.forEach((item, index) => {
       if (Array.isArray(item.image)) { // Check if item.image is an array
         item.image.forEach((img: File) => { // Loop through each image
-          payload.append(`items[${index}][image][]`, img); // Append each image to the payload
+          payload.append(`items[${index}][images][]`, img); // Append each image to the payload
         });
       }
       payload.append(`items[${index}][description]`, item.description as string);

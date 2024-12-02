@@ -226,7 +226,7 @@ const Inventory = () => {
                   This section consists of records of all items in the property
                   before renting it out to tenants. These records should be
                   created before creating the property itself. You can create
-                  records by clicking on the "Create New" button. To learn more
+                  records by clicking on the &quot;Create New&quot; button. To learn more
                   about this page later, you can click on this icon. <span className="inline-block text-brand-10 align-text-top">
                     <ExclamationMark />
                   </span> at the top left of the dashboard page.
