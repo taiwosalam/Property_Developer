@@ -1,9 +1,9 @@
+"use client";
 // Imports
 import ExportPageHeader from "@/components/reports/export-page-header";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import AccountStatsCard from "@/components/Accounting/account-stats-card";
-import { empty } from "@/app/config";
 import BackButton from "@/components/BackButton/back-button";
 import CustomTable from "@/components/Table/table";
 import { invoiceTableData, invoiceExportTableFields } from "../data";

@@ -1,4 +1,6 @@
 import type { AttachedDocumentCard } from "@/components/Management/landlord-tenant-info-components";
+import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
+
 interface ContactAddress {
   address: string;
   city: string | null;
@@ -23,17 +25,16 @@ interface Guarantor {
 }
 
 interface Others {
-  occupation: string | null;
-  type: string | null;
+  employment: string | null;
+  employment_type: string | null;
   family_type: string | null;
-  note: string | null;
 }
 
 interface BankDetails {
   bank_name: string | null;
   account_name: string | null;
   account_number: string | null;
-  wallet_id: string | null;
+  wallet_id?: string | null;
 }
 
 interface AttachedDocument extends AttachedDocumentCard {
@@ -41,21 +42,25 @@ interface AttachedDocument extends AttachedDocumentCard {
 }
 
 export interface TenantData {
-  id: string | number;
+  id: string;
   picture: string;
-  first_name: string;
-  last_name: string;
+  // first_name: string;
+  // last_name: string;
+  name: string;
   email: string;
+  user_id: string;
   user_tag: "web" | "mobile";
+  badge_color?: BadgeIconColors;
   phone_number: string;
+  tenant_type: string;
   gender: string;
   birthdate: string;
   religion: string | null;
   marital_status: string | null;
   contact_address: ContactAddress;
   next_of_kin: NextOfKin;
-  guarantor1: Guarantor;
-  guarantor2: Guarantor;
+  guarantor_1?: Guarantor;
+  guarantor_2?: Guarantor;
   others: Others;
   bank_details: BankDetails;
   notes: {

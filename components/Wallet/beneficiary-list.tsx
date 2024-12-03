@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React from "react";
 import WalletModalPreset from "./wallet-modal-preset";
@@ -8,7 +8,7 @@ import Input from "../Form/Input/input";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const BeneficiaryList = () => {
-  const isDarkMode = useDarkMode()
+  const isDarkMode = useDarkMode();
   return (
     <WalletModalPreset title="Beneficiary List">
       <div className="custom-flex-col gap-6">
@@ -34,7 +34,13 @@ const BeneficiaryList = () => {
             {Array(3)
               .fill(null)
               .map((_, idx) => (
-                <FundsBeneficiary key={idx} remove={() => {}} />
+                <FundsBeneficiary
+                  key={idx}
+                  remove={() => {}}
+                  picture={""}
+                  name={""}
+                  wallet_id={""}
+                />
               ))}
           </div>
         </div>

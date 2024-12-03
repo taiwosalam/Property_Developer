@@ -130,6 +130,9 @@ export interface ProfileResponse {
       industry: string;
       cac_registration_number: string;
     };
+    director: {
+      personal_title: string | null;
+    };
     profile: {
       picture: string | null;
     };

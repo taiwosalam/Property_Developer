@@ -1,11 +1,9 @@
-import React from "react";
-
 // Imports
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
-import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
+import LandlordTenantModalPreset from "./landlord-tenant-modal-preset";
 
-const UpdateTenantProfile = () => {
+const UpdateProfileWithIdModal = () => {
   return (
     <LandlordTenantModalPreset heading={"Update Tenants/Occupant Profile"}>
       <form className="flex justify-center" onSubmit={() => {}}>
@@ -26,4 +24,4 @@ const UpdateTenantProfile = () => {
   );
 };
 
-export default UpdateTenantProfile;
+export default UpdateProfileWithIdModal;

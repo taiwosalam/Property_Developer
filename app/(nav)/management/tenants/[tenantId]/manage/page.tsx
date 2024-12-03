@@ -17,11 +17,9 @@ import {
   MobileNotesModal,
 } from "@/components/Management/landlord-tenant-info-components";
 import { ChevronLeft } from "@/public/icons/icons";
-import { ASSET_URL, empty } from "@/app/config";
 import UnitItem from "@/components/Management/Properties/unit-item";
 import { getObjectProperties } from "@/utils/get-object-properties";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import UpdateTenantProfile from "@/components/Management/Tenants/update-tenant-profile";
 import { useRouter } from "next/navigation";
 import CustomTable from "@/components/Table/table";
 import {
@@ -33,6 +31,9 @@ import {
 import { TenantEditAttachmentSection } from "@/components/Management/Tenants/Edit/tenant-edit-info-sectios";
 import { groupDocumentsByType } from "@/utils/group-documents";
 import useFetch from "@/hooks/useFetch";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import UpdateProfileWithIdModal from "@/components/Management/update-with-id-modal";
+import { TenantEditContext } from "@/components/Management/Tenants/Edit/tenant-edit-context";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -71,7 +72,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               <ChevronLeft />
             </button>
             <Picture
-              src={tenant.picture ? `${ASSET_URL}${tenant.picture}` : empty}
+              src={tenant.picture}
               alt="profile picture"
               size={120}
               rounded
@@ -81,8 +82,11 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               <div className="custom-flex-col">
                 <div className="flex items-center gap-2">
                   <p className="text-black text-lg lg:text-xl font-bold capitalize">
-                    {tenant.first_name} {tenant.last_name}
+                    {tenant.name}
                   </p>
+                  {tenant.badge_color && (
+                    <BadgeIcon color={tenant.badge_color} />
+                  )}
                 </div>
                 <p
                   className={`${secondaryFont.className} text-sm font-normal dark:text-white text-[#151515B3]`}
@@ -93,7 +97,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               <div className="custom-flex-col gap-2">
                 <UserTag type={tenant.user_tag} />
                 <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
-                  ID: {tenantId}
+                  ID: {tenant.user_id}
                 </p>
               </div>
             </div>
@@ -143,7 +147,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <UpdateTenantProfile />
+                    <UpdateProfileWithIdModal />
                   </ModalContent>
                 </Modal>
               </>
@@ -151,15 +155,17 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
           </div>
         </LandlordTenantInfoBox>
 
-        <LandlordTenantInfo
-          info={{
-            gender: tenant.gender,
-            birthday: tenant.birthdate,
-            religion: tenant.religion,
-            phone: tenant.phone_number,
-            "marital status": tenant.marital_status,
-          }}
-        />
+        {tenant?.user_tag === "mobile" && (
+          <LandlordTenantInfo
+            info={{
+              gender: tenant.gender,
+              birthday: tenant.birthdate,
+              religion: tenant.religion,
+              phone: tenant.phone_number,
+              "marital status": tenant.marital_status,
+            }}
+          />
+        )}
 
         {Object.keys(otherData).map((key, idx) => (
           <LandlordTenantInfo key={idx} heading={key} info={otherData[key]} />
@@ -191,13 +197,14 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
         </div>
       </LandlordTenantInfoSection>
       {tenant?.user_tag === "mobile" && (
-        <TenantEditAttachmentSection useContext={false} />
+        <TenantEditContext.Provider value={{ data: tenant }}>
+          <TenantEditAttachmentSection />
+        </TenantEditContext.Provider>
       )}
       <LandlordTenantInfoSection title="shared documents">
-        {Object.entries(groupedDocuments || {}).map(
-          ([documentType, documents]) => {
-            if (documentType === "other document") return null; // Skip "other document" for now
-            return (
+        {Object.entries(groupedDocuments).map(([documentType, documents]) => {
+          if (documentType === "others") return null; // Skip "others" for now
+          return (
             <LandlordTenantInfoSection
               minimized
               title={documentType}
@@ -211,14 +218,14 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
             </LandlordTenantInfoSection>
           );
         })}
-        {groupedDocuments?.["other document"] && (
+        {groupedDocuments?.["others"] && (
           <LandlordTenantInfoSection
             minimized
             title="other documents"
             key="other document"
           >
             <div className="flex flex-wrap gap-4">
-              {groupedDocuments?.["other document"]?.map((document) => (
+              {groupedDocuments?.["others"]?.map((document) => (
                 <LandlordTenantInfoDocument key={document.id} {...document} />
               ))}
             </div>

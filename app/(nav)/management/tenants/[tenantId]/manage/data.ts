@@ -1,5 +1,6 @@
 import type { Field } from "@/components/Table/types";
 import type { TenantData } from "../../types";
+import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "S/N" },
@@ -42,22 +43,35 @@ export const statementTableData = generateTableData(10);
 
 export interface IndividualTenantAPIResponse {
   data: {
-    id: number;
-    first_name: string;
-    last_name: string;
+    id: string;
+    // first_name: string;
+    // last_name: string;
+    name: string;
     email: string;
-    phone_number: string;
-    tier_id: number;
+    phone: string;
+    tier_id?: 1 | 2 | 3 | 4 | 5;
     picture: string;
-    gender: string;
-    notes: {
-      last_updated: string;
-      write_up: string;
+    agent: string;
+    // gender: string;
+    user_id: string;
+    note: {
+      // last_updated: string;
+      note: string;
     };
-    tenant: {
-      owner_type: string;
-      agent: string;
+    bank_details: {
+      bank_name: string;
+      account_name: string;
+      account_number: string;
+      // wallet_id: string;
     };
+    next_of_kin: {
+      name: string;
+      phone: string;
+      email: string;
+      address: string;
+      relationship: string;
+    };
+    documents: any[]; //confirm structure
   };
 }
 
@@ -67,50 +81,31 @@ export const transformIndividualTenantAPIResponse = ({
   return {
     id: data.id,
     picture: data.picture,
-    first_name: data.first_name,
-    last_name: data.last_name,
+    name: data.name,
+    user_id: data.user_id,
+    // first_name: data.first_name,
+    // last_name: data.last_name,
     email: data.email,
-    user_tag: data.tenant.agent.toLowerCase() === "mobile" ? "mobile" : "web",
-    phone_number: data.phone_number,
-    gender: data.gender,
+    user_tag: data.agent.toLowerCase() === "mobile" ? "mobile" : "web",
+    badge_color: data.tier_id ? tierColorMap[data.tier_id] : undefined,
+    phone_number: data.phone,
+    tenant_type: "backend error",
+    gender: "", //backend error
     birthdate: "",
     religion: "",
     marital_status: "",
     contact_address: { address: "", city: "", state: "", local_govt: "" },
-    next_of_kin: {
-      name: "",
-      email: "",
-      address: "",
-      phone: "",
-      relationship: "",
-    },
-    guarantor1: {
-      name: "",
-      email: "",
-      phone_number: "",
-      address: "",
-      relationship: "",
-    },
-    guarantor2: {
-      name: "",
-      email: "",
-      phone_number: "",
-      address: "",
-      relationship: "",
-    },
+    next_of_kin: data.next_of_kin,
     others: {
-      occupation: "",
-      type: "",
+      employment: "",
+      employment_type: "",
       family_type: "",
-      note: "",
     },
-    bank_details: {
-      bank_name: "",
-      account_name: "",
-      account_number: "",
-      wallet_id: "",
+    bank_details: data.bank_details,
+    notes: {
+      last_updated: "backend error",
+      write_up: data.note.note,
     },
-    notes: data.notes,
-    documents: [],
+    documents: data.documents,
   };
 };
