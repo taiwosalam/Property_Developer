@@ -34,12 +34,12 @@ const Select: React.FC<SelectProps> = ({
   const initialState: {
     isOpen: boolean;
     searchTerm: string;
-    filteredOptions: string[] | SelectOptionObject[];
+    filteredOptions: (string | SelectOptionObject)[];
     selectedValue?: string | number;
   } = {
     isOpen: false,
     searchTerm: "",
-    filteredOptions: options,
+    filteredOptions: options as (string | SelectOptionObject)[],
     selectedValue: defaultValue,
   };
   const [state, setState] = useState(initialState);
@@ -74,9 +74,11 @@ const Select: React.FC<SelectProps> = ({
   const isOptionObjectArray = (
     options: string[] | SelectOptionObject[]
   ): options is SelectOptionObject[] => {
-    return Array.isArray(options) && 
-           options.length > 0 && 
-           typeof options[0] === "object";
+    return (
+      Array.isArray(options) &&
+      options.length > 0 &&
+      typeof options[0] === "object"
+    );
   };
 
   useOutsideClick(dropdownRef, () => {
@@ -99,10 +101,13 @@ const Select: React.FC<SelectProps> = ({
       }
 
       let filteredOptions: typeof options = [];
-      
-      if (isOptionObjectArray(options)) {
-        filteredOptions = options.filter((o) =>
-          o.label.toLowerCase().includes(searchTerm.toLowerCase())
+
+      if (isOptionObjectArray(options as SelectOptionObject[])) {
+        filteredOptions = options.filter(
+          (o): o is SelectOptionObject =>
+            typeof o === "object" &&
+            "label" in o && // Type guard to check if o is an object with a label
+            o.label.toLowerCase().includes(searchTerm.toLowerCase())
         );
       } else {
         filteredOptions = options.filter((o) =>
@@ -188,8 +193,10 @@ const Select: React.FC<SelectProps> = ({
                 inputTextClassName
               )}
             >
-              {isOptionObjectArray(options)
-                ? options.find((o) => o.value === selectedValue)?.label
+              {isOptionObjectArray(options as SelectOptionObject[])
+                ? (options as SelectOptionObject[]).find(
+                    (o) => o.value === selectedValue
+                  )?.label
                 : selectedValue}
             </span>
           ) : isSearchable ? (
