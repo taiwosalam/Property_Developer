@@ -2,19 +2,24 @@
 
 // Imports
 import clsx from "clsx";
+import { toast } from "sonner";
 import Input from "@/components/Form/Input/input";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import {
+  objectToFormData,
+  cleanPhoneNumber,
+} from "@/utils/checkFormDataForImageOrAvatar";
 import {
   LandlordTenantInfoEditGrid,
   LandlordTenantInfoEditSection,
   LandlordTenantInfoDocument,
 } from "../../landlord-tenant-info-components";
 import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
-import { DeleteIconOrange } from "@/public/icons/icons";
+import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import {
   landlordTypes,
@@ -29,9 +34,25 @@ import { useLandlordEditContext } from "../landlord-edit-context";
 import type { LandlordPageData } from "@/app/(nav)/management/landlord/types";
 import Picture from "@/components/Picture/picture";
 import Avatars from "@/components/Avatars/avatars";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { v4 as uuidv4 } from "uuid";
+import { AuthForm } from "@/components/Auth/auth-components";
+import {
+  updateLandlordProfile,
+  updateLandlordNextOfKin,
+  updateLandlordBankDetails,
+  updateLandlordDocuments,
+  updateLandlordNote,
+  updateLandlordPicture,
+} from "@/app/(nav)/management/landlord/[landlordId]/manage/edit/data";
+import { useMultipleFileUpload } from "@/hooks/useMultipleFilesUpload";
+import { useImageUploader } from "@/hooks/useImageUploader";
+import Image from "next/image";
+import LandlordTenantModalPreset from "../../landlord-tenant-modal-preset";
+import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
 
 export const LandlordEditProfileInfoSection = () => {
+  const [reqLoading, setReqLoading] = useState(false);
   const { data: landlord } = useLandlordEditContext();
   const [address, setAddress] = useState<{
     state: string;
@@ -51,6 +72,33 @@ export const LandlordEditProfileInfoSection = () => {
     }));
   };
 
+  const handleUpdateProfile = async (data: Record<string, string>) => {
+    const payload = {
+      first_name: data.landlord_firstname,
+      last_name: data.landlord_lastname,
+      email: data.landlord_email,
+      phone_number: data.landlord_phone,
+      state: data.landlord_state,
+      local_government: data.landlord_local_government,
+      city: data.landlord_city,
+      address: data.landlord_address,
+      owner_type: data.owner_type,
+      gender: data.gender,
+    };
+    cleanPhoneNumber(payload);
+    if (landlord?.id) {
+      setReqLoading(true);
+      const status = await updateLandlordProfile(
+        landlord.id,
+        objectToFormData(payload)
+      );
+      if (status) {
+        window.dispatchEvent(new Event("landlord-updated"));
+      }
+      setReqLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (landlord?.contact_address) {
       setAddress({
@@ -63,145 +111,181 @@ export const LandlordEditProfileInfoSection = () => {
 
   return (
     <LandlordTenantInfoEditSection title="profile">
-      <LandlordTenantInfoEditGrid>
-        <Input
-          id="landlord-firstname"
-          label="first name"
-          required
-          inputClassName="rounded-lg"
-          defaultValue={landlord?.name.split(" ")[0]}
-        />
-        <Input
-          id="landlord-lastname"
-          label="last name"
-          required
-          inputClassName="rounded-lg"
-          defaultValue={landlord?.name.split(" ")[1]}
-        />
-        <Input
-          id="landlord-email"
-          type="email"
-          label="email"
-          required
-          inputClassName="rounded-lg"
-          defaultValue={landlord?.email}
-        />
-        <PhoneNumberInput
-          id="landlord-phone-number"
-          label="phone number"
-          required
-          inputContainerClassName="bg-neutral-2"
-          defaultValue={landlord?.phone_number}
-        />
-        <Select
-          id="landlord-state"
-          label="state"
-          options={getAllStates()}
-          placeholder="Select options"
-          inputContainerClassName="bg-neutral-2"
-          value={address.state}
-          onChange={(value) => handleAddressChange(value, "state")}
-        />
-        <Select
-          id="landlord-local_government"
-          label="local government"
-          placeholder="Select options"
-          options={getLocalGovernments(address.state)}
-          inputContainerClassName="bg-neutral-2"
-          value={address.local_government}
-          onChange={(value) => handleAddressChange(value, "local_government")}
-        />
-        <Select
-          id="landlord-city"
-          label="city"
-          placeholder="Select options"
-          options={getCities(address.state, address.local_government)}
-          inputContainerClassName="bg-neutral-2"
-          value={address.city}
-          allowCustom={true}
-          onChange={(value) => handleAddressChange(value, "city")}
-        />
-        <Input
-          id="landlord-address"
-          label="address"
-          inputClassName="rounded-lg"
-          defaultValue={landlord?.contact_address.address}
-        />
-        <Select
-          id="owner-type"
-          label="owner type"
-          isSearchable={false}
-          placeholder="Select options"
-          options={landlordTypes}
-          inputContainerClassName="bg-neutral-2"
-          defaultValue={landlord?.type}
-        />
-        <Select
-          id="gender"
-          label="gender"
-          isSearchable={false}
-          placeholder="Select options"
-          inputContainerClassName="bg-neutral-2"
-          options={genderTypes}
-          defaultValue={landlord?.gender}
-        />
-        <div className="md:col-span-2 flex justify-end">
-          <Button size="base_medium" className="py-2 px-6">
-            update
-          </Button>
-        </div>
-      </LandlordTenantInfoEditGrid>
+      <AuthForm onFormSubmit={handleUpdateProfile} skipValidation>
+        <LandlordTenantInfoEditGrid>
+          <Input
+            id="landlord_firstname"
+            label="first name"
+            required
+            inputClassName="rounded-lg"
+            defaultValue={landlord?.name.split(" ")[0]}
+          />
+          <Input
+            id="landlord_lastname"
+            label="last name"
+            required
+            inputClassName="rounded-lg"
+            defaultValue={landlord?.name.split(" ")[1]}
+          />
+          <Input
+            id="landlord_email"
+            type="email"
+            label="email"
+            required
+            inputClassName="rounded-lg"
+            defaultValue={landlord?.email}
+          />
+          <PhoneNumberInput
+            id="landlord_phone"
+            label="phone number"
+            required
+            inputContainerClassName="bg-neutral-2"
+            defaultValue={landlord?.phone_number}
+          />
+          <Select
+            id="landlord_state"
+            label="state"
+            options={getAllStates()}
+            placeholder="Select options"
+            inputContainerClassName="bg-neutral-2"
+            value={address.state}
+            onChange={(value) => handleAddressChange(value, "state")}
+          />
+          <Select
+            id="landlord_local_government"
+            label="local government"
+            placeholder="Select options"
+            options={getLocalGovernments(address.state)}
+            inputContainerClassName="bg-neutral-2"
+            value={address.local_government}
+            onChange={(value) => handleAddressChange(value, "local_government")}
+          />
+          <Select
+            id="landlord_city"
+            label="city"
+            placeholder="Select options"
+            options={getCities(address.state, address.local_government)}
+            inputContainerClassName="bg-neutral-2"
+            value={address.city}
+            allowCustom={true}
+            onChange={(value) => handleAddressChange(value, "city")}
+          />
+          <Input
+            id="landlord_address"
+            label="address"
+            inputClassName="rounded-lg"
+            defaultValue={landlord?.contact_address.address}
+          />
+          <Select
+            id="owner_type"
+            label="owner type"
+            isSearchable={false}
+            placeholder="Select options"
+            options={landlordTypes}
+            inputContainerClassName="bg-neutral-2"
+            defaultValue={landlord?.owner_type}
+          />
+          <Select
+            id="gender"
+            label="gender"
+            isSearchable={false}
+            placeholder="Select options"
+            inputContainerClassName="bg-neutral-2"
+            options={genderTypes}
+            defaultValue={landlord?.gender}
+          />
+          <div className="md:col-span-2 flex justify-end">
+            <Button
+              size="base_medium"
+              className="py-2 px-6"
+              type="submit"
+              disabled={reqLoading}
+            >
+              {reqLoading ? "updating..." : "update"}
+            </Button>
+          </div>
+        </LandlordTenantInfoEditGrid>
+      </AuthForm>
     </LandlordTenantInfoEditSection>
   );
 };
 
 export const LandlordEditNextOfKinInfoSection = () => {
   const { data: landlord } = useLandlordEditContext();
+  const [reqLoading, setReqLoading] = useState(false);
+  const handleUpdateNextOfKin = async (data: Record<string, string>) => {
+    const payload = {
+      full_name: data.next_of_kin_fullname,
+      email: data.next_of_kin_email,
+      phone_number: data.next_of_kin_phone_number,
+      relationship: data.next_of_kin_relationship,
+      address: data.next_of_kin_address,
+    };
+    cleanPhoneNumber(payload);
+    if (landlord?.id) {
+      setReqLoading(true);
+      const status = await updateLandlordNextOfKin(
+        landlord.id,
+        objectToFormData(payload)
+      );
+      if (status) {
+        window.dispatchEvent(new Event("landlord-updated"));
+      }
+      setReqLoading(false);
+    }
+  };
   return (
     <LandlordTenantInfoEditSection title="Next of Kin">
-      <LandlordTenantInfoEditGrid>
-        <Input
-          id="next-of-kin-fullname"
-          label="full name"
-          required
-          inputClassName="rounded-lg"
-          defaultValue={landlord?.next_of_kin.name}
-        />
-        <Input
-          id="next-of-kin-email"
-          type="email"
-          label="email"
-          required
-          inputClassName="rounded-lg"
-          defaultValue={landlord?.next_of_kin.email}
-        />
-        <PhoneNumberInput
-          id="next-of-kin-phone-number"
-          label="phone number"
-          required
-          inputContainerClassName="bg-neutral-2"
-          defaultValue={landlord?.next_of_kin.phone || ""}
-        />
-        <Select
-          id="next-of-kin-relationship"
-          label="relationship"
-          placeholder="Select options"
-          options={nextOfKinRelationships}
-          inputContainerClassName="bg-neutral-2"
-          defaultValue={landlord?.next_of_kin.relationship || ""}
-        />
-        <Input
-          id="next-of-kin-address"
-          label="address"
-          inputClassName="rounded-lg"
-          defaultValue={landlord?.next_of_kin.address}
-        />
-        <div className="flex items-end justify-end">
-          <Button size="base_medium" className="py-2 px-6">
-            update
-          </Button>
-        </div>
-      </LandlordTenantInfoEditGrid>
+      <AuthForm onFormSubmit={handleUpdateNextOfKin} skipValidation>
+        <LandlordTenantInfoEditGrid>
+          <Input
+            id="next_of_kin_fullname"
+            label="full name"
+            required
+            inputClassName="rounded-lg"
+            defaultValue={landlord?.next_of_kin.name}
+          />
+          <Input
+            id="next_of_kin_email"
+            type="email"
+            label="email"
+            required
+            inputClassName="rounded-lg"
+            defaultValue={landlord?.next_of_kin.email}
+          />
+          <PhoneNumberInput
+            id="next_of_kin_phone_number"
+            label="phone number"
+            required
+            inputContainerClassName="bg-neutral-2"
+            defaultValue={landlord?.next_of_kin.phone || ""}
+          />
+          <Select
+            id="next_of_kin_relationship"
+            label="relationship"
+            placeholder="Select options"
+            options={nextOfKinRelationships}
+            inputContainerClassName="bg-neutral-2"
+            defaultValue={landlord?.next_of_kin.relationship || ""}
+          />
+          <Input
+            id="next_ of_kin_address"
+            label="address"
+            inputClassName="rounded-lg"
+            defaultValue={landlord?.next_of_kin.address}
+          />
+          <div className="flex items-end justify-end">
+            <Button
+              size="base_medium"
+              className="py-2 px-6"
+              disabled={reqLoading}
+              type="submit"
+            >
+              {reqLoading ? "updating..." : "update"}
+            </Button>
+          </div>
+        </LandlordTenantInfoEditGrid>
+      </AuthForm>
     </LandlordTenantInfoEditSection>
   );
 };
@@ -287,52 +371,71 @@ export const LandlordEditGuarantorInfoSection = () => {
 
 export const LandlordEditBankDetailsInfoSection = () => {
   const { data: landlord } = useLandlordEditContext();
+  const [reqLoading, setReqLoading] = useState(false);
+  const handleUpdateBankDetails = async (data: FormData) => {
+    if (landlord?.id) {
+      setReqLoading(true);
+      const status = await updateLandlordBankDetails(landlord.id, data);
+      if (status) {
+        window.dispatchEvent(new Event("landlord-updated"));
+      }
+      setReqLoading(false);
+    }
+  };
   return (
     <LandlordTenantInfoEditSection title="Bank Details">
-      <LandlordTenantInfoEditGrid>
-        <Input
-          id="bank_name"
-          label="bank name"
-          inputClassName="rounded-lg"
-          defaultValue={landlord?.bank_details.bank_name}
-        />
-        <Input
-          id="account_name"
-          label="account name"
-          inputClassName="rounded-lg"
-          defaultValue={landlord?.bank_details.account_name}
-        />
-        <Input
-          id="account_number"
-          label="account number"
-          inputClassName="rounded-lg"
-          defaultValue={landlord?.bank_details.account_number}
-        />
+      <AuthForm
+        onFormSubmit={handleUpdateBankDetails}
+        skipValidation
+        returnType="form-data"
+      >
+        <LandlordTenantInfoEditGrid>
+          <Input
+            id="bank_name"
+            label="bank name"
+            inputClassName="rounded-lg"
+            defaultValue={landlord?.bank_details.bank_name}
+          />
+          <Input
+            id="account_name"
+            label="account name"
+            inputClassName="rounded-lg"
+            defaultValue={landlord?.bank_details.account_name}
+          />
+          <Input
+            id="account_number"
+            label="account number"
+            inputClassName="rounded-lg"
+            defaultValue={landlord?.bank_details.account_number}
+          />
 
-        <div className="flex items-end justify-end">
-          <Button size="base_medium" className="py-2 px-6">
-            update
-          </Button>
-        </div>
-      </LandlordTenantInfoEditGrid>
+          <div className="flex items-end justify-end">
+            <Button
+              size="base_medium"
+              className="py-2 px-6"
+              disabled={reqLoading}
+              type="submit"
+            >
+              {reqLoading ? "updating..." : "update"}
+            </Button>
+          </div>
+        </LandlordTenantInfoEditGrid>
+      </AuthForm>
     </LandlordTenantInfoEditSection>
   );
 };
 
 export const LandlordEditOthersInfoSection = () => {
   const { data } = useLandlordEditContext();
-  const others = data?.others || {
-    type: "",
-    note: "",
-    occupation: "",
-    family_type: "",
-  };
 
-  const [employment, setEmployment] = useState(others.occupation);
+  const [employment, setEmployment] = useState<string | null>("");
 
   useEffect(() => {
-    setEmployment(others.occupation);
-  }, [others.occupation]);
+    if (data?.others) {
+      setEmployment(data.others.employment);
+    }
+  }, [data?.others]);
+
   return (
     <LandlordTenantInfoEditSection title="Others">
       <LandlordTenantInfoEditGrid>
@@ -343,7 +446,6 @@ export const LandlordEditOthersInfoSection = () => {
           options={employmentOptions}
           value={employment || ""}
           onChange={(value) => setEmployment(value)}
-          defaultValue={others.occupation || ""}
         />
         {employment && employment.toLowerCase() === "employed" && (
           <Select
@@ -351,7 +453,7 @@ export const LandlordEditOthersInfoSection = () => {
             label="employment type"
             options={employmentTypeOptions}
             inputContainerClassName="bg-neutral-2"
-            defaultValue={others.type || ""}
+            defaultValue={data?.others?.employment_type || ""}
           />
         )}
         <Select
@@ -359,13 +461,13 @@ export const LandlordEditOthersInfoSection = () => {
           label="family type"
           inputContainerClassName="bg-neutral-2"
           options={familyTypes}
-          defaultValue={others.family_type || ""}
+          defaultValue={data?.others?.family_type || ""}
         />
         <div
           className={clsx(
             "flex items-end justify-end",
-            employment &&
-              employment.toLowerCase() !== "employed" &&
+            (!employment ||
+              (employment && employment.toLowerCase()) !== "employed") &&
               "md:col-span-2"
           )}
         >
@@ -378,33 +480,31 @@ export const LandlordEditOthersInfoSection = () => {
   );
 };
 
-export const LandlordEditAttachmentInfoSection = ({ useContext = true }) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const data = useContext ? useLandlordEditContext().data : null;
+export const LandlordEditAttachmentInfoSection = () => {
+  const { data } = useLandlordEditContext();
   const [documents, setDocuments] = useState<LandlordPageData["documents"]>([]);
   const [documentType, setDocumentType] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const acceptedExtensions = ["pdf", "doc", "docx", "jpg", "png", "jpeg"];
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      const newFiles = Array.from(files).map((file) => ({
-        document_type: documentType,
+  const { fileInputRef, handleFileChange, resetFiles } = useMultipleFileUpload({
+    maxFileSizeMB: 10,
+    acceptedExtensions,
+    onFilesUpdate: (files) => {
+      const newDocuments = files.map((file) => ({
         id: uuidv4(),
-        name: file.name,
-        link: URL.createObjectURL(file),
+        document_type: documentType,
+        name: file.fileName,
+        link: file.fileURL,
       }));
-
-      setDocuments((prevDocuments) => [...newFiles, ...(prevDocuments || [])]); // NB: - I change this cuz i have to push some things to main & this throw ts err
+      setDocuments((prev) => [...prev, ...newDocuments]);
       setDocumentType("");
-    }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
+      resetFiles();
+    },
+  });
+
   const handleChooseFileClick = () => {
     if (!documentType) {
-      alert("Please select a document type before choosing a file.");
+      toast.warning("Please select a document type before choosing a file.");
       return;
     }
     if (fileInputRef.current) {
@@ -413,16 +513,12 @@ export const LandlordEditAttachmentInfoSection = ({ useContext = true }) => {
   };
 
   const handleDeleteDocument = (fileId: string | number) => {
-    setDocuments((prevDocuments) =>
-      prevDocuments?.filter((document) => document.id !== fileId) // NB: - I added ? check this cuz i have to push some things to main & this throw ts err
-    );
+    setDocuments((prev) => prev.filter((doc) => doc.id !== fileId));
   };
 
   useEffect(() => {
-    if (useContext) {
-      setDocuments(data?.documents || []);
-    }
-  }, [data?.documents, useContext]);
+    setDocuments(data?.documents || []);
+  }, [data?.documents]);
 
   return (
     <LandlordTenantInfoEditSection title="attachment">
@@ -432,7 +528,12 @@ export const LandlordEditAttachmentInfoSection = ({ useContext = true }) => {
             id="document_type"
             label="document type"
             placeholder="Select options"
-            options={["invoice", "receipt", "agreement", "other document"]}
+            options={[
+              "invoice",
+              "receipt",
+              "agreement",
+              { label: "other document", value: "others" },
+            ]}
             value={documentType}
             onChange={(value) => setDocumentType(value)}
             inputContainerClassName="bg-neutral-2"
@@ -450,9 +551,11 @@ export const LandlordEditAttachmentInfoSection = ({ useContext = true }) => {
         </div>
         <input
           type="file"
-          onChange={handleFileUpload}
+          onChange={handleFileChange}
           className="hidden"
           ref={fileInputRef}
+          accept={acceptedExtensions.join(",")}
+          multiple
         />
         <div className="flex flex-wrap gap-4 col-span-full">
           {documents?.map((document) => (
@@ -481,12 +584,27 @@ export const LandlordEditAttachmentInfoSection = ({ useContext = true }) => {
 
 export const LandlordEditNoteInfoSection = () => {
   const { data } = useLandlordEditContext();
-
+  const [reqLoading, setReqLoading] = useState(false);
   const [note, setNote] = useState("");
 
   useEffect(() => {
     setNote(data?.notes?.write_up || "");
   }, [data?.notes?.write_up]);
+
+  const handleUpdateNote = async () => {
+    if (data?.id) {
+      setReqLoading(true);
+      const status = await updateLandlordNote(
+        data.id,
+        objectToFormData({ note })
+      );
+      if (status) {
+        window.dispatchEvent(new Event("landlord-updated"));
+      }
+      setReqLoading(false);
+    }
+  };
+
   return (
     <LandlordTenantInfoEditSection
       title="add note"
@@ -500,8 +618,13 @@ export const LandlordEditNoteInfoSection = () => {
         Clear
       </button>
       <TextArea id="note" value={note} onChange={(value) => setNote(value)} />
-      <Button size="base_medium" className="!w-fit ml-auto py-2 px-6">
-        update
+      <Button
+        size="base_medium"
+        className="!w-fit ml-auto py-2 px-6"
+        onClick={handleUpdateNote}
+        disabled={reqLoading}
+      >
+        {reqLoading ? "updating..." : "update"}
       </Button>
     </LandlordTenantInfoEditSection>
   );
@@ -509,79 +632,149 @@ export const LandlordEditNoteInfoSection = () => {
 
 export const LandlordEditAvatarInfoSection = () => {
   const { data } = useLandlordEditContext();
-  const [profilePicture, setProfilePicture] = useState<string>(CameraCircle);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [reqLoading, setReqLoading] = useState(false);
+  const {
+    preview,
+    handleImageChange: originalHandleImageChange,
+    inputFileRef,
+    clearSelection: clearImageSelection,
+    setPreview,
+  } = useImageUploader({
+    placeholder: CameraCircle,
+    maxSize: {
+      unit: "MB",
+      value: 2,
+    },
+  });
+
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState("");
+
+  const handleAvatarSelection = (avatarUrl: string) => {
+    clearImageSelection();
+    setSelectedAvatar(avatarUrl);
+    setAvatarModalOpen(false);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedAvatar("");
+    originalHandleImageChange(e);
+  };
+
+  const handleUpdatePicture = async (formData: FormData) => {
+    if (data?.id) {
+      if (preview === data.picture) {
+        return;
+      }
+      if (data?.picture && preview !== data.picture) {
+        if (!checkFormDataForImageOrAvatar(formData)) {
+          toast.warning("Please upload a picture or choose an avatar.");
+          return;
+        }
+      }
+      setReqLoading(true);
+      const status = await updateLandlordPicture(data.id, formData);
+      if (status) {
+        window.dispatchEvent(new Event("landlord-updated"));
+      }
+      setReqLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (data?.picture) {
-      setProfilePicture(data.picture || CameraCircle);
+      setPreview(data.picture);
     }
-  }, [data?.picture]);
+  }, [data?.picture, setPreview]);
 
   return (
-    <LandlordTenantInfoEditSection title="edit avatar">
-      <div className="flex">
-        <div
-          className="relative"
-          role="button"
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            className="hidden"
-            onChange={(event) => {
-              const file = event.target.files?.[0];
-              if (file) {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                  setProfilePicture(reader.result as string);
-                };
-                reader.readAsDataURL(file);
-              }
-            }}
-          />
-          <input
-            type="hidden"
-            name="avatar"
-            value={profilePicture === CameraCircle ? "" : profilePicture}
-          />
-          <Picture
-            src={profilePicture}
-            alt="profile picture"
-            size={90}
-            rounded
-          />
-          {profilePicture !== CameraCircle && (
-            <button
-              type="button"
-              className="absolute top-0 right-0 translate-x-[5px] -translate-y-[5px]"
+    <AuthForm
+      onFormSubmit={handleUpdatePicture}
+      skipValidation
+      returnType="form-data"
+    >
+      <LandlordTenantInfoEditSection title="edit avatar">
+        <input type="hidden" name="avater" value={selectedAvatar} />
+
+        <label htmlFor="picture" className="!w-fit cursor-pointer relative">
+          <Picture src={preview} alt="Camera" size={90} rounded />
+          {preview && preview !== CameraCircle && (
+            <div
+              role="button"
+              aria-label="remove image"
+              className="absolute top-0 right-0"
               onClick={(e) => {
-                setProfilePicture(CameraCircle);
-                if (fileInputRef.current) {
-                  fileInputRef.current.value = "";
-                }
-                e.stopPropagation();
+                e.preventDefault();
+                clearImageSelection();
               }}
             >
-              <DeleteIconOrange size={32} />
-            </button>
+              <DeleteIconOrange size={20} />
+            </div>
           )}
+          <input
+            type="file"
+            id="picture"
+            name="picture"
+            accept="image/*"
+            className="hidden pointer-events-none"
+            onChange={handleImageChange}
+            ref={inputFileRef}
+          />
+        </label>
+
+        <div className="custom-flex-col gap-3">
+          <p className="text-black text-base font-medium">Choose Avatar</p>
+          <Modal
+            state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
+          >
+            <ModalTrigger
+              className="bg-[rgba(42,42,42,0.63)] !w-[60px] h-[60px] rounded-full flex items-center justify-center text-white relative"
+              aria-label="choose avatar"
+            >
+              {selectedAvatar ? (
+                <>
+                  <Image
+                    src={selectedAvatar}
+                    alt="selected avatar"
+                    width={60}
+                    height={60}
+                    className="object-cover object-center w-[60px] h-[60px] rounded-full bg-brand-9"
+                  />
+                  <div
+                    role="button"
+                    aria-label="remove avatar"
+                    className="absolute top-0 right-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedAvatar("");
+                    }}
+                  >
+                    <DeleteIconOrange size={20} />
+                  </div>
+                </>
+              ) : (
+                <PersonIcon size={18} />
+              )}
+            </ModalTrigger>
+            <ModalContent>
+              <LandlordTenantModalPreset
+                heading="Choose Avatar"
+                style={{ maxWidth: "700px" }}
+              >
+                <Avatars onClick={handleAvatarSelection} />
+              </LandlordTenantModalPreset>
+            </ModalContent>
+          </Modal>
         </div>
-      </div>
-      <div className="custom-flex-col gap-3">
-        <p className="text-black text-base font-medium">Choose Avatar</p>
-        {/* <Avatars
-          type="avatars"
-          size={40}
-          maxSize={4}
-          onClick={setProfilePicture}
-        /> */}
-      </div>
-      <Button size="base_medium" className="py-2 px-6">
-        Save
-      </Button>
-    </LandlordTenantInfoEditSection>
+        <Button
+          size="base_medium"
+          className="py-2 px-6"
+          type="submit"
+          disabled={reqLoading}
+        >
+          {reqLoading ? "updating..." : "save"}
+        </Button>
+      </LandlordTenantInfoEditSection>
+    </AuthForm>
   );
 };

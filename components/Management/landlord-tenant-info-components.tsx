@@ -9,6 +9,7 @@ import Button from "../Form/Button/button";
 import { ModalTrigger } from "../Modal/modal";
 import TextArea from "../Form/TextArea/textarea";
 import { NavCloseIcon } from "@/public/icons/icons";
+import DOMPurify from "dompurify";
 
 export const LandlordTenantInfoBox: React.FC<{
   style?: CSSProperties;
@@ -180,6 +181,7 @@ export const LandlordTenantInfoEditGrid: React.FC<{
 export const NotesInfoBox: React.FC<{
   notes?: { last_updated: string; write_up: string };
 }> = ({ notes }) => {
+  const sanitizedHTML = DOMPurify.sanitize(notes?.write_up || "");
   return (
     <LandlordTenantInfoBox className="custom-flex-col gap-4">
       <div className="flex justify-between gap-4">
@@ -195,7 +197,7 @@ export const NotesInfoBox: React.FC<{
         lines={7}
         className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
       >
-        {notes?.write_up}
+        <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
       </TruncatedText>
     </LandlordTenantInfoBox>
   );

@@ -36,7 +36,9 @@ interface InventoryApiData {
 const Inventory = () => {
   const view = useView();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
-  const [selectedView, setSelectedView] = useState<string>(selectedOptions.view || "grid");
+  const [selectedView, setSelectedView] = useState<string>(
+    selectedOptions.view || "grid"
+  );
 
   const initialState = {
     gridView: selectedView === "grid",
@@ -82,9 +84,9 @@ const Inventory = () => {
 
   const config = useMemo(
     () => ({
-      params: { 
+      params: {
         page: current_page,
-        search: searchQuery 
+        search: searchQuery,
       },
     }),
     [current_page, searchQuery]
@@ -104,30 +106,29 @@ const Inventory = () => {
     error,
     refetch,
     isNetworkError,
-    silentLoading
+    silentLoading,
   } = useFetch<InventoryApiData>(`inventories`, config);
   useRefetchOnEvent("refetchInventory", () => refetch({ silent: true }));
 
-    useEffect(() => {
-      console.log("Fetching inventory data...");
-      if (apiData) {
-        console.log("Inventory data received here - :", apiData);
-        setState((x) => ({
-          ...x,
-          inventoryPageData: {
-            ...x.inventoryPageData,
-            inventory: apiData.data.data,
-            total_pages: apiData.total_pages,
-            total_inventory: apiData.data.total,
-            new_inventory_this_month: apiData.data.new_inventory_this_month,
-          },
-        }));
-      }
-      if (error) {
-        console.error("Error fetching inventory data:", error);
-      }
-    }, [apiData, error]);
-
+  useEffect(() => {
+    console.log("Fetching inventory data...");
+    if (apiData) {
+      console.log("Inventory data received here - :", apiData);
+      setState((x) => ({
+        ...x,
+        inventoryPageData: {
+          ...x.inventoryPageData,
+          inventory: apiData.data.data,
+          total_pages: apiData.total_pages,
+          total_inventory: apiData.data.total,
+          new_inventory_this_month: apiData.data.new_inventory_this_month,
+        },
+      }));
+    }
+    if (error) {
+      console.error("Error fetching inventory data:", error);
+    }
+  }, [apiData, error]);
 
   const handleFilterApply = (filters: any) => {
     console.log("Filter applied:", filters);
@@ -144,10 +145,12 @@ const Inventory = () => {
     }));
   };
 
-  if (loading) return( <div className="min-h-[80vh] flex justify-center items-center">
-    <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-    </div>
-  )
+  if (loading)
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
+    );
 
   if (isNetworkError) return <NetworkError />;
 
@@ -172,7 +175,7 @@ const Inventory = () => {
         { label: "Branch 3", value: "branch3" },
       ],
     },
-  ]
+  ];
   return (
     <div className="custom-flex-col gap-9">
       <div className="page-header-container">
@@ -226,10 +229,12 @@ const Inventory = () => {
                   This section consists of records of all items in the property
                   before renting it out to tenants. These records should be
                   created before creating the property itself. You can create
-                  records by clicking on the "Create New" button. To learn more
-                  about this page later, you can click on this icon. <span className="inline-block text-brand-10 align-text-top">
+                  records by clicking on the &quot;Create New&quot; button. To
+                  learn more about this page later, you can click on this icon.{" "}
+                  <span className="inline-block text-brand-10 align-text-top">
                     <ExclamationMark />
-                  </span> at the top left of the dashboard page.
+                  </span>{" "}
+                  at the top left of the dashboard page.
                 </p>
               }
             />

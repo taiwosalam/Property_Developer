@@ -30,6 +30,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.13",
+    "dompurify": "^3.2.2",
     "framer-motion": "^11.5.4",
     "gsap": "^3.12.5",
     "install": "^0.13.0",

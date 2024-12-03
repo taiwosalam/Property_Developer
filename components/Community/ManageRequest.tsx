@@ -17,12 +17,10 @@ import { usePropertyRequestStore } from "@/store/createPropertyStore";
 import { DatePickerWithRange } from "../dashboard/date-picker";
 import { DateRange } from "react-day-picker";
 
-
-
 const SkeletonBox = ({ className }: { className: string }) => (
-  <div 
+  <div
     className={`bg-gray-200 dark:bg-gray-700 rounded animate-pulse ${className}`}
-    style={{ animation: 'pulse 1.5s ease-in-out infinite' }}
+    style={{ animation: "pulse 1.5s ease-in-out infinite" }}
   />
 );
 
@@ -38,8 +36,8 @@ export const PropertyRequestFirstSection = ({
   placeholderText: string;
   loading?: boolean;
 }) => {
-  const [inputValue, setInputValue] = useState(data?.title ?? '');
-  
+  const [inputValue, setInputValue] = useState(data?.title ?? "");
+
   useEffect(() => {
     if (data?.title) {
       setInputValue(data.title);
@@ -50,15 +48,14 @@ export const PropertyRequestFirstSection = ({
     setInputValue(e.target.value);
   };
 
-
   if (loading) {
     return (
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-4">
           <SkeletonBox className="h-6 w-16" />
-          <SkeletonBox className="h-10 w-full" /> 
+          <SkeletonBox className="h-10 w-full" />
         </div>
-        <SkeletonBox className="w-full h-[400px]" /> 
+        <SkeletonBox className="w-full h-[400px]" />
       </div>
     );
   }
@@ -81,7 +78,7 @@ export const PropertyRequestFirstSection = ({
         label=""
         placeholder={desc ? desc : placeholderText}
         className="w-full mt-4 min-h-[300px]"
-        value={data?.content || data?.description || ''}
+        value={data?.content || data?.description || ""}
         // minChar={200}
         inputSpaceClassName="!min-h-[400px] text-text-secondary no-italic !leading-60 dark:text-darkText-2"
       />
@@ -89,46 +86,55 @@ export const PropertyRequestFirstSection = ({
   );
 };
 
-export const PropertyRequestSecondSection = ({ loading, data }: { loading?: boolean, data?: any }) => {
-  const [selectedDateRange, setSelectedDateRange] = useState<DateRange | undefined>();
-  const { minBudget, maxBudget, setMinBudget, setMaxBudget } = usePropertyRequestStore();
+export const PropertyRequestSecondSection = ({
+  loading,
+  data,
+}: {
+  loading?: boolean;
+  data?: any;
+}) => {
+  const [selectedDateRange, setSelectedDateRange] = useState<
+    DateRange | undefined
+  >();
+  const { minBudget, maxBudget, setMinBudget, setMaxBudget } =
+    usePropertyRequestStore();
   const [timeRange, setTimeRange] = useState("90d");
   const CURRENCY_SYMBOL = currencySymbols.naira;
 
   if (loading) {
     return (
       <>
-      <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
-        {/* Request Types section */}
-        <SkeletonBox className="h-6 w-24" />
-        <div className="flex flex-wrap gap-3">
-          {[1, 2, 3].map((i) => (
-            <SkeletonBox key={i} className="h-10 w-24" />
-          ))}
-        </div>
+        <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
+          {/* Request Types section */}
+          <SkeletonBox className="h-6 w-24" />
+          <div className="flex flex-wrap gap-3">
+            {[1, 2, 3].map((i) => (
+              <SkeletonBox key={i} className="h-10 w-24" />
+            ))}
+          </div>
 
-        {/* Budget section */}
-        <div className="budget flex flex-col gap-2">
-          <SkeletonBox className="h-6 w-16" />
-          <div className="space-y-4">
-            <SkeletonBox className="h-[72px] w-full" />
-            <SkeletonBox className="h-[72px] w-full" />
+          {/* Budget section */}
+          <div className="budget flex flex-col gap-2">
+            <SkeletonBox className="h-6 w-16" />
+            <div className="space-y-4">
+              <SkeletonBox className="h-[72px] w-full" />
+              <SkeletonBox className="h-[72px] w-full" />
+            </div>
           </div>
-        </div>
 
-        {/* Target Audience & Valid Till section */}
-        <div className="flex flex-col gap-2">
-          <div className="space-y-4">
-            <SkeletonBox className="h-6 w-32" />
-            <SkeletonBox className="h-10 w-full" />
-          </div>
-          
-          <div className="space-y-4 mt-4">
-            <SkeletonBox className="h-6 w-20" />
-            <SkeletonBox className="h-10 w-full" />
+          {/* Target Audience & Valid Till section */}
+          <div className="flex flex-col gap-2">
+            <div className="space-y-4">
+              <SkeletonBox className="h-6 w-32" />
+              <SkeletonBox className="h-10 w-full" />
+            </div>
+
+            <div className="space-y-4 mt-4">
+              <SkeletonBox className="h-6 w-20" />
+              <SkeletonBox className="h-10 w-full" />
+            </div>
           </div>
         </div>
-      </div>
       </>
     );
   }
@@ -136,14 +142,14 @@ export const PropertyRequestSecondSection = ({ loading, data }: { loading?: bool
   // Handle minimum budget change
   const handleMinChange = (value: string) => {
     // Remove any non-numeric characters except decimal point
-    const cleanValue = value.replace(/[^\d.]/g, '');
+    const cleanValue = value.replace(/[^\d.]/g, "");
     const numValue = parseFloat(cleanValue) || null;
     setMinBudget(numValue);
   };
 
   // Handle maximum budget change
   const handleMaxChange = (value: string) => {
-    const cleanValue = value.replace(/[^\d.]/g, '');
+    const cleanValue = value.replace(/[^\d.]/g, "");
     const numValue = parseFloat(cleanValue) || null;
     setMaxBudget(numValue);
   };
@@ -188,7 +194,9 @@ export const PropertyRequestSecondSection = ({ loading, data }: { loading?: bool
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}
             inputClassName="bg-white"
             onChange={handleMinChange}
-            value={minBudget !== null ? minBudget.toString() : data?.min_budget || ""}
+            value={
+              minBudget !== null ? minBudget.toString() : data?.min_budget || ""
+            }
           />
           <Input
             required
@@ -199,13 +207,13 @@ export const PropertyRequestSecondSection = ({ loading, data }: { loading?: bool
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}
             inputClassName="bg-white"
             onChange={handleMaxChange}
-            value={maxBudget !== null ? maxBudget.toString() : data?.max_budget || ""}
+            value={
+              maxBudget !== null ? maxBudget.toString() : data?.max_budget || ""
+            }
           />
         </div>
         <div className="flex flex-col gap-2">
-          <StateAndLocalGovt
-            data={data}
-          />
+          <StateAndLocalGovt data={data} />
           <div className="flex flex-col gap-2">
             <h3 className="text-black dark:text-white font-semibold mb-2">
               Valid Till
@@ -237,10 +245,10 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
 
   useEffect(() => {
-    console.log('Original target_audience:', data?.target_audience);
+    console.log("Original target_audience:", data?.target_audience);
 
     const initialSelectedStates = (() => {
-      if (typeof data?.target_audience === 'string') {
+      if (typeof data?.target_audience === "string") {
         try {
           // Attempt to parse as JSON
           const parsed = JSON.parse(data.target_audience);
@@ -249,7 +257,9 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
           }
         } catch (e) {
           // If parsing fails, fall back to splitting by commas
-          return data.target_audience.split(',').map((state: string) => state.trim());
+          return data.target_audience
+            .split(",")
+            .map((state: string) => state.trim());
         }
       } else if (Array.isArray(data?.target_audience)) {
         return data.target_audience.map((state: string) => state.trim());
@@ -257,7 +267,7 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
       return [];
     })();
 
-    console.log('Processed initialSelectedStates:', initialSelectedStates);
+    console.log("Processed initialSelectedStates:", initialSelectedStates);
     setSelectedStates(initialSelectedStates);
   }, [data?.target_audience]);
 
