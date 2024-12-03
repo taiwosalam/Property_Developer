@@ -331,6 +331,7 @@ const Tenants = () => {
                 )}
               </>
             )}
+
             <Pagination
               totalPages={total_pages}
               currentPage={current_page}
