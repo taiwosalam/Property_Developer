@@ -77,3 +77,30 @@ export const mapNumericToYesNo = (value?: 1 | 0) => {
   } as const;
   return value !== undefined ? mapping[value] : undefined;
 };
+
+export function objectToFormData(
+  obj: Record<string, any>,
+  form?: FormData,
+  namespace?: string
+): FormData {
+  const formData = form || new FormData();
+
+  for (let property in obj) {
+    if (obj.hasOwnProperty(property)) {
+      const formKey = namespace ? `${namespace}[${property}]` : property;
+
+      if (
+        typeof obj[property] === "object" &&
+        !(obj[property] instanceof File)
+      ) {
+        // If the property is an object, but not a File, use recursion.
+        objectToFormData(obj[property], formData, formKey);
+      } else {
+        // If the property is a string or a File, append it to the FormData.
+        formData.append(formKey, obj[property]);
+      }
+    }
+  }
+
+  return formData;
+}

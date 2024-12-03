@@ -4,15 +4,15 @@ import api, { handleAxiosError } from "@/services/api";
 
 export const walletChartConfig = {
   totalfunds: {
-    label: "total funds",
+    label: "Total Funds",
     color: "#38BDF8",
   },
   credit: {
-    label: "credit",
+    label: "Credit",
     color: "#2DD4BF ",
   },
   debit: {
-    label: "debit",
+    label: "Debit",
     color: "#E9212E",
   },
 } satisfies ChartConfig;

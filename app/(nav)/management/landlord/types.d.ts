@@ -1,5 +1,5 @@
-
 import type { AttachedDocumentCard } from "@/components/Management/landlord-tenant-info-components";
+import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 
 interface ContactAddress {
   address: string;
@@ -37,7 +37,7 @@ interface Others {
   family_type: string | null;
 }
 
-interface PropertyManaged  {
+interface PropertyManaged {
   rental_value: number;
   account_officer: string;
 }
@@ -55,7 +55,8 @@ export type LandlordPageData = {
   gender: string;
   phone_number: string;
   user_tag: "web" | "mobile";
-  id: number | string;
+  badge_color?: BadgeIconColors;
+  id: string;
   type: string;
   user_id: string;
   marital_status?: string;
@@ -110,5 +111,3 @@ export type LandlordHelpInfo = {
 };
 
 export type LandlordHelpInfoList = LandlordHelpInfo[];
-
-

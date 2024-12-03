@@ -1,12 +1,13 @@
 "use client";
 
 import Button from "@/components/Form/Button/button";
-
+import { useEffect, useState } from "react";
 import { LandlordEditContext } from "@/components/Management/Landlord/landlord-edit-context";
 import {
   type IndividualLandlordAPIResponse,
   transformIndividualLandlordAPIResponse,
 } from "../data";
+import { LandlordPageData } from "../../../types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import BackButton from "@/components/BackButton/back-button";
@@ -24,22 +25,31 @@ import {
 } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
 import { useRouter } from "next/navigation"; //only web can edit profile
 import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
-  const { data, error, loading } = useFetch<IndividualLandlordAPIResponse>(
-    `landlord/${landlordId}`
+  const [landlordData, setLandlordData] = useState<LandlordPageData | null>(
+    null
   );
+  const { data, error, loading, refetch } =
+    useFetch<IndividualLandlordAPIResponse>(`landlord/${landlordId}`);
 
-  const landlord = data ? transformIndividualLandlordAPIResponse(data) : null;
+  useRefetchOnEvent("landlord-updated", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (data) {
+      setLandlordData(transformIndividualLandlordAPIResponse(data));
+    }
+  }, [data]);
 
   if (loading)
     return <CustomLoader layout="edit-page" pageTitle="Edit Landlord" />;
   if (error) return <div>{error}</div>;
-  if (!landlord) return null;
+  if (!landlordData) return null;
 
   return (
-    <LandlordEditContext.Provider value={{ data: landlord }}>
+    <LandlordEditContext.Provider value={{ data: landlordData }}>
       <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
         <BackButton>Edit Landlord</BackButton>
         <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
@@ -47,7 +57,8 @@ const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
           <div className="custom-flex-col gap-5 flex-1 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">
             <LandlordEditProfileInfoSection />
             <LandlordEditNextOfKinInfoSection />
-            <LandlordEditGuarantorInfoSection />
+            {/* <LandlordEditGuarantorInfoSection /> */}
+            {/* will handle guarantor for mobile users later */}
             <LandlordEditOthersInfoSection />
             <LandlordEditBankDetailsInfoSection />
             <LandlordEditAttachmentInfoSection />

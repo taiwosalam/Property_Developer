@@ -37,12 +37,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
   };
 
   return (
-    <div
-      className={clsx(
-        "custom-flex-col gap-2",
-        className
-      )}
-    >
+    <div className={clsx("custom-flex-col gap-2", className)}>
       {/* Render the label if provided */}
       {label && (
         <Label id={id} required={required}>
@@ -94,6 +89,5 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
     </div>
   );
 };
-//!pt-[9px] !pb-[9px] !h-[unset]
 
 export default PhoneNumberInput;

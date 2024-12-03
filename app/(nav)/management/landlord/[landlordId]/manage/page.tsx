@@ -93,7 +93,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     {/* {landlordData?.first_name} {landlordData?.last_name} */}
                     {landlordData.name}
                   </p>
-                  <BadgeIcon color="blue" />
+                  {landlordData.badge_color && (
+                    <BadgeIcon color={landlordData.badge_color} />
+                  )}
                 </div>
                 <p
                   className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-[#FFFFFFB2]`}

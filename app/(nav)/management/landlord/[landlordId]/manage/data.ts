@@ -1,5 +1,6 @@
 import type { Field } from "@/components/Table/types";
 import type { LandlordPageData } from "../../types";
+import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
@@ -53,7 +54,7 @@ export const statementTableData = generateTableData(10);
 
 export interface IndividualLandlordAPIResponse {
   data: {
-    id: number;
+    id: string;
     // first_name: string;
     // last_name: string;
     name: string;
@@ -100,28 +101,18 @@ export const transformIndividualLandlordAPIResponse = ({
     gender: data.gender,
     notes: data.notes,
     user_id: data.user_id,
+    badge_color: data.tier_id ? tierColorMap[data.tier_id] : undefined,
     user_tag: data.agent.toLowerCase() === "mobile" ? "mobile" : "web",
     type: "backend error",
     contact_address: { address: "", city: "", state: "", local_govt: "" },
-    next_of_kin: {
-      name: "",
-      email: "",
-      address: "",
-      phone: "",
-      relationship: "",
-    },
-    bank_details: {
-      bank_name: "",
-      account_name: "",
-      account_number: "",
-      wallet_id: "",
-    },
+    next_of_kin: data.next_of_kin,
+    bank_details: data.bank_details,
     others: {
       occupation: "",
       type: "",
       family_type: "",
     },
-    documents: [],
+    documents: data.documents,
     properties_managed: [],
   };
 };
