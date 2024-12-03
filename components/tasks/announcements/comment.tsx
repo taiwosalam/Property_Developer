@@ -170,7 +170,7 @@ const Comment: React.FC<CommentProps> = ({
 
   return (
     <div data-comment-id={id}>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col">
         <div className="flex gap-2 items-center">
           <div className="flex-shrink-0 relative w-9 h-9 rounded-full bg-neutral-2 overflow-hidden">
             <Image

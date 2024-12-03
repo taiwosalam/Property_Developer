@@ -13,13 +13,7 @@ const ReceiptPreviewPage = () => {
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
         <BackButton as="p">Back</BackButton>
-        <ExportPageHeader
-          logo={empty}
-          location="States and Local Govt"
-          website="https://realesate.com"
-          phoneNumbers={["09022312133", "07012133313", "0901212121"]}
-          email="example@mail.com"
-        />
+        <ExportPageHeader />
         <h1 className="text-center my-7 font-medium text-2xl">Receipt</h1>
         <div className="rounded-lg bg-white dark:bg-darkText-primary   p-8 flex flex-col md:flex-row">
           <KeyValueList

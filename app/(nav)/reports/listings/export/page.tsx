@@ -27,13 +27,7 @@ const ExportListings = () => {
   return (
     <div className="space-y-9 pb-[100px]">
       <BackButton>Back</BackButton>
-      <ExportPageHeader
-        logo={empty}
-        location="States and Local Govt"
-        website="https://realesate.com"
-        phoneNumbers={["09022312133", "07012133313", "0901212121"]}
-        email="example@mail.com"
-      />
+      <ExportPageHeader />
       <p className="text-center text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium">
         Summary
       </p>

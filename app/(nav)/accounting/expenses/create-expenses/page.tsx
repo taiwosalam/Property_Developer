@@ -47,13 +47,7 @@ const CreateExpensePage = () => {
   return (
     <section className="space-y-7 pb-[100px]">
       <BackButton>Create New Expense</BackButton>
-      <ExportPageHeader
-        email="Email@gmail.com"
-        location="States and Local Govt."
-        logo="/empty/logo placeholder.svg"
-        phoneNumbers={["08132086958", "09123435487", "9848848488"]}
-        website="https://www.hprealestate.co.in1"
-      />
+      <ExportPageHeader />
       <div className="space-y-8">
         <Details />
         <div className="space-y-4 max-w-[600px]">

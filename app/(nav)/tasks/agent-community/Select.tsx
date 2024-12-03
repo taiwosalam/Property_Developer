@@ -41,7 +41,7 @@ const Select: React.FC<SelectProps> = ({
   } = {
     isOpen: false,
     searchTerm: "",
-    filteredOptions: options,
+    filteredOptions: options as string[] | SelectOptionObject[],
     selectedValue: defaultValue,
   };
   const [state, setState] = useState(initialState);
@@ -179,8 +179,9 @@ const Select: React.FC<SelectProps> = ({
                 inputTextClassName
               )}
             >
-              {isOptionObjectArray(options)
-                ? options.find((o) => o.value === selectedValue)?.label
+              {isOptionObjectArray(options as SelectOptionObject[])
+                          // ? options.find((o) => (o as SelectOptionObject).value === selectedValue)?.label
+                ? options.find((o): o is SelectOptionObject => typeof o !== 'string' && 'value' in o && o.value === selectedValue)?.label
                 : selectedValue}
             </span>
           ) : isSearchable ? (
