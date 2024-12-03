@@ -28,6 +28,7 @@ export interface VehicleDataProps {
 }
 
 export interface PersonalDataProps {
+  id: number;
   full_name: string;
   state: string;
   local_government: string;
@@ -357,7 +358,7 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
           size="16_bold"
           className="ml-auto rounded-lg py-2 px-8 self-end justify-self-start md:col-span-2 lg:col-span-1 lg:col-start-3"
         >
-          {editMode ? "Update" : "Create"}
+          {props.loading ? "Loading..." : editMode ? "Update" : "Create"}
         </Button>
       )}
     </div>

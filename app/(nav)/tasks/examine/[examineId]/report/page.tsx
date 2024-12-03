@@ -17,13 +17,7 @@ const ExamineReportpage = () => {
   return (
     <div className="space-y-8 pb-[100px]">
       <BackButton as="p">Back</BackButton>
-      <ExportPageHeader
-        email="text@text.com"
-        location="locationnñ"
-        logo="/empty/SampleLogo.jpeg"
-        phoneNumbers={["08012345678", "08012345678"]}
-        website="www.website.com"
-      />
+      <ExportPageHeader />
       <h1 className="text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
         Property Inspection Report
       </h1>

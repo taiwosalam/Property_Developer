@@ -27,12 +27,13 @@ const CreateArticle = () => {
       return; 
     }
 
-    // Check if the user has uploaded at least one picture
-    if (imageFiles.length === 0) {
-      toast.error("Please upload at least one picture.");
-       return;
-     }
-    
+    // Check if the user has uploaded at least one picture or provided a video link
+    const videoLink = formData.get("video_link");
+    if (imageFiles.length === 0 && !videoLink) {
+      toast.error("Please upload at least one picture or provide a video link.");
+      return;
+    }
+
     // Parse and append target_audience as an array
     const targetAudience = formData.get("target_audience");
     if (typeof targetAudience === "string") {

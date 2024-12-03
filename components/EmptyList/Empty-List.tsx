@@ -1,3 +1,4 @@
+import { EmptyListIcon } from "@/public/icons/icons";
 import Button from "../Form/Button/button";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 
@@ -9,7 +10,10 @@ const EmptyList: React.FC<{
   modalContent?: React.ReactNode;
 }> = ({ title, body, buttonText, buttonLink, modalContent }) => {
   return (
-    <div className="mt-[140px] space-y-10">
+    <div className="mt-[50px] space-y-4">
+      <div className="w-full text-brand-9 h-full flex justify-center items-center mb-4">
+        <EmptyListIcon />
+      </div>
       {modalContent ? (
         <Modal>
           <ModalTrigger asChild>

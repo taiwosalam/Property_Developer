@@ -35,4 +35,5 @@ export interface InputProps {
   endWith?: string;
   isPinField?: boolean;
   minLength?: number;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLFormElement>) => void;
 }

@@ -12,6 +12,7 @@ interface BaseProps {
   pictureSrc: string;
   userName: string;
   id: string | number;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 interface VisitorFormProps extends BaseProps {
   useCase: "visitor";
@@ -26,7 +27,7 @@ interface VehicleFormProps extends BaseProps {
 const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
   props
 ) => {
-  const { type, handleBack, pictureSrc, userName, id, useCase } = props;
+  const { type, handleBack, pictureSrc, userName, id, useCase, onSubmit } = props;
   return (
     <ModalPreset
       heading={
@@ -39,6 +40,7 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
       back={handleBack ? { handleBack } : undefined}
     >
         <div className="flex flex-col md:flex-row gap-x-10 lg:gap-x-20 md:justify-between gap-y-5 mb-4">
+          <form onSubmit={onSubmit}>
           <div className="md:min-w-fit custom-flex-col justify-between gap-6">
             <div>
               <div className="mb-[10px] flex items-center gap-4">
@@ -118,15 +120,16 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
               inputSpaceClassName="md:!h-[100px]"
             />
           </div>
-        </div>
-        <Button
-          type="submit"
-          aria-label="submit"
-          size="16_bold"
-          className="py-[10px] px-8 rounded-lg block ml-auto"
-        >
-          {type === "check-in" ? "Create" : "Submit"}
-        </Button>
+          <Button
+            type="submit"
+            aria-label="submit"
+            size="16_bold"
+            className="py-[10px] px-8 rounded-lg block ml-auto"
+          >
+            {type === "check-in" ? "Create" : "Submit"}
+          </Button>
+        </form>
+      </div>
     </ModalPreset>
   );
 };

@@ -47,13 +47,7 @@ const PreviewExpenses = () => {
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
         <BackButton as="p">Add Payment</BackButton>
-        <ExportPageHeader
-          logo={empty}
-          location="States and Local Govt"
-          website="https://realesate.com"
-          phoneNumbers={["09022312133", "07012133313", "0901212121"]}
-          email="example@mail.com"
-        />
+        <ExportPageHeader />
         <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex">
           <KeyValueList
             data={{}}

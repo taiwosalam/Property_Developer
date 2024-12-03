@@ -59,13 +59,7 @@ const ExportWallet = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <BackButton>Back</BackButton>
-      <ExportPageHeader
-        logo={empty}
-        location="States and Local Govt"
-        website="https://realesate.com"
-        phoneNumbers={["09022312133", "07012133313", "0901212121"]}
-        email="example@mail.com"
-      />
+      <ExportPageHeader />
       <div className="custom-flex-col gap-6">
         <div className="flex justify-center">
           <div className="custom-flex-col text-center gap-1">

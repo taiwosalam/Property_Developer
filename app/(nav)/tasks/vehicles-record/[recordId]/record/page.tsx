@@ -38,6 +38,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import { checkInVehicle } from "@/components/tasks/vehicles-record/data";
 import { toast } from "sonner";
 import { Box as MuiBox, Modal as MuiModal } from "@mui/material";
+import { UseerSkeletonVehicleRecord } from "@/components/Skeleton/vehicle-record";
 
 
 interface TransformedData {
@@ -68,6 +69,7 @@ const RecordPage = () => {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
   const [updateUserModal, setUpdateUserModal] = useState(false)
+  const [updateVehicleModal, setUpdateVehicleModal] = useState(false)
   const { recordId } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -133,8 +135,9 @@ const RecordPage = () => {
           webContactInfo: transformed.webContactInfo,
           checkInsOutData: transformed.checkInsOutData,
         }));
-        console.log("transformed", transformed);  
-        console.log("checkInsOutData", transformed.checkInsOutData);
+        console.log("vehicleDetails", transformed.vehicleDetails);  
+        // console.log("transformed", transformed);  
+        // console.log("checkInsOutData", transformed.checkInsOutData);
       } catch (error) {
         console.error("Transformation error:", error, apiData);
       }
@@ -176,6 +179,7 @@ const RecordPage = () => {
   } = userData;
 
   const {
+    id,
     brand,
     plate_number,
     category,
@@ -281,6 +285,7 @@ const RecordPage = () => {
                   <ModalContent>
                     <EditPersonalDetailsFormModal
                       data={{
+                        id: vehicleDetails.id,
                         full_name,
                         state: userState,
                         address,
@@ -367,7 +372,12 @@ const RecordPage = () => {
             <Detail label="Color" value={color || "N/A"} />
             <Detail label="Manufacture Year" value={manufacture_year} />
           </div>
-          <Modal>
+          <Modal
+            state={{
+              isOpen: updateVehicleModal,
+              setIsOpen: setUpdateVehicleModal,
+            }}
+          >
             <ModalTrigger asChild>
               <Button size="base_medium" className="py-2 px-8 ml-auto self-end">
                 Edit
@@ -386,6 +396,7 @@ const RecordPage = () => {
                   manufacturer_year: manufacture_year,
                   visitor_category: category,
                 }}
+                setIsOpen={setUpdateVehicleModal}
               />
             </ModalContent>
           </Modal>
@@ -424,8 +435,9 @@ const RecordPage = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <form onSubmit={handleCheckIn}>
+            {/* <form onSubmit={handleCheckIn}> */}
               <CheckInOutForm
+                onSubmit={handleCheckIn}
                 useCase="vehicle"
                 type="check-in"
                 pictureSrc={pictureSrc}
@@ -434,7 +446,7 @@ const RecordPage = () => {
                 category={category}
                 registrationDate="12/01/2024 (08:09pm)" // Replace with dynamic data if available
               />
-            </form>
+            {/* </form> */}
           </ModalContent>
         </Modal>
       </FixedFooter>

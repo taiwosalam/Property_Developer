@@ -12,6 +12,7 @@ export type ThreadCardProps = {
   slug: string;
   likes: string;
   dislikes: string;
+  video: string;
   shareLink: string;
 };
 

@@ -242,7 +242,7 @@ const StaffAndBranches = () => {
               setOpenVerifyModal={setOpenVerifyModal} 
               emailStatus={emailStatus}
               setEmailStatus={setEmailStatus}
-            />
+            />|
           </ModalContent>
         </Modal>
         <Modal

@@ -54,13 +54,7 @@ const CreateInvoicePage = () => {
   return (
     <section className="space-y-7 pb-20">
       <BackButton>Create New Invoice</BackButton>
-      <ExportPageHeader
-        logo={empty}
-        location="States and Local Govt"
-        website="https://realesate.com"
-        phoneNumbers={["09022312133", "07012133313", "0901212121"]}
-        email="example@mail.com"
-      />
+      <ExportPageHeader />
       <div className="flex flex-col gap-4">
         <Details />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -37,7 +37,7 @@ export const createVehicleRecord = async (data: any) => {
 
 export const updateVehicleDetails = async (data: any, id: number) => {
   try {
-    const response = await api.put(`/vehicle-record/${id}`, data);
+    const response = await api.post(`/vehicle-record/${id}`, data);
     return response.status === 200 || response.status === 201;
   } catch (error) {
     console.error(error);
@@ -83,9 +83,9 @@ export function formatCustomDateTime(dateTimeString: string): string {
 }
 
 
-export const updateUserProfile = async (data: any) => {
+export const updateVehicleRecord = async (data: any, id: number) => {
   try {
-    const response = await api.patch(`user/update`, data);
+    const response = await api.patch(`/vehicle-record/${id}`, data);
     return response.status === 200 || response.status === 201;
   } catch (error) {
     console.error(error)

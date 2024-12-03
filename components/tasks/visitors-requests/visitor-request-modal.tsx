@@ -238,6 +238,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
   ) {
     return (
       <CheckInOutForm
+        onSubmit={() => {}}
         type={activeStep}
         useCase="visitor"
         handleBack={handleBack}

@@ -97,11 +97,23 @@ const Header = () => {
   useEffect(() => {
     if (data?.data) {
       const { user, company, profile } = data.data;
+      console.log("company data ", company);
       setPersonalInfo("user_id", user.userid);
       setPersonalInfo("name", user.name);
       setPersonalInfo("profile_picture", profile.picture);
       setPersonalInfo("company_id", company.company_id);
       setPersonalInfo("company_logo", company.company_logo);
+      setPersonalInfo("company_name", company.company_name);
+      setPersonalInfo("company_state", company.state);
+      setPersonalInfo("company_local_government", company.local_government);
+      setPersonalInfo("company_head_office_address", company.head_office_address);
+      setPersonalInfo("company_city", company.city);
+      setPersonalInfo("company_phone_number", company.phone_numbers);
+      setPersonalInfo("date_of_registration", company.date_of_registration);
+      setPersonalInfo("membership_number", company.membership_number);
+      setPersonalInfo("is_verified", company.is_verified);
+      setPersonalInfo("industry", company.industry);
+      setPersonalInfo("cac_registration_number", company.cac_registration_number);
     }
   }, [data, setPersonalInfo]);
 

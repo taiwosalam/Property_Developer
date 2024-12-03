@@ -15,6 +15,7 @@ import { toggleLike } from "@/app/(nav)/tasks/agent-community/my-articles/data";
 import { empty } from "@/app/config";
 import { useState } from "react";
 import { toast } from "sonner";
+import ReactPlayer from 'react-player';
 
 const link = "/tasks/agent-community/";
 
@@ -33,6 +34,7 @@ const ThreadCard = ({
   dislikes,
   slug,
   shareLink,
+  video,
 }: ThreadCardProps) => {
   const link = `/tasks/agent-community/${myArticle ? "my-articles" : "threads"}/${slug}/preview?id=${id}`;
   return (
@@ -47,7 +49,7 @@ const ThreadCard = ({
           role={role}
           time={time}
         />
-        <ThreadBody title={title} picture_url={picture_url} desc={desc} />
+        <ThreadBody title={title} picture_url={picture_url} desc={desc} video={video} />
       </Link>
       <ThreadFooter comments={comments} likes={likes} dislikes={dislikes} slug={slug} shareLink={link} />
     </div>
@@ -101,10 +103,12 @@ const ThreadBody = ({
   title,
   picture_url,
   desc,
+  video,
 }: {
   title: string;
   picture_url: string;
   desc: string;
+  video: string;
 }) => {
   return (
     <div className="flex flex-col gap-2">
@@ -115,16 +119,28 @@ const ThreadBody = ({
         className="text-sm line-clamp-3 max-h-[3lh]"
         dangerouslySetInnerHTML={{ __html: desc || "__" }}
       />
-      <div className="imagWrapper overflow-hidden max-h-[195px]">
-        <Image
-          src={picture_url || empty}
-          alt="Thread"
-          priority
-          width={300}
-          height={300}
-          className="w-full h-[195px] object-cover"
-        />
-      </div>
+      {video ? (
+        <div className="imagWrapper overflow-hidden max-h-[195px]">
+          <ReactPlayer
+            url={video}
+            width="100%"
+            height="195px"
+            controls
+            className="object-cover"
+          />
+        </div>
+      ) : (
+        <div className="imagWrapper overflow-hidden max-h-[195px]">
+          <Image
+            src={picture_url || empty}
+            alt="Thread"
+            priority
+            width={300}
+            height={300}
+            className="w-full h-[195px] object-cover"
+          />
+        </div>
+      )}
     </div>
   );
 };
