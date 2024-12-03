@@ -68,6 +68,7 @@ const ManageInventory = () => {
   const [allBranches, setAllBranches] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [deleteInventoryModal, setDeleteInventoryModal] = useState<boolean>(false); 
+  const [deleteInventorySuccessModal, setDeleteInventorySuccessModal] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
@@ -172,8 +173,11 @@ const ManageInventory = () => {
     try {
       const success = await deleteInventory(inventoryId as string);
       if (success) {
-        setDeleteInventoryModal(true);
-        toast.success("Inventory deleted successfully");
+        setDeleteInventoryModal(false);
+        setDeleteInventorySuccessModal(true);
+        setTimeout(() => {
+          window.location.href = '/management/inventory';
+        }, 1500);
       }
     } catch (error) {
       console.error("Error deleting inventory:", error);
@@ -240,7 +244,12 @@ const ManageInventory = () => {
           ))}
         </div>
         <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
-          <Modal>
+          <Modal
+            state={{
+              isOpen: deleteInventoryModal,
+              setIsOpen: setDeleteInventoryModal,
+            }}
+          >
             <ModalTrigger asChild>
               <Button
                 size="sm_medium"
@@ -260,8 +269,8 @@ const ManageInventory = () => {
           </Modal>
           <Modal
             state={{
-              isOpen: deleteInventoryModal,
-              setIsOpen: setDeleteInventoryModal,
+              isOpen: deleteInventorySuccessModal,
+              setIsOpen: setDeleteInventorySuccessModal,
             }}
           >
             <ModalContent>

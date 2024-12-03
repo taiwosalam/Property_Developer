@@ -37,7 +37,7 @@ export interface InventoryItemProps {
     quantity: number;
     description?: string;
     condition: InventoryConditions;
-    image: string;
+    images: string[];
     unit?: string;
   };
 }

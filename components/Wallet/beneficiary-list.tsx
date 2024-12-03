@@ -34,7 +34,13 @@ const BeneficiaryList = () => {
             {Array(3)
               .fill(null)
               .map((_, idx) => (
-                <FundsBeneficiary key={idx} remove={() => {}} />
+                <FundsBeneficiary
+                  key={idx}
+                  remove={() => {}}
+                  picture={""}
+                  name={""}
+                  wallet_id={""}
+                />
               ))}
           </div>
         </div>

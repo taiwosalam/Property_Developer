@@ -49,6 +49,7 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
   inventoryFiles,
   setInventoryFiles,
 }) => {
+  const initialImages = data?.images || [];
   const isDarkMode = useDarkMode();
   const [count, setCount] = useState<number>(1);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -58,7 +59,7 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
 
   const maxNumberOfImages = 6;
   const {
-    images,
+    images:uploadedImages,
     imageFiles,
     fileInputRef,
     handleFileChange,
@@ -70,6 +71,8 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
     maxFileSizeMB: MAX_FILE_SIZE_MB,
   });
 
+  const images = initialImages.length > 0 ? initialImages : uploadedImages;
+  
 useEffect(() => {
     if (setInventoryFiles) {
       const updatedFiles = [...(inventoryFiles || [])];
@@ -206,7 +209,7 @@ useEffect(() => {
               onClick={() => setScreenModal(true)}
             >
             {images.length > 0 && <Image
-                src={images[0] || data?.image || ""}
+                src={images[0] || data?.images[0] || ""}
                 alt={`Inventory Image ${index + 1}`}
                 fill
                 className="object-cover"
