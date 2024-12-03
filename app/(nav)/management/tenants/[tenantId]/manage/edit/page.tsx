@@ -7,6 +7,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import { TenantEditContext } from "@/components/Management/Tenants/Edit/tenant-edit-context";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import NetworkError from "@/components/Error/NetworkError";
 import {
   TenantEditNoteSection,
   TenantEditAttachmentSection,
@@ -25,15 +26,19 @@ import {
   type IndividualTenantAPIResponse,
 } from "../data";
 import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { deleteTenant } from "./data";
+import { useRouter } from "next/navigation";
 
 const EditTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
-
+  const router = useRouter();
   const [tenantData, setTenantData] = useState<TenantData | null>(null);
 
-  const { data, error, loading } = useFetch<IndividualTenantAPIResponse>(
-    `tenant/${tenantId}`
-  );
+  const { data, error, loading, isNetworkError, refetch } =
+    useFetch<IndividualTenantAPIResponse>(`tenant/${tenantId}`);
+
+  useRefetchOnEvent("tenant-updated", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (data) {
@@ -45,6 +50,7 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
     return (
       <CustomLoader layout="edit-page" pageTitle="Edit Tenants & Occupant" />
     );
+  if (isNetworkError) return <NetworkError />;
   if (error) return <div>{error}</div>;
   if (!tenantData) return null;
 
@@ -56,7 +62,7 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
           <div className="custom-flex-col gap-5 flex-1 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">
             <TenantEditProfileInfoSection />
             <TenantEditNextOfKinInfoSection />
-            <TenantEditGuarantorInfoSection />
+            {/* <TenantEditGuarantorInfoSection /> */}
             <TenantEditOthersInfoSection />
             <TenantEditBankDetailsSection />
             <TenantEditAttachmentSection />
@@ -81,7 +87,11 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <DeleteAccountModal />
+              <DeleteAccountModal
+                accountType="tenant"
+                action={async () => await deleteTenant(tenantId)}
+                afterAction={() => router.push("/management/tenants")}
+              />
             </ModalContent>
           </Modal>
 

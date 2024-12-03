@@ -587,10 +587,6 @@ export const LandlordEditNoteInfoSection = () => {
   const [reqLoading, setReqLoading] = useState(false);
   const [note, setNote] = useState("");
 
-  useEffect(() => {
-    setNote(data?.notes?.write_up || "");
-  }, [data?.notes?.write_up]);
-
   const handleUpdateNote = async () => {
     if (data?.id) {
       setReqLoading(true);
@@ -604,6 +600,10 @@ export const LandlordEditNoteInfoSection = () => {
       setReqLoading(false);
     }
   };
+
+  useEffect(() => {
+    setNote(data?.notes?.write_up || "");
+  }, [data?.notes?.write_up]);
 
   return (
     <LandlordTenantInfoEditSection
@@ -693,7 +693,7 @@ export const LandlordEditAvatarInfoSection = () => {
       skipValidation
       returnType="form-data"
     >
-      <LandlordTenantInfoEditSection title="edit avatar">
+      <LandlordTenantInfoEditSection title="Edit Picture">
         <input type="hidden" name="avater" value={selectedAvatar} />
 
         <label htmlFor="picture" className="!w-fit cursor-pointer relative">
