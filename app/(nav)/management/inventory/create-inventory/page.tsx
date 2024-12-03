@@ -77,7 +77,7 @@ const handleAddInventory = async (event: React.FormEvent<HTMLFormElement>) => {
 
     const success = await createInventory(payload);
     if (success) {
-      // router.push("/management/inventory");
+      router.push("/management/inventory");
       toast.success("Inventory created successfully");
     }
   } catch (error) {
@@ -107,8 +107,8 @@ const handleAddInventory = async (event: React.FormEvent<HTMLFormElement>) => {
               style={input_styles}
             />
             <Input
-              id="video-link"
-              name="video-link"
+              id="video_link"
+              name="video_link"
               placeholder="Video Link"
               className="flex-1"
               style={input_styles}
