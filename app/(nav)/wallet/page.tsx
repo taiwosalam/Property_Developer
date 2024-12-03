@@ -15,6 +15,8 @@ import BeneficiaryList from "@/components/Wallet/beneficiary-list";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import {
+  determinePercentageDifference,
+  determineTrend,
   walletChartConfig,
   walletChartData,
   walletTableData,
@@ -30,9 +32,27 @@ import { BlueBuildingIcon } from "@/public/icons/dashboard-cards/icons";
 import { useWalletStore } from "@/store/wallet-store";
 
 const Wallet = () => {
-  const walletId = useWalletStore((state) => state.walletId);
+  const walletId = useWalletStore((state) => state.balance.wallet_id);
   const beneficiaries = useWalletStore((state) => state.beneficiaries);
+  const stats = useWalletStore((state) => state.stats);
+  const transactions = useWalletStore((state) => state.transactions);
+  
+  // FUNDS
+  const totalFunds = stats.current_day.total_funds + stats.before_current_day.total_funds;
+  const fundsPercent = determinePercentageDifference(stats.current_day.total_credit, stats.before_current_day.total_credit)
+  const fundsUpDown = determineTrend(stats.current_day.total_credit, stats.before_current_day.total_credit)
 
+  // DEBIT
+  const totalDebit = stats.current_day.total_debit + stats.before_current_day.total_debit;
+  const debitPercent = determinePercentageDifference(stats.current_day.total_debit, stats.before_current_day.total_debit)
+  const debitUpDown = determineTrend(stats.current_day.total_debit, stats.before_current_day.total_debit)
+
+  // CREDIT
+  const totalCredit = stats.current_day.total_credit + stats.before_current_day.total_credit;
+  const creditPercent = determinePercentageDifference(stats.current_day.total_credit, stats.before_current_day.total_credit)
+  const creditUpDown = determineTrend(stats.current_day.total_credit, stats.before_current_day.total_credit)
+
+  console.log("fundsPercent", fundsPercent);
   const transformedWalletTableData = walletTableData.map((t) => ({
     ...t,
     amount: (
@@ -86,29 +106,29 @@ const Wallet = () => {
           <div className="flex flex-col lg:flex-row gap-6">
             <WalletAnalytics
               title="funds"
-              amount={6505689}
+              amount={Number(totalFunds)}
               trend={{
                 from: "yesterday",
-                type: "up",
-                percent: 53,
+                type: fundsUpDown as "up" | "down" | "none",
+                percent: Number(fundsPercent),
               }}
             />
             <WalletAnalytics
               title="debit"
-              amount={6505689}
+              amount={Number(totalDebit)}
               trend={{
                 from: "last week",
-                type: "down",
-                percent: 4.3,
+                type: debitUpDown as "up" | "down" | "none",
+                percent: Number(debitPercent),
               }}
             />
             <WalletAnalytics
               title="credit"
-              amount={6505689}
+              amount={Number(totalCredit)}
               trend={{
                 from: "yesterday",
-                type: "up",
-                percent: 53,
+                type: creditUpDown as "up" | "down" | "none",
+                percent: Number(creditPercent),
               }}
             />
           </div>
@@ -141,9 +161,15 @@ const Wallet = () => {
               </Modal>
             </div>
             <div className="custom-flex-col gap-2 h-full overflow-y-scroll custom-round-scrollbar">
-              {beneficiaries.map((beneficiary, idx) => (
-                <WalletBenefiary key={idx} {...beneficiary} />
-              ))}
+              {Array.isArray(beneficiaries) ? (
+                beneficiaries.map((beneficiary, idx) => (
+                  <WalletBenefiary key={idx} {...beneficiary} />
+                ))
+              ) : (
+                <p className="text-text-label text-center text-sm dark:text-darkText-1">
+                  No beneficiary yet.
+                </p>
+              )}
             </div>
           </div>
         </div>
