@@ -2,6 +2,7 @@ import { ChartConfig } from "@/components/ui/chart";
 import type { Field } from "@/components/Table/types";
 import api, { handleAxiosError } from "@/services/api";
 
+
 export const walletChartConfig = {
   totalfunds: {
     label: "Total funds",
@@ -70,15 +71,62 @@ const generateWalletTableData = (numRows: number) =>
     time: "03:30 PM",
   }));
 
+export const determineTrend = (
+  value1: string | number,
+  value2: string | number
+) => {
+  const num1 = Number(value1);
+  const num2 = Number(value2);
+
+  if (num1 > num2) {
+    return "up";
+  } else if (num1 < num2) {
+    return "down";
+  } else {
+    return "equal";
+  }
+};
+
+export const determinePercentageDifference = (
+  value1: string | number,
+  value2: string | number
+) => {
+  const num1 = Number(value1);
+  const num2 = Number(value2);
+
+  if (num2 === 0) {
+    return num1 > 0 ? "Infinity" : "0"; 
+  }
+
+  const difference = ((num1 - num2) / Math.abs(num2)) * 100;
+
+  return difference > 0
+    ? `${difference.toFixed(2)}`
+    : `${Math.abs(difference).toFixed(2)}`;
+};
 export const walletTableData = generateWalletTableData(10);
 
 export interface WalletDataResponse {
-  data: {
+  balance: {
     wallet_id: string;
     my_balance: string;
     escrow_balance: string;
-    // earned_bonus: "0.00";
-    recent_transactions: any[]; //confirm with backend
-    beneficiaries: any[]; //confirm with backend
+    earned_bonus: string;
+    pin_status: boolean;
+  };
+  recent_transactions: any[]; //confirm with backend
+  beneficiaries: any[]; //confirm with backend
+  transactions: any[];
+  stats: {
+    current_day: {
+      total_funds: string;
+      total_credit: string;
+      total_debit: string;
+    };
+    before_current_day: {
+      total_funds: string;
+      total_credit: string;
+      total_debit: string;
+    };
   };
 }

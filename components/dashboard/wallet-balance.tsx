@@ -77,12 +77,17 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
 
   useEffect(() => {
     if (data) {
-      const { my_balance, escrow_balance, beneficiaries, wallet_id } =
-        data.data;
-      setWalletStore("balance", my_balance);
-      setWalletStore("walletId", wallet_id);
-      setWalletStore("caution_deposit", escrow_balance);
+      console.log("wallet data", data);
+      const {
+        beneficiaries,
+        balance,
+        transactions,
+        stats,
+      } = data;
+      setWalletStore("balance", balance);
       setWalletStore("beneficiaries", beneficiaries);
+      setWalletStore("transactions", transactions);
+      setWalletStore("stats", stats);
     }
   }, [data, setWalletStore]);
 
@@ -128,12 +133,12 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
             </button>
           </div>
           <p className="font-medium text-xl text-white">
-            {hideBalance ? "*******" : "₦ " + balance}
+            {hideBalance ? "*******" : "₦ " + balance.my_balance}
           </p>
           <div className="text-white text-xs font-medium capitalize flex items-center space-x-1">
             <p className="text-text-white-secondary ">caution deposit</p>
             <span className="text-white ml-2">
-              {hideBalance ? "*******" : "₦ " + caution_deposit}
+              {hideBalance ? "*******" : "₦ " + balance.escrow_balance}
             </span>
             <CautionIcon />
           </div>
