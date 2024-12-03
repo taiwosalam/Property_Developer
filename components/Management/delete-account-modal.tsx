@@ -2,14 +2,28 @@
 
 // Imports
 import useStep from "@/hooks/useStep";
+import { useState } from "react";
 import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 
 const DeleteAccountModal: React.FC<{
   accountType?: string;
-}> = ({ accountType }) => {
+  action?: () => Promise<boolean>;
+  afterAction?: () => void;
+}> = ({ accountType, action, afterAction }) => {
   const { activeStep, changeStep } = useStep(2);
+  const [reqLoading, setReqLoading] = useState(false);
+
+  const handleAction = async () => {
+    setReqLoading(true);
+    const success = action ? await action?.() : true;
+    if (success) {
+      changeStep("next");
+      setTimeout(() => afterAction?.(), 1000);
+    }
+    setReqLoading(false);
+  };
 
   return activeStep === 1 ? (
     <ModalPreset type="warning">
@@ -18,7 +32,9 @@ const DeleteAccountModal: React.FC<{
         profile?
       </p>
       <div className="flex flex-col items-center gap-4">
-        <Button onClick={() => changeStep("next")}>proceed</Button>
+        <Button onClick={handleAction} disabled={reqLoading}>
+          {reqLoading ? "deleting..." : "proceed"}
+        </Button>
         <ModalTrigger
           close
           className="text-brand-primary text-sm font-medium px-3"
@@ -33,11 +49,10 @@ const DeleteAccountModal: React.FC<{
         <span className="capitalize">{accountType}</span> Profile has been
         successfully deleted.
       </p>
-      <div className="flex justify-center">
-        <ModalTrigger close asChild>
-          <Button>ok</Button>
-        </ModalTrigger>
-      </div>
+
+      <ModalTrigger close asChild>
+        <Button className="!w-fit mx-auto">ok</Button>
+      </ModalTrigger>
     </ModalPreset>
   );
 };

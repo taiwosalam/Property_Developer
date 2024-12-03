@@ -1,14 +1,8 @@
 "use client";
 
-import { useState } from "react";
-
-// Types
-import type { ValidationErrors } from "@/utils/types";
-
 // Imports
 
 import Button from "@/components/Form/Button/button";
-import { updateTenant } from "./data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import { AuthForm, formDataToString } from "@/components/Auth/auth-components";
@@ -54,7 +48,7 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
 
   return (
     // <TenantEditContext.Provider value={{ data: tenant }}> NB: - I comment all these cuz i have to push some things to main & this throw ts err
-    <TenantEditContext.Provider value={{ data: {} as TenantData }}> 
+    <TenantEditContext.Provider value={{ data: {} as TenantData }}>
       <AuthForm
         returnType="form-data"
         onFormSubmit={handleUpdateTenant}

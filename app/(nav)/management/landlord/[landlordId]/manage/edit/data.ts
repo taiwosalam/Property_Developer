@@ -44,13 +44,52 @@ export const updateLandlordBankDetails = async (
   }
 };
 
-export const updateLandlordDocuments = async (id: string, payload: FormData) => {
+export const updateLandlordDocuments = async (
+  id: string,
+  payload: FormData
+) => {
   try {
-    const { data } = await api.post(`landlords/${id}/attach-documents`, payload);
+    const { data } = await api.post(
+      `landlords/${id}/attach-documents`,
+      payload
+    );
     toast.success(data?.message || "Update successful");
     return true;
   } catch (error) {
     handleAxiosError(error, "Failed to update landlord documents");
+    return false;
+  }
+};
+
+export const updateLandlordNote = async (id: string, payload: FormData) => {
+  payload.append("_method", "PUT");
+  try {
+    const { data } = await api.post(`landlords/${id}/note`, payload);
+    toast.success(data?.message || "Update successful");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to update landlord note");
+    return false;
+  }
+};
+
+export const updateLandlordPicture = async (id: string, payload: FormData) => {
+  try {
+    const { data } = await api.post(`landlord/${id}/picture-update`, payload);
+    toast.success(data?.message || "Update successful");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to update landlord picture");
+    return false;
+  }
+};
+
+export const deleteLandlord = async (id: string) => {
+  try {
+    await api.delete(`landlord/${id}`);
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to delete landlord");
     return false;
   }
 };

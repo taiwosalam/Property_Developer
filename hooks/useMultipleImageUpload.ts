@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { toast } from "sonner";
 
 interface UseMultipleImageUploadProps {
   maxImages: number;
@@ -34,7 +35,7 @@ export const useMultipleImageUpload = ({
 
     for (const file of files) {
       if (!file.type.startsWith("image/")) {
-        alert("Upload only image files.");
+        toast.warning("Upload only image files.");
         return;
       }
       if (file.size > maxFileSizeMB * 1024 * 1024) {
@@ -56,12 +57,14 @@ export const useMultipleImageUpload = ({
         validFiles.push(file);
       } catch (error) {
         console.error("Error processing image:", error);
-        alert("There was an error processing your image. Please try again.");
+        toast.warning(
+          "There was an error processing your image. Please try again."
+        );
       }
     }
 
     if (oversizeImages.length > 0) {
-      alert(
+      toast.warning(
         `Some files were not uploaded due to exceeding the maximum size: ${maxFileSizeMB} MB`
       );
     }

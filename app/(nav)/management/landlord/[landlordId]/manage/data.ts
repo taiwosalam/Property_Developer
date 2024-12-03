@@ -66,9 +66,9 @@ export interface IndividualLandlordAPIResponse {
     gender: string;
     agent: string;
     // owner_type: string;
-    notes?: {
-      last_updated: string;
-      write_up: string;
+    note: {
+      // last_updated: string; backend shit
+      note: string;
     };
     bank_details: {
       bank_name: string;
@@ -99,7 +99,10 @@ export const transformIndividualLandlordAPIResponse = ({
     email: data.email,
     phone_number: data.phone,
     gender: data.gender,
-    notes: data.notes,
+    notes: {
+      last_updated: "backend error",
+      write_up: data.note.note,
+    },
     user_id: data.user_id,
     badge_color: data.tier_id ? tierColorMap[data.tier_id] : undefined,
     user_tag: data.agent.toLowerCase() === "mobile" ? "mobile" : "web",
@@ -108,8 +111,8 @@ export const transformIndividualLandlordAPIResponse = ({
     next_of_kin: data.next_of_kin,
     bank_details: data.bank_details,
     others: {
-      occupation: "",
-      type: "",
+      employment: "",
+      employment_type: "",
       family_type: "",
     },
     documents: data.documents,

@@ -26,12 +26,14 @@ import {
 import { useRouter } from "next/navigation"; //only web can edit profile
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-
+import { deleteLandlord } from "./data";
 const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
+  const router = useRouter();
   const [landlordData, setLandlordData] = useState<LandlordPageData | null>(
     null
   );
+
   const { data, error, loading, refetch } =
     useFetch<IndividualLandlordAPIResponse>(`landlord/${landlordId}`);
 
@@ -82,7 +84,11 @@ const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <DeleteAccountModal />
+              <DeleteAccountModal
+                accountType="landlord"
+                action={async () => await deleteLandlord(landlordId)}
+                afterAction={() => router.push("/management/landlord")}
+              />
             </ModalContent>
           </Modal>
 

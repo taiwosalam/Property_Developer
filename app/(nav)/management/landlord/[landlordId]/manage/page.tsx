@@ -16,6 +16,7 @@ import {
   MobileNotesModal,
 } from "@/components/Management/landlord-tenant-info-components";
 import PropertyCard from "@/components/Management/Properties/property-card";
+import { LandlordEditContext } from "@/components/Management/Landlord/landlord-edit-context";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { ChevronLeft } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
@@ -171,57 +172,47 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         ) : (
           <LandlordTenantInfo
             heading="Contact Address"
-            info={
-              landlordData?.contact_address
-                ? {
-                    address: landlordData.contact_address.address,
-                    city: landlordData.contact_address.city,
-                    state: landlordData.contact_address.state,
-                    "L.G": landlordData.contact_address.local_govt,
-                  }
-                : {}
-            }
+            info={{
+              address: landlordData.contact_address.address,
+              city: landlordData.contact_address.city,
+              state: landlordData.contact_address.state,
+              "L.G": landlordData.contact_address.local_govt,
+            }}
           />
         )}
 
         <LandlordTenantInfo
           containerClassName="flex flex-col justify-center"
           heading="bank details"
-          info={
-            landlordData?.bank_details
-              ? {
-                  bank: landlordData.bank_details.bank_name,
-                  "account name": landlordData.bank_details.account_name,
-                  "account number": landlordData.bank_details.account_number,
-                  "wallet ID": landlordData.bank_details.wallet_id,
-                }
-              : {}
-          }
+          info={{
+            bank: landlordData.bank_details.bank_name,
+            "account name": landlordData.bank_details.account_name,
+            "account number": landlordData.bank_details.account_number,
+            ...(landlordData.user_tag === "mobile" && {
+              "wallet ID": landlordData.bank_details.wallet_id,
+            }),
+          }}
         />
 
         {landlordData?.user_tag === "mobile" ? (
           <LandlordTenantInfo
             heading="Contact Address"
             containerClassName="flex flex-col justify-center"
-            info={
-              landlordData?.contact_address
-                ? {
-                    address: landlordData.contact_address.address,
-                    city: landlordData.contact_address.city,
-                    state: landlordData.contact_address.state,
-                    "L.G": landlordData.contact_address.local_govt,
-                  }
-                : {}
-            }
+            info={{
+              address: landlordData.contact_address.address,
+              city: landlordData.contact_address.city,
+              state: landlordData.contact_address.state,
+              "L.G": landlordData.contact_address.local_govt,
+            }}
           />
         ) : (
           <LandlordTenantInfo
             containerClassName="flex flex-col justify-center"
             heading="Others"
             info={{
-              occupation: landlordData.others.occupation,
-              employment_title: landlordData.others.type,
-              "family type": landlordData.others.family_type,
+              occupation: landlordData.others.employment,
+              employment_title: landlordData.others.employment_type,
+              family_type: landlordData.others.family_type,
               xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
             }}
           />
@@ -244,9 +235,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               containerClassName="flex flex-col justify-center"
               heading="Others"
               info={{
-                occupation: landlordData.others.occupation,
-                employment_title: landlordData.others.type,
-                "family type": landlordData.others.family_type,
+                occupation: landlordData.others.employment,
+                employment_title: landlordData.others.employment_type,
+                family_type: landlordData.others.family_type,
                 xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
               }}
             />
@@ -304,7 +295,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         <div className="flex gap-8"></div>
       </LandlordTenantInfoSection>
       {landlordData?.user_tag === "mobile" && (
-        <LandlordEditAttachmentInfoSection useContext={false} />
+        <LandlordEditContext.Provider value={{ data: landlordData }}>
+          <LandlordEditAttachmentInfoSection />
+        </LandlordEditContext.Provider>
       )}
       <LandlordTenantInfoSection title="shared documents">
         {Object.entries(groupedDocuments || {}).map(

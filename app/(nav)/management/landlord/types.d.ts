@@ -32,8 +32,8 @@ interface BankDetails {
 }
 
 interface Others {
-  occupation: string | null;
-  type: string | null;
+  employment: string | null;
+  employment_type: string | null;
   family_type: string | null;
 }
 
@@ -72,7 +72,7 @@ export type LandlordPageData = {
     write_up: string;
   };
   others: Others;
-  documents?: AttachedDocument[];
+  documents: AttachedDocument[];
   properties_managed?: PropertyManaged[];
 };
 
