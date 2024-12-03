@@ -116,18 +116,6 @@ export const CommentTextArea = ({
   name: string, 
   disabled?: boolean
 })=> {
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      const textarea = e.target as HTMLTextAreaElement;
-      if (e.key === "Enter") {
-        e.preventDefault();
-        const currentValue = textarea.value;
-        const newValue = currentValue + "\n";
-        textarea.value = newValue;
-      }
-    };
-
-    const handleChange = debounce(handleKeyDown, 500);
-
   return (
     <textarea
       name={name}
@@ -138,7 +126,6 @@ export const CommentTextArea = ({
         className
       )}
       disabled={disabled}
-      onKeyDown={handleChange}
       style={{
         resize: "none",
         scrollBehavior: "smooth",

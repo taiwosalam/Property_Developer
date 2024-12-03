@@ -170,22 +170,29 @@ const Comment: React.FC<CommentProps> = ({
 
   return (
     <div data-comment-id={id}>
-      <div className="flex items-center gap-1">
-        <div className="flex-shrink-0 relative w-9 h-9 rounded-full bg-neutral-2 overflow-hidden">
-          <Image
-            src={profile_picture || empty}
-            alt="user-real-info-from-props"
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div className="space-y-1">
+      <div className="flex flex-col gap-1">
+        <div className="flex gap-2 items-center">
+          <div className="flex-shrink-0 relative w-9 h-9 rounded-full bg-neutral-2 overflow-hidden">
+            <Image
+              src={profile_picture || empty}
+              alt="user-real-info-from-props"
+              fill
+              className="object-cover"
+            />
+          </div>
           <p className="text-text-primary dark:text-white text-sm font-medium flex items-center">
             <span className="text-ellipsis line-clamp-1">{name}</span>
             <BadgeIcon color="yellow" />
           </p>
+        </div>
+        <div className="space-y-1 pl-[3em]">
           <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium">
-            {text}
+            {text.split("\r\n").map((line, index) => (
+              <span key={index}>
+                {line}
+                {index < text.split("\r\n").length - 1 && <br />}
+              </span>
+            ))}
           </p>
         </div>
       </div>

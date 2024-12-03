@@ -7,7 +7,7 @@ export interface SelectProps {
   id: string;
   name?: string;
   defaultValue?: string;
-  options: string[] | SelectOptionObject[];
+  options: (string | SelectOptionObject)[];
   value?: string;
   label?: string;
   className?: string;

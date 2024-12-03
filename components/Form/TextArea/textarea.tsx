@@ -15,8 +15,6 @@ import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import ReactQuill, { type ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { UndoIcon, RedoIcon } from "@/public/icons/icons";
-
-import { useCallback } from "react";
 import { toast } from "sonner";
 
 // Dynamically import ReactQuill with SSR option set to false

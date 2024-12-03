@@ -14,7 +14,6 @@ import { useThemeStoreSelectors } from "@/store/themeStore";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import Header from "@/components/Nav/navbar";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
-import { useAuthStore } from "@/store/authStore";
 import useSettingsStore from "@/store/settings";
 import TopNav from "@/components/Nav/topnav";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";

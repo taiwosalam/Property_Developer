@@ -34,18 +34,13 @@ const Select: React.FC<SelectProps> = ({
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const inputRef = useRef<HTMLInputElement>(null);
-  const initialState: {
-    showAbove: boolean;
-    isOpen: boolean;
-    searchTerm: string;
-    filteredOptions: string[] | SelectOptionObject[];
-    selectedValue?: string | number;
-  } = {
+  const initialState = {
     showAbove: false,
     isOpen: false,
     searchTerm: "",
-    filteredOptions: options,
-    selectedValue: defaultValue,
+    filteredOptions: [] as (string | SelectOptionObject)[],
+    selectedValue: propValue || defaultValue,
+    selectedLabel: "",
   };
   const [state, setState] = useState(initialState);
   const { isOpen, searchTerm, filteredOptions, selectedValue, showAbove } =
@@ -64,21 +59,31 @@ const Select: React.FC<SelectProps> = ({
     }
   };
 
-  const handleSelection = (option: string | number) => {
+  const handleSelection = (option: string | SelectOptionObject) => {
+    const value = typeof option === "string" ? option : option.value;
+    const label = typeof option === "string" ? option : option.label;
     setState((x) => ({
       ...x,
-      selectedValue: option,
+      selectedValue: `${value}`,
+      selectedLabel: label,
       searchTerm: "",
       isOpen: false,
     }));
-    onChange && onChange(`${option}`); // Call the onChange prop if provided
+    onChange && onChange(`${value}`); // Call the onChange prop if provided
   };
 
-  // Type guard to check if the options array is an array of objects
-  const isOptionObjectArray = (
-    options: string[] | SelectOptionObject[]
-  ): options is SelectOptionObject[] => {
-    return typeof options[0] === "object";
+  const filterOptions = (
+    options: (string | SelectOptionObject)[],
+    searchTerm: string
+  ) => {
+    return options.filter((option) => {
+      if (typeof option === "string") {
+        return option.toLowerCase().includes(searchTerm.toLowerCase());
+      } else {
+        // If the option is an object, match the label
+        return option.label.toLowerCase().includes(searchTerm.toLowerCase());
+      }
+    });
   };
 
   useOutsideClick(dropdownRef, () => {
@@ -94,21 +99,10 @@ const Select: React.FC<SelectProps> = ({
 
   // Filter options based on the search term
   useEffect(() => {
-    setState((x) => {
-      if (!options?.length) {
-        return { ...x, filteredOptions: [] };
-      }
-      const filteredOptions =
-        typeof options[0] === "string"
-          ? (options as string[]).filter((o) =>
-              o.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-          : (options as SelectOptionObject[]).filter((o) =>
-              o.label.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-
-      return { ...x, filteredOptions };
-    });
+    setState((x) => ({
+      ...x,
+      filteredOptions: filterOptions(options, searchTerm),
+    }));
   }, [options, searchTerm]);
 
   // Initialize
@@ -185,9 +179,7 @@ const Select: React.FC<SelectProps> = ({
                 inputTextClassName
               )}
             >
-              {isOptionObjectArray(options)
-                ? options.find((o) => o.value === selectedValue)?.label
-                : selectedValue}
+              {selectedValue}
             </span>
           ) : isSearchable ? (
             <input
@@ -263,19 +255,16 @@ const Select: React.FC<SelectProps> = ({
             <div className="max-h-60 overflow-y-auto">
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => {
-                  const optionLabel =
+                  const label =
                     typeof option === "string" ? option : option.label;
-                  const optionValue =
-                    typeof option === "string" ? option : option.value;
-
                   return (
                     <div
                       role="button"
                       key={uuidv4()}
                       className="p-2 hover:bg-gray-100 dark:hover:bg-darkText-2 capitalize"
-                      onClick={() => handleSelection(optionValue)}
+                      onClick={() => handleSelection(option)}
                     >
-                      {optionLabel}
+                      {label}
                     </div>
                   );
                 })

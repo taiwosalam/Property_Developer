@@ -152,7 +152,10 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
                   <ModalContent>{option.action}</ModalContent>
                 </Modal>
               ) : (
-                <div className="space-y-2 opacity-50 cursor-not-allowed">
+                <div
+                  className="space-y-2 opacity-50 cursor-not-allowed"
+                  key={index}
+                >
                   <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
                     <span className="text-brand-9 ">{option.icon}</span>
                   </div>

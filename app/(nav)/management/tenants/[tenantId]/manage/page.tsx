@@ -23,7 +23,6 @@ import { getObjectProperties } from "@/utils/get-object-properties";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import UpdateTenantProfile from "@/components/Management/Tenants/update-tenant-profile";
 import { useRouter } from "next/navigation";
-// import { MockFunction } from "@/components/Management/Tenants/Edit/mock";
 import CustomTable from "@/components/Table/table";
 import {
   statementTableFields,
