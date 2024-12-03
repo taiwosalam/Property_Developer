@@ -183,7 +183,7 @@ export const LandlordEditProfileInfoSection = () => {
             placeholder="Select options"
             options={landlordTypes}
             inputContainerClassName="bg-neutral-2"
-            defaultValue={landlord?.type}
+            defaultValue={landlord?.owner_type}
           />
           <Select
             id="gender"

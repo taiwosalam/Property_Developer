@@ -213,6 +213,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               occupation: landlordData.others.employment,
               employment_title: landlordData.others.employment_type,
               family_type: landlordData.others.family_type,
+              landlord_type: landlordData.owner_type,
               xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
             }}
           />

@@ -47,6 +47,7 @@ interface AttachedDocument extends AttachedDocumentCard {
 }
 
 export type LandlordPageData = {
+  id: string;
   picture: string;
   // first_name: string;
   // last_name: string;
@@ -56,9 +57,8 @@ export type LandlordPageData = {
   phone_number: string;
   user_tag: "web" | "mobile";
   badge_color?: BadgeIconColors;
-  id: string;
-  type: string;
   user_id: string;
+  owner_type: string;
   marital_status?: string;
   birthday?: string;
   religion?: string;
