@@ -119,6 +119,16 @@ export interface ProfileResponse {
       company_id: string;
       company_name: string;
       company_logo: string;
+      state: string;
+      local_government: string;
+      head_office_address: string;
+      city: string;
+      phone_numbers: string[];
+      date_of_registration: string;
+      membership_number: string;
+      is_verified: boolean | number;
+      industry: string;
+      cac_registration_number: string;
     };
     profile: {
       picture: string | null;

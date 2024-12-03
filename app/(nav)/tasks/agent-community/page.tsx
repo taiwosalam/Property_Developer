@@ -209,9 +209,11 @@ import EmptyList from "@/components/EmptyList/Empty-List";
         ) : (
           <AutoResizingGrid minWidth={300}>
             {silentLoading ? (
-              <div className="min-h-[60vh] flex justify-center items-center w-full">
-                <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-              </div>
+              <>
+                <ThreadSkeleton />  
+                <ThreadSkeleton />  
+                <ThreadSkeleton />  
+              </>
             ) : data.length === 0 ? (
               <section>
                 <EmptyList
@@ -247,6 +249,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
                   dislikes={thread.post.likes_down}
                   slug={thread.post.slug}
                   shareLink={thread.post.share_link}
+                  video={thread.post.video_link}
                 />
               ))
             )}

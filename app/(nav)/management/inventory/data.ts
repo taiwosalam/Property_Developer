@@ -1,4 +1,4 @@
-import api from "@/services/api";
+import api, { handleAxiosError } from "@/services/api";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { convertFileToBase64 } from "../data";
@@ -17,14 +17,15 @@ export const createInventory = async (formData: FormData) => {
       return response.status === 200 || response.status === 201;
     } catch (error) {
       console.error('Error in createInventory:', error);
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message || "Failed to create inventory.";
-        console.error('Axios error details:', error.response?.data);
-        toast.error(errorMessage);
-      } else {
-        const errorMessage = error instanceof Error ? error.message : "Failed to create inventory.";
-        toast.error(errorMessage);
-      }
+      // if (axios.isAxiosError(error)) {
+      //   const errorMessage = error.response?.data?.message || "Failed to create inventory.";
+      //   console.error('Axios error details:', error.response?.data);
+      //   toast.error(errorMessage);
+      // } else {
+      //   const errorMessage = error instanceof Error ? error.message : "Failed to create inventory.";
+      //   toast.error(errorMessage);
+      // }
+      handleAxiosError(error)
       return false;
     }
 }

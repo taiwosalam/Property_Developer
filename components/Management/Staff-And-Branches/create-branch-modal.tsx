@@ -111,7 +111,11 @@ const CreateBranchModal = ({
   };
 
   const handleFormSubmit = async (data: Record<string, any>) => {
-    console.log("data here - :", data)
+    if(emailStatus === "pending") {
+      toast.warning("Please verify your email first.");
+      return;
+    }
+    
     if (!checkFormDataForImageOrAvatar(data)) {
       toast.warning("Please upload a picture or choose an avatar.");
       return;
@@ -156,8 +160,8 @@ const CreateBranchModal = ({
                 <label>Branch Email</label>
                 <div className="flex items-center gap-2 max-h-[50px] bg-neutral-2 dark:bg-darkText-primary border border-neutral-3 rounded-[8px] justify-between">
                   <input
-                    id="branch_email"
-                    name="branch_email"
+                    id="email"
+                    name="email"
                     className="h-[50px] outline-none bg-transparent w-2/3 pl-1"
                     placeholder="Write Here"
                     value={branchEmail}

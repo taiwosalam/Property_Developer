@@ -12,6 +12,7 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 import { toast } from "sonner";
 import { createInventory, getBranches } from "../data";
 import { useRouter } from "next/navigation";
+import { handleAxiosError } from "@/services/api";
 
 const CreateInventory = () => {
   const isDarkMode = useDarkMode();
@@ -40,7 +41,7 @@ const CreateInventory = () => {
 
 const handleAddInventory = async (event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
-  // setIsLoading(true);
+  setIsLoading(true);
   console.log("imagefiles= ", inventoryFiles);
   const formData = new FormData(event.currentTarget);
   const inventoryData = [];
@@ -65,8 +66,8 @@ const handleAddInventory = async (event: React.FormEvent<HTMLFormElement>) => {
     // Append each item separately with proper indexing
     inventoryData.forEach((item, index) => {
       if (Array.isArray(item.image)) { // Check if item.image is an array
-        item.image.forEach((img: File) => { // Loop through each image
-          payload.append(`items[${index}][images][]`, img); // Append each image to the payload
+        item.image.forEach((img: File, imageIndex: number) => { // Loop through each image with index
+          payload.append(`items[${index}][images][${imageIndex}]`, img); // Append each image to the payload
         });
       }
       payload.append(`items[${index}][description]`, item.description as string);
@@ -76,12 +77,13 @@ const handleAddInventory = async (event: React.FormEvent<HTMLFormElement>) => {
 
     const success = await createInventory(payload);
     if (success) {
-      router.push("/management/inventory");
+      // router.push("/management/inventory");
       toast.success("Inventory created successfully");
     }
   } catch (error) {
     console.error("Error creating inventory:", error);
-    toast.error("Failed to create inventory");
+    // toast.error("Failed to create inventory");
+    handleAxiosError(error)
   } finally {
     setIsLoading(false);
   }

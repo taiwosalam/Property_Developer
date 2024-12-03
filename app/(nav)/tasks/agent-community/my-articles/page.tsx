@@ -15,6 +15,7 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import NetworkError from "@/components/Error/NetworkError";
+import EmptyList from "@/components/EmptyList/Empty-List";
 
 const lists = [
   {
@@ -185,45 +186,57 @@ const MyArticlePage = () => {
         onSort={handleSort}
       />
 
-      <AutoResizingGrid minWidth={300}>
-        {loading ? (
-          <div className="flex">
-            {Array(data?.length || 3)
-              .fill(null)
-              .map((_, index) => (
-                <ThreadSkeleton key={index} />
-              ))}
-          </div>
+      <section className="capitalize">
+        {data.length === 0 && !silentLoading ?(
+          searchQuery ? (
+            "No Search Found"
+          ) : (
+            <EmptyList
+              buttonText="+ create article"
+              title="You have not created any articles yet"
+              body={
+                <p>
+                  Create articles to share your thoughts, ideas, and insights with other agents in your network.
+                </p>
+              }
+            />
+          )
+        ) : (
+        <AutoResizingGrid minWidth={300}>
+          {silentLoading ? (
+          <>
+            <ThreadSkeleton />  
+            <ThreadSkeleton />  
+            <ThreadSkeleton />  
+          </>
         ) : data && data.length > 0 ? (
           data.map((thread, index) => (
             <ThreadCard
-              key={index}
-              slug={thread.post.slug}
-              id={thread.post.id}
-              name={thread.user.name}
-              picture_url={
-                thread.post.media && thread.post.media.length > 0
-                  ? thread.post.media[0].path
-                  : undefined
-              }
-              role={thread.user.role}
-              time={thread.post.created_at}
-              title={thread.post.title}
-              desc={thread.post.content}
-              comments={thread.post.comments_count}
-              user_pics={thread.user.picture}
-              likes={thread.post.likes_up}
-              dislikes={thread.post.likes_down}
-              shareLink={thread.post.share_link}
-              myArticle={true}
-            />
-          ))
-        ) : (
-          <div className="col-span-full text-center py-8 text-gray-500">
-            No Article found
-          </div>
+                key={index}
+                slug={thread.post.slug}
+                id={thread.post.id}
+                name={thread.user.name}
+                picture_url={
+                  thread.post.media && thread.post.media.length > 0
+                    ? thread.post.media[0].path
+                    : undefined
+                }
+                role={thread.user.role}
+                time={thread.post.created_at}
+                title={thread.post.title}
+                desc={thread.post.content}
+                comments={thread.post.comments_count}
+                user_pics={thread.user.picture}
+                likes={thread.post.likes_up}
+                dislikes={thread.post.likes_down}
+                shareLink={thread.post.share_link}
+                myArticle={true}
+                video={thread.post.video_link}
+              />
+              ))
+            ) : null}
+          </AutoResizingGrid>
         )}
-      </AutoResizingGrid>
       {meta?.pagination.total > 1 && (
         <div className="pagination">
           <Pagination
@@ -232,15 +245,16 @@ const MyArticlePage = () => {
             onPageChange={handlePageChange}
           />
         </div>
-      )}
-      <div className="top-80 right-4 fixed rounded-full">
-        <button
-          onClick={handleCreateMyArticleClick}
+        )}
+        <div className="top-80 right-4 fixed rounded-full">
+          <button
+            onClick={handleCreateMyArticleClick}
           className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
         >
           <PlusIcon />
         </button>
       </div>
+      </section>
     </div>
   );
 };

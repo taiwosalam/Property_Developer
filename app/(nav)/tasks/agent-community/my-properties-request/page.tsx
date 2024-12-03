@@ -39,13 +39,15 @@ const lists = [
 
 interface PropertyRequestApiData {
   data: PropertyRequestDataType[];
-    current_month_requests: number;
+  current_month_requests: number;
+  total_requests: number;
+  meta: {
+    current_page: number;
+    total: number;
+    newly_created_requests: number;
     total_requests: number;
-    meta: {
-      current_page: number;
-      total: number;
-    }
-  }
+  };
+}
 
 const transformToPropertyRequestCardProps = (
   data: PropertyRequestDataType
@@ -74,6 +76,8 @@ const MyPropertiesRequestPage = () => {
     meta: {
       current_page: 0,
       total: 0,
+      newly_created_requests: 0,
+      total_requests: 0,
     },
   };
 
@@ -81,11 +85,11 @@ const MyPropertiesRequestPage = () => {
   const [state, setState] = useState<PropertyRequestApiData>(initialState);
   const {
       data,
-      current_month_requests,
-      total_requests,
       meta: {
         current_page,
-        total
+        total,
+        newly_created_requests,
+        total_requests
       }
   } = state
 
@@ -100,6 +104,8 @@ const MyPropertiesRequestPage = () => {
       meta: {
         current_page: page,
         total: total,
+        newly_created_requests: newly_created_requests,
+        total_requests: total_requests,
       },
     }));
   };
@@ -129,20 +135,19 @@ const MyPropertiesRequestPage = () => {
 
   useEffect(() => {
     console.log("apiData", apiData)
-    console.log('apiData meta -', apiData?.meta);
     if (apiData) {
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         data: apiData.data,
-        meta: {
-          ...prevState.meta,
           meta: {
             current_page: apiData.meta.current_page,
             total: apiData.meta.total,
-          }
-        }
-      }))
+            newly_created_requests: apiData.meta.newly_created_requests,
+            total_requests: apiData.meta.total_requests,
+          },
+      }));
     }
+    console.log('apiData meta -', apiData?.meta);
   }, [apiData])
 
   const handleFilterApply = (filters: any) => {
@@ -183,14 +188,14 @@ const MyPropertiesRequestPage = () => {
       <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">
         <ManagementStatistcsCard
           title="Total Request"
-          newData={current_month_requests}
+          newData={newly_created_requests}
           colorScheme={1}
           total={total_requests}
         />
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">
-              + Community Board
+              + Community  {total_requests}
             </Button>
           </ModalTrigger>
           <ModalContent>

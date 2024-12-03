@@ -7,6 +7,8 @@ import { useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { debounce } from "@/utils/debounce";
 
 interface ThreadResponse {
   post: any;
@@ -54,33 +56,95 @@ const NewComment = ({ commentCount, slug }: Props) => {
   
   return (
     <div className="mt-6">
-    <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium mb-4">
-      {commentCount === 0 ? "Be the first to comment" : "Add a comment"}
-    </p>
-    <form onSubmit={handleFormSubmit} className="flex items-center justify-between gap-3">
-      <Input
-        id="message"
-        name="message"
-        placeholder="Type your message here"
-        disabled={isSubmitting}
-        className="w-full"
-        inputClassName="border-none bg-neutral-3"
-      />
-      <button
-        type="submit"
-        className="bg-brand-9 p-2 rounded grid place-items-center text-white"
-        aria-label="send message"
-        disabled={isSubmitting}
+      <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium mb-4">
+        {commentCount === 0 ? "Be the first to comment" : "Add a comment"}
+      </p>
+      <form
+        onSubmit={handleFormSubmit}
+        className="flex items-center justify-between gap-3"
       >
-         {isSubmitting ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-          <SendMessageIcon />
-        )}
-      </button>
-    </form>
-  </div>
-);
+        {/* <Input
+          id="message"
+          name="message"
+          placeholder="Type your message here"
+          disabled={isSubmitting}
+          className="w-full"
+          inputClassName="border-none bg-neutral-3"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") e.preventDefault();
+          }}
+        /> */}
+        <CommentTextArea 
+          placeholder="Type your message here"
+          id="message"
+          name="message"
+          disabled={isSubmitting}
+        />  
+        <button
+          type="submit"
+          // onClick={handleFormSubmit}
+          className="bg-brand-9 p-2 rounded grid place-items-center text-white"
+          aria-label="send message"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            <SendMessageIcon />
+          )}
+        </button>
+      </form>
+    </div>
+  );
 }
 
 export default NewComment;
+
+
+
+
+export const CommentTextArea = ({
+  className, 
+  placeholder, 
+  id, 
+  name, 
+  disabled
+}: {
+  className?: string, 
+  placeholder: string, 
+  id: string, 
+  name: string, 
+  disabled?: boolean
+})=> {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      const textarea = e.target as HTMLTextAreaElement;
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const currentValue = textarea.value;
+        const newValue = currentValue + "\n";
+        textarea.value = newValue;
+      }
+    };
+
+    const handleChange = debounce(handleKeyDown, 500);
+
+  return (
+    <textarea
+      name={name}
+      id={id}
+      placeholder={placeholder}
+      className={cn(
+        "w-full px-2 py-1 border border-solid border-[#C1C2C366] bg-neutral-3 outline-brand-9 max-h-[80px] rounded-[4px] overflow-y-auto custom-round-scrollbar",
+        className
+      )}
+      disabled={disabled}
+      onKeyDown={handleChange}
+      style={{
+        resize: "none",
+        scrollBehavior: "smooth",
+        scrollbarColor: "brand-9",
+        msOverflowStyle: "none",
+      }}
+    ></textarea>
+  );
+}
