@@ -23,7 +23,9 @@ export const useMultipleImageUpload = ({
   initialImages,
 }: UseMultipleImageUploadProps): UseMultipleImageUploadReturn => {
   const [images, setImages] = useState<string[]>(initialImages || []);
-  const [imageFiles, setImageFiles] = useState<(string | File)[]>(initialImages || []);
+  const [imageFiles, setImageFiles] = useState<(string | File)[]>(
+    initialImages || []
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,20 +78,7 @@ export const useMultipleImageUpload = ({
   const removeImage = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
     setImageFiles((prev) => prev.filter((_, i) => i !== index));
-
   };
-
-  // const removeImage = (index: number) => {
-  //   // Check if the image at the given index is part of the initial images
-  //   if (index < (initialImages?.length || 0)) {
-  //     // If it's an initial image, do not remove from imageFiles
-  //     setImages((prev) => prev.filter((_, i) => i !== index));
-  //   } else {
-  //     // If it's an uploaded image, remove from both images and imageFiles
-  //     setImages((prev) => prev.filter((_, i) => i !== index));
-  //     setImageFiles((prev) => prev.filter((_, i) => i !== index));
-  //   }
-  // };
 
   const handleImageReorder = (
     sourceIndex: number,

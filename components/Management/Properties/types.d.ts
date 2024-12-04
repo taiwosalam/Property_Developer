@@ -54,7 +54,7 @@ export interface PropertyFormStateType {
 export interface AllLandlordsResponse {
   data: {
     id: string;
-    full_name: string;
+    name: string;
   }[];
 }
 export interface AllBranchesResponse {

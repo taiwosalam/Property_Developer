@@ -2,124 +2,104 @@
 
 import { useEffect, useState } from "react";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
-import type { ActivateWalletOptions } from "@/components/Wallet/types";
-import { useAuthStore } from "@/store/authStore";
 import { AuthPinField } from "@/components/Auth/auth-components";
 import Button from "@/components/Form/Button/button";
 import obfuscateEmail from "@/utils/obfuscateEmail";
-import { getOtpToActivateWallet, setWalletPin } from "@/components/Wallet/data";
-import { toast } from "sonner";
-import useBranchStore from "@/store/branchStore";
-import { verifyEmail, verifyEmailOTP } from "./data";
+import { ReloadIcon } from "@/public/icons/icons";
+import { getEmailVerificationOTP, verifyEmailOTP } from "./data";
 
-
-const VerifyEmailModal = ({
-  setOpenVerifyModal,
-  modalOpen,
-  setModalOpen,
-  setEmailStatus,
-}: {
-  setOpenVerifyModal: (value: boolean) => void;
-  modalOpen: boolean;
-  setModalOpen: (value: boolean) => void;
-  setEmailStatus: (value: "pending" | "verified") => void;
-}) => {
+const VerifyEmailModal: React.FC<{
+  email: string;
+  setVerifyEmailModal: (value: boolean) => void;
+  setEmailStatus: (value: "verified" | "pending") => void;
+  setVerifiedEmail: (value: string) => void;
+}> = ({ email, setVerifyEmailModal, setEmailStatus, setVerifiedEmail }) => {
   const [requestLoading, setRequestLoading] = useState(false);
-  const { branchEmail } = useBranchStore();
+  const [resendReqLoading, setResendReqLoading] = useState(false);
+  const [canResend, setCanResend] = useState(false);
   const [countdown, setCountdown] = useState(60);
-  const [verifyEmailLoading, setVerifyEmailLoading] = useState(false);
-  const email = useAuthStore((state) => state.email);
-  const [confirmPin, setConfirmPin] = useState("");
   const [otp, setOtp] = useState("");
 
-  const handleChangeEmail = () => {
-    setModalOpen(true);
-    setOpenVerifyModal(false);
+  const handleResendCode = async () => {
+    if (canResend) {
+      setResendReqLoading(true);
+      const status = await getEmailVerificationOTP(email);
+      if (status) {
+        setCountdown(60);
+        setCanResend(false);
+      }
+      setResendReqLoading(false);
+    }
+  };
+
+  const handleVerifyEmail = async () => {
+    setRequestLoading(true);
+    const status = await verifyEmailOTP(otp);
+    if (status) {
+      setEmailStatus("verified");
+      setVerifyEmailModal(false);
+      setVerifiedEmail(email);
+    }
+    setRequestLoading(false);
   };
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
     if (countdown > 0) {
-      const timer = setInterval(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1000);
-      return () => clearInterval(timer);
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    } else {
+      setCanResend(true);
     }
+    return () => clearTimeout(timer);
   }, [countdown]);
-
-  const handleResendEmail = async () => {
-    // Logic to resend the email
-    setVerifyEmailLoading(true);
-    const status = await verifyEmail(branchEmail || "");
-    if (status) {
-      toast.success("Check your email for OTP");
-    }
-    setVerifyEmailLoading(false);
-    setCountdown(60); // Reset countdown
-  };
-
-
-  const activeStep = "confirm-email";
-
-  const flow = {
-    "confirm-email": {
-      heading: "Verify Branch Email",
-      content: (
-        <>
-          <p>
-            To create a branch, you will need to attach an email, we have sent a
-            one-time (OTP) to your email address (
-            {obfuscateEmail(branchEmail || "")}). Please enter the OTP to
-            complete the validation process.
-          </p>
-          <button
-            className="text-brand-9"
-            onClick={handleResendEmail}
-            disabled={countdown > 0}
-          >
-            {countdown > 0
-              ? `${String(Math.floor(countdown / 60)).padStart(
-                  2,
-                  "0"
-                )}:${String(countdown % 60).padStart(2, "0")}`
-              : "Resend Email"}
-          </button>
-          <AuthPinField onChange={setOtp} key="confirm-email" />
-          <button className="text-brand-9" onClick={handleChangeEmail}>
-            Change Email
-          </button>
-        </>
-      ),
-    },
-  };
-
-  const handleNext = async () => {
-    setVerifyEmailLoading(true);
-    const status = await verifyEmailOTP(otp);
-    if (status) {
-      toast.success("Email verified successfully");
-      setModalOpen(true);
-      setOpenVerifyModal(false);
-      setEmailStatus("verified");
-    }
-    setVerifyEmailLoading(false);
-  };
 
   return (
     <WalletModalPreset
       style={{ width: "80%", maxWidth: "390px" }}
-      title={flow[activeStep].heading}
-      back={undefined}
+      title="Verify Branch Email"
     >
       <div className="space-y-7 text-text-secondary dark:text-white text-sm font-medium text-center">
-        {flow[activeStep].content}
+        <p>
+          To create a branch, you will need to attach an email. We have sent a
+          one-time (OTP) to your email address{" "}
+          <span className="text-supporting-1">
+            ({obfuscateEmail(email || "")})
+          </span>
+          . Please enter the OTP to complete the validation process.
+        </p>
+        {!canResend ? (
+          <p className="text-black">
+            {`${String(Math.floor(countdown / 60)).padStart(2, "0")}:${String(
+              countdown % 60
+            ).padStart(2, "0")}`}
+          </p>
+        ) : (
+          <button
+            type="button"
+            onClick={handleResendCode}
+            className="mx-auto flex gap-1 text-brand-9 text-base font-medium"
+            disabled={resendReqLoading}
+          >
+            <ReloadIcon />
+            Resend code
+          </button>
+        )}
+        <AuthPinField onChange={setOtp} />
+        <button
+          type="button"
+          className="text-brand-9"
+          onClick={() => setVerifyEmailModal(false)}
+        >
+          Change Email
+        </button>
       </div>
       <Button
-        onClick={handleNext}
         size="sm_medium"
-        className="mt-[90px] w-full py-2 px-8"
-        disabled={verifyEmailLoading}
+        className="mt-[80px] w-full py-2 px-8"
+        disabled={requestLoading}
+        onClick={handleVerifyEmail}
       >
-        {verifyEmailLoading ? "Please wait..." : "Proceed"}
+        {requestLoading ? "Please wait..." : "Proceed"}
       </Button>
     </WalletModalPreset>
   );
