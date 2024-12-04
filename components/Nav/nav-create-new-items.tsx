@@ -21,7 +21,7 @@ export const create_new_items: CreateNewItemsProps = [
     content: [
       { label: "landlord / landlady", modal: <AddLandlordModal /> },
       { label: "tenants / occupants", modal: <AddTenantModal /> },
-      { label: "branch", modal: <CreateBranchModal isOpen={false} setIsOpen={() => {}} /> },
+      { label: "branch", modal: <CreateBranchModal /> },
       //   { label: "staff", modal: <CreateStaffModal /> }, // NOTE: This modal require a branch id, thats why its commented out
       { label: "inventory", link: "/management/inventory/create-inventory" },
       { label: "property", modal: <AddPropertyModal /> },
@@ -58,7 +58,12 @@ export const create_new_items: CreateNewItemsProps = [
     content: [
       {
         label: "tenancy agreement",
-        modal: <LegalProcedureModal type="tenancy_agreement" title="Tenancy Agreement" />,
+        modal: (
+          <LegalProcedureModal
+            type="tenancy_agreement"
+            title="Tenancy Agreement"
+          />
+        ),
       },
       {
         label: "quit notice",
@@ -66,11 +71,18 @@ export const create_new_items: CreateNewItemsProps = [
       },
       {
         label: "warning / reminder",
-        modal: <LegalProcedureModal type="warning_reminder" title="Warning / Reminder" />,
+        modal: (
+          <LegalProcedureModal
+            type="warning_reminder"
+            title="Warning / Reminder"
+          />
+        ),
       },
       {
         label: "court processs",
-        modal: <LegalProcedureModal type="court_process" title="Court Process" />,
+        modal: (
+          <LegalProcedureModal type="court_process" title="Court Process" />
+        ),
       },
       {
         label: "possession",
@@ -78,7 +90,9 @@ export const create_new_items: CreateNewItemsProps = [
       },
       {
         label: "other legal processes",
-        modal: <LegalProcedureModal type="other" title="Other Legal Processes" />,
+        modal: (
+          <LegalProcedureModal type="other" title="Other Legal Processes" />
+        ),
       },
     ],
   },
