@@ -42,6 +42,7 @@ const VehiclesRecordPage = () => {
     vehicle_records: {
       data: [] as VehicleData[],
       current_page: 1,
+      last_page: 0,
       total: 0,
     },
   };
@@ -55,7 +56,7 @@ const VehiclesRecordPage = () => {
     check_ins_this_month,
     check_outs_this_month,
     total_records,
-    vehicle_records: { data, current_page, total },
+    vehicle_records: { data, current_page, last_page, total },
   } = state;
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -252,7 +253,7 @@ const VehiclesRecordPage = () => {
               </ModalContent>
             </Modal>
             <Pagination
-              totalPages={total}
+              totalPages={last_page}
               currentPage={current_page}
               onPageChange={handlePageChange}
             />

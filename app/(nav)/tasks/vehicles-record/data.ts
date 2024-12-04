@@ -70,6 +70,7 @@ export interface VehicleRecordApiResponse {
     data: VehicleData[];
     current_page: number;
     total: number;
+    last_page: number;
   };
 }
 
@@ -83,6 +84,7 @@ export interface VehicleRecordPageData {
   vehicle_records: {
     data: VehicleData[];
     current_page: number;
+    last_page: number;
     total: number;
   };
 }
@@ -135,6 +137,7 @@ export const transformVehicleRecordApiResponse = (
       })),
       current_page: response.vehicle_records.current_page,
       total: response.vehicle_records.total,
+      last_page: response.vehicle_records.last_page,
     },
   };
 };

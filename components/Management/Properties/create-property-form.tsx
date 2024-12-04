@@ -210,7 +210,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const handleFormSubmit = async (data: Record<string, any>) => {
     setRequestLoading(true);
     convertYesNoToBoolean(data, yesNoFields);
-    const payload = transformPropertyFormData(data, imageFiles, companyId);
+    const payload = transformPropertyFormData(data, imageFiles as File[], companyId);
     await handleSubmit(payload);
     setRequestLoading(false);
   };

@@ -124,7 +124,6 @@ const RecordPage = () => {
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
   useEffect(() => {
-    console.log("apiData", apiData);
     if (apiData && "data" in apiData && apiData.data) {
       try {
         const transformed = transformSingleVehicleRecordApiResponse(apiData);
@@ -135,9 +134,6 @@ const RecordPage = () => {
           webContactInfo: transformed.webContactInfo,
           checkInsOutData: transformed.checkInsOutData,
         }));
-        console.log("vehicleDetails", transformed.vehicleDetails);  
-        // console.log("transformed", transformed);  
-        // console.log("checkInsOutData", transformed.checkInsOutData);
       } catch (error) {
         console.error("Transformation error:", error, apiData);
       }
@@ -206,7 +202,6 @@ const RecordPage = () => {
       // Add vehicle_record to requestId
       data.vehicle_record_id = `${recordId}`;
 
-      console.log("data", data);
 
       try {
         const response = await checkInVehicle(data);

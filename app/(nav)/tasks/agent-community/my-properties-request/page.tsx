@@ -46,6 +46,7 @@ interface PropertyRequestApiData {
     total: number;
     newly_created_requests: number;
     total_requests: number;
+    last_page: number;
   };
 }
 
@@ -74,7 +75,8 @@ const MyPropertiesRequestPage = () => {
     current_month_requests: 0,
     total_requests: 0,
     meta: {
-      current_page: 0,
+      current_page: 1,
+      last_page: 1,
       total: 0,
       newly_created_requests: 0,
       total_requests: 0,
@@ -89,7 +91,8 @@ const MyPropertiesRequestPage = () => {
         current_page,
         total,
         newly_created_requests,
-        total_requests
+        total_requests,
+        last_page
       }
   } = state
 
@@ -106,6 +109,7 @@ const MyPropertiesRequestPage = () => {
         total: total,
         newly_created_requests: newly_created_requests,
         total_requests: total_requests,
+        last_page: last_page,
       },
     }));
   };
@@ -144,6 +148,7 @@ const MyPropertiesRequestPage = () => {
             total: apiData.meta.total,
             newly_created_requests: apiData.meta.newly_created_requests,
             total_requests: apiData.meta.total_requests,
+            last_page: apiData.meta.last_page,
           },
       }));
     }
@@ -250,7 +255,7 @@ const MyPropertiesRequestPage = () => {
       )}
       <div className="pagination">
         <Pagination
-          totalPages={total}
+          totalPages={last_page}
           currentPage={current_page}
           onPageChange={handlePageChange}
         />

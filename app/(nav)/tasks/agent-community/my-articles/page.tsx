@@ -38,7 +38,7 @@ interface ThreadApiResponse {
   data:any[];
   meta: {
     pagination: {
-      total_pages: number;
+      last_page: number;
       current_page: number;
       total: number;
     };
@@ -54,7 +54,7 @@ const MyArticlePage = () => {
     data: [],
     meta: {
       pagination: {
-        total_pages: 1,
+        last_page: 1,
         current_page: 1,
         total: 0,
       },
@@ -98,8 +98,8 @@ const MyArticlePage = () => {
     );
 
   const handleSearch = async (query: string): Promise<void> => {
-    console.log('query', query);
-    console.log('total_pages', meta?.pagination.total_pages);
+      // console.log('query', query);
+      // console.log('last_page', meta?.pagination.last_page);
     if (!query && !searchQuery) return;
     setState((prevState) => ({
       ...prevState,
@@ -124,7 +124,7 @@ const MyArticlePage = () => {
         ...x,
         data: apiData.data,
         meta: apiData.meta,
-        total_pages: apiData.meta.pagination.total_pages,
+        last_page: apiData.meta.pagination.last_page,
         // total_pages: 1,
         // current_page: apiData.meta.current_page,
         current_page: apiData.meta.pagination.current_page,
@@ -240,7 +240,7 @@ const MyArticlePage = () => {
       {meta?.pagination.total > 1 && (
         <div className="pagination">
           <Pagination
-            totalPages={meta?.pagination.total}
+            totalPages={meta?.pagination.last_page}
             currentPage={meta?.pagination.current_page}
             onPageChange={handlePageChange}
           />

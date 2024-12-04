@@ -40,7 +40,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
   interface ThreadApiResponse {
       data: any[];
       meta: {
-        total_pages: number;
+        last_page: number;
         current_page: number;
         total_items: number;
         current_month_posts: number;
@@ -61,7 +61,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
     const initialState:ThreadApiResponse = {
         data: [],
         meta: {
-          total_pages: 1,
+          last_page: 1,
           current_page: 1,
           total_items: 0,
           current_month_posts: 0,
@@ -122,7 +122,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
           ...x,
           data: apiData.data,
           meta: apiData.meta,
-          total_pages: apiData.meta.total_pages,
+          last_page: apiData.meta.last_page,
           current_page: apiData.meta.current_page,
           total: apiData.meta.total,
         }));
@@ -143,7 +143,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 
     if (error) return <div>{error}</div>;
     
-    console.log("threads", data);
+    
     return (
       <div className="space-y-7">
         <div className="flex gap-5 flex-wrap items-center justify-between">
@@ -255,15 +255,11 @@ import EmptyList from "@/components/EmptyList/Empty-List";
             )}
           </AutoResizingGrid>
         )}
-        {meta?.total_pages > 1 && (
-          <div className="pagination">
             <Pagination
-              totalPages={meta?.total_pages}
+              totalPages={meta?.last_page}
               currentPage={meta?.current_page}
               onPageChange={handlePageChange}
             />
-          </div>
-        )}
         <div className="top-80 right-5 fixed rounded-full">
           <button
             onClick={handleCreateArticleClick}

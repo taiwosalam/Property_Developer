@@ -47,6 +47,7 @@ interface PropertyRequestApiData {
     pagination: {
       current_page: number;
       total: number;
+      last_page: number;
     }
   }
 }
@@ -76,8 +77,9 @@ const PropertyRequest = () => {
       current_month_requests: 0,
       total_requests: 0,
       pagination: {
-        current_page: 0,
+        current_page: 1,
         total: 0,
+        last_page: 1,
       }
     }
   }
@@ -89,7 +91,8 @@ const PropertyRequest = () => {
       total_requests,
       pagination: {
         current_page,
-        total
+        total,
+        last_page,
       }
     }
   } = state
@@ -263,7 +266,7 @@ const PropertyRequest = () => {
       )}
       <div className="pagination">
         <Pagination
-          totalPages={total}
+          totalPages={last_page}
           currentPage={current_page}
           onPageChange={handlePageChange}
         />
