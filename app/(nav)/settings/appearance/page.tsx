@@ -179,11 +179,8 @@ const Appearance = () => {
 
   const handleCustomColorChange = (color: string) => {
     if (!color) return; // Added check to prevent setting undefined colors
-    console.log("color = ", color);
     setCustomColor(color);
     setSelectedColor(color);
-    setModalOpen(false);
-    // console.log("selected color = ", color);
   };
 
   const handleFontSelect = (fontName: string) => {
@@ -385,7 +382,12 @@ const Appearance = () => {
               )}
             </div>
           )}
-          <Modal>
+          <Modal
+            state={{
+              isOpen: modalOpen,
+              setIsOpen: setModalOpen,
+            }}
+          >
             <ModalTrigger className="h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white dark:bg-darkText-primary flex items-center justify-center cursor-pointer">
               +
             </ModalTrigger>
@@ -393,6 +395,7 @@ const Appearance = () => {
               <CustomColorPicker
                 color={customColor}
                 onChange={debouncedHandleCustomColorChange}
+                setModalOpen={setModalOpen}
               />
             </ModalContent>
           </Modal>

@@ -100,11 +100,11 @@ export const DeleteInventoryModalSuccess = () => {
             <p className="text-text-disabled text-sm font-normal">
                 <span className="capitalize">inventory list</span> The list has been successfully deleted.
             </p>
-            <div className="flex justify-center">
+            {/* <div className="flex justify-center">
                 <ModalTrigger close asChild>
                     <Button href={"/management/inventory"}>ok</Button>
                 </ModalTrigger>
-            </div>
+            </div> */}
         </ModalPreset>
     )
 }

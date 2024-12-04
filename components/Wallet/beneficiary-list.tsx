@@ -9,6 +9,7 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const BeneficiaryList = () => {
   const isDarkMode = useDarkMode();
+  // const { }
   return (
     <WalletModalPreset title="Beneficiary List">
       <div className="custom-flex-col gap-6">

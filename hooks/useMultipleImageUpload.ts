@@ -9,7 +9,7 @@ interface UseMultipleImageUploadProps {
 
 interface UseMultipleImageUploadReturn {
   images: string[];
-  imageFiles: (File | string)[];
+  imageFiles: (string | File)[];
   fileInputRef: React.RefObject<HTMLInputElement>;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   removeImage: (index: number) => void;
@@ -20,11 +20,12 @@ interface UseMultipleImageUploadReturn {
 export const useMultipleImageUpload = ({
   maxImages,
   maxFileSizeMB,
-  initialImages = [],
+  initialImages,
 }: UseMultipleImageUploadProps): UseMultipleImageUploadReturn => {
-  const [images, setImages] = useState<string[]>(initialImages);
-  const [imageFiles, setImageFiles] =
-    useState<(File | string)[]>(initialImages);
+  const [images, setImages] = useState<string[]>(initialImages || []);
+  const [imageFiles, setImageFiles] = useState<(string | File)[]>(
+    initialImages || []
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +60,7 @@ export const useMultipleImageUpload = ({
         reader.readAsDataURL(file);
         validFiles.push(file);
       } catch (error) {
-        console.error("Error processing image:", error);
+        // console.error("Error processing image:", error);
         toast.warning(
           "There was an error processing your image. Please try again."
         );

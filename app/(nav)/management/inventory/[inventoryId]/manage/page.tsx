@@ -18,6 +18,7 @@ import { deleteInventory, getBranches, updateInventory } from "../../data";
 import { getBranch } from "@/components/Management/Inventory/data";
 import { DeleteInventoryModal, DeleteInventoryModalSuccess } from "@/components/Modal/delete-inventory";
 import { toast } from "sonner";
+import { ManageInventorySkeleton } from "@/components/Skeleton/manageInventory";
 
 // TODO: HandleDelete Fnx & SuccessModal
 
@@ -48,6 +49,7 @@ interface FetchData {
     id: string;
     items: any[];
     branch_id: string;
+    video?: string;
   };
 }
 
@@ -64,18 +66,18 @@ const ManageInventory = () => {
   const [moreInventory, setMoreInventory] = useState<number>(0);
   const [branch, setBranch] = useState<any>(null);
   const [inventoryData, setInventoryData] = useState<InventoryData | null>(null);
-  const { data, loading, error } = useFetch<FetchData>(`/inventory/${inventoryId}`);
   const [allBranches, setAllBranches] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [deleteInventoryModal, setDeleteInventoryModal] = useState<boolean>(false); 
+  const [deleteInventorySuccessModal, setDeleteInventorySuccessModal] = useState<boolean>(false);
+  const [inventoryFiles, setInventoryFiles] = useState<any[]>([]);
   const [isDeleting, setIsDeleting] = useState(false)
+  
+  const { data, loading, error } = useFetch<FetchData>(`/inventory/${inventoryId}`);
 
   useEffect(() => {
     const fetchBranchData = async () => {
-      console.log("inventory data - ", data);
       if (data) {
-        // console.log("data - ", data.inventory.branch_id);
-
         const updatedInventoryData: InventoryData = {
           title: data.inventory.title || "",
           inventory_id: data.inventory.id || "",
@@ -85,10 +87,11 @@ const ManageInventory = () => {
           branch_name: data.branch_name || "",
           account_officer: data.account_officer || "",
           branch_id: data.inventory.branch_id || "",
+          video: data.inventory.video || "",
         };
         setInventoryData(updatedInventoryData);
         setInventoryItems(data.inventory.items);
-
+        // console.log("updatedInventoryData - ", updatedInventoryData);
         try {
           const { data: branch } = await getBranch(data.inventory.branch_id);
           setBranch(branch.data.branch.branch_name);
@@ -172,8 +175,11 @@ const ManageInventory = () => {
     try {
       const success = await deleteInventory(inventoryId as string);
       if (success) {
-        setDeleteInventoryModal(true);
-        toast.success("Inventory deleted successfully");
+        setDeleteInventoryModal(false);
+        setDeleteInventorySuccessModal(true);
+        setTimeout(() => {
+          window.location.href = '/management/inventory';
+        }, 1500);
       }
     } catch (error) {
       console.error("Error deleting inventory:", error);
@@ -184,8 +190,9 @@ const ManageInventory = () => {
 
   return (
     <div className="custom-flex-col gap-10 min-h-[80vh] pb-[150px] lg:pb-[100px]">
-      <form onSubmit={handleUpdateInventory}> 
-        <div className="custom-flex-col gap-4">
+      {loading ? <ManageInventorySkeleton /> : (
+        <form onSubmit={handleUpdateInventory}> 
+          <div className="custom-flex-col gap-4">
           <BackButton>Manage Inventory</BackButton>
           <div className="custom-flex-col gap-6">
             <div className="flex flex-col md:flex-row gap-8">
@@ -232,15 +239,33 @@ const ManageInventory = () => {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
           {inventoryItems.map((item: any, index: number) => (
-            <InventoryItem key={index} index={index} data={item} edit={true} />
+            <InventoryItem 
+              key={index} 
+              index={index} 
+              data={item} 
+              edit
+              inventoryFiles={inventoryFiles} 
+              setInventoryFiles={setInventoryFiles} 
+            />
           ))}
 
           {[...Array(moreInventory)].map((_, index) => (
-            <InventoryItem key={index} edit index={index} />
+            <InventoryItem 
+              key={index} 
+              edit 
+              index={index} 
+              inventoryFiles={inventoryFiles} 
+              setInventoryFiles={setInventoryFiles} 
+            />
           ))}
         </div>
         <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
-          <Modal>
+          <Modal
+            state={{
+              isOpen: deleteInventoryModal,
+              setIsOpen: setDeleteInventoryModal,
+            }}
+          >
             <ModalTrigger asChild>
               <Button
                 size="sm_medium"
@@ -260,8 +285,8 @@ const ManageInventory = () => {
           </Modal>
           <Modal
             state={{
-              isOpen: deleteInventoryModal,
-              setIsOpen: setDeleteInventoryModal,
+              isOpen: deleteInventorySuccessModal,
+              setIsOpen: setDeleteInventorySuccessModal,
             }}
           >
             <ModalContent>
@@ -287,7 +312,8 @@ const ManageInventory = () => {
             </Button>
           </div>
         </FixedFooter>
-      </form>
+        </form>
+      )}
     </div>
   );
 };
