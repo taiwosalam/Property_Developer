@@ -392,8 +392,8 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
 export const CustomColorPicker: React.FC<{
   color: string;
   onChange: (color: string) => void;
-  // onClose: () => void;
-}> = ({ color, onChange }) => {
+  setModalOpen: (isOpen: boolean) => void;
+}> = ({ color, onChange, setModalOpen }) => {
   return (
     <div className="bg-white rounded-lg shadow-xl pb-6 w-[390px] flex flex-col items-center justify-center">
       <div className="w-full">
@@ -410,7 +410,6 @@ export const CustomColorPicker: React.FC<{
           <input
             type="text"
             value={color}
-            // onChange={(e) => onChange(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded mb-4 mt-4"
             placeholder="Enter hex color code"
           />
@@ -419,6 +418,7 @@ export const CustomColorPicker: React.FC<{
           <button
             onClick={() => {
               onChange(color);
+              setModalOpen(false);
             }}
             className={`w-full py-2 text-white rounded hover:opacity-90 transition-colors`}
             style={{ backgroundColor: color }}

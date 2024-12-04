@@ -19,6 +19,8 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import { ExclamationMark } from "@/public/icons/icons";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import TableLoading from "@/components/Loader/TableLoading";
+import getBranches from "@/hooks/getBranches";
+
 
 //  Expected structure of apiData
 interface InventoryApiData {
@@ -37,6 +39,9 @@ const Inventory = () => {
   const view = useView();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const [selectedView, setSelectedView] = useState<string>(selectedOptions.view || "grid");
+  const { branches } = getBranches();
+
+  console.log("branches - ", branches);
 
   const initialState = {
     gridView: selectedView === "grid",
@@ -108,11 +113,9 @@ const Inventory = () => {
   } = useFetch<InventoryApiData>(`inventories`, config);
   useRefetchOnEvent("refetchInventory", () => refetch({ silent: true }));
 
-    useEffect(() => {
-      console.log("Fetching inventory data...");
-      if (apiData) {
-        console.log("Inventory data received here - :", apiData);
-        setState((x) => ({
+  useEffect(() => {
+    if (apiData) {
+      setState((x) => ({
           ...x,
           inventoryPageData: {
             ...x.inventoryPageData,
@@ -126,8 +129,7 @@ const Inventory = () => {
       if (error) {
         console.error("Error fetching inventory data:", error);
       }
-    }, [apiData, error]);
-
+  }, [apiData, error]);
 
   const handleFilterApply = (filters: any) => {
     console.log("Filter applied:", filters);
@@ -151,9 +153,6 @@ const Inventory = () => {
 
   if (isNetworkError) return <NetworkError />;
 
-  // if (inventory.length === 0) {
-  //   return <EmptyList title="You have not created any inventory yet" buttonText="+ create inventory" buttonLink="/management/inventory/create-inventory" />;
-  // }
 
   const inventoryFiltersWithDropdown = [
     {
@@ -166,11 +165,10 @@ const Inventory = () => {
     },
     {
       label: "Branch",
-      value: [
-        { label: "Branch 1", value: "branch1" },
-        { label: "Branch 2", value: "branch2" },
-        { label: "Branch 3", value: "branch3" },
-      ],
+      value: branches.map((branch) => ({
+        label: branch.branch_name,
+        value: branch.id,
+      })),
     },
   ]
   return (
