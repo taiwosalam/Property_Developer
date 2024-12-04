@@ -36,6 +36,7 @@ interface FetchData {
     id: string;
     items: any[];
     branch_id: string;
+    video: string;
   };
 }
 
@@ -44,6 +45,7 @@ const PreviewInventory = () => {
   const [inventoryItems, setInventoryItems] = useState<any>([]);
   const [inventoryData, setInventoryData] = useState<InventoryData | null>(null);
   const { data, loading, error } = useFetch<FetchData>(`/inventory/${inventoryId}`);
+  const [video, setVideo] = useState<string>("");
 
   useEffect(() => {
     const fetchBranchData = async () => {
@@ -62,6 +64,7 @@ const PreviewInventory = () => {
         };
         setInventoryData(updatedInventoryData);
         setInventoryItems(data.inventory.items);
+        setVideo(data.inventory.video);
       }
     };
 
@@ -93,12 +96,17 @@ const PreviewInventory = () => {
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {inventoryItems?.map((item: any, index: number) => (
-            <InventoryItem key={index} index={index} data={item} />
+            <InventoryItem 
+              key={index} 
+              index={index} 
+              data={item} 
+              video={video}
+            />
           ))}
         </div>
       </div>
       <FixedFooter className="flex gap-6 justify-end">
-        <Button
+        <Button 
           href={`/management/inventory/${inventoryData?.inventory_id}/manage`}
           size="sm_medium"
           className="py-2 px-7"

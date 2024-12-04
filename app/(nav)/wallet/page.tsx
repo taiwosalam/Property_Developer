@@ -161,7 +161,7 @@ const Wallet = () => {
               </Modal>
             </div>
             <div className="custom-flex-col gap-2 h-full overflow-y-scroll custom-round-scrollbar">
-              {Array.isArray(beneficiaries) ? (
+              {Array.isArray(beneficiaries) && beneficiaries.length > 0 ? (
                 beneficiaries.map((beneficiary, idx) => (
                   <WalletBenefiary key={idx} {...beneficiary} />
                 ))

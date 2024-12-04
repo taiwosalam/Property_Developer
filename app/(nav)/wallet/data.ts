@@ -27,6 +27,7 @@ export const walletChartData = [
   { date: "2024-08-20", totalfunds: 150, credit: 90, debit: 30 },
   { date: "2024-08-28", totalfunds: 100, credit: 60, debit: 30 },
   { date: "2024-09-30", totalfunds: 140, credit: 10, debit: 300 },
+  { date: "2024-12-04", totalfunds: 140, credit: 10, debit: 300 },
 ];
 
 export const walletTableFields: Field[] = [

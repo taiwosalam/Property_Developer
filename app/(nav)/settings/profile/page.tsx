@@ -711,6 +711,7 @@ const Profile = () => {
                 <CustomColorPicker
                   color={customColor}
                   onChange={handleCustomColorChange}
+                  setModalOpen={setModalOpen}
                 />
               </ModalContent>
             </Modal>

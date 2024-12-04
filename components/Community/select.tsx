@@ -74,11 +74,9 @@ const Select: React.FC<SelectProps> = ({
   const isOptionObjectArray = (
     options: string[] | SelectOptionObject[]
   ): options is SelectOptionObject[] => {
-    return (
-      Array.isArray(options) &&
-      options.length > 0 &&
-      typeof options[0] === "object"
-    );
+    return Array.isArray(options) && 
+           options.length > 0 && 
+           typeof options[0] === "object";
   };
 
   useOutsideClick(dropdownRef, () => {
@@ -101,13 +99,11 @@ const Select: React.FC<SelectProps> = ({
       }
 
       let filteredOptions: typeof options = [];
-
+      
       if (isOptionObjectArray(options as SelectOptionObject[])) {
-        filteredOptions = options.filter(
-          (o): o is SelectOptionObject =>
-            typeof o === "object" &&
-            "label" in o && // Type guard to check if o is an object with a label
-            o.label.toLowerCase().includes(searchTerm.toLowerCase())
+        filteredOptions = options.filter((o): o is SelectOptionObject => 
+          typeof o === 'object' && 'label' in o && // Type guard to check if o is an object with a label
+          o.label.toLowerCase().includes(searchTerm.toLowerCase())
         );
       } else {
         filteredOptions = options.filter((o) =>
@@ -194,9 +190,7 @@ const Select: React.FC<SelectProps> = ({
               )}
             >
               {isOptionObjectArray(options as SelectOptionObject[])
-                ? (options as SelectOptionObject[]).find(
-                    (o) => o.value === selectedValue
-                  )?.label
+                ? (options as SelectOptionObject[]).find((o) => o.value === selectedValue)?.label
                 : selectedValue}
             </span>
           ) : isSearchable ? (

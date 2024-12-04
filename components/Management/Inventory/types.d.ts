@@ -32,12 +32,13 @@ export interface InventoryItemProps {
   index?: number;
   inventoryFiles?: File[][];
   setInventoryFiles?: (files: File[][]) => void;
+  video?: string;
   data?: {
     name: string;
     quantity: number;
     description?: string;
     condition: InventoryConditions;
-    image: string;
+    images: string[];
     unit?: string;
   };
 }
