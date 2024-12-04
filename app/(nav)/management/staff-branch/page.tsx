@@ -29,26 +29,10 @@ import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { ExclamationMark } from "@/public/icons/icons";
-import VerifyEmailModal from "@/components/Management/Staff-And-Branches/verify-email-modal";
-import { Box, Modal as MuiModal } from "@mui/material";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
 const StaffAndBranches = () => {
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [emailStatus, setEmailStatus] = useState<"pending" | "verified">("pending");
-  const [openVerifyModal, setOpenVerifyModal] = useState(false);
   const router = useRouter();
   const initialState: StaffAndBranchPageState = {
     selectedState: "",
@@ -223,41 +207,14 @@ const StaffAndBranches = () => {
             colorScheme={3}
           />
         </div>
-        <Modal
-          state={{
-            isOpen: modalOpen,
-            setIsOpen: setModalOpen,
-          }}
-        >
+        <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">
               + create branch
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <CreateBranchModal 
-              isOpen={modalOpen} 
-              setIsOpen={setModalOpen} 
-              openVerifyModal={openVerifyModal} 
-              setOpenVerifyModal={setOpenVerifyModal} 
-              emailStatus={emailStatus}
-              setEmailStatus={setEmailStatus}
-            />|
-          </ModalContent>
-        </Modal>
-        <Modal
-          state={{
-            isOpen: openVerifyModal,
-            setIsOpen: setOpenVerifyModal,
-          }}
-        >
-          <ModalContent>
-            <VerifyEmailModal 
-              setOpenVerifyModal={setOpenVerifyModal} 
-              modalOpen={modalOpen} 
-              setModalOpen={setModalOpen}
-              setEmailStatus={setEmailStatus}
-            />
+            <CreateBranchModal />|
           </ModalContent>
         </Modal>
       </div>
@@ -288,12 +245,7 @@ const StaffAndBranches = () => {
           ) : (
             <EmptyList
               buttonText="+ create branch"
-              modalContent={<CreateBranchModal 
-                isOpen={modalOpen} 
-                setIsOpen={setModalOpen} 
-                emailStatus={emailStatus} 
-                setEmailStatus={setEmailStatus} 
-              />}
+              modalContent={<CreateBranchModal />}
               title="You have not created any branches or added any staff yet"
               body={
                 <p>

@@ -38,6 +38,10 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
     clearSelection: clearImageSelection,
   } = useImageUploader({
     placeholder: CameraCircle,
+    maxSize: {
+      unit: "MB",
+      value: 2,
+    },
   });
 
   const [avatar, setAvatar] = useState("");

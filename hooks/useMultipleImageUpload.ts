@@ -4,11 +4,12 @@ import { toast } from "sonner";
 interface UseMultipleImageUploadProps {
   maxImages: number;
   maxFileSizeMB: number;
+  initialImages?: string[];
 }
 
 interface UseMultipleImageUploadReturn {
   images: string[];
-  imageFiles: File[];
+  imageFiles: (File | string)[];
   fileInputRef: React.RefObject<HTMLInputElement>;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   removeImage: (index: number) => void;
@@ -19,9 +20,11 @@ interface UseMultipleImageUploadReturn {
 export const useMultipleImageUpload = ({
   maxImages,
   maxFileSizeMB,
+  initialImages = [],
 }: UseMultipleImageUploadProps): UseMultipleImageUploadReturn => {
-  const [images, setImages] = useState<string[]>([]);
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [images, setImages] = useState<string[]>(initialImages);
+  const [imageFiles, setImageFiles] =
+    useState<(File | string)[]>(initialImages);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,8 +99,8 @@ export const useMultipleImageUpload = ({
   };
 
   const resetImages = () => {
-    setImages([]);
-    setImageFiles([]);
+    setImages(initialImages || []);
+    setImageFiles(initialImages || []);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }

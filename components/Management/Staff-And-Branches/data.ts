@@ -13,7 +13,7 @@ export const createBranch = async (formData: any) => {
   }
 };
 
-export const addStaff = async (formData: FormData): Promise<any> => {
+export const addStaff = async (formData: FormData) => {
   try {
     const { data } = await api.post("staffs", formData);
     toast.success(data?.message || "Staff created successfully");
@@ -24,27 +24,26 @@ export const addStaff = async (formData: FormData): Promise<any> => {
   }
 };
 
-
-export const verifyEmail = async (email: string) => {
+export const getEmailVerificationOTP = async (email: string) => {
   try {
-    const { data } = await api.post(
-      `/branch/send-email-verification?email=${email}`
-    );
-    return data;
+    const { data } = await api.post("/branch/send-email-verification", {
+      email,
+    });
+    toast.success(data?.message || "Check your email for OTP");
+    return true;
   } catch (error) {
-    // handleAxiosError(error, "Failed to verify email");
-    toast.error('Failed to verify email');
+    handleAxiosError(error, "Failed to verify email");
     return false;
   }
-}
+};
 
 export const verifyEmailOTP = async (code: string) => {
   try {
-    const { data } = await api.post(`/branch/email-verification?code=${code}`);
-    return data;
+    const { data } = await api.post("/branch/email-verification", { code });
+    toast.success(data?.message || "Email verified successfully");
+    return true;
   } catch (error) {
     handleAxiosError(error, "Failed to verify email OTP");
     return false;
   }
-}
-
+};

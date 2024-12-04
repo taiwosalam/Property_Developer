@@ -65,8 +65,8 @@ export type LandlordPageData = {
   contact_address: ContactAddress;
   next_of_kin: NextOfKin;
   bank_details: BankDetails;
-  guarantor1?: Guarantor;
-  guarantor2?: Guarantor;
+  guarantor_1?: Guarantor;
+  guarantor_2?: Guarantor;
   notes?: {
     last_updated: string;
     write_up: string;
