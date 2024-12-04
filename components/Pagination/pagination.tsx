@@ -98,7 +98,8 @@ const Pagination: React.FC<PaginationProps> = ({
     <div
       className={clsx(
         "w-full flex flex-wrap gap-4 items-center justify-center custom-primary-color mt-8 text-xs font-medium",
-        className
+        className,
+        totalPages === 1 && "hidden"
       )}
     >
       <button

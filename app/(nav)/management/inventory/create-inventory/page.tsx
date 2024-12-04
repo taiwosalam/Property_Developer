@@ -104,7 +104,7 @@ const handleAddInventory = async (event: React.FormEvent<HTMLFormElement>) => {
               name="inventory-title"
               placeholder="Add Title"
               className="flex-1 dark:bg-darkText-primary"
-              style={input_styles}
+                style={input_styles}
             />
             <Input
               id="video_link"

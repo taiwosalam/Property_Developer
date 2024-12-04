@@ -9,7 +9,6 @@ import type { InventoryItemProps } from "./types";
 // Imports
 import { inventory_conditions } from "./data";
 import Input from "@/components/Form/Input/input";
-import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import { InventoryField } from "./inventory-components";
@@ -40,6 +39,7 @@ interface AddPictureModalProps {
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   images: any[];
   index: number;
+  video?: string;
 }
 
 const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
@@ -48,6 +48,7 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
   index,
   inventoryFiles,
   setInventoryFiles,
+  video,
 }) => {
   const initialImages = data?.images || [];
   const isDarkMode = useDarkMode();
@@ -55,11 +56,11 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [screenModal, setScreenModal] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  // const fileInputRef = useRef<HTMLInputElement>(null);
+  console.log("video - ", video);
 
   const maxNumberOfImages = 6;
   const {
-    images:uploadedImages,
+    images,
     imageFiles,
     fileInputRef,
     handleFileChange,
@@ -69,17 +70,23 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
   } = useMultipleImageUpload({
     maxImages: maxNumberOfImages,
     maxFileSizeMB: MAX_FILE_SIZE_MB,
+    initialImages: initialImages,
   });
 
-  const images = initialImages.length > 0 ? initialImages : uploadedImages;
+  // const images = initialImages.length > 0 ? initialImages : uploadedImages;
   
 useEffect(() => {
     if (setInventoryFiles) {
       const updatedFiles = [...(inventoryFiles || [])];
-      updatedFiles[index] = imageFiles;
+      updatedFiles[index] = imageFiles as File[];
       setInventoryFiles(updatedFiles);
     }
-  }, [imageFiles, setInventoryFiles]);
+}, [imageFiles, setInventoryFiles]);
+
+useEffect(() => {
+ console.log("Images - ", images);
+ console.log("Image Files - ", imageFiles);
+}, [images, imageFiles]);
   
   const handleSave = () => {
     console.log(`Images for index ${index}:`, imageFiles);
@@ -99,9 +106,6 @@ useEffect(() => {
     image,
   }));
 
-  useEffect(() => {
-    console.log("data inventory item item - ", data);
-  }, [data]);
 
   const handleIncrement = () => {
     setCount((prevCount) => prevCount + 1);
@@ -113,12 +117,6 @@ useEffect(() => {
 
   const input_styles: CSSProperties = {
     backgroundColor: isDarkMode ? "#020617" : "white",
-  };
-
-  const selectImage = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
   };
 
   return (
@@ -137,7 +135,7 @@ useEffect(() => {
                 <Input
                   id={`item-name-${index}`}
                   name={`item-name-${index}`}
-                  label="Inventory name"
+                  label="Inventory name/Unit"
                   className="flex-1"
                   style={input_styles}
                   defaultValue={data?.name || data?.description || ""}
@@ -201,20 +199,34 @@ useEffect(() => {
               images={images.map((image) => ({
                 src: image,
               }))}
+              video={video}
             />
+            {/* NOT EDIT MODE START */}
             <div
               className="w-[220px] h-[220px] rounded-2xl relative overflow-hidden group cursor-pointer flex-shrink-0"
               style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
               role="button"
               onClick={() => setScreenModal(true)}
             >
-            {images.length > 0 && <Image
-                src={images[0] || data?.images[0] || ""}
-                alt={`Inventory Image ${index + 1}`}
-                fill
-                className="object-cover"
-              />}
+              {images.length > 0 && (
+                <Image
+                  src={images[0] || data?.images[0] || ""}
+                  alt={`Inventory Image ${index + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              )}
+              <div
+                className="absolute top-2 right-2 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5 cursor-pointer"
+                onClick={() => setScreenModal(true)}
+              >
+                <CameraIcon />
+                <p className="text-black font-medium text-[10px] cursor-pointer">
+                  +{images.length}
+                </p>
+              </div>
             </div>
+            {/* NOT EDIT MODE END */}
             {edit && (
               <div
                 className={`absolute inset-0 flex ${
@@ -235,9 +247,7 @@ useEffect(() => {
                     </p>
                   </div>
                 )}
-                <Modal
-                  state={{ isOpen: openModal, setIsOpen: setOpenModal }}
-                >
+                <Modal state={{ isOpen: openModal, setIsOpen: setOpenModal }}>
                   <ModalTrigger>
                     {images.length === 0 ? (
                       <div className="flex flex-col items-center gap-2 custom-primary-color">
@@ -294,6 +304,7 @@ const AddPictureModal = ({
   index,
 }: AddPictureModalProps) => {
   const maxNumberOfImages = 6;
+  console.log("Images - ", images);
 
   return (
     <div className="">
@@ -351,17 +362,3 @@ const AddPictureModal = ({
     </div>
   );
 };
-
-
-
-                {
-                  /* <input
-                  ref={fileInputRef}
-                  type="file"
-                  name={`image-${index}`}
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  aria-label="Upload image"
-                /> */
-                }

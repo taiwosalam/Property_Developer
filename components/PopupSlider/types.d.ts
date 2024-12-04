@@ -5,4 +5,5 @@ export interface PopupImageModalProps {
   images: { src: string | StaticImageData; isVideo?: boolean }[];
   currentIndex?: number;
   onClose: () => void;
+  video?: string;
 }

@@ -4,11 +4,12 @@ import { toast } from "sonner";
 interface UseMultipleImageUploadProps {
   maxImages: number;
   maxFileSizeMB: number;
+  initialImages?: string[];
 }
 
 interface UseMultipleImageUploadReturn {
   images: string[];
-  imageFiles: File[];
+  imageFiles: (string | File)[];
   fileInputRef: React.RefObject<HTMLInputElement>;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   removeImage: (index: number) => void;
@@ -19,9 +20,10 @@ interface UseMultipleImageUploadReturn {
 export const useMultipleImageUpload = ({
   maxImages,
   maxFileSizeMB,
+  initialImages,
 }: UseMultipleImageUploadProps): UseMultipleImageUploadReturn => {
-  const [images, setImages] = useState<string[]>([]);
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [images, setImages] = useState<string[]>(initialImages || []);
+  const [imageFiles, setImageFiles] = useState<(string | File)[]>(initialImages || []);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +58,7 @@ export const useMultipleImageUpload = ({
         reader.readAsDataURL(file);
         validFiles.push(file);
       } catch (error) {
-        console.error("Error processing image:", error);
+        // console.error("Error processing image:", error);
         toast.warning(
           "There was an error processing your image. Please try again."
         );
@@ -74,7 +76,20 @@ export const useMultipleImageUpload = ({
   const removeImage = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
     setImageFiles((prev) => prev.filter((_, i) => i !== index));
+
   };
+
+  // const removeImage = (index: number) => {
+  //   // Check if the image at the given index is part of the initial images
+  //   if (index < (initialImages?.length || 0)) {
+  //     // If it's an initial image, do not remove from imageFiles
+  //     setImages((prev) => prev.filter((_, i) => i !== index));
+  //   } else {
+  //     // If it's an uploaded image, remove from both images and imageFiles
+  //     setImages((prev) => prev.filter((_, i) => i !== index));
+  //     setImageFiles((prev) => prev.filter((_, i) => i !== index));
+  //   }
+  // };
 
   const handleImageReorder = (
     sourceIndex: number,
@@ -96,8 +111,8 @@ export const useMultipleImageUpload = ({
   };
 
   const resetImages = () => {
-    setImages([]);
-    setImageFiles([]);
+    setImages(initialImages || []);
+    setImageFiles(initialImages || []);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }

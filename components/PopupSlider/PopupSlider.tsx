@@ -7,10 +7,12 @@ import "keen-slider/keen-slider.min.css";
 import { NextIcon, PreviousIcon, XIcon } from "@/public/icons/icons";
 import { PopupImageModalProps } from "./types";
 import Image from "next/image";
+import ReactPlayer from "react-player";
 
 const PopupImageModal: React.FC<PopupImageModalProps> = ({
   isOpen,
   images,
+  video,
   currentIndex = 0,
   onClose,
 }) => {
@@ -99,6 +101,17 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
               />
             </div>
           ))}
+          {video && (
+            <div className="keen-slider__slide relative w-full h-full">
+              <ReactPlayer 
+                url={video} 
+                width="100%" 
+                height="100%" 
+                controls
+                className="object-cover"
+              />
+            </div>
+          )}
         </div>
         <div
           className="absolute top-10 right-10 cursor-pointer bg-white rounded-full bg-opacity-60"

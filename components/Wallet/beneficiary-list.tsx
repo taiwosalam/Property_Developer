@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React from "react";
 import WalletModalPreset from "./wallet-modal-preset";
@@ -8,7 +8,7 @@ import Input from "../Form/Input/input";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const BeneficiaryList = () => {
-  const isDarkMode = useDarkMode()
+  const isDarkMode = useDarkMode();
   return (
     <WalletModalPreset title="Beneficiary List">
       <div className="custom-flex-col gap-6">

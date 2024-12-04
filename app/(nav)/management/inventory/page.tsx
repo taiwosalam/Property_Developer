@@ -131,7 +131,7 @@ const Inventory = () => {
 
   const handleFilterApply = (filters: any) => {
     console.log("Filter applied:", filters);
-    // Add  logic here to filter landlords
+    // Add  logic here to filter 
   };
 
   const handlePageChange = (page: number) => {

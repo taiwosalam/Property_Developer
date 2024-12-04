@@ -1,8 +1,8 @@
+"use client";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { empty } from "@/app/config";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import Button from "@/components/Form/Button/button";
 import TruncatedText from "@/components/TruncatedText/truncated-text";

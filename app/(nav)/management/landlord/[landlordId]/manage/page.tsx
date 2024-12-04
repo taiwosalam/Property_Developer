@@ -24,6 +24,7 @@ import UserTag from "@/components/Tags/user-tag";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { LandlordEditAttachmentInfoSection } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
+import NetworkError from "@/components/Error/NetworkError";
 import CustomTable from "@/components/Table/table";
 import {
   statementTableFields,
@@ -37,15 +38,15 @@ import useFetch from "@/hooks/useFetch";
 const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
   const router = useRouter();
-  const { data, error, loading } = useFetch<IndividualLandlordAPIResponse>(
-    `landlord/${landlordId}`
-  );
+  const { data, error, loading, isNetworkError } =
+    useFetch<IndividualLandlordAPIResponse>(`landlord/${landlordId}`);
 
   const landlordData = data
     ? transformIndividualLandlordAPIResponse(data)
     : null;
 
   if (loading) return <CustomLoader layout="profile" />;
+  if (isNetworkError) return <NetworkError />;
   if (error) return <div>{error}</div>;
   if (!landlordData) return null;
   const groupedDocuments = groupDocumentsByType(landlordData?.documents);
@@ -182,7 +183,6 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         )}
 
         <LandlordTenantInfo
-          containerClassName="flex flex-col justify-center"
           heading="bank details"
           info={{
             bank: landlordData.bank_details.bank_name,
@@ -301,35 +301,30 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         </LandlordEditContext.Provider>
       )}
       <LandlordTenantInfoSection title="shared documents">
-        {Object.entries(groupedDocuments || {}).map(
-          ([documentType, documents]) => {
-            if (documentType === "other document") return null; // Skip "other document" for now
-            return (
-              <LandlordTenantInfoSection
-                minimized
-                title={documentType}
-                key={documentType}
-              >
-                <div className="flex flex-wrap gap-4">
-                  {documents?.map((document) => (
-                    <LandlordTenantInfoDocument
-                      key={document.id}
-                      {...document}
-                    />
-                  ))}
-                </div>
-              </LandlordTenantInfoSection>
-            );
-          }
-        )}
-        {groupedDocuments?.["other document"] && (
+        {Object.entries(groupedDocuments).map(([documentType, documents]) => {
+          if (documentType === "others") return null; // Skip "others" for now
+          return (
+            <LandlordTenantInfoSection
+              minimized
+              title={documentType}
+              key={documentType}
+            >
+              <div className="flex flex-wrap gap-4">
+                {documents?.map((document) => (
+                  <LandlordTenantInfoDocument key={document.id} {...document} />
+                ))}
+              </div>
+            </LandlordTenantInfoSection>
+          );
+        })}
+        {groupedDocuments?.["others"] && (
           <LandlordTenantInfoSection
             minimized
             title="other documents"
             key="other document"
           >
             <div className="flex flex-wrap gap-4">
-              {groupedDocuments?.["other document"]?.map((document) => (
+              {groupedDocuments?.["others"]?.map((document) => (
                 <LandlordTenantInfoDocument key={document.id} {...document} />
               ))}
             </div>

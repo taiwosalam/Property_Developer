@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import {
   LocationIcon,
@@ -7,13 +8,16 @@ import {
 } from "@/public/icons/icons";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 
-const ExportPageHeader: React.FC<{
-}> = () => {
+const ExportPageHeader = () => {
   const logo = usePersonalInfoStore((state) => state.company_logo);
   const state = usePersonalInfoStore((state) => state.company_state);
   const lga = usePersonalInfoStore((state) => state.company_local_government);
-  const address = usePersonalInfoStore((state) => state.company_head_office_address);
-  const phoneNumbers = usePersonalInfoStore((state) => state.company_phone_number);
+  const address = usePersonalInfoStore(
+    (state) => state.company_head_office_address
+  );
+  const phoneNumbers = usePersonalInfoStore(
+    (state) => state.company_phone_number
+  );
 
   return (
     <div
@@ -59,7 +63,9 @@ const ExportPageHeader: React.FC<{
             <span className="text-brand-9">
               <TelephoneIcon />
             </span>
-            <p className="dark:text-darkText-1">{phoneNumbers?.join(" || ") || "___"}</p>
+            <p className="dark:text-darkText-1">
+              {phoneNumbers?.join(" || ") || "___"}
+            </p>
           </li>
         </ul>
       </div>

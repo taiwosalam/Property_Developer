@@ -1,9 +1,9 @@
+"use client";
 // Imports
 import clsx from "clsx";
 import Signature from "@/components/Signature/signature";
 import WalletAnalytics from "@/components/Wallet/wallet-analytics";
 import ExportPageHeader from "@/components/reports/export-page-header";
-import { empty } from "@/app/config";
 import CustomTable from "@/components/Table/table";
 import { walletTableData, walletTableFields } from "../../data";
 import {
