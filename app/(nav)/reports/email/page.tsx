@@ -51,7 +51,6 @@ const EmailReport = () => {
       <FilterBar
         azFilter
         isDateTrue
-        onStateSelect={() => {}}
         pageTitle="Email"
         aboutPageModalData={{
           title: "Email",
@@ -59,8 +58,7 @@ const EmailReport = () => {
         }}
         searchInputPlaceholder="Search for Email"
         handleFilterApply={() => {}}
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={reportsEmailFilterOptionsWithDropdown}
+        filterOptionsMenu={reportsEmailFilterOptionsWithDropdown}
         hasGridListToggle={false}
         exportHref="/reports/email/export"
       />

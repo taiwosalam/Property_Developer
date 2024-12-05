@@ -37,7 +37,6 @@ const CalendarPage = () => {
       <div className="custom-flex-col gap-8">
         <FilterBar
           azFilter
-          onStateSelect={() => {}}
           pageTitle="Calendar"
           aboutPageModalData={{
             title: "Calendar",
@@ -47,8 +46,7 @@ const CalendarPage = () => {
           searchInputPlaceholder="Search"
           handleFilterApply={() => {}}
           isDateTrue
-          filterOptions={[]}
-          filterWithOptionsWithDropdown={calendarsrFilterOptionsWithDropdown}
+          filterOptionsMenu={calendarsrFilterOptionsWithDropdown}
           hasGridListToggle={false}
         />
         <CalendarComponent />

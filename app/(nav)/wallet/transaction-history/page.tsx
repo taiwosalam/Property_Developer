@@ -65,9 +65,7 @@ const TransactionHistory = () => {
         exports
         isDateTrue
         exportHref="/wallet/audit-trail/export"
-        filterWithOptionsWithDropdown={
-          transactionHistoryFilterOptionsWithDropdown
-        }
+        filterOptionsMenu={transactionHistoryFilterOptionsWithDropdown}
       />
 
       <CustomTable

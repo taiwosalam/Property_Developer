@@ -35,7 +35,6 @@ const TrackingReport = () => {
         azFilter
         exports
         isDateTrue
-        onStateSelect={() => {}}
         pageTitle="Tracking"
         aboutPageModalData={{
           title: "Tracking",
@@ -43,8 +42,7 @@ const TrackingReport = () => {
         }}
         searchInputPlaceholder="Search for audit trail"
         handleFilterApply={() => {}}
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={reportsListingsFilterOptionsWithDropdown}
+        filterOptionsMenu={reportsListingsFilterOptionsWithDropdown}
         hasGridListToggle={false}
         exportHref="/reports/tracking/export"
       />

@@ -37,7 +37,6 @@ const RentReport = () => {
         azFilter
         exports
         isDateTrue
-        onStateSelect={() => {}}
         pageTitle="Rent / Due Roll"
         aboutPageModalData={{
           title: "Rent / Due Roll",
@@ -46,8 +45,7 @@ const RentReport = () => {
         }}
         searchInputPlaceholder="Search for Rent Roll"
         handleFilterApply={() => {}}
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={reportsRentFilterOptionsWithDropdown}
+        filterOptionsMenu={reportsRentFilterOptionsWithDropdown}
         hasGridListToggle={false}
         exportHref="/reports/rent/export"
       />

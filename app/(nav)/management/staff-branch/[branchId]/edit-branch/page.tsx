@@ -106,9 +106,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
         <FilterBar
           pageTitle="Edit Property"
           searchInputPlaceholder="Search for Property"
-          filterWithOptionsWithDropdown={[]}
           handleFilterApply={() => {}}
-          onStateSelect={() => {}}
           gridView={isGridView}
           setGridView={() => setIsGridView(true)}
           setListView={() => setIsGridView(false)}

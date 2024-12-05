@@ -43,8 +43,14 @@ const Select: React.FC<SelectProps> = ({
     selectedLabel: "",
   };
   const [state, setState] = useState(initialState);
-  const { isOpen, searchTerm, filteredOptions, selectedValue, showAbove } =
-    state;
+  const {
+    isOpen,
+    searchTerm,
+    filteredOptions,
+    selectedValue,
+    selectedLabel,
+    showAbove,
+  } = state;
   const dropdownRef = useRef<HTMLDivElement>(null);
   // State to store validation error message
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -179,7 +185,7 @@ const Select: React.FC<SelectProps> = ({
                 inputTextClassName
               )}
             >
-              {selectedValue}
+              {selectedLabel}
             </span>
           ) : isSearchable ? (
             <input

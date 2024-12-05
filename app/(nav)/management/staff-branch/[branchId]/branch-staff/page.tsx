@@ -133,8 +133,7 @@ const BranchStaffPage = () => {
         searchInputPlaceholder="Search within Branch"
         azFilter
         // filterOptions={BranchFilters}
-        filterWithOptionsWithDropdown={branchFiltersWithOptions}
-        onStateSelect={(state: string) => setSelectedState(state)}
+        filterOptionsMenu={branchFiltersWithOptions}
         handleFilterApply={handleFilterApply}
         isDateTrue
         gridView={gridView}

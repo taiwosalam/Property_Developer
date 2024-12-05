@@ -67,7 +67,6 @@ const ServiceProviders = () => {
       </div>
       <FilterBar
         azFilter
-        onStateSelect={() => {}}
         pageTitle="Service Provider"
         aboutPageModalData={{
           title: "Service Provider",
@@ -77,8 +76,7 @@ const ServiceProviders = () => {
         searchInputPlaceholder="Search for service provider"
         handleFilterApply={() => {}}
         isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={serviceProviderFilterOptionsWithDropdown}
+        filterOptionsMenu={serviceProviderFilterOptionsWithDropdown}
         hasGridListToggle={false}
       />
       <section

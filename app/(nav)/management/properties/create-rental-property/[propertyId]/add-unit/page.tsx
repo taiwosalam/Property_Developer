@@ -1,41 +1,53 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ChevronLeft } from "@/public/icons/icons";
+import { useState, useEffect } from "react";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import PropertyDetails from "@/components/Management/Properties/property-details";
 import PropertySettings from "@/components/Management/Properties/property-settings";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-card";
 import UnitForm from "@/components/Management/Properties/unit-form";
 import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
+import useFetch from "@/hooks/useFetch";
+import BackButton from "@/components/BackButton/back-button";
+import { SinglePropertyResponse } from "../../../[id]/data";
+import NetworkError from "@/components/Error/NetworkError";
+import { transformPropertyData } from "./data";
 
-const AddUnit = () => {
+const AddUnit = ({ params }: { params: { propertyId: string } }) => {
+  const { propertyId } = params;
   const [saved, setSaved] = useState(false);
 
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const removeUnit = useAddUnitStore((s) => s.removeUnit);
-
-  const router = useRouter();
+  const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
 
   const [duplicate, setDuplicate] = useState({ val: false, count: 2 });
 
-  //   useeffect to fetch property info from API with the Property ID. Set Unit Store Values.
-  
+  const {
+    data: propertyData,
+    loading,
+    isNetworkError,
+    error,
+  } = useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
+
+  useEffect(() => {
+    if (propertyData) {
+      const transformedData = transformPropertyData(propertyData);
+      setAddUnitStore("property_id", transformedData.property_id);
+      setAddUnitStore("propertyType", transformedData.propertyType);
+      setAddUnitStore("propertyDetails", transformedData.propertyDetails);
+      setAddUnitStore("propertySettings", transformedData.propertySettings);
+      setAddUnitStore("addedUnits", transformedData.addedUnits);
+    }
+  }, [propertyData]);
+
+  if (loading) return <PageCircleLoader />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className="pb-[70px] lg:pb-[80px]">
-      {/* Back Button & Page Title */}
-      <div className="flex items-center gap-1 mb-1">
-        <button
-          type="button"
-          aria-label="Go Back"
-          onClick={() => router.back()}
-          className="p-2"
-        >
-          <ChevronLeft />
-        </button>
-        <h1 className="text-black font-bold text-lg lg:text-xl">Add Units</h1>
-      </div>
+    <div className="pb-[100px]">
+      <BackButton>Add Units</BackButton>
       <PageProgressBar
         breakpoints={[25, 50, 75]}
         percentage={37}

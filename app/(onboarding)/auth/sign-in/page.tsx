@@ -60,10 +60,8 @@ const SignIn = () => {
           />
           <div className="flex items-center justify-between">
             <Checkbox
-              inputName="remember-me"
-              defaultChecked
-              // checked={rememberMe}
-              // onChange={() => setRememberMe(!rememberMe)}
+            // checked={rememberMe}
+            // onChange={() => setRememberMe(!rememberMe)}
             >
               remember me
             </Checkbox>

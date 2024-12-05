@@ -1,483 +1,235 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ModalTrigger } from "@/components/Modal/modal";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import DateInput from "@/components/Form/DateInput/date-input";
 import dayjs, { Dayjs } from "dayjs";
 import Button from "@/components/Form/Button/button";
-import {
-  FilterModalProps,
-  FilterOptionWithDropdown,
-  FilterOptionWithRadio,
-} from "./types";
+import { FilterModalProps, FilterOptionMenu } from "./types";
 import { CancelIcon, CheckboxCheckedIcon } from "@/public/icons/icons";
-import {
-  articleOptions,
-  propertyRequestOptions,
-} from "@/app/(nav)/tasks/inspections/data";
+import { useModal } from "@/components/Modal/modal";
+import Checkbox from "@/components/Form/Checkbox/checkbox";
 
 const FilterModal: React.FC<FilterModalProps> = ({
-  filterOptionsWithDropdown,
   filterOptions,
-  filterOptionsWithRadio,
-  onApply,
-  onStateSelect,
-  title = "Filters by",
-  date,
-  article,
-  propertyRequest,
+  filterOptionsMenu,
+  handleFilterApply,
+  filterTitle = "Filters by",
+  isDateTrue,
+  dateLabel = "Date",
+  appliedFilters,
 }) => {
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [activeDropdownOption, setActiveDropdownOption] =
-    useState<FilterOptionWithDropdown | null>(null);
-  const [activeRadioOption, setActiveRadioOption] =
-    useState<FilterOptionWithRadio | null>(null);
-  const [dropdownSelections, setDropdownSelections] = useState<
-    Record<string, string[]>
-  >({});
-  const [isTicked, setIsTicked] = useState<boolean>(false);
-  const [selectedRadioOption, setSelectedRadioOption] = useState<string | null>(
-    null
-  );
-  const [selectedDateOption, setSelectedDateOption] = useState<string | null>(
-    null
-  );
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const { setIsOpen } = useModal();
   const [selectedStartDate, setSelectedStartDate] = useState<string | null>(
-    null
+    appliedFilters?.startDate || null
   );
-  const [selectedEndDate, setSelectedEndDate] = useState<string | null>(null);
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+  const [selectedEndDate, setSelectedEndDate] = useState<string | null>(
+    appliedFilters?.endDate || null
+  );
 
   const handleDateChange = (type: "start" | "end", date?: Dayjs | null) => {
     if (type === "start") {
-      setSelectedStartDate(date ? date.toISOString() : null);
+      setSelectedStartDate(date && date.isValid() ? date.toISOString() : null);
     } else if (type === "end") {
-      setSelectedEndDate(date ? date.toISOString() : null);
+      setSelectedEndDate(date && date.isValid() ? date.toISOString() : null);
     }
-  };
-
-  const toggleDatePicker = () => {
-    setShowDatePicker((prev) => !prev);
-  };
-
-  // Handle changes to the main filter options (regular options)
-  const handleCheckboxChange = (value: string) => {
-    setSelectedFilters((prev) =>
-      prev.includes(value)
-        ? prev.filter((filter) => filter !== value)
-        : [...prev, value]
-    );
-  };
-
-  const handleRadioChange = (value: string) => {
-    setSelectedRadioOption(value);
-    setSearchQuery(""); // Reset search query
-  };
-
-  // Handle changes to dropdown sub-options
-  const handleDropdownCheckboxChange = (
-    dropdownLabel: string,
-    value: string
-  ) => {
-    setDropdownSelections((prev) => {
-      const currentSelections = prev[dropdownLabel] || [];
-      const updatedSelections = currentSelections.includes(value)
-        ? currentSelections.filter((v) => v !== value)
-        : [...currentSelections, value];
-
-      if (dropdownLabel === "State" && onStateSelect) {
-        onStateSelect(value); // Call the state select handler
-      }
-
-      return {
-        ...prev,
-        [dropdownLabel]: updatedSelections,
-      };
-    });
-    setSearchQuery(""); // Reset search query
   };
 
   // Apply filters and close modal
   const handleApplyFilter = () => {
-    const selectedDropdownValues = Object.values(dropdownSelections).flat();
-    const filtersToApply = [
-      ...selectedFilters,
-      ...selectedDropdownValues,
-      ...(selectedRadioOption ? [selectedRadioOption] : []),
-      ...(selectedStartDate ? [`startDate:${selectedStartDate}`] : []),
-      ...(selectedEndDate ? [`endDate:${selectedEndDate}`] : []),
-    ];
-    onApply(filtersToApply);
+    const selectedOptions = [...selectedFilters];
+    const selectedMenuOptions = { ...selectedFilterMenus };
+    const filtersToApply = {
+      options: selectedOptions,
+      menuOptions: selectedMenuOptions,
+      startDate: selectedStartDate,
+      endDate: selectedEndDate,
+    };
+    handleFilterApply(filtersToApply);
+    setIsOpen(false);
   };
 
-  // Show dropdown options content within the same modal
-  const showDropdownOptions = (option: FilterOptionWithDropdown) => {
-    setActiveDropdownOption(option);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState<string[]>(
+    appliedFilters?.options || []
+  );
+  const [selectedFilterMenus, setSelectedFilterMenus] = useState<
+    Record<string, string[]>
+  >(appliedFilters?.menuOptions || {});
+  const [view, setView] = useState<"default" | "date" | "menu">("default");
+  const commonCheckboxClasses =
+    "flex-row-reverse w-full justify-between bg-[#F5F5F5] dark:bg-[#3C3D37] py-2 px-4 capitalize";
+  const commonLabelClasses =
+    "text-text-secondary dark:text-darkText-1 font-medium flex items-center justify-between py-2 px-4 bg-[#F5F5F5] dark:bg-[#3C3D37] capitalize cursor-pointer";
+  const [activeOptionMenu, setActiveOptionMenu] =
+    useState<FilterOptionMenu | null>(null);
+  const handleOptionMenuClick = (option: FilterOptionMenu) => {
+    setSearchQuery("");
+    setActiveOptionMenu(option);
+    setView("menu");
   };
-
-  const showRadioOptions = (option: FilterOptionWithRadio) => {
-    setActiveRadioOption(option);
-  };
-
-  const hideDropdownOptions = () => {
-    setActiveDropdownOption(null);
-    setActiveRadioOption(null);
-  };
-
-  // Check if any dropdown option is selected
-  const isDropdownOptionSelected = (dropdownLabel: string) => {
-    return (dropdownSelections[dropdownLabel] || []).length > 0;
-  };
-
-  // Check if a radio option is selected
-  const isRadioOptionSelected = (value: string) => {
-    return selectedRadioOption === value;
-  };
-
-  // Content for the dropdown options
-  const renderDropdownOptions = () => {
-    const filteredDropdownOptions = activeDropdownOption?.value.filter(
-      (option) => option.label.toLowerCase().includes(searchQuery.toLowerCase())
+  const handleOptionClick = (value: string) => {
+    setSelectedFilters((prev) =>
+      prev.includes(value) ? prev.filter((x) => x !== value) : [...prev, value]
     );
+  };
 
-    return (
-      <>
-        <div className="flex items-center justify-between border-b border-solid border-gray-300">
-          <div
-            onClick={hideDropdownOptions}
-            className="flex items-center cursor-pointer"
-          >
-            <span className="text-sm capitalize">
-              <ChevronLeft />
-            </span>
-            <h2 className="text-lg font-bold text-primary-navy dark:text-white">
-              {activeDropdownOption?.label}
-            </h2>
-          </div>
-          <button
-            type="button"
-            className="p-2"
-            onClick={() => setActiveDropdownOption(null)}
-          >
-            <CancelIcon />
-          </button>
-        </div>
-        {/* Search bar */}
-        <input
-          type="text"
-          className="w-full border p-2 mt-4"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <div className="max-h-[150px] overflow-y-auto pr-2 custom-round-scrollbar">
-          {filteredDropdownOptions?.map((option, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between py-2 px-5 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
+  const handleOptionMenuItemClick = (
+    menuLabel: string,
+    value: string,
+    isRadio?: boolean
+  ) => {
+    setSelectedFilterMenus((prev) => {
+      const currentSelections = prev[menuLabel] || [];
+      if (isRadio) {
+        return {
+          ...prev,
+          [menuLabel]: currentSelections.includes(value) ? [] : [value],
+        };
+      } else {
+        const newSelections = currentSelections.includes(value)
+          ? currentSelections.filter((v) => v !== value)
+          : [...currentSelections, value];
+        return { ...prev, [menuLabel]: newSelections };
+      }
+    });
+  };
+
+  const filteredOptions = activeOptionMenu?.value.filter((option) =>
+    option.label.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  return (
+    <div className="w-[400px] max-h-[90vh] overflow-y-auto rounded-[20px] bg-white dark:bg-darkText-primary p-[20px] custom-flex-col">
+      <div className="flex items-center justify-between border-b border-solid border-gray-300 ">
+        <div className="flex items-center gap-1">
+          {view !== "default" && (
+            <button
+              onClick={() => {
+                setView("default");
+                setActiveOptionMenu(null);
+              }}
             >
-              <label className="text-sm capitalize">{option.label}</label>
-              <input
-                type="checkbox"
-                value={option.value}
-                className="cursor-pointer"
-                onChange={() =>
-                  handleDropdownCheckboxChange(
-                    activeDropdownOption!.label,
-                    option.value
-                  )
-                }
-                checked={(
-                  dropdownSelections[activeDropdownOption!.label] || []
-                ).includes(option.value)}
-              />
-            </div>
-          ))}
-        </div>
-        <Button
-          size="base_medium"
-          className="mt-4 w-full py-2 rounded-lg"
-          onClick={() => setActiveDropdownOption(null)}
-        >
-          OK
-        </Button>
-      </>
-    );
-  };
-
-  // Content for the radio options
-  const renderRadioOptions = () => {
-    const filteredRadioOptions = activeRadioOption?.value.filter((option) =>
-      option.label.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    return (
-      <>
-        <div className="flex items-center justify-between border-b border-solid border-gray-300">
-          <div
-            onClick={hideDropdownOptions}
-            className="flex items-center cursor-pointer"
-          >
-            <span className="text-sm capitalize">
               <ChevronLeft />
-            </span>
-            <h2 className="text-lg font-bold text-primary-navy dark:text-white">
-              {activeRadioOption?.label}
-            </h2>
-          </div>
-          <button
-            type="button"
-            className="p-2"
-            onClick={() => setActiveRadioOption(null)}
-          >
+            </button>
+          )}
+          <h2 className="text-lg font-bold text-primary-navy dark:text-white">
+            {view === "default"
+              ? filterTitle
+              : view === "date"
+              ? dateLabel
+              : activeOptionMenu?.label}
+          </h2>
+        </div>
+        {view === "default" && (
+          <ModalTrigger close className="p-2">
             <CancelIcon />
-          </button>
-        </div>
-        {/* Search bar */}
-        <input
-          type="text"
-          className="w-full border p-2 mt-4"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <div className="max-h-[150px] overflow-y-auto pr-2 custom-round-scrollbar">
-          {filteredRadioOptions?.map((option, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between py-2 px-5 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
-            >
-              <label className="text-sm capitalize">{option.label}</label>
-              <input
-                type="radio"
-                name={activeRadioOption!.label}
-                value={option.value}
-                className="cursor-pointer"
-                onChange={() => handleRadioChange(option.value)}
-                checked={isRadioOptionSelected(option.value)}
-              />
-            </div>
-          ))}
-        </div>
-        <Button
-          size="base_medium"
-          className="mt-4 w-full py-2 rounded-lg"
-          onClick={() => setActiveRadioOption(null)}
-        >
-          OK
-        </Button>
-      </>
-    );
-  };
-
-  //content for the article
-  const renderArticle = () => {
-    return articleOptions.map((option) => (
-      <div
-        key={option.value}
-        className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
-      >
-        <label className="text-sm capitalize dark:text-white">
-          {option.label}
-        </label>
-        <input
-          type="checkbox"
-          name="articleOptions"
-          value={option.value}
-          className="cursor-pointer"
-          onChange={() => setSelectedFilters([option.value])}
-          checked={selectedFilters.includes(option.value)}
-        />
+          </ModalTrigger>
+        )}
       </div>
-    ));
-  };
-
-  const renderPropertyRequest = () => {
-    return propertyRequestOptions.map((option) => (
-      <div
-        key={option.value}
-        className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
-      >
-        <label className="text-sm capitalize dark:text-black">
-          {option.label}
-        </label>
-        <input
-          type="checkbox"
-          name="propertyRequestOptions"
-          value={option.value}
-          className="cursor-pointer"
-          onChange={() => setSelectedFilters([option.value])}
-          checked={selectedFilters.includes(option.value)}
-        />
-      </div>
-    ));
-  };
-
-  // Content for the date options
-  const renderDateOptions = () => {
-    return (
-      <>
-        <div className="flex items-center justify-between border-b border-solid border-gray-300">
-          <div
-            onClick={() => setShowDatePicker(false)}
-            className="flex items-center cursor-pointer"
-          >
-            <span className="text-sm capitalize">
-              <ChevronLeft />
-            </span>
-            <h2 className="text-lg font-bold text-primary-navy dark:text-white">
-              Date
-            </h2>
-          </div>
-          <button
-            type="button"
-            className="p-2"
-            onClick={() => setShowDatePicker(false)}
-          >
-            <CancelIcon />
-          </button>
-        </div>
-        <div className="py-2 space-y-3 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary">
-          <div>
-            <label
-              htmlFor="registration_date_from"
-              className="text-xs text-black dark:text-darkText-1"
-            >
-              From
-            </label>
+      <div className="space-y-2 my-4">
+        {view === "default" ? (
+          <>
+            {isDateTrue && (
+              <div
+                role="button"
+                className={commonLabelClasses}
+                onClick={() => setView("date")}
+              >
+                <span>{dateLabel}</span>
+                {selectedStartDate || selectedEndDate ? (
+                  <CheckboxCheckedIcon />
+                ) : (
+                  <ChevronRight className="text-[#344054]" />
+                )}
+              </div>
+            )}
+            {filterOptionsMenu?.map((option, i) => (
+              <div
+                key={i}
+                role="button"
+                className={commonLabelClasses}
+                onClick={() => handleOptionMenuClick(option)}
+              >
+                <span>{option.label}</span>
+                {selectedFilterMenus[option.label] &&
+                selectedFilterMenus[option.label].length > 0 ? (
+                  <CheckboxCheckedIcon />
+                ) : (
+                  <ChevronRight className="text-[#344054]" />
+                )}
+              </div>
+            ))}
+            {filterOptions?.map((option, i) => (
+              <Checkbox
+                key={i}
+                className={commonCheckboxClasses}
+                checked={selectedFilters.includes(option.value)}
+                onChange={() => handleOptionClick(option.value)}
+              >
+                {option.label}
+              </Checkbox>
+            ))}
+          </>
+        ) : view === "date" ? (
+          <>
             <DateInput
-              id="registration_date_from"
+              label="From"
+              id="date_from"
               value={selectedStartDate ? dayjs(selectedStartDate) : undefined}
               onChange={(date) => handleDateChange("start", date)}
             />
-          </div>
-          <div>
-            <label
-              htmlFor="registration_date_to"
-              className="text-xs text-black dark:text-darkText-1"
-            >
-              To
-            </label>
             <DateInput
-              id="registration_date_to"
+              label="To"
+              id="date_to"
               value={selectedEndDate ? dayjs(selectedEndDate) : undefined}
               onChange={(date) => handleDateChange("end", date)}
             />
-          </div>
-        </div>
-        <Button
-          size="base_medium"
-          className="mt-4 w-full py-2 rounded-lg"
-          onClick={() => setShowDatePicker(false)}
-        >
-          OK
-        </Button>
-      </>
-    );
-  };
-
-  // Content for the main modal options
-  const renderMainOptions = () => (
-    <>
-      <div className="flex items-center justify-between border-b border-solid border-gray-300 ">
-        <h2 className="text-lg font-bold text-primary-navy dark:text-white">
-          {title}
-        </h2>
-        <ModalTrigger close className="p-2">
-          <CancelIcon />
-        </ModalTrigger>
-      </div>
-      {article && renderArticle()}
-      {propertyRequest && renderPropertyRequest()}
-      {date && (
-        <div
-          className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary dark:border dark:border-[#3C3D37] cursor-pointer"
-          onClick={toggleDatePicker}
-        >
-          <label className="text-sm capitalize">Date</label>
-          {selectedStartDate || selectedEndDate ? (
-            <CheckboxCheckedIcon />
-          ) : (
-            <ChevronRight className="text-[#344054]" />
-          )}
-        </div>
-      )}
-
-      {/* Dropdown filter options */}
-      {filterOptionsWithDropdown?.map((option) => (
-        <div key={option.label}>
-          <div
-            className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary dark:border dark:border-[#3C3D37] cursor-pointer"
-            onClick={() => showDropdownOptions(option)}
-          >
-            <label className="text-sm capitalize">{option.label}</label>
-            {isDropdownOptionSelected(option.label) ? (
-              <CheckboxCheckedIcon />
-            ) : (
-              <ChevronRight className="text-[#344054]" />
-            )}
-          </div>
-        </div>
-      ))}
-
-      {/* Radio filter options */}
-      {filterOptionsWithRadio?.map((option) => (
-        <div
-          key={option.label}
-          onClick={() => showRadioOptions(option)}
-          className="cursor-pointer"
-        >
-          <div className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary dark:border dark:border-[#3C3D37]">
-            <label className="text-sm capitalize">{option.label}</label>
-            {selectedRadioOption ? (
-              <CheckboxCheckedIcon />
-            ) : (
-              <ChevronRight className="text-[#344054]" />
-            )}
-          </div>
-        </div>
-      ))}
-
-      {/* Regular filter options */}
-      {filterOptions &&
-        filterOptions.map((option) => (
-          <div
-            key={option.value}
-            className="flex items-center justify-between py-2 px-4 my-2 bg-[#F5F5F5] dark:bg-darkText-primary"
-          >
-            <label className="text-sm capitalize dark:text-black">
-              {option.label}
-            </label>
+          </>
+        ) : (
+          <>
             <input
-              type="checkbox"
-              value={option.value}
-              className="cursor-pointer"
-              onChange={() => handleCheckboxChange(option.value)}
-              checked={selectedFilters.includes(option.value)}
+              type="text"
+              className="w-full border p-2"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-          </div>
-        ))}
-
+            <div className="max-h-[200px] overflow-y-auto pr-1 custom-round-scrollbar space-y-2 my-2">
+              {filteredOptions?.map((option, i) => (
+                <Checkbox
+                  key={i}
+                  radio={activeOptionMenu?.radio}
+                  className={commonCheckboxClasses}
+                  checked={selectedFilterMenus[
+                    activeOptionMenu!.label
+                  ]?.includes(option.value)}
+                  onChange={() =>
+                    handleOptionMenuItemClick(
+                      activeOptionMenu!.label,
+                      option.value,
+                      activeOptionMenu!.radio
+                    )
+                  }
+                >
+                  {option.label}
+                </Checkbox>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
       <Button
         className="w-full py-2 rounded-lg mt-4"
         size="base_medium"
-        onClick={handleApplyFilter}
+        onClick={() => {
+          if (view === "default") {
+            handleApplyFilter();
+          } else {
+            setView("default");
+          }
+        }}
       >
-        Apply Filters
+        {view === "default" ? "Apply Filters" : "OK"}
       </Button>
-    </>
-  );
-
-  // Main return statement in the component
-  return (
-    <div className="w-[400px] rounded-[20px] bg-white dark:bg-darkText-primary p-[20px] custom-flex-col">
-      {activeDropdownOption
-        ? renderDropdownOptions()
-        : activeRadioOption
-        ? renderRadioOptions()
-        : showDatePicker && date
-        ? renderDateOptions()
-        : renderMainOptions()}
     </div>
   );
 };

@@ -35,7 +35,6 @@ const Call = () => {
         exports
         isDateTrue
         azFilter
-        onStateSelect={() => {}}
         pageTitle="Calls Request"
         aboutPageModalData={{
           title: "calls request",
@@ -44,8 +43,7 @@ const Call = () => {
         }}
         searchInputPlaceholder="Search for calls request"
         handleFilterApply={() => {}}
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={reportsCallsFilterOptionsWithDropdown}
+        filterOptionsMenu={reportsCallsFilterOptionsWithDropdown}
         exportHref="/reports/call/export"
         hasGridListToggle={false}
       />

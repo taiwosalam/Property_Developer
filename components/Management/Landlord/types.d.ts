@@ -25,30 +25,30 @@ export interface AddLandlordOptionsProps {
   showForm: React.Dispatch<React.SetStateAction<AddLandlordModalOptions>>;
 }
 
-export type FilterOption = {
+export interface FilterOption {
   label: string;
   value: string;
-};
+}
 
-export type FilterOptionWithRadio = {
+export interface FilterOptionMenu {
+  radio?: boolean;
   label: string;
   value: FilterOption[];
-};
+}
 
-export type FilterOptionWithDropdown = {
-  label: string;
-  value: FilterOption[];
-};
+export interface FilterResult {
+  options: string[];
+  menuOptions: { [key: string]: string[] };
+  startDate: string | null;
+  endDate: string | null;
+}
 
-export type FilterModalProps = {
-  closeModal?: () => void;
-  filterOptionsWithDropdown?: FilterOptionWithDropdown[];
+export interface FilterModalProps {
+  handleFilterApply: (selectedFilters: FilterResult) => void;
+  filterTitle?: string;
+  isDateTrue?: boolean;
+  dateLabel?: string;
   filterOptions?: FilterOption[];
-  filterOptionsWithRadio?: FilterOptionWithRadio[];
-  onApply: (selectedFilters: string[]) => void;
-  title?: string;
-  onStateSelect?: (state: string) => void;
-  date?: boolean; // New prop to determine if date picker should be shown
-  article?: boolean;
-  propertyRequest?: boolean;
-};
+  filterOptionsMenu?: FilterOptionMenu[];
+  appliedFilters?: FilterResult;
+}

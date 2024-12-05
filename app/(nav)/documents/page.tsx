@@ -41,7 +41,7 @@ const Documents = () => {
           handleFilterApply={() => {}}
           pageTitle="Document"
           searchInputPlaceholder="Document Search"
-          filterWithOptionsWithDropdown={DocumentssFilterOptionsWithDropdown}
+          filterOptionsMenu={DocumentssFilterOptionsWithDropdown}
           azFilter
           isDateTrue
         />

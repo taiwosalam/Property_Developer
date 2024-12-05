@@ -37,7 +37,6 @@ const PropertyRequest = () => {
       </div>
       <FilterBar
         azFilter
-        onStateSelect={() => {}}
         pageTitle="Request"
         aboutPageModalData={{
           title: "Request",
@@ -46,8 +45,6 @@ const PropertyRequest = () => {
         searchInputPlaceholder="Search Property Request"
         handleFilterApply={() => {}}
         isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={[]}
         hasGridListToggle={false}
       />
       <AutoResizingGrid gap={28} minWidth={400}>

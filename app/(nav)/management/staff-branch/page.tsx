@@ -9,11 +9,13 @@ import CustomTable from "@/components/Table/table";
 import type { DataItem } from "@/components/Table/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { getAllStates, getLocalGovernments } from "@/utils/states";
+import { getAllStates } from "@/utils/states";
 import {
-  type StaffAndBranchPageState,
+  type BranchesPageData,
+  initialBranchesPageData,
   branchTableFields,
   type BranchApiResponse,
+  type BranchRequestParams,
   transformBranchApiResponse,
 } from "./data";
 import Pagination from "@/components/Pagination/pagination";
@@ -29,126 +31,101 @@ import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { ExclamationMark } from "@/public/icons/icons";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import { AxiosRequestConfig } from "axios";
+import dayjs from "dayjs";
+
+const allStates = getAllStates();
 
 const StaffAndBranches = () => {
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
   const router = useRouter();
-  const initialState: StaffAndBranchPageState = {
-    selectedState: "",
-    selectedLGA: "",
-    localGovernments: [],
-    branchesPageData: {
-      total_pages: 1,
-      current_page: 1,
-      total_branches: 0,
-      new_branches_count: 0,
-      total_properties: 0,
-      new_properties_count: 0,
-      total_staffs: 0,
-      new_staffs_count: 0,
-      branches: [],
-    },
-  };
-  const [state, setState] = useState<StaffAndBranchPageState>(initialState);
+  const [state, setState] = useState<BranchesPageData>(initialBranchesPageData);
   const {
-    selectedState,
-    selectedLGA,
-    localGovernments,
-    branchesPageData: {
-      total_pages,
-      current_page,
-      total_branches,
-      new_branches_count,
-      total_properties,
-      new_properties_count,
-      total_staffs,
-      new_staffs_count,
-      branches,
-    },
+    total_pages,
+    current_page,
+    total_branches,
+    new_branches_count,
+    total_properties,
+    new_properties_count,
+    total_staffs,
+    new_staffs_count,
+    branches,
   } = state;
 
   useEffect(() => {
     setView(storedView);
   }, [storedView]);
 
-  const setLocalGovernments = (array: string[]) => {
-    setState((state) => ({ ...state, localGovernments: array }));
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate } = filters;
+    const statesArray = menuOptions["State"] || [];
+    const queryParams: BranchRequestParams = {
+      page: 1,
+      search: "",
+      sort_order: "asc",
+    };
+    if (statesArray.length > 0) {
+      queryParams.state = statesArray.join(",");
+    }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    setConfig({
+      params: queryParams,
+    });
   };
-  const setSelectedState = (selectedState: string) => {
-    setState((state) => ({ ...state, selectedState }));
-  };
 
-  const allStates = getAllStates() || [];
-
-  const handleFilterApply = (filters: any) => {
-    console.log("Filter applied:", filters);
-    // Add filtering logic here for branches
-  };
-
-  const StaffAndBranchFiltersWithDropdown = [
-    {
-      label: "State",
-      value: allStates.map((state) => ({
-        label: state,
-        value: state,
-      })),
-    },
-    {
-      label: "Local Government",
-      value: selectedState
-        ? localGovernments.map((lga) => ({
-            label: lga,
-            value: lga,
-          }))
-        : [],
-    },
-  ];
-
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
   const handleSelectTableItem = (item: DataItem) => {
     router.push(`/management/staff-branch/${item.id}`);
   };
 
-  // Handle the selected state and update local governments
-  useEffect(() => {
-    if (selectedState) {
-      const lgas = getLocalGovernments(selectedState);
-      setLocalGovernments(lgas || []);
-    }
-  }, [selectedState]);
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+      sort_order: "asc",
+    } as BranchRequestParams,
+  });
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-
-  const handleSort = (order: "asc" | "desc") => {
-    setSortOrder(order);
+  const isFilterApplied = () => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
   };
 
   const handlePageChange = (page: number) => {
-    setSearchQuery("");
-    setState((prevState) => ({
-      ...prevState,
-      branchesPageData: {
-        ...prevState.branchesPageData,
-        current_page: page,
-      },
-    }));
+    setConfig({
+      params: { ...config.params, page },
+    });
   };
 
   const handleSearch = async (query: string) => {
-    setSearchQuery(query);
+    setConfig({
+      params: { ...config.params, search: query },
+    });
   };
 
-  const config = useMemo(
-    () => ({
-      params: {
-        page: current_page,
-        search: searchQuery,
-        sort_order: sortOrder,
-      },
-    }),
-    [current_page, searchQuery, sortOrder]
-  );
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({
+      params: { ...config.params, sort_order: order },
+    });
+  };
 
   const {
     data: apiData,
@@ -164,8 +141,7 @@ const StaffAndBranches = () => {
   useEffect(() => {
     if (apiData) {
       setState((x) => ({
-        ...x,
-        branchesPageData: transformBranchApiResponse(apiData),
+        ...transformBranchApiResponse(apiData),
       }));
     }
   }, [apiData]);
@@ -223,7 +199,6 @@ const StaffAndBranches = () => {
         gridView={view === "grid"}
         setGridView={() => setView("grid")}
         setListView={() => setView("list")}
-        onStateSelect={(state: string) => setSelectedState(state)}
         pageTitle="Staff & Branch"
         aboutPageModalData={{
           title: "Staff & Branch",
@@ -232,16 +207,25 @@ const StaffAndBranches = () => {
         }}
         searchInputPlaceholder="Search for Staff & Branch"
         handleFilterApply={handleFilterApply}
+        appliedFilters={appliedFilters}
         isDateTrue
-        filterWithOptionsWithDropdown={StaffAndBranchFiltersWithDropdown}
+        filterOptionsMenu={[
+          {
+            label: "State",
+            value: allStates.map((state) => ({
+              label: state,
+              value: state,
+            })),
+          },
+        ]}
         handleSearch={handleSearch}
         onSort={handleSort}
       />
 
       <section className="capitalize">
         {branches.length === 0 && !silentLoading ? (
-          searchQuery ? (
-            "No Search Found"
+          config.params.search || isFilterApplied() ? (
+            "No Search/Filter Found"
           ) : (
             <EmptyList
               buttonText="+ create branch"

@@ -224,8 +224,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       steps={1}
       activeStep={0}
       inputClassName="property-form-input"
-      images={images}
-      imagesRequired={true}
       showProgressBar={false}
     >
       <AuthForm
@@ -336,7 +334,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 ? "Estate Name"
                 : "Facility Name"
             }
-            placeholder="name"
+            placeholder="Name"
             inputClassName="bg-white dark:bg-darkText-primary rounded-[8px] property-form-input"
             required
           />
@@ -380,6 +378,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
 
           <Select
             id="branch_id"
+            required
             label="Branch"
             resetKey={resetKey}
             options={branchOptions}

@@ -43,7 +43,6 @@ const AnnouncementPage = () => {
       </div>
       <FilterBar
         azFilter
-        onStateSelect={() => {}}
         pageTitle="Announcement"
         aboutPageModalData={{
           title: "Announcement",
@@ -53,8 +52,7 @@ const AnnouncementPage = () => {
         searchInputPlaceholder="Search Announcement"
         handleFilterApply={() => {}}
         isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={announcementrFilterOptionsWithDropdown}
+        filterOptionsMenu={announcementrFilterOptionsWithDropdown}
         hasGridListToggle={false}
       />
       <AutoResizingGrid minWidth={315} gap={32}>

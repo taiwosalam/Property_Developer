@@ -1,6 +1,8 @@
 import { getAllStates } from "@/utils/states";
 import { currencySymbols } from "@/utils/number-formatter";
 import { type PropertyCardProps } from "@/components/Management/Properties/property-card";
+import type { FilterOptionMenu } from "@/components/Management/Landlord/types";
+import moment from "moment";
 
 export const initialState: PropertiesPageState = {
   total_pages: 1,
@@ -15,23 +17,7 @@ export const initialState: PropertiesPageState = {
 };
 const states = getAllStates();
 
-export const propertyFilterOptionsWithDropdowns = [
-  {
-    label: "Branch",
-    value: [
-      { label: "Branch 1", value: "branch1" },
-      { label: "Branch 2", value: "branch2" },
-      { label: "Branch 3", value: "branch3" },
-    ],
-  },
-  {
-    label: "Account Officer",
-    value: [
-      { label: "Account Officer 1", value: "account_officer1" },
-      { label: "Account Officer 2", value: "account_officer2" },
-      { label: "Account Officer 3", value: "account_officer3" },
-    ],
-  },
+export const propertyFilterOptionsMenu: FilterOptionMenu[] = [
   {
     label: "State",
     value: states.map((state) => ({
@@ -39,20 +25,16 @@ export const propertyFilterOptionsWithDropdowns = [
       value: state.toLowerCase(),
     })),
   },
-];
-
-export const propertyFilterOptionsRadio = [
   {
+    radio: true,
     label: "Property Type",
     value: [
-      { label: "gated estate", value: "gated_estate" },
-      { label: "single Property", value: "single_Property" },
-      { label: "All properties", value: "all_properties" },
+      { label: "Rental Property", value: "rental" },
+      { label: "Facility Property", value: "facility" },
+      { label: "All properties", value: "all" },
     ],
   },
 ];
-
-
 
 export interface PropertiesPageState {
   total_pages: number;
@@ -85,12 +67,17 @@ export interface PropertiesApiResponse {
       local_government: string;
       city_area: string;
       full_address: string;
-      images: string[];
+      images: {
+        id: string;
+        image_path: string;
+      }[];
       units_count: number;
       unit_images_count: number;
+      property_type: "rental" | "gated_estate";
+      updated_at: Date;
       settings: [
         {
-          currency: keyof typeof currencySymbols;
+          currency: keyof typeof currencySymbols | null;
         }
       ];
     }[];
@@ -110,27 +97,48 @@ export const transformPropertiesApiResponse = (
     new_rental_properties_count: 0, // backend shit
     total_facility_properties: 0, // backend shit
     new_facility_properties_count: 0, // backend shit
-    properties: data.data.map((p) => ({
-      id: p.id,
-      images: p.images,
-      property_name: p.title,
-      total_units: p.units_count,
-      address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
-      total_unit_pictures: p.unit_images_count,
-      hasVideo: p.video_link ? true : false,
-      property_type: "rental", // backend shit
-      annualReturns: 0, // backend shit
-      annualIncome: 0, // backend shit
-      mobile_tenants: 0, // backend shit
-      web_tenants: 0, // backend shit
-      branch: "", // backend shit
-      accountOfficer: "", // backend shit
-      last_updated: "", // backend shit
-      owing_units: 0, // backend shit
-      available_units: 0, // backend shit
-      currency: p.settings[0].currency,
-      isClickable: true,
-      viewOnly: false,
-    })),
+    properties: data.data.map((p) => {
+      const updatedAt = moment(p.updated_at);
+      let lastUpdated;
+      const now = moment();
+      if (now.diff(updatedAt, "days") < 7) {
+        lastUpdated = updatedAt.fromNow();
+      } else {
+        lastUpdated = updatedAt.format("DD/MM/YYYY");
+      }
+      return {
+        id: p.id,
+        images: p.images.map((image) => image.image_path),
+        property_name: p.title,
+        total_units: p.units_count,
+        address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
+        total_unit_pictures: p.unit_images_count,
+        hasVideo: p.video_link ? true : false,
+        property_type: p.property_type === "rental" ? "rental" : "facility",
+        annualReturns: 0, // backend shit
+        annualIncome: 0, // backend shit
+        mobile_tenants: 0, // backend shit
+        web_tenants: 0, // backend shit
+        branch: "", // backend shit
+        accountOfficer: "", // backend shit
+        last_updated: lastUpdated,
+        owing_units: 0, // backend shit
+        available_units: 0, // backend shit
+        currency: p.settings[0].currency || "naira",
+        isClickable: true,
+        viewOnly: false,
+      };
+    }),
   };
 };
+
+export interface PropertiesRequestParams {
+  page?: number;
+  search?: string;
+  sort_order?: "asc" | "desc";
+  state?: string;
+  start_date?: string;
+  end_date?: string;
+  property_type?: string;
+  branch_id?: string;
+}

@@ -24,7 +24,7 @@ const RentAndUnit = () => {
   // const grid = selectedView === "grid";
 
   const [state, setState] = useState<RentAndUnitState>({
-    gridView: selectedView === 'grid',
+    gridView: selectedView === "grid",
     total_pages: 5,
     current_page: 1,
   });
@@ -34,17 +34,17 @@ const RentAndUnit = () => {
   useEffect(() => {
     setState((prevState) => ({
       ...prevState,
-      gridView: selectedView === 'grid',
+      gridView: selectedView === "grid",
     }));
   }, [selectedView]);
 
   const setGridView = () => {
-    setSelectedOption('view', 'grid');
+    setSelectedOption("view", "grid");
     setSelectedView("grid");
   };
 
   const setListView = () => {
-    setSelectedOption('view', 'list');
+    setSelectedOption("view", "list");
     setSelectedView("list");
   };
 
@@ -90,10 +90,9 @@ const RentAndUnit = () => {
       </div>
       <FilterBar
         azFilter
-        gridView={view === 'grid' || gridView}
+        gridView={view === "grid" || gridView}
         setGridView={setGridView}
         setListView={setListView}
-        onStateSelect={() => {}}
         pageTitle="Rent & Unit"
         aboutPageModalData={{
           title: "Rent & Unit",
@@ -104,7 +103,7 @@ const RentAndUnit = () => {
         handleFilterApply={handleFilterApply}
         isDateTrue
         filterOptions={RentAndUnitFilters}
-        filterWithOptionsWithDropdown={RentAndUnitFiltersWithDropdown}
+        filterOptionsMenu={RentAndUnitFiltersWithDropdown}
       />
       <section className="capitalize space-y-4 px-4 w-full">
         <div className="w-full flex items-center justify-end">
@@ -116,7 +115,7 @@ const RentAndUnit = () => {
             <StatusIndicator statusTitle="relocate" />
           </div>
         </div>
-        {view === 'grid' || gridView ? (
+        {view === "grid" || gridView ? (
           <AutoResizingGrid minWidth={315}>
             <RentalPropertyCard
               propertyType="rental"
