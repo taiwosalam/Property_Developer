@@ -154,12 +154,9 @@ const AccountingInvoicePage = () => {
                 </ModalTrigger>
                 <ModalContent>
                   <FilterModal
-                    filterOptions={[]}
-                    filterOptionsWithDropdown={
-                      accountingInvoiceOptionsWithDropdown
-                    }
-                    onApply={handleFilterApply}
-                    onStateSelect={(state: string) => setSelectedState(state)}
+                    filterOptionsMenu={accountingInvoiceOptionsWithDropdown}
+                    handleFilterApply={handleFilterApply}
+                    isDateTrue
                   />
                 </ModalContent>
               </Modal>

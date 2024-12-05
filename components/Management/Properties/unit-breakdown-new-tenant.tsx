@@ -24,8 +24,9 @@ const emptyStateValues = {
 
 const UnitBreakdownNewTenant = () => {
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
-  const agencyFeePercentageString = propertySettings?.agency_fee || "10%";
-  const agencyFeePercentage = parseFloat(agencyFeePercentageString || "0"); // Convert '5%' to 5
+  const agencyFeePercentage = parseFloat(
+    String(propertySettings?.agency_fee || "0")
+  ); // Convert '5%' to 5
   const { formResetKey } = useUnitForm();
   const CURRENCY_SYMBOL = currencySymbols.naira; // Should be gotten from store from API
   const [otherChargesInput, setOtherChargesInput] = useState(false);
