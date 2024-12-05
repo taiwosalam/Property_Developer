@@ -38,14 +38,6 @@ const Statement = () => {
     DateRange | undefined
   >();
 
-  const [state, setState] = useState<{ selectedState: string }>({
-    selectedState: "",
-  });
-
-  const setSelectedState = (selectedState: string) => {
-    setState((state) => ({ ...state, selectedState }));
-  };
-
   const [timeRange, setTimeRange] = useState("90d");
 
   const handleDateChange = (range: DateRange | undefined) => {
@@ -150,13 +142,9 @@ const Statement = () => {
                 </ModalTrigger>
                 <ModalContent>
                   <FilterModal
-                    filterOptions={[]}
-                    filterOptionsWithDropdown={
-                      accountingStatementOptionsWithDropdown
-                    }
-                    onApply={handleFilterApply}
-                    date
-                    onStateSelect={(state: string) => setSelectedState(state)}
+                    filterOptionsMenu={accountingStatementOptionsWithDropdown}
+                    handleFilterApply={handleFilterApply}
+                    isDateTrue
                   />
                 </ModalContent>
               </Modal>

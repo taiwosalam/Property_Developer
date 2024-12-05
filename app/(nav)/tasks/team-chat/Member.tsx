@@ -5,7 +5,7 @@ import { useState, useRef } from "react";
 import { useTeamChatStore } from "@/store/teamChatStore";
 import { PlusIcon, SearchIcon } from "@/public/icons/icons";
 import { team_chat_members_data } from "./data";
-import FilterModal from "./FilterModal";
+import FilterModal from "@/components/Management/Landlord/filters-modal";
 import FilterButton from "@/components/FilterButton/filter-button";
 import Avatar1 from "@/public/empty/avatar-1.svg";
 import Modal from "@mui/material/Modal";
@@ -142,14 +142,7 @@ const MemberComponent = ({
             >
               <Box sx={style}>
                 <div className="w-full h-full flex items-center justify-center">
-                  <FilterModal
-                    filterOptionsWithDropdown={[]}
-                    filterOptions={[]}
-                    onApply={() => {}}
-                    onStateSelect={() => {}}
-                    date
-                    closeModal={handleClose}
-                  />
+                  <FilterModal isDateTrue handleFilterApply={() => {}} />
                 </div>
               </Box>
             </Modal>
