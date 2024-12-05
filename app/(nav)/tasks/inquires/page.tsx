@@ -63,7 +63,6 @@ const Inquires = () => {
       </div>
       <FilterBar
         azFilter
-        onStateSelect={() => {}}
         pageTitle="Request Callback"
         aboutPageModalData={{
           title: "Request Callback",
@@ -73,8 +72,7 @@ const Inquires = () => {
         searchInputPlaceholder="Search Call Request"
         handleFilterApply={() => {}}
         isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={inquiriesFilterOptionsWithDropdown}
+        filterOptionsMenu={inquiriesFilterOptionsWithDropdown}
         hasGridListToggle={false}
       />
       <AutoResizingGrid gap={28} minWidth={400}>

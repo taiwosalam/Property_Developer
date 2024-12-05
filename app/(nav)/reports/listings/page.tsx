@@ -47,7 +47,6 @@ const ListingsReport = () => {
         azFilter
         exports
         isDateTrue
-        onStateSelect={() => {}}
         pageTitle="Listings"
         aboutPageModalData={{
           title: "Listings",
@@ -55,8 +54,7 @@ const ListingsReport = () => {
         }}
         searchInputPlaceholder="Search for Listings"
         handleFilterApply={() => {}}
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={reportsListingsFilterOptionsWithDropdown}
+        filterOptionsMenu={reportsListingsFilterOptionsWithDropdown}
         hasGridListToggle={false}
         exportHref="/reports/listings/export"
       />

@@ -8,30 +8,9 @@ import FilterModal from "../Management/Landlord/filters-modal";
 import PageTitle from "../PageTitle/page-title";
 import SortButton from "../FilterButton/sort-button";
 import ExportButton from "../reports/export-button";
+import { FilterModalProps } from "../Management/Landlord/types";
 
-// Define the types for the props
-type FilterOption = {
-  label: string;
-  value: string;
-};
-
-type FilterOptionWithRadio = {
-  label: string;
-  value: FilterOption[];
-};
-
-type FilterOptionWithDropdown = {
-  label: string;
-  value: FilterOption[];
-};
-
-interface FilterBarProps {
-  filterWithOptionsWithDropdown?: FilterOptionWithDropdown[];
-  filterOptions?: FilterOption[];
-  filterOptionsWithRadio?: FilterOptionWithRadio[];
-  handleFilterApply: (filters: any) => void;
-  onStateSelect?: (state: string) => void;
-  isDateTrue?: boolean;
+interface FilterBarProps extends FilterModalProps {
   searchInputPlaceholder?: string;
   pageTitle?: string;
   aboutPageModalData?: {
@@ -49,21 +28,12 @@ interface FilterBarProps {
   exportHref?: string;
   hiddenSearchInput?: boolean;
   iconOnly?: boolean;
-  article?: boolean;
-  propertyRequest?: boolean;
   noExclamationMark?: boolean;
   handleSearch?: (query: string) => void;
-  // searchQuery?: string;
   onSort?: (order: "asc" | "desc") => void;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
-  filterWithOptionsWithDropdown,
-  filterOptions,
-  filterOptionsWithRadio,
-  handleFilterApply,
-  onStateSelect,
-  isDateTrue,
   searchInputPlaceholder,
   pageTitle,
   aboutPageModalData,
@@ -76,12 +46,16 @@ const FilterBar: React.FC<FilterBarProps> = ({
   exportHref,
   hiddenSearchInput,
   iconOnly,
-  article,
-  propertyRequest,
   noExclamationMark,
   handleSearch,
-  // searchQuery,
   onSort,
+  handleFilterApply,
+  filterOptions,
+  filterOptionsMenu,
+  isDateTrue,
+  filterTitle,
+  appliedFilters,
+  dateLabel,
 }) => {
   return (
     <div className="page-title-container ">
@@ -105,7 +79,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
             hiddenSearchInput && "hidden"
           }`}
           onSearch={handleSearch}
-          // searchQuery={searchQuery}
         />
         {hasGridListToggle && (
           <div className="flex items-center gap-3">
@@ -144,14 +117,13 @@ const FilterBar: React.FC<FilterBarProps> = ({
           </ModalTrigger>
           <ModalContent>
             <FilterModal
-              filterOptionsWithDropdown={filterWithOptionsWithDropdown}
+              handleFilterApply={handleFilterApply}
+              isDateTrue={isDateTrue}
+              filterTitle={filterTitle}
               filterOptions={filterOptions}
-              filterOptionsWithRadio={filterOptionsWithRadio}
-              onApply={handleFilterApply}
-              onStateSelect={onStateSelect}
-              date={isDateTrue}
-              article={article}
-              propertyRequest={propertyRequest}
+              filterOptionsMenu={filterOptionsMenu}
+              appliedFilters={appliedFilters}
+              dateLabel={dateLabel}
             />
           </ModalContent>
         </Modal>

@@ -16,20 +16,29 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import TableLoading from "@/components/Loader/TableLoading";
 import {
-  propertyFilterOptionsRadio,
-  propertyFilterOptionsWithDropdowns,
+  propertyFilterOptionsMenu,
   transformPropertiesApiResponse,
   initialState,
   type PropertiesPageState,
   type PropertiesApiResponse,
+  type PropertiesRequestParams,
 } from "./data";
 import useView from "@/hooks/useView";
 import useFetch from "@/hooks/useFetch";
+import { AxiosRequestConfig } from "axios";
+import dayjs from "dayjs";
+import { FilterResult } from "@/components/Management/Landlord/types";
 
 const Properties = () => {
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
   const [pageData, setPageData] = useState<PropertiesPageState>(initialState);
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
 
   const {
     total_pages,
@@ -43,35 +52,77 @@ const Properties = () => {
     properties,
   } = pageData;
 
-  const handlePageChange = (page: number) => {
-    setPageData((state) => ({ ...state, current_page: page }));
+  const isFilterApplied = () => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+      sort_order: "asc",
+    } as PropertiesRequestParams,
+  });
+
+  const handlePageChange = (page: number) => {
+    setConfig({
+      params: { ...config.params, page },
+    });
+  };
 
   const handleSort = (order: "asc" | "desc") => {
-    setSortOrder(order);
+    setConfig({
+      params: { ...config.params, sort_order: order },
+    });
   };
 
   const handleSearch = (query: string) => {
-    setSearchQuery(query);
+    setConfig({
+      params: { ...config.params, search: query },
+    });
+  };
+
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate } = filters;
+    const statesArray = menuOptions["State"] || [];
+    const propertyType = menuOptions["Property Type"]?.[0];
+    const branchIdsArray = menuOptions["Branch"] || [];
+
+    const queryParams: PropertiesRequestParams = {
+      page: 1,
+      sort_order: "asc",
+      search: "",
+    };
+    if (statesArray.length > 0) {
+      queryParams.state = statesArray.join(",");
+    }
+    if (branchIdsArray.length > 0) {
+      queryParams.branch_id = branchIdsArray.join(",");
+    }
+    if (propertyType && propertyType !== "all") {
+      queryParams.property_type = propertyType;
+    }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    setConfig({
+      params: queryParams,
+    });
   };
 
   useEffect(() => {
     setView(storedView);
   }, [storedView]);
-
-  const config = useMemo(
-    () => ({
-      params: {
-        page: current_page,
-        search: searchQuery,
-        sort_order: sortOrder,
-      },
-    }),
-    [current_page, searchQuery, sortOrder]
-  );
 
   const {
     data: apiData,
@@ -142,7 +193,6 @@ const Properties = () => {
         gridView={view === "grid"}
         setGridView={() => setView("grid")}
         setListView={() => setView("list")}
-        onStateSelect={() => {}}
         pageTitle="Properties"
         aboutPageModalData={{
           title: "Properties",
@@ -150,18 +200,17 @@ const Properties = () => {
             "This page contains a list of properties on the platform.",
         }}
         searchInputPlaceholder="Search for Properties"
-        handleFilterApply={() => {}}
+        handleFilterApply={handleFilterApply}
         isDateTrue
-        filterOptionsWithRadio={propertyFilterOptionsRadio}
-        filterWithOptionsWithDropdown={propertyFilterOptionsWithDropdowns}
+        filterOptionsMenu={propertyFilterOptionsMenu}
         onSort={handleSort}
         handleSearch={handleSearch}
       />
 
       <section className="capitalize">
         {properties.length === 0 && !silentLoading ? (
-          searchQuery ? (
-            "No Search Found"
+          isFilterApplied() || config.params.search ? (
+            "No Search/Filter Found"
           ) : (
             <EmptyList
               buttonText="+ Add Property"

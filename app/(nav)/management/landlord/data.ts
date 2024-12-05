@@ -25,6 +25,18 @@ export interface LandlordsPageData {
   landlords: LandlordCardProps[];
 }
 
+export const initialLandlordsPageData: LandlordsPageData = {
+  total_pages: 1,
+  current_page: 1,
+  total_landlords: 0,
+  new_landlords_this_month: 0,
+  mobile_landlords: 0,
+  new_mobile_landlords_this_month: 0,
+  web_landlords: 0,
+  new_web_landlords_this_month: 0,
+  landlords: [],
+};
+
 export const getOneLandlord = async (id: string) => {};
 
 export const getLandlordsHelpInfo = async () => {
@@ -100,32 +112,6 @@ const generateMockdata = (numItems: number): LandlordCardProps[] => {
 
 export const mockData = generateMockdata(10);
 
-// export const landlordFiltersWithDropdown = [
-//   {
-//     label: "Branch",
-//     value: [
-//       { label: "Branch 1", value: "branch1" },
-//       { label: "Branch 2", value: "branch2" },
-//       { label: "Branch 3", value: "branch3" },
-//     ],
-//   },
-//   {
-//     label: "Account Officer",
-//     value: [
-//       { label: "Account Officer 1", value: "account_officer1" },
-//       { label: "Account Officer 2", value: "account_officer2" },
-//       { label: "Account Officer 3", value: "account_officer3" },
-//     ],
-//   },
-//   {
-//     label: "State",
-//     value: states.map((state) => ({
-//       label: state,
-//       value: state.toLowerCase(),
-//     })),
-//   },
-// ];
-
 export interface LandlordApiResponse {
   data: {
     landlords: {
@@ -186,3 +172,14 @@ export const transformLandlordApiResponse = (
     })),
   };
 };
+
+export interface LandlordRequestParams {
+  page?: number;
+  search?: string;
+  sort_order?: "asc" | "desc";
+  state?: string;
+  start_date?: string;
+  end_date?: string;
+  agent?: string;
+  branch_id?: string;
+}

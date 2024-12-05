@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import {
   getALLMaintenance,
   maintenanceFilterOptionsWithDropdown,
-  maintenanceFilterOptionsWithRadio,
 } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
@@ -43,7 +42,6 @@ const Maintenance = () => {
       <FilterBar
         hasGridListToggle={false}
         azFilter
-        onStateSelect={() => {}}
         pageTitle="Maintenance"
         aboutPageModalData={{
           title: "Maintenance",
@@ -53,9 +51,7 @@ const Maintenance = () => {
         searchInputPlaceholder="Search maintenance"
         handleFilterApply={() => {}}
         isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={maintenanceFilterOptionsWithDropdown}
-        filterOptionsWithRadio={maintenanceFilterOptionsWithRadio}
+        filterOptionsMenu={maintenanceFilterOptionsWithDropdown}
       />
       <AutoResizingGrid minWidth={380} gap={32}>
         {Array(10)

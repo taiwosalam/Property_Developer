@@ -19,16 +19,21 @@ const Checkbox: React.FC<CheckboxProps> = ({
   hoverContent,
   radio,
   defaultChecked = false,
-  inputName,
 }) => {
   const [internalChecked, setInternalChecked] = useState(defaultChecked);
   const [isHovered, setIsHovered] = useState(false);
 
   const handleCheckboxClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const newCheckedState = !internalChecked;
-    setInternalChecked(newCheckedState);
-    onChange?.(newCheckedState);
+    const newCheckedState = checked !== undefined ? !checked : !internalChecked;
+    if (onChange) {
+      onChange(newCheckedState);
+    }
+    if (checked === undefined) {
+      setInternalChecked(newCheckedState);
+    }
   };
+
+  const isChecked = checked !== undefined ? checked : internalChecked;
 
   useEffect(() => {
     if (checked !== undefined) {
@@ -46,12 +51,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         onMouseLeave: () => setIsHovered(false),
       })}
     >
-      <input
-        type="hidden"
-        name={inputName}
-        value={internalChecked ? "true" : "false"}
-      />
-      {internalChecked ? (
+      {isChecked ? (
         radio ? (
           <RadioCheckedIcon />
         ) : (

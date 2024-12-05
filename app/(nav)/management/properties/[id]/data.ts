@@ -12,24 +12,33 @@ export interface SinglePropertyResponse {
     local_government: string;
     state: string;
     units: any[]; // TODO: Add type
-    images: string[];
+    images: {
+      id: string;
+      image_path: string;
+    }[];
     landlord: string | null;
+    land_lord_id?: string;
+    branch_id?: string;
+    inventory_id?: string;
     category: string;
+    property_type: "rental" | "gated_estate";
     settings: [
       {
         agency_fee?: number;
-        maintenance_fee?: number;
+        management_fee?: number;
         caution_deposit?: string;
         currency?: keyof typeof currencySymbols;
-        fee_period: string;
+        rent_penalty: 1 | 0;
+        active_vat: 1 | 0;
         group_chat: 1 | 0;
         who_to_charge_new_tenant: string;
         who_to_charge_renew_tenant: string;
         book_visitors: 1 | 0;
         request_call_back: 1 | 0;
-        vehicle_records: 1 | 0;
+        vehicle_record: 1 | 0;
       }
     ];
+    description: string;
   };
 }
 
@@ -42,9 +51,9 @@ export const transformSinglePropertyData = (
     id: data.id,
     property_name: data.title,
     address: `${data.full_address}, ${data.city_area}, ${data.local_government}, ${data.state}`,
-    propertyType: "rental", // backend shit
+    propertyType: data.property_type === "rental" ? "rental" : "facility",
     total_units: data.units.length, // backend shit
-    images: data.images,
+    images: data.images.map((img) => img.image_path),
     units: data.units,
     isRental: true, // backend shit
     landlord_name: data.landlord || "",
@@ -53,16 +62,16 @@ export const transformSinglePropertyData = (
     local_government: data.local_government,
     account_officer: "", // backend shit
     agency_fee: settings.agency_fee,
-    maintenance_fee: settings.maintenance_fee,
+    management_fee: settings.management_fee,
     caution_deposit: settings.caution_deposit,
     currency: settings.currency,
-    fee_period: settings.fee_period,
+    // fee_period: settings.fee_period,
     group_chat: mapNumericToYesNo(settings.group_chat),
     who_to_charge_new_tenant: settings.who_to_charge_new_tenant,
     who_to_charge_renew_tenant: settings.who_to_charge_renew_tenant,
     book_visitors: mapNumericToYesNo(settings.book_visitors),
     request_call_back: mapNumericToYesNo(settings.request_call_back),
-    vehicle_records: mapNumericToYesNo(settings.vehicle_records),
+    vehicle_records: mapNumericToYesNo(settings.vehicle_record),
     branch: "", // backend shit
     branch_manager: "", // backend shit
     mobile_tenants: 0, // backend shit

@@ -1,7 +1,7 @@
 "use client";
 
 // Imports
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Button from "@/components/Form/Button/button";
 import InventoryCard from "@/components/Management/Inventory/inventory-card";
 import InventoryList from "@/components/Management/Inventory/inventory-list";
@@ -21,7 +21,6 @@ import CardsLoading from "@/components/Loader/CardsLoading";
 import TableLoading from "@/components/Loader/TableLoading";
 import getBranches from "@/hooks/getBranches";
 
-
 //  Expected structure of apiData
 interface InventoryApiData {
   total_pages: number;
@@ -38,7 +37,9 @@ interface InventoryApiData {
 const Inventory = () => {
   const view = useView();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
-  const [selectedView, setSelectedView] = useState<string>(selectedOptions.view || "grid");
+  const [selectedView, setSelectedView] = useState<string>(
+    selectedOptions.view || "grid"
+  );
   const { branches } = getBranches();
 
   console.log("branches - ", branches);
@@ -87,9 +88,9 @@ const Inventory = () => {
 
   const config = useMemo(
     () => ({
-      params: { 
+      params: {
         page: current_page,
-        search: searchQuery 
+        search: searchQuery,
       },
     }),
     [current_page, searchQuery]
@@ -109,31 +110,31 @@ const Inventory = () => {
     error,
     refetch,
     isNetworkError,
-    silentLoading
+    silentLoading,
   } = useFetch<InventoryApiData>(`inventories`, config);
   useRefetchOnEvent("refetchInventory", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {
       setState((x) => ({
-          ...x,
-          inventoryPageData: {
-            ...x.inventoryPageData,
-            inventory: apiData.data.data,
-            total_pages: apiData.total_pages,
-            total_inventory: apiData.data.total,
-            new_inventory_this_month: apiData.data.new_inventory_this_month,
-          },
-        }));
-      }
-      if (error) {
-        console.error("Error fetching inventory data:", error);
-      }
+        ...x,
+        inventoryPageData: {
+          ...x.inventoryPageData,
+          inventory: apiData.data.data,
+          total_pages: apiData.total_pages,
+          total_inventory: apiData.data.total,
+          new_inventory_this_month: apiData.data.new_inventory_this_month,
+        },
+      }));
+    }
+    if (error) {
+      console.error("Error fetching inventory data:", error);
+    }
   }, [apiData, error]);
 
   const handleFilterApply = (filters: any) => {
     console.log("Filter applied:", filters);
-    // Add  logic here to filter 
+    // Add  logic here to filter
   };
 
   const handlePageChange = (page: number) => {
@@ -146,13 +147,14 @@ const Inventory = () => {
     }));
   };
 
-  if (loading) return( <div className="min-h-[80vh] flex justify-center items-center">
-    <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-    </div>
-  )
+  if (loading)
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
+    );
 
   if (isNetworkError) return <NetworkError />;
-
 
   const inventoryFiltersWithDropdown = [
     {
@@ -170,7 +172,7 @@ const Inventory = () => {
         value: branch.id,
       })),
     },
-  ]
+  ];
   return (
     <div className="custom-flex-col gap-9">
       <div className="page-header-container">
@@ -195,7 +197,6 @@ const Inventory = () => {
         gridView={selectedView === "grid"}
         setGridView={setGridView}
         setListView={setListView}
-        onStateSelect={() => {}}
         pageTitle="Inventory"
         aboutPageModalData={{
           title: "Inventory",
@@ -206,8 +207,7 @@ const Inventory = () => {
         handleFilterApply={() => {}}
         handleSearch={handleSearch}
         isDateTrue
-        filterOptionsWithRadio={[]}
-        filterWithOptionsWithDropdown={inventoryFiltersWithDropdown}
+        filterOptionsMenu={inventoryFiltersWithDropdown}
       />
 
       <section className="capitalize">
@@ -224,10 +224,12 @@ const Inventory = () => {
                   This section consists of records of all items in the property
                   before renting it out to tenants. These records should be
                   created before creating the property itself. You can create
-                  records by clicking on the &quot;Create New&quot; button. To learn more
-                  about this page later, you can click on this icon. <span className="inline-block text-brand-10 align-text-top">
+                  records by clicking on the &quot;Create New&quot; button. To
+                  learn more about this page later, you can click on this icon.{" "}
+                  <span className="inline-block text-brand-10 align-text-top">
                     <ExclamationMark />
-                  </span> at the top left of the dashboard page.
+                  </span>{" "}
+                  at the top left of the dashboard page.
                 </p>
               }
             />

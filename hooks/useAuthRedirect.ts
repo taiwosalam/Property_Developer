@@ -11,6 +11,7 @@ type UseAuthRedirectOptions = {
 export const useAuthRedirect = (options: UseAuthRedirectOptions = {}) => {
   const router = useRouter();
   const authStoreToken = useAuthStore((state) => state.token);
+  const setAuthState = useAuthStore((state) => state.setAuthState);
 
   useEffect(() => {
     const checkAuthAndRedirect = async () => {
@@ -20,7 +21,7 @@ export const useAuthRedirect = (options: UseAuthRedirectOptions = {}) => {
           router.replace("/auth/sign-in");
           return;
         }
-        useAuthStore.getState().setAuthState("token", localAuthToken);
+        setAuthState("token", localAuthToken);
       }
 
       const status = await getUserStatus();

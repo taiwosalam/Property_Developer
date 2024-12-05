@@ -14,7 +14,6 @@ const VehiclesRecordReport = () => {
         azFilter
         isDateTrue
         exports
-        onStateSelect={() => {}}
         pageTitle="vehicle records"
         aboutPageModalData={{
           title: "vehicle records",
@@ -23,8 +22,7 @@ const VehiclesRecordReport = () => {
         }}
         searchInputPlaceholder="Search for vehicle records"
         handleFilterApply={() => {}}
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={reportsVehiclesFilterOptionsWithDropdown}
+        filterOptionsMenu={reportsVehiclesFilterOptionsWithDropdown}
         hasGridListToggle={false}
         exportHref="/reports/vehicles-record/export"
       />

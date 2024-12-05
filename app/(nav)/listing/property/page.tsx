@@ -8,10 +8,7 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import { property_listing_status } from "@/components/Listing/Property/data";
 import { PropertyListingStatusItem } from "@/components/Listing/Property/property-listing-component";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import {
-  listingPropertyOptionsWithRadio,
-  lstingPropertyOptionsWithDropdown,
-} from "./data";
+import { listingPropertyFilter } from "./data";
 
 const Property = () => {
   return (
@@ -48,7 +45,6 @@ const Property = () => {
       </div>
       <FilterBar
         azFilter
-        onStateSelect={() => {}}
         pageTitle="Drafted Property"
         aboutPageModalData={{
           title: "Moderating Property",
@@ -59,9 +55,7 @@ const Property = () => {
         searchInputPlaceholder="Search"
         handleFilterApply={() => {}}
         isDateTrue={false}
-        filterOptions={[]}
-        filterOptionsWithRadio={listingPropertyOptionsWithRadio}
-        filterWithOptionsWithDropdown={lstingPropertyOptionsWithDropdown}
+        filterOptionsMenu={listingPropertyFilter}
         hasGridListToggle={false}
       />
       <div className="custom-flex-col gap-8">

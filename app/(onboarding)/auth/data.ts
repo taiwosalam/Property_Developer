@@ -72,15 +72,6 @@ export const login = async (formData: Record<string, any>) => {
       toast.warning("Please verify your email to continue");
       return "redirect to verify email";
     }
-
-    // if (data["remember-me"] === "true") {
-    //   localStorage.setItem("authToken", token);
-    // } else {
-    //   sessionStorage.setItem("authToken", token);
-    // }
-
-    // Update the auth store with the new token
-    // useAuthStore.getState().setToken(token);
   } catch (error) {
     handleAxiosError(error, "Login failed. Please try again.");
   }

@@ -11,12 +11,13 @@ import Pagination from "@/components/Pagination/pagination";
 import UserTag from "@/components/Tags/user-tag";
 import AddTenantModal from "@/components/Management/Tenants/add-tenant-modal";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
-import { getAllStates, getLocalGovernments } from "@/utils/states";
+import { getAllStates } from "@/utils/states";
 import {
   defaultTenantPageData,
   tenantTableFields,
   type TenantApiResponse,
   type TenantPageData,
+  type TenantRequestParams,
   transformTenantApiResponse,
 } from "./data";
 import Link from "next/link";
@@ -31,14 +32,19 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import { ExclamationMark } from "@/public/icons/icons";
 import TableLoading from "@/components/Loader/TableLoading";
 import CardsLoading from "@/components/Loader/CardsLoading";
+import { AxiosRequestConfig } from "axios";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import dayjs from "dayjs";
+import { AllBranchesResponse } from "@/components/Management/Properties/types";
+
+const states = getAllStates();
 
 const Tenants = () => {
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
-
-  const initialState: TenantPageData = defaultTenantPageData;
-
-  const [pageData, setPageData] = useState<TenantPageData>(initialState);
+  const [pageData, setPageData] = useState<TenantPageData>(
+    defaultTenantPageData
+  );
   const {
     total_pages,
     current_page,
@@ -51,91 +57,86 @@ const Tenants = () => {
     tenants,
   } = pageData;
 
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+      sort_order: "asc",
+    } as TenantRequestParams,
+  });
+
+  const { data: branchesData } =
+    useFetch<AllBranchesResponse>("/branches/select");
+
+  const branchOptions =
+    branchesData?.data.map((branch) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
+
   useEffect(() => {
     setView(storedView);
   }, [storedView]);
 
-  const states = getAllStates();
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
 
-  const onStateSelect = (selectedState: string) => {
-    const localGovernments = getLocalGovernments(selectedState);
+  const isFilterApplied = () => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  };
 
-    const updatedFilters = tenantFilterOptionssWithDropdown.map((filter) => {
-      if (filter.label === "Local Government") {
-        return {
-          ...filter,
-          value: localGovernments.map((lg) => ({
-            label: lg,
-            value: lg.toLowerCase(),
-          })),
-        };
-      }
-      return filter;
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate } = filters;
+    const statesArray = menuOptions["State"] || [];
+    const agent = menuOptions["Tenant Type"]?.[0];
+    const branchIdsArray = menuOptions["Branch"] || [];
+
+    const queryParams: TenantRequestParams = {
+      page: 1,
+      sort_order: "asc",
+      search: "",
+    };
+    if (statesArray.length > 0) {
+      queryParams.state = statesArray.join(",");
+    }
+    if (branchIdsArray.length > 0) {
+      queryParams.branch_id = branchIdsArray.join(",");
+    }
+    if (agent && agent !== "all") {
+      queryParams.agent = agent;
+    }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    setConfig({
+      params: queryParams,
     });
   };
 
-  const tenantFilters = [
-    { label: "Alphabetically", value: "alphabetically" },
-    { label: "Tenants", value: "tenants" },
-    { label: "Occupants", value: "occupants" },
-  ];
-
-  const tenantFilterOptionssWithDropdown = [
-    {
-      label: "Branch",
-      value: [
-        { label: "Branch 1", value: "branch1" },
-        { label: "Branch 2", value: "branch2" },
-        { label: "Branch 3", value: "branch3" },
-      ],
-    },
-    {
-      label: "Account Officer",
-      value: [
-        { label: "Account Officer 1", value: "account_officer1" },
-        { label: "Account Officer 2", value: "account_officer2" },
-        { label: "Account Officer 3", value: "account_officer3" },
-      ],
-    },
-    {
-      label: "State",
-      value: states.map((state) => ({
-        label: state,
-        value: state.toLowerCase(),
-      })),
-    },
-  ];
-
-  const tenantFiltersRadio = [
-    {
-      label: "Tenant Type",
-      value: [
-        { label: "Mobile user", value: "mobile_user" },
-        { label: "Web user", value: "web_user" },
-        { label: "All users", value: "all_users" },
-      ],
-    },
-  ];
-
-  const handleFilterApply = (filters: any) => {
-    console.log("Filter applied:", filters);
-    // Add  logic here to filter tenant
-  };
-
-  const [searchQuery, setSearchQuery] = useState("");
-
   const handlePageChange = (page: number) => {
-    setSearchQuery("");
-    setPageData((prevState) => ({
-      ...prevState,
-      current_page: page,
-    }));
+    setConfig({
+      params: { ...config.params, page },
+    });
   };
 
-  const handleSearch = async (query: string) => {
-    if (!query && !searchQuery) return;
-    setSearchQuery(query);
-  };
+  const handleSearch = async (query: string) =>
+    setConfig({
+      params: { ...config.params, search: query },
+    });
 
   const {
     data: apiData,
@@ -144,9 +145,7 @@ const Tenants = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<TenantApiResponse>(
-    `tenants?page=${current_page}&search=${searchQuery}`
-  );
+  } = useFetch<TenantApiResponse>("tenants", config);
 
   useEffect(() => {
     if (apiData) {
@@ -245,23 +244,47 @@ const Tenants = () => {
         gridView={view === "grid"}
         setGridView={() => setView("grid")}
         setListView={() => setView("list")}
-        onStateSelect={onStateSelect}
         pageTitle="Tenants/Occupants (Users)"
         aboutPageModalData={{
           title: "Tenants/Occupants (Users)",
           description: "This page contains a list of all tenants and occupants",
         }}
         searchInputPlaceholder="Search for Tenants & Occupants"
+        dateLabel="Registration Date"
         handleFilterApply={handleFilterApply}
         isDateTrue
-        filterOptionsWithRadio={tenantFiltersRadio}
-        filterWithOptionsWithDropdown={tenantFilterOptionssWithDropdown}
         handleSearch={handleSearch}
+        filterOptionsMenu={[
+          {
+            label: "State",
+            value: states.map((state) => ({
+              label: state,
+              value: state.toLowerCase(),
+            })),
+          },
+          {
+            radio: true,
+            label: "Tenant Type",
+            value: [
+              { label: "Mobile Tenant", value: "mobile" },
+              { label: "Web Tenant", value: "web" },
+              { label: "All Tenants", value: "all" },
+            ],
+          },
+          ...(branchOptions.length > 0
+            ? [
+                {
+                  label: "Branch",
+                  value: branchOptions,
+                },
+              ]
+            : []),
+        ]}
       />
       <section>
         {tenants.length === 0 && !silentLoading ? (
-          searchQuery ? (
-            "No Search Found"
+          config.params.search || isFilterApplied() ? (
+            "No Search/Filter Found"
           ) : (
             <EmptyList
               buttonText="+ Create New Tenant"

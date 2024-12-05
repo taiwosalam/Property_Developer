@@ -52,7 +52,6 @@ const DepositRequest = () => {
       </div>
       <FilterBar
         azFilter
-        onStateSelect={() => {}}
         pageTitle="Caution Deposit Request"
         aboutPageModalData={{
           title: "Caution Deposit Request",
@@ -62,8 +61,7 @@ const DepositRequest = () => {
         searchInputPlaceholder="Search Deposit Record"
         handleFilterApply={() => {}}
         isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={depositRequestOptionsWithDropdown}
+        filterOptionsMenu={depositRequestOptionsWithDropdown}
         hasGridListToggle={false}
       />
       <AutoResizingGrid gap={28} minWidth={400}>

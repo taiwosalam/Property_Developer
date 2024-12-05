@@ -100,7 +100,7 @@ const Header = () => {
       setPersonalInfo("user_id", user.userid);
       setPersonalInfo(
         "name",
-        `${director.personal_title ? director.personal_title + " " : ""}${
+        `${director?.personal_title ? director.personal_title + " " : ""}${
           user.name
         }`
       );

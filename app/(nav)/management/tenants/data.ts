@@ -128,3 +128,14 @@ export const transformTenantApiResponse = (
     })),
   };
 };
+
+export interface TenantRequestParams {
+  page?: number;
+  search?: string;
+  sort_order?: "asc" | "desc";
+  state?: string;
+  start_date?: string;
+  end_date?: string;
+  agent?: string;
+  branch_id?: string;
+}

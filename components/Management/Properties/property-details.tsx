@@ -1,11 +1,14 @@
 import Image from "next/image";
-import Sample from "@/public/empty/SampleProperty.jpeg";
 import { CameraIcon } from "@/public/icons/icons";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { SectionSeparator } from "@/components/Section/section-components";
+import DOMPurify from "dompurify";
 
 const PropertyDetails = ({ heading }: { heading: string }) => {
+  const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
+  const sanitizedHTML = DOMPurify.sanitize(propertyDetails?.desciption || "");
+
   return (
     <div
       className="py-6 px-4 rounded-lg bg-white"
@@ -20,50 +23,66 @@ const PropertyDetails = ({ heading }: { heading: string }) => {
           <div className="min-w-[400px] text-sm md:text-base grid grid-cols-[1fr,26%,1fr] gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[50%,1fr]">
             <div>
               <p className="text-[#747474]">Property Title</p>
-              <p className="text-black font-medium">Golden Estate</p>
+              <p className="text-black font-medium">
+                {propertyDetails?.property_title}
+              </p>
             </div>
             <div>
               <p className="text-[#747474]">State</p>
-              <p className="text-black font-medium">Oyo State</p>
+              <p className="text-black font-medium">{propertyDetails?.state}</p>
             </div>
             <div>
               <p className="text-[#747474]">Local Government</p>
-              <p className="text-black font-medium">Akinyele</p>
+              <p className="text-black font-medium">
+                {propertyDetails?.local_govt}
+              </p>
             </div>
             <div>
               <p className="text-[#747474]">Full Address</p>
               <p className="text-black font-medium">
-                56, Abiola way area Moniya ibadan
+                {propertyDetails?.full_address}
               </p>
             </div>
             <div>
               <p className="text-[#747474]">Branch</p>
-              <p className="text-black font-medium">Abiola Moniya</p>
+              <p className="text-black font-medium">
+                {propertyDetails?.branch}
+              </p>
             </div>
             <div>
               <p className="text-[#747474]">Account Officer</p>
-              <p className="text-black font-medium">Ajadi David</p>
+              <p className="text-black font-medium">
+                {propertyDetails?.account_officer}
+              </p>
             </div>
             <div>
               <p className="text-[#747474]">Manager</p>
-              <p className="text-black font-medium">David James</p>
+              <p className="text-black font-medium">
+                {propertyDetails?.manager}
+              </p>
             </div>
             <div>
               <p className="text-[#747474]">Category</p>
-              <p className="text-black font-medium">Residential</p>
+              <p className="text-black font-medium">
+                {propertyDetails?.category}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Image */}
         <div className="w-[225px] h-[135px] rounded-2xl relative overflow-hidden cursor-pointer">
-          <div className="absolute z-[1] left-[70%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
-            <CameraIcon />
-            <p className="text-black font-medium text-[10px]">+23</p>
-          </div>
+          {propertyDetails?.images && propertyDetails?.images.length > 1 && (
+            <div className="absolute z-[1] left-[70%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+              <CameraIcon />
+              <p className="text-black font-medium text-[10px]">
+                +{propertyDetails?.images.length - 1}
+              </p>
+            </div>
+          )}
           <Image
-            src={Sample}
-            alt={""}
+            src={propertyDetails?.images[0] || ""}
+            alt={propertyDetails?.property_title || ""}
             fill
             sizes="auto"
             className="object-cover object-center"
@@ -72,24 +91,11 @@ const PropertyDetails = ({ heading }: { heading: string }) => {
       </div>
       <div className="lg:flex gap-4">
         <p className="text-[#747474] w-[13.5%]">Description</p>
-        <TruncatedText className="text-text-quaternary flex-1" lines={2}>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis,
-          earum qui, modi aspernatur autem iste voluptate tenetur maiores
-          inventore eum veniam perspiciatis quasi. Explicabo officiis quisquam
-          quam, obcaecati neque deserunt. Nemo totam laudantium tempore ipsa
-          commodi, reprehenderit atque cumque repudiandae ducimus delectus
-          incidunt aperiam, itaque excepturi aut. Officia odio maxime voluptas
-          expedita minus soluta natus est explicabo. Nam, praesentium animi?
-          Libero accusantium, perspiciatis tempore architecto laboriosam iure
-          vero soluta modi pariatur distinctio velit dolores deserunt omnis? Rem
-          vitae rerum harum ullam dolorum! Alias architecto, consequuntur
-          officiis magni blanditiis corrupti aspernatur! Minus, officia quas a
-          ipsum nobis illo quibusdam sequi dicta id laudantium ea dolorum
-          nesciunt atque consequuntur fugit necessitatibus placeat itaque
-          tenetur maxime eum sit quisquam quod. Quae, illo earum. Asperiores
-          quidem sequi quas. Id quibusdam voluptas officiis excepturi officia
-          cum voluptates eaque quas? Enim nostrum consectetur voluptates aliquid
-          nulla aliquam tempore expedita iste eos? Obcaecati, ex! Velit
+        <TruncatedText
+          className="text-text-quaternary dark:text-darkText-2 flex-1"
+          lines={2}
+        >
+          <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
         </TruncatedText>
       </div>
     </div>

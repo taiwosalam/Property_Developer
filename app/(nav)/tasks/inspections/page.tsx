@@ -32,7 +32,6 @@ const InspectionPage = () => {
       </div>
       <FilterBar
         azFilter
-        onStateSelect={() => {}}
         pageTitle="Inspection"
         aboutPageModalData={{
           title: "Inspection",
@@ -42,8 +41,7 @@ const InspectionPage = () => {
         searchInputPlaceholder="Search for Inspection"
         handleFilterApply={() => {}}
         isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={inspectionFilterOptionsWithDropdown}
+        filterOptionsMenu={inspectionFilterOptionsWithDropdown}
         hasGridListToggle={false}
       />
       <AutoResizingGrid minWidth={505} gap={32}>

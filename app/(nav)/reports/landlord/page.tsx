@@ -23,7 +23,6 @@ const LandlordsReport = () => {
         azFilter
         exports
         isDateTrue
-        onStateSelect={() => {}}
         pageTitle="Landlord/Landlady"
         aboutPageModalData={{
           title: "Landlord/Landlady",
@@ -32,10 +31,7 @@ const LandlordsReport = () => {
         }}
         searchInputPlaceholder="Search for Landlord/Landlady"
         handleFilterApply={() => {}}
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={
-          reportsLandlordsFilterOptionsWithDropdown
-        }
+        filterOptionsMenu={reportsLandlordsFilterOptionsWithDropdown}
         hasGridListToggle={false}
         exportHref="/reports/landlord/export"
       />

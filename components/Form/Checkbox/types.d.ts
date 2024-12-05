@@ -7,5 +7,4 @@ export interface CheckboxProps {
   hoverContent?: React.ReactNode;
   radio?: boolean;
   defaultChecked?: boolean;
-  inputName?: string;
 }

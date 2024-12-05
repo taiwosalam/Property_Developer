@@ -53,7 +53,6 @@ const BookVisitorsPage = () => {
       </div>
       <FilterBar
         azFilter
-        onStateSelect={() => {}}
         pageTitle="Book for Visitation"
         aboutPageModalData={{
           title: "Book for Visitation",
@@ -63,8 +62,7 @@ const BookVisitorsPage = () => {
         searchInputPlaceholder="Search Visitor Request"
         handleFilterApply={() => {}}
         isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={VisitorRequestFilterOptionsWithDropdown}
+        filterOptionsMenu={VisitorRequestFilterOptionsWithDropdown}
         hasGridListToggle={false}
       />
       <AutoResizingGrid gap={28} minWidth={400}>
