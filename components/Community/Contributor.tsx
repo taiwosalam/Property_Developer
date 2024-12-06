@@ -1,8 +1,8 @@
 import Image from "next/image";
 import SampleUser from "@/public/empty/sample-user.svg";
 import { empty } from "@/app/config";
-import { TextSkeleton } from "@/app/(nav)/tasks/agent-community/components";
-import { formatDate } from "@/app/(nav)/tasks/agent-community/property-request/data";
+import { TextSkeleton } from "@/app/(nav)/management/agent-community/components";
+import { formatDate } from "@/app/(nav)/management/agent-community/property-request/data";
 import { useEffect } from "react";
 
 export const ContributorDetails = ({ 

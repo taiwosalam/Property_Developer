@@ -5,8 +5,8 @@ import Button from "@/components/Form/Button/button";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import VehicleRecordModal from "./vehicle-record-modal";
 import { useEffect, useState } from "react";
-import { formatDate } from "@/app/(nav)/tasks/agent-community/property-request/data";
-import { format_date_time } from "@/app/(nav)/tasks/vehicles-record/data";
+import { formatDate } from "@/app/(nav)/management/agent-community/property-request/data";
+import { format_date_time } from "@/app/(nav)/management/vehicles-record/data";
 import { CheckInOut } from "./types";
 
 interface checkInOutData {

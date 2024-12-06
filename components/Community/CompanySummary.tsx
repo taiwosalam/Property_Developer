@@ -9,9 +9,9 @@ import {
   WebsiteIcon,
 } from "@/public/icons/icons";
 import Image from "next/image";
-import { CompanySummarySkeleton, TextSkeleton } from "@/app/(nav)/tasks/agent-community/components";
+import { CompanySummarySkeleton, TextSkeleton } from "@/app/(nav)/management/agent-community/components";
 import { empty } from "@/app/config";
-import { calculateYearsInIndustry } from "@/app/(nav)/tasks/agent-community/data";
+import { calculateYearsInIndustry } from "@/app/(nav)/management/agent-community/data";
 import { useEffect } from "react";
 
 const CompanySummary = ({ loading, companySummary }: { loading?: boolean, companySummary: any }) => {

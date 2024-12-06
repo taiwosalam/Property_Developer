@@ -11,8 +11,8 @@ import {
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Input from "@/components/Form/Input/input";
 import { Loader2 } from "lucide-react";
-import { toggleCommentLike } from "@/app/(nav)/tasks/agent-community/my-articles/data";
-import { CommentTextArea } from "@/app/(nav)/tasks/agent-community/NewComment";
+import { toggleCommentLike } from "@/app/(nav)/management/agent-community/my-articles/data";
+import { CommentTextArea } from "@/app/(nav)/management/agent-community/NewComment";
 
 // Base comment data structure
 export interface CommentData {

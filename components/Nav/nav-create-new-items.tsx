@@ -11,8 +11,8 @@ import CreateBranchModal from "../Management/Staff-And-Branches/create-branch-mo
 import NewDisbursementModal from "../Accounting/Disbursement/new-disbursement-modal";
 // import CreateTenancyAggrementModal from "../BadgeIcon/create-tenancy-aggrement-modal";
 import LegalProcedureModal from "../Documents/legal-procedure-modal";
-import AddServiceProviderModal from "../tasks/service-providers/add-service-provider-modal";
 import CreateExamineModal from "../tasks/Examine/create-examine-modal";
+import AddServiceProviderModal from "../tasks/service-providers/add-service-provider-modal";
 
 export const create_new_items: CreateNewItemsProps = [
   {

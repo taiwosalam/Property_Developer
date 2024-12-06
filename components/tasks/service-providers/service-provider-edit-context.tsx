@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import type { ServiceProviderData } from "@/app/(nav)/tasks/service-providers/[serviceProviderId]/manage/types";
+import type { ServiceProviderData } from "@/app/(nav)/management/service-providers/[serviceProviderId]/manage/types";
 
 interface ServiceProviderEditContextProps {
   data: ServiceProviderData | null;

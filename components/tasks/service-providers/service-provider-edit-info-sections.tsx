@@ -10,7 +10,7 @@ import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-in
 import Select from "@/components/Form/Select/select";
 import { useServiceProviderEditContext } from "./service-provider-edit-context";
 import { useState, useEffect, useRef } from "react";
-import type { ServiceProviderData } from "@/app/(nav)/tasks/service-providers/[serviceProviderId]/manage/types";
+import type { ServiceProviderData } from "@/app/(nav)/management/service-providers/[serviceProviderId]/manage/types";
 import { DeleteIconOrange } from "@/public/icons/icons";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import TextArea from "@/components/Form/TextArea/textarea";

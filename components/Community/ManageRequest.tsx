@@ -1,13 +1,13 @@
 "use client";
 
-import { comments } from "@/app/(nav)/tasks/agent-community/data";
+import { comments } from "@/app/(nav)/management/agent-community/data";
 import TextArea from "../Form/TextArea/textarea";
 import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import { useState, useEffect } from "react";
 import { ValidationErrors } from "@/utils/types";
 import MultiSelect from "./multi-select";
-import Comment from "@/app/(nav)/tasks/agent-community/threads/[threadId]/preview/comment";
+import Comment from "@/app/(nav)/management/agent-community/threads/[threadId]/preview/comment";
 import PropertyRequestUnitType from "./UnitType";
 import { PropertyRequestContext } from "./propertyRequest";
 import Input from "../Form/Input/input";

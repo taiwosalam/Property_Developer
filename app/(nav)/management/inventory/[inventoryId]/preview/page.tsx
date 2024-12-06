@@ -66,6 +66,7 @@ const PreviewInventory = () => {
         setInventoryItems(data.inventory.items);
         setVideo(data.inventory.video);
       }
+      console.log("inventory items - ", inventoryItems);
     };
 
     fetchBranchData();

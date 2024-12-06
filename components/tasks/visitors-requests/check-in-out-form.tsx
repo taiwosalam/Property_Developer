@@ -42,7 +42,7 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
         <div className="flex flex-col md:flex-row gap-x-10 lg:gap-x-20 md:justify-between gap-y-5 mb-4">
           <form onSubmit={onSubmit}>
           <div className="md:min-w-fit custom-flex-col justify-between gap-6">
-            <div>
+            <div className="flex justify-between items-center gap-2">
               <div className="mb-[10px] flex items-center gap-4">
                 <Picture src={pictureSrc} alt="empty" size={80} rounded />
                 <div className="flex flex-col">

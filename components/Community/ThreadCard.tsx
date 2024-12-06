@@ -4,20 +4,20 @@ import BadgeIcon, {
   badgeIconColors,
   BadgeIconColors,
 } from "../BadgeIcon/badge-icon";
-import { ThreadCardProps } from "@/app/(nav)/tasks/agent-community/type";
+import { ThreadCardProps } from "@/app/(nav)/management/agent-community/type";
 import {
   CommentIcon,
   ShareIcon,
   ThumbsDown,
   ThumbsUp,
 } from "@/public/icons/icons";
-import { toggleLike } from "@/app/(nav)/tasks/agent-community/my-articles/data";
+import { toggleLike } from "@/app/(nav)/management/agent-community/my-articles/data";
 import { empty } from "@/app/config";
 import { useState } from "react";
 import { toast } from "sonner";
 import ReactPlayer from 'react-player';
 
-const link = "/tasks/agent-community/";
+const link = "/management/agent-community/";
 
 const ThreadCard = ({
   name,
@@ -36,7 +36,7 @@ const ThreadCard = ({
   shareLink,
   video,
 }: ThreadCardProps) => {
-  const link = `/tasks/agent-community/${myArticle ? "my-articles" : "threads"}/${slug}/preview?id=${id}`;
+  const link = `/management/agent-community/${myArticle ? "my-articles" : "threads"}/${slug}/preview?id=${id}`;
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md flex flex-col h-full">
       <Link
