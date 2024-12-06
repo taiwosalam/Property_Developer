@@ -35,7 +35,7 @@ const lists = [
   },
 ];
 interface ThreadApiResponse {
-  data:any[];
+  data: any[];
   meta: {
     pagination: {
       last_page: number;
@@ -50,7 +50,7 @@ interface ThreadApiResponse {
 }
 const MyArticlePage = () => {
   const router = useRouter();
-  const initialState:ThreadApiResponse = {
+  const initialState: ThreadApiResponse = {
     data: [],
     meta: {
       pagination: {
@@ -62,18 +62,17 @@ const MyArticlePage = () => {
       recent_posts: 0,
     },
     isLoading: false,
-    searchQuery: '',
-}
+    searchQuery: "",
+  };
   const [state, setState] = useState(initialState);
   const { data, isLoading, searchQuery, meta } = state;
   const [isFetching, setIsFetching] = useState(false);
-    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-    const handleSort = (order: "asc" | "desc") => {
-      setSortOrder(order);
-      console.log('sortOrder', order);
-    };
-
+  const handleSort = (order: "asc" | "desc") => {
+    setSortOrder(order);
+    console.log("sortOrder", order);
+  };
 
   const handlePageChange = (page: number) => {
     setState((prevState) => ({
@@ -86,20 +85,20 @@ const MyArticlePage = () => {
     }));
   };
 
-    const config = useMemo(
-      () => ({
-        params: {
-          page: meta?.pagination.current_page,
-          search: searchQuery,
-          sort: sortOrder,
-        },
-      }),
-      [meta?.pagination.current_page, searchQuery, sortOrder]
-    );
+  const config = useMemo(
+    () => ({
+      params: {
+        page: meta?.pagination.current_page,
+        search: searchQuery,
+        sort: sortOrder,
+      },
+    }),
+    [meta?.pagination.current_page, searchQuery, sortOrder]
+  );
 
   const handleSearch = async (query: string): Promise<void> => {
-      // console.log('query', query);
-      // console.log('last_page', meta?.pagination.last_page);
+    // console.log("query", query);
+    // console.log("total_pages", meta?.pagination.total_pages);
     if (!query && !searchQuery) return;
     setState((prevState) => ({
       ...prevState,
@@ -116,10 +115,10 @@ const MyArticlePage = () => {
     refetch,
   } = useFetch<ThreadApiResponse>("/agent_community/user/posts", config);
   useRefetchOnEvent("refetchThreads", () => refetch({ silent: true }));
-  
+
   useEffect(() => {
     if (apiData) {
-      console.log('apiData', apiData);
+      console.log("apiData", apiData);
       setState((x) => ({
         ...x,
         data: apiData.data,
@@ -129,22 +128,21 @@ const MyArticlePage = () => {
         // current_page: apiData.meta.current_page,
         current_page: apiData.meta.pagination.current_page,
         total_posts: apiData.meta.pagination.total,
-        
       }));
-      console.log('state', state);
+      console.log("state", state);
     }
   }, [apiData]);
 
-  if (loading) return(
-    <div className="min-h-[80vh] flex justify-center items-center">
-      <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-    </div>
-  )
-  
+  if (loading)
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
+    );
+
   if (isNetworkError) return <NetworkError />;
 
   if (error) return <div>{error}</div>;
-  
 
   const handleCreateMyArticleClick = () => {
     router.push("/management/agent-community/my-articles/create");
@@ -162,7 +160,7 @@ const MyArticlePage = () => {
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">
-              + Community Board 
+              + Community Board
             </Button>
           </ModalTrigger>
           <ModalContent>
@@ -173,7 +171,6 @@ const MyArticlePage = () => {
       <FilterBar
         hasGridListToggle={false}
         azFilter
-        onStateSelect={() => {}}
         pageTitle="My Articles"
         aboutPageModalData={{
           title: "My Articles",
@@ -187,7 +184,7 @@ const MyArticlePage = () => {
       />
 
       <section className="capitalize">
-        {data.length === 0 && !silentLoading ?(
+        {data.length === 0 && !silentLoading ? (
           searchQuery ? (
             "No Search Found"
           ) : (
@@ -196,64 +193,65 @@ const MyArticlePage = () => {
               title="You have not created any articles yet"
               body={
                 <p>
-                  Create articles to share your thoughts, ideas, and insights with other agents in your network.
+                  Create articles to share your thoughts, ideas, and insights
+                  with other agents in your network.
                 </p>
               }
             />
           )
         ) : (
-        <AutoResizingGrid minWidth={300}>
-          {silentLoading ? (
-          <>
-            <ThreadSkeleton />  
-            <ThreadSkeleton />  
-            <ThreadSkeleton />  
-          </>
-        ) : data && data.length > 0 ? (
-          data.map((thread, index) => (
-            <ThreadCard
-                key={index}
-                slug={thread.post.slug}
-                id={thread.post.id}
-                name={thread.user.name}
-                picture_url={
-                  thread.post.media && thread.post.media.length > 0
-                    ? thread.post.media[0].path
-                    : undefined
-                }
-                role={thread.user.role}
-                time={thread.post.created_at}
-                title={thread.post.title}
-                desc={thread.post.content}
-                comments={thread.post.comments_count}
-                user_pics={thread.user.picture}
-                likes={thread.post.likes_up}
-                dislikes={thread.post.likes_down}
-                shareLink={thread.post.share_link}
-                myArticle={true}
-                video={thread.post.video_link}
-              />
+          <AutoResizingGrid minWidth={300}>
+            {silentLoading ? (
+              <>
+                <ThreadSkeleton />
+                <ThreadSkeleton />
+                <ThreadSkeleton />
+              </>
+            ) : data && data.length > 0 ? (
+              data.map((thread, index) => (
+                <ThreadCard
+                  key={index}
+                  slug={thread.post.slug}
+                  id={thread.post.id}
+                  name={thread.user.name}
+                  picture_url={
+                    thread.post.media && thread.post.media.length > 0
+                      ? thread.post.media[0].path
+                      : undefined
+                  }
+                  role={thread.user.role}
+                  time={thread.post.created_at}
+                  title={thread.post.title}
+                  desc={thread.post.content}
+                  comments={thread.post.comments_count}
+                  user_pics={thread.user.picture}
+                  likes={thread.post.likes_up}
+                  dislikes={thread.post.likes_down}
+                  shareLink={thread.post.share_link}
+                  myArticle={true}
+                  video={thread.post.video_link}
+                />
               ))
             ) : null}
           </AutoResizingGrid>
         )}
-      {meta?.pagination.total > 1 && (
-        <div className="pagination">
-          <Pagination
-            totalPages={meta?.pagination.last_page}
-            currentPage={meta?.pagination.current_page}
-            onPageChange={handlePageChange}
-          />
-        </div>
+        {meta?.pagination.total > 1 && (
+          <div className="pagination">
+            <Pagination
+              totalPages={meta?.pagination.total}
+              currentPage={meta?.pagination.current_page}
+              onPageChange={handlePageChange}
+            />
+          </div>
         )}
         <div className="top-80 right-4 fixed rounded-full">
           <button
             onClick={handleCreateMyArticleClick}
-          className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
-        >
-          <PlusIcon />
-        </button>
-      </div>
+            className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
+          >
+            <PlusIcon />
+          </button>
+        </div>
       </section>
     </div>
   );

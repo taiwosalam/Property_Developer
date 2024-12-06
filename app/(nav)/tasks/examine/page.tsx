@@ -5,7 +5,7 @@ import Button from "@/components/Form/Button/button";
 import ExamineCard from "@/components/tasks/Examine/examine-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { examineFilterOptionsWithDropdown, getAllExamine } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -36,7 +36,6 @@ const Examine = () => {
       </div>
       <FilterBar
         azFilter
-        onStateSelect={() => {}}
         pageTitle="Examine"
         aboutPageModalData={{
           title: "Examine",
@@ -45,8 +44,7 @@ const Examine = () => {
         searchInputPlaceholder="Search for Examine"
         handleFilterApply={() => {}}
         isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={examineFilterOptionsWithDropdown}
+        filterOptionsMenu={examineFilterOptionsWithDropdown}
         hasGridListToggle={false}
       />
       <AutoResizingGrid minWidth={350} gap={32}>

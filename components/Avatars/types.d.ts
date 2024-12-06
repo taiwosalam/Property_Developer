@@ -3,3 +3,11 @@ export interface AvatarsProps {
   maxNumber?: number;
   branch?: boolean;
 }
+
+export interface AvatarLinksResponse {
+  avatars: {
+    id: string;
+    image_url: string;
+  }[];
+}
+

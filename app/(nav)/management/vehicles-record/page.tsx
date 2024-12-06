@@ -30,7 +30,9 @@ import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-recor
 
 const VehiclesRecordPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<VehicleRecord | null>(null);
+  const [selectedRecord, setSelectedRecord] = useState<VehicleRecord | null>(
+    null
+  );
 
   const initialState = {
     check_ins: 0,
@@ -62,8 +64,7 @@ const VehiclesRecordPage = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  
-  
+
   const handleSort = (order: "asc" | "desc") => {
     setSortOrder(order);
   };
@@ -105,7 +106,7 @@ const VehiclesRecordPage = () => {
     if (apiData) {
       setState((x) => ({
         ...x,
-        ...transformVehicleRecordApiResponse(apiData)
+        ...transformVehicleRecordApiResponse(apiData),
       }));
       console.log("Updated state", state);
     }
@@ -113,7 +114,7 @@ const VehiclesRecordPage = () => {
 
   const handleActionClick = (record: DataItem) => {
     const vehicleRecord = record as VehicleRecord;
-    console.log("vehicle record passed -", vehicleRecord)
+    console.log("vehicle record passed -", vehicleRecord);
     const updatedRecord = {
       ...data,
       latest_check_in: vehicleRecord.latest_check_in,
@@ -132,20 +133,19 @@ const VehiclesRecordPage = () => {
     setModalOpen(true);
   };
 
-    if (loading)
-      return (
-        <CustomLoader
-          layout="page"
-          pageTitle="Vehicle Records"
-          statsCardCount={3}
-        />
-      );
+  if (loading)
+    return (
+      <CustomLoader
+        layout="page"
+        pageTitle="Vehicle Records"
+        statsCardCount={3}
+      />
+    );
 
-    if (isNetworkError) return <NetworkError />;
+  if (isNetworkError) return <NetworkError />;
 
-    if (error)
-      return <p className="text-base text-red-500 font-medium">{error}</p>;
-
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-9">
@@ -183,7 +183,6 @@ const VehiclesRecordPage = () => {
       </div>
       <FilterBar
         azFilter
-        onStateSelect={() => {}}
         pageTitle="Vehicle Record"
         aboutPageModalData={{
           title: "Vehicle Record",
@@ -193,8 +192,7 @@ const VehiclesRecordPage = () => {
         searchInputPlaceholder="Search for Vehicle Record"
         handleFilterApply={() => {}}
         isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={vehicleRecordFIltersOptionsWithDropdown}
+        filterOptionsMenu={vehicleRecordFIltersOptionsWithDropdown}
         hasGridListToggle={false}
         handleSearch={handleSearch}
         onSort={handleSort}
@@ -206,9 +204,7 @@ const VehiclesRecordPage = () => {
           ) : (
             <EmptyList
               buttonText="+ create new"
-              modalContent={
-                <CreateRecordModal data={data} />
-              }
+              modalContent={<CreateRecordModal data={data} />}
               title="You have not created any vehicle records yet"
               body={
                 <p>
@@ -248,9 +244,13 @@ const VehiclesRecordPage = () => {
               }}
             >
               <ModalContent>
+<<<<<<< HEAD:app/(nav)/management/vehicles-record/page.tsx
                 <VehicleRecordModal
                   {...(selectedRecord as VehicleRecord)}
                 />
+=======
+                <VehicleRecordModal {...(selectedRecord as VehicleRecord)} />
+>>>>>>> f4f17cc7cda52a7f94bfc53a8e0ad372c13f8675:app/(nav)/tasks/vehicles-record/page.tsx
               </ModalContent>
             </Modal>
             <Pagination

@@ -65,7 +65,6 @@ const Undo = () => {
       <FilterBar
         azFilter
         isDateTrue
-        onStateSelect={() => {}}
         pageTitle="undo"
         aboutPageModalData={{
           title: "undo",
@@ -73,8 +72,7 @@ const Undo = () => {
         }}
         searchInputPlaceholder="Search for undo"
         handleFilterApply={() => {}}
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={reportsUndoFilterOptionsWithDropdown}
+        filterOptionsMenu={reportsUndoFilterOptionsWithDropdown}
         hasGridListToggle={false}
       />
       <CustomTable

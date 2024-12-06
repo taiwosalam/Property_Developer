@@ -1,4 +1,6 @@
-export const lstingUnitOptionsWithDropdown = [
+import type { FilterOptionMenu } from "@/components/Management/Landlord/types";
+
+export const listingUnitFilter: FilterOptionMenu[] = [
   {
     label: "Property",
     value: [
@@ -15,10 +17,8 @@ export const lstingUnitOptionsWithDropdown = [
       { label: "branch 3", value: "branch3" },
     ],
   },
-];
-
-export const listingUnitOptionsWithRadio = [
   {
+    radio: true,
     label: "Status",
     value: [
       { label: "Status 1", value: "Status1" },

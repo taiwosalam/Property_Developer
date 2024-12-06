@@ -1,3 +1,6 @@
+import api, { handleAxiosError } from "@/services/api";
+import type { AvatarLinksResponse } from "./types";
+
 export const avatarLinks = [
   "https://pubassets.ourproperty.ng/uploads/gBTaZYUXOch2qrKq5k5F2EdShRihQjYGuxDwOuu6.png",
   "https://pubassets.ourproperty.ng/uploads/7M10IKK6OGULqivpfmJ7AMYWNb1BAzpboSLtHffM.png",
@@ -102,3 +105,19 @@ export const branchAvatarLinks = [
   "https://khrimisay.s3.eu-north-1.amazonaws.com/utter/IxmkKOo5hO2lhMxWsR6KcjHiPaE2CwasQSEiene8.png",
   "https://khrimisay.s3.eu-north-1.amazonaws.com/utter/rHJ2CHenXMDuEnzwqveGdJu9V2d4vEUELMTIGDXb.png",
 ];
+
+let cachedAvatarLinks: { id: string; image_url: string }[] | null = null;
+
+export const getAvatarLinks = async () => {
+  if (cachedAvatarLinks) {
+    return cachedAvatarLinks;
+  }
+  try {
+    const { data } = await api<AvatarLinksResponse>("avatars");
+    cachedAvatarLinks = data.avatars;
+    return data.avatars;
+  } catch (error) {
+    handleAxiosError(error);
+    return [];
+  }
+};

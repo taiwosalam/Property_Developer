@@ -1,4 +1,6 @@
-export const maintenanceFilterOptionsWithDropdown = [
+import type { FilterOptionMenu } from "@/components/Management/Landlord/types";
+
+export const maintenanceFilterOptionsWithDropdown: FilterOptionMenu[] = [
   {
     label: "Property",
     value: [
@@ -7,10 +9,8 @@ export const maintenanceFilterOptionsWithDropdown = [
       { label: "Property 3", value: "Property3" },
     ],
   },
-];
-
-export const maintenanceFilterOptionsWithRadio = [
   {
+    radio: true,
     label: "Status",
     value: [
       { label: "Pending", value: "Pending" },
@@ -20,8 +20,6 @@ export const maintenanceFilterOptionsWithRadio = [
     ],
   },
 ];
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const createMaintenance = async (
   data: FormData //change to formdata later

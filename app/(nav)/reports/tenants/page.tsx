@@ -41,7 +41,6 @@ const TenantsReport = () => {
         azFilter
         exports
         isDateTrue
-        onStateSelect={() => {}}
         pageTitle="Tenants/Occupants"
         aboutPageModalData={{
           title: "Tenants/Occupants",
@@ -50,8 +49,7 @@ const TenantsReport = () => {
         }}
         searchInputPlaceholder="Search for Tenants/Occupants"
         handleFilterApply={() => {}}
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={reportsTenantsFilterOptionsWithDropdown}
+        filterOptionsMenu={reportsTenantsFilterOptionsWithDropdown}
         hasGridListToggle={false}
         exportHref="/reports/tenants/export"
       />

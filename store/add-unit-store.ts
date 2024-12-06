@@ -1,38 +1,51 @@
 import { create } from "zustand";
 import type { Categories } from "@/data";
+import { currencySymbols } from "@/utils/number-formatter";
 
-type PropertyType = "rental" | "facility";
+type PropertyType = "rental" | "facility" | null;
 
 interface PropertyDetails {
   property_title: string;
   state: string;
   local_govt: string;
   full_address: string;
-  branch: string;
-  account_officer: string;
-  manager: string;
+  branch?: string;
+  account_officer?: string;
+  manager?: string;
   category: Categories;
   desciption: string;
+  images: string[];
 }
 interface PropertySettings {
-  agency_fee: string;
-  period: string;
-  charge: string;
-  book_visitors: boolean;
-  VAT: boolean;
-  caution_deposit: string;
-  group_chat: boolean;
-  rent_penalty: boolean;
-  request_callback: boolean;
-  currency: string;
+  agency_fee?: number;
+  management_fee?: number;
+  who_to_charge_new_tenant?: string;
+  who_to_charge_renew_tenant?: string;
+  book_visitors?: "Yes" | "No";
+  VAT?: "Yes" | "No";
+  caution_deposit?: string;
+  group_chat?: "Yes" | "No";
+  rent_penalty?: "Yes" | "No";
+  request_callback?: "Yes" | "No";
+  vehicle_record?: "Yes" | "No";
+  currency?: keyof typeof currencySymbols | null;
 }
 
-interface AddUnitStore {
+export interface AddUnitStore {
+  property_id: string | null;
   propertyType: PropertyType;
   propertyDetails: null | PropertyDetails;
   propertySettings: null | PropertySettings;
-
   addedUnits: { [key: string]: FormDataEntryValue | FormDataEntryValue[] }[];
+  setAddUnitStore: <
+    K extends keyof Omit<
+      AddUnitStore,
+      "setAddUnitStore" | "addUnit" | "editUnit" | "removeUnit"
+    >
+  >(
+    key: K,
+    value: AddUnitStore[K]
+  ) => void;
   addUnit: (
     unitData: { [key: string]: FormDataEntryValue | FormDataEntryValue[] },
     duplicateCount?: number
@@ -45,11 +58,14 @@ interface AddUnitStore {
 }
 
 export const useAddUnitStore = create<AddUnitStore>((set) => ({
-  propertyType: "facility",
+  property_id: null,
+  propertyType: null,
   propertyDetails: null,
   propertySettings: null,
-
   addedUnits: [],
+  setAddUnitStore: (key, value) => {
+    set({ [key]: value });
+  },
   addUnit: (unitData, duplicateCount = 0) => {
     set((state) => {
       // perform post request should come with the unit data u just added and use that to set d state of addedUnits
@@ -80,8 +96,3 @@ export const useAddUnitStore = create<AddUnitStore>((set) => ({
     });
   },
 }));
-
-// export const useAddUnitStoreSelectors = {
-//   getState: useAddUnitStore.getState,
-//   setState: useAddUnitStore.setState,
-// };

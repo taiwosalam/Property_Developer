@@ -36,7 +36,6 @@ const Applications = () => {
           azFilter
           isDateTrue
           hasGridListToggle={false}
-          onStateSelect={() => {}}
           pageTitle="Applications"
           aboutPageModalData={{
             title: "Applications",
@@ -46,8 +45,7 @@ const Applications = () => {
           }}
           searchInputPlaceholder="Search application"
           handleFilterApply={() => {}}
-          filterOptions={[]}
-          filterWithOptionsWithDropdown={DocumentssFilterOptionsWithDropdown}
+          filterOptionsMenu={DocumentssFilterOptionsWithDropdown}
         />
         <AutoResizingGrid minWidth={300} gap={32}>
           <ApplicationCard status="flagged" type="staff" />

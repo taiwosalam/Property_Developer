@@ -36,14 +36,6 @@ const AccountingExpensesPage = () => {
     DateRange | undefined
   >();
 
-  const [state, setState] = useState<{ selectedState: string }>({
-    selectedState: "",
-  });
-
-  const setSelectedState = (selectedState: string) => {
-    setState((state) => ({ ...state, selectedState }));
-  };
-
   const [timeRange, setTimeRange] = useState("90d");
 
   const handleDateChange = (range: DateRange | undefined) => {
@@ -159,13 +151,9 @@ const AccountingExpensesPage = () => {
                 </ModalTrigger>
                 <ModalContent>
                   <FilterModal
-                    filterOptions={[]}
-                    filterOptionsWithDropdown={
-                      accountingExpensesOptionsWithDropdown
-                    }
-                    onApply={handleFilterApply}
-                    onStateSelect={(state: string) => setSelectedState(state)}
-                    date
+                    filterOptionsMenu={accountingExpensesOptionsWithDropdown}
+                    handleFilterApply={handleFilterApply}
+                    isDateTrue
                   />
                 </ModalContent>
               </Modal>

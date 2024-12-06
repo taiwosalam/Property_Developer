@@ -45,9 +45,6 @@ const BranchPropertiesSection: React.FC<{ branchId: string }> = ({
   const handlePageChange = (page: number) => {
     setState((state) => ({ ...state, current_page: page }));
   };
-  const setSelectedState = (selectedState: string) => {
-    setState((state) => ({ ...state, selectedState }));
-  };
 
   const allStates = getAllStates() || [];
 
@@ -58,15 +55,6 @@ const BranchPropertiesSection: React.FC<{ branchId: string }> = ({
         label: state,
         value: state,
       })),
-    },
-    {
-      label: "Local Government",
-      value: selectedState
-        ? localGovernments.map((lga) => ({
-            label: lga,
-            value: lga,
-          }))
-        : [],
     },
   ];
 
@@ -79,9 +67,7 @@ const BranchPropertiesSection: React.FC<{ branchId: string }> = ({
       <FilterBar
         searchInputPlaceholder="Search for Branch properties"
         azFilter
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={branchFiltersWithOptions}
-        onStateSelect={(state: string) => setSelectedState(state)}
+        filterOptionsMenu={branchFiltersWithOptions}
         handleFilterApply={handleFilterApply}
         isDateTrue
         gridView={gridView}

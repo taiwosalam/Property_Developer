@@ -3,7 +3,7 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import CustomTable from "@/components/Table/table";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
-  reportsPropertiessFilterOptionsWithDropdown,
+  reportsPropertiessFilterOptions,
   propertiesReportTablefields,
 } from "./data";
 
@@ -35,7 +35,6 @@ const PropertiesReport = () => {
         azFilter
         exports
         isDateTrue
-        onStateSelect={() => {}}
         pageTitle="Properties Report"
         aboutPageModalData={{
           title: "Properties Report",
@@ -44,10 +43,7 @@ const PropertiesReport = () => {
         }}
         searchInputPlaceholder="Search for Properties Report"
         handleFilterApply={() => {}}
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={
-          reportsPropertiessFilterOptionsWithDropdown
-        }
+        filterOptionsMenu={reportsPropertiessFilterOptions}
         hasGridListToggle={false}
         exportHref="/reports/properties/export"
       />

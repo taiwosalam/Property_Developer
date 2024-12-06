@@ -20,7 +20,6 @@ const BranchPPropertyPreview = () => {
       currency="naira"
       state="Lagos"
       local_government="Ikeja"
-      fee_period="Monthly"
       isRental={false}
       id="22"
       units={[]}

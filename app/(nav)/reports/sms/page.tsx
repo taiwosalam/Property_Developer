@@ -44,7 +44,6 @@ const SMSReport = () => {
       <FilterBar
         azFilter
         isDateTrue
-        onStateSelect={() => {}}
         pageTitle="SMS"
         aboutPageModalData={{
           title: "sms",
@@ -52,8 +51,7 @@ const SMSReport = () => {
         }}
         searchInputPlaceholder="Search for sms"
         handleFilterApply={() => {}}
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={reportsSmsFilterOptionsWithDropdown}
+        filterOptionsMenu={reportsSmsFilterOptionsWithDropdown}
         hasGridListToggle={false}
         exportHref="/reports/sms/export"
       />

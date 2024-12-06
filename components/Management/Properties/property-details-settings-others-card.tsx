@@ -9,10 +9,10 @@ export interface PropertyDetailsSettingsOthersCardProps {
   local_government: string;
   account_officer?: string;
   agency_fee?: number;
-  maintenance_fee?: number;
+  management_fee?: number;
   caution_deposit?: string;
   currency?: keyof typeof currencySymbols;
-  fee_period: string;
+  // fee_period: string;
   group_chat?: "Yes" | "No";
   who_to_charge_new_tenant?: string;
   who_to_charge_renew_tenant?: string;
@@ -54,10 +54,10 @@ const PropeertyDetailsSettingsCard: React.FC<
   local_government,
   account_officer,
   agency_fee,
-  maintenance_fee,
+  management_fee,
   caution_deposit,
   currency,
-  fee_period,
+  // fee_period,
   group_chat,
   who_to_charge_new_tenant,
   who_to_charge_renew_tenant,
@@ -102,10 +102,10 @@ const PropeertyDetailsSettingsCard: React.FC<
             {isRental ? "Property" : "Facility"} Settings
           </h3>
           <DetailItem
-            label={`${isRental ? "Agency" : "Maintenance"} Fee`}
-            value={`${isRental ? agency_fee : maintenance_fee}%`}
+            label={`${isRental ? "Agency" : "Management"} Fee`}
+            value={`${isRental ? agency_fee : management_fee}%`}
           />
-          <DetailItem label="Period" value={fee_period} />
+          {/* <DetailItem label="Period" value={fee_period} /> */}
           <DetailItem label="Group Chat" value={group_chat} />
           {isRental && (
             <>

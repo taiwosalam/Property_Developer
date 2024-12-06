@@ -35,7 +35,6 @@ const UnitsReport = () => {
         azFilter
         exports
         isDateTrue
-        onStateSelect={() => {}}
         pageTitle="Units"
         aboutPageModalData={{
           title: "Units",
@@ -43,8 +42,7 @@ const UnitsReport = () => {
         }}
         searchInputPlaceholder="Search for Units"
         handleFilterApply={() => {}}
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={reportsUnitsFilterOptionsWithDropdown}
+        filterOptionsMenu={reportsUnitsFilterOptionsWithDropdown}
         hasGridListToggle={false}
         exportHref="/reports/units/export"
       />

@@ -46,14 +46,10 @@ const Disbursement = () => {
       <div className="custom-flex-col gap-4">
         <FilterBar
           azFilter
-          onStateSelect={() => {}}
           searchInputPlaceholder="Search for disbursement"
           handleFilterApply={() => {}}
           isDateTrue
-          filterOptions={[]}
-          filterWithOptionsWithDropdown={
-            accountingDisbursementOptionsWithDropdown
-          }
+          filterOptionsMenu={accountingDisbursementOptionsWithDropdown}
           hasGridListToggle={false}
           exports
           exportHref="/accounting/disbursement/export"

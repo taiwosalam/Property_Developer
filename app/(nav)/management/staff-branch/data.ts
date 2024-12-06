@@ -13,12 +13,17 @@ export interface BranchesPageData {
   branches: BranchCardProps[];
 }
 
-export interface StaffAndBranchPageState {
-  selectedState: string;
-  selectedLGA: string;
-  localGovernments: string[];
-  branchesPageData: BranchesPageData;
-}
+export const initialBranchesPageData: BranchesPageData = {
+  total_pages: 1,
+  current_page: 1,
+  total_branches: 0,
+  new_branches_count: 0,
+  total_properties: 0,
+  new_properties_count: 0,
+  total_staffs: 0,
+  new_staffs_count: 0,
+  branches: [],
+};
 
 export const branchTableFields: Field[] = [
   { id: "1", label: "S/N", accessor: "S/N" },
@@ -121,3 +126,12 @@ export const transformBranchApiResponse = (
     })),
   };
 };
+
+export interface BranchRequestParams {
+  page?: number;
+  search?: string;
+  sort_order?: "asc" | "desc";
+  state?: string;
+  start_date?: string;
+  end_date?: string;
+}

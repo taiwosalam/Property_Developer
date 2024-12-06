@@ -38,14 +38,6 @@ const Vat = () => {
     DateRange | undefined
   >();
 
-  const [state, setState] = useState<{ selectedState: string }>({
-    selectedState: "",
-  });
-
-  const setSelectedState = (selectedState: string) => {
-    setState((state) => ({ ...state, selectedState }));
-  };
-
   const [timeRange, setTimeRange] = useState("90d");
 
   const handleDateChange = (range: DateRange | undefined) => {
@@ -145,11 +137,9 @@ const Vat = () => {
                 </ModalTrigger>
                 <ModalContent>
                   <FilterModal
-                    filterOptions={[]}
-                    filterOptionsWithDropdown={accountingVatOptionsWithDropdown}
-                    onApply={handleFilterApply}
-                    date
-                    onStateSelect={(state: string) => setSelectedState(state)}
+                    filterOptionsMenu={accountingVatOptionsWithDropdown}
+                    handleFilterApply={handleFilterApply}
+                    isDateTrue
                   />
                 </ModalContent>
               </Modal>

@@ -137,19 +137,22 @@ const PropertyRequest = () => {
     refetch,
     silentLoading,
     isNetworkError,
-  } = useFetch<PropertyRequestApiData>(`/agent-community/property-requests/all`, config);
+  } = useFetch<PropertyRequestApiData>(
+    `/agent-community/property-requests/all`,
+    config
+  );
 
   useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         data: apiData.data,
-        meta: apiData.meta
-      }))
+        meta: apiData.meta,
+      }));
     }
-  }, [apiData])
+  }, [apiData]);
 
   const handleFilterApply = (filters: any) => {
     console.log("Filter applied:", filters);
@@ -166,34 +169,38 @@ const PropertyRequest = () => {
     }
   };
 
-  const propertyRequestData: PropertyRequestDataType[] = data.map((request: any) => ({
-    requestId: request.propertyRequest.id,
-    userName: request.user?.name || "__",
-    requestDate: formatDate(request.propertyRequest.created_at) || "__",
-    pictureSrc: request.user?.picture || empty,
-    state: request.propertyRequest.state || "__",
-    lga: request.propertyRequest.lga || "__",
-    propertyType: request.propertyRequest.property_type || "__",
-    category: request.propertyRequest.property_category || "__",
-    subType: request.propertyRequest.sub_type || "__",
-    minBudget: `₦${request.propertyRequest.min_budget}` || "__",
-    maxBudget: `₦${request.propertyRequest.max_budget}` || "__",
-    requestType: "Web",
-    description: request.propertyRequest.description || "__",
-    phoneNumber: request.user?.phone || "__",
-    propertyTitle: request.propertyRequest.title || "__",
-    userTitle: request.user?.title || "__",
-    targetAudience: request.propertyRequest.target_audience,
-  })) || [];
+  const propertyRequestData: PropertyRequestDataType[] =
+    data.map((request: any) => ({
+      requestId: request.propertyRequest.id,
+      userName: request.user?.name || "__",
+      requestDate: formatDate(request.propertyRequest.created_at) || "__",
+      pictureSrc: request.user?.picture || empty,
+      state: request.propertyRequest.state || "__",
+      lga: request.propertyRequest.lga || "__",
+      propertyType: request.propertyRequest.property_type || "__",
+      category: request.propertyRequest.property_category || "__",
+      subType: request.propertyRequest.sub_type || "__",
+      minBudget: `₦${request.propertyRequest.min_budget}` || "__",
+      maxBudget: `₦${request.propertyRequest.max_budget}` || "__",
+      requestType: "Web",
+      description: request.propertyRequest.description || "__",
+      phoneNumber: request.user?.phone || "__",
+      propertyTitle: request.propertyRequest.title || "__",
+      userTitle: request.user?.title || "__",
+      targetAudience: request.propertyRequest.target_audience,
+    })) || [];
 
-  if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
-    <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-  </div>;
+  if (loading)
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
+    );
 
   if (isNetworkError) return <NetworkError />;
 
   if (error)
-     return <p className="text-base text-red-500 font-medium">{error}</p>;
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-9">
@@ -220,19 +227,31 @@ const PropertyRequest = () => {
       </div>
       <FilterBar
         azFilter
-        onStateSelect={() => { }}
         pageTitle="Property Request"
         aboutPageModalData={{
           title: "Property Request",
-          description: "This page contains a list of Property Request on the platform.",
+          description:
+            "This page contains a list of Property Request on the platform.",
         }}
         searchInputPlaceholder="Search Property Request"
-        handleFilterApply={() => { }}
+        handleFilterApply={() => {}}
         isDateTrue
-        filterOptions={[]}
+        filterOptions={[
+          {
+            label: "All Property Request",
+            value: "all",
+          },
+          {
+            label: "Trending Property Request",
+            value: "trending",
+          },
+          {
+            label: "New Property Request",
+            value: "new",
+          },
+        ]}
         hasGridListToggle={false}
-        propertyRequest={true}
-        filterWithOptionsWithDropdown={stateOptions}
+        filterOptionsMenu={stateOptions}
         handleSearch={handleSearch}
       />
       {propertyRequestData.length === 0 && !silentLoading ? (
@@ -245,7 +264,10 @@ const PropertyRequest = () => {
               buttonLink="/management/agent-community/my-properties-request/create"
               title="The property request files are empty"
               body={
-                <p>Create a property request by clicking on the &quot;Create New Property Request&quot; button.</p>
+                <p>
+                  Create a property request by clicking on the &quot;Create New
+                  Property Request&quot; button.
+                </p>
               }
             />
           </section>
@@ -257,8 +279,8 @@ const PropertyRequest = () => {
           ) : (
             propertyRequestData.map((details, index) => (
               <PropertyRequestCard
-              key={index}
-              {...transformToPropertyRequestCardProps(details)}
+                key={index}
+                {...transformToPropertyRequestCardProps(details)}
               />
             ))
           )}

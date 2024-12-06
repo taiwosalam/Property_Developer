@@ -49,7 +49,6 @@ const Visitors = () => {
         azFilter
         exports
         isDateTrue
-        onStateSelect={() => {}}
         pageTitle="visitors request"
         aboutPageModalData={{
           title: "visitors request",
@@ -58,8 +57,7 @@ const Visitors = () => {
         }}
         searchInputPlaceholder="Search for visitors request"
         handleFilterApply={() => {}}
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={reportsVisitorsFilterOptionsWithDropdown}
+        filterOptionsMenu={reportsVisitorsFilterOptionsWithDropdown}
         hasGridListToggle={false}
         exportHref="/reports/visitors/export"
       />

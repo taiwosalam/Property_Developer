@@ -35,7 +35,6 @@ const ComplaintsPage = () => {
       <FilterBar
         hasGridListToggle={false}
         azFilter
-        onStateSelect={() => {}}
         pageTitle="Complains"
         aboutPageModalData={{
           title: "Complains",
@@ -45,8 +44,7 @@ const ComplaintsPage = () => {
         searchInputPlaceholder="Search for Task"
         handleFilterApply={() => {}}
         isDateTrue
-        filterOptions={[]}
-        filterWithOptionsWithDropdown={complaintsFilterOptionsWithDropdown}
+        filterOptionsMenu={complaintsFilterOptionsWithDropdown}
       />
       <SectionContainer heading="Recent Complains">
         <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 gap-4 flex items-center overflow-x-scroll no-scrollbar">
