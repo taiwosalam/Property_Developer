@@ -19,7 +19,7 @@ const SignIn = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (formData: Record<string, any>) => {
+  const handleSubmit = async (formData: Record<string, any>) => { 
     setIsLoading(true);
     const a = await login(formData);
     if (a === "redirect to verify email") {

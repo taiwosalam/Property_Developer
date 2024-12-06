@@ -145,11 +145,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     error: branchesError,
   } = useFetch<AllBranchesResponse>("/branches/select");
 
-  // const {
-  //   data: landlordsData,
-  //   loading: landlordsLoading,
-  //   error: landlordsError,
-  // } = useFetch<AllLandlordsResponse>("/landlord/select");
+  const {
+    data: landlordsData,
+    loading: landlordsLoading,
+    error: landlordsError,
+  } = useFetch<AllLandlordsResponse>("/landlord/select");
 
   const {
     data: inventoryData,
@@ -163,11 +163,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       label: branch.branch_name,
     })) || [];
 
-  // const landlordOptions =
-  //   landlordsData?.data.map((landlord) => ({
-  //     value: landlord.id,
-  //     label: landlord.full_name,
-  //   })) || [];
+  const landlordOptions =
+    landlordsData?.data.map((landlord) => ({
+      value: landlord.id,
+      label: landlord.name,
+    })) || [];
 
   const inventoryOptions =
     inventoryData?.data.map((inventory) => ({
@@ -210,7 +210,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const handleFormSubmit = async (data: Record<string, any>) => {
     setRequestLoading(true);
     convertYesNoToBoolean(data, yesNoFields);
-    const payload = transformPropertyFormData(data, imageFiles as File[], companyId);
+    const payload = transformPropertyFormData(
+      data,
+      imageFiles as File[],
+      companyId
+    );
     await handleSubmit(payload);
     setRequestLoading(false);
   };
@@ -410,21 +414,20 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 error={inventoryError}
               />
               <Select
-                // options={landlordOptions}
-                options={[]}
+                options={landlordOptions}
                 id="land_lord_id"
                 label="Landlord"
                 inputContainerClassName="bg-white"
                 resetKey={resetKey}
                 hiddenInputClassName="property-form-input"
-                // placeholder={
-                //   landlordsLoading
-                //     ? "Loading landlords..."
-                //     : landlordsError
-                //     ? "Error loading landlords"
-                //     : "Select landlord"
-                // }
-                // error={landlordsError}
+                placeholder={
+                  landlordsLoading
+                    ? "Loading landlords..."
+                    : landlordsError
+                    ? "Error loading landlords"
+                    : "Select landlord"
+                }
+                error={landlordsError}
               />
             </>
           )}

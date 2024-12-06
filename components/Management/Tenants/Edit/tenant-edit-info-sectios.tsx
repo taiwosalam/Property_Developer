@@ -677,7 +677,7 @@ export const TenantEditAvatarInfoSection = () => {
     if (data?.picture) {
       setPreview(data.picture);
     }
-  }, [data?.picture]);
+  }, [data?.picture, setPreview]);
 
   return (
     <AuthForm

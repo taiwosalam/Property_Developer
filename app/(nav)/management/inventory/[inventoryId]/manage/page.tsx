@@ -248,7 +248,7 @@ const ManageInventory = () => {
               setInventoryFiles={setInventoryFiles} 
             />
           ))}
-
+          
           {[...Array(moreInventory)].map((_, index) => (
             <InventoryItem 
               key={index} 

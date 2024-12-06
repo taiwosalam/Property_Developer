@@ -1,5 +1,5 @@
 import { CommentData } from "@/components/tasks/announcements/comment";
-import { sendMyPropertyRequestComment } from "@/app/(nav)/tasks/agent-community/my-articles/data";
+import { sendMyPropertyRequestComment } from "@/app/(nav)/management/agent-community/my-articles/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { SendMessageIcon } from "@/public/icons/icons";
 import Input from "@/components/Form/Input/input";

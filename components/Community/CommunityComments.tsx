@@ -4,8 +4,8 @@ import "keen-slider/keen-slider.min.css";
 import Comment, { CommentData } from "@/components/tasks/announcements/comment";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import NewComment from "../../app/(nav)/tasks/agent-community/NewComment";
-import { sendMyArticleComment, sendMyArticleReply, toggleCommentLike } from "@/app/(nav)/tasks/agent-community/my-articles/data";
+import NewComment from "../../app/(nav)/management/agent-community/NewComment";
+import { sendMyArticleComment, sendMyArticleReply, toggleCommentLike } from "@/app/(nav)/management/agent-community/my-articles/data";
 
 interface ThreadCommentProps {
     slug: string;

@@ -10,7 +10,7 @@ import AddServiceProviderOptions from "./add-service-provider-options";
 import AddServiceProviderForm from "./add-service-provider-form";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
-import { createServiceProvider } from "@/app/(nav)/tasks/service-providers/data";
+import { createServiceProvider } from "@/app/(nav)/management/service-providers/data";
 const AddServiceProviderModal = () => {
   const [activeStep, setActiveStep] =
     useState<AddServiceProviderModalOptions>("options");

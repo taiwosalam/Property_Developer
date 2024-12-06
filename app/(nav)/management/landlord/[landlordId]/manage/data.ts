@@ -1,6 +1,7 @@
 import type { Field } from "@/components/Table/types";
 import type { LandlordPageData } from "../../types";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
+import moment from "moment";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
@@ -65,16 +66,19 @@ export interface IndividualLandlordAPIResponse {
     picture: string;
     gender: string;
     agent: string;
-    // owner_type: string;
+    owner_type: string;
+    state: string;
+    local_government: string;
+    address: string;
     note: {
-      // last_updated: string; backend shit
+      last_updated_at: Date | null;
       note: string;
     };
     bank_details: {
       bank_name: string;
       account_name: string;
       account_number: string;
-      // wallet_id: string;
+      // wallet_id: string; uncoment this later. mobile users have wallet_id
     };
     next_of_kin: {
       name: string;
@@ -90,6 +94,9 @@ export interface IndividualLandlordAPIResponse {
 export const transformIndividualLandlordAPIResponse = ({
   data,
 }: IndividualLandlordAPIResponse): LandlordPageData => {
+  const lastUpdated = data.note.last_updated_at
+    ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
+    : "";
   return {
     id: data.id,
     picture: data.picture,
@@ -100,14 +107,19 @@ export const transformIndividualLandlordAPIResponse = ({
     phone_number: data.phone,
     gender: data.gender,
     notes: {
-      last_updated: "backend error",
+      last_updated: lastUpdated,
       write_up: data.note.note,
     },
-    owner_type: "backend error",
+    owner_type: data.owner_type,
     user_id: data.user_id,
     badge_color: data.tier_id ? tierColorMap[data.tier_id] : undefined,
     user_tag: data.agent.toLowerCase() === "mobile" ? "mobile" : "web",
-    contact_address: { address: "", city: "", state: "", local_govt: "" },
+    contact_address: {
+      address: data.address,
+      city: "",
+      state: data.state,
+      local_govt: data.local_government,
+    },
     next_of_kin: data.next_of_kin,
     bank_details: data.bank_details,
     others: {

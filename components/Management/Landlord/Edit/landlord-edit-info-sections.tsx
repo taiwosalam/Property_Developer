@@ -293,7 +293,7 @@ export const LandlordEditNextOfKinInfoSection = () => {
 export const LandlordEditGuarantorInfoSection = () => {
   const { data } = useLandlordEditContext();
 
-  const guarantor1 = data?.guarantor1 || {
+  const guarantor1 = data?.guarantor_1 || {
     name: "",
     email: "",
     address: "",
@@ -301,7 +301,7 @@ export const LandlordEditGuarantorInfoSection = () => {
     relationship: "",
   };
 
-  const guarantor2 = data?.guarantor2 || {
+  const guarantor2 = data?.guarantor_2 || {
     name: "",
     email: "",
     address: "",
@@ -310,7 +310,7 @@ export const LandlordEditGuarantorInfoSection = () => {
   };
 
   const renderGuarantorSection = (
-    guarantor: LandlordPageData["guarantor1"],
+    guarantor: LandlordPageData["guarantor_1"],
     index: number
   ) => (
     <LandlordTenantInfoEditSection title={`Guarantor ${index}`}>

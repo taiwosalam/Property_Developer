@@ -189,7 +189,7 @@ export const NotesInfoBox: React.FC<{
           <span>Note</span>
           <sub className="text-sm font-normal bottom-[unset]">
             <span className="font-bold">Last Updated</span>{" "}
-            {notes?.last_updated}
+            {notes?.last_updated || "N/A"}
           </sub>
         </h3>
       </div>

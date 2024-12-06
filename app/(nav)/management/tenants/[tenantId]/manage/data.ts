@@ -1,6 +1,7 @@
 import type { Field } from "@/components/Table/types";
 import type { TenantData } from "../../types";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
+import moment from "moment";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "S/N" },
@@ -52,10 +53,14 @@ export interface IndividualTenantAPIResponse {
     tier_id?: 1 | 2 | 3 | 4 | 5;
     picture: string;
     agent: string;
-    // gender: string;
+    gender: string;
+    tenant_type: string;
     user_id: string;
+    state: string;
+    local_government: string;
+    address: string;
     note: {
-      // last_updated: string;
+      last_updated_at: Date;
       note: string;
     };
     bank_details: {
@@ -78,6 +83,9 @@ export interface IndividualTenantAPIResponse {
 export const transformIndividualTenantAPIResponse = ({
   data,
 }: IndividualTenantAPIResponse): TenantData => {
+  const lastUpdated = data.note.last_updated_at
+    ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
+    : "";
   return {
     id: data.id,
     picture: data.picture,
@@ -89,12 +97,17 @@ export const transformIndividualTenantAPIResponse = ({
     user_tag: data.agent.toLowerCase() === "mobile" ? "mobile" : "web",
     badge_color: data.tier_id ? tierColorMap[data.tier_id] : undefined,
     phone_number: data.phone,
-    tenant_type: "backend error",
-    gender: "", //backend error
+    tenant_type: data.tenant_type,
+    gender: data.gender,
     birthdate: "",
     religion: "",
     marital_status: "",
-    contact_address: { address: "", city: "", state: "", local_govt: "" },
+    contact_address: {
+      address: data.address,
+      city: "",
+      state: data.state,
+      local_govt: data.local_government,
+    },
     next_of_kin: data.next_of_kin,
     others: {
       employment: "",
@@ -103,7 +116,7 @@ export const transformIndividualTenantAPIResponse = ({
     },
     bank_details: data.bank_details,
     notes: {
-      last_updated: "backend error",
+      last_updated: lastUpdated,
       write_up: data.note.note,
     },
     documents: data.documents,
