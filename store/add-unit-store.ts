@@ -1,8 +1,10 @@
 import { create } from "zustand";
 import type { Categories } from "@/data";
 import { currencySymbols } from "@/utils/number-formatter";
+import type { AddUnitPayload } from "@/components/Management/Properties/types";
 
 type PropertyType = "rental" | "facility" | null;
+type StoreAddedUnit = AddUnitPayload & { notYetUploaded?: boolean };
 
 interface PropertyDetails {
   property_title: string;
@@ -36,7 +38,7 @@ export interface AddUnitStore {
   propertyType: PropertyType;
   propertyDetails: null | PropertyDetails;
   propertySettings: null | PropertySettings;
-  addedUnits: { [key: string]: FormDataEntryValue | FormDataEntryValue[] }[];
+  addedUnits: StoreAddedUnit[];
   setAddUnitStore: <
     K extends keyof Omit<
       AddUnitStore,
@@ -46,10 +48,7 @@ export interface AddUnitStore {
     key: K,
     value: AddUnitStore[K]
   ) => void;
-  addUnit: (
-    unitData: { [key: string]: FormDataEntryValue | FormDataEntryValue[] },
-    duplicateCount?: number
-  ) => void;
+  addUnit: (unitData: AddUnitPayload, duplicateCount?: number) => void;
   editUnit: (
     index: number,
     unitData: { [key: string]: FormDataEntryValue | FormDataEntryValue[] }
@@ -68,10 +67,14 @@ export const useAddUnitStore = create<AddUnitStore>((set) => ({
   },
   addUnit: (unitData, duplicateCount = 0) => {
     set((state) => {
-      // perform post request should come with the unit data u just added and use that to set d state of addedUnits
-      const updatedUnits = [...state.addedUnits, unitData];
+      const updatedUnits: StoreAddedUnit[] = [...state.addedUnits, unitData];
       // Replicate the added unit if `duplicateCount` > 0.
-      const replicatedUnits = Array(duplicateCount).fill(unitData);
+
+      const replicatedUnits: StoreAddedUnit[] = Array(duplicateCount).fill({
+        ...unitData,
+        images: [],
+        notYetUploaded: true,
+      });
 
       return {
         addedUnits: [...updatedUnits, ...replicatedUnits],

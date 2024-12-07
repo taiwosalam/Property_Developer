@@ -54,16 +54,16 @@ export function convertYesNoToBoolean(data: InputData, fields: string[]): void {
 
     if (data instanceof FormData) {
       value = data.get(field) as string | null;
-      if (value === "yes") {
+      if (value?.toLowerCase() === "yes") {
         data.set(field, "1");
-      } else if (value === "no") {
+      } else if (value?.toLowerCase() === "no") {
         data.set(field, "0");
       }
     } else {
       value = data[field];
-      if (value === "yes") {
+      if (value?.toLowerCase() === "yes") {
         data[field] = 1;
-      } else if (value === "no") {
+      } else if (value?.toLowerCase() === "no") {
         data[field] = 0;
       }
     }

@@ -6,14 +6,11 @@ import { unitFacilities } from "@/data";
 import { useUnitForm } from "./unit-form-context";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { useAddUnitStore } from "@/store/add-unit-store";
-import { useSearchParams } from "next/navigation";
 
 const UnitFeatures = () => {
   const { handleInputChange } = useContext(FlowProgressContext);
-  const params = useSearchParams();
-  const propertyType = params.get("propertyType") as "rental" | "facility";
-  // const propertyType = useAddUnitStore((state) => state.propertyType);
   const { unitType, formResetKey } = useUnitForm();
+  const propertyType = useAddUnitStore((state) => state.propertyType);
 
   const [selectedAreaUnit, setSelectedAreaUnit] = useState("");
 
@@ -26,7 +23,7 @@ const UnitFeatures = () => {
     setSelectedAreaUnit("");
   }, [formResetKey]);
 
-  const isFacility = propertyType === "facility";
+  const isRental = propertyType === "rental";
 
   return (
     <div>
@@ -35,58 +32,48 @@ const UnitFeatures = () => {
       </h4>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 mb-4 md:mb-5">
-        {/* General Fields */}
-        <>
-          {/* Select for choosing area unit */}
-          <Select
-            id="measurement" // Confirm ID with backend
-            required={!isFacility}
-            options={areaUnits}
-            label="measurement"
-            value={selectedAreaUnit}
-            onChange={(val) => setSelectedAreaUnit(val)}
-            inputContainerClassName="bg-white"
-            hiddenInputClassName="unit-form-input"
-            resetKey={formResetKey}
-          />
-
-          {/* Conditionally render input fields based on selected area unit */}
-          {selectedAreaUnit && (
-            <>
-              <Input
-                required
-                id="area_sqm" //confirm ID with backend
-                label="Total Area (m²)"
-                labelclassName="undo-text-transform"
-                requiredNoStar={!isFacility}
-                inputClassName="bg-white unit-form-input"
-                formatNumber
-                endWith="sqm"
-                onChange={handleInputChange}
-              />
-              {/* Show second input only if selected unit is not "sqm" or "half plot" */}
-              {selectedAreaUnit !== "sqm" &&
-                selectedAreaUnit !== "half plot" && (
-                  <Input
-                    required={!isFacility}
-                    id="total_units" //confirm ID with backend
-                    label={`Number of ${selectedAreaUnit}s`}
-                    inputClassName="bg-white unit-form-input"
-                    onChange={handleInputChange}
-                    formatNumber
-                    endWith={`${selectedAreaUnit}s`}
-                  />
-                )}
-            </>
+        <Select
+          id="measurement"
+          required={isRental}
+          options={areaUnits}
+          label="measurement"
+          value={selectedAreaUnit}
+          onChange={(val) => setSelectedAreaUnit(val)}
+          inputContainerClassName="bg-white"
+          hiddenInputClassName="unit-form-input"
+          resetKey={formResetKey}
+        />
+        <Input
+          required
+          id="total_area_sqm"
+          label="Total Area (m²)"
+          labelclassName="undo-text-transform"
+          requiredNoStar={isRental}
+          inputClassName="bg-white unit-form-input"
+          formatNumber
+          endWith="sqm"
+          onChange={handleInputChange}
+        />
+        {selectedAreaUnit &&
+          selectedAreaUnit !== "sqm" &&
+          selectedAreaUnit !== "half plot" && (
+            <Input
+              required={isRental}
+              id="number_of"
+              label={`Number of ${selectedAreaUnit}s`}
+              inputClassName="bg-white unit-form-input"
+              onChange={handleInputChange}
+              formatNumber
+              endWith={`${selectedAreaUnit}s`}
+            />
           )}
-        </>
 
         {unitType !== "land" && (
           <>
             {/* Default fields for other unit types */}
             <Input
               id="bedroom"
-              required={!isFacility}
+              required={isRental}
               label="Bedroom"
               inputClassName="bg-white keep-spinner unit-form-input"
               type="number"
@@ -96,7 +83,7 @@ const UnitFeatures = () => {
               onChange={handleInputChange}
             />
             <Input
-              required={!isFacility}
+              required={isRental}
               id="bathroom"
               label="Bathroom"
               inputClassName="bg-white keep-spinner unit-form-input"
@@ -107,7 +94,7 @@ const UnitFeatures = () => {
               onChange={handleInputChange}
             />
             <Input
-              required={!isFacility}
+              required={isRental}
               id="toilet"
               label="Toilet"
               inputClassName="bg-white keep-spinner unit-form-input"
@@ -117,19 +104,19 @@ const UnitFeatures = () => {
               maxLength={2}
               onChange={handleInputChange}
             />
-            {!isFacility && (
-              <MultiSelect
-                options={facilitiesOptions}
-                maxSelections={10}
-                id="facilities"
-                label="Select Facilities (Maximum of 10)"
-                resetKey={formResetKey}
-              />
-            )}
           </>
         )}
+        {isRental && (
+          <MultiSelect
+            options={facilitiesOptions}
+            maxSelections={10}
+            id="facilities"
+            label="Select Facilities (Maximum of 10)"
+            resetKey={formResetKey}
+          />
+        )}
       </div>
-      {unitType !== "land" && !isFacility && (
+      {unitType !== "land" && isRental && (
         <div className="flex gap-4 md:gap-5 flex-wrap">
           <Select
             dropdownRefClassName="!w-[160px]"

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { PlusIcon } from "@/public/icons/icons";
 import DraggableImage from "./draggable-image";
 import { useUnitForm } from "./unit-form-context";
@@ -6,67 +7,47 @@ import { v4 as uuidv4 } from "uuid";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { MAX_FILE_SIZE_MB } from "@/data";
-import { useSearchParams } from "next/navigation";
+import { useMultipleImageUpload } from "@/hooks/useMultipleImageUpload";
 
 const UnitPictures = () => {
-  const { images, setImages, removeImage, isEditing } = useUnitForm();
-  // const propertyType = useAddUnitStore((state) => state.propertyType);
-  const params = useSearchParams();
-  const propertyType = params.get("propertyType") as "rental" | "facility";
+  const { images, setImages, isEditing, formResetKey } = useUnitForm();
+  const propertyType = useAddUnitStore((state) => state.propertyType);
+  const maxImages = propertyType === "facility" ? 5 : 14;
+
+  const {
+    fileInputRef,
+    handleFileChange,
+    handleImageReorder,
+    images: hookImages,
+    imageFiles: hookImageFiles,
+    removeImage,
+    resetImages,
+  } = useMultipleImageUpload({
+    maxImages: maxImages,
+    maxFileSizeMB: MAX_FILE_SIZE_MB,
+    initialImages: images,
+  });
+
   const sortableImages = images.map((image, index) => ({
     id: uuidv4(),
     index,
     image,
   }));
 
-  const maxImages = propertyType === "facility" ? 5 : 14;
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let files = Array.from(e.target.files || []);
-    files = files.slice(0, maxImages - images.length);
-    const validImages: string[] = [];
-    const oversizeImages: string[] = [];
-    for (const file of files) {
-      if (!file.type.startsWith("image/")) {
-        alert("Upload only image files.");
-        return;
-      }
-      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-        oversizeImages.push(file.name);
-        continue;
-      }
-      try {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          validImages.push(reader.result as string);
-          if (validImages.length + oversizeImages.length === files.length) {
-            setImages(validImages, { append: true });
-          }
-        };
-        reader.readAsDataURL(file);
-      } catch (error) {
-        console.error("Error processing image:", error);
-        alert("There was an error processing your image. Please try again.");
-      }
-    }
-
-    if (oversizeImages.length > 0) {
-      alert(
-        `Some files were not uploaded due to exceeding the maximum size: ${MAX_FILE_SIZE_MB} MB`
-      );
-    }
-    e.target.value = ""; // Reset input value to allow re-uploading the same file
-  };
-
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
     const { source, destination } = result;
     if (source.index === destination.index) return;
-    const newImages = Array.from(images);
-    const [movedImage] = newImages.splice(source.index, 1);
-    newImages.splice(destination.index, 0, movedImage);
-    setImages(newImages, { append: false });
+    handleImageReorder(source.index, destination.index);
   };
+
+  useEffect(() => {
+    setImages({ images: hookImages, imageFiles: hookImageFiles });
+  }, [hookImages, hookImageFiles, setImages]);
+
+  useEffect(() => {
+    resetImages();
+  }, [formResetKey, resetImages]);
 
   return (
     <div className={clsx(isEditing && "!mt-0")}>
@@ -115,6 +96,7 @@ const UnitPictures = () => {
                   <input
                     id="unit_pictures"
                     type="file"
+                    ref={fileInputRef}
                     accept="image/*"
                     multiple
                     onChange={handleFileChange}

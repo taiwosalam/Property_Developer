@@ -23,47 +23,49 @@ const PropertyDetails = ({ heading }: { heading: string }) => {
           <div className="min-w-[400px] text-sm md:text-base grid grid-cols-[1fr,26%,1fr] gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[50%,1fr]">
             <div>
               <p className="text-[#747474]">Property Title</p>
-              <p className="text-black font-medium">
+              <p className="text-black font-medium capitalize">
                 {propertyDetails?.property_title}
               </p>
             </div>
             <div>
               <p className="text-[#747474]">State</p>
-              <p className="text-black font-medium">{propertyDetails?.state}</p>
+              <p className="text-black font-medium capitalize">
+                {propertyDetails?.state}
+              </p>
             </div>
             <div>
               <p className="text-[#747474]">Local Government</p>
-              <p className="text-black font-medium">
+              <p className="text-black font-medium capitalize">
                 {propertyDetails?.local_govt}
               </p>
             </div>
             <div>
               <p className="text-[#747474]">Full Address</p>
-              <p className="text-black font-medium">
+              <p className="text-black font-medium capitalize">
                 {propertyDetails?.full_address}
               </p>
             </div>
             <div>
               <p className="text-[#747474]">Branch</p>
-              <p className="text-black font-medium">
+              <p className="text-black font-medium capitalize">
                 {propertyDetails?.branch}
               </p>
             </div>
             <div>
               <p className="text-[#747474]">Account Officer</p>
-              <p className="text-black font-medium">
+              <p className="text-black font-medium capitalize">
                 {propertyDetails?.account_officer}
               </p>
             </div>
             <div>
               <p className="text-[#747474]">Manager</p>
-              <p className="text-black font-medium">
+              <p className="text-black font-medium capitalize ">
                 {propertyDetails?.manager}
               </p>
             </div>
             <div>
               <p className="text-[#747474]">Category</p>
-              <p className="text-black font-medium">
+              <p className="text-black font-medium capitalize">
                 {propertyDetails?.category}
               </p>
             </div>
@@ -92,6 +94,7 @@ const PropertyDetails = ({ heading }: { heading: string }) => {
       <div className="lg:flex gap-4">
         <p className="text-[#747474] w-[13.5%]">Description</p>
         <TruncatedText
+          as="div"
           className="text-text-quaternary dark:text-darkText-2 flex-1"
           lines={2}
         >

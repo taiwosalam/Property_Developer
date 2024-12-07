@@ -4,8 +4,7 @@ import { UnitTypeKey } from "@/data";
 import { UnitFormState } from "./unit-form";
 
 interface UnitFormContextType extends UnitFormState {
-  setImages: (newImages: string[], options?: { append: boolean }) => void;
-  removeImage: (index: number) => void;
+  setImages: (a: { images: string[]; imageFiles: (File | string)[] }) => void;
   setUnitType: (unitType: "" | UnitTypeKey) => void;
   setSaved?: (saved: boolean) => void;
   duplicate?: {
@@ -13,6 +12,8 @@ interface UnitFormContextType extends UnitFormState {
     count: number;
   };
   setDuplicate?: (duplicate: { val: boolean; count: number }) => void;
+  isEditing?: boolean;
+  setIsEditing?: (isEditing: boolean) => void;
 }
 
 export const UnitFormContext = createContext<UnitFormContextType | undefined>(

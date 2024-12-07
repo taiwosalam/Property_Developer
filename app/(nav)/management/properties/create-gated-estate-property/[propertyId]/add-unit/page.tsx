@@ -1,42 +1,66 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { ChevronLeft } from "@/public/icons/icons";
+import { useEffect, useState } from "react";
 import PropertyDetails from "@/components/Management/Properties/property-details";
 import PropertySettings from "@/components/Management/Properties/property-settings";
 import { useAddUnitStore } from "@/store/add-unit-store";
+import NetworkError from "@/components/Error/NetworkError";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-card";
 import UnitForm from "@/components/Management/Properties/unit-form";
 import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
+import BackButton from "@/components/BackButton/back-button";
+import useFetch from "@/hooks/useFetch";
+import { SinglePropertyResponse } from "../../../[id]/data";
+import { transformPropertyData } from "../../../create-rental-property/[propertyId]/add-unit/data";
 
-const AddUnitGated = () => {
+const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
+  const { propertyId } = params;
+  const router = useRouter();
+  const [dataNotFound, setDataNotFound] = useState(false);
   const [saved, setSaved] = useState(false);
 
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const removeUnit = useAddUnitStore((s) => s.removeUnit);
+  const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
 
-  const router = useRouter();
-  const goBack = () => {
-    router.back();
-  };
-  const [duplicate, setDuplicate] = useState({ val: false, count: 2 });
+  const {
+    data: propertyData,
+    loading,
+    isNetworkError,
+    error,
+  } = useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
 
-  //   useeffect to fetch property info from API with the Property ID.Change True/False Values to Yes/No. Set Unit Store Values.
+  useEffect(() => {
+    if (propertyData) {
+      const transformedData = transformPropertyData(propertyData);
+      if (!transformedData) {
+        setDataNotFound(true);
+        return;
+      }
+      if (transformedData.propertyType === "rental") {
+        router.push(
+          `/management/properties/create-rental-property/${propertyId}/add-unit`
+        );
+      }
+      setDataNotFound(false);
+      setAddUnitStore("property_id", transformedData.property_id);
+      setAddUnitStore("propertyType", transformedData.propertyType);
+      setAddUnitStore("propertyDetails", transformedData.propertyDetails);
+      setAddUnitStore("propertySettings", transformedData.propertySettings);
+      setAddUnitStore("addedUnits", transformedData.addedUnits);
+    }
+  }, [propertyData]);
+
+  if (loading) return <PageCircleLoader />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <div className="text-red-500">{error}</div>;
+  if (dataNotFound)
+    return <div className="text-red-500">Property Data not found</div>;
 
   return (
-    <div className="pb-[70px] lg:pb-[80px]">
-      {/* Back Button & Page Title */}
-      <div className="flex items-center gap-1 mb-1">
-        <button
-          type="button"
-          aria-label="Go Back"
-          onClick={goBack}
-          className="p-2"
-        >
-          <ChevronLeft />
-        </button>
-        <p className="text-black font-bold text-lg lg:text-xl">Add Units</p>
-      </div>
+    <div className="pb-[100px]">
+      <BackButton>Add Units</BackButton>
       <PageProgressBar
         breakpoints={[25, 50, 75]}
         percentage={37}
@@ -62,13 +86,7 @@ const AddUnitGated = () => {
           </>
         )}
 
-        {!saved && (
-          <UnitForm
-            empty={true}
-            duplicate={duplicate}
-            setDuplicate={setDuplicate}
-          />
-        )}
+        {!saved && <UnitForm empty={true} />}
       </div>
     </div>
   );

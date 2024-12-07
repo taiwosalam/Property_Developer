@@ -43,11 +43,14 @@ function useFetch<T>(
             setIsNetworkError(true);
             setError(err.message || "Network Error");
           } else {
-            setError(
-              err.response.data?.message ||
-                err.response?.data?.error ||
-                "Something went wrong"
-            );
+            const errorData = err.response.data;
+            const errorMessage =
+              errorData?.message || typeof errorData?.error === "string"
+                ? errorData?.error
+                : typeof errorData?.error?.message === "string"
+                ? errorData.error.message
+                : "Something went wrong";
+            setError(errorMessage);
           }
         } else {
           setError((err as Error)?.message);

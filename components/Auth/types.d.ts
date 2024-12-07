@@ -11,7 +11,7 @@ export interface AuthFormProps {
   className?: string;
   children: React.ReactNode;
   id?: string;
-  onFormSubmit: (data: any) => void;
+  onFormSubmit: (data: any, e?: React.FormEvent<HTMLFormElement>) => void;
   returnType?: "form-data" | "string";
   setValidationErrors?:
     | React.Dispatch<React.SetStateAction<ValidationErrors>>

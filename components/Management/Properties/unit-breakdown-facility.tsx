@@ -13,7 +13,6 @@ import { useUnitForm } from "./unit-form-context";
 
 const emptyStateValues = {
   rentAmount: "",
-  //   agencyFee: "",
   securityFee: "",
   serviceCharge: "",
   otherCharges: "",
@@ -22,17 +21,13 @@ const emptyStateValues = {
 
 const UnitBreakdownNewTenant = () => {
   const { formResetKey } = useUnitForm();
-  const CURRENCY_SYMBOL = currencySymbols.naira; // Should be gotten from store from API
+  const propertySettings = useAddUnitStore((s) => s.propertySettings);
+  const CURRENCY_SYMBOL =
+    currencySymbols[propertySettings?.currency || "naira"];
   const [otherChargesInput, setOtherChargesInput] = useState(false);
   const [formValues, setFormValues] = useState(emptyStateValues);
-  const {
-    rentAmount,
-    // agencyFee,
-    securityFee,
-    serviceCharge,
-    otherCharges,
-    totalPackage,
-  } = formValues;
+  const { rentAmount, securityFee, serviceCharge, otherCharges, totalPackage } =
+    formValues;
 
   type FormField = keyof typeof formValues;
   // Update formValues based on input changes
@@ -83,7 +78,7 @@ const UnitBreakdownNewTenant = () => {
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Select
-          id="rent_period"
+          id="fee_period"
           required
           options={rentPeriods}
           label="Fee Period"
@@ -92,7 +87,7 @@ const UnitBreakdownNewTenant = () => {
           hiddenInputClassName="unit-form-input"
         />
         <Input
-          id="rent_amount"
+          id="fee_amount"
           label="Fee Amount"
           required
           inputClassName="bg-white unit-form-input"
@@ -123,7 +118,7 @@ const UnitBreakdownNewTenant = () => {
         {otherChargesInput && (
           <div className="relative">
             <Input
-              id="other_charge"
+              id="other_charges"
               label="Other Charges"
               inputClassName="bg-white"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}

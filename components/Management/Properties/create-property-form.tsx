@@ -21,7 +21,6 @@ import DraggableImage from "./draggable-image";
 import { propertyCategories, MAX_FILE_SIZE_MB } from "@/data";
 import { AuthForm } from "@/components/Auth/auth-components";
 import {
-  getAllInventory,
   getAllStaffByBranch,
   property_form_state_data,
   transformPropertyFormData,

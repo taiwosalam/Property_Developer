@@ -2,6 +2,9 @@ import type { AddUnitStore } from "@/store/add-unit-store";
 import type { Categories } from "@/data";
 import type { SinglePropertyResponse } from "../../../[id]/data";
 import { mapNumericToYesNo } from "@/utils/checkFormDataForImageOrAvatar";
+import api, { handleAxiosError } from "@/services/api";
+import { toast } from "sonner";
+import type { AddUnitPayload } from "@/components/Management/Properties/types";
 
 type AddUnitStoreWithoutFunctions = Omit<
   AddUnitStore,
@@ -10,8 +13,9 @@ type AddUnitStoreWithoutFunctions = Omit<
 
 export const transformPropertyData = (
   response: SinglePropertyResponse
-): AddUnitStoreWithoutFunctions => {
+): AddUnitStoreWithoutFunctions | null => {
   const { data } = response;
+  if (!data) return null;
   const settings = data.settings[0];
   return {
     property_id: data.id,
@@ -42,4 +46,21 @@ export const transformPropertyData = (
     },
     addedUnits: data.units,
   };
+};
+
+export const createUnit = async (
+  propertyId: string,
+  formData: Record<string, any>
+) => {
+  try {
+    const { data } = await api.post<AddUnitPayload & { message: string }>(
+      `unit/${propertyId}/create`,
+      formData
+    );
+    toast.success(data?.message || "Unit Added Succesfully");
+    return data;
+  } catch (error) {
+    handleAxiosError(error, "Failed to add unit");
+    return false;
+  }
 };

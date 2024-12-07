@@ -26,9 +26,10 @@ const UnitBreakdownNewTenant = () => {
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const agencyFeePercentage = parseFloat(
     String(propertySettings?.agency_fee || "0")
-  ); // Convert '5%' to 5
+  );
   const { formResetKey } = useUnitForm();
-  const CURRENCY_SYMBOL = currencySymbols.naira; // Should be gotten from store from API
+  const CURRENCY_SYMBOL =
+    currencySymbols[propertySettings?.currency || "naira"];
   const [otherChargesInput, setOtherChargesInput] = useState(false);
 
   const [formValues, setFormValues] = useState(emptyStateValues);
@@ -114,7 +115,7 @@ const UnitBreakdownNewTenant = () => {
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Select
-          id="rent_period"
+          id="fee_period_new"
           required
           options={rentPeriods}
           label="Fee Period"
@@ -123,7 +124,7 @@ const UnitBreakdownNewTenant = () => {
           hiddenInputClassName="unit-form-input"
         />
         <Input
-          id="rent_amount"
+          id="fee_amount_new"
           label="Fee Amount"
           required
           inputClassName="bg-white unit-form-input"
@@ -133,7 +134,7 @@ const UnitBreakdownNewTenant = () => {
           type="text"
         />
         <Input
-          id="service_charge"
+          id="service_charge_new"
           label="Service Charge"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
@@ -181,7 +182,7 @@ const UnitBreakdownNewTenant = () => {
         {otherChargesInput && (
           <div className="relative">
             <Input
-              id="other_charges"
+              id="other_charges_new"
               label="Other Charges"
               inputClassName="bg-white"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
@@ -212,7 +213,7 @@ const UnitBreakdownNewTenant = () => {
           required
           options={["yes", "no"]}
           isSearchable={false}
-          id="open_to_negotiation"
+          id="negotiation"
           label="Are you open to negotiation?"
           inputContainerClassName="bg-white"
           dropdownRefClassName="!w-[160px]"
@@ -221,7 +222,7 @@ const UnitBreakdownNewTenant = () => {
         />
         <Input
           required
-          id="total_package"
+          id="total_package_new"
           label="Total Package"
           inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}

@@ -9,7 +9,7 @@ const EditUnitActions: React.FC<{ handleCancel: () => void }> = ({
   return (
     <div className="flex gap-4 justify-end">
       <Button
-        type="button"
+        type="reset"
         size="sm_medium"
         variant="light_red"
         className="py-1 px-8"

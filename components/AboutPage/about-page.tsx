@@ -1,7 +1,5 @@
 import Button from "../Form/Button/button";
 import { AboutPageProps } from "./types";
-import Image from "next/image";
-// import CloseCircle from "@/public/icons/close-circle.svg";
 import { CloseCircle, PlayIconButton } from "@/public/icons/icons";
 import { ModalTrigger } from "../Modal/modal";
 import React, { useEffect, useState } from "react";
@@ -27,7 +25,6 @@ const AboutPage: React.FC<AboutPageProps> = ({
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-center">{title}</h2>
           <ModalTrigger close className="p-1" type="button">
-            {/* <Image src={CloseCircle} alt="close" width={24} height={24} /> */}
             <CloseCircle />
           </ModalTrigger>
         </div>

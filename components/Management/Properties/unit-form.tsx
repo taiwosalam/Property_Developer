@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import UnitPictures from "./unit-pictures";
 import UnitDetails from "./unit-details";
 import UnitFeatures from "./unit-features";
@@ -7,118 +7,112 @@ import UnitBreakdownNewTenant from "./unit-breakdown-new-tenant";
 import UnitBreakdownRenewalTenant from "./unit-breakdown-renewal-tenants";
 import UnitBreakdownFacility from "./unit-breakdown-facility";
 import { UnitFormContext } from "./unit-form-context";
-import { getFormData } from "@/utils/getFormData";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { UnitTypeKey } from "@/data";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
 import EditUnitActions from "./editUnitActions";
 import AddUntFooter from "./AddUnitFooter";
-import { useSearchParams } from "next/navigation";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { convertYesNoToBoolean } from "@/utils/checkFormDataForImageOrAvatar";
+import { transformUnitFormData } from "./data";
+import { createUnit } from "@/app/(nav)/management/properties/create-rental-property/[propertyId]/add-unit/data";
+
 export interface UnitFormState {
-  isEditing?: boolean;
   images: string[];
+  imageFiles: (string | File)[];
   unitType: "" | UnitTypeKey;
   formResetKey: number;
 }
 
-interface UnitFormProps {
-  index?: number;
-  data?: any;
-  empty: boolean;
-  isEditing?: boolean;
-  setIsEditing?: (a: boolean) => void;
-  duplicate?: { val: boolean; count: number };
-  setDuplicate?: (a: { val: boolean; count: number }) => void;
+interface emptyUnitFormProps {
+  empty: true;
 }
 
-const UnitForm: React.FC<UnitFormProps> = ({
-  index,
-  empty = false,
-  data,
-  setIsEditing,
-  isEditing,
-  duplicate,
-  setDuplicate,
-}) => {
+interface editUnitFormProps {
+  empty?: false;
+  index: number;
+  data: any;
+  isEditing: boolean;
+  setIsEditing: (a: boolean) => void;
+}
+
+type UnitFormProps = emptyUnitFormProps | editUnitFormProps;
+
+const UnitForm: React.FC<UnitFormProps> = (props) => {
+  const [duplicate, setDuplicate] = useState({ val: false, count: 2 });
   const addUnit = useAddUnitStore((s) => s.addUnit);
   const editUnit = useAddUnitStore((s) => s.editUnit);
-  const formRef = useRef<HTMLFormElement>(null);
-  // const propertyType = useAddUnitStore((state) => state.propertyType);
-  const params = useSearchParams();
-  const propertyType = params.get("propertyType") as "rental" | "facility";
+  const propertyType = useAddUnitStore((state) => state.propertyType);
+  const propertyId = useAddUnitStore((state) => state.property_id);
+
   const [state, setState] = useState<UnitFormState>({
-    isEditing: isEditing,
-    images: empty ? [] : data.images,
-    unitType: empty ? "" : data.unitType,
+    images: props.empty ? [] : props.data.images,
+    imageFiles: props.empty ? [] : props.data.imageFiles,
+    unitType: props.empty ? "" : props.data.unitType,
     formResetKey: 0,
   });
 
   const maxImages = propertyType === "facility" ? 5 : 14;
-  const setImages = (newImages: string[], options?: { append: boolean }) =>
-    setState((x) => {
-      const append = options?.append ?? true;
-      if (append) {
-        const totalImages = x.images.length + newImages.length;
-        if (totalImages > maxImages) {
-          const allowedImages = newImages.slice(0, maxImages - x.images.length);
-          return { ...x, images: [...x.images, ...allowedImages] };
-        }
-        return { ...x, images: [...x.images, ...newImages] };
-      } else {
-        return { ...x, images: newImages.slice(0, maxImages) };
-      }
-    });
-  const removeImage = (index: number) =>
-    setState((x) => ({ ...x, images: x.images.filter((_, i) => i !== index) }));
+  const setImages = (a: { images: string[]; imageFiles: (File | string)[] }) =>
+    setState((x) => ({
+      ...x,
+      images: a.images.slice(0, maxImages),
+      imageFiles: a.imageFiles.slice(0, maxImages),
+    }));
+
   const setUnitType = (unitType: "" | UnitTypeKey) =>
     setState((x) => ({ ...x, unitType }));
   const resetForm = () =>
     setState((x) => ({
       ...x,
       formResetKey: x.formResetKey + 1,
-      images: empty ? [] : data.images,
-      unitType: empty ? "" : data.unitType,
+      unitType: props.empty ? "" : props.data.unitType,
     }));
 
-  const emptySubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = formRef.current;
-    if (form) {
-      let unitData = getFormData(form);
-      unitData.images = state.images;
-      // console.log(unitData);
-      if (duplicate?.val) {
-        addUnit(unitData, duplicate.count); // Pass duplicate count
-        // console.log("addunit duplicate");
+  const yesNoFields = [
+    "en_suit",
+    "prepaid",
+    "wardrobe",
+    "pets_allowed",
+    "negotiation",
+  ];
+
+  const handleSubmit = async (
+    formData: Record<string, any>,
+    e?: React.FormEvent<HTMLFormElement>
+  ) => {
+    convertYesNoToBoolean(formData, yesNoFields);
+    if (propertyId && propertyType) {
+      if (props.empty) {
+        const transformedData = transformUnitFormData(
+          formData,
+          state.images,
+          propertyType
+        );
+        const unit = await createUnit(propertyId, transformedData);
+        if (unit) {
+          if (duplicate?.val) {
+            addUnit(transformedData, duplicate.count);
+            setDuplicate({
+              val: false,
+              count: 1,
+            });
+            e?.currentTarget.reset();
+            resetForm();
+          } else {
+            addUnit(transformedData);
+            e?.currentTarget.reset();
+            resetForm();
+          }
+        }
       } else {
-        addUnit(unitData);
+        // const transformedData = transformUnitFormData(
+        //   formData,
+        //   state.images,
+        //   propertyType
+        // );
       }
-      if (setDuplicate && duplicate?.val) {
-        setDuplicate({
-          val: false,
-          count: duplicate?.count ?? 0, // Use existing count or default to 0
-        });
-        // console.log("reset val");
-      }
-      form.reset();
-      resetForm();
     }
-  };
-
-  const editSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = formRef.current;
-    if (form) {
-      const unitData = getFormData(form);
-      unitData.images = state.images;
-      index && editUnit(index, unitData);
-      if (setIsEditing) setIsEditing(false);
-    }
-  };
-
-  const handleCancel = () => {
-    resetForm();
-    if (setIsEditing) setIsEditing(false);
   };
 
   return (
@@ -126,27 +120,30 @@ const UnitForm: React.FC<UnitFormProps> = ({
       steps={1}
       activeStep={0}
       inputClassName="unit-form-input"
-      images={state.images}
-      imagesRequired={propertyType !== "facility"}
+      imagesLength={state.images.length}
+      minImages={propertyType !== "facility" ? 1 : 0}
       showProgressBar={false}
     >
       <UnitFormContext.Provider
         value={{
           ...state,
           setImages,
-          removeImage,
           setUnitType,
           duplicate,
           setDuplicate,
+          ...(!props.empty && {
+            isEditing: props.isEditing,
+            setIsEditing: props.setIsEditing,
+          }),
         }}
       >
-        <form
-          id={empty ? "add-unit-form" : "edit-unit-form"}
-          ref={formRef}
+        <AuthForm
+          id={props.empty ? "add-unit-form" : "edit-unit-form"}
           className="space-y-6 lg:space-y-8"
-          onSubmit={empty ? emptySubmit : editSubmit}
+          skipValidation
+          onFormSubmit={handleSubmit}
         >
-          {isEditing && (
+          {!props.empty && props.isEditing && (
             <>
               <p className="text-brand-9 font-semibold">Edit Unit</p>
               <hr className="!my-4 border-none bg-borders-dark h-[2px]" />
@@ -163,12 +160,17 @@ const UnitForm: React.FC<UnitFormProps> = ({
           ) : (
             <UnitBreakdownFacility />
           )}
-          {!empty ? (
-            <EditUnitActions handleCancel={handleCancel} />
+          {!props.empty ? (
+            <EditUnitActions
+              handleCancel={() => {
+                resetForm();
+                props.setIsEditing(false);
+              }}
+            />
           ) : (
             <AddUntFooter />
           )}
-        </form>
+        </AuthForm>
       </UnitFormContext.Provider>
     </FlowProgress>
   );

@@ -1,9 +1,7 @@
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
-import { useSearchParams } from "next/navigation";
 import {
   type UnitTypeKey,
-  type Categories,
   unitTypes,
   unitSubtypes,
   unitPreferences,
@@ -13,13 +11,9 @@ import { useEffect, useState } from "react";
 import { useUnitForm } from "./unit-form-context";
 
 const UnitDetails = () => {
-  // const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
-  const params = useSearchParams();
-  const propertyType = params.get("propertyType") as "rental" | "facility";
-  const propertyDetails: { category: Categories } = {
-    category: propertyType === "rental" ? "estate" : "facility", // for testing. remove this line and uncomment d line above
-  };
-  const isFacility = propertyType === "facility";
+  const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
+  const propertyType = useAddUnitStore((s) => s.propertyType);
+  const isRental = propertyType === "rental";
 
   const {
     unitType: selectedUnitType,
@@ -99,18 +93,18 @@ const UnitDetails = () => {
   return (
     <div>
       <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
-        {!isFacility && <span className="text-status-error-primary">*</span>}
+        {isRental && <span className="text-status-error-primary">*</span>}
         Unit Details
       </h4>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Input
-          id="unit_number"
+          id="unit_name"
           label="Unit Number or Name"
           placeholder="Flat 1"
           inputClassName="bg-white rounded-[8px] unit-form-input"
-          required={isFacility}
-          requiredNoStar={!isFacility}
+          required={!isRental}
+          requiredNoStar={isRental}
         />
         <Select
           id="unit_type"
@@ -120,7 +114,7 @@ const UnitDetails = () => {
           value={selectedUnitType}
           onChange={handleUnitTypeChange}
           hiddenInputClassName="unit-form-input"
-          requiredNoStar={!isFacility}
+          requiredNoStar={isRental}
           resetKey={formResetKey}
         />
         {selectedUnitType?.toLowerCase() !== "land" && (
@@ -132,7 +126,7 @@ const UnitDetails = () => {
             value={selectedSubtype}
             onChange={handleSubtypeChange}
             hiddenInputClassName="unit-form-input"
-            requiredNoStar={!isFacility}
+            requiredNoStar={isRental}
             resetKey={formResetKey}
           />
         )}
@@ -144,7 +138,7 @@ const UnitDetails = () => {
           value={selectedPreference}
           onChange={handlePreferenceChange}
           hiddenInputClassName="unit-form-input"
-          requiredNoStar={!isFacility}
+          requiredNoStar={isRental}
           resetKey={formResetKey}
         />
       </div>
