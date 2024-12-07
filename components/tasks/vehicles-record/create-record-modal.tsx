@@ -73,7 +73,7 @@ const CreateRecordModal = ({ data }: { data: any }) => {
       toast.error("Please select a property before proceeding.");
       setStep(1);
     } else {
-      window.location.href = "/tasks/vehicles-record/create?type=manual";
+      window.location.href = "/management/vehicles-record/create?type=manual";
     }
   };
 
@@ -82,7 +82,7 @@ const CreateRecordModal = ({ data }: { data: any }) => {
       toast.error("Please select a property before proceeding.");
       setStep(1);
     } else {
-      window.location.href = "/tasks/vehicles-record/create?type=id";
+      window.location.href = "/management/vehicles-record/create?type=id";
     }
   };
 
@@ -210,7 +210,7 @@ const CreateRecordModal = ({ data }: { data: any }) => {
                     <Button
                       size="base_medium"
                       className="bg-brand-9 px-8 py-2 rounded-md"
-                      href={`/tasks/vehicles-record/${selectedPlate.id}/record`}
+                      href={`/management/vehicles-record/${selectedPlate.id}/record`}
                     >
                       Open Record
                     </Button>

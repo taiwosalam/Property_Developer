@@ -1,9 +1,9 @@
-import { readyByData } from "@/app/(nav)/tasks/agent-community/data";
+import { readyByData } from "@/app/(nav)/management/agent-community/data";
 import Image from "next/image";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import user2 from "@/public/empty/user2.svg";
 import { empty } from "@/app/config";
-import { TextSkeleton } from "@/app/(nav)/tasks/agent-community/components";
+import { TextSkeleton } from "@/app/(nav)/management/agent-community/components";
 import { useEffect } from "react";
 
 const ReadyByCard = ({data}: {data: any}) => {

@@ -66,13 +66,15 @@ export const EditPersonalDetailsFormModal = ({
 
   const [loading, setLoading] = useState(false)
   console.log("data - :", data)  
-    const handleUpdateProfile = async (event: React.FormEvent) => {
-      event.preventDefault();
-      const form = event.target as HTMLFormElement;
-      const formData = new FormData(form);
-      formData.append("_method", "patch"); 
-      console.log("form data here - :", formData)
-      
+  
+  const [formstep, setFormstep] = useState(1)
+
+  const handleUpdateProfile = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
+    formData.append("_method", "patch"); 
+    
       try {
         setLoading(true);
         // Collect all form data into an object
@@ -92,14 +94,21 @@ export const EditPersonalDetailsFormModal = ({
     };
   
   return (
-    <ModalPreset heading="Edit Profile">
-      <form onSubmit={handleUpdateProfile}>  
-        <PersonalDetailsFormFields 
-          editMode data={data} 
-          showSubmitButton 
+    <ModalPreset
+      heading={formstep === 1 ? "Edit Profile" : "Choose Avatar"}
+      back={formstep === 2 ? { handleBack: () => setFormstep(1) } : undefined}
+      style={formstep === 2 ? { minHeight: "500px" } : {}}  
+    >
+      <form onSubmit={handleUpdateProfile}>
+        <PersonalDetailsFormFields
+          editMode
+          data={data}
+          showSubmitButton
           loading={loading}
+          formstep={formstep}
+          setFormstep={setFormstep}
         />
-      </form> 
+      </form>
     </ModalPreset>
   );
 };

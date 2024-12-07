@@ -55,7 +55,10 @@ type VehicleFieldProps = BaseFieldProps &
     }
   );
 
-type PersonalFieldProps = BaseFieldProps &
+type PersonalFieldProps = BaseFieldProps & {
+  formstep: number;
+  setFormstep: (step: number) => void;
+} &
   (
     | {
       editMode: true;
@@ -71,7 +74,7 @@ type PersonalFieldProps = BaseFieldProps &
 export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
   props
 ) => {
-  const { editMode, showSubmitButton, loading } = props;
+  const { editMode, showSubmitButton, loading, formstep, setFormstep } = props;
   const [activeAvatar, setActiveAvatar] = useState(
     editMode ? props.data.avatar : ""
   );
@@ -80,7 +83,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
     local_government: editMode ? props.data.local_government : "",
     city: editMode ? props.data.city : "",
   });
-
+  
   const {
     preview,
     setPreview,
@@ -91,12 +94,10 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
     placeholder: editMode ? props.data.avatar || CameraCircle : CameraCircle,
   });
 
-  const [avatarModalOpen, setAvatarModalOpen] = useState(false);
-
   const handleAvatarSelection = (avatarUrl: string) => {
     clearImageSelection();
     setActiveAvatar(avatarUrl);
-    setAvatarModalOpen(false);
+    setFormstep(1); 
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,106 +106,106 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
   };
 
   return (
-    <div className="space-y-5">
-      <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
-        <Input
-          required
-          label="Full Name"
-          id="name"
-          inputClassName="rounded-lg"
-          defaultValue={editMode ? props.data.full_name : undefined}
-        />
-        <Select
-          label="State"
-          id="state"
-          options={getAllStates()}
-          inputContainerClassName="bg-neutral-2"
-          value={address.state}
-          onChange={(option) =>
-            setAddress((prev) => ({
-              ...prev,
-              state: option,
-              local_government: "",
-              city: "",
-            }))
-          }
-        />
-        <Select
-          label="Local Government"
-          id="lga"
-          options={getLocalGovernments(address.state)}
-          inputContainerClassName="bg-neutral-2"
-          value={address.local_government}
-          onChange={(option) =>
-            setAddress((prev) => ({
-              ...prev,
-              local_government: option,
-              city: "",
-            }))
-          }
-        />
-        <Select
-          label="City"
-          id="city"
-          options={getCities(address.state, address.local_government)}
-          inputContainerClassName="bg-neutral-2"
-          value={address.city}
-          onChange={(option) =>
-            setAddress((prev) => ({ ...prev, city: option }))
-          }
-          allowCustom
-        />
-        <Input
-          label="Address"
-          id="address"
-          inputClassName="rounded-lg"
-          defaultValue={editMode ? props.data.address : undefined}
-        />
-        <PhoneNumberInput
-          required
-          id="phone"
-          label="Phone Number"
-          inputContainerClassName="bg-neutral-2"
-          defaultValue={editMode ? props.data.phone_number : undefined}
-        />
-      </div>
-      <div className="flex gap-4 justify-between items-end flex-wrap">
-        <div className="flex items-end gap-3">
-          <label
-            htmlFor="picture"
-            className="relative cursor-pointer flex-shrink-0"
-          >
-            <Picture src={preview} alt="camera" size={40} rounded />
-            {preview && preview !== CameraCircle && (
-              <div
-                role="button"
-                aria-label="remove image"
-                className="absolute top-0 right-0"
-                onClick={(e) => {
-                  e.preventDefault();
-                  clearImageSelection();
-                }}
-              >
-                <DeleteIconOrange size={20} />
-              </div>
-            )}
-            <input
-              type="file"
-              id="picture"
-              name="picture"
-              accept="image/*"
-              className="hidden pointer-events-none"
-              onChange={handleImageChange}
-              ref={inputFileRef}
-            />
-            <input type="hidden" name="avatar" value={activeAvatar} />
-          </label>
-          <Modal
-            state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
-          >
-            <ModalTrigger
-              className="bg-[rgba(42,42,42,0.63)] w-[40px] h-[40px] rounded-full flex items-center justify-center text-white relative"
-              aria-label="choose avatar"
+    <div className="relative">
+      <div className={formstep === 2 ? "pointer-events-none opacity-0" : "space-y-5"}>
+        <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <Input
+            required
+            label="Full Name"
+            id="name"
+            inputClassName="rounded-lg"
+            defaultValue={editMode ? props.data.full_name : undefined}
+          />
+          <Select
+            label="State"
+            id="state"
+            options={getAllStates()}
+            inputContainerClassName="bg-neutral-2"
+            value={address.state}
+            onChange={(option) =>
+              setAddress((prev) => ({
+                ...prev,
+                state: option,
+                local_government: "",
+                city: "",
+              }))
+            }
+          />
+          <Select
+            label="Local Government"
+            id="lga"
+            options={getLocalGovernments(address.state)}
+            inputContainerClassName="bg-neutral-2"
+            value={address.local_government}
+            onChange={(option) =>
+              setAddress((prev) => ({
+                ...prev,
+                local_government: option,
+                city: "",
+              }))
+            }
+          />
+          <Select
+            label="City"
+            id="city"
+            options={getCities(address.state, address.local_government)}
+            inputContainerClassName="bg-neutral-2"
+            value={address.city}
+            onChange={(option) =>
+              setAddress((prev) => ({ ...prev, city: option }))
+            }
+            allowCustom
+          />
+          <Input
+            label="Address"
+            id="address"
+            inputClassName="rounded-lg"
+            defaultValue={editMode ? props.data.address : undefined}
+          />
+          <PhoneNumberInput
+            required
+            id="phone"
+            label="Phone Number"
+            inputContainerClassName="bg-neutral-2"
+            defaultValue={editMode ? props.data.phone_number : undefined}
+          />
+        </div>
+        <div className="flex gap-4 justify-between items-end flex-wrap">
+          <div className="flex items-end gap-3">
+            <label
+              htmlFor="picture"
+              className="relative cursor-pointer flex-shrink-0"
+            >
+              <Picture src={preview} alt="camera" size={40} rounded />
+              {preview && preview !== CameraCircle && (
+                <div
+                  role="button"
+                  aria-label="remove image"
+                  className="absolute top-0 right-0"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    clearImageSelection();
+                    setPreview(CameraCircle);
+                  }}
+                >
+                  <DeleteIconOrange size={20} />
+                </div>
+              )}
+              <input
+                type="file"
+                id="picture"
+                name="picture"
+                accept="image/*"
+                className="hidden pointer-events-none"
+                onChange={handleImageChange}
+                ref={inputFileRef}
+              />
+              <input type="hidden" name="avatar" value={activeAvatar} />
+            </label>
+            <button
+              type="button"
+              onClick={() => setFormstep(2)}
+              className="w-[40px] h-[40px] rounded-full flex items-center justify-center text-white relative bg-red-500"
             >
               {activeAvatar ? (
                 <>
@@ -230,24 +231,24 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
               ) : (
                 <PersonIcon size={18} />
               )}
-            </ModalTrigger>
-            <ModalContent>
-              <LandlordTenantModalPreset heading="Choose Avatar">
-                <Avatars onClick={handleAvatarSelection} />
-              </LandlordTenantModalPreset>
-            </ModalContent>
-          </Modal>
+            </button>
+          </div>
+          {showSubmitButton && (
+            <Button
+              type="submit"
+              size="16_bold"
+              className="ml-auto rounded-lg py-2 px-8"
+            >
+              {loading ? "Loading..." : editMode ? "Update" : "Create"}
+            </Button>
+          )}
         </div>
-        {showSubmitButton && (
-          <Button
-            type="submit"
-            size="16_bold"
-            className="ml-auto rounded-lg py-2 px-8"
-          >
-            {loading ? "Loading..." : editMode ? "Update" : "Create"}
-          </Button>
-        )}
       </div>
+      {formstep === 2 && (
+        <div className="absolute top-0 left-0 right-0 pb-5">
+          <Avatars onClick={handleAvatarSelection} />
+        </div>
+      )}
     </div>
   );
 };

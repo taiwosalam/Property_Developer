@@ -39,20 +39,22 @@ const Wallet = () => {
   
   // FUNDS
   const totalFunds = stats.current_day.total_funds + stats.before_current_day.total_funds;
-  const fundsPercent = determinePercentageDifference(stats.current_day.total_credit, stats.before_current_day.total_credit)
-  const fundsUpDown = determineTrend(stats.current_day.total_credit, stats.before_current_day.total_credit)
+  const fundsPercent = determinePercentageDifference(
+    stats.before_current_day.total_funds,
+    stats.current_day.total_funds
+  );
+  const fundsUpDown = determineTrend(stats.current_day.total_funds, stats.before_current_day.total_funds)
 
   // DEBIT
   const totalDebit = stats.current_day.total_debit + stats.before_current_day.total_debit;
-  const debitPercent = determinePercentageDifference(stats.current_day.total_debit, stats.before_current_day.total_debit)
+  const debitPercent = determinePercentageDifference(stats.before_current_day.total_debit, stats.current_day.total_debit)
   const debitUpDown = determineTrend(stats.current_day.total_debit, stats.before_current_day.total_debit)
 
   // CREDIT
   const totalCredit = stats.current_day.total_credit + stats.before_current_day.total_credit;
-  const creditPercent = determinePercentageDifference(stats.current_day.total_credit, stats.before_current_day.total_credit)
+  const creditPercent = determinePercentageDifference(stats.before_current_day.total_credit, stats.current_day.total_credit)
   const creditUpDown = determineTrend(stats.current_day.total_credit, stats.before_current_day.total_credit)
 
-  console.log("fundsPercent", fundsPercent);
   const transformedWalletTableData = walletTableData.map((t) => ({
     ...t,
     amount: (

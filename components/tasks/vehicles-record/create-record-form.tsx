@@ -44,7 +44,7 @@ const CreateRecordForm = () => {
       if (res) {
         toast.success("Vehicle record created successfully");
         useVehicleRecordStore.setState({ selectedProperty: '' });
-        router.push("/tasks/vehicles-record");
+        router.push("/management/vehicles-record");
       }
     } catch (error) {
       console.error(error);
@@ -64,7 +64,11 @@ const CreateRecordForm = () => {
           Profile
         </BackButton>
         {type === "manual" ? (
-          <PersonalDetailsFormFields loading={loading} />
+          <PersonalDetailsFormFields
+            formstep={1}
+            setFormstep={() => {}}
+            loading={loading}
+          />
         ) : (
           <Input
             required

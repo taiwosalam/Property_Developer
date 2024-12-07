@@ -10,7 +10,7 @@ import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { checkOutVehicle } from "./data";
 import { toast } from "sonner";
-import { format_date_time } from "@/app/(nav)/tasks/vehicles-record/data";
+import { format_date_time } from "@/app/(nav)/management/vehicles-record/data";
 import ModalPreset from "@/components/Modal/modal-preset";
 
 const VehicleRecordModal: React.FC<
@@ -224,7 +224,7 @@ const VehicleRecordModal: React.FC<
             <Button
               size="sm_bold"
               className="py-[10px] px-6 rounded-lg"
-              href={`/tasks/vehicles-record/${id}/record`}
+              href={`/management/vehicles-record/${id}/record`}
             >
               Open Records
             </Button>
