@@ -12,16 +12,18 @@ import BackButton from "@/components/BackButton/back-button";
 import { SinglePropertyResponse } from "../../../[id]/data";
 import NetworkError from "@/components/Error/NetworkError";
 import { transformPropertyData } from "./data";
+import { useRouter } from "next/navigation";
 
 const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const { propertyId } = params;
+  const router = useRouter();
+  const [dataNotFound, setDataNotFound] = useState(false);
+
   const [saved, setSaved] = useState(false);
 
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const removeUnit = useAddUnitStore((s) => s.removeUnit);
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
-
-  const [duplicate, setDuplicate] = useState({ val: false, count: 2 });
 
   const {
     data: propertyData,
@@ -33,6 +35,16 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   useEffect(() => {
     if (propertyData) {
       const transformedData = transformPropertyData(propertyData);
+      if (!transformedData) {
+        setDataNotFound(true);
+        return;
+      }
+      if (transformedData.propertyType === "facility") {
+        router.push(
+          `/management/properties/create-gated-estate-property/${propertyId}/add-unit`
+        );
+      }
+      setDataNotFound(false);
       setAddUnitStore("property_id", transformedData.property_id);
       setAddUnitStore("propertyType", transformedData.propertyType);
       setAddUnitStore("propertyDetails", transformedData.propertyDetails);
@@ -44,6 +56,8 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <div className="text-red-500">{error}</div>;
+  if (dataNotFound)
+    return <div className="text-red-500">Property Data not found</div>;
 
   return (
     <div className="pb-[100px]">
@@ -73,13 +87,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
           </>
         )}
 
-        {!saved && (
-          <UnitForm
-            empty={true}
-            duplicate={duplicate}
-            setDuplicate={setDuplicate}
-          />
-        )}
+        {!saved && <UnitForm empty />}
       </div>
     </div>
   );

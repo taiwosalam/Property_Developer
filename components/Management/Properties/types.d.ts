@@ -121,23 +121,23 @@ export interface AddUnitPayload {
     unit_sub_type: string;
     unit_preference: string;
   };
-  images: File[];
+  images: (File | string)[];
   features: {
-    measurement: string;
-    // total_sqm: string
-    // number_of: number
-    bedroom: string;
-    bathroom: string;
-    toilet: number;
-    facilities: '{"swimming_pool": true, "gym": true}';
-    en_suit: boolean;
-    prepaid: boolean;
-    wardrobe: boolean;
-    pet_allowed: boolean;
+    measurement: string | null;
+    total_area_sqm: string;
+    number_of: number;
+    bedroom: string | null;
+    bathroom: string | null;
+    toilet: number | null;
+    facilities: string;
+    en_suit: boolean | null;
+    prepaid: boolean | null;
+    wardrobe: boolean | null;
+    pet_allowed: boolean | null;
   };
 
   unit_fee_news: {
-    fee_period: "monthly";
+    fee_period: string;
     fee_amount: number;
     service_charge: number;
     agency_fee: number;
@@ -147,22 +147,22 @@ export interface AddUnitPayload {
     other_charge: number;
     negotiation: boolean;
     total_package: number;
-  };
+  } | null;
 
   unit_fee_renews: {
-    fee_period: "yearly";
+    fee_period: string;
     fee_amount: number;
     service_charge: number;
     other_charge: number;
     total_package: number;
-  };
+  } | null;
 
   unit_fee: {
-    fee_period: "monthly";
+    fee_period: string;
     fee_amount: number;
     security_fee: number;
     service_fee: number;
     other_charge: number;
     total_package: number;
-  };
+  } | null;
 }

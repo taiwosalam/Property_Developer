@@ -1,9 +1,9 @@
 // Imports
 import type {
   PropertyFormStateType,
-  AllInventoryResponse,
   AllStaffResponse,
   PropertyFormPayload,
+  AddUnitPayload,
 } from "./types";
 import api from "@/services/api";
 
@@ -25,16 +25,6 @@ export const property_form_state_data: PropertyFormStateType = {
   staffOptions: [],
   accountOfficerOptions: [],
   resetKey: 0,
-};
-
-export const getAllInventory = async () => {
-  try {
-    const { data } = await api.get<AllInventoryResponse>("/inventory/all");
-    return data.data;
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
 };
 
 export const getAllStaffByBranch = async (branchId: string) => {
@@ -104,5 +94,77 @@ export const transformPropertyFormData = (
     property,
     settings,
     staff: staffIds,
+  };
+};
+
+export const transformUnitFormData = (
+  formData: Record<string, any>,
+  images: (File | string)[],
+  propertyType: "rental" | "facility"
+): AddUnitPayload => {
+  const unit = {
+    unit_name: formData.unit_name,
+    unit_type: formData.unit_type,
+    unit_sub_type: formData.unit_sub_type,
+    unit_preference: formData.unit_preference,
+  };
+
+  const features = {
+    measurement: formData.measurement || null,
+    total_area_sqm: formData.total_area_sqm,
+    number_of: formData.number_of,
+    bedroom: formData.bedroom || null,
+    bathroom: formData.bathroom || null,
+    toilet: formData.toilet || null,
+    facilities: formData.facilities,
+    en_suit: formData.en_suit || null,
+    prepaid: formData.prepaid || null,
+    wardrobe: formData.wardrobe || null,
+    pet_allowed: formData.pet_allowed || null,
+  };
+
+  let unit_fee_news = null;
+  let unit_fee_renews = null;
+  let unit_fee = null;
+
+  if (propertyType === "rental") {
+    unit_fee_news = {
+      fee_period: formData.fee_period_new,
+      fee_amount: formData.fee_amount_new,
+      service_charge: formData.service_charge_new,
+      agency_fee: formData.agency_fee,
+      legal_fee: formData.legal_fee,
+      caution_fee: formData.caution_fee,
+      inspection_fee: formData.inspection_fee,
+      other_charge: formData.other_charges_new,
+      negotiation: formData.negotiation,
+      total_package: formData.total_package_new,
+    };
+
+    unit_fee_renews = {
+      fee_period: formData.fee_period_renew,
+      fee_amount: formData.fee_amount_renew,
+      service_charge: formData.service_charge_renew,
+      other_charge: formData.other_charges_renew,
+      total_package: formData.total_package_renew,
+    };
+  } else if (propertyType === "facility") {
+    unit_fee = {
+      fee_period: formData.fee_period,
+      fee_amount: formData.fee_amount,
+      security_fee: formData.security_fee,
+      service_fee: formData.service_fee,
+      other_charge: formData.other_charges,
+      total_package: formData.total_package,
+    };
+  }
+
+  return {
+    unit,
+    images,
+    features,
+    unit_fee_news,
+    unit_fee_renews,
+    unit_fee,
   };
 };

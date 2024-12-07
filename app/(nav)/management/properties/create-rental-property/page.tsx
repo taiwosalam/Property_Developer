@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Fragment } from "react";
 import BackButton from "@/components/BackButton/back-button";
 import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
 import CreateRentalPropertyForm from "@/components/Management/Properties/create-property-form";
@@ -20,7 +19,7 @@ const CreateProperty = () => {
   };
 
   return (
-    <Fragment>
+    <>
       <BackButton className="mb-1">Create Rental Property</BackButton>
       <PageProgressBar
         breakpoints={[25, 50, 75]}
@@ -28,7 +27,7 @@ const CreateProperty = () => {
         className="mb-[52px]"
       />
       <CreateRentalPropertyForm handleSubmit={handleSubmit} formType="rental" />
-    </Fragment>
+    </>
   );
 };
 

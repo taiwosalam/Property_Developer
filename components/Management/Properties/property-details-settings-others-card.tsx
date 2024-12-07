@@ -39,7 +39,7 @@ const DetailItem: React.FC<{ label: string; value?: string | number }> = ({
     <p className="w-[140px] font-normal text-[#747474] dark:text-white flex-shrink-0">
       {label}
     </p>
-    <p className="text-black dark:text-darkText-1">{value}</p>
+    <p className="text-black dark:text-darkText-1 capitalize">{value}</p>
   </div>
 );
 
@@ -57,7 +57,6 @@ const PropeertyDetailsSettingsCard: React.FC<
   management_fee,
   caution_deposit,
   currency,
-  // fee_period,
   group_chat,
   who_to_charge_new_tenant,
   who_to_charge_renew_tenant,
@@ -77,6 +76,7 @@ const PropeertyDetailsSettingsCard: React.FC<
 }) => {
   const symbol =
     isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
+  // console.log(pro)
   return (
     <div className="bg-white dark:bg-darkText-primary p-6 lg:p-8 rounded-b-3xl space-y-8">
       <div className="space-y-4">

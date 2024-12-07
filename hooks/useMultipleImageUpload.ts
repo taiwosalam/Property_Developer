@@ -20,9 +20,9 @@ interface UseMultipleImageUploadReturn {
 export const useMultipleImageUpload = ({
   maxImages,
   maxFileSizeMB,
-  initialImages,
+  initialImages = [],
 }: UseMultipleImageUploadProps): UseMultipleImageUploadReturn => {
-  const [images, setImages] = useState<string[]>(initialImages || []);
+  const [images, setImages] = useState<string[]>(initialImages);
   const [imageFiles, setImageFiles] = useState<(string | File)[]>(
     initialImages || []
   );

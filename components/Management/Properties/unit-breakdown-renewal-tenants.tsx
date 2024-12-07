@@ -21,10 +21,8 @@ const emptyStateValues = {
 const UnitBreakdownRenewalTenant = () => {
   const { formResetKey } = useUnitForm();
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
-  const agencyFeePercentage = parseFloat(
-    String(propertySettings?.agency_fee || "0")
-  ); // Convert '5%' to 5
-  const CURRENCY_SYMBOL = currencySymbols.naira; // Should be gotten from store from API
+  const CURRENCY_SYMBOL =
+    currencySymbols[propertySettings?.currency || "naira"];
   const [otherChargesInput, setOtherChargesInput] = useState(false);
   const [formValues, setFormValues] = useState(emptyStateValues);
   const { rentAmount, serviceCharge, totalPackage, otherCharges } = formValues;
@@ -76,7 +74,7 @@ const UnitBreakdownRenewalTenant = () => {
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Select
           required
-          id="renewal_rent_period"
+          id="fee_period_renew"
           options={rentPeriods}
           label="Fee Period"
           inputContainerClassName="bg-white"
@@ -84,7 +82,7 @@ const UnitBreakdownRenewalTenant = () => {
           resetKey={formResetKey}
         />
         <Input
-          id="renewal_rent_amount"
+          id="fee_amount_renew"
           required
           label="Fee Amount"
           inputClassName="bg-white unit-form-input"
@@ -94,7 +92,7 @@ const UnitBreakdownRenewalTenant = () => {
           type="text"
         />
         <Input
-          id="renewal_service_charge"
+          id="service_charge_renew"
           label="Service Charge"
           inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
@@ -105,7 +103,7 @@ const UnitBreakdownRenewalTenant = () => {
         {otherChargesInput && (
           <div className="relative">
             <Input
-              id="renewal_other_charges"
+              id="other_charges_renew"
               label="Other Charges"
               inputClassName="bg-white"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
@@ -134,7 +132,7 @@ const UnitBreakdownRenewalTenant = () => {
         )}
         <Input
           required
-          id="renewal_total_package"
+          id="total_package_renew"
           label="Total Package"
           inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}

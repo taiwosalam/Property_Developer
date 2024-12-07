@@ -7,6 +7,7 @@ interface TruncatedTextProps {
   lines?: number;
   className?: string;
   disableShowLess?: boolean;
+  as?: keyof JSX.IntrinsicElements;
 }
 
 const TruncatedText: React.FC<TruncatedTextProps> = ({
@@ -14,6 +15,7 @@ const TruncatedText: React.FC<TruncatedTextProps> = ({
   lines = 2,
   className,
   disableShowLess = false,
+  as: Component = "p",
 }) => {
   const [isTruncated, setIsTruncated] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
@@ -39,7 +41,7 @@ const TruncatedText: React.FC<TruncatedTextProps> = ({
 
   return (
     <div className={className}>
-      <p
+      <Component
         ref={textRef}
         className={clsx("overflow-hidden", {
           "line-clamp": !showFullText, // Add "line-clamp" class conditionally based on state
@@ -53,7 +55,7 @@ const TruncatedText: React.FC<TruncatedTextProps> = ({
         }}
       >
         {children}
-      </p>
+      </Component>
       {isTruncated && !showFullText && (
         <button onClick={handleToggle} className="text-highlight mt-1">
           read more...

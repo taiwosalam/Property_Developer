@@ -3,17 +3,11 @@ import Button from "@/components/Form/Button/button";
 import Input from "@/components/Form/Input/input";
 import { useModal } from "@/components/Modal/modal";
 import { Pointer } from "@/public/icons/icons";
+import { useUnitForm } from "./unit-form-context";
 
-interface ModalProps {
-  duplicate?: {
-    val: boolean;
-    count: number;
-  };
-  setDuplicate?: (dup: { val: boolean; count: number }) => void;
-}
-
-const FooterModal: React.FC<ModalProps> = ({ duplicate, setDuplicate }) => {
+const FooterModal = () => {
   const { setIsOpen } = useModal();
+  const { duplicate, setDuplicate } = useUnitForm();
   const [countPopup, setCountPopup] = useState(false);
   const [count, setCount] = useState(duplicate?.count || 1);
 
@@ -31,8 +25,7 @@ const FooterModal: React.FC<ModalProps> = ({ duplicate, setDuplicate }) => {
                 type="number"
                 placeholder="Select"
                 inputClassName="keep-spinner"
-                min={1}
-                max={20}
+                maxLength={20}
                 value={count.toString()}
                 onChange={(val) => setCount(Number(val))}
               />
@@ -65,10 +58,11 @@ const FooterModal: React.FC<ModalProps> = ({ duplicate, setDuplicate }) => {
         Does the new unit you want to add have similar details, breakdown, and
         features to the one you added last?
       </p>
-      <div className="flex justify-center items-center gap-10 [&>button]:py-2 [&>button]:px-8">
+      <div className="flex justify-center items-center gap-10">
         <Button
           type="button"
           size="base_medium"
+          className="py-2 px-8"
           onClick={() => setCountPopup(true)}
         >
           Yes
@@ -76,6 +70,7 @@ const FooterModal: React.FC<ModalProps> = ({ duplicate, setDuplicate }) => {
         <Button
           type="button"
           form="add-unit-form"
+          className="py-2 px-8"
           onClick={(e) => {
             setIsOpen(false);
             e.currentTarget.form?.requestSubmit();

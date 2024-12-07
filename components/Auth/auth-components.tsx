@@ -72,14 +72,14 @@ export const AuthForm: React.FC<AuthFormProps> = ({
 
         if (skipValidation) {
           // Directly submit the form data if validation is skipped
-          onFormSubmit(returnType === "form-data" ? formData : data);
+          onFormSubmit(returnType === "form-data" ? formData : data, e);
           return;
         }
 
         const validation = validateData(data);
 
         if (!objectLength(validation.invalidKeys)) {
-          onFormSubmit(returnType === "form-data" ? formData : data);
+          onFormSubmit(returnType === "form-data" ? formData : data, e);
         } else {
           Object.entries(validation.invalidKeys).forEach(([key, messge]) => {
             errors.push(`${key}: ${messge}`);

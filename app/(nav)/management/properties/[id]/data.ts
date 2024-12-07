@@ -39,23 +39,25 @@ export interface SinglePropertyResponse {
       }
     ];
     description: string;
-  };
+  } | null;
 }
 
 export const transformSinglePropertyData = (
   response: SinglePropertyResponse
-): PropertyPreviewProps => {
+): PropertyPreviewProps | null => {
   const { data } = response;
+  if (!data) return null;
   const settings = data.settings[0];
   return {
     id: data.id,
+    video_link: data.video_link,
     property_name: data.title,
     address: `${data.full_address}, ${data.city_area}, ${data.local_government}, ${data.state}`,
     propertyType: data.property_type === "rental" ? "rental" : "facility",
     total_units: data.units.length, // backend shit
     images: data.images.map((img) => img.image_path),
     units: data.units,
-    isRental: true, // backend shit
+    isRental: data.property_type === "rental",
     landlord_name: data.landlord || "",
     category: data.category,
     state: data.state,
@@ -65,7 +67,6 @@ export const transformSinglePropertyData = (
     management_fee: settings.management_fee,
     caution_deposit: settings.caution_deposit,
     currency: settings.currency,
-    // fee_period: settings.fee_period,
     group_chat: mapNumericToYesNo(settings.group_chat),
     who_to_charge_new_tenant: settings.who_to_charge_new_tenant,
     who_to_charge_renew_tenant: settings.who_to_charge_renew_tenant,

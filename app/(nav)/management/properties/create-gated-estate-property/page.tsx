@@ -10,10 +10,10 @@ const CreateGatedEstate = () => {
   const router = useRouter();
 
   const handleSubmit = async (data: Record<string, any>) => {
-    const status = await addProperty(data);
-    if (status) {
+    const propertyId = await addProperty(data);
+    if (propertyId) {
       router.push(
-        `/management/properties/create-gated-estate-property/1/add-unit`
+        `/management/properties/create-gated-estate-property/${propertyId}/add-unit`
       );
     }
   };
