@@ -31,7 +31,7 @@ const Avatars: React.FC<AvatarsProps> = ({
       setLoading(false);
     };
     fetchAvatarLinks();
-  }, []);
+  }, [branch]);
 
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-10">

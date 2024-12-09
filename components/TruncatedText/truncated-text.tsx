@@ -7,7 +7,7 @@ interface TruncatedTextProps {
   lines?: number;
   className?: string;
   disableShowLess?: boolean;
-  as?: keyof JSX.IntrinsicElements;
+  as?: "p" | "span" | "div";
 }
 
 const TruncatedText: React.FC<TruncatedTextProps> = ({
