@@ -96,7 +96,6 @@ export const useMultipleFileUpload = ({
 
   const resetFiles = () => {
     setUploadedFiles([]);
-    onFilesUpdate?.([]);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }

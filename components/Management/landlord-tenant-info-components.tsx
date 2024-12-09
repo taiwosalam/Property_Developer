@@ -101,11 +101,11 @@ export const LandlordTenantInfoSection: React.FC<{
 };
 
 export interface AttachedDocumentCard {
-  id: string | number;
+  id: string;
   name: string;
   date?: string;
   thumbnail?: string;
-  link?: string;
+  link: string;
 }
 
 export const LandlordTenantInfoDocument: React.FC<AttachedDocumentCard> = ({
