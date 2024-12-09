@@ -5,22 +5,59 @@ import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-ca
 import CreatePropertyForm from "@/components/Management/Properties/create-property-form";
 import { SectionSeparator } from "@/components/Section/section-components";
 import BackButton from "@/components/BackButton/back-button";
-import { useSearchParams } from "next/navigation";
+import { SinglePropertyResponse } from "../data";
+import useFetch from "@/hooks/useFetch";
+import { useAddUnitStore } from "@/store/add-unit-store";
+import NetworkError from "@/components/Error/NetworkError";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { useEffect, useState } from "react";
+import { transformPropertyData } from "../../create-rental-property/[propertyId]/add-unit/data";
 
-const EditProperty = () => {
+const EditProperty = ({ params }: { params: { id: string } }) => {
+  const { id: propertyId } = params;
+  const [dataNotFound, setDataNotFound] = useState(false);
+  const propertyType = useAddUnitStore((s) => s.propertyType);
   const handleSubmit = async () => {};
-  const searchParams = useSearchParams();
-  const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
+
+  const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
+
+  const {
+    data: propertyData,
+    loading,
+    isNetworkError,
+    error,
+  } = useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
+
+  useEffect(() => {
+    if (propertyData) {
+      const transformedData = transformPropertyData(propertyData);
+      if (!transformedData) {
+        setDataNotFound(true);
+        return;
+      }
+      setDataNotFound(false);
+      setAddUnitStore("property_id", transformedData.property_id);
+      setAddUnitStore("propertyType", transformedData.propertyType);
+      setAddUnitStore("propertyDetails", transformedData.propertyDetails);
+      setAddUnitStore("propertySettings", transformedData.propertySettings);
+      setAddUnitStore("addedUnits", transformedData.addedUnits);
+    }
+  }, [propertyData]);
+
+  if (loading) return <PageCircleLoader />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <div className="text-red-500">{error}</div>;
+  if (dataNotFound)
+    return <div className="text-red-500">Property Data not found</div>;
 
   return (
     <div className="space-y-7 pb-[100px]">
       <BackButton>Edit Property</BackButton>
       <SectionSeparator className="!my-2.5" />
-      {/* Check for type of Property in your fetched property info. Also set the property info and added unit in unit store (zustand). property type determines formType */}
       <CreatePropertyForm
         editMode
         handleSubmit={handleSubmit}
-        formType={propertyType} //to be dynamic
+        formType={propertyType as "rental" | "facility"}
       />
 
       <div className="custom-flex-col gap-10">

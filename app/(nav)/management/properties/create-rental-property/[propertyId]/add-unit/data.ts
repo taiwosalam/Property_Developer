@@ -22,7 +22,9 @@ export const transformPropertyData = (
     propertyType: data.property_type === "rental" ? "rental" : "facility",
     propertyDetails: {
       property_title: data.title,
+      video_link: data.video_link,
       state: data.state,
+      city: data.city_area,
       local_govt: data.local_government,
       full_address: data.full_address,
       category: data.category as Categories,
@@ -37,7 +39,7 @@ export const transformPropertyData = (
         settings.who_to_charge_renew_tenant || undefined,
       book_visitors: mapNumericToYesNo(settings.book_visitors),
       VAT: mapNumericToYesNo(settings.active_vat),
-      caution_deposit: settings.caution_deposit || undefined,
+      caution_deposit: settings.caution_deposit ?? undefined,
       group_chat: mapNumericToYesNo(settings.group_chat),
       rent_penalty: mapNumericToYesNo(settings.rent_penalty),
       request_callback: mapNumericToYesNo(settings.request_call_back),

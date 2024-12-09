@@ -18,62 +18,60 @@ const PropertyDetails = ({ heading }: { heading: string }) => {
         {heading}
       </h2>
       <SectionSeparator className="!my-2.5" />
-      <div className="mb-4 md:mb-2.5 flex flex-col md:flex-row md:items-center gap-2 md:justify-between">
-        <div className="overflow-x-auto max-w-full flex-grow">
-          <div className="min-w-[400px] text-sm md:text-base grid grid-cols-[1fr,26%,1fr] gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[50%,1fr]">
-            <div>
-              <p className="text-[#747474]">Property Title</p>
-              <p className="text-black font-medium capitalize">
-                {propertyDetails?.property_title}
-              </p>
-            </div>
-            <div>
-              <p className="text-[#747474]">State</p>
-              <p className="text-black font-medium capitalize">
-                {propertyDetails?.state}
-              </p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Local Government</p>
-              <p className="text-black font-medium capitalize">
-                {propertyDetails?.local_govt}
-              </p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Full Address</p>
-              <p className="text-black font-medium capitalize">
-                {propertyDetails?.full_address}
-              </p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Branch</p>
-              <p className="text-black font-medium capitalize">
-                {propertyDetails?.branch}
-              </p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Account Officer</p>
-              <p className="text-black font-medium capitalize">
-                {propertyDetails?.account_officer}
-              </p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Manager</p>
-              <p className="text-black font-medium capitalize ">
-                {propertyDetails?.manager}
-              </p>
-            </div>
-            <div>
-              <p className="text-[#747474]">Category</p>
-              <p className="text-black font-medium capitalize">
-                {propertyDetails?.category}
-              </p>
-            </div>
+      <div className="mb-4 md:mb-2.5 flex items-center gap-2 justify-between overflow-x-auto custom-round-scrollbar pb-2">
+        <div className="min-w-[400px] flex-1 text-sm md:text-base grid grid-cols-[1fr,26%,1fr] gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[50%,1fr]">
+          <div>
+            <p className="text-[#747474]">Property Title</p>
+            <p className="text-black font-medium capitalize">
+              {propertyDetails?.property_title}
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474]">State</p>
+            <p className="text-black font-medium capitalize">
+              {propertyDetails?.state}
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Local Government</p>
+            <p className="text-black font-medium capitalize">
+              {propertyDetails?.local_govt}
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Full Address</p>
+            <p className="text-black font-medium capitalize">
+              {propertyDetails?.full_address}
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Branch</p>
+            <p className="text-black font-medium capitalize">
+              {propertyDetails?.branch}
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Account Officer</p>
+            <p className="text-black font-medium capitalize">
+              {propertyDetails?.account_officer}
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Manager</p>
+            <p className="text-black font-medium capitalize ">
+              {propertyDetails?.manager}
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Category</p>
+            <p className="text-black font-medium capitalize">
+              {propertyDetails?.category}
+            </p>
           </div>
         </div>
 
         {/* Image */}
-        <div className="w-[225px] h-[135px] rounded-2xl relative overflow-hidden cursor-pointer">
+        <div className="flex-shrink-0 w-[225px] h-[135px] rounded-2xl relative overflow-hidden cursor-pointer">
           {propertyDetails?.images && propertyDetails?.images.length > 1 && (
             <div className="absolute z-[1] left-[70%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
               <CameraIcon />
@@ -82,13 +80,15 @@ const PropertyDetails = ({ heading }: { heading: string }) => {
               </p>
             </div>
           )}
-          <Image
-            src={propertyDetails?.images[0] || ""}
-            alt={propertyDetails?.property_title || ""}
-            fill
-            sizes="auto"
-            className="object-cover object-center"
-          />
+          {propertyDetails?.images[0] && (
+            <Image
+              src={propertyDetails?.images[0]}
+              alt={propertyDetails?.property_title}
+              fill
+              sizes="auto"
+              className="object-cover object-center"
+            />
+          )}
         </div>
       </div>
       <div className="lg:flex gap-4">

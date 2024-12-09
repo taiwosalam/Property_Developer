@@ -110,17 +110,17 @@ export const transformUnitFormData = (
   };
 
   const features = {
-    measurement: formData.measurement || null,
-    total_area_sqm: formData.total_area_sqm,
-    number_of: formData.number_of,
-    bedroom: formData.bedroom || null,
-    bathroom: formData.bathroom || null,
-    toilet: formData.toilet || null,
-    facilities: formData.facilities,
-    en_suit: formData.en_suit || null,
-    prepaid: formData.prepaid || null,
-    wardrobe: formData.wardrobe || null,
-    pet_allowed: formData.pet_allowed || null,
+    measurement: formData.measurement ?? null,
+    total_area_sqm: formData.total_area_sqm ?? null,
+    number_of: formData.number_of ?? null,
+    bedroom: formData.bedroom ?? null,
+    bathroom: formData.bathroom ?? null,
+    toilet: formData.toilet ?? null,
+    facilities: formData.facilities ?? null,
+    en_suit: formData.en_suit ?? null,
+    prepaid: formData.prepaid ?? null,
+    wardrobe: formData.wardrobe ?? null,
+    pet_allowed: formData.pets_allowed ?? null,
   };
 
   let unit_fee_news = null;

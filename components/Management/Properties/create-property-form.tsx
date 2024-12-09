@@ -31,6 +31,7 @@ import PropertyFormFooter from "./property-form-footer.tsx";
 import { useMultipleImageUpload } from "@/hooks/useMultipleImageUpload";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
+import { useAddUnitStore } from "@/store/add-unit-store";
 
 const maxNumberOfImages = 6;
 
@@ -45,6 +46,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
 }) => {
   const [requestLoading, setRequestLoading] = useState(false);
   const companyId = usePersonalInfoStore((state) => state.company_id) || "";
+  const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
   const [state, setState] = useState<PropertyFormStateType>(
     property_form_state_data
   );
@@ -85,6 +87,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   } = useMultipleImageUpload({
     maxImages: maxNumberOfImages,
     maxFileSizeMB: MAX_FILE_SIZE_MB,
+    initialImages: editMode ? propertyDetails?.images : [],
   });
 
   const sortableImages = images.map((image, index) => ({
@@ -128,10 +131,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     setState((x) => ({
       ...x,
       resetKey: x.resetKey + 1,
-      state: "",
-      lga: "",
-      city: "",
-      images: [],
+      state: editMode ? propertyDetails?.state || "" : "",
+      lga: editMode ? propertyDetails?.local_govt || "" : "",
+      city: editMode ? propertyDetails?.city || "" : "",
       staff: [],
     }));
     resetImages();
@@ -218,6 +220,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     setRequestLoading(false);
   };
 
+  console.log(propertyDetails);
+
   return (
     <FlowProgress
       steps={1}
@@ -226,7 +230,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       showProgressBar={false}
     >
       <AuthForm
-        // returnType="form-data"
         onFormSubmit={handleFormSubmit}
         className="max-w-[970px] pb-[100px]"
       >
@@ -294,6 +297,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               className="mb-5"
               placeholder="https://www.youtube.com/video "
               inputClassName="bg-white rounded-[8px] md:col-span-1"
+              defaultValue={editMode ? propertyDetails?.video_link : undefined}
             />
           </div>
         )}
@@ -323,6 +327,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             required
             hiddenInputClassName="property-form-input"
             onChange={(category) => setSelectedCategory(category)}
+            defaultValue={editMode ? propertyDetails?.category : undefined}
           />
           <Input
             id="title"
@@ -336,6 +341,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             placeholder="Name"
             inputClassName="bg-white dark:bg-darkText-primary rounded-[8px] property-form-input"
             required
+            defaultValue={
+              editMode ? propertyDetails?.property_title : undefined
+            }
           />
           <Select
             id="state"
@@ -346,6 +354,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             onChange={(state) => setPropertyState({ state })}
             required
             hiddenInputClassName="property-form-input"
+            defaultValue={editMode ? propertyDetails?.state : undefined}
           />
           <Select
             options={getLocalGovernments(selectedState)}
@@ -356,6 +365,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             onChange={(lga) => setPropertyState({ lga })}
             required
             hiddenInputClassName="property-form-input"
+            defaultValue={editMode ? propertyDetails?.local_govt : undefined}
           />
           <Select
             options={getCities(selectedState, lga)}
@@ -367,17 +377,19 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             inputContainerClassName="bg-white"
             required
             hiddenInputClassName="property-form-input"
+            defaultValue={editMode ? propertyDetails?.city : undefined}
           />
           <Input
             id="full_address"
             label="Full Address"
             inputClassName="bg-white rounded-[8px] property-form-input"
             required
+            defaultValue={editMode ? propertyDetails?.full_address : undefined}
           />
 
           <Select
             id="branch_id"
-            required
+            // required
             label="Branch"
             resetKey={resetKey}
             options={branchOptions}
