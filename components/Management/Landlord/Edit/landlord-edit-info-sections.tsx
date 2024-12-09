@@ -51,6 +51,7 @@ import { useImageUploader } from "@/hooks/useImageUploader";
 import Image from "next/image";
 import LandlordTenantModalPreset from "../../landlord-tenant-modal-preset";
 import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
+import { MAX_FILE_SIZE_MB } from "@/data";
 
 export const LandlordEditProfileInfoSection = () => {
   const [reqLoading, setReqLoading] = useState(false);
@@ -490,7 +491,7 @@ export const LandlordEditAttachmentInfoSection = () => {
   const [urlsToRemove, setUrlsToRemove] = useState<string[]>([]);
 
   const { fileInputRef, handleFileChange, resetFiles } = useMultipleFileUpload({
-    maxFileSizeMB: 10,
+    maxFileSizeMB: MAX_FILE_SIZE_MB,
     acceptedExtensions,
     onFilesUpdate: (files) => {
       if (files.length === 0) return;
@@ -727,7 +728,7 @@ export const LandlordEditAvatarInfoSection = () => {
       returnType="form-data"
     >
       <LandlordTenantInfoEditSection title="Edit Picture">
-        <input type="hidden" name="avater" value={selectedAvatar} />
+        <input type="hidden" name="avatar" value={selectedAvatar} />
 
         <label htmlFor="picture" className="!w-fit cursor-pointer relative">
           <Picture src={preview} alt="Camera" size={90} rounded />

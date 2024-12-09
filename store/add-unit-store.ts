@@ -8,8 +8,10 @@ type StoreAddedUnit = AddUnitPayload & { notYetUploaded?: boolean };
 
 interface PropertyDetails {
   property_title: string;
+  video_link?: string;
   state: string;
   local_govt: string;
+  city: string;
   full_address: string;
   branch?: string;
   account_officer?: string;
@@ -68,7 +70,6 @@ export const useAddUnitStore = create<AddUnitStore>((set) => ({
   addUnit: (unitData, duplicateCount = 0) => {
     set((state) => {
       const updatedUnits: StoreAddedUnit[] = [...state.addedUnits, unitData];
-      // Replicate the added unit if `duplicateCount` > 0.
 
       const replicatedUnits: StoreAddedUnit[] = Array(duplicateCount).fill({
         ...unitData,

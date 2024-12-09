@@ -56,7 +56,7 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [screenModal, setScreenModal] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [count, setCount] = useState<number>(data?.quantity || data?.unit || 1);
+  const [count, setCount] = useState<number>(Number(`${data?.quantity }`|| `${data?.unit }`|| 1));
 
   // console.log("data -", data)
   const maxNumberOfImages = 6;

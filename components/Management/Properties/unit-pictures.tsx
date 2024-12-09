@@ -18,14 +18,15 @@ const UnitPictures = () => {
     fileInputRef,
     handleFileChange,
     handleImageReorder,
-    images: hookImages,
-    imageFiles: hookImageFiles,
     removeImage,
     resetImages,
   } = useMultipleImageUpload({
     maxImages: maxImages,
     maxFileSizeMB: MAX_FILE_SIZE_MB,
     initialImages: images,
+    onImagesUpdate: (a) => {
+      setImages({ images: a.images, imageFiles: a.imageFiles });
+    },
   });
 
   const sortableImages = images.map((image, index) => ({
@@ -42,11 +43,9 @@ const UnitPictures = () => {
   };
 
   useEffect(() => {
-    setImages({ images: hookImages, imageFiles: hookImageFiles });
-  }, [hookImages, hookImageFiles, setImages]);
-
-  useEffect(() => {
-    resetImages();
+    if (formResetKey !== 0) {
+      resetImages();
+    }
   }, [formResetKey, resetImages]);
 
   return (

@@ -27,6 +27,7 @@ import {
   familyTypes,
   employmentOptions,
   employmentTypeOptions,
+  MAX_FILE_SIZE_MB,
 } from "@/data";
 import type { TenantData } from "@/app/(nav)/management/tenants/types";
 import CameraCircle from "@/public/icons/camera-circle.svg";
@@ -41,12 +42,17 @@ import {
   updateTenantBankDetails,
   updateTenantNote,
   updateTenantPicture,
+  uploadDocuments,
+  removeDocuments,
 } from "@/app/(nav)/management/tenants/[tenantId]/manage/edit/data";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { toast } from "sonner";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import Image from "next/image";
 import LandlordTenantModalPreset from "../../landlord-tenant-modal-preset";
+import { useMultipleFileUpload } from "@/hooks/useMultipleFilesUpload";
+import { v4 as uuidv4 } from "uuid";
+import { TenantPageData } from "@/app/(nav)/management/tenants/data";
 
 const states = getAllStates();
 
@@ -481,28 +487,33 @@ export const TenantEditBankDetailsSection = () => {
 };
 
 export const TenantEditAttachmentSection = () => {
-  const { data } = useTenantEditContext();
+  const { data: tenant } = useTenantEditContext();
   const [documents, setDocuments] = useState<TenantData["documents"]>([]);
+  const [reqLoading, setReqLoading] = useState(false);
   const [documentType, setDocumentType] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      const newFiles = Array.from(files).map((file, i) => ({
+  const acceptedExtensions = ["pdf", "doc", "docx", "jpg", "png", "jpeg"];
+  const [urlsToRemove, setUrlsToRemove] = useState<string[]>([]);
+  const { fileInputRef, handleFileChange, resetFiles } = useMultipleFileUpload({
+    maxFileSizeMB: MAX_FILE_SIZE_MB,
+    acceptedExtensions,
+    onFilesUpdate: (files) => {
+      if (files.length === 0) return;
+      const newDocuments = files.map((file) => ({
+        id: uuidv4(),
         document_type: documentType,
-        id: i, // or generate a unique ID
-        name: file.name,
-        link: URL.createObjectURL(file),
+        name: file.fileName,
+        link: file.fileURL,
+        file: file.file,
       }));
-
-      setDocuments((prevDocuments) => [...newFiles, ...prevDocuments]);
+      setDocuments((prev) => [...newDocuments, ...prev]);
       setDocumentType("");
-    }
-  };
+      resetFiles();
+    },
+  });
+
   const handleChooseFileClick = () => {
     if (!documentType) {
-      alert("Please select a document type before choosing a file.");
+      toast.warning("Please select a document type before choosing a file.");
       return;
     }
     if (fileInputRef.current) {
@@ -510,15 +521,39 @@ export const TenantEditAttachmentSection = () => {
     }
   };
 
-  const handleDeleteDocument = (fileId: string | number) => {
-    setDocuments((prevDocuments) =>
-      prevDocuments.filter((document) => document.id !== fileId)
-    );
+  const handleDeleteDocument = (fileId: string) => {
+    setDocuments((prev) => {
+      const updatedDocuments = prev.filter((doc) => doc.id !== fileId);
+      const documentToRemove = prev.find((doc) => doc.id === fileId);
+      // Add the document's link to urlsToRemove if it doesn't have a file property
+      if (documentToRemove && !documentToRemove.file && documentToRemove.link) {
+        setUrlsToRemove((prevUrls) => [...prevUrls, documentToRemove.link]);
+      }
+
+      return updatedDocuments;
+    });
+  };
+
+  const handleUpdateButtonClick = async () => {
+    if (!tenant?.id) return;
+    setReqLoading(true);
+    const removeSuccess =
+      urlsToRemove.length > 0
+        ? await removeDocuments(urlsToRemove, tenant.id)
+        : true;
+    const uploadSuccess = await uploadDocuments(documents, tenant.id);
+    if (removeSuccess && uploadSuccess) {
+      toast.success("Documents updated successfully");
+      window.dispatchEvent(new Event("tenant-updated"));
+    } else {
+      toast.error("An error occurred while updating documents");
+    }
+    setReqLoading(false);
   };
 
   useEffect(() => {
-    setDocuments(data?.documents || []);
-  }, [data?.documents]);
+    setDocuments(tenant?.documents || []);
+  }, [tenant?.documents]);
 
   return (
     <LandlordTenantInfoEditSection title="attachment">
@@ -546,9 +581,11 @@ export const TenantEditAttachmentSection = () => {
         </div>
         <input
           type="file"
-          onChange={handleFileUpload}
+          onChange={handleFileChange}
           className="hidden"
+          accept={acceptedExtensions.join(",")}
           ref={fileInputRef}
+          multiple
         />
         <div className="flex flex-wrap gap-4 col-span-full">
           {documents?.map((document) => (
@@ -567,8 +604,10 @@ export const TenantEditAttachmentSection = () => {
         <Button
           size="base_medium"
           className="col-span-full w-fit ml-auto py-2 px-6"
+          onClick={handleUpdateButtonClick}
+          disabled={reqLoading}
         >
-          update
+          {reqLoading ? "updating..." : "update"}
         </Button>
       </LandlordTenantInfoEditGrid>
     </LandlordTenantInfoEditSection>
@@ -686,7 +725,7 @@ export const TenantEditAvatarInfoSection = () => {
       returnType="form-data"
     >
       <LandlordTenantInfoEditSection title="Edit Picture">
-        <input type="hidden" name="avater" value={selectedAvatar} />
+        <input type="hidden" name="avatar" value={selectedAvatar} />
 
         <label htmlFor="picture" className="!w-fit cursor-pointer relative">
           <Picture src={preview} alt="Camera" size={90} rounded />

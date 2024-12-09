@@ -113,10 +113,25 @@ const Select: React.FC<SelectProps> = ({
 
   // Initialize
   useEffect(() => {
-    setState((x) => ({ ...x, selectedValue: typeof selectedValue === string ?  }));
-    // setState({
-      
-    // })
+    const updateSelection = (value: string, label: string) => {
+      setState((prevState) => ({
+        ...prevState,
+        selectedValue: value,
+        selectedLabel: label,
+      }));
+    };
+
+    if (propValue) {
+      const value = typeof propValue === "string" ? propValue : propValue.value;
+      const label = typeof propValue === "string" ? propValue : propValue.label;
+      updateSelection(`${value}`, label);
+    } else if (defaultValue) {
+      const value =
+        typeof defaultValue === "string" ? defaultValue : defaultValue.value;
+      const label =
+        typeof defaultValue === "string" ? defaultValue : defaultValue.label;
+      updateSelection(`${value}`, label);
+    }
   }, [propValue, resetKey, defaultValue]);
 
   useEffect(() => {
