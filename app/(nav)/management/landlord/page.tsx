@@ -134,10 +134,10 @@ const Landlord = () => {
       queryParams.agent = agent;
     }
     if (startDate) {
-      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
     }
     if (endDate) {
-      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
     }
     setConfig({
       params: queryParams,

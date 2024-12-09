@@ -2,6 +2,7 @@ import type { Field } from "@/components/Table/types";
 import type { LandlordPageData } from "../../types";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import moment from "moment";
+import { v4 as uuidv4 } from "uuid";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
@@ -87,7 +88,16 @@ export interface IndividualLandlordAPIResponse {
       address: string;
       relationship: string;
     };
-    documents: any[]; //confirm structure
+    documents: {
+      type: string;
+      files: (
+        | {
+            url: string;
+            updated_at: string;
+          }
+        | string
+      )[];
+    }[];
   };
 }
 
@@ -127,7 +137,26 @@ export const transformIndividualLandlordAPIResponse = ({
       employment_type: "",
       family_type: "",
     },
-    documents: data.documents,
+    documents: data.documents.flatMap((doc) => {
+      return doc.files.map((file, index) => {
+        if (typeof file === "string") {
+          return {
+            id: uuidv4(),
+            name: `${doc.type} ${index + 1}`,
+            link: file,
+            document_type: doc.type,
+          };
+        } else {
+          return {
+            id: uuidv4(),
+            name: `${doc.type} ${index + 1}`,
+            date: moment(file.updated_at).format("DD/MM/YYYY"),
+            link: file.url,
+            document_type: doc.type,
+          };
+        }
+      });
+    }),
     properties_managed: [],
   };
 };

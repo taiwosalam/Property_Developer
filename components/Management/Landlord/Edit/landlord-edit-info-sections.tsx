@@ -41,9 +41,10 @@ import {
   updateLandlordProfile,
   updateLandlordNextOfKin,
   updateLandlordBankDetails,
-  updateLandlordDocuments,
   updateLandlordNote,
   updateLandlordPicture,
+  uploadDocuments,
+  removeDocuments,
 } from "@/app/(nav)/management/landlord/[landlordId]/manage/edit/data";
 import { useMultipleFileUpload } from "@/hooks/useMultipleFilesUpload";
 import { useImageUploader } from "@/hooks/useImageUploader";
@@ -481,22 +482,26 @@ export const LandlordEditOthersInfoSection = () => {
 };
 
 export const LandlordEditAttachmentInfoSection = () => {
-  const { data } = useLandlordEditContext();
+  const { data: landlord } = useLandlordEditContext();
+  const [reqLoading, setReqLoading] = useState(false);
   const [documents, setDocuments] = useState<LandlordPageData["documents"]>([]);
   const [documentType, setDocumentType] = useState("");
   const acceptedExtensions = ["pdf", "doc", "docx", "jpg", "png", "jpeg"];
+  const [urlsToRemove, setUrlsToRemove] = useState<string[]>([]);
 
   const { fileInputRef, handleFileChange, resetFiles } = useMultipleFileUpload({
     maxFileSizeMB: 10,
     acceptedExtensions,
     onFilesUpdate: (files) => {
+      if (files.length === 0) return;
       const newDocuments = files.map((file) => ({
         id: uuidv4(),
         document_type: documentType,
         name: file.fileName,
         link: file.fileURL,
+        file: file.file,
       }));
-      setDocuments((prev) => [...prev, ...newDocuments]);
+      setDocuments((prev) => [...newDocuments, ...prev]);
       setDocumentType("");
       resetFiles();
     },
@@ -512,13 +517,39 @@ export const LandlordEditAttachmentInfoSection = () => {
     }
   };
 
-  const handleDeleteDocument = (fileId: string | number) => {
-    setDocuments((prev) => prev.filter((doc) => doc.id !== fileId));
+  const handleDeleteDocument = (fileId: string) => {
+    setDocuments((prev) => {
+      const updatedDocuments = prev.filter((doc) => doc.id !== fileId);
+      const documentToRemove = prev.find((doc) => doc.id === fileId);
+      // Add the document's link to urlsToRemove if it doesn't have a file property
+      if (documentToRemove && !documentToRemove.file && documentToRemove.link) {
+        setUrlsToRemove((prevUrls) => [...prevUrls, documentToRemove.link]);
+      }
+
+      return updatedDocuments;
+    });
+  };
+
+  const handleUpdateButtonClick = async () => {
+    if (!landlord?.id) return;
+    setReqLoading(true);
+    const removeSuccess =
+      urlsToRemove.length > 0
+        ? await removeDocuments(urlsToRemove, landlord.id)
+        : true;
+    const uploadSuccess = await uploadDocuments(documents, landlord.id);
+    if (removeSuccess && uploadSuccess) {
+      toast.success("Documents updated successfully");
+      window.dispatchEvent(new Event("landlord-updated"));
+    } else {
+      toast.error("An error occurred while updating documents");
+    }
+    setReqLoading(false);
   };
 
   useEffect(() => {
-    setDocuments(data?.documents || []);
-  }, [data?.documents]);
+    setDocuments(landlord?.documents || []);
+  }, [landlord?.documents]);
 
   return (
     <LandlordTenantInfoEditSection title="attachment">
@@ -574,8 +605,10 @@ export const LandlordEditAttachmentInfoSection = () => {
         <Button
           size="base_medium"
           className="col-span-full w-fit ml-auto py-2 px-6"
+          onClick={handleUpdateButtonClick}
+          disabled={reqLoading}
         >
-          update
+          {reqLoading ? "updating..." : "update"}
         </Button>
       </LandlordTenantInfoEditGrid>
     </LandlordTenantInfoEditSection>

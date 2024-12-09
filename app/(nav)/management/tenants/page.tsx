@@ -33,7 +33,7 @@ import { ExclamationMark } from "@/public/icons/icons";
 import TableLoading from "@/components/Loader/TableLoading";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import { AxiosRequestConfig } from "axios";
-import { FilterResult } from "@/components/Management/Landlord/types";
+import type { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 
@@ -117,10 +117,10 @@ const Tenants = () => {
       queryParams.agent = agent;
     }
     if (startDate) {
-      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
     }
     if (endDate) {
-      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
     }
     setConfig({
       params: queryParams,
