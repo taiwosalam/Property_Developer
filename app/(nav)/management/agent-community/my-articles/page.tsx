@@ -90,15 +90,13 @@ const MyArticlePage = () => {
       params: {
         page: meta?.pagination.current_page,
         search: searchQuery,
-        sort: sortOrder,
+        sort_order: sortOrder,
       },
     }),
     [meta?.pagination.current_page, searchQuery, sortOrder]
   );
 
   const handleSearch = async (query: string): Promise<void> => {
-    // console.log("query", query);
-    // console.log("total_pages", meta?.pagination.total_pages);
     if (!query && !searchQuery) return;
     setState((prevState) => ({
       ...prevState,
@@ -124,8 +122,6 @@ const MyArticlePage = () => {
         data: apiData.data,
         meta: apiData.meta,
         last_page: apiData.meta.pagination.last_page,
-        // total_pages: 1,
-        // current_page: apiData.meta.current_page,
         current_page: apiData.meta.pagination.current_page,
         total_posts: apiData.meta.pagination.total,
       }));
@@ -235,15 +231,13 @@ const MyArticlePage = () => {
             ) : null}
           </AutoResizingGrid>
         )}
-        {meta?.pagination.total > 1 && (
           <div className="pagination">
             <Pagination
-              totalPages={meta?.pagination.total}
+              totalPages={meta?.pagination.last_page}
               currentPage={meta?.pagination.current_page}
               onPageChange={handlePageChange}
             />
           </div>
-        )}
         <div className="top-80 right-4 fixed rounded-full">
           <button
             onClick={handleCreateMyArticleClick}

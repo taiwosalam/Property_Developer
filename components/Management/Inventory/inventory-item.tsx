@@ -52,12 +52,13 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
 }) => {
   const initialImages = data?.images || [];
   const isDarkMode = useDarkMode();
-  const [count, setCount] = useState<number>(1);
+  // const [count, setCount] = useState<number>(1);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [screenModal, setScreenModal] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  console.log("video - ", video);
+  const [count, setCount] = useState<number>(data?.quantity || data?.unit || 1);
 
+  // console.log("data -", data)
   const maxNumberOfImages = 6;
   const {
     images,
@@ -83,13 +84,7 @@ useEffect(() => {
     }
 }, [imageFiles, setInventoryFiles]);
 
-useEffect(() => {
- console.log("Images - ", images);
- console.log("Image Files - ", imageFiles);
-}, [images, imageFiles]);
-  
   const handleSave = () => {
-    console.log(`Images for index ${index}:`, imageFiles);
     setOpenModal(false);
   };
 
@@ -106,14 +101,14 @@ useEffect(() => {
     image,
   }));
 
-
   const handleIncrement = () => {
-    setCount((prevCount) => prevCount + 1);
-  };
+  setCount((prevCount) => Number(prevCount) + 1);
+};
 
-  const handleDecrement = () => {
-    setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : prevCount));
-  };
+const handleDecrement = () => {
+  setCount((prevCount) => Math.max(1, Number(prevCount) - 1));
+};
+
 
   const input_styles: CSSProperties = {
     backgroundColor: isDarkMode ? "#020617" : "white",
@@ -154,7 +149,7 @@ useEffect(() => {
                       type="number"
                       id={`quantity-${index}`}
                       name={`quantity-${index}`}
-                      value={data?.quantity || data?.unit || count}
+                      value={count}
                       onChange={(e) => setCount(Number(e.target.value))}
                       className="w-2/3 px-2 py-2 border-transparent focus:outline-none"
                     />
@@ -216,7 +211,7 @@ useEffect(() => {
                   className="object-cover"
                 />
               )}
-              <div
+             {!edit && <div
                 className="absolute top-2 right-2 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5 cursor-pointer"
                 onClick={() => setScreenModal(true)}
               >
@@ -224,7 +219,7 @@ useEffect(() => {
                 <p className="text-black font-medium text-[10px] cursor-pointer">
                   +{images.length}
                 </p>
-              </div>
+              </div>}
             </div>
             {/* NOT EDIT MODE END */}
             {edit && (

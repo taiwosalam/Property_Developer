@@ -39,7 +39,7 @@ const Select: React.FC<SelectProps> = ({
     isOpen: false,
     searchTerm: "",
     filteredOptions: [] as (string | SelectOptionObject)[],
-    selectedValue: propValue || defaultValue,
+    selectedValue: "",
     selectedLabel: "",
   };
   const [state, setState] = useState(initialState);
@@ -113,7 +113,10 @@ const Select: React.FC<SelectProps> = ({
 
   // Initialize
   useEffect(() => {
-    setState((x) => ({ ...x, selectedValue: propValue || defaultValue }));
+    setState((x) => ({ ...x, selectedValue: typeof selectedValue === string ?  }));
+    // setState({
+      
+    // })
   }, [propValue, resetKey, defaultValue]);
 
   useEffect(() => {

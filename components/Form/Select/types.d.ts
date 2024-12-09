@@ -6,9 +6,9 @@ export interface SelectOptionObject {
 export interface SelectProps {
   id: string;
   name?: string;
-  defaultValue?: string;
+  defaultValue?: string | SelectOptionObject;
   options: (string | SelectOptionObject)[];
-  value?: string;
+  value?: string | SelectOptionObject;
   label?: string;
   className?: string;
   required?: boolean;

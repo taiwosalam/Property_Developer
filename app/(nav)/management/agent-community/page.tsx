@@ -115,7 +115,7 @@ const AgentCommunityPage = () => {
   useRefetchOnEvent("refetchThreads", () => refetch({ silent: true }));
 
   useEffect(() => {
-    console.log("apiData", apiData);
+    // console.log("apiData", apiData);
     if (apiData) {
       setState((x) => ({
         ...x,
@@ -143,7 +143,7 @@ const AgentCommunityPage = () => {
 
   if (error) return <div>{error}</div>;
 
-  console.log("threads", data);
+  // console.log("threads", data);
   return (
     <div className="space-y-7">
       <div className="flex gap-5 flex-wrap items-center justify-between">
@@ -266,7 +266,6 @@ const AgentCommunityPage = () => {
           )}
         </AutoResizingGrid>
       )}
-      {meta?.last_page > 1 && (
         <div className="pagination">
           <Pagination
             totalPages={meta?.last_page}
@@ -274,7 +273,6 @@ const AgentCommunityPage = () => {
             onPageChange={handlePageChange}
           />
         </div>
-      )}
       <div className="top-80 right-5 fixed rounded-full">
         <button
           onClick={handleCreateArticleClick}
