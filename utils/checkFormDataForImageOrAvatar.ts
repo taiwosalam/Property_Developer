@@ -3,7 +3,7 @@ export type InputData = FormData | Record<string, any>;
 export function checkFormDataForImageOrAvatar(
   data: InputData,
   pictureField: string = "picture",
-  avatarField: string = "avater"
+  avatarField: string = "avatar"
 ): boolean {
   let pictureFile: File | null | undefined;
   let avatarValue: string | null | undefined;

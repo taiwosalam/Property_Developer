@@ -86,7 +86,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       if (props.empty) {
         const transformedData = transformUnitFormData(
           formData,
-          state.images,
+          state.imageFiles,
           propertyType
         );
         const unit = await createUnit(propertyId, transformedData);

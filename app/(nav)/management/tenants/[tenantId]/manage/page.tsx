@@ -34,6 +34,7 @@ import useFetch from "@/hooks/useFetch";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import UpdateProfileWithIdModal from "@/components/Management/update-with-id-modal";
 import { TenantEditContext } from "@/components/Management/Tenants/Edit/tenant-edit-context";
+import { TenantData } from "../../types";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -53,7 +54,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
 
   const groupedDocuments = groupDocumentsByType(tenant?.documents);
 
-  const otherData = getObjectProperties(tenant, ["notes"]);
+  const otherData = getObjectProperties({ obj: tenant, exceptions: ["notes"] });
 
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">

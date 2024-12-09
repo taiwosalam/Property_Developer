@@ -5,6 +5,10 @@ interface UseMultipleImageUploadProps {
   maxImages: number;
   maxFileSizeMB: number;
   initialImages?: string[];
+  onImagesUpdate?: (a: {
+    images: string[];
+    imageFiles: (string | File)[];
+  }) => void;
 }
 
 interface UseMultipleImageUploadReturn {
@@ -21,6 +25,7 @@ export const useMultipleImageUpload = ({
   maxImages,
   maxFileSizeMB,
   initialImages = [],
+  onImagesUpdate,
 }: UseMultipleImageUploadProps): UseMultipleImageUploadReturn => {
   const [images, setImages] = useState<string[]>(initialImages);
   const [imageFiles, setImageFiles] = useState<(string | File)[]>(
@@ -55,12 +60,15 @@ export const useMultipleImageUpload = ({
             setImageFiles((prev) =>
               [...prev, ...validFiles].slice(0, maxImages)
             );
+            onImagesUpdate?.({
+              images: [...images, ...validImages],
+              imageFiles: [...imageFiles, ...validFiles],
+            });
           }
         };
         reader.readAsDataURL(file);
         validFiles.push(file);
       } catch (error) {
-        // console.error("Error processing image:", error);
         toast.warning(
           "There was an error processing your image. Please try again."
         );
@@ -76,32 +84,42 @@ export const useMultipleImageUpload = ({
   };
 
   const removeImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-    setImageFiles((prev) => prev.filter((_, i) => i !== index));
+    const newImages = images.filter((_, i) => i !== index);
+    const newImageFiles = imageFiles.filter((_, i) => i !== index);
+    setImages(newImages);
+    setImageFiles(newImageFiles);
+    onImagesUpdate?.({
+      images: newImages,
+      imageFiles: newImageFiles,
+    });
   };
 
   const handleImageReorder = (
     sourceIndex: number,
     destinationIndex: number
   ) => {
-    setImages((prev) => {
-      const newImages = Array.from(prev);
-      const [movedImage] = newImages.splice(sourceIndex, 1);
-      newImages.splice(destinationIndex, 0, movedImage);
-      return newImages;
-    });
+    const newImages = Array.from(images);
+    const [movedImage] = newImages.splice(sourceIndex, 1);
+    newImages.splice(destinationIndex, 0, movedImage);
+    setImages(newImages);
 
-    setImageFiles((prev) => {
-      const newFiles = Array.from(prev);
-      const [movedFile] = newFiles.splice(sourceIndex, 1);
-      newFiles.splice(destinationIndex, 0, movedFile);
-      return newFiles;
+    const newImageFiles = Array.from(imageFiles);
+    const [movedFile] = newImageFiles.splice(sourceIndex, 1);
+    newImageFiles.splice(destinationIndex, 0, movedFile);
+    setImageFiles(newImageFiles);
+    onImagesUpdate?.({
+      images: newImages,
+      imageFiles: newImageFiles,
     });
   };
 
   const resetImages = () => {
     setImages(initialImages || []);
     setImageFiles(initialImages || []);
+    onImagesUpdate?.({
+      images: initialImages || [],
+      imageFiles: initialImages || [],
+    });
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }

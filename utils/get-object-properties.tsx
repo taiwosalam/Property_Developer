@@ -1,5 +1,11 @@
 // Function to filter properties that are objects
-export const getObjectProperties = (obj: any, exceptions: string[] = []) => {
+export const getObjectProperties = ({
+  obj,
+  exceptions = [],
+}: {
+  obj: any;
+  exceptions: string[];
+}) => {
   const result: any = {};
 
   for (const key in obj) {
