@@ -1,7 +1,7 @@
 // Components
 import dynamic from "next/dynamic";
 const CreateRecordForm = dynamic(
-  () => import("@/components//vehicles-record/create-record-form"),
+  () => import("@/components/tasks/vehicles-record/create-record-form"),
   { ssr: false }
 );
 

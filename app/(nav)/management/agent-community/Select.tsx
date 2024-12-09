@@ -1,18 +1,18 @@
 "use client";
 import clsx from "clsx";
+import { v4 as uuidv4 } from "uuid";
 import { useEffect, useRef, useState, useContext } from "react";
 import { DeleteIconX, ArrowDownIcon, SearchIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { checkValidatonError } from "@/utils/validation";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
-import {
-  SelectOptionObject,
-  SelectProps,
-} from "@/components/Form/Select/types";
+import { SelectOptionObject } from "@/components/Form/Select/types";
+import { SelectProps } from "@/components/Form/Select/types";
 import Label from "@/components/Form/Label/label";
 
 const Select: React.FC<SelectProps> = ({
   id,
+  name,
   label,
   defaultValue,
   value: propValue,
@@ -30,94 +30,109 @@ const Select: React.FC<SelectProps> = ({
   dropdownRefClassName,
   resetKey,
   requiredNoStar,
+  disabled,
+  error,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const inputRef = useRef<HTMLInputElement>(null);
-  const initialState: {
-    isOpen: boolean;
-    searchTerm: string;
-    filteredOptions: string[] | SelectOptionObject[];
-    selectedValue?: string | number;
-  } = {
+  const initialState = {
+    showAbove: false,
     isOpen: false,
     searchTerm: "",
-    filteredOptions: options as string[] | SelectOptionObject[],
-    selectedValue: defaultValue,
+    filteredOptions: [] as (string | SelectOptionObject)[],
+    selectedValue: "",
+    selectedLabel: "",
   };
   const [state, setState] = useState(initialState);
-  const { isOpen, searchTerm, filteredOptions, selectedValue } = state;
+  const {
+    isOpen,
+    searchTerm,
+    filteredOptions,
+    selectedValue,
+    selectedLabel,
+    showAbove,
+  } = state;
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [showAbove, setShowAbove] = useState(false);
-
   // State to store validation error message
   const [validationError, setValidationError] = useState<string | null>(null);
 
   const updateDropdownPosition = () => {
     if (dropdownRef.current) {
       const dropdownRect = dropdownRef.current.getBoundingClientRect();
+      const dropdownHeight = 240; // max-h-60 = 15rem = 240px
       const windowHeight = window.innerHeight;
       const bottomSpace = windowHeight - dropdownRect.bottom;
-      const dropdownHeight = 240; // max-h-60 = 15rem = 240px
-      setShowAbove(bottomSpace < dropdownHeight);
-      console.log({
-        bottomSpace,
-        diff: dropdownHeight - bottomSpace,
-        value: bottomSpace < dropdownHeight,
-      });
+      setState((x) => ({ ...x, showAbove: bottomSpace < dropdownHeight }));
     }
   };
 
-  const handleSelection = (option: string | number) => {
+  const handleSelection = (option: string | SelectOptionObject) => {
+    const value = typeof option === "string" ? option : option.value;
+    const label = typeof option === "string" ? option : option.label;
     setState((x) => ({
       ...x,
-      selectedValue: option,
+      selectedValue: `${value}`,
+      selectedLabel: label,
       searchTerm: "",
       isOpen: false,
     }));
-    onChange && onChange(`${option}`); // Call the onChange prop if provided
+    onChange && onChange(`${value}`); // Call the onChange prop if provided
   };
 
-  // Type guard to check if the options array is an array of objects
-  const isOptionObjectArray = (
-    options: string[] | SelectOptionObject[]
-  ): options is SelectOptionObject[] => {
-    // Check if options is defined and has at least one element
-    return (
-      Array.isArray(options) &&
-      options.length > 0 &&
-      typeof options[0] === "object"
-    );
-  };
-
-  useEffect(() => {
-    if (isOpen) {
-      inputRef.current?.focus();
-      updateDropdownPosition();
-    }
-  }, [isOpen]);
-
-  // Filter options based on the search term
-  useEffect(() => {
-    setState((x) => {
-      const filteredOptions =
-        options && options.length > 0 && typeof options[0] === "string"
-          ? (options as string[]).filter((o) =>
-              o.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-          : []; // Provide a fallback to an empty array if options is undefined or empty
-
-      return { ...x, filteredOptions };
-      
+  const filterOptions = (
+    options: (string | SelectOptionObject)[],
+    searchTerm: string
+  ) => {
+    return options.filter((option) => {
+      if (typeof option === "string") {
+        return option.toLowerCase().includes(searchTerm.toLowerCase());
+      } else {
+        // If the option is an object, match the label
+        return option.label.toLowerCase().includes(searchTerm.toLowerCase());
+      }
     });
-  }, [searchTerm, options]);
+  };
 
   useOutsideClick(dropdownRef, () => {
     setState((x) => ({ ...x, isOpen: false, searchTerm: "" }));
   });
 
+  useEffect(() => {
+    updateDropdownPosition();
+    if (isOpen) {
+      inputRef.current?.focus();
+    }
+  }, [isOpen]);
+
+  // Filter options based on the search term
+  useEffect(() => {
+    setState((x) => ({
+      ...x,
+      filteredOptions: filterOptions(options, searchTerm),
+    }));
+  }, [options, searchTerm]);
+
   // Initialize
   useEffect(() => {
-    setState((x) => ({ ...x, selectedValue: propValue || defaultValue }));
+    const updateSelection = (value: string, label: string) => {
+      setState((prevState) => ({
+        ...prevState,
+        selectedValue: value,
+        selectedLabel: label,
+      }));
+    };
+
+    if (propValue) {
+      const value = typeof propValue === "string" ? propValue : propValue.value;
+      const label = typeof propValue === "string" ? propValue : propValue.label;
+      updateSelection(`${value}`, label);
+    } else if (defaultValue) {
+      const value =
+        typeof defaultValue === "string" ? defaultValue : defaultValue.value;
+      const label =
+        typeof defaultValue === "string" ? defaultValue : defaultValue.label;
+      updateSelection(`${value}`, label);
+    }
   }, [propValue, resetKey, defaultValue]);
 
   useEffect(() => {
@@ -133,15 +148,24 @@ const Select: React.FC<SelectProps> = ({
   }, [validationErrors, id]);
 
   return (
-    <div className={clsx("custom-flex-col gap-2", className)}>
+    <div
+      className={clsx(
+        "custom-flex-col gap-2",
+        {
+          "pointer-events-none opacity-50": disabled,
+        },
+        className
+      )}
+    >
       {/* input for flow progress and holding the selected value for form submission */}
       <input
-        name={id}
+        name={name ? name : id}
         id={id}
         type="hidden"
         className={hiddenInputClassName}
         value={selectedValue || ""}
         required={required || requiredNoStar}
+        disabled={disabled}
       />
       {label && (
         <Label id={id} required={required}>
@@ -160,7 +184,8 @@ const Select: React.FC<SelectProps> = ({
             inputContainerClassName
           )}
           onClick={() => {
-            if (!selectedValue) setState((x) => ({ ...x, isOpen: !x.isOpen }));
+            if (!selectedValue && !disabled)
+              setState((x) => ({ ...x, isOpen: !x.isOpen }));
           }}
         >
           {/* Conditionally render the search icon */}
@@ -179,10 +204,7 @@ const Select: React.FC<SelectProps> = ({
                 inputTextClassName
               )}
             >
-              {isOptionObjectArray(options as SelectOptionObject[])
-                          // ? options.find((o) => (o as SelectOptionObject).value === selectedValue)?.label
-                ? options.find((o): o is SelectOptionObject => typeof o !== 'string' && 'value' in o && o.value === selectedValue)?.label
-                : selectedValue}
+              {selectedLabel}
             </span>
           ) : isSearchable ? (
             <input
@@ -258,18 +280,16 @@ const Select: React.FC<SelectProps> = ({
             <div className="max-h-60 overflow-y-auto">
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => {
-                  const optionLabel =
+                  const label =
                     typeof option === "string" ? option : option.label;
-                  const optionValue =
-                    typeof option === "string" ? option : option.value;
-
                   return (
                     <div
-                      key={optionValue}
-                      className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-darkText-2 capitalize"
-                      onClick={() => handleSelection(optionValue)}
+                      role="button"
+                      key={uuidv4()}
+                      className="p-2 hover:bg-gray-100 dark:hover:bg-darkText-2 capitalize"
+                      onClick={() => handleSelection(option)}
                     >
-                      {optionLabel}
+                      {label}
                     </div>
                   );
                 })
@@ -294,6 +314,7 @@ const Select: React.FC<SelectProps> = ({
           </div>
         )}
       </div>
+      {error && <p className="text-sm text-red-500 font-medium">{error}</p>}
       {/* Render validation error message if present */}
       {validationError && (
         <p className="text-sm text-red-500 font-medium">{validationError}</p>

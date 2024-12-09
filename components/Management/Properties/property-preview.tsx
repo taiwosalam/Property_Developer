@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { LocationIcon, PlayIconButton } from "@/public/icons/icons";
 import UnitItem from "./unit-item";

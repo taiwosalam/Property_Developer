@@ -3,7 +3,7 @@
 import Button from "@/components/Form/Button/button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
-import { ServiceProviderEditContext } from "@/components/management/service-providers/service-provider-edit-context";
+import { ServiceProviderEditContext } from "@/components/tasks/service-providers/service-provider-edit-context";
 import { serviceProviderData as Mockdata } from "../data";
 import BackButton from "@/components/BackButton/back-button";
 import {
@@ -12,7 +12,7 @@ import {
   ServiceProviderBankDetailsSection,
   ServiceProviderNotesSection,
   ServiceProviderEditAvatarInfoSection,
-} from "@/components/management/service-providers/service-provider-edit-info-sections";
+} from "@/components/tasks/service-providers/service-provider-edit-info-sections";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const EditServiceProvider = () => {
