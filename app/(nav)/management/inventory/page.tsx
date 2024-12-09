@@ -20,6 +20,11 @@ import { ExclamationMark } from "@/public/icons/icons";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import TableLoading from "@/components/Loader/TableLoading";
 import getBranches from "@/hooks/getBranches";
+import { AxiosRequestConfig } from "axios";
+import { InventoryRequestParams } from "./type";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import dayjs from "dayjs";
+import { AllBranchesResponse } from "@/components/Management/Properties/types";
 
 //  Expected structure of apiData
 interface InventoryApiData {
@@ -27,6 +32,7 @@ interface InventoryApiData {
   total: number;
   new_inventory_this_month: number;
   data: {
+    last_page: number;
     total: number;
     new_inventory_this_month: number;
     data: InventoryCardDataProps[];
@@ -40,15 +46,15 @@ const Inventory = () => {
   const [selectedView, setSelectedView] = useState<string>(
     selectedOptions.view || "grid"
   );
-  const { branches } = getBranches();
-
-  console.log("branches - ", branches);
+  // const { branches } = getBranches();
+    const { data: branchesData } =
+    useFetch<AllBranchesResponse>("/branches/select");
 
   const initialState = {
     gridView: selectedView === "grid",
-    searchQuery: "",
     inventoryPageData: {
       total_pages: 1,
+      last_page: 1,
       current_page: 1,
       total_inventory: 0,
       new_inventory_this_month: 0,
@@ -56,17 +62,25 @@ const Inventory = () => {
     },
   };
 
+    const branchOptions =
+      branchesData?.data.map((branch) => ({
+        label: branch.branch_name,
+        value: branch.id,
+      })) || [];
+
+
   const [state, setState] = useState(initialState);
   const {
     gridView,
     inventoryPageData: {
       total_pages,
+      last_page,
       current_page,
       total_inventory,
       new_inventory_this_month,
       inventory,
     },
-    searchQuery,
+    // searchQuery,
   } = state;
 
   useEffect(() => {
@@ -86,22 +100,47 @@ const Inventory = () => {
     setSelectedView("list");
   };
 
-  const config = useMemo(
-    () => ({
-      params: {
-        page: current_page,
-        search: searchQuery,
-      },
-    }),
-    [current_page, searchQuery]
-  );
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+
+  const isFilterApplied = () => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  };
+
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+      sort_order: "asc",
+    } as InventoryRequestParams,
+  });
 
   const handleSearch = async (query: string) => {
-    if (!query && !searchQuery) return;
-    setState((prevState) => ({
-      ...prevState,
-      searchQuery: query,
-    }));
+    setConfig({
+      params: { ...config.params, search: query },
+    });
+  };
+
+  const handlePageChange = (page: number) => {
+    setConfig({
+      params: { ...config.params, page },
+    });
+  };
+
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({
+      params: { ...config.params, sort_order: order },
+    });
   };
 
   const {
@@ -122,30 +161,44 @@ const Inventory = () => {
           ...x.inventoryPageData,
           inventory: apiData.data.data,
           total_pages: apiData.total_pages,
+          last_page: apiData.data.last_page,
           total_inventory: apiData.data.total,
           new_inventory_this_month: apiData.data.new_inventory_this_month,
         },
       }));
     }
+    // console.log("last page -", apiData.last_page)
     if (error) {
       console.error("Error fetching inventory data:", error);
     }
   }, [apiData, error]);
 
-  const handleFilterApply = (filters: any) => {
-    console.log("Filter applied:", filters);
-    // Add  logic here to filter
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate } = filters;
+    const accountOfficerArray = menuOptions["Account Officer"] || [];
+    // const agent = menuOptions["Landlord Type"]?.[0];
+    const branchIdsArray = menuOptions["Branch"] || [];
+
+    const queryParams: InventoryRequestParams = {
+      page: 1,
+      sort: "asc",
+      search: "",
+    };
+    if (branchIdsArray.length > 0) {
+      queryParams.branch_id = branchIdsArray.join(",");
+    }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    setConfig({
+      params: queryParams,
+    });
   };
 
-  const handlePageChange = (page: number) => {
-    setState((prevState) => ({
-      ...prevState,
-      inventoryPageData: {
-        ...prevState.inventoryPageData,
-        current_page: page,
-      },
-    }));
-  };
 
   if (loading)
     return (
@@ -167,10 +220,7 @@ const Inventory = () => {
     },
     {
       label: "Branch",
-      value: branches.map((branch) => ({
-        label: branch.branch_name,
-        value: branch.id,
-      })),
+      value: branchOptions,
     },
   ];
   return (
@@ -204,7 +254,7 @@ const Inventory = () => {
             "This page contains a list of inventory on the platform.",
         }}
         searchInputPlaceholder="Search inventory"
-        handleFilterApply={() => {}}
+        handleFilterApply={handleFilterApply}
         handleSearch={handleSearch}
         isDateTrue
         filterOptionsMenu={inventoryFiltersWithDropdown}
@@ -212,8 +262,8 @@ const Inventory = () => {
 
       <section className="capitalize">
         {inventory.length === 0 && !silentLoading ? (
-          searchQuery ? (
-            "No Search Found"
+          (config.params.search || isFilterApplied()) ? (
+            "No Search/Filter Found"
           ) : (
             <EmptyList
               buttonText="+ create new"
@@ -258,7 +308,7 @@ const Inventory = () => {
               </>
             )}
             <Pagination
-              totalPages={total_pages}
+              totalPages={last_page}
               currentPage={current_page}
               onPageChange={handlePageChange}
             />

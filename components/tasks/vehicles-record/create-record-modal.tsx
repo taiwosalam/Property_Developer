@@ -45,7 +45,7 @@ const CreateRecordModal = ({ data }: { data: any }) => {
     number: string;
     state: string;
     name: string;
-    model: string;  
+    model: string;
     brand: string;
     user_id : string;
     pictureSrc: string;

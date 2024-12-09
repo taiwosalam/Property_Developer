@@ -244,13 +244,9 @@ const VehiclesRecordPage = () => {
               }}
             >
               <ModalContent>
-<<<<<<< HEAD:app/(nav)/management/vehicles-record/page.tsx
                 <VehicleRecordModal
                   {...(selectedRecord as VehicleRecord)}
                 />
-=======
-                <VehicleRecordModal {...(selectedRecord as VehicleRecord)} />
->>>>>>> f4f17cc7cda52a7f94bfc53a8e0ad372c13f8675:app/(nav)/tasks/vehicles-record/page.tsx
               </ModalContent>
             </Modal>
             <Pagination

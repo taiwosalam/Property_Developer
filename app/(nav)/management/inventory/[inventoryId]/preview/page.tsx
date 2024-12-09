@@ -24,19 +24,23 @@ interface InventoryData {
 
 //  Type for the data object
 interface FetchData {
-  id: string;
-  title: string;
-  created_date: string;
-  edited_date: string;
-  property_name: string;
-  branch_name: string;
-  account_officer: string;
-  inventory: {
-    title: string;
+  data: {
     id: string;
-    items: any[];
-    branch_id: string;
+    title: string;
     video: string;
+    branch_name: string;
+    branch_id: string;
+    created_date: string;
+    edited_date: string;
+    property_name: string;
+    account_officer: string;
+    items: {
+      id: string;
+      description: string;
+      image: any[];
+      unit: string;
+      condition: string;
+    };
   };
 }
 
@@ -50,23 +54,21 @@ const PreviewInventory = () => {
   useEffect(() => {
     const fetchBranchData = async () => {
       if (data) {
-        console.log("data - ", data);
-
+        const { data: apiData } = data;
         const updatedInventoryData: InventoryData = {
-          title: data.inventory.title || "",
-          inventory_id: data.inventory.id || "",
-          created_date: data.created_date || "",
-          edited_date: data.edited_date || "",
-          property_name: data.property_name || "",
-          branch_name: data.branch_name || "",
-          account_officer: data.account_officer || "",
-          branch_id: data.inventory.branch_id || "",
+          title: apiData.title || "",
+          inventory_id: apiData.id || "",
+          created_date: apiData.created_date || "",
+          edited_date: apiData.edited_date || "",
+          property_name: apiData.property_name || "",
+          branch_name: apiData.branch_name || "",
+          account_officer: apiData.account_officer || "",
+          branch_id: apiData.branch_id || "",
         };
         setInventoryData(updatedInventoryData);
-        setInventoryItems(data.inventory.items);
-        setVideo(data.inventory.video);
+        setInventoryItems(apiData.items);
+        setVideo(apiData.video);
       }
-      console.log("inventory items - ", inventoryItems);
     };
 
     fetchBranchData();
@@ -98,9 +100,9 @@ const PreviewInventory = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {inventoryItems?.map((item: any, index: number) => (
             <InventoryItem 
-              key={index} 
-              index={index} 
-              data={item} 
+              key={index}
+              index={index}
+              data={item}
               video={video}
             />
           ))}
