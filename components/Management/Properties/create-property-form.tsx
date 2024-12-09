@@ -47,6 +47,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const [requestLoading, setRequestLoading] = useState(false);
   const companyId = usePersonalInfoStore((state) => state.company_id) || "";
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
+  const propertySettings = useAddUnitStore((s) => s.propertySettings);
+  const propertyType = useAddUnitStore((s) => s.propertyType);
   const [state, setState] = useState<PropertyFormStateType>(
     property_form_state_data
   );
@@ -219,8 +221,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     await handleSubmit(payload);
     setRequestLoading(false);
   };
-
-  console.log(propertyDetails);
 
   return (
     <FlowProgress
@@ -489,6 +489,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             required
             hiddenInputClassName="property-form-input"
             inputSpaceClassName="bg-white dark:bg-transparent"
+            defaultValue={editMode ? propertyDetails?.description : undefined}
           />
         </div>
         {/* Property Settings */}
@@ -528,6 +529,13 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             resetKey={resetKey}
             requiredNoStar
             hiddenInputClassName="property-form-input"
+            defaultValue={
+              editMode && formType === "rental"
+                ? `${propertySettings?.agency_fee}%`
+                : editMode && formType === "facility"
+                ? `${propertySettings?.management_fee}%`
+                : undefined
+            }
           />
           {formType === "rental" && (
             <>
@@ -540,6 +548,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 resetKey={resetKey}
                 requiredNoStar
                 hiddenInputClassName="property-form-input"
+                defaultValue={
+                  editMode
+                    ? propertySettings?.who_to_charge_new_tenant
+                    : undefined
+                }
               />
               <Select
                 id="who_to_charge_renew_tenant"
@@ -550,26 +563,33 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 resetKey={resetKey}
                 requiredNoStar
                 hiddenInputClassName="property-form-input"
+                defaultValue={
+                  editMode
+                    ? propertySettings?.who_to_charge_renew_tenant
+                    : undefined
+                }
+              />
+              <Select
+                options={[
+                  "Keep with Landlord",
+                  "Keep with Manager",
+                  "Escrow it",
+                  "None",
+                ]}
+                isSearchable={false}
+                id="caution_deposit"
+                label="Caution Deposit"
+                inputContainerClassName="bg-white"
+                resetKey={resetKey}
+                requiredNoStar
+                hiddenInputClassName="property-form-input"
+                defaultValue={
+                  editMode ? propertySettings?.caution_deposit : undefined
+                }
               />
             </>
           )}
-          {formType === "rental" && (
-            <Select
-              options={[
-                "Keep with Landlord",
-                "Keep with Manager",
-                "Escrow it",
-                "None",
-              ]}
-              isSearchable={false}
-              id="caution_deposit"
-              label="Caution Deposit"
-              inputContainerClassName="bg-white"
-              resetKey={resetKey}
-              requiredNoStar
-              hiddenInputClassName="property-form-input"
-            />
-          )}
+
           <Select
             id="group_chat"
             label="Group Chat"
@@ -579,6 +599,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             resetKey={resetKey}
             requiredNoStar
             hiddenInputClassName="property-form-input"
+            defaultValue={editMode ? propertySettings?.group_chat : undefined}
           />
           <Select
             options={["yes", "no"]}
@@ -589,6 +610,13 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             resetKey={resetKey}
             requiredNoStar
             hiddenInputClassName="property-form-input"
+            defaultValue={
+              editMode && formType === "rental"
+                ? propertySettings?.rent_penalty
+                : editMode && formType === "facility"
+                ? propertySettings?.fee_penalty
+                : undefined
+            }
           />
           <Select
             options={["yes", "no"]}
@@ -599,6 +627,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             resetKey={resetKey}
             requiredNoStar
             hiddenInputClassName="property-form-input"
+            defaultValue={
+              editMode ? propertySettings?.request_callback : undefined
+            }
           />
           <Select
             options={["yes", "no"]}
@@ -609,6 +640,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             resetKey={resetKey}
             requiredNoStar
             hiddenInputClassName="property-form-input"
+            defaultValue={
+              editMode ? propertySettings?.book_visitors : undefined
+            }
           />
           <Select
             options={["yes", "no"]}
@@ -619,6 +653,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             resetKey={resetKey}
             requiredNoStar
             hiddenInputClassName="property-form-input"
+            defaultValue={
+              editMode ? propertySettings?.vehicle_record : undefined
+            }
           />
           <Select
             options={["yes", "no"]}
@@ -629,6 +666,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             resetKey={resetKey}
             requiredNoStar
             hiddenInputClassName="property-form-input"
+            defaultValue={editMode ? propertySettings?.VAT : undefined}
           />
           {formType === "rental" && (
             <>
@@ -648,11 +686,19 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 resetKey={resetKey}
                 requiredNoStar
                 hiddenInputClassName="property-form-input"
+                defaultValue={
+                  editMode && propertySettings?.currency
+                    ? propertySettings.currency
+                    : undefined
+                }
               />
               <Input
                 id="coordinate"
                 label="Cordinates"
                 inputClassName="bg-white rounded-[8px]"
+                defaultValue={
+                  editMode ? propertySettings?.coordinate : undefined
+                }
               />
             </>
           )}

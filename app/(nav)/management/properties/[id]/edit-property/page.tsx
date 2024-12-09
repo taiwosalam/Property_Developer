@@ -42,7 +42,7 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
       setAddUnitStore("propertySettings", transformedData.propertySettings);
       setAddUnitStore("addedUnits", transformedData.addedUnits);
     }
-  }, [propertyData]);
+  }, [propertyData, setAddUnitStore]);
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;

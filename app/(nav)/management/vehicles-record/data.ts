@@ -1,5 +1,5 @@
 import type { Field } from "@/components/Table/types";
-import type { VehicleRecord } from "@/components/t/vehicles-record/types";
+import type { VehicleRecord } from "@/components/tasks/vehicles-record/types";
 import { formatDate } from "../../management/agent-community/property-request/data";
 
 export const vehicleRecordFIltersOptionsWithDropdown = [
