@@ -30,9 +30,9 @@ const CreateInventory = () => {
 
   useEffect(() => {
     const fetchBranches = async () => {
-      const branchesResponse = await getBranches();
+      const {data: branchesResponse} = await getBranches();
       if (branchesResponse) {
-        setBranches(branchesResponse?.data?.data);
+        setBranches(branchesResponse);
       }
     };
     fetchBranches();

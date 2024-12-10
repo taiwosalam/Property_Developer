@@ -21,7 +21,7 @@ import { toast } from "sonner";
 import { ManageInventorySkeleton } from "@/components/Skeleton/manageInventory";
 import { handleAxiosError } from "@/services/api";
 
-// TODO: HandleDelete Fnx & SuccessModal
+// TODO: Ts err
 
 interface InventoryData {
   title: string;
@@ -96,15 +96,16 @@ const ManageInventory = () => {
         };
         setInventoryData(updatedInventoryData);
         setInventoryItems(apiData.items);
-        // console.log("updatedInventory data - ", apiData.items.id);
       }
     };
 
-    const fetchAllBranches = async () => {  
+    // console.log("inventoryItems", inventoryItems);
+
+    const fetchAllBranches = async () => {
       try {
         const { data: branches } = await getBranches();
-        setAllBranches(branches.data);
-        console.log("all branches", branches.data);
+        setAllBranches(branches);
+        console.log("all branches", branches);
       } catch (error) {
         console.error("Error fetching all branches:", error);
       }
@@ -119,7 +120,6 @@ const ManageInventory = () => {
 ) => {
   event.preventDefault();
   setIsLoading(true);
-
   try {
     const formData = new FormData(event.currentTarget);
     const payload = {
@@ -133,9 +133,8 @@ const ManageInventory = () => {
         const images = inventoryFiles[index]
           ? inventoryFiles[index].filter((file: any) => file instanceof File)
           : [];
-
         return {
-          id: item.id || undefined, // Ensure IDs are not sent for new items
+          id: item.id || undefined,
           description: item.description,
           unit: item.unit,
           condition: item.condition,
@@ -146,38 +145,39 @@ const ManageInventory = () => {
     };
 
     // Convert payload for multipart/form-data
-    const formPayload = new FormData();
-    formPayload.append("title", payload.title);
-    formPayload.append("video", payload.video);
-    formPayload.append("branch_id", payload.branch_id);
+    // const formPayload = new FormData();
+    // formPayload.append("title", payload.title);
+    // formPayload.append("video", payload.video);
+    // formPayload.append("branch_id", payload.branch_id);
 
-    payload.items.forEach((item: any, itemIndex: number) => {
-      formPayload.append(`items[${itemIndex}][description]`, item.description);
-      formPayload.append(`items[${itemIndex}][unit]`, item.unit);
-      formPayload.append(`items[${itemIndex}][condition]`, item.condition);
+    // payload.items.forEach((item: any, itemIndex: number) => {
+    //   formPayload.append(`items[${itemIndex}][description]`, item.description);
+    //   formPayload.append(`items[${itemIndex}][unit]`, item.unit);
+    //   formPayload.append(`items[${itemIndex}][condition]`, item.condition);
+    //   // formPayload.append('_method', 'PUT')
 
-      item.retain_media.forEach((media: any, mediaIndex: number) => {
-        formPayload.append(
-          `items[${itemIndex}][retain_media][${mediaIndex}]`,
-          media
-        );
-      });
+    //   item.retain_media.forEach((media: any, mediaIndex: number) => {
+    //     formPayload.append(
+    //       `items[${itemIndex}][retain_media][${mediaIndex}]`,
+    //       media
+    //     );
+    //   });
 
-      item.images.forEach((image: any, imageIndex: number) => {
-        formPayload.append(
-          `items[${itemIndex}][images][${imageIndex}]`,
-          image
-        );
-      });
-    });
+    //   item.images.forEach((image: any, imageIndex: number) => {
+    //     formPayload.append(
+    //       `items[${itemIndex}][images][${imageIndex}]`,
+    //       image
+    //     );
+    //   });
+    // });
 
     console.log("Payload for API:", payload);
 
-    const success = await updateInventory(formPayload, inventoryId as string);
+    const success = await updateInventory(payload, inventoryId as string);
 
-    if (success) {
-      toast.success("Inventory updated successfully!");
-    }
+      if (success) {
+        toast.success("Inventory updated successfully!");
+      }
   } catch (error) {
     console.error("Error updating inventory:", error);
     handleAxiosError(error);
@@ -234,14 +234,28 @@ const ManageInventory = () => {
                 <Select
                   id="branch-name"
                   placeholder="Branch Name"
-                  options={allBranches.map((branch) => ({
-                    label: branch.branch_name,
-                    value: String(branch.id),
-                  }))}
-                  defaultValue={inventoryData?.branch_name || undefined}
-                  onChange={(selectedOption) =>
-                    console.log("branch name", selectedOption)
+                  options={
+                    allBranches.map((branch) => ({
+                      label: branch.branch_name,
+                      value: String(branch.id),
+                    })) || []
                   }
+                  value={
+                    inventoryData?.branch_name
+                      ? {
+                          label: inventoryData.branch_name,
+                          value: String(
+                            allBranches.find(
+                              (branch) =>
+                                branch.branch_name === inventoryData.branch_name
+                            )?.id
+                          ),
+                        }
+                      : undefined
+                  }
+                  onChange={(selectedOption) => {
+                    const selectedValue = selectedOption?.value;
+                  }}
                   isSearchable={false}
                   className="bg-white dark:bg-darkText-primary flex-1"
                 />

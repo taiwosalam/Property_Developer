@@ -52,11 +52,9 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
 }) => {
   const initialImages = data?.images || [];
   const isDarkMode = useDarkMode();
-  // const [count, setCount] = useState<number>(1);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [screenModal, setScreenModal] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [count, setCount] = useState<number>(Number(`${data?.quantity }`|| `${data?.unit }`|| 1));
+  const [count, setCount] = useState<string | number>(data?.quantity || data?.unit || 1);
 
   // console.log("data -", data)
   const maxNumberOfImages = 6;
@@ -73,16 +71,42 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
     maxFileSizeMB: MAX_FILE_SIZE_MB,
     initialImages: initialImages,
   });
-
-  // const images = initialImages.length > 0 ? initialImages : uploadedImages;
   
 useEffect(() => {
-    if (setInventoryFiles) {
-      const updatedFiles = [...(inventoryFiles || [])];
-      updatedFiles[index] = imageFiles as File[];
-      setInventoryFiles(updatedFiles);
-    }
-}, [imageFiles, setInventoryFiles]);
+  if (inventoryFiles?.length === 0) {
+    // Set inventoryFiles to initialImages when the user hasn't uploaded any images yet
+    setInventoryFiles(prevState => {
+      const updatedFiles = [...prevState];
+      updatedFiles[index] = initialImages as unknown as File[]; // Set initial images for the specific index
+      return updatedFiles;
+    });
+  }
+}, [initialImages, inventoryFiles, index]);
+
+// Use imageFiles (from useMultipleImageUpload) when user interacts with the image input
+useEffect(() => {
+  if (imageFiles?.length > 0) {
+    setInventoryFiles(prevState => {
+      const updatedFiles = [...prevState];
+      updatedFiles[index] = imageFiles as unknown as File[]; // Update the images for the specific index
+      return updatedFiles;
+    });
+  }
+}, [imageFiles, index]);
+
+// Debugging log to check inventoryFiles
+console.log("inventoryFiles after updates", inventoryFiles);
+
+
+  // const images = initialImages.length > 0 ? initialImages : uploadedImages;
+// useEffect(() => {
+//   console.log("image files here -", imageFiles)
+//     if (setInventoryFiles) {
+//       const updatedFiles = [...(inventoryFiles || [])];
+//       updatedFiles[index] = imageFiles as File[];
+//       setInventoryFiles(updatedFiles);
+//     }
+// }, [imageFiles, setInventoryFiles]);
 
   const handleSave = () => {
     setOpenModal(false);
@@ -299,7 +323,7 @@ const AddPictureModal = ({
   index,
 }: AddPictureModalProps) => {
   const maxNumberOfImages = 6;
-  console.log("Images - ", images);
+  // console.log("Images - ", images);
 
   return (
     <div className="">
