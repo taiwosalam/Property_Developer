@@ -24,3 +24,27 @@ export interface CommentProps {
   dislikes: number;
   replies?: CommentProps[];
 }
+
+export interface ArticlesRequestParams{
+  search?: string;
+  sort?: 'asc' | 'desc'
+  page?: number;
+  all?: boolean;
+  recent?: boolean;
+  state?: string;
+  trending?: boolean;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface PropertyRequestParams{
+    search?: string;
+    sort?: 'asc' | 'desc'
+    page?: number;
+    all?: boolean;
+    recent?: boolean;
+    state?: string;
+    trending?: boolean;
+    start_date?: string;
+    end_date?: string;
+}

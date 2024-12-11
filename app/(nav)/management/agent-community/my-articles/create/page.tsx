@@ -24,7 +24,7 @@ const CreateArticle = () => {
     const content = formData.get("content");
     if (typeof content === "string" && content.length < 200) {
       toast.error("Content must be at least 200 characters long.");
-      return; 
+      return;
     }
 
     // Check if the user has uploaded at least one picture or provided a video link
@@ -42,11 +42,11 @@ const CreateArticle = () => {
     }
 
     imageFiles.forEach((file) => formData.append("pictures[]", file));
-  
+
     const transformedData = transformFormArticleData(formData);
     console.log("Submitting:", transformedData);
-  
-    setIsCreating(true); 
+
+    setIsCreating(true);
     try {
       const success = await createArticle(formData);
       if (success) {
@@ -61,8 +61,8 @@ const CreateArticle = () => {
       setIsCreating(false);
     }
   };
-  
-  
+
+
 
   return (
     <>
@@ -83,8 +83,8 @@ const CreateArticle = () => {
           </div>
         </div>
         <AuthForm
-       returnType="form-data"
-       onFormSubmit={handleSubmit}
+          returnType="form-data"
+          onFormSubmit={handleSubmit}
           className="custom-flex-col gap-5"
           setValidationErrors={() => { }}
         >
@@ -103,7 +103,7 @@ const CreateArticle = () => {
               disabled={isCreating}
               className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
             >
-             { isCreating ? "Creating..." : "Create" }
+              {isCreating ? "Creating..." : "Create"}
             </button>
           </FixedFooter>
         </AuthForm>
@@ -114,10 +114,10 @@ const CreateArticle = () => {
 
 export default CreateArticle;
 
-const SecondSection = ({setImageFiles}: {setImageFiles: (files: File[]) => void}) => {
+const SecondSection = ({ setImageFiles }: { setImageFiles: (files: File[]) => void }) => {
   return (
     <div className="bg-white dark:bg-darkText-primary p-4 rounded-lg flex flex-col gap-4">
-    <AddPhotoAndVideo onFilesChange={(files) => setImageFiles(files)} />
+      <AddPhotoAndVideo onFilesChange={(files) => setImageFiles(files)} />
       <StateAndLocalGovt />
     </div>
   );

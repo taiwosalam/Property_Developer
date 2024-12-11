@@ -2331,3 +2331,154 @@ const AddPictureModal = ({
                   aria-label="Upload image"
                 /> */
                 }
+
+
+
+
+                ===================== update inventory
+
+                  const handleUpdateInventory = async (
+  event: React.FormEvent<HTMLFormElement>
+) => {
+  event.preventDefault();
+  setIsLoading(true);
+  try {
+    const formData = new FormData(event.currentTarget);
+    const payload = {
+      title: formData.get("inventory-title") as string,
+      video: formData.get("video-link") as string,
+      branch_id: formData.get("branch-name") as string,
+      items: inventoryItems.map((item: any, index: number) => {
+        const retainMedia = inventoryFiles[index]
+          ? inventoryFiles[index].filter((file: any) => typeof file === "string")
+            ? inventoryFiles[index.filter((file: any) => typeof file === "string")
+          : [];
+        const images = inventoryFiles[index]
+          ? inventoryFiles[index].filter((file: any) => file instanceof File)
+          : [];
+        return {
+          id: item.id || undefined,
+          description: item.description,
+          unit: item.unit,
+          condition: item.condition,
+          retain_media: retainMedia,
+          images,
+        };
+      }),
+    };
+
+    // Convert payload for multipart/form-data
+      // Convert payload for multipart/form-data if needed
+      // Example:
+    // const formPayload = new FormData();
+    // formPayload.append("title", payload.title);
+    // formPayload.append("video", payload.video);
+    // formPayload.append("branch_id", payload.branch_id);
+
+    // payload.items.forEach((item: any, itemIndex: number) => {
+      // payload.items.forEach((item, itemIndex) => {
+    //   formPayload.append(`items[${itemIndex}][description]`, item.description);
+    //   formPayload.append(`items[${itemIndex}][unit]`, item.unit);
+    //   formPayload.append(`items[${itemIndex}][condition]`, item.condition);
+    //   // formPayload.append('_method', 'PUT')
+
+    //   item.retain_media.forEach((media: any, mediaIndex: number) => {
+      //   item.retain_media.forEach((media, mediaIndex) => {
+    //     formPayload.append(
+    //       `items[${itemIndex}][retain_media][${mediaIndex}]`,
+    //       media
+    //     );
+    //   });
+
+    //   item.images.forEach((image: any, imageIndex: number) => {
+      //   item.images.forEach((image) => {
+    //     formPayload.append(
+    //       `items[${itemIndex}][images][${imageIndex}]`,
+      //       `items[${itemIndex}][images[]`, // Notice the use of [] for multiple files
+    //       image
+    //     );
+    //   });
+    // });
+
+    console.log("Payload for API:", payload);
+
+    const success = await updateInventory(payload, inventoryId as string);
+
+      if (success) {
+        toast.success("Inventory updated successfully!");
+        router.push(`/management/inventory/${inventoryId}`);
+      }
+  } catch (error) {
+    console.error("Error updating inventory:", error);
+    handleAxiosError(error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+
+
++================ HANDLE UPDATE INVENTORY FUNCTION
+const handleUpdateInventory = async (
+  event: React.FormEvent<HTMLFormElement>
+) => {
+  event.preventDefault();
+  setIsLoading(true);
+  console.log("imagefiles= ", inventoryFiles);
+  
+  try {
+    const formData = new FormData(event.currentTarget);
+    const totalItems = inventoryItems.length + moreInventory;
+    const allItems = [];
+
+    // Process all items (both existing and new)
+    for (let i = 0; i < totalItems; i++) {
+      const description = formData.get(`item-name-${i}`);
+      const unit = formData.get(`quantity-${i}`);
+      const condition = formData.get(`condition-${i}`);
+      const existingItem = inventoryItems[i];
+      const imageFile = inventoryFiles[i] || []; // Get the image from inventoryFiles
+
+      const retainMedia = imageFile.filter((file: any) => typeof file === "string");
+      const images = imageFile.filter((file: any) => file instanceof File);
+
+      console.log(`Form data for item ${i}:`, {
+        description,
+        unit,
+        condition,
+        imageFile,
+      });
+
+      allItems.push({
+        id: existingItem?.id || undefined,
+        description: description || "",
+        unit: unit || "",
+        condition: condition || "",
+        retain_media: retainMedia,
+        images,
+      });
+    }
+
+    const payload = {
+      title: formData.get("inventory-title") as string,
+      video: formData.get("video-link") as string,
+      branch_id: formData.get("branch-name") as string,
+      items: allItems,
+    };
+
+    console.log("Payload for API:", payload);
+
+    // const success = await updateInventory(payload, inventoryId as string);
+
+    // if (success) {
+    //   toast.success("Inventory updated successfully!");
+    //   // router.push(`/management/inventory/${inventoryId}`);
+    // }
+  } catch (error) {
+    console.error("Error updating inventory:", error);
+    handleAxiosError(error);
+  } finally {
+    setIsLoading(false);
+  }
+};

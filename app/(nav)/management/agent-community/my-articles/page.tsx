@@ -16,6 +16,11 @@ import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import { ArticlesRequestParams } from "../type";
+import { AxiosRequestConfig } from "axios";
+import dayjs from "dayjs";
+import { stateOptions } from "@/app/(nav)/tasks/inspections/data";
 
 const lists = [
   {
@@ -69,11 +74,72 @@ const MyArticlePage = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+      sort: "asc",
+    } as ArticlesRequestParams,
+  });
+
   const handleSort = (order: "asc" | "desc") => {
-    setSortOrder(order);
-    console.log("sortOrder", order);
+    setConfig({
+      params: { ...config.params, sort: order },
+    });
   };
 
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate, options } = filters;
+    const statesArray = menuOptions["State"] || [];
+
+    const queryParams: ArticlesRequestParams = {
+      page: 1,
+      sort: "asc",
+      search: "",
+    };
+    options.forEach(option => {
+      if (option === 'all') {
+        queryParams.all = true;
+      } else if (option === 'trending') {
+        queryParams.trending = true;
+      } else if (option === 'new') {
+        queryParams.recent = true;
+      }
+    });
+    if (statesArray.length > 0) {
+      queryParams.state = statesArray.join(",");
+    }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    setConfig({
+      params: queryParams,
+    });
+
+    console.log({ menuOptions, startDate, endDate, options })
+  };
+
+  const isFilterApplied = () => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  };
+  
   const handlePageChange = (page: number) => {
     setState((prevState) => ({
       ...prevState,
@@ -84,17 +150,6 @@ const MyArticlePage = () => {
       },
     }));
   };
-
-  const config = useMemo(
-    () => ({
-      params: {
-        page: meta?.pagination.current_page,
-        search: searchQuery,
-        sort_order: sortOrder,
-      },
-    }),
-    [meta?.pagination.current_page, searchQuery, sortOrder]
-  );
 
   const handleSearch = async (query: string): Promise<void> => {
     if (!query && !searchQuery) return;
@@ -116,7 +171,6 @@ const MyArticlePage = () => {
 
   useEffect(() => {
     if (apiData) {
-      console.log("apiData", apiData);
       setState((x) => ({
         ...x,
         data: apiData.data,
@@ -174,15 +228,34 @@ const MyArticlePage = () => {
             "This page contains a list of My Articles on the platform.",
         }}
         searchInputPlaceholder="Search Articles"
+        handleFilterApply={handleFilterApply}
+        isDateTrue
+        filterOptionsMenu={stateOptions}
+        filterOptions={[
+          {
+            label: "All Articles",
+            value: "all",
+          },
+          {
+            label: "Trending Articles",
+            value: "trending",
+          },
+          {
+            label: "New Articles",
+            value: "new",
+          },
+        ]}
         handleSearch={handleSearch}
-        handleFilterApply={() => {}}
         onSort={handleSort}
+        appliedFilters={appliedFilters}
       />
 
       <section className="capitalize">
         {data.length === 0 && !silentLoading ? (
-          searchQuery ? (
-            "No Search Found"
+          config.params.search || isFilterApplied() ? (
+            <div className="col-span-full text-center py-8 text-gray-500">
+            No Search/Filter Found
+          </div>
           ) : (
             <EmptyList
               buttonText="+ create article"
@@ -231,13 +304,13 @@ const MyArticlePage = () => {
             ) : null}
           </AutoResizingGrid>
         )}
-          <div className="pagination">
-            <Pagination
-              totalPages={meta?.pagination.last_page}
-              currentPage={meta?.pagination.current_page}
-              onPageChange={handlePageChange}
-            />
-          </div>
+        <div className="pagination">
+          <Pagination
+            totalPages={meta?.pagination.last_page}
+            currentPage={meta?.pagination.current_page}
+            onPageChange={handlePageChange}
+          />
+        </div>
         <div className="top-80 right-4 fixed rounded-full">
           <button
             onClick={handleCreateMyArticleClick}

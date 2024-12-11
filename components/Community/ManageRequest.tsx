@@ -170,14 +170,15 @@ export const PropertyRequestSecondSection = ({
   };
 
   return (
-    <PropertyRequestContext.Provider
-      value={{
-        unitType: "",
-        setUnitType: () => {},
-        images: [],
-        formResetKey: 0,
-      }}
-    >
+    // <PropertyRequestContext.Provider
+    //   value={{
+    //     unitType: "",
+    //     setUnitType: () => {},
+    //     images: [],
+    //     formResetKey: 0,
+    //     setFormResetKey: () => {},
+    //   }}
+    // >
       <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
         <h2>Request Types</h2>
         <PropertyRequestUnitType data={data} />
@@ -227,7 +228,7 @@ export const PropertyRequestSecondSection = ({
           </div>
         </div>
       </div>
-    </PropertyRequestContext.Provider>
+    // </PropertyRequestContext.Provider>
   );
 };
 

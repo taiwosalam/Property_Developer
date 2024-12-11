@@ -30,8 +30,10 @@ export type InventoryConditions = (typeof inventory_conditions)[number];
 export interface InventoryItemProps {
   edit?: boolean;
   index?: number;
-  inventoryFiles?: File[][];
-  setInventoryFiles?: (files: File[][]) => void;
+  // inventoryFiles?: File[][];
+  // setInventoryFiles?: (files: File[][]) => void;
+  inventoryFiles: File[][];
+  setInventoryFiles: React.Dispatch<React.SetStateAction<File[][]>>;
   video?: string;
   data?: {
     name: string;
@@ -45,4 +47,38 @@ export interface InventoryItemProps {
 
 export interface InventoryFieldProps {
   children: React.ReactNode;
+}
+
+
+export interface FetchData {
+  data: {
+    id: string;
+    title: string;
+    video: string;
+    branch_name: string;
+    branch_id: string;
+    created_date: string;
+    edited_date: string;
+    property_name: string;
+    account_officer: string;
+    items: {
+      id: string;
+      description: string;
+      image: any[];
+      unit: string;
+      condition: string;
+    };
+  };
+}
+
+export interface InventoryData {
+  title: string;
+  inventory_id: string;
+  created_date: string;
+  edited_date: string;
+  property_name: string;
+  branch_name: string;
+  account_officer: string;
+  branch_id: string;
+  video?: string;
 }

@@ -7,7 +7,6 @@ import Button from "@/components/Form/Button/button";
 import BackButton from "@/components/BackButton/back-button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import InventoryItem from "@/components/Management/Inventory/inventory-item";
-import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import { InventoryListInfo } from "@/components/Management/Inventory/inventory-components";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import Select from "@/components/Form/Select/select";
@@ -20,45 +19,12 @@ import { DeleteInventoryModal, DeleteInventoryModalSuccess } from "@/components/
 import { toast } from "sonner";
 import { ManageInventorySkeleton } from "@/components/Skeleton/manageInventory";
 import { handleAxiosError } from "@/services/api";
+import { useRouter } from "next/navigation";
+import { FetchData, InventoryData } from "@/components/Management/Inventory/types";
 
 // TODO: Ts err
-
-interface InventoryData {
-  title: string;
-  inventory_id: string;
-  created_date: string;
-  edited_date: string;
-  property_name: string;
-  branch_name: string;
-  account_officer: string;
-  branch_id: string;
-  video?: string;
-}
-
-//  Type for the data object
-interface FetchData {
-  data: {
-    id: string;
-    title: string;
-    video: string;
-    branch_name: string;
-    branch_id: string;
-    created_date: string;
-    edited_date: string;
-    property_name: string;
-    account_officer: string;
-    items: {
-      id: string;
-      description: string;
-      image: any[];
-      unit: string;
-      condition: string;
-    };
-  };
-}
-
-
 const ManageInventory = () => {
+  const router = useRouter();
   const isDarkMode = useDarkMode();
   const input_styles: CSSProperties = {
     padding: "12px 14px",
@@ -72,17 +38,17 @@ const ManageInventory = () => {
   const [inventoryData, setInventoryData] = useState<InventoryData | null>(null);
   const [allBranches, setAllBranches] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [deleteInventoryModal, setDeleteInventoryModal] = useState<boolean>(false); 
+  const [deleteInventoryModal, setDeleteInventoryModal] = useState<boolean>(false);
   const [deleteInventorySuccessModal, setDeleteInventorySuccessModal] = useState<boolean>(false);
   const [inventoryFiles, setInventoryFiles] = useState<any[]>([]);
   const [isDeleting, setIsDeleting] = useState(false)
-  
+
   const { data, loading, error } = useFetch<FetchData>(`/inventory/${inventoryId}`);
 
   useEffect(() => {
     const fetchBranchData = async () => {
       if (data) {
-         const { data: apiData } = data;
+        const { data: apiData } = data;
         const updatedInventoryData: InventoryData = {
           title: apiData.title || "",
           inventory_id: apiData.id || "",
@@ -99,13 +65,11 @@ const ManageInventory = () => {
       }
     };
 
-    // console.log("inventoryItems", inventoryItems);
-
     const fetchAllBranches = async () => {
       try {
         const { data: branches } = await getBranches();
         setAllBranches(branches);
-        console.log("all branches", branches);
+        // console.log("all branches", branches);
       } catch (error) {
         console.error("Error fetching all branches:", error);
       }
@@ -115,81 +79,99 @@ const ManageInventory = () => {
     fetchAllBranches();
   }, [data]);
 
-  const handleUpdateInventory = async (
-  event: React.FormEvent<HTMLFormElement>
-) => {
-  event.preventDefault();
-  setIsLoading(true);
-  try {
-    const formData = new FormData(event.currentTarget);
-    const payload = {
-      title: formData.get("inventory-title") as string,
-      video: formData.get("video-link") as string,
-      branch_id: formData.get("branch-name") as string,
-      items: inventoryItems.map((item: any, index: number) => {
-        const retainMedia = inventoryFiles[index]
-          ? inventoryFiles[index].filter((file: any) => typeof file === "string")
-          : [];
-        const images = inventoryFiles[index]
-          ? inventoryFiles[index].filter((file: any) => file instanceof File)
-          : [];
-        return {
-          id: item.id || undefined,
-          description: item.description,
-          unit: item.unit,
-          condition: item.condition,
-          retain_media: retainMedia,
-          images,
-        };
-      }),
-    };
-
-    // Convert payload for multipart/form-data
-    // const formPayload = new FormData();
-    // formPayload.append("title", payload.title);
-    // formPayload.append("video", payload.video);
-    // formPayload.append("branch_id", payload.branch_id);
-
-    // payload.items.forEach((item: any, itemIndex: number) => {
-    //   formPayload.append(`items[${itemIndex}][description]`, item.description);
-    //   formPayload.append(`items[${itemIndex}][unit]`, item.unit);
-    //   formPayload.append(`items[${itemIndex}][condition]`, item.condition);
-    //   // formPayload.append('_method', 'PUT')
-
-    //   item.retain_media.forEach((media: any, mediaIndex: number) => {
-    //     formPayload.append(
-    //       `items[${itemIndex}][retain_media][${mediaIndex}]`,
-    //       media
-    //     );
-    //   });
-
-    //   item.images.forEach((image: any, imageIndex: number) => {
-    //     formPayload.append(
-    //       `items[${itemIndex}][images][${imageIndex}]`,
-    //       image
-    //     );
-    //   });
-    // });
-
-    console.log("Payload for API:", payload);
-
-    const success = await updateInventory(payload, inventoryId as string);
-
-      if (success) {
-        toast.success("Inventory updated successfully!");
-      }
-  } catch (error) {
-    console.error("Error updating inventory:", error);
-    handleAxiosError(error);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
   const handleAddMoreInventory = () => {
     setMoreInventory((prev) => prev + 1);
   };
-
+  const handleUpdateInventory = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+    setIsLoading(true);
+    
+    try {
+      const formData = new FormData(event.currentTarget);
+      const totalItems = inventoryItems.length + moreInventory;
+  
+      // Create an array for all items
+      const allItems = [];
+  
+      // Process existing items
+      for (let i = 0; i < inventoryItems.length; i++) {
+        const existingItem = inventoryItems[i];
+        const retainMedia = inventoryFiles[i]
+          ? inventoryFiles[i].filter((file: any) => typeof file === "string")
+          : [];
+        const images = inventoryFiles[i]
+          ? inventoryFiles[i].filter((file: any) => file instanceof File)
+          : [];
+  
+        allItems.push({
+          id: existingItem?.id || undefined,
+          description: formData.get(`item-name-${i}`) as string || existingItem?.description || "",
+          unit: formData.get(`quantity-${i}`) as string || existingItem?.unit || "",
+          condition: formData.get(`condition-${i}`) as string || existingItem?.condition || "",
+          retain_media: retainMedia,
+          images,
+        });
+      }
+  
+      // Process new items
+      for (let i = inventoryItems.length; i < totalItems; i++) {
+        const description = formData.get(`item-name-${i}`) as string;
+        const unit = formData.get(`quantity-${i}`) as string;
+        const condition = formData.get(`condition-${i}`) as string;
+        const retainMedia = inventoryFiles[i]
+          ? inventoryFiles[i].filter((file: any) => typeof file === "string")
+          : [];
+        const images = inventoryFiles[i]
+          ? inventoryFiles[i].filter((file: any) => file instanceof File)
+          : [];
+  
+        allItems.push({
+          id: undefined, // New items won't have an ID yet
+          description: description || "",
+          unit: unit || "",
+          condition: condition || "",
+          retain_media: retainMedia,
+          images,
+        });
+      }
+  
+      // Create FormData object
+      const payload = new FormData();
+      payload.append("title", formData.get("inventory-title") as string);
+      payload.append("video", formData.get("video-link") as string);
+      payload.append("branch_id", formData.get("branch-name") as string);
+      
+      // Append all items to the payload
+      allItems.forEach((item, index) => {
+        payload.append(`items[${index}][id]`, item.id || '');
+        payload.append(`items[${index}][description]`, item.description);
+        payload.append(`items[${index}][unit]`, item.unit);
+        payload.append(`items[${index}][condition]`, item.condition);
+        item.retain_media.forEach((media:string, mediaIndex: number) => {
+          payload.append(`items[${index}][retain_media][${mediaIndex}]`, media);
+        });
+        item.images.forEach((image:string, imageIndex:number) => {
+          payload.append(`items[${index}][images][${imageIndex}]`, image);
+        });
+      });
+  
+      // console.log("Payload for API:", payload);
+  
+      const success = await updateInventory(payload, inventoryId as string);
+      if (success) {
+        toast.success("Inventory updated successfully!");
+        router.push(`/management/inventory/${inventoryId}`);
+      }
+    } catch (error) {
+      console.error("Error updating inventory:", error);
+      handleAxiosError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
   const handleDeleteInventory = async () => {
     setIsDeleting(true)
     try {
@@ -243,19 +225,16 @@ const ManageInventory = () => {
                   value={
                     inventoryData?.branch_name
                       ? {
-                          label: inventoryData.branch_name,
-                          value: String(
-                            allBranches.find(
-                              (branch) =>
-                                branch.branch_name === inventoryData.branch_name
-                            )?.id
-                          ),
-                        }
+                        label: inventoryData.branch_name,
+                        value: String(
+                          allBranches.find(
+                            (branch) =>
+                              branch.branch_name === inventoryData.branch_name
+                          )?.id
+                        ),
+                      }
                       : undefined
                   }
-                  onChange={(selectedOption) => {
-                    const selectedValue = selectedOption?.value;
-                  }}
                   isSearchable={false}
                   className="bg-white dark:bg-darkText-primary flex-1"
                 />
@@ -277,24 +256,14 @@ const ManageInventory = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
-            {inventoryItems.map((item: any, index: number) => (
-              <InventoryItem
-                key={index}
-                index={index}
-                data={item}
-                edit
-                inventoryFiles={inventoryFiles}
-                setInventoryFiles={setInventoryFiles}
-              />
-            ))}
-
-            {[...Array(moreInventory)].map((_, index) => (
+            {[...Array(inventoryItems.length + moreInventory)].map((_, index) => (
               <InventoryItem
                 key={index}
                 edit
-                index={index}
+                index={index} // Use the current index for the item
                 inventoryFiles={inventoryFiles}
                 setInventoryFiles={setInventoryFiles}
+                data={inventoryItems[index] || {}} // Pass existing item data if available
               />
             ))}
           </div>

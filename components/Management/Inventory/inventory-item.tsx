@@ -56,7 +56,6 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
   const [openModal, setOpenModal] = useState(false);
   const [count, setCount] = useState<string | number>(data?.quantity || data?.unit || 1);
 
-  // console.log("data -", data)
   const maxNumberOfImages = 6;
   const {
     images,
@@ -73,9 +72,9 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
   });
   
 useEffect(() => {
-  if (inventoryFiles?.length === 0) {
+  if (inventoryFiles?.length === 0 && setInventoryFiles) {
     // Set inventoryFiles to initialImages when the user hasn't uploaded any images yet
-    setInventoryFiles(prevState => {
+    setInventoryFiles((prevState: File[][]) => {
       const updatedFiles = [...prevState];
       updatedFiles[index] = initialImages as unknown as File[]; // Set initial images for the specific index
       return updatedFiles;
@@ -85,28 +84,14 @@ useEffect(() => {
 
 // Use imageFiles (from useMultipleImageUpload) when user interacts with the image input
 useEffect(() => {
-  if (imageFiles?.length > 0) {
-    setInventoryFiles(prevState => {
+  if (imageFiles?.length > 0 && setInventoryFiles) {
+    setInventoryFiles((prevState: File[][]) => {
       const updatedFiles = [...prevState];
       updatedFiles[index] = imageFiles as unknown as File[]; // Update the images for the specific index
       return updatedFiles;
     });
   }
 }, [imageFiles, index]);
-
-// Debugging log to check inventoryFiles
-console.log("inventoryFiles after updates", inventoryFiles);
-
-
-  // const images = initialImages.length > 0 ? initialImages : uploadedImages;
-// useEffect(() => {
-//   console.log("image files here -", imageFiles)
-//     if (setInventoryFiles) {
-//       const updatedFiles = [...(inventoryFiles || [])];
-//       updatedFiles[index] = imageFiles as File[];
-//       setInventoryFiles(updatedFiles);
-//     }
-// }, [imageFiles, setInventoryFiles]);
 
   const handleSave = () => {
     setOpenModal(false);
