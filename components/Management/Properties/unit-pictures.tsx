@@ -71,7 +71,7 @@ const UnitPictures = () => {
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              className="flex gap-4 overflow-x-auto custom-round-scrollbar overflow-y-hidden"
+              className="flex gap-4 overflow-x-auto custom-round-scrollbar overflow-y-hidden pb-2"
             >
               {sortableImages.map((s) => (
                 <DraggableImage

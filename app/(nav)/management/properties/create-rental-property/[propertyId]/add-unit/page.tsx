@@ -51,7 +51,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
       setAddUnitStore("propertySettings", transformedData.propertySettings);
       setAddUnitStore("addedUnits", transformedData.addedUnits);
     }
-  }, [propertyData]);
+  }, [propertyData, setAddUnitStore, router]);
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;

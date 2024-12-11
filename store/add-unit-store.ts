@@ -17,7 +17,7 @@ interface PropertyDetails {
   account_officer?: string;
   manager?: string;
   category: Categories;
-  desciption: string;
+  description: string;
   images: string[];
 }
 interface PropertySettings {
@@ -29,10 +29,12 @@ interface PropertySettings {
   VAT?: "Yes" | "No";
   caution_deposit?: string;
   group_chat?: "Yes" | "No";
-  rent_penalty?: "Yes" | "No";
+  rent_penalty?: "Yes" | "No"; // for rental
+  fee_penalty?: "Yes" | "No"; // for facility
   request_callback?: "Yes" | "No";
   vehicle_record?: "Yes" | "No";
   currency?: keyof typeof currencySymbols | null;
+  coordinate?: string;
 }
 
 export interface AddUnitStore {

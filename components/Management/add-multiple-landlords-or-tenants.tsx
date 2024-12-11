@@ -23,6 +23,7 @@ const AddMultipleLandlordsOrTenants: React.FC<
     handleFileChange,
     handleDrop,
     clearFile,
+    fileURL,
   } = useFileUploader({
     maxSize: { unit: "MB", value: 5 },
     acceptedExtensions: ["xls", "xlsx", "csv"],
@@ -92,10 +93,11 @@ const AddMultipleLandlordsOrTenants: React.FC<
             >
               <DeleteIconOrange size={20} />
             </button>
-            <LandlordTenantInfoDocument 
+
+            <LandlordTenantInfoDocument
               name={fileName}
-              id="uploaded-file" 
-              link=""
+              id="uploaded-file"
+              link={fileURL as string}
             />
           </div>
         )}

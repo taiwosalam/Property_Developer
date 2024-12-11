@@ -102,8 +102,8 @@ export interface PropertyFormPayload {
     who_to_charge_renew_tenant?: string | null;
     caution_deposit?: string | null;
     group_chat: (0 | 1) | boolean;
-    rent_penalty?: (0 | 1) | boolean | null;
-    fee_penalty?: (0 | 1) | boolean | null;
+    rent_penalty?: (0 | 1) | boolean | null; // for rental
+    fee_penalty?: (0 | 1) | boolean | null; // for facility
     request_call_back: (0 | 1) | boolean;
     book_visitors: (0 | 1) | boolean;
     vehicle_record: (0 | 1) | boolean;
