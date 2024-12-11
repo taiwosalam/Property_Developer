@@ -131,6 +131,8 @@ const Select: React.FC<SelectProps> = ({
       const label =
         typeof defaultValue === "string" ? defaultValue : defaultValue.label;
       updateSelection(`${value}`, label);
+    } else {
+      updateSelection("", "");
     }
   }, [propValue, resetKey, defaultValue]);
 

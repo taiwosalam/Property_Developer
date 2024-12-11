@@ -45,6 +45,22 @@ export const updateLandlordBankDetails = async (
   }
 };
 
+export const updateLandlordOthers = async (id: string, payload: FormData) => {
+  payload.append("_method", "PUT");
+  // if (!payload.get("job_type")) {
+  //   payload.append("job_type", "Unemployed");
+  // }
+
+  try {
+    const { data } = await api.post(`landlord/${id}/other-status`, payload);
+    toast.success(data?.message || "Update successful");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to update landlord others");
+    return false;
+  }
+};
+
 export const updateLandlordNote = async (id: string, payload: FormData) => {
   payload.append("_method", "PUT");
   try {

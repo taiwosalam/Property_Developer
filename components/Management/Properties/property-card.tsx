@@ -17,8 +17,8 @@ export interface PropertyCardProps {
   total_unit_pictures: number;
   hasVideo: boolean;
   property_type: "rental" | "facility";
-  annualReturns: number;
-  annualIncome: number;
+  total_returns: number;
+  total_income: number;
   branch?: string;
   accountOfficer?: string;
   last_updated?: string;
@@ -41,8 +41,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   total_unit_pictures,
   hasVideo,
   property_type,
-  annualReturns,
-  annualIncome,
+  total_returns,
+  total_income,
   branch,
   accountOfficer,
   last_updated,
@@ -138,16 +138,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <PropertyTag propertyType={property_type} sm />
           <div className="text-right">
             <p className="text-brand-primary text-lg lg:text-xl font-bold">{`${symbol}${formatNumber(
-              annualReturns
+              total_returns
             )}`}</p>
             <p className="text-[#606060] dark:text-darkText-1 font-normal text-xs">
-              Annual Returns
+              Total Returns
             </p>
             <p className="text-text-disabled font-medium text-sm">
               <span className="text-highlight">{`${symbol}${formatNumber(
-                annualIncome
+                total_income
               )}`}</span>{" "}
-              / Annual Income
+              / Total Income
             </p>
           </div>
         </div>
@@ -167,7 +167,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               <p className="text-brand-9 font-bold">{branch}</p>
             </div>
             <div>
-              <p className="text-label font-normal">Total Unit</p>
+              <p className="text-label font-normal">Total Units</p>
               <p className="text-brand-9 font-bold">{total_units}</p>
             </div>
             <div>

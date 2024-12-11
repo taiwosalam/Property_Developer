@@ -82,7 +82,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               <ChevronLeft />
             </button>
             <Picture
-              src={landlordData.picture}
+              src={landlordData?.picture || ""}
               alt="profile picture"
               size={120}
               rounded
@@ -211,7 +211,10 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
             heading="Others"
             info={{
               occupation: landlordData.others.employment,
-              employment_title: landlordData.others.employment_type,
+              ...(landlordData.others.employment &&
+                landlordData.others.employment.toLowerCase() === "employed" && {
+                  employment_title: landlordData.others.employment_type,
+                }),
               family_type: landlordData.others.family_type,
               landlord_type: landlordData.owner_type,
               xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
@@ -237,7 +240,11 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               heading="Others"
               info={{
                 occupation: landlordData.others.employment,
-                employment_title: landlordData.others.employment_type,
+                ...(landlordData.others.employment &&
+                  landlordData.others.employment.toLowerCase() ===
+                    "employed" && {
+                    employment_title: landlordData.others.employment_type,
+                  }),
                 family_type: landlordData.others.family_type,
                 xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
               }}

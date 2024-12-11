@@ -25,9 +25,10 @@ interface Guarantor {
 }
 
 interface Others {
-  employment: string | null;
-  employment_type: string | null;
+  occupation: string | null;
+  employment_type?: string | null;
   family_type: string | null;
+  tenant_type: string | null;
 }
 
 interface BankDetails {

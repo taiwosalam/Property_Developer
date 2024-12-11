@@ -63,7 +63,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
           style={{ padding: "24px 40px" }}
           className="relative space-y-5"
         >
-          <div className="relative flex flex-col xl:flex-row gap-5">
+          <div className="flex flex-col xl:flex-row gap-5">
             <button
               type="button"
               aria-label="back"
@@ -73,7 +73,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               <ChevronLeft />
             </button>
             <Picture
-              src={tenant.picture}
+              src={tenant?.picture || ""}
               alt="profile picture"
               size={120}
               rounded

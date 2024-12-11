@@ -8,7 +8,7 @@ import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
 import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@/components/Form/Button/button";
 import { AuthForm } from "@/components/Auth/auth-components";
 import Avatars from "@/components/Avatars/avatars";

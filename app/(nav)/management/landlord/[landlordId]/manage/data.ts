@@ -64,7 +64,7 @@ export interface IndividualLandlordAPIResponse {
     phone: string;
     user_id: string;
     tier_id?: 1 | 2 | 3 | 4 | 5;
-    picture: string;
+    picture?: string;
     gender: string;
     agent: string;
     owner_type: string;
@@ -80,6 +80,11 @@ export interface IndividualLandlordAPIResponse {
       account_name: string;
       account_number: string;
       // wallet_id: string; uncoment this later. mobile users have wallet_id
+    };
+    Others: {
+      occupation: string | null;
+      job_type: string | null;
+      family_type: string | null;
     };
     next_of_kin: {
       name: string;
@@ -109,7 +114,7 @@ export const transformIndividualLandlordAPIResponse = ({
     : "";
   return {
     id: data.id,
-    picture: data.picture,
+    picture: data.picture || "",
     // first_name: data.first_name,
     // last_name: data.last_name,
     name: data.name,
@@ -133,9 +138,9 @@ export const transformIndividualLandlordAPIResponse = ({
     next_of_kin: data.next_of_kin,
     bank_details: data.bank_details,
     others: {
-      employment: "",
-      employment_type: "",
-      family_type: "",
+      employment: data.Others.occupation,
+      employment_type: data.Others.job_type,
+      family_type: data.Others.family_type,
     },
     documents: data.documents.flatMap((doc) => {
       return doc.files.map((file, index) => {

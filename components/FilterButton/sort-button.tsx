@@ -1,24 +1,16 @@
 "use client";
 import { ArrowDownAZ, ArrowUpZA } from "lucide-react";
-import { useState, useCallback } from "react";
-import { debounce } from "@/utils/debounce";
+import { useState } from "react";
 
 const SortButton: React.FC<{
   onSort?: (order: "asc" | "desc") => void;
 }> = ({ onSort }) => {
   const [sort, setSort] = useState<"asc" | "desc">("asc");
 
-  const debouncedSort = useCallback(
-    debounce((order: "asc" | "desc") => {
-      onSort?.(order);
-    }, 500),
-    []
-  );
-
   const toggleSort = () => {
     const newSort = sort === "asc" ? "desc" : "asc";
     setSort(newSort);
-    debouncedSort(newSort);
+    onSort?.(newSort);
   };
 
   const getIcon = () => {

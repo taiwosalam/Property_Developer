@@ -8,7 +8,7 @@ import type { AddUnitPayload } from "@/components/Management/Properties/types";
 
 type AddUnitStoreWithoutFunctions = Omit<
   AddUnitStore,
-  "addUnit" | "editUnit" | "removeUnit" | "setAddUnitStore"
+  "addUnit" | "editUnit" | "removeUnit" | "setAddUnitStore" | "resetStore"
 >;
 
 export const transformPropertyData = (
@@ -28,7 +28,9 @@ export const transformPropertyData = (
       local_govt: data.local_government,
       full_address: data.full_address,
       category: data.category as Categories,
-      description: data.description,
+      // description: data.description,
+      description:
+        '<p>https://www.youtube.com/watch?v=1YpbDWpH7Pw<span style="background-color: rgb(250, 250, 250);">afnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</span>afnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</p><p>afnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</p><p><br></p><p><br></p><ol><li>https://www.youtube.com/watch?v=1YpbDWpH7Pw<span style="background-color: rgb(250, 250, 250);">afnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</span>afnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</li></ol><p><em>afnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHH</em>HHHH<strong>HHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHD</strong>SJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhS<em>DJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</em></p>',
       images: data.images.map((img) => img.image_path),
     },
     propertySettings: {

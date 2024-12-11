@@ -24,7 +24,8 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const removeUnit = useAddUnitStore((s) => s.removeUnit);
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
-
+  const resetStore = useAddUnitStore((s) => s.resetStore);
+  resetStore();
   const {
     data: propertyData,
     loading,
@@ -51,7 +52,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
       setAddUnitStore("propertySettings", transformedData.propertySettings);
       setAddUnitStore("addedUnits", transformedData.addedUnits);
     }
-  }, [propertyData, setAddUnitStore, router]);
+  }, [propertyData, setAddUnitStore, router, propertyId]);
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;

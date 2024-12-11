@@ -49,7 +49,7 @@ interface AttachedDocument extends AttachedDocumentCard {
 
 export type LandlordPageData = {
   id: string;
-  picture: string;
+  picture?: string;
   // first_name: string;
   // last_name: string;
   name: string;

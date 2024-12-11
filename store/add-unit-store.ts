@@ -3,6 +3,14 @@ import type { Categories } from "@/data";
 import { currencySymbols } from "@/utils/number-formatter";
 import type { AddUnitPayload } from "@/components/Management/Properties/types";
 
+const initialState = {
+  property_id: null,
+  propertyType: null,
+  propertyDetails: null,
+  propertySettings: null,
+  addedUnits: [],
+};
+
 type PropertyType = "rental" | "facility" | null;
 type StoreAddedUnit = AddUnitPayload & { notYetUploaded?: boolean };
 
@@ -43,6 +51,7 @@ export interface AddUnitStore {
   propertyDetails: null | PropertyDetails;
   propertySettings: null | PropertySettings;
   addedUnits: StoreAddedUnit[];
+  resetStore: () => void;
   setAddUnitStore: <
     K extends keyof Omit<
       AddUnitStore,
@@ -61,11 +70,9 @@ export interface AddUnitStore {
 }
 
 export const useAddUnitStore = create<AddUnitStore>((set) => ({
-  property_id: null,
-  propertyType: null,
-  propertyDetails: null,
-  propertySettings: null,
-  addedUnits: [],
+  ...initialState,
+  resetStore: () => set(initialState),
+
   setAddUnitStore: (key, value) => {
     set({ [key]: value });
   },

@@ -51,7 +51,7 @@ export interface IndividualTenantAPIResponse {
     email: string;
     phone: string;
     tier_id?: 1 | 2 | 3 | 4 | 5;
-    picture: string;
+    picture?: string;
     agent: string;
     gender: string;
     tenant_type: string;
@@ -68,6 +68,11 @@ export interface IndividualTenantAPIResponse {
       account_name: string;
       account_number: string;
       // wallet_id: string;
+    };
+    Others: {
+      occupation: string | null;
+      job_type: string | null;
+      family_type: string | null;
     };
     next_of_kin: {
       name: string;
@@ -88,7 +93,7 @@ export const transformIndividualTenantAPIResponse = ({
     : "";
   return {
     id: data.id,
-    picture: data.picture,
+    picture: data.picture || "",
     name: data.name,
     user_id: data.user_id,
     // first_name: data.first_name,
@@ -110,9 +115,13 @@ export const transformIndividualTenantAPIResponse = ({
     },
     next_of_kin: data.next_of_kin,
     others: {
-      employment: "",
-      employment_type: "",
-      family_type: "",
+      occupation: data.Others.occupation,
+      ...(data.Others.occupation &&
+        data.Others.occupation.toLowerCase() === "employed" && {
+          employment_type: data.Others.job_type,
+        }),
+      family_type: data.Others.family_type,
+      tenant_type: data.tenant_type,
     },
     bank_details: data.bank_details,
     notes: {

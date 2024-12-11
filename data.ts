@@ -343,7 +343,7 @@ export const tenantTypes = [
   "Single Mother",
   "Student",
   "Cooperate",
-  "Window",
+  "Widow",
   "Others",
 ];
 
