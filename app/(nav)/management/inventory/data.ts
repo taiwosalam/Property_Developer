@@ -24,7 +24,7 @@ export const createInventory = async (formData: FormData) => {
 
 export const updateInventory = async (formData: FormData, id: string) => {
   try {
-    const response = await api.put(`/inventory/${id}`, formData);
+    const response = await api.post(`/inventory/${id}`, formData);
     return response.status === 200 || response.status === 201;
   } catch (error) {
     handleAxiosError(error);
@@ -56,7 +56,7 @@ export const deleteInventory = async (id: string) => {
 
 export const getBranches = async () => {
     try { 
-      const response = await api.get("/branches");
+      const response = await api.get("/branches/select");
       return response.data;
     } catch (error) {
       console.error("Error fetching branches:", error);

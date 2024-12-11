@@ -27,7 +27,7 @@ const CreateMyPropertyRequest = () => {
         resetBudgets();
         return;
       }
-      const result = await createPropertyRequest(data);
+      const result = await createPropertyRequest(data); 
       if (result) {
         toast.success("Property request created successfully");
         router.push("/management/agent-community/my-properties-request");

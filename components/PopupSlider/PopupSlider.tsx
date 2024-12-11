@@ -16,7 +16,7 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
   currentIndex = 0,
   onClose,
 }) => {
-  console.log(currentIndex);
+  // console.log(currentIndex);
   const cRef = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({

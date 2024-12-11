@@ -10,6 +10,7 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useParams } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import { getBranch } from "@/components/Management/Inventory/data";
+import { ManageInventorySkeleton } from "@/components/Skeleton/manageInventory";
 
 interface InventoryData {
   title: string;
@@ -49,6 +50,9 @@ const PreviewInventory = () => {
   const [inventoryItems, setInventoryItems] = useState<any>([]);
   const [inventoryData, setInventoryData] = useState<InventoryData | null>(null);
   const { data, loading, error } = useFetch<FetchData>(`/inventory/${inventoryId}`);
+  const [inventoryFiles, setInventoryFiles] = useState<any[]>([]);
+  // const [inventoryFiles, setInventoryFiles] = useState<File[][]>([]);
+
   const [video, setVideo] = useState<string>("");
 
   useEffect(() => {
@@ -75,6 +79,8 @@ const PreviewInventory = () => {
   }, [data]);
 
   return (
+    <>
+    {loading && <ManageInventorySkeleton />}
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-4">
         <BackButton>{inventoryData?.title}</BackButton>
@@ -104,6 +110,8 @@ const PreviewInventory = () => {
               index={index}
               data={item}
               video={video}
+              setInventoryFiles={setInventoryFiles}
+              inventoryFiles={inventoryFiles}
             />
           ))}
         </div>
@@ -118,6 +126,7 @@ const PreviewInventory = () => {
         </Button>
       </FixedFooter>
     </div>
+    </>
   );
 };
 

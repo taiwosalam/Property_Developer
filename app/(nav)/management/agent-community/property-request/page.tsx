@@ -20,6 +20,10 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import NetworkError from "@/components/Error/NetworkError";
 import { stateOptions } from "@/app/(nav)/tasks/inspections/data";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import dayjs from "dayjs";
+import { AxiosRequestConfig } from "axios";
+import { PropertyRequestParams } from "../type";
 
 const lists = [
   {
@@ -83,7 +87,9 @@ const PropertyRequest = () => {
       }
     }
   }
+
   const [state, setState] = useState<PropertyRequestApiData>(initialState);
+
   const {
     data,
     meta: {
@@ -123,12 +129,74 @@ const PropertyRequest = () => {
     setSearchQuery(query);
   };
 
-  const config = useMemo(
-    () => ({
-      params: { page: current_page, search: searchQuery },
-    }),
-    [current_page, searchQuery]
-  );
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+      sort: "asc",
+    } as PropertyRequestParams,
+  });
+
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+
+  const isFilterApplied = () => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  };
+
+
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({
+      params: { ...config.params, sort: order },
+    });
+  };
+
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate, options } = filters;
+    const statesArray = menuOptions["State"] || [];
+    
+    const queryParams: PropertyRequestParams = {
+      page: 1,
+      sort: "desc",
+      search: "",
+    };
+
+    options.forEach(option => {
+      if (option === 'all') {
+          queryParams.all = true; 
+      } else if (option === 'trending') {
+          queryParams.trending = true; 
+      } else if (option === 'new') {
+          queryParams.recent = true; 
+      }
+  });
+  if (statesArray.length > 0) {
+    queryParams.state = statesArray.join(",");
+  }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    setConfig({
+      params: queryParams,
+    });
+    
+    console.log({ menuOptions, startDate, endDate, options })
+  };
+
 
   const {
     data: apiData,
@@ -138,14 +206,13 @@ const PropertyRequest = () => {
     silentLoading,
     isNetworkError,
   } = useFetch<PropertyRequestApiData>(
-    `/agent-community/property-requests/all`,
-    config
-  );
+    `/agent-community/property-requests/all`, config);
 
   useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {
+      console.log("api data", apiData)
       setState((prevState) => ({
         ...prevState,
         data: apiData.data,
@@ -154,10 +221,6 @@ const PropertyRequest = () => {
     }
   }, [apiData]);
 
-  const handleFilterApply = (filters: any) => {
-    console.log("Filter applied:", filters);
-    // Add filtering logic here for branches
-  };
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "___";
@@ -234,7 +297,7 @@ const PropertyRequest = () => {
             "This page contains a list of Property Request on the platform.",
         }}
         searchInputPlaceholder="Search Property Request"
-        handleFilterApply={() => {}}
+        handleFilterApply={handleFilterApply}
         isDateTrue
         filterOptions={[
           {
@@ -253,10 +316,14 @@ const PropertyRequest = () => {
         hasGridListToggle={false}
         filterOptionsMenu={stateOptions}
         handleSearch={handleSearch}
+        onSort={handleSort}
+        appliedFilters={appliedFilters}
       />
       {propertyRequestData.length === 0 && !silentLoading ? (
-        searchQuery ? (
-          "No Search Found"
+        config.params.search || isFilterApplied() ? (
+          <div className="col-span-full text-center py-8 text-gray-500">
+            No Search/Filter Found
+          </div>
         ) : (
           <section>
             <EmptyList
