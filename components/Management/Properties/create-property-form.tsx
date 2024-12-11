@@ -48,7 +48,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const companyId = usePersonalInfoStore((state) => state.company_id) || "";
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
-  const propertyType = useAddUnitStore((s) => s.propertyType);
   const [state, setState] = useState<PropertyFormStateType>(
     property_form_state_data
   );
@@ -199,6 +198,17 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     };
     fetchStaff();
   }, [selectedBranch]);
+
+  useEffect(() => {
+    if (editMode && propertyDetails) {
+      setState((x) => ({
+        ...x,
+        state: propertyDetails.state || "",
+        lga: propertyDetails.local_govt || "",
+        city: propertyDetails.city || "",
+      }));
+    }
+  }, [propertyDetails, editMode]);
 
   const yesNoFields = [
     "group_chat",
@@ -354,7 +364,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             onChange={(state) => setPropertyState({ state })}
             required
             hiddenInputClassName="property-form-input"
-            defaultValue={editMode ? propertyDetails?.state : undefined}
           />
           <Select
             options={getLocalGovernments(selectedState)}
@@ -365,7 +374,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             onChange={(lga) => setPropertyState({ lga })}
             required
             hiddenInputClassName="property-form-input"
-            defaultValue={editMode ? propertyDetails?.local_govt : undefined}
           />
           <Select
             options={getCities(selectedState, lga)}
@@ -377,7 +385,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             inputContainerClassName="bg-white"
             required
             hiddenInputClassName="property-form-input"
-            defaultValue={editMode ? propertyDetails?.city : undefined}
           />
           <Input
             id="full_address"

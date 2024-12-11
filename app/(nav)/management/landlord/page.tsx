@@ -125,10 +125,10 @@ const Landlord = () => {
       search: "",
     };
     if (statesArray.length > 0) {
-      queryParams.state = statesArray.join(",");
+      queryParams.states = statesArray.join(",");
     }
     if (branchIdsArray.length > 0) {
-      queryParams.branch_id = branchIdsArray.join(",");
+      queryParams.branch_ids = branchIdsArray.join(",");
     }
     if (agent && agent !== "all") {
       queryParams.agent = agent;

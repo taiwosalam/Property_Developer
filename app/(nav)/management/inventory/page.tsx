@@ -47,7 +47,7 @@ const Inventory = () => {
     selectedOptions.view || "grid"
   );
   // const { branches } = getBranches();
-    const { data: branchesData } =
+  const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");
 
   const initialState = {
@@ -62,12 +62,11 @@ const Inventory = () => {
     },
   };
 
-    const branchOptions =
-      branchesData?.data.map((branch) => ({
-        label: branch.branch_name,
-        value: branch.id,
-      })) || [];
-
+  const branchOptions =
+    branchesData?.data.map((branch) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
 
   const [state, setState] = useState(initialState);
   const {
@@ -199,7 +198,6 @@ const Inventory = () => {
     });
   };
 
-
   if (loading)
     return (
       <div className="min-h-[80vh] flex justify-center items-center">
@@ -258,11 +256,12 @@ const Inventory = () => {
         handleSearch={handleSearch}
         isDateTrue
         filterOptionsMenu={inventoryFiltersWithDropdown}
+        appliedFilters={appliedFilters}
       />
 
       <section className="capitalize">
         {inventory.length === 0 && !silentLoading ? (
-          (config.params.search || isFilterApplied()) ? (
+          config.params.search || isFilterApplied() ? (
             "No Search/Filter Found"
           ) : (
             <EmptyList

@@ -85,7 +85,7 @@ const EditBranchForm = ({
       data.delete("picture");
     }
     setUpdateRequestLoading(true);
-    convertYesNoToBoolean(data, ["branch_wallet"]);
+    // convertYesNoToBoolean(data, ["branch_wallet"]);
     if (somedata?.id) {
       const status = await updateBranch(data, somedata.id);
       if (status) {

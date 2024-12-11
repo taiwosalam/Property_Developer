@@ -115,7 +115,7 @@ export interface ProfileResponse {
       userid: string;
       name: string | null;
     };
-    company: {
+    company?: {
       company_id: string;
       company_name: string;
       company_logo: string;
@@ -130,7 +130,7 @@ export interface ProfileResponse {
       industry: string;
       cac_registration_number: string;
     };
-    director: {
+    director?: {
       personal_title: string | null;
     };
     profile: {
