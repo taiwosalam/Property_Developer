@@ -120,7 +120,7 @@ const Inventory = () => {
     params: {
       page: 1,
       search: "",
-      sort_order: "asc",
+      sort: "asc",
     } as InventoryRequestParams,
   });
 
@@ -138,7 +138,7 @@ const Inventory = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_order: order },
+      params: { ...config.params, sort: order },
     });
   };
 

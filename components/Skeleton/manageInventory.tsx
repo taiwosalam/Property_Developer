@@ -11,7 +11,7 @@ export const ManageInventorySkeleton = () => {
           <div className="flex-1 h-10 bg-gray-300 rounded"></div>
         </div>
         <div className="px-6 py-12 bg-gray-300 rounded-lg custom-flex-col gap-4">
-          <p className="h-8 w-1/4 bg-gray-400 rounded"></p>
+          <p className="h-8 w-1/4 bg-gray-300 rounded"></p>
           <div className="flex flex-col gap-4 lg:gap-0 lg:flex-row lg:items-center">
             <div className="h-6 w-full bg-gray-300 rounded"></div>
           </div>

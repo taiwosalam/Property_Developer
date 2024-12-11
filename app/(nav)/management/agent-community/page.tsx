@@ -1,77 +1,144 @@
 "use client";
 
-  import FilterBar from "@/components/FIlterBar/FilterBar";
-  import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-  import Button from "@/components/Form/Button/button";
-  import ThreadCard, { ThreadSkeleton } from "@/components/Community/ThreadCard";
-  import { getThreads } from "./data";
-  import Pagination from "@/components/Pagination/pagination";
-  import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-  import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
-  import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-  import { PlusIcon } from "@/public/icons/icons";
-  import { useRouter } from "next/navigation";
-  import { useEffect, useMemo, useState } from "react";
-  import useFetch from "@/hooks/useFetch";
-  import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-  import CustomLoader from "@/components/Loader/CustomLoader";
-  import NetworkError from "@/components/Error/NetworkError";
+import FilterBar from "@/components/FIlterBar/FilterBar";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import Button from "@/components/Form/Button/button";
+import ThreadCard, { ThreadSkeleton } from "@/components/Community/ThreadCard";
+import { getThreads } from "./data";
+import Pagination from "@/components/Pagination/pagination";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
+import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+import { PlusIcon } from "@/public/icons/icons";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import { stateOptions } from "../../tasks/inspections/data";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import { AxiosRequestConfig } from "axios";
+import { ArticlesRequestParams } from "./type";
+import dayjs from "dayjs";
 
-  const lists = [
-    {
-      title: "All Property Request",
-      desc: "Review and respond to property needs and requests from other real estate agents within your network. Strengthen business connections and explore profit-sharing opportunities by fulfilling portfolio demands together for mutual success.",
-      link: "/management/agent-community/property-request",
-    },
-    {
-      title: "My Articles",
-      desc: "Assess the Articles youve initiated, any modifications made to it, and its overall performance.",
-      link: "/management/agent-community/my-articles",
-    },
-    {
-      title: "My Properties Request",
-      desc: "Evaluate the property request you've generated, comments received, and how you've managed them.",
-      link: "/management/agent-community/my-properties-request",
-    },
-  ];
+const lists = [
+  {
+    title: "All Property Request",
+    desc: "Review and respond to property needs and requests from other real estate agents within your network. Strengthen business connections and explore profit-sharing opportunities by fulfilling portfolio demands together for mutual success.",
+    link: "/management/agent-community/property-request",
+  },
+  {
+    title: "My Articles",
+    desc: "Assess the Articles youve initiated, any modifications made to it, and its overall performance.",
+    link: "/management/agent-community/my-articles",
+  },
+  {
+    title: "My Properties Request",
+    desc: "Evaluate the property request you've generated, comments received, and how you've managed them.",
+    link: "/management/agent-community/my-properties-request",
+  },
+];
 
-  interface ThreadApiResponse {
-      data: any[];
-      meta: {
-        last_page: number;
-        current_page: number;
-        total_items: number;
-        current_month_posts: number;
-        total: number;
-      };
-      isLoading: boolean;
-      searchQuery: string;
-  }
+interface ThreadApiResponse {
+  data: any[];
+  meta: {
+    last_page: number;
+    current_page: number;
+    total_items: number;
+    current_month_posts: number;
+    total: number;
+  };
+  isLoading: boolean;
+  searchQuery: string;
+}
 
 const AgentCommunityPage = () => {
   const router = useRouter();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-       const handleSort = (order: "asc" | "desc") => {
-         setSortOrder(order);
-       };
-       
-    const initialState:ThreadApiResponse = {
-        data: [],
-        meta: {
-          last_page: 1,
-          current_page: 1,
-          total_items: 0,
-          current_month_posts: 0,
-          total: 0,
-        },
-        isLoading: false,
-        searchQuery: '',
+  const initialState: ThreadApiResponse = {
+    data: [],
+    meta: {
+      last_page: 1,
+      current_page: 1,
+      total_items: 0,
+      current_month_posts: 0,
+      total: 0,
+    },
+    isLoading: false,
+    searchQuery: '',
+  }
+  const [state, setState] = useState(initialState);
+  const { data, isLoading, searchQuery, meta } = state;
+
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+
+  const isFilterApplied = () => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  };
+
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+      sort: "asc",
+    } as ArticlesRequestParams,
+  });
+
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({
+      params: { ...config.params, sort: order },
+    });
+  };
+
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate, options } = filters;
+    const statesArray = menuOptions["State"] || [];
+    
+    const queryParams: ArticlesRequestParams = {
+      page: 1,
+      sort: "asc",
+      search: "",
+    };
+    options.forEach(option => {
+      if (option === 'all') {
+          queryParams.all = true; 
+      } else if (option === 'trending') {
+          queryParams.trending = true; 
+      } else if (option === 'new') {
+          queryParams.recent = true; 
+      }
+  });
+  if (statesArray.length > 0) {
+    queryParams.state = statesArray.join(",");
+  }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
     }
-    const [state, setState] = useState(initialState);
-    const { data, isLoading, searchQuery, meta } = state;
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    setConfig({
+      params: queryParams,
+    });
+    
+    console.log({ menuOptions, startDate, endDate, options })
+  };
+
 
   const handlePageChange = (page: number) => {
     setState((prevState) => ({
@@ -83,17 +150,6 @@ const AgentCommunityPage = () => {
       },
     }));
   };
-
-  const config = useMemo(
-    () => ({
-      params: {
-        page: meta?.current_page,
-        search: searchQuery,
-        sort_order: sortOrder,
-      },
-    }),
-    [meta?.current_page, searchQuery, sortOrder]
-  );
 
   const handleSearch = async (query: string) => {
     if (!query && !searchQuery) return;
@@ -115,7 +171,6 @@ const AgentCommunityPage = () => {
   useRefetchOnEvent("refetchThreads", () => refetch({ silent: true }));
 
   useEffect(() => {
-    // console.log("apiData", apiData);
     if (apiData) {
       setState((x) => ({
         ...x,
@@ -177,7 +232,7 @@ const AgentCommunityPage = () => {
             "This page contains a list of Agent Community on the platform.",
         }}
         searchInputPlaceholder="Search for Agent Community"
-        handleFilterApply={() => {}}
+        handleFilterApply={handleFilterApply}
         isDateTrue
         filterOptionsMenu={stateOptions}
         filterOptions={[
@@ -196,11 +251,12 @@ const AgentCommunityPage = () => {
         ]}
         handleSearch={handleSearch}
         onSort={handleSort}
+        appliedFilters={appliedFilters}
       />
       {data.length === 0 && !silentLoading ? (
-        searchQuery ? (
+        config.params.search || isFilterApplied() ? (
           <div className="col-span-full text-center py-8 text-gray-500">
-            No Article found
+            No Search/Filter Found
           </div>
         ) : (
           <section>
@@ -266,13 +322,13 @@ const AgentCommunityPage = () => {
           )}
         </AutoResizingGrid>
       )}
-        <div className="pagination">
-          <Pagination
-            totalPages={meta?.last_page}
-            currentPage={meta?.current_page}
-            onPageChange={handlePageChange}
-          />
-        </div>
+      <div className="pagination">
+        <Pagination
+          totalPages={meta?.last_page}
+          currentPage={meta?.current_page}
+          onPageChange={handlePageChange}
+        />
+      </div>
       <div className="top-80 right-5 fixed rounded-full">
         <button
           onClick={handleCreateArticleClick}
