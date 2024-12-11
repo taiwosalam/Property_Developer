@@ -82,6 +82,7 @@ const ManageInventory = () => {
   const handleAddMoreInventory = () => {
     setMoreInventory((prev) => prev + 1);
   };
+  
   const handleUpdateInventory = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {

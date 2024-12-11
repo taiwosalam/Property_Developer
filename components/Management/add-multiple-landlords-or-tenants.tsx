@@ -92,7 +92,11 @@ const AddMultipleLandlordsOrTenants: React.FC<
             >
               <DeleteIconOrange size={20} />
             </button>
-            <LandlordTenantInfoDocument name={fileName} id="uploaded-file" />
+            <LandlordTenantInfoDocument 
+              name={fileName}
+              id="uploaded-file" 
+              link=""
+            />
           </div>
         )}
       </div>
