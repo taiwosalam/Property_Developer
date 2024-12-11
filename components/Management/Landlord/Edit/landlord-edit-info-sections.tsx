@@ -45,6 +45,7 @@ import {
   updateLandlordPicture,
   uploadDocuments,
   removeDocuments,
+  updateLandlordOthers,
 } from "@/app/(nav)/management/landlord/[landlordId]/manage/edit/data";
 import { useMultipleFileUpload } from "@/hooks/useMultipleFilesUpload";
 import { useImageUploader } from "@/hooks/useImageUploader";
@@ -428,56 +429,79 @@ export const LandlordEditBankDetailsInfoSection = () => {
 };
 
 export const LandlordEditOthersInfoSection = () => {
-  const { data } = useLandlordEditContext();
+  const { data: landlord } = useLandlordEditContext();
 
   const [employment, setEmployment] = useState<string | null>("");
 
-  useEffect(() => {
-    if (data?.others) {
-      setEmployment(data.others.employment);
+  const [reqLoading, setReqLoading] = useState(false);
+  const handleUpdateOthers = async (data: FormData) => {
+    if (landlord?.id) {
+      setReqLoading(true);
+      const status = await updateLandlordOthers(landlord.id, data);
+      if (status) {
+        window.dispatchEvent(new Event("landlord-updated"));
+      }
+      setReqLoading(false);
     }
-  }, [data?.others]);
+  };
+
+  useEffect(() => {
+    if (landlord?.others) {
+      setEmployment(landlord.others.employment);
+    }
+  }, [landlord?.others]);
 
   return (
     <LandlordTenantInfoEditSection title="Others">
-      <LandlordTenantInfoEditGrid>
-        <Select
-          id="employment"
-          label="employment"
-          inputContainerClassName="bg-neutral-2"
-          options={employmentOptions}
-          value={employment || ""}
-          onChange={(value) => setEmployment(value)}
-        />
-        {employment && employment.toLowerCase() === "employed" && (
+      <AuthForm
+        onFormSubmit={handleUpdateOthers}
+        skipValidation
+        returnType="form-data"
+      >
+        <LandlordTenantInfoEditGrid>
           <Select
-            id="employment_type"
-            label="employment type"
-            options={employmentTypeOptions}
+            id="occupation"
+            label="employment"
             inputContainerClassName="bg-neutral-2"
-            defaultValue={data?.others?.employment_type || ""}
+            options={employmentOptions}
+            value={employment || ""}
+            onChange={(value) => setEmployment(value)}
           />
-        )}
-        <Select
-          id="family_type"
-          label="family type"
-          inputContainerClassName="bg-neutral-2"
-          options={familyTypes}
-          defaultValue={data?.others?.family_type || ""}
-        />
-        <div
-          className={clsx(
-            "flex items-end justify-end",
-            (!employment ||
-              (employment && employment.toLowerCase()) !== "employed") &&
-              "md:col-span-2"
+          {employment && employment.toLowerCase() === "employed" && (
+            <Select
+              id="job_type"
+              label="employment type"
+              options={employmentTypeOptions}
+              inputContainerClassName="bg-neutral-2"
+              defaultValue={landlord?.others?.employment_type || ""}
+            />
           )}
-        >
-          <Button size="base_medium" className="py-2 px-6">
-            update
-          </Button>
-        </div>
-      </LandlordTenantInfoEditGrid>
+          <Select
+            id="family_type"
+            label="family type"
+            inputContainerClassName="bg-neutral-2"
+            options={familyTypes}
+            defaultValue={landlord?.others?.family_type || ""}
+          />
+          <div
+            className={clsx(
+              "flex items-end justify-end",
+              (!employment ||
+                (employment && employment.toLowerCase()) !== "employed") &&
+                "md:col-span-2"
+            )}
+          >
+            <Button
+              size="base_medium"
+              className="py-2 px-6"
+              disabled={reqLoading}
+              type="submit"
+            >
+              {reqLoading ? "updating..." : "update"}
+            </Button>
+          </div>
+        </LandlordTenantInfoEditGrid>
+      </AuthForm>
     </LandlordTenantInfoEditSection>
   );
 };

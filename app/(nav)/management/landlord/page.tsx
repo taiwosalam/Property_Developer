@@ -34,7 +34,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { ExclamationMark } from "@/public/icons/icons";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import TableLoading from "@/components/Loader/TableLoading";
-import { AllBranchesResponse } from "@/components/Management/Properties/types";
+import type { AllBranchesResponse } from "@/components/Management/Properties/types";
 import useFetch from "@/hooks/useFetch";
 import type { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
@@ -122,10 +122,10 @@ const Landlord = () => {
       search: "",
     };
     if (statesArray.length > 0) {
-      queryParams.state = statesArray.join(",");
+      queryParams.states = statesArray.join(",");
     }
     if (branchIdsArray.length > 0) {
-      queryParams.branch_id = branchIdsArray.join(",");
+      queryParams.branch_ids = branchIdsArray.join(",");
     }
     if (agent && agent !== "all") {
       queryParams.agent = agent;

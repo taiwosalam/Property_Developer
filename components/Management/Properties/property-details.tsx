@@ -7,6 +7,7 @@ import DOMPurify from "dompurify";
 
 const PropertyDetails = ({ heading }: { heading: string }) => {
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
+  // console.log(propertyDetails);
   const sanitizedHTML = DOMPurify.sanitize(propertyDetails?.description || "");
 
   return (

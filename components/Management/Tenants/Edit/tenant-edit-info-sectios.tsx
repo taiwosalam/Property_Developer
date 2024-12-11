@@ -44,6 +44,7 @@ import {
   updateTenantPicture,
   uploadDocuments,
   removeDocuments,
+  updateTenantOthers,
 } from "@/app/(nav)/management/tenants/[tenantId]/manage/edit/data";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { toast } from "sonner";
@@ -52,7 +53,7 @@ import Image from "next/image";
 import LandlordTenantModalPreset from "../../landlord-tenant-modal-preset";
 import { useMultipleFileUpload } from "@/hooks/useMultipleFilesUpload";
 import { v4 as uuidv4 } from "uuid";
-import { TenantPageData } from "@/app/(nav)/management/tenants/data";
+
 
 const states = getAllStates();
 
@@ -373,55 +374,78 @@ export const TenantEditGuarantorInfoSection = () => {
 };
 
 export const TenantEditOthersInfoSection = () => {
-  const { data } = useTenantEditContext();
+  const { data: tenant } = useTenantEditContext();
   const [employment, setEmployment] = useState<string | null>("");
 
-  useEffect(() => {
-    if (data?.others) {
-      setEmployment(data.others.employment);
+  const [reqLoading, setReqLoading] = useState(false);
+  const handleUpdateOthers = async (data: FormData) => {
+    if (tenant?.id) {
+      setReqLoading(true);
+      const status = await updateTenantOthers(tenant.id, data);
+      if (status) {
+        window.dispatchEvent(new Event("tenant-updated"));
+      }
+      setReqLoading(false);
     }
-  }, [data?.others]);
+  };
+
+  useEffect(() => {
+    if (tenant?.others) {
+      setEmployment(tenant.others.occupation);
+    }
+  }, [tenant?.others]);
 
   return (
     <LandlordTenantInfoEditSection title="Others">
-      <LandlordTenantInfoEditGrid>
-        <Select
-          id="employment"
-          label="employment"
-          options={employmentOptions}
-          value={employment || ""}
-          inputContainerClassName="bg-neutral-2"
-          onChange={(value) => setEmployment(value)}
-        />
-        {employment && employment.toLowerCase() === "employed" && (
+      <AuthForm
+        onFormSubmit={handleUpdateOthers}
+        skipValidation
+        returnType="form-data"
+      >
+        <LandlordTenantInfoEditGrid>
           <Select
-            id="employment_type"
-            label="employment type"
-            options={employmentTypeOptions}
+            id="employment"
+            label="employment"
+            options={employmentOptions}
+            value={employment || ""}
             inputContainerClassName="bg-neutral-2"
-            defaultValue={data?.others?.employment_type || ""}
+            onChange={(value) => setEmployment(value)}
           />
-        )}
-        <Select
-          id="family_type"
-          label="family type"
-          options={familyTypes}
-          inputContainerClassName="bg-neutral-2"
-          defaultValue={data?.others?.family_type || ""}
-        />
-        <div
-          className={clsx(
-            "flex items-end justify-end",
-            (!employment ||
-              (employment && employment.toLowerCase()) !== "employed") &&
-              "md:col-span-2"
+          {employment && employment.toLowerCase() === "employed" && (
+            <Select
+              id="employment_type"
+              label="employment type"
+              options={employmentTypeOptions}
+              inputContainerClassName="bg-neutral-2"
+              defaultValue={tenant?.others?.employment_type || ""}
+            />
           )}
-        >
-          <Button size="base_medium" className="py-2 px-6">
-            update
-          </Button>
-        </div>
-      </LandlordTenantInfoEditGrid>
+          <Select
+            id="family_type"
+            label="family type"
+            options={familyTypes}
+            inputContainerClassName="bg-neutral-2"
+            defaultValue={tenant?.others?.family_type || ""}
+          />
+          <div
+            className={clsx(
+              "flex items-end justify-end",
+              (!employment ||
+                (employment && employment.toLowerCase()) !== "employed") &&
+                "md:col-span-2"
+            )}
+          >
+            <Button
+              size="base_medium"
+              className="py-2 px-6"
+              disabled={reqLoading}
+              type="submit"
+            >
+              {reqLoading ? "updating..." : "update"}
+            </Button>
+          </div>
+        </LandlordTenantInfoEditGrid>
+      </AuthForm>
     </LandlordTenantInfoEditSection>
   );
 };

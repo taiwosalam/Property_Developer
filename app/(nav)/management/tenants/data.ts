@@ -133,9 +133,9 @@ export interface TenantRequestParams {
   page?: number;
   search?: string;
   sort_order?: "asc" | "desc";
-  state?: string;
+  states?: string;
   start_date?: string;
   end_date?: string;
   agent?: string;
-  branch_id?: string;
+  branch_ids?: string;
 }

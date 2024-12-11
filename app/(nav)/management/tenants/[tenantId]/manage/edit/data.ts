@@ -26,6 +26,18 @@ export const updateTenantNextOfKin = async (id: string, payload: FormData) => {
   }
 };
 
+export const updateTenantOthers = async (id: string, payload: FormData) => {
+  payload.append("_method", "PUT");
+  try {
+    const { data } = await api.post(`tenant/${id}/other-status`, payload);
+    toast.success(data?.message || "Update successful");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to update tenant others");
+    return false;
+  }
+};
+
 export const updateTenantBankDetails = async (
   id: string,
   payload: FormData

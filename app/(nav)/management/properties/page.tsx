@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { ExclamationMark } from "@/public/icons/icons";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
@@ -21,13 +21,15 @@ import {
   initialState,
   type PropertiesPageState,
   type PropertiesApiResponse,
-  type PropertiesRequestParams,
+  type PropertyFilterResponse,
+  type PropertiesFilterParams,
 } from "./data";
 import useView from "@/hooks/useView";
 import useFetch from "@/hooks/useFetch";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import { FilterResult } from "@/components/Management/Landlord/types";
+import type { AllBranchesResponse } from "@/components/Management/Properties/types";
 
 const Properties = () => {
   const storedView = useView();
@@ -52,7 +54,7 @@ const Properties = () => {
     properties,
   } = pageData;
 
-  const isFilterApplied = () => {
+  const isFilterApplied = useCallback(() => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
     return (
       options.length > 0 ||
@@ -60,69 +62,62 @@ const Properties = () => {
       startDate !== null ||
       endDate !== null
     );
-  };
+  }, [appliedFilters]);
 
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-      sort_order: "asc",
-    } as PropertiesRequestParams,
-  });
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<"asc" | "desc" | "">("");
+
+  const endpoint =
+    isFilterApplied() || search || sort ? "/property/filter" : "/property/list";
+  const config: AxiosRequestConfig = useMemo(() => {
+    return {
+      params: {
+        page,
+        date_from: appliedFilters.startDate
+          ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+          : undefined,
+        date_to: appliedFilters.endDate
+          ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+          : undefined,
+        search: search,
+        branch_id: appliedFilters.menuOptions["Branch"] || [],
+        state: appliedFilters.menuOptions["State"] || [],
+        property_type: appliedFilters.menuOptions["Property Type"]?.[0],
+        sort_by: sort,
+      } as PropertiesFilterParams,
+    };
+  }, [appliedFilters, search, sort, page]);
 
   const handlePageChange = (page: number) => {
-    setConfig({
-      params: { ...config.params, page },
-    });
+    setPage(page);
   };
 
   const handleSort = (order: "asc" | "desc") => {
-    setConfig({
-      params: { ...config.params, sort_order: order },
-    });
+    setSort(order);
   };
 
   const handleSearch = (query: string) => {
-    setConfig({
-      params: { ...config.params, search: query },
-    });
+    setSearch(query);
   };
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
-    const { menuOptions, startDate, endDate } = filters;
-    const statesArray = menuOptions["State"] || [];
-    const propertyType = menuOptions["Property Type"]?.[0];
-    const branchIdsArray = menuOptions["Branch"] || [];
-
-    const queryParams: PropertiesRequestParams = {
-      page: 1,
-      sort_order: "asc",
-      search: "",
-    };
-    if (statesArray.length > 0) {
-      queryParams.state = statesArray.join(",");
-    }
-    if (branchIdsArray.length > 0) {
-      queryParams.branch_id = branchIdsArray.join(",");
-    }
-    if (propertyType && propertyType !== "all") {
-      queryParams.property_type = propertyType;
-    }
-    if (startDate) {
-      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
-    }
-    if (endDate) {
-      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
-    }
-    setConfig({
-      params: queryParams,
-    });
+    setPage(1);
   };
 
   useEffect(() => {
     setView(storedView);
   }, [storedView]);
+
+  const { data: branchesData } =
+    useFetch<AllBranchesResponse>("/branches/select");
+
+  const branchOptions =
+    branchesData?.data.map((branch) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
 
   const {
     data: apiData,
@@ -130,7 +125,10 @@ const Properties = () => {
     silentLoading,
     isNetworkError,
     error,
-  } = useFetch<PropertiesApiResponse>("property/list", config);
+  } = useFetch<PropertiesApiResponse | PropertyFilterResponse>(
+    endpoint,
+    config
+  );
 
   useEffect(() => {
     if (apiData) {
@@ -202,14 +200,25 @@ const Properties = () => {
         searchInputPlaceholder="Search for Properties"
         handleFilterApply={handleFilterApply}
         isDateTrue
-        filterOptionsMenu={propertyFilterOptionsMenu}
+        filterOptionsMenu={[
+          ...propertyFilterOptionsMenu,
+          ...(branchOptions.length > 0
+            ? [
+                {
+                  label: "Branch",
+                  value: branchOptions,
+                },
+              ]
+            : []),
+        ]}
         onSort={handleSort}
         handleSearch={handleSearch}
+        appliedFilters={appliedFilters}
       />
 
       <section className="capitalize">
         {properties.length === 0 && !silentLoading ? (
-          isFilterApplied() || config.params.search ? (
+          isFilterApplied() || search ? (
             "No Search/Filter Found"
           ) : (
             <EmptyList

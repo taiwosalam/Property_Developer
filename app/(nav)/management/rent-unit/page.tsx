@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import {
   initialRentUnitPageData,
@@ -7,6 +7,7 @@ import {
   RentAndUnitFiltersWithDropdown,
   RentAndUnitState,
   RentUnitApiResponse,
+  RentUnitFilterParams,
   RentUnitPageData,
   RentUnitRequestParams,
   transformRentUnitApiResponse,
@@ -43,14 +44,6 @@ const RentAndUnit = () => {
     current_page: 1,
   });
 
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-      sort_order: "asc",
-    } as RentUnitRequestParams,
-  });
-
   const { gridView, total_pages, current_page } = state;
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -72,52 +65,49 @@ const RentAndUnit = () => {
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
-    const { menuOptions, startDate, endDate } = filters;
-    const statesArray = menuOptions["State"] || [];
-    const agent = menuOptions["Landlord Type"]?.[0];
-    const branchIdsArray = menuOptions["Branch"] || [];
-
-    const queryParams: RentUnitRequestParams = {
-      page: 1,
-      sort_order: "asc",
-      search: "",
-    };
-    if (statesArray.length > 0) {
-      queryParams.state = statesArray.join(",");
-    }
-    if (branchIdsArray.length > 0) {
-      queryParams.branch_id = branchIdsArray.join(",");
-    }
-    if (agent && agent !== "all") {
-      queryParams.agent = agent;
-    }
-    if (startDate) {
-      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
-    }
-    if (endDate) {
-      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
-    }
-    setConfig({
-      params: queryParams,
-    });
+    setPage(1);
   };
 
+  const { menuOptions, startDate, endDate } = appliedFilters;
+  const statesArray = menuOptions["State"] || [];
+  const agent = menuOptions["Landlord Type"]?.[0];
+  const branchIdsArray = menuOptions["Branch"] || [];
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<"asc" | "desc" | "">("");
+
+  const endpoint =
+    isFilterApplied() || search || sort ? "/unit/filter" : "/unit/list";
+
+  const config: AxiosRequestConfig = useMemo(() => {
+    return {
+      params: {
+        page,
+        date_from: appliedFilters.startDate
+          ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+          : undefined,
+        date_to: appliedFilters.endDate
+          ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+          : undefined,
+        search: search,
+        branch_id: appliedFilters.menuOptions["Branch"] || [],
+        state: appliedFilters.menuOptions["State"] || [],
+        property_type: appliedFilters.menuOptions["Property Type"]?.[0],
+        sort_by: sort,
+      } as RentUnitFilterParams,
+    };
+  }, [appliedFilters, search, sort, page]);
+
   const handlePageChange = (page: number) => {
-    setConfig({
-      params: { ...config.params, page },
-    });
+    setPage(page);
   };
 
   const handleSort = (order: "asc" | "desc") => {
-    setConfig({
-      params: { ...config.params, sort_order: order },
-    });
+    setSort(order);
   };
 
-  const handleSearch = async (query: string) => {
-    setConfig({
-      params: { ...config.params, search: query },
-    });
+  const handleSearch = (query: string) => {
+    setSearch(query);
   };
 
   const {
@@ -127,7 +117,7 @@ const RentAndUnit = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<RentUnitApiResponse>("unit/list", config);
+  } = useFetch<RentUnitApiResponse>(endpoint, config);
 
   useEffect(() => {
     if (apiData) {
@@ -139,9 +129,6 @@ const RentAndUnit = () => {
   }, [apiData])
   // Listen for the refetch event
   useRefetchOnEvent("refetchRentUnit", () => refetch({ silent: true }));
-
-  // const { stats, unit_data } = pageData
-  console.log("page data", pageData)
 
   useEffect(() => {
     setState((prevState) => ({
@@ -242,7 +229,7 @@ const RentAndUnit = () => {
               <RentalPropertyCard
                 key={index}
                 propertyType={unit.property_type as 'rental' | 'facility'}
-                unitId={unit.id}
+                unitId={unit.unitId || ""}
                 images={unit.images}
                 unit_title={unit.unit_title}
                 unit_name={unit.unit_name}
@@ -263,7 +250,7 @@ const RentAndUnit = () => {
               <RentalPropertyListCard
                 key={index}
                 propertyType={unit.property_type as 'rental' | 'facility'}
-                unitId={unit.id}
+                unitId={unit.unitId || ""}
                 images={unit.images}
                 unit_title={unit.unit_title}
                 unit_name={unit.unit_name}

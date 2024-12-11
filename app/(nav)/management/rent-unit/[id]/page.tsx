@@ -1,9 +1,15 @@
+"use client"
+
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import BackButton from "@/components/BackButton/back-button";
 import { LocationIcon } from "@/public/icons/icons";
 import { unitDetails } from "@/components/Management/Rent And Unit/data";
 import TenancyRecord from "@/components/Management/Rent And Unit/tenancy-record";
 import { RentSectionTitle } from "@/components/Management/Rent And Unit/rent-section-container";
+import { useParams, useRouter } from "next/navigation";
+import useFetch from "@/hooks/useFetch";
+import { useEffect, useState } from "react";
+import { initialSingleData, InitialSingleUnitProps, RentUnitApiResponse, RentUnitPageData, transformRentUnitApiResponse, transformSingleUnitData } from "../data";
 
 const PriceSection: React.FC<{ title: string; price: number }> = ({
   title,
@@ -41,6 +47,31 @@ const DetailItem: React.FC<{ label: string; value: string | number }> = ({
 );
 
 const UnitPreviewPage = () => {
+  const router = useRouter()
+  const { id } = useParams();
+  const [pageData, setPageData] = useState<InitialSingleUnitProps>(initialSingleData);
+  const endpoint = `/unit/${id}/list`
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<RentUnitApiResponse>(endpoint);
+
+  useEffect(() => {
+    if (apiData) {
+      setPageData((x) => ({
+        ...x,
+        ...transformSingleUnitData(apiData),
+      }));
+    }
+  }, [apiData])
+
+  console.log("data single", pageData)
+  
   return (
     <section className="space-y-5">
       <BackButton as="p">Unit No/Name</BackButton>
