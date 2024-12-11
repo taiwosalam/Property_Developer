@@ -28,7 +28,7 @@ export const transformPropertyData = (
       local_govt: data.local_government,
       full_address: data.full_address,
       category: data.category as Categories,
-      desciption: data.description,
+      description: data.description,
       images: data.images.map((img) => img.image_path),
     },
     propertySettings: {
@@ -42,9 +42,11 @@ export const transformPropertyData = (
       caution_deposit: settings.caution_deposit ?? undefined,
       group_chat: mapNumericToYesNo(settings.group_chat),
       rent_penalty: mapNumericToYesNo(settings.rent_penalty),
+      fee_penalty: mapNumericToYesNo(settings.fee_penalty),
       request_callback: mapNumericToYesNo(settings.request_call_back),
       vehicle_record: mapNumericToYesNo(settings.vehicle_record),
       currency: settings.currency || undefined,
+      coordinate: settings.coordinate || undefined,
     },
     addedUnits: data.units,
   };

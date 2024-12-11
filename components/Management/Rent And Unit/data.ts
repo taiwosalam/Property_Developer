@@ -242,7 +242,7 @@ export const calculateDueDate = (
 
 export const sampleDocuments = [
   {
-    id: 1,
+    id: "1",
     name: "Invoice 1",
     link: "https://example.com/sample-attachment.pdf",
     date: "2021-01-01",
@@ -250,7 +250,7 @@ export const sampleDocuments = [
     document_type: "invoice",
   },
   {
-    id: 2,
+    id: "2",
     name: "Invoice 2",
     link: "https://example.com/sample-attachment.pdf",
     date: "2021-01-01",
@@ -258,7 +258,7 @@ export const sampleDocuments = [
     document_type: "invoice",
   },
   {
-    id: 3,
+    id: "3",
     name: "Receipt 1",
     link: "https://example.com/sample-attachment.pdf",
     date: "2021-01-01",
@@ -266,7 +266,7 @@ export const sampleDocuments = [
     document_type: "receipt",
   },
   {
-    id: 4,
+    id: "4",
     name: "Receipt 2",
     link: "https://example.com/sample-attachment.pdf",
     date: "2021-01-01",
@@ -275,14 +275,14 @@ export const sampleDocuments = [
   },
 
   {
-    id: 5,
+    id: "5",
     name: "Classified MI6 Info",
     link: "https://example.com/sample-attachment.pdf",
     date: "2021-01-01",
     document_type: "other document",
   },
   {
-    id: 6,
+    id: "6",
     name: "Highly Classified FBI Database",
     link: "https://example.com/sample-attachment.pdf",
     date: "2021-01-01",

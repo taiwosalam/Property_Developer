@@ -70,6 +70,8 @@ export const transformPropertyFormData = (
     who_to_charge_renew_tenant: data.who_to_charge_renew_tenant,
     caution_deposit: data.caution_deposit,
     group_chat: data.group_chat,
+    rent_penalty: data.rent_penalty,
+    fee_penalty: data.fee_penalty,
     request_call_back: data.request_call_back,
     book_visitors: data.book_visitors,
     vehicle_record: data.vehicle_record,

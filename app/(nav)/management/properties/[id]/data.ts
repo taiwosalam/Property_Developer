@@ -29,6 +29,7 @@ export interface SinglePropertyResponse {
         caution_deposit?: string;
         currency?: keyof typeof currencySymbols;
         rent_penalty: 1 | 0;
+        fee_penalty: 1 | 0;
         active_vat: 1 | 0;
         group_chat: 1 | 0;
         who_to_charge_new_tenant: string;
@@ -36,6 +37,7 @@ export interface SinglePropertyResponse {
         book_visitors: 1 | 0;
         request_call_back: 1 | 0;
         vehicle_record: 1 | 0;
+        coordinate?: string;
       }
     ];
     description: string;
