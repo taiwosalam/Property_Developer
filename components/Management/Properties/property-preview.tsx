@@ -7,18 +7,19 @@ import BackButton from "@/components/BackButton/back-button";
 import dynamic from "next/dynamic";
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import { type PropertyDetailsSettingsOthersCardProps } from "./property-details-settings-others-card";
+import { type UnitItemProps } from "./unit-item";
 
 const DynamicReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
 });
 
-const colors = {
+export const UnitStatusColors = {
   vacant: "#FFBB53",
   occupied: "#01BA4C",
   active: "#0033C4",
   expired: "#E9212E",
   relocate: "#620E13",
-};
+} as const;
 
 export interface PropertyPreviewProps
   extends PropertyDetailsSettingsOthersCardProps {
@@ -29,7 +30,7 @@ export interface PropertyPreviewProps
   total_units: number;
   images: string[];
   video_link?: string;
-  units: any[]; // TODO: Add type
+  units: UnitItemProps[];
 }
 
 const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
@@ -40,9 +41,9 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
     images,
     propertyType,
     total_units,
-    units,
     video_link,
     isRental,
+    units,
     ...others
   } = props;
 
@@ -61,7 +62,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
       <div className="text-black dark:text-white">
         <p className="text-base font-medium dark:text-darkText-1">ID: {id}</p>
         <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
-          {property_name} ({total_units} Units)
+          {property_name} ({total_units} Unit{total_units > 1 ? "s" : ""})
         </h1>
         <p className="text-sm text-text-label font-normal flex items-center gap-1">
           <LocationIcon />
@@ -101,7 +102,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
             {...others}
           />
           <div className="flex items-center justify-between flex-wrap gap-y-2">
-            {Object.entries(colors).map(([status, color]) => (
+            {Object.entries(UnitStatusColors).map(([status, color]) => (
               <div key={status} className="flex items-center gap-2">
                 <div
                   className="w-5 h-5 rounded-full"
@@ -117,8 +118,8 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
       </div>
 
       <section className="space-y-4">
-        {units.map((unit, index) => (
-          <UnitItem key={index} type={propertyType} />
+        {units.map((unit) => (
+          <UnitItem key={unit.unitId} {...unit} />
         ))}
       </section>
     </div>

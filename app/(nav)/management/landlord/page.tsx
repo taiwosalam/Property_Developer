@@ -34,7 +34,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { ExclamationMark } from "@/public/icons/icons";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import TableLoading from "@/components/Loader/TableLoading";
-import { AllBranchesResponse } from "@/components/Management/Properties/types";
+import type { AllBranchesResponse } from "@/components/Management/Properties/types";
 import useFetch from "@/hooks/useFetch";
 import type { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";

@@ -27,8 +27,8 @@ export interface PropertyDetailsSettingsOthersCardProps {
   last_updated?: string;
   available_units?: number;
   owing_units?: number;
-  annual_returns: number;
-  annual_income: number;
+  total_returns: number;
+  total_income: number;
 }
 
 const DetailItem: React.FC<{ label: string; value?: string | number }> = ({
@@ -71,8 +71,8 @@ const PropeertyDetailsSettingsCard: React.FC<
   last_updated,
   available_units,
   owing_units,
-  annual_returns,
-  annual_income,
+  total_returns,
+  total_income,
 }) => {
   const symbol =
     isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
@@ -164,17 +164,17 @@ const PropeertyDetailsSettingsCard: React.FC<
         <div>
           <p className="text-brand-9 text-xl font-bold">
             {symbol}
-            {formatNumber(annual_returns)}
+            {formatNumber(total_returns)}
           </p>
           <p className="text-[#606060] font-normal text-xs">
-            Annual {isRental ? "Returns" : "Fees"}
+            Total {isRental ? "Returns" : "Fees"}
           </p>
           <p className="text-text-disabled font-medium text-sm">
             <span className="text-highlight">
               {symbol}
-              {formatNumber(annual_income)}
+              {formatNumber(total_income)}
             </span>{" "}
-            / Annual Income
+            / Total Income
           </p>
         </div>
       </div>

@@ -1,47 +1,11 @@
 import { type PropertyPreviewProps } from "@/components/Management/Properties/property-preview";
-import { currencySymbols } from "@/utils/number-formatter";
 import { mapNumericToYesNo } from "@/utils/checkFormDataForImageOrAvatar";
+import type { PropertyDataObject } from "../data";
+import moment from "moment";
+import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 
 export interface SinglePropertyResponse {
-  data: {
-    id: string;
-    video_link?: string;
-    title: string;
-    full_address: string;
-    city_area: string;
-    local_government: string;
-    state: string;
-    units: any[]; // TODO: Add type
-    images: {
-      id: string;
-      image_path: string;
-    }[];
-    landlord: string | null;
-    land_lord_id?: string;
-    branch_id?: string;
-    inventory_id?: string;
-    category: string;
-    property_type: "rental" | "gated_estate";
-    settings: [
-      {
-        agency_fee?: number;
-        management_fee?: number;
-        caution_deposit?: string;
-        currency?: keyof typeof currencySymbols;
-        rent_penalty: 1 | 0;
-        fee_penalty: 1 | 0;
-        active_vat: 1 | 0;
-        group_chat: 1 | 0;
-        who_to_charge_new_tenant: string;
-        who_to_charge_renew_tenant: string;
-        book_visitors: 1 | 0;
-        request_call_back: 1 | 0;
-        vehicle_record: 1 | 0;
-        coordinate?: string;
-      }
-    ];
-    description: string;
-  } | null;
+  data: PropertyDataObject | null;
 }
 
 export const transformSinglePropertyData = (
@@ -49,40 +13,57 @@ export const transformSinglePropertyData = (
 ): PropertyPreviewProps | null => {
   const { data } = response;
   if (!data) return null;
-  const settings = data.settings[0];
+  const totalReturns = data.units.reduce((sum, unit) => {
+    return sum + parseFloat(unit.fee_amount);
+  }, 0);
+  const feePercentage =
+    data.property_type === "rental" ? data.agency_fee : data.management_fee;
   return {
     id: data.id,
     video_link: data.video_link,
     property_name: data.title,
     address: `${data.full_address}, ${data.city_area}, ${data.local_government}, ${data.state}`,
-    propertyType: data.property_type === "rental" ? "rental" : "facility",
-    total_units: data.units.length, // backend shit
-    images: data.images.map((img) => img.image_path),
-    units: data.units,
+    propertyType: data.property_type as "rental" | "facility",
+    total_units: data.units_count,
+    images: data.images.map((img) => img.path),
     isRental: data.property_type === "rental",
-    landlord_name: data.landlord || "",
     category: data.category,
     state: data.state,
     local_government: data.local_government,
-    account_officer: "", // backend shit
-    agency_fee: settings.agency_fee,
-    management_fee: settings.management_fee,
-    caution_deposit: settings.caution_deposit,
-    currency: settings.currency,
-    group_chat: mapNumericToYesNo(settings.group_chat),
-    who_to_charge_new_tenant: settings.who_to_charge_new_tenant,
-    who_to_charge_renew_tenant: settings.who_to_charge_renew_tenant,
-    book_visitors: mapNumericToYesNo(settings.book_visitors),
-    request_call_back: mapNumericToYesNo(settings.request_call_back),
-    vehicle_records: mapNumericToYesNo(settings.vehicle_record),
-    branch: "", // backend shit
-    branch_manager: "", // backend shit
+    agency_fee: data.agency_fee,
+    management_fee: data.management_fee,
+    caution_deposit: data.caution_deposit,
+    currency: data.currency,
+    group_chat: mapNumericToYesNo(data.group_chat),
+    who_to_charge_new_tenant: data.who_to_charge_new_tenant,
+    who_to_charge_renew_tenant: data.who_to_charge_renew_tenant,
+    book_visitors: mapNumericToYesNo(data.book_visitors),
+    request_call_back: mapNumericToYesNo(data.request_call_back),
+    vehicle_records: mapNumericToYesNo(data.vehicle_record),
+    branch: data.branch?.branch_name,
+    account_officer: "", // to do
+    landlord_name: "", //to do
+    branch_manager: "", //  later
     mobile_tenants: 0, // backend shit
     web_tenants: 0, // backend shit
-    last_updated: "", // backend shit
+    last_updated: moment(data.updated_at).format("Do MMM, YYYY"),
     owing_units: 0, // backend shit
     available_units: 0, // backend shit
-    annual_returns: 0, // backend shit
-    annual_income: 0, // backend shit
+    total_returns: totalReturns,
+    total_income: (totalReturns * feePercentage) / 100,
+    units: data.units.map((unit) => ({
+      unitId: unit.id,
+      propertyType: data.property_type as "rental" | "facility",
+      rent: `${currencySymbols[data?.currency || "naira"]}${formatNumber(
+        parseFloat(unit.fee_amount)
+      )}`,
+      serviceCharge: `${
+        currencySymbols[data?.currency || "naira"]
+      }${formatNumber(parseFloat(unit.service_charge))}`,
+      unitImages: unit.images.map((img) => img.path),
+      unitDetails: `${unit.unit_preference} - ${unit.unit_sub_type} - ${unit.unit_type}`,
+      unitStatus: unit.is_active,
+      unitName: unit.unit_name,
+    })),
   };
 };

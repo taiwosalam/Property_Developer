@@ -19,8 +19,8 @@ interface PropertyListItemProps {
   web_tenants?: number;
   accountOfficer?: string;
   last_updated?: string;
-  annualReturns: number;
-  annualIncome: number;
+  total_returns: number;
+  total_income: number;
   currency?: keyof typeof currencySymbols;
   branch?: string;
   property_type: "rental" | "facility";
@@ -40,8 +40,8 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
   web_tenants,
   accountOfficer,
   last_updated,
-  annualReturns,
-  annualIncome,
+  total_returns,
+  total_income,
   currency,
   branch,
   property_type,
@@ -72,23 +72,23 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
             <p className="text-black dark:text-darkText-2">{last_updated}</p>
           </div>
           <div>
-            <p className="text-[#747474] dark:text-white">Annual Returns</p>
+            <p className="text-[#747474] dark:text-white">Total Returns</p>
             <p className="text-brand-primary font-bold dark:text-brand-9">
               {symbol}
-              {formatNumber(annualReturns)}
+              {formatNumber(total_returns)}
             </p>
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Total Units</p>
             <p className="text-black dark:text-darkText-2">
-              {total_units} Units
+              {total_units} Unit{total_units > 1 ? "s" : ""}
             </p>
           </div>
           <div>
-            <p className="text-[#747474] dark:text-white">Annual Income</p>
+            <p className="text-[#747474] dark:text-white">Total Income</p>
             <p className="text-highlight font-bold dark:text-highlight">
               {symbol}
-              {formatNumber(annualIncome)}
+              {formatNumber(total_income)}
             </p>
           </div>
           <div>
