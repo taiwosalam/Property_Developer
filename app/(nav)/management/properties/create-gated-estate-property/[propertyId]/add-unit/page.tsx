@@ -21,10 +21,9 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   const [saved, setSaved] = useState(false);
 
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
-  const removeUnit = useAddUnitStore((s) => s.removeUnit);
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
-  const resetStore = useAddUnitStore((s) => s.resetStore);
-  resetStore();
+  // const resetStore = useAddUnitStore((s) => s.resetStore);
+  // resetStore();
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
 
   const {
@@ -41,7 +40,6 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
         setDataNotFound(true);
         return;
       }
-      // console.log(transformedData);
       if (transformedData.propertyType === "rental") {
         router.push(
           `/management/properties/create-rental-property/${propertyId}/add-unit`
@@ -83,12 +81,7 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
             </h4>
             <hr className="!my-4 border-none bg-borders-dark h-[1px]" />
             {addedUnits.map((unit, index) => (
-              <AddUnitFormCard
-                key={index}
-                index={index}
-                data={unit}
-                handleRemove={() => removeUnit(index)}
-              />
+              <AddUnitFormCard key={index} index={index} data={unit} />
             ))}
           </>
         )}

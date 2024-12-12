@@ -19,15 +19,20 @@ const UnitDetails = () => {
     unitType: selectedUnitType,
     setUnitType: setSelectedUnitType,
     formResetKey,
+    unitData,
   } = useUnitForm();
 
   const [unitTypeOptions, setUnitTypeOptions] = useState<string[]>([]);
   const [unitSubtypeOptions, setUnitSubtypeOptions] = useState<string[]>([]);
-  const [selectedSubtype, setSelectedSubtype] = useState("");
+  const [selectedSubtype, setSelectedSubtype] = useState(
+    unitData?.unit_sub_type || ""
+  );
   const [unitPreferencesOptions, setUnitPreferencesOptions] = useState<
     string[]
   >([]);
-  const [selectedPreference, setSelectedPreference] = useState("");
+  const [selectedPreference, setSelectedPreference] = useState(
+    unitData?.unit_preference || ""
+  );
 
   const handleUnitTypeChange = (val: string) => {
     setSelectedUnitType(val.toLowerCase() as UnitTypeKey);
@@ -105,6 +110,7 @@ const UnitDetails = () => {
           inputClassName="bg-white rounded-[8px] unit-form-input"
           required={!isRental}
           requiredNoStar={isRental}
+          defaultValue={unitData?.unit_name}
         />
         <Select
           id="unit_type"

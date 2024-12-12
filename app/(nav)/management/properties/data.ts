@@ -67,7 +67,7 @@ export interface UnitDataObject {
   wardrobe?: 1 | 0;
   pet_allowed?: 1 | 0;
   total_area_sqm: string;
-  number_of?: number;
+  number_of?: string;
   fee_period: string;
   fee_amount: string;
   security_fee: string;
@@ -110,7 +110,7 @@ export interface PropertyDataObject {
   updated_at: Date;
   currency?: keyof typeof currencySymbols;
   units_count: number;
-  total_unit_images: number;
+  total_unit_images: number | null;
   images: {
     id: string;
     path: string;
@@ -122,13 +122,17 @@ export interface PropertyDataObject {
   staff: string[]; //check after adding staff
   agency_fee: number;
   management_fee: number;
-  caution_deposit: string;
+  caution_deposit?: string;
   group_chat: 1 | 0;
   who_to_charge_new_tenant: string;
   who_to_charge_renew_tenant: string;
   book_visitors: 1 | 0;
   vehicle_record: 1 | 0;
   request_call_back: 1 | 0;
+  active_vat: 1 | 0;
+  rent_penalty: 1 | 0;
+  fee_penalty: 1 | 0;
+  coordinate: string;
   units: UnitDataObject[];
 }
 

@@ -20,7 +20,8 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
   const handleSubmit = async () => {};
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
-  const resetStore = useAddUnitStore((s) => s.resetStore);
+  const addedUnits = useAddUnitStore((s) => s.addedUnits);
+  // const resetStore = useAddUnitStore((s) => s.resetStore);
 
   const {
     data: propertyData,
@@ -63,16 +64,9 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
       />
 
       <div className="custom-flex-col gap-10">
-        {Array(3)
-          .fill(null)
-          .map((_, index) => (
-            <AddUnitFormCard
-              key={index}
-              data={{ images: ["", "", ""] }}
-              index={index}
-              handleRemove={() => {}}
-            />
-          ))}
+        {addedUnits.map((unit, index) => (
+          <AddUnitFormCard key={index} data={unit} index={index} />
+        ))}
       </div>
     </div>
   );

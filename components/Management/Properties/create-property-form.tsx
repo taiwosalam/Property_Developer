@@ -206,6 +206,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         state: propertyDetails.state || "",
         lga: propertyDetails.local_govt || "",
         city: propertyDetails.city || "",
+        selectedBranch: propertyDetails.branch_id || "",
       }));
     }
   }, [propertyDetails, editMode]);
@@ -239,15 +240,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       inputClassName="property-form-input"
       showProgressBar={false}
     >
-      <AuthForm
-        onFormSubmit={handleFormSubmit}
-        className="max-w-[970px] pb-[100px]"
-      >
-        <input
-          name="property_type"
-          type="hidden"
-          value={formType === "rental" ? "rental" : "gated_estate"}
-        />
+      <AuthForm onFormSubmit={handleFormSubmit} className="max-w-[970px]">
+        <input name="property_type" type="hidden" value={formType} />
         <div className="mb-5 lg:mb-8">
           <p className="mb-5 text-text-secondary dark:text-darkText-1 text-base font-normal">
             Set {formType === "rental" ? "property" : "Estate/Facility"}{" "}
@@ -396,7 +390,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
 
           <Select
             id="branch_id"
-            // required
+            required
             label="Branch"
             resetKey={resetKey}
             options={branchOptions}
@@ -411,6 +405,14 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 : "Select branch"
             }
             error={branchesError}
+            defaultValue={
+              editMode
+                ? {
+                    label: propertyDetails?.branch_name || "",
+                    value: propertyDetails?.branch_id || "",
+                  }
+                : undefined
+            }
           />
           {formType === "rental" && (
             <>
@@ -709,11 +711,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                         }`,
                       }
                     : {
-                        value: currencySymbols.naira,
-                        label: `${currencySymbols.naira} ${
-                          currencySymbols.naira.charAt(0).toUpperCase() +
-                          currencySymbols.naira.slice(1).toLowerCase()
-                        }`,
+                        value: "naira",
+                        label: `${currencySymbols.naira} Naira`,
                       }
                 }
               />

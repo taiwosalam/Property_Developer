@@ -15,7 +15,12 @@ import AddUntFooter from "./AddUnitFooter";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { convertYesNoToBoolean } from "@/utils/checkFormDataForImageOrAvatar";
 import { transformUnitFormData } from "./data";
-import { createUnit } from "@/app/(nav)/management/properties/create-rental-property/[propertyId]/add-unit/data";
+import {
+  createUnit,
+  getUnitById,
+  editUnit as editUnitApi,
+} from "@/app/(nav)/management/properties/create-rental-property/[propertyId]/add-unit/data";
+import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
 
 export interface UnitFormState {
   images: string[];
@@ -31,7 +36,7 @@ interface emptyUnitFormProps {
 interface editUnitFormProps {
   empty?: false;
   index: number;
-  data: any;
+  data: UnitDataObject & { notYetUploaded?: boolean };
   isEditing: boolean;
   setIsEditing: (a: boolean) => void;
 }
@@ -45,10 +50,12 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const propertyId = useAddUnitStore((state) => state.property_id);
 
+  const [submitLoading, setSubmitLoading] = useState(false);
+
   const [state, setState] = useState<UnitFormState>({
-    images: props.empty ? [] : props.data.images,
-    imageFiles: props.empty ? [] : props.data.imageFiles,
-    unitType: props.empty ? "" : props.data.unitType,
+    images: props.empty ? [] : props.data.images.map((img) => img.path),
+    imageFiles: props.empty ? [] : props.data.images.map((img) => img.path),
+    unitType: props.empty ? "" : (props.data.unit_type as UnitTypeKey),
     formResetKey: 0,
   });
 
@@ -66,7 +73,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     setState((x) => ({
       ...x,
       formResetKey: x.formResetKey + 1,
-      unitType: props.empty ? "" : props.data.unitType,
+      unitType: props.empty ? "" : (props.data.unit_type as UnitTypeKey),
     }));
 
   const yesNoFields = [
@@ -81,18 +88,21 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     formData: Record<string, any>,
     e?: React.FormEvent<HTMLFormElement>
   ) => {
+    if (!propertyId) return;
+    setSubmitLoading(true);
     convertYesNoToBoolean(formData, yesNoFields);
-    if (propertyId && propertyType) {
-      if (props.empty) {
-        const transformedData = transformUnitFormData(
-          formData,
-          state.imageFiles,
-          propertyType
-        );
-        const unit = await createUnit(propertyId, transformedData);
-        if (unit) {
+    const transformedData = transformUnitFormData(
+      formData,
+      state.imageFiles,
+      propertyId
+    );
+    if (props.empty) {
+      const unitId = await createUnit(propertyId, transformedData);
+      if (unitId) {
+        const unitData = await getUnitById(unitId);
+        if (unitData) {
           if (duplicate?.val) {
-            addUnit(transformedData, duplicate.count);
+            addUnit(unitData, duplicate.count);
             setDuplicate({
               val: false,
               count: 1,
@@ -100,19 +110,57 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
             e?.currentTarget.reset();
             resetForm();
           } else {
-            addUnit(transformedData);
+            addUnit(unitData);
             e?.currentTarget.reset();
             resetForm();
           }
         }
-      } else {
-        // const transformedData = transformUnitFormData(
-        //   formData,
-        //   state.images,
-        //   propertyType
-        // );
       }
+    } else {
+      if (props.data.notYetUploaded) {
+        const unitId = await createUnit(propertyId, transformedData);
+        if (unitId) {
+          const unitData = await getUnitById(unitId);
+          if (unitData) {
+            editUnit(props.index, unitData);
+          }
+        }
+      } else {
+        const { newImages, retainedImages } = transformedData.images.reduce<{
+          newImages: File[];
+          retainedImages: string[];
+        }>(
+          (acc, image) => {
+            if (image instanceof File) {
+              acc.newImages.push(image);
+            } else {
+              const matchingImage = props.data.images.find(
+                (img) => img.path === image
+              );
+              if (matchingImage) {
+                acc.retainedImages.push(matchingImage.id);
+              }
+            }
+            return acc;
+          },
+          { newImages: [], retainedImages: [] }
+        );
+        const editUnitPayload = {
+          ...transformedData,
+          images: newImages,
+          retain_images: retainedImages,
+        };
+        const unitId = await editUnitApi(props.data.id, editUnitPayload);
+        if (unitId) {
+          const unitData = await getUnitById(unitId);
+          if (unitData) {
+            editUnit(props.index, unitData);
+          }
+        }
+      }
+      props.setIsEditing(false);
     }
+    setSubmitLoading(false);
   };
 
   return (
@@ -131,14 +179,16 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           setUnitType,
           duplicate,
           setDuplicate,
+          submitLoading,
           ...(!props.empty && {
             isEditing: props.isEditing,
             setIsEditing: props.setIsEditing,
+            unitData: props.data,
           }),
         }}
       >
         <AuthForm
-          id={props.empty ? "add-unit-form" : "edit-unit-form"}
+          id={props.empty ? "add-unit-form" : undefined}
           className="space-y-6 lg:space-y-8"
           skipValidation
           onFormSubmit={handleSubmit}

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { Categories } from "@/data";
 import { currencySymbols } from "@/utils/number-formatter";
-import type { AddUnitPayload } from "@/components/Management/Properties/types";
+import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
 
 const initialState = {
   property_id: null,
@@ -12,7 +12,6 @@ const initialState = {
 };
 
 type PropertyType = "rental" | "facility" | null;
-type StoreAddedUnit = AddUnitPayload & { notYetUploaded?: boolean };
 
 interface PropertyDetails {
   property_title: string;
@@ -21,7 +20,8 @@ interface PropertyDetails {
   local_govt: string;
   city: string;
   full_address: string;
-  branch?: string;
+  branch_name?: string;
+  branch_id?: string;
   account_officer?: string;
   manager?: string;
   category: Categories;
@@ -50,7 +50,7 @@ export interface AddUnitStore {
   propertyType: PropertyType;
   propertyDetails: null | PropertyDetails;
   propertySettings: null | PropertySettings;
-  addedUnits: StoreAddedUnit[];
+  addedUnits: (UnitDataObject & { notYetUploaded?: boolean })[];
   resetStore: () => void;
   setAddUnitStore: <
     K extends keyof Omit<
@@ -61,11 +61,8 @@ export interface AddUnitStore {
     key: K,
     value: AddUnitStore[K]
   ) => void;
-  addUnit: (unitData: AddUnitPayload, duplicateCount?: number) => void;
-  editUnit: (
-    index: number,
-    unitData: { [key: string]: FormDataEntryValue | FormDataEntryValue[] }
-  ) => void;
+  addUnit: (unitData: UnitDataObject, duplicateCount?: number) => void;
+  editUnit: (index: number, unitData: UnitDataObject) => void;
   removeUnit: (index: number) => void;
 }
 
@@ -78,13 +75,17 @@ export const useAddUnitStore = create<AddUnitStore>((set) => ({
   },
   addUnit: (unitData, duplicateCount = 0) => {
     set((state) => {
-      const updatedUnits: StoreAddedUnit[] = [...state.addedUnits, unitData];
+      const updatedUnits: (UnitDataObject & { notYetUploaded?: boolean })[] = [
+        ...state.addedUnits,
+        unitData,
+      ];
 
-      const replicatedUnits: StoreAddedUnit[] = Array(duplicateCount).fill({
-        ...unitData,
-        images: [],
-        notYetUploaded: true,
-      });
+      const replicatedUnits: (UnitDataObject & { notYetUploaded?: boolean })[] =
+        Array(duplicateCount).fill({
+          ...unitData,
+          images: [],
+          notYetUploaded: true,
+        });
 
       return {
         addedUnits: [...updatedUnits, ...replicatedUnits],
@@ -93,16 +94,13 @@ export const useAddUnitStore = create<AddUnitStore>((set) => ({
   },
   removeUnit: (index) =>
     set((state) => ({
-      // communicate with API and remove d unit
       addedUnits: state.addedUnits.filter((_, i) => i !== index),
     })),
   editUnit: (index, unitData) => {
     set((state) => {
-      // communicate with API and edit d unit
-      const updatedUnits = state.addedUnits.map((unit, i) =>
-        i === index ? { ...unit, ...unitData } : unit
-      );
-      // console.log("Updated addedUnits:", updatedUnits);
+      const updatedUnits = [...state.addedUnits];
+      updatedUnits[index] = unitData;
+
       return {
         addedUnits: updatedUnits,
       };

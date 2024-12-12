@@ -201,22 +201,22 @@ const ManageApplication = () => {
       </div>
       <LandlordTenantInfoSection title="Current Rent">
         <div className="opacity-40">
-          <UnitItem />
+          {/* <UnitItem /> */}
         </div>
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="Property">
         <div className="opacity-40">
-          <UnitItem />
+          {/* <UnitItem /> */}
         </div>
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="Previous Rent">
         <div className="opacity-40">
-          <UnitItem />
+          {/* <UnitItem /> */}
         </div>
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="Previous Property">
         <div className="opacity-40">
-          <UnitItem />
+          {/* <UnitItem /> */}
         </div>
       </LandlordTenantInfoSection>
       <FixedFooter className="flex gap-6 flex-wrap items-center justify-between">

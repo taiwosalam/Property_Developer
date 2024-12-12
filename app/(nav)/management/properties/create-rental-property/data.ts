@@ -4,7 +4,7 @@ import { toast } from "sonner";
 interface AddPropertyResponse {
   message: string;
   data: {
-    id: number;
+    id: string;
   };
 }
 

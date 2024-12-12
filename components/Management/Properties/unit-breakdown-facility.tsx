@@ -2,7 +2,7 @@ import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import { rentPeriods } from "@/data";
 import { useAddUnitStore } from "@/store/add-unit-store";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DeleteIconX } from "@/public/icons/icons";
 import {
   formatNumber,
@@ -11,21 +11,42 @@ import {
 } from "@/utils/number-formatter";
 import { useUnitForm } from "./unit-form-context";
 
-const emptyStateValues = {
-  rentAmount: "",
-  securityFee: "",
-  serviceCharge: "",
-  otherCharges: "",
-  totalPackage: "",
-};
-
-const UnitBreakdownNewTenant = () => {
-  const { formResetKey } = useUnitForm();
+const UnitBreakdownFacility = () => {
+  const { formResetKey, unitData } = useUnitForm();
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const CURRENCY_SYMBOL =
     currencySymbols[propertySettings?.currency || "naira"];
-  const [otherChargesInput, setOtherChargesInput] = useState(false);
-  const [formValues, setFormValues] = useState(emptyStateValues);
+  const [otherChargesInput, setOtherChargesInput] = useState(
+    !!unitData?.other_charge
+  );
+
+  const initialFormValues = useMemo(() => {
+    return {
+      rentAmount: unitData?.fee_amount
+        ? formatNumber(parseFloat(unitData.fee_amount))
+        : "",
+      securityFee: unitData?.security_fee
+        ? formatNumber(parseFloat(unitData.security_fee))
+        : "",
+      serviceCharge: unitData?.service_charge
+        ? formatNumber(parseFloat(unitData.service_charge))
+        : "",
+      otherCharges: unitData?.other_charge
+        ? formatNumber(parseFloat(unitData.other_charge))
+        : "",
+      totalPackage: unitData?.total_package
+        ? formatNumber(parseFloat(unitData.total_package))
+        : "",
+    };
+  }, [
+    unitData?.fee_amount,
+    unitData?.security_fee,
+    unitData?.service_charge,
+    unitData?.other_charge,
+    unitData?.total_package,
+  ]);
+
+  const [formValues, setFormValues] = useState(initialFormValues);
   const { rentAmount, securityFee, serviceCharge, otherCharges, totalPackage } =
     formValues;
 
@@ -66,9 +87,11 @@ const UnitBreakdownNewTenant = () => {
 
   // reset form
   useEffect(() => {
-    setOtherChargesInput(false);
-    setFormValues(emptyStateValues);
-  }, [formResetKey]);
+    if (formResetKey !== 0) {
+      setOtherChargesInput(!!unitData?.other_charge);
+      setFormValues(initialFormValues);
+    }
+  }, [formResetKey, initialFormValues, unitData?.other_charge]);
 
   return (
     <div>
@@ -118,7 +141,7 @@ const UnitBreakdownNewTenant = () => {
         {otherChargesInput && (
           <div className="relative">
             <Input
-              id="other_charges"
+              id="other_charge"
               label="Other Charges"
               inputClassName="bg-white"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
@@ -153,7 +176,6 @@ const UnitBreakdownNewTenant = () => {
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={totalPackage}
           readOnly
-          disabled
           type="text"
         />
       </div>
@@ -161,4 +183,4 @@ const UnitBreakdownNewTenant = () => {
   );
 };
 
-export default UnitBreakdownNewTenant;
+export default UnitBreakdownFacility;

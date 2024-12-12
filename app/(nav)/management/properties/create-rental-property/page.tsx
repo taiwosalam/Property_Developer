@@ -26,7 +26,12 @@ const CreateProperty = () => {
         percentage={27}
         className="mb-[52px]"
       />
-      <CreateRentalPropertyForm handleSubmit={handleSubmit} formType="rental" />
+      <div className="pb-[100px]">
+        <CreateRentalPropertyForm
+          handleSubmit={handleSubmit}
+          formType="rental"
+        />
+      </div>
     </>
   );
 };

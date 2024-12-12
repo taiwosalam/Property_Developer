@@ -48,7 +48,7 @@ const PropertyDetails = ({ heading }: { heading: string }) => {
           <div>
             <p className="text-[#747474]">Branch</p>
             <p className="text-black font-medium capitalize">
-              {propertyDetails?.branch}
+              {propertyDetails?.branch_name}
             </p>
           </div>
           <div>
@@ -96,7 +96,7 @@ const PropertyDetails = ({ heading }: { heading: string }) => {
         <p className="text-[#747474] w-[13.5%]">Description</p>
         <TruncatedText
           as="div"
-          className="text-text-quaternary dark:text-darkText-2 flex-1"
+          className="text-text-quaternary dark:text-darkText-2 flex-1 max-w-[80%]"
           lines={2}
         >
           <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />

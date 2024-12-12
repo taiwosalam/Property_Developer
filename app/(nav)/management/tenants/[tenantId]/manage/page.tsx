@@ -174,10 +174,12 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
         {tenant?.user_tag === "web" && <NotesInfoBox notes={tenant.notes} />}
       </div>
       <LandlordTenantInfoSection title="current rent">
-        <UnitItem />
+        {/* <UnitItem /> */}
+        <div></div>
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="Property">
-        <UnitItem />
+        {/* <UnitItem /> */}
+        <div></div>
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="statement">
         <CustomTable
@@ -189,12 +191,14 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="previous rent">
         <div className="opacity-40">
-          <UnitItem />
+          {/* <UnitItem /> */}
+          <div></div>
         </div>
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="previous property">
         <div className="opacity-40">
-          <UnitItem />
+          {/* <UnitItem /> */}
+          <div></div>
         </div>
       </LandlordTenantInfoSection>
       {tenant?.user_tag === "mobile" && (

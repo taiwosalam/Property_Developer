@@ -64,6 +64,11 @@ export const transformSinglePropertyData = (
       unitDetails: `${unit.unit_preference} - ${unit.unit_sub_type} - ${unit.unit_type}`,
       unitStatus: unit.is_active,
       unitName: unit.unit_name,
+      cautionDeposit: unit.caution_fee
+        ? `${currencySymbols[data?.currency || "naira"]}${formatNumber(
+            parseFloat(unit.caution_fee)
+          )}`
+        : undefined,
     })),
   };
 };

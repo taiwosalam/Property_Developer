@@ -4,7 +4,7 @@ import type { SinglePropertyResponse } from "../../../[id]/data";
 import { mapNumericToYesNo } from "@/utils/checkFormDataForImageOrAvatar";
 import api, { handleAxiosError } from "@/services/api";
 import { toast } from "sonner";
-import type { AddUnitPayload } from "@/components/Management/Properties/types";
+import type { UnitDataObject } from "@/app/(nav)/management/properties/data";
 
 type AddUnitStoreWithoutFunctions = Omit<
   AddUnitStore,
@@ -16,7 +16,7 @@ export const transformPropertyData = (
 ): AddUnitStoreWithoutFunctions | null => {
   const { data } = response;
   if (!data) return null;
-  const settings = data.settings[0];
+
   return {
     property_id: data.id,
     propertyType: data.property_type === "rental" ? "rental" : "facility",
@@ -28,45 +28,82 @@ export const transformPropertyData = (
       local_govt: data.local_government,
       full_address: data.full_address,
       category: data.category as Categories,
-      // description: data.description,
-      description:
-        '<p>https://www.youtube.com/watch?v=1YpbDWpH7Pw<span style="background-color: rgb(250, 250, 250);">afnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</span>afnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</p><p>afnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</p><p><br></p><p><br></p><ol><li>https://www.youtube.com/watch?v=1YpbDWpH7Pw<span style="background-color: rgb(250, 250, 250);">afnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</span>afnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</li></ol><p><em>afnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHH</em>HHHH<strong>HHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHD</strong>SJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhSDJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHafnjkhsjhfjJFHDSJHKfhS<em>DJKHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</em></p>',
-      images: data.images.map((img) => img.image_path),
+      description: data.description,
+      images: data.images.map((img) => img.path),
+      branch_name: data.branch?.branch_name,
+      branch_id: data.branch?.id,
     },
     propertySettings: {
-      agency_fee: settings.agency_fee || undefined,
-      management_fee: settings.management_fee || undefined,
-      who_to_charge_new_tenant: settings.who_to_charge_new_tenant || undefined,
-      who_to_charge_renew_tenant:
-        settings.who_to_charge_renew_tenant || undefined,
-      book_visitors: mapNumericToYesNo(settings.book_visitors),
-      VAT: mapNumericToYesNo(settings.active_vat),
-      caution_deposit: settings.caution_deposit ?? undefined,
-      group_chat: mapNumericToYesNo(settings.group_chat),
-      rent_penalty: mapNumericToYesNo(settings.rent_penalty),
-      fee_penalty: mapNumericToYesNo(settings.fee_penalty),
-      request_callback: mapNumericToYesNo(settings.request_call_back),
-      vehicle_record: mapNumericToYesNo(settings.vehicle_record),
-      currency: settings.currency || undefined,
-      coordinate: settings.coordinate || undefined,
+      agency_fee: data.agency_fee || undefined,
+      management_fee: data.management_fee || undefined,
+      who_to_charge_new_tenant: data.who_to_charge_new_tenant || undefined,
+      who_to_charge_renew_tenant: data.who_to_charge_renew_tenant || undefined,
+      book_visitors: mapNumericToYesNo(data.book_visitors),
+      VAT: mapNumericToYesNo(data.active_vat),
+      caution_deposit: data.caution_deposit ?? undefined,
+      group_chat: mapNumericToYesNo(data.group_chat),
+      rent_penalty: mapNumericToYesNo(data.rent_penalty),
+      fee_penalty: mapNumericToYesNo(data.fee_penalty),
+      request_callback: mapNumericToYesNo(data.request_call_back),
+      vehicle_record: mapNumericToYesNo(data.vehicle_record),
+      currency: data.currency || undefined,
+      coordinate: data.coordinate || undefined,
     },
     addedUnits: data.units,
   };
 };
 
-export const createUnit = async (
-  propertyId: string,
-  formData: Record<string, any>
-) => {
+export const createUnit = async (propertyId: string, formData: any) => {
   try {
-    const { data } = await api.post<AddUnitPayload & { message: string }>(
-      `unit/${propertyId}/create`,
-      formData
-    );
+    const { data } = await api.post<{
+      message: string;
+      data: {
+        id: string;
+      };
+    }>(`unit/${propertyId}/create`, formData);
     toast.success(data?.message || "Unit Added Succesfully");
-    return data;
+    return data.data?.id;
   } catch (error) {
     handleAxiosError(error, "Failed to add unit");
+    return null;
+  }
+};
+
+export const getUnitById = async (unitId: string) => {
+  try {
+    const { data } = await api.get<{
+      data: UnitDataObject;
+    }>(`unit/${unitId}/view`);
+    return data.data;
+  } catch (error) {
+    handleAxiosError(error, "Failed to fetch unit data");
+    return null;
+  }
+};
+
+export const editUnit = async (unitId: string, formData: any) => {
+  try {
+    const { data } = await api.post<{
+      message: string;
+      data: {
+        id: string;
+      };
+    }>(`unit/${unitId}/update`, formData);
+    toast.success(data?.message || "Unit Updated Succesfully");
+    return data.data.id;
+  } catch (error) {
+    handleAxiosError(error, "Failed to update unit");
+    return null;
+  }
+};
+
+export const deleteUnit = async (unitId: string) => {
+  try {
+    const { data } = await api.delete(`unit/${unitId}/delete`);
+    toast.success(data?.message || "Unit Deleted Succesfully");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to delete unit");
     return false;
   }
 };

@@ -27,7 +27,9 @@ const CreateGatedEstate = () => {
         percentage={27}
         className="mb-[52px]"
       />
-      <CreatePropertyForm handleSubmit={handleSubmit} formType="facility" />
+      <div className="pb-[100px]">
+        <CreatePropertyForm handleSubmit={handleSubmit} formType="facility" />
+      </div>
     </>
   );
 };

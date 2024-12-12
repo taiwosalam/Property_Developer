@@ -138,8 +138,8 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
                   property_type={index % 2 === 0 ? "rental" : "facility"}
                   currency="naira"
                   isClickable={false}
-                  annualReturns={1000000}
-                  annualIncome={1000000}
+                  total_returns={1000000}
+                  total_income={1000000}
                   accountOfficer="John Doe"
                   last_updated="2021-01-01"
                   mobile_tenants={1}
