@@ -2,7 +2,7 @@ import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import { rentPeriods } from "@/data";
 import { useAddUnitStore } from "@/store/add-unit-store";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DeleteIconX } from "@/public/icons/icons";
 import {
   formatCostInputValue,
@@ -11,20 +11,38 @@ import {
 } from "@/utils/number-formatter";
 import { useUnitForm } from "./unit-form-context";
 
-const emptyStateValues = {
-  rentAmount: "",
-  otherCharges: "",
-  serviceCharge: "",
-  totalPackage: "",
-};
-
 const UnitBreakdownRenewalTenant = () => {
-  const { formResetKey } = useUnitForm();
+  const { formResetKey, unitData } = useUnitForm();
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const CURRENCY_SYMBOL =
     currencySymbols[propertySettings?.currency || "naira"];
-  const [otherChargesInput, setOtherChargesInput] = useState(false);
-  const [formValues, setFormValues] = useState(emptyStateValues);
+  const [otherChargesInput, setOtherChargesInput] = useState(
+    !!unitData?.renew_other_charge
+  );
+
+  const initialFormValues = useMemo(() => {
+    return {
+      rentAmount: unitData?.renew_fee_amount
+        ? formatNumber(parseFloat(unitData.renew_fee_amount))
+        : "",
+      serviceCharge: unitData?.renew_service_charge
+        ? formatNumber(parseFloat(unitData.renew_service_charge))
+        : "",
+      otherCharges: unitData?.renew_other_charge
+        ? formatNumber(parseFloat(unitData.renew_other_charge))
+        : "",
+      totalPackage: unitData?.renew_total_package
+        ? formatNumber(parseFloat(unitData.renew_total_package))
+        : "",
+    };
+  }, [
+    unitData?.renew_fee_amount,
+    unitData?.renew_service_charge,
+    unitData?.renew_other_charge,
+    unitData?.renew_total_package,
+  ]);
+
+  const [formValues, setFormValues] = useState(initialFormValues);
   const { rentAmount, serviceCharge, totalPackage, otherCharges } = formValues;
   type FormField = keyof typeof formValues;
   // Update formValues based on input changes
@@ -61,9 +79,11 @@ const UnitBreakdownRenewalTenant = () => {
 
   // reset form
   useEffect(() => {
-    setOtherChargesInput(false);
-    setFormValues(emptyStateValues);
-  }, [formResetKey]);
+    if (formResetKey !== 0) {
+      setOtherChargesInput(!!unitData?.renew_other_charge);
+      setFormValues(initialFormValues);
+    }
+  }, [formResetKey, initialFormValues, unitData?.renew_other_charge]);
 
   return (
     <div>
@@ -74,15 +94,16 @@ const UnitBreakdownRenewalTenant = () => {
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Select
           required
-          id="fee_period_renew"
+          id="renew_fee_period"
           options={rentPeriods}
           label="Fee Period"
           inputContainerClassName="bg-white"
           hiddenInputClassName="unit-form-input"
           resetKey={formResetKey}
+          defaultValue={unitData?.renew_fee_period}
         />
         <Input
-          id="fee_amount_renew"
+          id="renew_fee_amount"
           required
           label="Fee Amount"
           inputClassName="bg-white unit-form-input"
@@ -92,7 +113,7 @@ const UnitBreakdownRenewalTenant = () => {
           type="text"
         />
         <Input
-          id="service_charge_renew"
+          id="renew_service_charge"
           label="Service Charge"
           inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
@@ -103,7 +124,7 @@ const UnitBreakdownRenewalTenant = () => {
         {otherChargesInput && (
           <div className="relative">
             <Input
-              id="other_charges_renew"
+              id="renew_other_charge"
               label="Other Charges"
               inputClassName="bg-white"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
@@ -132,13 +153,12 @@ const UnitBreakdownRenewalTenant = () => {
         )}
         <Input
           required
-          id="total_package_renew"
+          id="renew_total_package"
           label="Total Package"
           inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={totalPackage}
           readOnly
-          disabled
           type="text"
         />
       </div>

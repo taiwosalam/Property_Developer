@@ -2,7 +2,7 @@ import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import { rentPeriods } from "@/data";
 import { useAddUnitStore } from "@/store/add-unit-store";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DeleteIconX } from "@/public/icons/icons";
 import {
   formatNumber,
@@ -10,29 +10,59 @@ import {
   formatCostInputValue,
 } from "@/utils/number-formatter";
 import { useUnitForm } from "./unit-form-context";
-
-const emptyStateValues = {
-  rentAmount: "",
-  agencyFee: "",
-  legalFee: "",
-  serviceCharge: "",
-  cautionFee: "",
-  inspectionFee: "",
-  otherCharges: "",
-  totalPackage: "",
-};
+import { mapNumericToYesNo } from "@/utils/checkFormDataForImageOrAvatar";
 
 const UnitBreakdownNewTenant = () => {
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const agencyFeePercentage = parseFloat(
     String(propertySettings?.agency_fee || "0")
   );
-  const { formResetKey } = useUnitForm();
+  const { formResetKey, unitData } = useUnitForm();
   const CURRENCY_SYMBOL =
     currencySymbols[propertySettings?.currency || "naira"];
-  const [otherChargesInput, setOtherChargesInput] = useState(false);
+  const [otherChargesInput, setOtherChargesInput] = useState(
+    !!unitData?.other_charge
+  );
 
-  const [formValues, setFormValues] = useState(emptyStateValues);
+  const initialFormValues = useMemo(() => {
+    return {
+      rentAmount: unitData?.fee_amount
+        ? formatNumber(parseFloat(unitData.fee_amount))
+        : "",
+      agencyFee: unitData?.agency_fee
+        ? formatNumber(parseFloat(unitData.agency_fee))
+        : "",
+      legalFee: unitData?.legal_fee
+        ? formatNumber(parseFloat(unitData.legal_fee))
+        : "",
+      serviceCharge: unitData?.service_charge
+        ? formatNumber(parseFloat(unitData.service_charge))
+        : "",
+      cautionFee: unitData?.caution_fee
+        ? formatNumber(parseFloat(unitData.caution_fee))
+        : "",
+      inspectionFee: unitData?.inspection_fee
+        ? formatNumber(parseFloat(unitData.inspection_fee))
+        : "",
+      otherCharges: unitData?.other_charge
+        ? formatNumber(parseFloat(unitData.other_charge))
+        : "",
+      totalPackage: unitData?.total_package
+        ? formatNumber(parseFloat(unitData.total_package))
+        : "",
+    };
+  }, [
+    unitData?.fee_amount,
+    unitData?.agency_fee,
+    unitData?.legal_fee,
+    unitData?.service_charge,
+    unitData?.caution_fee,
+    unitData?.inspection_fee,
+    unitData?.other_charge,
+    unitData?.total_package,
+  ]);
+
+  const [formValues, setFormValues] = useState(initialFormValues);
   const {
     rentAmount,
     agencyFee,
@@ -103,9 +133,11 @@ const UnitBreakdownNewTenant = () => {
 
   // reset form
   useEffect(() => {
-    setOtherChargesInput(false);
-    setFormValues(emptyStateValues);
-  }, [formResetKey]);
+    if (formResetKey !== 0) {
+      setOtherChargesInput(!!unitData?.other_charge);
+      setFormValues(initialFormValues);
+    }
+  }, [formResetKey, initialFormValues, unitData?.other_charge]);
 
   return (
     <div>
@@ -115,16 +147,17 @@ const UnitBreakdownNewTenant = () => {
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Select
-          id="fee_period_new"
+          id="fee_period"
           required
           options={rentPeriods}
           label="Fee Period"
           inputContainerClassName="bg-white"
           resetKey={formResetKey}
           hiddenInputClassName="unit-form-input"
+          defaultValue={unitData?.fee_period}
         />
         <Input
-          id="fee_amount_new"
+          id="fee_amount"
           label="Fee Amount"
           required
           inputClassName="bg-white unit-form-input"
@@ -134,7 +167,7 @@ const UnitBreakdownNewTenant = () => {
           type="text"
         />
         <Input
-          id="service_charge_new"
+          id="service_charge"
           label="Service Charge"
           inputClassName="bg-white"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
@@ -149,7 +182,6 @@ const UnitBreakdownNewTenant = () => {
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={agencyFee}
           readOnly
-          disabled
           type="text"
         />
         <Input
@@ -182,7 +214,7 @@ const UnitBreakdownNewTenant = () => {
         {otherChargesInput && (
           <div className="relative">
             <Input
-              id="other_charges_new"
+              id="other_charge"
               label="Other Charges"
               inputClassName="bg-white"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
@@ -219,16 +251,16 @@ const UnitBreakdownNewTenant = () => {
           dropdownRefClassName="!w-[160px]"
           resetKey={formResetKey}
           hiddenInputClassName="unit-form-input"
+          defaultValue={mapNumericToYesNo(unitData?.negotiation)}
         />
         <Input
           required
-          id="total_package_new"
+          id="total_package"
           label="Total Package"
           inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={totalPackage}
           readOnly
-          disabled
           type="text"
         />
       </div>

@@ -7,7 +7,7 @@ import { useUnitForm } from "./unit-form-context";
 
 const FooterModal = () => {
   const { setIsOpen } = useModal();
-  const { duplicate, setDuplicate } = useUnitForm();
+  const { duplicate, setDuplicate, submitLoading } = useUnitForm();
   const [countPopup, setCountPopup] = useState(false);
   const [count, setCount] = useState(duplicate?.count || 1);
 
@@ -35,6 +35,7 @@ const FooterModal = () => {
               type="button"
               size="base_medium"
               className="py-2 px-8"
+              disabled={submitLoading}
               onClick={(e) => {
                 e.preventDefault();
                 const form = e.currentTarget.form;
@@ -46,7 +47,7 @@ const FooterModal = () => {
                 }, 0);
               }}
             >
-              Add
+              {submitLoading ? "Adding..." : "Add"}
             </Button>
           </div>
           <div className="text-neutral-2 absolute top-full left-[50%] translate-x-[-50%]">
@@ -71,13 +72,14 @@ const FooterModal = () => {
           type="button"
           form="add-unit-form"
           className="py-2 px-8"
+          disabled={submitLoading}
           onClick={(e) => {
             setIsOpen(false);
             e.currentTarget.form?.requestSubmit();
           }}
           size="base_medium"
         >
-          No
+          {submitLoading ? "Please wait..." : "No"}
         </Button>
       </div>
     </div>

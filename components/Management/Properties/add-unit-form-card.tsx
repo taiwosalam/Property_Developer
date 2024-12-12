@@ -1,17 +1,15 @@
 import UnitCard from "./unit-card";
 import { useState } from "react";
-
+import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
 import UnitForm from "./unit-form";
 
 // set d data structute and dont continue with any
 const AddUnitFormCard = ({
   data,
   index,
-  handleRemove,
 }: {
-  data: any;
+  data: UnitDataObject & { notYetUploaded?: boolean };
   index: number;
-  handleRemove: () => void;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   return (
@@ -20,15 +18,10 @@ const AddUnitFormCard = ({
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       {!isEditing ? (
-        <UnitCard
-          data={data}
-          setIsEditing={setIsEditing}
-          handleRemove={handleRemove}
-        />
+        <UnitCard data={data} setIsEditing={setIsEditing} index={index} />
       ) : (
         <UnitForm
           index={index}
-          empty={false}
           data={data}
           setIsEditing={setIsEditing}
           isEditing={isEditing}

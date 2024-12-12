@@ -7,7 +7,6 @@ import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import ExportPageHeader from "@/components/reports/export-page-header";
-import { empty } from "@/app/config";
 import DeleteInvoiceModal from "@/components/Accounting/invoice/delete-invoice-modal";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";

@@ -23,8 +23,8 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const removeUnit = useAddUnitStore((s) => s.removeUnit);
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
-  const resetStore = useAddUnitStore((s) => s.resetStore);
-  resetStore();
+  // const resetStore = useAddUnitStore((s) => s.resetStore);
+  // resetStore();
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
 
   const {
@@ -41,7 +41,6 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
         setDataNotFound(true);
         return;
       }
-      // console.log(transformedData);
       if (transformedData.propertyType === "rental") {
         router.push(
           `/management/properties/create-rental-property/${propertyId}/add-unit`

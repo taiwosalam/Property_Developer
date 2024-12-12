@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Label from "../Label/label";
 import clsx from "clsx";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 
 interface MultiSelectProps {
   id: string;
@@ -11,6 +12,7 @@ interface MultiSelectProps {
   inputTextClassName?: string;
   className?: string;
   resetKey?: number;
+  defaultSelections?: string[];
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
@@ -22,9 +24,11 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   label,
   inputTextClassName,
   resetKey,
+  defaultSelections = [],
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [selectedItems, setSelectedItems] =
+    useState<string[]>(defaultSelections);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleToggleDropdown = () => {
@@ -43,26 +47,15 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
   const isSelected = (option: string) => selectedItems.includes(option);
 
-  const handleClickOutside = (e: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(e.target as Node)
-    ) {
-      setIsOpen(false); // Close dropdown if clicking outside
+  useOutsideClick(dropdownRef, () => {
+    setIsOpen(false);
+  });
+
+  useEffect(() => {
+    if (resetKey !== 0) {
+      setSelectedItems(defaultSelections);
     }
-  };
-
-  useEffect(() => {
-    // Attach event listener to handle clicks outside
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    setSelectedItems([]);
-  }, [resetKey]);
+  }, [resetKey, defaultSelections]);
 
   return (
     <div className={clsx("flex flex-col gap-2", className)}>
@@ -72,7 +65,11 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
         </Label>
       )}
       {/* Hidden input to hold the selected values */}
-      <input type="hidden" name={id} value={selectedItems.join(",") || ""} />
+      <input
+        type="hidden"
+        name={id}
+        value={selectedItems.map(encodeURIComponent).join(",") || ""}
+      />
 
       <div className="relative" ref={dropdownRef}>
         <div
