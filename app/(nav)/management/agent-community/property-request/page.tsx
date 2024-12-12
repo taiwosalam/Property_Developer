@@ -110,18 +110,32 @@ const PropertyRequest = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
 
+  // const handlePageChange = (page: number) => {
+  //   setSearchQuery("");
+  //   setState((prevState) => ({
+  //     ...prevState,
+  //     meta: {
+  //       ...prevState.meta,
+  //       pagination: {
+  //         ...prevState.meta.pagination,
+  //         current_page: page,
+  //       },
+  //     },
+  //   }));
+  // };
+
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      // page: 1,
+      // search: "",
+      sort: "asc",
+    } as PropertyRequestParams,
+  });
+
   const handlePageChange = (page: number) => {
-    setSearchQuery("");
-    setState((prevState) => ({
-      ...prevState,
-      meta: {
-        ...prevState.meta,
-        pagination: {
-          ...prevState.meta.pagination,
-          current_page: page,
-        },
-      },
-    }));
+    setConfig({
+      params: { ...config.params, page },
+    });
   };
 
   const handleSearch = async (query: string) => {
@@ -129,13 +143,6 @@ const PropertyRequest = () => {
     setSearchQuery(query);
   };
 
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-      sort: "asc",
-    } as PropertyRequestParams,
-  });
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -173,13 +180,9 @@ const PropertyRequest = () => {
     };
 
     options.forEach(option => {
-      if (option === 'all') {
-          queryParams.all = true; 
-      } else if (option === 'trending') {
-          queryParams.trending = true; 
-      } else if (option === 'new') {
-          queryParams.recent = true; 
-      }
+      if (option === 'new') {
+          queryParams.current_month = true; 
+      } 
   });
   if (statesArray.length > 0) {
     queryParams.state = statesArray.join(",");

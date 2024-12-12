@@ -2,7 +2,7 @@ import TruncatedText from "@/components/TruncatedText/truncated-text";
 import { cn } from "@/lib/utils";
 interface EstateDetailItemProps {
   label: string;
-  value: string;
+  value?: string;
   style?: React.CSSProperties;
   column?: boolean;
   truncate?: boolean;

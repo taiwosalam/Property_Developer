@@ -42,7 +42,6 @@ const CreateMyPropertyRequest = () => {
   return (
     <>
     <AuthForm 
-    // setValidationErrors={() => {}}
      onFormSubmit={handleCreateClick}
      returnType="form-data"
     >

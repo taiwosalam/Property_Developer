@@ -47,6 +47,7 @@ const Landlord = () => {
   const [pageData, setPageData] = useState<LandlordsPageData>(
     initialLandlordsPageData
   );
+
   const {
     total_pages,
     current_page,
@@ -90,10 +91,6 @@ const Landlord = () => {
   useEffect(() => {
     setView(storedView);
   }, [storedView]);
-
-  // const onClickChat = () => {
-  //   console.log("Chat clicked for:", landlord);
-  // };
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],

@@ -214,6 +214,7 @@ export const transformPropertiesApiResponse = (
   );
 
   if (isPropertiesApiResponse(response)) {
+    console.log("prop res", response)
     return {
       total_pages: propertiesData.last_page,
       current_page: propertiesData.current_page,

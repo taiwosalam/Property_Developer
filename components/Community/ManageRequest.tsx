@@ -176,7 +176,7 @@ export const PropertyRequestSecondSection = ({
     //     setUnitType: () => {},
     //     images: [],
     //     formResetKey: 0,
-    //     setFormResetKey: () => {},
+    //     imageFiles: [],
     //   }}
     // >
       <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
