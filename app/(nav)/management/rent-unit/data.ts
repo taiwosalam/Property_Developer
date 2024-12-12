@@ -211,8 +211,8 @@ export interface Property {
   who_to_charge_new_tenant: string;
   who_to_charge_renew_tenant: string;
   caution_deposit: string;
-  group_chat: number;
-  rent_penalty: number;
+  group_chat: string;
+  rent_penalty: string;
   fee_penalty: number;
   request_call_back: number;
   book_visitors: number;
@@ -451,8 +451,8 @@ export const initialSingleData: InitialSingleUnitProps = {
       agency_fee: "",
       branchName: "",
       whoToCharge: "",
-      group_chat: 0,
-      rent_penalty: 0,
+      group_chat: "",
+      rent_penalty: "",
       caution_deposit: "",
     }
   ]
@@ -483,12 +483,12 @@ export interface pageInitialObject {
   renewalTenantTotalPrice: string;
   fee_period: string;
   renew_fee_period: string;
-  images: [];
+  images: string[];
   agency_fee?: string;
   branchName?: string;
   whoToCharge?: string;
-  group_chat?: number;
-  rent_penalty?: number;
+  group_chat?: string;
+  rent_penalty?: string;
   caution_deposit?: string;
 }
 
@@ -520,12 +520,12 @@ export const InitialSingleUnit = {
   renewalTenantTotalPrice: "",
   fee_period: "",
   renew_fee_period: "",
-  images: [],
+  images: [] as string[],
   agency_fee: "",
   branchName: "",
   WhoToCharge: "",
-  group_chat: 0,
-  rent_penalty: 0,
+  group_chat: "",
+  rent_penalty: "",
   caution_deposit: "",
 }
 
@@ -533,10 +533,7 @@ export interface singleDataObject {
   unit_id: string;
   unit_name: string;
   address: string;
-  images: {
-    id: string;
-    path: string;
-  }[];
+  images: [];
   unit_category: string;
   unit_preference: string;
   unit_type: string;
@@ -552,17 +549,17 @@ export interface singleDataObject {
   renew_fee_amount: string;
   renew_service_charge: string;
   renew_other_charge: string;
-  bedroom: number;
-  bathroom: number;
-  toilet: number;
+  bedroom: string;
+  bathroom: string;
+  toilet: string;
   en_suit: number;
   prepaid: number;
-  wardrobe: number;
+  wardrobe: string;
   agency_fee: string;
   branchName?: string;
   WhoToCharge?: string;
-  group_chat?: number;
-  rent_penalty?: number;
+  group_chat?: string;
+  rent_penalty?: string;
 }
 
 
@@ -570,8 +567,8 @@ export interface singleUnitApiResponse {
   data: {
     current_page: string | number;
     data: Array<{
-      id: number;
-      user_id: number;
+      id: string;
+      user_id: string;
       property_id: number;
       unit_name: string;
       unit_type: string;
@@ -580,7 +577,7 @@ export interface singleUnitApiResponse {
       measurement: string;
       bedroom: string;
       bathroom: string;
-      toilet: number;
+      toilet: string;
       facilities: string[];
       en_suit: number;
       prepaid: number;
@@ -613,10 +610,6 @@ export interface singleUnitApiResponse {
       images: Array<{
         id: number;
         path: string;
-        mediaable_type: string;
-        mediaable_id: number;
-        created_at: string;
-        updated_at: string;
       }>;
       property: {
         id: number;
@@ -638,8 +631,8 @@ export interface singleUnitApiResponse {
         who_to_charge_new_tenant: string;
         who_to_charge_renew_tenant: string;
         caution_deposit: string;
-        group_chat: number;
-        rent_penalty: number;
+        group_chat: string;
+        rent_penalty: string;
         fee_penalty: number;
         request_call_back: number;
         book_visitors: number;
@@ -716,7 +709,7 @@ export interface UnitDetails {
   renewalTenantPrice: string;
   renewalTenantTotalPrice: string;
   fee_amount: string;
-  images: string[];
+  images: [];
   fee_period: string;
   renew_fee_period: string;
   who_to_charge_new_tenant: string;
@@ -767,8 +760,8 @@ export const transformSingleUnitData = (
       branchName: unit.property.branch.branch_name,
       agency_fee: unit.agency_fee,
       whoToCharge: unit.property.who_to_charge_new_tenant,
-      group_chat: convertToYesNo(unit.property.group_chat),
-      rent_penalty: convertToYesNo(unit.property.rent_penalty),
+      group_chat: convertToYesNo(Number(unit.property.group_chat)),
+      rent_penalty: convertToYesNo(Number(unit.property.rent_penalty)),
       caution_deposit: unit.property.caution_deposit,
       location: "",
       fee_amount: "",

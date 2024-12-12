@@ -46,5 +46,6 @@ export interface PropertyRequestParams{
     state?: string;
     trending?: boolean;
     start_date?: string;
+    current_month?: boolean;
     end_date?: string;
 }
