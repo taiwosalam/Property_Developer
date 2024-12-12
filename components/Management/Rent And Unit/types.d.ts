@@ -20,23 +20,34 @@ interface PropertyImageSliderProps {
   video_link?: string;
 }
 export interface UnitDetails {
-  //   id: string;
-  title: string;
-  location: string;
-  categories: string;
-  unitNumber: string;
-  unitPreference: string;
-  unitType: string;
-  unitSubType: string;
-  state: string;
-  localGovernment: string;
-  accountOfficer: string;
-  bedrooms: number;
-  bathrooms: number;
-  toilets: number;
-  newTenantPrice: number;
-  renewalTenantPrice: number;
-  images: string[];
+  data: [
+    {
+      unit_id: string;
+      title: string;
+      unit_name: string;
+      address: string;
+      location: string;
+      categories: string;
+      unitNumber: string;
+      unitPreference: string;
+      unitType: string;
+      unitSubType: string;
+      state: string;
+      localGovernment: string;
+      accountOfficer: string;
+      bedrooms: string;
+      bathrooms: string;
+      toilets: string;
+      newTenantPrice: string;
+      newTenantTotalPrice: string;
+      renewalTenantPrice: string;
+      renewalTenantTotalPrice: string;
+      fee_amount: string;
+      images: string[];
+      fee_period: string;
+      renew_fee_period: string;
+    }
+  ]
 }
 
 export interface Occupant {

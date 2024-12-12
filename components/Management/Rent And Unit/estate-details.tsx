@@ -6,7 +6,7 @@ const EstateDetails = ({
   estateData,
 }: {
   title: string;
-  estateData: { label: string; value: string }[];
+  estateData: { label: string; value?: string }[];
 }) => {
   return (
     <div

@@ -10,6 +10,7 @@ import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import PropertyTag from "@/components/Tags/property-tag";
 import { useRouter } from "next/navigation";
 import ImageSlider from "@/components/ImageSlider/image-slider";
+import { RentalPropertyCardProps } from "@/app/(nav)/management/rent-unit/data";
 
 export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
   images,
@@ -123,11 +124,22 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   );
 };
 
-const RentalPropertyCard: React.FC<{
-  propertyType: "rental" | "facility";
-  images: string[];
-  unitId: string;
-}> = ({ propertyType, images, unitId }) => {
+const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
+  propertyType,
+  images,
+  unitId,
+  unit_title,
+  unit_name,
+  unit_type,
+  tenant_name,
+  expiry_date,
+  rent,
+  caution_deposit,
+  service_charge,
+  status,
+  property_type,
+}) => {
+
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
 
@@ -139,7 +151,7 @@ const RentalPropertyCard: React.FC<{
           className="absolute top-5 right-5 z-10"
         />
         {/* <PropertyImageSlider images={images} showOverlay={isHovered} /> */}
-        <ImageSlider images={images} className="h-full" />
+        <ImageSlider images={images.map(image => image)} className="h-full" />
       </div>
       <div
         role="button"
@@ -151,54 +163,51 @@ const RentalPropertyCard: React.FC<{
         <div className="relative">
           <div className="flex items-center justify-between">
             <h3 className="text-2xl font-bold text-[#374151] dark:text-white">
-              Moniya Apartment
+             { unit_title }
             </h3>
             <div className="flex items-center space-x-1">
-              {activeStatuses.map((status) => (
                 <div
                   key={status}
                   className="w-[15px] h-[15px] rounded-full"
                   style={{ backgroundColor: getBackgroundColor(status) }}
                 />
-              ))}
             </div>
           </div>
           <p className="text-sm font-normal">
-            Newly Built 5 Bedroom Detached Duplex
+          { unit_name + " " + unit_type }
           </p>
 
           {/* Hover information */}
           <div
-            className={`absolute inset-0 bg-white dark:bg-darkText-primary py-2 transition-all duration-300 flex items-center justify-between ${
-              isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
+            className={`absolute inset-0 bg-white dark:bg-darkText-primary py-2 transition-all duration-300 flex items-center justify-between ${isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
           >
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Unit ID
               </span>
-              <p className="text-brand-primary font-medium">1234567867</p>
+              <p className="text-brand-primary font-medium"> { unitId } </p>
             </div>
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Tenant&lsquo;s Name
               </span>
               <p className="text-brand-primary font-medium">
-                Ajaia David <span className="text-green-500">●</span>
+                { tenant_name } <span className="text-green-500">●</span>
               </p>
             </div>
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Expiry Date
               </span>
-              <p className="text-brand-primary font-medium">25/02/2024</p>
+              <p className="text-brand-primary font-medium"> { expiry_date } </p>
             </div>
           </div>
         </div>
         <PropertyDetails
-          rent={3000000}
-          cautionDeposit={3000000}
-          serviceCharge={3000000}
+          rent={Number(rent)}
+          cautionDeposit={Number(caution_deposit)}
+          serviceCharge={Number(service_charge)}
         />
       </div>
       <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
