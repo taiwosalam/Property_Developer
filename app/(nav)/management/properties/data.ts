@@ -61,7 +61,7 @@ export interface UnitDataObject {
   bedroom?: string;
   bathroom?: string;
   toilet?: string;
-  facilities?: string[];
+  facilities: string[] | null;
   en_suit?: 1 | 0;
   prepaid?: 1 | 0;
   wardrobe?: 1 | 0;

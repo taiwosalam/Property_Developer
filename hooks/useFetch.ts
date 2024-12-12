@@ -45,11 +45,13 @@ function useFetch<T>(
           } else {
             const errorData = err.response.data;
             const errorMessage =
-              errorData?.message || typeof errorData?.error === "string"
+              errorData?.message ||
+              (typeof errorData?.error === "string"
                 ? errorData?.error
                 : typeof errorData?.error?.message === "string"
                 ? errorData.error.message
-                : "Something went wrong";
+                : "Something went wrong");
+            console.log(errorMessage);
             setError(errorMessage);
           }
         } else {

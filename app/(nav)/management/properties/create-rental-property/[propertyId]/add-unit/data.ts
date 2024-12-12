@@ -29,7 +29,7 @@ export const transformPropertyData = (
       full_address: data.full_address,
       category: data.category as Categories,
       description: data.description,
-      images: data.images.map((img) => img.path),
+      images: data.images.map((img) => ({ path: img.path, id: img.id })),
       branch_name: data.branch?.branch_name,
       branch_id: data.branch?.id,
     },

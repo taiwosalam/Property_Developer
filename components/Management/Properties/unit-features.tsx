@@ -49,7 +49,7 @@ const UnitFeatures = () => {
           resetKey={formResetKey}
         />
         <Input
-          required
+          required={isRental}
           id="total_area_sqm"
           label="Total Area (m²)"
           labelclassName="undo-text-transform"
@@ -123,7 +123,7 @@ const UnitFeatures = () => {
             id="facilities"
             label="Select Facilities (Maximum of 10)"
             resetKey={formResetKey}
-            defaultSelections={unitData?.facilities}
+            defaultSelections={unitData?.facilities || []}
           />
         )}
       </div>

@@ -3,7 +3,7 @@ import { toast } from "sonner";
 
 interface UseMultipleImageUploadProps {
   maxImages: number;
-  maxFileSizeMB: number;
+  maxFileSizeMB?: number;
   initialImages?: string[];
   onImagesUpdate?: (a: {
     images: string[];
@@ -23,7 +23,7 @@ interface UseMultipleImageUploadReturn {
 
 export const useMultipleImageUpload = ({
   maxImages,
-  maxFileSizeMB,
+  maxFileSizeMB = Infinity,
   initialImages = [],
   onImagesUpdate,
 }: UseMultipleImageUploadProps): UseMultipleImageUploadReturn => {
@@ -116,10 +116,7 @@ export const useMultipleImageUpload = ({
   const resetImages = () => {
     setImages(initialImages || []);
     setImageFiles(initialImages || []);
-    onImagesUpdate?.({
-      images: initialImages || [],
-      imageFiles: initialImages || [],
-    });
+
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
