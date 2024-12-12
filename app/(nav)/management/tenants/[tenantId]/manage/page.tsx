@@ -49,7 +49,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const tenant = apiData ? transformIndividualTenantAPIResponse(apiData) : null;
 
   if (loading) return <CustomLoader layout="profile" />;
-  if (error) return <div>{error}</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
   if (!tenant) return null;
 
   const groupedDocuments = groupDocumentsByType(tenant?.documents);

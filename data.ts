@@ -298,22 +298,8 @@ export const unitFacilities = {
   ],
 };
 
-export const rentPeriods = [
-  "daily",
-  "weekly",
-  "quarterly",
-  "binary",
-  "monthly",
-  "yearly",
-  "biennially",
-  "triennially",
-  "quadrennial",
-  "quinquennial",
-  "sexennial",
-  "septennial",
-  "octennial",
-  "nonennial",
-  "decennial",
+export const rentPeriods = 
+['daily', 'weekly', 'monthly', 'quarterly', 'yearly', 'biennially', 'triennially', 'quadrennial', 'quinquennial', 'sexennial', 'septennial', 'octennial', 'nonennial', 'decennial'
 ];
 
 export const landlordTypes = [

@@ -1,9 +1,5 @@
 // Imports
-import type {
-  PropertyFormStateType,
-  AllStaffResponse,
-  PropertyFormPayload,
-} from "./types";
+import type { PropertyFormStateType, AllStaffResponse } from "./types";
 import api from "@/services/api";
 
 export const property_form_state_data: PropertyFormStateType = {
@@ -29,9 +25,9 @@ export const getAllStaffByBranch = async (branchId: string) => {
 
 export const transformPropertyFormData = (
   data: Record<string, any>,
-  imageFiles: File[],
+  imageFiles: (File | string)[],
   company_id: string
-): PropertyFormPayload => {
+) => {
   // Collect staff IDs
   const staffIds = Object.entries(data)
     .filter(([key]) => key.startsWith("staff") && key.endsWith("_id"))
@@ -42,7 +38,7 @@ export const transformPropertyFormData = (
     staffIds.push(data.account_officer_id);
   }
 
-  const payload: PropertyFormPayload = {
+  const payload = {
     title: data.title,
     state: data.state,
     local_government: data.local_government,
@@ -87,7 +83,7 @@ export const transformUnitFormData = (
   property_id: string
 ) => {
   const parseFee = (value: string | undefined): number | null => {
-    if (value === undefined) {
+    if (!value) {
       return null;
     }
     return parseFloat(value.replace(/,/g, ""));

@@ -12,14 +12,52 @@ import NetworkError from "@/components/Error/NetworkError";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { useEffect, useState } from "react";
 import { transformPropertyData } from "../../create-rental-property/[propertyId]/add-unit/data";
+import { updateProperty } from "./data";
+import { transformPropertyFormData } from "@/components/Management/Properties/data";
+import { useRouter } from "next/navigation";
+import UnitForm from "@/components/Management/Properties/unit-form";
 
 const EditProperty = ({ params }: { params: { id: string } }) => {
   const { id: propertyId } = params;
   const [dataNotFound, setDataNotFound] = useState(false);
-  const propertyType = useAddUnitStore((s) => s.propertyType);
-  const handleSubmit = async () => {};
-  const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
+  const [showNewUnitForm, setShowNewUnitForm] = useState(false);
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
+  const propertyType = useAddUnitStore((s) => s.propertyType);
+  const router = useRouter();
+
+  const handleSubmit = async (
+    data: ReturnType<typeof transformPropertyFormData>
+  ) => {
+    const { newImages, retainedImages } = data.images.reduce<{
+      newImages: File[];
+      retainedImages: string[];
+    }>(
+      (acc, image) => {
+        if (image instanceof File) acc.newImages.push(image);
+        else {
+          const matchingImage = propertyDetails?.images.find(
+            (img) => img.path === image
+          );
+          if (matchingImage) {
+            acc.retainedImages.push(matchingImage.id);
+          }
+        }
+        return acc;
+      },
+      { newImages: [], retainedImages: [] }
+    );
+    const status = await updateProperty(propertyId, {
+      ...data,
+      images: newImages,
+      retain_images: retainedImages,
+    });
+    if (status) {
+      router.push(`/management/properties/${propertyId}`);
+    }
+  };
+
+  const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
+
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   // const resetStore = useAddUnitStore((s) => s.resetStore);
 
@@ -61,12 +99,17 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
         editMode
         handleSubmit={handleSubmit}
         formType={propertyType as "rental" | "facility"}
+        propertyId={propertyId}
+        onAddUnit={() => setShowNewUnitForm(true)}
       />
 
       <div className="custom-flex-col gap-10">
         {addedUnits.map((unit, index) => (
           <AddUnitFormCard key={index} data={unit} index={index} />
         ))}
+        {showNewUnitForm && (
+          <UnitForm empty afterSubmit={() => setShowNewUnitForm(false)} />
+        )}
       </div>
     </div>
   );

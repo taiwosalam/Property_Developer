@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { v4 as uuidv4 } from "uuid";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { useAddUnitStore } from "@/store/add-unit-store";
-import { MAX_FILE_SIZE_MB } from "@/data";
+// import { MAX_FILE_SIZE_MB } from "@/data";
 import { useMultipleImageUpload } from "@/hooks/useMultipleImageUpload";
 
 const UnitPictures = () => {
@@ -22,7 +22,6 @@ const UnitPictures = () => {
     resetImages,
   } = useMultipleImageUpload({
     maxImages: maxImages,
-    maxFileSizeMB: MAX_FILE_SIZE_MB,
     initialImages: images,
     onImagesUpdate: (a) => {
       setImages({ images: a.images, imageFiles: a.imageFiles });
