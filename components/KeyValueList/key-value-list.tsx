@@ -1,5 +1,3 @@
-import React from "react";
-
 // Types
 import { KeyValueListProps } from "./types";
 
@@ -46,9 +44,14 @@ export const KeyValueList = <T extends object>({
                   >
                     {String(key).split("_").join(" ")}
                   </p>
-                  <p className="text-black dark:text-darkText-2" style={styles?.[key]?.value}>
+                  <p
+                    className="text-black dark:text-darkText-2"
+                    style={styles?.[key]?.value}
+                  >
                     {/* Safely render the value or placeholder */}
-                    {data && data[key] !== undefined ? String(data[key]) : "---"}
+                    {data && data[key] !== undefined
+                      ? String(data[key])
+                      : "---"}
                   </p>
                 </div>
               ))}
@@ -74,7 +77,9 @@ export const KeyValueList = <T extends object>({
                     style={styles?.[key]?.value}
                   >
                     {/* Safely render the value or placeholder */}
-                    {data && data[key] !== undefined ? String(data[key]) : "---"}
+                    {data && data[key] !== undefined
+                      ? String(data[key])
+                      : "---"}
                   </p>
                 ))}
               </div>

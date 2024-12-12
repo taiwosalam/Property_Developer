@@ -1,11 +1,13 @@
 import Button from "@/components/Form/Button/button";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { useContext } from "react";
+import { useUnitForm } from "./unit-form-context";
 
 const EditUnitActions: React.FC<{ handleCancel: () => void }> = ({
   handleCancel,
 }) => {
   const { canSubmit } = useContext(FlowProgressContext);
+  const { submitLoading } = useUnitForm();
   return (
     <div className="flex gap-4 justify-end">
       <Button
@@ -18,13 +20,12 @@ const EditUnitActions: React.FC<{ handleCancel: () => void }> = ({
         Cancel
       </Button>
       <Button
-        form="edit-unit-form"
         type="submit"
         size="sm_medium"
         className="py-1 px-8"
-        disabled={!canSubmit}
+        disabled={!canSubmit || submitLoading}
       >
-        Update
+        {submitLoading ? "Updating..." : "Update"}
       </Button>
     </div>
   );

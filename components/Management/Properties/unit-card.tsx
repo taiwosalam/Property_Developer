@@ -1,43 +1,87 @@
 // Images
 import { CameraIcon } from "@/public/icons/icons";
-import SampleProperty6 from "@/public/empty/SampleProperty6.jpg";
 
 // Imports
 import { UnitCardProps } from "./types";
 import { useState } from "react";
-import { unit_card_data_props } from "./data";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { SectionSeparator } from "@/components/Section/section-components";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { Modal, ModalContent } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
+import { useAddUnitStore } from "@/store/add-unit-store";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+import { deleteUnit } from "@/app/(nav)/management/properties/create-rental-property/[propertyId]/add-unit/data";
 
-const UnitCard: React.FC<UnitCardProps> = ({
-  data,
-  handleRemove,
-  setIsEditing,
-}) => {
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
+const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const propertySettings = useAddUnitStore((state) => state.propertySettings);
+  const removeUnit = useAddUnitStore((state) => state.removeUnit);
+
+  const currency = propertySettings?.currency;
+
+  const referenceObject = {
+    unit_details: "",
+    "unit no/name": "",
+    rent: "",
+    ...(data.caution_fee ? { caution_deposit: "" } : {}),
+    service_charge: "",
+  };
+
+  const keyValueData = {
+    unit_details: `${data.unit_preference} - ${data.unit_sub_type} - ${data.unit_type}`,
+    "unit no/name": data.unit_name,
+    rent: `${currencySymbols[currency || "naira"]}${formatNumber(
+      parseFloat(data.fee_amount)
+    )}`,
+    ...(data.caution_fee
+      ? {
+          caution_deposit: `${
+            currencySymbols[currency || "naira"]
+          }${formatNumber(parseFloat(data.caution_fee))}`,
+        }
+      : {}),
+    service_charge: `${currencySymbols[currency || "naira"]}${formatNumber(
+      parseFloat(data.service_charge)
+    )}`,
+  };
+
+  const handleRemove = async () => {
+    if (data.notYetUploaded) {
+      removeUnit(index);
+    } else {
+      setModalOpen(true);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    const success = await deleteUnit(data.id);
+    if (success) {
+      removeUnit(index);
+      setModalOpen(false);
+    }
+  };
 
   return (
     <>
       <div className="flex gap-4 flex-wrap items-center justify-between">
         <p className="text-brand-10 text-base font-bold">
-          Unit ID: 123456776342
+          Unit ID: {data.id || (data.notYetUploaded ? "Not Yet Uploaded" : "")}
         </p>
         <div className="flex gap-4 sm:gap-8">
-          <Button size="sm_medium" className="py-2 px-8" onClick={handleEdit}>
+          <Button
+            size="sm_medium"
+            className="py-2 px-8"
+            onClick={() => setIsEditing(true)}
+          >
             edit
           </Button>
           <Button
             size="sm_medium"
             variant="light_red"
             className="py-2 px-8"
-            onClick={() => setModalOpen(true)}
+            onClick={handleRemove}
           >
             remove
           </Button>
@@ -47,29 +91,44 @@ const UnitCard: React.FC<UnitCardProps> = ({
       <div className="overflow-x-auto custom-round-scrollbar">
         <div className="min-w-[700px] flex py-4 items-center justify-between">
           <div className="flex-1 flex gap-6">
-            <KeyValueList data={data} referenceObject={unit_card_data_props} />
+            <KeyValueList
+              data={keyValueData}
+              referenceObject={referenceObject}
+            />
           </div>
-          <div className="relative rounded-2xl overflow-hidden">
-            <Picture src={SampleProperty6} alt="property preview" size={168} />
-            <div
-              style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
-              className="absolute inset-0 custom-flex-col justify-between p-3"
-            >
-              <div className="flex justify-end">
-                <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
-                  <CameraIcon />
-                  <p className="text-black dark:text-white font-medium text-[10px]">
-                    +23
-                  </p>
+          {data.images.length > 0 && (
+            <div className="relative rounded-2xl overflow-hidden">
+              <Picture
+                src={data.images[0].path}
+                alt="property preview"
+                size={168}
+              />
+              <div
+                style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
+                className="absolute inset-0 custom-flex-col justify-between p-3"
+              >
+                {data.images.length > 1 && (
+                  <div className="flex justify-end">
+                    <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
+                      <CameraIcon />
+                      <p className="text-black dark:text-white font-medium text-[10px]">
+                        +{data.images.length - 1}
+                      </p>
+                    </div>
+                  </div>
+                )}
+                <div className="flex justify-center mt-auto">
+                  <Button
+                    size="base_medium"
+                    className="py-1 px-6"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    Change
+                  </Button>
                 </div>
               </div>
-              <div className="flex justify-center">
-                <Button size="base_medium" className="py-1 px-6">
-                  Select
-                </Button>
-              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       <Modal
@@ -91,10 +150,7 @@ const UnitCard: React.FC<UnitCardProps> = ({
                 type="button"
                 size="base_medium"
                 className="py-2 px-8"
-                onClick={() => {
-                  handleRemove && handleRemove();
-                  setModalOpen(false);
-                }}
+                onClick={handleConfirmDelete}
               >
                 proceed
               </Button>

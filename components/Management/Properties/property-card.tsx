@@ -14,7 +14,7 @@ export interface PropertyCardProps {
   property_name: string;
   total_units: number;
   address: string;
-  total_unit_pictures: number;
+  total_unit_pictures: number | null;
   hasVideo: boolean;
   property_type: "rental" | "facility";
   total_returns: number;
@@ -105,12 +105,14 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         className="h-[200px] rounded-t-2xl"
       >
         <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
-          <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
-            <CameraIcon />
-            <p className="text-black dark:text-darkText-1 font-medium text-[10px]">
-              +{total_unit_pictures}
-            </p>
-          </div>
+          {total_unit_pictures && (
+            <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
+              <CameraIcon />
+              <p className="text-black dark:text-darkText-1 font-medium text-[10px]">
+                +{total_unit_pictures}
+              </p>
+            </div>
+          )}
           {hasVideo && (
             <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 grid place-items-center">
               <VideoIcon />

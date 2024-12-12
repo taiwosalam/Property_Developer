@@ -6,13 +6,16 @@ import { unitFacilities } from "@/data";
 import { useUnitForm } from "./unit-form-context";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { useAddUnitStore } from "@/store/add-unit-store";
+import { mapNumericToYesNo } from "@/utils/checkFormDataForImageOrAvatar";
 
 const UnitFeatures = () => {
   const { handleInputChange } = useContext(FlowProgressContext);
-  const { unitType, formResetKey } = useUnitForm();
+  const { unitType, formResetKey, unitData } = useUnitForm();
   const propertyType = useAddUnitStore((state) => state.propertyType);
 
-  const [selectedAreaUnit, setSelectedAreaUnit] = useState("");
+  const [selectedAreaUnit, setSelectedAreaUnit] = useState(
+    unitData?.measurement || ""
+  );
 
   const areaUnits = ["sqm", "half plot", "plot", "acre", "hectare"];
 
@@ -20,8 +23,10 @@ const UnitFeatures = () => {
     unitType === "land" ? unitFacilities.lands : unitFacilities.buildings;
 
   useEffect(() => {
-    setSelectedAreaUnit("");
-  }, [formResetKey]);
+    if (formResetKey !== 0) {
+      setSelectedAreaUnit(unitData?.measurement || "");
+    }
+  }, [formResetKey, unitData?.measurement]);
 
   const isRental = propertyType === "rental";
 
@@ -53,6 +58,7 @@ const UnitFeatures = () => {
           formatNumber
           endWith="sqm"
           onChange={handleInputChange}
+          defaultValue={unitData?.total_area_sqm}
         />
         {selectedAreaUnit &&
           selectedAreaUnit !== "sqm" &&
@@ -65,6 +71,7 @@ const UnitFeatures = () => {
               onChange={handleInputChange}
               formatNumber
               endWith={`${selectedAreaUnit}s`}
+              defaultValue={unitData?.number_of}
             />
           )}
 
@@ -81,6 +88,7 @@ const UnitFeatures = () => {
               max={99}
               maxLength={2}
               onChange={handleInputChange}
+              defaultValue={unitData?.bedroom}
             />
             <Input
               required={isRental}
@@ -92,6 +100,7 @@ const UnitFeatures = () => {
               max={99}
               maxLength={2}
               onChange={handleInputChange}
+              defaultValue={unitData?.bathroom}
             />
             <Input
               required={isRental}
@@ -103,6 +112,7 @@ const UnitFeatures = () => {
               max={99}
               maxLength={2}
               onChange={handleInputChange}
+              defaultValue={unitData?.toilet}
             />
           </>
         )}
@@ -113,6 +123,7 @@ const UnitFeatures = () => {
             id="facilities"
             label="Select Facilities (Maximum of 10)"
             resetKey={formResetKey}
+            defaultSelections={unitData?.facilities}
           />
         )}
       </div>
@@ -128,6 +139,7 @@ const UnitFeatures = () => {
             isSearchable={false}
             resetKey={formResetKey}
             hiddenInputClassName="unit-form-input"
+            defaultValue={mapNumericToYesNo(unitData?.en_suit)}
           />
           <Select
             dropdownRefClassName="!w-[160px]"
@@ -139,6 +151,7 @@ const UnitFeatures = () => {
             isSearchable={false}
             resetKey={formResetKey}
             hiddenInputClassName="unit-form-input"
+            defaultValue={mapNumericToYesNo(unitData?.prepaid)}
           />
           <Select
             dropdownRefClassName="!w-[160px]"
@@ -150,6 +163,7 @@ const UnitFeatures = () => {
             isSearchable={false}
             resetKey={formResetKey}
             hiddenInputClassName="unit-form-input"
+            defaultValue={mapNumericToYesNo(unitData?.wardrobe)}
           />
           <Select
             dropdownRefClassName="!w-[160px]"
@@ -161,6 +175,7 @@ const UnitFeatures = () => {
             isSearchable={false}
             resetKey={formResetKey}
             hiddenInputClassName="unit-form-input"
+            defaultValue={mapNumericToYesNo(unitData?.pet_allowed)}
           />
         </div>
       )}

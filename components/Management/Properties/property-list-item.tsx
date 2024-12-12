@@ -24,7 +24,7 @@ interface PropertyListItemProps {
   currency?: keyof typeof currencySymbols;
   branch?: string;
   property_type: "rental" | "facility";
-  total_unit_pictures: number;
+  total_unit_pictures: number | null;
   hasVideo: boolean;
 }
 
@@ -130,12 +130,14 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
           >
             {/* Gropu of icons down */}
             <div className="flex items-stretch gap-[10px] absolute z-[1] left-[35%] bottom-4">
-              <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
-                <CameraIcon />
-                <p className="text-black font-medium text-[10px]">
-                  +{total_unit_pictures}
-                </p>
-              </div>
+              {total_unit_pictures && (
+                <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+                  <CameraIcon />
+                  <p className="text-black font-medium text-[10px]">
+                    +{total_unit_pictures}
+                  </p>
+                </div>
+              )}
               {hasVideo && (
                 <div className="bg-brand-1 rounded py-1 px-1.5 grid place-items-center">
                   <VideoIcon />

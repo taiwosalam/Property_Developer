@@ -19,7 +19,7 @@ export interface UnitItemProps {
   unitName: string;
   rent: string;
   serviceCharge: string;
-  // cautionDeposit: number;
+  cautionDeposit?: string;
   tenantName?: string;
   tenantBadgeColor?: BadgeIconColors;
   dueDate?: string;
@@ -37,6 +37,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
   tenantName,
   tenantBadgeColor,
   dueDate,
+  cautionDeposit,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
 
@@ -78,10 +79,14 @@ const UnitItem: React.FC<UnitItemProps> = ({
             <p className="text-[#747474] dark:text-white">Unit No/Name</p>
             <p className="text-black dark:text-darkText-1">{unitName}</p>
           </div>
-          {/* <div>
-            <p className="text-[#747474] dark:text-white">Caution Deposit</p>
-            <p className="text-black dark:text-darkText-1">₦300,000</p>
-          </div> */}
+          {cautionDeposit && (
+            <div>
+              <p className="text-[#747474] dark:text-white">Caution Deposit</p>
+              <p className="text-black dark:text-darkText-1">
+                {cautionDeposit}
+              </p>
+            </div>
+          )}
           <div>
             <p className="text-[#747474] dark:text-white">Service Charge</p>
             <p className="text-black dark:text-darkText-1">{serviceCharge}</p>

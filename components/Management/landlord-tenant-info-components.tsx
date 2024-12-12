@@ -196,6 +196,7 @@ export const NotesInfoBox: React.FC<{
       <TruncatedText
         lines={7}
         className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
+        as="div"
       >
         <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
       </TruncatedText>
