@@ -151,7 +151,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
           className="absolute top-5 right-5 z-10"
         />
         {/* <PropertyImageSlider images={images} showOverlay={isHovered} /> */}
-        <ImageSlider images={images.map(image => image.path)} className="h-full" />
+        <ImageSlider images={images.map(image => image)} className="h-full" />
       </div>
       <div
         role="button"

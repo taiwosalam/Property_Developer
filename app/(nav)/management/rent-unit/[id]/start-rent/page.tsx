@@ -11,13 +11,62 @@ import EstateDetails from "@/components/Management/Rent And Unit/estate-details"
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
 import { OccupantProfile } from "@/components/Management/Rent And Unit/occupant-profile";
 import BackButton from "@/components/BackButton/back-button";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { useEffect, useState } from "react";
+import {initialSingleData, InitialSingleUnit, InitialSingleUnitProps, singleUnitApiResponse, transformSingleUnitData, UnitDetails } from "../../data";
+import useFetch from "@/hooks/useFetch";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
-  const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
+  const id = searchParams.get("id");
+  const propertyType = searchParams.get("type") as "rental" | "facility"; 
   const isRental = propertyType === "rental";
+
+  const [pageData, setPageData] = useState<InitialSingleUnitProps>(initialSingleData);
+  const endpoint = `/unit/${id}/list`
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<singleUnitApiResponse>(endpoint);
+
+  useEffect(() => {
+    if (apiData) {
+      setPageData((x) => ({
+        ...x,
+        ...transformSingleUnitData(apiData), 
+      }));
+    }
+  }, [apiData])
+
+  
+  const unit_data = pageData?.data[0];
+  console.log("data", pageData?.data[0])
+
+const rentalData = [
+  { label: "Property Title", value: unit_data?.title },
+  { label: "State", value: unit_data?.state },
+  { label: "Local Government", value: unit_data?.localGovernment },
+  { label: "Full Address", value: unit_data?.address },
+  { label: "Branch", value: unit_data?.branchName  },
+  { label: "Account Officer", value: "No Officer" }, //TODO
+  { label: "Landlord", value: "No Landlord" }, //TODO
+  { label: "Categories", value: unit_data?.categories },
+  { label: "Unit ID", value: unit_data?.unit_id },
+];
+
+const propertySettingsData = [
+  { label: "Agency Fee", value: unit_data?.agency_fee },
+  { label: "Period", value: unit_data?.fee_period },
+  { label: "Charge", value: unit_data?.whoToCharge },
+  { label: "Caution Deposit", value: unit_data.caution_deposit },
+  { label: "Group Chat", value: `${unit_data?.group_chat}`},
+  { label: "Rent Penalty", value: `${unit_data?.rent_penalty}` },
+];
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Start {isRental ? "Rent" : "Counting"}</BackButton>

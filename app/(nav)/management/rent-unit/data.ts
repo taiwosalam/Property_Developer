@@ -1,9 +1,11 @@
 import { getAllStates } from "@/utils/states";
+import { number } from "zod";
 //
 export interface RentAndUnitState {
   gridView: boolean;
   total_pages: number;
   current_page: number;
+  last_page: number;
 }
 //
 
@@ -11,6 +13,240 @@ export const RentAndUnitFilters = [
   { label: "Single Property", value: "single-property" },
   { label: "Gated Eestate", value: "gated-estate" },
 ];
+
+export const initialState: UnitPageState = {
+  total_unit: 1,
+  total_occupied: 0,
+  total_vacant: 2,
+  total_active: 0,
+  total_expired: 0,
+  total_relocate: 0,
+  month_unit: 2,
+  month_occupied: 0,
+  month_vacant: 2,
+  month_active: 0,
+  month_expired: 0,
+  month_relocate: 0,
+  unit: [],
+};
+
+export interface UnitPageState {
+  total_unit: number;
+  total_occupied: number;
+  total_vacant: number;
+  total_active: number;
+  total_expired: number;
+  total_relocate: number;
+  month_unit: number;
+  month_occupied: number;
+  month_vacant: number;
+  month_active: number;
+  month_expired: number;
+  month_relocate: number;
+  unit: RentalPropertyCardProps[];
+}
+
+export interface UnitApiResponse {
+  data: {
+    total_unit: number;
+    total_occupied: number;
+    total_vacant: number;
+    total_active: number;
+    total_expired: number;
+    total_relocate: number;
+    month_unit: number;
+    month_occupied: number;
+    month_vacant: number;
+    month_active: number;
+    month_expired: number;
+    month_relocate: number;
+    unit: {
+      current_page: number;
+      last_page: number;
+      data: UnitDataObject[];
+    };
+  };
+}
+
+
+export interface UnitFilterResponse {
+  data: {
+    current_page: number;
+    last_page: number;
+    data: UnitDataObject[];
+  };
+}
+
+export const transformRentUnitApiResponse = (
+  response: UnitApiResponse | UnitFilterResponse
+): Partial<UnitPageState> => {
+  const isUnitApiResponse = (
+    response: any
+  ): response is UnitApiResponse => {
+    return "total_unit" in response.data;
+  };
+
+  const unitData = isUnitApiResponse(response)
+    ? response.data.unit
+    : response.data;
+
+  // console.log("Response received:", response);
+  // console.log("unit data", unitData)
+
+  const transformedUnits: RentalPropertyCardProps[] = unitData.data.map(
+    (u) => {
+      return {
+        unitId: u.id.toString(),
+        unit_title: u.property.title,
+        unit_type: u.unit_type,
+        tenant_name: "No Tenant", //TODO
+        expiry_date: "No Expiry", //TODO
+        rent: u.fee_amount,
+        caution_deposit: u.caution_fee,
+        service_charge: u.service_charge,
+        images: u.images.map((image) => image.path),
+        unit_name: u.unit_name,
+        caution_fee: u.caution_fee,
+        status: u.is_active,
+        propertyType: u.property.property_type as "rental" | "facility",
+        address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
+      };
+    }
+  );
+
+  console.log("Transformed unit data", transformedUnits)
+  if (isUnitApiResponse(response)) {
+    // console.log("isUnitApiResponse", response)
+    return {
+      total_unit: response.data.total_unit,
+      total_occupied: response.data.total_occupied,
+      total_vacant: response.data.total_vacant,
+      total_active: response.data.total_active,
+      total_expired: response.data.month_expired,
+      total_relocate: response.data.total_relocate,
+      month_unit: response.data.month_unit,
+      month_occupied: response.data.month_occupied,
+      month_vacant: response.data.month_vacant,
+      month_active: response.data.month_active,
+      month_expired: response.data.month_expired,
+      unit: transformedUnits,
+    };
+  } else {
+    return {
+      unit: transformedUnits,
+    };
+  }
+};
+
+
+export interface UnitDataObject {
+  id: number;
+  user_id: string;
+  property_id: number;
+  unit_name: string;
+  unit_type: string;
+  unit_sub_type: string;
+  unit_preference: string;
+  measurement: string;
+  bedroom: string;
+  bathroom: string;
+  toilet: number;
+  facilities: string[];
+  en_suit: number;
+  prepaid: number;
+  wardrobe: number;
+  pet_allowed: number;
+  total_area_sqm: string;
+  number_of: string;
+  fee_period: string;
+  fee_amount: string;
+  security_fee: string | null;
+  service_charge: string;
+  agency_fee: string;
+  legal_fee: string;
+  caution_fee: string;
+  inspection_fee: string;
+  management_fee: string | null;
+  other_charge: string | null;
+  negotiation: number;
+  total_package: string;
+  renew_fee_period: string;
+  renew_fee_amount: string;
+  renew_service_charge: string;
+  renew_other_charge: string | null;
+  renew_total_package: string;
+  is_active: string;
+  published: number;
+  status: string;
+  reject_reason: string | null;
+  created_at: string;
+  updated_at: string;
+  images_count: number;
+  images: {
+    id: string;
+    path: string;
+  }[];
+  property: Property;
+  user: User;
+}
+
+
+export interface Property {
+  id: number;
+  video_link: string;
+  title: string;
+  state: string;
+  local_government: string;
+  city_area: string;
+  full_address: string;
+  category: string;
+  description: string;
+  property_type: string;
+  branch_id: number;
+  inventory_id: number | null;
+  land_lord_id: number | null;
+  user_id: number;
+  company_id: number;
+  agency_fee: number;
+  who_to_charge_new_tenant: string;
+  who_to_charge_renew_tenant: string;
+  caution_deposit: string;
+  group_chat: number;
+  rent_penalty: number;
+  fee_penalty: number;
+  request_call_back: number;
+  book_visitors: number;
+  vehicle_record: number;
+  active_vat: number;
+  currency: string;
+  coordinate: string | null;
+  management_fee: number;
+  fee_period: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface User {
+  id: number;
+  encodedId: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  username: string | null;
+  referrer_code: string | null;
+  email_verified_at: string;
+  phone_verified_at: string | null;
+  username_updated_at: string | null;
+  is_active: number;
+  is_company_owner: number;
+  tier_id: number;
+  deleted_at: string | null;
+  created_at: string;
+  updated_at: string;
+  provider_id: string | null;
+  provider_name: string | null;
+}
+
 
 export interface RentUnitFilterParams {
   date_from?: string;
@@ -25,7 +261,7 @@ export interface RentUnitFilterParams {
 
 export interface RentalPropertyCardProps {
   propertyType: "rental" | "facility";
-  images: { path: string }[];
+  images: string[];
   unitId: string;
   unit_title: string;
   unit_name: string;
@@ -36,7 +272,8 @@ export interface RentalPropertyCardProps {
   caution_deposit: string;
   service_charge: string;
   status: string;
-  property_type: string;
+  property_type?: string;
+  is_active?: string;
 }
 
 const allStates = getAllStates() || [];
@@ -107,11 +344,20 @@ export const initialRentUnitPageData: RentUnitPageData = {
     month_expired: 0,
     month_relocate: 0,
   },
+  unit: {
+    current_page: 1,
+    last_page: 1,
+  },
   unit_data: [],
+
 }
 
 export interface RentUnitPageData {
   stats: StatsData;
+  unit: {
+    current_page: number;
+    last_page: number;
+  };
   unit_data: UnitData[];
 }
 
@@ -144,16 +390,14 @@ export interface RentUnitApiResponse {
     month_active: number;
     month_expired: number;
     month_relocate: number;
+    pagination: {
+      current_page: number;
+      last_page: number;
+    };
     unit: UnitData;
   };
 }
 
-
-interface PaginationLink {
-  url: string | null;
-  label: string;
-  active: boolean;
-}
 
 export interface RentUnitRequestParams {
   page?: number;
@@ -174,253 +418,364 @@ export interface RentUnitFilterResponse {
   }
 }
 
-export const transformRentUnitApiResponse = (
-  response: RentUnitApiResponse | RentUnitFilterResponse
-): Partial<RentUnitPageData> => {
-  // Check if response is RentUnitApiResponse by the presence of `total_unit`
-  const isRentUnitApiResponse = (response: any): response is RentUnitApiResponse => {
-    const result = response.data && !("total_unit" in response.data);
-    return result;
-  };
 
-
-  // Extract unit data based on the type of response
-  const unitData = isRentUnitApiResponse(response)
-    ? response.data.data // For RentUnitApiResponse
-    : response.data.unit.data; // For RentUnitFilterResponse
-
-  // Map through unit data
-  const transformedUnits = unitData.map((unit: UnitData) => {
-    const transformedUnit = {
-      propertyType: unit.property.property_type,
-      images: unit.images,
-      unitId: unit.id,
-      unit_title: unit.property.title,
-      unit_name: unit.unit_name,
-      unit_type: unit.unit_type,
-      tenant_name: unit.tenant_name || "No Tenant",
-      expiry_date: unit.expiry_date || "No Expiry",
-      rent: unit.fee_amount,
-      caution_deposit: unit.caution_fee,
-      service_charge: unit.service_charge,
-      status: unit.is_active,
-      property_type: unit.property.property_type,
-    };
-    return transformedUnit;
-  });
-
-  // Extract stats if it is RentUnitApiResponse
-  const stats = !isRentUnitApiResponse(response)
-    ? {
-      total_unit: response.data.total_unit,
-      total_occupied: response.data.total_occupied,
-      total_vacant: response.data.total_vacant,
-      total_active: response.data.total_active,
-      total_expired: response.data.total_expired,
-      total_relocate: response.data.total_relocate,
-      month_unit: response.data.month_unit,
-      month_occupied: response.data.month_occupied,
-      month_vacant: response.data.month_vacant,
-      month_active: response.data.month_active,
-      month_expired: response.data.month_expired,
-      month_relocate: response.data.month_relocate,
-    }
-    : undefined; // No stats for RentUnitFilterResponse
-
-  console.log("Extracted stats:", stats);
-
-  return {
-    stats,
-    unit_data: transformedUnits,
-  };
-};
-
-
-export interface InitialSingleUnitProps {
-  current_page: number;
-  data: {
-    unit_id: number;
-    unit_name: string;
-    address: string;
-    images: {
-      id: string;
-      path: string;
-    }[];
-    unit_category: string;
-    unit_preference: string;
-    unit_type: string;
-    unit_sub_type: string;
-    state: string;
-    local_government: string;
-    account_officer: string;
-    tenant_name: string;
-    unit_features: [];
-  }
-}
-
+// SINGLE UNIT 
 
 export const initialSingleData: InitialSingleUnitProps = {
-  current_page: 1,
+  data: [
+    {
+      title: "",
+      unit_id: "",
+      location: "",
+      unit_name: "",
+      address: "",
+      categories: "",
+      unitNumber: "",
+      unitPreference: "",
+      unitType: "",
+      unitSubType: "",
+      state: "",
+      localGovernment: "",
+      accountOfficer: "",
+      bedrooms: "",
+      bathrooms: "",
+      toilets: "",
+      fee_amount: "",
+      newTenantPrice: "",
+      newTenantTotalPrice: "",
+      renewalTenantPrice: "",
+      renewalTenantTotalPrice: "",
+      fee_period: "",
+      renew_fee_period: "",
+      images: [],
+      agency_fee: "",
+      branchName: "",
+      whoToCharge: "",
+      group_chat: 0,
+      rent_penalty: 0,
+      caution_deposit: "",
+    }
+  ]
+}
+
+
+export interface pageInitialObject {
+  title: string;
+  unit_id: string;
+  location: string;
+  unit_name: string;
+  address: string;
+  categories: string;
+  unitNumber: string;
+  unitPreference: string;
+  unitType: string;
+  unitSubType: string;
+  state: string;
+  localGovernment: string;
+  accountOfficer: string;
+  bedrooms: string;
+  bathrooms: string;
+  toilets: string;
+  fee_amount: string;
+  newTenantPrice: string;
+  newTenantTotalPrice: string;
+  renewalTenantPrice: string;
+  renewalTenantTotalPrice: string;
+  fee_period: string;
+  renew_fee_period: string;
+  images: [];
+  agency_fee?: string;
+  branchName?: string;
+  whoToCharge?: string;
+  group_chat?: number;
+  rent_penalty?: number;
+  caution_deposit?: string;
+}
+
+export interface InitialSingleUnitProps {
+  data: pageInitialObject[];
+}
+
+export const InitialSingleUnit = {
+  title: "",
+  unit_id: "",
+  location: "",
+  unit_name: "",
+  address: "",
+  categories: "",
+  unitNumber: "",
+  unitPreference: "",
+  unitType: "",
+  unitSubType: "",
+  state: "",
+  localGovernment: "",
+  accountOfficer: "",
+  bedrooms: "",
+  bathrooms: "",
+  toilets: "",
+  fee_amount: "",
+  newTenantPrice: "",
+  newTenantTotalPrice: "",
+  renewalTenantPrice: "",
+  renewalTenantTotalPrice: "",
+  fee_period: "",
+  renew_fee_period: "",
+  images: [],
+  agency_fee: "",
+  branchName: "",
+  WhoToCharge: "",
+  group_chat: 0,
+  rent_penalty: 0,
+  caution_deposit: "",
+}
+
+export interface singleDataObject {
+  unit_id: string;
+  unit_name: string;
+  address: string;
+  images: {
+    id: string;
+    path: string;
+  }[];
+  unit_category: string;
+  unit_preference: string;
+  unit_type: string;
+  unit_sub_type: string;
+  state: string;
+  local_government: string;
+  account_officer: string;
+  tenant_name: string;
+  unit_features: [];
+  total_package: string;
+  renew_total_package: string;
+  renew_fee_period: string;
+  renew_fee_amount: string;
+  renew_service_charge: string;
+  renew_other_charge: string;
+  bedroom: number;
+  bathroom: number;
+  toilet: number;
+  en_suit: number;
+  prepaid: number;
+  wardrobe: number;
+  agency_fee: string;
+  branchName?: string;
+  WhoToCharge?: string;
+  group_chat?: number;
+  rent_penalty?: number;
+}
+
+
+export interface singleUnitApiResponse {
   data: {
-    unit_id: 1,
-    unit_name: "",
-    address: "",
-    images: [],
-    unit_category: "",
-    unit_preference: "",
-    unit_type: "",
-    unit_sub_type: "",
-    state: "",
-    local_government: "",
-    account_officer: "",
-    tenant_name: "",
-    unit_features: [],
+    current_page: string | number;
+    data: Array<{
+      id: number;
+      user_id: number;
+      property_id: number;
+      unit_name: string;
+      unit_type: string;
+      unit_sub_type: string;
+      unit_preference: string;
+      measurement: string;
+      bedroom: string;
+      bathroom: string;
+      toilet: number;
+      facilities: string[];
+      en_suit: number;
+      prepaid: number;
+      wardrobe: number;
+      pet_allowed: number;
+      total_area_sqm: string;
+      number_of: number;
+      fee_period: string;
+      fee_amount: string;
+      security_fee: string | null;
+      service_charge: string;
+      agency_fee: string;
+      legal_fee: string;
+      caution_fee: string;
+      inspection_fee: string;
+      management_fee: string | null;
+      other_charge: string | null;
+      negotiation: number;
+      total_package: string;
+      renew_fee_period: string;
+      renew_fee_amount: string;
+      renew_service_charge: string;
+      renew_other_charge: string | null;
+      renew_total_package: string;
+      is_active: string;
+      status: string;
+      reject_reason: string | null;
+      created_at: string;
+      updated_at: string;
+      images: Array<{
+        id: number;
+        path: string;
+        mediaable_type: string;
+        mediaable_id: number;
+        created_at: string;
+        updated_at: string;
+      }>;
+      property: {
+        id: number;
+        video_link: string;
+        title: string;
+        state: string;
+        local_government: string;
+        city_area: string;
+        full_address: string;
+        category: string;
+        description: string;
+        property_type: string;
+        branch_id: number;
+        inventory_id: number | null;
+        land_lord_id: number;
+        user_id: number;
+        company_id: number;
+        agency_fee: number;
+        who_to_charge_new_tenant: string;
+        who_to_charge_renew_tenant: string;
+        caution_deposit: string;
+        group_chat: number;
+        rent_penalty: number;
+        fee_penalty: number;
+        request_call_back: number;
+        book_visitors: number;
+        vehicle_record: number;
+        active_vat: number;
+        currency: string;
+        coordinate: string | null;
+        management_fee: number;
+        fee_period: string | null;
+        created_at: string;
+        updated_at: string;
+        branch: {
+          branch_name: string;
+        }
+      };
+      user: {
+        id: number;
+        encodedId: string;
+        name: string;
+        email: string;
+        phone: string | null;
+        username: string | null;
+        referrer_code: string | null;
+        email_verified_at: string;
+        phone_verified_at: string | null;
+        username_updated_at: string | null;
+        is_active: number;
+        is_company_owner: number;
+        tier_id: number;
+        deleted_at: string | null;
+        created_at: string;
+        updated_at: string;
+        provider_id: number | null;
+        provider_name: string | null;
+      };
+    }>;
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: Array<{
+      url: string | null;
+      label: string;
+      active: boolean;
+    }>;
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number;
+    total: number;
   }
 }
 
-export interface singleUnitApiResponse {
-  current_page: number;
-  data: Array<{
-    id: number;
-    user_id: number;
-    property_id: number;
-    unit_name: string;
-    unit_type: string;
-    unit_sub_type: string;
-    unit_preference: string;
-    measurement: string;
-    bedroom: string;
-    bathroom: string;
-    toilet: number;
-    facilities: string[];
-    en_suit: number;
-    prepaid: number;
-    wardrobe: number;
-    pet_allowed: number;
-    total_area_sqm: string;
-    number_of: number;
-    fee_period: string;
-    fee_amount: string;
-    security_fee: string | null;
-    service_charge: string;
-    agency_fee: string;
-    legal_fee: string;
-    caution_fee: string;
-    inspection_fee: string;
-    management_fee: string | null;
-    other_charge: string | null;
-    negotiation: number;
-    total_package: string;
-    renew_fee_period: string;
-    renew_fee_amount: string;
-    renew_service_charge: string;
-    renew_other_charge: string | null;
-    renew_total_package: string;
-    is_active: string;
-    status: string;
-    reject_reason: string | null;
-    created_at: string;
-    updated_at: string;
-    images: Array<{
-      id: number;
-      path: string;
-      mediaable_type: string;
-      mediaable_id: number;
-      created_at: string;
-      updated_at: string;
-    }>;
-    property: {
-      id: number;
-      video_link: string;
-      title: string;
-      state: string;
-      local_government: string;
-      city_area: string;
-      full_address: string;
-      category: string;
-      description: string;
-      property_type: string;
-      branch_id: number;
-      inventory_id: number | null;
-      land_lord_id: number;
-      user_id: number;
-      company_id: number;
-      agency_fee: number;
-      who_to_charge_new_tenant: string;
-      who_to_charge_renew_tenant: string;
-      caution_deposit: string;
-      group_chat: number;
-      rent_penalty: number;
-      fee_penalty: number;
-      request_call_back: number;
-      book_visitors: number;
-      vehicle_record: number;
-      active_vat: number;
-      currency: string;
-      coordinate: string | null;
-      management_fee: number;
-      fee_period: string | null;
-      created_at: string;
-      updated_at: string;
-    };
-    user: {
-      id: number;
-      encodedId: string;
-      name: string;
-      email: string;
-      phone: string | null;
-      username: string | null;
-      referrer_code: string | null;
-      email_verified_at: string;
-      phone_verified_at: string | null;
-      username_updated_at: string | null;
-      is_active: number;
-      is_company_owner: number;
-      tier_id: number;
-      deleted_at: string | null;
-      created_at: string;
-      updated_at: string;
-      provider_id: number | null;
-      provider_name: string | null;
-    };
-  }>;
-  first_page_url: string;
-  from: number;
-  last_page: number;
-  last_page_url: string;
-  links: Array<{
-    url: string | null;
-    label: string;
-    active: boolean;
-  }>;
-  next_page_url: string | null;
-  path: string;
-  per_page: number;
-  prev_page_url: string | null;
-  to: number;
-  total: number;
+export interface UnitDetails {
+  unit_id: string;
+  title: string;
+  unit_name: string;
+  address: string;
+  location: string;
+  categories: string;
+  unitNumber: string;
+  unitPreference: string;
+  unitType: string;
+  unitSubType: string;
+  state: string;
+  localGovernment: string;
+  accountOfficer: string;
+  bedrooms: string;
+  bathrooms: string;
+  toilets: string;
+  newTenantPrice: string;
+  newTenantTotalPrice: string;
+  renewalTenantPrice: string;
+  renewalTenantTotalPrice: string;
+  fee_amount: string;
+  images: string[];
+  fee_period: string;
+  renew_fee_period: string;
+  who_to_charge_new_tenant: string;
+  property?: {
+    branch?: {
+      branch_name?: string;
+    }
+  }
 }
 
 export const transformSingleUnitData = (
   response: singleUnitApiResponse
 ): InitialSingleUnitProps => {
   const data = response.data;
+  // console.log("res", response)
+  // console.log("single response", data)
   return {
-    current_page: data.current_page,
     data: data.data.map(unit => ({
+      title: unit.property.title,
       unit_id: unit.id,
-      unit_name: unit.unit_name,
+      unit_name: `${unit.unit_name} ${unit.unit_type}`,
       address: unit.property.full_address,
-      images: unit.images.map(image => ({ id: image.id.toString(), path: image.path })),
-      unit_category: unit.property.category,
-      unit_preference: unit.unit_preference,
-      unit_type: unit.unit_type,
-      unit_sub_type: unit.unit_sub_type,
+      unitNumber: "",
+      images: unit.images.map((image) => image.path),
+      categories: unit.property.category,
+      unitPreference: unit.unit_preference,
+      unitType: unit.unit_type,
+      unitSubType: unit.unit_sub_type,
       state: unit.property.state,
-      local_government: unit.property.local_government,
-      account_officer: "", // Assuming this needs to be filled in later
+      localGovernment: unit.property.local_government,
+      accountOfficer: "",
+      bedrooms: unit.bedroom,
+      bathrooms: unit.bathroom,
+      toilets: unit.toilet,
       tenant_name: unit.user.name,
-      unit_features: [], 
+      unit_features: unit.facilities,
+      newTenantTotalPrice: unit.total_package,
+      newTenantPrice: unit.fee_amount,
+      renewalTenantTotalPrice: unit.renew_total_package,
+      renew_fee_period: unit.renew_fee_period,
+      renewalTenantPrice: unit.renew_fee_amount,
+      renew_service_charge: unit.renew_service_charge,
+      renew_other_charge: unit.renew_other_charge,
+      en_suit: unit.en_suit,
+      prepaid: unit.prepaid,
+      wardrobe: unit.wardrobe,
+      fee_period: unit.fee_period,
+      branchName: unit.property.branch.branch_name,
+      agency_fee: unit.agency_fee,
+      whoToCharge: unit.property.who_to_charge_new_tenant,
+      group_chat: convertToYesNo(unit.property.group_chat),
+      rent_penalty: convertToYesNo(unit.property.rent_penalty),
+      caution_deposit: unit.property.caution_deposit,
+      location: "",
+      fee_amount: "",
     }))
   };
 };
+
+export function convertToYesNo(value: number): string {
+  return value === 1 ? "Yes" : "No";
+}

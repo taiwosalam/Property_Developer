@@ -33,13 +33,11 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
             Unit ID: { unitId } {status}
           </span>
           <div className="flex items-center gap-1 flex-wrap">
-            {/* {activeStatuses.map((status) => ( */}
               <div
                 key={status}
                 className="w-4 h-4 rounded-full"
                 style={{ backgroundColor: getBackgroundColor(status) }}
               />
-            {/* ))} */}
           </div>
         </div>
         <div className="flex items-center justify-between gap-4 py-4 border-y border-gray-200 overflow-y-auto">
@@ -70,14 +68,14 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
             role="button"
           >
             <Image
-              src={images[0].path}
+              src={images[0]}
               alt="Property"
               fill
               sizes="auto"
               className="rounded-lg"
             />
             <PopupImageModal
-              images={images.map((image) => ({ src: image.path, isVideo: false }))}
+              images={images.map((image) => ({ src: image, isVideo: false }))}
               isOpen={isOpened}
               onClose={() => setIsOpened(false)}
             />

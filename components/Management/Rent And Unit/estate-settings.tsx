@@ -11,7 +11,7 @@ const EstateSettings = ({
   gridThree,
 }: {
   title: string;
-  estateSettingsDta: { label: string; value: string }[];
+  estateSettingsDta: { label: string; value?: string }[];
   gridThree?: boolean;
 }) => {
   return (

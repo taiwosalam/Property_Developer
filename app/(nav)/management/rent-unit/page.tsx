@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import {
   initialRentUnitPageData,
+  initialState,
   RentAndUnitFilters,
   RentAndUnitFiltersWithDropdown,
   RentAndUnitState,
@@ -11,6 +12,9 @@ import {
   RentUnitPageData,
   RentUnitRequestParams,
   transformRentUnitApiResponse,
+  UnitApiResponse,
+  UnitFilterResponse,
+  UnitPageState,
 } from "./data";
 import StatusIndicator from "@/components/Management/status-indicator";
 import Pagination from "@/components/Pagination/pagination";
@@ -27,24 +31,42 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import dayjs from "dayjs";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import { ExclamationMark } from "@/public/icons/icons";
 
 const RentAndUnit = () => {
   const view = useView();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
-  const [pageData, setPageData] = useState<RentUnitPageData>(initialRentUnitPageData);
+  const [pageData, setPageData] = useState<UnitPageState>(initialState);
+
+  const {
+    total_unit,
+    total_occupied,
+    total_vacant,
+    total_active,
+    total_expired,
+    total_relocate,
+    month_unit,
+    month_occupied,
+    month_vacant,
+    month_active,
+    month_expired,
+    month_relocate,
+    unit: [],
+  } = pageData;
+
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
   );
-
-
-
   const [state, setState] = useState<RentAndUnitState>({
     gridView: selectedView === "grid",
-    total_pages: 5,
+    total_pages: 1,
     current_page: 1,
+    last_page: 1,
   });
 
-  const { gridView, total_pages, current_page } = state;
+
+  const { gridView, total_pages, current_page, last_page } = state;
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -117,16 +139,18 @@ const RentAndUnit = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<RentUnitApiResponse>(endpoint, config);
+  } = useFetch<UnitApiResponse | UnitFilterResponse>(endpoint, config);
 
   useEffect(() => {
     if (apiData) {
-      setPageData((x) => ({
-        ...x,
-        ...transformRentUnitApiResponse(apiData),
+      setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData) }));
+      setState((prevState) => ({
+        ...prevState,
+        // current_page: apiData.data.unit?.current_page,
+        // last_page: apiData.data.unit?.last_page,
       }));
     }
-  }, [apiData])
+  }, [apiData]);
   // Listen for the refetch event
   useRefetchOnEvent("refetchRentUnit", () => refetch({ silent: true }));
 
@@ -166,29 +190,29 @@ const RentAndUnit = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total Units"
-          newData={pageData?.stats?.month_unit}
-          total={pageData?.stats?.total_unit}
+          newData={pageData?.month_unit}
+          total={pageData?.total_unit}
           className="w-[240px]"
           colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Occupied Units"
-          newData={pageData?.stats?.month_occupied}
-          total={pageData?.stats?.total_occupied}
+          newData={pageData?.month_occupied}
+          total={pageData?.total_occupied}
           className="w-[240px]"
           colorScheme={2}
         />
         <ManagementStatistcsCard
           title="Vacannt Units"
-          newData={pageData?.stats?.month_vacant}
-          total={pageData?.stats?.total_vacant}
+          newData={pageData?.month_vacant}
+          total={pageData?.total_vacant}
           className="w-[240px]"
           colorScheme={3}
         />
         <ManagementStatistcsCard
           title="Expired Units"
-          newData={pageData?.stats?.month_expired}
-          total={pageData?.stats?.total_expired}
+          newData={pageData?.month_expired}
+          total={pageData?.total_expired}
           className="w-[240px]"
           colorScheme={4}
         />
@@ -213,65 +237,108 @@ const RentAndUnit = () => {
         filterOptions={RentAndUnitFilters}
         filterOptionsMenu={RentAndUnitFiltersWithDropdown}
       />
-      <section className="capitalize space-y-4 px-4 w-full">
-        <div className="w-full flex items-center justify-end">
-          <div className="flex gap-4 flex-wrap">
-            <StatusIndicator statusTitle="vacant" />
-            <StatusIndicator statusTitle="occupied" />
-            <StatusIndicator statusTitle="active" />
-            <StatusIndicator statusTitle="expired" />
-            <StatusIndicator statusTitle="relocate" />
-          </div>
-        </div>
-        {view === "grid" || gridView ? (
-          <AutoResizingGrid minWidth={315}>
-            {pageData?.unit_data?.map((unit, index) => (
-              <RentalPropertyCard
-                key={index}
-                propertyType={unit.property_type as 'rental' | 'facility'}
-                unitId={unit.unitId || ""}
-                images={unit.images}
-                unit_title={unit.unit_title}
-                unit_name={unit.unit_name}
-                unit_type={unit.unit_type}
-                tenant_name={unit.tenant_name || ""}
-                expiry_date={unit.expiry_date || ""}
-                rent={unit.rent || ""}
-                caution_deposit={unit.caution_deposit || ""}
-                service_charge={unit.service_charge}
-                status={unit.is_active}
-                property_type={unit.property_type || ""}
-              />
-            ))}
-          </AutoResizingGrid>
+      <section className="capitalize">
+        {pageData?.unit.length === 0 && !silentLoading ? (
+          isFilterApplied() || search ? (
+            <div className="col-span-full text-center py-8 text-gray-500">
+              No Search/Filter Result Found
+            </div>
+          ) : (
+            <EmptyList
+              buttonText="Create New Unit"
+              buttonLink="/management/rent-unit/create"
+              title="No Unit Found"
+              body={
+                <p>
+                  You can create a Unit by clicking on the &quot;Add
+                  Property&quot; button. You can create two types of properties:
+                  rental and facility properties. Rental properties are mainly
+                  tailored for managing properties for rent, including landlord
+                  and tenant management processes. Facility properties are
+                  designed for managing occupants in gated estates, overseeing
+                  their due payments, visitor access, and vehicle records.{" "}
+                  <br />
+                  <br />
+                  Once a property is added to this page, this guide will
+                  disappear. To learn more about this page in the future, you
+                  can click on this icon{" "}
+                  <span className="inline-block text-brand-10 align-text-top">
+                    <ExclamationMark />
+                  </span>{" "}
+                  at the top left of the dashboard page.
+                  <br />
+                  <br />
+                  Property creation involves several segments: property
+                  settings, details, what to showcase on the dashboard or user
+                  app, unit creation, permissions, and assigning staff.
+                </p>
+              }
+            />
+          )
         ) : (
-          <div className="space-y-4">
-            {pageData?.unit_data?.map((unit, index) => (
-              <RentalPropertyListCard
-                key={index}
-                propertyType={unit.property_type as 'rental' | 'facility'}
-                unitId={unit.unitId || ""}
-                images={unit.images}
-                unit_title={unit.unit_title}
-                unit_name={unit.unit_name}
-                unit_type={unit.unit_type}
-                tenant_name={unit.tenant_name || ""}
-                expiry_date={unit.expiry_date || ""}
-                rent={unit.rent || ""}
-                caution_deposit={unit.caution_deposit || ""}
-                service_charge={unit.service_charge}
-                status={unit.is_active}
-                property_type={unit.property_type || ""}
-              />
-            ))}
-          </div>
+          <>
+            <section className="capitalize space-y-4 px-4 w-full">
+              <div className="w-full flex items-center justify-end">
+                <div className="flex gap-4 flex-wrap">
+                  <StatusIndicator statusTitle="vacant" />
+                  <StatusIndicator statusTitle="occupied" />
+                  <StatusIndicator statusTitle="active" />
+                  <StatusIndicator statusTitle="expired" />
+                  <StatusIndicator statusTitle="relocate" />
+                </div>
+              </div>
+              {view === "grid" || gridView ? (
+                <AutoResizingGrid minWidth={315}>
+                  {pageData?.unit.map((unit, index) => (
+                    <RentalPropertyCard
+                      key={index}
+                      propertyType={unit.propertyType as 'rental' | 'facility'}
+                      unitId={unit.unitId || ""}
+                      images={unit.images}
+                      unit_title={unit.unit_title}
+                      unit_name={unit.unit_name}
+                      unit_type={unit.unit_type}
+                      tenant_name={unit.tenant_name || ""}
+                      expiry_date={unit.expiry_date || ""}
+                      rent={unit.rent || ""}
+                      caution_deposit={unit.caution_deposit || ""}
+                      service_charge={unit.service_charge}
+                      status={unit.status || ""}
+                      property_type={unit.propertyType || ""}
+                    />
+                  ))}
+                </AutoResizingGrid>
+              ) : (
+                <div className="space-y-4">
+                  {pageData?.unit.map((unit, index) => (
+                    <RentalPropertyListCard
+                      key={index}
+                      propertyType={unit.propertyType as 'rental' | 'facility'}
+                      unitId={unit.unitId || ""}
+                      images={unit.images}
+                      unit_title={unit.unit_title}
+                      unit_name={unit.unit_name}
+                      unit_type={unit.unit_type}
+                      tenant_name={unit.tenant_name || ""}
+                      expiry_date={unit.expiry_date || ""}
+                      rent={unit.rent || ""}
+                      caution_deposit={unit.caution_deposit || ""}
+                      service_charge={unit.service_charge}
+                      status={unit.status || ""}
+                      property_type={unit.propertyType || ""}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+            <Pagination
+              totalPages={last_page}
+              currentPage={current_page}
+              onPageChange={handlePageChange}
+            />
+          </>
         )}
       </section>
-      <Pagination
-        totalPages={total_pages}
-        currentPage={current_page}
-        onPageChange={handlePageChange}
-      />
     </div>
   );
 };
