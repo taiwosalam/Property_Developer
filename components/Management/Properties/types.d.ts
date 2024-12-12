@@ -39,7 +39,7 @@ export interface StaffData {
   picture_url: string | null;
 }
 
-export interface PropertyFormStateType {
+export interface  PropertyFormStateType {
   state: string;
   city: string;
   lga: string;

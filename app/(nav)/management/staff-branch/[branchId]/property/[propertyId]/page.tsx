@@ -12,8 +12,8 @@ const BranchPPropertyPreview = () => {
         // "/empty/SampleProperty5.jpg",
       ]}
       address="123 Main St"
-      annual_income={1000000}
-      annual_returns={1000000}
+      total_income={1000000}
+      total_returns={1000000}
       total_units={1}
       property_name="Property 1"
       category="facility"

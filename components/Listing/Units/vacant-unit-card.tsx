@@ -17,7 +17,6 @@ import UnitPublishModal from "./unit-publish-modal";
 import Switch from "@/components/Form/Switch/switch";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { SectionSeparator } from "@/components/Section/section-components";
-import { unit_card_data_props } from "@/components/Management/Properties/data";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import Link from "next/link";
 import UnitSponsorPopover from "./unit-sponsor-popover";
@@ -47,7 +46,13 @@ const VacantUnitCard = () => {
             <div className="custom-flex-col flex-1 gap-2">
               <div className="flex">
                 <KeyValueList
-                  referenceObject={unit_card_data_props}
+                  referenceObject={{
+                    unit_details: "",
+                    "unit no/name": "",
+                    rent: "",
+                    caution_deposit: "",
+                    service_charge: "",
+                  }}
                   data={{}}
                 />
               </div>
