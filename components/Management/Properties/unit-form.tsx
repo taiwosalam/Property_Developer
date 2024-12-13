@@ -219,7 +219,15 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
         >
           {!props.empty && props.isEditing && (
             <>
-              <p className="text-brand-9 font-semibold">Edit Unit</p>
+              <div className="flex justify-between items-center">
+                <p className="text-brand-9 font-semibold">Edit Unit</p>
+                <EditUnitActions
+                  handleCancel={() => {
+                    resetForm();
+                    props.setIsEditing(false);
+                  }}
+                />
+              </div>
               <hr className="!my-4 border-none bg-borders-dark h-[2px]" />
             </>
           )}

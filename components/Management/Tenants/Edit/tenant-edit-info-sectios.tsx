@@ -552,16 +552,13 @@ export const TenantEditAttachmentSection = () => {
   };
 
   const handleDeleteDocument = (fileId: string) => {
-    setDocuments((prev) => {
-      const updatedDocuments = prev.filter((doc) => doc.id !== fileId);
-      const documentToRemove = prev.find((doc) => doc.id === fileId);
-      // Add the document's link to urlsToRemove if it doesn't have a file property
-      if (documentToRemove && !documentToRemove.file && documentToRemove.link) {
-        setUrlsToRemove((prevUrls) => [...prevUrls, documentToRemove.link]);
-      }
+    const documentToRemove = documents.find((doc) => doc.id === fileId);
 
-      return updatedDocuments;
-    });
+    if (documentToRemove && !documentToRemove.file && documentToRemove.link) {
+      setUrlsToRemove((prevUrls) => [...prevUrls, documentToRemove.link]);
+    }
+
+    setDocuments((prev) => prev.filter((doc) => doc.id !== fileId));
   };
 
   const handleUpdateButtonClick = async () => {

@@ -8,6 +8,7 @@ const initialState = {
   propertyType: null,
   propertyDetails: null,
   propertySettings: null,
+  canDelete: false,
   addedUnits: [],
 };
 
@@ -48,6 +49,7 @@ interface PropertySettings {
 export interface AddUnitStore {
   property_id: string | null;
   propertyType: PropertyType;
+  canDelete: boolean;
   propertyDetails: null | PropertyDetails;
   propertySettings: null | PropertySettings;
   addedUnits: (UnitDataObject & { notYetUploaded?: boolean })[];

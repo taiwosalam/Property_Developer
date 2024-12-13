@@ -128,11 +128,11 @@ export const uploadDocuments = async (
 
 export const removeDocuments = async (
   urlsToRemove: string[],
-  landlordId: string
+  tenantId: string
 ) => {
   const payload: RemoveFilePayload = { remove_files: urlsToRemove };
   try {
-    await api.post(`/landlords/${landlordId}/attach-documents`, payload);
+    await api.post(`/tenant/${tenantId}/attach-documents`, payload);
     return true;
   } catch (error) {
     return false;
