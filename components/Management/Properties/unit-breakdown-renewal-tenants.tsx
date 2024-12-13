@@ -100,7 +100,7 @@ const UnitBreakdownRenewalTenant = () => {
           inputContainerClassName="bg-white"
           hiddenInputClassName="unit-form-input"
           resetKey={formResetKey}
-          defaultValue={unitData?.renew_fee_period}
+          defaultValue={unitData?.renew_fee_period || "yearly"}
         />
         <Input
           id="renew_fee_amount"

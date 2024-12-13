@@ -6,7 +6,7 @@ export const property_form_state_data: PropertyFormStateType = {
   state: "",
   city: "",
   lga: "",
-  selectedBranch: "",
+  selectedBranch: { value: "", label: "" },
   staff: [],
   staffOptions: [],
   accountOfficerOptions: [],
@@ -82,11 +82,17 @@ export const transformUnitFormData = (
   images: (File | string)[],
   property_id: string
 ) => {
-  const parseFee = (value: string | undefined): number | null => {
+  const parseFee = (value: string | undefined) => {
     if (!value) {
       return null;
     }
     return parseFloat(value.replace(/,/g, ""));
+  };
+
+  const parseIntOrNull = (value: string | undefined | null) => {
+    if (value === "" || value === null || value === undefined) return null;
+    const parsed = parseInt(value, 10);
+    return isNaN(parsed) ? null : parsed;
   };
 
   const payload = {
@@ -97,9 +103,9 @@ export const transformUnitFormData = (
     measurement: formData.measurement ?? null,
     total_area_sqm: formData.total_area_sqm ?? null,
     number_of: formData.number_of ?? null,
-    bedroom: formData.bedroom ?? null,
-    bathroom: formData.bathroom ?? null,
-    toilet: formData.toilet ?? null,
+    bedroom: parseIntOrNull(formData.bedroom),
+    bathroom: parseIntOrNull(formData.bathroom),
+    toilet: parseIntOrNull(formData.toilet),
     facilities: formData.facilities
       ? formData.facilities.split(",").map(decodeURIComponent)
       : [],

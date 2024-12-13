@@ -139,7 +139,7 @@ const UnitFeatures = () => {
             isSearchable={false}
             resetKey={formResetKey}
             hiddenInputClassName="unit-form-input"
-            defaultValue={mapNumericToYesNo(unitData?.en_suit)}
+            defaultValue={mapNumericToYesNo(unitData?.en_suit) || "no"}
           />
           <Select
             dropdownRefClassName="!w-[160px]"
@@ -151,7 +151,7 @@ const UnitFeatures = () => {
             isSearchable={false}
             resetKey={formResetKey}
             hiddenInputClassName="unit-form-input"
-            defaultValue={mapNumericToYesNo(unitData?.prepaid)}
+            defaultValue={mapNumericToYesNo(unitData?.prepaid) || "no"}
           />
           <Select
             dropdownRefClassName="!w-[160px]"
@@ -163,7 +163,7 @@ const UnitFeatures = () => {
             isSearchable={false}
             resetKey={formResetKey}
             hiddenInputClassName="unit-form-input"
-            defaultValue={mapNumericToYesNo(unitData?.wardrobe)}
+            defaultValue={mapNumericToYesNo(unitData?.wardrobe) || "no"}
           />
           <Select
             dropdownRefClassName="!w-[160px]"
@@ -175,7 +175,7 @@ const UnitFeatures = () => {
             isSearchable={false}
             resetKey={formResetKey}
             hiddenInputClassName="unit-form-input"
-            defaultValue={mapNumericToYesNo(unitData?.pet_allowed)}
+            defaultValue={mapNumericToYesNo(unitData?.pet_allowed) || "no"}
           />
         </div>
       )}

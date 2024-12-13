@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, forwardRef } from "react";
 
 // Types
 import type {
@@ -47,56 +47,62 @@ export const formDataToString = (formData: FormData) => {
 };
 
 // AuthForm Component: Handles form submission and validation
-export const AuthForm: React.FC<AuthFormProps> = ({
-  children,
-  className,
-  id,
-  onFormSubmit,
-  setValidationErrors,
-  returnType = "string",
-  skipValidation,
-}) => {
-  return (
-    <form
-      method="post"
-      encType="multipart/form-data"
-      id={id}
-      onSubmit={(e) => {
-        e.preventDefault();
+export const AuthForm = forwardRef<HTMLFormElement, AuthFormProps>(
+  (
+    {
+      children,
+      className,
+      id,
+      onFormSubmit,
+      setValidationErrors,
+      returnType = "string",
+      skipValidation,
+    },
+    ref
+  ) => {
+    return (
+      <form
+        method="post"
+        encType="multipart/form-data"
+        id={id}
+        ref={ref}
+        onSubmit={(e) => {
+          e.preventDefault();
 
-        const errors: string[] = [];
+          const errors: string[] = [];
 
-        const form = e.target as HTMLFormElement;
-        const formData = new FormData(form);
-        const data = formDataToString(formData);
+          const form = e.target as HTMLFormElement;
+          const formData = new FormData(form);
+          const data = formDataToString(formData);
 
-        if (skipValidation) {
-          // Directly submit the form data if validation is skipped
-          onFormSubmit(returnType === "form-data" ? formData : data, e);
-          return;
-        }
+          if (skipValidation) {
+            // Directly submit the form data if validation is skipped
+            onFormSubmit(returnType === "form-data" ? formData : data, e);
+            return;
+          }
 
-        const validation = validateData(data);
+          const validation = validateData(data);
 
-        if (!objectLength(validation.invalidKeys)) {
-          onFormSubmit(returnType === "form-data" ? formData : data, e);
-        } else {
-          Object.entries(validation.invalidKeys).forEach(([key, messge]) => {
-            errors.push(`${key}: ${messge}`);
-          });
+          if (!objectLength(validation.invalidKeys)) {
+            onFormSubmit(returnType === "form-data" ? formData : data, e);
+          } else {
+            Object.entries(validation.invalidKeys).forEach(([key, messge]) => {
+              errors.push(`${key}: ${messge}`);
+            });
 
-          // if (errors.length > 0)
-          //   console.warn("Validation errors:\n•", errors.join(`\n• `));
+            // if (errors.length > 0)
+            //   console.warn("Validation errors:\n•", errors.join(`\n• `));
 
-          setValidationErrors?.(validation.invalidKeys);
-        }
-      }}
-      className={className}
-    >
-      {children}
-    </form>
-  );
-};
+            setValidationErrors?.(validation.invalidKeys);
+          }
+        }}
+        className={className}
+      >
+        {children}
+      </form>
+    );
+  }
+);
 
 // Ensure to use displayName for better debugging
 AuthForm.displayName = "AuthForm";

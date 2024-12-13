@@ -67,7 +67,7 @@ export const updateTenantNote = async (id: string, payload: FormData) => {
 
 export const updateTenantPicture = async (id: string, payload: FormData) => {
   try {
-    const { data } = await api.post(`tenants/${id}/picture-update`, payload);
+    const { data } = await api.post(`tenant/${id}/picture-update`, payload);
     toast.success(data?.message || "Update successful");
     return true;
   } catch (error) {

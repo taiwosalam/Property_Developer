@@ -29,8 +29,6 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
   inputClassName,
   requiredFields,
   showProgressBar = true,
-  imagesLength,
-  minImages,
 }) => {
   const progress = useRef(0);
   const barRef = useRef<HTMLDivElement | null>(null);
@@ -69,6 +67,7 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
   };
 
   const handleInputChange = useCallback(() => {
+    // console.log("first")
     const selector = inputClassName ? `.${inputClassName}` : "input";
     const inputs = Array.from(
       containerRef.current?.querySelectorAll(selector) || []
@@ -98,17 +97,8 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     });
 
     const allRequiredFilled = allRequired.every(isInputFilled);
-    // Check if images are required and at least one image is present
-    const imagesCondition =
-      minImages && imagesLength ? imagesLength >= minImages : true;
-    setCanSubmit(allRequiredFilled && imagesCondition);
-  }, [
-    inputClassName,
-    requiredFields,
-    imagesLength,
-    minImages,
-    showProgressBar,
-  ]);
+    setCanSubmit(allRequiredFilled);
+  }, [inputClassName, requiredFields, showProgressBar]);
 
   useEffect(() => {
     const selector = inputClassName ? `.${inputClassName}` : "input";

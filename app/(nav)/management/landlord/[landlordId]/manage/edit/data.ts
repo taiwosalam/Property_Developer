@@ -19,7 +19,7 @@ export const updateLandlordNextOfKin = async (
   id: string,
   payload: FormData
 ) => {
-  payload.append("_method", "PUT");
+  // payload.append("_method", "PUT");
   try {
     const { data } = await api.post(`landlords/${id}/next-of-kins`, payload);
     toast.success(data?.message || "Update successful");

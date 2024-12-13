@@ -1,20 +1,27 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Button from "@/components/Form/Button/button";
 import Input from "@/components/Form/Input/input";
 import { useModal } from "@/components/Modal/modal";
 import { Pointer } from "@/public/icons/icons";
 import { useUnitForm } from "./unit-form-context";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 
 const FooterModal = () => {
   const { setIsOpen } = useModal();
   const { duplicate, setDuplicate, submitLoading } = useUnitForm();
   const [countPopup, setCountPopup] = useState(false);
   const [count, setCount] = useState(duplicate?.count || 1);
+  const popupRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClick(popupRef, () => setCountPopup(false));
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white py-7 px-6 shadow-lg text-center z-50">
       {countPopup && (
-        <div className="absolute top-[-90%] left-[50%] translate-x-[-50%] bg-neutral-2 p-4">
+        <div
+          ref={popupRef}
+          className="absolute top-[-90%] left-[50%] translate-x-[-50%] bg-neutral-2 p-4"
+        >
           <div className="flex items-center gap-4">
             <div>
               <p className="text-base text-text-secondary mb-2">
@@ -25,7 +32,8 @@ const FooterModal = () => {
                 type="number"
                 placeholder="Select"
                 inputClassName="keep-spinner"
-                maxLength={20}
+                max={20}
+                min={1}
                 value={count.toString()}
                 onChange={(val) => setCount(Number(val))}
               />

@@ -83,7 +83,7 @@ const PropertyDetails = ({ heading }: { heading: string }) => {
           )}
           {propertyDetails?.images[0] && (
             <Image
-              src={propertyDetails?.images[0]}
+              src={propertyDetails?.images[0].path}
               alt={propertyDetails?.property_title}
               fill
               sizes="auto"

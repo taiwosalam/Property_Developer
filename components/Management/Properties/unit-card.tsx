@@ -30,7 +30,9 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
   };
 
   const keyValueData = {
-    unit_details: `${data.unit_preference} - ${data.unit_sub_type} - ${data.unit_type}`,
+    unit_details: data.unit_sub_type
+      ? `${data.unit_preference} - ${data.unit_sub_type} - ${data.unit_type}`
+      : `${data.unit_preference} - ${data.unit_type}`,
     "unit no/name": data.unit_name,
     rent: `${currencySymbols[currency || "naira"]}${formatNumber(
       parseFloat(data.fee_amount)
@@ -43,7 +45,7 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
         }
       : {}),
     service_charge: `${currencySymbols[currency || "naira"]}${formatNumber(
-      parseFloat(data.service_charge)
+      parseFloat(data.service_charge || "0")
     )}`,
   };
 

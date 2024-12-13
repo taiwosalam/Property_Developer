@@ -92,7 +92,13 @@ const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
             </ModalContent>
           </Modal>
 
-          <Button size="base_medium" className="py-2 px-6">
+          <Button
+            size="base_medium"
+            className="py-2 px-6"
+            onClick={() => {
+              router.push(`/management/landlord/${landlordId}`);
+            }}
+          >
             save
           </Button>
         </FixedFooter>

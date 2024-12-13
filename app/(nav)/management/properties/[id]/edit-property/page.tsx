@@ -107,8 +107,9 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
         {addedUnits.map((unit, index) => (
           <AddUnitFormCard key={index} data={unit} index={index} />
         ))}
+        <hr className="!my-4 border-none bg-borders-dark h-[1px]" />
         {showNewUnitForm && (
-          <UnitForm empty afterSubmit={() => setShowNewUnitForm(false)} />
+          <UnitForm empty hideEmptyForm={() => setShowNewUnitForm(false)} />
         )}
       </div>
     </div>
