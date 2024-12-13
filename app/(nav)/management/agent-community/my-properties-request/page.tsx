@@ -21,6 +21,11 @@ import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import NetworkError from "@/components/Error/NetworkError";
+import { AxiosRequestConfig } from "axios";
+import { PropertyRequestParams } from "../type";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import dayjs from "dayjs";
+import { stateOptions } from "@/app/(nav)/tasks/inspections/data";
 
 const lists = [
   {
@@ -51,6 +56,7 @@ interface PropertyRequestApiData {
     total_requests: number;
     last_page: number;
   };
+  searchQuery: string;
 }
 
 const transformToPropertyRequestCardProps = (
@@ -84,9 +90,10 @@ const MyPropertiesRequestPage = () => {
       newly_created_requests: 0,
       total_requests: 0,
     },
+    searchQuery: "",
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
+  // const [searchQuery, setSearchQuery] = useState("");
   const [state, setState] = useState<PropertyRequestApiData>(initialState);
   const {
       data,
@@ -96,38 +103,91 @@ const MyPropertiesRequestPage = () => {
         newly_created_requests,
         total_requests,
         last_page
-      }
+      },
+      searchQuery,
   } = state
 
   const handleCreatePropertyRequestClick = () => {
     router.push("/management/agent-community/my-properties-request/create");
   };
 
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+      sort: "asc",
+    } as PropertyRequestParams,
+  });
+
   const handlePageChange = (page: number) => {
-    setSearchQuery("");
-    setState((prevState) => ({
-      ...prevState,
-      meta: {
-        current_page: page,
-        total: total,
-        newly_created_requests: newly_created_requests,
-        total_requests: total_requests,
-        last_page: last_page,
-      },
-    }));
+    setConfig({
+      params: { ...config.params, page },
+    });
   };
+
 
   const handleSearch = async (query: string) => {
-    if (!query && !searchQuery) return;
-    setSearchQuery(query);
+    setConfig({
+      params: { ...config.params, search: query },
+    });
   };
 
-  const config = useMemo(
-    () => ({
-      params: { page: current_page, search: searchQuery },
-    }),
-    [current_page, searchQuery]
-  );
+
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+
+  const isFilterApplied = () => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  };
+
+
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({
+      params: { ...config.params, sort: order },
+    });
+  };
+
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate, options } = filters;
+    const statesArray = menuOptions["State"] || [];
+    
+    const queryParams: PropertyRequestParams = {
+      page: 1,
+      sort: "desc",
+      search: "",
+    };
+
+    options.forEach(option => {
+      if (option === 'new') {
+          queryParams.current_month = true; 
+      } 
+  });
+  if (statesArray.length > 0) {
+    queryParams.state = statesArray.join(",");
+  }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    setConfig({
+      params: queryParams,
+    });
+    
+    console.log({ menuOptions, startDate, endDate, options })
+  };
 
   const {
     data: apiData,
@@ -160,11 +220,6 @@ const MyPropertiesRequestPage = () => {
     }
     console.log("apiData meta -", apiData?.meta);
   }, [apiData]);
-
-  const handleFilterApply = (filters: any) => {
-    console.log("Filter applied:", filters);
-    // Add filtering logic here for branches
-  };
 
   const propertyRequestData: PropertyRequestDataType[] =
     data.map((request: any) => ({
@@ -228,15 +283,34 @@ const MyPropertiesRequestPage = () => {
             "This page contains a list of My Properties Request on the platform.",
         }}
         searchInputPlaceholder="Search My Properties Request"
-        handleFilterApply={() => {}}
+        handleFilterApply={handleFilterApply}
         isDateTrue
+        filterOptions={[
+          {
+            label: "All Property Request",
+            value: "all",
+          },
+          {
+            label: "Trending Property Request",
+            value: "trending",
+          },
+          {
+            label: "New Property Request",
+            value: "new",
+          },
+        ]}
         hasGridListToggle={false}
+        filterOptionsMenu={stateOptions}
         handleSearch={handleSearch}
+        onSort={handleSort}
+        appliedFilters={appliedFilters}
       />
 
       {propertyRequestData.length === 0 && !silentLoading ? (
-        searchQuery ? (
-          "No Search Found"
+         config.params.search || isFilterApplied() ? (
+          <div className="col-span-full text-center py-8 text-gray-500">
+            No Search/Filter Found
+          </div>
         ) : (
           <section>
             <EmptyList
@@ -254,15 +328,21 @@ const MyPropertiesRequestPage = () => {
         )
       ) : (
         <AutoResizingGrid gap={28} minWidth={400}>
-          {propertyRequestData.map((details, index) => (
+        {silentLoading ? (
+          <>
+          <RequestCardSkeleton />
+          <RequestCardSkeleton />
+          <RequestCardSkeleton />
+          </>
+        ) : (
+          propertyRequestData.map((details, index) => (
             <PropertyRequestCard
               key={index}
               {...transformToPropertyRequestCardProps(details)}
-              cardType="agent-community"
-              user
             />
-          ))}
-        </AutoResizingGrid>
+          ))
+        )}
+      </AutoResizingGrid>
       )}
       <div className="pagination">
         <Pagination
