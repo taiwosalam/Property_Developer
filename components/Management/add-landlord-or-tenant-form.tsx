@@ -79,6 +79,9 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
     }
     setIsLoading(true);
     cleanPhoneNumber(data);
+    if (!data.get("phone_number")) {
+      data.append("phone_number", "");
+    }
     data.append("agent", "Web");
     await submitAction(data);
     setIsLoading(false);
@@ -156,7 +159,8 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
         <div className="flex justify-between items-end flex-wrap gap-4 md:gap-5">
           <div className="custom-flex-col gap-3">
             <p className="text-black dark:text-darkText-1 text-base font-medium">
-              Upload picture or select an avatar.
+              <span className="text-status-error-primary">*</span> Upload
+              picture or select an avatar.
             </p>
             <div className="flex items-end gap-3">
               <label htmlFor="picture" className="cursor-pointer relative">

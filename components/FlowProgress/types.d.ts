@@ -11,8 +11,6 @@ export interface FlowProgressProps {
   children: React.ReactNode;
   inputClassName?: string;
   requiredFields?: string[];
-  imagesLength?: number;
-  minImages?: number;
 }
 
 export interface FlowProgressBarProps {

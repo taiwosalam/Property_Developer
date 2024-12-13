@@ -8,15 +8,19 @@ import { useUnitForm } from "./unit-form-context";
 
 const AddUntFooter = () => {
   const { canSubmit } = useContext(FlowProgressContext);
-  const { submitLoading } = useUnitForm();
+  const { submitLoading, setSaveClick } = useUnitForm();
 
   return (
     <FixedFooter className="flex items-center justify-end gap-10">
       {canSubmit && (
         <Modal>
           <ModalTrigger asChild>
-            <Button size="base_medium" className="py-2 px-6">
-              Add More Unit
+            <Button
+              size="base_medium"
+              className="py-2 px-6"
+              disabled={submitLoading}
+            >
+              {submitLoading ? "Adding..." : "Add More Unit"}
             </Button>
           </ModalTrigger>
           <ModalContent>
@@ -26,10 +30,17 @@ const AddUntFooter = () => {
       )}
       <Button
         form="add-unit-form"
-        type="submit"
+        type="button"
         size="base_medium"
         className="py-2 px-6"
         disabled={!canSubmit || submitLoading}
+        onClick={(e) => {
+          setSaveClick(true);
+          const form = e.currentTarget.form;
+          setTimeout(() => {
+            form?.requestSubmit();
+          }, 0);
+        }}
       >
         {submitLoading ? "Saving..." : "Save"}
       </Button>

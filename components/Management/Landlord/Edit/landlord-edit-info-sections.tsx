@@ -225,6 +225,10 @@ export const LandlordEditNextOfKinInfoSection = () => {
       address: data.next_of_kin_address,
     };
     cleanPhoneNumber(payload);
+    if (!payload.phone_number) {
+      toast.warning("Next of kin phone number is required");
+      return;
+    }
     if (landlord?.id) {
       setReqLoading(true);
       const status = await updateLandlordNextOfKin(
@@ -272,7 +276,7 @@ export const LandlordEditNextOfKinInfoSection = () => {
             defaultValue={landlord?.next_of_kin.relationship || ""}
           />
           <Input
-            id="next_ of_kin_address"
+            id="next_of_kin_address"
             label="address"
             inputClassName="rounded-lg"
             defaultValue={landlord?.next_of_kin.address}

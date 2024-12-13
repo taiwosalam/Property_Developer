@@ -154,7 +154,7 @@ const UnitBreakdownNewTenant = () => {
           inputContainerClassName="bg-white"
           resetKey={formResetKey}
           hiddenInputClassName="unit-form-input"
-          defaultValue={unitData?.fee_period}
+          defaultValue={unitData?.fee_period || "yearly"}
         />
         <Input
           id="fee_amount"
@@ -251,7 +251,7 @@ const UnitBreakdownNewTenant = () => {
           dropdownRefClassName="!w-[160px]"
           resetKey={formResetKey}
           hiddenInputClassName="unit-form-input"
-          defaultValue={mapNumericToYesNo(unitData?.negotiation)}
+          defaultValue={mapNumericToYesNo(unitData?.negotiation) || "no"}
         />
         <Input
           required

@@ -54,7 +54,6 @@ import LandlordTenantModalPreset from "../../landlord-tenant-modal-preset";
 import { useMultipleFileUpload } from "@/hooks/useMultipleFilesUpload";
 import { v4 as uuidv4 } from "uuid";
 
-
 const states = getAllStates();
 
 export const TenantEditProfileInfoSection = () => {
@@ -228,6 +227,10 @@ export const TenantEditNextOfKinInfoSection = () => {
       address: data.next_of_kin_address,
     };
     cleanPhoneNumber(payload);
+    if (!payload.phone_number) {
+      toast.warning("Next of kin phone number is required");
+      return;
+    }
     if (tenant?.id) {
       setReqLoading(true);
       const status = await updateTenantNextOfKin(
@@ -246,26 +249,26 @@ export const TenantEditNextOfKinInfoSection = () => {
       <AuthForm onFormSubmit={handleUpdateNextOfKin} skipValidation>
         <LandlordTenantInfoEditGrid>
           <Input
-            id="next-of-kin-fullname"
+            id="next_of_kin_fullname"
             label="full name"
             defaultValue={tenant?.next_of_kin.name}
             inputClassName="rounded-lg"
           />
           <Input
-            id="next-of-kin-email"
+            id="next_of_kin_email"
             type="email"
             label="email"
             defaultValue={tenant?.next_of_kin.email}
             inputClassName="rounded-lg"
           />
           <PhoneNumberInput
-            id="next-of-kin-phone-number"
+            id="next_of_kin_phone_number"
             label="phone number"
             defaultValue={tenant?.next_of_kin.phone || ""}
             inputContainerClassName="bg-neutral-2"
           />
           <Select
-            id="next-of-kin-relationship"
+            id="next_of_kin_relationship"
             label="relationship"
             placeholder="Select options"
             options={nextOfKinRelationships}
@@ -273,7 +276,7 @@ export const TenantEditNextOfKinInfoSection = () => {
             inputContainerClassName="bg-neutral-2 dark:bg-darkText-primary"
           />
           <Input
-            id="next-of-kin-address"
+            id="next_of_kin_address"
             label="address"
             defaultValue={tenant?.next_of_kin.address}
             inputClassName="rounded-lg"

@@ -18,7 +18,7 @@ import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 import { v4 as uuidv4 } from "uuid";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import DraggableImage from "./draggable-image";
-import { propertyCategories, MAX_FILE_SIZE_MB } from "@/data";
+import { propertyCategories } from "@/data";
 import { AuthForm } from "@/components/Auth/auth-components";
 import {
   getAllStaffByBranch,
@@ -89,8 +89,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     resetImages,
   } = useMultipleImageUpload({
     maxImages: maxNumberOfImages,
-    maxFileSizeMB: MAX_FILE_SIZE_MB,
-    initialImages: editMode ? propertyDetails?.images.map((img) => img.path) : [],
+    initialImages: editMode
+      ? propertyDetails?.images.map((img) => img.path)
+      : [],
   });
 
   const sortableImages = images.map((image, index) => ({
@@ -180,9 +181,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     })) || [];
 
   useEffect(() => {
-    if (!selectedBranch) return;
+    if (!selectedBranch.value) return;
     const fetchStaff = async () => {
-      const staffMembers = await getAllStaffByBranch(selectedBranch);
+      const staffMembers = await getAllStaffByBranch(selectedBranch.value);
       setPropertyState({
         staffOptions: staffMembers
           .filter((staff) => staff.position.toLowerCase() !== "account officer")
@@ -208,7 +209,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         state: propertyDetails.state || "",
         lga: propertyDetails.local_govt || "",
         city: propertyDetails.city || "",
-        selectedBranch: propertyDetails.branch_id || "",
+        selectedBranch: {
+          value: propertyDetails.branch_id || "",
+          label: propertyDetails.branch_name || "",
+        },
       }));
     }
   }, [propertyDetails, editMode]);
@@ -393,7 +397,19 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             resetKey={resetKey}
             options={branchOptions}
             inputContainerClassName="bg-white"
-            onChange={(selectedBranch) => setPropertyState({ selectedBranch })}
+            onChange={(selectedBranchId) =>
+              setPropertyState({
+                selectedBranch: {
+                  value: selectedBranchId,
+                  label:
+                    branchOptions.find(
+                      (branch) =>
+                        String(branch.value) === String(selectedBranchId)
+                    )?.label || "",
+                },
+              })
+            }
+            value={selectedBranch}
             hiddenInputClassName="property-form-input"
             placeholder={
               branchesLoading
@@ -403,14 +419,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 : "Select branch"
             }
             error={branchesError}
-            defaultValue={
-              editMode
-                ? {
-                    label: propertyDetails?.branch_name || "",
-                    value: propertyDetails?.branch_id || "",
-                  }
-                : undefined
-            }
           />
           {formType === "rental" && (
             <>

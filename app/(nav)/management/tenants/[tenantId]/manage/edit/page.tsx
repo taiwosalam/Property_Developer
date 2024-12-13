@@ -95,7 +95,14 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
             </ModalContent>
           </Modal>
 
-          <Button type="submit" size="base_medium" className="py-2 px-6">
+          <Button
+            type="submit"
+            size="base_medium"
+            className="py-2 px-6"
+            onClick={() => {
+              router.push(`/management/tenants/${tenantId}`);
+            }}
+          >
             save
           </Button>
         </FixedFooter>

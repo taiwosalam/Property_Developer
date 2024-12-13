@@ -48,7 +48,7 @@ export interface PropertyFormStateType {
   state: string;
   city: string;
   lga: string;
-  selectedBranch: string;
+  selectedBranch: { value: string; label: string };
   staff: { id: string; label: string }[];
   staffOptions: { value: string; label: string }[];
   accountOfficerOptions: { value: string; label: string }[];

@@ -19,7 +19,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const router = useRouter();
   const [dataNotFound, setDataNotFound] = useState(false);
 
-  const [saved, setSaved] = useState(false);
+  const [hideEmptyForm, setHideEmptyForm] = useState(false);
 
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
 
@@ -74,7 +74,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
         {addedUnits.length > 0 && (
           <>
             <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
-              {saved ? "Units Summary" : "Added Units"}
+              {hideEmptyForm ? "Units Summary" : "Added Units"}
             </h4>
             <hr className="!my-4 border-none bg-borders-dark h-[1px]" />
             {addedUnits.map((unit, index) => (
@@ -83,7 +83,9 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
           </>
         )}
 
-        {!saved && <UnitForm empty afterSubmit={() => setSaved(true)} />}
+        {!hideEmptyForm && (
+          <UnitForm empty hideEmptyForm={() => setHideEmptyForm(true)} />
+        )}
       </div>
     </div>
   );
