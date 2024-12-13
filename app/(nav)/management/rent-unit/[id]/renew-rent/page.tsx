@@ -43,7 +43,7 @@ const RenewRent = () => {
 
   useEffect(() => {
     if (apiData) {
-      setUnit_data((x:any) => ({
+      setUnit_data((x: any) => ({
         ...x,
         ...transformUnitData(apiData)
       }))
@@ -51,25 +51,36 @@ const RenewRent = () => {
     }
   }, [apiData])
 
+  if (loading)
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
+    );
+
+  if (isNetworkError) return <NetworkError />;
+
+  if (error) return <div>{error}</div>;
+
   const propertyId = unit_data.propertyId;
   const rentalData = [
     { label: "Property Title", value: unit_data?.title },
     { label: "State", value: unit_data?.state },
     { label: "Local Government", value: unit_data?.localGovernment },
     { label: "Full Address", value: unit_data?.address },
-    { label: "Branch", value: unit_data?.branchName  },
+    { label: "Branch", value: unit_data?.branchName },
     { label: "Account Officer", value: "No Officer" }, //TODO
     { label: "Landlord", value: "No Landlord" }, //TODO
     { label: "Categories", value: unit_data?.categories },
     { label: "Unit ID", value: unit_data?.unit_id },
   ];
-  
+
   const propertySettingsData = [
-    { label: "Agency Fee", value: unit_data?.agency_fee },
+    { label: "Agency Fee", value: `${unit_data?.agency_fee}%` },
     { label: "Period", value: unit_data?.fee_period },
     { label: "Charge", value: unit_data?.whoToCharge },
     { label: "Caution Deposit", value: unit_data.caution_deposit },
-    { label: "Group Chat", value: `${unit_data?.group_chat}`},
+    { label: "Group Chat", value: `${unit_data?.group_chat}` },
     { label: "Rent Penalty", value: `${unit_data?.rent_penalty}` },
   ];
 
@@ -82,7 +93,6 @@ const RenewRent = () => {
         <EstateDetails
           title={`${isRental ? "Unit" : "Facility"} Details`}
           estateData={isRental ? rentalData : estateData}
-          loading={loading}
         />
         <EstateSettings
           title={`${isRental ? "Property" : "Facility"} Settings`}
@@ -91,21 +101,28 @@ const RenewRent = () => {
             isRental ? propertySettingsData : estateSettingsDta
           }
           {...(isRental ? { gridThree: true } : {})}
-          loading={loading}
         />
         <div className="pt-6 lg:flex lg:gap-10 space-y-8">
           <div className="lg:w-3/5 space-y-8">
-            <RenewalRentDetails isRental={isRental} />
+            <RenewalRentDetails
+              isRental={isRental}
+              startDate="12/12/24"
+              dueDate="12/12/24"
+              rentFee={unit_data.newTenantPrice}
+              otherFee={unit_data.other_charge as string}
+            />
             <RenewalFee
               isRental={isRental}
               feeDetails={[
                 {
                   name: isRental ? "Rent" : "Fee",
-                  amount: 300000,
+                  amount: Number(unit_data.renewalTenantPrice),
                 },
-                { name: "Service Charge", amount: 300000 },
-                { name: "Other Charges", amount: 300000 },
+                { name: "Service Charge", amount: Number(unit_data.renew_service_charge) },
+                { name: "Other Charges", amount: Number(unit_data.renew_other_charge) },
               ]}
+              total_package={Number(unit_data.total_package)}
+              id={propertyId as string}
             />
             <RenewalRent isRental={isRental} rentPeriod="yearly" />
           </div>

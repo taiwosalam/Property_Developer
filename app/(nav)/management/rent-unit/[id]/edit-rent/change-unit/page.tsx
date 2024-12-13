@@ -26,6 +26,7 @@ import EstateDetails from "@/components/Management/Rent And Unit/estate-details"
 
 const ChangeUnitpage = () => {
   const searchParams = useSearchParams();
+  const id = searchParams.get("id");
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const isRental = propertyType === "rental";
   const router = useRouter();
@@ -42,6 +43,7 @@ const ChangeUnitpage = () => {
           estateSettingsDta={
             isRental ? propertySettingsData : estateSettingsDta
           }
+          id={id as string}
           {...(isRental ? { gridThree: true } : {})}
         />
 

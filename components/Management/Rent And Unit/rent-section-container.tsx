@@ -57,7 +57,7 @@ export const FeeDetails: React.FC<{
               key={index}
               style={{ width: "120px" }}
               label={fee.name}
-              value={`₦${fee.amount.toLocaleString()}`}
+              value={`₦${fee?.amount?.toLocaleString()}`}
             />
           ))}
         </div>
@@ -67,7 +67,7 @@ export const FeeDetails: React.FC<{
               Total Package
             </p>
             <p className="text-lg lg:text-xl text-brand-9 font-bold">
-            {`₦${total_package.toLocaleString()}`}
+            {`₦${total_package?.toLocaleString()}`}
             </p>
           </div>
           <Modal>

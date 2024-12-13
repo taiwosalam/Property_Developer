@@ -809,7 +809,9 @@ export const initData = {
   security_fee: "",
   other_charge: "",
   unitAgentFee: "",
-  service_charge: ""
+  service_charge: "",
+  renew_service_charge: "",
+  renew_other_charge: "",
 }
 
 
@@ -836,6 +838,7 @@ export interface initDataProps{
   renew_fee_period:string;
   renewalTenantPrice:string;
   renewalTenantTotalPrice:string;
+  renew_service_charge?: string;
   branchName?: string,
   agency_fee?: string;
   whoToCharge?: string;
@@ -849,6 +852,7 @@ export interface initDataProps{
   other_charge?: string;
   unitAgentFee?: string;
   service_charge?: string;
+  renew_other_charge?: string;
 }
 
 // ================ transform /unit/${id}/view =================

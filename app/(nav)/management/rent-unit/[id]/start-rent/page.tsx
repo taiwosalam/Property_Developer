@@ -16,6 +16,7 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useEffect, useState } from "react";
 import { initData, initDataProps, initialSingleData, InitialSingleUnit, InitialSingleUnitProps, singleUnitApiResponse, transformSingleUnitData, transformUnitData, UnitDetails } from "../../data";
 import useFetch from "@/hooks/useFetch";
+import NetworkError from "@/components/Error/NetworkError";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -44,6 +45,17 @@ const StartRent = () => {
     }
   }, [apiData])
 
+  if (loading)
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
+    );
+
+  if (isNetworkError) return <NetworkError />;
+
+  if (error) return <div>{error}</div>;
+
   const propertyId = unit_data.propertyId;
   const rentalData = [
     { label: "Property Title", value: unit_data?.title },
@@ -65,6 +77,7 @@ const StartRent = () => {
     { label: "Group Chat", value: `${unit_data?.group_chat}` },
     { label: "Rent Penalty", value: `${unit_data?.rent_penalty}` },
   ];
+  
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Start {isRental ? "Rent" : "Counting"}</BackButton>
@@ -72,7 +85,6 @@ const StartRent = () => {
         <EstateDetails
           title={`${isRental ? "Unit" : "Facility"} Details`}
           estateData={isRental ? rentalData : estateData}
-          loading={loading}
         />
         <EstateSettings
           id={propertyId as string}
@@ -81,7 +93,6 @@ const StartRent = () => {
             isRental ? propertySettingsData : estateSettingsDta
           }
           {...(isRental ? { gridThree: true } : {})}
-          loading={loading}
         />
         <OccupantProfile
           isRental={isRental}
@@ -91,12 +102,12 @@ const StartRent = () => {
             { name: "Hello World", id: "id-3" },
           ]}
           feeDetails={[
-            { name: isRental ? "Annual Rent" : "Annual Fee", amount: 300000 },
-            { name: "Service Charge", amount: Number(unit_data.service_charge) },
-            { name: "Caution Fee", amount: Number(unit_data.caution_fee) },
-            { name: "Security Fee", amount: Number(unit_data.security_fee) },
-            { name: "Agency Fee", amount: Number(unit_data.unitAgentFee) },
-            { name: "Other Charges", amount: Number(unit_data.other_charge) },
+            { name: isRental ? "Annual Rent" : "Annual Fee", amount: Number(unit_data.newTenantPrice) },
+            { name: "Service Charge", amount: Number(unit_data.service_charge)},
+            { name: "Caution Fee", amount: Number(unit_data.caution_fee)},
+            { name: "Security Fee", amount: Number(unit_data.security_fee)},
+            { name: "Agency Fee", amount: Number(unit_data.unitAgentFee)},
+            { name: "Other Charges", amount: Number(unit_data.other_charge)},
           ]}
           total_package={Number(unit_data.total_package)}
           loading={loading}
