@@ -108,26 +108,12 @@ const PropertyRequest = () => {
     router.push("/management/agent-community/my-properties-request/create");
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // const handlePageChange = (page: number) => {
-  //   setSearchQuery("");
-  //   setState((prevState) => ({
-  //     ...prevState,
-  //     meta: {
-  //       ...prevState.meta,
-  //       pagination: {
-  //         ...prevState.meta.pagination,
-  //         current_page: page,
-  //       },
-  //     },
-  //   }));
-  // };
+  // const [searchQuery, setSearchQuery] = useState("");
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
-      // page: 1,
-      // search: "",
+      page: 1,
+      search: "",
       sort: "asc",
     } as PropertyRequestParams,
   });
@@ -139,8 +125,9 @@ const PropertyRequest = () => {
   };
 
   const handleSearch = async (query: string) => {
-    if (!query && !searchQuery) return;
-    setSearchQuery(query);
+    setConfig({
+      params: { ...config.params, search: query },
+    });
   };
 
 
@@ -345,7 +332,11 @@ const PropertyRequest = () => {
       ) : (
         <AutoResizingGrid gap={28} minWidth={400}>
           {silentLoading ? (
-            <RequestCardSkeleton />
+              <>
+              <RequestCardSkeleton />
+              <RequestCardSkeleton />
+              <RequestCardSkeleton />
+              </>
           ) : (
             propertyRequestData.map((details, index) => (
               <PropertyRequestCard
