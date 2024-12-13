@@ -24,6 +24,7 @@ import { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import { AxiosRequestConfig } from "axios";
 import { PropertyRequestParams } from "../type";
+import { formatNumber } from "@/utils/number-formatter";
 
 const lists = [
   {
@@ -233,8 +234,8 @@ const PropertyRequest = () => {
       propertyType: request.propertyRequest.property_type || "__",
       category: request.propertyRequest.property_category || "__",
       subType: request.propertyRequest.sub_type || "__",
-      minBudget: `₦${request.propertyRequest.min_budget}` || "__",
-      maxBudget: `₦${request.propertyRequest.max_budget}` || "__",
+      minBudget: `₦${formatNumber(request.propertyRequest.min_budget)}` || "__",
+      maxBudget: `₦${formatNumber(request.propertyRequest.max_budget)}` || "__",
       requestType: "Web",
       description: request.propertyRequest.description || "__",
       phoneNumber: request.user?.phone || "__",

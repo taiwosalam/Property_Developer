@@ -21,6 +21,8 @@ import { useState, useEffect } from "react";
 import { formatDateRange } from "../../data";
 import PropertyRequestComments from "@/components/Community/PropertyRequestComments";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { CommentData } from "@/components/tasks/announcements/comment";
+import { formatNumber } from "@/utils/number-formatter";
 
 interface PropertyRequestResponse {
   data: {
@@ -52,7 +54,7 @@ const PreviewPage = () => {
       setReadByData(data.data.readByData);
       setComments(data.data.comments);
       setCompanySummary(data.data.company_summary);
-      console.log("data here - ", data);
+      // console.log("data here - ", data);
     }
   }, [data]);
   // console.log(data?.data.PropertyRequest);
@@ -94,6 +96,7 @@ const PreviewPage = () => {
           />
           <ThreadArticle 
             propertyRequest={propertyRequest} 
+            comments={data?.data.comments}
           />
           <PropertyRequestComments 
             id={requestId as string}
@@ -122,10 +125,10 @@ const PreviewPage = () => {
 
 export default PreviewPage;
 
-const ThreadArticle = ({ propertyRequest }: { propertyRequest: any }) => {
-  useEffect(() => {
-    console.log("propertyRequest", propertyRequest);
-  }, [propertyRequest]);
+const ThreadArticle = ({ propertyRequest, comments }: { propertyRequest: any, comments: CommentData[] }) => {
+  // useEffect(() => {
+  //   console.log("propertyRequest", propertyRequest);
+  // }, [propertyRequest]);
   return (
     <div className="">
         <div dangerouslySetInnerHTML={{ __html: propertyRequest?.description }} className="text-sm text-darkText-secondary mt-6" />
@@ -147,30 +150,19 @@ const ThreadArticle = ({ propertyRequest }: { propertyRequest: any }) => {
 
           <div className="flex">
             <div className="images flex z-30">
-              <Image
-                src={user1}
-                alt="blog"
-                width={23}
-                height={23}
-                className="-mr-2"
-              />
-              <Image
-                src={user2}
-                alt="blog"
-                width={23}
-                height={23}
-                className="-mr-2"
-              />
-              <Image
-                src={user3}
-                alt="blog"
-                width={23}
-                height={23}
-                className="-mr-2"
-              />
+            {comments.slice(0, 3).map((comment, index) => (
+                <Image
+                  key={index}
+                  src={comment.profile_picture}
+                  alt={`commenter ${index + 1}`}
+                  width={300}
+                  height={300}
+                  className="-mr-2 h-[30px] w-[30px] object-cover rounded-full"
+                />
+              ))}
             </div>
             <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-              +122
+              +{comments.length}
             </div>
           </div>
         </div>
@@ -205,8 +197,8 @@ const MoreDetailsCard = ({ propertyRequest, user }: { propertyRequest: any, user
     { label: "Category:", value: propertyRequest?.property_category },
     { label: "Property Type:", value: propertyRequest?.property_type },
     { label: "Sub Type:", value: propertyRequest?.sub_type },
-    { label: "Min Budget:", value: `₦${propertyRequest?.min_budget}` },
-    { label: "Max Budget:", value: `₦${propertyRequest?.max_budget}` },
+    { label: "Min Budget:", value: `₦${formatNumber(propertyRequest?.min_budget)}` },
+    { label: "Max Budget:", value: `₦${formatNumber(propertyRequest?.max_budget)}` },
     { label: "Date Range:", value: formatDateRange(propertyRequest?.start_date, propertyRequest?.end_date) },
   ];
   return (
@@ -225,3 +217,5 @@ const MoreDetailsCard = ({ propertyRequest, user }: { propertyRequest: any, user
     </div>
   );
 };
+
+// ₦{(total_package).toLocaleString()}

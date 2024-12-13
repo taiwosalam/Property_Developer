@@ -125,14 +125,14 @@ const PropertyRequestComments = ({
       <div>
        {!edit && 
         <PropertyRequestNewComment
-          commentCount={comments.length || 0}
+          commentCount={comments?.length || 0}
           id={id}
           slug={slug}
           likeCount={likeCount}
           dislikeCount={dislikeCount}
         />}
         <div className="mt-4">
-          {comments.map((comment) => (
+          {comments?.map((comment) => (
             <Comment
               key={comment.id}
               {...comment}

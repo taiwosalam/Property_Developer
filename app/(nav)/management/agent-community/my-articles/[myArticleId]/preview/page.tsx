@@ -22,6 +22,9 @@ import NewComment from "../../../NewComment";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import CommunityComments from "@/components/Community/CommunityComments";
 import { CommunitySlider } from "@/components/Community/CommunitySlider";
+import DOMPurify from "dompurify";
+import NetworkError from "@/components/Error/NetworkError";
+
 
 interface ArticleResponse {
   post: any;
@@ -45,9 +48,17 @@ const ThreadPreview = () => {
   const [contributors, setContributors] = useState<any>(null);
   const [comments, setComments] = useState<CommentData[]>([]);
   const [readyBy, setReadyBy] = useState<any>(null);
-  const { data, error, loading, refetch: refetchComments } = useFetch<ArticleResponse>(`/agent_community/${slug}`);
-  
-  useRefetchOnEvent("refetchComments", ()=> refetchComments({silent:true}));
+
+  const {
+    data,
+    error,
+    loading,
+    silentLoading,
+    isNetworkError,
+    refetch: refetchComments
+  } = useFetch<ArticleResponse>(`/agent_community/${slug}`);
+
+  useRefetchOnEvent("refetchComments", () => refetchComments({ silent: true }));
 
   useEffect(() => {
     if (data) {
@@ -59,13 +70,18 @@ const ThreadPreview = () => {
     }
   }, [data]);
 
-  console.log("data", data);
-  // console.log("read by data", data?.post.readByData);
+  // console.log("data", data);
 
-  if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
-  <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-  </div>;
+  if (loading)
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
+    );
 
+  if (isNetworkError) return <NetworkError />;
+
+  if (error) return <div>{error}</div>;
   return (
     <div>
       <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
@@ -94,10 +110,10 @@ const ThreadPreview = () => {
             {loading ? (
               <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
             ) : post?.media?.length > 0 ? (
-              <CommunitySlider 
-                images={post?.media} 
-                video_link={post?.video_link} 
-                thread 
+              <CommunitySlider
+                images={post?.media}
+                video_link={post?.video_link}
+                thread
               />
             ) : (
               <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
@@ -105,24 +121,24 @@ const ThreadPreview = () => {
               </div>
             )}
           </div>
-          <ThreadArticle 
-            post={post} 
-            slug={slug} 
+          <ThreadArticle
+            post={post}
+            slug={slug}
             comments={comments}
           />
-          <CommunityComments 
-            slug={slug} 
-            comments={comments} 
-            setComments={setComments} 
+          <CommunityComments
+            slug={slug}
+            comments={comments}
+            setComments={setComments}
           />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <Summary 
-           post={post} 
-           loading={loading} 
+          <Summary
+            post={post}
+            loading={loading}
           />
-          <ReadyByCard 
-            data={readyBy} 
+          <ReadyByCard
+            data={readyBy}
           />
         </div>
       </div>
@@ -181,16 +197,18 @@ const ThreadArticle = ({ post, slug, comments }: { post: any, slug: string, comm
     return <ThreadArticleSkeleton />;
   }
 
+  const sanitizedHTML = DOMPurify.sanitize(post?.content || "")
+
   return (
     <div className="mt-4">
       <div
         className="text-sm text-darkText-secondary mt-2"
-        dangerouslySetInnerHTML={{ __html: post?.content }}
+        dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
       />
       <div className="flex justify-between mt-6">
         <div className="flex items-center gap-2">
           <span className="text-text-secondary">Comments</span>
-            {/* <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">
+          {/* <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">
               {post?.comments_count}
             </p> */}
         </div>

@@ -21,10 +21,18 @@ export const listingUnitFilter: FilterOptionMenu[] = [
     radio: true,
     label: "Status",
     value: [
-      { label: "Status 1", value: "Status1" },
-      { label: "Status 2", value: "Status2" },
-      { label: "Status 3", value: "Status3" },
-      { label: "Status 4", value: "Status4" },
+      { label: "Published", value: "published" },
+      { label: "Unpublished", value: "unpublished" },
+      { label: "Under Moderation", value: "under_moderation" },
+      { label: "Rejected", value: "rejected" },
     ],
   },
 ];
+
+
+export const unit_listing_status = {
+  published: "#01BA4C",
+  unpublished: "#FFBB53",
+  "under moderation": "#702AC8",
+  rejected: '#FB1818'
+} as const;
