@@ -64,7 +64,7 @@ const Landlord = () => {
     params: {
       page: 1,
       search: "",
-      sort_order: "asc",
+      // sort_order: "asc",
     } as LandlordRequestParams,
   });
 
@@ -118,7 +118,7 @@ const Landlord = () => {
 
     const queryParams: LandlordRequestParams = {
       page: 1,
-      sort_order: "asc",
+      // sort_order: "asc",
       search: "",
     };
     if (statesArray.length > 0) {

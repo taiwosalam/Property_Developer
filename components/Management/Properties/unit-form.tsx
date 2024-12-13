@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import UnitPictures from "./unit-pictures";
 import UnitDetails from "./unit-details";
 import UnitFeatures from "./unit-features";
@@ -21,6 +21,8 @@ import {
   editUnit as editUnitApi,
 } from "@/app/(nav)/management/properties/create-rental-property/[propertyId]/add-unit/data";
 import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export interface UnitFormState {
   images: string[];
@@ -31,7 +33,7 @@ export interface UnitFormState {
 
 interface emptyUnitFormProps {
   empty: true;
-  afterSubmit: () => void;
+  hideEmptyForm: () => void;
 }
 
 interface editUnitFormProps {
@@ -45,6 +47,8 @@ interface editUnitFormProps {
 type UnitFormProps = emptyUnitFormProps | editUnitFormProps;
 
 const UnitForm: React.FC<UnitFormProps> = (props) => {
+  const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
   const [duplicate, setDuplicate] = useState({ val: false, count: 2 });
   const addUnit = useAddUnitStore((s) => s.addUnit);
   const editUnit = useAddUnitStore((s) => s.editUnit);
@@ -52,6 +56,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
   const propertyId = useAddUnitStore((state) => state.property_id);
 
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [saveClick, setSaveClick] = useState(false);
 
   const [state, setState] = useState<UnitFormState>({
     images: props.empty ? [] : props.data.images.map((img) => img.path),
@@ -87,11 +92,21 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     "negotiation",
   ];
 
-  const handleSubmit = async (
-    formData: Record<string, any>,
-    e?: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = async (formData: Record<string, any>) => {
     if (!propertyId) return;
+    if (propertyType !== "facility" && state.images.length === 0) {
+      toast.warning("Please add at least one picture");
+      return;
+    }
+    // Check if strings contain at least one digit
+    const hasNoDigits = (str: string) => !/\d/.test(str);
+    if (
+      (formData.number_of && hasNoDigits(formData.number_of)) ||
+      (formData.total_area_sqm && hasNoDigits(formData.total_area_sqm))
+    ) {
+      toast.warning("Please enter valid measurement values");
+      return;
+    }
     setSubmitLoading(true);
     convertYesNoToBoolean(formData, yesNoFields);
     const transformedData = transformUnitFormData(
@@ -102,6 +117,13 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     if (props.empty) {
       const unitId = await createUnit(propertyId, transformedData);
       if (unitId) {
+        if (saveClick) {
+          setSubmitLoading(false);
+          resetForm();
+          formRef.current?.reset();
+          router.push("/management/properties/");
+          return;
+        }
         const unitData = await getUnitById(unitId);
         if (unitData) {
           if (duplicate?.val) {
@@ -110,11 +132,11 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
               val: false,
               count: 1,
             });
-            props.afterSubmit();
+            props.hideEmptyForm();
           } else {
             addUnit(unitData);
           }
-          e?.currentTarget.reset();
+          formRef.current?.reset();
           resetForm();
         }
       }
@@ -170,8 +192,6 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       steps={1}
       activeStep={0}
       inputClassName="unit-form-input"
-      imagesLength={state.images.length}
-      minImages={propertyType !== "facility" ? 1 : 0}
       showProgressBar={false}
     >
       <UnitFormContext.Provider
@@ -182,6 +202,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           duplicate,
           setDuplicate,
           submitLoading,
+          setSaveClick,
           ...(!props.empty && {
             isEditing: props.isEditing,
             setIsEditing: props.setIsEditing,
@@ -194,6 +215,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           className="space-y-6 lg:space-y-8"
           skipValidation
           onFormSubmit={handleSubmit}
+          ref={formRef}
         >
           {!props.empty && props.isEditing && (
             <>

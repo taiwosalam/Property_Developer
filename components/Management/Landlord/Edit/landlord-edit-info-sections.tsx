@@ -89,6 +89,9 @@ export const LandlordEditProfileInfoSection = () => {
       gender: data.gender,
     };
     cleanPhoneNumber(payload);
+    if (!payload.phone_number) {
+      payload.phone_number = "";
+    }
     if (landlord?.id) {
       setReqLoading(true);
       const status = await updateLandlordProfile(
@@ -225,6 +228,10 @@ export const LandlordEditNextOfKinInfoSection = () => {
       address: data.next_of_kin_address,
     };
     cleanPhoneNumber(payload);
+    if (!payload.phone_number) {
+      toast.warning("Next of kin phone number is required");
+      return;
+    }
     if (landlord?.id) {
       setReqLoading(true);
       const status = await updateLandlordNextOfKin(
@@ -272,7 +279,7 @@ export const LandlordEditNextOfKinInfoSection = () => {
             defaultValue={landlord?.next_of_kin.relationship || ""}
           />
           <Input
-            id="next_ of_kin_address"
+            id="next_of_kin_address"
             label="address"
             inputClassName="rounded-lg"
             defaultValue={landlord?.next_of_kin.address}
@@ -729,6 +736,10 @@ export const LandlordEditAvatarInfoSection = () => {
           toast.warning("Please upload a picture or choose an avatar.");
           return;
         }
+      }
+      const pictureFile = formData.get("picture") as File;
+      if (pictureFile && pictureFile.size > 0) {
+        formData.delete("avatar");
       }
       setReqLoading(true);
       const status = await updateLandlordPicture(data.id, formData);

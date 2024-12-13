@@ -27,7 +27,7 @@ const UserCard: React.FC<UserCardProps> = ({
       className="h-full border border-brand-tertiary bg-[#F9F9F9] dark:bg-[#020617] dark:border-[#3C3D37] p-2 rounded-lg flex gap-2 items-start"
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
     >
-      <div className="rounded-lg relative overflow-hidden flex-shrink-0 w-[82px] h-[90px]">
+      <div className="rounded-lg relative overflow-hidden flex-shrink-0 w-[82px] h-[90px] bg-[#F0F2F5]">
         <Image
           src={picture_url || empty}
           alt={name}
@@ -38,10 +38,10 @@ const UserCard: React.FC<UserCardProps> = ({
       </div>
       <div className="flex-1 flex flex-col items-start">
         <p className="flex items-center font-bold text-black dark:text-darkText-1 text-sm capitalize">
-          <span className="text-ellipsis line-clamp-1">{name}</span>
+          <span className="text-ellipsis line-clamp-1 break-all">{name}</span>
           {badge_color && <BadgeIcon color={badge_color} />}
         </p>
-        <p className="font-normal text-black dark:text-darkText-1 text-xs mb-1 text-ellipsis line-clamp-2 break-all">
+        <p className="font-normal text-black dark:text-darkText-1 text-xs mb-1 text-ellipsis line-clamp-1 break-all">
           {email}
         </p>
         {user_tag === "mobile" || user_tag === "web" ? (

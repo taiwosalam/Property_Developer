@@ -108,6 +108,7 @@ const UnitBreakdownFacility = () => {
           inputContainerClassName="bg-white"
           resetKey={formResetKey}
           hiddenInputClassName="unit-form-input"
+          defaultValue={unitData?.fee_period || "yearly"}
         />
         <Input
           id="fee_amount"

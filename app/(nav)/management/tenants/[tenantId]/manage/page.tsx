@@ -77,6 +77,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               alt="profile picture"
               size={120}
               rounded
+              containerClassName="bg-[#F0F2F5] w-fit"
             />
 
             <div className="custom-flex-col gap-4">

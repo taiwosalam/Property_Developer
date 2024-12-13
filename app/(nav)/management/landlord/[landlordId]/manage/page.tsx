@@ -85,6 +85,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               src={landlordData?.picture || ""}
               alt="profile picture"
               size={120}
+              containerClassName="w-fit bg-[#F0F2F5]"
               rounded
             />
 

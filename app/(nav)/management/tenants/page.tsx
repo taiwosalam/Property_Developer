@@ -61,7 +61,7 @@ const Tenants = () => {
     params: {
       page: 1,
       search: "",
-      sort_order: "asc",
+      // sort_order: "asc",
     } as TenantRequestParams,
   });
 
@@ -104,7 +104,7 @@ const Tenants = () => {
 
     const queryParams: TenantRequestParams = {
       page: 1,
-      sort_order: "asc",
+      // sort_order: "asc",
       search: "",
     };
     if (statesArray.length > 0) {
@@ -137,6 +137,12 @@ const Tenants = () => {
     setConfig({
       params: { ...config.params, search: query },
     });
+
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({
+      params: { ...config.params, sort_order: order },
+    });
+  };
 
   const {
     data: apiData,
@@ -254,6 +260,7 @@ const Tenants = () => {
         handleFilterApply={handleFilterApply}
         isDateTrue
         handleSearch={handleSearch}
+        onSort={handleSort}
         appliedFilters={appliedFilters}
         filterOptionsMenu={[
           {

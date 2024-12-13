@@ -18,7 +18,7 @@ export interface UnitItemProps {
   unitStatus: keyof typeof UnitStatusColors;
   unitName: string;
   rent: string;
-  serviceCharge: string;
+  serviceCharge?: string;
   cautionDeposit?: string;
   tenantName?: string;
   tenantBadgeColor?: BadgeIconColors;
@@ -87,10 +87,12 @@ const UnitItem: React.FC<UnitItemProps> = ({
               </p>
             </div>
           )}
-          <div>
-            <p className="text-[#747474] dark:text-white">Service Charge</p>
-            <p className="text-black dark:text-darkText-1">{serviceCharge}</p>
-          </div>
+          {serviceCharge && (
+            <div>
+              <p className="text-[#747474] dark:text-white">Service Charge</p>
+              <p className="text-black dark:text-darkText-1">{serviceCharge}</p>
+            </div>
+          )}
           {tenantName && (
             <div>
               <p className="text-[#747474] dark:text-white">
