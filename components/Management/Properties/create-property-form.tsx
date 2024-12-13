@@ -43,6 +43,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   editMode,
   handleSubmit,
   formType,
+  propertyId,
+  onAddUnit,
 }) => {
   const [requestLoading, setRequestLoading] = useState(false);
   const companyId = usePersonalInfoStore((state) => state.company_id) || "";
@@ -88,7 +90,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   } = useMultipleImageUpload({
     maxImages: maxNumberOfImages,
     maxFileSizeMB: MAX_FILE_SIZE_MB,
-    initialImages: editMode ? propertyDetails?.images : [],
+    initialImages: editMode ? propertyDetails?.images.map((img) => img.path) : [],
   });
 
   const sortableImages = images.map((image, index) => ({
@@ -224,11 +226,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const handleFormSubmit = async (data: Record<string, any>) => {
     setRequestLoading(true);
     convertYesNoToBoolean(data, yesNoFields);
-    const payload = transformPropertyFormData(
-      data,
-      imageFiles as File[],
-      companyId
-    );
+    const payload = transformPropertyFormData(data, imageFiles, companyId);
     await handleSubmit(payload);
     setRequestLoading(false);
   };
@@ -731,6 +729,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           editMode={editMode}
           handleReset={handleReset}
           requestLoading={requestLoading}
+          propertyId={propertyId}
+          onAddUnit={onAddUnit}
         />
       </AuthForm>
     </FlowProgress>

@@ -1,5 +1,6 @@
 import { unit_card_data_props } from "./data";
 import type { UnitDataObject } from "@/app/(nav)/management/properties/data";
+import { transformPropertyFormData } from "./data";
 
 export type AddPropertyModalViews = "options" | "add-property-with-id";
 
@@ -15,8 +16,12 @@ export interface UnitCardProps {
 
 export interface CreatePropertyFormProps {
   formType: "rental" | "facility";
-  handleSubmit: (data: Record<string, any>) => Promise<void>;
+  handleSubmit: (
+    data: ReturnType<typeof transformPropertyFormData>
+  ) => Promise<void>;
   editMode?: boolean;
+  propertyId?: string;
+  onAddUnit?: () => void;
 }
 
 export interface StaffData {
@@ -39,7 +44,7 @@ export interface StaffData {
   picture_url: string | null;
 }
 
-export interface  PropertyFormStateType {
+export interface PropertyFormStateType {
   state: string;
   city: string;
   lga: string;
@@ -76,74 +81,3 @@ export interface AllStaffResponse {
     position: string;
   }[];
 }
-
-export interface PropertyFormPayload {
-  title: string;
-  state: string;
-  local_government: string;
-  city_area: string;
-  full_address: string;
-  category: string;
-  description: string;
-  video_link?: string | null;
-  property_type: string;
-  company_id: string;
-  agency_fee?: number | null;
-  who_to_charge_new_tenant?: string;
-  who_to_charge_renew_tenant?: string;
-  caution_deposit?: string | null;
-  group_chat: (0 | 1) | boolean;
-  rent_penalty?: (0 | 1) | boolean | null; // for rental
-  fee_penalty?: (0 | 1) | boolean | null; // for facility
-  request_call_back: (0 | 1) | boolean;
-  book_visitors: (0 | 1) | boolean;
-  vehicle_record: (0 | 1) | boolean;
-  active_vat: (0 | 1) | boolean;
-  currency?: string | null;
-  coordinate?: string | null;
-  management_fee?: number | null;
-
-  branch_id: string;
-  inventory_id?: string | null;
-  land_lord_id?: string | null;
-  images: File[];
-
-  staff: string[];
-}
-
-// export interface AddUnitPayload {
-//   unit_name: string;
-//   unit_type: string;
-//   unit_sub_type: string;
-//   unit_preference: string;
-//   property_id: string;
-//   measurement: string | null;
-//   bedroom: string | null;
-//   bathroom: string | null;
-//   toilet: number | null;
-//   facilities: string[];
-//   en_suit: 1 | 0;
-//   prepaid: 1 | 0;
-//   wardrobe: 1 | 0;
-//   pet_allowed: 1 | 0;
-//   total_area_sqm: string;
-//   number_of: number;
-//   fee_period: string;
-//   fee_amount: number | null;
-//   service_charge: number | null;
-//   agency_fee?: number | null;
-//   management_fee?: number | null;
-//   security_fee?: number | null;
-//   legal_fee: number | null;
-//   caution_fee: number | null;
-//   inspection_fee: number | null;
-//   other_charge: number | null;
-//   negotiation: 1 | 0;
-//   total_package: number | null;
-//   renew_fee_period?: string;
-//   renew_fee_amount?: number | null;
-//   renew_service_charge?: number | null;
-//   renew_other_charge?: number | null;
-//   renew_total_package?: number | null;
-//   images: File[];
-// }
