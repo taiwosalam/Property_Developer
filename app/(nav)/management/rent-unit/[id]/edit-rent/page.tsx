@@ -23,11 +23,59 @@ import {
   PreviousRentRecords,
 } from "@/components/Management/Rent And Unit/renewal-rent-detals";
 import { MatchedProfile } from "@/components/Management/Rent And Unit/matched-profile";
+import { initData, initDataProps, singleUnitApiResponse, transformUnitData } from "../../data";
+import { useEffect, useState } from "react";
+import useFetch from "@/hooks/useFetch";
 
 const EditRent = () => {
   const searchParams = useSearchParams();
-  const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
+  const id = searchParams.get("id");
+  const propertyType = searchParams.get("type") as "rental" | "facility";
   const isRental = propertyType === "rental";
+
+  const [unit_data, setUnit_data] = useState<initDataProps>(initData);
+  const endpoint = `/unit/${id}/view`
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<singleUnitApiResponse>(endpoint);
+
+  useEffect(() => {
+    if (apiData) {
+      setUnit_data((x: any) => ({
+        ...x,
+        ...transformUnitData(apiData)
+      }))
+      // console.log("Data", unit_data)
+    }
+  }, [apiData])
+
+  const propertyId = unit_data.propertyId;
+  const rentalData = [
+    { label: "Property Title", value: unit_data?.title },
+    { label: "State", value: unit_data?.state },
+    { label: "Local Government", value: unit_data?.localGovernment },
+    { label: "Full Address", value: unit_data?.address },
+    { label: "Branch", value: unit_data?.branchName },
+    { label: "Account Officer", value: "No Officer" }, //TODO
+    { label: "Landlord", value: "No Landlord" }, //TODO
+    { label: "Categories", value: unit_data?.categories },
+    { label: "Unit ID", value: unit_data?.unit_id },
+  ];
+
+  const propertySettingsData = [
+    { label: "Agency Fee", value: unit_data?.agency_fee },
+    { label: "Period", value: unit_data?.fee_period },
+    { label: "Charge", value: unit_data?.whoToCharge },
+    { label: "Caution Deposit", value: unit_data.caution_deposit },
+    { label: "Group Chat", value: `${unit_data?.group_chat}` },
+    { label: "Rent Penalty", value: `${unit_data?.rent_penalty}` },
+  ];
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Edit {isRental ? "Rent" : "Fee"}</BackButton>
@@ -35,9 +83,12 @@ const EditRent = () => {
         <EstateDetails
           title={`${isRental ? "Unit" : "Facility"} Details`}
           estateData={isRental ? rentalData : estateData}
+          loading={loading}
         />
         <EstateSettings
           title={`${isRental ? "Property" : "Facility"} Settings`}
+          loading={loading}
+          id={propertyId as string}
           estateSettingsDta={
             isRental ? propertySettingsData : estateSettingsDta
           }

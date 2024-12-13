@@ -5,11 +5,15 @@ import { MatchedProfile } from "./matched-profile";
 import { FeeBreakdown } from "./fee-breakdown";
 import { ProfileForm } from "./profile-form";
 import { RentSectionTitle } from "./rent-section-container";
+import { Skeleton } from "@mui/material";
 
 export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   isRental,
   occupants,
   feeDetails,
+  total_package,
+  id,
+  loading,
 }) => {
   const [selectedOccupant, setSelectedOccupant] = useState<Occupant | null>(
     null
@@ -21,6 +25,10 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   const [occupantError, setOccupantError] = useState<Error | null>(null);
 
   return (
+    <>
+    {loading ? (
+      <OccupantProfileLoading />
+    ): (
     <div className="pt-6 space-y-4">
       <RentSectionTitle>
         {isRental ? "Tenant" : "Occupant"} Profile
@@ -39,7 +47,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
             occupantLoading={occupantLoading}
             occupantError={occupantError}
           />
-          <FeeBreakdown feeDetails={feeDetails} isRental={isRental} />
+          <FeeBreakdown id={id} total_package={total_package} feeDetails={feeDetails} isRental={isRental} />
         </div>
 
         {/* Right Column */}
@@ -53,5 +61,21 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
         </div>
       </div>
     </div>
+     )}
+    </>
   );
 };
+
+
+const OccupantProfileLoading = () => {
+  return(
+    <Skeleton
+      width={"100%"}
+      height={200}
+      animation="wave"
+      sx={{
+        transform: "none",
+      }}
+    />
+  )
+}

@@ -1,14 +1,21 @@
+import { Skeleton } from "@mui/material";
 import { EstateDetailItem } from "./detail-item";
 import { RentSectionTitle } from "./rent-section-container";
 
 const EstateDetails = ({
   title,
   estateData,
+  loading,
 }: {
   title: string;
   estateData: { label: string; value?: string }[];
+  loading?: boolean;
 }) => {
   return (
+    <>
+    { loading ? (
+      <EstateDetailsLoading />
+    ) : (
     <div
       className="p-6 bg-white dark:bg-darkText-primary shadow rounded-lg space-y-4"
       style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
@@ -26,7 +33,23 @@ const EstateDetails = ({
         ))}
       </div>
     </div>
+     )}
+    </>
   );
 };
 
 export default EstateDetails;
+
+
+const EstateDetailsLoading = () => {
+  return(
+    <Skeleton
+      width={"100%"}
+      height={200}
+      animation="wave"
+      sx={{
+        transform: "none",
+      }}
+    />
+  )
+}

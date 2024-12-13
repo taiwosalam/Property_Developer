@@ -76,4 +76,7 @@ export interface OccupantProfileProps {
   occupants: { name: string; id: string }[];
   isRental: boolean;
   feeDetails: FeeDetail[];
+  total_package: number;
+  loading?: boolean;
+  id: string;
 }

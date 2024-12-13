@@ -4,7 +4,9 @@ import { RentSectionTitle, FeeDetails } from "./rent-section-container";
 export const FeeBreakdown: React.FC<{
   feeDetails: FeeDetail[];
   isRental: boolean;
-}> = ({ feeDetails, isRental }) => {
+  total_package: number;
+  id:string;
+}> = ({ feeDetails, isRental, total_package, id }) => {
   return (
     <div className="space-y-6">
       <RentSectionTitle>  
@@ -13,6 +15,8 @@ export const FeeBreakdown: React.FC<{
       <FeeDetails
         title={isRental ? "New Tenant Fee" : "Occupant Fee"}
         feeDetails={feeDetails}
+        total_package={total_package}
+        id={id}
       />
     </div>
   );

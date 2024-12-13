@@ -773,7 +773,85 @@ export function convertToYesNo(value: number): string {
   return value === 1 ? "Yes" : "No";
 }
 
+// =============== /unit/${id}/view Transform ==========
+export const initData = {
+  title: "",
+  unit_id: "",
+  unit_name: "",
+  address: "",
+  images: [],
+  categories: "",
+  unitNumber: "",
+  unitPreference: "",
+  unitType: "",
+  unitSubType: "",
+  state: "",
+  localGovernment: "",
+  accountOfficer: "",
+  bedrooms: "",
+  bathrooms: "",
+  toilets: "",
+  fee_period: "",
+  newTenantPrice: "",
+  newTenantTotalPrice: "",
+  renew_fee_period: "",
+  renewalTenantPrice: "",
+  renewalTenantTotalPrice: "",
+  branchName: "",
+  agency_fee: "",
+  whoToCharge: "",
+  caution_deposit: "",
+  group_chat: "",
+  rent_penalty: "",
+  propertyId: "",
+  total_package: "",
+  caution_fee: "",
+  security_fee: "",
+  other_charge: "",
+  unitAgentFee: "",
+  service_charge: ""
+}
 
+
+export interface initDataProps{
+  title:string;
+  unit_id:string;
+  unit_name:string;
+  address:string;
+  images: string[];
+  categories:string;
+  unitNumber:string;
+  unitPreference:string;
+  unitType: string,
+  unitSubType: string;
+  state:string;
+  localGovernment:string;
+  accountOfficer:string;
+  bedrooms:string;
+  bathrooms:string;
+  toilets:string;
+  fee_period:string;
+  newTenantPrice:string;
+  newTenantTotalPrice:string;
+  renew_fee_period:string;
+  renewalTenantPrice:string;
+  renewalTenantTotalPrice:string;
+  branchName?: string,
+  agency_fee?: string;
+  whoToCharge?: string;
+  caution_deposit?: string;
+  group_chat?: string;
+  rent_penalty?: string;
+  propertyId?: string;
+  total_package?: string;
+  caution_fee?: string;
+  security_fee?: string;
+  other_charge?: string;
+  unitAgentFee?: string;
+  service_charge?: string;
+}
+
+// ================ transform /unit/${id}/view =================
 export const transformUnitData = (response: any) => {
   const data = response.data;
   console.log("data", data)
@@ -808,12 +886,19 @@ export const transformUnitData = (response: any) => {
     wardrobe: data.wardrobe,
     fee_period: data.fee_period,
     branchName: data.property.branch.branch_name,
-    agency_fee: data.agency_fee,
+    agency_fee: data.property.agency_fee,
     whoToCharge: data.property.who_to_charge_new_tenant,
     group_chat: convertToYesNo(Number(data.property.group_chat)),
     rent_penalty: convertToYesNo(Number(data.property.rent_penalty)),
     caution_deposit: data.property.caution_deposit,
     location: "",
     fee_amount: "",
+    propertyId: data.property.id,
+    total_package: data.total_package,
+    caution_fee: data.caution_fee, 
+    security_fee: data.security_fee,
+    other_charge: data.other_charge,
+    unitAgentFee: data.agency_fee,
+    service_charge: data.service_charge,
   }
 }

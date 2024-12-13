@@ -14,17 +14,17 @@ import BackButton from "@/components/BackButton/back-button";
 import { useParams, useSearchParams } from "next/navigation";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useEffect, useState } from "react";
-import {initialSingleData, InitialSingleUnit, InitialSingleUnitProps, singleUnitApiResponse, transformSingleUnitData, UnitDetails } from "../../data";
+import { initData, initDataProps, initialSingleData, InitialSingleUnit, InitialSingleUnitProps, singleUnitApiResponse, transformSingleUnitData, transformUnitData, UnitDetails } from "../../data";
 import useFetch from "@/hooks/useFetch";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  const propertyType = searchParams.get("type") as "rental" | "facility"; 
+  const propertyType = searchParams.get("type") as "rental" | "facility";
   const isRental = propertyType === "rental";
 
-  const [pageData, setPageData] = useState<InitialSingleUnitProps>(initialSingleData);
-  const endpoint = `/unit/${id}/list`
+  const [unit_data, setUnit_data] = useState<initDataProps>(initData);
+  const endpoint = `/unit/${id}/view`
   const {
     data: apiData,
     loading,
@@ -36,37 +36,35 @@ const StartRent = () => {
 
   useEffect(() => {
     if (apiData) {
-      setPageData((x) => ({
+      setUnit_data((x: any) => ({
         ...x,
-        ...transformSingleUnitData(apiData), 
-      }));
+        ...transformUnitData(apiData)
+      }))
+      console.log("Data", unit_data)
     }
   }, [apiData])
 
-  
-  const unit_data = pageData?.data[0];
-  console.log("data", pageData?.data[0])
+  const propertyId = unit_data.propertyId;
+  const rentalData = [
+    { label: "Property Title", value: unit_data?.title },
+    { label: "State", value: unit_data?.state },
+    { label: "Local Government", value: unit_data?.localGovernment },
+    { label: "Full Address", value: unit_data?.address },
+    { label: "Branch", value: unit_data?.branchName },
+    { label: "Account Officer", value: "No Officer" }, //TODO
+    { label: "Landlord", value: "No Landlord" }, //TODO
+    { label: "Categories", value: unit_data?.categories },
+    { label: "Unit ID", value: unit_data?.unit_id },
+  ];
 
-const rentalData = [
-  { label: "Property Title", value: unit_data?.title },
-  { label: "State", value: unit_data?.state },
-  { label: "Local Government", value: unit_data?.localGovernment },
-  { label: "Full Address", value: unit_data?.address },
-  { label: "Branch", value: unit_data?.branchName  },
-  { label: "Account Officer", value: "No Officer" }, //TODO
-  { label: "Landlord", value: "No Landlord" }, //TODO
-  { label: "Categories", value: unit_data?.categories },
-  { label: "Unit ID", value: unit_data?.unit_id },
-];
-
-const propertySettingsData = [
-  { label: "Agency Fee", value: unit_data?.agency_fee },
-  { label: "Period", value: unit_data?.fee_period },
-  { label: "Charge", value: unit_data?.whoToCharge },
-  { label: "Caution Deposit", value: unit_data.caution_deposit },
-  { label: "Group Chat", value: `${unit_data?.group_chat}`},
-  { label: "Rent Penalty", value: `${unit_data?.rent_penalty}` },
-];
+  const propertySettingsData = [
+    { label: "Agency Fee", value: `${unit_data?.agency_fee}%` },
+    { label: "Period", value: unit_data?.fee_period },
+    { label: "Charge", value: unit_data?.whoToCharge },
+    { label: "Caution Deposit", value: unit_data.caution_deposit },
+    { label: "Group Chat", value: `${unit_data?.group_chat}` },
+    { label: "Rent Penalty", value: `${unit_data?.rent_penalty}` },
+  ];
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Start {isRental ? "Rent" : "Counting"}</BackButton>
@@ -74,13 +72,16 @@ const propertySettingsData = [
         <EstateDetails
           title={`${isRental ? "Unit" : "Facility"} Details`}
           estateData={isRental ? rentalData : estateData}
+          loading={loading}
         />
         <EstateSettings
+          id={propertyId as string}
           title={`${isRental ? "Property" : "Facility"} Settings`}
           estateSettingsDta={
             isRental ? propertySettingsData : estateSettingsDta
           }
           {...(isRental ? { gridThree: true } : {})}
+          loading={loading}
         />
         <OccupantProfile
           isRental={isRental}
@@ -91,12 +92,15 @@ const propertySettingsData = [
           ]}
           feeDetails={[
             { name: isRental ? "Annual Rent" : "Annual Fee", amount: 300000 },
-            { name: "Service Charge", amount: 300000 },
-            { name: "Caution Fee", amount: 300000 },
-            { name: "Security Fee", amount: 300000 },
-            { name: "Agency Fee", amount: 300000 },
-            { name: "Other Charges", amount: 300000 },
+            { name: "Service Charge", amount: Number(unit_data.service_charge) },
+            { name: "Caution Fee", amount: Number(unit_data.caution_fee) },
+            { name: "Security Fee", amount: Number(unit_data.security_fee) },
+            { name: "Agency Fee", amount: Number(unit_data.unitAgentFee) },
+            { name: "Other Charges", amount: Number(unit_data.other_charge) },
           ]}
+          total_package={Number(unit_data.total_package)}
+          loading={loading}
+          id={propertyId as string}
         />
       </section>
       <FixedFooter className={`flex justify-${isRental ? "between" : "end"}`}>

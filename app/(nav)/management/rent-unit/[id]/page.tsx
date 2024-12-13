@@ -9,7 +9,7 @@ import { RentSectionTitle } from "@/components/Management/Rent And Unit/rent-sec
 import { useParams, useRouter } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import { useEffect, useState } from "react";
-import { initialSingleData, InitialSingleUnitProps, singleUnitApiResponse, transformSingleUnitData, transformUnitData } from "../data";
+import { initData, initDataProps, singleUnitApiResponse, transformSingleUnitData, transformUnitData } from "../data";
 import NetworkError from "@/components/Error/NetworkError";
 
 const PriceSection: React.FC<{ period: string; title: string; total_package: number; price: number }> = ({
@@ -49,11 +49,11 @@ const DetailItem: React.FC<{ label: string; value: string | number }> = ({
   </div>
 );
 
+
 const UnitPreviewPage = () => {
   const router = useRouter()
   const { id } = useParams();
-  const [unit_data, setUnit_data] = useState<any>({});
-  // const [pageData, setPageData] = useState<InitialSingleUnitProps>(initialSingleData);
+  const [unit_data, setUnit_data] = useState<initDataProps>(initData);
   const endpoint = `/unit/${id}/view`
   const {
     data: apiData,

@@ -42,7 +42,9 @@ export const RentSectionTitle: React.FC<{ children: React.ReactNode }> = ({
 export const FeeDetails: React.FC<{
   title: string;
   feeDetails: FeeDetail[];
-}> = ({ title, feeDetails }) => {
+  total_package: number;
+  id: string;
+}> = ({ title, feeDetails, total_package, id }) => {
   const totalFee = feeDetails
     .reduce((acc, fee) => acc + fee.amount, 0)
     .toLocaleString();
@@ -65,7 +67,7 @@ export const FeeDetails: React.FC<{
               Total Package
             </p>
             <p className="text-lg lg:text-xl text-brand-9 font-bold">
-              ₦{totalFee}
+            {`₦${total_package.toLocaleString()}`}
             </p>
           </div>
           <Modal>
@@ -75,7 +77,7 @@ export const FeeDetails: React.FC<{
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <EditWarningModal />
+              <EditWarningModal id={id}/>
             </ModalContent>
           </Modal>
         </div>
