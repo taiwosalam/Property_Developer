@@ -3,9 +3,11 @@
 import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-const EditWarningModal = () => {
+const EditWarningModal = ({ id }: { id:string }) => {
   const router = useRouter();
+
   return (
     <div className="bg-white px-4 py-5 lg:py-10 absolute bottom-0 left-0 right-0">
       <p className="text-center font-semibold my-4 text-brand-9">
@@ -19,7 +21,7 @@ const EditWarningModal = () => {
             className="py-2 px-8"
             size="16_bold"
             onClick={() => {
-              router.push("/management/properties/1/edit-property");
+              router.push(`/management/properties/${id}/edit-property`);
             }}
           >
             Proceed

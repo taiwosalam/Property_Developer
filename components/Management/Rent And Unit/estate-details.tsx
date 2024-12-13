@@ -1,3 +1,4 @@
+import { Skeleton } from "@mui/material";
 import { EstateDetailItem } from "./detail-item";
 import { RentSectionTitle } from "./rent-section-container";
 
@@ -26,7 +27,7 @@ const EstateDetails = ({
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default EstateDetails;

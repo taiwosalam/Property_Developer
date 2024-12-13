@@ -20,7 +20,17 @@ import SwitchPropertyModal from "@/components/Management/Rent And Unit/Edit-Rent
 
 export const RentDetails: React.FC<{
   isRental: boolean;
-}> = ({ isRental }) => {
+  startDate: string;
+  dueDate: string;
+  rentFee: string;
+  otherFee: string;
+}> = ({ isRental, startDate, dueDate, rentFee, otherFee }) => {
+  const renewalRentDetailItems = [
+    { label: "Current Start Date", value: startDate },
+    { label: "Due Date", value: dueDate },
+    { label: "Annual Rent", value: `₦${(rentFee ? Number(rentFee) : 0).toLocaleString()}` },
+    { label: "Other Fees", value: `₦${(otherFee ? Number(otherFee) : 0).toLocaleString()}` },
+  ];
   return (
     <div className="space-y-6">
       <RentSectionTitle>
@@ -48,9 +58,8 @@ export const EditCurrentRent: React.FC<{
   const CURRENCY_SYMBOL = currencySymbols.naira;
   return (
     <div>
-      <RentSectionTitle>{`Edit Current ${
-        isRental ? "Rent" : "Fee"
-      }`}</RentSectionTitle>
+      <RentSectionTitle>{`Edit Current ${isRental ? "Rent" : "Fee"
+        }`}</RentSectionTitle>
       <SectionSeparator className="mt-4 mb-6" />
       <div className="grid md:grid-cols-2 gap-4 mb-6">
         <DateInput
@@ -227,6 +236,8 @@ export const NewUnitCost: React.FC<{
       <FeeDetails
         title={isRental ? "Annual Rent" : "Annual Fee"}
         feeDetails={feeDetails}
+        total_package={1}
+        id={""}
       />
     </div>
   );

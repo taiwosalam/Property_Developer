@@ -108,13 +108,12 @@ const VehiclesRecordPage = () => {
         ...x,
         ...transformVehicleRecordApiResponse(apiData),
       }));
-      console.log("Updated state", state);
     }
   }, [apiData]);
 
   const handleActionClick = (record: DataItem) => {
     const vehicleRecord = record as VehicleRecord;
-    console.log("vehicle record passed -", vehicleRecord);
+    // console.log("vehicle record passed -", vehicleRecord);
     const updatedRecord = {
       ...data,
       latest_check_in: vehicleRecord.latest_check_in,
@@ -129,7 +128,6 @@ const VehiclesRecordPage = () => {
       last_update: vehicleRecord.last_update,
     };
     setSelectedRecord(updatedRecord);
-    // console.log("updatedRecord", updatedRecord)
     setModalOpen(true);
   };
 
@@ -146,7 +144,7 @@ const VehiclesRecordPage = () => {
 
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
-
+console.log("data needed", data)
   return (
     <div className="space-y-9">
       <div className="page-header-container">
