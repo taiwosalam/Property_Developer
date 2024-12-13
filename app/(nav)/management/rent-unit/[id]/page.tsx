@@ -9,11 +9,10 @@ import { RentSectionTitle } from "@/components/Management/Rent And Unit/rent-sec
 import { useParams, useRouter } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import { useEffect, useState } from "react";
-import { initialSingleData, InitialSingleUnitProps, singleUnitApiResponse, transformSingleUnitData } from "../data";
-import { UnitDetails } from "@/components/Management/Rent And Unit/types";
+import { initialSingleData, InitialSingleUnitProps, singleUnitApiResponse, transformSingleUnitData, transformUnitData } from "../data";
 import NetworkError from "@/components/Error/NetworkError";
 
-const PriceSection: React.FC<{ period:string; title: string; total_package: number; price: number }> = ({
+const PriceSection: React.FC<{ period: string; title: string; total_package: number; price: number }> = ({
   title,
   price,
   total_package,
@@ -32,7 +31,7 @@ const PriceSection: React.FC<{ period:string; title: string; total_package: numb
         <span className="text-highlight">
           ₦{(total_package).toLocaleString()}
         </span>{" "}
-        / { period }
+        / {period}
       </p>
     </div>
   </div>
@@ -53,8 +52,9 @@ const DetailItem: React.FC<{ label: string; value: string | number }> = ({
 const UnitPreviewPage = () => {
   const router = useRouter()
   const { id } = useParams();
-  const [pageData, setPageData] = useState<InitialSingleUnitProps>(initialSingleData);
-  const endpoint = `/unit/${id}/list`
+  const [unit_data, setUnit_data] = useState<any>({});
+  // const [pageData, setPageData] = useState<InitialSingleUnitProps>(initialSingleData);
+  const endpoint = `/unit/${id}/view`
   const {
     data: apiData,
     loading,
@@ -66,43 +66,41 @@ const UnitPreviewPage = () => {
 
   useEffect(() => {
     if (apiData) {
-      setPageData((x) => ({
+      setUnit_data((x:any) => ({
         ...x,
-        ...transformSingleUnitData(apiData), 
-      }));
+        ...transformUnitData(apiData)
+      }))
+      console.log("Data", unit_data)
     }
   }, [apiData])
 
-  
-  const unit_data = pageData?.data[0];
-  console.log("page data", pageData)
-  
-if (loading)
-  return (
-    <div className="min-h-[80vh] flex justify-center items-center">
-      <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-    </div>
-  );
 
-if (isNetworkError) return <NetworkError />;
+  if (loading)
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
+    );
 
-if (error) return <div>{error}</div>;
+  if (isNetworkError) return <NetworkError />;
+
+  if (error) return <div>{error}</div>;
 
   return (
     <section className="space-y-5">
-      <BackButton as="p"> { unit_data.title } </BackButton>
+      <BackButton as="p"> {unit_data.title} </BackButton>
 
       {/* Heading */}
       <div className="text-black dark:text-white">
         <p className="text-base font-medium dark:text-darkText-1">
-          ID: { unit_data.unit_id }
+          ID: {unit_data.unit_id}
         </p>
         <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
-          { unit_data.unit_name }
+          {unit_data.unit_name}
         </h1>
         <p className="text-sm text-text-label font-normal flex items-center gap-1">
           <LocationIcon />
-          { unit_data.address }
+          {unit_data.address}
         </p>
       </div>
 
