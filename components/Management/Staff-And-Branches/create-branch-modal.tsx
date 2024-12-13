@@ -26,13 +26,6 @@ const CreateBranchModal = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [formStep, setFormStep] = useState(1);
-  // const [verifyEmailModal, setVerifyEmailModal] = useState(false);
-  // const [getOtpReqLoading, setGetOtpReqLoading] = useState(false);
-  // const [branchEmail, setBranchEmail] = useState("");
-  // const [verifiedEmail, setVerifiedEmail] = useState("");
-  // const [emailStatus, setEmailStatus] = useState<"pending" | "verified">(
-  //   "pending"
-  // );
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -78,33 +71,12 @@ const CreateBranchModal = () => {
     setFormStep(1);
   };
 
-  // const handleGetEmailVerificationOTP = async (email: string) => {
-  //   const emailSchema = z.string().email();
-  //   if (!emailSchema.safeParse(email).success) {
-  //     toast.warning("Please enter a valid email address.");
-  //     return;
-  //   }
-  //   setGetOtpReqLoading(true);
-  //   const status = await getEmailVerificationOTP(email);
-  //   if (status) {
-  //     setVerifyEmailModal(true);
-  //   }
-  //   setGetOtpReqLoading(false);
-  // };
-
   const handleFormSubmit = async (data: Record<string, any>) => {
-    // if (emailStatus !== "verified" || !verifiedEmail) {
-    //   toast.warning("Please verify your email first.");
-    //   return;
-    // }
     if (!checkFormDataForImageOrAvatar(data)) {
       toast.warning("Please upload a picture or choose an avatar.");
       return;
     }
-    // if (branchEmail !== verifiedEmail || data.branch_email !== verifiedEmail) {
-    //   toast.error("The email you entered does not match the verified email.");
-    //   return;
-    // }
+
     setIsLoading(true);
     const status = await createBranch(data);
     if (status) {
@@ -137,27 +109,6 @@ const CreateBranchModal = () => {
         >
           <input type="hidden" name="avatar" value={activeAvatar} />
           <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {/* <div className="relative">
-              <Input
-                type="email"
-                label="Branch Email"
-                id="branch_email"
-                inputClassName="rounded-[8px] pr-[87px]"
-                value={branchEmail}
-                onChange={(value) => setBranchEmail(value)}
-                required
-              />
-              <Button
-                size="xs_medium"
-                className={`retain-opacity absolute right-2 top-[54%] py-1 px-4 ${
-                  emailStatus === "verified" ? "!bg-status-success-2" : ""
-                }`}
-                onClick={() => handleGetEmailVerificationOTP(branchEmail)}
-                disabled={emailStatus === "verified" || getOtpReqLoading}
-              >
-                {emailStatus === "pending" ? "Verify" : "Verified"}
-              </Button>
-            </div> */}
             <Input
               label="Branch Name/Title"
               id="branch_name"
@@ -194,6 +145,13 @@ const CreateBranchModal = () => {
               id="branch_address"
               inputClassName="rounded-[8px]"
             />
+            <Select
+              label="Branch Wallet"
+              id="branch_wallet"
+              options={["activate", "deactivate"]}
+              inputContainerClassName="bg-neutral-2"
+              defaultValue="activate"
+            />
             <TextArea
               id="branch_description"
               label="Branch Description"
@@ -205,7 +163,8 @@ const CreateBranchModal = () => {
           <div className="flex justify-between items-end gap-4 flex-wrap">
             <div className="custom-flex-col gap-3">
               <p className="text-black text-base font-medium">
-                Upload picture or select an avatar.
+                <span className="text-status-error-primary">*</span>Upload
+                picture or select an avatar.
               </p>
               <div className="flex items-end gap-3">
                 <label htmlFor="picture" className="cursor-pointer relative">
@@ -285,14 +244,6 @@ const CreateBranchModal = () => {
       </div>
     </LandlordTenantModalPreset>
   );
-  // : (
-  //   <VerifyEmailModal
-  //     email={branchEmail}
-  //     setVerifyEmailModal={setVerifyEmailModal}
-  //     setEmailStatus={setEmailStatus}
-  //     setVerifiedEmail={setVerifiedEmail}
-  //   />
-  // );
 };
 
 export default CreateBranchModal;

@@ -50,6 +50,9 @@ export const transformPropertyData = (
       coordinate: data.coordinate || undefined,
     },
     addedUnits: data.units,
+    canDelete:
+      !data.units.length ||
+      data.units.every((unit) => unit.is_active === "vacant"),
   };
 };
 

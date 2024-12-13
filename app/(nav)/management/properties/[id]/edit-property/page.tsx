@@ -52,7 +52,7 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
       retain_images: retainedImages,
     });
     if (status) {
-      router.push(`/management/properties/${propertyId}`);
+      refetch({ silent: true });
     }
   };
 
@@ -66,6 +66,7 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
     loading,
     isNetworkError,
     error,
+    refetch,
   } = useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
 
   useEffect(() => {
@@ -76,6 +77,7 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
         return;
       }
       setDataNotFound(false);
+      setAddUnitStore("canDelete", transformedData.canDelete);
       setAddUnitStore("property_id", transformedData.property_id);
       setAddUnitStore("propertyType", transformedData.propertyType);
       setAddUnitStore("propertyDetails", transformedData.propertyDetails);
@@ -100,14 +102,22 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
         handleSubmit={handleSubmit}
         formType={propertyType as "rental" | "facility"}
         propertyId={propertyId}
-        onAddUnit={() => setShowNewUnitForm(true)}
+        onAddUnit={() => {
+          setShowNewUnitForm(true);
+          setTimeout(() => {
+            window.scrollTo({
+              top: document.documentElement.scrollHeight,
+              behavior: "smooth",
+            });
+          }, 0);
+        }}
       />
 
       <div className="custom-flex-col gap-10">
         {addedUnits.map((unit, index) => (
           <AddUnitFormCard key={index} data={unit} index={index} />
         ))}
-        <hr className="!my-4 border-none bg-borders-dark h-[1px]" />
+
         {showNewUnitForm && (
           <UnitForm empty hideEmptyForm={() => setShowNewUnitForm(false)} />
         )}

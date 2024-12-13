@@ -17,7 +17,7 @@ const EditUnitActions: React.FC<{ handleCancel: () => void }> = ({
         className="py-1 px-8"
         onClick={handleCancel}
       >
-        Cancel
+        Close
       </Button>
       <Button
         type="submit"

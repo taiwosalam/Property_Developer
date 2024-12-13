@@ -130,11 +130,18 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       >
         <p className="text-brand-5 text-xs lg:text-sm font-bold">ID: {id}</p>
         <p className="text-[#374151] dark:text-white text-lg md:text-xl lg:text-2xl font-bold">
-          {property_name} <br />({total_units} Units)
+          <span className="text-ellipsis line-clamp-1 break-all">
+            {property_name}
+          </span>
+          <span className="text-ellipsis line-clamp-1 break-all">
+            ({total_units} Units)
+          </span>
         </p>
-        <p className="flex items-center gap-1 text-brand-tertiary text-xs lg:text-sm font-normal">
+        <p className="flex items-center gap-1 text-brand-tertiary text-xs lg:text-sm font-normal text-ellipsis line-clamp-1 break-all">
           <LocationIcon />
-          {address}
+          <span className="text-ellipsis line-clamp-1 break-all">
+            {address}
+          </span>
         </p>
         <div className="flex flex-wrap justify-between items-end mt-1">
           <PropertyTag propertyType={property_type} sm />
