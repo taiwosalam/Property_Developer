@@ -26,7 +26,7 @@ interface PropertyDetails {
   manager?: string;
   category: Categories;
   description: string;
-  images: string[];
+  images: { path: string; id: string }[];
 }
 interface PropertySettings {
   agency_fee?: number;
@@ -83,6 +83,7 @@ export const useAddUnitStore = create<AddUnitStore>((set) => ({
       const replicatedUnits: (UnitDataObject & { notYetUploaded?: boolean })[] =
         Array(duplicateCount).fill({
           ...unitData,
+          id: "",
           images: [],
           notYetUploaded: true,
         });

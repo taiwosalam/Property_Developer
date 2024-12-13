@@ -10,7 +10,9 @@ const PropertyFormFooter: React.FC<{
   editMode?: boolean;
   requestLoading: boolean;
   handleReset: () => void;
-}> = ({ editMode, requestLoading, handleReset }) => {
+  propertyId?: string;
+  onAddUnit?: () => void;
+}> = ({ editMode, requestLoading, handleReset, propertyId, onAddUnit }) => {
   const { canSubmit } = useContext(FlowProgressContext);
   return (
     <FixedFooter
@@ -32,7 +34,7 @@ const PropertyFormFooter: React.FC<{
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <DeletePropertyModal />
+              <DeletePropertyModal propertyId={propertyId as string} />
             </ModalContent>
           </Modal>
           <div className="flex items-center gap-4">
@@ -41,6 +43,7 @@ const PropertyFormFooter: React.FC<{
               size="sm_medium"
               variant="sky_blue"
               className="py-2 px-6"
+              onClick={onAddUnit}
             >
               Add more unit
             </Button>
@@ -48,9 +51,9 @@ const PropertyFormFooter: React.FC<{
               type="submit"
               size="sm_medium"
               className="py-2 px-6"
-              disabled={!canSubmit}
+              disabled={!canSubmit || requestLoading}
             >
-              update
+              {requestLoading ? "Updating..." : "Update"}
             </Button>
           </div>
         </Fragment>
@@ -71,7 +74,7 @@ const PropertyFormFooter: React.FC<{
             size="base_medium"
             className="py-2 px-6"
           >
-            {requestLoading ? "Please Wait." : "Add Unit"}
+            {requestLoading ? "Please Wait..." : "Add Unit"}
           </Button>
         </Fragment>
       )}

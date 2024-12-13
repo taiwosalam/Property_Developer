@@ -47,7 +47,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
-  if (error) return <div>{error}</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
   if (!landlordData) return null;
   const groupedDocuments = groupDocumentsByType(landlordData?.documents);
 

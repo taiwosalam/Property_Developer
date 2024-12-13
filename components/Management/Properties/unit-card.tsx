@@ -67,7 +67,7 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
     <>
       <div className="flex gap-4 flex-wrap items-center justify-between">
         <p className="text-brand-10 text-base font-bold">
-          Unit ID: {data.id || (data.notYetUploaded ? "Not Yet Uploaded" : "")}
+          Unit ID: {(data.notYetUploaded ? "Not Yet Uploaded" : "") || data.id}
         </p>
         <div className="flex gap-4 sm:gap-8">
           <Button

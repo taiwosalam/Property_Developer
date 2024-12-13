@@ -31,6 +31,7 @@ export interface UnitFormState {
 
 interface emptyUnitFormProps {
   empty: true;
+  afterSubmit: () => void;
 }
 
 interface editUnitFormProps {
@@ -74,6 +75,8 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       ...x,
       formResetKey: x.formResetKey + 1,
       unitType: props.empty ? "" : (props.data.unit_type as UnitTypeKey),
+      images: props.empty ? [] : props.data.images.map((img) => img.path),
+      imageFiles: props.empty ? [] : props.data.images.map((img) => img.path),
     }));
 
   const yesNoFields = [
@@ -107,13 +110,12 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
               val: false,
               count: 1,
             });
-            e?.currentTarget.reset();
-            resetForm();
+            props.afterSubmit();
           } else {
             addUnit(unitData);
-            e?.currentTarget.reset();
-            resetForm();
           }
+          e?.currentTarget.reset();
+          resetForm();
         }
       }
     } else {

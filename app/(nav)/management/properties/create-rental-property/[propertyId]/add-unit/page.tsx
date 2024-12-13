@@ -83,7 +83,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
           </>
         )}
 
-        {!saved && <UnitForm empty />}
+        {!saved && <UnitForm empty afterSubmit={() => setSaved(true)} />}
       </div>
     </div>
   );
