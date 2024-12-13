@@ -89,6 +89,9 @@ export const LandlordEditProfileInfoSection = () => {
       gender: data.gender,
     };
     cleanPhoneNumber(payload);
+    if (!payload.phone_number) {
+      payload.phone_number = "";
+    }
     if (landlord?.id) {
       setReqLoading(true);
       const status = await updateLandlordProfile(
@@ -733,6 +736,10 @@ export const LandlordEditAvatarInfoSection = () => {
           toast.warning("Please upload a picture or choose an avatar.");
           return;
         }
+      }
+      const pictureFile = formData.get("picture") as File;
+      if (pictureFile && pictureFile.size > 0) {
+        formData.delete("avatar");
       }
       setReqLoading(true);
       const status = await updateLandlordPicture(data.id, formData);

@@ -88,6 +88,9 @@ export const TenantEditProfileInfoSection = () => {
       gender: data.gender,
     };
     cleanPhoneNumber(payload);
+    if (!payload.phone_number) {
+      payload.phone_number = "";
+    }
 
     if (tenant?.id) {
       setReqLoading(true);
@@ -729,6 +732,10 @@ export const TenantEditAvatarInfoSection = () => {
           toast.warning("Please upload a picture or choose an avatar.");
           return;
         }
+      }
+      const pictureFile = formData.get("picture") as File;
+      if (pictureFile && pictureFile.size > 0) {
+        formData.delete("avatar");
       }
       setReqLoading(true);
       const status = await updateTenantPicture(data.id, formData);
