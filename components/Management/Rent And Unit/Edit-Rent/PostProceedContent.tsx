@@ -28,6 +28,7 @@ const PostProceedContent = () => {
   const searchParams = useSearchParams();
   const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
   const isRental = propertyType === "rental";
+  const id = '1'  //change to API ID
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Change Property Unit</BackButton>
@@ -42,6 +43,7 @@ const PostProceedContent = () => {
             isRental ? propertySettingsData : estateSettingsDta
           }
           {...(isRental ? { gridThree: true } : {})}
+          id={id}
         />
         <div className="pt-6 lg:flex lg:gap-10 space-y-8">
           <div className="lg:w-3/5 space-y-8">
