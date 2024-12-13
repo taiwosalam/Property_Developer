@@ -253,10 +253,11 @@ const Inventory = () => {
         }}
         searchInputPlaceholder="Search inventory"
         handleFilterApply={handleFilterApply}
-        handleSearch={handleSearch}
         isDateTrue
         filterOptionsMenu={inventoryFiltersWithDropdown}
         appliedFilters={appliedFilters}
+        handleSearch={handleSearch}
+        onSort={handleSort}
       />
 
       <section className="capitalize">

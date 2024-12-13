@@ -104,6 +104,20 @@ const AgentCommunityPage = () => {
     });
   };
 
+  
+  const handlePageChange = (page: number) => {
+    setConfig({
+      params: { ...config.params, page },
+    });
+  };
+
+  const handleSearch = async (query: string) => {
+    // console.log("searching...")
+    setConfig({
+      params: { ...config.params, search: query },
+    });
+  };
+
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate, options } = filters;
@@ -123,6 +137,7 @@ const AgentCommunityPage = () => {
           queryParams.recent = true; 
       }
   });
+
   if (statesArray.length > 0) {
     queryParams.state = statesArray.join(",");
   }
@@ -140,24 +155,6 @@ const AgentCommunityPage = () => {
   };
 
 
-  const handlePageChange = (page: number) => {
-    setState((prevState) => ({
-      ...prevState,
-      searchQuery: "",
-      meta: {
-        ...prevState.meta,
-        current_page: page,
-      },
-    }));
-  };
-
-  const handleSearch = async (query: string) => {
-    if (!query && !searchQuery) return;
-    setState((prevState) => ({
-      ...prevState,
-      searchQuery: query,
-    }));
-  };
 
   const {
     data: apiData,
@@ -246,7 +243,7 @@ const AgentCommunityPage = () => {
           },
           {
             label: "New Articles",
-            value: "new",
+              value: "new",
           },
         ]}
         handleSearch={handleSearch}
