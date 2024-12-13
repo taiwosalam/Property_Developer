@@ -19,40 +19,60 @@ import CustomTable from "@/components/Table/table";
 import { Dayjs } from "dayjs";
 import { useState, useEffect } from "react";
 
-export const RenewalRentDetails: React.FC<{ isRental: boolean }> = ({
+export const RenewalRentDetails: React.FC<{
+  isRental: boolean;
+  startDate: string;
+  dueDate: string;
+  rentFee: string;
+  otherFee: string;
+}> = ({
   isRental,
+  startDate,
+  dueDate,
+  rentFee,
+  otherFee
 }) => {
-  return (
-    <div className="space-y-6">
-      <RentSectionTitle>
-        {isRental ? "Renew Rent Details" : "Fee Renewal Details"}
-      </RentSectionTitle>
-      <RentSectionContainer title={isRental ? "Rent Fee" : "Fee"}>
-        <div className="grid md:grid-cols-2 gap-4">
-          {renewalRentDetailItems.map((item, index) => (
-            <DetailItem
-              key={index}
-              label={item.label}
-              value={item.value}
-              style={{ width: "150px" }}
-            />
-          ))}
-        </div>
-      </RentSectionContainer>
-    </div>
-  );
-};
+    const renewalRentDetailItems = [
+      { label: "Current Start Date", value: startDate },
+      { label: "Due Date", value: dueDate },
+      { label: "Annual Rent", value: `₦${(rentFee ? Number(rentFee) : 0).toLocaleString()}` },
+      { label: "Other Fees", value: `₦${(otherFee ? Number(otherFee) : 0).toLocaleString()}` },  
+    ];
+    return (
+      <div className="space-y-6">
+        <RentSectionTitle>
+          {isRental ? "Renew Rent Details" : "Fee Renewal Details"}
+        </RentSectionTitle>
+        <RentSectionContainer title={isRental ? "Rent Fee" : "Fee"}>
+          <div className="grid md:grid-cols-2 gap-4">
+            {renewalRentDetailItems.map((item, index) => (
+              <DetailItem
+                key={index}
+                label={item.label}
+                value={item.value}
+                style={{ width: "150px" }}
+              />
+            ))}
+          </div>
+        </RentSectionContainer>
+      </div>
+    );
+  };
 
 export const RenewalFee: React.FC<{
   isRental: boolean;
   feeDetails: FeeDetail[];
-}> = ({ isRental, feeDetails }) => {
+  total_package: number;
+  id: string;
+}> = ({ isRental, feeDetails, total_package, id }) => {
   return (
     <div className="space-y-6">
       <RentSectionTitle>Renewal Fee</RentSectionTitle>
       <FeeDetails
         title={isRental ? "Annual Rent" : "Annual Fee"}
         feeDetails={feeDetails}
+        total_package={total_package}
+        id={id}
       />
     </div>
   );
@@ -144,24 +164,19 @@ export const RenewalRent: React.FC<{
         {start ? (
           <>
             {checkboxStates["Create Invoice"]
-              ? `Payment will be reflected once the ${
-                  isRental ? "tenant" : "occupant"
-                } makes a payment towards the generated invoice.`
-              : `Confirms that you have received payment for the Unit Change.  However, if you intend to receive the payment, you can click 'create invoice' for ${
-                  isRental ? "tenant" : "occupant"
-                } to make the payment.`}
+              ? `Payment will be reflected once the ${isRental ? "tenant" : "occupant"
+              } makes a payment towards the generated invoice.`
+              : `Confirms that you have received payment for the Unit Change.  However, if you intend to receive the payment, you can click 'create invoice' for ${isRental ? "tenant" : "occupant"
+              } to make the payment.`}
           </>
         ) : (
           <>
             {checkboxStates["Create Invoice"]
-              ? `${isRental ? "Rent" : "Fee"} will commence upon ${
-                  isRental ? "tenant" : "occupant"
-                } making payment for the generated invoice.`
-              : `Confirms that you have received payment for the ${
-                  isRental ? "rent" : "fee"
-                } renewal. However, if you intend to receive the payment, you can click 'create invoice' for ${
-                  isRental ? "tenant" : "occupant"
-                } to make the payment.`}
+              ? `${isRental ? "Rent" : "Fee"} will commence upon ${isRental ? "tenant" : "occupant"
+              } making payment for the generated invoice.`
+              : `Confirms that you have received payment for the ${isRental ? "rent" : "fee"
+              } renewal. However, if you intend to receive the payment, you can click 'create invoice' for ${isRental ? "tenant" : "occupant"
+              } to make the payment.`}
           </>
         )}
       </p>
