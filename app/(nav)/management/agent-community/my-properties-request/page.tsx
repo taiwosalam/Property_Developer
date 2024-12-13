@@ -26,6 +26,7 @@ import { PropertyRequestParams } from "../type";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import { stateOptions } from "@/app/(nav)/tasks/inspections/data";
+import { formatNumber } from "@/utils/number-formatter";
 
 const lists = [
   {
@@ -232,8 +233,8 @@ const MyPropertiesRequestPage = () => {
       propertyType: request.property_type || "__",
       category: request.property_category || "__",
       subType: request.sub_type || "__",
-      minBudget: `₦${request.min_budget}` || "__",
-      maxBudget: `₦${request.max_budget}` || "__",
+      minBudget: `₦${formatNumber(request.min_budget)}` || "__",
+      maxBudget: `₦${formatNumber(request.max_budget)}` || "__",
       requestType: "Web",
       description: request.description || "__",
       phoneNumber: request.user?.phone || "__",

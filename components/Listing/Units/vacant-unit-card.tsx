@@ -22,8 +22,17 @@ import Link from "next/link";
 import UnitSponsorPopover from "./unit-sponsor-popover";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
+import { unit_listing_status } from "@/app/(nav)/listing/units/data";
 
-const VacantUnitCard = () => {
+// published: "#01BA4C",
+// unpublished: "#FFBB53",
+// moderation: "#702AC8",
+// rejected: '#FB1818'
+const VacantUnitCard = ({ 
+  status 
+}: {
+  status: "published" | "unpublished" | "under moderation" | "rejected"
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [checked, setChecked] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,12 +42,20 @@ const VacantUnitCard = () => {
     setChecked(!checked);
   };
 
+  const color = unit_listing_status[status];
+
   return (
     <div
       className="p-6 custom-flex-col gap-4 rounded-2xl bg-white dark:bg-darkText-primary"
       style={{ boxShadow: " 2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
-      <p className="text-brand-10 text-base font-bold">Unit ID: 123456776342</p>
+       <div className="flex items-center gap-6 justify-between">
+         <p className="text-brand-10 text-base font-bold">Unit ID: 123456776342</p>
+        <div
+          className="w-5 h-5 rounded-full"
+          style={{ backgroundColor: color || "#ebeef0" }}
+        ></div>
+      </div>
       <SectionSeparator />
       <div className="custom-flex-col gap-4 overflow-x-auto custom-round-scrollbar">
         <div className="min-w-[800px] custom-flex-col gap-4">
@@ -120,7 +137,7 @@ const VacantUnitCard = () => {
       >
         <div className="flex  gap-2 capitalize">
           <Switch checked={checked} onClick={() => setIsOpen(true)} />
-          <p>publish</p>
+          <p>Under Moderation</p>
         </div>
         <UnitSponsorPopover />
         <Modal

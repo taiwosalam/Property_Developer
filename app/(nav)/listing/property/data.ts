@@ -21,10 +21,10 @@ export const listingPropertyFilter: FilterOptionMenu[] = [
     label: "Status",
     radio: true,
     value: [
-      { label: "Status 1", value: "Status1" },
-      { label: "Status 2", value: "Status2" },
-      { label: "Status 3", value: "Status3" },
-      { label: "Status 4", value: "Status4" },
+      { label: "Draft", value: "draft" },
+      { label: "Request", value: "request" },
+      // { label: "Status 3", value: "Status3" },
+      // { label: "Status 4", value: "Status4" },
     ],
   },
 ];

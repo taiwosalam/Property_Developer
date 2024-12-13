@@ -90,9 +90,6 @@ export const transformRentUnitApiResponse = (
     ? response.data.unit
     : response.data;
 
-  // console.log("Response received:", response);
-  // console.log("unit data", unitData)
-
   const transformedUnits: RentalPropertyCardProps[] = unitData.data.map(
     (u) => {
       return {
@@ -269,8 +266,8 @@ export interface RentalPropertyCardProps {
   tenant_name: string;
   expiry_date: string;
   rent: string;
-  caution_deposit: string;
-  service_charge: string;
+  caution_deposit: string | number;
+  service_charge: string | number;
   status: string;
   property_type?: string;
   is_active?: string;

@@ -9,6 +9,7 @@ import PropertyTag from "@/components/Tags/property-tag";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { ActionButton } from "./action-button";
 import { RentalPropertyCardProps } from "@/app/(nav)/management/rent-unit/data";
+import { formatNumber } from "@/utils/number-formatter";
 
 const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   propertyType,
@@ -48,9 +49,9 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
             />
             <DetailItem label="Rent" value={`₦${rent}`} />
             <DetailItem label="Unit No/Name" value="Flat 4" />
-            <DetailItem label="Caution Deposit" value={`₦${caution_deposit}`} />
+            <DetailItem label="Caution Deposit" value={`₦${formatNumber(caution_deposit as number)}`} />
             <DetailItem label="Unit Description" value={ unit_title } />
-            <DetailItem label="Service Charge" value={`₦${service_charge}`} />
+            <DetailItem label="Service Charge" value={`₦${formatNumber(service_charge as number)}`} />
             <DetailItem
               label="Tenants Name"
               value={

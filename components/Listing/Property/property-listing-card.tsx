@@ -111,16 +111,16 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                 <PropertyListingParagraph>
                   Property creation is not yet complete.
                 </PropertyListingParagraph>
-              ) : status === "awaiting" || status === "unpublished" ? (
-                <PropertyListingParagraph>
-                  Created By : Ajadi David -- Moniya Branch
-                </PropertyListingParagraph>
-              ) : status === "moderation" ? (
-                <PropertyListingRed>
-                  Please review the property settings and replace the picture,
-                  as it appears to have been mistakenly used for another
-                  property.
-                </PropertyListingRed>
+              // ) : status === "awaiting" || status === "unpublished" ? (
+              //   <PropertyListingParagraph>
+              //     Created By : Ajadi David -- Moniya Branch
+              //   </PropertyListingParagraph>
+              // ) : status === "moderation" ? (
+              //   <PropertyListingRed>
+              //     Please review the property settings and replace the picture,
+              //     as it appears to have been mistakenly used for another
+              //     property.
+              //   </PropertyListingRed>
               ) : status === "request" ? (
                 <PropertyListingTitleDesc
                   title="Taiwo Salam & Co. Properties Ltd"
@@ -129,19 +129,19 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
               ) : null}
             </div>
             <div className="flex gap-3 items-center">
-              {status === "draft" || status === "awaiting" ? (
+              {status === "draft"? (
                 <Button {...button_props}>continue</Button>
-              ) : status === "unpublished" ? (
-                <>
-                  <Button variant="border" {...button_props}>
-                    manage
-                  </Button>
-                  <Button {...button_props}>publish</Button>
-                </>
-              ) : status === "moderation" ? (
-                <Button variant="border" {...button_props}>
-                  manage
-                </Button>
+              // ) : status === "unpublished" ? (
+              //   <>
+              //     <Button variant="border" {...button_props}>
+              //       manage
+              //     </Button>
+              //     <Button {...button_props}>publish</Button>
+              //   </>
+              // ) : status === "moderation" ? (
+              //   <Button variant="border" {...button_props}>
+              //     manage
+              //   </Button>
               ) : status === "request" ? (
                 <>
                   <Button {...button_props}>action</Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 // Imports
 import PropertyListingCard from "@/components/Listing/Property/property-listing-card";
@@ -11,6 +11,16 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import { listingPropertyFilter } from "./data";
 
 const Property = () => {
+  const [pageData, setPageData] = useState<any>({});
+
+  const initData = {
+    property_name: "",
+    annual_returns: "",
+    annual_income: "",
+    branch: "",
+    address: "",
+    last_updated: "",
+  }
   return (
     <div className="custom-flex-col gap-9">
       <div className="hidden md:flex gap-5 flex-wrap">
@@ -29,23 +39,16 @@ const Property = () => {
           colorScheme={2}
         />
         <ManagementStatistcsCard
-          title="Under Moderation"
+          title="Request"
           newData={34}
           total={657}
           className="w-[240px]"
           colorScheme={3}
         />
-        <ManagementStatistcsCard
-          title="Unpublished"
-          newData={34}
-          total={657}
-          className="w-[240px]"
-          colorScheme={4}
-        />
       </div>
       <FilterBar
         azFilter
-        pageTitle="Drafted Property"
+        pageTitle="Property Draft & Request"
         aboutPageModalData={{
           title: "Moderating Property",
           description:
@@ -80,17 +83,17 @@ const Property = () => {
         />
         <PropertyListingCard
           data={{}}
-          status="awaiting"
+          status="draft"
           propertyType="rental property"
         />
         <PropertyListingCard
           data={{}}
-          status="moderation"
+          status="request"
           propertyType="gated property"
         />
         <PropertyListingCard
           data={{}}
-          status="unpublished"
+          status="draft"
           propertyType="rental property"
         />
       </div>

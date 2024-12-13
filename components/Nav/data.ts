@@ -49,7 +49,7 @@ export const nav_items: NavItemsProps = [
     content: [
       { label: "units", href: "/units" },
       { label: "statistics", href: "/statistics" },
-      { label: "property", href: "/property" },
+      { label: "Property Draft/Request", href: "/property" },
     ],
   },
   {
