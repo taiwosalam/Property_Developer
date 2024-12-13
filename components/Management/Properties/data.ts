@@ -6,7 +6,7 @@ export const property_form_state_data: PropertyFormStateType = {
   state: "",
   city: "",
   lga: "",
-  selectedBranch: "",
+  selectedBranch: { value: "", label: "" },
   staff: [],
   staffOptions: [],
   accountOfficerOptions: [],
