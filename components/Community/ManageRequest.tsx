@@ -11,7 +11,7 @@ import Comment from "@/app/(nav)/management/agent-community/threads/[threadId]/p
 import PropertyRequestUnitType from "./UnitType";
 import { PropertyRequestContext } from "./propertyRequest";
 import Input from "../Form/Input/input";
-import { currencySymbols } from "@/utils/number-formatter";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { toast } from "sonner";
 import { usePropertyRequestStore } from "@/store/createPropertyStore";
 import { DatePickerWithRange } from "../dashboard/date-picker";
@@ -170,65 +170,55 @@ export const PropertyRequestSecondSection = ({
   };
 
   return (
-    // <PropertyRequestContext.Provider
-    //   value={{
-    //     unitType: "",
-    //     setUnitType: () => {},
-    //     images: [],
-    //     formResetKey: 0,
-    //     imageFiles: [],
-    //   }}
-    // >
-      <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
-        <h2>Request Types</h2>
-        <PropertyRequestUnitType data={data} />
-        <div className="budget flex flex-col gap-2">
-          <h3 className="text-black dark:text-white font-semibold mb-2">
-            Budget
-          </h3>
-          <Input
-            required
-            id="min_budget"
-            placeholder=""
-            label="Minimum Budget"
-            formatNumber
-            CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-            inputClassName="bg-white"
-            onChange={handleMinChange}
-            value={
-              minBudget !== null ? minBudget.toString() : data?.min_budget || ""
-            }
-          />
-          <Input
-            required
-            id="max_budget"
-            placeholder=""
-            label="Maximum Budget"
-            formatNumber
-            CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-            inputClassName="bg-white"
-            onChange={handleMaxChange}
-            value={
-              maxBudget !== null ? maxBudget.toString() : data?.max_budget || ""
-            }
-          />
-        </div>
+    <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
+      <h2>Request Types</h2>
+      <PropertyRequestUnitType data={data} />
+      <div className="budget flex flex-col gap-2">
+        <h3 className="text-black dark:text-white font-semibold mb-2">
+          Budget
+        </h3>
+        <Input
+          required
+          id="min_budget"
+          placeholder=""
+          label="Minimum Budget"
+          formatNumber
+          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+          inputClassName="bg-white"
+          onChange={handleMinChange}
+          value={
+            minBudget !== null ? minBudget.toString() : data?.min_budget || ""
+          }
+        />
+        <Input
+          required
+          id="max_budget"
+          placeholder=""
+          label="Maximum Budget"
+          formatNumber
+          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+          inputClassName="bg-white"
+          onChange={handleMaxChange}
+          value={
+            maxBudget !== null ? maxBudget.toString() : data?.max_budget || ""
+          }
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <StateAndLocalGovt data={data} />
         <div className="flex flex-col gap-2">
-          <StateAndLocalGovt data={data} />
-          <div className="flex flex-col gap-2">
-            <h3 className="text-black dark:text-white font-semibold mb-2">
-              Valid Till
-            </h3>
-            <DatePickerWithRange
-              id="valid_till"
-              className="w-full border border-gray-200 rounded-md"
-              selectedRange={selectedDateRange}
-              onDateChange={handleDateChange}
-            />
-          </div>
+          <h3 className="text-black dark:text-white font-semibold mb-2">
+            Valid Till
+          </h3>
+          <DatePickerWithRange
+            id="valid_till"
+            className="w-full border border-gray-200 rounded-md"
+            selectedRange={selectedDateRange}
+            onDateChange={handleDateChange}
+          />
         </div>
       </div>
-    // </PropertyRequestContext.Provider>
+    </div>
   );
 };
 
@@ -283,8 +273,8 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
   const allOptions = selectedStates.includes("All States")
     ? ["All States"] // Limit options to "All States" when selected
     : ["All States", ...getAllStates()].filter(
-        (option, index, self) => self.indexOf(option) === index // Remove duplicates
-      );
+      (option, index, self) => self.indexOf(option) === index // Remove duplicates
+    );
 
   return (
     <div className="audience flex flex-col gap-2">

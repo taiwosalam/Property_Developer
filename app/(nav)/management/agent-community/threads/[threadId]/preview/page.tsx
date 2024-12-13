@@ -20,7 +20,7 @@ import { ThreadArticleSkeleton } from "../../../components";
 import { sendMyArticleComment, sendMyArticleReply, toggleLike } from "../../../my-articles/data";
 import { toast } from "sonner";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import NewComment from "../../../NewComment";
+import DOMPurify from "dompurify";
 import CommunityComments from "@/components/Community/CommunityComments";
 import { CommunitySlider } from "@/components/Community/CommunitySlider";
 
@@ -145,10 +145,10 @@ const ThreadArticle = ({ post, slug, comments }: { post: any, slug: string, comm
   const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
-  console.log("comments", comments);
+  // console.log("comments", comments);
 
   const handleLike = async () => {
-    console.log('like clicked');
+    // console.log('like clicked');
     if (isLoading || userAction === 'like') return;
     setIsLoading(true);
     
@@ -188,12 +188,14 @@ const ThreadArticle = ({ post, slug, comments }: { post: any, slug: string, comm
   if (!post) {
     return <ThreadArticleSkeleton />;
   }
+
+  const sanitizedHTML = DOMPurify.sanitize(post?.content || "")
   
   return (
     <div className="mt-4">
       <div
         className="text-sm text-darkText-secondary mt-2"
-        dangerouslySetInnerHTML={{ __html: post?.content }}
+        dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
       />
       <div className="flex justify-between mt-6">
         <div className="flex items-center gap-2">

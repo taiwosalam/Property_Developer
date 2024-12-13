@@ -7,6 +7,7 @@ import { useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { CommentTextArea } from "@/app/(nav)/management/agent-community/NewComment";
 
 interface ThreadResponse {
   post: any;
@@ -60,14 +61,12 @@ const NewComment = ({ commentCount, id, slug }: Props) => {
       {commentCount === 0 ? "Be the first to comment" : "Add a comment"}
     </p>
     <form onSubmit={handleFormSubmit} className="flex items-center justify-between gap-3">
-      <Input
-        id="message"
-        name="message"
-        placeholder="Type your message here"
-        disabled={isSubmitting}
-        className="w-full"
-        inputClassName="border-none bg-neutral-3"
-      />
+       <CommentTextArea 
+          placeholder="Type your message here"
+          id="message"
+          name="message"
+          disabled={isSubmitting}
+        />  
       <button
         type="submit"
         className="bg-brand-9 p-2 rounded grid place-items-center text-white"

@@ -17,6 +17,7 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Button from "@/components/Form/Button/button";
 import { DeleteArticleModal, DeleteArticleModalSuccess, DeleteInventoryModal, DeleteInventoryModalSuccess } from "@/components/Modal/delete-inventory";
+import NetworkError from "@/components/Error/NetworkError";
 
 const desc =
   "#Commercial and retail real estate fundamentals are expected to remain strong due to the scarcity of new construction deliveries, prompting compelling opportunities for investors amid high interest rates and inflation in the market, writes CHINEDUM UWAEGBULAM. Despite economic headwinds and challenges with obtaining building permits, experts predict that the demand for housing will remain strong, and the market will see a steady increase in property values this year. There are also opportunities available for high-quality properties that meet the needs of investors and tenants, while low mortgage rates and government incentives will likely contribute to this optimistic outlook as inflation may remain a concern in 2024, affecting both home prices and mortgage rates.";
@@ -32,7 +33,6 @@ const ManageMyArticle = () => {
   const router = useRouter();
   const { myArticleId } = useParams();
   const slug = myArticleId as string;
-  const { data, error, loading } = useFetch<ArticleResponse>(`/agent_community/${slug}`);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [article, setArticle] = useState(null)
@@ -40,7 +40,15 @@ const ManageMyArticle = () => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [retainMedia, setRetainMedia] = useState<string[]>([])
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-
+  const {
+     data, 
+     error, 
+     loading,
+     silentLoading,
+     isNetworkError,
+     refetch
+  } = useFetch<ArticleResponse>(`/agent_community/${slug}`);
+  
   const handleDeleteMyArticle = async ({ slug }: { slug: string }) => {
     setIsDeleting(true);
     const response = await deleteMyArticle(slug);
@@ -79,7 +87,6 @@ const ManageMyArticle = () => {
 
     imageFiles.forEach((file) => formData.append("pictures[]", file));
     formData.append("_method", "patch");
-    // console.log("FormData after appending images:", formData.getAll("pictures[]"));
     const transformedData = transformFormUpdateArticleData(formData);
     // console.log("Submitting:", transformedData);
     setIsUpdating(true); 
@@ -98,6 +105,17 @@ const ManageMyArticle = () => {
       setIsUpdating(false);
     }
   }
+
+  if (loading)
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
+    );
+
+  if (isNetworkError) return <NetworkError />;
+
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="wra mb-16">
