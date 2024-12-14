@@ -16,6 +16,7 @@ const AddMultipleLandlordsOrTenants: React.FC<
   AddMultipleLandlordsOrTenantsProps
 > = ({ type, method, submitAction }) => {
   const [requestLoading, setRequestLoading] = useState(false);
+  const acceptedExtensions = ["xls", "xlsx", "csv"];
   const {
     file,
     fileName,
@@ -26,7 +27,7 @@ const AddMultipleLandlordsOrTenants: React.FC<
     fileURL,
   } = useFileUploader({
     maxSize: { unit: "MB", value: 5 },
-    acceptedExtensions: ["xls", "xlsx", "csv"],
+    acceptedExtensions,
   });
 
   const handleFileUploadClick = () => {
@@ -73,7 +74,7 @@ const AddMultipleLandlordsOrTenants: React.FC<
             </button>
             <div className="custom-flex-col gap-[10px] text-center">
               <p className="text-base md:text-xl lg:text-2xl font-bold">
-                Import XLS or CSV file
+                Import XLSX or CSV file
               </p>
               <p className="text-[#6C6D6D] text-sm font-medium">
                 Please click to select a file{" "}
@@ -96,8 +97,8 @@ const AddMultipleLandlordsOrTenants: React.FC<
 
             <LandlordTenantInfoDocument
               name={fileName}
-              id="uploaded-file"
               link={fileURL as string}
+              file={file}
             />
           </div>
         )}

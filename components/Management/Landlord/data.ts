@@ -23,3 +23,25 @@ export const inviteLandlordEmail = async (formData: any) => {
     return false;
   }
 };
+
+export const multipleCreateLandlord = async (formData: FormData) => {
+  try {
+    const { data } = await api.post("/landlord/multiple/creation", formData);
+    toast.success(data?.message || "Landlords invited successfully");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to create landlords profiles");
+    return false;
+  }
+};
+
+export const multipleInviteLandlord = async (formData: FormData) => {
+  try {
+    const { data } = await api.post("landlord/multiple/invitation", formData);
+    toast.success(data?.message || "Landlords invited successfully");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to invite landlords");
+    return false;
+  }
+};

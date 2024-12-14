@@ -137,14 +137,12 @@ export const LandlordEditProfileInfoSection = () => {
             id="landlord_email"
             type="email"
             label="email"
-            required
             inputClassName="rounded-lg"
             defaultValue={landlord?.email}
           />
           <PhoneNumberInput
             id="landlord_phone"
             label="phone number"
-            required
             inputContainerClassName="bg-neutral-2"
             defaultValue={landlord?.phone_number}
           />
@@ -592,7 +590,8 @@ export const LandlordEditAttachmentInfoSection = () => {
               "invoice",
               "receipt",
               "agreement",
-              { label: "other document", value: "others" },
+              "others",
+              // { label: "other document", value: "others" },
             ]}
             value={documentType}
             onChange={(value) => setDocumentType(value)}

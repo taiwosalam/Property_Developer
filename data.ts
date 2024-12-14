@@ -94,30 +94,15 @@ export const propertyCategories = {
 };
 
 export const unitTypes = {
-  residential: ["apartment", "flat", "house", "land"],
-  "mixed use": ["apartment", "flat", "house", "land"],
-  commercial: ["land", "industry & factory"],
+  residential: ["apartment", "block of flat", "house", "land"],
+  "mixed use": ["apartment", "block of flat", "house", "land"],
+  commercial: ["land", "industrial", "factory", "commercial"],
   estate: ["apartment", "flat", "house", "land"],
-  facility: ["land", "industry & factory"],
+  // facility: ["land", "industry & factory"],
+  facility: ["land", "industrial", "factory", "commercial"],
 };
 
-export const unitFeature = {
-  lands: ["sqm", "half plot", "plot", "acre", "hectare"], // This can stay for general land sizes
-  buildings: ["swimming pool", "gym", "garden"], // Example building features
-  commercialLand: [
-    "joint venture",
-    "agriculture land",
-    "farm land",
-    "industrial land",
-    "factory land",
-    "commercial land",
-    "mass housing land",
-    "estate land",
-    "mixed use land",
-    "others",
-  ],
-  residentialLand: ["sqm", "half plot", "plot", "acre", "hectare"],
-};
+
 
 export type Categories = keyof typeof unitTypes;
 
@@ -132,8 +117,17 @@ export const unitSubtypes = {
     "studio apartment",
     "others",
   ],
-
-  flat: ["twin flat", "block of flat", "semi detached", "others"],
+  "block of flat": [
+    "twins",
+    "three",
+    "four",
+    "six",
+    "eight",
+    "semi-detached",
+    "multiple",
+    "detached",
+    "others",
+  ],
   house: [
     "detached bungalow",
     "semi-detached bungalow",
@@ -162,7 +156,7 @@ export const unitSubtypes = {
       "others",
     ],
   },
-  "industry & factory": [
+  others: [
     "church",
     "industry",
     "filling station",
@@ -194,7 +188,23 @@ export const unitSubtypes = {
     "hospital",
     "institution",
     "quarry",
-    "others",
+    // "others",
+    ///
+    "Room & Parlor",
+    "Single Room",
+    "Mini Flat",
+    "A Room in Flat",
+    "Tenement Room",
+    "Shared House",
+    "Studio House",
+    "Detached Bungalow",
+    "Semi-Detached Bungalow",
+    "Terrace Bungalow",
+    "Detached Duplex",
+    "Semi-Detached Duplex",
+    "Terrace Duplex",
+    "Skyscraper",
+    "Mansion Structure",
   ],
 };
 
@@ -253,21 +263,6 @@ export const unitPreferences = {
   },
 };
 
-export const unitFeatures = {
-  lands: ["sqm", "half plot", "plot", "acre", "hectare"],
-  buildings: [
-    "bedroom",
-    "bathroom",
-    "toilet",
-    "total area",
-    "cover area",
-    "en-suit",
-    "prepaid",
-    "wardrobe",
-    "pets allowed",
-  ],
-};
-
 export const unitFacilities = {
   buildings: [
     "swimming pool",
@@ -298,8 +293,21 @@ export const unitFacilities = {
   ],
 };
 
-export const rentPeriods = 
-['daily', 'weekly', 'monthly', 'quarterly', 'yearly', 'biennially', 'triennially', 'quadrennial', 'quinquennial', 'sexennial', 'septennial', 'octennial', 'nonennial', 'decennial'
+export const rentPeriods = [
+  "daily",
+  "weekly",
+  "monthly",
+  "quarterly",
+  "yearly",
+  "biennially",
+  "triennially",
+  "quadrennial",
+  "quinquennial",
+  "sexennial",
+  "septennial",
+  "octennial",
+  "nonennial",
+  "decennial",
 ];
 
 export const landlordTypes = [

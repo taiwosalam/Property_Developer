@@ -11,7 +11,12 @@ import AddLandlordOptions from "./add-landlord-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
 import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
 import InvitationForm from "../invitation-form";
-import { addLandlord, inviteLandlordEmail } from "./data";
+import {
+  addLandlord,
+  inviteLandlordEmail,
+  multipleCreateLandlord,
+  multipleInviteLandlord,
+} from "./data";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { useModal } from "@/components/Modal/modal";
 
@@ -59,6 +64,24 @@ const AddLandlordModal = () => {
     }
   };
 
+  const handleBulkCreateLandlord = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const status = await multipleCreateLandlord(formData);
+    if (status) {
+      closeModalAndRefresh();
+    }
+  };
+
+  const handleMultipleInviteLandlord = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const status = await multipleInviteLandlord(formData);
+    if (status) {
+      closeModalAndRefresh();
+    }
+  };
+
   const modal_states: Record<
     AddLandlordModalOptions,
     {
@@ -88,7 +111,7 @@ const AddLandlordModal = () => {
         <AddMultipleLandlordsOrTenants
           type="landlord"
           method="import"
-          submitAction={async () => {}}
+          submitAction={handleBulkCreateLandlord}
         />
       ),
     },
@@ -98,7 +121,7 @@ const AddLandlordModal = () => {
         <AddMultipleLandlordsOrTenants
           type="landlord"
           method="invite"
-          submitAction={async () => {}}
+          submitAction={handleMultipleInviteLandlord}
         />
       ),
     },
