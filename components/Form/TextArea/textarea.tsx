@@ -14,14 +14,7 @@ import Label from "../Label/label";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import ReactQuill, { type ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { UndoIcon, RedoIcon, AiIcon } from "@/public/icons/icons";
-import { toast } from "sonner";
-
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { UndoIcon, RedoIcon, } from "@/public/icons/icons";
 import AIPopOver from "./text-area-popover";
 
 // Dynamically import ReactQuill with SSR option set to false
