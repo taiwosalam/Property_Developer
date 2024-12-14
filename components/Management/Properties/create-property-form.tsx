@@ -351,7 +351,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   ? "Estate Name"
                   : "Facility Name"
               }
-              placeholder="Name"
               inputClassName="bg-white dark:bg-darkText-primary rounded-[8px] property-form-input"
               required
               defaultValue={

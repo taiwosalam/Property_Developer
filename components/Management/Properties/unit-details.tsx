@@ -31,7 +31,7 @@ const UnitDetails = () => {
     string[]
   >([]);
   const [selectedPreference, setSelectedPreference] = useState(
-    unitData?.unit_preference || ""
+    unitData?.unit_preference || "none"
   );
 
   const handleUnitTypeChange = (val: string) => {
@@ -112,7 +112,6 @@ const UnitDetails = () => {
         <Input
           id="unit_name"
           label="Unit Number or Name"
-          placeholder="Flat 1"
           inputClassName="bg-white rounded-[8px] unit-form-input"
           required={!isRental}
           requiredNoStar={isRental}
@@ -146,7 +145,7 @@ const UnitDetails = () => {
           id="unit_preference"
           label="Unit Preference"
           inputContainerClassName="bg-white"
-          options={unitPreferencesOptions}
+          options={["none", ...unitPreferencesOptions]}
           value={selectedPreference}
           onChange={handlePreferenceChange}
           hiddenInputClassName="unit-form-input"

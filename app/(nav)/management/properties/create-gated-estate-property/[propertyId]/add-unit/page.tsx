@@ -12,11 +12,13 @@ import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
 import BackButton from "@/components/BackButton/back-button";
 import useFetch from "@/hooks/useFetch";
 import { SinglePropertyResponse } from "../../../[id]/data";
+import { useCustomBackNavigation } from "@/hooks/useCustomBackNavigation";
 import { transformPropertyData } from "../../../create-rental-property/[propertyId]/add-unit/data";
 
 const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   const { propertyId } = params;
   const router = useRouter();
+  const customBackPath = `/management/properties/${propertyId}/edit-property`;
   const [dataNotFound, setDataNotFound] = useState(false);
   const [hideEmptyForm, setHideEmptyForm] = useState(false);
 
@@ -54,6 +56,8 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
     }
   }, [propertyData, setAddUnitStore, router, propertyId]);
 
+  // useCustomBackNavigation({ customBackPath });
+
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <div className="text-red-500">{error}</div>;
@@ -65,7 +69,7 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
 
   return (
     <div className="pb-[100px]">
-      <BackButton>Add Units</BackButton>
+      <BackButton customBackPath={customBackPath}>Add Units</BackButton>
       <PageProgressBar
         breakpoints={[25, 50, 75]}
         percentage={37}
