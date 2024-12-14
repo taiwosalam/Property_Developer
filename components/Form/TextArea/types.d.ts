@@ -12,4 +12,5 @@ export interface TextAreaProps {
   resetKey?: number;
   requiredNoStar?: boolean;
   minChar?: number;
+  ai?: boolean;
 }
