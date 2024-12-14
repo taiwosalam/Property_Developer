@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
 import { cn } from "@/lib/utils";
 import { CSSProperties } from "react";
@@ -10,6 +10,11 @@ import { ModalTrigger } from "../Modal/modal";
 import TextArea from "../Form/TextArea/textarea";
 import { NavCloseIcon } from "@/public/icons/icons";
 import DOMPurify from "dompurify";
+import DocThumbnail from "@/public/document-thumbnails/docx-thumbnail.jpg";
+import PdfThumbnail from "@/public/document-thumbnails/pdf-thumbnail.jpg";
+import JpgThumbnail from "@/public/document-thumbnails/jpg-thumbnail.png";
+import ExcelThumbnail from "@/public/document-thumbnails/xlsx-thumbnail.jpg";
+import Image from "next/image";
 
 export const LandlordTenantInfoBox: React.FC<{
   style?: CSSProperties;
@@ -101,11 +106,11 @@ export const LandlordTenantInfoSection: React.FC<{
 };
 
 export interface AttachedDocumentCard {
-  id: string;
   name: string;
   date?: string;
   thumbnail?: string;
   link: string;
+  file?: File;
 }
 
 export const LandlordTenantInfoDocument: React.FC<AttachedDocumentCard> = ({
@@ -113,40 +118,75 @@ export const LandlordTenantInfoDocument: React.FC<AttachedDocumentCard> = ({
   date,
   thumbnail,
   link,
+  file,
 }) => {
-  const content = (
-    <>
-      <div className="flex-1">
-        <div
-          className="w-full h-full bg-text-disabled"
-          style={{
-            backgroundImage: thumbnail ? `url(${thumbnail})` : undefined,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        ></div>
-      </div>
-      <div className="p-4 bg-brand-primary text-white text-sm lg:text-base font-medium">
-        <p className="w-full whitespace-nowrap overflow-hidden text-ellipsis">
-          {name}
-        </p>
-        <p>{date}</p>
-      </div>
-    </>
-  );
-  return link ? (
+  const getFileExtension = (filename: string): string => {
+    return filename.split(".").pop()?.toLowerCase() || "";
+  };
+  const getThumbnailForFileType = (extension: string) => {
+    switch (extension) {
+      case "pdf":
+        return PdfThumbnail;
+      case "doc":
+      case "docx":
+        return DocThumbnail;
+      case "xls":
+      case "xlsx":
+        return ExcelThumbnail;
+      case "jpg":
+      case "jpeg":
+      case "png":
+      case "gif":
+        return JpgThumbnail;
+      default:
+        return null;
+    }
+  };
+
+  const displayThumbnail = useMemo(() => {
+    // If thumbnail prop is provided, use it
+    if (thumbnail) return thumbnail;
+
+    // If it's a blob URL (from file upload)
+    if (file) {
+      const extension = getFileExtension(file.name);
+      return getThumbnailForFileType(extension);
+    }
+
+    // If it's a regular URL
+    if (link) {
+      const extension = getFileExtension(link);
+      return getThumbnailForFileType(extension);
+    }
+
+    return null;
+  }, [thumbnail, link, file]);
+
+  return (
     <Link
       href={link}
       className="w-[160px] h-[168px] rounded-2xl overflow-hidden bg-text-disabled custom-flex-col"
       rel="noopener noreferrer"
       target="_blank"
     >
-      {content}
+      <div className="flex-1">
+        {displayThumbnail ? (
+          <Image
+            src={displayThumbnail}
+            alt={name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-text-disabled"></div>
+        )}
+      </div>
+      <div className="p-4 bg-brand-primary text-white text-sm lg:text-base font-medium">
+        <p className="w-full whitespace-nowrap overflow-hidden text-ellipsis capitalize">
+          {name}
+        </p>
+        <p>{date}</p>
+      </div>
     </Link>
-  ) : (
-    <div className="w-[160px] h-[168px] rounded-2xl overflow-hidden bg-text-disabled custom-flex-col">
-      {content}
-    </div>
   );
 };
 

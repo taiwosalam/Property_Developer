@@ -44,7 +44,7 @@ interface PropertyManaged {
 
 interface AttachedDocument extends AttachedDocumentCard {
   document_type: string;
-  file?: File;
+  id: string;
 }
 
 export type LandlordPageData = {

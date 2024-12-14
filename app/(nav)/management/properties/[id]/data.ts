@@ -63,9 +63,14 @@ export const transformSinglePropertyData = (
           )}`
         : undefined,
       unitImages: unit.images.map((img) => img.path),
-      unitDetails: unit.unit_sub_type
-        ? `${unit.unit_preference} - ${unit.unit_sub_type} - ${unit.unit_type}`
-        : `${unit.unit_preference} - ${unit.unit_type}`,
+      unitDetails:
+        unit.unit_type.toLowerCase() === "land"
+          ? `${unit.unit_preference} - ${unit.unit_type} - ${
+              unit.total_area_sqm
+            }${unit.number_of ? ` - ${unit.number_of}` : ""}`
+          : `${unit.unit_preference} - ${unit.bedroom || 0} bedroom${
+              parseInt(unit.bedroom || "0") > 1 ? "s" : ""
+            } - ${unit.unit_sub_type} - ${unit.unit_type}`,
       unitStatus: unit.is_active,
       unitName: unit.unit_name,
       cautionDeposit: unit.caution_fee

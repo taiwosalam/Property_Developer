@@ -325,14 +325,14 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
             </LandlordTenantInfoSection>
           );
         })}
-        {groupedDocuments?.["others"] && (
+        {groupedDocuments?.others && (
           <LandlordTenantInfoSection
             minimized
             title="other documents"
             key="other document"
           >
             <div className="flex flex-wrap gap-4">
-              {groupedDocuments?.["others"]?.map((document) => (
+              {groupedDocuments.others.map((document) => (
                 <LandlordTenantInfoDocument key={document.id} {...document} />
               ))}
             </div>

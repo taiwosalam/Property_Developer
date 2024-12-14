@@ -40,7 +40,7 @@ interface BankDetails {
 
 interface AttachedDocument extends AttachedDocumentCard {
   document_type: string;
-  file?: File;
+  id: string;
 }
 
 export interface TenantData {

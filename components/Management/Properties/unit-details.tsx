@@ -74,7 +74,13 @@ const UnitDetails = () => {
         }
       } else {
         // For other unit types, just use their subtypes normally
-        setUnitSubtypeOptions(unitSubtypes[selectedUnitType] as string[]);
+        const subtypes =
+          unitSubtypes[selectedUnitType as keyof typeof unitSubtypes];
+        // If the unit type exists in unitSubtypes, use its subtypes
+        // Otherwise, fallback to the "others" array
+        setUnitSubtypeOptions(
+          Array.isArray(subtypes) ? subtypes : unitSubtypes.others
+        );
         if (
           propertyDetails?.category.toLowerCase() === "commercial" ||
           propertyDetails?.category.toLowerCase() === "facility"

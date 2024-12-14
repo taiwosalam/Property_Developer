@@ -139,14 +139,12 @@ export const TenantEditProfileInfoSection = () => {
             type="email"
             label="email"
             defaultValue={tenant?.email}
-            required
             inputClassName="rounded-lg"
           />
           <PhoneNumberInput
             id="tenant_phone_number"
             label="phone number"
             defaultValue={tenant?.phone_number}
-            required
             inputContainerClassName="bg-neutral-2"
           />
           <Select
