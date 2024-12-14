@@ -15,11 +15,16 @@ const BackButton: React.FC<BackButtonProps> = ({
   as: Component = "h1",
   textClassName,
   reducePaddingTop,
+  customBackPath,
 }) => {
   const router = useRouter();
 
   const handleBack = () => {
-    router.back();
+    if (customBackPath) {
+      router.push(customBackPath);
+    } else {
+      router.back();
+    }
   };
 
   return (

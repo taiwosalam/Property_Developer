@@ -14,7 +14,7 @@ const UnitFeatures = () => {
   const propertyType = useAddUnitStore((state) => state.propertyType);
 
   const [selectedAreaUnit, setSelectedAreaUnit] = useState(
-    unitData?.measurement || ""
+    unitData?.measurement || "sqm"
   );
 
   const areaUnits = ["sqm", "half plot", "plot", "acre", "hectare"];

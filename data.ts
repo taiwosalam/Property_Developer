@@ -102,8 +102,6 @@ export const unitTypes = {
   facility: ["land", "industrial", "factory", "commercial"],
 };
 
-
-
 export type Categories = keyof typeof unitTypes;
 
 export const unitSubtypes = {
@@ -111,10 +109,10 @@ export const unitSubtypes = {
     "room & parlor",
     "single room",
     "mini flat",
-    "a room in flat",
+    "room in flat",
     "tenement room",
-    "shared apartment",
-    "studio apartment",
+    "shared house",
+    "studio house",
     "others",
   ],
   "block of flat": [
