@@ -17,7 +17,7 @@ const UnitBreakdownRenewalTenant = () => {
   const CURRENCY_SYMBOL =
     currencySymbols[propertySettings?.currency || "naira"];
   const [otherChargesInput, setOtherChargesInput] = useState(
-    !!unitData?.renew_other_charge
+    !!parseFloat(unitData?.renew_other_charge || "0")
   );
 
   const initialFormValues = useMemo(() => {
