@@ -30,9 +30,14 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
   };
 
   const keyValueData = {
-    unit_details: data.unit_sub_type
-      ? `${data.unit_preference} - ${data.unit_sub_type} - ${data.unit_type}`
-      : `${data.unit_preference} - ${data.unit_type}`,
+    unit_details:
+      data.unit_type.toLowerCase() === "land"
+        ? `${data.unit_preference} - ${data.unit_type} - ${
+            data.total_area_sqm
+          }${data.number_of ? ` - ${data.number_of}` : ""}`
+        : `${data.unit_preference} - ${data.bedroom || 0} bedroom${
+            parseInt(data.bedroom || "0") > 1 ? "s" : ""
+          } - ${data.unit_sub_type} - ${data.unit_type}`,
     "unit no/name": data.unit_name,
     rent: `${currencySymbols[currency || "naira"]}${formatNumber(
       parseFloat(data.fee_amount)

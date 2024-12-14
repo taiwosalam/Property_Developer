@@ -31,7 +31,7 @@ const UnitDetails = () => {
     string[]
   >([]);
   const [selectedPreference, setSelectedPreference] = useState(
-    unitData?.unit_preference || ""
+    unitData?.unit_preference || "none"
   );
 
   const handleUnitTypeChange = (val: string) => {
@@ -74,7 +74,13 @@ const UnitDetails = () => {
         }
       } else {
         // For other unit types, just use their subtypes normally
-        setUnitSubtypeOptions(unitSubtypes[selectedUnitType] as string[]);
+        const subtypes =
+          unitSubtypes[selectedUnitType as keyof typeof unitSubtypes];
+        // If the unit type exists in unitSubtypes, use its subtypes
+        // Otherwise, fallback to the "others" array
+        setUnitSubtypeOptions(
+          Array.isArray(subtypes) ? subtypes : unitSubtypes.others
+        );
         if (
           propertyDetails?.category.toLowerCase() === "commercial" ||
           propertyDetails?.category.toLowerCase() === "facility"
@@ -106,7 +112,6 @@ const UnitDetails = () => {
         <Input
           id="unit_name"
           label="Unit Number or Name"
-          placeholder="Flat 1"
           inputClassName="bg-white rounded-[8px] unit-form-input"
           required={!isRental}
           requiredNoStar={isRental}
@@ -140,7 +145,7 @@ const UnitDetails = () => {
           id="unit_preference"
           label="Unit Preference"
           inputContainerClassName="bg-white"
-          options={unitPreferencesOptions}
+          options={["none", ...unitPreferencesOptions]}
           value={selectedPreference}
           onChange={handlePreferenceChange}
           hiddenInputClassName="unit-form-input"

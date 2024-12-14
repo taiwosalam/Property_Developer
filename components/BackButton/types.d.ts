@@ -5,4 +5,5 @@ export interface BackButtonProps {
   as?: keyof JSX.IntrinsicElements;
   textClassName?: string;
   reducePaddingTop?: boolean;
+  customBackPath?: string;
 }

@@ -69,7 +69,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
         <div className="min-w-[400px] flex-1 text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
           <div>
             <p className="text-[#747474] dark:text-white">Unit Details</p>
-            <p className="text-black dark:text-darkText-1">{unitDetails}</p>
+            <p className="text-black dark:text-darkText-1 capitalize">{unitDetails}</p>
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Rent</p>

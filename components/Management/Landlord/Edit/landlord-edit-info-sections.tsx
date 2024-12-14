@@ -137,14 +137,12 @@ export const LandlordEditProfileInfoSection = () => {
             id="landlord_email"
             type="email"
             label="email"
-            required
             inputClassName="rounded-lg"
             defaultValue={landlord?.email}
           />
           <PhoneNumberInput
             id="landlord_phone"
             label="phone number"
-            required
             inputContainerClassName="bg-neutral-2"
             defaultValue={landlord?.phone_number}
           />
@@ -550,16 +548,13 @@ export const LandlordEditAttachmentInfoSection = () => {
   };
 
   const handleDeleteDocument = (fileId: string) => {
-    setDocuments((prev) => {
-      const updatedDocuments = prev.filter((doc) => doc.id !== fileId);
-      const documentToRemove = prev.find((doc) => doc.id === fileId);
-      // Add the document's link to urlsToRemove if it doesn't have a file property
-      if (documentToRemove && !documentToRemove.file && documentToRemove.link) {
-        setUrlsToRemove((prevUrls) => [...prevUrls, documentToRemove.link]);
-      }
+    const documentToRemove = documents.find((doc) => doc.id === fileId);
 
-      return updatedDocuments;
-    });
+    if (documentToRemove && !documentToRemove.file && documentToRemove.link) {
+      setUrlsToRemove((prevUrls) => [...prevUrls, documentToRemove.link]);
+    }
+
+    setDocuments((prev) => prev.filter((doc) => doc.id !== fileId));
   };
 
   const handleUpdateButtonClick = async () => {
@@ -595,7 +590,8 @@ export const LandlordEditAttachmentInfoSection = () => {
               "invoice",
               "receipt",
               "agreement",
-              { label: "other document", value: "others" },
+              "others",
+              // { label: "other document", value: "others" },
             ]}
             value={documentType}
             onChange={(value) => setDocumentType(value)}

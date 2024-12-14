@@ -1,10 +1,13 @@
 import clsx from "clsx";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
-import { useContext, Fragment } from "react";
+import { useContext } from "react";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import Button from "@/components/Form/Button/button";
 import DeletePropertyModal from "./delete-property-modal";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { useAddUnitStore } from "@/store/add-unit-store";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const PropertyFormFooter: React.FC<{
   editMode?: boolean;
@@ -14,71 +17,98 @@ const PropertyFormFooter: React.FC<{
   onAddUnit?: () => void;
 }> = ({ editMode, requestLoading, handleReset, propertyId, onAddUnit }) => {
   const { canSubmit } = useContext(FlowProgressContext);
+  const { canDelete, addedUnits } = useAddUnitStore();
+  const router = useRouter();
+
+  const handleSave = () => {
+    const hasUnuploadedUnits = addedUnits.some((unit) => unit.notYetUploaded);
+    if (hasUnuploadedUnits) {
+      toast.error("Please update all units before saving");
+      return;
+    }
+    router.push("/management/properties");
+  };
+
   return (
-    <FixedFooter
-      className={clsx("flex items-center gap-10", {
-        "justify-end": !editMode,
-        "justify-between": editMode,
-      })}
-    >
-      {editMode ? (
-        <Fragment>
-          <Modal>
-            <ModalTrigger asChild>
+    <>
+      {editMode && (
+        <Button
+          size="sm_medium"
+          className="py-2 px-6 block ml-auto mt-5"
+          type="submit"
+          disabled={!canSubmit || requestLoading}
+        >
+          {requestLoading ? "Updating..." : "Update"}
+        </Button>
+      )}
+      <FixedFooter
+        className={clsx("flex items-center gap-10", {
+          "justify-end": !editMode,
+          "justify-between": editMode,
+        })}
+      >
+        {editMode ? (
+          <>
+            {canDelete ? (
+              <Modal>
+                <ModalTrigger asChild>
+                  <Button
+                    size="sm_medium"
+                    variant="light_red"
+                    className="py-2 px-6"
+                  >
+                    Delete all units and property
+                  </Button>
+                </ModalTrigger>
+                <ModalContent>
+                  <DeletePropertyModal propertyId={propertyId as string} />
+                </ModalContent>
+              </Modal>
+            ) : (
+              <div></div>
+            )}
+            <div className="flex items-center gap-4">
+              <Button
+                type="button"
+                size="sm_medium"
+                variant="sky_blue"
+                className="py-2 px-6"
+                onClick={onAddUnit}
+              >
+                Add more unit
+              </Button>
               <Button
                 size="sm_medium"
-                variant="light_red"
                 className="py-2 px-6"
+                onClick={handleSave}
               >
-                delete property
+                Save
               </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <DeletePropertyModal propertyId={propertyId as string} />
-            </ModalContent>
-          </Modal>
-          <div className="flex items-center gap-4">
+            </div>
+          </>
+        ) : (
+          <>
             <Button
-              type="button"
-              size="sm_medium"
+              type="reset"
               variant="sky_blue"
+              size="base_medium"
               className="py-2 px-6"
-              onClick={onAddUnit}
+              onClick={handleReset}
             >
-              Add more unit
+              Clear Fields
             </Button>
             <Button
               type="submit"
-              size="sm_medium"
-              className="py-2 px-6"
               disabled={!canSubmit || requestLoading}
+              size="base_medium"
+              className="py-2 px-6"
             >
-              {requestLoading ? "Updating..." : "Update"}
+              {requestLoading ? "Please Wait..." : "Add Unit"}
             </Button>
-          </div>
-        </Fragment>
-      ) : (
-        <Fragment>
-          <Button
-            type="reset"
-            variant="sky_blue"
-            size="base_medium"
-            className="py-2 px-6"
-            onClick={handleReset}
-          >
-            Clear Fields
-          </Button>
-          <Button
-            type="submit"
-            disabled={!canSubmit || requestLoading}
-            size="base_medium"
-            className="py-2 px-6"
-          >
-            {requestLoading ? "Please Wait..." : "Add Unit"}
-          </Button>
-        </Fragment>
-      )}
-    </FixedFooter>
+          </>
+        )}
+      </FixedFooter>
+    </>
   );
 };
 

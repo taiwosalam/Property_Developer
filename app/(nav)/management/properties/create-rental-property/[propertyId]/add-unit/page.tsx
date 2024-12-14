@@ -12,10 +12,12 @@ import BackButton from "@/components/BackButton/back-button";
 import { SinglePropertyResponse } from "../../../[id]/data";
 import NetworkError from "@/components/Error/NetworkError";
 import { transformPropertyData } from "./data";
+import { useCustomBackNavigation } from "@/hooks/useCustomBackNavigation";
 import { useRouter } from "next/navigation";
 
 const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const { propertyId } = params;
+  const customBackPath = `/management/properties/${propertyId}/edit-property`;
   const router = useRouter();
   const [dataNotFound, setDataNotFound] = useState(false);
 
@@ -54,6 +56,8 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
     }
   }, [propertyData, setAddUnitStore, router, propertyId]);
 
+  // useCustomBackNavigation({ customBackPath });
+
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <div className="text-red-500">{error}</div>;
@@ -62,7 +66,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
 
   return (
     <div className="pb-[100px]">
-      <BackButton>Add Units</BackButton>
+      <BackButton customBackPath={customBackPath}>Add Units</BackButton>
       <PageProgressBar
         breakpoints={[25, 50, 75]}
         percentage={37}
