@@ -14,8 +14,15 @@ import Label from "../Label/label";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import ReactQuill, { type ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { UndoIcon, RedoIcon } from "@/public/icons/icons";
+import { UndoIcon, RedoIcon, AiIcon } from "@/public/icons/icons";
 import { toast } from "sonner";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import AIPopOver from "./text-area-popover";
 
 // Dynamically import ReactQuill with SSR option set to false
 const DynamicReactQuill = dynamic(
@@ -50,16 +57,19 @@ const TextArea: React.FC<TextAreaProps> = ({
   resetKey,
   requiredNoStar,
   minChar,
+  ai,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [mounted, setMounted] = useState(false);
   const quillRef = useRef<ReactQuill>(null);
   const [editorValue, setEditorValue] = useState(defaultValue);
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [showPopover, setShowPopover] = useState(false);
 
   const handleChange = (content: string) => {
     setEditorValue(content); // Update editorValue state
     if (onChange) {
+      setShowPopover(true);
       onChange(content);
     }
 
@@ -70,12 +80,13 @@ const TextArea: React.FC<TextAreaProps> = ({
 
     // Set a new timeout to check minChar after user stops typing
     const newTimeout = setTimeout(() => {
-      if (minChar && content.length < minChar) {
-        toast.error(`Please enter at least ${minChar} characters.`); // Show toast notification
+      if(minChar && content.length >= minChar ){
+        setShowPopover(true);
       }
-    }, 500); // Adjust the delay as needed (500ms in this case)
+    }, 1000); 
 
     setTypingTimeout(newTimeout); // Store the new timeout
+    setShowPopover(false);
   };
 
   // Handle undo and redo
@@ -198,6 +209,13 @@ const TextArea: React.FC<TextAreaProps> = ({
               >
                 <RedoIcon />
               </button>
+              { ai &&
+                <AIPopOver
+                  editorValue={editorValue as string}
+                  setEditorValue={setEditorValue}
+                  autoPop={showPopover}
+                />
+              }
             </div>
           </Fragment>
         )}

@@ -509,6 +509,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               className="md:col-span-2 lg:col-span-3 dark:text-white !dark:bg-transparent"
               placeholder="Write here"
               resetKey={resetKey}
+              minChar={200}
+              ai={true}
               required
               hiddenInputClassName="property-form-input"
               inputSpaceClassName="bg-white dark:bg-transparent"
