@@ -72,7 +72,7 @@ const PropertyRequestUnitType = ({ data }: { data?: any }) => {
     if (data?.property_type) {
       handleTypeChange(data.property_type);
     }
-  }, [data]);
+  }, [data, handleTypeChange]);
 
   return (
     <>
