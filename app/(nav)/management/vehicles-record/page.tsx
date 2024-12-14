@@ -144,7 +144,7 @@ const VehiclesRecordPage = () => {
 
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
-console.log("data needed", data)
+// console.log("data needed", data)
   return (
     <div className="space-y-9">
       <div className="page-header-container">

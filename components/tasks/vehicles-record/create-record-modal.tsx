@@ -2,12 +2,15 @@ import { ModalTrigger } from "@/components/Modal/modal";
 import { XIcon, DownArrow, ChevronLeft, SearchIcon } from "@/public/icons/icons";
 import Select from "@/components/Form/Select/select";
 import Button from "@/components/Form/Button/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useVehicleRecordStore from "@/store/vehicle-record";
 import { toast } from "sonner";
 import { empty } from "@/app/config";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Image from "next/image";
+import useFetch from "@/hooks/useFetch";
+import NetworkError from "@/components/Error/NetworkError";
+
 
 const PlateNumber: React.FC<{
   id: string;
@@ -23,9 +26,8 @@ const PlateNumber: React.FC<{
 }> = ({ id, number, state, name, model, brand, user_id, pictureSrc, onClick, isSelected }) => {
   return (
     <div
-      className={`rounded-lg p-2 cursor-pointer ${
-        isSelected ? "bg-brand-9" : "custom-secondary-bg"
-      }`}
+      className={`rounded-lg p-2 cursor-pointer ${isSelected ? "bg-brand-9" : "custom-secondary-bg"
+        }`}
       onClick={onClick}
     >
       <p className="text-base text-white font-bold">{number}</p>
@@ -37,7 +39,31 @@ const PlateNumber: React.FC<{
 };
 
 const CreateRecordModal = ({ data }: { data: any }) => {
-  console.log("passed data", data);
+  const [properties, setProperties] = useState([]);
+
+  const transformData = (res: any) => {
+    const data = res.data
+    const transformedData = data.map((item: any) => ({
+      id: item.id,
+      title: item.title
+    }));
+    return transformedData
+  }
+  const {
+    data: apiData,
+    loading,
+    error,
+    isNetworkError,
+  } = useFetch('/properties/vehicle-record')
+
+  useEffect(() => {
+    if (apiData) {
+      setProperties(transformData(apiData))
+    }
+  }, [apiData])
+
+
+
   const [step, setStep] = useState(1);
   const { selectedProperty, setSelectedProperty } = useVehicleRecordStore();
   const [selectedPlate, setSelectedPlate] = useState<{
@@ -47,10 +73,19 @@ const CreateRecordModal = ({ data }: { data: any }) => {
     name: string;
     model: string;
     brand: string;
-    user_id : string;
+    user_id: string;
     pictureSrc: string;
   } | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const selectOptions = properties.map((property: any) => ({
+    label: property.title,
+    value: property.id,
+  }));
+  const handleSelectProperty = (option: any) => {
+    setSelectedProperty(option);
+    console.log("selected property", option);
+  };
 
   const handleNext = () => {
     setStep((prevStep) => prevStep + 1);
@@ -63,12 +98,9 @@ const CreateRecordModal = ({ data }: { data: any }) => {
     }
   };
 
-  const handleSelectProperty = (option: string) => {
-    setSelectedProperty(option);
-  };
 
   const handleCreateManually = () => {
-    console.log("selected property", selectedProperty);
+    // console.log("selected property", selectedProperty);
     if (!selectedProperty) {
       toast.error("Please select a property before proceeding.");
       setStep(1);
@@ -93,17 +125,23 @@ const CreateRecordModal = ({ data }: { data: any }) => {
 
   const vehicleDetails = selectedPlate
     ? [
-        { label: "Brand Name", value: selectedPlate.brand },
-        { label: "Model", value: selectedPlate.model },
-        { label: "Plate Number", value: selectedPlate.number },
-        { label: "State", value: selectedPlate.state },
-      ]
+      { label: "Brand Name", value: selectedPlate.brand },
+      { label: "Model", value: selectedPlate.model },
+      { label: "Plate Number", value: selectedPlate.number },
+      { label: "State", value: selectedPlate.state },
+    ]
     : [];
 
-  const filteredData = data.filter((plate: any) => 
+  const filteredData = data.filter((plate: any) =>
     plate.plate_number.toUpperCase().includes(searchTerm.toUpperCase()) ||
     plate.name.toUpperCase().includes(searchTerm.toUpperCase())
   );
+
+
+  if (isNetworkError) return <NetworkError />;
+
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <>
@@ -129,10 +167,10 @@ const CreateRecordModal = ({ data }: { data: any }) => {
           {/* Step 1: Form with Select and Next Button */}
           <div className="p-4 flex flex-col gap-4 items-center justify-center w-full mt-8">
             <Select
-              options={["Property 1", "Property 2", "Property 3"]}
+              options={selectOptions}
               id="select-option"
               className="w-2/3"
-              onChange={handleSelectProperty}
+              onChange={handleSelectProperty} // Handle the selection
             />
             <Button
               onClick={handleNext}

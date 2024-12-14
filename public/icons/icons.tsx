@@ -1,6 +1,20 @@
 import { type Color } from "@/types/global";
 import React from "react";
 
+
+export const AiIcon = ()=>{
+  return (
+    <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10.1313 13.9696V6.7696L15.7263 3.5396C18.8263 1.7496 24.3763 6.1646 22.0463 10.2046" stroke="currentColor" strokeWidth="0.5" strokeLinejoin="round" />
+      <path d="M10.1313 10.4701L16.3663 6.87012L21.9613 10.1001C25.0613 11.8901 24.0113 18.9051 19.3463 18.9051" stroke="currentColor" strokeWidth="0.5" strokeLinejoin="round" />
+      <path d="M13.1613 8.71973L19.3963 12.3197V18.7847C19.3963 22.3647 12.7963 24.9647 10.4663 20.9247" stroke="currentColor" strokeWidth="0.5" strokeLinejoin="round" />
+      <path d="M16.1914 10.5996V17.6696L10.5964 20.8996C7.49638 22.6896 1.94638 18.2746 4.27638 14.2346" stroke="currentColor" strokeWidth="0.5" strokeLinejoin="round" />
+      <path d="M16.1913 13.9702L9.9563 17.5702L4.3613 14.3402C1.2563 12.5452 2.3063 5.53516 6.9713 5.53516" stroke="currentColor" strokeWidth="0.5" strokeLinejoin="round" />
+      <path d="M13.1615 15.7204L6.92651 12.1204V5.65538C6.92651 2.07538 13.5265 -0.524624 15.8565 3.51538" stroke="currentColor" strokeWidth="0.5" strokeLinejoin="round" />
+    </svg>
+
+  )
+}
 export const MailIcon = ({ size = 33, color = "currentColor" }) => {
   return (
     <svg
@@ -1624,7 +1638,7 @@ export const ManagementIcon: React.FC<IconProps> = () => (
   </svg>
 );
 
-export const SubscriptionIcon: React.FC<IconProps> = ({}) => (
+export const SubscriptionIcon: React.FC<IconProps> = ({ }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="18"

@@ -25,7 +25,7 @@ const CreateRecordForm = () => {
     e.preventDefault();
     console.log('selectedProperty', selectedProperty);
     const formData = new FormData(e.currentTarget);
-    formData.append("property", selectedProperty);
+    formData.append("property_id", selectedProperty);
 
     // Get the values of avatar and picture
     const avatar = formData.get("avatar") as string;
