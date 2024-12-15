@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   type UnitTypeKey,
   propertyCategories,
@@ -34,7 +34,7 @@ const PropertyRequestUnitType = ({ data }: { data?: any }) => {
     setPropertyTypeOptions(val ? unitTypes[val as keyof typeof unitTypes] : []);
   };
 
-  const handleTypeChange = (val: string) => {
+  const handleTypeChange = useCallback((val: string) => {
     setPropertyType(val as UnitTypeKey);
     setSelectedSubtype(""); // Clear subtype when type changes
 
@@ -63,7 +63,8 @@ const PropertyRequestUnitType = ({ data }: { data?: any }) => {
     } else {
       setSubtypeOptions([]);
     }
-  };
+  }, [selectedCategory]);
+  
   const handleSubtypeChange = (val: string) => {
     setSelectedSubtype(val);
   };
