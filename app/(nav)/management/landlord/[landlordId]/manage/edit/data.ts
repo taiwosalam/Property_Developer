@@ -45,12 +45,34 @@ export const updateLandlordBankDetails = async (
   }
 };
 
+export const lookupBankDetails = async (
+  bankCode: string,
+  accountNumber: string
+) => {
+  const formData = new FormData();
+  formData.append("bank_code", bankCode);
+  formData.append("account_number", accountNumber);
+  try {
+    const { data } = await api.post<{
+      data: {
+        data: {
+          account_number: string;
+          account_name: string;
+        };
+      };
+    }>("mono/lookup/account", formData);
+    return data.data.data.account_name;
+  } catch (error) {
+    handleAxiosError(error, "Failed to get bank list");
+    return null;
+  }
+};
+
 export const updateLandlordOthers = async (id: string, payload: FormData) => {
   payload.append("_method", "PUT");
   // if (!payload.get("job_type")) {
   //   payload.append("job_type", "Unemployed");
   // }
-
   try {
     const { data } = await api.post(`landlord/${id}/other-status`, payload);
     toast.success(data?.message || "Update successful");
