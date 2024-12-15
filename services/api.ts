@@ -56,17 +56,18 @@ export const handleAxiosError = (
       return;
     }
 
+    // Check for error in data.error
+    if (typeof error.response.data.error === "string") {
+      toast.error(error.response.data.error);
+      return;
+    }
+
     // Check for error in data.message
     if (error.response.data.message) {
       toast.error(error.response.data.message);
       return;
     }
 
-    // Check for error in data.error
-    if (typeof error.response.data.error === "string") {
-      toast.error(error.response.data.error);
-      return;
-    }
     if (typeof error.response.data?.error?.message === "string") {
       toast.error(error.response.data.error.message);
       return;

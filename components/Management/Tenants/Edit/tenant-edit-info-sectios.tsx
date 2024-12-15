@@ -18,7 +18,7 @@ import { useTenantEditContext } from "./tenant-edit-context";
 import { AuthForm } from "@/components/Auth/auth-components";
 import Picture from "@/components/Picture/picture";
 import Avatars from "@/components/Avatars/avatars";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   tenantTypes,
   genderTypes,
@@ -53,6 +53,8 @@ import Image from "next/image";
 import LandlordTenantModalPreset from "../../landlord-tenant-modal-preset";
 import { useMultipleFileUpload } from "@/hooks/useMultipleFilesUpload";
 import { v4 as uuidv4 } from "uuid";
+import { lookupBankDetails } from "@/app/(nav)/management/landlord/[landlordId]/manage/edit/data";
+import useFetch from "@/hooks/useFetch";
 
 const states = getAllStates();
 
@@ -457,15 +459,49 @@ export const TenantEditOthersInfoSection = () => {
 export const TenantEditBankDetailsSection = () => {
   const { data: tenant } = useTenantEditContext();
   const [reqLoading, setReqLoading] = useState(false);
+  const [bankName, setBankName] = useState(
+    tenant?.bank_details.bank_name || ""
+  );
+  const [bankCode, setBankCode] = useState("");
+  const [accountNumber, setAccountNumber] = useState(
+    tenant?.bank_details.account_number || ""
+  );
+  const [accountName, setAccountName] = useState(
+    tenant?.bank_details.account_name || ""
+  );
+  const [isVerified, setIsVerified] = useState(false);
+  const [lookupLoading, setLookupLoading] = useState(false);
+  const {
+    data: bankList,
+    loading: bankListLoading,
+    error: bankListError,
+  } = useFetch<{
+    data: { bank_name: string; bank_code: string }[];
+  }>("/mono/bank-list");
 
   const handleUpdateBankDetails = async (data: FormData) => {
-    if (tenant?.id) {
+    if (tenant?.id && isVerified) {
       setReqLoading(true);
       const status = await updateTenantBankDetails(tenant.id, data);
       if (status) {
         window.dispatchEvent(new Event("tenant-updated"));
       }
       setReqLoading(false);
+    }
+  };
+
+  const handleAccountNumberChange = async (value: string) => {
+    const numericValue = value.replace(/\D/g, "");
+    setAccountNumber(numericValue.slice(0, 10));
+    setAccountName("");
+    if (numericValue.length === 10 && bankCode) {
+      setLookupLoading(true);
+      const name = await lookupBankDetails(bankCode, numericValue);
+      setAccountName(name || "");
+      setIsVerified(!!name);
+      setLookupLoading(false);
+    } else {
+      setIsVerified(false);
     }
   };
 
@@ -477,32 +513,57 @@ export const TenantEditBankDetailsSection = () => {
         returnType="form-data"
       >
         <LandlordTenantInfoEditGrid>
-          <Input
+          <Select
             id="bank_name"
             label="bank name"
-            placeholder="Placeholder"
-            defaultValue={tenant?.bank_details.bank_name}
-            inputClassName="rounded-lg"
-          />
-          <Input
-            id="account_name"
-            label="account name"
-            placeholder="Placeholder"
-            defaultValue={tenant?.bank_details.account_name}
-            inputClassName="rounded-lg"
+            options={
+              bankList?.data.map((bank) => ({
+                value: bank.bank_code,
+                label: bank.bank_name,
+              })) || []
+            }
+            placeholder={
+              bankListLoading
+                ? "Loading bank list..."
+                : bankListError
+                ? "Error loading bank list"
+                : "Select bank"
+            }
+            value={bankName}
+            error={bankListError}
+            onChange={(value) => {
+              setBankCode(value);
+              setIsVerified(false);
+              setAccountName("");
+              const selectedBank = bankList?.data.find(
+                (bank) => String(bank.bank_code) === value
+              );
+              setBankName(selectedBank ? selectedBank.bank_name : "");
+            }}
           />
           <Input
             id="account_number"
             label="account number"
-            placeholder="Placeholder"
-            defaultValue={tenant?.bank_details.account_number}
             inputClassName="rounded-lg"
+            value={accountNumber}
+            maxLength={10}
+            onChange={handleAccountNumberChange}
+            disabled={!bankCode}
           />
+          <Input
+            id="account_name"
+            label="account name"
+            placeholder={lookupLoading ? "Looking up account" : ""}
+            value={accountName}
+            inputClassName="rounded-lg"
+            readOnly
+          />
+
           <div className="flex items-end justify-end">
             <Button
               size="base_medium"
               className="py-2 px-6"
-              disabled={reqLoading}
+              disabled={!isVerified || reqLoading}
               type="submit"
             >
               {reqLoading ? "updating..." : "update"}
