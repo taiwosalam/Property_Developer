@@ -16,7 +16,8 @@ const PropertyFormFooter: React.FC<{
   propertyId?: string;
   onAddUnit?: () => void;
 }> = ({ editMode, requestLoading, handleReset, propertyId, onAddUnit }) => {
-  const { canSubmit } = useContext(FlowProgressContext);
+  const { canSubmit, missingFields, handleInputChange } =
+    useContext(FlowProgressContext);
   const { canDelete, addedUnits } = useAddUnitStore();
   const router = useRouter();
 
@@ -29,14 +30,30 @@ const PropertyFormFooter: React.FC<{
     router.push("/management/properties");
   };
 
+  const handleSubmitClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    handleInputChange(); // Ensure the latest input state is checked
+
+    if (!canSubmit) {
+      toast.error(
+        `The following fields are required: ${missingFields.join(", ")}`
+      );
+      return;
+    }
+    const form = e.currentTarget.form;
+    form?.requestSubmit();
+  };
+
   return (
     <>
       {editMode && (
         <Button
           size="sm_medium"
           className="py-2 px-6 block ml-auto mt-5"
-          type="submit"
-          disabled={!canSubmit || requestLoading}
+          type="button"
+          disabled={requestLoading}
+          onClick={handleSubmitClick}
+          // form="edit-property-form"
         >
           {requestLoading ? "Updating..." : "Update"}
         </Button>
@@ -98,10 +115,12 @@ const PropertyFormFooter: React.FC<{
               Clear Fields
             </Button>
             <Button
-              type="submit"
-              disabled={!canSubmit || requestLoading}
+              type="button"
+              disabled={requestLoading}
               size="base_medium"
               className="py-2 px-6"
+              onClick={handleSubmitClick}
+              // form="create-property-form"
             >
               {requestLoading ? "Please Wait..." : "Add Unit"}
             </Button>

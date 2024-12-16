@@ -193,7 +193,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       activeStep={0}
       inputClassName="unit-form-input"
       showProgressBar={false}
-      key="unit-form"
+      key="unit-form-progress"
     >
       <UnitFormContext.Provider
         value={{
