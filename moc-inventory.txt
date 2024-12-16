@@ -2808,3 +2808,50 @@ const handleUpdateInventory = async (
 
 
 
+
+
+
+======================textarea
+
+  // useEffect(() => {
+  //   const quill = quillRef.current?.getEditor();
+  //   quill?.on("selection-change", () => {
+  //     updateCursorPosition();
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   const quill = quillRef.current?.getEditor();
+  //   quill?.root.addEventListener("keydown", handleKeyDown);
+
+  //   return () => {
+  //     quill?.root.removeEventListener("keydown", handleKeyDown);
+  //   };
+  // }, [suggestions]);
+
+
+// const handleChange = (content: string) => {
+//   setEditorValue(content); // Update editorValue state
+//   if (onChange) {
+//     setShowPopover(true);
+//     onChange(content);
+//   }
+
+//   // Clear previous timeout if typing continues
+//   if (typingTimeout) {
+//     clearTimeout(typingTimeout);
+//   }
+
+//   // Set a new timeout to check minChar after user stops typing
+//   const newTimeout = setTimeout(() => {
+//     if (content && content.length >= 20) {
+//       setShowPopover(true);
+//       generateText('Autocomplete', content);
+//       setShowSuggestion(true);
+//     }
+//   }, 1000);
+
+//   setTypingTimeout(newTimeout); // Store the new timeout
+//   setShowPopover(false);
+//   setShowSuggestion(false)
+// };
