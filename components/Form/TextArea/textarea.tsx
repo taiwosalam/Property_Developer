@@ -89,6 +89,18 @@ const TextArea: React.FC<TextAreaProps> = ({
     setShowPopover(false);
   };
 
+    // Function to simulate typing effect
+    const simulateTyping = (content: string) => {
+      let i = 0;
+      const intervalId = setInterval(() => {
+        setEditorValue((prevValue) => prevValue + content[i]);
+        i += 1;
+        if (i >= content.length) {
+          clearInterval(intervalId); // Clear the interval once all characters are added
+        }
+      }, 50); // Adjust typing speed here (50ms between characters)
+    };
+
   // Handle undo and redo
   const handleUndo = () => {
     const editor = quillRef.current?.getEditor();
@@ -195,7 +207,7 @@ const TextArea: React.FC<TextAreaProps> = ({
               </button>
               <button
                 type="button"
-                className="hover:text-[#06c]"
+                className="hover:text-[#06c] dark:text-neutral-4"
                 onClick={handleUndo}
                 aria-label="Undo"
               >
@@ -203,19 +215,19 @@ const TextArea: React.FC<TextAreaProps> = ({
               </button>
               <button
                 type="button"
-                className="hover:text-[#06c]"
+                className="hover:text-[#06c] dark:text-neutral-4"
                 onClick={handleRedo}
                 aria-label="Redo"
               >
                 <RedoIcon />
               </button>
-              { ai &&
+              {/* { ai && */}
                 <AIPopOver
                   editorValue={editorValue as string}
                   setEditorValue={setEditorValue}
                   autoPop={showPopover}
                 />
-              }
+              {/* } */}
             </div>
           </Fragment>
         )}

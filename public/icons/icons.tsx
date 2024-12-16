@@ -1340,7 +1340,7 @@ export const UndoIcon = () => {
       >
         <path
           d="M0 0.296875H20V12.2969C20 16.7152 16.4183 20.2969 12 20.2969H8C3.58172 20.2969 0 16.7152 0 12.2969V0.296875Z"
-          fill="white"
+          fill="currentColor"
         />
       </mask>
       <g mask="url(#mask0_3267_126976)">
@@ -1373,7 +1373,7 @@ export const RedoIcon = () => {
       >
         <path
           d="M0 0.296875H20V12.2969C20 16.7152 16.4183 20.2969 12 20.2969H8C3.58172 20.2969 0 16.7152 0 12.2969V0.296875Z"
-          fill="white"
+          fill="currentColor"
         />
       </mask>
       <g mask="url(#mask0_3267_126979)">
