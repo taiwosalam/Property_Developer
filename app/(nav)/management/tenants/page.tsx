@@ -61,7 +61,6 @@ const Tenants = () => {
     params: {
       page: 1,
       search: "",
-      // sort_order: "asc",
     } as TenantRequestParams,
   });
 
@@ -104,7 +103,6 @@ const Tenants = () => {
 
     const queryParams: TenantRequestParams = {
       page: 1,
-      // sort_order: "asc",
       search: "",
     };
     if (statesArray.length > 0) {

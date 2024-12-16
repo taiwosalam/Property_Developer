@@ -238,6 +238,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
 
   return (
     <FlowProgress
+      key="property-form-progress"
       steps={1}
       activeStep={0}
       inputClassName="property-form-input"
@@ -246,7 +247,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         "p-6 bg-white dark:bg-darkText-primary rounded-2xl": editMode,
       })}
     >
-      <AuthForm onFormSubmit={handleFormSubmit}>
+      <AuthForm
+        onFormSubmit={handleFormSubmit}
+        // id={editMode ? "edit-property-form" : "create-property-form"}
+        skipValidation
+      >
         <div className="max-w-[970px]">
           <input name="property_type" type="hidden" value={formType} />
           <div className="mb-5 lg:mb-8">
@@ -557,7 +562,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   ? `${propertySettings?.agency_fee}%`
                   : editMode && formType === "facility"
                   ? `${propertySettings?.management_fee}%`
-                  : "10%"
+                  : "5%"
               }
             />
             {formType === "rental" && (

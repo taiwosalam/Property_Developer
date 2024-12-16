@@ -36,6 +36,9 @@ const UnitDetails = () => {
 
   const handleUnitTypeChange = (val: string) => {
     setSelectedUnitType(val.toLowerCase() as UnitTypeKey);
+    if (val.toLowerCase() === "land") {
+      setSelectedSubtype("none");
+    }
   };
 
   const handleSubtypeChange = (val: string) => {
@@ -61,8 +64,9 @@ const UnitDetails = () => {
       if (selectedUnitType.toLowerCase() === "land") {
         // Handle the special case for land based on the category
         if (
-          propertyDetails?.category.toLowerCase() === "commercial" ||
-          propertyDetails?.category.toLowerCase() === "facility"
+          ["commercial", "facility", "mixed use"].includes(
+            propertyDetails?.category?.toLowerCase() || ""
+          )
         ) {
           // Use the commercial subtypes under land
           setUnitSubtypeOptions(unitSubtypes.land.commercial);
@@ -82,11 +86,17 @@ const UnitDetails = () => {
           Array.isArray(subtypes) ? subtypes : unitSubtypes.others
         );
         if (
-          propertyDetails?.category.toLowerCase() === "commercial" ||
-          propertyDetails?.category.toLowerCase() === "facility"
+          ["commercial", "facility"].includes(
+            propertyDetails?.category?.toLowerCase() || ""
+          )
         ) {
           // Use the commercial building preferences
           setUnitPreferencesOptions(unitPreferences.buildings.commercial);
+        } else if (propertyDetails?.category.toLowerCase() === "mixed use") {
+          setUnitPreferencesOptions([
+            ...unitPreferences.buildings.residential,
+            ...unitPreferences.buildings.commercial,
+          ]);
         } else {
           // Use the residential building preferences
           setUnitPreferencesOptions(unitPreferences.buildings.residential);
@@ -128,7 +138,10 @@ const UnitDetails = () => {
           requiredNoStar={isRental}
           resetKey={formResetKey}
         />
-        {selectedUnitType?.toLowerCase() !== "land" && (
+        {(selectedUnitType.toLowerCase() !== "land" ||
+          ["commercial", "facility", "mixed use"].includes(
+            propertyDetails?.category?.toLowerCase() || ""
+          )) && (
           <Select
             options={unitSubtypeOptions || []}
             id="unit_sub_type"
@@ -145,7 +158,7 @@ const UnitDetails = () => {
           id="unit_preference"
           label="Unit Preference"
           inputContainerClassName="bg-white"
-          options={["none", ...unitPreferencesOptions]}
+          options={unitPreferencesOptions}
           value={selectedPreference}
           onChange={handlePreferenceChange}
           hiddenInputClassName="unit-form-input"

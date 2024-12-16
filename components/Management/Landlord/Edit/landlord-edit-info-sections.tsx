@@ -461,7 +461,7 @@ export const LandlordEditBankDetailsInfoSection = () => {
               const selectedBank = bankList?.data.find(
                 (bank) => String(bank.bank_code) === value
               );
-              setBankName(selectedBank ? selectedBank.bank_name : "");
+              setBankName(selectedBank?.bank_name || "");
             }}
           />
           <Input
