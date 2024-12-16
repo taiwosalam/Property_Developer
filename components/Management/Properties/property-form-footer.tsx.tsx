@@ -75,7 +75,7 @@ const PropertyFormFooter: React.FC<{
                 className="py-2 px-6"
                 onClick={onAddUnit}
               >
-                Add more unit
+                Add unit
               </Button>
               <Button
                 size="sm_medium"

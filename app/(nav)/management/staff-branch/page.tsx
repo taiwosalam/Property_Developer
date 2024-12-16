@@ -65,16 +65,15 @@ const StaffAndBranches = () => {
     const queryParams: BranchRequestParams = {
       page: 1,
       search: "",
-      sort_order: "asc",
     };
     if (statesArray.length > 0) {
-      queryParams.state = statesArray.join(",");
+      queryParams.states = statesArray.join(",");
     }
     if (startDate) {
-      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
     }
     if (endDate) {
-      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
     }
     setConfig({
       params: queryParams,
@@ -95,7 +94,6 @@ const StaffAndBranches = () => {
     params: {
       page: 1,
       search: "",
-      sort_order: "asc",
     } as BranchRequestParams,
   });
 
@@ -209,6 +207,7 @@ const StaffAndBranches = () => {
         handleFilterApply={handleFilterApply}
         appliedFilters={appliedFilters}
         isDateTrue
+        dateLabel="Date Created"
         filterOptionsMenu={[
           {
             label: "State",

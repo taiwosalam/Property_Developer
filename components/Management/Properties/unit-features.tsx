@@ -12,6 +12,9 @@ const UnitFeatures = () => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const { unitType, formResetKey, unitData } = useUnitForm();
   const propertyType = useAddUnitStore((state) => state.propertyType);
+  const propertyCategory = useAddUnitStore(
+    (state) => state.propertyDetails?.category
+  );
 
   const [selectedAreaUnit, setSelectedAreaUnit] = useState(
     unitData?.measurement || "sqm"
@@ -19,8 +22,12 @@ const UnitFeatures = () => {
 
   const areaUnits = ["sqm", "half plot", "plot", "acre", "hectare"];
 
+  // const facilitiesOptions =
+  //   unitType === "land" ? unitFacilities.lands : unitFacilities.buildings;
   const facilitiesOptions =
-    unitType === "land" ? unitFacilities.lands : unitFacilities.buildings;
+    propertyCategory?.toLowerCase() === "commercial"
+      ? unitFacilities.lands
+      : unitFacilities.buildings;
 
   useEffect(() => {
     if (formResetKey !== 0) {
@@ -80,7 +87,9 @@ const UnitFeatures = () => {
             {/* Default fields for other unit types */}
             <Input
               id="bedroom"
-              required={isRental}
+              required={
+                isRental && propertyCategory?.toLowerCase() !== "commercial"
+              }
               label="Bedroom"
               inputClassName="bg-white keep-spinner unit-form-input"
               type="number"
@@ -91,7 +100,9 @@ const UnitFeatures = () => {
               defaultValue={unitData?.bedroom}
             />
             <Input
-              required={isRental}
+              required={
+                isRental && propertyCategory?.toLowerCase() !== "commercial"
+              }
               id="bathroom"
               label="Bathroom"
               inputClassName="bg-white keep-spinner unit-form-input"
@@ -103,7 +114,9 @@ const UnitFeatures = () => {
               defaultValue={unitData?.bathroom}
             />
             <Input
-              required={isRental}
+              required={
+                isRental && propertyCategory?.toLowerCase() !== "commercial"
+              }
               id="toilet"
               label="Toilet"
               inputClassName="bg-white keep-spinner unit-form-input"
@@ -119,66 +132,74 @@ const UnitFeatures = () => {
         {isRental && (
           <MultiSelect
             options={facilitiesOptions}
-            maxSelections={10}
+            maxSelections={
+              propertyCategory?.toLowerCase() !== "commercial" ? 10 : undefined
+            }
             id="facilities"
-            label="Select Facilities (Maximum of 10)"
+            label={`Select Facilities${
+              propertyCategory?.toLowerCase() !== "commercial"
+                ? " (Maximum of 10)"
+                : ""
+            }`}
             resetKey={formResetKey}
             defaultSelections={unitData?.facilities || []}
           />
         )}
       </div>
-      {unitType !== "land" && isRental && (
-        <div className="flex gap-4 md:gap-5 flex-wrap">
-          <Select
-            dropdownRefClassName="!w-[160px]"
-            required
-            options={["yes", "no"]}
-            id="en_suit"
-            label="En-Suit"
-            inputContainerClassName="bg-white"
-            isSearchable={false}
-            resetKey={formResetKey}
-            hiddenInputClassName="unit-form-input"
-            defaultValue={mapNumericToYesNo(unitData?.en_suit) || "no"}
-          />
-          <Select
-            dropdownRefClassName="!w-[160px]"
-            required
-            options={["yes", "no"]}
-            id="prepaid"
-            label="Prepaid"
-            inputContainerClassName="bg-white"
-            isSearchable={false}
-            resetKey={formResetKey}
-            hiddenInputClassName="unit-form-input"
-            defaultValue={mapNumericToYesNo(unitData?.prepaid) || "no"}
-          />
-          <Select
-            dropdownRefClassName="!w-[160px]"
-            required
-            options={["yes", "no"]}
-            id="wardrobe"
-            label="Wardrobe"
-            inputContainerClassName="bg-white"
-            isSearchable={false}
-            resetKey={formResetKey}
-            hiddenInputClassName="unit-form-input"
-            defaultValue={mapNumericToYesNo(unitData?.wardrobe) || "no"}
-          />
-          <Select
-            dropdownRefClassName="!w-[160px]"
-            required
-            options={["yes", "no"]}
-            id="pets_allowed"
-            label="Pets Allowed"
-            inputContainerClassName="bg-white"
-            isSearchable={false}
-            resetKey={formResetKey}
-            hiddenInputClassName="unit-form-input"
-            defaultValue={mapNumericToYesNo(unitData?.pet_allowed) || "no"}
-          />
-        </div>
-      )}
+      {unitType.toLowerCase() !== "land" &&
+        isRental &&
+        propertyCategory?.toLowerCase() !== "commercial" && (
+          <div className="flex gap-4 md:gap-5 flex-wrap">
+            <Select
+              dropdownRefClassName="!w-[160px]"
+              required
+              options={["yes", "no"]}
+              id="en_suit"
+              label="En-Suit"
+              inputContainerClassName="bg-white"
+              isSearchable={false}
+              resetKey={formResetKey}
+              hiddenInputClassName="unit-form-input"
+              defaultValue={mapNumericToYesNo(unitData?.en_suit) || "no"}
+            />
+            <Select
+              dropdownRefClassName="!w-[160px]"
+              required
+              options={["yes", "no"]}
+              id="prepaid"
+              label="Prepaid"
+              inputContainerClassName="bg-white"
+              isSearchable={false}
+              resetKey={formResetKey}
+              hiddenInputClassName="unit-form-input"
+              defaultValue={mapNumericToYesNo(unitData?.prepaid) || "no"}
+            />
+            <Select
+              dropdownRefClassName="!w-[160px]"
+              required
+              options={["yes", "no"]}
+              id="wardrobe"
+              label="Wardrobe"
+              inputContainerClassName="bg-white"
+              isSearchable={false}
+              resetKey={formResetKey}
+              hiddenInputClassName="unit-form-input"
+              defaultValue={mapNumericToYesNo(unitData?.wardrobe) || "no"}
+            />
+            <Select
+              dropdownRefClassName="!w-[160px]"
+              required
+              options={["yes", "no"]}
+              id="pets_allowed"
+              label="Pets Allowed"
+              inputContainerClassName="bg-white"
+              isSearchable={false}
+              resetKey={formResetKey}
+              hiddenInputClassName="unit-form-input"
+              defaultValue={mapNumericToYesNo(unitData?.pet_allowed) || "no"}
+            />
+          </div>
+        )}
     </div>
   );
 };

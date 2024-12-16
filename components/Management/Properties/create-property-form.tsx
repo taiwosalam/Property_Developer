@@ -238,6 +238,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
 
   return (
     <FlowProgress
+      key="property-form"
       steps={1}
       activeStep={0}
       inputClassName="property-form-input"
@@ -559,7 +560,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   ? `${propertySettings?.agency_fee}%`
                   : editMode && formType === "facility"
                   ? `${propertySettings?.management_fee}%`
-                  : "10%"
+                  : "5%"
               }
             />
             {formType === "rental" && (
