@@ -17,6 +17,7 @@ import "react-quill/dist/quill.snow.css";
 import { UndoIcon, RedoIcon, } from "@/public/icons/icons";
 import AIPopOver from "./text-area-popover";
 import useTextGenerator from "@/hooks/useAIContentGenerator";
+import Typewriter from 'typewriter-effect';
 
 // Dynamically import ReactQuill with SSR option set to false
 const DynamicReactQuill = dynamic(
@@ -61,13 +62,13 @@ const TextArea: React.FC<TextAreaProps> = ({
   const [showPopover, setShowPopover] = useState(false);
   const [showAiCreator, setShowAiCreator] = useState(false);
   const [suggestions, setSuggestions] = useState("")
+  const [apiContentValue, setApiContentValue] = useState("");
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ top: 0, left: 0 });
   const { content: apiContent, error: apiError, generateText, loading } = useTextGenerator();
 
   useEffect(() => {
     if (apiContent?.length) {
-      console.log("Suggestions: ", apiContent)
       setSuggestions(apiContent);
       setShowSuggestion(true); // Show suggestions when they exist
     } else {
@@ -113,6 +114,24 @@ const TextArea: React.FC<TextAreaProps> = ({
     }
     updateCursorPosition();// Update position on key press
   };
+
+  // Function to simulate typewriter effect
+  // const typeWriterEffect = (text: string) => {
+  //   let i = 0;
+  //   const editor = quillRef.current?.getEditor();
+  //   if (editor) {
+  //     editor.setText(""); // Clear existing text
+  //     const interval = setInterval(() => {
+  //       if (i < text.length) {
+  //         editor.insertText(i, text.charAt(i));
+  //         i++;
+  //       } else {
+  //         clearInterval(interval); // Stop the interval when the text is completely typed
+  //       }
+  //     }, 5); // Adjust typing speed here
+  //   }
+  // };
+  
 
   const handleChange = (content: string) => {
     setEditorValue(content);
@@ -160,6 +179,12 @@ const TextArea: React.FC<TextAreaProps> = ({
   useEffect(() => {
     setEditorValue(value || defaultValue);
   }, [value, defaultValue, resetKey]);
+
+  // useEffect(() => {
+  //   if (apiContentValue && quillRef.current) {
+  //     typeWriterEffect(apiContentValue);
+  //   }
+  // }, [apiContentValue]);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
@@ -239,7 +264,7 @@ const TextArea: React.FC<TextAreaProps> = ({
               </button>
               <button
                 type="button"
-                className="hover:text-[#06c] dark:text-neutral-4"
+                className="hover:text-[#06c] text-black dark:text-neutral-4"
                 onClick={handleUndo}
                 aria-label="Undo"
               >
@@ -247,7 +272,7 @@ const TextArea: React.FC<TextAreaProps> = ({
               </button>
               <button
                 type="button"
-                className="hover:text-[#06c] dark:text-neutral-4"
+                className="hover:text-[#06c] text-black dark:text-neutral-4"
                 onClick={handleRedo}
                 aria-label="Redo"
               >
@@ -258,12 +283,14 @@ const TextArea: React.FC<TextAreaProps> = ({
                 setEditorValue={setEditorValue}
                 showAiCreator={showAiCreator}
                 setShowAiCreator={setShowAiCreator}
+                // apiContentValue={apiContentValue}
+                // setApiContentValue={setApiContentValue}
               />
             </div>
           </Fragment>
         )}
         {/* Inline Suggestion */}
-        {!showAiCreator && showSuggestion && suggestions.length > 0 && (
+        {/* {!showAiCreator && showSuggestion && suggestions.length > 0 && (
           <div
             className="absolute bg-white dark:bg-darkText-primary border border-gray-300 rounded shadow-md p-1"
             style={{
@@ -278,7 +305,7 @@ const TextArea: React.FC<TextAreaProps> = ({
               {suggestions}
             </div>
           </div>
-        )}
+        )} */}
 
       </div>
     </div>
