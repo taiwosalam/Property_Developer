@@ -221,13 +221,11 @@ const TextArea: React.FC<TextAreaProps> = ({
               >
                 <RedoIcon />
               </button>
-              {/* { ai && */}
                 <AIPopOver
                   editorValue={editorValue as string}
                   setEditorValue={setEditorValue}
                   autoPop={showPopover}
                 />
-              {/* } */}
             </div>
           </Fragment>
         )}
