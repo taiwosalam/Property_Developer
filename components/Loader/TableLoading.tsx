@@ -1,9 +1,9 @@
 import Skeleton from "@mui/material/Skeleton";
 
-const TableLoading = () => {
+const TableLoading = ({ length = 20 }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {Array.from({ length: 20 }).map((_, index) => (
+      {Array.from({ length }).map((_, index) => (
         <Skeleton
           key={index}
           width={"100%"}
@@ -16,6 +16,6 @@ const TableLoading = () => {
       ))}
     </div>
   );
-}
+};
 
-export default TableLoading
+export default TableLoading;

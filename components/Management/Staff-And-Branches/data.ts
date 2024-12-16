@@ -13,7 +13,8 @@ export const createBranch = async (formData: any) => {
   }
 };
 
-export const addStaff = async (formData: FormData) => {
+export const addStaff = async (formData: FormData, branchId: string) => {
+  formData.append("branch_id", branchId);
   try {
     const { data } = await api.post("staffs", formData);
     toast.success(data?.message || "Staff created successfully");

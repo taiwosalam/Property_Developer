@@ -57,7 +57,10 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
     }
     setIsLoading(true);
     cleanPhoneNumber(data);
-    const status = await addStaff(data);
+    if (!data.get("phone_number")) {
+      data.append("phone_number", "");
+    }
+    const status = await addStaff(data, branchId);
     if (status) {
       setIsOpen(false);
     } else {
@@ -80,18 +83,15 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
             formStep === 2 ? "pointer-events-none opacity-0" : "opacity-100"
           }`}
         >
-          <input type="hidden" name="avater" value={selectedAvatar} />
-          <input type="hidden" name="branch_id" value={branchId} />
+          <input type="hidden" name="avatar" value={selectedAvatar} />
           <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             <Select
-              isSearchable
               id="title"
               label="personal title / qualifiction"
               inputContainerClassName="bg-neutral-2"
               options={titles}
             />
             <Select
-              isSearchable
               id="estate_title"
               label="real estate title"
               inputContainerClassName="bg-neutral-2"
@@ -112,12 +112,13 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
             />
             <Select
               id="position"
+              required
               label="position"
               inputContainerClassName="bg-neutral-2"
               options={[
-                { value: "branch", label: "branch manager" },
-                { value: "account", label: "account officer" },
-                { value: "staff", label: "staff" },
+                { value: "manager", label: "branch manager" },
+                "account officer",
+                "staff",
               ]}
             />
             <Select

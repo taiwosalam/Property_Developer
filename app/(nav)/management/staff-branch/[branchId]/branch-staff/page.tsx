@@ -9,87 +9,113 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Pagination from "@/components/Pagination/pagination";
 import { LocationIcon } from "@/public/icons/icons";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import type { DataItem } from "@/components/Table/types";
 import CustomTable from "@/components/Table/table";
-import { branchStaffTableFields, branchStaffTableData } from "./data";
+import { branchStaffTableFields } from "./data";
+import useView from "@/hooks/useView";
+import useFetch from "@/hooks/useFetch";
+import { AxiosRequestConfig } from "axios";
+import type { BranchStaffRequestParams, BranchStaffPageState } from "./types";
+import type { FilterResult } from "@/components/Management/Landlord/types";
+import NetworkError from "@/components/Error/NetworkError";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import TableLoading from "@/components/Loader/TableLoading";
 
-interface PageState {
-  gridView: boolean;
-  total_pages: number;
-  current_page: number;
-  selectedState: string;
-  localGovernments: string[];
-}
-
-const BranchStaffPage = () => {
+const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
+  const { branchId } = params;
   const router = useRouter();
+  const storedView = useView();
+  const [view, setView] = useState<string | null>(storedView);
 
-  const branchFiltersWithOptions = [
-    {
-      label: "Branch",
-      value: [
-        { label: "Branch 1", value: "branch1" },
-        { label: "Branch 2", value: "branch2" },
-        { label: "Branch 3", value: "branch3" },
-      ],
-    },
-    {
-      label: "Account Officer",
-      value: [
-        { label: "Account Officer 1", value: "account_officer1" },
-        { label: "Account Officer 2", value: "account_officer2" },
-        { label: "Account Officer 3", value: "account_officer3" },
-      ],
-    },
-  ];
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+    } as BranchStaffRequestParams,
+  });
+
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+
+  const isFilterApplied = () => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  };
+
+  const [state, setState] = useState<BranchStaffPageState | null>(null);
+
+  const handlePageChange = (page: number) => {
+    setConfig({
+      params: { ...config.params, page },
+    });
+  };
+
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({
+      params: { ...config.params, sort_order: order },
+    });
+  };
+
+  const handleSearch = async (query: string) => {
+    setConfig({
+      params: { ...config.params, search: query },
+    });
+  };
 
   const handleFilterApply = (filters: any) => {
     console.log("Filter applied:", filters);
     // Add filtering logic here for branches
   };
-  const initialState = {
-    gridView: true,
-    total_pages: 1,
-    current_page: 1,
-    selectedState: "",
-    localGovernments: [],
-  };
-  const [state, setState] = useState<PageState>(initialState);
 
-  const { gridView, total_pages, current_page } = state;
-  const { branchId } = useParams();
+  const {
+    data: apiData,
+    error,
+    loading,
+    isNetworkError,
+    silentLoading,
+  } = useFetch<any>(`staffs/${branchId}`, config);
 
-  const setGridView = () => {
-    setState((state) => ({ ...state, gridView: true }));
-  };
-  const setListView = () => {
-    setState((state) => ({ ...state, gridView: false }));
-  };
-  const handlePageChange = (page: number) => {
-    setState((state) => ({ ...state, current_page: page }));
-  };
-  const setSelectedState = (selectedState: string) => {
-    setState((state) => ({ ...state, selectedState }));
-  };
+  // useEffect(() => {
+  //   if (apiData) {
+  //     setState((x) => ({
+  //       ...x,
+  //       ...transformBranchStaffApiResponse(apiData),
+  //     }));
+  //   }
+  // }, [apiData]);
 
   useEffect(() => {
-    // await getOneBranch(branchId);
-  }, [branchId]);
+    setView(storedView);
+  }, [storedView]);
 
-  const transformedTableData = branchStaffTableData.map((item) => ({
+  const transformedTableData = state?.staffs.map((item) => ({
     ...item,
-    gender: (
+    gender: ["male", "female"].includes(item.gender?.toLowerCase() || "") ? (
       <p
         className={clsx(
-          item.gender === "Male" ? "bg-support-1" : "bg-support-2",
+          item.gender?.toLowerCase() === "male"
+            ? "bg-support-1"
+            : "bg-support-2",
           "p-2 rounded-lg text-white w-8 h-8 flex items-center justify-center"
         )}
       >
-        {item.gender.charAt(0).toUpperCase()}
+        {item.gender?.charAt(0).toUpperCase()}
       </p>
+    ) : (
+      ""
     ),
   }));
 
@@ -97,20 +123,27 @@ const BranchStaffPage = () => {
     router.push(`/management/staff-branch/${branchId}/branch-staff/${item.id}`);
   };
 
+  if (isNetworkError) return <NetworkError />;
+
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
+
   return (
     <div className="custom-flex-col gap-6">
       <div className="w-full gap-2 flex items-center justify-between flex-wrap">
-        <div>
-          <BackButton as="div" className="items-start">
-            <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-              Null
-            </h1>
-            <div className="text-text-disabled flex items-center space-x-1">
-              <LocationIcon />
-              <p className="text-sm font-medium">Null</p>
-            </div>
-          </BackButton>
-        </div>
+        <BackButton reducePaddingTop as="div" className="items-start">
+          <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
+            {loading ? "Loading..." : state?.branch_name || "Branch Name"}
+          </h1>
+          <div className="text-text-disabled flex items-center space-x-1">
+            <LocationIcon />
+            <p className="text-sm font-medium">
+              {loading
+                ? "Loading..."
+                : state?.branch_address || "Branch Address"}
+            </p>
+          </div>
+        </BackButton>
         <div className="flex items-center justify-between gap-2 ml-auto flex-wrap">
           <Modal>
             <ModalTrigger asChild>
@@ -132,47 +165,78 @@ const BranchStaffPage = () => {
         pageTitle="Branch Staff"
         searchInputPlaceholder="Search within Branch"
         azFilter
-        // filterOptions={BranchFilters}
-        filterOptionsMenu={branchFiltersWithOptions}
+        filterOptions={[
+          { label: "Account Officer", value: "account_officer" },
+          { label: "Regular Staff", value: "regular_staff" },
+        ]}
         handleFilterApply={handleFilterApply}
-        isDateTrue
-        gridView={gridView}
-        setGridView={setGridView}
-        setListView={setListView}
+        gridView={view === "grid"}
+        setGridView={() => setView("grid")}
+        setListView={() => setView("list")}
+        appliedFilters={appliedFilters}
+        handleSearch={handleSearch}
+        onSort={handleSort}
       />
-      {/* staff cards */}
-      {gridView ? (
-        <AutoResizingGrid minWidth={284}>
-          {Array.from({ length: 20 }).map((_, index) => (
-            <Link
-              key={index}
-              href={`/management/staff-branch/${branchId}/branch-staff/${index}`}
-            >
-              <UserCard
-                badge_color="black"
-                email="test@test.com"
-                name="John Doe"
-                phone_number="123-456-7890"
-                user_tag="Manager"
-                picture_url=""
-              />
-            </Link>
-          ))}
-        </AutoResizingGrid>
-      ) : (
-        <CustomTable
-          fields={branchStaffTableFields}
-          data={transformedTableData}
-          tableBodyCellSx={{ fontSize: "1rem" }}
-          tableHeadCellSx={{ fontSize: "1rem", height: 70 }}
-          handleSelect={handleSelectTableItem}
-        />
-      )}
-      <Pagination
-        totalPages={total_pages}
-        currentPage={current_page}
-        onPageChange={handlePageChange}
-      />
+      <section>
+        {loading || silentLoading ? (
+          view === "grid" ? (
+            <AutoResizingGrid minWidth={284} gap={16}>
+              <CardsLoading />
+            </AutoResizingGrid>
+          ) : (
+            <TableLoading />
+          )
+        ) : state?.staffs.length === 0 ? (
+          config.params.search || isFilterApplied() ? (
+            "No Search/Filter Found"
+          ) : (
+            <EmptyList
+              buttonText="+ Create New Staff"
+              modalContent={<CreateStaffModal branchId={branchId as string} />}
+              title="The branch staff is empty"
+              body={
+                <p>
+                  You can create a staff by clicking on the &quot;Create
+                  Staff&quot; button.
+                </p>
+              }
+            />
+          )
+        ) : view === "grid" ? (
+          <AutoResizingGrid minWidth={284} gap={16}>
+            {state?.staffs.map((staff) => (
+              <Link
+                key={staff.id}
+                href={`/management/staff-branch/${branchId}/branch-staff/${staff.id}`}
+              >
+                <UserCard
+                  badge_color="gray"
+                  email={staff.email}
+                  name={staff.name}
+                  phone_number={staff.phone_number || ""}
+                  user_tag={staff.position}
+                  picture_url={staff.picture || ""}
+                />
+              </Link>
+            ))}
+          </AutoResizingGrid>
+        ) : (
+          <CustomTable
+            fields={branchStaffTableFields}
+            data={transformedTableData || []}
+            tableBodyCellSx={{ fontSize: "1rem" }}
+            tableHeadCellSx={{ fontSize: "1rem", height: 70 }}
+            handleSelect={handleSelectTableItem}
+          />
+        )}
+        {state && state.staffs.length && (
+          <Pagination
+            totalPages={state.total_pages}
+            currentPage={state.current_page}
+            onPageChange={handlePageChange}
+          />
+        )}
+      </section>
     </div>
   );
 };

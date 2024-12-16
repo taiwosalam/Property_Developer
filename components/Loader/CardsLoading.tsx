@@ -1,9 +1,9 @@
 import Skeleton from "@mui/material/Skeleton";
 
-const CardsLoading = () => {
+const CardsLoading = ({ length = 20 }) => {
   return (
     <>
-      {Array.from({ length: 20 }).map((_, index) => (
+      {Array.from({ length }).map((_, index) => (
         <Skeleton
           key={index}
           width={"100%"}
