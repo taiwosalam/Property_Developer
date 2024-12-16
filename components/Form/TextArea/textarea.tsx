@@ -16,6 +16,8 @@ import ReactQuill, { type ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { UndoIcon, RedoIcon, } from "@/public/icons/icons";
 import AIPopOver from "./text-area-popover";
+import useTextGenerator from "@/hooks/useAIContentGenerator";
+import Typewriter from 'typewriter-effect';
 
 // Dynamically import ReactQuill with SSR option set to false
 const DynamicReactQuill = dynamic(
@@ -58,41 +60,97 @@ const TextArea: React.FC<TextAreaProps> = ({
   const [editorValue, setEditorValue] = useState(defaultValue);
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
   const [showPopover, setShowPopover] = useState(false);
+  const [showAiCreator, setShowAiCreator] = useState(false);
+  const [suggestions, setSuggestions] = useState("")
+  const [apiContentValue, setApiContentValue] = useState("");
+  const [showSuggestion, setShowSuggestion] = useState(false);
+  const [cursorPosition, setCursorPosition] = useState({ top: 0, left: 0 });
+  const { content: apiContent, error: apiError, generateText, loading } = useTextGenerator();
 
-  const handleChange = (content: string) => {
-    setEditorValue(content); // Update editorValue state
-    if (onChange) {
-      setShowPopover(true);
-      onChange(content);
+  useEffect(() => {
+    if (apiContent?.length) {
+      setSuggestions(apiContent);
+      setShowSuggestion(true); // Show suggestions when they exist
+    } else {
+      setShowSuggestion(false); // Hide suggestions if the list is empty
     }
+  }, [apiContent]);
 
-    // Clear previous timeout if typing continues
-    if (typingTimeout) {
-      clearTimeout(typingTimeout);
-    }
-
-    // Set a new timeout to check minChar after user stops typing
-    const newTimeout = setTimeout(() => {
-      if(minChar && content.length >= minChar ){
-        setShowPopover(true);
+  const updateCursorPosition = () => {
+    const editor = quillRef.current?.getEditor();
+    if (editor) {
+      const range = editor.getSelection();
+      if (range) {
+        const bounds = editor.getBounds(range.index);
+        if (bounds) {
+          setCursorPosition({ top: bounds.top, left: bounds.left });
+        }
       }
-    }, 1000); 
-
-    setTypingTimeout(newTimeout); // Store the new timeout
-    setShowPopover(false);
+    }
   };
 
-    // Function to simulate typing effect
-    const simulateTyping = (content: string) => {
-      let i = 0;
-      const intervalId = setInterval(() => {
-        setEditorValue((prevValue) => prevValue + content[i]);
-        i += 1;
-        if (i >= content.length) {
-          clearInterval(intervalId); // Clear the interval once all characters are added
-        }
-      }, 50); // Adjust typing speed here (50ms between characters)
-    };
+  const insertSuggestionAtCursor = (text: string) => {
+    const editor = quillRef.current?.getEditor();
+    if (editor) {
+      const range = editor.getSelection();
+      if (range) {
+        editor.deleteText(range.index, range.length);
+        editor.insertText(range.index, text);
+      }
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    const editor = quillRef.current?.getEditor();
+    if (!editor) return;
+
+    if (e.key === "Tab" || e.key === "ArrowRight") {
+      e.preventDefault(); // Prevent default tab behavior (focus switch)
+      if (suggestions.length > 0) {
+        const selectedSuggestion = suggestions; // For simplicity, select the first suggestion
+        insertSuggestionAtCursor(selectedSuggestion);
+        setShowPopover(false); // Hide suggestions after selection
+      }
+    }
+    updateCursorPosition();// Update position on key press
+  };
+
+  // Function to simulate typewriter effect
+  // const typeWriterEffect = (text: string) => {
+  //   let i = 0;
+  //   const editor = quillRef.current?.getEditor();
+  //   if (editor) {
+  //     editor.setText(""); // Clear existing text
+  //     const interval = setInterval(() => {
+  //       if (i < text.length) {
+  //         editor.insertText(i, text.charAt(i));
+  //         i++;
+  //       } else {
+  //         clearInterval(interval); // Stop the interval when the text is completely typed
+  //       }
+  //     }, 5); // Adjust typing speed here
+  //   }
+  // };
+  
+
+  const handleChange = (content: string) => {
+    setEditorValue(content);
+    updateCursorPosition();
+    if (onChange) onChange(content);
+
+    if (typingTimeout) clearTimeout(typingTimeout);
+
+    const newTimeout = setTimeout(() => {
+      if (content && content.length >= 20) {
+        generateText("Autocomplete", content);
+        setShowSuggestion(true);
+      } else {
+        setShowSuggestion(false);
+      }
+    }, 1000);
+
+    setTypingTimeout(newTimeout);
+  };
 
   // Handle undo and redo
   const handleUndo = () => {
@@ -122,6 +180,12 @@ const TextArea: React.FC<TextAreaProps> = ({
     setEditorValue(value || defaultValue);
   }, [value, defaultValue, resetKey]);
 
+  // useEffect(() => {
+  //   if (apiContentValue && quillRef.current) {
+  //     typeWriterEffect(apiContentValue);
+  //   }
+  // }, [apiContentValue]);
+
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
       {label && (
@@ -129,7 +193,7 @@ const TextArea: React.FC<TextAreaProps> = ({
           {label}
         </Label>
       )}
-      <div className="flex flex-col dark:border dark:border-darkText-1 dark:rounded-lg">
+      <div className="flex flex-col dark:border dark:border-darkText-1 dark:rounded-lg relative">
         {mounted && (
           <Fragment>
             <DynamicReactQuill
@@ -137,6 +201,7 @@ const TextArea: React.FC<TextAreaProps> = ({
               value={editorValue}
               onChange={handleChange}
               placeholder={placeholder}
+              onKeyDown={handleKeyDown}
               className={clsx("quill-editor", inputSpaceClassName)}
               modules={{
                 toolbar: {
@@ -157,7 +222,6 @@ const TextArea: React.FC<TextAreaProps> = ({
               required={required || requiredNoStar}
               className={clsx("react-quill-hidden-input", hiddenInputClassName)}
             />
-            {/* Hidden input field */}
 
             <div
               id={`toolbar-${id}`}
@@ -200,7 +264,7 @@ const TextArea: React.FC<TextAreaProps> = ({
               </button>
               <button
                 type="button"
-                className="hover:text-[#06c] dark:text-neutral-4"
+                className="hover:text-[#06c] text-black dark:text-neutral-4"
                 onClick={handleUndo}
                 aria-label="Undo"
               >
@@ -208,20 +272,41 @@ const TextArea: React.FC<TextAreaProps> = ({
               </button>
               <button
                 type="button"
-                className="hover:text-[#06c] dark:text-neutral-4"
+                className="hover:text-[#06c] text-black dark:text-neutral-4"
                 onClick={handleRedo}
                 aria-label="Redo"
               >
                 <RedoIcon />
               </button>
-                <AIPopOver
-                  editorValue={editorValue as string}
-                  setEditorValue={setEditorValue}
-                  autoPop={showPopover}
-                />
+              <AIPopOver
+                editorValue={editorValue as string}
+                setEditorValue={setEditorValue}
+                showAiCreator={showAiCreator}
+                setShowAiCreator={setShowAiCreator}
+                // apiContentValue={apiContentValue}
+                // setApiContentValue={setApiContentValue}
+              />
             </div>
           </Fragment>
         )}
+        {/* Inline Suggestion */}
+        {/* {!showAiCreator && showSuggestion && suggestions.length > 0 && (
+          <div
+            className="absolute bg-white dark:bg-darkText-primary border border-gray-300 rounded shadow-md p-1"
+            style={{
+              top: cursorPosition.top + 25, // Adjust for spacing below the cursor
+              left: cursorPosition.left,
+            }}
+          >
+            <div
+              className="cursor-pointer hover:bg-gray-100 dark:hover:bg-darkText-2 text-xs"
+              onClick={() => insertSuggestionAtCursor(suggestions)}
+            >
+              {suggestions}
+            </div>
+          </div>
+        )} */}
+
       </div>
     </div>
   );

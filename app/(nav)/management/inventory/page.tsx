@@ -166,7 +166,7 @@ const Inventory = () => {
         },
       }));
     }
-    // console.log("last page -", apiData.last_page)
+    console.log("api data -", inventory)
     if (error) {
       console.error("Error fetching inventory data:", error);
     }
@@ -221,6 +221,8 @@ const Inventory = () => {
       value: branchOptions,
     },
   ];
+
+
   return (
     <div className="custom-flex-col gap-9">
       <div className="page-header-container">

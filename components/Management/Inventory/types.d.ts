@@ -3,7 +3,7 @@ import { inventory_conditions } from "./data";
 
 export interface InventoryCardDataProps {
   inventory_id: string;
-  created_date: string;
+  created_at: string;
   edited_date: string;
   property_name: string;
   branch_name: string;

@@ -12,6 +12,7 @@ import type {
 // Imports
 import { getBranch } from "./data";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
+import dayjs from "dayjs";
 
 // Component
 export const InventoryListInfo: React.FC<InventoryListInfoProps> = ({
@@ -41,7 +42,7 @@ export const InventoryListInfo: React.FC<InventoryListInfoProps> = ({
 
   const inventory_data_props: InventoryCardDataProps = {
     inventory_id: data.inventory_id || "",
-    created_date: data.created_date || "",
+    created_at: dayjs(data.created_at).format("DD/MM/YYYY") || "",
     edited_date: data.edited_date || "",
     property_name: data.property_name || "",
     branch_name: branchName || "",

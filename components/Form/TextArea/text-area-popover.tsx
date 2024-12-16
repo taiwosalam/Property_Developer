@@ -16,32 +16,27 @@ import { toast } from "sonner";
 const AIPopOver = ({
   editorValue,
   setEditorValue,
-  autoPop,
+  showAiCreator,
+  setShowAiCreator, 
 }: {
   editorValue: string;
   setEditorValue: any;
-  autoPop: any;
+  showAiCreator: any;
+  setShowAiCreator: any;
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [showPopover, setShowPopover] = useState(autoPop);
-
-  // Sync `autoPop` prop with `showPopover` state
-  useEffect(() => {
-    setShowPopover(autoPop);
-  }, [autoPop]);
-
-
+  const [showPopover, setShowPopover] = useState(false);
   const popoverRef = useRef(null);
   const containerRef = useRef(null);
 
   // Close Popover Handler
   const closePopover = useCallback(() => {
-    if (showPopover) setShowPopover(false);
-  }, [showPopover]);
+    if (showAiCreator) setShowAiCreator(false);
+  }, [showAiCreator]);
 
   // Proceed Button Handler
   const proceedAction = () => {
-    setShowPopover(false);
+    setShowAiCreator(false);
     setModalOpen(true);
   };
 
@@ -51,7 +46,7 @@ const AIPopOver = ({
 
     const timeline = gsap.timeline({ defaults: { ease: "expo.out" } });
 
-    if (showPopover) {
+    if (showAiCreator) {
       timeline
         .set(popoverRef.current, { display: "flex", autoAlpha: 0 })
         .to(popoverRef.current, { autoAlpha: 1, y: -20 });
@@ -61,13 +56,13 @@ const AIPopOver = ({
         .to(popoverRef.current, { autoAlpha: 0, y: 0 })
         .set(popoverRef.current, { display: "none" });
     }
-  }, [showPopover, closePopover]);
+  }, [showAiCreator, closePopover]);
 
   const handleShowPopOver = ()=> {
     if (editorValue.length < 30){
       toast.error("Please enter more than 30 characters to get AI suggestions.")
     } else {
-      setShowPopover((prev: any) => !prev);
+      setShowAiCreator((prev: any) => !prev);
     }
   }
 
@@ -97,13 +92,14 @@ const AIPopOver = ({
     if (content) {
       console.log("Formatted content", content)
       setEditorValue(content); // Update editorValue only when contentGenerated changes
+      
     }
   }, [setEditorValue, content]);
 
   return (
     <div ref={containerRef} className="relative dm-sans">
       {/* Popover Content */}
-      {showPopover && (
+      {showAiCreator && (
         <div
           ref={popoverRef}
           className="absolute bottom-full left-2/4 -translate-x-2/4 custom-flex-col w-[154px]"
@@ -114,6 +110,7 @@ const AIPopOver = ({
               <button
                 key={index}
                 type="button"
+                // style={{backgroundColor: "var(--secondary-color)"}}
                 className={`!w-full !flex !text-start !items-center !py-2 !font-[300] !text-[10px] !px-1 !text-white mt-2 rounded-md ${editorValue
                   ? "!bg-brand-9 !text-[#3F4247] hover:bg-blue-600"
                   : "!bg-brand-9 !text-[#3F4247] !cursor-not-allowed"
@@ -131,6 +128,7 @@ const AIPopOver = ({
             height="19"
             viewBox="0 0 32 19"
             fill="none"
+            className="text-white dark:text-darktext-primary"
           >
             <path d="M0 0L16 19L32 0H0Z" fill="currentColor" />
           </svg>
