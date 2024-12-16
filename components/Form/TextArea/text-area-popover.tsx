@@ -17,7 +17,7 @@ const AIPopOver = ({
   editorValue,
   setEditorValue,
   showAiCreator,
-  setShowAiCreator,
+  setShowAiCreator, 
 }: {
   editorValue: string;
   setEditorValue: any;
@@ -92,6 +92,7 @@ const AIPopOver = ({
     if (content) {
       console.log("Formatted content", content)
       setEditorValue(content); // Update editorValue only when contentGenerated changes
+      
     }
   }, [setEditorValue, content]);
 
@@ -109,6 +110,7 @@ const AIPopOver = ({
               <button
                 key={index}
                 type="button"
+                // style={{backgroundColor: "var(--secondary-color)"}}
                 className={`!w-full !flex !text-start !items-center !py-2 !font-[300] !text-[10px] !px-1 !text-white mt-2 rounded-md ${editorValue
                   ? "!bg-brand-9 !text-[#3F4247] hover:bg-blue-600"
                   : "!bg-brand-9 !text-[#3F4247] !cursor-not-allowed"

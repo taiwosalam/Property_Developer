@@ -15,6 +15,7 @@ import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import { SectionSeparator } from "@/components/Section/section-components";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
+import dayjs from "dayjs";
 
 const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
   const [isOpened, setIsOpened] = useState(false);
@@ -38,7 +39,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
 
   const inventory_data_props: InventoryCardDataProps = {
     inventory_id: data.id || "",
-    created_date: data.created_date || "",
+    created_at: dayjs(data.created_at).format("MMM DD, YYYY") || "",
     edited_date: data.edited_date || "",
     property_name: data.property_name || "",
     branch_name: branchName || "",

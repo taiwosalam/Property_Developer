@@ -113,7 +113,7 @@ const VehiclesRecordPage = () => {
 
   const handleActionClick = (record: DataItem) => {
     const vehicleRecord = record as VehicleRecord;
-    // console.log("vehicle record passed -", vehicleRecord);
+    console.log("vehicle record passed -", vehicleRecord);
     const updatedRecord = {
       ...data,
       latest_check_in: vehicleRecord.latest_check_in,
