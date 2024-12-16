@@ -113,7 +113,7 @@ export const unitSubtypes = {
     "tenement room",
     "shared house",
     "studio house",
-    "others",
+    "none",
   ],
   "block of flat": [
     "twins",
@@ -124,7 +124,7 @@ export const unitSubtypes = {
     "semi-detached",
     "multiple",
     "detached",
-    "others",
+    "none",
   ],
   house: [
     "detached bungalow",
@@ -137,7 +137,7 @@ export const unitSubtypes = {
     "mansion structure",
     "high rise",
     "tube",
-    "other",
+    "none",
   ],
   land: {
     residential: ["sqm", "half plot", "plot", "acre", "hectare"],
@@ -151,7 +151,7 @@ export const unitSubtypes = {
       "mass housing land",
       "estate land",
       "mixed use land",
-      "others",
+      "none",
     ],
   },
   others: [
@@ -219,6 +219,7 @@ export const unitPreferences = {
       "furnished",
       "unfurnished",
       "semi-furnished",
+      "none",
     ],
     commercial: [
       "newly built",
@@ -232,7 +233,7 @@ export const unitPreferences = {
       "fully equipped",
       "distress",
       "back to market",
-      "others",
+      "none",
     ],
   },
   lands: {
@@ -245,7 +246,7 @@ export const unitPreferences = {
       "distress",
       "gated",
       "layout",
-      "others",
+      "none",
     ],
     commercial: [
       "corner plot",
@@ -256,7 +257,7 @@ export const unitPreferences = {
       "layout",
       "water front",
       "tarred road",
-      "others",
+      "none",
     ],
   },
 };

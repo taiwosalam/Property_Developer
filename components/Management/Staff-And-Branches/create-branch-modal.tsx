@@ -1,14 +1,13 @@
 "use client";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import { z } from "zod";
 import { toast } from "sonner";
 import { useModal } from "@/components/Modal/modal";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
 import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "@/components/Form/Button/button";
 import { AuthForm } from "@/components/Auth/auth-components";
 import Avatars from "@/components/Avatars/avatars";
@@ -18,8 +17,8 @@ import Picture from "@/components/Picture/picture";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { PersonIcon, DeleteIconOrange } from "@/public/icons/icons";
 import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
-import { createBranch, getEmailVerificationOTP } from "./data";
-import VerifyEmailModal from "./verify-email-modal";
+import { createBranch } from "./data";
+// import VerifyEmailModal from "./verify-email-modal";
 
 const CreateBranchModal = () => {
   const { setIsOpen } = useModal();
@@ -76,7 +75,6 @@ const CreateBranchModal = () => {
       toast.warning("Please upload a picture or choose an avatar.");
       return;
     }
-
     setIsLoading(true);
     const status = await createBranch(data);
     if (status) {
@@ -148,9 +146,21 @@ const CreateBranchModal = () => {
             <Select
               label="Branch Wallet"
               id="branch_wallet"
-              options={["activate", "deactivate"]}
+              options={[
+                {
+                  label: "activate",
+                  value: "1",
+                },
+                {
+                  label: "deactivate",
+                  value: "0",
+                },
+              ]}
               inputContainerClassName="bg-neutral-2"
-              defaultValue="activate"
+              defaultValue={{
+                label: "activate",
+                value: "1",
+              }}
             />
             <TextArea
               id="branch_description"

@@ -150,7 +150,7 @@ const UnitBreakdownNewTenant = () => {
           id="fee_period"
           required
           options={rentPeriods}
-          label="Fee Period"
+          label="Rent Period"
           inputContainerClassName="bg-white"
           resetKey={formResetKey}
           hiddenInputClassName="unit-form-input"
@@ -158,7 +158,7 @@ const UnitBreakdownNewTenant = () => {
         />
         <Input
           id="fee_amount"
-          label="Fee Amount"
+          label="Rent Amount"
           required
           inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}

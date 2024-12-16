@@ -176,12 +176,14 @@ const FilterModal: React.FC<FilterModalProps> = ({
               id="date_from"
               value={selectedStartDate ? dayjs(selectedStartDate) : undefined}
               onChange={(date) => handleDateChange("start", date)}
+              disableFuture
             />
             <DateInput
               label="To"
               id="date_to"
               value={selectedEndDate ? dayjs(selectedEndDate) : undefined}
               onChange={(date) => handleDateChange("end", date)}
+              disableFuture
             />
           </>
         ) : (

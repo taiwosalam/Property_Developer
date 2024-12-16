@@ -13,11 +13,13 @@ import FlowProgressBar from "./flow-progress-bar";
 interface FlowProgressContextType {
   handleInputChange: () => void;
   canSubmit: boolean;
+  missingFields: string[];
 }
 
 export const FlowProgressContext = createContext<FlowProgressContextType>({
   handleInputChange: () => {},
   canSubmit: false,
+  missingFields: [],
 });
 
 const FlowProgress: React.FC<FlowProgressProps> = ({
@@ -34,6 +36,7 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
   const barRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [canSubmit, setCanSubmit] = useState(false);
+  const [missingFields, setMissingFields] = useState<string[]>([]);
 
   // Helper function to check if an input is filled
   const isInputFilled = (input: HTMLInputElement) => {
@@ -98,6 +101,12 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
 
     const allRequiredFilled = allRequired.every(isInputFilled);
     setCanSubmit(allRequiredFilled);
+
+    const missingFields = allRequired
+      .filter((input) => !isInputFilled(input))
+      .map((input) => input.name || input.id);
+
+    setMissingFields(missingFields);
   }, [inputClassName, requiredFields, showProgressBar]);
 
   useEffect(() => {
@@ -121,7 +130,9 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
   }, [activeStep, handleInputChange, inputClassName]);
 
   return (
-    <FlowProgressContext.Provider value={{ handleInputChange, canSubmit }}>
+    <FlowProgressContext.Provider
+      value={{ handleInputChange, canSubmit, missingFields }}
+    >
       <div ref={containerRef} className={className}>
         {showProgressBar && (
           <div className="flex gap-[10px] bg-white" style={style}>
