@@ -95,7 +95,7 @@ const UnitDetails = () => {
     } else {
       // If no unit type is selected, clear the subtype options
       setSelectedSubtype("");
-      setSelectedPreference("");
+      setSelectedPreference("none");
       setUnitSubtypeOptions([]);
       setUnitPreferencesOptions([]);
     }

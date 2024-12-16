@@ -17,7 +17,7 @@ const UnitBreakdownFacility = () => {
   const CURRENCY_SYMBOL =
     currencySymbols[propertySettings?.currency || "naira"];
   const [otherChargesInput, setOtherChargesInput] = useState(
-    !!unitData?.other_charge
+    !!parseFloat(unitData?.other_charge || "0")
   );
 
   const initialFormValues = useMemo(() => {

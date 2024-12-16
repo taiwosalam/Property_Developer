@@ -84,13 +84,13 @@ export const transformUnitFormData = (
 ) => {
   const parseFee = (value: string | undefined) => {
     if (!value) {
-      return null;
+      return 0;
     }
     return parseFloat(value.replace(/,/g, ""));
   };
 
   const parseIntOrNull = (value: string | undefined | null) => {
-    if (value === "" || value === null || value === undefined) return null;
+    if (!value) return 0;
     const parsed = parseInt(value, 10);
     return isNaN(parsed) ? null : parsed;
   };
@@ -102,7 +102,7 @@ export const transformUnitFormData = (
     unit_preference: formData.unit_preference,
     measurement: formData.measurement ?? null,
     total_area_sqm: formData.total_area_sqm ?? null,
-    number_of: formData.number_of ?? null,
+    number_of: formData.number_of ?? 0,
     bedroom: parseIntOrNull(formData.bedroom),
     bathroom: parseIntOrNull(formData.bathroom),
     toilet: parseIntOrNull(formData.toilet),

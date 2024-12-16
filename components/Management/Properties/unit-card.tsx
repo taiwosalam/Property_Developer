@@ -34,7 +34,11 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
       data.unit_type.toLowerCase() === "land"
         ? `${data.unit_preference} - ${data.unit_type} - ${
             data.total_area_sqm
-          }${data.number_of ? ` - ${data.number_of}` : ""}`
+          }${
+            data.number_of && data.number_of !== "0"
+              ? ` - ${data.number_of}`
+              : ""
+          }`
         : `${data.unit_preference} - ${data.bedroom || 0} bedroom${
             parseInt(data.bedroom || "0") > 1 ? "s" : ""
           } - ${data.unit_sub_type} - ${data.unit_type}`,

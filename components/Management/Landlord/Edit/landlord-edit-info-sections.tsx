@@ -46,6 +46,7 @@ import {
   uploadDocuments,
   removeDocuments,
   updateLandlordOthers,
+  lookupBankDetails,
 } from "@/app/(nav)/management/landlord/[landlordId]/manage/edit/data";
 import { useMultipleFileUpload } from "@/hooks/useMultipleFilesUpload";
 import { useImageUploader } from "@/hooks/useImageUploader";
@@ -53,6 +54,7 @@ import Image from "next/image";
 import LandlordTenantModalPreset from "../../landlord-tenant-modal-preset";
 import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
 import { MAX_FILE_SIZE_MB } from "@/data";
+import useFetch from "@/hooks/useFetch";
 
 export const LandlordEditProfileInfoSection = () => {
   const [reqLoading, setReqLoading] = useState(false);
@@ -380,8 +382,28 @@ export const LandlordEditGuarantorInfoSection = () => {
 export const LandlordEditBankDetailsInfoSection = () => {
   const { data: landlord } = useLandlordEditContext();
   const [reqLoading, setReqLoading] = useState(false);
+  const [bankName, setBankName] = useState(
+    landlord?.bank_details.bank_name || ""
+  );
+  const [bankCode, setBankCode] = useState("");
+  const [accountNumber, setAccountNumber] = useState(
+    landlord?.bank_details.account_number || ""
+  );
+  const [accountName, setAccountName] = useState(
+    landlord?.bank_details.account_name || ""
+  );
+  const [isVerified, setIsVerified] = useState(false);
+  const [lookupLoading, setLookupLoading] = useState(false);
+  const {
+    data: bankList,
+    loading: bankListLoading,
+    error: bankListError,
+  } = useFetch<{
+    data: { bank_name: string; bank_code: string }[];
+  }>("/mono/bank-list");
+
   const handleUpdateBankDetails = async (data: FormData) => {
-    if (landlord?.id) {
+    if (landlord?.id && isVerified) {
       setReqLoading(true);
       const status = await updateLandlordBankDetails(landlord.id, data);
       if (status) {
@@ -390,6 +412,22 @@ export const LandlordEditBankDetailsInfoSection = () => {
       setReqLoading(false);
     }
   };
+
+  const handleAccountNumberChange = async (value: string) => {
+    const numericValue = value.replace(/\D/g, "");
+    setAccountNumber(numericValue.slice(0, 10));
+    setAccountName("");
+    if (numericValue.length === 10 && bankCode) {
+      setLookupLoading(true);
+      const name = await lookupBankDetails(bankCode, numericValue);
+      setAccountName(name || "");
+      setIsVerified(!!name);
+      setLookupLoading(false);
+    } else {
+      setIsVerified(false);
+    }
+  };
+
   return (
     <LandlordTenantInfoEditSection title="Bank Details">
       <AuthForm
@@ -398,30 +436,56 @@ export const LandlordEditBankDetailsInfoSection = () => {
         returnType="form-data"
       >
         <LandlordTenantInfoEditGrid>
-          <Input
+          <Select
             id="bank_name"
             label="bank name"
-            inputClassName="rounded-lg"
-            defaultValue={landlord?.bank_details.bank_name}
-          />
-          <Input
-            id="account_name"
-            label="account name"
-            inputClassName="rounded-lg"
-            defaultValue={landlord?.bank_details.account_name}
+            options={
+              bankList?.data.map((bank) => ({
+                value: bank.bank_code,
+                label: bank.bank_name,
+              })) || []
+            }
+            placeholder={
+              bankListLoading
+                ? "Loading bank list..."
+                : bankListError
+                ? "Error loading bank list"
+                : "Select bank"
+            }
+            value={bankName}
+            error={bankListError}
+            onChange={(value) => {
+              setBankCode(value);
+              setIsVerified(false);
+              setAccountName("");
+              const selectedBank = bankList?.data.find(
+                (bank) => String(bank.bank_code) === value
+              );
+              setBankName(selectedBank ? selectedBank.bank_name : "");
+            }}
           />
           <Input
             id="account_number"
             label="account number"
             inputClassName="rounded-lg"
-            defaultValue={landlord?.bank_details.account_number}
+            value={accountNumber}
+            maxLength={10}
+            onChange={handleAccountNumberChange}
+            disabled={!bankCode}
           />
-
+          <Input
+            id="account_name"
+            label="account name"
+            inputClassName="rounded-lg"
+            value={accountName}
+            placeholder={lookupLoading ? "Looking up account" : ""}
+            readOnly
+          />
           <div className="flex items-end justify-end">
             <Button
               size="base_medium"
               className="py-2 px-6"
-              disabled={reqLoading}
+              disabled={!isVerified || reqLoading}
               type="submit"
             >
               {reqLoading ? "updating..." : "update"}
