@@ -20,7 +20,9 @@ export async function generateTextContent(aiFeature: string, userInput: string):
 
       User Input: ${userInput}
 
-      Based on the task and user input, provide a detailed response.
+      Based on the task and user input, provide a detailed response. 
+
+      Important: make sure all response is well formated and clear.
     `;
 
     // Generate content using the model
