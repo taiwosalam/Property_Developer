@@ -94,7 +94,6 @@ export const transformRentUnitApiResponse = (
     return "total_unit" in response.data;
   };
 
-  console.lo
   const unitData = isUnitApiResponse(response)
     ? response.data.unit
     : response.data;
@@ -120,7 +119,7 @@ export const transformRentUnitApiResponse = (
     }
   );
 
-  console.log("Transformed unit data", transformedUnits)
+  // console.log("Transformed unit data", transformedUnits)
   if (isUnitApiResponse(response)) {
     // console.log("isUnitApiResponse", response)
     return {

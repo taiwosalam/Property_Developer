@@ -70,7 +70,7 @@ const UnitPreviewPage = () => {
         ...x,
         ...transformUnitData(apiData)
       }))
-      console.log("Data", unit_data)
+      // console.log("Data", unit_data)
     }
   }, [apiData])
 
