@@ -16,6 +16,7 @@ import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { getBranch } from "./data";
+import dayjs from "dayjs";
 
 const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
   const [isOpened, setIsOpened] = useState(false);
@@ -39,8 +40,8 @@ const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
 
     const inventoryData: InventoryCardDataProps = {
     inventory_id: data.id || "",
-    created_date: data.created_date || "",
-    edited_date: data.edited_date || "",
+    created_at: dayjs(data.created_at).format("DD-MM-YYYY") || "",
+    edited_date: dayjs(data.edited_date).format("DD-MM-YYYY") || "",
     property_name: data.property_name || "",
     branch_name: branchName || "",
     account_officer: data.account_officer || "",
