@@ -62,10 +62,6 @@ const ThreadPreview = () => {
     console.log("target_audience", targetAudience.join(", ")); // This should now work correctly
   }, [data]);
 
-  // console.log("slug", slug);
-
-  // console.log("companySummary", companySummary);
-  // console.log("comments", comments);
   return (
     <div className="mb-16">
       <div className="flex items-center justify-between flex-wrap gap-2">
