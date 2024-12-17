@@ -22,28 +22,13 @@ const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
   const [isOpened, setIsOpened] = useState(false);
   const [branchName, setBranchName ] = useState<string | null>(null);
 
-    useEffect(() => {
-      console.log('data -',data)
-    const fetchBranch = async () => {
-      if (data.branch_id) {
-        const branch = await getBranch(data.branch_id.toString());
-        if (branch) {
-          setBranchName(branch.data.data.branch.branch_name);
-          // console.log("branch name", branch.data.data.branch.branch_name);
-        }
-      } else {
-        console.warn("branch_id is not available in data");
-      }
-    }
-    fetchBranch();
-  }, [data]);
 
     const inventoryData: InventoryCardDataProps = {
     inventory_id: data.id || "",
-    created_at: dayjs(data.created_at).format("DD-MM-YYYY") || "",
-    edited_date: dayjs(data.edited_date).format("DD-MM-YYYY") || "",
+    created_at: dayjs(data.created_at).format("DD/MM/YYYY") || "",
+    edited_date: data.edited_date || "",
     property_name: data.property_name || "",
-    branch_name: branchName || "",
+    branch_name: data.branch_name || "",
     account_officer: data.account_officer || "",
   };
 

@@ -283,14 +283,14 @@ export const RentAndUnitFiltersWithDropdown = [
       value: state,
     })),
   },
-  {
-    label: "Branch",
-    value: [
-      { label: "Branch 1", value: "branch1" },
-      { label: "Branch 2", value: "branch2" },
-      { label: "Branch 3", value: "branch3" },
-    ],
-  },
+  // {
+  //   label: "Branch",
+  //   value: [
+  //     { label: "Branch 1", value: "branch1" },
+  //     { label: "Branch 2", value: "branch2" },
+  //     { label: "Branch 3", value: "branch3" },
+  //   ],
+  // },
   {
     label: "Account Officer",
     value: [
