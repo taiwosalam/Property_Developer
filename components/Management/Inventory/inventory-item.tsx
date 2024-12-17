@@ -70,28 +70,28 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
     maxFileSizeMB: MAX_FILE_SIZE_MB,
     initialImages: initialImages,
   });
-  
-useEffect(() => {
-  if (inventoryFiles?.length === 0 && setInventoryFiles) {
-    // Set inventoryFiles to initialImages when the user hasn't uploaded any images yet
-    setInventoryFiles((prevState: File[][]) => {
-      const updatedFiles = [...prevState];
-      updatedFiles[index] = initialImages as unknown as File[]; // Set initial images for the specific index
-      return updatedFiles;
-    });
-  }
-}, [initialImages, inventoryFiles, index]);
 
-// Use imageFiles (from useMultipleImageUpload) when user interacts with the image input
-useEffect(() => {
-  if (imageFiles?.length > 0 && setInventoryFiles) {
-    setInventoryFiles((prevState: File[][]) => {
-      const updatedFiles = [...prevState];
-      updatedFiles[index] = imageFiles as unknown as File[]; // Update the images for the specific index
-      return updatedFiles;
-    });
-  }
-}, [imageFiles, index]);
+  useEffect(() => {
+    if (inventoryFiles?.length === 0 && setInventoryFiles) {
+      // Set inventoryFiles to initialImages when the user hasn't uploaded any images yet
+      setInventoryFiles((prevState: File[][]) => {
+        const updatedFiles = [...prevState];
+        updatedFiles[index] = initialImages as unknown as File[]; // Set initial images for the specific index
+        return updatedFiles;
+      });
+    }
+  }, [initialImages, inventoryFiles, index]);
+
+  // Use imageFiles (from useMultipleImageUpload) when user interacts with the image input
+  useEffect(() => {
+    if (imageFiles?.length > 0 && setInventoryFiles) {
+      setInventoryFiles((prevState: File[][]) => {
+        const updatedFiles = [...prevState];
+        updatedFiles[index] = imageFiles as unknown as File[]; // Update the images for the specific index
+        return updatedFiles;
+      });
+    }
+  }, [imageFiles, index]);
 
   const handleSave = () => {
     setOpenModal(false);
@@ -111,12 +111,12 @@ useEffect(() => {
   }));
 
   const handleIncrement = () => {
-  setCount((prevCount) => Number(prevCount) + 1);
-};
+    setCount((prevCount) => Number(prevCount) + 1);
+  };
 
-const handleDecrement = () => {
-  setCount((prevCount) => Math.max(1, Number(prevCount) - 1));
-};
+  const handleDecrement = () => {
+    setCount((prevCount) => Math.max(1, Number(prevCount) - 1));
+  };
 
 
   const input_styles: CSSProperties = {
@@ -220,7 +220,7 @@ const handleDecrement = () => {
                   className="object-cover"
                 />
               )}
-             {!edit && <div
+              {!edit && <div
                 className="absolute top-2 right-2 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5 cursor-pointer"
                 onClick={() => setScreenModal(true)}
               >
@@ -233,11 +233,10 @@ const handleDecrement = () => {
             {/* NOT EDIT MODE END */}
             {edit && (
               <div
-                className={`absolute inset-0 flex ${
-                  images.length === 0
+                className={`absolute inset-0 flex ${images.length === 0
                     ? "items-center justify-center"
                     : "flex-col items-end justify-between mr-4 my-4"
-                }`}
+                  }`}
                 style={{ backgroundColor: "rgba(0, 0, 0, 0.1)" }}
               >
                 {edit && images.length > 0 && (
