@@ -35,6 +35,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import { ExclamationMark } from "@/public/icons/icons";
+import { AllBranchesResponse } from "@/components/Management/Properties/types";
 
 const RentAndUnit = () => {
   const view = useView();
@@ -122,6 +123,8 @@ const RentAndUnit = () => {
     };
   }, [appliedFilters, search, sort, page]);
 
+  // console.log("config", config)
+
   const handlePageChange = (page: number) => {
     setPage(page);
   };
@@ -133,6 +136,17 @@ const RentAndUnit = () => {
   const handleSearch = (query: string) => {
     setSearch(query);
   };
+
+  const { data: branchesData } =
+  useFetch<AllBranchesResponse>("/branches/select");
+
+const branchOptions =
+  branchesData?.data.map((branch) => ({
+    label: branch.branch_name,
+    value: branch.id,
+  })) || [];
+
+  // console.log("Braches", branchOptions)
 
   const {
     data: apiData,
@@ -237,7 +251,17 @@ const RentAndUnit = () => {
         appliedFilters={appliedFilters}
         isDateTrue
         filterOptions={RentAndUnitFilters}
-        filterOptionsMenu={RentAndUnitFiltersWithDropdown}
+        filterOptionsMenu={[
+          ...RentAndUnitFiltersWithDropdown,
+          ...(branchOptions.length > 0
+            ? [
+              {
+                label: "Branch",
+                value: branchOptions,
+              },
+            ]
+            : []),
+        ]}
       />
       <section className="capitalize">
         {pageData?.unit.length === 0 && !silentLoading ? (

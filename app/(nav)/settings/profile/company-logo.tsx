@@ -74,7 +74,7 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ lightLogo, darkLogo }) => {
         ideally 160px x 450px.
       </SectionHeading>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 flex-wrap">
         {(["light", "dark"] as const).map((mode) => (
           <div key={mode}>
             <h3 className="text-md font-medium mb-4">
