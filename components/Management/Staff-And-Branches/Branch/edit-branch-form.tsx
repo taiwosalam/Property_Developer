@@ -246,7 +246,7 @@ const EditBranchForm = ({
               </ModalTrigger>
               <ModalContent>
                 <LandlordTenantModalPreset heading="Choose Avatar">
-                  <Avatars onClick={handleAvatarSelection} />
+                  <Avatars branch onClick={handleAvatarSelection} />
                 </LandlordTenantModalPreset>
               </ModalContent>
             </Modal>
