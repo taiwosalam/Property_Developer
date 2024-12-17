@@ -4,15 +4,11 @@
 import { useEffect, useMemo, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import {
-  initialRentUnitPageData,
   initialState,
   RentAndUnitFilters,
   RentAndUnitFiltersWithDropdown,
   RentAndUnitState,
-  RentUnitApiResponse,
   RentUnitFilterParams,
-  RentUnitPageData,
-  RentUnitRequestParams,
   transformRentUnitApiResponse,
   UnitApiResponse,
   UnitFilterResponse,
@@ -209,7 +205,7 @@ const branchOptions =
           newData={pageData?.month_unit}
           total={pageData?.total_unit}
           className="w-[240px]"
-          colorScheme={1}
+        colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Occupied Units"

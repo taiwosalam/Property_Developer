@@ -21,6 +21,7 @@ const Property = () => {
     address: "",
     last_updated: "",
   }
+  
   return (
     <div className="custom-flex-col gap-9">
       <div className="hidden md:flex gap-5 flex-wrap">

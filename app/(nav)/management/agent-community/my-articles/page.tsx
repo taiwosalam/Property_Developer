@@ -179,7 +179,6 @@ const MyArticlePage = () => {
         current_page: apiData.meta.pagination.current_page,
         total_posts: apiData.meta.pagination.total,
       }));
-      console.log("state", state);
     }
   }, [apiData]);
 
