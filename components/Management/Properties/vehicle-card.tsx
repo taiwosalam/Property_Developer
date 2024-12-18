@@ -33,31 +33,32 @@ export interface PropertyCardProps {
   viewOnly?: boolean;
 }
 
-const VehicleCard: React.FC<PropertyCardProps> = ({
-  id = 12133,
-  images,
-  property_name = 'Property Name',
-  total_units = 20,
-  address = '12, kola sanusi street, mabolaje oyo',
-  total_unit_pictures = 10,
-  hasVideo = true,
-  property_type = 'rental',
-  total_returns = 20000,
-  total_income = 40000,
-  branch = 'Branch Name',
-  accountOfficer = "Officer muba",
-  last_updated = '27/11/2023',
-  mobile_tenants = 2,
-  web_tenants = 2,
-  owing_units = 3,
-  available_units = 34,
-  currency = 'naira',
-  isClickable = 0,
-  viewOnly = 0,
-}) => {
+const VehicleCard: React.FC<any> = ({ data }) => {
+  const {  
+    id = 12133,
+    images,
+    property_name = 'Property Name',
+    total_units = 20,
+    address = '12, kola sanusi street, mabolaje oyo',
+    total_unit_pictures = 10,
+    hasVideo = true,
+    property_type = 'rental',
+    total_returns = 20000,
+    total_income = 40000,
+    branch = 'Branch Name',
+    accountOfficer = "Officer muba",
+    last_updated = '27/11/2023',
+    mobile_tenants = 2,
+    web_tenants = 2,
+    owing_units = 3,
+    available_units = 34,
+    currency = 'naira',
+    isClickable = 0,
+    viewOnly = 0, } = data
+
   const isRental = property_type === "rental";
-  const symbol =
-    isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
+  // const symbol =
+    // isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
   const modalRef = useRef<HTMLDivElement>(null);
   const [isModalActive, setIsModalActive] = useState(false);
 

@@ -306,8 +306,8 @@ const Inventory = () => {
                   <TableLoading />
                 ) : (
                   inventory.map((item, idx) => (
-                    <div className="mb-4">
-                      <InventoryList key={idx} data={item} />
+                    <div key={idx} className="mb-4">
+                      <InventoryList data={item} />
                     </div>
                   ))
                 )}
