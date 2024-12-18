@@ -67,7 +67,7 @@ const VehicleRecordModal: React.FC<
       try {
         const response = await checkOutVehicle(data, checkIn.id);
         if (response) {
-          console.log("response", response);
+          // console.log("response", response);
           setCheckOut({
             id: response.id || checkOut.id,
             name: response.data.out_by || checkOut.name,
@@ -224,7 +224,7 @@ const VehicleRecordModal: React.FC<
             <Button
               size="sm_bold"
               className="py-[10px] px-6 rounded-lg"
-              href={`/management/vehicles-record/${id}/record`}
+              href={`/management/vehicles-record/records/${id}/record`}
             >
               Open Records
             </Button>

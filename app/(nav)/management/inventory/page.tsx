@@ -154,6 +154,7 @@ const Inventory = () => {
 
   useEffect(() => {
     if (apiData) {
+      console.error("Error fetching inventory data:", error);
       setState((x) => ({
         ...x,
         inventoryPageData: {
@@ -166,11 +167,12 @@ const Inventory = () => {
         },
       }));
     }
-    console.log("api data -", inventory)
+    console.log("api data -", apiData)
     if (error) {
-      console.error("Error fetching inventory data:", error);
     }
   }, [apiData, error]);
+
+  console.log("Inventory", inventory)
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
@@ -304,7 +306,9 @@ const Inventory = () => {
                   <TableLoading />
                 ) : (
                   inventory.map((item, idx) => (
-                    <InventoryList key={idx} data={item} />
+                    <div className="mb-4">
+                      <InventoryList key={idx} data={item} />
+                    </div>
                   ))
                 )}
               </>

@@ -49,6 +49,7 @@ const CreateRecordModal = ({ data }: { data: any }) => {
     }));
     return transformedData
   }
+
   const {
     data: apiData,
     loading,
@@ -100,7 +101,6 @@ const CreateRecordModal = ({ data }: { data: any }) => {
 
 
   const handleCreateManually = () => {
-    // console.log("selected property", selectedProperty);
     if (!selectedProperty) {
       toast.error("Please select a property before proceeding.");
       setStep(1);
@@ -145,67 +145,21 @@ const CreateRecordModal = ({ data }: { data: any }) => {
 
   return (
     <>
-      {/* Step 1 */}
-      {step === 1 && (
-        <div className="w-[600px] max-w-[80%] max-h-[90%] h-[90%] md:h-[450px] rounded-2xl overflow-x-auto custom-round-scrollbar font-medium dark:bg-darkText-primary bg-white custom-flex-col relative">
-          {/* Header */}
-          <div className="flex items-center justify-between sticky top-0 z-[2] bg-white dark:bg-darkText-primary p-4">
-            <div className="flex gap-2 items-center">
-              <h2 className="text-md text-text-tertiary dark:text-white">
-                Select Property
-              </h2>
-            </div>
-            <div className="flex items-center justify-end gap-2">
-              <ModalTrigger close aria-label="Close">
-                <XIcon size="30" />
-              </ModalTrigger>
-            </div>
-          </div>
-          {/* Separator Line */}
-          <div className="w-full h-[1px] bg-neutral-200 dark:bg-neutral-700 separator"></div>
-
-          {/* Step 1: Form with Select and Next Button */}
-          <div className="p-4 flex flex-col gap-4 items-center justify-center w-full mt-8">
-            <Select
-              options={selectOptions}
-              id="select-option"
-              className="w-2/3"
-              onChange={handleSelectProperty} // Handle the selection
-            />
-            <Button
-              onClick={handleNext}
-              size="sm_medium"
-              className="py-2 px-8 rounded-lg mt-4"
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      )}
-
+      {/* REMOVED STEP 1 */}
       {/* Layout for Step 2 */}
-      {step === 2 && (
-        <div className="w-[600px] max-w-[80%] max-h-[90%] h-[90%] md:h-[450px] p-2 rounded-2xl overflow-x-auto custom-round-scrollbar font-medium dark:bg-darkText-primary bg-white custom-flex-col relative">
-          <div className="flex gap-2 items-center justify-between w-full mb-2">
-            <div className="flex items-center gap-2">
-              <button onClick={handleBack} aria-label="Back">
-                <ChevronLeft />
-              </button>
-              <p className="text-base text-text-tertiary dark:text-white">
-                Create / Search
-              </p>
-            </div>
-            <div className="flex items-center justify-end gap-2">
-              <ModalTrigger close aria-label="Close">
-                <XIcon size="30" />
-              </ModalTrigger>
-            </div>
+      {step === 1 && (
+        <div className="w-[600px] max-w-[80%] max-h-[90%] h-[90%] md:h-[450px] px-2 py-3 rounded-2xl overflow-x-auto custom-round-scrollbar font-medium dark:bg-darkText-primary bg-white custom-flex-col relative">
+          <div className="flex gap-4 justify-between items-center sticky top-0 z-[2] bg-white dark:bg-darkText-primary p-2">
+            <p className="text-base text-text-tertiary dark:text-white">Create / Search</p>
+            <ModalTrigger close aria-label="Close">
+              <XIcon size="30" />
+            </ModalTrigger>
           </div>
-          {/* Separator Line */}
-          <div className="w-full h-[1px] bg-neutral-200 dark:bg-neutral-700 separator"></div>
+          {/* Vertical line */}
+          <div className="hidden md:block absolute h-full !w-[4px] bg-[#f4f4f4] top-0 left-[calc(40%+1rem)] z-[3]" />
 
           {/* Content for Step 2 */}
-          <div className="p-4 pt-0 mt-4 custom-flex-col md:flex-1 md:flex-row-reverse gap-8 md:overflow-hidden">
+          <div className="p-4 pt-0 mt-2 custom-flex-col md:flex-1 md:flex-row-reverse gap-8 md:overflow-hidden">
             {selectedPlate ? (
               <>
                 <div className="custom-flex-col gap-4 md:flex-1 justify-start h-full md:mt-auto md:text-center relative">
@@ -248,7 +202,7 @@ const CreateRecordModal = ({ data }: { data: any }) => {
                     <Button
                       size="base_medium"
                       className="bg-brand-9 px-8 py-2 rounded-md"
-                      href={`/management/vehicles-record/${selectedPlate.id}/record`}
+                      href={`/management/vehicles-record/records/${selectedPlate.id}/record`}
                     >
                       Open Record
                     </Button>

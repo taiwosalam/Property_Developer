@@ -10,7 +10,7 @@ import {
 import useVehicleRecordStore from "@/store/vehicle-record";
 import { createVehicleRecord } from "./data";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 
@@ -21,9 +21,9 @@ const CreateRecordForm = () => {
   const { selectedProperty } = useVehicleRecordStore();
   const [loading, setLoading] = useState(false);
 
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('selectedProperty', selectedProperty);
     const formData = new FormData(e.currentTarget);
     formData.append("property_id", selectedProperty);
 

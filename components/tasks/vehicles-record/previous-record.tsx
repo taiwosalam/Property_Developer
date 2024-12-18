@@ -67,7 +67,7 @@ const PreviousRecord: React.FC<checkInOutData & { pictureSrc: string, category?:
     inventory: recordData.inventory_out,
   }
 
-  console.log("recordData", recordData);
+  // console.log("recordData", recordData);
 
   return (
     <InfoBox>
