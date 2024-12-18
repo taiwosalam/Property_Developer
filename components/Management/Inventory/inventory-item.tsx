@@ -91,7 +91,7 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
         return updatedFiles;
       });
     }
-  }, [imageFiles, index]);
+  }, [imageFiles, index, setInventoryFiles]);
 
   const handleSave = () => {
     setOpenModal(false);

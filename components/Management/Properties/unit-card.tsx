@@ -1,4 +1,4 @@
-// Images
+ // Images
 import { CameraIcon } from "@/public/icons/icons";
 
 // Imports

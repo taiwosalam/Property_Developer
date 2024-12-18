@@ -2,7 +2,7 @@ import { getAllStates } from "@/utils/states";
 import { number } from "zod";
 //
 export interface RentAndUnitState {
-  gridView: boolean;
+  gridView?: boolean;
   total_pages: number;
   current_page: number;
   last_page: number;
@@ -43,6 +43,10 @@ export interface UnitPageState {
   month_active: number;
   month_expired: number;
   month_relocate: number;
+  published_vacant?: number;
+  month_published_vacant?: number;
+  unpublished_vacant?:number;
+  month_unpublished_vacant?: number;
   unit: RentalPropertyCardProps[];
 }
 
@@ -60,6 +64,10 @@ export interface UnitApiResponse {
     month_active: number;
     month_expired: number;
     month_relocate: number;
+    published_vacant?: number;
+    month_published_vacant?: number;
+    unpublished_vacant?:number;
+    month_unpublished_vacant?: number;
     unit: {
       current_page: number;
       last_page: number;
@@ -111,7 +119,7 @@ export const transformRentUnitApiResponse = (
     }
   );
 
-  console.log("Transformed unit data", transformedUnits)
+  // console.log("Transformed unit data", transformedUnits)
   if (isUnitApiResponse(response)) {
     // console.log("isUnitApiResponse", response)
     return {
@@ -126,6 +134,10 @@ export const transformRentUnitApiResponse = (
       month_vacant: response.data.month_vacant,
       month_active: response.data.month_active,
       month_expired: response.data.month_expired,
+      published_vacant: response.data.published_vacant,
+      month_published_vacant: response.data.month_published_vacant,
+      unpublished_vacant: response.data.unpublished_vacant,
+      month_unpublished_vacant: response.data.month_unpublished_vacant,
       unit: transformedUnits,
     };
   } else {

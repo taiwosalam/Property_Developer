@@ -47,7 +47,6 @@ const RenewRent = () => {
         ...x,
         ...transformUnitData(apiData)
       }))
-      // console.log("Unit Data", unit_data)
     }
   }, [apiData])
 

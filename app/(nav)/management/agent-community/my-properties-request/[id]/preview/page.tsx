@@ -41,15 +41,11 @@ const PreviewPage = () => {
 
   useEffect(() => {
     if (data) {
-      console.log('data', data.data);
       setPropertyRequest(data.data.PropertyRequest);
       setReadBy(data.data.readByData);
       setSlug(data.data.PropertyRequest.slug);
       setComments(data.data.comments);
-      console.log('comments', comments);
-      console.log('readBy', readBy);
     }
-    console.log("slug", slug)
   }, [data]);
 
   // console.log(propertyRequest);
