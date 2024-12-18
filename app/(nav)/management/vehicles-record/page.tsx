@@ -1,262 +1,305 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { ExclamationMark } from "@/public/icons/icons";
+import PropertyCard from "@/components/Management/Properties/property-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+import { ModalContent, ModalTrigger, Modal } from "@/components/Modal/modal";
 import Button from "@/components/Form/Button/button";
-import CustomTable from "@/components/Table/table";
-import type { DataItem } from "@/components/Table/types";
 import Pagination from "@/components/Pagination/pagination";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-
-import {
-  transformVehicleRecordApiResponse,
-  VehicleData,
-  VehicleRecordApiResponse,
-  vehicleRecordFIltersOptionsWithDropdown,
-  veicleRecordTablefields,
-} from "./data";
-import FilterBar from "@/components/FIlterBar/FilterBar";
-import useFetch from "@/hooks/useFetch";
-import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import PropertyListItem from "@/components/Management/Properties/property-list-item";
+import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
-import { ExclamationMark } from "@/public/icons/icons";
-import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import TableLoading from "@/components/Loader/TableLoading";
+import FilterBar from "@/components/FIlterBar/FilterBar";
 import CardsLoading from "@/components/Loader/CardsLoading";
-import { VehicleRecord } from "@/components/tasks/vehicles-record/types";
-import CreateRecordModal from "@/components/tasks/vehicles-record/create-record-modal";
-import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-record-modal";
+import TableLoading from "@/components/Loader/TableLoading";
+import useView from "@/hooks/useView";
+import useFetch from "@/hooks/useFetch";
+import { AxiosRequestConfig } from "axios";
+import dayjs from "dayjs";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import type { AllBranchesResponse } from "@/components/Management/Properties/types";
+import VehicleCard from "@/components/Management/Properties/vehicle-card";
+import BackButton from "@/components/BackButton/back-button";
 
-const VehiclesRecordPage = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<VehicleRecord | null>(
-    null
-  );
+const Properties = () => {
+  const storedView = useView();
+  const [view, setView] = useState<string | null>(storedView);
+  // const [pageData, setPageData] = useState<PropertiesPageState>(initialState);
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
 
-  const initialState = {
-    check_ins: 0,
-    check_ins_pending: 0,
-    check_ins_this_month: 0,
-    check_outs: 0,
-    check_outs_pending: 0,
-    check_outs_this_month: 0,
-    total_records: 0,
-    vehicle_records: {
-      data: [] as VehicleData[],
-      current_page: 1,
-      last_page: 0,
-      total: 0,
-    },
-  };
+  const vehicle_data = {
+    id: 12133,
+    images: [],
+    property_name: 'Property Name',
+    total_units: 20,
+    address: '12, kola sanusi street, mabolaje oyo',
+    total_unit_pictures: 10,
+    hasVideo: true,
+    property_type: 'rental',
+    total_returns: 20000,
+    total_income: 40000,
+    branch: 'Branch Name',
+    accountOfficer: "Officer muba",
+    last_updated: '27/11/2023',
+    mobile_tenants: 2,
+    web_tenants: 2,
+    owing_units: 3,
+    available_units: 34,
+    currency: 'naira',
+    isClickable: 0,
+    viewOnly: 0,
+  }
+  // const {
+  //   total_pages,
+  //   current_page,
+  //   total_properties,
+  //   new_properties_count,
+  //   total_rental_properties,
+  //   new_rental_properties_count,
+  //   total_facility_properties,
+  //   new_facility_properties_count,
+  //   properties,
+  // } = pageData;
 
-  const [state, setState] = useState(initialState);
-  const {
-    check_ins,
-    check_outs,
-    check_ins_pending,
-    check_outs_pending,
-    check_ins_this_month,
-    check_outs_this_month,
-    total_records,
-    vehicle_records: { data, current_page, last_page, total },
-  } = state;
+  const isFilterApplied = useCallback(() => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  }, [appliedFilters]);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<"asc" | "desc" | "">("");
 
-  const handleSort = (order: "asc" | "desc") => {
-    setSortOrder(order);
-  };
+  const endpoint =
+    isFilterApplied() || search || sort ? "/property/filter" : "/property/list";
+  // const config: AxiosRequestConfig = useMemo(() => {
+  //   return {
+  //     params: {
+  //       page,
+  //       date_from: appliedFilters.startDate
+  //         ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+  //         : undefined,
+  //       date_to: appliedFilters.endDate
+  //         ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+  //         : undefined,
+  //       search: search,
+  //       branch_id: appliedFilters.menuOptions["Branch"] || [],
+  //       state: appliedFilters.menuOptions["State"] || [],
+  //       ...(appliedFilters.menuOptions["Property Type"]?.[0] &&
+  //       appliedFilters.menuOptions["Property Type"]?.[0] !== "all"
+  //         ? { property_type: appliedFilters.menuOptions["Property Type"]?.[0] }
+  //         : {}),
+  //       sort_by: sort,
+  //     } as PropertiesFilterParams,
+  //   };
+  // }, [appliedFilters, search, sort, page]);
 
   const handlePageChange = (page: number) => {
-    setSearchQuery("");
-    setState((prevState) => ({
-      ...prevState,
-      current_page: page,
-    }));
+    setPage(page);
   };
 
-  const handleSearch = async (query: string) => {
-    setSearchQuery(query);
+  const handleSort = (order: "asc" | "desc") => {
+    setSort(order);
   };
 
-  const config = useMemo(
-    () => ({
-      params: {
-        page: current_page,
-        search: searchQuery,
-        sort_order: sortOrder,
-      },
-    }),
-    [current_page, searchQuery, sortOrder]
-  );
+  const handleSearch = (query: string) => {
+    setSearch(query);
+  };
 
-  const {
-    data: apiData,
-    loading,
-    silentLoading,
-    isNetworkError,
-    error,
-    refetch,
-  } = useFetch<VehicleRecordApiResponse>("vehicle-record", config);
-  useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    setPage(1);
+  };
 
   useEffect(() => {
-    if (apiData) {
-      setState((x) => ({
-        ...x,
-        ...transformVehicleRecordApiResponse(apiData),
-      }));
-    }
-  }, [apiData]);
+    setView(storedView);
+  }, [storedView]);
 
-  const handleActionClick = (record: DataItem) => {
-    const vehicleRecord = record as VehicleRecord;
-    console.log("vehicle record passed -", vehicleRecord);
-    const updatedRecord = {
-      ...data,
-      latest_check_in: vehicleRecord.latest_check_in,
-      pictureSrc: vehicleRecord.pictureSrc,
-      status: vehicleRecord.status,
-      name: vehicleRecord.name,
-      id: vehicleRecord.id,
-      category: vehicleRecord.category,
-      registrationDate: vehicleRecord.registrationDate,
-      checkOut: vehicleRecord.latest_check_in,
-      plate_number: vehicleRecord.plate_number,
-      last_update: vehicleRecord.last_update,
-    };
-    setSelectedRecord(updatedRecord);
-    setModalOpen(true);
-  };
+  const { data: branchesData } =
+    useFetch<AllBranchesResponse>("/branches/select");
 
-  if (loading)
-    return (
-      <CustomLoader
-        layout="page"
-        pageTitle="Vehicle Records"
-        statsCardCount={3}
-      />
-    );
+  const branchOptions =
+    branchesData?.data.map((branch) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
 
-  if (isNetworkError) return <NetworkError />;
+  // const {
+  //   data: apiData,
+  //   loading,
+  //   silentLoading,
+  //   isNetworkError,
+  //   error,
+  // } = useFetch<PropertiesApiResponse | PropertyFilterResponse>(
+  //   endpoint,
+  //   config
+  // );
 
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
-// console.log("data needed", data)
+  // useEffect(() => {
+  //   if (apiData) {
+  //     setPageData((x) => ({
+  //       ...x,
+  //       ...transformPropertiesApiResponse(apiData),
+  //     }));
+  //   }
+  // }, [apiData]);
+
+  // if (loading)
+  //   return (
+  //     <CustomLoader layout="page" pageTitle="Properties" statsCardCount={3} />
+  //   );
+
+  // if (isNetworkError) return <NetworkError />;
+
+  // if (error)
+  //   return <p className="text-base text-red-500 font-medium">{error}</p>;
+
   return (
     <div className="space-y-9">
+      {/* Header with statistics cards */}
       <div className="page-header-container">
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
-            title="Check In"
-            newData={check_ins_this_month}
-            total={check_ins}
+            title="Total Properties"
+            newData={23}
+            total={657}
             colorScheme={1}
           />
           <ManagementStatistcsCard
-            title="Check Out"
-            newData={check_outs_this_month}
-            total={check_outs}
+            title="Rental Vehicle Records"
+            newData={43}
+            total={657}
             colorScheme={2}
           />
-          <ManagementStatistcsCard
-            title="Pending"
-            newData={check_ins_pending}
-            total={check_ins_pending}
-            colorScheme={3}
-          />
         </div>
-        <Modal>
-          <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
-              + Create New Record
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <CreateRecordModal data={data} />
-          </ModalContent>
-        </Modal>
       </div>
-      <FilterBar
-        azFilter
-        pageTitle="Vehicle Record"
-        aboutPageModalData={{
-          title: "Vehicle Record",
-          description:
-            "This page contains a list of Vehicle Record on the platform.",
-        }}
-        searchInputPlaceholder="Search for Vehicle Record"
-        handleFilterApply={() => {}}
-        isDateTrue
-        filterOptionsMenu={vehicleRecordFIltersOptionsWithDropdown}
-        hasGridListToggle={false}
-        handleSearch={handleSearch}
-        onSort={handleSort}
-      />
-      <section className="capitalize">
-        {data.length === 0 && !silentLoading ? (
-          searchQuery ? (
-            "No Search Found"
+
+      {/* Page Title with search */}
+        <FilterBar
+          pageTitle="vehicles record"
+          hasGridListToggle={false}
+          aboutPageModalData={{
+            title: "vehicles record",
+            description:
+              "This page contains a list of vehicles record on the platform.",
+          }}
+          searchInputPlaceholder="Search for vehicles record"
+          handleFilterApply={handleFilterApply}
+          isDateTrue
+          filterOptionsMenu={[
+            // ...propertyFilterOptionsMenu,
+            ...(branchOptions.length > 0
+              ? [
+                {
+                  label: "Branch",
+                  value: branchOptions,
+                },
+              ]
+              : []),
+          ]}
+          onSort={handleSort}
+          handleSearch={handleSearch}
+          appliedFilters={appliedFilters}
+        />
+
+      <div>
+        <AutoResizingGrid minWidth={284}>
+          <VehicleCard data={vehicle_data} />
+          <VehicleCard data={vehicle_data} />
+          <VehicleCard data={vehicle_data} />
+          <VehicleCard data={vehicle_data} />
+          <VehicleCard data={vehicle_data} />
+          <VehicleCard data={vehicle_data} />
+        </AutoResizingGrid>
+        <Pagination
+          totalPages={10}
+          currentPage={1}
+          onPageChange={handlePageChange}
+        />
+      </div>
+
+      {/* <section className="capitalize">
+        {properties.length === 0 && !silentLoading ? (
+          isFilterApplied() || search ? (
+            "No Search/Filter Found"
           ) : (
             <EmptyList
-              buttonText="+ create new"
-              modalContent={<CreateRecordModal data={data} />}
-              title="You have not created any vehicle records yet"
+              buttonText="+ Add Property"
+              modalContent={<AddPropertyModal />}
+              title="You have not creared any properties yet"
               body={
                 <p>
-                  You can create profiles for all your branches and assign staff
-                  and properties to them by clicking on the &quot;Create
-                  Branch&quot; button. Branch managers will have the same access
-                  to their branch as you do, while you will have access to all
-                  staff accounts and branches created. To learn more about this
-                  page later, you can click on this icon{" "}
+                  You can create a property by clicking on the &quot;Add
+                  Property&quot; button. You can create two types of properties:
+                  rental and facility properties. Rental properties are mainly
+                  tailored for managing properties for rent, including landlord
+                  and tenant management processes. Facility properties are
+                  designed for managing occupants in gated estates, overseeing
+                  their due payments, visitor access, and vehicle records.{" "}
+                  <br />
+                  <br />
+                  Once a property is added to this page, this guide will
+                  disappear. To learn more about this page in the future, you
+                  can click on this icon{" "}
                   <span className="inline-block text-brand-10 align-text-top">
                     <ExclamationMark />
                   </span>{" "}
                   at the top left of the dashboard page.
+                  <br />
+                  <br />
+                  Property creation involves several segments: property
+                  settings, details, what to showcase on the dashboard or user
+                  app, unit creation, permissions, and assigning staff.
                 </p>
               }
             />
           )
         ) : (
           <>
-            {silentLoading ? (
-              <TableLoading />
+            {view === "grid" ? (
+              <AutoResizingGrid minWidth={284}>
+                {silentLoading ? (
+                  <CardsLoading />
+                ) : (
+                  properties.map((p) => <PropertyCard key={p.id} {...p} />)
+                )}
+              </AutoResizingGrid>
             ) : (
-              <CustomTable
-                fields={veicleRecordTablefields}
-                data={data}
-                tableHeadClassName="h-[76px]"
-                tableHeadCellSx={{
-                  borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
-                }}
-                handleSelect={handleActionClick}
-              />
+              <>
+                {silentLoading ? (
+                  <TableLoading />
+                ) : (
+                  <div className="space-y-4">
+                    {properties.map((p) => (
+                      <PropertyListItem key={p.id} {...p} />
+                    ))}
+                  </div>
+                )}
+              </>
             )}
-            <Modal
-              state={{
-                isOpen: modalOpen,
-                setIsOpen: setModalOpen,
-              }}
-            >
-              <ModalContent>
-                <VehicleRecordModal
-                  {...(selectedRecord as VehicleRecord)}
-                />
-              </ModalContent>
-            </Modal>
             <Pagination
-              totalPages={last_page}
+              totalPages={total_pages}
               currentPage={current_page}
               onPageChange={handlePageChange}
             />
           </>
         )}
-      </section>
+      </section> */}
     </div>
   );
 };
 
-export default VehiclesRecordPage;
+export default Properties;

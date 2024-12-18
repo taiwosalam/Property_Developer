@@ -7,11 +7,16 @@ export interface InventoryCardDataProps {
   edited_date: string;
   property_name: string;
   branch_name: string;
-  account_officer: string;
+  account_officer: any;
   branch_id?: string;
   title?: string;
   id?: string;
 }
+
+export interface AccountOfficer {
+  name: string;
+}
+
 
 export interface InventoryCardProps {
   data: Partial<InventoryCardDataProps>;

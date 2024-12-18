@@ -39,10 +39,10 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
       }
       back={handleBack ? { handleBack } : undefined}
     >
-        <div className="flex flex-col md:flex-row gap-x-10 lg:gap-x-20 md:justify-between gap-y-5 mb-4">
-          <form onSubmit={onSubmit}>
-          <div className="md:min-w-fit custom-flex-col justify-between gap-6">
-            <div className="flex justify-between items-center gap-2">
+        <div className="flex md:flex-row gap-x-10 lg:gap-x-20 md:justify-between gap-y-5 mb-4">
+          <form onSubmit={onSubmit} className="flex w-full gap-10 items-start">
+          <div className="md:min-w-fit custom-flex-col gap-6">
+            <div className="flex-1 flex-col items-center gap-2">
               <div className="mb-[10px] flex items-center gap-4">
                 <Picture src={pictureSrc} alt="empty" size={80} rounded />
                 <div className="flex flex-col">
@@ -119,15 +119,15 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
               id={type === "decline" ? "reason" : "inventory"}
               inputSpaceClassName="md:!h-[100px]"
             />
-          </div>
           <Button
             type="submit"
             aria-label="submit"
             size="16_bold"
-            className="py-[10px] px-8 rounded-lg block ml-auto"
+            className="py-[10px] px-8 rounded-lg block ml-auto mt-5"
           >
             {type === "check-in" ? "Create" : "Submit"}
           </Button>
+          </div>
         </form>
       </div>
     </ModalPreset>

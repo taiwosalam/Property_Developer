@@ -100,20 +100,20 @@ const TextArea: React.FC<TextAreaProps> = ({
     }
   };
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    const editor = quillRef.current?.getEditor();
-    if (!editor) return;
+  // const handleKeyDown = (e: KeyboardEvent) => {
+  //   const editor = quillRef.current?.getEditor();
+  //   if (!editor) return;
 
-    if (e.key === "Tab" || e.key === "ArrowRight") {
-      e.preventDefault(); // Prevent default tab behavior (focus switch)
-      if (suggestions.length > 0) {
-        const selectedSuggestion = suggestions; // For simplicity, select the first suggestion
-        insertSuggestionAtCursor(selectedSuggestion);
-        setShowPopover(false); // Hide suggestions after selection
-      }
-    }
-    updateCursorPosition();// Update position on key press
-  };
+  //   if (e.key === "Tab" || e.key === "ArrowRight") {
+  //     e.preventDefault(); // Prevent default tab behavior (focus switch)
+  //     if (suggestions.length > 0) {
+  //       const selectedSuggestion = suggestions; // For simplicity, select the first suggestion
+  //       insertSuggestionAtCursor(selectedSuggestion);
+  //       setShowPopover(false); // Hide suggestions after selection
+  //     }
+  //   }
+  //   updateCursorPosition();// Update position on key press
+  // };
 
   // Function to simulate typewriter effect
   // const typeWriterEffect = (text: string) => {
@@ -201,7 +201,7 @@ const TextArea: React.FC<TextAreaProps> = ({
               value={editorValue}
               onChange={handleChange}
               placeholder={placeholder}
-              onKeyDown={handleKeyDown}
+              // onKeyDown={handleKeyDown}
               className={clsx("quill-editor", inputSpaceClassName)}
               modules={{
                 toolbar: {

@@ -11,6 +11,7 @@ import { useParams } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import { getBranch } from "@/components/Management/Inventory/data";
 import { ManageInventorySkeleton } from "@/components/Skeleton/manageInventory";
+import dayjs from "dayjs";
 
 interface InventoryData {
   title: string;
@@ -51,23 +52,22 @@ const PreviewInventory = () => {
   const [inventoryData, setInventoryData] = useState<InventoryData | null>(null);
   const { data, loading, error } = useFetch<FetchData>(`/inventory/${inventoryId}`);
   const [inventoryFiles, setInventoryFiles] = useState<any[]>([]);
-  // const [inventoryFiles, setInventoryFiles] = useState<File[][]>([]);
-
   const [video, setVideo] = useState<string>("");
 
+  
   useEffect(() => {
     const fetchBranchData = async () => {
       if (data) {
         const { data: apiData } = data;
         const updatedInventoryData: InventoryData = {
-          title: apiData.title || "",
-          inventory_id: apiData.id || "",
-          created_date: apiData.created_date || "",
-          edited_date: apiData.edited_date || "",
-          property_name: apiData.property_name || "",
-          branch_name: apiData.branch_name || "",
-          account_officer: apiData.account_officer || "",
-          branch_id: apiData.branch_id || "",
+          title: apiData.title || "___",
+          inventory_id: apiData.id || "___",
+          created_date: dayjs(apiData.created_date).format("MMM DD, YYYY") || "___",
+          edited_date: apiData.edited_date || "___",
+          property_name: apiData.title || "___",
+          branch_name: apiData.branch_name || "___",
+          account_officer: apiData.account_officer || "___",
+          branch_id: apiData.branch_id || "___",
         };
         setInventoryData(updatedInventoryData);
         setInventoryItems(apiData.items);

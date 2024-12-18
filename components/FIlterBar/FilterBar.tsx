@@ -58,7 +58,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
   dateLabel,
 }) => {
   return (
-    <div className="page-title-container ">
+    <div className="page-title-container w-full">
       {pageTitle && (
         <PageTitle
           title={pageTitle}
