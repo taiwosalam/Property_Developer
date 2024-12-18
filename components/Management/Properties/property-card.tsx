@@ -27,7 +27,6 @@ export interface PropertyCardProps {
   owing_units?: number;
   available_units?: number;
   currency?: keyof typeof currencySymbols;
-
   isClickable?: boolean;
   viewOnly?: boolean;
 }

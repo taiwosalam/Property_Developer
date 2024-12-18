@@ -14,6 +14,8 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { RentUnitFilterParams } from "../../management/rent-unit/data";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import { ExclamationMark } from "@/public/icons/icons";
 
 const Units = () => {
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
@@ -46,12 +48,6 @@ const Units = () => {
     );
   };
 
-
-  const handleFilterApply = (filters: FilterResult) => {
-    setAppliedFilters(filters);
-    setPage(1);
-  };
-
   const { menuOptions, startDate, endDate } = appliedFilters;
   const branchIdsArray = menuOptions["Branch"] || [];
   const [page, setPage] = useState(1);
@@ -59,7 +55,7 @@ const Units = () => {
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
 
   const endpoint =
-    isFilterApplied() || search || sort ? "/unit/vacant/list" : "/unit/vacant/lists";
+    isFilterApplied() || search || sort ? "/unit/vacant/list/filter" : "/unit/vacant/lists";
 
   const config: AxiosRequestConfig = useMemo(() => {
     return {
@@ -79,6 +75,19 @@ const Units = () => {
       } as RentUnitFilterParams,
     };
   }, [appliedFilters, search, sort, page]);
+
+  const handleSort = (order: "asc" | "desc") => {
+    setSort(order);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearch(query);
+  };
+
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    setPage(1);
+  };
 
   const {
     data: apiData,
@@ -138,8 +147,8 @@ const Units = () => {
         />
         <ManagementStatistcsCard
           title="Under Moderation"
-          newData={34}
-          total={657}
+          newData={pageData.month_pending_unit}
+          total={pageData.pending_unit}
           className="w-[240px]"
           colorScheme={4}
         />
@@ -153,13 +162,16 @@ const Units = () => {
             "This page contains a list of Vacant Units on the platform.",
         }}
         searchInputPlaceholder="Search for vacant units"
-        handleFilterApply={() => { }}
+        handleFilterApply={handleFilterApply}
+        handleSearch={handleSearch}
         isDateTrue={false}
         filterOptionsMenu={listingUnitFilter}
         hasGridListToggle={false}
+        onSort={handleSort}
+        appliedFilters={appliedFilters}
       />
-      <div className="custom-flex-col gap-8">
-        <div className="flex flex-wrap gap-4 justify-end">
+      <section className="custom-flex-col gap-8">
+      <div className="flex flex-wrap gap-4 justify-end">
           {Object.entries(unit_listing_status).map(([key, value], idx) => (
             <PropertyListingStatusItem
               key={`${key}(${idx})`}
@@ -168,14 +180,52 @@ const Units = () => {
             />
           ))}
         </div>
-        {pageData.unit.map((item, idx) => (
-          <VacantUnitCard
-            key={idx}
-            unit_data={item}
-            status={item.status as "published" | "unpublished"}
+      {pageData.unit.length === 0 && !silentLoading ? (
+          isFilterApplied() || search ? (
+            "No Search/Filter Found"
+          ) : (
+            <EmptyList
+            buttonText="+ Add Unit"
+            title="You have not creared any unit yet"
+            body={
+              <p>
+                You can create a property by clicking on the &quot;Add
+                Property&quot; button. You can create two types of properties:
+                rental and facility properties. Rental properties are mainly
+                tailored for managing properties for rent, including landlord
+                and tenant management processes. Facility properties are
+                designed for managing occupants in gated estates, overseeing
+                their due payments, visitor access, and vehicle records.{" "}
+                <br />
+                <br />
+                Once a property is added to this page, this guide will
+                disappear. To learn more about this page in the future, you
+                can click on this icon{" "}
+                <span className="inline-block text-brand-10 align-text-top">
+                  <ExclamationMark />
+                </span>{" "}
+                at the top left of the dashboard page.
+                <br />
+                <br />
+                Property creation involves several segments: property
+                settings, details, what to showcase on the dashboard or user
+                app, unit creation, permissions, and assigning staff.
+              </p>
+            }
           />
-        ))}
-      </div>
+          )
+        ) : (
+          <div className="custom-flex-col gap-4">
+            {pageData.unit.map((item, idx) => (
+              <VacantUnitCard
+                key={idx}
+                unit_data={item}
+                status={item.status as "published" | "unpublished"}
+              />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 };

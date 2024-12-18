@@ -24,8 +24,9 @@ import {
   PropertyListingTitleDesc,
 } from "./property-listing-component";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
+import Link from "next/link";
 
-const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
+const  PropertyListingCard: React.FC<PropertyListingCardProps> = ({
   data,
   status,
   propertyType,
@@ -35,6 +36,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
     className: "py-2 px-8",
   };
 
+  // console.log("propertyType", propertyType);
   const color = property_listing_status[status];
 
   const [isOpened, setIsOpened] = useState(false);
@@ -58,7 +60,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
             <div className="flex flex-1">
               <KeyValueList
                 chunkSize={5}
-                data={data}
+                data={data as any}
                 referenceObject={property_listing_data}
               />
             </div>
@@ -67,14 +69,17 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
               className="relative rounded-2xl overflow-hidden"
             >
               <Picture
-                src={SampleProperty6}
+                src={data.images && data.images[0]}
                 alt="property preview"
                 width={220}
                 height={204}
               />
               <PopupImageModal
                 isOpen={isOpened}
-                images={[{ src: SampleProperty6, isVideo: false }]}
+                images={data.images && data.images.map((image: any) => ({
+                  src: image,
+                  isVideo: false,
+                }))}
                 onClose={() => setIsOpened(false)}
                 currentIndex={0}
               />
@@ -130,7 +135,9 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
             </div>
             <div className="flex gap-3 items-center">
               {status === "draft"? (
-                <Button {...button_props}>continue</Button>
+                <Button
+                 {...button_props}
+                 href={`/management/properties/${data.id}/edit-property`}>continue</Button>
               // ) : status === "unpublished" ? (
               //   <>
               //     <Button variant="border" {...button_props}>

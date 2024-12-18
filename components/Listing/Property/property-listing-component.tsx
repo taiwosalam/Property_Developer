@@ -19,12 +19,12 @@ export const PropertyListingLabelID: React.FC<PropertyListingLabelIDProps> = ({
       className={clsx(
         "rounded-full py-1 px-4 text-[10px] font-normal capitalize",
         {
-          "bg-status-success-1 text-status-success-3": type === "rental property",
-          "bg-brand-3 text-brand-primary": type === "gated property",
+          "bg-status-success-1 text-status-success-3": type === "rental",
+          "bg-brand-3 text-brand-primary": type === "gated",
         }
       )}
     >
-      {type}
+      {type} property
     </p>
     <p className="text-brand-10 text-base font-bold">ID: {id}</p>
   </div>
