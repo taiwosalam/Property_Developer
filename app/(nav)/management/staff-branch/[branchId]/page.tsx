@@ -34,13 +34,13 @@ import BackButton from "@/components/BackButton/back-button";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import { transformSingleBranchAPIResponse } from "./data";
+import NetworkError from "@/components/Error/NetworkError";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
 
-  const { data, error, loading } = useFetch<SingleBranchResponseType>(
-    `branch/${branchId}`
-  );
+  const { data, error, loading, isNetworkError } =
+    useFetch<SingleBranchResponseType>(`branch/${branchId}`);
 
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
 
@@ -85,6 +85,8 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   };
 
   if (loading) return <CustomLoader layout="dasboard" />;
+
+  if (isNetworkError) return <NetworkError />;
 
   if (error) return <div>{error}</div>;
   if (!branchData) return null;

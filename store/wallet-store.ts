@@ -1,9 +1,11 @@
 import { create } from "zustand";
+import type { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 
-interface Beneficiary {
+export interface Beneficiary {
   name: string;
   picture: string;
   wallet_id: string;
+  badge_color?: BadgeIconColors;
 }
 
 interface Transaction {
@@ -20,15 +22,12 @@ interface WalletStore {
   walletId: string | null;
   walletPinStatus: boolean;
   balance: {
-    wallet_id: string;
     my_balance: string;
-    escrow_balance: string;
+    caution_deposit: string;
     earned_bonus: string;
-    pin_status: boolean;
   };
-  caution_deposit: string;
   beneficiaries: Beneficiary[];
-  transactions: Transaction[];
+  recentTransactions: Transaction[];
   stats: {
     current_day: {
       total_funds: string;
@@ -40,6 +39,12 @@ interface WalletStore {
       total_credit: string;
       total_debit: string;
     };
+  };
+  account: {
+    account_number: string;
+    account_name: string;
+    bank: string;
+    customer_code: string;
   };
   setWalletStore: <K extends keyof Omit<WalletStore, "setWalletStore">>(
     key: K,
@@ -49,17 +54,14 @@ interface WalletStore {
 
 export const useWalletStore = create<WalletStore>((set) => ({
   walletId: null,
-  walletPinStatus: true,
+  walletPinStatus: false,
   balance: {
-    wallet_id: "",
     my_balance: "0",
-    escrow_balance: "0",
+    caution_deposit: "0",
     earned_bonus: "0",
-    pin_status: false,
   },
-  caution_deposit: "0",
   beneficiaries: [],
-  transactions: [],
+  recentTransactions: [],
   stats: {
     current_day: {
       total_funds: "0",
@@ -71,6 +73,12 @@ export const useWalletStore = create<WalletStore>((set) => ({
       total_credit: "0",
       total_debit: "0",
     },
+  },
+  account: {
+    account_number: "",
+    account_name: "",
+    bank: "",
+    customer_code: "",
   },
   setWalletStore: (key, value) => set({ [key]: value }),
 }));

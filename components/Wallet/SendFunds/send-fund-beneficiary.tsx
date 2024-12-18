@@ -1,19 +1,25 @@
 "use client";
 
-// Images
-import TickDefault from "@/public/icons/tick-default.svg";
 // Imports
 import Input from "@/components/Form/Input/input";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { currencySymbols } from "@/utils/number-formatter";
+import type { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
+import Checkbox from "@/components/Form/Checkbox/checkbox";
+import { useWalletStore } from "@/store/wallet-store";
 
 const SendFundBeneficiary: React.FC<{
   picture: string;
   name: string;
   wallet_id: string;
-}> = ({ picture, name, wallet_id }) => {
+  badge_color?: BadgeIconColors;
+}> = ({ picture, name, wallet_id, badge_color }) => {
+  const beneficiaries = useWalletStore((state) => state.beneficiaries);
+  const isAlreadyBeneficiary = beneficiaries.some(
+    (beneficiary) => beneficiary.wallet_id === wallet_id
+  );
   return (
     <div className="custom-flex-col gap-8">
       <div className="custom-flex-col gap-4">
@@ -26,7 +32,7 @@ const SendFundBeneficiary: React.FC<{
               <p className="text-[#010A23] dark:text-white text-base font-medium capitalize">
                 {name}
               </p>
-              <BadgeIcon color="red" />
+              {badge_color && <BadgeIcon color={badge_color} />}
             </div>
             <p className="text-[#606060] dark:text-darkText-1 text-sm font-normal">
               Wallet ID: {wallet_id}
@@ -39,6 +45,7 @@ const SendFundBeneficiary: React.FC<{
             id="amount"
             label="amount"
             CURRENCY_SYMBOL={currencySymbols.naira}
+            formatNumber
           />
           <Input
             id="description"
@@ -46,12 +53,11 @@ const SendFundBeneficiary: React.FC<{
             placeholder="Description"
           />
         </div>
-        <button className="flex items-center justify-between">
-          <p className="text-text-tertiary dark:text-darkText-1 text-sm font-normal">
+        {!isAlreadyBeneficiary && (
+          <Checkbox radio className="flex-row-reverse justify-between">
             Save as beneficiary
-          </p>
-          <Picture src={TickDefault} alt="tick" size={20} />
-        </button>
+          </Checkbox>
+        )}
       </div>
       <Button size="sm_medium" className="py-2 px-8">
         send

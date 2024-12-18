@@ -9,7 +9,7 @@ interface UnitFormContextType extends UnitFormState {
   submitLoading: boolean;
   setSaveClick: (saveClick: boolean) => void;
   setUnitType: (unitType: "" | UnitTypeKey) => void;
-  setSaved?: (saved: boolean) => void;
+  resetForm: () => void;
   duplicate?: {
     val: boolean;
     count: number;

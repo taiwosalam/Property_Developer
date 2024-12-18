@@ -1,17 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 // Types
-import type {
-  SettingsPaymentOptions,
-  SettingsPaymentModalProps,
-} from "../types";
+import type { SettingsPaymentModalProps } from "../types";
 
-// Imports
-import SettingsPaymentOnline from "./settings-payment-online";
 import SettingsAnnumSwitcher from "../settings-annum-switcher";
-import SettingsPaymentTransfer from "./settings-payment-transfer";
+
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import SettingsPaymentOptionsComponent from "./settings-payment-options";
 
@@ -23,41 +18,19 @@ const SettingsPaymentModal: React.FC<SettingsPaymentModalProps> = ({
   hideTitleOnProceed,
   limitTransferFields,
 }) => {
-  const [activeStep, setActiveStep] =
-    useState<SettingsPaymentOptions>("options");
+  const [activeStep, setActiveStep] = useState<
+    "options" | "bank transfer" | "online funding"
+  >("options");
 
-  const flow: Record<
-    SettingsPaymentOptions,
-    {
-      heading: string;
-      content: React.ReactNode;
-    }
-  > = {
-    options: {
-      heading: headings?.options || "Select payment method",
-      content: <SettingsPaymentOptionsComponent changeStep={setActiveStep} />,
-    },
-    "bank transfer": {
-      heading: headings?.["bank transfer"] || "Make Payment with Transfer",
-      content: <SettingsPaymentTransfer limitFields={limitTransferFields} />,
-    },
-    "online funding": {
-      heading: headings?.["online funding"] || "Online Payment",
-      content: <SettingsPaymentOnline />,
-    },
-  };
+  // const flow = {
+  //   options: {
+  //     heading: headings?.options || "Select payment method",
+  //     content: <SettingsPaymentOptionsComponent />,
+  //   },
+  // };
 
   return (
-    <WalletModalPreset
-      title={flow[activeStep].heading}
-      back={
-        activeStep !== "options"
-          ? () => {
-              setActiveStep("options");
-            }
-          : undefined
-      }
-    >
+    <WalletModalPreset title={"Select payment method"}>
       <div className="custom-flex-col gap-5">
         {hideTitleOnProceed && activeStep !== "options" ? null : (
           <div className="flex justify-center">
@@ -76,7 +49,7 @@ const SettingsPaymentModal: React.FC<SettingsPaymentModalProps> = ({
             </div>
           </div>
         )}
-        {flow[activeStep].content}
+        <SettingsPaymentOptionsComponent />
       </div>
     </WalletModalPreset>
   );

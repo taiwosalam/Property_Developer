@@ -1,4 +1,5 @@
 import { CSSProperties } from "react";
+import type { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 
 export interface WalletAnalyticsProps {
   amount: number;
@@ -12,10 +13,13 @@ export interface WalletAnalyticsProps {
   className?: string;
 }
 
-export type WalletAddFundsOptions =
-  | "options"
-  | "bank transfer"
-  | "online funding";
+export interface FundingCardProps {
+  cta?: string;
+  desc?: string;
+  title?: string;
+  notRounded?: boolean;
+  type: "paystack" | "flutterwave" | "bank transfer" | "sterling";
+}
 
 export type WalletSendFundsOptions = "send funds" | "send fund to beneficiary";
 
@@ -34,32 +38,9 @@ export interface WalletFundsCardsHeadingProps {
   title: string;
 }
 
-export interface WalletBankTransferCardProps {
-  proceed?: () => void;
-  cantInteract?: boolean;
-}
-
-export interface WalletOnlineFundingCardProps {
-  noInput?: boolean;
-  proceed: () => void;
-  title?: string;
-  price?: number;
-}
-
-export interface FundingCardProps {
-  cta?: string;
-  desc?: string;
-  title?: string;
-  notRounded?: boolean;
-  type: "paystack" | "flutterwave" | "bank transfer" | "sterling";
-}
-
 // Generic Interface for Modals
 export interface WalletModalDefaultProps<
-  T extends
-    | WalletAddFundsOptions
-    | WalletSendFundsOptions
-    | WalletWithdrawFundsOptions
+  T extends WalletSendFundsOptions | WalletWithdrawFundsOptions
 > {
   changeStep: React.Dispatch<React.SetStateAction<T>>;
 }
@@ -71,6 +52,7 @@ export interface FundsBeneficiaryProps {
   onClick?: () => void;
   seeMore?: boolean;
   remove?: () => void;
+  badge_color?: BadgeIconColors;
 }
 
 export type ActivateWalletOptions = "setup-pin" | "confirm-pin" | "enter-otp";

@@ -25,18 +25,18 @@ import ActivateWalletModal from "../Wallet/activate-wallet-modal";
 import SendFundsModal from "../Wallet/SendFunds/send-funds-modal";
 import WithdrawFundsModal from "../Wallet/Withdraw/withdraw-funds-modal";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
-import { useWalletStore } from "@/store/wallet-store";
+import { formatNumber } from "@/utils/number-formatter";
 import useFetch from "@/hooks/useFetch";
+import { useWalletStore } from "@/store/wallet-store";
 import { WalletDataResponse } from "@/app/(nav)/wallet/data";
 
 const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   noHeader,
   className,
 }) => {
-  const walletPinStatus = useWalletStore((state) => state.walletPinStatus);
-  const balance = useWalletStore((state) => state.balance);
-  const caution_deposit = useWalletStore((state) => state.caution_deposit);
-  const setWalletStore = useWalletStore((state) => state.setWalletStore);
+  const walletPinStatus = useWalletStore((s) => s.walletPinStatus);
+  const balance = useWalletStore((s) => s.balance);
+  const setWalletStore = useWalletStore((s) => s.setWalletStore);
   const [hideBalance, setHideBalance] = useState(false);
 
   const hideWalletBalance = () => {
@@ -65,8 +65,28 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
     },
   ];
 
-  const { data, loading, error } =
-    useFetch<WalletDataResponse>("/wallets/dashboard");
+  const { data, error } = useFetch<WalletDataResponse>("/wallets/dashboard");
+
+  useEffect(() => {
+    if (data) {
+      setWalletStore("walletPinStatus", data.balance.pin_status);
+      setWalletStore("walletId", data.balance.wallet_id);
+      setWalletStore("balance", {
+        my_balance: data.balance.my_balance,
+        caution_deposit: data.balance.escrow_balance,
+        earned_bonus: data.balance.earned_bonus,
+      });
+      setWalletStore("beneficiaries", data.beneficiaries);
+      setWalletStore("recentTransactions", data.transactions);
+      setWalletStore("stats", data.stats);
+      setWalletStore("account", {
+        account_number: data.account.account_number,
+        account_name: data.account.account_name,
+        bank: data.account.bank,
+        customer_code: data.account.customer_code,
+      });
+    }
+  }, [data, setWalletStore]);
 
   useEffect(() => {
     const storedHideBalance = getLocalStorage("hideBalance");
@@ -74,22 +94,6 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
       setHideBalance(storedHideBalance);
     }
   }, []);
-
-  useEffect(() => {
-    if (data) {
-      console.log("wallet data", data);
-      const {
-        beneficiaries,
-        balance,
-        transactions,
-        stats,
-      } = data;
-      setWalletStore("balance", balance);
-      setWalletStore("beneficiaries", beneficiaries);
-      setWalletStore("transactions", transactions);
-      setWalletStore("stats", stats);
-    }
-  }, [data, setWalletStore]);
 
   return (
     <div className={clsx("space-y-2", className)}>
@@ -133,12 +137,14 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
             </button>
           </div>
           <p className="font-medium text-xl text-white">
-            {hideBalance ? "*******" : "₦ " + balance.my_balance}
+            {hideBalance ? "*******" : "₦ " + formatNumber(balance.my_balance)}
           </p>
           <div className="text-white text-xs font-medium capitalize flex items-center space-x-1">
             <p className="text-text-white-secondary ">caution deposit</p>
             <span className="text-white ml-2">
-              {hideBalance ? "*******" : "₦ " + balance.escrow_balance}
+              {hideBalance
+                ? "*******"
+                : "₦ " + formatNumber(balance.caution_deposit)}
             </span>
             <CautionIcon />
           </div>
@@ -173,6 +179,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
           </div>
         </div>
       </div>
+      {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>
   );
 };

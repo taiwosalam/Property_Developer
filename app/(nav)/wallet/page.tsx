@@ -32,28 +32,46 @@ import { BlueBuildingIcon } from "@/public/icons/dashboard-cards/icons";
 import { useWalletStore } from "@/store/wallet-store";
 
 const Wallet = () => {
-  const walletId = useWalletStore((state) => state.balance.wallet_id);
+  const walletId = useWalletStore((state) => state.walletId);
   const beneficiaries = useWalletStore((state) => state.beneficiaries);
   const stats = useWalletStore((state) => state.stats);
-  const transactions = useWalletStore((state) => state.transactions);
-  
+  const transactions = useWalletStore((state) => state.recentTransactions);
+
   // FUNDS
-  const totalFunds = stats.current_day.total_funds + stats.before_current_day.total_funds;
+  const totalFunds =
+    stats.current_day.total_funds + stats.before_current_day.total_funds;
   const fundsPercent = determinePercentageDifference(
     stats.before_current_day.total_funds,
     stats.current_day.total_funds
   );
-  const fundsUpDown = determineTrend(stats.current_day.total_funds, stats.before_current_day.total_funds)
+  const fundsUpDown = determineTrend(
+    stats.current_day.total_funds,
+    stats.before_current_day.total_funds
+  );
 
   // DEBIT
-  const totalDebit = stats.current_day.total_debit + stats.before_current_day.total_debit;
-  const debitPercent = determinePercentageDifference(stats.before_current_day.total_debit, stats.current_day.total_debit)
-  const debitUpDown = determineTrend(stats.current_day.total_debit, stats.before_current_day.total_debit)
+  const totalDebit =
+    stats.current_day.total_debit + stats.before_current_day.total_debit;
+  const debitPercent = determinePercentageDifference(
+    stats.before_current_day.total_debit,
+    stats.current_day.total_debit
+  );
+  const debitUpDown = determineTrend(
+    stats.current_day.total_debit,
+    stats.before_current_day.total_debit
+  );
 
   // CREDIT
-  const totalCredit = stats.current_day.total_credit + stats.before_current_day.total_credit;
-  const creditPercent = determinePercentageDifference(stats.before_current_day.total_credit, stats.current_day.total_credit)
-  const creditUpDown = determineTrend(stats.current_day.total_credit, stats.before_current_day.total_credit)
+  const totalCredit =
+    stats.current_day.total_credit + stats.before_current_day.total_credit;
+  const creditPercent = determinePercentageDifference(
+    stats.before_current_day.total_credit,
+    stats.current_day.total_credit
+  );
+  const creditUpDown = determineTrend(
+    stats.current_day.total_credit,
+    stats.before_current_day.total_credit
+  );
 
   const transformedWalletTableData = walletTableData.map((t) => ({
     ...t,

@@ -49,7 +49,7 @@ type UnitFormProps = emptyUnitFormProps | editUnitFormProps;
 const UnitForm: React.FC<UnitFormProps> = (props) => {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
-  const [duplicate, setDuplicate] = useState({ val: false, count: 2 });
+  const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
   const addUnit = useAddUnitStore((s) => s.addUnit);
   const editUnit = useAddUnitStore((s) => s.editUnit);
   const propertyType = useAddUnitStore((state) => state.propertyType);
@@ -200,15 +200,19 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           ...state,
           setImages,
           setUnitType,
-          duplicate,
-          setDuplicate,
           submitLoading,
           setSaveClick,
-          ...(!props.empty && {
-            isEditing: props.isEditing,
-            setIsEditing: props.setIsEditing,
-            unitData: props.data,
-          }),
+          resetForm,
+          ...(!props.empty
+            ? {
+                isEditing: props.isEditing,
+                setIsEditing: props.setIsEditing,
+                unitData: props.data,
+              }
+            : {
+                duplicate,
+                setDuplicate,
+              }),
         }}
       >
         <AuthForm
@@ -222,12 +226,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
             <>
               <div className="flex justify-between items-center">
                 <p className="text-brand-9 font-semibold">Edit Unit</p>
-                <EditUnitActions
-                  handleCancel={() => {
-                    resetForm();
-                    props.setIsEditing(false);
-                  }}
-                />
+                <EditUnitActions />
               </div>
               <hr className="!my-4 border-none bg-borders-dark h-[2px]" />
             </>
@@ -243,16 +242,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           ) : (
             <UnitBreakdownFacility />
           )}
-          {!props.empty ? (
-            <EditUnitActions
-              handleCancel={() => {
-                resetForm();
-                props.setIsEditing(false);
-              }}
-            />
-          ) : (
-            <AddUntFooter />
-          )}
+          {!props.empty ? <EditUnitActions /> : <AddUntFooter />}
         </AuthForm>
       </UnitFormContext.Provider>
     </FlowProgress>

@@ -1,24 +1,20 @@
-import React from "react";
-
-// Types
-import type { WalletBankTransferCardProps } from "./types";
-
 // Imports
 import clsx from "clsx";
 import Button from "../Form/Button/button";
 import { WalletFundsCardsHeading } from "./wallet-components";
+import { useWalletStore } from "@/store/wallet-store";
 
-const WalletBankTransferCard: React.FC<WalletBankTransferCardProps> = ({
-  proceed,
-  cantInteract,
-}) => {
+const WalletBankTransferCard = () => {
+  const account = useWalletStore((state) => state.account);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(account.account_number);
+  };
+
   return (
     <div
       className={clsx(
-        "p-[18px] rounded-2xl overflow-hidden bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-[#3C3D37] custom-flex-col gap-2",
-        {
-          "pointer-events-none opacity-50": cantInteract,
-        }
+        "p-[18px] rounded-2xl overflow-hidden bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-[#3C3D37] custom-flex-col gap-2"
       )}
     >
       <WalletFundsCardsHeading
@@ -27,22 +23,21 @@ const WalletBankTransferCard: React.FC<WalletBankTransferCardProps> = ({
       />
       <div className="flex justify-between text-text-disabled text-sm font-medium">
         <div className="custom-flex-col gap-[2px]">
-          <p className="dark:text-white">Zenith Bank</p>
+          <p className="dark:text-white">{account.bank}</p>
           <p className="text-text-quaternary dark:text-darkText-1">
-            Taiwo Salam & Co. Properties Ltd
+            {account.account_name}
           </p>
         </div>
         <div className="custom-flex-col gap-[2px]">
           <p className="dark:text-white">Account Number</p>
-          <p className="text-brand-primary">1211265949</p>
+          <p className="text-brand-primary">{account.account_number}</p>
         </div>
-        {proceed && (
-          <div className="flex items-end">
-            <Button onClick={proceed} size="xs_medium" className="py-1 px-2">
-              proceed
-            </Button>
-          </div>
-        )}
+
+        <div className="flex items-end">
+          <Button size="xs_medium" className="py-1 px-2" onClick={handleCopy}>
+            Copy
+          </Button>
+        </div>
       </div>
     </div>
   );

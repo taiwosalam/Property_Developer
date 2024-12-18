@@ -12,7 +12,7 @@ import BackButton from "@/components/BackButton/back-button";
 import { SinglePropertyResponse } from "../../../[id]/data";
 import NetworkError from "@/components/Error/NetworkError";
 import { transformPropertyData } from "./data";
-import { useCustomBackNavigation } from "@/hooks/useCustomBackNavigation";
+// import { useCustomBackNavigation } from "@/hooks/useCustomBackNavigation";
 import { useRouter } from "next/navigation";
 
 const AddUnit = ({ params }: { params: { propertyId: string } }) => {
@@ -86,7 +86,6 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
             ))}
           </>
         )}
-
         {!hideEmptyForm && (
           <UnitForm empty hideEmptyForm={() => setHideEmptyForm(true)} />
         )}
