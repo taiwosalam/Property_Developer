@@ -116,15 +116,16 @@ const VacantUnitCard = ({
               </div>
               <div className="flex items-start gap-[75px] text-base font-normal">
                 <p className="text-[#747474] dark:text-darkText-1">
-                  Description
+                  Property Title
                 </p>
-                <TruncatedText
+                {/* <TruncatedText
                   lines={3}
                   className="text-text-quaternary dark:text-darkText-2"
                   as="div"
                 >
                   <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
-                </TruncatedText>
+                </TruncatedText> */}
+                <span> { unit_data.property_title } </span>
               </div>
             </div>
             <div
