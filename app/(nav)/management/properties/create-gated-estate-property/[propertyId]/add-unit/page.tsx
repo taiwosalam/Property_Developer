@@ -12,7 +12,7 @@ import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
 import BackButton from "@/components/BackButton/back-button";
 import useFetch from "@/hooks/useFetch";
 import { SinglePropertyResponse } from "../../../[id]/data";
-import { useCustomBackNavigation } from "@/hooks/useCustomBackNavigation";
+// import { useCustomBackNavigation } from "@/hooks/useCustomBackNavigation";
 import { transformPropertyData } from "../../../create-rental-property/[propertyId]/add-unit/data";
 
 const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {

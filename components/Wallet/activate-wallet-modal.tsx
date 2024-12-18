@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import WalletModalPreset from "./wallet-modal-preset";
 import type { ActivateWalletOptions } from "./types";
 import { useAuthStore } from "@/store/authStore";
@@ -10,18 +10,35 @@ import obfuscateEmail from "@/utils/obfuscateEmail";
 import { getOtpToActivateWallet, setWalletPin } from "./data";
 import { toast } from "sonner";
 import { useModal } from "../Modal/modal";
+import { useWalletStore } from "@/store/wallet-store";
+import { ReloadIcon } from "@/public/icons/icons";
 
 const ActivateWalletModal = () => {
   const { setIsOpen } = useModal();
   const [requestLoading, setRequestLoading] = useState(false);
+  const [resendReqLoading, setResendReqLoading] = useState(false);
   const email = useAuthStore((state) => state.email);
+  const walletId = useWalletStore((state) => state.walletId);
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
   const [otp, setOtp] = useState("");
-  const [countdown, setCountdown] = useState(120);
+  const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const [activeStep, setActiveStep] =
     useState<ActivateWalletOptions>("setup-pin");
+
+  const handleResendOtp = async () => {
+    if (canResend) {
+      setResendReqLoading(true);
+      const status = await getOtpToActivateWallet();
+      if (status) {
+        setCountdown(60);
+        setCanResend(false);
+      }
+      setResendReqLoading(false);
+    }
+  };
+
   const flow: Record<
     ActivateWalletOptions,
     {
@@ -53,7 +70,7 @@ const ActivateWalletModal = () => {
       ),
     },
     "enter-otp": {
-      heading: "Input OTP",
+      heading: "Enter OTP",
       content: (
         <>
           <p>
@@ -62,12 +79,30 @@ const ActivateWalletModal = () => {
             complete your request.
           </p>
           <AuthPinField onChange={setOtp} key="enter-otp" />
+          {!canResend ? (
+            <p className="text-black">
+              {`${String(Math.floor(countdown / 60)).padStart(2, "0")}:${String(
+                countdown % 60
+              ).padStart(2, "0")}`}
+            </p>
+          ) : (
+            <button
+              type="button"
+              onClick={handleResendOtp}
+              className="mx-auto flex gap-1 text-brand-9 text-base font-medium"
+              disabled={resendReqLoading}
+            >
+              <ReloadIcon />
+              Resend code
+            </button>
+          )}
         </>
       ),
     },
   };
 
   const handleNext = async () => {
+    if (!walletId) return;
     if (activeStep === "setup-pin") {
       if (pin.length !== 4) {
         toast.warning("Please enter a valid 4-digit PIN.");
@@ -83,18 +118,34 @@ const ActivateWalletModal = () => {
       const status = await getOtpToActivateWallet();
       if (status) {
         setActiveStep("enter-otp");
+        setCountdown(60);
+        setCanResend(false);
       }
       setRequestLoading(false);
     } else if (activeStep === "enter-otp") {
+      if (otp.length !== 4) {
+        toast.warning("Please enter a valid 4-digit OTP.");
+        return;
+      }
       setRequestLoading(true);
-      const status = await setWalletPin(pin, confirmPin, otp);
+      const status = await setWalletPin(pin, confirmPin, otp, walletId);
       if (status) {
-        toast.success("PIN set successfully!");
         setIsOpen(false);
       }
       setRequestLoading(false);
     }
   };
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    } else {
+      setCanResend(true);
+    }
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
   return (
     <WalletModalPreset
       style={{ width: "80%", maxWidth: "390px" }}

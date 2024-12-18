@@ -1,17 +1,26 @@
-import React from "react";
-
-// Types
-import type { WalletOnlineFundingCardProps } from "./types";
-
 // Imports
+import { useState } from "react";
 import Input from "../Form/Input/input";
 import Button from "../Form/Button/button";
+import { currencySymbols } from "@/utils/number-formatter";
 import { WalletFundsCardsHeading } from "./wallet-components";
+import { fundWallet } from "./data";
 
-const WalletOnlineFundingCard: React.FC<WalletOnlineFundingCardProps> = ({
-  noInput,
-  proceed,
-}) => {
+const WalletOnlineFundingCard = () => {
+  const [amount, setAmount] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleProceed = async () => {
+    if (amount > 0) {
+      setLoading(true);
+      const paymentUrl = await fundWallet(amount);
+      if (paymentUrl) {
+        window.open(paymentUrl, "_blank");
+      }
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="p-[18px] rounded-2xl overflow-hidden bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-[#3C3D37] custom-flex-col gap-2">
       <WalletFundsCardsHeading
@@ -20,17 +29,25 @@ const WalletOnlineFundingCard: React.FC<WalletOnlineFundingCardProps> = ({
       />
       <div></div>
       <div className="custom-flex-col gap-6">
-        {!noInput && (
-          <Input
-            id="amount"
-            placeholder="₦ 0.00"
-            label="Input the amount you wish to deposit"
-            inputClassName="bg-white"
-            labelclassName="normal-case"
-          />
-        )}
+        <Input
+          id="amount"
+          CURRENCY_SYMBOL={currencySymbols.naira}
+          label="Input the amount you wish to deposit"
+          inputClassName="bg-white"
+          labelclassName="normal-case"
+          formatNumber
+          onChange={(value) => {
+            setAmount(parseFloat(value.replace(/,/g, "")));
+          }}
+        />
+
         <div className="flex justify-end">
-          <Button onClick={proceed} size="xs_medium" className="py-1 px-2">
+          <Button
+            size="xs_medium"
+            className="py-1 px-2"
+            onClick={handleProceed}
+            disabled={loading}
+          >
             proceed
           </Button>
         </div>

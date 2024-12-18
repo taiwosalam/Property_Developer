@@ -66,15 +66,6 @@ export interface DefaultSettingsModalProps {
   changeStep: (step: FormSteps) => void;
 }
 
-export type SettingsPaymentOptions =
-  | "options"
-  | "bank transfer"
-  | "online funding";
-
-export interface DefaultSettingsPaymentModalProps {
-  changeStep: (step: SettingsPaymentOptions) => void;
-}
-
 export interface SettingsAnnumSwitcherProps {
   data?: {
     price: number;
@@ -147,7 +138,7 @@ export interface SettingsDirectorTypes {
 export interface SettingsOthersCheckBoxProps {
   title: string;
   desc: string;
-  checked?: boolean; 
+  checked?: boolean;
   value: string;
   onChange: (value: string, checked: boolean) => void;
 }
@@ -165,7 +156,7 @@ export interface CheckboxProps {
 // interface ThemeCardProps {
 //   img: string;
 //   value: string;
-//   onSelect: (value: string) => void; 
+//   onSelect: (value: string) => void;
 // }
 
 export interface CheckboxProps {
@@ -178,14 +169,13 @@ interface ThemeCardProps {
   img: string;
   value: string;
   isSelected: boolean;
-  onSelect: (value: string) => void; 
+  onSelect: (value: string) => void;
   className?: string;
   profile?: boolean;
   showMessage?: boolean;
   setShowMessage?: (show: boolean) => void;
   showProfessionalMessage?: boolean;
 }
-
 
 export interface SettingsEnrollmentCardProps {
   planTitle: string;
@@ -198,17 +188,16 @@ export interface SettingsEnrollmentCardProps {
   setShowFeatures: (show: boolean) => void;
   onSelect: () => void;
   features: string[];
-  billingType: 'monthly' | 'yearly';
+  billingType: "monthly" | "yearly";
   payMonthly: () => void;
   payYearly: () => void;
   quantity: number;
   incrementQuantity: () => void;
   decrementQuantity: () => void;
   isFree?: boolean;
-  onBillingTypeChange: (type: 'monthly' | 'yearly') => void;
+  onBillingTypeChange: (type: "monthly" | "yearly") => void;
   discountText: string;
 }
-
 
 export interface ProfileUploadProps {
   preview: string | StaticImageData;
@@ -217,13 +206,11 @@ export interface ProfileUploadProps {
   onClick: () => void;
 }
 
-
 export interface LegalOption {
   title: string;
   description: string;
   value?: string;
 }
-
 
 export interface ZoomSettingsProps {
   resetZoom: () => void;
@@ -234,7 +221,6 @@ export interface ZoomSettingsProps {
   toggleFullscreen: () => void;
   fullScreen?: boolean;
 }
-
 
 export interface SelectedOptions {
   theme: string;

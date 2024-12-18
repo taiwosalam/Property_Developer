@@ -4,12 +4,10 @@ import { useContext } from "react";
 import { useUnitForm } from "./unit-form-context";
 import { toast } from "sonner";
 
-const EditUnitActions: React.FC<{ handleCancel: () => void }> = ({
-  handleCancel,
-}) => {
+const EditUnitActions = () => {
   const { canSubmit, missingFields, handleInputChange } =
     useContext(FlowProgressContext);
-  const { submitLoading } = useUnitForm();
+  const { submitLoading, setIsEditing, resetForm } = useUnitForm();
 
   const handleUpdateClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -26,11 +24,13 @@ const EditUnitActions: React.FC<{ handleCancel: () => void }> = ({
   return (
     <div className="flex gap-4 justify-end">
       <Button
-        type="reset"
         size="sm_medium"
         variant="light_red"
         className="py-1 px-8"
-        onClick={handleCancel}
+        onClick={() => {
+          resetForm();
+          setIsEditing?.(false);
+        }}
       >
         Close
       </Button>

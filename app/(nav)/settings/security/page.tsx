@@ -40,10 +40,10 @@ const Security = () => {
       ...inputFields,
       { id: Date.now(), signature: SignatureImage },
     ]);
-    console.log("Input Fields after adding:", [
-      ...inputFields,
-      { id: Date.now(), signature: SignatureImage },
-    ]);
+    // console.log("Input Fields after adding:", [
+    //   ...inputFields,
+    //   { id: Date.now(), signature: SignatureImage },
+    // ]);
   };
 
   const removeInputField = (id: number) => {

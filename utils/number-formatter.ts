@@ -1,7 +1,8 @@
 const NUMBER_FORMAT_LOCALE = "en-NG";
 
-export const formatNumber = (price: number) => {
-  return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE).format(price);
+export const formatNumber = (price: number | string) => {
+  const priceNumber = typeof price === "string" ? parseFloat(price) : price;
+  return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE).format(priceNumber);
 };
 
 export const formatCostInputValue = (value: string): string => {

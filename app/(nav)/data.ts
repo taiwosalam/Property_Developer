@@ -5,6 +5,7 @@ interface UserResponse {
   data: {
     details: {
       role: [string];
+      email: string;
       email_verification: boolean;
     };
   };
@@ -13,8 +14,9 @@ interface UserResponse {
 export const getUserStatus = async () => {
   try {
     const { data } = await api.get<UserResponse>("/user");
-    const { role, email_verification } = data.data.details;
+    const { role, email_verification, email } = data.data.details;
     useAuthStore.getState().setAuthState("role", role[0]);
+    useAuthStore.getState().setAuthState("email", email);
     if (!email_verification) {
       useAuthStore.getState().setAuthState("emailVerified", false);
       return "redirect to verify email";
