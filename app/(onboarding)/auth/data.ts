@@ -12,11 +12,10 @@ interface LoginResponse {
   access_token: string;
   data: {
     details: {
-      id: string; //actually number but fuck it
+      id: string;
       email: string;
       role: [string];
       email_verification: boolean;
-      wallet_pin_status: boolean;
     };
   };
   wallet_pin_status: boolean;

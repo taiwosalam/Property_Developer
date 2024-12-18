@@ -11,6 +11,7 @@ import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import { SectionSeparator } from "@/components/Section/section-components";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 const FundsBeneficiary: React.FC<FundsBeneficiaryProps> = ({
   seeMore,
@@ -18,6 +19,7 @@ const FundsBeneficiary: React.FC<FundsBeneficiaryProps> = ({
   picture,
   name,
   wallet_id,
+  badge_color,
   onClick,
 }) => {
   const isDarkMode = useDarkMode();
@@ -31,9 +33,12 @@ const FundsBeneficiary: React.FC<FundsBeneficiaryProps> = ({
         <div className="flex items-center gap-2">
           <Picture src={picture} alt="profile picture" size={33} rounded />
           <div className="custom-flex-col font-medium">
-            <p className="text-[#010A23] dark:text-white text-sm capitalize">
-              {name}
-            </p>
+            <div className="flex items-center">
+              <p className="text-[#010A23] dark:text-white text-sm capitalize">
+                {name}
+              </p>
+              {badge_color && <BadgeIcon color={badge_color} />}
+            </div>
             <p className="text-[#606060] dark:text-darkText-1 text-xs">
               Wallet ID: {wallet_id}
             </p>

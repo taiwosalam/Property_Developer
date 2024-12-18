@@ -2,7 +2,6 @@ import { ChartConfig } from "@/components/ui/chart";
 import type { Field } from "@/components/Table/types";
 import api, { handleAxiosError } from "@/services/api";
 
-
 export const walletChartConfig = {
   totalfunds: {
     label: "Total funds",
@@ -95,8 +94,8 @@ export const determinePercentageDifference = (
   const num1 = Number(value1);
   const num2 = Number(value2);
 
-  if(num1 === 0 && num2 === 0) {
-    return "0.00"
+  if (num1 === 0 && num2 === 0) {
+    return "0.00";
   }
 
   const difference = ((num1 - num2) / Math.abs(num2)) * 100;
@@ -106,20 +105,9 @@ export const determinePercentageDifference = (
     : `${Math.abs(difference).toFixed(2)}`;
 };
 
-
 export const walletTableData = generateWalletTableData(10);
 
 export interface WalletDataResponse {
-  balance: {
-    wallet_id: string;
-    my_balance: string;
-    escrow_balance: string;
-    earned_bonus: string;
-    pin_status: boolean;
-  };
-  recent_transactions: any[]; //confirm with backend
-  beneficiaries: any[]; //confirm with backend
-  transactions: any[];
   stats: {
     current_day: {
       total_funds: string;
@@ -132,4 +120,19 @@ export interface WalletDataResponse {
       total_debit: string;
     };
   };
+  balance: {
+    wallet_id: string;
+    my_balance: string;
+    escrow_balance: string;
+    earned_bonus: string;
+    pin_status: boolean;
+  };
+  account: {
+    account_number: string;
+    account_name: string;
+    bank: string;
+    customer_code: string;
+  };
+  transactions: any[]; //confirm with backend
+  beneficiaries: any[]; //confirm with backend
 }

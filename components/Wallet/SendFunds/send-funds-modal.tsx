@@ -9,8 +9,10 @@ import type { WalletSendFundsOptions } from "../types";
 import SendFunds from "./send-funds";
 import WalletModalPreset from "../wallet-modal-preset";
 import SendFundBeneficiary from "./send-fund-beneficiary";
+import type { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
+import type { Beneficiary } from "@/store/wallet-store";
 
-const emptyBeneficiary = {
+const emptyBeneficiary: Beneficiary = {
   name: "",
   picture: "",
   wallet_id: "",
@@ -19,11 +21,7 @@ const emptyBeneficiary = {
 const SendFundsModal = () => {
   const [activeStep, setActiveStep] =
     useState<WalletSendFundsOptions>("send funds");
-  const [recipient, setRecipient] = useState<{
-    name: string;
-    picture: string;
-    wallet_id: string;
-  }>(emptyBeneficiary);
+  const [recipient, setRecipient] = useState(emptyBeneficiary);
 
   const flow: Record<WalletSendFundsOptions, { content: React.ReactNode }> = {
     "send funds": {
@@ -37,6 +35,7 @@ const SendFundsModal = () => {
           name={recipient.name}
           picture={recipient.picture}
           wallet_id={recipient.wallet_id}
+          badge_color={recipient.badge_color}
         />
       ),
     },

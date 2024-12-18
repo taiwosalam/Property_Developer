@@ -51,7 +51,6 @@ function useFetch<T>(
                 : typeof errorData?.error?.message === "string"
                 ? errorData.error.message
                 : "Something went wrong");
-            console.log(errorMessage);
             setError(errorMessage);
           }
         } else {
