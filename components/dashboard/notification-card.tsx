@@ -96,19 +96,23 @@ const NotificationCard: React.FC<notificationCardProps> = ({
           >
             <Avatar className="hidden h-9 w-9 sm:flex">
               <AvatarImage src={notification.avatarSrc} alt="Avatar" />
-              <AvatarFallback>{notification.avatarFallback}</AvatarFallback>
+              {notification.avatarFallback && (
+                <AvatarFallback>{notification.avatarFallback}</AvatarFallback>
+              )}
             </Avatar>
             <div className="w-full gap-1">
               <div className="w-full flex items-center justify-between">
                 <p className="text-sm font-medium text-text-primary dark:text-[#f1f1fd] flex items-center">
-                  {notification.name || notification.full_name}
-                  {sectionHeader !== "Staffs" && <BadgeIcon color="red" />}
+                  {notification.name}
+                  {sectionHeader !== "Staffs" && (
+                    <BadgeIcon color={notification.badgeColor || "red"} />
+                  )}
                 </p>
                 <p className="text-[10px] text-text-disabled">
                   {sectionHeader === "Staffs" ? "Message" : notification.time}
                 </p>
               </div>
-              {sectionHeader !== "Staffs" && (
+              {notification.title && (
                 <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
                   {notification.title}
                 </p>
