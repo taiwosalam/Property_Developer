@@ -156,7 +156,10 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <CreateStaffModal branchId={branchId as string} />
+              <CreateStaffModal
+                branchId={branchId as string}
+                hasManager={false}
+              />
             </ModalContent>
           </Modal>
         </div>
@@ -192,7 +195,12 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
           ) : (
             <EmptyList
               buttonText="+ Create New Staff"
-              modalContent={<CreateStaffModal branchId={branchId as string} />}
+              modalContent={
+                <CreateStaffModal
+                  branchId={branchId as string}
+                  hasManager={false}
+                />
+              }
               title="The branch staff is empty"
               body={
                 <p>

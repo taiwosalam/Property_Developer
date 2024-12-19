@@ -11,6 +11,7 @@ import {
   variants,
 } from "@/utils/slider";
 import { PreviousIcon, NextIcon, CameraIcon } from "@/public/icons/icons";
+import { empty } from "@/app/config";
 
 interface ImageSliderProps {
   images: string[];
@@ -112,7 +113,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
             className="absolute inset-0"
           >
             <Image
-              src={images[imageIndex]}
+              src={images[imageIndex] || empty}
               alt={`image-${imageIndex + 1}`}
               fill
               className="object-cover"

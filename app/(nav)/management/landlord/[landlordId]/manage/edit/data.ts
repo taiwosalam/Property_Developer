@@ -60,7 +60,7 @@ export const lookupBankDetails = async (
           account_name: string;
         };
       };
-    }>("mono/lookup/account", formData);
+    }>("bank/lookup/account", formData);
     return data.data.data.account_name;
   } catch (error) {
     handleAxiosError(error, "Failed to get bank list");

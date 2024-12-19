@@ -1,32 +1,24 @@
-type Branch = {
-  branch_title: string;
-  branch_full_address: string;
-  branch_image: string | null;
-  city: string;
-  state: string;
-  local_government: string;
-  branch_wallet: string;
-  branch_description: string;
-};
-
-type Properties = {
+import type { notificationCardProps } from "@/components/dashboard/types";
+interface Stats {
   total: number;
   new_this_month: number;
-};
+}
 
-type Landlords = {
-  total: number;
-  new_this_month: number;
-};
-
-type Tenants = {
-  total: number;
-  new_this_month: number;
-};
-
-type Staff = any[]; // Assuming the structure of staff is unknown. Change `any` to a specific type if needed.
-
-type PropertyList = any[]; // Assuming the structure of property_list is unknown. Change `any` to a specific type if needed.
+export interface SingleBranchPageData {
+  branch_name: string;
+  address: string;
+  properties: Stats;
+  landlords: Stats;
+  tenants: Stats;
+  vacant_units: Stats;
+  expired: Stats;
+  invoices: Stats;
+  inquiries: Stats;
+  complaints: Stats;
+  listings: Stats;
+  staffs: notificationCardProps["notifications"];
+  hasManager: boolean;
+}
 
 export type SingleBranchResponseType = {
   data: {
@@ -40,6 +32,24 @@ export type SingleBranchResponseType = {
       picture: string | null;
       // branch_wallet: string; //to be added later
       branch_desc: string;
+      staffs_count: number; // do d monthly/this month stuff
+      properties_count: number; // do d monthly/this month stuff
+      staffs: {
+        id: string;
+        // user_id: string;
+        is_active: 1 | 0;
+        title: string | null;
+        // estate_title: string | null;
+        staff_role: "manager" | "staff" | "account officer";
+        name: string;
+      }[];
     };
+    manager: {
+      id: string;
+      is_active: 1 | 0;
+      title: string | null;
+      estate_title: string | null;
+      staff_role: "manager" | "staff" | "account officer";
+    }[];
   };
 };

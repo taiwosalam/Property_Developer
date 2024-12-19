@@ -477,7 +477,7 @@ export const TenantEditBankDetailsSection = () => {
     error: bankListError,
   } = useFetch<{
     data: { bank_name: string; bank_code: string }[];
-  }>("/mono/bank-list");
+  }>("bank/bank-list");
 
   const handleUpdateBankDetails = async (data: FormData) => {
     if (tenant?.id && isVerified) {

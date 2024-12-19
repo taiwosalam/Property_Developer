@@ -8,7 +8,7 @@ export interface BranchCardProps {
   branch_title: string;
   branch_full_address: string;
   manager_name: string;
-  manager_picture: string;
+  manager_picture?: string | null;
   staff_count: number;
   property_count: number;
   unit_count: number;
@@ -35,7 +35,7 @@ const BranchCard: React.FC<BranchCardProps> = ({
       <div className="absolute left-[50%] translate-x-[-50%] top-[-2.8rem] bg-white dark:bg-darkText-primary rounded-full w-[95px] h-[95px] overflow-hidden border-[3px] border-transparent">
         <Image
           src={branch_picture || empty}
-          alt={branch_title || ""}
+          alt={branch_title}
           fill
           className="rounded-full object-cover"
         />
@@ -49,7 +49,7 @@ const BranchCard: React.FC<BranchCardProps> = ({
         </p>
         <div className="flex items-center gap-2 justify-center mb-5">
           <Image
-            alt={`${manager_name} avatar`}
+            alt={manager_name}
             src={manager_picture || DefaultBranchManagerAvatar}
             width={20}
             height={20}
