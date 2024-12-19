@@ -5,57 +5,11 @@ import Signature from "@/components/Signature/signature";
 import WalletAnalytics from "@/components/Wallet/wallet-analytics";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import CustomTable from "@/components/Table/table";
-import { walletTableData, walletTableFields } from "../../data";
-import {
-  RedOutgoingIcon,
-  BlueIncomingIcon,
-  GreenIncomingIcon,
-} from "@/components/Accounting/icons";
+import { walletTableFields } from "../../data";
 import BackButton from "@/components/BackButton/back-button";
-import { BlueBuildingIcon } from "@/public/icons/dashboard-cards/icons";
 import ExportPageFooter from "@/components/reports/export-page-footer";
 
 const ExportWallet = () => {
-  const transformedWalletTableData = walletTableData.map((t) => ({
-    ...t,
-    amount: (
-      <span
-        className={clsx("text-status-error-primary", {
-          "text-status-success-3":
-            t.transaction_type.toLowerCase() === "wallet top-up" ||
-            t.transaction_type.toLowerCase() === "received",
-        })}
-      >
-        {t.amount}
-      </span>
-    ),
-    icon: (
-      <div
-        className={clsx(
-          "flex items-center justify-center w-9 h-9 rounded-full",
-          {
-            "bg-status-error-1 text-status-error-primary":
-              t.transaction_type.toLowerCase() === "debit" ||
-              t.transaction_type.toLowerCase() === "withdrawal",
-            "bg-status-success-1 text-status-success-primary":
-              t.transaction_type.toLowerCase() === "wallet top-up" ||
-              t.transaction_type.toLowerCase() === "received",
-          }
-        )}
-      >
-        {t.transaction_type.toLowerCase() === "debit" ? (
-          <RedOutgoingIcon size={25} />
-        ) : t.transaction_type.toLowerCase() === "wallet top-up" ? (
-          <BlueIncomingIcon color="#01BA4C" size={25} />
-        ) : t.transaction_type.toLowerCase() === "withdrawal" ? (
-          <BlueBuildingIcon />
-        ) : t.transaction_type.toLowerCase() === "received" ? (
-          <GreenIncomingIcon size={25} />
-        ) : null}
-      </div>
-    ),
-  }));
-
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <BackButton>Back</BackButton>
@@ -103,7 +57,7 @@ const ExportWallet = () => {
       </div>
       <CustomTable
         fields={walletTableFields}
-        data={transformedWalletTableData}
+        data={[]}
         tableBodyCellSx={{
           paddingTop: "12px",
           paddingBottom: "12px",

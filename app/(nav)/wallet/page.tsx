@@ -21,16 +21,11 @@ import {
   walletTableFields,
 } from "./data";
 import CustomTable from "@/components/Table/table";
-import {
-  RedOutgoingIcon,
-  GreenIncomingIcon,
-  BlueIncomingIcon,
-} from "@/components/Accounting/icons";
-import { BlueBuildingIcon } from "@/public/icons/dashboard-cards/icons";
 import { useWalletStore } from "@/store/wallet-store";
 import FundsBeneficiary from "@/components/Wallet/SendFunds/funds-beneficiary";
 import SendFundBeneficiary from "@/components/Wallet/SendFunds/send-fund-beneficiary";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
+import { getTransactionIcon } from "@/components/Wallet/icons";
 
 const Wallet = () => {
   const walletId = useWalletStore((state) => state.walletId);
@@ -86,27 +81,15 @@ const Wallet = () => {
     icon: (
       <div
         className={clsx(
-          "flex items-center justify-center w-9 h-9 rounded-full"
-          // {
-          //   "bg-status-error-1 text-status-error-primary":
-          //     t.transaction_type.toLowerCase() === "debit" ||
-          //     t.transaction_type.toLowerCase() === "withdrawal",
-          //   "bg-status-success-1 text-status-success-primary":
-          //     t.transaction_type.toLowerCase() === "wallet top-up" ||
-          //     t.transaction_type.toLowerCase() === "received",
-          // }
+          "flex items-center justify-center w-9 h-9 rounded-full",
+          {
+            "bg-status-error-1 text-status-error-primary": t.type === "debit",
+            "bg-status-success-1 text-status-success-primary":
+              t.type === "credit" || t.type === "DVA",
+          }
         )}
       >
-        {/* {t.transaction_type.toLowerCase() === "debit" ? (
-          <RedOutgoingIcon size={25} />
-        ) : t.transaction_type.toLowerCase() === "wallet top-up" ? (
-          <BlueIncomingIcon color="#01BA4C" size={25} />
-        ) : t.transaction_type.toLowerCase() === "withdrawal" ? (
-          <BlueBuildingIcon />
-        ) : t.transaction_type.toLowerCase() === "received" ? (
-          <GreenIncomingIcon size={25} />
-        ) : null} */}
-        <GreenIncomingIcon size={25} />
+        {getTransactionIcon(t.source, t.type)}
       </div>
     ),
   }));

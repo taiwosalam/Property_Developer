@@ -6,12 +6,6 @@ import clsx from "clsx";
 import BackButton from "@/components/BackButton/back-button";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import CustomTable from "@/components/Table/table";
-import {
-  RedOutgoingIcon,
-  GreenIncomingIcon,
-  BlueIncomingIcon,
-} from "@/components/Accounting/icons";
-import { BlueBuildingIcon } from "@/public/icons/dashboard-cards/icons";
 import { walletTableFields } from "../data";
 import {
   initialPageData,
@@ -25,6 +19,7 @@ import type { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import NetworkError from "@/components/Error/NetworkError";
+import { getTransactionIcon } from "@/components/Wallet/icons";
 
 const TransactionHistory = () => {
   const [state, setState] = useState(initialPageData);
@@ -73,7 +68,7 @@ const TransactionHistory = () => {
 
   const lastRowRef = useCallback(
     (node: HTMLElement | null) => {
-      if (loading) return;
+      // if (loading || silentLoading) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && state.hasMore) {
@@ -82,7 +77,7 @@ const TransactionHistory = () => {
       });
       if (node) observer.current.observe(node);
     },
-    [fetchNextPage, loading, state.hasMore]
+    [fetchNextPage, loading, state.hasMore, silentLoading]
   );
 
   useEffect(() => {
@@ -90,21 +85,30 @@ const TransactionHistory = () => {
       setState((prevState) => {
         const newTransactions = transformAllTransactionsResponse(apiData);
 
+        const combinedTransactions = [
+          ...prevState.transactions,
+          ...newTransactions.transactions,
+        ];
+
+        // Filter out duplicates based on transaction ID
+        const uniqueTransactions = combinedTransactions.filter(
+          (transaction, index, self) =>
+            index === self.findIndex((t) => t.id === transaction.id)
+        );
+
         // Check if page number is 1 to decide whether to overwrite or append
         if (newTransactions.current_page === 1) {
           // Overwrite transactions for the first page (e.g., after applying filters)
           return {
             ...prevState,
             ...newTransactions,
+            transactions: uniqueTransactions,
           };
         } else {
           // Append transactions for subsequent pages (e.g., scrolling)
           return {
             ...prevState,
-            transactions: [
-              ...prevState.transactions,
-              ...newTransactions.transactions,
-            ],
+            transactions: uniqueTransactions,
             current_page: newTransactions.current_page,
             total_pages: newTransactions.total_pages,
             hasMore: newTransactions.hasMore,
@@ -131,10 +135,15 @@ const TransactionHistory = () => {
     icon: (
       <div
         className={clsx(
-          "flex items-center justify-center w-9 h-9 rounded-full"
+          "flex items-center justify-center w-9 h-9 rounded-full",
+          {
+            "bg-status-error-1 text-status-error-primary": t.type === "debit",
+            "bg-status-success-1 text-status-success-primary":
+              t.type === "credit" || t.type === "DVA",
+          }
         )}
       >
-        <GreenIncomingIcon size={25} />
+        {getTransactionIcon(t.source, t.type)}
       </div>
     ),
     ref: index === state.transactions.length - 1 ? lastRowRef : null,
@@ -185,24 +194,31 @@ const TransactionHistory = () => {
         appliedFilters={appliedFilters}
       />
 
-      {loading || silentLoading ? (
+      {loading ? (
         <TableLoading />
       ) : (
-        <CustomTable
-          fields={walletTableFields}
-          data={transformedWalletTableData}
-          tableBodyCellSx={{
-            paddingTop: "12px",
-            paddingBottom: "12px",
-            fontSize: "16px",
-            whiteSpace: "nowrap",
-          }}
-          tableHeadCellSx={{
-            paddingTop: "14px",
-            paddingBottom: "14px",
-            fontSize: "16px",
-          }}
-        />
+        <section>
+          <CustomTable
+            fields={walletTableFields}
+            data={transformedWalletTableData}
+            tableBodyCellSx={{
+              paddingTop: "12px",
+              paddingBottom: "12px",
+              fontSize: "16px",
+              whiteSpace: "nowrap",
+            }}
+            tableHeadCellSx={{
+              paddingTop: "14px",
+              paddingBottom: "14px",
+              fontSize: "16px",
+            }}
+          />
+          {silentLoading && (
+            <div className="flex items-center justify-center py-4">
+              <div className="loader" />
+            </div>
+          )}
+        </section>
       )}
     </div>
   );

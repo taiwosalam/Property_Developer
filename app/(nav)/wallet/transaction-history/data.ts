@@ -25,7 +25,7 @@ export const transactionHistoryFilterMenu: FilterOptionMenu[] = [
 export const initialPageData: TransactionPageData = {
   current_page: 1,
   total_pages: 1,
-  hasMore: false,
+  hasMore: true,
   transactions: [],
 };
 
