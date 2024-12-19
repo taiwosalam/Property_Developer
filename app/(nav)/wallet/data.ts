@@ -1,6 +1,10 @@
 import { ChartConfig } from "@/components/ui/chart";
 import type { Field } from "@/components/Table/types";
-import api, { handleAxiosError } from "@/services/api";
+import {
+  tierColorMap,
+  type BadgeIconColors,
+} from "@/components/BadgeIcon/badge-icon";
+import type { Beneficiary } from "@/store/wallet-store";
 
 export const walletChartConfig = {
   totalfunds: {
@@ -31,7 +35,7 @@ export const walletChartData = [
 
 export const walletTableFields: Field[] = [
   { id: "1", accessor: "icon" },
-  { id: "2", label: "Transaction ID", accessor: "transaction_id" },
+  { id: "2", label: "Transaction ID", accessor: "id" },
   { id: "3", label: "Source", accessor: "source" },
   { id: "4", label: "Description", accessor: "description" },
   { id: "5", label: "Amount", accessor: "amount" },
@@ -44,32 +48,6 @@ export const walletTableFields: Field[] = [
   { id: "7", label: "Date", accessor: "date" },
   { id: "8", label: "Time", accessor: "time" },
 ];
-
-const sampleSources = ["Debit", "Wallet Top-up", "Withdrawal", "Received"];
-
-const sampleDescriptions = [
-  "Paid for Services",
-  "Lodgement Renewal",
-  "Deposit Refund",
-  "Lodgement Fee",
-];
-
-const sampleStatuses = ["Successful", "Pending", "Failed"];
-
-const generateWalletTableData = (numRows: number) =>
-  Array.from({ length: numRows }, (_, index) => ({
-    id: index + 1,
-    transaction_id: `TXN${index + 1}`,
-    transaction_type: sampleSources[index % sampleSources.length],
-    source: sampleSources[index % sampleSources.length],
-    description: sampleDescriptions[index % sampleDescriptions.length],
-    amount: `${Math.random() > 0.5 ? "-" : "+"}₦${
-      Math.floor(Math.random() * 1000) + 10023
-    }`,
-    status: sampleStatuses[index % sampleStatuses.length],
-    date: "12/01/2024",
-    time: "03:30 PM",
-  }));
 
 export const determineTrend = (
   value1: string | number,
@@ -105,8 +83,6 @@ export const determinePercentageDifference = (
     : `${Math.abs(difference).toFixed(2)}`;
 };
 
-export const walletTableData = generateWalletTableData(10);
-
 export interface WalletDataResponse {
   stats: {
     current_day: {
@@ -133,6 +109,42 @@ export interface WalletDataResponse {
     bank: string;
     customer_code: string;
   };
-  transactions: any[]; //confirm with backend
-  beneficiaries: any[]; //confirm with backend
+  transactions: {
+    id: string;
+    amount: string;
+    source: string;
+    description: string;
+    status: string;
+    date: string;
+    time: string;
+    type: "credit" | "debit" | "DVA";
+  }[];
+  beneficiaries: {
+    id: string;
+    beneficiary_name: string;
+    beneficiary_picture: string | null;
+    beneficiary_wallet_id: string;
+    tier_id: null | 1 | 2 | 3 | 4 | 5;
+    is_verified: "0" | "1" | 0 | 1;
+  }[];
 }
+
+export const transformBeneficiaries = (
+  beneficiaries: WalletDataResponse["beneficiaries"]
+): Beneficiary[] => {
+  return beneficiaries.map((b) => {
+    let badgeColor: BadgeIconColors | undefined;
+    if (b.is_verified === 1 || b.is_verified === "1") {
+      badgeColor = "gray"; // Company wallet and verified
+    } else if (b.tier_id) {
+      badgeColor = tierColorMap[b.tier_id]; // User wallet with tier
+    }
+    return {
+      id: b.id,
+      name: b.beneficiary_name,
+      picture: b.beneficiary_picture,
+      wallet_id: b.beneficiary_wallet_id,
+      badge_color: badgeColor,
+    };
+  });
+};

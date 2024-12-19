@@ -1,8 +1,22 @@
 const NUMBER_FORMAT_LOCALE = "en-NG";
 
-export const formatNumber = (price: number | string) => {
+interface FormatNumberOptions {
+  forceTwoDecimals?: boolean;
+}
+
+export const formatNumber = (
+  price: number | string,
+  options: FormatNumberOptions = {}
+) => {
   const priceNumber = typeof price === "string" ? parseFloat(price) : price;
-  return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE).format(priceNumber);
+
+  const formatOptions = options.forceTwoDecimals
+    ? { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+    : {};
+
+  return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE, formatOptions).format(
+    priceNumber
+  );
 };
 
 export const formatCostInputValue = (value: string): string => {
