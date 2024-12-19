@@ -9,7 +9,7 @@ const VehicleRecordPage = () => {
 
   useEffect(() => {
     if (recordId) {
-      router.replace(`//vehicles-record/${recordId}/record`);
+      router.replace(`/vehicles-record/${recordId}/record`);
     }
   }, [recordId, router]);
 

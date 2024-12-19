@@ -20,16 +20,15 @@ import dayjs from "dayjs";
 
 const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
   const [isOpened, setIsOpened] = useState(false);
-  const [branchName, setBranchName ] = useState<string | null>(null);
+  // const [branchName, setBranchName ] = useState<string | null>(null);
 
-
-    const inventoryData: InventoryCardDataProps = {
-    inventory_id: data.id || "",
-    created_at: dayjs(data.created_at).format("DD/MM/YYYY") || "",
-    edited_date: data.edited_date || "",
-    property_name: data.property_name || "",
-    branch_name: data.branch_name || "",
-    account_officer: data.account_officer || "",
+  const inventoryData: InventoryCardDataProps = {
+      inventory_id: data.id || "___",
+      created_at: dayjs(data.created_at).format("MMM DD, YYYY") || "___",
+      edited_date: data.edited_date || "___",
+      property_name: data.property_name || "___",
+      branch_name: data.branch_name || "___",
+      account_officer: data?.account_officer?.name || "____",
   };
 
   // Ensure data is not null or undefined
@@ -66,14 +65,7 @@ const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
             </div>
           </div>
           <KeyValueList
-            referenceObject={{
-              inventory_id: data.id || "",
-              edited_date: "",
-              property_name: "",
-              created_date: "",
-              branch_name: branchName,
-              account_officer: "",
-            }}
+            referenceObject={inventoryData}
             data={inventoryData}
             chunkSize={3}
           />

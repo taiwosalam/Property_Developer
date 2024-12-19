@@ -187,6 +187,8 @@ const RecordPage = () => {
     vehicle_type,
   } = vehicleDetails;
 
+  console.log("color", vehicleDetails)
+
 
     const handleCheckIn = async (event: React.FormEvent) => {
       event.preventDefault();

@@ -44,6 +44,8 @@ export const initialState: UnitPageState = {
   month_published_vacant: 0,
   unpublished_vacant: 0,
   month_unpublished_vacant: 0,
+  month_pending_unit: 0,
+  pending_unit: 0,
   unit: [],
   current_page: 1,
   last_page: 1
@@ -56,6 +58,8 @@ export interface UnitPageState {
   month_published_vacant: number;
   unpublished_vacant:number;
   month_unpublished_vacant: number;
+  month_pending_unit: number;
+  pending_unit: number;
   unit: RentalPropertyCardProps[];
   current_page: number;
   last_page: number;
@@ -76,6 +80,8 @@ export interface UnitApiResponse {
     month_published_vacant: number;
     unpublished_vacant:number;
     month_unpublished_vacant: number;
+    month_pending_unit: number;
+    pending_unit: number;
     unit: {
       current_page: number;
       last_page: number;
@@ -130,6 +136,7 @@ export const transformRentUnitApiResponse = (
         caution_fee: u.caution_fee,
         status: u.status,
         property_id: u.property.id,
+        property_title: u.property.title,
         propertyType: u.property.property_type as "rental" | "facility",
         address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
       };
@@ -142,6 +149,8 @@ export const transformRentUnitApiResponse = (
     return {
       current_page: response.data.unit.current_page,
       last_page: response.data.unit.last_page,
+      pending_unit: response.data.pending_unit,
+      month_pending_unit: response.data.month_pending_unit,
       total_vacant: response.data.total_vacant,
       month_vacant: response.data.month_vacant,
       published_vacant: response.data.published_vacant,
