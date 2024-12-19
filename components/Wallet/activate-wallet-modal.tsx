@@ -83,6 +83,7 @@ const ActivateWalletModal = () => {
             <p className="text-black">
               {`${String(Math.floor(countdown / 60)).padStart(2, "0")}:${String(
                 countdown % 60
+                
               ).padStart(2, "0")}`}
             </p>
           ) : (

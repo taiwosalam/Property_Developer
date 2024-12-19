@@ -109,7 +109,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
     <TableContainer
       component={Paper}
       className={clsx(
-        "relative max-h-[600px] custom-round-scrollbar",
+        "relative max-h-[600px] custom-round-scrollbar pb-1",
         className
       )}
       sx={{ boxShadow: "none" }}
@@ -148,10 +148,14 @@ const CustomTable: React.FC<CustomTableProps> = ({
           </TableHead>
         )}
         <TableBody className="capitalize">
+          {/* {data.length === 0 && (
+            <div className="my-4 text-center">No data to diaplay</div>
+          )} */}
           {data.map((x, index) => (
             <TableRow
               // key={getUniqueKey(x)}
               key={index}
+              ref={x.ref}
               onClick={handleSelect ? (e) => handleSelect(x, e) : undefined}
               className="cursor-pointer"
               sx={{

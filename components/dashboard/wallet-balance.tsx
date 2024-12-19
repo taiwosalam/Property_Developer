@@ -25,10 +25,14 @@ import ActivateWalletModal from "../Wallet/activate-wallet-modal";
 import SendFundsModal from "../Wallet/SendFunds/send-funds-modal";
 import WithdrawFundsModal from "../Wallet/Withdraw/withdraw-funds-modal";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
-import { formatNumber } from "@/utils/number-formatter";
+import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import useFetch from "@/hooks/useFetch";
 import { useWalletStore } from "@/store/wallet-store";
-import { WalletDataResponse } from "@/app/(nav)/wallet/data";
+import {
+  WalletDataResponse,
+  transformBeneficiaries,
+} from "@/app/(nav)/wallet/data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   noHeader,
@@ -65,10 +69,49 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
     },
   ];
 
-  const { data, error } = useFetch<WalletDataResponse>("/wallets/dashboard");
+  const { data, error, refetch } =
+    useFetch<WalletDataResponse>("/wallets/dashboard");
+
+  useRefetchOnEvent("refetch-wallet", () => {
+    refetch({ silent: true });
+  });
 
   useEffect(() => {
     if (data) {
+      const recentTransactions = data.transactions.map((t) => {
+        // Parse the date and time strings into a Date object (assuming UTC from server)
+        const dateTimeString = `${t.date}T${t.time}Z`; // Add 'Z' to indicate UTC
+        const serverDateTime = new Date(dateTimeString);
+
+        // Get the user's time zone (replace with your actual method)
+        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; //Gets from browser
+
+        // Convert to user's local time
+        const localDateTime = new Date(
+          serverDateTime.toLocaleString("en-US", { timeZone: userTimeZone })
+        );
+
+        // Format the date and time as needed
+        const formattedDate = localDateTime.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+        const formattedTime = localDateTime.toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        });
+
+        return {
+          ...t,
+          date: formattedDate,
+          time: formattedTime,
+          amount:
+            currencySymbols.naira +
+            formatNumber(t.amount, { forceTwoDecimals: true }),
+        };
+      });
       setWalletStore("walletPinStatus", data.balance.pin_status);
       setWalletStore("walletId", data.balance.wallet_id);
       setWalletStore("balance", {
@@ -76,8 +119,11 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
         caution_deposit: data.balance.escrow_balance,
         earned_bonus: data.balance.earned_bonus,
       });
-      setWalletStore("beneficiaries", data.beneficiaries);
-      setWalletStore("recentTransactions", data.transactions);
+      setWalletStore(
+        "beneficiaries",
+        transformBeneficiaries(data.beneficiaries)
+      );
+      setWalletStore("recentTransactions", recentTransactions);
       setWalletStore("stats", data.stats);
       setWalletStore("account", {
         account_number: data.account.account_number,
@@ -137,14 +183,23 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
             </button>
           </div>
           <p className="font-medium text-xl text-white">
-            {hideBalance ? "*******" : "₦ " + formatNumber(balance.my_balance)}
+            {hideBalance
+              ? "*******"
+              : `${currencySymbols.naira} ${formatNumber(balance.my_balance, {
+                  forceTwoDecimals: true,
+                })}`}
           </p>
           <div className="text-white text-xs font-medium capitalize flex items-center space-x-1">
             <p className="text-text-white-secondary ">caution deposit</p>
             <span className="text-white ml-2">
               {hideBalance
                 ? "*******"
-                : "₦ " + formatNumber(balance.caution_deposit)}
+                : `${currencySymbols.naira} ${formatNumber(
+                    balance.caution_deposit,
+                    {
+                      forceTwoDecimals: true,
+                    }
+                  )}`}
             </span>
             <CautionIcon />
           </div>

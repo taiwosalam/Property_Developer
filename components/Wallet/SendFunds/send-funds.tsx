@@ -9,59 +9,42 @@ import Button from "@/components/Form/Button/button";
 import { useWalletStore } from "@/store/wallet-store";
 import { getUserInfoFromWalletId } from "../data";
 import type { Beneficiary } from "@/store/wallet-store";
+import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
+import { toast } from "sonner";
 
 interface SendFundsProps
   extends WalletModalDefaultProps<WalletSendFundsOptions> {
-  setRecipient: React.Dispatch<
-    React.SetStateAction<{
-      name: string;
-      picture: string;
-      wallet_id: string;
-    }>
-  >;
+  setRecipient: React.Dispatch<React.SetStateAction<Omit<Beneficiary, "id">>>;
 }
 
 const SendFunds: React.FC<SendFundsProps> = ({ changeStep, setRecipient }) => {
-  // const beneficiaries = useWalletStore((state) => state.beneficiaries);
-  const beneficiaries: Beneficiary[] = [
-    {
-      name: "John Doe",
-      picture: "",
-      wallet_id: "1234567890",
-      badge_color: "red",
-    },
-    {
-      name: "John Geut",
-      picture: "",
-      wallet_id: "338746739",
-      badge_color: "yellow",
-    },
-    {
-      name: "usijh Doe",
-      picture: "",
-      wallet_id: "338746739",
-    },
-    {
-      name: "Josjhn Doe",
-      picture: "",
-      wallet_id: "338746739",
-    },
-  ];
+  const beneficiaries = useWalletStore((state) => state.beneficiaries);
   const [walletId, setWalletId] = useState("");
   const [loading, setLoading] = useState(false);
-  const handleClickBeneficiary = (beneficiary: Beneficiary) => {
+  const handleNext = (beneficiary: Omit<Beneficiary, "id">) => {
     setRecipient(beneficiary);
-    changeStep("send fund to beneficiary");
+    changeStep("recipient");
   };
 
   const handleContinue = async () => {
     if (!walletId) return;
+    if (!/^\d{8}$/.test(walletId.trim())) {
+      toast.error("Invalid wallet Id");
+      return;
+    }
     setLoading(true);
-    const data = await getUserInfoFromWalletId(walletId);
+    const data = await getUserInfoFromWalletId(walletId.trim());
     if (data) {
-      handleClickBeneficiary(data);
-      changeStep("send fund to beneficiary");
-      setWalletId("");
+      handleNext({
+        name: data.name,
+        picture: data.picture,
+        wallet_id: data.encodedId,
+        badge_color: data.isVerified
+          ? "gray"
+          : data.tier
+          ? tierColorMap[data.tier]
+          : undefined,
+      });
     }
     setLoading(false);
   };
@@ -89,7 +72,7 @@ const SendFunds: React.FC<SendFundsProps> = ({ changeStep, setRecipient }) => {
                 key={idx}
                 seeMore
                 {...beneficiary}
-                onClick={() => handleClickBeneficiary(beneficiary)}
+                onClick={() => handleNext(beneficiary)}
               />
             ))}
           </div>

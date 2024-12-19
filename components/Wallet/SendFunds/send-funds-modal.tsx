@@ -8,11 +8,10 @@ import type { WalletSendFundsOptions } from "../types";
 // Imports
 import SendFunds from "./send-funds";
 import WalletModalPreset from "../wallet-modal-preset";
-import SendFundBeneficiary from "./send-fund-beneficiary";
-import type { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
+import SendFundRecipient from "./send-fund-beneficiary";
 import type { Beneficiary } from "@/store/wallet-store";
 
-const emptyBeneficiary: Beneficiary = {
+const emptyBeneficiary: Omit<Beneficiary, "id"> = {
   name: "",
   picture: "",
   wallet_id: "",
@@ -20,18 +19,18 @@ const emptyBeneficiary: Beneficiary = {
 
 const SendFundsModal = () => {
   const [activeStep, setActiveStep] =
-    useState<WalletSendFundsOptions>("send funds");
+    useState<WalletSendFundsOptions>("send funds menu");
   const [recipient, setRecipient] = useState(emptyBeneficiary);
 
   const flow: Record<WalletSendFundsOptions, { content: React.ReactNode }> = {
-    "send funds": {
+    "send funds menu": {
       content: (
         <SendFunds changeStep={setActiveStep} setRecipient={setRecipient} />
       ),
     },
-    "send fund to beneficiary": {
+    recipient: {
       content: (
-        <SendFundBeneficiary
+        <SendFundRecipient
           name={recipient.name}
           picture={recipient.picture}
           wallet_id={recipient.wallet_id}
@@ -45,10 +44,10 @@ const SendFundsModal = () => {
     <WalletModalPreset
       title="Send Funds"
       back={
-        activeStep !== "send funds"
+        activeStep !== "send funds menu"
           ? () => {
               setRecipient(emptyBeneficiary);
-              setActiveStep("send funds");
+              setActiveStep("send funds menu");
             }
           : undefined
       }

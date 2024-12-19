@@ -47,11 +47,13 @@ export const fundWallet = async (amount: number) => {
   try {
     const { data } = await api.post<{
       data: {
-        payment_url: string;
+        payment_url: {
+          url: string;
+        };
         // reference: string;
       };
     }>("wallets/fund", { amount });
-    return data.data.payment_url;
+    return data.data.payment_url.url;
   } catch (error) {
     handleAxiosError(error, "Funding Initiation Failed. Please try again.");
     return null;
@@ -61,39 +63,71 @@ export const fundWallet = async (amount: number) => {
 export const getUserInfoFromWalletId = async (wallet_id: string) => {
   try {
     const { data } = await api.get<{
-      name: string;
-      picture: string;
-      wallet_id: string;
-    }>(`wallet/user/${wallet_id}`); //confirm if this is correct
-    return data;
+      data: {
+        encodedId: string;
+        name: string;
+        picture: string | null;
+        isVerified?: boolean;
+        tier?: 1 | 2 | 3 | 4 | 5;
+      };
+    }>(`wallets/wallet-details?encodedId=${wallet_id}`);
+    return data.data;
   } catch (error) {
     handleAxiosError(error, "Failed to retrieve info. Please try again.");
     return null;
   }
 };
 
-export const addBeneficiary = async (beneficiary_wallet_id: string) => {
+export const addBeneficiary = async (
+  beneficiary_wallet_id: string,
+  my_wallet_id: string,
+  options: { noToast?: boolean } = {}
+) => {
   try {
     const { data } = await api.post("wallets/add-beneficiary", {
       beneficiary_wallet_id,
+      wallet_id: my_wallet_id,
     });
-    toast.success(data?.message || "Beneficiary saved successfully!");
+    if (!options.noToast) {
+      toast.success(data?.message || "Beneficiary added successfully!");
+    }
     return true;
   } catch (error) {
-    handleAxiosError(error, "Failed to add beneficiary. Please try again.");
+    if (!options.noToast) {
+      handleAxiosError(error, "Failed to add beneficiary. Please try again.");
+    }
     return false;
   }
 };
 
-export const transferFunds = async (receiver_encodedId: string, amount: number) => {
+export const removeBeneficiary = async (beneficiaryId: string) => {
   try {
-    const { data } = await api.post("wallets/transfer-funds", {
+    const { data } = await api.delete(`wallets/beneficiary/${beneficiaryId}`);
+    toast.success(data?.message || "Beneficiary removed successfully!");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to remove beneficiary. Please try again.");
+    return false;
+  }
+};
+
+export const transferFunds = async (
+  receiver_encodedId: string,
+  amount: number,
+  description: string,
+  pin: string
+) => {
+  try {
+    const { data } = await api.post("wallets/transfer-fund", {
       receiver_encodedId,
       amount,
+      description,
+      pin,
     });
-    return data;
+    toast.success(data?.message || "Transfer successful");
+    return true;
   } catch (error) {
     handleAxiosError(error, "Failed to transfer funds. Please try again.");
-    return null;
+    return false;
   }
 };
