@@ -7,10 +7,13 @@ import {
   WebIcon,
 } from "@/public/icons/icons";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { useAuthStore } from "@/store/authStore";
 
 const ExportPageHeader = () => {
+  const email = useAuthStore((s) => s.email);
   const logo = usePersonalInfoStore((state) => state.company_logo);
   const state = usePersonalInfoStore((state) => state.company_state);
+  const city = usePersonalInfoStore((state) => state.company_city);
   const lga = usePersonalInfoStore((state) => state.company_local_government);
   const address = usePersonalInfoStore(
     (state) => state.company_head_office_address
@@ -45,7 +48,7 @@ const ExportPageHeader = () => {
             <span className="text-brand-9 -ml-1">
               <LocationIcon size={22} />
             </span>
-            <p className="dark:text-darkText-1">{address || "___"}</p>
+            <p className="dark:text-darkText-1">{`${address}, ${city}, ${lga}, ${state}`}</p>
           </li>
           <li>
             <span className="text-brand-9">
@@ -57,7 +60,7 @@ const ExportPageHeader = () => {
             <span className="text-brand-9">
               <EmailIcon />
             </span>
-            <p className="lowercase dark:text-darkText-1">example@mail.com</p>
+            <p className="lowercase dark:text-darkText-1">{email}</p>
           </li>
           <li>
             <span className="text-brand-9">

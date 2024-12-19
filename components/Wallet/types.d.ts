@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import type { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
+import type { Beneficiary } from "@/store/wallet-store";
 
 export interface WalletAnalyticsProps {
   amount: number;
@@ -21,7 +21,7 @@ export interface FundingCardProps {
   type: "paystack" | "flutterwave" | "bank transfer" | "sterling";
 }
 
-export type WalletSendFundsOptions = "send funds" | "send fund to beneficiary";
+export type WalletSendFundsOptions = "send funds menu" | "recipient";
 
 export type WalletWithdrawFundsOptions = "withdrawal" | "input pin";
 
@@ -45,14 +45,10 @@ export interface WalletModalDefaultProps<
   changeStep: React.Dispatch<React.SetStateAction<T>>;
 }
 
-export interface FundsBeneficiaryProps {
-  picture: string;
-  name: string;
-  wallet_id: string;
+export interface FundsBeneficiaryProps extends Beneficiary {
   onClick?: () => void;
   seeMore?: boolean;
   remove?: () => void;
-  badge_color?: BadgeIconColors;
 }
 
 export type ActivateWalletOptions = "setup-pin" | "confirm-pin" | "enter-otp";

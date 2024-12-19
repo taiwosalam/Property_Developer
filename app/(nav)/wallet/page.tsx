@@ -10,7 +10,6 @@ import { ExclamationMark } from "@/public/icons/icons";
 import clsx from "clsx";
 import { DashboardChart } from "@/components/dashboard/chart";
 import WalletAnalytics from "@/components/Wallet/wallet-analytics";
-import WalletBenefiary from "@/components/Wallet/wallet-benefiary";
 import BeneficiaryList from "@/components/Wallet/beneficiary-list";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -19,27 +18,23 @@ import {
   determineTrend,
   walletChartConfig,
   walletChartData,
-  walletTableData,
   walletTableFields,
 } from "./data";
 import CustomTable from "@/components/Table/table";
-import {
-  RedOutgoingIcon,
-  GreenIncomingIcon,
-  BlueIncomingIcon,
-} from "@/components/Accounting/icons";
-import { BlueBuildingIcon } from "@/public/icons/dashboard-cards/icons";
 import { useWalletStore } from "@/store/wallet-store";
+import FundsBeneficiary from "@/components/Wallet/SendFunds/funds-beneficiary";
+import SendFundBeneficiary from "@/components/Wallet/SendFunds/send-fund-beneficiary";
+import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
+import { getTransactionIcon } from "@/components/Wallet/icons";
 
 const Wallet = () => {
   const walletId = useWalletStore((state) => state.walletId);
-  const beneficiaries = useWalletStore((state) => state.beneficiaries);
+  const recentTransactions = useWalletStore(
+    (state) => state.recentTransactions
+  );
   const stats = useWalletStore((state) => state.stats);
-  const transactions = useWalletStore((state) => state.recentTransactions);
+  const beneficiaries = useWalletStore((state) => state.beneficiaries);
 
-  // FUNDS
-  const totalFunds =
-    stats.current_day.total_funds + stats.before_current_day.total_funds;
   const fundsPercent = determinePercentageDifference(
     stats.before_current_day.total_funds,
     stats.current_day.total_funds
@@ -50,8 +45,6 @@ const Wallet = () => {
   );
 
   // DEBIT
-  const totalDebit =
-    stats.current_day.total_debit + stats.before_current_day.total_debit;
   const debitPercent = determinePercentageDifference(
     stats.before_current_day.total_debit,
     stats.current_day.total_debit
@@ -62,8 +55,6 @@ const Wallet = () => {
   );
 
   // CREDIT
-  const totalCredit =
-    stats.current_day.total_credit + stats.before_current_day.total_credit;
   const creditPercent = determinePercentageDifference(
     stats.before_current_day.total_credit,
     stats.current_day.total_credit
@@ -73,17 +64,18 @@ const Wallet = () => {
     stats.before_current_day.total_credit
   );
 
-  const transformedWalletTableData = walletTableData.map((t) => ({
+  const transformedWalletTableData = recentTransactions.map((t) => ({
     ...t,
     amount: (
       <span
-        className={clsx("text-status-error-primary", {
-          "text-status-success-3":
-            t.transaction_type.toLowerCase() === "wallet top-up" ||
-            t.transaction_type.toLowerCase() === "received",
+        className={clsx({
+          "text-status-success-3": t.type === "credit",
+          "text-status-error-primary": t.type === "debit",
         })}
       >
-        {t.amount}
+        {`${t.type === "credit" ? "+" : t.type === "debit" ? "-" : ""}${
+          t.amount
+        }`}
       </span>
     ),
     icon: (
@@ -91,24 +83,13 @@ const Wallet = () => {
         className={clsx(
           "flex items-center justify-center w-9 h-9 rounded-full",
           {
-            "bg-status-error-1 text-status-error-primary":
-              t.transaction_type.toLowerCase() === "debit" ||
-              t.transaction_type.toLowerCase() === "withdrawal",
+            "bg-status-error-1 text-status-error-primary": t.type === "debit",
             "bg-status-success-1 text-status-success-primary":
-              t.transaction_type.toLowerCase() === "wallet top-up" ||
-              t.transaction_type.toLowerCase() === "received",
+              t.type === "credit" || t.type === "DVA",
           }
         )}
       >
-        {t.transaction_type.toLowerCase() === "debit" ? (
-          <RedOutgoingIcon size={25} />
-        ) : t.transaction_type.toLowerCase() === "wallet top-up" ? (
-          <BlueIncomingIcon color="#01BA4C" size={25} />
-        ) : t.transaction_type.toLowerCase() === "withdrawal" ? (
-          <BlueBuildingIcon />
-        ) : t.transaction_type.toLowerCase() === "received" ? (
-          <GreenIncomingIcon size={25} />
-        ) : null}
+        {getTransactionIcon(t.source, t.type)}
       </div>
     ),
   }));
@@ -126,7 +107,7 @@ const Wallet = () => {
           <div className="flex flex-col lg:flex-row gap-6">
             <WalletAnalytics
               title="funds"
-              amount={Number(totalFunds)}
+              amount={Number(stats.current_day.total_funds)}
               trend={{
                 from: "yesterday",
                 type: fundsUpDown as "up" | "down" | "none",
@@ -135,7 +116,7 @@ const Wallet = () => {
             />
             <WalletAnalytics
               title="debit"
-              amount={Number(totalDebit)}
+              amount={Number(stats.current_day.total_debit)}
               trend={{
                 from: "last week",
                 type: debitUpDown as "up" | "down" | "none",
@@ -144,7 +125,7 @@ const Wallet = () => {
             />
             <WalletAnalytics
               title="credit"
-              amount={Number(totalCredit)}
+              amount={Number(stats.current_day.total_credit)}
               trend={{
                 from: "yesterday",
                 type: creditUpDown as "up" | "down" | "none",
@@ -170,9 +151,9 @@ const Wallet = () => {
               <p className="text-black dark:text-white">Beneficiary</p>
               <Modal>
                 <ModalTrigger className="flex items-center gap-1">
-                  <p className="text-text-label dark:text-darkText-1">
+                  <span className="text-text-label dark:text-darkText-1">
                     See all
-                  </p>
+                  </span>
                   <ChevronRight color="#5A5D61" size={16} />
                 </ModalTrigger>
                 <ModalContent>
@@ -181,9 +162,20 @@ const Wallet = () => {
               </Modal>
             </div>
             <div className="custom-flex-col gap-2 h-full overflow-y-scroll custom-round-scrollbar">
-              {Array.isArray(beneficiaries) && beneficiaries.length > 0 ? (
+              {beneficiaries.length > 0 ? (
                 beneficiaries.map((beneficiary, idx) => (
-                  <WalletBenefiary key={idx} {...beneficiary} />
+                  <Modal key={idx}>
+                    <ModalTrigger>
+                      <FundsBeneficiary {...beneficiary} />
+                    </ModalTrigger>
+                    <ModalContent>
+                      <WalletModalPreset
+                        title={`Send Funds to ${beneficiary.name}`}
+                      >
+                        <SendFundBeneficiary {...beneficiary} />
+                      </WalletModalPreset>
+                    </ModalContent>
+                  </Modal>
                 ))
               ) : (
                 <p className="text-text-label text-center text-sm dark:text-darkText-1">
@@ -203,17 +195,21 @@ const Wallet = () => {
             href="/wallet/transaction-history"
             className="flex items-center gap-1"
           >
-            <p className="text-text-label dark:text-darkText-1">See all</p>
+            <span className="text-text-label dark:text-darkText-1">
+              See all
+            </span>
             <ChevronRight color="#5A5D61" size={16} />
           </Link>
         </div>
         <CustomTable
           fields={walletTableFields}
+          className="max-h-[unset]"
           data={transformedWalletTableData}
           tableBodyCellSx={{
             paddingTop: "12px",
             paddingBottom: "12px",
             fontSize: "16px",
+            whiteSpace: "nowrap",
           }}
           tableHeadCellSx={{
             paddingTop: "14px",

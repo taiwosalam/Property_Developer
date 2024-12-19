@@ -1583,9 +1583,9 @@ export const ExcelIcon = () => {
           y2="15.5538"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#18884F" />
-          <stop offset="0.5" stop-color="#117E43" />
-          <stop offset="1" stop-color="#0B6631" />
+          <stop stopColor="#18884F" />
+          <stop offset="0.5" stopColor="#117E43" />
+          <stop offset="1" stopColor="#0B6631" />
         </linearGradient>
       </defs>
     </svg>

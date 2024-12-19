@@ -2,20 +2,22 @@ import { create } from "zustand";
 import type { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 
 export interface Beneficiary {
+  id: string;
   name: string;
-  picture: string;
+  picture: string | null;
   wallet_id: string;
   badge_color?: BadgeIconColors;
 }
 
-interface Transaction {
-  id: number;
+export interface Transaction {
+  id: string;
   source: string;
   description: string;
   amount: string;
   status: string;
   date: string;
   time: string;
+  type: "credit" | "debit" | "DVA";
 }
 
 interface WalletStore {

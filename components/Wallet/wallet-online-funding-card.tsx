@@ -7,7 +7,7 @@ import { WalletFundsCardsHeading } from "./wallet-components";
 import { fundWallet } from "./data";
 
 const WalletOnlineFundingCard = () => {
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState(0);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleProceed = async () => {

@@ -31,7 +31,9 @@ const FundsBeneficiary: React.FC<FundsBeneficiaryProps> = ({
         role={onClick ? "button" : undefined}
       >
         <div className="flex items-center gap-2">
-          <Picture src={picture} alt="profile picture" size={33} rounded />
+          {picture && (
+            <Picture src={picture} alt="profile picture" size={33} rounded />
+          )}
           <div className="custom-flex-col font-medium">
             <div className="flex items-center">
               <p className="text-[#010A23] dark:text-white text-sm capitalize">
@@ -46,7 +48,7 @@ const FundsBeneficiary: React.FC<FundsBeneficiaryProps> = ({
         </div>
         <div className="flex items-center">
           {remove && (
-            <Button size="xs_medium" className="py-1 px-2">
+            <Button size="xs_medium" className="py-1 px-2" onClick={remove}>
               remove
             </Button>
           )}
