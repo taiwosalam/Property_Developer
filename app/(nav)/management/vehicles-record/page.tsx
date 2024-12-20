@@ -141,6 +141,7 @@ const VehilceRecords = () => {
 
   console.log("Page data", pageData)
 
+
   if (loading)
     return (
       <CustomLoader layout="page" pageTitle="Vehicle Records" statsCardCount={3} />
@@ -230,7 +231,7 @@ const VehilceRecords = () => {
               {silentLoading ? (
                 <CardsLoading />
               ) : (
-                pageData.data.map((p) => <VehicleCard data={p} total={total_vehicle_records} />)
+                pageData.data.map((p, index) => <VehicleCard key={index} data={p} total={total_vehicle_records} />)
               )}
             </AutoResizingGrid>
 
