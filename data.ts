@@ -410,10 +410,15 @@ export const employmentTypeOptions = [
 ];
 
 export const visitorCategories = [
-  "Occupant",
+  "Agent",
   "Guest",
-  "Visitor",
+  "Manager",
+  "Occupant",
+  "Staff",
+  "Supervisor",
   "Tenants",
+  "Visitor",
+  "Workers",
   "Others",
 ];
 

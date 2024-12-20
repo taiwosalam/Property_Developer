@@ -109,10 +109,11 @@ const VehiclesRecordPage = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<VehicleRecordApiResponse>("vehicle-record", config);
+  } = useFetch<VehicleRecordApiResponse>(`vehicle-records/properties/${id}/details`, config);
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
   useEffect(() => {
+    console.log("api data", apiData)
     if (apiData) {
       setState((x) => ({
         ...x,
@@ -123,7 +124,6 @@ const VehiclesRecordPage = () => {
 
   const handleActionClick = (record: DataItem) => {
     const vehicleRecord = record as VehicleRecord;
-    // console.log("vehicle record passed -", vehicleRecord);
     const updatedRecord = {
       ...data,
       latest_check_in: vehicleRecord.latest_check_in,
@@ -140,8 +140,6 @@ const VehiclesRecordPage = () => {
     setSelectedRecord(updatedRecord);
     setModalOpen(true);
   };
-
-  console.log("data", data)
 
   if (loading)
     return (
