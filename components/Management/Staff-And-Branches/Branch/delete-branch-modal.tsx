@@ -3,27 +3,26 @@ import useStep from "@/hooks/useStep";
 import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
-import { useParams, useRouter } from "next/navigation";
-// import { deleteBranch } from "@/app/(nav)/management/staff-branch/data";
-import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { deleteBranch } from "@/app/(nav)/management/staff-branch/[branchId]/edit-branch/data";
 
-const DeleteBranchModal = () => {
-  const branchId = useParams().branchId as string;
-  const { activeStep, changeStep } = useStep(2);
+const DeleteBranchModal: React.FC<{
+  branchId: string;
+}> = ({ branchId }) => {
   const router = useRouter();
+  const { activeStep, changeStep } = useStep(2);
+  const [reqLoading, setReqLoading] = useState(false);
 
   const handleConfirmDelete = async () => {
-    // await deleteBranch(branchId);
-    // if (success) {
-    //   // If the delete operation was successful, show success toast
-    //   toast.success(res?.message || "Branch deleted successfully");
-    //   // Proceed to the next step in your process
-    //   changeStep("next");
-    //   router.push("/management/staff-branch");
-    // } else {
-    //   // If the delete operation failed, show an error toast
-    //   toast.error(message || "Failed to delete branch");
-    // }
+    setReqLoading(true);
+    const status = await deleteBranch(branchId);
+    if (status) {
+      changeStep("next");
+      setTimeout(() => {
+        router.push("/management/staff-branch");
+      }, 1500);
+    }
   };
 
   return activeStep === 1 ? (

@@ -23,7 +23,6 @@ export interface notificationCardProps {
   className?: string;
   branchId?: string;
   notifications: {
-    avatarFallback?: string;
     avatarSrc: string;
     name: string;
     message?: string;

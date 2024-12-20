@@ -17,7 +17,7 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import useFetch from "@/hooks/useFetch";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import type { SingleBranchResponseType } from "../types";
-import { transformSingleBranchAPIResponse } from "../data";
+import { transformSingleBranchAPIResponseToEditBranchFormDetails } from "../data";
 
 const EditBranch = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -29,7 +29,9 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
     `branch/${branchId}`
   );
 
-  const branchData = data ? transformSingleBranchAPIResponse(data) : null;
+  const branchData = data
+    ? transformSingleBranchAPIResponseToEditBranchFormDetails(data)
+    : null;
 
   if (loading) return <PageCircleLoader />;
 
@@ -41,36 +43,40 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
         <div className="flex gap-8 flex-col md:flex-row justify-between flex-wrap">
           <BackButton>Edit Branch</BackButton>
           <div className="flex gap-3">
-            {/* <Modal>
-              <ModalTrigger asChild>
-                <Button
-                  type="button"
-                  size="sm_medium"
-                  className="py-2 px-8 border-status-caution-2 text-status-error-2"
-                  variant="blank"
-                >
-                  Lock Branch !
-                </Button>
-              </ModalTrigger>
-              <ModalContent>
-                <LockBranchModal />
-              </ModalContent>
-            </Modal> */}
-            <Modal>
-              <ModalTrigger asChild>
-                <Button
-                  type="button"
-                  variant="blank"
-                  size="sm_medium"
-                  className="py-2 px-8 border-status-success-2 text-brand-9"
-                >
-                  Un-Lock Branch !
-                </Button>
-              </ModalTrigger>
-              <ModalContent>
-                <UnLockBranchModal />
-              </ModalContent>
-            </Modal>
+            {branchData &&
+              (branchData?.isActive ? (
+                <Modal>
+                  <ModalTrigger asChild>
+                    <Button
+                      type="button"
+                      size="sm_medium"
+                      className="py-2 px-8 border-status-caution-2 text-status-error-2"
+                      variant="blank"
+                    >
+                      Lock Branch !
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <LockBranchModal branchId={branchId} />
+                  </ModalContent>
+                </Modal>
+              ) : (
+                <Modal>
+                  <ModalTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="blank"
+                      size="sm_medium"
+                      className="py-2 px-8 border-status-success-2 text-brand-9"
+                    >
+                      Un-Lock Branch !
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <UnLockBranchModal branchId={branchId} />
+                  </ModalContent>
+                </Modal>
+              ))}
             <Modal>
               <ModalTrigger asChild>
                 <Button
@@ -83,7 +89,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
                 </Button>
               </ModalTrigger>
               <ModalContent>
-                <DeleteBranchModal />
+                <DeleteBranchModal branchId={branchId} />
               </ModalContent>
             </Modal>
             <Button

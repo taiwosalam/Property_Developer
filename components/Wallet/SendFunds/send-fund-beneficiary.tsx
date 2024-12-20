@@ -12,9 +12,10 @@ import { useWalletStore, type Beneficiary } from "@/store/wallet-store";
 import { AuthPinField } from "@/components/Auth/auth-components";
 import { useModal } from "@/components/Modal/modal";
 import { addBeneficiary, transferFunds } from "@/components/Wallet/data";
+import { empty } from "@/app/config";
 import { toast } from "sonner";
 
-const SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
+const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
   picture,
   name,
   wallet_id,
@@ -69,16 +70,14 @@ const SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
       {activeStep === "send funds" ? (
         <div className="custom-flex-col gap-4">
           <div className="flex flex-col items-center gap-2">
-            {picture && (
-              <div className="flex justify-center">
-                <Picture
-                  src={picture}
-                  alt="profile picture"
-                  size={60}
-                  rounded
-                />
-              </div>
-            )}
+            <div className="flex justify-center">
+              <Picture
+                src={picture || empty}
+                alt="profile picture"
+                size={60}
+                rounded
+              />
+            </div>
             <div className="flex flex-col items-center">
               <div className="flex items-center">
                 <p className="text-[#010A23] dark:text-white text-base font-medium capitalize">

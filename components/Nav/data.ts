@@ -126,7 +126,7 @@ export interface ProfileResponse {
       phone_numbers: string[];
       date_of_registration: string;
       membership_number: string;
-      is_verified: boolean | number;
+      is_verified: boolean;
       industry: string;
       cac_registration_number: string;
     };

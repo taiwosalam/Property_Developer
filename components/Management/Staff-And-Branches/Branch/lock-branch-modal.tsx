@@ -6,12 +6,18 @@ import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import { AuthPinField } from "@/components/Auth/auth-components";
-import { ReloadIcon, XIcon } from "@/public/icons/icons";
+import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
+import { ReloadIcon } from "@/public/icons/icons";
+import obfuscateEmail from "@/utils/obfuscateEmail";
 
-const LockBranchModal = () => {
+const LockBranchModal: React.FC<{
+  branchId: string;
+}> = ({ branchId }) => {
   const { activeStep, changeStep } = useStep(3);
   const [canResend, setCanResend] = useState(false);
+  const [resendReqLoading, setResendReqLoading] = useState(false);
   const [countdown, setCountdown] = useState(40);
+  const [otp, setOtp] = useState("");
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -29,13 +35,18 @@ const LockBranchModal = () => {
 
   const handleResendCode = async () => {
     if (canResend) {
-      setCountdown(40);
-      setCanResend(false);
+      setResendReqLoading(true);
+      // const status = await getEmailVerificationOTP(email);
+      if (true) {
+        setCountdown(40);
+        setCanResend(false);
+      }
+      setResendReqLoading(false);
     }
   };
 
   return activeStep === 1 ? (
-    <ModalPreset type="warning" className="md:max-w-[440px]">
+    <ModalPreset type="warning" className="max-w-[360px]">
       <p className="text-text-disabled text-sm font-normal">
         Are you sure you want to lock this branch? By proceeding with this
         action, all branch staff will be unable to log in, and access to the
@@ -55,58 +66,48 @@ const LockBranchModal = () => {
       </div>
     </ModalPreset>
   ) : activeStep === 2 ? (
-    <div className="w-full custom-flex-col gap-4 rounded-[40px] bg-white dark:bg-black overflow-hidden text-center max-w-[400px] relative">
-      <ModalTrigger
-        close
-        className="absolute top-7 -right-[340px] w-fit cursor-pointer"
-      >
-        <XIcon />
-      </ModalTrigger>
-      <div
-        className="bg-[#EFF6FF] w-full py-7"
-        style={{ boxShadow: "0px 2px 10px 0px #00000005" }}
-      >
-        <p className="text-text-secondary font-medium text-[16px]">Input Pin</p>
-      </div>
-      <div className="p-6">
-        <p className="text-text-label text-xs font-normal mb-10">
-          An OTP code has been sent to your email <br />
-          <span className="text-support-1">(************oke@gmail.com)</span>
-          <br /> for confirmation.
-        </p>
-        <div className="mb-[72px]">
-          <AuthPinField
-            length={4}
-            onChange={
-              // Handle changes in the input values
-              () => {}
-            }
-          />
-        </div>
-        <button
-          type="button"
-          onClick={handleResendCode}
-          className="flex gap-1 custom-secondary-color text-base font-medium mb-10"
-          disabled={!canResend}
-        >
-          <span className="custom-primary-color">
-            <ReloadIcon />
+    <WalletModalPreset
+      style={{ width: "80%", maxWidth: "390px" }}
+      title="Input Pin"
+    >
+      <div className="space-y-7 text-text-secondary dark:text-white text-sm font-medium text-center">
+        <p>
+          An OTP code has been sent to your email{" "}
+          <span className="text-supporting-1">
+            ({obfuscateEmail("email@mail.com")})
           </span>
-          <p>Resend code</p>
-          {!canResend && <p>({countdown}s)</p>}
-        </button>
-        <div className="w-full px-6 mb-4">
-          <Button
-            className="w-full"
-            onClick={() => {
-              changeStep("next");
-            }}
+          for confirmation
+        </p>
+        {!canResend ? (
+          <p className="text-black">
+            {`${String(Math.floor(countdown / 60)).padStart(2, "0")}:${String(
+              countdown % 60
+            ).padStart(2, "0")}`}
+          </p>
+        ) : (
+          <button
+            type="button"
+            onClick={handleResendCode}
+            className="mx-auto flex gap-1 text-brand-9 text-base font-medium"
+            disabled={resendReqLoading}
           >
-            Proceed
-          </Button>
-        </div>
+            <ReloadIcon />
+            Resend code
+          </button>
+        )}
+        <AuthPinField length={4} onChange={setOtp} />
       </div>
-    </div>
+
+      <Button
+        size="sm_medium"
+        className="mt-[80px] w-full py-2 px-8"
+        // disabled={requestLoading}
+        // onClick={handleVerifyEmail}
+      >
+        {/* {requestLoading ? "Please wait..." : "Proceed"} */}
+        Proceed
+      </Button>
+    </WalletModalPreset>
   ) : activeStep === 3 ? (
     <ModalPreset type="success">
       <p className="text-text-disabled text-sm font-normal">
@@ -115,7 +116,7 @@ const LockBranchModal = () => {
       </p>
       <div className="flex justify-center">
         <ModalTrigger close asChild>
-          <Button onClick={() => {}}>ok</Button>
+          <Button>ok</Button>
         </ModalTrigger>
       </div>
     </ModalPreset>

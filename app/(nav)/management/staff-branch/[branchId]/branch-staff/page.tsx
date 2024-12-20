@@ -14,27 +14,34 @@ import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import type { DataItem } from "@/components/Table/types";
 import CustomTable from "@/components/Table/table";
-import { branchStaffTableFields } from "./data";
+import { branchStaffTableFields, transformStaffListResponse } from "./data";
 import useView from "@/hooks/useView";
 import useFetch from "@/hooks/useFetch";
 import { AxiosRequestConfig } from "axios";
-import type { BranchStaffRequestParams, BranchStaffPageState } from "./types";
+import type {
+  BranchStaffRequestParams,
+  BranchStaffPageState,
+  StaffListResponse,
+} from "./types";
 import type { FilterResult } from "@/components/Management/Landlord/types";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import TableLoading from "@/components/Loader/TableLoading";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import dayjs from "dayjs";
 
 const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
   const router = useRouter();
+  const companyVerified = usePersonalInfoStore((state) => state.is_verified);
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
       page: 1,
-      search: "",
     } as BranchStaffRequestParams,
   });
 
@@ -75,9 +82,26 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
     });
   };
 
-  const handleFilterApply = (filters: any) => {
-    console.log("Filter applied:", filters);
-    // Add filtering logic here for branches
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate } = filters;
+    const position = menuOptions["Position"]?.[0];
+    const queryParams: BranchStaffRequestParams = {
+      page: 1,
+      search: "",
+    };
+    if (position) {
+      queryParams.staff_positiion = position;
+    }
+    // if (startDate) {
+    //   queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
+    // }
+    // if (endDate) {
+    //   queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
+    // }
+    setConfig({
+      params: queryParams,
+    });
   };
 
   const {
@@ -86,20 +110,23 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
     loading,
     isNetworkError,
     silentLoading,
-  } = useFetch<any>(`staffs/${branchId}`, config);
+    refetch,
+  } = useFetch<StaffListResponse>(`staffs?branch_id=${branchId}`, config);
 
-  // useEffect(() => {
-  //   if (apiData) {
-  //     setState((x) => ({
-  //       ...x,
-  //       ...transformBranchStaffApiResponse(apiData),
-  //     }));
-  //   }
-  // }, [apiData]);
+  useEffect(() => {
+    if (apiData) {
+      setState((x) => ({
+        ...x,
+        ...transformStaffListResponse(apiData),
+      }));
+    }
+  }, [apiData]);
 
   useEffect(() => {
     setView(storedView);
   }, [storedView]);
+
+  useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
 
   const transformedTableData = state?.staffs.map((item) => ({
     ...item,
@@ -158,7 +185,7 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
             <ModalContent>
               <CreateStaffModal
                 branchId={branchId as string}
-                hasManager={false}
+                hasManager={true}
               />
             </ModalContent>
           </Modal>
@@ -168,9 +195,16 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
         pageTitle="Branch Staff"
         searchInputPlaceholder="Search within Branch"
         azFilter
-        filterOptions={[
-          { label: "Account Officer", value: "account_officer" },
-          { label: "Regular Staff", value: "regular_staff" },
+        filterOptionsMenu={[
+          {
+            label: "Position",
+            radio: true,
+            value: [
+              { label: "Account Officer", value: "account_officer" },
+              { label: "Staff", value: "staff" },
+              { label: "Branch Manager", value: "manager" },
+            ],
+          },
         ]}
         handleFilterApply={handleFilterApply}
         gridView={view === "grid"}
@@ -183,7 +217,7 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
       <section>
         {loading || silentLoading ? (
           view === "grid" ? (
-            <AutoResizingGrid minWidth={284} gap={16}>
+            <AutoResizingGrid minWidth={284} gap={16} key="loading">
               <CardsLoading />
             </AutoResizingGrid>
           ) : (
@@ -198,7 +232,7 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
               modalContent={
                 <CreateStaffModal
                   branchId={branchId as string}
-                  hasManager={false}
+                  hasManager={true}
                 />
               }
               title="The branch staff is empty"
@@ -211,19 +245,19 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
             />
           )
         ) : view === "grid" ? (
-          <AutoResizingGrid minWidth={284} gap={16}>
+          <AutoResizingGrid minWidth={284} gap={16} key="data">
             {state?.staffs.map((staff) => (
               <Link
                 key={staff.id}
                 href={`/management/staff-branch/${branchId}/branch-staff/${staff.id}`}
               >
                 <UserCard
-                  badge_color="gray"
+                  badge_color={companyVerified ? "gray" : undefined}
                   email={staff.email}
                   name={staff.name}
-                  phone_number={staff.phone_number || ""}
+                  phone_number={staff.phone_number}
                   user_tag={staff.position}
-                  picture_url={staff.picture || ""}
+                  picture_url={staff.picture}
                 />
               </Link>
             ))}
