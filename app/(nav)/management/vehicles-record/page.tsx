@@ -6,28 +6,36 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import { ModalContent, ModalTrigger, Modal } from "@/components/Modal/modal";
 import Button from "@/components/Form/Button/button";
 import Pagination from "@/components/Pagination/pagination";
-import PropertyListItem from "@/components/Management/Properties/property-list-item";
-import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import CardsLoading from "@/components/Loader/CardsLoading";
-import TableLoading from "@/components/Loader/TableLoading";
 import useView from "@/hooks/useView";
 import useFetch from "@/hooks/useFetch";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import { FilterResult } from "@/components/Management/Landlord/types";
-import type { AllBranchesResponse } from "@/components/Management/Properties/types";
 import VehicleCard from "@/components/Management/Properties/vehicle-card";
-import BackButton from "@/components/BackButton/back-button";
+import { initialPageState, VehicleRecordAPIRes, VehicleRecordParams } from "./type";
+import { initialData, transformVehicleRecords } from "./data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
-const Properties = () => {
+
+const VehilceRecords = () => {
   const storedView = useView();
-  const [view, setView] = useState<string | null>(storedView);
-  // const [pageData, setPageData] = useState<PropertiesPageState>(initialState);
+  const [pageData, setPageData] = useState<initialPageState>(initialData);
+
+  const {
+    properties_this_month,
+    total_properties,
+    total_vehicle_records,
+    vehicle_records_this_month,
+    current_page,
+    last_page
+  } = pageData.stats;
+
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
@@ -35,41 +43,7 @@ const Properties = () => {
     endDate: null,
   });
 
-  const vehicle_data = {
-    id: 12133,
-    images: [],
-    property_name: 'Property Name',
-    total_units: 20,
-    address: '12, kola sanusi street, mabolaje oyo',
-    total_unit_pictures: 10,
-    hasVideo: true,
-    property_type: 'rental',
-    total_returns: 20000,
-    total_income: 40000,
-    branch: 'Branch Name',
-    accountOfficer: "Officer muba",
-    last_updated: '27/11/2023',
-    mobile_tenants: 2,
-    web_tenants: 2,
-    owing_units: 3,
-    available_units: 34,
-    currency: 'naira',
-    isClickable: 0,
-    viewOnly: 0,
-  }
-  // const {
-  //   total_pages,
-  //   current_page,
-  //   total_properties,
-  //   new_properties_count,
-  //   total_rental_properties,
-  //   new_rental_properties_count,
-  //   total_facility_properties,
-  //   new_facility_properties_count,
-  //   properties,
-  // } = pageData;
-
-  const isFilterApplied = useCallback(() => {
+  const isFilterApplied = () => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
     return (
       options.length > 0 ||
@@ -77,183 +51,166 @@ const Properties = () => {
       startDate !== null ||
       endDate !== null
     );
-  }, [appliedFilters]);
-
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<"asc" | "desc" | "">("");
-
-  const endpoint =
-    isFilterApplied() || search || sort ? "/property/filter" : "/property/list";
-  // const config: AxiosRequestConfig = useMemo(() => {
-  //   return {
-  //     params: {
-  //       page,
-  //       date_from: appliedFilters.startDate
-  //         ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
-  //         : undefined,
-  //       date_to: appliedFilters.endDate
-  //         ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
-  //         : undefined,
-  //       search: search,
-  //       branch_id: appliedFilters.menuOptions["Branch"] || [],
-  //       state: appliedFilters.menuOptions["State"] || [],
-  //       ...(appliedFilters.menuOptions["Property Type"]?.[0] &&
-  //       appliedFilters.menuOptions["Property Type"]?.[0] !== "all"
-  //         ? { property_type: appliedFilters.menuOptions["Property Type"]?.[0] }
-  //         : {}),
-  //       sort_by: sort,
-  //     } as PropertiesFilterParams,
-  //   };
-  // }, [appliedFilters, search, sort, page]);
-
-  const handlePageChange = (page: number) => {
-    setPage(page);
   };
+
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+      sort: "asc",
+    } as VehicleRecordParams,
+  });
 
   const handleSort = (order: "asc" | "desc") => {
-    setSort(order);
+    setConfig({
+      params: { ...config.params, sort: order },
+    });
   };
 
-  const handleSearch = (query: string) => {
-    setSearch(query);
+
+  const handlePageChange = (page: number) => {
+    setConfig({
+      params: { ...config.params, page },
+    });
+  };
+
+  const handleSearch = async (query: string) => {
+    // console.log("searching...")
+    setConfig({
+      params: { ...config.params, search: query },
+    });
   };
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
-    setPage(1);
+    const { menuOptions, startDate, endDate, options } = filters;
+    const statesArray = menuOptions["State"] || [];
+
+    const queryParams: VehicleRecordParams = {
+      page: 1,
+      sort: "asc",
+      search: "",
+    };
+    options.forEach(option => {
+      if (option === 'all') {
+        queryParams.all = true;
+      } else if (option === 'trending') {
+        queryParams.trending = true;
+      } else if (option === 'new') {
+        queryParams.recent = true;
+      }
+    });
+
+    if (statesArray.length > 0) {
+      queryParams.state = statesArray.join(",");
+    }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
+    }
+    setConfig({
+      params: queryParams,
+    });
+
+    console.log({ menuOptions, startDate, endDate, options })
   };
 
+
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<VehicleRecordAPIRes>("/vehicle-records", config);
+
+  useRefetchOnEvent("refetchThreads", () => refetch({ silent: true }));
+
   useEffect(() => {
-    setView(storedView);
-  }, [storedView]);
+    if (apiData) {
+      setPageData((x: any) => ({
+        ...x,
+        ...transformVehicleRecords(apiData),
+      }));
+    }
+  }, [apiData]);
 
-  const { data: branchesData } =
-    useFetch<AllBranchesResponse>("/branches/select");
+  console.log("Page data", pageData)
 
-  const branchOptions =
-    branchesData?.data.map((branch) => ({
-      label: branch.branch_name,
-      value: branch.id,
-    })) || [];
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Vehicle Records" statsCardCount={3} />
+    );
 
-  // const {
-  //   data: apiData,
-  //   loading,
-  //   silentLoading,
-  //   isNetworkError,
-  //   error,
-  // } = useFetch<PropertiesApiResponse | PropertyFilterResponse>(
-  //   endpoint,
-  //   config
-  // );
+  if (isNetworkError) return <NetworkError />;
 
-  // useEffect(() => {
-  //   if (apiData) {
-  //     setPageData((x) => ({
-  //       ...x,
-  //       ...transformPropertiesApiResponse(apiData),
-  //     }));
-  //   }
-  // }, [apiData]);
-
-  // if (loading)
-  //   return (
-  //     <CustomLoader layout="page" pageTitle="Properties" statsCardCount={3} />
-  //   );
-
-  // if (isNetworkError) return <NetworkError />;
-
-  // if (error)
-  //   return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-9">
-      {/* Header with statistics cards */}
       <div className="page-header-container">
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Properties"
-            newData={23}
-            total={657}
+            newData={properties_this_month}
+            total={total_properties}
             colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Rental Vehicle Records"
-            newData={43}
-            total={657}
+            newData={vehicle_records_this_month}
+            total={total_vehicle_records}
             colorScheme={2}
           />
         </div>
       </div>
 
       {/* Page Title with search */}
-        <FilterBar
-          pageTitle="vehicles record"
-          hasGridListToggle={false}
-          aboutPageModalData={{
-            title: "vehicles record",
-            description:
-              "This page contains a list of vehicles record on the platform.",
-          }}
-          searchInputPlaceholder="Search for vehicles record"
-          handleFilterApply={handleFilterApply}
-          isDateTrue
-          filterOptionsMenu={[
-            // ...propertyFilterOptionsMenu,
-            ...(branchOptions.length > 0
-              ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
-                },
-              ]
-              : []),
-          ]}
-          onSort={handleSort}
-          handleSearch={handleSearch}
-          appliedFilters={appliedFilters}
-        />
+      <FilterBar
+        pageTitle="vehicles record"
+        hasGridListToggle={false}
+        aboutPageModalData={{
+          title: "vehicles record",
+          description:
+            "This page contains a list of vehicles record on the platform.",
+        }}
+        searchInputPlaceholder="Search for vehicles record"
+        handleFilterApply={handleFilterApply}
+        isDateTrue
+        onSort={handleSort}
+        handleSearch={handleSearch}
+        appliedFilters={appliedFilters}
+      />
 
-      <div>
-        <AutoResizingGrid minWidth={284}>
-          <VehicleCard data={vehicle_data} />
-          <VehicleCard data={vehicle_data} />
-          <VehicleCard data={vehicle_data} />
-          <VehicleCard data={vehicle_data} />
-          <VehicleCard data={vehicle_data} />
-          <VehicleCard data={vehicle_data} />
-        </AutoResizingGrid>
-        <Pagination
-          totalPages={10}
-          currentPage={1}
-          onPageChange={handlePageChange}
-        />
-      </div>
-
-      {/* <section className="capitalize">
-        {properties.length === 0 && !silentLoading ? (
-          isFilterApplied() || search ? (
+      <section className="capitalize">
+        {pageData.data.length === 0 && !silentLoading ? (
+          isFilterApplied() ? (
             "No Search/Filter Found"
           ) : (
             <EmptyList
-              buttonText="+ Add Property"
-              modalContent={<AddPropertyModal />}
-              title="You have not creared any properties yet"
+              buttonText="+ Add Vehicle"
+              title="You have not creared any vehicles yet"
               body={
                 <p>
-                  You can create a property by clicking on the &quot;Add
-                  Property&quot; button. You can create two types of properties:
-                  rental and facility properties. Rental properties are mainly
+                  You can create a vehicle by clicking on the &quot;Add
+                  Vehicle&quot; button. You can create two types of vehicles:
+                  rental and facility vehicles. Rental vehicles are mainly
                   tailored for managing properties for rent, including landlord
                   and tenant management processes. Facility properties are
                   designed for managing occupants in gated estates, overseeing
                   their due payments, visitor access, and vehicle records.{" "}
+
                   <br />
                   <br />
                   Once a property is added to this page, this guide will
                   disappear. To learn more about this page in the future, you
                   can click on this icon{" "}
+
                   <span className="inline-block text-brand-10 align-text-top">
                     <ExclamationMark />
                   </span>{" "}
@@ -269,37 +226,24 @@ const Properties = () => {
           )
         ) : (
           <>
-            {view === "grid" ? (
-              <AutoResizingGrid minWidth={284}>
-                {silentLoading ? (
-                  <CardsLoading />
-                ) : (
-                  properties.map((p) => <PropertyCard key={p.id} {...p} />)
-                )}
-              </AutoResizingGrid>
-            ) : (
-              <>
-                {silentLoading ? (
-                  <TableLoading />
-                ) : (
-                  <div className="space-y-4">
-                    {properties.map((p) => (
-                      <PropertyListItem key={p.id} {...p} />
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
+            <AutoResizingGrid minWidth={284}>
+              {silentLoading ? (
+                <CardsLoading />
+              ) : (
+                pageData.data.map((p) => <VehicleCard data={p} total={total_vehicle_records} />)
+              )}
+            </AutoResizingGrid>
+
             <Pagination
-              totalPages={total_pages}
+              totalPages={last_page}
               currentPage={current_page}
               onPageChange={handlePageChange}
             />
           </>
         )}
-      </section> */}
+      </section>
     </div>
   );
 };
 
-export default Properties;
+export default VehilceRecords;

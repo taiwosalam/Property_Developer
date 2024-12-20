@@ -317,7 +317,7 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
         ?.length > 0 && (
           <Select
             label="Color"
-            id="vehicle_color"
+            id="color"
             options={
               vehicleData[vehicleRecord.type as keyof typeof vehicleData]
                 ?.colors || []

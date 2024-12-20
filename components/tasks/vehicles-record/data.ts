@@ -37,7 +37,7 @@ export const createVehicleRecord = async (data: any) => {
 
 export const updateVehicleDetails = async (data: any, id: number) => {
   try {
-    const response = await api.post(`/vehicle-record/${id}`, data);
+    const response = await api.post(`/vehicle-records/${id}`, data);
     return response.status === 200 || response.status === 201;
   } catch (error) {
     console.error(error);

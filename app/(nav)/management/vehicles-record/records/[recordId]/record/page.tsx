@@ -120,7 +120,7 @@ const RecordPage = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<SingleVehicleRecordApiResponse>(`vehicle-record/${recordId}/show-details`, config);
+  } = useFetch<SingleVehicleRecordApiResponse>(`vehicle-records/${recordId}/show-details`, config);
 
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
