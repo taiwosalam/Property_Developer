@@ -5,7 +5,7 @@ interface Staff {
   position: string;
   phone_number?: string;
   gender?: string;
-  picture: string;
+  picture: string | null;
 }
 
 export interface BranchStaffPageState {
@@ -20,5 +20,30 @@ export interface BranchStaffRequestParams {
   page?: number;
   search?: string;
   sort_order?: "asc" | "desc";
-  staff_type?: "account_officer" | "regular_staff";
+  staff_positiion?: string; // "account_officer" | "staff" | "manager";
+}
+
+export interface StaffListResponse {
+  data: {
+    staff: {
+      id: string;
+      name: string;
+      email: string;
+      phone: string;
+      picture: string | null;
+      title: string | null;
+    }[];
+    branch: {
+      id: string;
+      name: string;
+      address: string;
+      // lga
+      // city
+      // state
+    };
+    pagination: {
+      current_page: number;
+      total_pages: number;
+    };
+  };
 }

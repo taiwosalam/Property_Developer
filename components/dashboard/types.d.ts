@@ -1,6 +1,7 @@
 // Imports
 
 import React from "react";
+import { type BadgeIconColors } from "../BadgeIcon/badge-icon";
 
 // Exports
 export interface cardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -16,21 +17,19 @@ export interface walletBalanceCardProps
   noHeader?: boolean;
 }
 
-export interface notificationCardProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface notificationCardProps {
   seeAllLink?: string;
-  sectionHeader: string;
+  sectionHeader: "Staffs" | "Recent Messages" | "Complaints";
   className?: string;
   branchId?: string;
   notifications: {
-    avatarFallback: string;
     avatarSrc: string;
-    name?: string;
-    full_name?: string;
-    message: string;
-    time: string;
+    name: string;
+    message?: string;
+    time?: string;
     title?: string;
     position?: string;
     staff_ID?: string;
+    badgeColor?: BadgeIconColors;
   }[];
 }

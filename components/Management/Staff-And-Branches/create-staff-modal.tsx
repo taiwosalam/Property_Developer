@@ -23,7 +23,10 @@ import { titles, genderTypes, industryOptions } from "@/data";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
 
-const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
+const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
+  branchId,
+  hasManager,
+}) => {
   const { setIsOpen } = useModal();
   const [isLoading, setIsLoading] = useState(false);
   const [formStep, setFormStep] = useState(1);
@@ -63,6 +66,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
     const status = await addStaff(data, branchId);
     if (status) {
       setIsOpen(false);
+      window.dispatchEvent(new Event("refetch_staff"));
     } else {
       setIsLoading(false);
     }
@@ -116,7 +120,9 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ branchId }) => {
               label="position"
               inputContainerClassName="bg-neutral-2"
               options={[
-                { value: "manager", label: "branch manager" },
+                ...(hasManager
+                  ? []
+                  : [{ value: "manager", label: "branch manager" }]),
                 "account officer",
                 "staff",
               ]}

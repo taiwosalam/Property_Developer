@@ -221,8 +221,16 @@ const StaffAndBranches = () => {
         onSort={handleSort}
       />
 
-      <section className="capitalize">
-        {branches.length === 0 && !silentLoading ? (
+      <section>
+        {loading || silentLoading ? (
+          view === "grid" ? (
+            <AutoResizingGrid minWidth={284} gap={16} key="loading">
+              <CardsLoading />
+            </AutoResizingGrid>
+          ) : (
+            <TableLoading />
+          )
+        ) : branches.length === 0 ? (
           config.params.search || isFilterApplied() ? (
             "No Search/Filter Found"
           ) : (
@@ -246,43 +254,31 @@ const StaffAndBranches = () => {
               }
             />
           )
+        ) : view === "grid" ? (
+          <AutoResizingGrid minWidth={284} key="card">
+            {branches.map((b) => (
+              <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
+                <BranchCard {...b} />
+              </Link>
+            ))}
+          </AutoResizingGrid>
         ) : (
-          <>
-            {view === "grid" ? (
-              <AutoResizingGrid minWidth={284}>
-                {silentLoading ? (
-                  <CardsLoading />
-                ) : (
-                  branches.map((b) => (
-                    <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
-                      <BranchCard {...b} />
-                    </Link>
-                  ))
-                )}
-              </AutoResizingGrid>
-            ) : (
-              <>
-                {silentLoading ? (
-                  <TableLoading />
-                ) : (
-                  <CustomTable
-                    fields={branchTableFields}
-                    data={branches}
-                    tableHeadClassName="bg-brand-5 h-[76px]"
-                    tableHeadStyle={{
-                      borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
-                    }}
-                    handleSelect={handleSelectTableItem}
-                  />
-                )}
-              </>
-            )}
-            <Pagination
-              totalPages={total_pages}
-              currentPage={current_page}
-              onPageChange={handlePageChange}
-            />
-          </>
+          <CustomTable
+            fields={branchTableFields}
+            data={branches}
+            tableHeadClassName="bg-brand-5 h-[76px]"
+            tableHeadStyle={{
+              borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
+            }}
+            handleSelect={handleSelectTableItem}
+          />
+        )}
+        {branches.length && (
+          <Pagination
+            totalPages={total_pages}
+            currentPage={current_page}
+            onPageChange={handlePageChange}
+          />
         )}
       </section>
     </div>

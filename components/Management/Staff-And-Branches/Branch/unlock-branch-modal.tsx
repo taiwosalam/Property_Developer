@@ -8,7 +8,9 @@ import ModalPreset from "@/components/Modal/modal-preset";
 import { AuthPinField } from "@/components/Auth/auth-components";
 import { XIcon, ReloadIcon } from "@/public/icons/icons";
 
-const UnLockBranchModal = () => {
+const UnLockBranchModal: React.FC<{
+  branchId: string;
+}> = ({ branchId }) => {
   const { activeStep, changeStep } = useStep(3);
   const [canResend, setCanResend] = useState(false);
   const [countdown, setCountdown] = useState(40);

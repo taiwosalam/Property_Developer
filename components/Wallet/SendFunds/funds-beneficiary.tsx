@@ -10,6 +10,7 @@ import { ChevronRight } from "lucide-react";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import { SectionSeparator } from "@/components/Section/section-components";
+import { empty } from "@/app/config";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
@@ -31,9 +32,13 @@ const FundsBeneficiary: React.FC<FundsBeneficiaryProps> = ({
         role={onClick ? "button" : undefined}
       >
         <div className="flex items-center gap-2">
-          {picture && (
-            <Picture src={picture} alt="profile picture" size={33} rounded />
-          )}
+          <Picture
+            src={picture || empty}
+            alt="profile picture"
+            size={33}
+            rounded
+          />
+
           <div className="custom-flex-col font-medium">
             <div className="flex items-center">
               <p className="text-[#010A23] dark:text-white text-sm capitalize">

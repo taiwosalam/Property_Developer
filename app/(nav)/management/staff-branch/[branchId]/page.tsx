@@ -28,13 +28,13 @@ import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch
 import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-staff-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import BranchPropertiesSection from "@/components/Management/Staff-And-Branches/Branch/branch-properties-section";
-import { SingleBranchResponseType } from "./types";
 import { DateRange } from "react-day-picker";
 import BackButton from "@/components/BackButton/back-button";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import { transformSingleBranchAPIResponse } from "./data";
 import NetworkError from "@/components/Error/NetworkError";
+import type { Stats, SingleBranchResponseType } from "./types";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -44,7 +44,46 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
 
-  const branchAddress = `${branchData?.branch_address}, ${branchData?.city}, ${branchData?.local_government}, ${branchData?.state}`;
+  const updatedDashboardCardData = dashboardCardData.map((card) => {
+    let stats: Stats | undefined;
+    switch (card.title) {
+      case "Properties":
+        stats = branchData?.properties;
+        break;
+      case "Landlords":
+        stats = branchData?.landlords;
+        break;
+      case "Tenants & Occupants":
+        stats = branchData?.tenants;
+        break;
+      case "Vacant Unit":
+        stats = branchData?.vacant_units;
+        break;
+      case "Expired":
+        stats = branchData?.expired;
+        break;
+      case "Invoices":
+        stats = branchData?.invoices;
+        break;
+      case "Inquiries":
+        stats = branchData?.inquiries;
+        break;
+      case "Complaints":
+        stats = branchData?.complaints;
+        break;
+      case "Listings":
+        stats = branchData?.listings;
+        break;
+      default:
+        break;
+    }
+
+    return {
+      ...card,
+      value: stats ? stats.total : card.value,
+      subValue: stats ? stats.new_this_month : card.subValue,
+    };
+  });
 
   const [timeRange, setTimeRange] = useState("30d");
   // const [highestMetric, setHighestMetric] = useState<string | null>(null);
@@ -100,7 +139,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
           </h1>
           <div className="text-text-disabled flex items-center space-x-1">
             <LocationIcon />
-            <p className="text-sm font-medium">{branchAddress}</p>
+            <p className="text-sm font-medium">{branchData.address}</p>
           </div>
         </BackButton>
 
@@ -116,7 +155,10 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <CreateStaffModal branchId={branchId} />
+              <CreateStaffModal
+                branchId={branchId}
+                hasManager={branchData.hasManager}
+              />
             </ModalContent>
           </Modal>
           <Button
@@ -208,7 +250,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       </div>
       <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 lg:items-start">
         <div className="overflow-x-auto flex lg:w-[68%] md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
-          {dashboardCardData.map((card, index) => (
+          {updatedDashboardCardData.map((card, index) => (
             <Link href={card.link} key={index} prefetch={false}>
               <Card
                 title={card.title}
@@ -233,8 +275,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
         <NotificationCard
           sectionHeader="Staffs"
           seeAllLink={`/management/staff-branch/${branchId}/branch-staff`}
-          // notifications={fetchedBranchData?.staff || []}
-          notifications={[]}
+          notifications={branchData.staffs}
           branchId={branchId}
           className="md:flex-1 lg:h-[380px]"
         />

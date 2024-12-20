@@ -80,6 +80,11 @@ export const branchTableFields: Field[] = [
 
 export interface BranchApiResponse {
   branch_count: number;
+  branches_monthly_count: number;
+  property_count: number;
+  properties_monthly_count: number;
+  staff_count: number;
+  staff_monthly_count: number;
   data: {
     id: string;
     branch_name: string;
@@ -87,11 +92,15 @@ export interface BranchApiResponse {
     state: string;
     local_government: string;
     city: string;
-    // branch_manager: string;  // to be added
     picture: string;
     staffs_count: number;
     properties_count: number;
-    // unit_count: number; // to be added
+    units_count: number;
+    manager: {
+      id: string;
+      name: string;
+      picture: string | null;
+    } | null;
   }[];
   pagination: {
     // total: number;
@@ -109,21 +118,21 @@ export const transformBranchApiResponse = (
     total_pages: pagination.last_page,
     current_page: pagination.current_page,
     total_branches: branch_count,
-    new_branches_count: 0, // to be added
-    total_properties: 0, // to be added
-    new_properties_count: 0, // to be added
-    total_staffs: 0, // to be added
-    new_staffs_count: 0, // to be added
+    new_branches_count: response.branches_monthly_count,
+    total_properties: response.property_count,
+    new_properties_count: response.properties_monthly_count,
+    total_staffs: response.staff_count,
+    new_staffs_count: response.staff_monthly_count,
     branches: data.map((branch) => ({
       id: branch.id,
       branch_title: branch.branch_name,
       branch_full_address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
-      manager_name: "", // to be added
+      manager_name: branch.manager?.name || "",
       branch_picture: branch.picture,
       staff_count: branch.staffs_count,
       property_count: branch.properties_count,
-      unit_count: 0, // to be added
-      manager_picture: "", // to be added
+      unit_count: branch.units_count,
+      manager_picture: branch.manager?.picture || null,
     })),
   };
 };
