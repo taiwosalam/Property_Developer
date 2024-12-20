@@ -1,5 +1,9 @@
 import { ChartConfig } from "@/components/ui/chart";
-import type { SingleBranchResponseType, SingleBranchPageData } from "./types";
+import type {
+  SingleBranchResponseType,
+  SingleBranchPageData,
+  EditBranchFormData,
+} from "./types";
 
 export const branchIdChartConfig = {
   sales: {
@@ -55,5 +59,26 @@ export const transformSingleBranchAPIResponse = (
       };
     }),
     hasManager: manager.length > 0,
+  };
+};
+
+export const transformSingleBranchAPIResponseToEditBranchFormDetails = (
+  response: SingleBranchResponseType
+): EditBranchFormData => {
+  const {
+    data: { branch },
+  } = response;
+  return {
+    id: branch.id,
+    branch_name: branch.branch_name,
+    isActive: branch.is_active,
+    state: branch.state,
+    local_government: branch.local_government,
+    city: branch.city,
+    address: branch.branch_address,
+    description: branch.branch_desc,
+    picture: branch.picture,
+    wallet: "no",
+    // wallet: "no",
   };
 };

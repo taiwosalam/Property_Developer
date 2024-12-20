@@ -11,7 +11,7 @@ import { SectionSeparator } from "@/components/Section/section-components";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { useState, useEffect } from "react";
 import Avatars from "@/components/Avatars/avatars";
-import { transformSingleBranchAPIResponse } from "@/app/(nav)/management/staff-branch/[branchId]/data";
+import type { EditBranchFormData } from "@/app/(nav)/management/staff-branch/[branchId]/types";
 import LandlordTenantModalPreset from "../../landlord-tenant-modal-preset";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import Image from "next/image";
@@ -24,13 +24,11 @@ import { toast } from "sonner";
 import { updateBranch } from "@/app/(nav)/management/staff-branch/[branchId]/edit-branch/data";
 import UpdateBranchModalSuccess from "./update-branch-modal-success";
 
-type BranchData = ReturnType<typeof transformSingleBranchAPIResponse>;
-
 const EditBranchForm = ({
   somedata,
   setUpdateRequestLoading,
 }: {
-  somedata: BranchData | null;
+  somedata: EditBranchFormData | null;
   setUpdateRequestLoading: (value: boolean) => void;
 }) => {
   const {
@@ -85,7 +83,7 @@ const EditBranchForm = ({
       data.delete("picture");
     }
     setUpdateRequestLoading(true);
-    // convertYesNoToBoolean(data, ["branch_wallet"]);
+    convertYesNoToBoolean(data, ["branch_wallet"]);
     if (somedata?.id) {
       const status = await updateBranch(data, somedata.id);
       if (status) {
@@ -163,21 +161,21 @@ const EditBranchForm = ({
                 label="Branch Full Address"
                 placeholder="Street Address"
                 inputClassName="bg-white"
-                defaultValue={somedata?.branch_address}
+                defaultValue={somedata?.address}
               />
               <Select
                 id="branch_wallet"
                 label="branch wallet"
                 options={["yes", "no"]}
                 inputContainerClassName="bg-white"
-                // defaultValue={somedata?.branch?.branch_wallet}
+                defaultValue={somedata?.wallet}
               />
             </div>
 
             <TextArea
               inputSpaceClassName="bg-white dark:bg-darkText-primary"
               id="branch_description"
-              defaultValue={somedata?.branch_desc}
+              defaultValue={somedata?.description}
               label="branch description"
             />
           </div>

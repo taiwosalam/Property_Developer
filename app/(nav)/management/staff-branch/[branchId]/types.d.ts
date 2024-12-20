@@ -20,11 +20,25 @@ export interface SingleBranchPageData {
   hasManager: boolean;
 }
 
+export interface EditBranchFormData {
+  id: string;
+  isActive: 1 | 0;
+  branch_name: string;
+  state: string;
+  local_government: string;
+  city: string;
+  address: string;
+  wallet: "yes" | "no";
+  description: string;
+  picture: string | null;
+}
+
 export type SingleBranchResponseType = {
   data: {
     branch: {
       id: string;
       branch_name: string;
+      is_active: 1 | 0;
       state: string;
       local_government: string;
       city: string;

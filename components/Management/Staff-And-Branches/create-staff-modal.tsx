@@ -66,6 +66,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
     const status = await addStaff(data, branchId);
     if (status) {
       setIsOpen(false);
+      window.dispatchEvent(new Event("refetch_staff"));
     } else {
       setIsLoading(false);
     }
@@ -119,7 +120,9 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
               label="position"
               inputContainerClassName="bg-neutral-2"
               options={[
-                { value: "manager", label: "branch manager" },
+                ...(hasManager
+                  ? []
+                  : [{ value: "manager", label: "branch manager" }]),
                 "account officer",
                 "staff",
               ]}

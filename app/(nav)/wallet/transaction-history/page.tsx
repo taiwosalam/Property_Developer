@@ -77,7 +77,7 @@ const TransactionHistory = () => {
       });
       if (node) observer.current.observe(node);
     },
-    [fetchNextPage, loading, state.hasMore, silentLoading]
+    [fetchNextPage, state.hasMore]
   );
 
   useEffect(() => {

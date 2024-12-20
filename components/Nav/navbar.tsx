@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Skeleton } from "@mui/material";
 import { empty } from "@/app/config";
-import Avatar from "@/public/empty/avatar.png";
+// import Avatar from "@/public/empty/avatar.png";
 import { useTheme } from "next-themes";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import Picture from "@/components/Picture/picture";
@@ -333,7 +333,7 @@ const Header = () => {
         <DropdownTrigger>
           <div className="flex items-center gap-4">
             <Picture
-              src={profile_picture || Avatar}
+              src={profile_picture || empty}
               alt="profile picture"
               status
               size={isMobile ? 50 : 60}
