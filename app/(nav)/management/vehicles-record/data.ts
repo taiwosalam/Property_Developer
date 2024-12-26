@@ -15,7 +15,7 @@ export const vehicleRecordFIltersOptionsWithDropdown = [
 ];
 
 export interface VehicleData {
-  vehicle_records: {
+  // vehicle_records: {
     id: number;
     user_id: string;
     property_id: number;
@@ -42,7 +42,7 @@ export interface VehicleData {
     registrationDate: string;
     last_update: string;
     latest_check_in: LatestCheckInData;
-  }
+  // }
 }
 
 export interface LatestCheckInData {
@@ -154,7 +154,7 @@ export interface VehicleRecordApiResponse {
 export const transformVehicleRecordApiResponse = (
   response: VehicleRecordApiResponse
 ): VehicleRecordPageData => {
-  console.log("response", response.data.vehicle_records);
+  // console.log("response", response);
   const vehicle_records = response.data.vehicle_records;
   return {
     check_ins: response.data.stats.check_ins.total,
@@ -166,7 +166,7 @@ export const transformVehicleRecordApiResponse = (
     vehicle_records: {
       last_page: 0,
       data: vehicle_records.map((record) => ({
-        vehicle_records: {
+        // vehicle_records: {
           id: record.vehicle_record.id,
           vehicle_brand: record.vehicle_record.vehicle_brand,
           user_id: record.vehicle_record.user_id,
@@ -197,7 +197,7 @@ export const transformVehicleRecordApiResponse = (
           latest_check_in: {
             ...record.vehicle_record.check_ins[0],
           },
-        },
+        // },
       })),
       current_page: 0,
       total: 0,
@@ -263,7 +263,7 @@ export const initialRecord: VehicleRecordData = {
     viewOnly: 0,
   }
 }
-
+ 
 export const transformVehicleRecords = (res: VehicleRecordAPIRes) => {
   return {
     stats: {
@@ -276,7 +276,7 @@ export const transformVehicleRecords = (res: VehicleRecordAPIRes) => {
     },
     data: res.properties.data.map((item: any) => ({
       id: item.id,
-      images: item.images,
+      images: item.images, 
       property_name: item.title,
       units_count: item.units_count,
       address: `${item.full_address}, ${item.city_area}, ${item.local_government}, ${item.state}`,
