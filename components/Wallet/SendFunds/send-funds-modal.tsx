@@ -42,7 +42,7 @@ const SendFundsModal = () => {
 
   return (
     <WalletModalPreset
-      title="Send Funds"
+       title="Send Funds"
       back={
         activeStep !== "send funds menu"
           ? () => {

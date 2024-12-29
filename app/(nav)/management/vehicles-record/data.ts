@@ -15,7 +15,6 @@ export const vehicleRecordFIltersOptionsWithDropdown = [
 ];
 
 export interface VehicleData {
-  // vehicle_records: {
     id: number;
     user_id: string;
     property_id: number;
@@ -23,7 +22,7 @@ export interface VehicleData {
     created_at: string;
     updated_at: string;
     brand?: string;
-    city: string;
+    city: string; 
     address: string;
     phone: string;
     lga: string;
@@ -42,7 +41,6 @@ export interface VehicleData {
     registrationDate: string;
     last_update: string;
     latest_check_in: LatestCheckInData;
-  // }
 }
 
 export interface LatestCheckInData {
