@@ -38,8 +38,22 @@ interface Others {
 }
 
 interface PropertyManaged {
-  rental_value: number;
-  account_officer: string;
+  images: string[];
+  id: string;
+  name: string;
+  address: string;
+  currency: string;
+  total_income: number;
+  total_returns: number;
+  total_units: number;
+  mobile_tenants: number;
+  web_tenants: number;
+  accountOfficer: string;
+  owing_units: number;
+  available_units: number;
+  isClickable: boolean;
+  viewOnly: boolean;
+  branch: string;
 }
 
 interface AttachedDocument extends AttachedDocumentCard {
