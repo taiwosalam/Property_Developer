@@ -216,20 +216,49 @@ const VehiclesRecordPage = () => {
             <EmptyList
               buttonText="+ create new"
               modalContent={<CreateRecordModal data={data} />}
-              title="You have not created any vehicle records yet"
+              title="No vehicle record profiles have been created yet"
               body={
-                <p>
-                  You can create profiles for all your branches and assign staff
-                  and properties to them by clicking on the &quot;Create
-                  Branch&quot; button. Branch managers will have the same access
-                  to their branch as you do, while you will have access to all
-                  staff accounts and branches created. To learn more about this
-                  page later, you can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
-                </p>
+                <div>
+                  <p className="mb-2">It looks like you haven&apos;t created any vehicle record profiles yet. Setting up vehicle record profiles is essential for efficient property and vehicle management within gated communities or facilities. When creating a profile, you have two options: Create Manually or Create with ID, depending on your specific requirements.</p>
+
+                  <p>Options for Creating Vehicle Record Profiles</p>
+                  <p className="font-semibold text-lg mt-2">
+                    <strong className="font-bold mr-2">1.</strong>
+                    Create Manually
+                  </p>
+                  <p>  This option allows you to create a profile for an occupant of the facility or gated community from scratch. By doing so, you can: </p>
+                  <ul className="custom-list">
+                    <li>Monitoring occupant vehicle movements (entry and exit). </li>
+                    <li>Managing visitor access to the premises.</li>
+                    <li>Keeping a comprehensive database of vehicles associated with occupants.</li>
+                  </ul>
+
+                  <p className="font-semibold text-lg mt-2">
+                    <strong className="font-bold mr-2">2.</strong>
+                    Create with ID
+                  </p>
+                  <p>This option provides a streamlined approach by enabling you to select profiles from: </p>
+                  <ul className="custom-list">
+                    <li>Existing records in your database. </li>
+                    <li>User accounts on the mobile app, where vehicle details may already be stored.</li>
+                    <li>This method ensures consistency, reduces duplication, and speeds up the process of adding profiles.</li>
+                  </ul>
+
+                  <p className="text-black font-semibold text-lg mt-2">How This Works</p>
+                  <ul className="custom-list">
+                    <li>After entering the occupant&apos;s profile details, add additional vehicle information such as license plate numbers, vehicle make and model, and other identifying available features. </li>
+                    <li>These records are crucial for maintaining accurate logs of vehicle movements, including check-ins and check-outs.
+                    </li>
+                  </ul>
+
+                  <p className="text-black font-semibold text-lg mt-2">Next Steps After Adding a Vehicle Record</p>
+                  <ul className="custom-list">
+                    <li>Once a vehicle record and its corresponding profile are added, the introductory guide on this page will automatically disappear. The page will then shift into active management mode, allowing you to efficiently manage the newly created records.
+                    </li>
+                  </ul>
+
+                  <p>If you require assistance or want to revisit this guide later, simply click on the help icon <span className="inline-block text-brand-10 align-text-top"><ExclamationMark /></span> located at the top-left corner of the dashboard. </p>
+                </div>
               }
             />
           )

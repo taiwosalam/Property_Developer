@@ -34,12 +34,13 @@ export interface PropertyCardProps {
   total: number;
 }
 
-const VehicleCard: React.FC<any> = ({ data, total }) => {
+const VehicleCard: React.FC<any> = ({ data }) => {
   const {
     id = 12133,
     images,
     property_name = 'Property Name',
     units_count,
+    vehicle_records_count,
     address,
     total_unit_pictures,
     hasVideo = true,
@@ -110,7 +111,7 @@ const VehicleCard: React.FC<any> = ({ data, total }) => {
           </p>
           <div className="flex flex-wrap justify-between items-center mt-1">
             <p className="text-black text-xs lg:text-sm font-normal"> Total Vehicles Record </p>
-            <h3 className="text-brand-9 text-xl lg:text-2xl font-bold"> { total } </h3>
+            <h3 className="text-brand-9 text-xl lg:text-2xl font-bold"> {vehicle_records_count} </h3>
           </div>
         </div>
       </Link>

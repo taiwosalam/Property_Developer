@@ -162,8 +162,7 @@ export const transformVehicleRecordApiResponse = (
     check_outs_this_month: response.data.stats.check_outs.this_month,
     vehicle_records: {
       last_page: 0,
-      data: vehicle_records.map((record) => ({
-        // vehicle_records: {
+      data: vehicle_records.map((record) => ({ 
           id: record.vehicle_record.id,
           vehicle_brand: record.vehicle_record.vehicle_brand,
           user_id: record.vehicle_record.user_id,
@@ -179,11 +178,12 @@ export const transformVehicleRecordApiResponse = (
           state: record.vehicle_record.state,
           name: record.vehicle_record.name,
           model: record.vehicle_record.model,
-          status: !record.vehicle_record.latest_check_in
-            ? "no_record"
-            : Object.keys(record.vehicle_record.latest_check_in).length === 0
-              ? "completed"
-              : "pending",
+          // status: !record.vehicle_record.latest_check_in
+          //   ? "no_record"
+          //   : Object.keys(record.vehicle_record.latest_check_in).length === 0
+          //     ? "completed"
+          //     : "pending",
+          status: record.vehicle_record?.check_ins[0]?.status === undefined ? "no_record" : record.vehicle_record?.check_ins[0]?.status,
           category: record.vehicle_record.visitor_category,
           registrationDate: formatDate(record.vehicle_record.created_at),
           visitor_category: record.vehicle_record.visitor_category,
@@ -194,7 +194,6 @@ export const transformVehicleRecordApiResponse = (
           latest_check_in: {
             ...record.vehicle_record.check_ins[0],
           },
-        // },
       })),
       current_page: 0,
       total: 0,
@@ -262,6 +261,7 @@ export const initialRecord: VehicleRecordData = {
 }
  
 export const transformVehicleRecords = (res: VehicleRecordAPIRes) => {
+  console.log("res", res)
   return {
     stats: {
       total_properties: res.stats.total_properties,
@@ -276,6 +276,7 @@ export const transformVehicleRecords = (res: VehicleRecordAPIRes) => {
       images: item.images, 
       property_name: item.title,
       units_count: item.units_count,
+      vehicle_records_count: item.vehicle_records_count,
       address: `${item.full_address}, ${item.city_area}, ${item.local_government}, ${item.state}`,
       total_unit_pictures: item.images.length,
       hasVideo: item.has_video,

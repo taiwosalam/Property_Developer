@@ -83,7 +83,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
     local_government: editMode ? props.data.local_government : "",
     city: editMode ? props.data.city : "",
   });
-  
+
   const {
     preview,
     setPreview,
@@ -97,7 +97,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
   const handleAvatarSelection = (avatarUrl: string) => {
     clearImageSelection();
     setActiveAvatar(avatarUrl);
-    setFormstep(1); 
+    setFormstep(1);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -313,7 +313,7 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
           }))
         }
       />
-      {vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.colors
+      {/* {vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.colors
         ?.length > 0 && (
           <Select
             label="Color"
@@ -327,7 +327,19 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
               setVehicleRecord((prev) => ({ ...prev, color: option }))
             }
           />
-        )}
+        )} */}
+      <Select
+        label="Color"
+        id="color"
+        options={
+          vehicleData[vehicleRecord.type as keyof typeof vehicleData]
+            ?.colors || []
+        }
+        value={vehicleRecord.color}
+        onChange={(option) =>
+          setVehicleRecord((prev) => ({ ...prev, color: option }))
+        }
+      />
       <Select
         label="Manufacture Year"
         id="manufacture_year"

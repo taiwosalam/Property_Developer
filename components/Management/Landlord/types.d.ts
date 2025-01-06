@@ -36,6 +36,11 @@ export interface FilterOptionMenu {
   value: FilterOption[];
 }
 
+export interface FilterOptionObj {
+  radio?: boolean;
+  value: FilterOption[];
+}
+
 export interface FilterResult {
   options: string[];
   menuOptions: { [key: string]: string[] };
@@ -48,7 +53,7 @@ export interface FilterModalProps {
   filterTitle?: string;
   isDateTrue?: boolean;
   dateLabel?: string;
-  filterOptions?: FilterOption[];
+  filterOptions?: FilterOption[] | FilterOptionObj;
   filterOptionsMenu?: FilterOptionMenu[];
   appliedFilters?: FilterResult;
 }

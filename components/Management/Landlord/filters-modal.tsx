@@ -19,6 +19,11 @@ const FilterModal: React.FC<FilterModalProps> = ({
   appliedFilters,
 }) => {
   const { setIsOpen } = useModal();
+  const isRadio =
+    typeof filterOptions === "object" &&
+    !Array.isArray(filterOptions) &&
+    filterOptions.radio;
+
   const [selectedStartDate, setSelectedStartDate] = useState<string | null>(
     appliedFilters?.startDate || null
   );
@@ -62,11 +67,13 @@ const FilterModal: React.FC<FilterModalProps> = ({
     "text-text-secondary dark:text-darkText-1 font-medium flex items-center justify-between py-2 px-4 bg-[#F5F5F5] dark:bg-[#3C3D37] capitalize cursor-pointer";
   const [activeOptionMenu, setActiveOptionMenu] =
     useState<FilterOptionMenu | null>(null);
+
   const handleOptionMenuClick = (option: FilterOptionMenu) => {
     setSearchQuery("");
     setActiveOptionMenu(option);
     setView("menu");
   };
+
   const handleOptionClick = (value: string) => {
     setSelectedFilters((prev) =>
       prev.includes(value) ? prev.filter((x) => x !== value) : [...prev, value]
@@ -97,6 +104,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const filteredOptions = activeOptionMenu?.value.filter((option) =>
     option.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
   return (
     <div className="w-[400px] max-h-[90vh] overflow-y-auto rounded-[20px] bg-white dark:bg-darkText-primary p-[20px] custom-flex-col">
       <div className="flex items-center justify-between border-b border-solid border-gray-300 ">
@@ -115,8 +123,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
             {view === "default"
               ? filterTitle
               : view === "date"
-              ? dateLabel
-              : activeOptionMenu?.label}
+                ? dateLabel
+                : activeOptionMenu?.label}
           </h2>
         </div>
         {view === "default" && (
@@ -151,24 +159,41 @@ const FilterModal: React.FC<FilterModalProps> = ({
               >
                 <span>{option.label}</span>
                 {selectedFilterMenus[option.label] &&
-                selectedFilterMenus[option.label].length > 0 ? (
+                  selectedFilterMenus[option.label].length > 0 ? (
                   <CheckboxCheckedIcon />
                 ) : (
                   <ChevronRight className="text-[#344054]" />
                 )}
               </div>
             ))}
-            {filterOptions?.map((option, i) => (
-              <Checkbox
-                key={i}
-                className={commonCheckboxClasses}
-                checked={selectedFilters.includes(option.value)}
-                onChange={() => handleOptionClick(option.value)}
-              >
-                {option.label}
-              </Checkbox>
-            ))}
-          </>
+            {!isRadio &&
+              Array.isArray(filterOptions) &&
+              filterOptions.map((option, i) => (
+                <Checkbox
+                  key={i}
+                  className={commonCheckboxClasses}
+                  checked={selectedFilters.includes(option.value)}
+                  onChange={() => handleOptionClick(option.value)}
+                >
+                  {option.label}
+                </Checkbox>
+              ))}
+            {isRadio &&
+              Array.isArray(filterOptions?.value) &&
+              filterOptions.value.map((option, i) => (
+                <Checkbox 
+                  key={i}
+                  radio={true}
+                  className={commonCheckboxClasses}
+                  checked={selectedFilters.includes(option.value)}
+                  onChange={() => {
+                    setSelectedFilters([option.value]);
+                  }}
+                >
+                  {option.label}
+                </Checkbox>
+              ))}
+           </>
         ) : view === "date" ? (
           <>
             <DateInput

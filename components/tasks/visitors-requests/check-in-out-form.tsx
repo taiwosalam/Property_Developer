@@ -13,6 +13,7 @@ interface BaseProps {
   userName: string;
   id: string | number;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  loading: boolean;
 }
 interface VisitorFormProps extends BaseProps {
   useCase: "visitor";
@@ -27,7 +28,7 @@ interface VehicleFormProps extends BaseProps {
 const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
   props
 ) => {
-  const { type, handleBack, pictureSrc, userName, id, useCase, onSubmit } = props;
+  const { type, handleBack, pictureSrc, userName, id, useCase, onSubmit, loading } = props;
   return (
     <ModalPreset
       heading={
@@ -124,8 +125,9 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
             aria-label="submit"
             size="16_bold"
             className="py-[10px] px-8 rounded-lg block ml-auto mt-5"
+            disabled={loading}
           >
-            {type === "check-in" ? "Create" : "Submit"}
+            {loading ? "Loading..." : type === "check-in" ? "Create" : "Submit"}
           </Button>
           </div>
         </form>
