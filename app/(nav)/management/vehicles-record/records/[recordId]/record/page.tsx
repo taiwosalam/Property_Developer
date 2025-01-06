@@ -72,6 +72,7 @@ const RecordPage = () => {
   const [updateVehicleModal, setUpdateVehicleModal] = useState(false)
   const { recordId } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
+  const [checking, setChecking] = useState(false);
 
   const initialState: TransformedData = {
     userData: null,
@@ -187,8 +188,6 @@ const RecordPage = () => {
     vehicle_type,
   } = vehicleDetails;
 
-  console.log("color", vehicleDetails)
-
 
     const handleCheckIn = async (event: React.FormEvent) => {
       event.preventDefault();
@@ -201,23 +200,25 @@ const RecordPage = () => {
       delete data.passenger;
       data.inventory_in = data.inventory;
       delete data.inventory;
-
+      
       // Add vehicle_record to requestId
       data.vehicle_record_id = `${recordId}`;
-
-
+      
+      
       try {
+        setChecking(true);
         const response = await checkInVehicle(data);
         if (response) {
           window.dispatchEvent(new Event("refetchVehicleRecord"));
           toast.success("Vehicle checked in successfully");
           setModalOpen(false);
-          // setActiveStep("success-action");
         } else {
           toast.error("Failed to check in vehicle");
         }
       } catch (error) {
         console.error(error);
+      } finally { 
+        setChecking(false);
       }
     };
 
@@ -433,9 +434,9 @@ const RecordPage = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            {/* <form onSubmit={handleCheckIn}> */}
               <CheckInOutForm
                 onSubmit={handleCheckIn}
+                loading={checking}
                 useCase="vehicle"
                 type="check-in"
                 pictureSrc={pictureSrc}
@@ -444,7 +445,6 @@ const RecordPage = () => {
                 category={category}
                 registrationDate="12/01/2024 (08:09pm)" // Replace with dynamic data if available
               />
-            {/* </form> */}
           </ModalContent>
         </Modal>
       </FixedFooter>

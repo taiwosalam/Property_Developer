@@ -154,7 +154,7 @@ const VehilceRecords = () => {
       <div className="page-header-container">
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
-            title="Total Properties"
+            title="Total Vehicle Records"
             newData={properties_this_month}
             total={total_properties}
             colorScheme={1}
@@ -184,9 +184,15 @@ const VehilceRecords = () => {
             "This page contains a list of vehicles record on the platform.",
         }}
         searchInputPlaceholder="Search for vehicles record"
-        filterOptionsMenu={vehicleRecordFIltersOptionsWithDropdown}
+        filterOptions={{
+          radio: true,
+          value: [
+            { label: "All", value: "all" },
+            { label: "Rental", value: "rental" },
+            { label: "Facility", value: "facility" },
+          ],
+        }}
         handleFilterApply={handleFilterApply}
-        isDateTrue
         onSort={handleSort}
         handleSearch={handleSearch}
         appliedFilters={appliedFilters}
@@ -194,8 +200,10 @@ const VehilceRecords = () => {
 
       <section className="capitalize">
         {pageData.data.length === 0 && !silentLoading ? (
-          isFilterApplied() ? (
-            "No Search/Filter Found"
+            config.params.search || isFilterApplied() ? (
+              <div className="col-span-full text-center py-8 text-gray-500">
+                No Search/Filter Found
+              </div>
           ) : (
             <EmptyList
               noButton
@@ -242,7 +250,7 @@ const VehilceRecords = () => {
               {silentLoading ? (
                 <CardsLoading />
               ) : (
-                pageData.data.map((p, index) => <VehicleCard key={index} data={p} total={total_vehicle_records} />)
+                pageData.data.map((p, index) => <VehicleCard key={index} data={p} />)
               )}
             </AutoResizingGrid>
 

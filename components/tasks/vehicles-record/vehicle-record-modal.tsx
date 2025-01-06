@@ -27,7 +27,8 @@ const VehicleRecordModal: React.FC<
   latest_check_in,
   showOpenRecordsButton = true,
 }) => {
-    
+    const [ loading, setLoading ] = useState(false)
+
     const checkIn = {
       id: latest_check_in?.id,
       name: latest_check_in?.in_by || "---",
@@ -65,6 +66,7 @@ const VehicleRecordModal: React.FC<
       }
 
       try {
+        setLoading(true);
         const response = await checkOutVehicle(data, checkIn.id);
         if (response) {
           // console.log("response", response);
@@ -83,6 +85,8 @@ const VehicleRecordModal: React.FC<
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -237,8 +241,8 @@ const VehicleRecordModal: React.FC<
   if (activeStep === "check-out") {
     return (
       <>
-      {/* <form onSubmit={handleCheckOut}> */}
       <CheckInOutForm
+        loading={loading}
         type="check-out"
         useCase="vehicle"
         handleBack={handleBack}
@@ -249,7 +253,6 @@ const VehicleRecordModal: React.FC<
         registrationDate={registrationDate}
         onSubmit={handleCheckOut}
         />  
-      {/* </form> */}
       </>
     );
   }

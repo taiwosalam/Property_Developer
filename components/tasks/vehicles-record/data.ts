@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 export const createVehicleRecord = async (data: any) => {
   try {
-    const response = await api.post("/vehicle-record", data);
+    const response = await api.post("/vehicle-records", data);
     return response.status === 200 || response.status === 201;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -48,10 +48,13 @@ export const updateVehicleDetails = async (data: any, id: number) => {
 
 export const checkOutVehicle = async (data: any, id: number) => {
   try {
-    const response = await api.post(`/vehicle-record/check-out/${id}`, data);
+    const response = await api.post(`/vehicle-records/check-out/${id}`, data);
+    // if(response.status === 200 || response.status === 201) {
+    //   return true
+    // }
     return response.data;
   } catch (error) {
-    console.error(error);
+    handleAxiosError(error);
     return false;
   }
 };
@@ -60,7 +63,7 @@ export const checkOutVehicle = async (data: any, id: number) => {
 
 export const checkInVehicle = async (data: any) => {
   try {
-    const response = await api.post(`/vehicle-record/check-in`, data);
+    const response = await api.post(`/vehicle-records/check-in`, data);
     return response.status === 200 || response.status === 201;
   } catch (error) {
     console.error(error);
