@@ -188,7 +188,7 @@ const StaffAndBranches = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <CreateBranchModal />|
+            <CreateBranchModal />
           </ModalContent>
         </Modal>
       </div>
@@ -232,7 +232,9 @@ const StaffAndBranches = () => {
           )
         ) : branches.length === 0 ? (
           config.params.search || isFilterApplied() ? (
-            "No Search/Filter Found"
+            <div className="col-span-full text-center py-8 text-gray-500">
+              No Search/Filter Found
+            </div>
           ) : (
             <EmptyList
               buttonText="+ create branch"

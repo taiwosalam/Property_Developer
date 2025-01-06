@@ -1,26 +1,26 @@
 "use client";
+// TYPES
+import { ArticlesRequestParams } from "./type";
 
+// IMPORTS
+import { useEffect, useMemo, useState } from "react";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import Button from "@/components/Form/Button/button";
 import ThreadCard, { ThreadSkeleton } from "@/components/Community/ThreadCard";
-import { getThreads } from "./data";
 import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { PlusIcon } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import { stateOptions } from "../../tasks/inspections/data";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
-import { ArticlesRequestParams } from "./type";
 import dayjs from "dayjs";
 
 const lists = [
@@ -128,6 +128,7 @@ const AgentCommunityPage = () => {
       sort: "asc",
       search: "",
     };
+    
     options.forEach(option => {
       if (option === 'all') {
           queryParams.all = true; 
@@ -151,7 +152,7 @@ const AgentCommunityPage = () => {
       params: queryParams,
     });
     
-    console.log({ menuOptions, startDate, endDate, options })
+    // console.log({ menuOptions, startDate, endDate, options })
   };
 
 

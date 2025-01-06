@@ -151,7 +151,7 @@ export interface VehicleRecordApiResponse {
 export const transformVehicleRecordApiResponse = (
   response: VehicleRecordApiResponse
 ): VehicleRecordPageData => {
-  // console.log("response", response);
+  console.log("response", response);
   const vehicle_records = response.data.vehicle_records;
   return {
     check_ins: response.data.stats.check_ins.total,
