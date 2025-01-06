@@ -5,31 +5,34 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 const EmptyList: React.FC<{
   title: string;
   body?: React.ReactNode;
-  buttonText: string;
+  buttonText?: string;
+  noButton?: boolean;
   buttonLink?: string;
   modalContent?: React.ReactNode;
-}> = ({ title, body, buttonText, buttonLink, modalContent }) => {
+}> = ({ title, body, buttonText, noButton, buttonLink, modalContent }) => {
   return (
     <div className="mt-[50px] space-y-4">
       <div className="w-full text-brand-9 h-full flex justify-center items-center mb-4">
         <EmptyListIcon />
       </div>
-      {modalContent ? (
-        <Modal>
-          <ModalTrigger asChild>
-            <Button className="rounded-[8px] py-2 px-6 lg:px-12 text-base font-semiboldbold w-fit mx-auto block">
-              {buttonText}
-            </Button>
-          </ModalTrigger>
-          <ModalContent>{modalContent}</ModalContent>
-        </Modal>
-      ) : (
-        <Button
-          href={buttonLink}
-          className="rounded-[8px] py-2 px-6 lg:px-12 text-base font-semiboldbold w-fit mx-auto block"
-        >
-          {buttonText}
-        </Button>
+      {!noButton && ( // Check for noButton
+        modalContent ? (
+          <Modal>
+            <ModalTrigger asChild>
+              <Button className="rounded-[8px] py-2 px-6 lg:px-12 text-base font-semiboldbold w-fit mx-auto block">
+                {buttonText}
+              </Button>
+            </ModalTrigger>
+            <ModalContent>{modalContent}</ModalContent>
+          </Modal>
+        ) : (
+          <Button
+            href={buttonLink}
+            className="rounded-[8px] py-2 px-6 lg:px-12 text-base font-semiboldbold w-fit mx-auto block"
+          >
+            {buttonText}
+          </Button>
+        )
       )}
       <div className="space-y-4 w-[85%] mx-auto">
         <p className="text-[#092C4C] dark:text-darkText-1 font-bold text-xl">
@@ -40,7 +43,7 @@ const EmptyList: React.FC<{
           {body}
         </div>
       </div>
-    </div>  
+    </div>
   );
 };
 

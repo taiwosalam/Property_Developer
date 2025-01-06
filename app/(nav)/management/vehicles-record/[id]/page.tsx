@@ -21,9 +21,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import { ExclamationMark } from "@/public/icons/icons";
-import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import TableLoading from "@/components/Loader/TableLoading";
-import CardsLoading from "@/components/Loader/CardsLoading";
 import { VehicleRecord } from "@/components/tasks/vehicles-record/types";
 import CreateRecordModal from "@/components/tasks/vehicles-record/create-record-modal";
 import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-record-modal";
@@ -34,7 +32,6 @@ import useVehicleRecordStore from "@/store/vehicle-record";
 const VehiclesRecordPage = () => {
   const { id } = useParams();
   const { selectedProperty, setSelectedProperty } = useVehicleRecordStore();
-  // console.log("Property id", selectedProperty)
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<VehicleRecord | null>(
     null
@@ -113,7 +110,7 @@ const VehiclesRecordPage = () => {
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
   useEffect(() => {
-    // console.log("api data", apiData)
+    console.log("api data", apiData)
     if (apiData) {
       setState((x) => ({
         ...x,
@@ -154,9 +151,7 @@ const VehiclesRecordPage = () => {
 
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
-  console.log("data needed", data)
-  console.log("data needed", data[0])
-  // const vehicle_records = data[0].vehicle_records
+  // console.log("data needed", data)
   return (
     <div className="space-y-9">
       <div className="page-header-container">

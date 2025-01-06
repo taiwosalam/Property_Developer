@@ -1,10 +1,7 @@
 "use client";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { ExclamationMark } from "@/public/icons/icons";
-import PropertyCard from "@/components/Management/Properties/property-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { ModalContent, ModalTrigger, Modal } from "@/components/Modal/modal";
-import Button from "@/components/Form/Button/button";
 import Pagination from "@/components/Pagination/pagination";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import CustomLoader from "@/components/Loader/CustomLoader";
@@ -19,7 +16,7 @@ import dayjs from "dayjs";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import VehicleCard from "@/components/Management/Properties/vehicle-card";
 import { initialPageState, VehicleRecordAPIRes, VehicleRecordParams } from "./type";
-import { initialData, transformVehicleRecords } from "./data";
+import { initialData, transformVehicleRecords, vehicleRecordFIltersOptionsWithDropdown } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 
@@ -168,6 +165,12 @@ const VehilceRecords = () => {
             total={total_vehicle_records}
             colorScheme={2}
           />
+          <ManagementStatistcsCard
+            title="Facility Vehicle Records"
+            newData={vehicle_records_this_month}
+            total={total_vehicle_records}
+            colorScheme={3}
+          />
         </div>
       </div>
 
@@ -181,6 +184,7 @@ const VehilceRecords = () => {
             "This page contains a list of vehicles record on the platform.",
         }}
         searchInputPlaceholder="Search for vehicles record"
+        filterOptionsMenu={vehicleRecordFIltersOptionsWithDropdown}
         handleFilterApply={handleFilterApply}
         isDateTrue
         onSort={handleSort}
@@ -194,33 +198,40 @@ const VehilceRecords = () => {
             "No Search/Filter Found"
           ) : (
             <EmptyList
-              buttonText="+ Add Vehicle"
-              title="You have not creared any vehicles yet"
+              noButton
+              title="You have not activate any vehicles record yet"
               body={
                 <p>
-                  You can create a vehicle by clicking on the &quot;Add
-                  Vehicle&quot; button. You can create two types of vehicles:
-                  rental and facility vehicles. Rental vehicles are mainly
-                  tailored for managing properties for rent, including landlord
-                  and tenant management processes. Facility properties are
-                  designed for managing occupants in gated estates, overseeing
-                  their due payments, visitor access, and vehicle records.{" "}
+                  When creating or editing property settings, you have the option to enable vehicle records by selecting &quot;Yes.&quot; This feature allows you to maintain and manage two distinct types of vehicle records: rental vehicle records and facility vehicle records. Each type serves a unique purpose to enhance property management within gated communities or commercial facilities.
 
                   <br />
                   <br />
-                  Once a property is added to this page, this guide will
-                  disappear. To learn more about this page in the future, you
-                  can click on this icon{" "}
 
-                  <span className="inline-block text-brand-10 align-text-top">
+                  <strong>Rental Vehicle Records</strong>
+                  <br />
+                  Rental vehicle records are designed specifically for properties intended for rent within gated communities. These records streamline the management processes for landlords, occupants, tenants, and property managers. By organizing vehicle information under this category, you can efficiently oversee tenant-related vehicle details, ensuring smooth operations and better communication between stakeholders.
+                  <br />
+                  <br />
+
+                  <strong>Facility Vehicle Records</strong>
+                  <br />
+                  Facility vehicle records cater to the management of occupants in gated estates or commercial facilities. This feature allows property managers to oversee essential activities, including:
+                  <ul  className="custom-list">
+                    <li>Monitoring occupant vehicle movements (entry and exit). </li>
+                    <li>Managing visitor access to the premises.</li>
+                    <li>Keeping a comprehensive database of vehicles associated with occupants.</li>
+                  </ul>
+                  These records ensure seamless access control and help maintain security standards within the estate or facility.
+                  <br />
+                  <br />
+
+                  <strong> How This Works </strong>
+                  <br />
+                  <span>Once a vehicle record is added to this page, the introductory guide will automatically disappear, as the page transitions into active management mode. However, if you ever need assistance or wish to revisit this guide, you can easily do so. Simply click on the help icon <span className="inline-block text-brand-10 align-text-top">
                     <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
+                  </span>{" "} located at the top-left corner of the dashboard. This icon provides quick access to detailed instructions and support whenever needed.</span>
                   <br />
-                  <br />
-                  Property creation involves several segments: property
-                  settings, details, what to showcase on the dashboard or user
-                  app, unit creation, permissions, and assigning staff.
+                  <span>By enabling vehicle records, you enhance the efficiency of property management while ensuring a secure and organized environment for all occupants and visitors.</span>
                 </p>
               }
             />

@@ -1,5 +1,4 @@
 import type { Field } from "@/components/Table/types";
-// import type { VehicleRecord } from "@/components/tasks/vehicles-record/types";
 import { formatDate } from "../../management/agent-community/property-request/data";
 import { initialPageState, VehicleRecordAPIRes, VehicleRecordData } from "./type";
 
@@ -15,7 +14,6 @@ export const vehicleRecordFIltersOptionsWithDropdown = [
 ];
 
 export interface VehicleData {
-  // vehicle_records: {
     id: number;
     user_id: string;
     property_id: number;
@@ -23,7 +21,7 @@ export interface VehicleData {
     created_at: string;
     updated_at: string;
     brand?: string;
-    city: string;
+    city: string; 
     address: string;
     phone: string;
     lga: string;
@@ -42,7 +40,6 @@ export interface VehicleData {
     registrationDate: string;
     last_update: string;
     latest_check_in: LatestCheckInData;
-  // }
 }
 
 export interface LatestCheckInData {
@@ -154,7 +151,7 @@ export interface VehicleRecordApiResponse {
 export const transformVehicleRecordApiResponse = (
   response: VehicleRecordApiResponse
 ): VehicleRecordPageData => {
-  // console.log("response", response);
+  console.log("response", response);
   const vehicle_records = response.data.vehicle_records;
   return {
     check_ins: response.data.stats.check_ins.total,

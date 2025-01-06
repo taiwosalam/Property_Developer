@@ -2,20 +2,15 @@
 import Image from "next/image";
 import Button from "@/components/Form/Button/button";
 import { useRouter } from "next/navigation";
+import { PageNotFoundIcon } from "@/public/icons/icons";
 
 const NotFound = () => {
   const router = useRouter();
   return (
     <div className="py-11 px-20 flex flex-col gap-10">
       <div className="w-full flex items-center justify-center">
-        <div className="w-[224.45px] h-[246px] relative">
-          <Image
-            src="/empty/404-illustration.png"
-            alt="404"
-            fill
-            priority
-            className="object-cover"
-          />
+        <div className="relative text-brand-9">
+          <PageNotFoundIcon />
         </div>
       </div>
       <div className="w-full flex items-center justify-center">

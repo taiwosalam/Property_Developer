@@ -38,6 +38,7 @@ export const transformSingleBranchAPIResponse = (
     data: { branch, manager },
   } = response;
 
+  console.log("manager", manager);
   return {
     branch_name: branch.branch_name,
     address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
@@ -58,7 +59,7 @@ export const transformSingleBranchAPIResponse = (
         staff_ID: s.id,
       };
     }),
-    hasManager: manager.length > 0,
+    hasManager: manager !== null && manager.length > 0,
   };
 };
 

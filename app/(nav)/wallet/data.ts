@@ -65,6 +65,7 @@ export const determineTrend = (
   }
 };
 
+
 export const determinePercentageDifference = (
   value1: string | number,
   value2: string | number
@@ -72,16 +73,18 @@ export const determinePercentageDifference = (
   const num1 = Number(value1);
   const num2 = Number(value2);
 
+  console.log(num1, num2);
   if (num1 === 0 && num2 === 0) {
     return "0.00";
   }
 
-  const difference = ((num1 - num2) / Math.abs(num2)) * 100;
-
+  const difference = ((num1 - num2) / Math.abs(num2)) * 100
   return difference > 0
-    ? `${difference.toFixed(2)}`
-    : `${Math.abs(difference).toFixed(2)}`;
+    ? `${difference.toFixed(2)}%`
+    : `${Math.abs(difference).toFixed(2)}%`;
 };
+
+
 
 export interface WalletDataResponse {
   stats: {

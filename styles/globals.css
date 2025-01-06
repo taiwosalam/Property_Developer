@@ -68,6 +68,19 @@ body {
   background-color: #f0f0f0;
 }
 
+.custom-list {
+  margin-top: 5px;
+  list-style: none; /* Removes default bullets */
+  padding-left: 0;
+}
+
+.custom-list li::before {
+  content: "•"; /* Unicode for a bullet */
+  font-size: 1.5rem; /* Custom size */
+  margin-right: 8px; /* Spacing between dot and text */
+}
+
+
 
 #portal {
   position: fixed;

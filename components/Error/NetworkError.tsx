@@ -1,6 +1,11 @@
+import { NetworkIcon } from "@/public/icons/icons";
+
 const NetworkError = () => {
   return (
-    <div className="flex flex-col gap-[15px] mt-[35vh] px-20">
+    <div className="flex flex-col gap-[15px] mt-12 px-20">
+      <div className="flex w-full items-center justify-center text-brand-9 mb-4">
+        <NetworkIcon />
+      </div>
       <p className="text-[#092C4C] dark:text-darkText-1 font-bold text-xl">
         No network or error in internet connection.
       </p>
