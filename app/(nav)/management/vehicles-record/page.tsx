@@ -202,7 +202,7 @@ const VehilceRecords = () => {
               title="You have not activate any vehicles record yet"
               body={
                 <p>
-                  When creating or editing property settings, you have the option to enable vehicle records by selecting "Yes." This feature allows you to maintain and manage two distinct types of vehicle records: rental vehicle records and facility vehicle records. Each type serves a unique purpose to enhance property management within gated communities or commercial facilities.
+                  When creating or editing property settings, you have the option to enable vehicle records by selecting &quot;Yes.&quot; This feature allows you to maintain and manage two distinct types of vehicle records: rental vehicle records and facility vehicle records. Each type serves a unique purpose to enhance property management within gated communities or commercial facilities.
 
                   <br />
                   <br />
@@ -221,7 +221,7 @@ const VehilceRecords = () => {
                     <li>Managing visitor access to the premises.</li>
                     <li>Keeping a comprehensive database of vehicles associated with occupants.</li>
                   </ul>
-                  These records ensure seamless access control and help maintain security standards within the estate or facility. 
+                  These records ensure seamless access control and help maintain security standards within the estate or facility.
                   <br />
                   <br />
 
