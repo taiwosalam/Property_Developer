@@ -65,6 +65,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
     ),
   }));
 
+  console.log("landlord data", landlordData);
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
@@ -276,19 +277,27 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
       <LandlordTenantInfoSection title="Property Managed">
         <AutoResizingGrid minWidth={315}>
           {landlordData?.properties_managed?.map((property) => (
-            <></>
-            // <PropertyCard
-            //   key={property.id}
-            //   images={property.images}
-            //   id={property.id.toString()}
-            //   propertyId={property.id.toString()}
-            //   name={property.name}
-            //   units={property.units}
-            //   address={property.address}
-            //   price={property.rental_value}
-            //   currency={property.currency}
-            //   propertyType="facility"
-            // />
+            <PropertyCard
+              key={property.id}
+              images={property.images}
+              id={property.id.toString()}
+              property_name={property.name}
+              address={property.address}
+              total_units={property.total_units}
+              total_income={property.total_income}
+              total_returns={property.total_returns}
+              property_type="facility"
+              total_unit_pictures={2}
+              currency="naira"
+              mobile_tenants={property.mobile_tenants}
+              web_tenants={property.web_tenants}
+              owing_units={property.owing_units}
+              available_units={property.available_units}
+              viewOnly={property.viewOnly}
+              isClickable={property.isClickable}
+              hasVideo
+              branch={property.branch}
+            />
           ))}
         </AutoResizingGrid>
       </LandlordTenantInfoSection>

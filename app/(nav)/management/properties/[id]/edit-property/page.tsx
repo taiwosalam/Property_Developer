@@ -71,6 +71,7 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (propertyData) {
+    // console.log("prop data", propertyData)
       const transformedData = transformPropertyData(propertyData);
       if (!transformedData) {
         setDataNotFound(true);

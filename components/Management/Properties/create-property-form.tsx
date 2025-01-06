@@ -54,6 +54,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const [state, setState] = useState<PropertyFormStateType>(
     property_form_state_data
   );
+
+  console.log(propertyDetails);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const {
@@ -66,6 +68,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     accountOfficerOptions,
     resetKey,
   } = state;
+
+  const selectedBranchId = selectedBranch.value;
+  console.log("selected branch", selectedBranch)
 
   const setPropertyState = (changes: SetPropertyStateChanges) => {
     setState((x) => {
@@ -161,7 +166,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     data: inventoryData,
     loading: inventoryLoading,
     error: inventoryError,
-  } = useFetch<AllInventoryResponse>("/inventories/select");
+  } = useFetch<AllInventoryResponse>(`/inventories/select/${selectedBranchId}`);
 
   const branchOptions =
     branchesData?.data.map((branch) => ({
@@ -457,6 +462,13 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   label="Landlord"
                   inputContainerClassName="bg-white"
                   resetKey={resetKey}
+                  defaultValue={
+                    editMode && propertyDetails?.land_lord_id
+                      ? landlordOptions.find(
+                          (landlord) => landlord.value === propertyDetails.land_lord_id
+                        )
+                      : undefined
+                  }
                   hiddenInputClassName="property-form-input"
                   placeholder={
                     landlordsLoading

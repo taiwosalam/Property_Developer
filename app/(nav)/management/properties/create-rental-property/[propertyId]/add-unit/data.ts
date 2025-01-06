@@ -32,6 +32,7 @@ export const transformPropertyData = (
       images: data.images.map((img) => ({ path: img.path, id: img.id })),
       branch_name: data.branch?.branch_name,
       branch_id: data.branch?.id,
+      land_lord_id: data.land_lord_id,
     },
     propertySettings: {
       agency_fee: data.agency_fee || undefined,

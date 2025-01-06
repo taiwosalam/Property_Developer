@@ -28,6 +28,7 @@ interface PropertyDetails {
   category: Categories;
   description: string;
   images: { path: string; id: string }[];
+  land_lord_id?: string;
 }
 interface PropertySettings {
   agency_fee?: number;

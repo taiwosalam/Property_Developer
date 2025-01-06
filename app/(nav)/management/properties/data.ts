@@ -134,6 +134,7 @@ export interface PropertyDataObject {
   fee_penalty: 1 | 0;
   coordinate: string;
   units: UnitDataObject[];
+  land_lord_id: string;
 }
 
 export interface PropertiesApiResponse {
