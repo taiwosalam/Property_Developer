@@ -3,8 +3,10 @@ import { inventory_conditions } from "./data";
 
 export interface InventoryCardDataProps {
   inventory_id: string;
-  created_at: string;
-  edited_date: string;
+  created_date: string;
+  created_at?: string;
+  last_edited: string;
+  updated_at?: string;
   property_name: string;
   branch_name: string;
   account_officer: any;
@@ -63,7 +65,8 @@ export interface FetchData {
     branch_name: string;
     branch_id: string;
     created_date: string;
-    edited_date: string;
+    // edited_date: string;
+    updated_at?: string;
     property_name: string;
     account_officer: string;
     items: {

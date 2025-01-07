@@ -59,7 +59,7 @@ export const LandlordTenantInfo: React.FC<{
         <div className="custom-flex-col gap-4">
           {Object.values(info).map((value, idx) => (
             <p key={idx} className="text-black dark:text-darkText-2">
-              {value?.split("_").join(" ") || "N/A"}
+              {value?.split("_").join(" ") || "___"}
             </p>
           ))}
         </div>
@@ -229,7 +229,7 @@ export const NotesInfoBox: React.FC<{
           <span>Note</span>
           <sub className="text-sm font-normal bottom-[unset]">
             <span className="font-bold">Last Updated</span>{" "}
-            {notes?.last_updated || "N/A"}
+            {notes?.last_updated || "___"}
           </sub>
         </h3>
       </div>

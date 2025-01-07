@@ -22,8 +22,8 @@ export const InventoryListInfo: React.FC<InventoryListInfoProps> = ({
 
   const inventory_data_props: InventoryCardDataProps = {
     inventory_id: data.inventory_id || "",
-    created_at: dayjs(data.created_at).format("DD/MM/YYYY") || "",
-    edited_date: data.edited_date || "",
+    created_date: dayjs(data.created_at).format("DD/MM/YYYY") || "",
+    last_edited: dayjs(data.last_edited).format("DD/MM/YYYY") || "",
     property_name: data.property_name || "",
     branch_name: data.branch_name || "",
     account_officer: data.account_officer || "",

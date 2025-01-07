@@ -6,7 +6,7 @@ import { useState } from "react";
 import type { AddTenantModalOptions } from "./types";
 
 // Imports
-import { addTenant } from "./data";
+import { addTenant, inviteTenantEmail, multipleCreateTenants, multipleInviteTenants } from "./data";
 import InvitationForm from "../invitation-form";
 import AddTenantOptions from "./add-tenant-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
@@ -53,10 +53,10 @@ const AddTenantModal = () => {
   };
 
   const handleInviteTenantEmail = async (data: any) => {
-    // const success = await inviteTenantEmail(data);
-    // if (success) {
-    //   closeModalAndRefresh();
-    // }
+    const success = await inviteTenantEmail(data);
+    if (success) {
+      closeModalAndRefresh();
+    }
   };
 
   const handleInviteTenantId = async (data: any) => {
@@ -65,6 +65,25 @@ const AddTenantModal = () => {
     //   closeModalAndRefresh();
     // }
   };
+
+  const handleMultipleInviteTenants = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const status = await multipleInviteTenants(formData);
+    if (status) {
+      closeModalAndRefresh();
+    }
+  };
+
+  const handleBulkCreateTenants = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const status = await multipleCreateTenants(formData);
+    if (status) {
+      closeModalAndRefresh();
+    }
+  };
+
 
   const modal_states: Record<
     AddTenantModalOptions,
@@ -94,7 +113,7 @@ const AddTenantModal = () => {
         <AddMultipleLandlordsOrTenants
           type="tenant"
           method="import"
-          submitAction={async () => {}}
+          submitAction={handleBulkCreateTenants}
         />
       ),
     },
@@ -104,7 +123,7 @@ const AddTenantModal = () => {
         <AddMultipleLandlordsOrTenants
           type="tenant"
           method="invite"
-          submitAction={async () => {}}
+          submitAction={handleMultipleInviteTenants}
         />
       ),
     },

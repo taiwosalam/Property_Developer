@@ -58,13 +58,14 @@ const PreviewInventory = () => {
   useEffect(() => {
     const fetchBranchData = async () => {
       if (data) {
+        console.log("apiData", data);
         const { data: apiData } = data;
         const updatedInventoryData: InventoryData = {
           title: apiData.title || "___",
           inventory_id: apiData.id || "___",
           created_date: dayjs(apiData.created_date).format("MMM DD, YYYY") || "___",
-          edited_date: apiData.edited_date || "___",
-          property_name: apiData.title || "___",
+          edited_date: dayjs(apiData.edited_date).format("MMM DD, YYYY") || "___",
+          property_name: apiData.property_name || "___",
           branch_name: apiData.branch_name || "___",
           account_officer: apiData.account_officer || "___",
           branch_id: apiData.branch_id || "___",

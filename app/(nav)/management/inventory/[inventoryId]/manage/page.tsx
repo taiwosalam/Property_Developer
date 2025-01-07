@@ -53,7 +53,7 @@ const ManageInventory = () => {
           title: apiData.title || "",
           inventory_id: apiData.id || "",
           created_date: apiData.created_date || "",
-          edited_date: apiData.edited_date || "",
+          edited_date: apiData.updated_at || "",
           property_name: apiData.property_name || "",
           branch_name: apiData.branch_name || "",
           account_officer: apiData.account_officer || "",
