@@ -46,33 +46,43 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
+    let link = "";
     switch (card.title) {
       case "Properties":
         stats = branchData?.properties;
+        link = `/management/staff-branch/${branchId}/properties`;
         break;
       case "Landlords":
         stats = branchData?.landlords;
+        link = `/management/staff-branch/${branchId}/landlords`;
         break;
       case "Tenants & Occupants":
         stats = branchData?.tenants;
+        link = `/management/staff-branch/${branchId}/tenants`;
         break;
       case "Vacant Unit":
         stats = branchData?.vacant_units;
+        link = `/management/staff-branch/${branchId}/vacant-units`;
         break;
       case "Expired":
         stats = branchData?.expired;
+        link = `/management/staff-branch/${branchId}/vacant-units`;
         break;
       case "Invoices":
         stats = branchData?.invoices;
+        link = `/management/staff-branch/${branchId}/invoices`;
         break;
       case "Inquiries":
         stats = branchData?.inquiries;
+        link = `/management/staff-branch/${branchId}/inquiries`;
         break;
       case "Complaints":
         stats = branchData?.complaints;
+        link = `/management/staff-branch/${branchId}/complaints`;
         break;
       case "Listings":
         stats = branchData?.listings;
+        link = `/management/staff-branch/${branchId}/listings`;
         break;
       default:
         break;
@@ -80,6 +90,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
     return {
       ...card,
+      link,
       value: stats ? stats.total : card.value,
       subValue: stats ? stats.new_this_month : card.subValue,
     };
@@ -172,38 +183,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       </div>
       <div className="flex flex-col-reverse md:flex-row md:justify-between gap-x-8 gap-y-4 md:items-start">
         <div className="md:w-[58%] lg:w-[68%] bg-white dark:bg-[#3C3D37] p-6 space-y-4 rounded-lg border border-[rgba(186,199,213,0.20)]">
-          <div className="ml-auto flex w-[390px] max-w-full px-4 bg-[#F5F5F5] dark:bg-darkText-primary rounded-md items-center justify-end">
-            <DatePickerWithRange
-              selectedRange={selectedDateRange}
-              onDateChange={handleDateChange}
-            />
-            <Select value={timeRange} onValueChange={handleSelectChange}>
-              <SelectTrigger
-                className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto dark:text-whie dark:bg-[#020617]"
-                aria-label="Select a value"
-              >
-                <SelectValue placeholder="Last 3 months" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl">
-                <SelectItem value="90d" className="rounded-lg">
-                  Last 3 months
-                </SelectItem>
-                <SelectItem value="30d" className="rounded-lg">
-                  Last 30 days
-                </SelectItem>
-                <SelectItem value="7d" className="rounded-lg">
-                  Last 7 days
-                </SelectItem>
-                <SelectItem value="1d" className="rounded-lg">
-                  Yesterday
-                </SelectItem>
-                <SelectItem value="custom" className="rounded-lg">
-                  Custom
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <AutoResizingGrid gap={12} minWidth={215}>
+          <AutoResizingGrid gap={12} minWidth={230}>
             <AccountStatsCard
               title="Total Receipts"
               balance={1234535}
@@ -251,7 +231,11 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 lg:items-start">
         <div className="overflow-x-auto flex lg:w-[68%] md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
           {updatedDashboardCardData.map((card, index) => (
-            <Link href={card.link} key={index} prefetch={false}>
+            <Link
+              href={card.link}
+              key={index}
+              prefetch={false}
+            >
               <Card
                 title={card.title}
                 icon={<card.icon />}
@@ -267,7 +251,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 items-start">
         <DashboardChart
           chartTitle="Reports"
-          visibleRange={false}
+          visibleRange
           className="hidden md:block md:w-full lg:w-[68%]"
           chartConfig={branchIdChartConfig}
           chartData={branchIdChartData}
@@ -280,7 +264,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
           className="md:flex-1 lg:h-[380px]"
         />
       </div>
-      <BranchPropertiesSection branchId={branchId} />
+      {/* <BranchPropertiesSection branchId={branchId} /> */}
     </div>
   );
 };

@@ -83,7 +83,7 @@ const eventToComponentMap = {
           account_officer: "John Doe",
           branch_name: "Branch 1",
           created_at: "2021-01-01",
-          edited_date: "2021-01-01",
+          last_edited: "2021-01-01",
           inventory_id: "1",
           property_name: "Property 1",
         }}

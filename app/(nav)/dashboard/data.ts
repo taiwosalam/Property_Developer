@@ -59,7 +59,7 @@ export const dashboardCardData = [
     icon: BuildingIcon,
     value: 10,
     subValue: 20,
-    link: "/management/properties",
+    link: "/management/staff-branch/",
   },
   {
     title: "Landlords",
