@@ -89,6 +89,7 @@ export type LandlordPageData = {
   others: Others;
   documents: AttachedDocument[];
   properties_managed?: PropertyManaged[];
+  previous_properties?: PropertyManaged[];
 };
 
 export type LandlordHelpInfo = {
