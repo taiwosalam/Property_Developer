@@ -89,6 +89,7 @@ export const TenantEditProfileInfoSection = () => {
       tenant_type: data.tenant_type,
       gender: data.gender,
     };
+    console.log("payload", payload);
     cleanPhoneNumber(payload);
     if (!payload.phone_number) {
       payload.phone_number = "";

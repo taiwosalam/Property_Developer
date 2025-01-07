@@ -14,6 +14,29 @@ export const addTenant = async (
   }
 };
 
+export const inviteTenantEmail = async (formData: any) => {
+  try {
+    const { data } = await api.post("tenant/invitation", formData);
+    toast.success(data?.message || "Tenant invited successfully");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to invite tenant");
+    return false;
+  }
+};
+
+export const multipleInviteTenants = async (formData: FormData) => {
+  try {
+    const { data } = await api.post("tenant/multiple/invitation", formData);
+    toast.success(data?.message || "Tenants invited successfully");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to invite tenants");
+    return false;
+  }
+};
+
+
 export const addMultipleTenants = async (formData: any) => {
   try {
     const response = await fetch(
@@ -24,5 +47,16 @@ export const addMultipleTenants = async (formData: any) => {
     console.log(response);
   } catch (error) {
     console.error("Error adding multiple tenants:", error);
+  }
+};
+
+export const multipleCreateTenants = async (formData: FormData) => {
+  try {
+    const { data } = await api.post("/tenant/multiple/creation", formData);
+    toast.success(data?.message || "Tenants created successfully");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to create tenants profiles");
+    return false;
   }
 };

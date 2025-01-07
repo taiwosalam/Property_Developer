@@ -154,7 +154,7 @@ const Inventory = () => {
 
   useEffect(() => {
     if (apiData) {
-      console.error("Error fetching inventory data:", error);
+      // console.log("apiData", apiData);
       setState((x) => ({
         ...x,
         inventoryPageData: {
@@ -167,12 +167,11 @@ const Inventory = () => {
         },
       }));
     }
-    console.log("api data -", apiData)
     if (error) {
     }
   }, [apiData, error]);
 
-  console.log("Inventory", inventory)
+  // console.log("Inventory", inventory)
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);

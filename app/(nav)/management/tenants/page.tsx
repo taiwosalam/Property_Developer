@@ -186,7 +186,7 @@ const Tenants = () => {
             variant="sky_blue"
             size="sm_medium"
             className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
-            // onClick={() => onClickChat(t)}
+          // onClick={() => onClickChat(t)}
           >
             Chat
           </Button>
@@ -279,18 +279,20 @@ const Tenants = () => {
           },
           ...(branchOptions.length > 0
             ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
-                },
-              ]
+              {
+                label: "Branch",
+                value: branchOptions,
+              },
+            ]
             : []),
         ]}
       />
       <section>
         {tenants.length === 0 && !silentLoading ? (
           config.params.search || isFilterApplied() ? (
-            "No Search/Filter Found"
+            <div className="col-span-full text-center py-8 text-gray-500">
+              No Search/Filter Found
+            </div>
           ) : (
             <EmptyList
               buttonText="+ Create New Tenant"

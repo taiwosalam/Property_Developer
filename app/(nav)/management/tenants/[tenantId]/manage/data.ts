@@ -60,6 +60,7 @@ export interface IndividualTenantAPIResponse {
     state: string;
     local_government: string;
     address: string;
+    city: string;
     note: {
       last_updated_at: Date;
       note: string;
@@ -119,7 +120,7 @@ export const transformIndividualTenantAPIResponse = ({
     marital_status: "",
     contact_address: {
       address: data.address,
-      city: "",
+      city: data.city,
       state: data.state,
       local_govt: data.local_government,
     },
