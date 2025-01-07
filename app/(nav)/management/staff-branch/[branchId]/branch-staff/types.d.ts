@@ -3,6 +3,7 @@ interface Staff {
   name: string;
   email: string;
   position: string;
+  staff_role?: string;
   phone_number?: string;
   gender?: string;
   picture: string | null;
@@ -31,6 +32,7 @@ export interface StaffListResponse {
       email: string;
       phone: string;
       picture: string | null;
+      staff_role: string;
       title: string | null;
     }[];
     branch: {

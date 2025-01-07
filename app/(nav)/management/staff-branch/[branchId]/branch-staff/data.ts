@@ -44,7 +44,7 @@ export const transformStaffListResponse = (
     // branch_address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
     staffs: data.staff.map((s) => {
       const name = s.title ? `${s.title} ${s.name}` : s.name;
-      return { ...s, name, position: "", phone_number: s.phone, gender: "" };
+      return { ...s, name, position: s.staff_role, phone_number: s.phone, gender: "" };
     }),
   };
 };

@@ -35,14 +35,21 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import { transformSingleBranchAPIResponse } from "./data";
 import NetworkError from "@/components/Error/NetworkError";
 import type { Stats, SingleBranchResponseType } from "./types";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
 
-  const { data, error, loading, isNetworkError } =
+  const { data, error, loading, isNetworkError, refetch } =
     useFetch<SingleBranchResponseType>(`branch/${branchId}`);
+  useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
 
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
+
+  // console.log("data", data)
+  // useEffect(()=> {
+  //   console.log("branch data", branchData)
+  // },[branchData])
 
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
@@ -133,6 +140,8 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       setSelectedDateRange(calculateDateRange(days));
     }
   };
+
+  console.log("branch data", branchData);
 
   if (loading) return <CustomLoader layout="dasboard" />;
 

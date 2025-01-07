@@ -114,6 +114,7 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
   } = useFetch<StaffListResponse>(`staffs?branch_id=${branchId}`, config);
 
   useEffect(() => {
+    console.log("apiData", apiData);
     if (apiData) {
       setState((x) => ({
         ...x,
@@ -149,6 +150,8 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
   const handleSelectTableItem = (item: DataItem) => {
     router.push(`/management/staff-branch/${branchId}/branch-staff/${item.id}`);
   };
+
+  // console.log("staff", state)
 
   if (isNetworkError) return <NetworkError />;
 
