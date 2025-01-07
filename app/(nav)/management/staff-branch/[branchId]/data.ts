@@ -38,7 +38,7 @@ export const transformSingleBranchAPIResponse = (
     data: { branch, manager },
   } = response;
 
-  console.log("manager", manager);
+  console.log("branch", branch);
   return {
     branch_name: branch.branch_name,
     address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
@@ -53,7 +53,7 @@ export const transformSingleBranchAPIResponse = (
     listings: { total: 0, new_this_month: 0 },
     staffs: branch.staffs.map((s) => {
       return {
-        avatarSrc: "",
+        avatarSrc: s.picture,
         name: `${s.title ? s.title + " " : ""}${s.name}`,
         position: s.staff_role,
         staff_ID: s.id,

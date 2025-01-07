@@ -47,8 +47,8 @@ const UserCard: React.FC<UserCardProps> = ({
         {user_tag === "mobile" || user_tag === "web" ? (
           <UserTag type={user_tag} className="mb-2" />
         ) : (
-          <p className="text-xs text-brand-10 dark:text-darkText-1 font-normal capitalize">
-            {user_tag}
+          <p className="text-xs text-brand-10 font-normal capitalize">
+            {user_tag === "manager" ? "Branch Manager" : user_tag}
           </p>
         )}
         <p className="font-semibold text-xs text-[#8D8D8D] dark:text-darkText-2 text-ellipsis line-clamp-1">

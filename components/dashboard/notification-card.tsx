@@ -86,45 +86,58 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         )}
       >
         {notifications.map((notification, index) => (
-          <Link
-            href={
-              sectionHeader === "Staffs"
-                ? `/management/staff-branch/${branchId}/staff-profile/${notification.staff_ID}`
-                : "#"
-            }
-            className="flex items-center gap-3"
-            key={index}
-          >
-            <Picture
-              src={notification.avatarSrc || empty}
-              alt="profile picture"
-              size={36}
-              rounded
-            />
-            <div className="w-full gap-1">
-              <div className="w-full flex items-center justify-between">
-                <p className="text-sm font-medium text-text-primary dark:text-[#f1f1fd] flex items-center">
+          <div className="flex items-center justify-between">
+            <Link
+              href={
+                sectionHeader === "Staffs"
+                  ? `/management/staff-branch/${branchId}/branch-staff/${notification.staff_ID}`
+                  : "#"
+              }
+              className="flex items-center gap-3 w-[70%]"
+              key={index}
+            >
+              <div className="custom-secondary-bg rounded-full p-[1px]">
+                <Picture
+                  src={notification.avatarSrc || empty}
+                  alt="profile picture"
+                  size={36}
+                  rounded
+                />
+              </div>
+              <div className="w-full gap-1">
+                {/* <div className=""> */}
+                <p className="text-sm font-medium text-text-primary dark:text-[#f1f1fd] flex items-center line-clamp-1 text-ellipsis">
                   {notification.name}
                   {sectionHeader !== "Staffs" && (
                     <BadgeIcon color={notification.badgeColor || "red"} />
                   )}
                 </p>
-                <p className="text-[10px] text-text-disabled">
+                {/* <p className="text-[10px] text-text-disabled">
                   {sectionHeader === "Staffs" ? "Message" : notification.time}
+                </p> */}
+                {/* </div> */}
+                {notification.title && (
+                  <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
+                    {notification.title === "manager"
+                      ? "Branch Manager"
+                      : notification.title}
+                  </p>
+                )}
+                <p className="text-xs text-text-tertiary font-normal capitalize">
+                  {sectionHeader !== "Staffs"
+                    ? notification.message
+                    : notification.position === "manager"
+                      ? "Branch Manager"
+                      : notification.position}
                 </p>
               </div>
-              {notification.title && (
-                <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
-                  {notification.title}
-                </p>
-              )}
-              <p className="text-xs text-text-tertiary font-normal">
-                {sectionHeader !== "Staffs"
-                  ? notification.message
-                  : notification.position}
+            </Link>
+            <div>
+              <p className="text-[10px] text-text-disabled">
+                {sectionHeader === "Staffs" ? "Message" : notification.time}
               </p>
             </div>
-          </Link>
+          </div>
         ))}
         {notifications.length === 0 && (
           <div className="flex flex-col items-center text-center gap-6">
