@@ -310,7 +310,31 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         />
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="previous property">
-        <div className="flex gap-8"></div>
+        <AutoResizingGrid minWidth={315}>
+          {landlordData?.previous_properties?.map((property) => (
+            <PropertyCard
+              key={property.id}
+              images={property.images}
+              id={property.id.toString()}
+              property_name={property.name}
+              address={property.address}
+              total_units={property.total_units}
+              total_income={property.total_income}
+              total_returns={property.total_returns}
+              property_type="facility"
+              total_unit_pictures={2}
+              currency="naira"
+              mobile_tenants={property.mobile_tenants}
+              web_tenants={property.web_tenants}
+              owing_units={property.owing_units}
+              available_units={property.available_units}
+              viewOnly={property.viewOnly}
+              isClickable={false}
+              hasVideo
+              branch={property.branch}
+            />
+          ))}
+        </AutoResizingGrid>
       </LandlordTenantInfoSection>
       {landlordData?.user_tag === "mobile" && (
         <LandlordEditContext.Provider value={{ data: landlordData }}>

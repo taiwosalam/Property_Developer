@@ -94,6 +94,7 @@ export interface IndividualLandlordAPIResponse {
       relationship: string;
     };
     properties: any[];
+    previous_properties: any[];
     documents: {
       type: string;
       files: (
@@ -165,6 +166,38 @@ export const transformIndividualLandlordAPIResponse = ({
       });
     }),
     properties_managed: data.properties.map((p) => {
+      const totalReturns = p.properties.units.reduce((sum:any, unit:any) => {
+        return sum + parseFloat(unit.fee_amount);
+      }, 0);
+      const feePercentage =
+      p.properties.property_type === "rental" ? p.properties.agency_fee : p.properties.management_fee;
+
+      return {
+        id: p.properties.id,
+        name: p.properties.title,
+        address: `${p.properties.full_address}, ${p.properties.city_area}, ${p.properties.local_government}, ${p.properties.state}`,
+        state: p.properties.state,
+        local_govt: p.properties.local_government,
+        type: p.properties.type,
+        images: p.properties.images.map((image: any) => image.path),
+        status: p.properties.status,
+        tenant_count: p.properties.tenant_count,
+        total_units: p.properties.units.length,
+        currency: p.properties.currency,
+        last_updated: moment(p.properties.updated_at).format("DD/MM/YYYY"),
+        total_returns: totalReturns,
+        total_income: (totalReturns * feePercentage) / 100,
+        mobile_tenants: 0,
+        web_tenants: 0,
+        accountOfficer: "",
+        owing_units: 0,
+        available_units: 0,
+        isClickable: true,
+        viewOnly: false,
+        branch: p.properties.branch.branch_name,
+      }
+    }),
+    previous_properties: data.previous_properties.map((p) => {
       const totalReturns = p.properties.units.reduce((sum:any, unit:any) => {
         return sum + parseFloat(unit.fee_amount);
       }, 0);
