@@ -44,7 +44,7 @@ const BranchCard: React.FC<BranchCardProps> = ({
         <p className="font-bold text-base text-black dark:text-white leading-5 mb-[5px]">
           {branch_title}
         </p>
-        <p className="text-xs text-text-tertiary font-normal mb-[6.5px]">
+        <p className="text-xs text-text-tertiary font-normal mb-[6.5px] line-clamp-1 truncate">
           {branch_full_address}
         </p>
         <div className="flex items-center gap-2 justify-center mb-5">
