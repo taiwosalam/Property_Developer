@@ -1,6 +1,7 @@
 // Imports
 import type { PropertyFormStateType, AllStaffResponse } from "./types";
-import api from "@/services/api";
+import api, { handleAxiosError } from "@/services/api";
+import toast from "sonner";
 
 export const property_form_state_data: PropertyFormStateType = {
   state: "",
@@ -134,4 +135,20 @@ export const transformUnitFormData = (
   };
 
   return payload;
+};
+
+export const addPropertyWithId = async (
+  property_id: string,
+  company_id: string
+): Promise<boolean> => {
+  try {
+    await api.post(`property/invite`, {
+      property_id,
+      company_id,
+    });
+    return true;
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
 };
