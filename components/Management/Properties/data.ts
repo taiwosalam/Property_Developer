@@ -142,6 +142,7 @@ export const addPropertyWithId = async (
   company_id: string
 ): Promise<boolean> => {
   try {
+    // end point throwing error
     await api.post(`property/invite`, {
       property_id,
       company_id,
