@@ -171,7 +171,6 @@ const Inventory = () => {
     }
   }, [apiData, error]);
 
-  // console.log("Inventory", inventory)
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);

@@ -27,6 +27,8 @@ import { useRouter } from "next/navigation"; //only web can edit profile
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { deleteLandlord } from "./data";
+
+
 const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
   const router = useRouter();
