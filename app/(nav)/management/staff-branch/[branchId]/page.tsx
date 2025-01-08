@@ -48,6 +48,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
 
+  console.log("here we are", branchData)
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
     let link = "";
