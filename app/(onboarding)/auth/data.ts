@@ -6,6 +6,7 @@ import api, { handleAxiosError } from "@/services/api";
 import { useAuthStore } from "@/store/authStore";
 import { useWalletStore } from "@/store/wallet-store";
 import { InputData } from "@/utils/checkFormDataForImageOrAvatar";
+import Cookies from "js-cookie";
 
 interface LoginResponse {
   message: string;
@@ -48,12 +49,19 @@ export const login = async (formData: Record<string, any>) => {
     );
     useAuthStore.getState().reset();
     const token = data.access_token;
-    useAuthStore.getState().setAuthState("token", token);
     const email = data.data.details?.email || formData.email;
-    useAuthStore.getState().setAuthState("email", email);
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
+
+    // SAVE TO ZUSTAND
+    useAuthStore.getState().setAuthState("token", token);
+    useAuthStore.getState().setAuthState("email", email);
     useAuthStore.getState().setAuthState("role", role);
+
+    // Save to cookies for middleware
+    Cookies.set("authToken", token, { expires: 7 }); // Expires in 7 days
+    Cookies.set("role", role, { expires: 7 });
+
     if (emailVerified) {
       toast.success(data?.message || "Login successful!");
       if (role === "user") {
