@@ -36,20 +36,17 @@ import { transformSingleBranchAPIResponse } from "./data";
 import NetworkError from "@/components/Error/NetworkError";
 import type { Stats, SingleBranchResponseType } from "./types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import useBranchStore from "@/store/branch-store";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
+  const { branch, setBranch } = useBranchStore();
 
   const { data, error, loading, isNetworkError, refetch } =
     useFetch<SingleBranchResponseType>(`branch/${branchId}`);
   useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
 
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
-
-  // console.log("data", data)
-  // useEffect(()=> {
-  //   console.log("branch data", branchData)
-  // },[branchData])
 
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
@@ -103,6 +100,15 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     };
   });
 
+  // set branch data to store
+  useEffect(() => {
+    if (branch?.branch_name !== branchData?.branch_name) {
+      setBranch("branch_name", branchData?.branch_name || "___");
+      setBranch("address", branchData?.address || "___");
+      setBranch("branch_id", branchId);
+    }
+  }, [branchData, branch, setBranch]);
+
   const [timeRange, setTimeRange] = useState("30d");
   // const [highestMetric, setHighestMetric] = useState<string | null>(null);
   // const [primaryColor, setPrimaryColor] = useState<string | null>(null);
@@ -141,7 +147,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     }
   };
 
-  console.log("branch data", branchData);
+  // console.log("branch data", branchData);
 
   if (loading) return <CustomLoader layout="dasboard" />;
 

@@ -33,10 +33,12 @@ import type { DataItem } from "@/components/Table/types";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import TableMenu from "@/components/Table/table-menu";
 import BackButton from "@/components/BackButton/back-button";
-// import { invoiceTableFields } from "@/app/(nav)/accounting/invoice/data";
+import { AllBranchesResponse } from "@/components/Management/Properties/types";
+import useBranchStore from "@/store/branch-store";
 
 const BranchInvoicePage = () => {
   const isDarkMode = useDarkMode();
+  const { branch } = useBranchStore();
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >();
@@ -99,11 +101,11 @@ const BranchInvoicePage = () => {
         <div className="">
                 <BackButton reducePaddingTop as="div" className="items-start">
                     <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-                        branchData.branch_name
+                       { branch.branch_name}
                     </h1>
                     <div className="text-text-disabled flex items-center space-x-1">
                         <LocationIcon />
-                        <p className="text-sm font-medium">branchData.address</p>
+                        <p className="text-sm font-medium">{branch.address}</p>
                     </div>
                 </BackButton>
             </div>

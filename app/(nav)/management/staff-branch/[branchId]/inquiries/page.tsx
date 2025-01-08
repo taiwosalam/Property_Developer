@@ -15,7 +15,8 @@ import { useEffect, useState } from "react";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import BackButton from "@/components/BackButton/back-button";
 import { LocationIcon } from "@/public/icons/icons";
-// import { RequestCallBackCardDataType } from "@/app/(nav)/tasks/inquires/data";
+import { AllBranchesResponse } from "@/components/Management/Properties/types";
+import useBranchStore from "@/store/branch-store";
 
 const transformToCallBackRequestCardProps = (
   data: RequestCallBackCardDataType
@@ -34,6 +35,7 @@ const transformToCallBackRequestCardProps = (
 };
 
 const BranchInquires = () => {
+  const { branch } = useBranchStore();
   const [requestCallBackCardData, setRequestCallBackCardData] = useState<
     RequestCallBackCardDataType[]
   >([]);
@@ -47,14 +49,14 @@ const BranchInquires = () => {
       <div className="w-full gap-2 flex items-center justify-between flex-wrap">
         <BackButton reducePaddingTop as="div" className="items-start">
           <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-            branchData.branch_name
+            {branch?.branch_name}
           </h1>
           <div className="text-text-disabled flex items-center space-x-1">
             <LocationIcon />
-            <p className="text-sm font-medium">branchData.address</p>
+            <p className="text-sm font-medium">{branch?.address}</p>
           </div>
         </BackButton>
-            </div>
+      </div>
       <FilterBar
         azFilter
         pageTitle="Request Callback"

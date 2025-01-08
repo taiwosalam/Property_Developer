@@ -33,10 +33,11 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import { ExclamationMark, LocationIcon } from "@/public/icons/icons";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import BackButton from "@/components/BackButton/back-button";
-// import { UnitPageState } from "../../../rent-unit/data";
+import useBranchStore from "@/store/branch-store";
 
 const RentAndUnit = () => {
   const view = useView();
+  const { branch } = useBranchStore();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
 
@@ -160,8 +161,6 @@ const RentAndUnit = () => {
       setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData) }));
       setState((prevState) => ({
         ...prevState,
-        // current_page: apiData.data.unit?.current_page,
-        // last_page: apiData.data.unit?.last_page,
       }));
     }
   }, [apiData]);
@@ -204,11 +203,11 @@ const RentAndUnit = () => {
       <div className="w-full gap-2 flex items-center justify-between flex-wrap">
         <BackButton reducePaddingTop as="div" className="items-start">
           <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-            branchData.branch_name
+            {branch.branch_name}
           </h1>
           <div className="text-text-disabled flex items-center space-x-1">
             <LocationIcon />
-            <p className="text-sm font-medium">branchData.address</p>
+            <p className="text-sm font-medium">{branch.address}</p>
           </div>
         </BackButton>
       </div>
