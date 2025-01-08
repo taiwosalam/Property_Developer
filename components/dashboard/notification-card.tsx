@@ -86,7 +86,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         )}
       >
         {notifications.map((notification, index) => (
-          <div className="flex items-center justify-between">
+          <div key={index} className="flex items-center justify-between">
             <Link
               href={
                 sectionHeader === "Staffs"
@@ -94,7 +94,6 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                   : "#"
               }
               className="flex items-center gap-3 w-[70%]"
-              key={index}
             >
               <div className="custom-secondary-bg rounded-full p-[1px]">
                 <Picture
