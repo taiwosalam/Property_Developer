@@ -69,7 +69,7 @@ const StaffProfile = () => {
     }
   }, [apiData]);
 
-  // console.log("data -", apiData);
+  console.log("data -", apiData);
   // console.log("staff here -", staff);
 
   if (loading) return <CustomLoader layout="profile" />;
