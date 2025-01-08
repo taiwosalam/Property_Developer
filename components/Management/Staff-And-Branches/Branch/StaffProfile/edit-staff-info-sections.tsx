@@ -12,67 +12,107 @@ import Select from "@/components/Form/Select/select";
 import { titles, genderTypes } from "@/data";
 import TextArea from "@/components/Form/TextArea/textarea";
 import CameraCircle from "@/public/icons/camera-circle.svg";
-import { DeleteIconOrange } from "@/public/icons/icons";
+import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
 import Picture from "@/components/Picture/picture";
 import Avatars from "@/components/Avatars/avatars";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import LockOTPModal from "./lock-otp-modal";
+import { checkFormDataForImageOrAvatar, cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { useImageUploader } from "@/hooks/useImageUploader";
+import Image from "next/image";
+import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import { toast } from "sonner";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { updateStaffPicture, updateStaffProfile } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/edit/data";
 export const StaffEditProfileInfoSection = () => {
   const { data: staff } = useStaffEditContext();
+  const [reqLoading, setReqLoading] = useState(false);
 
+  const handleUpdateProfile = async (data: Record<string, string>) => {
+    const payload = {
+      full_name: data.fullname,
+      title: data.personal_title,
+      estate_title: data.real_estate_title,
+      email: data.email,
+      phone: data.phone_number,
+      gender: data.gender,
+    };
+    cleanPhoneNumber(payload);
+    if (!payload.phone) {
+      payload.phone = "";
+    }
+    if (staff?.id) {
+      setReqLoading(true);
+      const status = await updateStaffProfile(
+        staff.id,
+        objectToFormData(payload)
+      );
+      if (status) {
+        window.dispatchEvent(new Event("staff-updated"));
+      }
+      setReqLoading(false);
+    }
+  };
   return (
     <LandlordTenantInfoEditSection title="profile">
-      <LandlordTenantInfoEditGrid>
-        <Select
-          isSearchable={false}
-          id="personal-title"
-          label="personal title / qualifiction"
-          inputContainerClassName="bg-neutral-2"
-          options={titles}
-          defaultValue={staff?.personal_title}
-        />
-        <Select
-          isSearchable={false}
-          id="real-estate-title"
-          label="real estate title"
-          inputContainerClassName="bg-neutral-2"
-          options={["realtors", "real estate agent", "attorneys", "investors"]}
-          defaultValue={staff?.real_estate_title}
-        />
-        <Input
-          id="fullname"
-          label="full name"
-          required
-          defaultValue={staff?.full_name}
-        />
-        <Input
-          id="email"
-          type="email"
-          label="email"
-          required
-          defaultValue={staff?.email}
-        />
-        <Select
-          id="gender"
-          label="gender"
-          isSearchable={false}
-          options={genderTypes}
-          inputContainerClassName="bg-neutral-2"
-          defaultValue={staff?.gender}
-        />
-        <Input
-          id="phone-number"
-          label="phone number"
-          required
-          defaultValue={staff?.phone_number}
-        />
+      <AuthForm onFormSubmit={handleUpdateProfile} skipValidation>
+        <LandlordTenantInfoEditGrid>
+          <Select
+            isSearchable={false}
+            id="personal_title"
+            label="personal title / qualifiction"
+            inputContainerClassName="bg-neutral-2"
+            options={titles}
+            defaultValue={staff?.personal_title}
+          />
+          <Select
+            isSearchable={false}
+            id="real_estate_title"
+            label="real estate title"
+            inputContainerClassName="bg-neutral-2"
+            options={["realtors", "real estate agent", "attorneys", "investors"]}
+            defaultValue={staff?.real_estate_title}
+          />
+          <Input
+            id="fullname"
+            label="full name"
+            required
+            defaultValue={staff?.full_name}
+          />
+          <Input
+            id="email"
+            type="email"
+            label="email"
+            required
+            defaultValue={staff?.email}
+          />
+          <Select
+            id="gender"
+            label="gender"
+            isSearchable={false}
+            options={genderTypes}
+            inputContainerClassName="bg-neutral-2"
+            defaultValue={staff?.gender}
+          />
+          <Input
+            id="phone_number"
+            label="phone number"
+            required
+            defaultValue={staff?.phone_number}
+          />
 
-        <div className="md:col-span-2 flex justify-end">
-          <Button size="base_medium" className="py-2 px-6">
-            update
-          </Button>
-        </div>
-      </LandlordTenantInfoEditGrid>
+          <div className="md:col-span-2 flex justify-end">
+            <Button
+              size="base_medium"
+              className="py-2 px-6"
+              type="submit"
+              disabled={reqLoading}
+            >
+              {reqLoading ? "updating..." : "update"}
+            </Button>
+          </div>
+        </LandlordTenantInfoEditGrid>
+      </AuthForm>
     </LandlordTenantInfoEditSection>
   );
 };
@@ -96,7 +136,7 @@ export const StaffEditMoveToAnotherBranchSection = () => {
           label="select new branch"
           inputContainerClassName="bg-neutral-2"
           options={[]}
-          //   defaultValue={staff?.real_estate_title}
+        //   defaultValue={staff?.real_estate_title}
         />
         <Select
           id="transfer_current_position_to"
@@ -109,7 +149,7 @@ export const StaffEditMoveToAnotherBranchSection = () => {
           label="select new branch position"
           inputContainerClassName="bg-neutral-2"
           options={[]}
-          //   defaultValue={staff?.real_estate_title}
+        //   defaultValue={staff?.real_estate_title}
         />
         <div className="md:col-span-2 flex justify-end">
           <Button size="base_medium" className="py-2 px-6">
@@ -132,14 +172,14 @@ export const StaffEditChangePositionSection = () => {
           label="assign current position to"
           inputContainerClassName="bg-neutral-2"
           options={[]}
-          //   defaultValue={position}
+        //   defaultValue={position}
         />
         <Select
           id="new_position"
           label="new position"
           inputContainerClassName="bg-neutral-2"
           options={[]}
-          //   defaultValue={staff?.real_estate_title}
+        //   defaultValue={staff?.real_estate_title}
         />
 
         <div className="md:col-span-2 flex justify-end">
@@ -214,80 +254,156 @@ export const StaffLockAccountSection = () => {
 };
 
 export const StaffEditAvatarInfoSection = () => {
-  const { data: staff } = useStaffEditContext();
-  const [profilePicture, setProfilePicture] = useState<string>(CameraCircle);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { data } = useStaffEditContext();
+
+  const [reqLoading, setReqLoading] = useState(false);
+  const {
+    preview,
+    handleImageChange: originalHandleImageChange,
+    inputFileRef,
+    clearSelection: clearImageSelection,
+    setPreview,
+  } = useImageUploader({
+    placeholder: CameraCircle,
+    maxSize: {
+      unit: "MB",
+      value: 2,
+    },
+  });
+
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState("");
+
+  const handleAvatarSelection = (avatarUrl: string) => {
+    clearImageSelection();
+    setSelectedAvatar(avatarUrl);
+    setAvatarModalOpen(false);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedAvatar("");
+    originalHandleImageChange(e);
+  };
+
+  const handleUpdatePicture = async (formData: FormData) => {
+    if (data?.id) {
+      if (preview === data.picture) {
+        return;
+      }
+      if (data?.picture && preview !== data.picture) {
+        if (!checkFormDataForImageOrAvatar(formData)) {
+          toast.warning("Please upload a picture or choose an avatar.");
+          return;
+        }
+      }
+      const pictureFile = formData.get("picture") as File;
+      if (pictureFile && pictureFile.size > 0) {
+        formData.delete("avatar");
+      }
+      setReqLoading(true);
+      const status = await updateStaffPicture(data.id, formData);
+      if (status) {
+        window.dispatchEvent(new Event("staff-updated"));
+      }
+      setReqLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (staff?.avatar || staff?.picture) {
-      setProfilePicture(staff.picture || staff.avatar || CameraCircle);
+    if (data?.picture) {
+      setPreview(data.picture);
     }
-  }, [staff?.avatar, staff?.picture]);
+  }, [data?.picture, setPreview]);
+
 
   return (
-    <LandlordTenantInfoEditSection title="edit profile picture">
-      <div className="flex">
-        <div
-          className="relative"
-          role="button"
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            className="hidden"
-            onChange={(event) => {
-              const file = event.target.files?.[0];
-              if (file) {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                  setProfilePicture(reader.result as string);
-                };
-                reader.readAsDataURL(file);
-              }
-            }}
-          />
-          <input
-            type="hidden"
-            name="avatar"
-            value={profilePicture === CameraCircle ? "" : profilePicture}
-          />
-          <Picture
-            src={profilePicture}
-            alt="profile picture"
-            size={90}
-            rounded
-          />
-          {profilePicture !== CameraCircle && (
-            <button
-              type="button"
-              className="absolute top-0 right-0 translate-x-[5px] -translate-y-[5px]"
+    <AuthForm
+      onFormSubmit={handleUpdatePicture}
+      skipValidation
+      returnType="form-data"
+    >
+      <LandlordTenantInfoEditSection title="Edit Picture">
+        <input type="hidden" name="avatar" value={selectedAvatar} />
+
+        <label htmlFor="picture" className="!w-fit cursor-pointer relative">
+          <Picture src={preview} alt="Camera" size={90} rounded />
+          {preview && preview !== CameraCircle && (
+            <div
+              role="button"
+              aria-label="remove image"
+              className="absolute top-0 right-0"
               onClick={(e) => {
-                setProfilePicture(CameraCircle);
-                if (fileInputRef.current) {
-                  fileInputRef.current.value = "";
-                }
-                e.stopPropagation();
+                e.preventDefault();
+                clearImageSelection();
               }}
             >
-              <DeleteIconOrange size={32} />
-            </button>
+              <DeleteIconOrange size={20} />
+            </div>
           )}
+          <input
+            type="file"
+            id="picture"
+            name="picture"
+            accept="image/*"
+            className="hidden pointer-events-none"
+            onChange={handleImageChange}
+            ref={inputFileRef}
+          />
+        </label>
+
+        <div className="custom-flex-col gap-3">
+          <p className="text-black text-base font-medium">Choose Avatar</p>
+          <Modal
+            state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
+          >
+            <ModalTrigger
+              className="bg-[rgba(42,42,42,0.63)] !w-[60px] h-[60px] rounded-full flex items-center justify-center text-white relative"
+              aria-label="choose avatar"
+            >
+              {selectedAvatar ? (
+                <>
+                  <Image
+                    src={selectedAvatar}
+                    alt="selected avatar"
+                    width={60}
+                    height={60}
+                    className="object-cover object-center w-[60px] h-[60px] rounded-full bg-brand-9"
+                  />
+                  <div
+                    role="button"
+                    aria-label="remove avatar"
+                    className="absolute top-0 right-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedAvatar("");
+                    }}
+                  >
+                    <DeleteIconOrange size={20} />
+                  </div>
+                </>
+              ) : (
+                <PersonIcon size={18} />
+              )}
+            </ModalTrigger>
+            <ModalContent>
+              <LandlordTenantModalPreset
+                heading="Choose Avatar"
+                style={{ maxWidth: "700px" }}
+              >
+                <Avatars onClick={handleAvatarSelection} />
+              </LandlordTenantModalPreset>
+            </ModalContent>
+          </Modal>
         </div>
-      </div>
-      <div className="custom-flex-col gap-3">
-        <p className="text-black text-base font-medium">Choose Avatar</p>
-        {/* <Avatars
-          type="avatars"
-          size={40}
-          maxSize={4}
-          onClick={setProfilePicture}
-        /> */}
-      </div>
-      <Button size="base_medium" className="py-2 px-6">
-        Save
-      </Button>
-    </LandlordTenantInfoEditSection>
+        <Button
+          size="base_medium"
+          className="py-2 px-6"
+          type="submit"
+          disabled={reqLoading}
+        >
+          {reqLoading ? "updating..." : "save"}
+        </Button>
+      </LandlordTenantInfoEditSection>
+    </AuthForm>
   );
 };

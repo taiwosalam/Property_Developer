@@ -14,22 +14,62 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import Button from "@/components/Form/Button/button";
 import { StaffEditContext } from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/staff-edit-context";
+import { useParams } from "next/navigation";
+import useBranchStore from "@/store/branch-store";
+import { useEffect, useState } from "react";
+import useFetch from "@/hooks/useFetch";
+import { StaffAPIResponse } from "../type";
+import { staffData, transformStaffAPIResponse } from "../data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import NetworkError from "@/components/Error/NetworkError";
 
-const mockdata: StaffProfileProps = {
-  personal_title: "Evangelist",
-  real_estate_title: "Realtor",
-  full_name: "John Doe",
-  email: "john@doe.com",
-  phone_number: "08012345678",
-  gender: "Male",
-  position: "Evangelist",
-  picture: "/empty/SampleLandlord.jpeg",
-  about: "I am a software engineer",
-};
 
 const EditStaffProfile = () => {
+  const { branchId, staffId } = useParams();
+  const { branch } = useBranchStore();
+
+  const [pageData, setPageData] = useState<StaffProfileProps>(staffData);
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<StaffAPIResponse>(`/staff/${staffId}`);
+  useRefetchOnEvent("staff-updated", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (apiData) {
+      setPageData(
+        {
+          id: apiData.data.id,
+          personal_title: apiData.data.title,
+          real_estate_title: apiData.data.real_estate_title,
+          full_name: apiData.data.name,
+          email: apiData.data.email,
+          phone_number: apiData.data.phone,
+          gender: apiData.data.gender,
+          position: apiData.data.position,
+          picture: apiData.data.picture,
+          about: apiData.data.about_staff,
+        }
+      )
+    }
+  }, [apiData]);
+
+  console.log("data -", apiData);
+  console.log("page -", pageData);
+
+  if (loading)
+    return <CustomLoader layout="edit-page" pageTitle="Edit Staff" />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <div>{error}</div>;
+  if (!apiData) return null;
+
   return (
-    <StaffEditContext.Provider value={{ data: mockdata }}>
+    <StaffEditContext.Provider value={{ data: pageData }}>
       <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
         <BackButton>Edit Staff</BackButton>
         <div className="flex flex-col lg:flex-row gap-8 lg:items-start">

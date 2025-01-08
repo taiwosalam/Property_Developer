@@ -41,10 +41,10 @@ const BranchCard: React.FC<BranchCardProps> = ({
         />
       </div>
       <div className="rounded-2xl bg-white dark:bg-darkText-primary px-[20px] pt-[60px] pb-[20px] items-center text-center flex flex-col border-2 border-support-1 border-solid h-full">
-        <p className="font-bold text-base text-black dark:text-white leading-5 mb-[5px]">
+        <p className="font-bold text-base text-black dark:text-white leading-5 mb-[5px] line-clamp-1 truncate text-ellipsis text-wrap">
           {branch_title}
         </p>
-        <p className="text-xs text-text-tertiary font-normal mb-[6.5px] overflow-hidden text-ellipsis whitespace-nowrap">
+        <p className="text-xs text-text-tertiary font-normal mb-[6.5px] line-clamp-1 truncate text-ellipsis text-wrap">
           {branch_full_address}
         </p>
         <div className="flex items-center gap-2 justify-center mb-5">
@@ -55,7 +55,7 @@ const BranchCard: React.FC<BranchCardProps> = ({
             height={20}
             className="w-5 h-5 rounded-full object-cover"
           />
-          <p className="text-black dark:text-darkText-1 font-medium text-sm">
+          <p className="text-black dark:text-darkText-1 font-medium text-sm line-clamp-1 truncate text-ellipsis text-wrap">
             {manager_name}
           </p>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -23,27 +24,69 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import StaffProfilePortfolio from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/staff-profile-portfolio";
 import {
   activitiesTableData,
+  initialPageData,
   placeholder_portfolio_data,
   staffActivitiesTableFields,
+  transformStaffAPIResponse,
 } from "./data";
 import CustomTable from "@/components/Table/table";
 import StaffChat from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/staff-chat";
+import useBranchStore from "@/store/branch-store";
+import useFetch from "@/hooks/useFetch";
+import NetworkError from "@/components/Error/NetworkError";
+import { StaffPageTypes, StaffAPIResponse } from "./type";
+import { empty } from "@/app/config";
+import dayjs from "dayjs";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const StaffProfile = () => {
   const { branchId, staffId } = useParams();
+  const { branch } = useBranchStore();
+
+  const [pageData, setPageData] = useState<StaffPageTypes>(initialPageData);
+
+  const {
+    staff,
+    activities,
+    chats,
+    portfolio
+  } = pageData
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+  } = useFetch<StaffAPIResponse>(`/staff/${staffId}`);
+
+  useEffect(() => {
+    if (apiData) {
+      setPageData((x) => ({
+        ...x,
+        ...transformStaffAPIResponse(apiData),
+      }));
+    }
+  }, [apiData]);
+
+  // console.log("data -", apiData);
+  // console.log("staff here -", staff);
+
+  if (loading) return <CustomLoader layout="profile" />;
+  if (isNetworkError) return <NetworkError />;
+
+  if (error) return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="custom-flex-col gap-10">
-      <div className="custom-flex-col gap-6">
-        <div className="custom-flex-col gap-2">
-          <BackButton bold>Moniya Branch</BackButton>
+      <div className="custom-flex-col gap-4">
+        <div className="custom-flex-col">
+          <BackButton bold> {branch.branch_name} </BackButton>
           <div className="flex">
             <div className="w-10"></div>
-            <div className="flex items-center gap-1 text-text-disabled">
+            <div className="flex items-center gap-1 text-text-disabled mb-2">
               <LocationIcon />
-              <p className="text-sm font-normal">
-                Street 23, All Avenue, Nigeria
-              </p>
+              <p className="text-sm font-normal">{branch.address}</p>
             </div>
           </div>
         </div>
@@ -52,7 +95,7 @@ const StaffProfile = () => {
             <div className="flex flex-col xl:flex-row gap-5">
               <div className="flex items-start">
                 <Picture
-                  src={Avatar}
+                  src={staff.picture || empty}
                   alt="profile picture"
                   size={120}
                   rounded
@@ -62,19 +105,19 @@ const StaffProfile = () => {
                 <div className="space-y-4">
                   <div>
                     <div className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-center">
-                      Barrister Adedeji
+                      {staff?.name}
                       <BadgeIcon color="blue" />
                     </div>
                     <p
                       className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-darkText-2`}
                     >
-                      Legal Practitioner
+                      {staff?.real_estate_title}
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <BranchManagerTag />
+                    <BranchManagerTag role={staff?.position} />
                     <p className="text-neutral-800 dark:text-darkText-2 text-base font-medium">
-                      ID: 22132876554444
+                      ID: {staff?.id}
                     </p>
                   </div>
                 </div>
@@ -95,28 +138,21 @@ const StaffProfile = () => {
           </LandlordTenantInfoBox>
           <LandlordTenantInfo
             info={{
-              gender: "Male",
-              email: "BarristerBarrister@gmail.com",
-              phone: "+2348132086958",
-              "personal title": "Barrister",
-              "real estate title": "Legal Practitioner",
+              gender: staff?.gender,
+              email: staff?.email,
+              phone: staff?.phone,
+              "personal title": staff?.title,
+              "real estate title": staff?.real_estate_title,
             }}
           />
           <LandlordTenantInfoBox>
             <div className="custom-flex-col gap-4">
               <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                About Barrister Abimbola Adedeji
+                About {`${staff?.title} ${staff?.name}`}
               </h3>
               <div className="w-full border border-dashed border-brand-9 opacity-40" />
               <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal">
-                A multi-family home, also know as a duplex, triplex, or
-                multi-unit building, is a residential property that living read
-                more. They want to work with their budget in booking an
-                appointment. They wants to ease themselves of the stress of
-                having to que, and also reduce the time spent searching for
-                something new. They wants to ease themselves of the stress of
-                having to que, and also reduce the time spent searching for
-                something new.
+                {staff?.about_staff}
               </p>
             </div>
           </LandlordTenantInfoBox>
@@ -124,9 +160,9 @@ const StaffProfile = () => {
             separator
             heading="Information"
             info={{
-              branch: "moniya branch",
-              "date created": "23/07/2023",
-              "last updated": "23/07/2023",
+              branch: branch.branch_name,
+              "date created": dayjs(staff.created_at).format("MMM DD, YYYY"),
+              "last updated": dayjs(staff.updated_at).format("MMM DD, YYYY"),
               status: "active",
             }}
           />
@@ -135,7 +171,7 @@ const StaffProfile = () => {
       <div className="custom-flex-col gap-[18px]">
         <div className="flex justify-between">
           <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-            Barrister Abimbola Adedeji Activities
+            {`${staff?.title} ${staff?.name} Activities`}
           </h2>
           <Link
             href={`/management/staff-branch/${branchId}/branch-staff/${staffId}/activities`}
@@ -152,13 +188,13 @@ const StaffProfile = () => {
       </div>
       <div className="custom-flex-col gap-[18px]">
         <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-          Barrister Abimbola Adedeji Chat
+          {`${staff?.title} ${staff?.name}`} Chat
         </h2>
         <StaffChat />
       </div>
       <div className="custom-flex-col gap-[18px]">
         <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-          Barrister Abimbola Adedeji Portfolios
+          {`${staff?.title} ${staff?.name}`} Portfolios
         </h1>
         <div className="custom-flex-col gap-8">
           {placeholder_portfolio_data.map(({ title, items }, index) => (

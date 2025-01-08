@@ -232,11 +232,6 @@ const BranchProperties = () => {
                     </>
                 )}
             </section>
-            <Pagination
-                totalPages={10}
-                currentPage={1}
-                onPageChange={() => { }}
-            />
         </div>
     );
 };

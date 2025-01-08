@@ -1,5 +1,5 @@
 // Types
-import type { StaffProfilePortfolioProps } from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/types";
+import type { StaffProfilePortfolioProps, StaffProfileProps } from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/types";
 import type { Field } from "@/components/Table/types";
 // Images
 import SampleProperty from "@/public/empty/SampleProperty.jpeg";
@@ -11,7 +11,49 @@ import Avatar1 from "@/public/empty/avatar-1.svg";
 import Avatar2 from "@/public/empty/avatar-2.svg";
 import Avatar3 from "@/public/empty/avatar-3.svg";
 import Avatar4 from "@/public/empty/avatar-4.svg";
+import { StaffAPIResponse, StaffPageTypes } from "./type";
 
+
+export const staffData: StaffProfileProps = {
+  id:"",
+  personal_title: "",
+  real_estate_title: "",
+  full_name: "",
+  email: "",
+  phone_number: "",
+  gender: "",
+  position: "",
+  picture: "",
+  about: "",
+};
+
+
+export const initialPageData:StaffPageTypes = {
+  staff: {
+    id: "",
+    name: "",
+    email: "",
+    title: "",
+    real_estate_title: "",
+    phone: "",
+    username: "",
+    gender: "",
+    position: "",
+    state: "",
+    local_government: "",
+    address: "",
+    picture: "",
+    user_id: "0",
+    branch_id: "0",
+    company_id: "0",
+    created_at: "",
+    updated_at: "",
+    about_staff: "",
+  },
+  activities: [],
+  chats: [],
+  portfolio: [],
+}
 export const placeholder_portfolio_data: StaffProfilePortfolioProps[] = [
   {
     title: "Properties",
@@ -200,3 +242,35 @@ const generateTableData = (numItems: number) => {
 };
 
 export const activitiesTableData = generateTableData(5);
+
+
+export const transformStaffAPIResponse = (
+  res: StaffAPIResponse
+) : StaffPageTypes => {
+  return {
+    staff: {
+      id: res.data.id.toString(),
+      name: res.data.name,
+      email: res.data.email,
+      title: res.data.title,
+      real_estate_title: res.data.real_estate_title,
+      phone: res.data.phone,
+      picture: res.data.picture,
+      username: res.data.username,
+      gender: res.data.gender,
+      position: res.data.position,
+      state: res.data.state,
+      local_government: res.data.local_government,
+      address: res.data.address,
+      user_id: res.data.user_id,
+      branch_id: res.data.branch_id,
+      company_id: res.data.company_id,
+      created_at: res.data.created_at,
+      updated_at: res.data.updated_at,
+      about_staff: res.data.about_staff,
+    },
+    activities: [],
+    chats: [],
+    portfolio: [],
+  }
+}
