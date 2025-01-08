@@ -1,3 +1,4 @@
+
 "use client";
 // Imports
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
@@ -23,8 +24,10 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import { ExclamationMark, LocationIcon } from "@/public/icons/icons";
 import { RentUnitFilterParams } from "../../../rent-unit/data";
 import BackButton from "@/components/BackButton/back-button";
+import useBranchStore from "@/store/branch-store";
 
 const BranchUnits = () => {
+    const { branch } = useBranchStore()
     const [pageData, setPageData] = useState<UnitPageState>(initialState);
     const {
         total_vacant,
@@ -136,11 +139,11 @@ const BranchUnits = () => {
             <div className="w-full gap-2 flex items-center justify-between flex-wrap">
                 <BackButton reducePaddingTop as="div" className="items-start">
                     <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-                        branchData.branch_name
+                       { branch.branch_name } 
                     </h1>
                     <div className="text-text-disabled flex items-center space-x-1">
                         <LocationIcon />
-                        <p className="text-sm font-medium">branchData.address</p>
+                        <p className="text-sm font-medium">{branch.address}</p>
                     </div>
                 </BackButton>
             </div>
