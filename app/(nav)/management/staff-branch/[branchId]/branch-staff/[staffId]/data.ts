@@ -15,7 +15,8 @@ import { StaffAPIResponse, StaffPageTypes } from "./type";
 
 
 export const staffData: StaffProfileProps = {
-  id:"",
+  branch_id: "",
+  id: "",
   personal_title: "",
   real_estate_title: "",
   full_name: "",
@@ -28,7 +29,7 @@ export const staffData: StaffProfileProps = {
 };
 
 
-export const initialPageData:StaffPageTypes = {
+export const initialPageData: StaffPageTypes = {
   staff: {
     id: "",
     name: "",
@@ -246,7 +247,7 @@ export const activitiesTableData = generateTableData(5);
 
 export const transformStaffAPIResponse = (
   res: StaffAPIResponse
-) : StaffPageTypes => {
+): StaffPageTypes => {
   return {
     staff: {
       id: res.data.id.toString(),
@@ -269,7 +270,22 @@ export const transformStaffAPIResponse = (
       updated_at: res.data.updated_at,
       about_staff: res.data.about_staff,
     },
-    activities: [],
+    activities: res.activities.map((a) => {
+      // Parsing action_taken
+      const actionTaken = JSON.parse(a.action_taken);
+      // Accessing the message
+      const message = actionTaken.message;
+      return {
+        id: a["S/N"],
+        username: a.username,
+        page_visits: a.page_visits,
+        action_taken: message,
+        ip_address: a.ip_address,
+        location: a.location,
+        date: a.date,
+        time: a.time,
+      }
+    }),
     chats: [],
     portfolio: [],
   }

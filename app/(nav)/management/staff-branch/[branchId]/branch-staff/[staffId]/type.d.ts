@@ -22,6 +22,19 @@ export interface StaffAPIResponse {
         updated_at: string;
         about_staff: string;
     };
+    activities: StaffActivitiies[];
+}
+
+export interface StaffActivitiies{
+    "S/N"?: number;
+    id?: number;
+    username: string; 
+    page_visits: string; 
+    action_taken: string; 
+    ip_address: string;
+    location: string; 
+    date: string; 
+    time: string; 
 }
 
 export interface StaffPageTypes {
@@ -46,7 +59,7 @@ export interface StaffPageTypes {
         updated_at: string;
         about_staff: string;
     },
-    activities: [],
+    activities: StaffActivitiies[],
     chats: [],
     portfolio: StaffProfilePortfolioProps[],  
 }
