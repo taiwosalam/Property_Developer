@@ -329,10 +329,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             {formType === "rental"
               ? "Property Details"
               : selectedCategory?.toLocaleLowerCase() === "estate"
-              ? "Estate Details"
-              : selectedCategory?.toLocaleLowerCase() === "facility"
-              ? "Facility Details"
-              : "Estate/Facility Details"}
+                ? "Estate Details"
+                : selectedCategory?.toLocaleLowerCase() === "facility"
+                  ? "Facility Details"
+                  : "Estate/Facility Details"}
           </p>
           <hr className="my-4" />
           <div className="mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 dark:bg-darkText-primary dark:p-4 dark:rounded-lg">
@@ -358,8 +358,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 formType === "rental"
                   ? "Property Title"
                   : selectedCategory?.toLocaleLowerCase() === "estate"
-                  ? "Estate Name"
-                  : "Facility Name"
+                    ? "Estate Name"
+                    : "Facility Name"
               }
               inputClassName="bg-white dark:bg-darkText-primary rounded-[8px] property-form-input"
               required
@@ -409,6 +409,30 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             />
 
             <Select
+              options={landlordOptions}
+              id="land_lord_id"
+              label="Landlord"
+              inputContainerClassName="bg-white"
+              resetKey={resetKey}
+              defaultValue={
+                editMode && propertyDetails?.land_lord_id
+                  ? landlordOptions.find(
+                    (landlord) => landlord.value === propertyDetails.land_lord_id
+                  )
+                  : undefined
+              }
+              hiddenInputClassName="property-form-input"
+              placeholder={
+                landlordsLoading
+                  ? "Loading landlords..."
+                  : landlordsError
+                    ? "Error loading landlords"
+                    : "Select landlord"
+              }
+              error={landlordsError}
+            />
+
+            <Select
               id="branch_id"
               required
               label="Branch"
@@ -433,8 +457,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 branchesLoading
                   ? "Loading branches..."
                   : branchesError
-                  ? "Error loading branches"
-                  : "Select branch"
+                    ? "Error loading branches"
+                    : "Select branch"
               }
               error={branchesError}
             />
@@ -451,12 +475,12 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                     inventoryLoading
                       ? "Loading inventories..."
                       : inventoryError
-                      ? "Error loading inventories"
-                      : "Select inventory"
+                        ? "Error loading inventories"
+                        : "Select inventory"
                   }
                   error={inventoryError}
                 />
-                <Select
+                {/* <Select
                   options={landlordOptions}
                   id="land_lord_id"
                   label="Landlord"
@@ -478,7 +502,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                       : "Select landlord"
                   }
                   error={landlordsError}
-                />
+                /> */}
               </>
             )}
             <Select
@@ -539,10 +563,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             {formType === "rental"
               ? "Property Settings"
               : selectedCategory?.toLocaleLowerCase() === "estate"
-              ? "Estate Settings"
-              : selectedCategory?.toLocaleLowerCase() === "facility"
-              ? "Facility Settings"
-              : "Estate/Facility Settings"}
+                ? "Estate Settings"
+                : selectedCategory?.toLocaleLowerCase() === "facility"
+                  ? "Facility Settings"
+                  : "Estate/Facility Settings"}
           </p>
 
           <hr className="my-4" />
@@ -573,8 +597,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 editMode && formType === "rental"
                   ? `${propertySettings?.agency_fee}%`
                   : editMode && formType === "facility"
-                  ? `${propertySettings?.management_fee}%`
-                  : "5%"
+                    ? `${propertySettings?.management_fee}%`
+                    : "5%"
               }
             />
             {formType === "rental" && (
@@ -643,8 +667,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 editMode
                   ? propertySettings?.group_chat
                   : formType === "rental"
-                  ? "no"
-                  : "yes"
+                    ? "no"
+                    : "yes"
               }
             />
             <Select
@@ -660,8 +684,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 editMode && formType === "rental"
                   ? propertySettings?.rent_penalty
                   : editMode && formType === "facility"
-                  ? propertySettings?.fee_penalty
-                  : "no"
+                    ? propertySettings?.fee_penalty
+                    : "no"
               }
             />
             <Select
@@ -690,8 +714,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 editMode
                   ? propertySettings?.book_visitors
                   : formType === "rental"
-                  ? "no"
-                  : "yes"
+                    ? "no"
+                    : "yes"
               }
             />
             <Select
@@ -722,9 +746,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   options={Object.entries(currencySymbols).map(
                     ([key, symbol]) => ({
                       value: key.toLowerCase(),
-                      label: `${symbol} ${
-                        key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
-                      }`,
+                      label: `${symbol} ${key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
+                        }`,
                     })
                   )}
                   id="currency"
@@ -737,18 +760,16 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   defaultValue={
                     editMode && propertySettings?.currency
                       ? {
-                          value: propertySettings.currency,
-                          label: `${
-                            currencySymbols[propertySettings.currency]
-                          } ${
-                            propertySettings.currency.charAt(0).toUpperCase() +
-                            propertySettings.currency.slice(1).toLowerCase()
+                        value: propertySettings.currency,
+                        label: `${currencySymbols[propertySettings.currency]
+                          } ${propertySettings.currency.charAt(0).toUpperCase() +
+                          propertySettings.currency.slice(1).toLowerCase()
                           }`,
-                        }
+                      }
                       : {
-                          value: "naira",
-                          label: `${currencySymbols.naira} Naira`,
-                        }
+                        value: "naira",
+                        label: `${currencySymbols.naira} Naira`,
+                      }
                   }
                 />
                 <Input

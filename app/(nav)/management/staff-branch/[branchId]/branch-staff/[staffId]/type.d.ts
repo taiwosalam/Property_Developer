@@ -32,9 +32,14 @@ export interface StaffActivitiies{
     page_visits: string; 
     action_taken: string; 
     ip_address: string;
-    location: string; 
+    location: LocationObj; 
     date: string; 
     time: string; 
+}
+
+interface LocationObj{
+    latitude: number;
+    longitude: number;
 }
 
 export interface StaffPageTypes {
@@ -57,7 +62,7 @@ export interface StaffPageTypes {
         company_id: string;
         created_at: string;
         updated_at: string;
-        about_staff: string;
+        about_staff: any;
     },
     activities: StaffActivitiies[],
     chats: [],

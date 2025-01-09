@@ -275,6 +275,8 @@ export const transformStaffAPIResponse = (
       const actionTaken = JSON.parse(a.action_taken);
       // Accessing the message
       const message = actionTaken.message;
+      const { latitude, longitude } = a.location;
+      // const { address, error } = useReverseGeocoding(latitude, longitude);
       return {
         id: a["S/N"],
         username: a.username,

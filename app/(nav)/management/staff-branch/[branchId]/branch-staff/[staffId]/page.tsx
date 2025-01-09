@@ -38,11 +38,18 @@ import { StaffPageTypes, StaffAPIResponse } from "./type";
 import { empty } from "@/app/config";
 import dayjs from "dayjs";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import useAddressFromCoords from "@/hooks/useGeoCoding";
+import DOMPurify from "dompurify";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
+
 
 const StaffProfile = () => {
   const { branchId, staffId } = useParams();
   const { branch, setBranch } = useBranchStore();
+  const [lat, setLat] = useState<number>(0);
+  const [lng, setLng] = useState<number>(0);
   const [pageData, setPageData] = useState<StaffPageTypes>(initialPageData);
+  const { address, loading: addressLoading, error: addressError } = useAddressFromCoords(lat, lng);
 
   const {
     staff,
@@ -65,12 +72,29 @@ const StaffProfile = () => {
         ...x,
         ...transformStaffAPIResponse(apiData),
       }));
-      setBranch("staff_name", apiData.data.name);
     }
   }, [apiData]);
 
-  // console.log("data -", apiData);
-  // console.log("page -", pageData);
+
+  useEffect(() => {
+    if (activities) {
+      activities.forEach((activity) => {
+        const { location } = activity;
+        const { latitude, longitude } = location;
+        if (latitude && longitude) {
+          setLat(parseFloat(`${latitude}`));
+          setLng(parseFloat(`${longitude}`));
+        }
+      });
+    }
+  }, [activities]);
+
+  const sanitizedHTML = DOMPurify.sanitize(staff?.about_staff?.note || "")
+
+  console.log("data -", apiData);
+  // console.log("Address", address)
+  // console.log("error -", addressError);
+  // console.log("page -", pageData.activities);
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
@@ -151,9 +175,12 @@ const StaffProfile = () => {
                 About {`${staff?.title} ${staff?.name}`}
               </h3>
               <div className="w-full border border-dashed border-brand-9 opacity-40" />
-              <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal">
-                {staff?.about_staff}
-              </p>
+              <TruncatedText as="div">
+                <div
+                  className="text-text-quaternary dark:text-darkText-2 text-sm font-normal"
+                  dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
+                />
+              </TruncatedText>
             </div>
           </LandlordTenantInfoBox>
           <LandlordTenantInfo
@@ -173,18 +200,29 @@ const StaffProfile = () => {
           <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
             {`${staff?.title} ${staff?.name} Activities`}
           </h2>
-          <Link
-            href={`/management/staff-branch/${branchId}/branch-staff/${staffId}/activities`}
-            className="flex items-center gap-1"
-          >
-            <p>See all</p>
-            <ChevronRight size={16} color="#5A5D61" />
-          </Link>
+          {activities.length > 0 && (
+            <Link
+              href={`/management/staff-branch/${branchId}/branch-staff/${staffId}/activities`}
+              className="flex items-center gap-1"
+            >
+              <p>See all</p>
+              <ChevronRight size={16} color="#5A5D61" />
+            </Link>
+          )}
         </div>
-        <CustomTable
-          data={activities}
-          fields={staffActivitiesTableFields}
-        />
+        {activities.length === 0 ? (
+          <p className="text-base text-text-disabled font-medium flex w-full items-center justify-center">
+            No activities yet
+          </p>
+        ) :
+          <CustomTable
+            data={activities.map(activity => ({
+              ...activity,
+              location: address?.formattedAddress ? address?.formattedAddress : 'Location not available', // Safely handle location
+            }))}
+            fields={staffActivitiesTableFields}
+          />
+        }
       </div>
       <div className="custom-flex-col gap-[18px]">
         <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
