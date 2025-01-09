@@ -4,26 +4,57 @@ import BackButton from "@/components/BackButton/back-button";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import CustomTable from "@/components/Table/table";
 import { useParams } from "next/navigation";
-import { staffActivitiesTableFields, activitiesTableData } from "../data";
+import { staffActivitiesTableFields, activitiesTableData, initialPageData, transformStaffAPIResponse } from "../data";
+import useBranchStore from "@/store/branch-store";
+import { useEffect, useState } from "react";
+import { StaffAPIResponse, StaffPageTypes } from "../type";
+import useFetch from "@/hooks/useFetch";
 
 const StaffActivitiesPage = () => {
   const { branchId, staffId } = useParams();
+  const { branch } = useBranchStore();
+  const [pageData, setPageData] = useState<StaffPageTypes>(initialPageData);
+
+  const {
+    staff,
+    activities,
+    chats,
+    portfolio
+  } = pageData
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+  } = useFetch<StaffAPIResponse>(`/staff/${staffId}`);
+
+  useEffect(() => {
+    if (apiData) {
+      setPageData((x) => ({
+        ...x,
+        ...transformStaffAPIResponse(apiData),
+      }));
+    }
+  }, [apiData]);
+
   return (
     <div className="space-y-6">
       <div className="custom-flex-col gap-2">
-        <BackButton bold>Moniya Branch</BackButton>
+        <BackButton bold> { branch.branch_name } </BackButton>
         <div className="flex">
           <div className="w-10"></div>
           <div className="flex items-center gap-1 text-text-disabled">
             <LocationIcon />
             <p className="text-sm font-normal">
-              Street 23, All Avenue, Nigeria
+              { branch.address }
             </p>
           </div>
         </div>
       </div>
       <FilterBar
-        pageTitle="Barrister Abimbola Adedeji"
+        pageTitle={staff.name}
         azFilter
         isDateTrue
         noExclamationMark
@@ -34,7 +65,7 @@ const StaffActivitiesPage = () => {
         exportHref={`/management/staff-branch/${branchId}/branch-staff/${staffId}/activities/export`}
       />
       <CustomTable
-        data={activitiesTableData}
+        data={activities}
         fields={staffActivitiesTableFields}
       />
     </div>

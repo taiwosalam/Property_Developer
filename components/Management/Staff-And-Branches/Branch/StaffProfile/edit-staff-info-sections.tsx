@@ -24,6 +24,10 @@ import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-m
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { updateStaffPicture, updateStaffProfile } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/edit/data";
+import { AllBranchesResponse } from "@/components/Management/Properties/types";
+import useFetch from "@/hooks/useFetch";
+
+
 export const StaffEditProfileInfoSection = () => {
   const { data: staff } = useStaffEditContext();
   const [reqLoading, setReqLoading] = useState(false);
@@ -33,7 +37,7 @@ export const StaffEditProfileInfoSection = () => {
       full_name: data.fullname,
       title: data.personal_title,
       estate_title: data.real_estate_title,
-      email: data.email,
+      // email: data.email,
       phone: data.phone_number,
       gender: data.gender,
     };
@@ -83,7 +87,7 @@ export const StaffEditProfileInfoSection = () => {
             id="email"
             type="email"
             label="email"
-            required
+            disabled
             defaultValue={staff?.email}
           />
           <Select
@@ -119,8 +123,45 @@ export const StaffEditProfileInfoSection = () => {
 
 export const StaffEditMoveToAnotherBranchSection = () => {
   const { data: staff } = useStaffEditContext();
+  const [branchId, setBranchId] = useState("");
   const name = staff?.full_name;
   const position = staff?.position;
+
+  useEffect(()=> {
+    if(staff){
+      setBranchId(staff.branch_id)
+    }
+  }, [staff, branchId])
+
+  const {
+    data: branchesData,
+    loading: branchesLoading,
+    error: branchesError,
+  } = useFetch<AllBranchesResponse>("/branches/select");
+
+  const {
+    data: staffsData,
+    loading: staffsLoading,
+    error: staffsError,
+  } = useFetch<any>(`/staffs/${branchId}`);
+  const staffs = staffsData?.data.staff;
+
+  // console.log("id", staff?.branch_id);
+  // console.log("staff data", staffsData);
+
+  const branchOptions =
+  branchesData?.data.map((branch) => ({
+    value: branch.id,
+    label: branch.branch_name,
+  })) || [];
+
+  const staffOptions = staffs?.map((staff:any) => ({
+    value: staff.id,
+    label: `${staff.title} ${staff.name}`,
+  })) || [];
+
+  const hasManager = staff?.position === "manager";
+
   return (
     <LandlordTenantInfoEditSection title={`move ${name} to another branch`}>
       <LandlordTenantInfoEditGrid>
@@ -130,25 +171,36 @@ export const StaffEditMoveToAnotherBranchSection = () => {
           inputContainerClassName="bg-neutral-2"
           options={[]}
           defaultValue={position}
+          disabled
         />
         <Select
           id="select_new_branch"
           label="select new branch"
           inputContainerClassName="bg-neutral-2"
-          options={[]}
+          options={branchOptions}
+          placeholder={
+            branchesLoading
+              ? "Loading branches..."
+              : branchesError
+              ? "Error loading branches"
+              : "Select branch"
+          }
         //   defaultValue={staff?.real_estate_title}
         />
         <Select
           id="transfer_current_position_to"
           label="transfer current position to"
-          //   defaultValue={staff?.full_name}
-          options={[]}
+          options={staffOptions}
         />
         <Select
           id="select_new_branch_position"
           label="select new branch position"
           inputContainerClassName="bg-neutral-2"
-          options={[]}
+          options={[
+            "manager",
+            "account officer",
+            "staff",
+          ]}
         //   defaultValue={staff?.real_estate_title}
         />
         <div className="md:col-span-2 flex justify-end">
@@ -164,6 +216,29 @@ export const StaffEditMoveToAnotherBranchSection = () => {
 export const StaffEditChangePositionSection = () => {
   const { data: staff } = useStaffEditContext();
   const name = staff?.full_name;
+  const position = staff?.position;
+  const [branchId, setBranchId] = useState("");
+
+  useEffect(()=> {
+    if(staff){
+      setBranchId(staff.branch_id)
+    }
+  }, [staff, branchId])
+
+  const {
+    data: staffsData,
+    loading: staffsLoading,
+    error: staffsError,
+  } = useFetch<any>(`/staffs/${branchId}`);
+  const staffs = staffsData?.data.staff;
+
+  const staffOptions = staffs?.map((staff:any) => ({
+    value: staff.id,
+    label: `${staff.title} ${staff.name}`,
+  })) || [];
+
+  const hasManager = staff?.position === "manager";
+
   return (
     <LandlordTenantInfoEditSection title={`change ${name} position`}>
       <LandlordTenantInfoEditGrid>
@@ -171,14 +246,19 @@ export const StaffEditChangePositionSection = () => {
           id="assign_current_position_to"
           label="assign current position to"
           inputContainerClassName="bg-neutral-2"
-          options={[]}
-        //   defaultValue={position}
+          options={staffOptions}
         />
         <Select
           id="new_position"
           label="new position"
           inputContainerClassName="bg-neutral-2"
-          options={[]}
+          options={[
+            ...(hasManager
+              ? []
+              : [{ value: "manager", label: "branch manager" }]),
+            "account officer",
+            "staff",
+          ]}
         //   defaultValue={staff?.real_estate_title}
         />
 

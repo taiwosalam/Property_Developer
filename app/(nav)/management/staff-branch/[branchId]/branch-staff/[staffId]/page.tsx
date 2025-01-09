@@ -41,8 +41,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 
 const StaffProfile = () => {
   const { branchId, staffId } = useParams();
-  const { branch } = useBranchStore();
-
+  const { branch, setBranch } = useBranchStore();
   const [pageData, setPageData] = useState<StaffPageTypes>(initialPageData);
 
   const {
@@ -66,11 +65,12 @@ const StaffProfile = () => {
         ...x,
         ...transformStaffAPIResponse(apiData),
       }));
+      setBranch("staff_name", apiData.data.name);
     }
   }, [apiData]);
 
-  console.log("data -", apiData);
-  // console.log("staff here -", staff);
+  // console.log("data -", apiData);
+  // console.log("page -", pageData);
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
@@ -182,7 +182,7 @@ const StaffProfile = () => {
           </Link>
         </div>
         <CustomTable
-          data={activitiesTableData}
+          data={activities}
           fields={staffActivitiesTableFields}
         />
       </div>

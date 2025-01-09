@@ -45,6 +45,7 @@ const EditStaffProfile = () => {
       setPageData(
         {
           id: apiData.data.id,
+          branch_id: branchId as string,
           personal_title: apiData.data.title,
           real_estate_title: apiData.data.real_estate_title,
           full_name: apiData.data.name,

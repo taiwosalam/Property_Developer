@@ -21,6 +21,7 @@ export interface StaffProfilePortfolioItemProps {
 }
 
 export interface StaffProfileProps {
+  branch_id: string;
   id: string;
   personal_title: string;
   real_estate_title: string;
