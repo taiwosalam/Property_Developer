@@ -32,5 +32,5 @@ export interface StaffProfileProps {
   position: string;
   avatar?: string;
   picture?: string;
-  about: string;
+  about:any;
 }

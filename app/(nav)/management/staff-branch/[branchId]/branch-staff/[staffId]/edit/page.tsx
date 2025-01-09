@@ -23,11 +23,13 @@ import { staffData, transformStaffAPIResponse } from "../data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
-
+import { deleteStaff } from "./data";
+import { useRouter } from "next/navigation";
 
 const EditStaffProfile = () => {
   const { branchId, staffId } = useParams();
   const { branch } = useBranchStore();
+  const router = useRouter()
 
   const [pageData, setPageData] = useState<StaffProfileProps>(staffData);
   const {
@@ -60,8 +62,15 @@ const EditStaffProfile = () => {
     }
   }, [apiData]);
 
+  const handleDeleteStaffAccount = () => {
+    try{
+    }catch(error){
+      console.log(error);
+    }
+  }
+
   console.log("data -", apiData);
-  console.log("page -", pageData);
+  // console.log("page -", pageData);
 
   if (loading)
     return <CustomLoader layout="edit-page" pageTitle="Edit Staff" />;
@@ -97,7 +106,10 @@ const EditStaffProfile = () => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <DeleteAccountModal accountType="staff" />
+              <DeleteAccountModal
+               action={async () => await deleteStaff(pageData.id)}
+               afterAction={() => router.push("/management/staff-branch")}
+               />
             </ModalContent>
           </Modal>
 
