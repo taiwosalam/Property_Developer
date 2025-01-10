@@ -18,6 +18,7 @@ import useFetch from "@/hooks/useFetch";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import type { SingleBranchResponseType } from "../types";
 import { transformSingleBranchAPIResponseToEditBranchFormDetails } from "../data";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 const EditBranch = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -39,7 +40,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
 
   return (
     <div className="custom-flex-col gap-10">
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-8 mb-[150px]">
         <div className="flex gap-8 flex-col md:flex-row justify-between flex-wrap">
           <BackButton>Edit Branch</BackButton>
           <div className="flex gap-3">
@@ -77,30 +78,6 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
                   </ModalContent>
                 </Modal>
               ))}
-            <Modal>
-              <ModalTrigger asChild>
-                <Button
-                  type="button"
-                  variant="light_red"
-                  size="sm_medium"
-                  className="py-2 px-4 sm:px-8 text-xs sm:text-sm"
-                >
-                  Delete Branch
-                </Button>
-              </ModalTrigger>
-              <ModalContent>
-                <DeleteBranchModal branchId={branchId} />
-              </ModalContent>
-            </Modal>
-            <Button
-              type="submit"
-              size="sm_medium"
-              className="py-2 px-8"
-              form="edit-branch-form"
-              disabled={updateRequestLoading}
-            >
-              {updateRequestLoading ? "Updating..." : "Update"}
-            </Button>
           </div>
         </div>
         <EditBranchForm
@@ -108,68 +85,32 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
           setUpdateRequestLoading={setUpdateRequestLoading}
         />
       </div>
-      <div className="custom-flex-col gap-8">
-        <FilterBar
-          pageTitle="Edit Property"
-          searchInputPlaceholder="Search for Property"
-          handleFilterApply={() => {}}
-          gridView={isGridView}
-          setGridView={() => setIsGridView(true)}
-          setListView={() => setIsGridView(false)}
-        />
-        {isGridView ? (
-          <AutoResizingGrid minWidth={315}>
-            {/* {properties.slice(0, 6).map((p, idx) => (
-              <PropertyCard key={idx} {...p} />
-            ))} */}
-            {Array.from({ length: 5 }).map((_, index) => (
-              <Link
-                key={index}
-                href={`/management/properties/${index}/edit-property`}
-              >
-                <PropertyCard
-                  address="123 Main St"
-                  id={"1"}
-                  images={[
-                    "/empty/SampleProperty.jpeg",
-                    "/empty/SampleProperty2.jpeg",
-                    "/empty/SampleProperty3.jpeg",
-                    "/empty/SampleProperty4.jpeg",
-                    "/empty/SampleProperty5.jpeg",
-                  ]}
-                  property_name="Property 1"
-                  total_units={1}
-                  total_unit_pictures={5}
-                  hasVideo={true}
-                  property_type={index % 2 === 0 ? "rental" : "facility"}
-                  currency="naira"
-                  isClickable={false}
-                  total_returns={1000000}
-                  total_income={1000000}
-                  accountOfficer="John Doe"
-                  last_updated="2021-01-01"
-                  mobile_tenants={1}
-                  web_tenants={1}
-                  owing_units={1}
-                  available_units={1}
-                />
-              </Link>
-            ))}
-          </AutoResizingGrid>
-        ) : (
-          <div className="custom-flex-col gap-4">
-            {Array.from({ length: 10 }).map((_, index) => (
-              <Link
-                key={index}
-                href={`/management/properties/${index}/edit-property`}
-                className="block"
-              >
-                <BranchPropertyListItem />
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
+      <FixedFooter className="flex justify-between items-center flex-wrap">
+        <Modal>
+          <ModalTrigger asChild>
+            <Button
+              type="button"
+              variant="light_red"
+              size="sm_medium"
+              className="py-2 px-4 sm:px-8 text-xs sm:text-sm"
+            >
+              Delete Branch
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <DeleteBranchModal branchId={branchId} />
+          </ModalContent>
+        </Modal>
+        <Button
+          type="submit"
+          size="sm_medium"
+          className="py-2 px-8"
+          form="edit-branch-form"
+          disabled={updateRequestLoading}
+        >
+          {updateRequestLoading ? "Updating..." : "Update"}
+        </Button>
+      </FixedFooter>
     </div>
   );
 };
