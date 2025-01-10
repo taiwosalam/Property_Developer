@@ -125,12 +125,19 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
               label="position"
               inputContainerClassName="bg-neutral-2"
               options={[
-                ...(branch.isManagerAvailable
+                ...(hasManager
                   ? []
                   : [{ value: "manager", label: "branch manager" }]),
                 "account officer",
                 "staff",
               ]}
+              // options={[
+              //   ...(branch.isManagerAvailable
+              //     ? []
+              //     : [{ value: "manager", label: "branch manager" }]),
+              //   "account officer",
+              //   "staff",
+              // ]}
             />
             <Select
               id="gender"

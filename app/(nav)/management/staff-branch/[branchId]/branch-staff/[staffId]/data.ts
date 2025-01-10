@@ -51,6 +51,7 @@ export const staffData: StaffProfileProps = {
     position: "",
     picture: "",
     about: "",
+    status: "",
   };
 
 
@@ -75,6 +76,7 @@ export const staffData: StaffProfileProps = {
       created_at: "",
       updated_at: "",
       about_staff: "",
+      status: "",
     },
     activities: [],
     chats: [],
