@@ -14,9 +14,13 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import { useState } from "react";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/authStore";
+import { cookies } from "next/headers";
 
 const NavProfileDropdown = () => {
   const router = useRouter();
+  const role = useAuthStore((state) => state.role);
+  // const role = cookies().get("role")?.value;
   const { isMobile } = useWindowWidth();
   const name = usePersonalInfoStore((state) => state.name);
   const userId = usePersonalInfoStore((state) => state.user_id);
@@ -32,7 +36,11 @@ const NavProfileDropdown = () => {
     setRequestLoading(true);
     const status = await logout();
     if (status) {
-      router.push("/auth/sign-in");
+      if(role === "director"){
+        router.push("/auth/sign-in");
+      }else{
+        router.push("/auth/user/sign-in");
+      }
     }
     setRequestLoading(false);
   };
