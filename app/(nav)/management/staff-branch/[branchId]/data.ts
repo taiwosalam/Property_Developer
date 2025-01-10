@@ -42,14 +42,14 @@ export const transformSingleBranchAPIResponse = (
   return {
     branch_name: branch.branch_name,
     address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
-    properties: { total: branch.properties_count, new_this_month: 0 },
-    landlords: { total: 0, new_this_month: 0 },
-    tenants: { total: 0, new_this_month: 0 },
+    properties: { total: branch.properties_count, new_this_month: branch.current_month_properties_count },
+    landlords: { total: branch.landlords_count, new_this_month: branch.current_month_landlords_count },
+    tenants: { total: branch.tenants_count, new_this_month: branch.current_month_tenants_count },
     vacant_units: { total: 0, new_this_month: 0 },
     expired: { total: 0, new_this_month: 0 },
     invoices: { total: 0, new_this_month: 0 },
     inquiries: { total: 0, new_this_month: 0 },
-    complaints: { total: 0, new_this_month: 0 },
+    complaints: { total: branch.complaints_count, new_this_month: branch.current_month_complaints_count },
     listings: { total: 0, new_this_month: 0 },
     staffs: branch.staffs.map((s) => {
       return {
