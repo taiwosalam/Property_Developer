@@ -125,7 +125,7 @@ const EditBranchForm = ({
               <Input
                 id="branch_name"
                 label="branch title"
-                placeholder="Moniya Branch"
+                placeholder="Write Here"
                 inputClassName="bg-white"
                 defaultValue={somedata?.branch_name}
               />
@@ -150,7 +150,7 @@ const EditBranchForm = ({
               <Select
                 id="city"
                 label="city"
-                placeholder="Ibadan"
+                placeholder="Select options"
                 inputContainerClassName="bg-white"
                 value={address.city}
                 onChange={(value) => handleAddressChange("city", value)}
@@ -159,7 +159,7 @@ const EditBranchForm = ({
               <Input
                 id="branch_address"
                 label="Branch Full Address"
-                placeholder="Street Address"
+                placeholder="Enter Address"
                 inputClassName="bg-white"
                 defaultValue={somedata?.address}
               />
