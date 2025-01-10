@@ -86,9 +86,9 @@ const EditStaffProfile = () => {
         <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
           <div className="custom-flex-col gap-5 flex-1 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">
             <StaffEditProfileInfoSection />
+            <StaffEditAboutSection />
             <StaffEditMoveToAnotherBranchSection />
             <StaffEditChangePositionSection />
-            <StaffEditAboutSection />
             <StaffLockAccountSection />
           </div>
           <div className="w-full lg:w-[334px] custom-flex-col gap-5 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">
