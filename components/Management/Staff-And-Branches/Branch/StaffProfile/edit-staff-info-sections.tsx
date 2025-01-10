@@ -9,7 +9,7 @@ import {
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
-import { titles, genderTypes } from "@/data";
+import { titles, genderTypes, industryOptions } from "@/data";
 import TextArea from "@/components/Form/TextArea/textarea";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
@@ -74,7 +74,7 @@ export const StaffEditProfileInfoSection = () => {
             id="real_estate_title"
             label="real estate title"
             inputContainerClassName="bg-neutral-2"
-            options={["realtors", "real estate agent", "attorneys", "investors"]}
+            options={industryOptions}
             defaultValue={staff?.real_estate_title}
           />
           <Input

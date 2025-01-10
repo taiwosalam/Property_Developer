@@ -21,6 +21,7 @@ import { ArticlesRequestParams } from "../type";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import { stateOptions } from "@/app/(nav)/tasks/inspections/data";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const lists = [
   {
@@ -252,9 +253,7 @@ const MyArticlePage = () => {
       <section className="capitalize">
         {data.length === 0 && !silentLoading ? (
           config.params.search || isFilterApplied() ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-            No Search/Filter Found
-          </div>
+            <SearchError />
           ) : (
             <EmptyList
               buttonText="+ create article"

@@ -38,6 +38,7 @@ import type { AllBranchesResponse } from "@/components/Management/Properties/typ
 import useFetch from "@/hooks/useFetch";
 import type { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const states = getAllStates();
 
@@ -318,7 +319,7 @@ const Landlord = () => {
       <section>
         {landlords.length === 0 && !silentLoading ? (
           config.params.search || isFilterApplied() ? (
-            "No Search/Filter Found"
+            <SearchError />
           ) : (
             <EmptyList
               buttonText="+ Create New Landlord"

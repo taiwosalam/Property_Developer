@@ -48,7 +48,6 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
 
-  console.log("here we are", data)
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
     let link = "";
@@ -101,14 +100,24 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     };
   });
 
+  
   // set branch data to store
   useEffect(() => {
     if (branch?.branch_name !== branchData?.branch_name) {
       setBranch("branch_name", branchData?.branch_name || "___");
       setBranch("address", branchData?.address || "___");
       setBranch("branch_id", branchId);
+      setBranch("branch_details", branchData);
     }
   }, [branchData, branch, setBranch]);
+
+  let isManagerAvailable = false;
+  (branch?.branch_details as any)?.staffs?.map((staff: any) => {
+    if (staff.position === "manager") {
+      isManagerAvailable = true;
+      setBranch("isManagerAvailable", isManagerAvailable);
+    }
+  });
 
   const [timeRange, setTimeRange] = useState("30d");
   // const [highestMetric, setHighestMetric] = useState<string | null>(null);

@@ -30,6 +30,7 @@ import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import type { AllBranchesResponse } from "@/components/Management/Properties/types";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const Properties = () => {
   const storedView = useView();
@@ -222,7 +223,7 @@ const Properties = () => {
       <section className="capitalize">
         {properties.length === 0 && !silentLoading ? (
           isFilterApplied() || search ? (
-            "No Search/Filter Found"
+            <SearchError />
           ) : (
             <EmptyList
               buttonText="+ Add Property"

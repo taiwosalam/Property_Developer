@@ -22,6 +22,7 @@ import { stateOptions } from "../../tasks/inspections/data";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const lists = [
   {
@@ -253,9 +254,7 @@ const AgentCommunityPage = () => {
       />
       {data.length === 0 && !silentLoading ? (
         config.params.search || isFilterApplied() ? (
-          <div className="col-span-full text-center py-8 text-gray-500">
-            No Search/Filter Found
-          </div>
+          <SearchError />
         ) : (
           <section>
             <EmptyList

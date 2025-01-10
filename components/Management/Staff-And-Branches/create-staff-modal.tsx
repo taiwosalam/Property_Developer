@@ -22,6 +22,7 @@ import {
 import { titles, genderTypes, industryOptions } from "@/data";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
+import useBranchStore from "@/store/branch-store";
 
 const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
   branchId,
@@ -30,6 +31,10 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
   const { setIsOpen } = useModal();
   const [isLoading, setIsLoading] = useState(false);
   const [formStep, setFormStep] = useState(1);
+  const { branch } = useBranchStore();
+
+  const { staffs } = branch
+  // console.log("Branch data", branch.isManagerAvailable)
 
   const {
     preview,
@@ -120,7 +125,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
               label="position"
               inputContainerClassName="bg-neutral-2"
               options={[
-                ...(hasManager
+                ...(branch.isManagerAvailable
                   ? []
                   : [{ value: "manager", label: "branch manager" }]),
                 "account officer",
