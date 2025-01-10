@@ -46,6 +46,15 @@ export type SingleBranchResponseType = {
       picture: string | null;
       // branch_wallet: string; //to be added later
       branch_desc: string;
+      landlords_count: number;
+      current_month_landlords_count: number;
+      tenants_count: number;
+      current_month_tenants_count: number;
+      properties_count: number;
+      current_month_properties_count: number;
+      units_count: number;
+      complaints_count: number;
+      current_month_complaints_count: number;
       staffs_count: number; // do d monthly/this month stuff
       properties_count: number; // do d monthly/this month stuff
       staffs: {

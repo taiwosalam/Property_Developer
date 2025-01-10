@@ -146,7 +146,7 @@ const RentAndUnit = () => {
     })) || [];
 
   // console.log("Braches", branchOptions)
-
+// endpoint - /branch/8/vacant_units
   const {
     data: apiData,
     loading,
