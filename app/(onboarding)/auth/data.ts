@@ -61,6 +61,7 @@ export const login = async (formData: Record<string, any>) => {
     // Save to cookies for middleware
     Cookies.set("authToken", token, { expires: 7 }); // Expires in 7 days
     Cookies.set("role", role, { expires: 7 });
+    Cookies.set("emailVerified", String(emailVerified), { expires: 7 });
 
     if (emailVerified) {
       toast.success(data?.message || "Login successful!");

@@ -269,6 +269,10 @@ export const staffData: StaffProfileProps = {
 
   export const activitiesTableData = generateTableData(5);
 
+  // function to change Yes/no to active/inactive
+  export const yesNoToActiveInactive = (yesNo: string): string => {
+    return yesNo === "Yes" ? "active" : "inactive";
+  };
 
   export const transformStaffAPIResponse = (
     res: StaffAPIResponse
@@ -294,6 +298,7 @@ export const staffData: StaffProfileProps = {
         created_at: res.data.created_at,
         updated_at: res.data.updated_at,
         about_staff: res.data.about_staff,
+        status: yesNoToActiveInactive(res.data.status),
       },
       activities: res.activities.map((a) => {
         // Parsing action_taken

@@ -24,6 +24,7 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const email = useAuthStore((state) => state.email);
   const emailVerified = useAuthStore((state) => state.emailVerified);
+  const role = useAuthStore((state) => state.role);
   const [code, setCode] = useState("");
   const [countdown, setCountdown] = useState(40);
   const [canResend, setCanResend] = useState(false);
@@ -48,7 +49,11 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
 
       if (status) {
         if (type === "sign up") {
-          router.push("/setup");
+          if (role !== "director") {
+            router.push("/dashboard"); //FIX ROUTE TO DASHBOARD ACCORDING TO ROLE LATER
+          } else {
+            router.push("/setup");
+          }
         } else if (type === "forgot password") {
           changeStep("next");
         }
