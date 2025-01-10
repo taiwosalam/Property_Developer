@@ -385,6 +385,8 @@ export const StaffLockAccountSection = () => {
   const name = staff?.full_name;
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isLocking, setIsLocking] = useState(false);
+  const [next, setNext] = useState(false)
   const [otp, setOtp] = useState("");
 
   const handleLockClicked = async () => {
@@ -403,19 +405,24 @@ export const StaffLockAccountSection = () => {
 
   const handleLockAccount = async () => {
     try {
-      setLoading(true);
+      setIsLocking(true);
       if(staff?.id){
       const res = await lockStaffAccount(staff?.id, otp);
       if (res) {
+        toast.success("Staff Locked Successfully")
         window.dispatchEvent(new Event("staff-updated"));
+        setNext(true)
       }
     }
     } catch (error) {
       console.error(error);
     }finally{
-      setLoading(false);
+      setIsLocking(false);
     }
   };
+
+  const inactive = staff?.status === 'inactive';
+  console.log("inactive", inactive)
 
   return (
     <LandlordTenantInfoEditSection title={`lock ${name} account`}>
@@ -425,25 +432,25 @@ export const StaffLockAccountSection = () => {
           cannot be regained until the account is unlocked from your end
         </p>
         <div className="flex justify-end">
-          {/* <ModalTrigger asChild> */}
           <Button
             size="base_medium"
             className="py-2 px-6 w-fit"
-            variant="red"
+            variant={inactive ? "default" : "red"}
             disabled={loading}
             onClick={handleLockClicked}
           >
-            {loading ? "Please wait..." : "lock"}
+            {loading ? "Please wait..." : inactive ? "Unlock" : "lock"}
           </Button>
           <Modal
             state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}
           >
-            {/* </ModalTrigger> */}
             <ModalContent>
               <LockOTPModal 
                action={handleLockAccount}
                otp={otp}
                setOtp={setOtp}
+               loading={isLocking}
+               next={next}
               />
             </ModalContent>
           </Modal>

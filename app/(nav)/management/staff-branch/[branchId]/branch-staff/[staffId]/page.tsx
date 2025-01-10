@@ -75,6 +75,7 @@ const StaffProfile = () => {
     }
   }, [apiData]);
 
+  // console.log("Data for staff page", pageData);
 
   useEffect(() => {
     if (activities) {
@@ -188,7 +189,7 @@ const StaffProfile = () => {
               branch: branch.branch_name,
               "date created": dayjs(staff.created_at).format("MMM DD, YYYY"),
               "last updated": dayjs(staff.updated_at).format("MMM DD, YYYY"),
-              status: "active",
+              status: staff.status,
             }}
           />
         </div>

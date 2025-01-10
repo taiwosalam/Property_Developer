@@ -152,7 +152,7 @@ const Profile = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch("/user/profile");
+  } = useFetch("/user/full-profile");
   useRefetchOnEvent("refetchProfile", () => refetch({ silent: true }));
 
   useEffect(() => {

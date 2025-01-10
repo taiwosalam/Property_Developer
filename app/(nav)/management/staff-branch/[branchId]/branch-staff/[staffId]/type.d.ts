@@ -21,6 +21,7 @@ export interface StaffAPIResponse {
         created_at: string;
         updated_at: string;
         about_staff: string;
+        status: string;
     };
     activities: StaffActivitiies[];
 }
@@ -63,6 +64,7 @@ export interface StaffPageTypes {
         created_at: string;
         updated_at: string;
         about_staff: any;
+        status: string;
     },
     activities: StaffActivitiies[],
     chats: [],

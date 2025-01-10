@@ -19,7 +19,7 @@ import useBranchStore from "@/store/branch-store";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { StaffAPIResponse } from "../type";
-import { staffData, transformStaffAPIResponse } from "../data";
+import { staffData, transformStaffAPIResponse, yesNoToActiveInactive } from "../data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
@@ -57,6 +57,7 @@ const EditStaffProfile = () => {
           position: apiData.data.position,
           picture: apiData.data.picture,
           about: apiData.data.about_staff,
+          status: yesNoToActiveInactive(apiData.data.status),
         }
       )
     }

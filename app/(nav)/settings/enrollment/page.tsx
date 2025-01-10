@@ -18,6 +18,8 @@ const Enrollment = () => {
   const [basicIsLifeTimePlan, setBasicIsLifeTimePlan] = useState(false);
   const [premiumIsLifeTimePlan, setPremiumIsLifeTimePlan] = useState(false);
 
+  const [pageData, setPageData] = useState([]);
+  
   const calculatePrice = (
     billingType: "monthly" | "yearly",
     quantity: number,

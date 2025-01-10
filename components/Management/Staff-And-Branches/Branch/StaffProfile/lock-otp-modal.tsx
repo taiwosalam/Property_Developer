@@ -15,9 +15,11 @@ interface LockOTPModalProps {
   action: () => Promise<void>;
   otp: string;
   setOtp: (otp: string) => void;
+  loading?: boolean;
+  next?: boolean;
 }
 
-const LockOTPModal: React.FC<LockOTPModalProps> = ({ action, otp, setOtp }) => {
+const LockOTPModal: React.FC<LockOTPModalProps> = ({ action, otp, setOtp, loading, next }) => {
   const [countdown, setCountdown] = useState(120);
   const [canResend, setCanResend] = useState(false);
   const { activeStep, changeStep } = useStep(2);
@@ -41,9 +43,10 @@ const LockOTPModal: React.FC<LockOTPModalProps> = ({ action, otp, setOtp }) => {
   };
 
   const handleAction = async () => {
-    const res = await action();
-    console.log("res", res)
-    // changeStep("next");
+    await action();
+    if(next){
+      changeStep("next");
+    }
   };
 
   useEffect(() => {
@@ -93,8 +96,9 @@ const LockOTPModal: React.FC<LockOTPModalProps> = ({ action, otp, setOtp }) => {
       <Button
         className="w-full mx-auto mt-[50px]"
         onClick={handleAction}
+        disabled={loading}
       >
-        proceed
+        { loading ? "Please wait..." : "proceed"}
       </Button>
     </WalletModalPreset>
   ) : (

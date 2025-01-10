@@ -1,5 +1,5 @@
 export interface ProfileSettingsApiResponse {
-  data: {
+  user: {
     user: userData;
     company: companyData;
     profile: profileData;
@@ -66,8 +66,8 @@ export const transformProfileApiResponse = (
 ): ProfileSettingsPageState => {
   console.log("profile settings response ", response);
   return {
-    profileData: { ...response.data.profile },
-    companyData: { ...response.data.company },
-    userData: { ...response.data.user },
+    profileData: { ...response.user.profile },
+    companyData: { ...response.user.company },
+    userData: { ...response.user.user },
   };
 };
