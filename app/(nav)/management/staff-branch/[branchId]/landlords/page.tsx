@@ -46,11 +46,13 @@ const states = getAllStates();
 const Landlord = () => {
     const storedView = useView();
     const { branch } = useBranchStore();
+    const branchId = branch.branch_id
     const [view, setView] = useState<string | null>(storedView);
     const [pageData, setPageData] = useState<LandlordsPageData>(
         initialLandlordsPageData
     );
 
+    console.log("branch", branchId)
     const {
         total_pages,
         current_page,
@@ -173,7 +175,7 @@ const Landlord = () => {
         isNetworkError,
         error,
         refetch,
-    } = useFetch<LandlordApiResponse>("landlords", config);
+    } = useFetch<LandlordApiResponse>(`/branch/${branchId}/landlords`, config);
 
     useEffect(() => {
         if (apiData) {

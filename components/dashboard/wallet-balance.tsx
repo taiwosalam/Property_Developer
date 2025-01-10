@@ -79,6 +79,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   useEffect(() => {
     if (data) {
       // console.log("data", data)
+      if(data.transactions.length > 0){
       const recentTransactions = data.transactions.map((t) => {
         // Parse the date and time strings into a Date object (assuming UTC from server)
         const dateTimeString = `${t.date}T${t.time}Z`; // Add 'Z' to indicate UTC
@@ -113,6 +114,8 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
             formatNumber(t.amount, { forceTwoDecimals: true }),
         };
       });
+      setWalletStore("recentTransactions", recentTransactions);
+      }
       setWalletStore("walletPinStatus", data.balance.pin_status);
       setWalletStore("walletId", data.balance.wallet_id);
       setWalletStore("balance", {
@@ -124,7 +127,6 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
         "beneficiaries",
         transformBeneficiaries(data.beneficiaries)
       );
-      setWalletStore("recentTransactions", recentTransactions);
       setWalletStore("stats", data.stats);
       setWalletStore("account", {
         account_number: data.account.account_number,
