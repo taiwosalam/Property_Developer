@@ -101,7 +101,7 @@ const RentAndUnit = () => {
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
 
   const endpoint =
-    isFilterApplied() || search || sort ? "/unit/filter" : "/unit/list";
+    isFilterApplied() || search || sort ? "/unit/filter" : `/branch/${branch.branch_id}/vacant_units`;
 
   const config: AxiosRequestConfig = useMemo(() => {
     return {

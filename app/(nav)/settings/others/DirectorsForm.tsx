@@ -3,7 +3,7 @@ import { useState } from "react";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import Select from "@/components/Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
-import { tenantTypes, genderTypes, titles } from "@/data";
+import { tenantTypes, genderTypes, titles, industryOptions } from "@/data";
 import Input from "@/components/Form/Input/input";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import Button from "@/components/Form/Button/button";
@@ -52,12 +52,6 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction, chooseAvata
     originalHandleImageChange(e);
   };
 
-  // const handleAvatarSelection = (avatarUrl: string) => {
-  //   clearImageSelection();
-  //   setAvatar(avatarUrl);
-  //   setFormStep(1);
-  // };
-
   const handleAddressChange = (field: Address, value: string) => {
     setState((prevState) => ({
       ...prevState,
@@ -91,7 +85,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction, chooseAvata
           id="real-estate-title"
           label="real estate title"
           inputContainerClassName="bg-neutral-2"
-          options={["realtors", "real estate agent", "attorneys", "investors"]}
+          options={industryOptions}
         />
         <Input
           id="full_name"

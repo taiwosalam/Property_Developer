@@ -31,6 +31,7 @@ import TableLoading from "@/components/Loader/TableLoading";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import dayjs from "dayjs";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -228,7 +229,7 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
           )
         ) : state?.staffs.length === 0 ? (
           config.params.search || isFilterApplied() ? (
-            "No Search/Filter Found"
+           <SearchError />
           ) : (
             <EmptyList
               buttonText="+ Create New Staff"

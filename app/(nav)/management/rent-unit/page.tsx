@@ -32,6 +32,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import { ExclamationMark } from "@/public/icons/icons";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const RentAndUnit = () => {
   const view = useView();
@@ -262,9 +263,7 @@ const branchOptions =
       <section className="capitalize">
         {pageData?.unit.length === 0 && !silentLoading ? (
           isFilterApplied() || search ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Result Found
-            </div>
+            <SearchError />
           ) : (
             <EmptyList
               buttonText="Create New Unit"

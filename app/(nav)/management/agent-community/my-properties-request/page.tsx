@@ -27,6 +27,7 @@ import { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import { stateOptions } from "@/app/(nav)/tasks/inspections/data";
 import { formatNumber } from "@/utils/number-formatter";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const lists = [
   {
@@ -205,7 +206,7 @@ const MyPropertiesRequestPage = () => {
   useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
   useEffect(() => {
-    console.log("apiData", apiData);
+    // console.log("apiData", apiData);
     if (apiData) {
       setState((prevState) => ({
         ...prevState,
@@ -219,7 +220,7 @@ const MyPropertiesRequestPage = () => {
           },
       }));
     }
-    console.log("apiData meta -", apiData?.meta);
+    // console.log("apiData meta -", apiData?.meta);
   }, [apiData]);
 
   const propertyRequestData: PropertyRequestDataType[] =
@@ -309,9 +310,7 @@ const MyPropertiesRequestPage = () => {
 
       {propertyRequestData.length === 0 && !silentLoading ? (
          config.params.search || isFilterApplied() ? (
-          <div className="col-span-full text-center py-8 text-gray-500">
-            No Search/Filter Found
-          </div>
+          <SearchError />
         ) : (
           <section>
             <EmptyList

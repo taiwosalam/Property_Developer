@@ -38,7 +38,6 @@ export const transformSingleBranchAPIResponse = (
     data: { branch, manager },
   } = response;
 
-  console.log("branch", branch);
   return {
     branch_name: branch.branch_name,
     address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,

@@ -25,6 +25,7 @@ import dayjs from "dayjs";
 import { AxiosRequestConfig } from "axios";
 import { PropertyRequestParams } from "../type";
 import { formatNumber } from "@/utils/number-formatter";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const lists = [
   {
@@ -312,9 +313,7 @@ const PropertyRequest = () => {
       />
       {propertyRequestData.length === 0 && !silentLoading ? (
         config.params.search || isFilterApplied() ? (
-          <div className="col-span-full text-center py-8 text-gray-500">
-            No Search/Filter Found
-          </div>
+          <SearchError />
         ) : (
           <section>
             <EmptyList

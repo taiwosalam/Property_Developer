@@ -25,6 +25,7 @@ import { InventoryRequestParams } from "./type";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 //  Expected structure of apiData
 interface InventoryApiData {
@@ -265,9 +266,7 @@ const Inventory = () => {
       <section className="capitalize">
         {inventory.length === 0 && !silentLoading ? (
           config.params.search || isFilterApplied() ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+            <SearchError />
           ) : (
             <EmptyList
               buttonText="+ create new"
