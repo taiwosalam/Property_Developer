@@ -1,3 +1,4 @@
+
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(req: NextRequest) {
@@ -14,9 +15,9 @@ export function middleware(req: NextRequest) {
 
   // Define role-based routes
   const roleBasedRoutes: Record<string, string[]> = {
-    admin: ["/dashboard/admin", "/dashboard/settings", "/dashboard/reports"],
-    user: ["/dashboard/user", "/dashboard/profile", "/dashboard/orders"],
-    staff: ["/dashboard/staff", "/dashboard/tasks"],
+    admin: ["/dashboard", "/dashboard/settings", "/dashboard/reports"],
+    user: ["/dashboard", "/dashboard/profile", "/dashboard/orders"],
+    staff: ["/dashboard", "/dashboard/tasks"],
     director: ["/dashboard", "/dashboard/overview"],
   };
 

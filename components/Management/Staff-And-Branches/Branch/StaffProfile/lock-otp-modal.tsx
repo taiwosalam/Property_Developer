@@ -7,17 +7,43 @@ import useStep from "@/hooks/useStep";
 import ModalPreset from "@/components/Modal/modal-preset";
 import { ModalTrigger } from "@/components/Modal/modal";
 import { ReloadIcon } from "@/public/icons/icons";
+import { useAuthStore } from "@/store/authStore";
+import { useObfuscatedEmail } from "@/hooks/useObfuscateEmail";
+import { sendVerifyStaffOTP } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/data";
 
-const LockOTPModal = () => {
+interface LockOTPModalProps {
+  action: () => Promise<void>;
+  otp: string;
+  setOtp: (otp: string) => void;
+}
+
+const LockOTPModal: React.FC<LockOTPModalProps> = ({ action, otp, setOtp }) => {
   const [countdown, setCountdown] = useState(120);
   const [canResend, setCanResend] = useState(false);
   const { activeStep, changeStep } = useStep(2);
+  const email = useAuthStore((state) => state.email);
+  const obfuscatedEmail = useObfuscatedEmail(email || "");
 
   const handleResendCode = async () => {
     if (canResend) {
       setCountdown(120);
       setCanResend(false);
     }
+    try {
+      const status = await sendVerifyStaffOTP();
+      if (status) {
+        setCountdown(120);
+        setCanResend(true);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleAction = async () => {
+    const res = await action();
+    console.log("res", res)
+    // changeStep("next");
   };
 
   useEffect(() => {
@@ -30,13 +56,18 @@ const LockOTPModal = () => {
     return () => clearTimeout(timer);
   }, [countdown]);
 
+
+  const handlePinChange = (pin: string) => {
+    setOtp(pin);
+  };
+
   return activeStep === 1 ? (
     <WalletModalPreset title="Enter OTP" style={{ maxWidth: "390px" }}>
       <div className="space-y-[28px]">
         <div className="space-y-3 text-center text-sm font-medium">
           <p className="text-text-tertiary">
             To validate your request, we&apos;ve sent a one-time password (OTP)
-            to your email. Please input it to confirm your request.
+            to your email (<span className="text-supporting-1">{obfuscatedEmail}</span>). Please input it to confirm your request.
           </p>
           {!canResend && (
             <p>
@@ -46,7 +77,7 @@ const LockOTPModal = () => {
             </p>
           )}
         </div>
-        <AuthPinField onChange={() => {}} length={4} />
+        <AuthPinField onChange={handlePinChange} length={4} />
         <button
           type="button"
           onClick={handleResendCode}
@@ -61,7 +92,7 @@ const LockOTPModal = () => {
       </div>
       <Button
         className="w-full mx-auto mt-[50px]"
-        onClick={() => changeStep("next")}
+        onClick={handleAction}
       >
         proceed
       </Button>

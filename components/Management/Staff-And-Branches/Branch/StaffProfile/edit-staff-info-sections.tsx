@@ -26,6 +26,7 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { moveStaffToAnotherBranch, updateStaffAbout, updateStaffPicture, updateStaffProfile, updateStaffRole } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/edit/data";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import useFetch from "@/hooks/useFetch";
+import { lockStaffAccount, sendVerifyStaffOTP } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/data";
 
 
 export const StaffEditProfileInfoSection = () => {
@@ -159,7 +160,7 @@ export const StaffEditMoveToAnotherBranchSection = () => {
       })) || [];
 
   const staffOptions = staffs
-    ?.filter((staffItem:any) => staffItem.id !== staff?.id)
+    ?.filter((staffItem: any) => staffItem.id !== staff?.id)
     .map((staff: any) => ({
       value: staff.id,
       label: `${staff.title} ${staff.name}`,
@@ -261,11 +262,11 @@ export const StaffEditChangePositionSection = () => {
   const staffs = staffsData?.data.staff;
 
   const staffOptions = staffs
-  ?.filter((staffItem:any) => staffItem.id !== staff?.id)
-  .map((staff: any) => ({
-    value: staff.id,
-    label: `${staff.title} ${staff.name}`,
-  })) || [];
+    ?.filter((staffItem: any) => staffItem.id !== staff?.id)
+    .map((staff: any) => ({
+      value: staff.id,
+      label: `${staff.title} ${staff.name}`,
+    })) || [];
 
   const hasManager = staff?.position === "manager";
   const positionOptions = [
@@ -274,9 +275,9 @@ export const StaffEditChangePositionSection = () => {
       : [{ value: "manager", label: "branch manager" }]),
     { value: "account officer", label: "account officer" },
     { value: "staff", label: "staff" },
-  ].filter((option) => option.value !== position); 
+  ].filter((option) => option.value !== position);
 
-  
+
 
   const handleUpdateStaffPosition = async (data: Record<string, string>) => {
     const payload = {
@@ -300,27 +301,27 @@ export const StaffEditChangePositionSection = () => {
     <LandlordTenantInfoEditSection title={`change ${name} position`}>
       <AuthForm onFormSubmit={handleUpdateStaffPosition} skipValidation>
         <LandlordTenantInfoEditGrid>
-        <Select
-          id="assign_current_position_to"
-          label="assign current position to"
-          inputContainerClassName="bg-neutral-2"
-          options={staffOptions}
-        />
-        <Select
-          id="new_position"
-          label="new position"
-          inputContainerClassName="bg-neutral-2"
-          options={positionOptions}
-        //   defaultValue={staff?.real_estate_title}
-        />
+          <Select
+            id="assign_current_position_to"
+            label="assign current position to"
+            inputContainerClassName="bg-neutral-2"
+            options={staffOptions}
+          />
+          <Select
+            id="new_position"
+            label="new position"
+            inputContainerClassName="bg-neutral-2"
+            options={positionOptions}
+          //   defaultValue={staff?.real_estate_title}
+          />
 
-        <div className="md:col-span-2 flex justify-end">
-          <Button type="submit" size="base_medium" className="py-2 px-6">
-            {updating ? "Updating..." : "Update"}
-          </Button>
-        </div>
-      </LandlordTenantInfoEditGrid>
-    </AuthForm>
+          <div className="md:col-span-2 flex justify-end">
+            <Button type="submit" size="base_medium" className="py-2 px-6">
+              {updating ? "Updating..." : "Update"}
+            </Button>
+          </div>
+        </LandlordTenantInfoEditGrid>
+      </AuthForm>
     </LandlordTenantInfoEditSection >
   );
 };
@@ -355,26 +356,26 @@ export const StaffEditAboutSection = () => {
 
   return (
     <AuthForm onFormSubmit={handleUpdateAboutStaff} skipValidation>
-    <LandlordTenantInfoEditSection
-      title="about staff"
-      style={{ position: "relative" }}
-    >
-      <button
-        type="button"
-        className="absolute top-5 right-5 !w-[unset]"
-        onClick={() => setAbout("")}
+      <LandlordTenantInfoEditSection
+        title="about staff"
+        style={{ position: "relative" }}
       >
-        Clear
-      </button>
-      <TextArea
-        id="note"
-        value={about}
-        onChange={(value) => setAbout(value)}
-      />
-      <Button type="submit" size="base_medium" className="!w-fit ml-auto py-2 px-6">
-        {updating ? "Updating..." : "Update"}
-      </Button>
-    </LandlordTenantInfoEditSection>
+        <button
+          type="button"
+          className="absolute top-5 right-5 !w-[unset]"
+          onClick={() => setAbout("")}
+        >
+          Clear
+        </button>
+        <TextArea
+          id="note"
+          value={about}
+          onChange={(value) => setAbout(value)}
+        />
+        <Button type="submit" size="base_medium" className="!w-fit ml-auto py-2 px-6">
+          {updating ? "Updating..." : "Update"}
+        </Button>
+      </LandlordTenantInfoEditSection>
     </AuthForm>
   );
 };
@@ -382,6 +383,40 @@ export const StaffEditAboutSection = () => {
 export const StaffLockAccountSection = () => {
   const { data: staff } = useStaffEditContext();
   const name = staff?.full_name;
+  const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [otp, setOtp] = useState("");
+
+  const handleLockClicked = async () => {
+    try {
+      setLoading(true);
+      const res = await sendVerifyStaffOTP();
+      if (res) {
+        setModalOpen(true);
+      }
+    } catch (error) {
+      console.error(error);
+    }finally{
+      setLoading(false);
+    }
+  };
+
+  const handleLockAccount = async () => {
+    try {
+      setLoading(true);
+      if(staff?.id){
+      const res = await lockStaffAccount(staff?.id, otp);
+      if (res) {
+        window.dispatchEvent(new Event("staff-updated"));
+      }
+    }
+    } catch (error) {
+      console.error(error);
+    }finally{
+      setLoading(false);
+    }
+  };
+
   return (
     <LandlordTenantInfoEditSection title={`lock ${name} account`}>
       <div className="space-y-4">
@@ -390,18 +425,26 @@ export const StaffLockAccountSection = () => {
           cannot be regained until the account is unlocked from your end
         </p>
         <div className="flex justify-end">
-          <Modal>
-            <ModalTrigger asChild>
-              <Button
-                size="base_medium"
-                className="py-2 px-6 w-fit"
-                variant="red"
-              >
-                lock
-              </Button>
-            </ModalTrigger>
+          {/* <ModalTrigger asChild> */}
+          <Button
+            size="base_medium"
+            className="py-2 px-6 w-fit"
+            variant="red"
+            disabled={loading}
+            onClick={handleLockClicked}
+          >
+            {loading ? "Please wait..." : "lock"}
+          </Button>
+          <Modal
+            state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}
+          >
+            {/* </ModalTrigger> */}
             <ModalContent>
-              <LockOTPModal />
+              <LockOTPModal 
+               action={handleLockAccount}
+               otp={otp}
+               setOtp={setOtp}
+              />
             </ModalContent>
           </Modal>
         </div>
