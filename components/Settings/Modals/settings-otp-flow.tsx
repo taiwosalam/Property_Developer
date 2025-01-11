@@ -11,7 +11,7 @@ import ForgetWalletModal from "./forget-wallet";
 const SettingsOTPFlow = ({
   isForgetWallet,
 }: {
-  isForgetWallet: boolean;
+  isForgetWallet?: boolean;
 }) => {
   const { activeStep, changeStep } = useStep(3);
 

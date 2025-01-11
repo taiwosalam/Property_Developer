@@ -22,6 +22,9 @@ export interface Transaction {
 
 interface WalletStore {
   walletId: string | null;
+  current_pin: string;
+  new_pin: string;
+  confirm_pin: string;
   walletPinStatus: boolean;
   balance: {
     my_balance: string;
@@ -57,6 +60,9 @@ interface WalletStore {
 export const useWalletStore = create<WalletStore>((set) => ({
   walletId: null,
   walletPinStatus: false,
+  current_pin: "",
+  new_pin: "",
+  confirm_pin: "",
   balance: {
     my_balance: "0",
     caution_deposit: "0",
