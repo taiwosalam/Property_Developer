@@ -135,6 +135,7 @@ export interface ProfileResponse {
     };
     profile: {
       picture: string | null;
+      title: string;
     };
   };
 }

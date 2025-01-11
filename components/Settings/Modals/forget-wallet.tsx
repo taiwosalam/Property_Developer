@@ -9,8 +9,10 @@ import type { DefaultSettingsModalProps } from "../types";
 import PinField from "react-pin-field";
 import Button from "@/components/Form/Button/button";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
+import Input from "@/components/Form/Input/input";
+import { AuthForm } from "@/components/Auth/auth-components";
 
-const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
+const ForgetWalletModal: React.FC<DefaultSettingsModalProps> = ({
   changeStep,
 }) => {
   const pinFieldRef = useRef<HTMLInputElement[] | null>(null);
@@ -23,35 +25,36 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
 
   return (
     <WalletModalPreset
-      title="Input OTP"
+      title="Forget Wallet PIN"
       style={{ width: 390, borderRadius: 20 }}
     >
+    <AuthForm onFormSubmit={()=>{}} autoComplete="off">
       <div className="custom-flex-col gap-20">
         <div className="custom-flex-col gap-10">
           <p className="text-text-tertiary text-center text-sm font-medium">
-            To authenticate your request, please input the OTP sent to the email
-            you used during registration (amo****@gmail.com) to complete your
-            request.
+          Please enter your password to proceed with resetting your wallet PIN securely. This ensures your account remains protected and only authorized changes are made.
           </p>
           <div className="flex gap-6 justify-center">
-            <PinField
-              length={4}
-              ref={pinFieldRef}
-              validate={/^[0-9]$/}
-              className="w-10 h-10 text-center border border-solid border-[#2B2B2B] rounded-lg custom-primary-outline"
-            />
+           <Input
+            id="passord"
+            label="Enter Password"
+            type="password"
+            inputClassName="w-full"
+            className="w-full"
+           />
           </div>
         </div>
         <Button
-          onClick={() => changeStep(3)}
+          onClick={() => changeStep("next")}
           size="sm_medium"
           className="py-2 px-8"
         >
           update
         </Button>
       </div>
+      </AuthForm>
     </WalletModalPreset>
   );
 };
 
-export default SettingsOTPModal;
+export default ForgetWalletModal;

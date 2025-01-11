@@ -49,8 +49,9 @@ import useGoogleFonts from "@/hooks/useFonts";
 import Picture from "@/components/Picture/picture";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { companyData, profileData, ProfileSettingsApiResponse, ProfileSettingsPageState, transformProfileApiResponse, userData } from "./data";
+import { companyData, CompanyDataApiResponse, initialPageData, ProfileSettingsApiResponse, ProfileSettingsPageState, transformProfileApiResponse, userData } from "./data";
 import NetworkError from "@/components/Error/NetworkError";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const websiteOptions = [
   {
@@ -79,6 +80,7 @@ const Profile = () => {
   const [selectedFont, setSelectedFont] = useState<string | null>(null);
   const [customDomain, setCustomDomain] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const company_id = usePersonalInfoStore((state) => state.company_id)
   
   const [checkedStates, setCheckedStates] = useState<{
     [key: string]: boolean;
@@ -98,51 +100,9 @@ const Profile = () => {
       }));
     };
 
-  const [state, setState] = useState<ProfileSettingsPageState>({
-    profileData: {
-      phone: "",
-      picture: "",
-      title: "",
-      gender: "",
-      address: "",
-      state: "",
-      lga: "",
-      city: "",
-      bio: "",
-      dob: "",
-      religion: "",
-      marital_status: "",
-      occupation: "",
-      job_type: "",
-      family_type: "",
-      note: "",
-    },
-    companyData: {
-      company_name: "",
-      company_id: 0,
-      company_logo: "",
-      is_verified: 0,
-      date_of_registration: "",
-      cac_registration_number: "",
-      industry: null,
-      membership_number: null,
-      head_office_address: "",
-      state: "",
-      local_government: "",
-      city: "",
-      phone_numbers: [],
-    },
-    userData: {
-      id: 0,
-      userid: "",
-      name: "",
-      email: "",
-      role: [],
-      email_verification: false,
-      tier: 0,
-      account_level: "",
-    },
-  });
+  const [state, setState] = useState<ProfileSettingsPageState>(initialPageData);
+
+  const { verifications, companyData, directorsData } = state;
 
   // FETCH API DATA
   const {
@@ -152,13 +112,13 @@ const Profile = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch("/user/full-profile");
+  } = useFetch(`/companies/${company_id}`);
   useRefetchOnEvent("refetchProfile", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {
       console.log(apiData);
-      const transformedData: ProfileSettingsPageState = transformProfileApiResponse(apiData as ProfileSettingsApiResponse);
+      const transformedData: ProfileSettingsPageState = transformProfileApiResponse(apiData as CompanyDataApiResponse);
       setState(transformedData);
       console.log("transformedData", transformedData);
       console.log("state", state);
@@ -172,12 +132,12 @@ const Profile = () => {
   });
 
   const [socialInputs, setSocialInputs] = useState({
-    instagram: "https://instagram.com/",
-    facebook: "https://facebook.com/",
-    twitter: "https://x.com/",
-    linkedin: "https://www.linkedin.com/company/",
-    tiktok: "https://tiktok.com/",
-    youtube: "https://www.youtube.com/@",
+    instagram: companyData.instagram || "https://instagram.com/",
+    facebook: companyData.facebook || "https://facebook.com/",
+    twitter: companyData.x || "https://x.com/",
+    linkedin: companyData.linkedin || "https://www.linkedin.com/company/",
+    tiktok: companyData.tiktok || "https://tiktok.com/",
+    youtube: companyData.youtube || "https://www.youtube.com/@",
   });
 
   const handleCustomColorChange = (color: string) => {
@@ -211,7 +171,6 @@ const Profile = () => {
 
   const handleFontSelect = (fontName: string) => {
     setSelectedFont(fontName);
-    // localStorage.setItem("selectedFont", fontName);
     const link = document.createElement("link");
     link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(
       / /g,
@@ -267,12 +226,12 @@ const Profile = () => {
                   required
                   id="company_name"
                   label="company name"
-                  placeholder={state.companyData.company_name}
+                  placeholder={companyData.company_name}
                   className="w-full"
                   disabled
                 />
                 <div className="flex mt-2 sm:mt-0 sm:ml-2">
-                  <SettingsVerifiedBadge />
+                  <SettingsVerifiedBadge status="verified" />
                 </div>
               </div>
               <div className="md:w-1/3 w-full gap-1 flex items-end">
@@ -282,11 +241,11 @@ const Profile = () => {
                   id="company_mail"
                   placeholder="ourtenantsdeveloper@gmail.com"
                   inputClassName="rounded-[8px] bg-white w-full"
-                  value={"developer@gmail.com"}
+                  value={companyData.email}
                   disabled
                 />
                 <div className="flex mt-2 sm:mt-0 sm:ml-2">
-                  <SettingsVerifiedBadge />
+                  <SettingsVerifiedBadge status="verified" />
                 </div>
               </div>
             </div>
@@ -296,7 +255,7 @@ const Profile = () => {
                 required
                 id="cac_date"
                 label="date of registration"
-                value={dayjs(state.companyData.date_of_registration)}
+                value={dayjs(companyData.date_of_registration)}
                 onChange={() => {}}
                 disabled
               />
@@ -306,7 +265,7 @@ const Profile = () => {
                 id="cac_number"
                 placeholder="Write here"
                 inputClassName="rounded-[8px] setup-f bg-white"
-                value={state.companyData.cac_registration_number}
+                value={companyData.cac_registration_number}
                 disabled
               />
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
@@ -320,7 +279,7 @@ const Profile = () => {
                   disabled
                 />
                 <div className="flex pt-2 sm:pt-7">
-                  <SettingsVerifiedBadge />
+                  <SettingsVerifiedBadge status={verifications.cac_status} />
                 </div>
               </div>
               <Select
@@ -328,18 +287,17 @@ const Profile = () => {
                 label="industry"
                 options={industryOptions}
                 inputContainerClassName="bg-neutral-2 w-full"
-                defaultValue={state.companyData.industry ?? ""}
+                defaultValue={companyData.industry || ""}
               />
               <Input
                 id="membership_number"
                 label="membership number"
                 placeholder="write here"
                 className="w-full"
-                defaultValue={state.companyData.membership_number}
+                defaultValue={companyData.membership_number || ""}
               />
               <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
                 <FileInput
-                  // onChange={handleUploadMembership}
                   required
                   id="membership_document"
                   label="Membership document"
@@ -351,11 +309,11 @@ const Profile = () => {
                   hiddenInputClassName="setup-f required w-full sm:w-[250px]"
                   settingsPage={true}
                 />
-                {uploadingMembership && (
+                {/* {uploadingMembership && (
                   <button className="w-1/2 sm:w-auto py-2 px-3 mt-2 sm:mt-0 text-brand-9">
                     Verify Document
                   </button>
-                )}
+                )} */}
               </div>
             </div>
           </div>
@@ -429,7 +387,7 @@ const Profile = () => {
               )}
             </div>
           </div>
-          <CompanyMobileNumber phoneNumbers={state.companyData.phone_numbers} />
+          <CompanyMobileNumber phoneNumbers={state.companyData.phone_number} />
           <CompanyLogo
             lightLogo={state.companyData.company_logo}
             darkLogo={""}

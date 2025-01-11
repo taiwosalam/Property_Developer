@@ -25,6 +25,7 @@ const FileInput: React.FC<FileInputProps> = ({
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [file, setFile] = useState<File | null>(null);
+  const [showVerifyBtn, setShowVerifyBtn] = useState(false);
   const [fileName, setFileName] = useState("");
   const [fileURL, setFileURL] = useState("");
   const { width } = useWindowDimensions();
@@ -79,6 +80,7 @@ const FileInput: React.FC<FileInputProps> = ({
       ) {
         toast.warning(`Please upload a ${fileType} or image file.`);
         restorePreviousFile();
+        // setShowVerifyBtn(true);
         return;
       }
     }
@@ -92,6 +94,7 @@ const FileInput: React.FC<FileInputProps> = ({
       return;
     }
     setFile(newFile);
+    // setShowVerifyBtn(true);
   };
 
   const handleViewFile = () => {
@@ -113,11 +116,13 @@ const FileInput: React.FC<FileInputProps> = ({
 
   useEffect(() => {
     if (file) {
+      setShowVerifyBtn(true);
       setFileURL(URL.createObjectURL(file));
       setFileName(file.name);
     } else {
       setFileURL("");
       setFileName("");
+      setShowVerifyBtn(false);
     }
     handleInputChange?.();
     previousFileRef.current = file;
@@ -130,7 +135,7 @@ const FileInput: React.FC<FileInputProps> = ({
           {label}
         </Label>
       )}
-      <div className="relative">
+      <div className={`relative ${settingsPage && "flex"} `}>
         <input
           id={id}
           name={id}
@@ -161,9 +166,8 @@ const FileInput: React.FC<FileInputProps> = ({
             >
               {fileName
                 ? fileName
-                : `Click ${isLgScreen ? "the side button" : "here"} to upload ${
-                    placeholder || "file"
-                  }`}
+                : `Click ${isLgScreen ? "the side button" : "here"} to upload ${placeholder || "file"
+                }`}
             </span>
           ) : (
             <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -209,6 +213,11 @@ const FileInput: React.FC<FileInputProps> = ({
               {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
             </Button>
           </div>
+        )}
+        {settingsPage && showVerifyBtn && (
+          <button className="text-xs w-1/2 sm:w-auto sm:mt-0 text-brand-9">
+            Verify Document
+          </button>
         )}
       </div>
     </div>

@@ -39,6 +39,7 @@ import { DrawerComponent } from "../BadgeIcon/create-tenancy-aggrement-modal";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
 import { ProfileResponse } from "./data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const NotificationBadge = ({
   count,
@@ -84,7 +85,9 @@ const Header = () => {
   const lgIconsInteractionClasses =
     "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
 
-  const { data, loading } = useFetch<ProfileResponse>("/user/profile");
+  const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
+  useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
+
   const setPersonalInfo = usePersonalInfoStore(
     (state) => state.setPersonalInfo
   );
@@ -100,10 +103,10 @@ const Header = () => {
       setPersonalInfo("user_id", user.userid);
       setPersonalInfo(
         "name",
-        `${director?.personal_title ? director.personal_title + " " : ""}${
-          user.name
-        }`
+        `${profile?.title ? profile.title + " " : ""}${user.name}`
       );
+      setPersonalInfo("full_name", user.name);
+      setPersonalInfo("title", profile?.title as string);
       setPersonalInfo("profile_picture", profile.picture);
       if (company) {
         setPersonalInfo("company_id", company.company_id);

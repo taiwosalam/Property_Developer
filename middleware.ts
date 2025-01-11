@@ -28,6 +28,11 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // Allow access to /auth/sign-up if there's no role
+  if (currentPath === "/auth/sign-up" && !role) {
+    return NextResponse.next();
+  }
+
   // If the current path is `/auth/sign-in` and the user's role is not `director`, redirect them to `/auth/user/sign-in`
   if (currentPath === "/auth/sign-in" && role !== "director") {
     return NextResponse.redirect(new URL("/auth/user/sign-in", req.url));
@@ -35,11 +40,11 @@ export function middleware(req: NextRequest) {
 
   // Define role-based routes
   const roleBasedRoutes: Record<string, string[]> = {
-    admin: ["/dashboard",  "/auth/user/sign-in", "/dashboard/reports"],
-    user: ["/dashboard",  "/auth/user/sign-in", "/dashboard/orders"],
-    staff: ["/dashboard", "/auth/user/sign-in"],
-    account: ["/dashboard", "/auth/user/sign-in", "/auth/sign-up"],
-    director: ["/dashboard", "/wallet", "/auth/sign-in", "/auth/user/sign-in"],
+    admin: ["/dashboard",  "/auth/user/sign-in", "/dashboard/reports", "/auth/forgot-password"],
+    user: ["/dashboard",  "/auth/user/sign-in", "/dashboard/orders", "/auth/forgot-password"],
+    staff: ["/dashboard", "/auth/user/sign-in", "/auth/forgot-password"],
+    account: ["/dashboard", "/auth/user/sign-in", "/auth/sign-up", "/auth/forgot-password"],
+    director: ["/dashboard", "/wallet", "/auth/sign-in", "/auth/user/sign-in", "/auth/forgot-password"],
   };
 
   // Check if the user's role allows access to the current path

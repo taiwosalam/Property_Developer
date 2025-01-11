@@ -57,12 +57,14 @@ export const AuthForm = forwardRef<HTMLFormElement, AuthFormProps>(
       setValidationErrors,
       returnType = "string",
       skipValidation,
+      autoComplete,
     },
     ref
   ) => {
     return (
       <form
         method="post"
+        autoComplete={autoComplete ? autoComplete : "on"}
         encType="multipart/form-data"
         id={id}
         ref={ref}
