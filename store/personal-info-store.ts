@@ -3,7 +3,9 @@ import { create } from "zustand";
 interface PersonalInfoStoreState {
   user_id: string | null;
   name: string | null;
+  full_name: string | null;
   profile_picture: string | null;
+  title: string | null;
 
   // Company Info
   company_id: string | null;
@@ -32,6 +34,9 @@ export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
   // Personal Info
   user_id: null,
   name: null,
+  full_name: null,
+  title: null,
+  
   profile_picture: null,
 
   // Company Info

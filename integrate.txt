@@ -1,0 +1,61 @@
+ const handleUpdateProfile = async (data: Record<string, string>) => {
+    const payload = {
+      name: data.fullname,
+      title: data.personal_title,
+      // estate_title: data.real_estate_title,
+      // email: data.email,
+      // phone_number: data.phone_number,
+      // gender: data.gender,
+    };
+    // cleanPhoneNumber(payload);
+    // if (!payload.phone_number) {
+    //   payload.phone_number = "";
+    // }
+
+    try {
+      setReqLoading(true);
+      const status = await updateUserProfile(objectToFormData(payload));
+      if (status) {
+        setNext(true);
+        window.dispatchEvent(new Event("fetch-profile"));
+      }
+    } catch (error) {
+      toast.error("Error updating profile");
+    } finally {
+      setReqLoading(false);
+      setNext(false);
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // const handleSubmit = async(data: Record<string, string>) => {
+  //   if (isForgetPin) {
+  //     setIsForgetPin(false); // Reset `isForgetPin`
+  //     setIsOpen(true); 
+  //     try{
+  //       // const response = await 
+  //       console.log("Goin to API", data)
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   } else {
+  //     setIsOpen(true); // Open the modal directly
+  //     try{
+  //       // const response = await 
+  //       console.log("Goin to API", data)
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // };

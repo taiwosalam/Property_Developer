@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // Images
 import { Check } from "lucide-react";
@@ -24,12 +24,32 @@ import {
   SettingsSectionTitle,
   SettingsUpdateButton,
 } from "@/components/Settings/settings-components";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { FormState, updateUserProfile } from "./data";
+import { toast } from "sonner";
+import { AuthForm } from "@/components/Auth/auth-components";
 
 const Security = () => {
+  const name = usePersonalInfoStore((state) => state.full_name);
+  const title = usePersonalInfoStore((state) => state.title);
   const { preview, inputFileRef, handleImageChange } = useImageUploader();
   const [inputFields, setInputFields] = useState([
     { id: Date.now(), signature: SignatureImage },
   ]);
+  const profile_picture = usePersonalInfoStore(
+    (state) => state.profile_picture
+  );
+  const [reqLoading, setReqLoading] = useState(false);
+  const [next, setNext] = useState(false);
+  const [formState, setFormState] = useState<FormState>({
+    name: name || "",
+    title: title || "",
+  });
+
+  const setUpdateState = (fieldName: keyof FormState, value: any) => {
+    setFormState((prev) => ({ ...prev, [fieldName]: value }));
+  };
 
   const changeImage = () => {
     inputFileRef.current?.click();
@@ -40,10 +60,6 @@ const Security = () => {
       ...inputFields,
       { id: Date.now(), signature: SignatureImage },
     ]);
-    // console.log("Input Fields after adding:", [
-    //   ...inputFields,
-    //   { id: Date.now(), signature: SignatureImage },
-    // ]);
   };
 
   const removeInputField = (id: number) => {
@@ -70,40 +86,79 @@ const Security = () => {
       }
     };
 
+  const handleUpdateProfile = async (data: FormData) => {
+    const payload = {
+      name: data.get("name"),
+      title: data.get("title"),
+      picture: data.get("picture"),
+    };
+
+    try {
+      setReqLoading(true);
+      const res = await updateUserProfile(objectToFormData(payload));
+      if (res && 'status' in res && res.status === 200) {
+        // console.log(res);
+        toast.success("Profile updated successfully");
+        setNext(true);
+        window.dispatchEvent(new Event("fetch-profile"));
+      }
+    } catch (error) {
+      toast.error("Error updating profile");
+    } finally {
+      setReqLoading(false);
+    }
+  };
+
+
   return (
     <>
       <SettingsSection title="directors profile">
-        <div className="custom-flex-col gap-8">
-          <div className="custom-flex-col gap-4">
-            <SettingsSectionTitle
-              title="Director Display Picture"
-              desc="The profile photo size should be 180 x 180 pixels with a maximum file size of 2MB."
-            />
-            <div className="custom-flex-col gap-[18px]">
-              <ProfileUpload
-                preview={preview || ""}
-                onChange={handleImageChange}
-                inputFileRef={inputFileRef}
-                onClick={changeImage}
+        <AuthForm onFormSubmit={handleUpdateProfile} skipValidation returnType="form-data">
+          <div className="custom-flex-col gap-8">
+            <div className="custom-flex-col gap-4">
+              <SettingsSectionTitle
+                title="Director Display Picture"
+                desc="The profile photo size should be 180 x 180 pixels with a maximum file size of 2MB."
               />
-              <div className="flex flex-col lg:flex-row gap-5">
-                <Input
-                  id="fullname"
-                  label="full name"
-                  placeholder="Taiwo Salam"
-                  className="w-[277px]"
+              <div className="custom-flex-col gap-[18px]">
+                <ProfileUpload
+                  preview={preview || profile_picture || ""}
+                  onChange={handleImageChange}
+                  inputFileRef={inputFileRef}
+                  onClick={changeImage}
                 />
-                <Select
-                  id="personal_title"
-                  options={titles}
-                  label="personal title"
-                  inputContainerClassName="w-[277px] bg-neutral-2"
-                />
+                <div className="flex flex-col lg:flex-row gap-5">
+                  <Select
+                    id="personal_title"
+                    name="title"
+                    options={titles}
+                    label="personal title"
+                    inputContainerClassName="w-[277px] bg-neutral-2"
+                    defaultValue={title as string}
+                    // value={formState.title}
+                    onChange={(v) => setUpdateState("title", v)}
+                  />
+                  <Input
+                    id="fullname"
+                    name="name"
+                    label="full name"
+                    placeholder="Write Here"
+                    className="w-[277px]"
+                    defaultValue={name}
+                    // value={formState.name}
+                    // onChange={(v) => setUpdateState("name", v)}
+                  />
+                </div>
               </div>
             </div>
+            <SettingsUpdateButton
+              submit
+              loading={reqLoading}
+              action={handleUpdateProfile as any}
+              next={next}
+            />
           </div>
-          <SettingsUpdateButton />
-        </div>
+        </AuthForm>
       </SettingsSection>
       <SettingsSection title="Authorized Signature">
         <div className="custom-flex-col gap-8">

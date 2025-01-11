@@ -59,11 +59,14 @@ export interface SettingsUpdateButtonProps {
   remove?: boolean;
   addMore?: boolean;
   submit?: boolean;
+  loading?: boolean;
+  action?: () => Promise<void>;
+  next?: boolean;
   type?: "default" | "otp" | "add domain" | "purchase unit" | "feature";
 }
 
 export interface DefaultSettingsModalProps {
-  changeStep: (step: FormSteps) => void;
+  changeStep: (step: FormSteps | number) => void;
 }
 
 export interface SettingsAnnumSwitcherProps {

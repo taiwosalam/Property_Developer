@@ -19,8 +19,8 @@ const SearchError = () => {
         <div className="flex flex-col gap-2">
             <h3 className="font-bold">Why You&rsquo;re Seeing This</h3>
             <ol className="list-decimal pl-6 space-y-2">
-                <li>The keywords or query entered may not match any content in our database.</li>
-                <li>The item, service, or content you&rsquo;re searching for may not exist on our platform.</li>
+                <li>The keywords or query entered may not match any content in database.</li>
+                <li>The item, service, or content you&rsquo;re searching for may not exist on the platform.</li>
                 <li>There may be a typo or error in the search terms you entered.</li>
             </ol>
         </div>
