@@ -1,3 +1,5 @@
+import api, { handleAxiosError } from "@/services/api";
+
 interface SocialLinks {
   facebook: string;
   x: string;
@@ -222,16 +224,30 @@ export const transformProfileApiResponse = (
 };
 
 // Send OTP to verify wallet PIN
-// /wallets/validate-pin
-// export const SendVerifyOTp = async (data: FormData) => {
-//   try {
-//     data.append("_method", "PATCH");
-//     const response = await api.post("/wallets/validate-pin", data);
-//     if (response.status === 200) {
-//       return response;
-//     }
-//   } catch (error) {
-//     handleAxiosError(error);
-//     return false;
-//   }
-// };
+// /security/wallet-otp
+export const sendWalletSecurityOTp = async (data:any) => {
+  // console.log("data", data)
+  try {
+    const response = await api.post("/security/wallet-otp", data);
+    if (response.status === 200) {
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+// change wallet pin - /security/change_pin
+
+export const changeWalletPin = async(data: any) => {
+  try {
+    const response = await api.post("/security/change_pin", data);
+    if (response.status === 200) {
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+}
