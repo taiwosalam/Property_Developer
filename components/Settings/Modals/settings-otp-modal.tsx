@@ -11,13 +11,15 @@ import Button from "@/components/Form/Button/button";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { useWalletStore } from "@/store/wallet-store";
 import { toast } from "sonner";
-import { changeWalletPin } from "@/app/(nav)/settings/profile/data";
+import { changeWalletPin, createNewWalletPin } from "@/app/(nav)/settings/profile/data";
 
 const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
   changeStep,
+  isForgetWallet,
 }) => {
   const pinFieldRef = useRef<HTMLInputElement[] | null>(null);
   const [otp, setOtp] = React.useState("");
+  const setWalletStore = useWalletStore((s) => s.setWalletStore)
   const walletId = useWalletStore((s) => s.walletId);
   const [loading, setLoading] = useState(false)
   const current_pin = useWalletStore((s) => s.current_pin);
@@ -52,6 +54,12 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
     }
   }
 
+  const handleIsForgetWallet = async()=> {
+    console.log("otp", otp)
+    setWalletStore("otp", otp);
+    changeStep(4);
+  }
+
 
   return (
     <WalletModalPreset
@@ -76,12 +84,12 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
           </div>
         </div>
         <Button
-          onClick={() => handleChangeWalletPin()}
+          onClick={() => isForgetWallet ? handleIsForgetWallet() : handleChangeWalletPin()}
           size="sm_medium"
           disabled={loading}
           className="py-2 px-8"
         >
-          {loading ? "Please wait..." : "Update"}
+          {loading ? "Please wait..." : "Proceed"}
         </Button>
       </div>
     </WalletModalPreset>

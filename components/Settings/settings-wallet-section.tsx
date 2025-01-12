@@ -25,15 +25,16 @@ const SettingsWalletSection = () => {
 
   const { data, error, refetch } =
   useFetch<WalletDataResponse>("/wallets/dashboard");
-  
   const walletId = data?.balance.wallet_id;
+  
+  
   const handleSubmit = async (data: Record<string, string>) => {
     try {
+      setWalletStore("walletId", walletId as string);
       // API request logic here
       setLoading(true)
       const payload = {
         wallet_id: walletId as string,
-        
       }
       // if there's no value in current_pin, new_pin, confirm_pin
       if(!data.current_pin && !data.new_pin && !data.confirm_pin) {
@@ -43,7 +44,6 @@ const SettingsWalletSection = () => {
       
       // check if there's value in current_pin, new_pin, confirm_pin
       if (data.current_pin && data.new_pin && data.confirm_pin) {
-        setWalletStore("walletId", walletId as string);
         setWalletStore("current_pin", data.current_pin);
         setWalletStore("new_pin", data.new_pin);
         setWalletStore("confirm_pin", data.confirm_pin);
@@ -129,7 +129,12 @@ const SettingsWalletSection = () => {
             />
           </div>
           <div className="flex justify-end gap-4">
-            <Button disabled={loading} size="base_bold" className="py-[10px] px-8" type="submit">
+            <Button
+              disabled={loading}
+              size="base_bold"
+              className="py-[10px] px-8"
+              type="submit"
+            >
               {loading ? "Please wait..." : "Update"}
             </Button>
           </div>

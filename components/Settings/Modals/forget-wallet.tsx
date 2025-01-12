@@ -1,6 +1,7 @@
+
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // Types
 import type { DefaultSettingsModalProps } from "../types";
@@ -11,11 +12,20 @@ import Button from "@/components/Form/Button/button";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import Input from "@/components/Form/Input/input";
 import { AuthForm } from "@/components/Auth/auth-components";
+import { useWalletStore } from "@/store/wallet-store";
+import { WalletDataResponse } from "@/app/(nav)/wallet/data";
+import useFetch from "@/hooks/useFetch";
+import { toast } from "sonner";
+import { ForgetWalletPinPassword } from "@/app/(nav)/settings/profile/data";
 
 const ForgetWalletModal: React.FC<DefaultSettingsModalProps> = ({
   changeStep,
 }) => {
   const pinFieldRef = useRef<HTMLInputElement[] | null>(null);
+  const [loading, setLoading] = useState(false)
+  const walletId = useWalletStore((s) => s.walletId);
+
+  console.log("walletId", walletId)
 
   useEffect(() => {
     if (pinFieldRef.current && pinFieldRef.current.length > 0) {
@@ -23,12 +33,32 @@ const ForgetWalletModal: React.FC<DefaultSettingsModalProps> = ({
     }
   }, []);
 
+  const hanldeForgetPassword = async(data: Record<string, string>)=>{
+    try{
+      setLoading(true)
+      const payload = {
+        wallet_id: walletId as string,
+        password: data.password
+      }
+      console.log("payload", payload)
+      const res = await ForgetWalletPinPassword(payload);
+      if(res){
+        toast.success("Check Email For OTP")
+        changeStep("next");
+      }
+    } catch (err){
+        toast.error("Failed to forget wallet password")
+    } finally{
+      setLoading(false)
+    }
+  }
+
   return (
     <WalletModalPreset
       title="Forget Wallet PIN"
       style={{ width: 390, borderRadius: 20 }}
     >
-    <AuthForm onFormSubmit={()=>{}} autoComplete="off">
+    <AuthForm onFormSubmit={hanldeForgetPassword} autoComplete="off">
       <div className="custom-flex-col gap-20">
         <div className="custom-flex-col gap-10">
           <p className="text-text-tertiary text-center text-sm font-medium">
@@ -36,7 +66,7 @@ const ForgetWalletModal: React.FC<DefaultSettingsModalProps> = ({
           </p>
           <div className="flex gap-6 justify-center">
            <Input
-            id="passord"
+            id="password"
             label="Enter Password"
             type="password"
             inputClassName="w-full"
@@ -45,11 +75,11 @@ const ForgetWalletModal: React.FC<DefaultSettingsModalProps> = ({
           </div>
         </div>
         <Button
-          onClick={() => changeStep("next")}
           size="sm_medium"
+          type="submit"
           className="py-2 px-8"
         >
-          update
+          {loading ? "Please wait..." : "Proceed"}
         </Button>
       </div>
       </AuthForm>
