@@ -25,6 +25,7 @@ interface WalletStore {
   current_pin: string;
   new_pin: string;
   confirm_pin: string;
+  otp?: string;
   walletPinStatus: boolean;
   balance: {
     my_balance: string;
@@ -63,6 +64,7 @@ export const useWalletStore = create<WalletStore>((set) => ({
   current_pin: "",
   new_pin: "",
   confirm_pin: "",
+  otp: "",
   balance: {
     my_balance: "0",
     caution_deposit: "0",

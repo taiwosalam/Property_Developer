@@ -67,6 +67,7 @@ export interface SettingsUpdateButtonProps {
 
 export interface DefaultSettingsModalProps {
   changeStep: (step: FormSteps | number) => void;
+  isForgetWallet?: boolean;
 }
 
 export interface SettingsAnnumSwitcherProps {

@@ -251,3 +251,32 @@ export const changeWalletPin = async(data: any) => {
     return false;
   }
 }
+
+// Forget wallet Pin,
+// /security/forget_pin/password
+
+export const ForgetWalletPinPassword = async(data: any)=>{
+  try{
+    const res = await api.post("/security/forget_pin/password", data);
+    if(res.status === 200){
+      return res;
+    }
+  } catch(err){
+    handleAxiosError(err);
+    return false;
+  }
+}
+
+// New wallet Pin
+// /security/forget_pin
+export const createNewWalletPin = async(data:any)=>{
+ try{
+  const res = await api.post("/security/forget_pin", data);
+  if(res.status === 200){
+    return res;
+  }
+ } catch(err){
+  handleAxiosError(err);
+    return false;
+ }
+}
