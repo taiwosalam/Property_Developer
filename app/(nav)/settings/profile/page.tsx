@@ -52,6 +52,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { companyData, CompanyDataApiResponse, initialPageData, ProfileSettingsApiResponse, ProfileSettingsPageState, transformProfileApiResponse, userData } from "./data";
 import NetworkError from "@/components/Error/NetworkError";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import useBranchStore from "@/store/branch-store";
 
 const websiteOptions = [
   {
@@ -120,8 +121,6 @@ const Profile = () => {
       console.log(apiData);
       const transformedData: ProfileSettingsPageState = transformProfileApiResponse(apiData as CompanyDataApiResponse);
       setState(transformedData);
-      console.log("transformedData", transformedData);
-      console.log("state", state);
     }
   }, [apiData]);
 

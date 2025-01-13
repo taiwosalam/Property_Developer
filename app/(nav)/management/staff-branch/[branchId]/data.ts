@@ -35,11 +35,11 @@ export const transformSingleBranchAPIResponse = (
   response: SingleBranchResponseType
 ): SingleBranchPageData => {
   const {
-    data: { branch, manager },
+    data: { branch, manager, sub_wallet },
   } = response;
-
   return {
     branch_name: branch.branch_name,
+    picture: branch.picture,
     address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
     properties: { total: branch.properties_count, new_this_month: branch.current_month_properties_count },
     landlords: { total: branch.landlords_count, new_this_month: branch.current_month_landlords_count },
@@ -50,6 +50,7 @@ export const transformSingleBranchAPIResponse = (
     inquiries: { total: 0, new_this_month: 0 },
     complaints: { total: branch.complaints_count, new_this_month: branch.current_month_complaints_count },
     listings: { total: 0, new_this_month: 0 },
+    branch_wallet: sub_wallet !== null ? { ...sub_wallet } : null,
     staffs: branch.staffs.map((s) => {
       return {
         avatarSrc: s.picture,

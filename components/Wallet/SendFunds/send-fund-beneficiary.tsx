@@ -1,12 +1,12 @@
 "use client";
 
 // Imports
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "@/components/Form/Input/input";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
-import { currencySymbols } from "@/utils/number-formatter";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import { useWalletStore, type Beneficiary } from "@/store/wallet-store";
 import { AuthPinField } from "@/components/Auth/auth-components";
@@ -20,8 +20,10 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
   name,
   wallet_id,
   badge_color,
+  branch,
 }) => {
   const { setIsOpen } = useModal();
+  const balance = useWalletStore((s) => s.balance);
   const [activeStep, setActiveStep] = useState<"send funds" | "confirm pin">(
     "send funds"
   );
@@ -45,6 +47,10 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
         toast.warning("Please enter an amount");
         return;
       }
+      if (branch && amount > Number(balance.my_balance)) {
+        toast.warning("Insufficient balance");
+        return;
+      }
       setActiveStep("confirm pin");
     } else {
       if (pin.length !== 4) {
@@ -65,6 +71,7 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
       setLoading(false);
     }
   };
+
   return (
     <div className="custom-flex-col gap-8">
       {activeStep === "send funds" ? (
@@ -83,13 +90,26 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
                 <p className="text-[#010A23] dark:text-white text-base font-medium capitalize">
                   {name}
                 </p>
-                {badge_color && <BadgeIcon color={badge_color} />}
+                {/* FIX BADGE LATER */}
+                {/* {badge_color && <BadgeIcon color={badge_color} />} */}
               </div>
               <p className="text-[#606060] dark:text-darkText-1 text-sm font-normal">
                 Wallet ID: {wallet_id}
               </p>
             </div>
           </div>
+          {branch && (
+            <div className="flex items-center justify-between w-full">
+              <p className="text-[#010A23] dark:text-white text-base font-medium capitalize">
+                Company Balance
+              </p>
+              <p>
+                {`${currencySymbols.naira} ${formatNumber(balance.my_balance, {
+                  forceTwoDecimals: true,
+                })}`}
+              </p>
+            </div>
+          )}            
           <div className="h-[1px] border border-dashed border-brand-9"></div>
           <div className="custom-flex-col gap-4">
             <Input
@@ -112,7 +132,7 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
               onChange={setDescription}
             />
           </div>
-          {!isAlreadyBeneficiary && (
+          {!isAlreadyBeneficiary && !branch && (
             <Checkbox
               radio
               className="flex-row-reverse justify-between"
@@ -127,7 +147,7 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
         <div className="custom-flex-col gap-8">
           <button
             onClick={() => setActiveStep("send funds")}
-            className="w-6 h-6 flex items-center justify-center"
+            className="w-6 h-6 flex items-center justify-center text-brand-9"
           >
             Back
           </button>

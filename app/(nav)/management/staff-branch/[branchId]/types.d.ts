@@ -18,7 +18,23 @@ export interface SingleBranchPageData {
   listings: Stats;
   staffs: notificationCardProps["notifications"];
   hasManager: boolean;
+  branch_wallet: SubWallet | null;
+  picture: string | null;
 }
+
+interface SubWallet {
+  wallet_id: string;
+  balance: string;
+  escrow_balance: string;
+  is_active: string;
+  credit_total: number;
+  debit_total: number;
+  balance_total: string;
+  last_week_credit: number;
+  last_week_debit: number;
+  last_week_balance: number;
+}
+
 
 export interface EditBranchFormData {
   id: string;
@@ -68,6 +84,7 @@ export type SingleBranchResponseType = {
         name: string;
       }[];
     };
+    sub_wallet: SubWallet | null,
     manager: {
       id: string;
       is_active: 1 | 0;

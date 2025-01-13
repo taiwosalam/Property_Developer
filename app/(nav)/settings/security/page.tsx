@@ -29,6 +29,7 @@ import { cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImag
 import { FormState, updateUserProfile } from "./data";
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
+import SettingsSignature from "@/components/Settings/settings-signature";
 
 const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
@@ -160,96 +161,7 @@ const Security = () => {
           </div>
         </AuthForm>
       </SettingsSection>
-      <SettingsSection title="Authorized Signature">
-        <div className="custom-flex-col gap-8">
-          <div className="custom-flex-col gap-6">
-            <SettingsSectionTitle
-              title=""
-              desc="This signature is affixed to every document requiring authorization. Please sign on a plain white paper and take a photo for uploading. If possible, remove the background picture of the signature before uploading for a cleaner appearance."
-            />
-            <div className="custom-flex-col gap-[18px]">
-              <div className="flex flex-col gap-5">
-                {inputFields.map((field, index) => (
-                  <React.Fragment key={field.id}>
-                    <div className="relative max-w-[100px] rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer">
-                      <Picture
-                        size={100}
-                        fit="contain"
-                        src={field.signature}
-                        alt="official signature"
-                      />
-                      <div
-                        style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
-                        className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
-                      >
-                        <Picture src={ImageBlue} alt="image icon" size={20} />
-                        <p
-                          className="text-brand-9 text-xs font-normal"
-                          onClick={() => changeSignatureImage(index)}
-                        >
-                          Change Image
-                        </p>
-                      </div>
-                      <input
-                        type="file"
-                        id={`signature_input_${index}`}
-                        name={`signature_${index}`}
-                        accept="image/*"
-                        onChange={handleSignatureChange(index)}
-                        className="hidden"
-                        ref={React.createRef()}
-                      />
-                    </div>
-                    <div className="flex flex-col md:flex-row gap-5 justify-start md:justify-end md:items-end items-start">
-                      <div className="flex-1">
-                        <Input
-                          id={`fullname_${index}`}
-                          label="full name"
-                          placeholder="Taiwo Salam"
-                          className="w-full"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <Select
-                          id={`personal_title_qualification_${index}`}
-                          options={titles}
-                          label="personal title / qualification"
-                          inputContainerClassName="w-full bg-neutral-2"
-                        />
-                      </div>
-                      <div className="flex flex-col sm:flex-row gap-3 items-end">
-                        <Select
-                          id={`real_estate_title_${index}`}
-                          options={industryOptions}
-                          label="real estate title"
-                          inputContainerClassName="w-full bg-neutral-2"
-                        />
-                        {index !== 0 && (
-                          <button
-                            className="bg-brand-9 min-w-[50px] text-white text-xs font-normal py-2 px-3 rounded-lg max-h-[40px]"
-                            onClick={() => removeInputField(field.id)}
-                          >
-                            Remove
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </React.Fragment>
-                ))}
-                <div className="flex items-end">
-                  <button
-                    className="text-xs font-normal py-2 px-3 w-full sm:w-auto text-brand-9 bg-white"
-                    onClick={addInputField}
-                  >
-                    Add More
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
+      <SettingsSignature />
       <SettingsWalletSection />
       <SettingsPasswordSection />
       <SettingsSection title="Bank Details">

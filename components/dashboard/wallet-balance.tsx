@@ -193,7 +193,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
                 })}`}
           </p>
           <div className="text-white text-xs font-medium capitalize flex items-center space-x-1">
-            <p className="text-text-white-secondary ">caution deposit</p>
+              <p className="text-text-white-secondary ">caution deposit</p>
             <span className="text-white ml-2">
               {hideBalance
                 ? "*******"

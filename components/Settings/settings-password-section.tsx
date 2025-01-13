@@ -17,9 +17,16 @@ const SettingsPasswordSection = () => {
     {}
   );
 
-  const handleSubmit = () => {
+  const handleSubmit = (data: Record<string, string>) => {
     // communicate with backend
     setIsOpen(true);
+    const payload = {
+      current_password: data.current_password,
+      password: data.password,
+      password_confirmation: data.confirm_password,
+    }
+
+    console.log("Payload", payload)
   };
 
   return (
@@ -47,7 +54,7 @@ const SettingsPasswordSection = () => {
               validationErrors={validationErrors}
             />
             <Input
-              id="confirm-password"
+              id="confirm_password"
               label="re-enter new password"
               className="w-full sm:w-[277px]"
               type="password"

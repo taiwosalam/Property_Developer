@@ -43,6 +43,7 @@ export interface WalletModalDefaultProps<
   T extends WalletSendFundsOptions | WalletWithdrawFundsOptions
 > {
   changeStep: React.Dispatch<React.SetStateAction<T>>;
+  branch?: boolean;
 }
 
 export interface FundsBeneficiaryProps extends Beneficiary {

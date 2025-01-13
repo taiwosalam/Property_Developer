@@ -7,6 +7,7 @@ export interface Beneficiary {
   picture: string | null;
   wallet_id: string;
   badge_color?: BadgeIconColors;
+  branch?: boolean;
 }
 
 export interface Transaction {
@@ -52,6 +53,10 @@ interface WalletStore {
     bank: string;
     customer_code: string;
   };
+  sub_wallet:{
+    status: string;
+    wallet_id: number | undefined;
+  }
   setWalletStore: <K extends keyof Omit<WalletStore, "setWalletStore">>(
     key: K,
     value: WalletStore[K]
@@ -89,6 +94,10 @@ export const useWalletStore = create<WalletStore>((set) => ({
     account_name: "",
     bank: "",
     customer_code: "",
+  },
+  sub_wallet: {
+    status: "",
+    wallet_id: 0,
   },
   setWalletStore: (key, value) => set({ [key]: value }),
 }));

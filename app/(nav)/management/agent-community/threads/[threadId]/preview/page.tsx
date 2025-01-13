@@ -59,8 +59,7 @@ const ThreadPreview = () => {
 
       setTargetAudience(Array.isArray(audience) ? audience : []); // Ensure it's an array
     }
-    console.log("target_audience", targetAudience.join(", ")); // This should now work correctly
-  }, [data]);
+  }, [data, targetAudience]);
 
   return (
     <div className="mb-16">

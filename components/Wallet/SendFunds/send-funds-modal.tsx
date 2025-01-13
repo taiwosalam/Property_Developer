@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Types
 import type { WalletSendFundsOptions } from "../types";
@@ -9,7 +9,9 @@ import type { WalletSendFundsOptions } from "../types";
 import SendFunds from "./send-funds";
 import WalletModalPreset from "../wallet-modal-preset";
 import SendFundRecipient from "./send-fund-beneficiary";
-import type { Beneficiary } from "@/store/wallet-store";
+import { useWalletStore, type Beneficiary } from "@/store/wallet-store";
+import useFetch from "@/hooks/useFetch";
+import { WalletDataResponse } from "@/app/(nav)/wallet/data";
 
 const emptyBeneficiary: Omit<Beneficiary, "id"> = {
   name: "",
