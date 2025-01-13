@@ -19,9 +19,7 @@ const InputPin = () => {
     <div className="custom-flex-col gap-20">
       <div className="custom-flex-col gap-10">
         <p className="text-text-tertiary dark:text-darkText-1 text-center text-sm font-medium">
-          We partner with a third party for payment transfers, and they charge
-          ₦50 max for every withdrawal transaction. Please authenticate the
-          transaction to proceed with the process.
+        Please enter your 4-digit PIN
         </p>
         <div className="flex gap-6 justify-center">
           <PinField

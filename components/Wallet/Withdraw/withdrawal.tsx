@@ -18,18 +18,19 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const Withdrawal: React.FC<
   WalletModalDefaultProps<WalletWithdrawFundsOptions>
-> = ({ changeStep }) => {
+> = ({ changeStep, branch }) => {
   const isDarkMode = useDarkMode()
+  const securityText = branch ? "For security reasons and to ensure accurate record-keeping, withdrawals are only permitted from the branch wallet to the company's main wallet. This policy helps maintain transparency, streamline financial management, and safeguard funds within the organization's system." : "For security purposes, you can only withdraw money from your wallet to a verified account details. You can modify these details only from your profile."
   return (
     <div className="custom-flex-col gap-8">
       <div className="custom-flex-col gap-[18px]">
-        <FundingCard
+        {!branch && <FundingCard
           type="sterling"
           title="0068190063"
           desc="David Ajala"
           cta="Sterling Bank"
           notRounded
-        />
+        />}
         <div className="custom-flex-col gap-4">
           <Input
             id="amount"
@@ -58,9 +59,7 @@ const Withdrawal: React.FC<
             <Picture src={InfoWarningIcon} alt="warning" size={26} />
           </div>
           <p className="text-[#606060] dark:text-darkText-1 text-sm font-normal">
-            For security purposes, you can only withdraw money from your wallet
-            to a verified account details. You can modify these details only
-            from your profile.
+            {securityText}
           </p>
         </div>
       </div>

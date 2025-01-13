@@ -37,16 +37,24 @@ import NetworkError from "@/components/Error/NetworkError";
 import type { Stats, SingleBranchResponseType } from "./types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import useBranchStore from "@/store/branch-store";
+import { useWalletStore } from "@/store/wallet-store";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
   const { branch, setBranch } = useBranchStore();
+  const setWalletStore = useWalletStore((s) => s.setWalletStore);
 
   const { data, error, loading, isNetworkError, refetch } =
     useFetch<SingleBranchResponseType>(`branch/${branchId}`);
   useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
 
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
+  const { branch_wallet } = branchData || {};
+  
+  setWalletStore("sub_wallet", {
+    status: branch_wallet !== null ? "active" : "inactive",
+    wallet_id: branch_wallet !== null ? Number(branchData?.branch_wallet?.wallet_id) : undefined,
+  });
 
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
@@ -100,13 +108,14 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     };
   });
 
-  
+
   // set branch data to store
   useEffect(() => {
     if (branch?.branch_name !== branchData?.branch_name) {
       setBranch("branch_name", branchData?.branch_name || "___");
       setBranch("address", branchData?.address || "___");
       setBranch("branch_id", branchId);
+      setBranch("branch_picture", branchData?.picture || "___");
       setBranch("branch_details", branchData);
     }
   }, [branchData, branch, setBranch]);
@@ -120,9 +129,6 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   });
 
   const [timeRange, setTimeRange] = useState("30d");
-  // const [highestMetric, setHighestMetric] = useState<string | null>(null);
-  // const [primaryColor, setPrimaryColor] = useState<string | null>(null);
-
   const calculateDateRange = (days: number) => {
     const now = new Date();
     const fromDate = new Date();
@@ -244,11 +250,11 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             className="max-w-full flex items-center justify-between flex-wrap gap-2"
           >
             <h1 className="text-[14px] font-medium">Branch Wallet</h1>
-            <p className="text-xs text-text-label">ID: 2324354678</p>
+            <p className="text-xs text-text-label">ID: {branch_wallet?.wallet_id}</p>
           </Link>
           <BranchBalanceCard
-            mainBalance={walletBalanceCardData.mainBalance}
-            cautionDeposit={walletBalanceCardData.cautionDeposit}
+            mainBalance={Number(branch_wallet?.balance_total)}
+            cautionDeposit={Number(branch_wallet?.escrow_balance)}
             className="max-w-full"
           />
         </div>

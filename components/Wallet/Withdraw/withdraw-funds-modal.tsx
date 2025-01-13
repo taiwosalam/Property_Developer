@@ -10,7 +10,7 @@ import InputPin from "./input-pin";
 import Withdrawal from "./withdrawal";
 import WalletModalPreset from "../wallet-modal-preset";
 
-const WithdrawFundsModal = () => {
+const WithdrawFundsModal = ({ branch }: { branch?: boolean}) => {
   const [activeStep, setActiveStep] =
     useState<WalletWithdrawFundsOptions>("withdrawal");
 
@@ -23,7 +23,7 @@ const WithdrawFundsModal = () => {
   > = {
     withdrawal: {
       heading: "Withdrawal",
-      content: <Withdrawal changeStep={setActiveStep} />,
+      content: <Withdrawal changeStep={setActiveStep} branch />,
     },
     "input pin": {
       heading: "Input Pin",
