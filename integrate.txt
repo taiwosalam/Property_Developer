@@ -1,3 +1,50 @@
+ const handleClickSend = async () => {
+    if (activeStep === "send funds") {
+      if (!description) {
+        toast.warning("Please enter a description");
+        return;
+      }
+      if (!(amount > 0)) {
+        toast.warning("Please enter an amount");
+        return;
+      }
+      if (branch && amount > Number(balance.my_balance)) {
+        toast.warning("Insufficient balance");
+        return;
+      }
+      setActiveStep("confirm pin");
+    } else {
+      if (pin.length !== 4) {
+        toast.warning("Please enter your PIN");
+        return;
+      }
+      setLoading(true);
+      const action = branch
+        ? branchFundWallet({ wallet_id, amount, pin, description })
+        : transferFunds(wallet_id, amount, description, pin);
+      const status = await action;
+      if (status) {
+        setIsOpen(false);
+        if (!isAlreadyBeneficiary && saveAsBeneficiary && my_wallet_id) {
+          await addBeneficiary(wallet_id, my_wallet_id, {
+            noToast: true,
+          });
+        }
+        window.dispatchEvent(new Event("refetch-wallet"));
+      }
+      setLoading(false);
+    }
+  };
+
+
+
+
+
+
+
+
+
+
  const handleUpdateProfile = async (data: Record<string, string>) => {
     const paylo
     ad = {

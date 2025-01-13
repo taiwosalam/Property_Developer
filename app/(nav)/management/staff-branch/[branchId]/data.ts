@@ -4,6 +4,7 @@ import type {
   SingleBranchPageData,
   EditBranchFormData,
 } from "./types";
+import api, { handleAxiosError } from "@/services/api";
 
 export const branchIdChartConfig = {
   sales: {
@@ -83,3 +84,17 @@ export const transformSingleBranchAPIResponseToEditBranchFormDetails = (
     // wallet: "no",
   };
 };
+
+
+// /branch/1/hold-wallet
+export const holdBranchWallet = async(id:string)=>{
+  try{
+    const res = await api.post(`/branch/${id}/hold-wallet`)
+    if (res.status === 200){
+      return true
+    }
+  }catch(err){
+    handleAxiosError(err)
+    return false
+  }
+}

@@ -136,8 +136,6 @@ const Security = () => {
                     label="personal title"
                     inputContainerClassName="w-[277px] bg-neutral-2"
                     defaultValue={title as string}
-                    // value={formState.title}
-                    onChange={(v) => setUpdateState("title", v)}
                   />
                   <Input
                     id="fullname"
@@ -146,8 +144,6 @@ const Security = () => {
                     placeholder="Write Here"
                     className="w-[277px]"
                     defaultValue={name}
-                    // value={formState.name}
-                    // onChange={(v) => setUpdateState("name", v)}
                   />
                 </div>
               </div>

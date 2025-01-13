@@ -13,6 +13,7 @@ import {
   BlueBuildingIcon,
   BlueLockIcon,
   CheckIcon,
+  BlueUnlockIcon,
 } from "@/public/icons/dashboard-cards/icons";
 import { CautionIcon } from "@/public/icons/icons";
 import { useWalletStore } from "@/store/wallet-store";
@@ -25,6 +26,9 @@ import { WalletDataResponse } from "@/app/(nav)/wallet/data";
 import useFetch from "@/hooks/useFetch";
 import Link from "next/link";
 import useBranchStore from "@/store/branch-store";
+import { toast } from "sonner";
+import { holdBranchWallet } from "@/app/(nav)/management/staff-branch/[branchId]/data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const BranchBalanceCard = ({
   mainBalance,
@@ -36,12 +40,17 @@ const BranchBalanceCard = ({
   className?: string;
 }) => {
   const walletPinStatus = useWalletStore((s) => s.sub_wallet.status);
+  const is_active = useWalletStore((s) => s.sub_wallet.is_active);
   const [hideBalance, setHideBalance] = useState(false);
+  const [loading, setLoading] = useState(false)
   const setWalletStore = useWalletStore((s) => s.setWalletStore);
   const { branch } = useBranchStore()
 
   const { data, error, refetch } =
     useFetch<WalletDataResponse>("/wallets/dashboard");
+    useRefetchOnEvent("refetch-wallet", () => {
+      refetch({ silent: true });
+    });  
 
   useEffect(() => {
     if (data) {
@@ -52,7 +61,6 @@ const BranchBalanceCard = ({
       });
     }
   }, [data])
-
 
   const options = [
     {
@@ -66,9 +74,8 @@ const BranchBalanceCard = ({
       action: walletPinStatus === "active" ? <WithdrawFundsModal branch /> : null,
     },
     {
-      name: "Hold Wallet",
-      icon: <BlueLockIcon />,
-      // action: walletPinStatus === "active" ? <ActivateWalletModal /> : null,
+      name: walletPinStatus === "active" && is_active ? "Hold Wallet" : "UnHold Wallet",
+      icon: walletPinStatus === "active" && is_active ? <BlueUnlockIcon /> : <BlueLockIcon />,
     },
   ];
 
@@ -86,6 +93,23 @@ const BranchBalanceCard = ({
       return newHideBalance;
     });
   };
+
+
+  const handleHoldWallet = async ()=> {
+    try{
+      setLoading(true)
+      const res = await holdBranchWallet(branch.branch_id)
+      if (res) {
+        toast.success("Branch Wallet Hold Successfully")
+        window.dispatchEvent(new Event("refetch-wallet"));
+        window.dispatchEvent(new Event("refetch_staff"));
+      }
+    }catch{
+      toast.error("Failed to Hold Branch Wallet")
+    }finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className={clsx("space-y-2", className)}>
@@ -155,16 +179,18 @@ const BranchBalanceCard = ({
             <div className="w-full flex justify-between">
               {options.map((option, index) => {
                 return option.action && walletPinStatus === "active" ? (
-                  <Modal key={index}>
+                  <Modal 
+                    key={index}
+                  >
                     <ModalTrigger className="space-y-2">
-                      <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
-                        <span className="text-brand-9 ">{option.icon}</span>
+                      <div className={`bg-white ${!is_active && "opacity-50 cursor-not-allowed"} dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto`}>
+                        <span className="text-brand-9">{option.icon}</span>
                       </div>
                       <p className="capitalize text-white dark:text-white text-xs font-normal">
                         {option.name}
                       </p>
                     </ModalTrigger>
-                    <ModalContent>{option.action}</ModalContent>
+                   {is_active && <ModalContent>{option.action}</ModalContent>}
                   </Modal>
                 ) : (
                   option.name === "Activate Wallet" ? (
@@ -181,17 +207,23 @@ const BranchBalanceCard = ({
                       </p>
                     </Link>
                   ) : (
-                    <div
-                      className={`space-y-2 ${option.name === "Hold Wallet" ? "opacity-100" : "opacity-50 cursor-not-allowed"}`}
+                    <button
+                      className={`space-y-2 ${option.name === "Hold Wallet" || option.name === "UnHold Wallet" && walletPinStatus === "active" ? "opacity-100" : "opacity-50 cursor-not-allowed"}`}
                       key={index}
+                      type="button"
+                      onClick={handleHoldWallet}
                     >
                       <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
-                        <span className="text-brand-9 ">{option.icon}</span>
+                        {loading ? (
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-brand-9"></div>
+                        ) : (
+                          <span className="text-brand-9 ">{option.icon}</span>
+                        )}
                       </div>
                       <p className="capitalize text-white dark:text-white text-xs font-normal">
                         {option.name}
                       </p>
-                    </div>
+                    </button>
                   )
                 );
               })}

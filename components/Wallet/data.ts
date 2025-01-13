@@ -131,3 +131,17 @@ export const transferFunds = async (
     return false;
   }
 };
+
+
+// /branch/wallet-fund
+export const branchFundWallet = async (data: any) => {
+  try{
+    const res = await api.post('/branch/wallet-fund', data)
+    if (res.status === 200){
+      return true
+    }
+  }catch(err){
+    handleAxiosError(err)
+    return false;
+  }
+}

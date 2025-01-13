@@ -46,16 +46,21 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   const { data, error, loading, isNetworkError, refetch } =
     useFetch<SingleBranchResponseType>(`branch/${branchId}`);
-  useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
+    useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
 
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
   const { branch_wallet } = branchData || {};
-  
+  const yesNoToActiveInactive = (yesNo: string): boolean => {
+    return yesNo === "Yes" ? true : false;
+  };  
+
   setWalletStore("sub_wallet", {
     status: branch_wallet !== null ? "active" : "inactive",
     wallet_id: branch_wallet !== null ? Number(branchData?.branch_wallet?.wallet_id) : undefined,
+    is_active: branch_wallet !== null && yesNoToActiveInactive(branchData?.branch_wallet?.is_active as string),
   });
 
+  console.log("branch wallet", branchData)
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
     let link = "";

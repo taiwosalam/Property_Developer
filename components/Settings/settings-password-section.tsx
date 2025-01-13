@@ -10,23 +10,38 @@ import Button from "../Form/Button/button";
 import type { ValidationErrors } from "@/utils/types";
 import { Modal, ModalContent } from "../Modal/modal";
 import SettingsOTPFlow from "./Modals/settings-otp-flow";
+import { changePassword } from "@/app/(nav)/settings/security/data";
+import { toast } from "sonner";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
 const SettingsPasswordSection = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false)
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
   );
 
-  const handleSubmit = (data: Record<string, string>) => {
+  const handleSubmit = async(data: FormData) => {
     // communicate with backend
-    setIsOpen(true);
     const payload = {
-      current_password: data.current_password,
-      password: data.password,
-      password_confirmation: data.confirm_password,
+      current_password: data.get("current_password"),
+      password: data.get("password"),
+      password_confirmation: data.get("confirm_password"),
     }
 
-    console.log("Payload", payload)
+    try{
+      setLoading(true)
+      const res = await changePassword(objectToFormData(payload))
+      if(res){
+        toast.success("Password changed successfully")
+        setIsOpen(true);
+      }
+    } catch (err){
+      toast.error("Failed to change password")
+    } finally {
+      setLoading(false)
+    }
+    // console.log("Payload", payload)
   };
 
   return (

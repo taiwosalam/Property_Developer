@@ -11,9 +11,10 @@ import Checkbox from "@/components/Form/Checkbox/checkbox";
 import { useWalletStore, type Beneficiary } from "@/store/wallet-store";
 import { AuthPinField } from "@/components/Auth/auth-components";
 import { useModal } from "@/components/Modal/modal";
-import { addBeneficiary, transferFunds } from "@/components/Wallet/data";
+import { addBeneficiary, branchFundWallet, transferFunds } from "@/components/Wallet/data";
 import { empty } from "@/app/config";
 import { toast } from "sonner";
+import useBranchStore from "@/store/branch-store";
 
 const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
   picture,
@@ -24,6 +25,7 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
 }) => {
   const { setIsOpen } = useModal();
   const balance = useWalletStore((s) => s.balance);
+  const {branch:branchData} = useBranchStore()
   const [activeStep, setActiveStep] = useState<"send funds" | "confirm pin">(
     "send funds"
   );
@@ -58,7 +60,10 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
         return;
       }
       setLoading(true);
-      const status = await transferFunds(wallet_id, amount, description, pin);
+      const action = branch
+        ? branchFundWallet({ branch_id: branchData.branch_id, amount, pin, description })
+        : transferFunds(wallet_id, amount, description, pin);
+      const status = await action;
       if (status) {
         setIsOpen(false);
         if (!isAlreadyBeneficiary && saveAsBeneficiary && my_wallet_id) {
@@ -66,7 +71,12 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
             noToast: true,
           });
         }
-        window.dispatchEvent(new Event("refetch-wallet"));
+        if (branch){
+          toast.success("Branch Wallet Funded Successfully")
+          window.dispatchEvent(new Event("refetch-wallet"));
+          window.dispatchEvent(new Event("refetch-wallet"));
+        }
+        window.dispatchEvent(new Event("refetch_staff"));
       }
       setLoading(false);
     }

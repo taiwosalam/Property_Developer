@@ -56,6 +56,7 @@ interface WalletStore {
   sub_wallet:{
     status: string;
     wallet_id: number | undefined;
+    is_active?: boolean;
   }
   setWalletStore: <K extends keyof Omit<WalletStore, "setWalletStore">>(
     key: K,
@@ -98,6 +99,7 @@ export const useWalletStore = create<WalletStore>((set) => ({
   sub_wallet: {
     status: "",
     wallet_id: 0,
+    is_active: false,
   },
   setWalletStore: (key, value) => set({ [key]: value }),
 }));
