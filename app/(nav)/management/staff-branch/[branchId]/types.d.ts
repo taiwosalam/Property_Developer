@@ -20,6 +20,8 @@ export interface SingleBranchPageData {
   hasManager: boolean;
   branch_wallet: SubWallet | null;
   picture: string | null;
+  recent_transactions: Transactions[];
+  transactions: Transactions[];
 }
 
 interface SubWallet {
@@ -47,6 +49,21 @@ export interface EditBranchFormData {
   wallet: "yes" | "no";
   description: string;
   picture: string | null;
+}
+
+export interface Transactions{
+  id: number;
+  amount: string;
+  transaction_type: "credit" | "debit" | "DVA" | "transfer_in" | "transfer_out";
+  reference: string;
+  description: string;
+  status: string;
+  balance_before: string;
+  balance_after: string;
+  source_name?: string;
+  source?: string;
+  date: string;
+  time: string;
 }
 
 export type SingleBranchResponseType = {
@@ -85,6 +102,8 @@ export type SingleBranchResponseType = {
       }[];
     };
     sub_wallet: SubWallet | null,
+    recent_transactions: Transactions[],
+    transactions: Transactions[],
     manager: {
       id: string;
       is_active: 1 | 0;

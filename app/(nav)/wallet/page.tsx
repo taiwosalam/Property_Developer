@@ -17,7 +17,6 @@ import {
   determinePercentageDifference,
   determineTrend,
   walletChartConfig,
-  walletChartData,
   walletTableFields,
 } from "./data";
 import CustomTable from "@/components/Table/table";
@@ -32,6 +31,10 @@ const Wallet = () => {
   const recentTransactions = useWalletStore(
     (state) => state.recentTransactions
   );
+  const transactions = useWalletStore(
+    (state) => state.transactions
+  );
+
   const stats = useWalletStore((state) => state.stats);
   const beneficiaries = useWalletStore((state) => state.beneficiaries);
 
@@ -94,6 +97,13 @@ const Wallet = () => {
     ),
   }));
 
+  const walletChartData = transactions.map((t) => ({
+    date: t.date,
+    totalfunds: t.amount,
+    credit: t.type === "credit" ? t.amount : 0,
+    debit: t.type === "debit" ? t.amount : 0,
+  }));
+
   return (
     <div className="custom-flex-col gap-10">
       <div className="flex items-center gap-1">
@@ -109,7 +119,7 @@ const Wallet = () => {
               title="funds"
               amount={Number(stats.current_day.total_funds)}
               trend={{
-                from: "yesterday",
+                from: "last month",
                 type: fundsUpDown as "up" | "down" | "none",
                 percent: Number(fundsPercent),
               }}
@@ -118,7 +128,7 @@ const Wallet = () => {
               title="debit"
               amount={Number(stats.current_day.total_debit)}
               trend={{
-                from: "last week",
+                from: "last month",
                 type: debitUpDown as "up" | "down" | "none",
                 percent: Number(debitPercent),
               }}
@@ -127,7 +137,7 @@ const Wallet = () => {
               title="credit"
               amount={Number(stats.current_day.total_credit)}
               trend={{
-                from: "yesterday",
+                from: "last month",
                 type: creditUpDown as "up" | "down" | "none",
                 percent: Number(creditPercent),
               }}

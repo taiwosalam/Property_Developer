@@ -114,7 +114,21 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
             formatNumber(t.amount, { forceTwoDecimals: true }),
         };
       });
+
+      const transactions = data.transactions.map((t) => {
+        return {
+          id: t.id,
+          source: t.source,
+          description: t.description,
+          date: t.date,
+          time: t.time,
+          amount: t.amount,
+          type: t.type,
+          status: t.status,
+        };
+      });
       setWalletStore("recentTransactions", recentTransactions);
+      setWalletStore("transactions", transactions);
       }
       setWalletStore("walletPinStatus", data.balance.pin_status);
       setWalletStore("walletId", data.balance.wallet_id);

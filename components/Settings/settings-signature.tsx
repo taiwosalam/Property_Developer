@@ -28,41 +28,28 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { FormState } from "@/app/(nav)/settings/security/data";
+import { createSignatureProfiles, FormState } from "@/app/(nav)/settings/security/data";
 
 const SettingsSignature = () => {
     const name = usePersonalInfoStore((state) => state.full_name);
     const title = usePersonalInfoStore((state) => state.title);
-    const [image, setImage] = useState("")
     const { preview, inputFileRef, handleImageChange } = useImageUploader();
-    // const [inputFields, setInputFields] = useState([
-    //   { id: Date.now(), signature: SignatureImage },
-    // ]);
-
     const [inputFields, setInputFields] = useState([
-        { id: Date.now(), fullName: "", title: "", industry: "", signature: "" },
-      ]);
-
+      { id: Date.now(), signature: SignatureImage, signatureFile: new File([], "") },
+    ]);
     const [reqLoading, setReqLoading] = useState(false);
     const [next, setNext] = useState(false);  
     const changeImage = () => {
       inputFileRef.current?.click();
     };
   
-    // const addInputField = () => {
-    //   setInputFields([
-    //     ...inputFields,
-    //     { id: Date.now(), signature: SignatureImage },
-    //   ]);
-    // };
-  
     const addInputField = () => {
-        setInputFields([
-          ...inputFields,
-          { id: Date.now(), fullName: "", title: "", industry: "", signature: "" },
-        ]);
-      };
-
+      setInputFields([
+        ...inputFields,
+        { id: Date.now(), signature: SignatureImage, signatureFile: new File([], "") },
+      ]);
+    };
+  
     const removeInputField = (id: number) => {
       const updatedFields = inputFields.filter((field) => field.id !== id);
       setInputFields(updatedFields);
@@ -73,54 +60,51 @@ const SettingsSignature = () => {
       document.getElementById(`signature_input_${index}`)?.click();
     };
   
-    // const handleInputChange = (index: number, field: string, value: string) => {
-    //     const updatedFields = [...inputFields];
-    //     updatedFields[index][field] = value;
-    //     setInputFields(updatedFields);
-    //   };
-
-
     const handleSignatureChange =
       (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
           const newSignature = URL.createObjectURL(e.target.files[0]);
+          const newFile = e.target.files[0];
           setInputFields(
             inputFields.map((inputField) =>
               inputField.id === inputFields[index].id
-                ? { ...inputField, signature: newSignature }
+                ? { ...inputField, signature: newSignature, signatureFile: newFile }
                 : inputField
             )
           );
         }
       };
 
-      const handleCreateSignature = async () => {
-        const payload = inputFields.map((field) => ({
-          name: field.fullName,
-          title: field.title,
-          professional_title: field.industry,
-          picture: field.signature,
+    const hanleCreateSignature = async (data: FormData) => {
+        const payload = inputFields.map((field, index) => ({
+            // id: field.id,
+            signature: field.signatureFile, // Assuming you want to send the file
+            title: data.get(`personal_title_qualification_${index}`),
+            name: data.get(`fullname_${index}`),
+            professional_title: data.get(`real_estate_title_${index}`),
         }));
     
-        console.log("Payload:", payload);
+        console.log("Payload", payload);
     
+        // Continue with the API call
         try {
-          setReqLoading(true);
-          // API call placeholder
-          // const response = await yourApiCall(payload);
-          toast.success("Signatures saved successfully!");
+            setReqLoading(true);
+            const res = await createSignatureProfiles(objectToFormData(payload));
+            if (res) {
+                toast.success("Signature created successfully");
+                setNext(true);
+                window.dispatchEvent(new Event("fetch-profile"));
+            }
         } catch (error) {
-          toast.error("Error saving signatures.");
+            toast.error("Error creating signature");
         } finally {
-          setReqLoading(false);
+            setReqLoading(false);
         }
-      };
-    
+    };
 
-  
 return (
 <SettingsSection title="Authorized Signature">
-<AuthForm onFormSubmit={handleCreateSignature}>
+<AuthForm onFormSubmit={hanleCreateSignature} returnType="form-data">
 <div className="custom-flex-col gap-8">
   <div className="custom-flex-col gap-6">
     <SettingsSectionTitle
@@ -162,27 +146,19 @@ return (
             </div>
             <div className="flex flex-col md:flex-row gap-5 justify-start md:justify-end md:items-end items-start">
               <div className="flex-1">
-                <Input
-                  id={`fullname_${index}`}
-                  label="full name"
-                  placeholder="Write Here"
-                  className="w-full"
-                //   value={field.fullName}
-                //   onChange={(e) =>
-                //     handleInputChange(index, "fullName", e.target.value)
-                //   }
-                />
-              </div>
-              <div className="flex-1">
                 <Select
                   id={`personal_title_qualification_${index}`}
                   options={titles}
                   label="personal title / qualification"
                   inputContainerClassName="w-full bg-neutral-2"
-                  value={field.title}
-                //   onChange={(e) =>
-                //     handleInputChange(index, "title", e.target.value)
-                //   }
+                />
+              </div>
+              <div className="flex-1">
+                <Input
+                  id={`fullname_${index}`}
+                  label="full name"
+                  placeholder="Write Here"
+                  className="w-full"
                 />
               </div>
               <div className="flex flex-col sm:flex-row gap-3 items-end">
@@ -191,10 +167,6 @@ return (
                   options={industryOptions}
                   label="real estate title"
                   inputContainerClassName="w-full bg-neutral-2"
-                  value={field.industry}
-                //   onChange={(e) =>
-                //     handleInputChange(index, "industry", e.target.value)
-                //   }
                 />
                 {index !== 0 && (
                   <button
@@ -220,10 +192,9 @@ return (
     </div>
   </div>
   <SettingsUpdateButton 
-    submit
-    loading={reqLoading}
-    action={handleCreateSignature as any}
-    next={next}
+  submit
+  action={hanleCreateSignature as any} 
+  loading={reqLoading}
   />
 </div>
 </AuthForm>

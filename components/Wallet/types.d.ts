@@ -7,7 +7,7 @@ export interface WalletAnalyticsProps {
   trend: {
     percent: number;
     type: "up" | "down" | "none";
-    from: "yesterday" | "last week" | "none";
+    from: "last month" | "last week" | "none";
   };
 
   className?: string;

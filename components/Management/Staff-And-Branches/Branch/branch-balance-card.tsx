@@ -71,7 +71,7 @@ const BranchBalanceCard = ({
     {
       name: "Withdraw",
       icon: <BlueBuildingIcon />,
-      action: walletPinStatus === "active" ? <WithdrawFundsModal branch /> : null,
+      action: walletPinStatus === "active" ? <WithdrawFundsModal branch={true} /> : null,
     },
     {
       name: walletPinStatus === "active" && is_active ? "Hold Wallet" : "UnHold Wallet",
