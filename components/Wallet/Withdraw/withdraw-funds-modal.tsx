@@ -23,7 +23,7 @@ const WithdrawFundsModal = ({ branch }: { branch?: boolean}) => {
   > = {
     withdrawal: {
       heading: "Withdrawal",
-      content: <Withdrawal changeStep={setActiveStep} branch />,
+      content: <Withdrawal changeStep={setActiveStep} branch={branch} />,
     },
     "input pin": {
       heading: "Input Pin",

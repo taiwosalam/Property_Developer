@@ -5,6 +5,7 @@ import type {
   EditBranchFormData,
 } from "./types";
 import api, { handleAxiosError } from "@/services/api";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 
 export const branchIdChartConfig = {
   sales: {
@@ -36,7 +37,7 @@ export const transformSingleBranchAPIResponse = (
   response: SingleBranchResponseType
 ): SingleBranchPageData => {
   const {
-    data: { branch, manager, sub_wallet },
+    data: { branch, manager, sub_wallet, recent_transactions: recentTransactions },
   } = response;
   return {
     branch_name: branch.branch_name,
@@ -60,6 +61,22 @@ export const transformSingleBranchAPIResponse = (
         staff_ID: s.id,
       };
     }),
+    transactions: recentTransactions !== null ? recentTransactions.map((t) => {
+      return {
+        id: t.id,
+        amount: currencySymbols.naira + formatNumber(t.amount, { forceTwoDecimals: true }),
+        transaction_type: t.transaction_type,
+        reference: t.reference,
+        description: t.description,
+        status: t.status,
+        balance_before: currencySymbols.naira + formatNumber(t.balance_before, { forceTwoDecimals: true }),
+        balance_after: currencySymbols.naira + formatNumber(t.balance_after, { forceTwoDecimals: true }),
+        source: t.source_name,
+        date: t.date.split(" ")[0],
+        time: t.date.split(" ")[1],
+      };
+    }) : [],
+    recent_transactions: [],
     hasManager: manager !== null && manager.length > 0,
   };
 };

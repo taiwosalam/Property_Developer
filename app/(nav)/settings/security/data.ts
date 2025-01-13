@@ -40,6 +40,20 @@ export const changePassword = async(data: FormData)=> {
   }
 }
 
+// Add signature
+// company-signatures/upload
+export const createSignatureProfiles = async (data: FormData)=> {
+  try{
+    const res = await api.post('/company-signatures/upload', data)
+    if (res.status === 200) {
+      return true
+    }
+  }catch(err){
+    handleAxiosError(err)
+    return false
+  }
+}
+
 export interface FormState {
     name?: string;
     title?: string;

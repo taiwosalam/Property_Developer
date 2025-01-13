@@ -174,7 +174,7 @@ const StaffProfile = () => {
                 About {`${staff?.title} ${staff?.name}`}
               </h3>
               <div className="w-full border border-dashed border-brand-9 opacity-40" />
-              <TruncatedText as="div">
+              <TruncatedText as="div" lines={6}>
                 <div
                   className="text-text-quaternary dark:text-darkText-2 text-sm font-normal"
                   dangerouslySetInnerHTML={{ __html: sanitizedHTML }}

@@ -38,6 +38,11 @@ import type { Stats, SingleBranchResponseType } from "./types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import useBranchStore from "@/store/branch-store";
 import { useWalletStore } from "@/store/wallet-store";
+import { ChevronRight } from "lucide-react";
+import CustomTable from "@/components/Table/table";
+import { walletTableFields } from "@/app/(nav)/wallet/data";
+import clsx from "clsx";
+import { getTransactionIcon } from "@/components/Wallet/icons";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -46,13 +51,14 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   const { data, error, loading, isNetworkError, refetch } =
     useFetch<SingleBranchResponseType>(`branch/${branchId}`);
-    useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
+  useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
 
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
-  const { branch_wallet } = branchData || {};
+  const { branch_wallet, transactions } = branchData || {};
   const yesNoToActiveInactive = (yesNo: string): boolean => {
     return yesNo === "Yes" ? true : false;
-  };  
+  };
+  console.log("Branch data", branchData);
 
   setWalletStore("sub_wallet", {
     status: branch_wallet !== null ? "active" : "inactive",
@@ -60,7 +66,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     is_active: branch_wallet !== null && yesNoToActiveInactive(branchData?.branch_wallet?.is_active as string),
   });
 
-  console.log("branch wallet", branchData)
+  // console.log("branch wallet", branchData)
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
     let link = "";
@@ -113,6 +119,36 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     };
   });
 
+
+  const transformedWalletTableData = transactions && transactions.map((t) => ({
+    ...t,
+    amount: (
+      <span
+        className={clsx({
+          "text-status-success-3": t.transaction_type === "credit" || t.transaction_type === "transfer_in",
+          "text-status-error-primary": t.transaction_type === "debit" || t.transaction_type === "transfer_out",
+        })}
+      >
+        {`${t.transaction_type === "credit" || t.transaction_type === "transfer_in" ? "+" : t.transaction_type === "debit" || t.transaction_type === "transfer_out" ? "-" : ""}${
+          t.amount
+        }`}
+      </span>
+    ),
+    icon: (
+      <div
+        className={clsx(
+          "flex items-center justify-center w-9 h-9 rounded-full",
+          {
+            "bg-status-error-1 text-status-error-primary": t.transaction_type === "debit" || t.transaction_type === "transfer_out",
+            "bg-status-success-1 text-status-success-primary":
+              t.transaction_type === "credit" || t.transaction_type === "transfer_in" || t.transaction_type === "DVA",
+          }
+        )}
+      >
+        {getTransactionIcon(t.source as string, t.transaction_type)}
+      </div>
+    ),
+  }));
 
   // set branch data to store
   useEffect(() => {
@@ -300,7 +336,38 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
           className="md:flex-1 lg:h-[380px]"
         />
       </div>
-      {/* <BranchPropertiesSection branchId={branchId} /> */}
+      <div className="custom-flex-col gap-10">
+        <div className="flex justify-between">
+          <h2 className="text-text-primary dark:text-white text-xl font-medium">
+            Recent Transaction
+          </h2>
+          <Link
+            href="/wallet/transaction-history"
+            className="flex items-center gap-1"
+          >
+            <span className="text-text-label dark:text-darkText-1">
+              See all
+            </span>
+            <ChevronRight color="#5A5D61" size={16} />
+          </Link>
+        </div>
+        <CustomTable
+          fields={walletTableFields}
+          data={transformedWalletTableData ?? []}
+          className="max-h-[unset]"
+          tableBodyCellSx={{
+            paddingTop: "12px",
+            paddingBottom: "12px",
+            fontSize: "16px",
+            whiteSpace: "nowrap",
+          }}
+          tableHeadCellSx={{
+            paddingTop: "14px",
+            paddingBottom: "14px",
+            fontSize: "16px",
+          }}
+        />
+      </div>
     </div>
   );
 };

@@ -30,7 +30,7 @@ const ExportWallet = () => {
             title="funds"
             amount={6505689}
             trend={{
-              from: "yesterday",
+              from: "last month",
               type: "up",
               percent: 53,
             }}
@@ -48,7 +48,7 @@ const ExportWallet = () => {
             title="credit"
             amount={6505689}
             trend={{
-              from: "yesterday",
+              from: "last month",
               type: "up",
               percent: 53,
             }}

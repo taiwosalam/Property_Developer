@@ -35,6 +35,7 @@ interface WalletStore {
   };
   beneficiaries: Beneficiary[];
   recentTransactions: Transaction[];
+ transactions: Transaction[];
   stats: {
     current_day: {
       total_funds: string;
@@ -78,6 +79,7 @@ export const useWalletStore = create<WalletStore>((set) => ({
   },
   beneficiaries: [],
   recentTransactions: [],
+  transactions: [],
   stats: {
     current_day: {
       total_funds: "0",

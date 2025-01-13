@@ -61,7 +61,7 @@ const WalletIncomingIcon = () => {
 
 export const getTransactionIcon = (
   source: string,
-  type: "credit" | "debit" | "DVA"
+  type: "credit" | "debit" | "DVA" | "transfer_in" | "transfer_out"
 ) => {
   switch (source) {
     case "funding":

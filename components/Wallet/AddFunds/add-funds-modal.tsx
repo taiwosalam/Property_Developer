@@ -8,14 +8,28 @@ import WalletOnlineFundingCard from "../wallet-online-funding-card";
 import useBranchStore from "@/store/branch-store";
 import { useWalletStore } from "@/store/wallet-store";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { useState } from "react";
+import { WalletSendFundsOptions } from "../types";
 
 const AddFundsModal = ({branch}: {branch?: boolean}) => {
   const { branch: branch_details, setBranch } = useBranchStore();
   const {sub_wallet} = useWalletStore();
   const company_name = usePersonalInfoStore((state) => state.company_name);
+  const [activeStep, setActiveStep] =
+  useState<WalletSendFundsOptions>("send funds menu");
+
   return (
-    <WalletModalPreset title={branch ? "Add Funds" : "Select payment method"}>
-      <div className="custom-flex-col gap-4">
+    <WalletModalPreset 
+    title={branch ? "Add Funds" : "Select payment method"}
+    back={
+      activeStep !== "send funds menu"
+        ? () => {
+            setActiveStep("send funds menu");
+          }
+        : undefined
+    }
+    >
+      <div className="custom-flex-col gap-4"> 
       {branch ? (
         <SendFundRecipient
           name={`${company_name} / ${branch_details?.branch_name}`}
