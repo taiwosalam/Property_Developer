@@ -93,7 +93,7 @@ const Appearance = () => {
         document.body.style.fontFamily = storedFont;
       }
     }
-  }, []);
+  }, [setSelectedFont]);
 
   // Zoom controls
   useEffect(() => {

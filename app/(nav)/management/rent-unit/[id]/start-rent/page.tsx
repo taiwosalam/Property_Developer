@@ -41,9 +41,8 @@ const StartRent = () => {
         ...x,
         ...transformUnitData(apiData)
       }))
-      console.log("Data", unit_data)
     }
-  }, [apiData])
+  }, [apiData, unit_data])
 
   if (loading)
     return (

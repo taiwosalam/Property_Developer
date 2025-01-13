@@ -61,7 +61,7 @@ const EditStaffProfile = () => {
         }
       )
     }
-  }, [apiData]);
+  }, [apiData, branchId]);
 
   const handleDeleteStaffAccount = () => {
     try{

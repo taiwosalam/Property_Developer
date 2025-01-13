@@ -39,7 +39,7 @@ const VehiclesRecordPage = () => {
 
   useEffect(() => {
     setSelectedProperty(id as string)
-  }, [id])
+  }, [id, setSelectedProperty])
 
   const initialState = {
     check_ins: 0,
