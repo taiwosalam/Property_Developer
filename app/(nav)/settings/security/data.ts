@@ -26,6 +26,19 @@ export const lockStaffAccount = async (id: string, otp: string) => {
   }
 };
 
+// security/change_password
+// Change Password
+export const changePassword = async(data: FormData)=> {
+  try{
+    const res = await api.post('/security/change_password')
+    if (res.status === 200) {
+      return true
+    }
+  }catch(err){
+    handleAxiosError(err)
+    return false
+  }
+}
 
 export interface FormState {
     name?: string;
