@@ -59,7 +59,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     return yesNo === "Yes" ? true : false;
   };
 
-  console.log("transactions", recent_transactions);
+  // console.log("transactions", recent_transactions);
   setWalletStore("sub_wallet", {
     status: branch_wallet !== null ? "active" : "inactive",
     wallet_id: branch_wallet !== null ? Number(branchData?.branch_wallet?.wallet_id) : undefined,
@@ -166,7 +166,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       setBranch("branch_picture", branchData?.picture || "___");
       setBranch("branch_details", branchData);
     }
-  }, [branchData, branch, setBranch]);
+  }, [branchData, branch, setBranch, branchId]);
 
   let isManagerAvailable = false;
   (branch?.branch_details as any)?.staffs?.map((staff: any) => {
