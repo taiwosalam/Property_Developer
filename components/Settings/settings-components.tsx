@@ -138,7 +138,7 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
           </ModalContent>
         </Modal>
       )}
-      <Button {...button_props}>
+      <Button {...button_props} onClick={() => setModalOpen(true)}>
         {loading ? "Please wait..." : text}
       </Button>
       <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>

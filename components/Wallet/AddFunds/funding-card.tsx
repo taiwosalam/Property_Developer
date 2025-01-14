@@ -20,6 +20,7 @@ const FundingCard: React.FC<FundingCardProps> = ({
   type,
   title,
   notRounded,
+  logo,
 }) => {
   return (
     <div
@@ -29,12 +30,16 @@ const FundingCard: React.FC<FundingCardProps> = ({
       <div className="flex items-center gap-2">
         <Picture
           src={
-            type === "paystack"
+            logo
+              ? logo
+              : type === "paystack"
               ? Paystack
               : type === "flutterwave"
               ? Flutterwave
               : type === "sterling"
               ? Sterling
+              : empty
+              ? logo
               : type === "bank transfer"
               ? Zenith
               : empty
@@ -44,6 +49,7 @@ const FundingCard: React.FC<FundingCardProps> = ({
           height={62}
           className={clsx({
             "rounded-2xl": !notRounded,
+            "border border-solid dark:bg-text-disabled border-brand-9 text-brand-9 p-2 rounded-md": logo,
           })}
         />
         <div

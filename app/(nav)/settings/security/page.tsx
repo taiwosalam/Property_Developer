@@ -30,6 +30,7 @@ import { FormState, updateUserProfile } from "./data";
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
 import SettingsSignature from "@/components/Settings/settings-signature";
+import SettingsBank from "@/components/Settings/settings-bank";
 
 const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
@@ -130,54 +131,7 @@ const Security = () => {
       {/* <SettingsSignature /> */}
       <SettingsWalletSection />
       <SettingsPasswordSection />
-      <SettingsSection title="Bank Details">
-        <div className="custom-flex-col gap-8">
-          <SettingsSectionTitle
-            title="Bank Account Withdrawal Details"
-            desc="The registered name must match your bank details, and you can only link one bank to your account."
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-end">
-            <Select
-              id="bank_name"
-              label="bank name"
-              options={["sterling bank"]}
-              inputContainerClassName="w-full bg-neutral-2"
-            />
-            <Input
-              id="account_number"
-              label="account number"
-              className="w-full"
-            />
-            <div className="h-[45px] px-6 flex gap-[18px] items-center bg-status-success-1">
-              <div className="w-4 h-4 pt-[1px] rounded-full flex items-center justify-center bg-status-success-primary">
-                <Check size={10} color="white" />
-              </div>
-              <p className="text-status-success-primary text-xs font-normal capitalize truncate">
-                David Adekunle Ajala
-              </p>
-            </div>
-          </div>
-          <div className="flex">
-            <div className="custom-flex-col max-w-[436px]  gap-4">
-              <FundingCard
-                type="sterling"
-                title="0068190063"
-                desc="David Ajala"
-                cta="Sterling Bank"
-                notRounded
-              />
-              <div className="flex items-center gap-2">
-                <Picture src={DangerIcon} alt="danger" size={24} />
-                <p className="text-text-label text-xs font-normal">
-                  You can only update or modify your bank details after 7 days,
-                  and they must match your verified name.
-                </p>
-              </div>
-            </div>
-          </div>
-          <SettingsUpdateButton type="otp" />
-        </div>
-      </SettingsSection>
+      <SettingsBank />
       <SettingsSection title="Customized SMS name">
         <div className="custom-flex-col gap-8">
           <SettingsSectionTitle desc="Custom sender SMS name allows you to input a preferred name, providing a way to brand your SMS messages with a personalized touch.  replaces the sender numbers displayed on devices receiving your SMS messages with a name of your choice, up to 11 characters in length." />

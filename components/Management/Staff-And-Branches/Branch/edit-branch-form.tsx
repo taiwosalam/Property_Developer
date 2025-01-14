@@ -78,6 +78,9 @@ const EditBranchForm = ({
         toast.warning("Please upload a picture or choose an avatar.");
         return;
       }
+      if (data.get("avatar")) {
+        data.delete("picture");
+      }
     } else {
       // Remove picture field if it wasn't changed cos its partial update on d backend
       data.delete("picture");
