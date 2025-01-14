@@ -34,7 +34,10 @@ import SettingsSignature from "@/components/Settings/settings-signature";
 const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
   const title = usePersonalInfoStore((state) => state.title);
-  const { preview, inputFileRef, handleImageChange } = useImageUploader();
+  // const { preview, inputFileRef, handleImageChange } = useImageUploader();
+  const { preview, inputFileRef, handleImageChange } = 
+  typeof window !== "undefined" ? useImageUploader() : { preview: null, inputFileRef: null, handleImageChange: () => {} };
+
   const [inputFields, setInputFields] = useState([
     { id: Date.now(), signature: SignatureImage },
   ]);
@@ -53,7 +56,7 @@ const Security = () => {
   };
 
   const changeImage = () => {
-    inputFileRef.current?.click();
+    inputFileRef?.current?.click();
   };
 
   const addInputField = () => {
@@ -75,6 +78,9 @@ const Security = () => {
 
   const handleSignatureChange =
     (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (typeof window === "undefined" || !e.target.files || !e.target.files[0]) {
+        return;
+      }
       if (e.target.files && e.target.files[0]) {
         const newSignature = URL.createObjectURL(e.target.files[0]);
         setInputFields(
