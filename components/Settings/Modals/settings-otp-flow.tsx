@@ -24,7 +24,7 @@ const SettingsOTPFlow = ({
   useEffect(() => {
     const wallet_id = data?.balance.wallet_id;
     setWalletStore("walletId", wallet_id as string);
-  }, [data]);
+  }, [data, setWalletStore]);
 
   
   const { activeStep, changeStep } = useStep(4);
