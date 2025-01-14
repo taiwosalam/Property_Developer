@@ -18,6 +18,7 @@ export interface FundingCardProps {
   desc?: string;
   title?: string;
   notRounded?: boolean;
+  logo?: string;
   type: "paystack" | "flutterwave" | "bank transfer" | "sterling";
 }
 

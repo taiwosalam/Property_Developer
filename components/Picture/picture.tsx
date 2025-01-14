@@ -10,11 +10,9 @@ import { empty } from "@/app/config";
 const Picture: React.FC<PictureProps> = ({
   src = empty,
   alt = "profile picture",
-
   size = 60,
   width,
   height,
-
   style,
   status,
   rounded,

@@ -16,6 +16,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "khrimisay.s3.eu-north-1.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "nigerianbanks.xyz",
+      },
     ],
   },
   // reactStrictMode: false
