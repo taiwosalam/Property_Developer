@@ -56,6 +56,7 @@ export type SettingsServiceOwners = keyof typeof services;
 
 export interface SettingsUpdateButtonProps {
   text?: string;
+  resetPass?: boolean;
   remove?: boolean;
   addMore?: boolean;
   submit?: boolean;
@@ -68,6 +69,8 @@ export interface SettingsUpdateButtonProps {
 export interface DefaultSettingsModalProps {
   changeStep: (step: FormSteps | number) => void;
   isForgetWallet?: boolean;
+  saveOtp?: boolean;
+  resetPass?: boolean;
 }
 
 export interface SettingsAnnumSwitcherProps {

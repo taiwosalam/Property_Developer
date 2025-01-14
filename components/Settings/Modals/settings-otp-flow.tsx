@@ -14,8 +14,12 @@ import { useWalletStore } from "@/store/wallet-store";
 
 const SettingsOTPFlow = ({
   isForgetWallet,
+  saveOtp,
+  resetPass
 }: {
   isForgetWallet?: boolean;
+  saveOtp?: boolean;
+  resetPass?: boolean;
 }) => {
   const setWalletStore = useWalletStore((s) => s.setWalletStore)
   const { data, error, refetch } =
@@ -26,22 +30,36 @@ const SettingsOTPFlow = ({
     setWalletStore("walletId", wallet_id as string);
   }, [data, setWalletStore]);
 
-  
+
   const { activeStep, changeStep } = useStep(4);
   console.log("active step", activeStep);
 
   return activeStep === 1 ? (
     isForgetWallet ? (
-      <ForgetWalletModal changeStep={changeStep} />
+      <ForgetWalletModal
+        changeStep={changeStep}
+      />
     ) : (
-      <SettingsOTPModal changeStep={changeStep} />
+      <SettingsOTPModal
+        changeStep={changeStep}
+        saveOtp={saveOtp}
+        resetPass={resetPass}
+      />
     )
   ) : activeStep === 3 ? (
     <SettingsUpdateModal />
   ) : activeStep === 4 ? (
-    <NewPinModal changeStep={changeStep} />
+    <NewPinModal
+      resetPass={resetPass}
+      changeStep={changeStep}
+    />
   ) : activeStep === 2 ? (
-    <SettingsOTPModal changeStep={changeStep} isForgetWallet={isForgetWallet} />
+    <SettingsOTPModal
+      changeStep={changeStep}
+      isForgetWallet={isForgetWallet}
+      saveOtp={saveOtp}
+      resetPass={resetPass}
+    />
   ) : null;
 };
 

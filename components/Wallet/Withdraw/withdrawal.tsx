@@ -16,6 +16,7 @@ import FundingCard from "../AddFunds/funding-card";
 import Button from "@/components/Form/Button/button";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { useWalletStore } from "@/store/wallet-store";
+import { toast } from "sonner";
 
 const Withdrawal: React.FC<
   WalletModalDefaultProps<WalletWithdrawFundsOptions>
@@ -31,6 +32,7 @@ const Withdrawal: React.FC<
     setWalletStore("amount", amount)
     setWalletStore("desc", description)
   }, [amount, description])
+  
   return (
     <div className="custom-flex-col gap-8">
       <div className="custom-flex-col gap-[18px]">

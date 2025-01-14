@@ -26,11 +26,40 @@ export const lockStaffAccount = async (id: string, otp: string) => {
   }
 };
 
+// change password otp
+// /security/get_opt
+export const getPasswordResetOTP = async () => {
+  try {
+    const response = await api.post("/security/get_opt");
+    if (response.status === 200) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+}
+
+// Verify password OTP
+// /password/reset/verify
+export const verifyPasswordOTP = async (code: string, identifier: string) => {
+  try {
+    const response = await api.post("/password/reset/verify", { code, identifier });
+    if (response.status === 200) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+
 // security/change_password
 // Change Password
 export const changePassword = async(data: FormData)=> {
   try{
-    const res = await api.post('/security/change_password')
+    const res = await api.post('/security/change_password', data)
     if (res.status === 200) {
       return true
     }
