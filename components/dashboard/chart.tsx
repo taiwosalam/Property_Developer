@@ -31,7 +31,7 @@ interface DashboardChartProps {
   chartTitle?: string;
   className?: string;
   chartConfig: ChartConfig;
-  chartData: ChartDataPoint[];
+  chartData: ChartDataPoint[] | undefined;
 }
 
 export const DashboardChart: React.FC<DashboardChartProps> = ({
@@ -89,7 +89,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
     }
   };
 
-  const filteredData = chartData
+  const filteredData = chartData && chartData
     .filter((item) => {
       const date = new Date(item.date);
       if (selectedDateRange?.from && selectedDateRange?.to) {
@@ -125,7 +125,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
     Object.keys(chartConfig).forEach((metric) => {
       if (enabledMetrics[metric]) {
         const metricMax = Math.max(
-          ...filteredData.map((item) => Number(item[metric]) || 0)
+          ...filteredData?.map((item) => Number(item[metric]) || 0) || []
         );
         if (metricMax > maxValue) {
           maxValue = metricMax;
@@ -146,14 +146,16 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
               {chartTitle || "Chart Title"}
             </CardTitle>
             <div
-              className={`w-fit ${
-                visibleRange ? "flex" : "hidden"
-              } bg-[#F5F5F5] dark:bg-[#020617] rounded-md items-center justify-center`}
+              className={`w-fit ${visibleRange ? "flex" : "hidden"
+                } bg-[#F5F5F5] dark:bg-[#020617] rounded-md items-center justify-center`}
             >
-              <DatePickerWithRange
-                selectedRange={selectedDateRange}
-                onDateChange={handleDateChange}
-              />
+              {/* Conditionally render DatePickerWithRange */}
+              {timeRange === "custom" && (
+                <DatePickerWithRange
+                  selectedRange={selectedDateRange}
+                  onDateChange={handleDateChange}
+                />
+              )}
               <Select value={timeRange} onValueChange={handleSelectChange}>
                 <SelectTrigger
                   className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto dark:text-whie dark:bg-[#020617]"
@@ -197,8 +199,8 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
                       key === highestMetric && primaryColor
                         ? primaryColor
                         : enabledMetrics[key]
-                        ? config.color
-                        : undefined,
+                          ? config.color
+                          : undefined,
                   }}
                 />
                 <Label
@@ -208,8 +210,8 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
                       key === highestMetric && primaryColor
                         ? primaryColor
                         : enabledMetrics[key]
-                        ? config.color
-                        : undefined,
+                          ? config.color
+                          : undefined,
                   }}
                 >
                   {config.label}

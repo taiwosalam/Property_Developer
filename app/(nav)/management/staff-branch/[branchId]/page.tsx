@@ -54,12 +54,12 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
 
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
-  const { branch_wallet, transactions } = branchData || {};
+  const { branch_wallet, transactions, recent_transactions } = branchData || {};
   const yesNoToActiveInactive = (yesNo: string): boolean => {
     return yesNo === "Yes" ? true : false;
   };
-  console.log("Branch data", branchData);
 
+  console.log("transactions", recent_transactions);
   setWalletStore("sub_wallet", {
     status: branch_wallet !== null ? "active" : "inactive",
     wallet_id: branch_wallet !== null ? Number(branchData?.branch_wallet?.wallet_id) : undefined,
@@ -148,6 +148,13 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
         {getTransactionIcon(t.source as string, t.transaction_type)}
       </div>
     ),
+  }));
+
+  const walletChartData = recent_transactions && recent_transactions.map((t) => ({
+    date: t.date,
+    totalfunds: t.amount,
+    credit: t.transaction_type === "credit" || t.transaction_type === "transfer_in" ? t.amount : 0,
+    debit: t.transaction_type === "debit" || t.transaction_type === "transfer_out" ? t.amount : 0,
   }));
 
   // set branch data to store
@@ -322,11 +329,11 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       </div>
       <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 items-start">
         <DashboardChart
-          chartTitle="Reports"
+          chartTitle="Analysis"
           visibleRange
           className="hidden md:block md:w-full lg:w-[68%]"
           chartConfig={branchIdChartConfig}
-          chartData={branchIdChartData}
+          chartData={walletChartData}
         />
         <NotificationCard
           sectionHeader="Staffs"

@@ -225,16 +225,16 @@ export const getDashboardData = async (access_token: string | null) => {
 };
 
 export const dashboardPerformanceChartConfig = {
-  sales: {
-    label: "Sales",
+  totalfunds: {
+    label: "Total funds",
     color: "#38BDF8",
   },
-  profits: {
-    label: "Profits",
-    color: "#2DD4BF",
+  credit: {
+    label: "Credit",
+    color: "#2DD4BF ",
   },
-  expenses: {
-    label: "Expenses",
+  debit: {
+    label: "Debit",
     color: "#E9212E",
   },
 } satisfies ChartConfig;
