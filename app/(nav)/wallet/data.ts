@@ -65,7 +65,6 @@ export const determineTrend = (
   }
 };
 
-// function to determine the % difference between two values
 export const determinePercentageDifference = (
   value1: string | number,
   value2: string | number
@@ -73,14 +72,21 @@ export const determinePercentageDifference = (
   const num1 = Number(value1);
   const num2 = Number(value2);
 
-  // console.log(num1, num2)
-
   if (num1 === 0 && num2 === 0) {
     return 0;
   }
 
-  return Math.round(((num1 - num2) / Math.abs(num2)) * 100 + Number.EPSILON) / 100;
+  if (num2 === 0) {
+    return Math.min(100, Math.abs(num1)); // Ensure it stays within the range
+  }
+
+  const percentage = (Math.abs(num1 - num2) / Math.abs(num2)) * 100;
+
+  // Always return a value between 0 and 100
+  return Math.min(100, percentage);
 };
+
+
 
 export interface WalletDataResponse {
   stats: {

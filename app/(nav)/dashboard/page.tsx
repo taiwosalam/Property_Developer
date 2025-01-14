@@ -22,8 +22,24 @@ import { SectionContainer } from "@/components/Section/section-components";
 import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
 import CustomTable from "@/components/Table/table";
 import Link from "next/link";
+import { useWalletStore } from "@/store/wallet-store";
 
 const Dashboard = () => {
+  const walletId = useWalletStore((state) => state.walletId);
+  const recentTransactions = useWalletStore(
+    (state) => state.recentTransactions
+  );
+  const transactions = useWalletStore((state) => state.transactions);
+
+  const dashboardPerformanceChartData = transactions.map((t) => ({
+    date: t.date,
+    totalfunds: t.amount,
+    credit: t.type === "credit" ? t.amount : 0,
+    debit: t.type === "debit" ? t.amount : 0,
+  }));
+
+  console.log("transactions", transactions)
+
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
@@ -46,7 +62,7 @@ const Dashboard = () => {
           <div className="hidden md:block space-y-10">
             <div className="w-full h-fit">
               <DashboardChart
-                chartTitle="performance"
+                chartTitle="Analysis"
                 visibleRange
                 chartConfig={dashboardPerformanceChartConfig}
                 chartData={dashboardPerformanceChartData}

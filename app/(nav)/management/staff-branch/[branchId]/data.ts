@@ -8,16 +8,16 @@ import api, { handleAxiosError } from "@/services/api";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 
 export const branchIdChartConfig = {
-  sales: {
-    label: "Sales",
+  totalfunds: {
+    label: "Total Funds",
     color: "#38BDF8",
   },
-  profits: {
-    label: "Profits",
+  credit: {
+    label: "Credit",
     color: "#2DD4BF",
   },
-  expenses: {
-    label: "Expenses",
+  debit: {
+    label: "Debit",
     color: "#E9212E",
   },
 } satisfies ChartConfig;
@@ -76,7 +76,20 @@ export const transformSingleBranchAPIResponse = (
         time: t.date.split(" ")[1],
       };
     }) : [],
-    recent_transactions: [],
+    recent_transactions: recentTransactions !== null ? recentTransactions.map((t)=> {
+      return{
+        id: t.id,
+        amount: t.amount,
+        transaction_type: t.transaction_type,
+        date: t.date.split(" ")[0],
+        time: t.date.split(" ")[1],
+        description: t.description,
+        reference: t.reference,
+        status: t.status,
+        balance_before: t.balance_before,
+        balance_after: t.balance_after,
+      }
+    }) : [],
     hasManager: manager !== null && manager.length > 0,
   };
 };
