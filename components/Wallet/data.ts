@@ -145,3 +145,18 @@ export const branchFundWallet = async (data: any) => {
     return false;
   }
 }
+
+
+// Withdraw branch Funds
+// /branch/14/Withdraw
+export const withdrawBranchFunds = async (id: string, data: any) => {
+  try{
+    const res = await api.post(`/branch/${id}/Withdraw`, data)
+    if (res.status === 200){
+      return true
+    }
+  }catch(err){
+    handleAxiosError(err)
+    return false;
+  }
+}

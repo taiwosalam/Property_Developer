@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // Types
 import type {
@@ -15,12 +15,22 @@ import Picture from "@/components/Picture/picture";
 import FundingCard from "../AddFunds/funding-card";
 import Button from "@/components/Form/Button/button";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import { useWalletStore } from "@/store/wallet-store";
 
 const Withdrawal: React.FC<
   WalletModalDefaultProps<WalletWithdrawFundsOptions>
 > = ({ changeStep, branch }) => {
   const isDarkMode = useDarkMode()
+  const setWalletStore = useWalletStore((s) => s.setWalletStore)
+  const [loading, setLoading] = useState(false);
+  const [amount, setAmount] = useState(0);
+  const [description, setDescription] = useState("");
   const securityText = branch ? "For security reasons and to ensure accurate record-keeping, withdrawals are only permitted from the branch wallet to the company's main wallet. This policy helps maintain transparency, streamline financial management, and safeguard funds within the organization's system." : "For security purposes, you can only withdraw money from your wallet to a verified account details. You can modify these details only from your profile."
+
+  useEffect(()=> {
+    setWalletStore("amount", amount)
+    setWalletStore("desc", description)
+  }, [amount, description])
   return (
     <div className="custom-flex-col gap-8">
       <div className="custom-flex-col gap-[18px]">
@@ -37,12 +47,19 @@ const Withdrawal: React.FC<
             label="amount"
             placeholder="₦"
             style={{ backgroundColor: isDarkMode ? 'black' : "white" }}
+            required
+            onChange={(value) => {
+              setAmount(parseFloat(value.replace(/,/g, "")));
+            }}
           />
           <Input
             id="description"
             label="description"
             placeholder="Description"
             style={{ backgroundColor: isDarkMode ? "black" : "white" }}
+            maxLength={100}
+            required
+            onChange={setDescription}
           />
         </div>
       </div>
