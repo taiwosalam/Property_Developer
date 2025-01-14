@@ -87,6 +87,7 @@ const Profile = () => {
     [key: string]: boolean;
   }>({});
 
+  // console.log("company id", company_id)
   const [address, setAddress] = useState({
       state: "",
       lga: "",
@@ -118,7 +119,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (apiData) {
-      console.log(apiData);
+      // console.log(apiData);
       const transformedData: ProfileSettingsPageState = transformProfileApiResponse(apiData as CompanyDataApiResponse);
       setState(transformedData);
     }
@@ -210,8 +211,8 @@ const Profile = () => {
 
    if (isNetworkError) return <NetworkError />;
 
-   if (error)
-     return <p className="text-base text-red-500 font-medium">{error}</p>;
+  //  if (error)
+  //    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
 
   return (

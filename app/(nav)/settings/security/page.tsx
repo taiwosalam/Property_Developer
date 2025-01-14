@@ -35,6 +35,7 @@ const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
   const title = usePersonalInfoStore((state) => state.title);
   const { preview, inputFileRef, handleImageChange } = useImageUploader();
+
   const [inputFields, setInputFields] = useState([
     { id: Date.now(), signature: SignatureImage },
   ]);
@@ -53,39 +54,8 @@ const Security = () => {
   };
 
   const changeImage = () => {
-    inputFileRef.current?.click();
+    inputFileRef?.current?.click();
   };
-
-  const addInputField = () => {
-    setInputFields([
-      ...inputFields,
-      { id: Date.now(), signature: SignatureImage },
-    ]);
-  };
-
-  const removeInputField = (id: number) => {
-    const updatedFields = inputFields.filter((field) => field.id !== id);
-    setInputFields(updatedFields);
-    console.log("Input Fields after removing:", updatedFields);
-  };
-
-  const changeSignatureImage = (index: number) => {
-    document.getElementById(`signature_input_${index}`)?.click();
-  };
-
-  const handleSignatureChange =
-    (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files && e.target.files[0]) {
-        const newSignature = URL.createObjectURL(e.target.files[0]);
-        setInputFields(
-          inputFields.map((inputField) =>
-            inputField.id === inputFields[index].id
-              ? { ...inputField, signature: newSignature }
-              : inputField
-          )
-        );
-      }
-    };
 
   const handleUpdateProfile = async (data: FormData) => {
     const payload = {

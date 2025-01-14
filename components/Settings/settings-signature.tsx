@@ -62,6 +62,9 @@ const SettingsSignature = () => {
   
     const handleSignatureChange =
       (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (typeof window === "undefined" || !e.target.files || !e.target.files[0]) {
+          return;
+        }
         if (e.target.files && e.target.files[0]) {
           const newSignature = URL.createObjectURL(e.target.files[0]);
           const newFile = e.target.files[0];
