@@ -44,6 +44,9 @@ const InputPin = () => {
       const res = await withdrawBranchFunds(branch_id, { amount, description: desc, pin })
       if (res) {
         toast.success("Withdrawal successful")
+        window.dispatchEvent(new Event("refetch-wallet"));
+        window.dispatchEvent(new Event("refetch_staff"));
+        // back()
       }
     } catch(err){
       toast.error("Failed to withdraw")

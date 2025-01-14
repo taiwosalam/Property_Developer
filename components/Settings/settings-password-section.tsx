@@ -10,38 +10,53 @@ import Button from "../Form/Button/button";
 import type { ValidationErrors } from "@/utils/types";
 import { Modal, ModalContent } from "../Modal/modal";
 import SettingsOTPFlow from "./Modals/settings-otp-flow";
-import { changePassword } from "@/app/(nav)/settings/security/data";
+import { changePassword, getPasswordResetOTP } from "@/app/(nav)/settings/security/data";
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { useWalletStore } from "@/store/wallet-store";
 
 const SettingsPasswordSection = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isForgetPin, setIsForgetPin] = useState(false);
+  const otp = useWalletStore((s) => s.otp);
+  const setWalletStore = useWalletStore((s) => s.setWalletStore);
   const [loading, setLoading] = useState(false)
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
   );
 
-  const handleSubmit = async(data: FormData) => {
-    // communicate with backend
-    const payload = {
-      current_password: data.get("current_password"),
-      password: data.get("password"),
-      password_confirmation: data.get("confirm_password"),
-    }
-
-    try{
+  const handleSubmit = async (data: Record<string, string>) => {
+    setIsOpen(true);
+    try {
       setLoading(true)
-      const res = await changePassword(objectToFormData(payload))
-      if(res){
-        toast.success("Password changed successfully")
+      setWalletStore("current_pin", data.current_password);
+      setWalletStore("new_pin", data.password);
+      setWalletStore("confirm_pin", data.confirm_password);
+      const res = await getPasswordResetOTP()
+      if (res) {
+        toast.success("Check Email For OTP")
         setIsOpen(true);
       }
-    } catch (err){
-      toast.error("Failed to change password")
+    } catch (err) {
+      toast.error("Failed to send OTP")
     } finally {
       setLoading(false)
     }
-    // console.log("Payload", payload)
+  };
+
+  const handleForgetPassword = async() => {
+    setIsOpen(true); // Open the modal
+    try{
+      const res = await getPasswordResetOTP()
+      if (res) {
+        toast.success("Check Email For OTP")
+        // setIsOpen(true);
+      }
+    } catch(err){
+      toast.error("Failed to send OTP")
+    }finally{
+      setLoading(false)
+    }
   };
 
   return (
@@ -56,13 +71,24 @@ const SettingsPasswordSection = () => {
             desc="Use this section to reset your account password."
           />
           <div className="flex flex-col sm:flex-row gap-5">
-            <Input
-              id="current_password"
-              label="current password"
-              className="w-full sm:w-[277px]"
-              type="password"
-              validationErrors={validationErrors}
-            />
+            <div className="flex flex-col gap-1">
+              <Input
+                id="current_password"
+                label="current password"
+                className="w-full sm:w-[277px]"
+                type="password"
+                validationErrors={validationErrors}
+              />
+              <div className="self-start">
+                <button
+                  type="button"
+                  onClick={handleForgetPassword}
+                  className="text-brand-9 hover:underline"
+                >
+                  Forget Current Password?
+                </button>
+              </div>
+            </div>
             <AuthNewPassword
               label="New Password"
               className="w-full sm:w-[277px]"
@@ -85,7 +111,9 @@ const SettingsPasswordSection = () => {
       </AuthForm>
       <Modal state={{ isOpen, setIsOpen }}>
         <ModalContent>
-          <SettingsOTPFlow />
+          <SettingsOTPFlow
+            resetPass={true}
+          />
         </ModalContent>
       </Modal>
     </SettingsSection>

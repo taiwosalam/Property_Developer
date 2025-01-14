@@ -105,7 +105,7 @@ const SettingsWalletSection = () => {
                   onClick={handleForgetPin}
                   className="text-brand-9 hover:underline"
                 >
-                  Forget Pin?
+                  Forget Wallet Pin?
                 </button>
               </div>
             </div>
