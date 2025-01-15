@@ -9,14 +9,14 @@ export function middleware(req: NextRequest) {
   const currentPath = req.nextUrl.pathname;
 
   // Allow acces to /auth/sign-in if the authToken does not exist
-  if (req.nextUrl.pathname === "/auth/sign-in" && !authToken) {
+  if (req.nextUrl.pathname === "/auth/user/sign-in" && !authToken) {
     return NextResponse.next();
   }
 
   // Redirect to login if no token exists
-  if (!authToken) {
-    return NextResponse.redirect(new URL("/auth/sign-in", req.url));
-  }
+  // if (!authToken) {
+  //   return NextResponse.redirect(new URL("/auth/sign-in", req.url));
+  // }
 
   // Allow access to /auth/sign-up for users without emailVerified or role
   if (currentPath === "/auth/sign-up" && (!emailVerified || !role)) {
@@ -40,16 +40,17 @@ export function middleware(req: NextRequest) {
 
   // Define role-based routes
   const roleBasedRoutes: Record<string, string[]> = {
-    admin: ["/dashboard",  "/auth/user/sign-in", "/dashboard/reports", "/auth/forgot-password"],
-    user: ["/dashboard",  "/auth/user/sign-in", "/dashboard/orders", "/auth/forgot-password"],
+    admin: ["/dashboard", "/auth/user/sign-in", "/dashboard/reports", "/auth/forgot-password"],
+    user: ["/dashboard", "/auth/user/sign-in", "/dashboard/orders", "/auth/forgot-password"],
     staff: ["/dashboard", "/auth/user/sign-in", "/auth/forgot-password"],
     account: ["/dashboard", "/auth/user/sign-in", "/auth/sign-up", "/auth/forgot-password"],
+    manager: ["/manager/dashboard", "/auth/user/sign-in", "/auth/sign-up", "/auth/forgot-password"],
     director: ["/dashboard", "/wallet", "/auth/sign-in", "/auth/user/sign-in", "/auth/forgot-password"],
   };
 
   // Check if the user's role allows access to the current path
-   const allowedRoutes = role ? roleBasedRoutes[role] : undefined;
-  if (!allowedRoutes || !allowedRoutes.some((route:any) => currentPath.startsWith(route))) {
+  const allowedRoutes = role ? roleBasedRoutes[role] : undefined;
+  if (!allowedRoutes || !allowedRoutes.some((route: any) => currentPath.startsWith(route))) {
     return NextResponse.redirect(new URL("/unauthorized", req.url));
   }
 
@@ -62,6 +63,6 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/wallet/:path*", "/auth/:path*"],
+  matcher: ["/dashboard/:path*", "/wallet/:path*", "/auth/:path*", "/manager/:path*"],
 };
 
