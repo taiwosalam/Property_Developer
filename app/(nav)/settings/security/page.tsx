@@ -140,9 +140,10 @@ const Security = () => {
               id="desired_name"
               label="input desired name"
               className="w-[277px]"
+              maxLength={11}
             />
           </div>
-          <SettingsUpdateButton type="otp" />
+          <SettingsUpdateButton />
         </div>
       </SettingsSection>
       <SettingsSection title="SMTP Settings">
@@ -156,7 +157,7 @@ const Security = () => {
             <Input id="password" label="password" className="w-full" />
             <Input id="smtp_server" label="SMTP Server" className="w-full" />
           </div>
-          <SettingsUpdateButton type="otp" />
+          <SettingsUpdateButton />
         </div>
       </SettingsSection>
     </>

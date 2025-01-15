@@ -20,7 +20,7 @@ const AddPropertyWithId = () => {
     // console.log(status);
     setIsLoading(false);
     if (status) {
-      toast.success("Property added successfully");
+      toast.success("Property Invitation Successful");
       setIsOpen(false);
     }
   };

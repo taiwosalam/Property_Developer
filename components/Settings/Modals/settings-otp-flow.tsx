@@ -32,7 +32,7 @@ const SettingsOTPFlow = ({
 
 
   const { activeStep, changeStep } = useStep(4);
-  console.log("active step", activeStep);
+  // console.log("active step", activeStep);
 
   return activeStep === 1 ? (
     isForgetWallet ? (

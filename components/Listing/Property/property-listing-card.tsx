@@ -25,8 +25,10 @@ import {
 } from "./property-listing-component";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import Link from "next/link";
+import { Modal, ModalContent } from "@/components/Modal/modal";
+import ListingFlow from "@/components/Settings/Modals/listing-otp-flow";
 
-const  PropertyListingCard: React.FC<PropertyListingCardProps> = ({
+const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
   data,
   status,
   propertyType,
@@ -36,10 +38,15 @@ const  PropertyListingCard: React.FC<PropertyListingCardProps> = ({
     className: "py-2 px-8",
   };
 
-  // console.log("propertyType", propertyType);
+  const [isOpen, setIsOpen] = useState(false);
   const color = property_listing_status[status];
 
   const [isOpened, setIsOpened] = useState(false);
+
+  const hanldeOpen = ()=> {
+    console.log("open modal")
+    setIsOpen(true)
+  }
 
   return (
     <div
@@ -47,7 +54,7 @@ const  PropertyListingCard: React.FC<PropertyListingCardProps> = ({
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="flex items-center gap-6 justify-between">
-        <PropertyListingLabelID id="123456776342" type={propertyType} />
+        <PropertyListingLabelID id={data.id} type={propertyType} />
         <div
           className="w-5 h-5 rounded-full"
           style={{ backgroundColor: color || "#ebeef0" }}
@@ -116,16 +123,16 @@ const  PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                 <PropertyListingParagraph>
                   Property creation is not yet complete.
                 </PropertyListingParagraph>
-              // ) : status === "awaiting" || status === "unpublished" ? (
-              //   <PropertyListingParagraph>
-              //     Created By : Ajadi David -- Moniya Branch
-              //   </PropertyListingParagraph>
-              // ) : status === "moderation" ? (
-              //   <PropertyListingRed>
-              //     Please review the property settings and replace the picture,
-              //     as it appears to have been mistakenly used for another
-              //     property.
-              //   </PropertyListingRed>
+                // ) : status === "awaiting" || status === "unpublished" ? (
+                //   <PropertyListingParagraph>
+                //     Created By : Ajadi David -- Moniya Branch
+                //   </PropertyListingParagraph>
+                // ) : status === "moderation" ? (
+                //   <PropertyListingRed>
+                //     Please review the property settings and replace the picture,
+                //     as it appears to have been mistakenly used for another
+                //     property.
+                //   </PropertyListingRed>
               ) : status === "request" ? (
                 <PropertyListingTitleDesc
                   title="Taiwo Salam & Co. Properties Ltd"
@@ -134,24 +141,34 @@ const  PropertyListingCard: React.FC<PropertyListingCardProps> = ({
               ) : null}
             </div>
             <div className="flex gap-3 items-center">
-              {status === "draft"? (
+              {status === "draft" ? (
                 <Button
-                 {...button_props}
-                 href={`/management/properties/${data.id}/edit-property`}>continue</Button>
-              // ) : status === "unpublished" ? (
-              //   <>
-              //     <Button variant="border" {...button_props}>
-              //       manage
-              //     </Button>
-              //     <Button {...button_props}>publish</Button>
-              //   </>
-              // ) : status === "moderation" ? (
-              //   <Button variant="border" {...button_props}>
-              //     manage
-              //   </Button>
+                  {...button_props}
+                  href={`/management/properties/${data.id}/edit-property`}>continue</Button>
+                // ) : status === "unpublished" ? (
+                //   <>
+                //     <Button variant="border" {...button_props}>
+                //       manage
+                //     </Button>
+                //     <Button {...button_props}>publish</Button>
+                //   </>
+                // ) : status === "moderation" ? (
+                //   <Button variant="border" {...button_props}>
+                //     manage
+                //   </Button>
               ) : status === "request" ? (
                 <>
-                  <Button {...button_props}>action</Button>
+                  <Button
+                    {...button_props}
+                    onClick={hanldeOpen}
+                  >
+                    action
+                  </Button>
+                  <Modal state={{ isOpen, setIsOpen }}>
+                    <ModalContent>
+                      <ListingFlow />
+                    </ModalContent>
+                  </Modal>
                   <Button variant="border" {...button_props}>
                     preview
                   </Button>
