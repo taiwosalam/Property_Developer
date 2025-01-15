@@ -12,10 +12,17 @@ import {
   AuthHeading,
 } from "@/components/Auth/auth-components";
 
-import { login } from "@/app/(onboarding)/auth/data";
+import { getDashboardPage, login } from "@/app/(onboarding)/auth/data";
+import { useAuthStore } from "@/store/authStore";
+import Cookies from "js-cookie";
 
 const SignIn = () => {
   const router = useRouter();
+  // const role = useAuthStore((state) => state.role);
+  const role = Cookies.get("role") || "";
+
+
+  console.log("dashboardPage", getDashboardPage);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -25,7 +32,13 @@ const SignIn = () => {
     if (a === "redirect to verify email") {
       router.push("/auth/sign-up");
     } else if (a === "redirect to dashboard") {
-      router.push("/dashboard");
+      const interval = setInterval(() => {
+        const currentRole = useAuthStore.getState().role;
+        if (currentRole) {
+          clearInterval(interval);
+          router.push(getDashboardPage(currentRole));
+        }
+      }, 50);
     } else if (a === "redirect to setup") {
       router.push("/setup");
     }

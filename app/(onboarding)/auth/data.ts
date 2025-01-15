@@ -8,6 +8,31 @@ import { useWalletStore } from "@/store/wallet-store";
 import { InputData } from "@/utils/checkFormDataForImageOrAvatar";
 import Cookies from "js-cookie";
 
+export const getDashboardPage = (role: string | null) => {
+  switch (role) {
+    case "director":
+      return "/dashboard";
+    case "tenant":
+      return "/dashboard";
+    case "manager":
+      return "/manager/dashboard";
+    default:
+      return "/";
+  }
+};
+
+
+export const getRoleSignInPage = (role: string | null): string => {
+  switch (role) {
+    case "director":
+      return "/auth/sign-in";
+    case "manager":
+      return "/auth/user/sign-in";
+    default:
+      return "/auth/user/sign-in";
+  }
+};
+
 interface LoginResponse {
   message: string;
   access_token: string;
@@ -144,6 +169,7 @@ export const resendOtp = async (): Promise<boolean> => {
 };
 
 export const logout = async (): Promise<boolean> => {
+  const role = useAuthStore.getState().role; 
   const resetAuthStore = useAuthStore.getState().reset;
   try {
     const { data } = await api.post("logout");

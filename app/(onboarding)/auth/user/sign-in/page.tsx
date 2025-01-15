@@ -11,21 +11,29 @@ import {
   AuthForm,
   AuthHeading,
 } from "@/components/Auth/auth-components";
-
-import { login } from "@/app/(onboarding)/auth/data";
+import { getDashboardPage, login } from "@/app/(onboarding)/auth/data";
+import Cookies from "js-cookie";
+import { useAuthStore } from "@/store/authStore";
 
 const SignIn = () => {
   const router = useRouter();
-
+  const role = useAuthStore((state) => state.role);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (formData: Record<string, any>) => { 
+  const handleSubmit = async (formData: Record<string, any>) => {
     setIsLoading(true);
     const a = await login(formData);
     if (a === "redirect to verify email") {
       router.push("/auth/sign-up");
     } else if (a === "redirect to dashboard") {
-      router.push("/dashboard");
+      // Wait until the `role` is set in Zustand before redirecting
+      const interval = setInterval(() => {
+        const currentRole = useAuthStore.getState().role;
+        if (currentRole) {
+          clearInterval(interval);
+          router.push(getDashboardPage(currentRole));
+        }
+      }, 50);
     } else if (a === "redirect to setup") {
       router.push("/setup");
     }
