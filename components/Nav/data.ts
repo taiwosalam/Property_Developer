@@ -5,7 +5,7 @@ import type { NavItemsProps } from "./types";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
 
-
+// The nav_items is used for the director role and it uses the top label joined the href unlinke other roles
 export const nav_items: NavItemsProps = [
   {
     type: "buildings",
@@ -98,7 +98,7 @@ export const nav_items: NavItemsProps = [
   { type: "settings", label: "settings", href: "/settings" },
 ];
 
-
+// Include the manager nav route in the href as it didn't use the label
 export const manager_nav_items: NavItemsProps = [
   {
     type: "buildings",
@@ -109,9 +109,9 @@ export const manager_nav_items: NavItemsProps = [
     type: "people",
     label: "management",
     content: [
-      { label: "landlord & landlady", href: "/landlord" },
-      { label: "tenants", href: "/tenants" },
-      { label: "occupants", href: "/occupants" },
+      { label: "landlord & landlady", href: "/manager/management/landlord" },
+      { label: "tenants", href: "/manager/management/tenants" },
+      { label: "occupants", href: "/manager/management/occupants" },
     ],
   },
   {

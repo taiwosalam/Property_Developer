@@ -49703,3 +49703,27 @@ export const states: State[] = [
     },
   },
 ];
+
+
+export const adminRoutes = ["/dashboard", "/dashboard/reports", "/auth/forgot-password"];
+export const userRoutes = ["/dashboard", "/dashboard/orders", "/auth/forgot-password"];
+export const staffRoutes = ["/dashboard", "/auth/forgot-password"];
+export const accountRoutes = ["/dashboard", "/auth/sign-up", "/auth/forgot-password"];
+export const managerRoutes = [
+  "/manager/dashboard", 
+  "/auth/forgot-password",
+  "/manager/management/landlord",
+  "/manager/management/tenants",
+  "/manager/management/occupants"
+];
+export const directorRoutes = ["/dashboard", "/wallet", "/auth/sign-in"];
+
+// Combine individual routes into a role-based object
+export const roleBasedRoutes: Record<string, string[]> = {
+  admin: adminRoutes,
+  user: userRoutes,
+  staff: staffRoutes,
+  account: accountRoutes,
+  manager: managerRoutes,
+  director: directorRoutes,
+};
