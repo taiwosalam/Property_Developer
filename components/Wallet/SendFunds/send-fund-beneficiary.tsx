@@ -61,7 +61,7 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
       }
       setLoading(true);
       const action = branch
-        ? branchFundWallet({ branch_id: branchData.branch_id, amount, pin, description })
+        ? branchFundWallet(branchData.branch_id, {amount, pin, description })
         : transferFunds(wallet_id, amount, description, pin);
       const status = await action;
       if (status) {

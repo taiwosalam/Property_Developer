@@ -16,7 +16,7 @@ const TopNav = () => {
 
   return (
     <div className="flex overflow-x-auto no-scrollbar">
-      {getNavs(role).map((item, idx) =>
+      {getNavs(role)?.map((item, idx) =>
         item.content ? (
           <TopNavDropdown
             key={idx}
