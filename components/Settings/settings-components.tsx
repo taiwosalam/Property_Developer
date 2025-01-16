@@ -108,11 +108,20 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
 
   const [modalOpen, setModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (next && next === true) {
-      setModalOpen(true);
+  // useEffect(() => {
+  //   if (next && next === true) {
+  //     setModalOpen(true);
+  //   }
+  // }, [next])
+
+  const handleAction = ()=> {
+    if (action){
+      action()
     }
-  }, [next])
+    if (next){
+      setModalOpen(true)
+    }
+  }
 
   return (
     <div className="flex justify-end gap-4">
@@ -138,7 +147,7 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
           </ModalContent>
         </Modal>
       )}
-      <Button {...button_props} onClick={() => setModalOpen(true)}>
+      <Button {...button_props} onClick={handleAction}>
         {loading ? "Please wait..." : text}
       </Button>
       <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
