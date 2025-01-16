@@ -21,9 +21,6 @@ const SignIn = () => {
   // const role = useAuthStore((state) => state.role);
   const role = Cookies.get("role") || "";
 
-
-  console.log("dashboardPage", getDashboardPage);
-
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (formData: Record<string, any>) => { 

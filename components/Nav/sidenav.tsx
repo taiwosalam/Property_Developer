@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { empty } from "@/app/config";
@@ -12,10 +12,13 @@ import { nav_items } from "./data";
 import NavDropdown from "./nav-dropdown";
 import { NavButton } from "./nav-components";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { getNavs } from "@/app/(onboarding)/auth/data";
+import Cookies from "js-cookie";
 
 const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
   const pathname = usePathname();
-
+  const [loading, setLoading] = useState(false);
+  const role = Cookies.get("role") || "";
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const handleDropdownToggle = (label: string) => {
@@ -36,7 +39,7 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
         />
       </div>
 
-      {nav_items.map((item, idx) =>
+      {getNavs(role).map((item, idx) =>
         item.content ? (
           <NavDropdown
             key={idx}

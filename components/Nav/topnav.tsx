@@ -6,13 +6,17 @@ import { usePathname } from "next/navigation";
 import { nav_items } from "./data";
 import { NavButton } from "./nav-components";
 import TopNavDropdown from "./nav-topdown";
+import { getNavs } from "@/app/(onboarding)/auth/data";
+import Cookies from "js-cookie";
+
 
 const TopNav = () => {
   const pathname = usePathname();
+  const role = Cookies.get("role") || "";
 
   return (
     <div className="flex overflow-x-auto no-scrollbar">
-      {nav_items.map((item, idx) =>
+      {getNavs(role).map((item, idx) =>
         item.content ? (
           <TopNavDropdown
             key={idx}

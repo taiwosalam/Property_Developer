@@ -109,7 +109,7 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    if (next) {
+    if (next && next === true) {
       setModalOpen(true);
     }
   }, [next])

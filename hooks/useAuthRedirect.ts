@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { getUserStatus } from "@/app/(nav)/data";
 import { getLocalStorage } from "@/utils/local-storage";
+import Cookies from "js-cookie";
 
 type UseAuthRedirectOptions = {
   skipSetupRedirect?: boolean;
@@ -10,6 +11,7 @@ type UseAuthRedirectOptions = {
 
 export const useAuthRedirect = (options: UseAuthRedirectOptions = {}) => {
   const router = useRouter();
+  const role = Cookies.get("role") || "";
   const authStoreToken = useAuthStore((state) => state.token);
   const setAuthState = useAuthStore((state) => state.setAuthState);
 
@@ -17,8 +19,13 @@ export const useAuthRedirect = (options: UseAuthRedirectOptions = {}) => {
     const checkAuthAndRedirect = async () => {
       if (!authStoreToken) {
         const localAuthToken = getLocalStorage("authToken");
-        if (!localAuthToken) {
+        if (!localAuthToken && role === "director") {
           router.replace("/auth/sign-in");
+          return;
+        } 
+
+        if(!localAuthToken && role !== "director" ){
+          router.replace("/auth/user/sign-in");
           return;
         }
         setAuthState("token", localAuthToken);
