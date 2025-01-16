@@ -71,6 +71,7 @@ export interface DefaultSettingsModalProps {
   isForgetWallet?: boolean;
   saveOtp?: boolean;
   resetPass?: boolean;
+  changePassword?: boolean;
 }
 
 export interface SettingsAnnumSwitcherProps {

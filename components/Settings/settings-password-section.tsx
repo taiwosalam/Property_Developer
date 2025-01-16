@@ -20,13 +20,14 @@ const SettingsPasswordSection = () => {
   const [isForgetPin, setIsForgetPin] = useState(false);
   const otp = useWalletStore((s) => s.otp);
   const setWalletStore = useWalletStore((s) => s.setWalletStore);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [changePassword, setChangePassword] = useState(false);
+  const [forgetPassword, setForgetPassword] = useState(false);
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
   );
 
   const handleSubmit = async (data: Record<string, string>) => {
-    setIsOpen(true);
     try {
       setLoading(true)
       setWalletStore("current_pin", data.current_password);
@@ -36,6 +37,7 @@ const SettingsPasswordSection = () => {
       if (res) {
         toast.success("Check Email For OTP")
         setIsOpen(true);
+        setChangePassword(true);
       }
     } catch (err) {
       toast.error("Failed to send OTP")
@@ -45,12 +47,13 @@ const SettingsPasswordSection = () => {
   };
 
   const handleForgetPassword = async() => {
-    setIsOpen(true); // Open the modal
     try{
+      setLoading(true)
       const res = await getPasswordResetOTP()
       if (res) {
         toast.success("Check Email For OTP")
-        // setIsOpen(true);
+        setIsOpen(true);
+        setForgetPassword(true);
       }
     } catch(err){
       toast.error("Failed to send OTP")
@@ -85,7 +88,7 @@ const SettingsPasswordSection = () => {
                   onClick={handleForgetPassword}
                   className="text-brand-9 hover:underline"
                 >
-                  Forget Current Password?
+                 {loading ? "Please wait..." : "Forget Current Password?"}
                 </button>
               </div>
             </div>
@@ -104,7 +107,7 @@ const SettingsPasswordSection = () => {
           </div>
           <div className="flex justify-end gap-4">
             <Button size="base_bold" className="py-[10px] px-8" type="submit">
-              Update
+              {loading ? "Please wait..." : "update"}
             </Button>
           </div>
         </div>
@@ -112,7 +115,8 @@ const SettingsPasswordSection = () => {
       <Modal state={{ isOpen, setIsOpen }}>
         <ModalContent>
           <SettingsOTPFlow
-            resetPass={true}
+            resetPass={forgetPassword}
+            changePassword={changePassword}
           />
         </ModalContent>
       </Modal>
