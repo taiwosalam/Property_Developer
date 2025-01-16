@@ -24,6 +24,7 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
   isForgetWallet,
   saveOtp,
   resetPass,
+  changePassword: changeOldPassword
 }) => {
   const pinFieldRef = useRef<HTMLInputElement[] | null>(null);
   const setWalletStore = useWalletStore((s) => s.setWalletStore)
@@ -81,24 +82,6 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
     changeStep(4);
   }
 
-  // const handleGetPassWordOTP = async () => {
-  //   if (canResend) {
-  //     setCountdown(60);
-  //     setCanResend(false);
-  //     try{
-  //       setLoading(true)
-  //       const res = await getPasswordResetOTP()
-  //       if (res) {
-  //         toast.success("Check Email For OTP")
-  //       }
-  //     } catch(err) {
-  //       toast.error("Failed to send OTP")
-  //     } finally {
-  //       setLoading(false)
-  //     }
-  //   } 
-  // }
-
   const verifyOTP =  async()=> {
     try{
       setLoading(true)
@@ -149,6 +132,10 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
     }
 
     if (isForgetWallet) return handleIsForgetWallet()
+
+    if (changeOldPassword){
+      return handleChangePassword()
+    }
 
     return handleChangeWalletPin()
   }

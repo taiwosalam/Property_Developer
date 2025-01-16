@@ -129,6 +129,7 @@ const SettingsBank = () => {
                 <SettingsUpdateButton 
                 type="otp" 
                 loading={false}
+                next={true}
                 />
             </div>
         </SettingsSection>

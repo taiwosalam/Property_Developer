@@ -77,10 +77,10 @@ export const determinePercentageDifference = (
   }
 
   if (num2 === 0) {
-    return Math.min(100, Math.abs(num1)); // Ensure it stays within the range
+    return Math.min(100, Math.round(Math.abs(num1))); // Ensure it stays within the range
   }
 
-  const percentage = (Math.abs(num1 - num2) / Math.abs(num2)) * 100;
+  const percentage = Math.round((Math.abs(num1 - num2) / Math.abs(num2)) * 100);
 
   // Always return a value between 0 and 100
   return Math.min(100, percentage);
