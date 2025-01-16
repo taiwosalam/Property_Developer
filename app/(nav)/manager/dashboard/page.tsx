@@ -24,8 +24,11 @@ import CustomTable from "@/components/Table/table";
 import Link from "next/link";
 import { useWalletStore } from "@/store/wallet-store";
 import Cookies from "js-cookie";
+import useWindowWidth from "@/hooks/useWindowWidth";
+import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 
 const Dashboard = () => {
+  const { isMobile } = useWindowWidth();
   const walletId = useWalletStore((state) => state.walletId);
   const recentTransactions = useWalletStore(
     (state) => state.recentTransactions
@@ -111,7 +114,7 @@ const Dashboard = () => {
           tableHeadCellSx={{ fontSize: "1rem" }}
         />
       </SectionContainer>
-      <SectionContainer heading="Recent Complains" href="/tasks/complaints">
+      {/* <SectionContainer heading="To do list" href="/tasks/complaints">
         <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array(6)
             .fill(null)
@@ -137,15 +140,20 @@ const Dashboard = () => {
                     progress: 50,
                   },
                   name: "John Doe",
-                  title: "Project Manager",
+                  title: "Window dilapidated and entrance not working",
                   message:
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                    "Hello, this is Makinwa, and i want to ask you how",
                   avatarSrc: "/empty/avatar.png",
                 }}
               />
             ))}
         </div>
-      </SectionContainer>
+      </SectionContainer> */}
+      {!isMobile && (
+        <SectionContainer heading="To do list">
+          <KanbanBoard />
+        </SectionContainer>
+      )}
     </section>
   );
 };
