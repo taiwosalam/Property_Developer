@@ -111,7 +111,7 @@ export const manager_nav_items: NavItemsProps = [
     content: [
       { label: "landlord & landlady", href: "/landlord" },
       { label: "tenants", href: "/tenants" },
-      { label: "occupants", href: "/" },
+      { label: "occupants", href: "/occupants" },
     ],
   },
   {
