@@ -27,6 +27,7 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
 
   const company_logo = usePersonalInfoStore((state) => state.company_logo);
   const isDirector = role === "director";
+  console.log("Navs", getNavs(role))
 
   return (
     <div className="custom-flex-col pb-3">
@@ -40,7 +41,7 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
         />
       </div>
 
-      {getNavs(role).map((item, idx) =>
+      {getNavs(role)?.map((item, idx) =>
         item.content ? (
           <NavDropdown
             key={idx}
@@ -60,7 +61,12 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
           </NavDropdown>
         ) : (
           <NavButton
-            highlight={item.href ? pathname.includes(item.href) : false}
+            highlight={
+              item.href &&
+              isDirector
+                ? pathname.includes(item.href)
+                : pathname.includes(`${getNavs(role)}/${item.href}`)
+            }
             key={idx}
             href={item.href}
             type={item.type}

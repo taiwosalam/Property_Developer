@@ -134,9 +134,9 @@ export const transferFunds = async (
 
 
 // /branch/wallet-fund
-export const branchFundWallet = async (data: any) => {
+export const branchFundWallet = async (id: string, data: any) => {
   try{
-    const res = await api.post('/branch/wallet-fund', data)
+    const res = await api.post(`/branch/${id}/wallet-fund`, data)
     if (res.status === 200){
       return true
     }

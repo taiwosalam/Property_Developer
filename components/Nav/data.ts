@@ -5,7 +5,7 @@ import type { NavItemsProps } from "./types";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
 
-// The nav_items is used for the director role and it uses the top label joined the href unlinke other roles
+// The nav_items is used for the director role and it uses the top label joined the href unlinke manager
 export const nav_items: NavItemsProps = [
   {
     type: "buildings",
@@ -110,24 +110,83 @@ export const manager_nav_items: NavItemsProps = [
     label: "management",
     content: [
       { label: "landlord & landlady", href: "/manager/management/landlord" },
-      { label: "tenants", href: "/manager/management/tenants" },
-      { label: "occupants", href: "/manager/management/occupants" },
+      { label: "tenants & occupants", href: "/manager/management/tenants" },
+      { label: "staff & branches", href: "/manager/management/staff-branch" },
+      { label: "inventory", href: "/manager/management/inventory" },
+      { label: "properties", href: "/manager/management/properties" },
+      { label: "rent & unit", href: "/manager/management/rent-unit" },
+      { label: "service providers", href: "/manager/management/service-providers" },
+      { label: "vehicles record", href: "/manager/management/vehicles-record" },
+      { label: "team chat", href: "/manager/management/team-chat" },
+      { label: "agent community", href: "/agent-community" },
     ],
   },
   {
     type: "briefcase_timer",
     label: "tasks",
     content: [
-      { label: "schedule visit", href: "#" },
-      { label: "announcement", href: "#" },
-      { label: "complaints", href: "#" },
-      { label: "examine report", href: "#" },
-      { label: "maintenance report", href: "#" },
-      { label: "caution deposit", href: "#" },
-      { label: "move out", href: "#" },
+      { label: "schedule visit", href: "/manager/tasks/schedule" },
+      { label: "announcement", href: "/manager/tasks/announcement" },
+      { label: "complaints", href: "/manager/tasks/complaints" },
+      { label: "examine report", href: "/manager/tasks/examine" },
+      { label: "maintenance report", href: "/manager/tasks/maintenance" },
+      { label: "caution deposit", href: "/manager/tasks/deposits" },
+      { label: "move out", href: "/manager/tasks/move-out" },
     ],
   },
-]
+  {
+    type: "chart",
+    label: "listing",
+    content: [
+      { label: "units", href: "/manager/listing/units" },
+      { label: "statistics", href: "/manager/listing/statistics" },
+      { label: "Property Draft/Request", href: "/manager/listing/property" },
+    ],
+  },
+  {
+    type: "menu_board",
+    label: "accounting",
+    content: [
+      { label: "invoice", href: "/manager/accounting/invoice" },
+      { label: "receipts", href: "/manager/accounting/receipts" },
+      { label: "expenses", href: "/manager/accounting/expenses" },
+      { label: "disbursement", href: "/manager/accounting/disbursement" },
+      { label: "statement", href: "/manager/accounting/statement" },
+      { label: "VAT", href: "/manager/accounting/vat" },
+    ],
+  },
+  {
+    type: "status_up",
+    label: "reports",
+    content: [
+      { label: "tenants / occupants", href: "/manager/reports/tenants" },
+      { label: "landlord / landlady", href: "/manager/reports/landlord" },
+      { label: "properties", href: "/manager/reports/properties" },
+      { label: "units", href: "/manager/reports/units" },
+      { label: "rent roll", href: "/manager/reports/rent" },
+      { label: "listings", href: "/manager/reports/listings" },
+      { label: "email", href: "/manager/reports/email" },
+      { label: "SMS", href: "/manager/reports/sms" },
+      { label: "tracking", href: "/manager/reports/tracking" },
+      { label: "call request", href: "/manager/reports/call" },
+      { label: "visitors request", href: "/manager/reports/visitors" },
+      { label: "undo", href: "/manager/reports/undo" },
+      { label: "vehicles record", href: "/manager/reports/vehicles-record" },
+    ],
+  },
+  { type: "empty_wallet", label: "wallet", href: "/manager/wallet" },
+  {
+    type: "task",
+    label: "applications",
+    href: "/manager/applications",
+  },
+  {
+    type: "folder",
+    label: "documents",
+    href: "/manager/documents",
+  },
+  { type: "settings", label: "settings", href: "/manager/settings" },
+];
 
 export const getGreeting = () => {
   const currentHour = new Date().getHours();

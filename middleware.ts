@@ -70,6 +70,19 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/wallet/:path*", "/auth/:path*", "/manager/:path*"],
+  matcher: [
+    "/dashboard/:path*", 
+    "/wallet/:path*", 
+    "/auth/:path*", 
+    "/manager/:path*",
+    "/management/:path*",
+    "/tasks/:path*",
+    "/reports/:path*",
+    "/listing/:path*",
+    "/accounting/:path*",
+    "/applications/:path*",
+    "/documents/:path*",
+    "/settings/:path*",
+  ],
 };
 

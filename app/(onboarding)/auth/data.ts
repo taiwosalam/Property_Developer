@@ -18,7 +18,7 @@ export const getDashboardPage = (role: string | null) => {
     case "manager":
       return "/manager/dashboard";
     default:
-      return "/";
+      return "";
   }
 };
 
@@ -32,7 +32,7 @@ export const getNavs = (role: string | null) => {
     case "manager":
       return manager_nav_items;
     default:
-      return nav_items;
+      return null;
   }
 };
 

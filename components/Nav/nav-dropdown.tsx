@@ -23,6 +23,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
   const pathname = usePathname();
   const role = Cookies.get("role") || "";
   const isDirector = role === "director";
+  
   return (
     <div
       className="custom-flex-col"
