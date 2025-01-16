@@ -214,7 +214,7 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
             <span className="custom-primary-color">
               <ReloadIcon />
             </span>
-            <p>Resend code</p>
+            <p className="custom-primary-color">Resend code</p>
           </button>
         </div>
         <Button

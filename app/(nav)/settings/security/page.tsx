@@ -128,7 +128,7 @@ const Security = () => {
           </div>
         </AuthForm>
       </SettingsSection>
-      {/* <SettingsSignature /> */}
+      <SettingsSignature />
       <SettingsWalletSection />
       <SettingsPasswordSection />
       <SettingsBank />
