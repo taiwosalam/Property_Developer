@@ -13,11 +13,6 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Redirect to login if no token exists
-  // if (!authToken) {
-  //   return NextResponse.redirect(new URL("/auth/sign-in", req.url));
-  // }
-
   // Allow access to /auth/sign-up for users without emailVerified or role
   if (currentPath === "/auth/sign-up" && (!emailVerified || !role)) {
     return NextResponse.next();
@@ -45,7 +40,7 @@ export function middleware(req: NextRequest) {
     staff: ["/dashboard", "/auth/user/sign-in", "/auth/forgot-password"],
     account: ["/dashboard", "/auth/user/sign-in", "/auth/sign-up", "/auth/forgot-password"],
     manager: ["/manager/dashboard", "/auth/user/sign-in", "/auth/sign-up", "/auth/forgot-password"],
-    director: ["/dashboard", "/wallet", "/auth/sign-in", "/auth/user/sign-in", "/auth/forgot-password"],
+    director: ["/dashboard", "/wallet", "/auth/sign-in", "/auth/user/sign-in", "/a  uth/forgot-password"],
   };
 
   // Check if the user's role allows access to the current path

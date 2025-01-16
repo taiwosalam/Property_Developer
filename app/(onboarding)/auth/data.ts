@@ -7,6 +7,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useWalletStore } from "@/store/wallet-store";
 import { InputData } from "@/utils/checkFormDataForImageOrAvatar";
 import Cookies from "js-cookie";
+import { manager_nav_items, nav_items } from "@/components/Nav/data";
 
 export const getDashboardPage = (role: string | null) => {
   switch (role) {
@@ -18,6 +19,20 @@ export const getDashboardPage = (role: string | null) => {
       return "/manager/dashboard";
     default:
       return "/";
+  }
+};
+
+
+export const getNavs = (role: string | null) => {
+  switch (role) {
+    case "director":
+      return nav_items;
+    case "tenant":
+      return nav_items;
+    case "manager":
+      return manager_nav_items;
+    default:
+      return nav_items;
   }
 };
 
@@ -169,7 +184,6 @@ export const resendOtp = async (): Promise<boolean> => {
 };
 
 export const logout = async (): Promise<boolean> => {
-  const role = useAuthStore.getState().role; 
   const resetAuthStore = useAuthStore.getState().reset;
   try {
     const { data } = await api.post("logout");

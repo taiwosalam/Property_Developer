@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { saveLocalStorage } from "@/utils/local-storage";
+import Cookies from "js-cookie";
 
 interface AuthState {
   email: string | null;
@@ -27,6 +28,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
   reset: (email) => {
     localStorage.removeItem("authToken");
+    // Cookies.remove("role");
+    Cookies.remove("authToken");
     set({
       email: email ?? null,
       token: null,

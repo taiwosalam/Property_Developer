@@ -5,6 +5,7 @@ import type { NavItemsProps } from "./types";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
 
+
 export const nav_items: NavItemsProps = [
   {
     type: "buildings",
@@ -96,6 +97,37 @@ export const nav_items: NavItemsProps = [
   },
   { type: "settings", label: "settings", href: "/settings" },
 ];
+
+
+export const manager_nav_items: NavItemsProps = [
+  {
+    type: "buildings",
+    label: "dashboard",
+    href: "/manager/dashboard",
+  },
+  {
+    type: "people",
+    label: "management",
+    content: [
+      { label: "landlord & landlady", href: "/landlord" },
+      { label: "tenants", href: "/tenants" },
+      { label: "occupants", href: "/" },
+    ],
+  },
+  {
+    type: "briefcase_timer",
+    label: "tasks",
+    content: [
+      { label: "schedule visit", href: "#" },
+      { label: "announcement", href: "#" },
+      { label: "complaints", href: "#" },
+      { label: "examine report", href: "#" },
+      { label: "maintenance report", href: "#" },
+      { label: "caution deposit", href: "#" },
+      { label: "move out", href: "#" },
+    ],
+  },
+]
 
 export const getGreeting = () => {
   const currentHour = new Date().getHours();

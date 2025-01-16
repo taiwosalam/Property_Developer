@@ -24,6 +24,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const sideNavRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowWidth();
   const [isSideNavOpen, setIsSideNavOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); 
 
   const navbar = selectedOptions.navbar;
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
@@ -38,7 +39,21 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     setIsSideNavOpen(!isMobile);
   }, [isMobile]);
 
+  // Simulate
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
   useAuthRedirect();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center w-full h-screen bg-neutral-100 dark:bg-neutral-900">
+        <div className="animate-spin w-12 h-12 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
 
   return (
     <LayoutContext.Provider value={{ isSideNavOpen }}>
