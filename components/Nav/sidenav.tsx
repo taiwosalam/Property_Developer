@@ -26,6 +26,7 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
   };
 
   const company_logo = usePersonalInfoStore((state) => state.company_logo);
+  const isDirector = role === "director";
 
   return (
     <div className="custom-flex-col pb-3">
@@ -46,7 +47,9 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
             type={item.type}
             content={item.content}
             highlight={item.content.some((i) =>
-              pathname.includes(`${item.label}${i.href}`)
+              isDirector
+                ? pathname.includes(`${item.label}${i.href}`)
+                : pathname.includes(`${i.href}`)
             )}
             onContentClick={closeSideNav}
             isOpen={activeDropdown === item.label}

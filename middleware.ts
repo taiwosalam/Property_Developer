@@ -1,17 +1,34 @@
 
 import { NextRequest, NextResponse } from "next/server";
+import {
+  roleBasedRoutes,
+  managerRoutes,
+} from "./data";
 
 export function middleware(req: NextRequest) {
   const authToken = req.cookies.get("authToken")?.value;
   const role = req.cookies.get("role")?.value; // Extract the value of the role cookie
   const emailVerified = req.cookies.get("emailVerified")?.value;
-
   const currentPath = req.nextUrl.pathname;
 
-  // Allow acces to /auth/sign-in if the authToken does not exist
-  if (req.nextUrl.pathname === "/auth/user/sign-in" && !authToken) {
+  // // Allow acces to /auth/sign-in if the authToken does not exist
+  // if (req.nextUrl.pathname === "/auth/user/sign-in" && !authToken) {
+  //   return NextResponse.next();
+  // }
+
+  // Routes accessible without authentication
+  const publicRoutes = ["/auth/user/sign-in", "/auth/sign-up", "/auth/forgot-password"];
+
+  // Check if the current path is public
+  if (publicRoutes.includes(currentPath) && (!authToken || !role)) {
     return NextResponse.next();
   }
+
+  // Restrict access to `/manager` routes to the `manager` role
+  if (currentPath.startsWith("/manager") && !managerRoutes.includes(currentPath) && role !== "manager") {
+    return NextResponse.redirect(new URL("/unauthorized", req.url));
+  }
+
 
   // Allow access to /auth/sign-up for users without emailVerified or role
   if (currentPath === "/auth/sign-up" && (!emailVerified || !role)) {
@@ -33,19 +50,14 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/auth/user/sign-in", req.url));
   }
 
-  // Define role-based routes
-  const roleBasedRoutes: Record<string, string[]> = {
-    admin: ["/dashboard", "/auth/user/sign-in", "/dashboard/reports", "/auth/forgot-password"],
-    user: ["/dashboard", "/auth/user/sign-in", "/dashboard/orders", "/auth/forgot-password"],
-    staff: ["/dashboard", "/auth/user/sign-in", "/auth/forgot-password"],
-    account: ["/dashboard", "/auth/user/sign-in", "/auth/sign-up", "/auth/forgot-password"],
-    manager: ["/manager/dashboard", "/auth/user/sign-in", "/auth/sign-up", "/auth/forgot-password"],
-    director: ["/dashboard", "/wallet", "/auth/sign-in", "/auth/user/sign-in", "/a  uth/forgot-password"],
-  };
+  // Get allowed routes for the user's role
+  const allowedRoutes = role ? roleBasedRoutes[role] : [];
+  // if (!allowedRoutes || !allowedRoutes.some((route: any) => currentPath.startsWith(route))) {
+  //   return NextResponse.redirect(new URL("/unauthorized", req.url));
+  // }
 
-  // Check if the user's role allows access to the current path
-  const allowedRoutes = role ? roleBasedRoutes[role] : undefined;
-  if (!allowedRoutes || !allowedRoutes.some((route: any) => currentPath.startsWith(route))) {
+  // Block access if the route is not in the user's allowed routes
+  if (!allowedRoutes.some((route) => currentPath.startsWith(route))) {
     return NextResponse.redirect(new URL("/unauthorized", req.url));
   }
 
