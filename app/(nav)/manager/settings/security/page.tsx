@@ -128,38 +128,9 @@ const Security = () => {
           </div>
         </AuthForm>
       </SettingsSection>
-      <SettingsSignature />
       <SettingsWalletSection />
       <SettingsPasswordSection />
       <SettingsBank />
-      <SettingsSection title="Customized SMS name">
-        <div className="custom-flex-col gap-8">
-          <SettingsSectionTitle desc="Custom sender SMS name allows you to input a preferred name, providing a way to brand your SMS messages with a personalized touch.  replaces the sender numbers displayed on devices receiving your SMS messages with a name of your choice, up to 11 characters in length." />
-          <div className="flex gap-5">
-            <Input
-              id="desired_name"
-              label="input desired name"
-              className="w-[277px]"
-              maxLength={11}
-            />
-          </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
-      <SettingsSection title="SMTP Settings">
-        <div className="custom-flex-col gap-8">
-          <SettingsSectionTitle
-            title="Set up email alias"
-            desc="Choose how you intend to utilize your SMTP: for private and business correspondence, updates, notifications, mobile messages, transactional messages, marketing communications, or other purposes. This feature enables you to utilize your own domain email address to send messages to your users."
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            <Input id="email" label="email address" className="w-full" />
-            <Input id="password" label="password" className="w-full" />
-            <Input id="smtp_server" label="SMTP Server" className="w-full" />
-          </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
     </>
   );
 };

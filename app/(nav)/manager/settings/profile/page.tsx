@@ -62,28 +62,6 @@ import NetworkError from '@/components/Error/NetworkError';
 import { usePersonalInfoStore } from '@/store/personal-info-store';
 import useBranchStore from '@/store/branch-store';
 
-const websiteOptions = [
-  {
-    title: 'About Us and Reviews Display',
-    desc: 'Easily toggle the About Us page on or off in your website menu.',
-  },
-  {
-    title: 'Services and Contact Page',
-    desc: 'Control services and contact page display in your website menu by toggling it on or off.',
-  },
-  {
-    title: 'Staffs and Branch Options',
-    desc: 'Toggle staff and branch pages on or off in your website menu',
-  },
-  {
-    title: 'Social Link Visibility',
-    desc: 'Toggle on or off to display social links or icons in your website menu',
-  },
-  {
-    title: 'Sponsored Logo',
-    desc: 'Toggle to activate or deactivate the sponsored logo. Deactivation requires a monthly fee.',
-  },
-];
 
 const Profile = () => {
   const [selectedFont, setSelectedFont] = useState<string | null>(null);
@@ -235,7 +213,7 @@ const Profile = () => {
           />
           <Input
             id='id'
-            label='Id'
+            label='ID'
             placeholder='12345678'
           />
           <Input

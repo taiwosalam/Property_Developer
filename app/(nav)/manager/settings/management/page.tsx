@@ -25,97 +25,6 @@ const Management = () => {
   return (
     <>
       <SettingsSection
-        title="staff configuration (branch manager)"
-        subTitle="Can be access through mobile app, software, or web cross platform."
-      >
-        <div className="custom-flex-col gap-8">
-          <div className="flex">
-            <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row justify-between w-full max-w-[900px]">
-              <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText checked={true}>
-                  Can view and reply branch messages
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can add/delete branch properties
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can view and edit branch profile
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can upgrade or downgrade branch staff account
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can view branch request
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can approve/decline account officer property added
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can check in visitors
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can view all request
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can create Examine
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can manage inspections
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can create and manage announcement
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can add and manage tenants/occupants
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can view and reply branch reviews
-                </DocumentCheckbox>
-              </div>
-              <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText checked={true}>
-                  Can add/delete branch staff
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can add/delete branch staff
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can view branch account statement
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can approve/decline account officer portfolio
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can add and manage landlords/landlady
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can approve/decline account officer announcement
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can view complain
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can create inventory
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can manage calender
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can create service provider
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can check in and manage vehicle records
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={true}>
-                  Can approve and refund caution deposit
-                </DocumentCheckbox>
-              </div>
-            </div>
-          </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
-      <SettingsSection
         title="staff configuration (account officer)"
         subTitle="Can be access through mobile app, software, or web cross platform."
       >
@@ -230,34 +139,6 @@ const Management = () => {
                 </DocumentCheckbox>
                 <DocumentCheckbox darkText checked={true}>
                   Can view and reply assign messages
-                </DocumentCheckbox>
-              </div>
-            </div>
-          </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
-      <SettingsSection
-        title="Users Configuration (Landlord, Occupant & Tenants)"
-        subTitle="Can be access through mobile app or web cross platform."
-      >
-        <div className="custom-flex-col gap-8">
-          <div className="flex">
-            <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row justify-between w-full max-w-[900px]">
-              <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText checked={false}>
-                Create Profile Account For Tenants/Occupant
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={false}>
-                Create Profile Account For Landlord/Landlady
-                </DocumentCheckbox>
-              </div>
-              <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText checked={false}>
-                Create Profile Account For Service Provider
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={false}>
-                Create Profile Account When You Sent Invite
                 </DocumentCheckbox>
               </div>
             </div>

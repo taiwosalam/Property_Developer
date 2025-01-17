@@ -23,9 +23,10 @@ const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> =
 
   const color = active ? '#000' : '#fff';
 
+      // href={`manager/settings/${type}`}
   return (
     <Link
-      href={`manager/settings/${type}`}
+    href={`/manager/settings/${type}`}
       className={clsx(
         "py-[14px] w-[138px] flex items-center justify-center gap-1 border-b-[2px] border-solid",
         {
