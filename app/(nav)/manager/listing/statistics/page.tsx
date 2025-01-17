@@ -1,0 +1,117 @@
+"use client";
+
+import { useState } from "react";
+
+// Types
+import type { StatisticsDataTypes } from "@/components/Listing/Statistics/types";
+
+// Images
+import { ChevronLeft } from "@/public/icons/icons";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+
+// Imports
+import BackButton from "@/components/BackButton/back-button";
+import { statistics_data_types } from "@/components/Listing/Statistics/data";
+import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+import StatisticsMessageCard from "@/components/Listing/Statistics/statistics-message-card";
+import { DashboardChart } from "@/components/dashboard/chart";
+import {
+  listingsStatisticsChartConfig,
+  listingsStatisticsChartData,
+} from "./data";
+
+const Statistics = () => {
+  const [activeStatIndex, setActiveStatIndex] = useState(0);
+  const [statsType, setStatsType] = useState<StatisticsDataTypes>("enquires");
+
+  // Function to handle next button click
+  const handleNext = () => {
+    setActiveStatIndex((prevIndex) =>
+      prevIndex === statistics_data_types.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  // Function to handle previous button click
+  const handlePrev = () => {
+    setActiveStatIndex((prevIndex) =>
+      prevIndex === 0 ? statistics_data_types.length - 1 : prevIndex - 1
+    );
+  };
+
+  return (
+    <div className="custom-flex-col gap-10">
+      <div className="custom-flex-col gap-5">
+        <BackButton bold>Statistics</BackButton>
+        <div className="hidden md:flex gap-5 flex-wrap">
+          <ManagementStatistcsCard
+            title="Enquires"
+            newData={34}
+            total={657}
+            className="w-[240px]"
+            colorScheme={1}
+          />
+          <ManagementStatistcsCard
+            title="Views"
+            newData={34}
+            total={657}
+            className="w-[240px]"
+            colorScheme={2}
+          />
+          <ManagementStatistcsCard
+            title="Offers"
+            newData={34}
+            total={657}
+            className="w-[240px]"
+            colorScheme={3}
+          />
+          <ManagementStatistcsCard
+            title="Bookmarked"
+            newData={34}
+            total={657}
+            className="w-[240px]"
+            colorScheme={4}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col xl:flex-row gap-10">
+        <div className="flex-1">
+          <DashboardChart
+            visibleRange
+            chartTitle="Performance"
+            chartConfig={listingsStatisticsChartConfig}
+            chartData={listingsStatisticsChartData}
+          />
+        </div>
+        <div className="w-full xl:w-[334px]">
+          <div className="w-full py-6 px-3 custom-flex-col gap-6 bg-white dark:bg-darkText-primary">
+            <div className="p-2 flex justify-between">
+              <h2 className="text-text-label dark:text-white text-sm font-medium capitalize">
+                {statistics_data_types[activeStatIndex]}
+              </h2>
+              <div className="flex gap-3">
+                <button onClick={handlePrev}>
+                  <ArrowLeft size={18} color="#696B70" />
+                </button>
+                <button onClick={handleNext}>
+                  <ArrowRight size={18} color="#696B70" />
+                </button>
+              </div>
+            </div>
+            <div className="custom-flex-col gap-5">
+              {Array(5)
+                .fill(null)
+                .map((_, index) => (
+                  <StatisticsMessageCard
+                    key={index}
+                    type={statistics_data_types[activeStatIndex]}
+                  />
+                ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Statistics;
