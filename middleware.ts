@@ -56,6 +56,11 @@ export function middleware(req: NextRequest) {
   // Get allowed routes for the user's role
   const allowedRoutes = role ? roleBasedRoutes[role] : [];
 
+  // // Allow access if the current path matches any of the allowed routes for the user's role || LATER
+  // if (allowedRoutes.some((route) => currentPath.startsWith(route))) {
+  //   return NextResponse.next();
+  // }
+
   // Block access if the route is not in the user's allowed routes
   if (!allowedRoutes.some((route) => currentPath.startsWith(route))) {
     return NextResponse.redirect(new URL("/unauthorized", req.url));

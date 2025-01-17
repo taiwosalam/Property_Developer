@@ -305,15 +305,7 @@ const Landlord = () => {
               { label: "Web Landlord", value: "web" },
               { label: "All Landlords", value: "all" },
             ],
-          },
-          ...(branchOptions.length > 0
-            ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
-                },
-              ]
-            : []),
+          }
         ]}
       />
       <section>

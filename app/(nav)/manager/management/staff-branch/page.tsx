@@ -172,19 +172,19 @@ const BranchStaffPage = () => {
       <div className='w-full gap-2 flex items-center justify-between flex-wrap'>
         <div className='hidden md:flex gap-5 flex-wrap'>
           <ManagementStatistcsCard
-            title='Total Branches'
+            title='Total Staff'
             newData={12}
             total={20}
             colorScheme={1}
           />
           <ManagementStatistcsCard
-            title='Total Properties'
+            title='Account Officers'
             newData={1}
             total={2}
             colorScheme={2}
           />
           <ManagementStatistcsCard
-            title='Total Staff'
+            title='Other Staffs'
             newData={1}
             total={2}
             colorScheme={3}
@@ -211,6 +211,7 @@ const BranchStaffPage = () => {
       </div>
       <FilterBar
         azFilter
+        noFilterButton
         pageTitle='Branch Staff'
         searchInputPlaceholder='Search within Branch'
         handleFilterApply={handleFilterApply}

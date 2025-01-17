@@ -49752,7 +49752,7 @@ export const adminRoutes = [
   "/wallet",
   "/applications",
   "/documents",
-  "/settings"
+  "/settings",
 ];
 export const userRoutes = ["/dashboard", "/dashboard/orders", "/auth/forgot-password"];
 export const staffRoutes = ["/dashboard", "/auth/forgot-password"];
