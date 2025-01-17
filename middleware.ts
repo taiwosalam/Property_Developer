@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from "next/server";
 import {
   roleBasedRoutes,
@@ -42,6 +41,11 @@ export function middleware(req: NextRequest) {
 
   // Allow access to /auth/sign-up if there's no role
   if (currentPath === "/auth/sign-up" && !role) {
+    return NextResponse.next();
+  }
+
+  // Allow access to /auth/sign-in for users with the director role
+  if (currentPath === "/auth/sign-in" && role === "director") {
     return NextResponse.next();
   }
 

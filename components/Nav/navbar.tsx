@@ -63,7 +63,12 @@ const Header = () => {
   const { isMobile } = useWindowWidth();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
   const loggedInUserDetails = getLocalStorage('additional_details');
-  const {company:loggedUserCompany, branch:loggedUserBranch} = loggedInUserDetails;
+  let loggedUserCompany: { company_id: string | null; company_logo: string | null } | undefined;
+  let loggedUserBranch: { branch_id: string | null; picture: string | null } | undefined;
+  if (loggedInUserDetails) {
+    ({ company: loggedUserCompany, branch: loggedUserBranch } = loggedInUserDetails);
+  }
+
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
     const primaryColor = localStorage.getItem("primary-color");
@@ -96,7 +101,7 @@ const Header = () => {
   );
   const name = usePersonalInfoStore((state) => state.name);
   const company_logo = usePersonalInfoStore(
-    (state) => state.company_logo || loggedUserCompany.company_logo
+    (state) => state.company_logo || loggedUserCompany?.company_logo
   );
   const profile_picture = usePersonalInfoStore(
     (state) => state.profile_picture

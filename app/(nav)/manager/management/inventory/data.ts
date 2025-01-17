@@ -1,7 +1,6 @@
 import api, { handleAxiosError } from "@/services/api";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
-import { convertFileToBase64 } from "../data";
 
 export const createInventory = async (formData: FormData) => {
     try {
