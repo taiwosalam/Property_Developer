@@ -49771,7 +49771,7 @@ export const managerRoutes = [
   "/manager/management/service-providers",
   "/manager/management/vehicles-record",
   "/manager/management/team-chat",
-  "/agent-community",
+  "/management/agent-community",
   "/manager/tasks/schedule",
   "/manager/tasks/announcement",
   "/manager/tasks/complaints",

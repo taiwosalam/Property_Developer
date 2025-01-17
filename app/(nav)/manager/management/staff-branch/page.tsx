@@ -160,6 +160,7 @@ const BranchStaffPage = () => {
     );
   };
 
+  // console.log("staff", state)
 
   if (isNetworkError) return <NetworkError />;
 
@@ -209,7 +210,7 @@ const BranchStaffPage = () => {
         </div>
       </div>
       <FilterBar
-        noFilterButton
+        azFilter
         pageTitle='Branch Staff'
         searchInputPlaceholder='Search within Branch'
         handleFilterApply={handleFilterApply}
