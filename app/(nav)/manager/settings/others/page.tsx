@@ -62,16 +62,8 @@ const companyTypes = [
 ];
 const notificationSettings = [
   {
-    title: "Subscription and Due Rent",
-    desc: "Receive push notifications whenever rent is due, subscription is about to expire, and for other upfront due notifications.",
-  },
-  {
     title: "General Notification",
     desc: "Receive priority notifications for general events or whenever there is a new event of notification.",
-  },
-  {
-    title: "SMS Notification",
-    desc: "Please notify me via SMS about subscriptions, tasks, and messages that have been waiting for a long time for a response.",
   },
   {
     title: "Email Notification",
@@ -114,19 +106,9 @@ const resetSettingsOptions = [
     icon: <ManageIcon />,
   },
   {
-    title: "Services",
-    desc: "This option enables you to reset any modifications made within the service settings to their default mode.",
-    icon: <SettingsServiceIcon />,
-  },
-  {
     title: "Notification",
     desc: "Your notification settings can be reverted to default mode if you've made any modifications that you want to undo. This allows you to reset your notifications to their original settings in case you've made changes that you'd like to revert.",
     icon: <SettingsBellIcon />,
-  },
-  {
-    title: "Appearance",
-    desc: "This option allows you to reset any modifications made within the appearance settings, such as changes to theme colors or screen modes, back to their default settings.",
-    icon: <SettingsAppearanceIcon />,
   },
   {
     title: "Restore All",
@@ -188,7 +170,7 @@ const Others = () => {
   return (
     <>
       {/* COMPANY TYPE SETTINGS */}
-      <SettingsSection title="Company Default Module">
+      <SettingsSection title="Choose Default Account">
         <div className="custom-flex-col gap-3">
           {companyTypes.map((type, index) => (
             <SettingsOthersType
@@ -201,53 +183,6 @@ const Others = () => {
               groupName={type.groupName}
             />
           ))}
-        </div>
-
-        {/* COMPANY DIRECTORS */}
-        <div className="custom-flex-col gap-6 mt-4">
-          <SettingsSectionTitle
-            title="Company Director"
-            desc="Please provide the details of the additional directors you wish to include on your landing page. You can click on the current card to edit and add their information."
-          />
-          <AutoResizingGrid minWidth={284} gap={16}>
-            <UserCard
-              name="Esq Abimbola Adedeji"
-              email="abimbola@gmail.com"
-              phone_number="+2348132086958"
-              picture_url="/empty/SampleLandlord.jpeg"
-              user_tag="Legal Practitioner"
-            />
-            <UserCard
-              name="Esq Abimbola Adedeji"
-              email="abimbola@gmail.com"
-              phone_number="+2348132086958"
-              picture_url="/empty/SampleLandlord.jpeg"
-              user_tag="Estate Surveyor & Valuer"
-            />
-
-            <Modal>
-              <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
-                <ModalTrigger>
-                  <div className="flex flex-col items-center gap-1 justify-center">
-                    <Image
-                      src="/icons/profile.svg"
-                      alt="add director"
-                      width={30}
-                      height={30}
-                    />
-                    <span> + Add new Profile </span>
-                  </div>
-                </ModalTrigger>
-              </div>
-              <ModalContent>
-                <LandlordTenantModalPreset heading={modal_states[activeStep].heading}
-                  back={activeStep !== "options" ? { handleBack } : undefined}
-                >
-                  {modal_states[activeStep].content}
-                </LandlordTenantModalPreset>
-              </ModalContent>
-            </Modal>
-          </AutoResizingGrid>
         </div>
         <div className="flex justify-end mt-2">
           <SettingsUpdateButton />
