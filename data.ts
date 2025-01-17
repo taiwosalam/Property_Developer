@@ -49765,6 +49765,7 @@ export const managerRoutes = [
   "/manager/management/occupants",
   "/manager/management/staff-branch",
   "/manager/management/inventory",
+  "/manager/management/inventory/create-inventory",
   "/manager/management/properties",
   "/manager/management/rent-unit",
   "/manager/management/service-providers",

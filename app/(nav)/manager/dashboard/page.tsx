@@ -26,10 +26,14 @@ import { useWalletStore } from "@/store/wallet-store";
 import Cookies from "js-cookie";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
+import { useAuthStore } from "@/store/authStore";
+import { getLocalStorage } from "@/utils/local-storage";
 
 const Dashboard = () => {
   const { isMobile } = useWindowWidth();
   const walletId = useWalletStore((state) => state.walletId);
+  // const additional_details = useAuthStore((state) => state.additional_details);
+  const loggedInUserDetails = getLocalStorage('additional_details');
   const recentTransactions = useWalletStore(
     (state) => state.recentTransactions
   );

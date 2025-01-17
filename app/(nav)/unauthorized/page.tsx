@@ -3,9 +3,12 @@ import Image from "next/image";
 import Button from "@/components/Form/Button/button";
 import { useRouter } from "next/navigation";
 import { UnauthorizedIcon } from "@/public/icons/icons";
-
+import Cookies from "js-cookie";
+import { getDashboardPage } from "@/app/(onboarding)/auth/data";
 const Unauthorized = () => {
   const router = useRouter();
+  const role = Cookies.get('role') || '';
+  const dashboard = getDashboardPage(role);
   return (
     <div className="py-11 px-20 flex flex-col gap-10">
       <div className="w-full flex items-center justify-center">
@@ -16,7 +19,7 @@ const Unauthorized = () => {
       <div className="w-full flex items-center justify-center">
         <Button
           onClick={() => {
-            router.push("/dashboard");
+            router.push(dashboard);
           }}
         >
           Go to Dashboard

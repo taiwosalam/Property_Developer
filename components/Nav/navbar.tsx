@@ -40,6 +40,7 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
 import { ProfileResponse } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { getLocalStorage } from "@/utils/local-storage";
 
 const NotificationBadge = ({
   count,
@@ -61,6 +62,8 @@ const NotificationBadge = ({
 const Header = () => {
   const { isMobile } = useWindowWidth();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
+  const loggedInUserDetails = getLocalStorage('additional_details');
+  const {company:loggedUserCompany, branch:loggedUserBranch} = loggedInUserDetails;
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
     const primaryColor = localStorage.getItem("primary-color");
@@ -92,7 +95,9 @@ const Header = () => {
     (state) => state.setPersonalInfo
   );
   const name = usePersonalInfoStore((state) => state.name);
-  const company_logo = usePersonalInfoStore((state) => state.company_logo);
+  const company_logo = usePersonalInfoStore(
+    (state) => state.company_logo || loggedUserCompany.company_logo
+  );
   const profile_picture = usePersonalInfoStore(
     (state) => state.profile_picture
   );

@@ -11,13 +11,13 @@ export function middleware(req: NextRequest) {
   const emailVerified = req.cookies.get("emailVerified")?.value;
   const currentPath = req.nextUrl.pathname;
 
-  // // Allow acces to /auth/sign-in if the authToken does not exist
-  // if (req.nextUrl.pathname === "/auth/user/sign-in" && !authToken) {
-  //   return NextResponse.next();
-  // }
+  // Allow acces to /auth/sign-in if the authToken does not exist
+  if (req.nextUrl.pathname === "/auth/user/sign-in" && !authToken) {
+    return NextResponse.next();
+  }
 
   // Routes accessible without authentication
-  const publicRoutes = ["/auth/user/sign-in", "/auth/sign-up", "/auth/forgot-password"];
+  const publicRoutes = ["/auth/user/sign-in", "/auth/sign-in", "/auth/sign-up", "/auth/forgot-password"];
 
   // Check if the current path is public
   if (publicRoutes.includes(currentPath) && (!authToken || !role)) {
@@ -52,9 +52,6 @@ export function middleware(req: NextRequest) {
 
   // Get allowed routes for the user's role
   const allowedRoutes = role ? roleBasedRoutes[role] : [];
-  // if (!allowedRoutes || !allowedRoutes.some((route: any) => currentPath.startsWith(route))) {
-  //   return NextResponse.redirect(new URL("/unauthorized", req.url));
-  // }
 
   // Block access if the route is not in the user's allowed routes
   if (!allowedRoutes.some((route) => currentPath.startsWith(route))) {

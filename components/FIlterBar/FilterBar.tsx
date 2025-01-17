@@ -31,6 +31,7 @@ interface FilterBarProps extends FilterModalProps {
   noExclamationMark?: boolean;
   handleSearch?: (query: string) => void;
   onSort?: (order: "asc" | "desc") => void;
+  noFilterButton?: boolean;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -56,6 +57,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
   filterTitle,
   appliedFilters,
   dateLabel,
+  noFilterButton,
 }) => {
   return (
     <div className="page-title-container w-full">
@@ -113,7 +115,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
         {azFilter && <SortButton onSort={onSort} />}
         <Modal>
           <ModalTrigger asChild>
-            <FilterButton noTitle={iconOnly} />
+            {!noFilterButton && <FilterButton noTitle={iconOnly} />}
           </ModalTrigger>
           <ModalContent>
             <FilterModal

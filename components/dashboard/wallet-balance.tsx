@@ -78,7 +78,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
 
   useEffect(() => {
     if (data) {
-      // console.log("data", data)
+      console.log("data", data)
       if(data.transactions.length > 0){
       const recentTransactions = data.transactions.map((t) => {
         // Parse the date and time strings into a Date object (assuming UTC from server)
