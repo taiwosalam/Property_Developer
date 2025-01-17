@@ -27,7 +27,6 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
 
   const company_logo = usePersonalInfoStore((state) => state.company_logo);
   const isDirector = role === "director";
-  console.log("Navs", getNavs(role))
 
   return (
     <div className="custom-flex-col pb-3">
