@@ -24,10 +24,9 @@ export function middleware(req: NextRequest) {
   }
 
   // Restrict access to `/manager` routes to the `manager` role
-  if (currentPath.startsWith("/manager") && !managerRoutes.includes(currentPath) && role !== "manager") {
-    return NextResponse.redirect(new URL("/unauthorized", req.url));
+  if (currentPath.startsWith("/manager") && (role === "manager" || managerRoutes.includes(currentPath))) {
+    return NextResponse.next(); // Allow access if role is manager or route is in managerRoutes
   }
-
 
   // Allow access to /auth/sign-up for users without emailVerified or role
   if (currentPath === "/auth/sign-up" && (!emailVerified || !role)) {

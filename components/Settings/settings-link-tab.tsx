@@ -25,7 +25,7 @@ const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> =
 
   return (
     <Link
-      href={`/settings/${type}`}
+      href={`manager/settings/${type}`}
       className={clsx(
         "py-[14px] w-[138px] flex items-center justify-center gap-1 border-b-[2px] border-solid",
         {
@@ -39,16 +39,8 @@ const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> =
         <ProfileIcon />
       ) : type === "management" ? (
         <ManagementIcon />
-      ) : type === "subscription" ? (
-        <SubscriptionIcon />
-      ) : type === "services" ? (
-        <ServicesIcon />
       ) : type === "security" ? (
         <SecurityIcon />
-      ) : type === "enrollment" ? (
-        <EnrollmentIcon />
-      ) : type === "appearance" ? (
-        <AppearanceIcon />
       ) : type === "others" ? (
         <SettingsIcon />
       ) : null}

@@ -49804,7 +49804,8 @@ export const managerRoutes = [
   "/manager/wallet",
   "/manager/applications",
   "/manager/documents",
-  "/manager/settings"
+  "/manager/settings",
+  "/manager/settings/profile",
 ];
 export const directorRoutes = ["/dashboard", "/wallet", "/auth/sign-in"];
 
