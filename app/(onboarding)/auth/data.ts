@@ -1,50 +1,48 @@
 // Types
-import type { AuthSliderContent } from "@/components/Auth/AuthSlider/types";
-import { toast } from "sonner";
-import axios from "axios";
-import api, { handleAxiosError } from "@/services/api";
-import { useAuthStore } from "@/store/authStore";
-import { useWalletStore } from "@/store/wallet-store";
-import { InputData } from "@/utils/checkFormDataForImageOrAvatar";
-import Cookies from "js-cookie";
-import { manager_nav_items, nav_items } from "@/components/Nav/data";
+import type { AuthSliderContent } from '@/components/Auth/AuthSlider/types';
+import { toast } from 'sonner';
+import axios from 'axios';
+import api, { handleAxiosError } from '@/services/api';
+import { useAuthStore } from '@/store/authStore';
+import { useWalletStore } from '@/store/wallet-store';
+import { InputData } from '@/utils/checkFormDataForImageOrAvatar';
+import Cookies from 'js-cookie';
+import { manager_nav_items, nav_items } from '@/components/Nav/data';
 
 export const getDashboardPage = (role: string | null) => {
   switch (role) {
-    case "director":
-      return "/dashboard";
-    case "tenant":
-      return "/dashboard";
-    case "manager":
-      return "/manager/dashboard";
+    case 'director':
+      return '/dashboard';
+    case 'tenant':
+      return '/dashboard';
+    case 'manager':
+      return '/manager/dashboard';
     default:
-      return "";
+      return '';
   }
 };
 
-
 export const getNavs = (role: string | null) => {
   switch (role) {
-    case "director":
+    case 'director':
       return nav_items;
-    case "tenant":
+    case 'tenant':
       return nav_items;
-    case "manager":
+    case 'manager':
       return manager_nav_items;
     default:
       return null;
   }
 };
 
-
 export const getRoleSignInPage = (role: string | null): string => {
   switch (role) {
-    case "director":
-      return "/auth/sign-in";
-    case "manager":
-      return "/auth/user/sign-in";
+    case 'director':
+      return '/auth/sign-in';
+    case 'manager':
+      return '/auth/user/sign-in';
     default:
-      return "/auth/user/sign-in";
+      return '/auth/user/sign-in';
   }
 };
 
@@ -61,22 +59,32 @@ interface LoginResponse {
   };
   wallet_pin_status: boolean;
   wallet_id: string | null;
+  additional_details: {
+    branch: {
+      id: string | null;
+      picture: string | null;
+    };
+    company: {
+      id: string | null;
+      company_logo: string | null;
+    };
+  };
 }
 
 const base_url = `${process.env.NEXT_PUBLIC_BASE_URL}api/v1/`;
 
 export const auth_slider_content: AuthSliderContent = [
   {
-    title: "Property Manager",
-    desc: "The company specializes in managing tenants for both commercial and residential properties, as well as overseeing occupants within gated estates.",
+    title: 'Property Manager',
+    desc: 'The company specializes in managing tenants for both commercial and residential properties, as well as overseeing occupants within gated estates.',
   },
   {
-    title: "Hospitality Manager",
-    desc: "The company specializes in managing short-stay apartments, holiday homes, and hotels, catering to occupants for brief durations.",
+    title: 'Hospitality Manager',
+    desc: 'The company specializes in managing short-stay apartments, holiday homes, and hotels, catering to occupants for brief durations.',
   },
   {
-    title: "Property Developer",
-    desc: "A company engaged in real estate development, constructing and selling properties, or acquiring land for development and subsequent sale. They also offer flexible payment plans.",
+    title: 'Property Developer',
+    desc: 'A company engaged in real estate development, constructing and selling properties, or acquiring land for development and subsequent sale. They also offer flexible payment plans.',
   },
 ];
 
@@ -92,36 +100,54 @@ export const login = async (formData: Record<string, any>) => {
     const email = data.data.details?.email || formData.email;
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
+    const additional_details = data.additional_details;
+    const details = {
+      branch: {
+        branch_id: additional_details.branch?.id || null,
+        picture: additional_details.branch?.picture || null,
+      },
+      company: {
+        company_id: additional_details.company?.id || null,
+        company_logo: additional_details.company?.company_logo || null,
+      },
+    };
+
+    if (additional_details) {
+      console.log('additional_details', details);
+    }
 
     // SAVE TO ZUSTAND
-    useAuthStore.getState().setAuthState("token", token);
-    useAuthStore.getState().setAuthState("email", email);
-    useAuthStore.getState().setAuthState("role", role);
+    useAuthStore.getState().setAuthState('token', token);
+    useAuthStore.getState().setAuthState('email', email);
+    useAuthStore.getState().setAuthState('role', role);
+    useAuthStore
+      .getState()
+      .setAuthState('additional_details', details);
 
     // Save to cookies for middleware
-    Cookies.set("authToken", token, { expires: 7 }); // Expires in 7 days
-    Cookies.set("role", role, { expires: 7 });
-    Cookies.set("emailVerified", String(emailVerified), { expires: 7 });
+    Cookies.set('authToken', token, { expires: 7 }); // Expires in 7 days
+    Cookies.set('role', role, { expires: 7 });
+    Cookies.set('emailVerified', String(emailVerified), { expires: 7 });
 
     if (emailVerified) {
-      toast.success(data?.message || "Login successful!");
-      if (role === "user") {
-        return "redirect to setup";
+      toast.success(data?.message || 'Login successful!');
+      if (role === 'user') {
+        return 'redirect to setup';
       } else {
         useWalletStore
           .getState()
-          .setWalletStore("walletPinStatus", data.wallet_pin_status);
-        useWalletStore.getState().setWalletStore("walletId", data.wallet_id);
-        return "redirect to dashboard";
+          .setWalletStore('walletPinStatus', data.wallet_pin_status);
+        useWalletStore.getState().setWalletStore('walletId', data.wallet_id);
+        return 'redirect to dashboard';
       }
     }
     if (!emailVerified) {
-      useAuthStore.getState().setAuthState("emailVerified", false);
-      toast.warning("Please verify your email to continue");
-      return "redirect to verify email";
+      useAuthStore.getState().setAuthState('emailVerified', false);
+      toast.warning('Please verify your email to continue');
+      return 'redirect to verify email';
     }
   } catch (error) {
-    handleAxiosError(error, "Login failed. Please try again.");
+    handleAxiosError(error, 'Login failed. Please try again.');
   }
 };
 
@@ -132,12 +158,12 @@ export const signup = async (
   try {
     const { data } = await axios.post(`${base_url}register`, formData);
     const token = data.access_token;
-    useAuthStore.getState().setAuthState("token", token);
-    useAuthStore.getState().setAuthState("email", formData.email);
-    toast.success(data?.message || "Signup successful!");
+    useAuthStore.getState().setAuthState('token', token);
+    useAuthStore.getState().setAuthState('email', formData.email);
+    toast.success(data?.message || 'Signup successful!');
     return true;
   } catch (error) {
-    handleAxiosError(error, "Signup failed. Please try again.");
+    handleAxiosError(error, 'Signup failed. Please try again.');
     return false;
   }
 };
@@ -154,11 +180,11 @@ export const verifyEmail = async (otp: string): Promise<boolean> => {
         },
       }
     );
-    const message = data?.message || "Email verified successfully!";
+    const message = data?.message || 'Email verified successfully!';
     toast.success(message);
     return true;
   } catch (error) {
-    handleAxiosError(error, "Verification failed. Please try again.");
+    handleAxiosError(error, 'Verification failed. Please try again.');
     return false;
   }
 };
@@ -175,10 +201,10 @@ export const resendOtp = async (): Promise<boolean> => {
         },
       }
     );
-    toast.success(data?.message || "OTP resent successfully!");
+    toast.success(data?.message || 'OTP resent successfully!');
     return true;
   } catch (error) {
-    handleAxiosError(error, "Failed to resend OTP. Please try again.");
+    handleAxiosError(error, 'Failed to resend OTP. Please try again.');
     return false;
   }
 };
@@ -186,13 +212,13 @@ export const resendOtp = async (): Promise<boolean> => {
 export const logout = async (): Promise<boolean> => {
   const resetAuthStore = useAuthStore.getState().reset;
   try {
-    const { data } = await api.post("logout");
-    const message = data?.message || "Successfully logged out";
+    const { data } = await api.post('logout');
+    const message = data?.message || 'Successfully logged out';
     resetAuthStore();
     toast.success(message);
     return true;
   } catch (error) {
-    handleAxiosError(error, "Logout failed. Please try again.");
+    handleAxiosError(error, 'Logout failed. Please try again.');
     return false;
   }
 };
@@ -200,15 +226,15 @@ export const logout = async (): Promise<boolean> => {
 export const requestPasswordReset = async (formData: InputData) => {
   try {
     const { data } = await axios.post(`${base_url}password/reset`, formData);
-    toast.success(data?.message || "Password reset OTP sent successfully!");
+    toast.success(data?.message || 'Password reset OTP sent successfully!');
     const email =
       formData instanceof FormData
-        ? (formData.get("email") as string)
+        ? (formData.get('email') as string)
         : formData.email;
     useAuthStore.getState().reset(email);
     return true;
   } catch (error) {
-    handleAxiosError(error, "Failed to send password reset OTP.");
+    handleAxiosError(error, 'Failed to send password reset OTP.');
     return false;
   }
 };
@@ -220,11 +246,11 @@ export const verifyOtpAndResetPassword = async (code: string) => {
       identifier: email,
       code,
     });
-    const message = data?.message || "OTP validated successfully!";
+    const message = data?.message || 'OTP validated successfully!';
     toast.success(message);
     return true;
   } catch (error) {
-    handleAxiosError(error, "Failed to validate OTP.");
+    handleAxiosError(error, 'Failed to validate OTP.');
     return false;
   }
 };
@@ -234,14 +260,14 @@ export const updatePassword = async (formData: FormData) => {
   try {
     const { data } = await axios.put(`${base_url}password/reset/update`, {
       identifier: email,
-      password: formData.get("password"),
-      password_confirmation: formData.get("password_confirmation"),
+      password: formData.get('password'),
+      password_confirmation: formData.get('password_confirmation'),
     });
-    const message = data?.message || "Password updated successfully!";
+    const message = data?.message || 'Password updated successfully!';
     toast.success(message);
     return true;
   } catch (error) {
-    handleAxiosError(error, "Failed to update password.");
+    handleAxiosError(error, 'Failed to update password.');
     return false;
   }
 };
