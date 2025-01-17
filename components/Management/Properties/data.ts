@@ -17,6 +17,7 @@ export const property_form_state_data: PropertyFormStateType = {
 export const getAllStaffByBranch = async (branchId: string) => {
   try {
     const { data } = await api.get<AllStaffResponse>(`/staff/all/${branchId}`);
+    // const { data } = await api.get<AllStaffResponse>(`/branch/${branchId}/staff`);
     return data.data;
   } catch (error) {
     console.log(error);
