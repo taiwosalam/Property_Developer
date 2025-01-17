@@ -16,36 +16,57 @@ import {
   SubscriptionIcon,
 } from "@/public/icons/icons";
 import clsx from "clsx";
+import Cookies from 'js-cookie';
+import { getSettingsPath } from "@/app/(onboarding)/auth/data";
 
 const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> = ({ type, active, className }) => {
   const active_color = "#fff";
   const default_color = "#000";
 
   const color = active ? '#000' : '#fff';
+   const role = Cookies.get("role") || "";
+  const path = getSettingsPath(role)
 
-      // href={`manager/settings/${type}`}
+  console.log("path", path)
+
   return (
     <Link
-    href={`/manager/settings/${type}`}
+      href={`${path}/settings/${type}`}
       className={clsx(
-        "py-[14px] w-[138px] flex items-center justify-center gap-1 border-b-[2px] border-solid",
+        'py-[14px] w-[138px] flex items-center justify-center gap-1 border-b-[2px] border-solid',
         {
-          "bg-white border-brand-9 dark:bg-darkText-primary dark:text-white":  active,
-          "border-transparent hover:bg-neutral-3 hover:dark:bg-darkText-primary": !active,
+          'bg-white border-brand-9 dark:bg-darkText-primary dark:text-white':
+            active,
+          'border-transparent hover:bg-neutral-3 hover:dark:bg-darkText-primary':
+            !active,
         },
         className
       )}
     >
-      {type === "profile" ? (
+      {type === 'profile' ? (
         <ProfileIcon />
-      ) : type === "management" ? (
+      ) : type === 'management' ? (
         <ManagementIcon />
-      ) : type === "security" ? (
+      ) : type === 'subscription' ? (
+        <SubscriptionIcon />
+      ) : type === 'services' ? (
+        <ServicesIcon />
+      ) : type === 'security' ? (
         <SecurityIcon />
-      ) : type === "others" ? (
+      ) : type === 'enrollment' ? (
+        <EnrollmentIcon />
+      ) : type === 'appearance' ? (
+        <AppearanceIcon />
+      ) : type === 'others' ? (
         <SettingsIcon />
       ) : null}
-      <p className={`text-base font-normal capitalize ${active ? 'dark:text-white' : 'dark:text-darkText-1 dark:hover:text-white'}`}>
+      <p
+        className={`text-base font-normal capitalize ${
+          active
+            ? 'dark:text-white'
+            : 'dark:text-darkText-1 dark:hover:text-white'
+        }`}
+      >
         {type}
       </p>
     </Link>

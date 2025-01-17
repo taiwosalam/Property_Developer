@@ -268,17 +268,18 @@ export const staffData: StaffProfileProps = {
       time: "3:20pm",
     }));
   };
-
+  
   export const activitiesTableData = generateTableData(5);
-
+  
   // function to change Yes/no to active/inactive
   export const yesNoToActiveInactive = (yesNo: string): string => {
     return yesNo === "Yes" ? "active" : "inactive";
   };
-
+  
   export const transformStaffAPIResponse = (
     res: StaffAPIResponse
   ): StaffPageTypes => {
+    // console.log("acti", res.activities)
     return {
       staff: {
         id: res.data.id.toString(),
@@ -304,9 +305,13 @@ export const staffData: StaffProfileProps = {
       },
       activities: res.activities.map((a) => {
         // Parsing action_taken
-        const actionTaken = JSON.parse(a.action_taken);
-        // Accessing the message
-        const message = actionTaken.message;
+        let message = "Unknown action"; // Default message
+        try {
+          const actionTaken = JSON.parse(a.action_taken);
+          message = actionTaken.message; // Accessing the message
+        } catch (error) {
+          console.error("Error parsing action_taken:", error);
+        }
         const { latitude, longitude } = a.location;
         // const { address, error } = useReverseGeocoding(latitude, longitude);
         return {

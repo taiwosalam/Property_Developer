@@ -5,13 +5,16 @@ import { usePathname } from "next/navigation";
 
 // Imports
 import SettingsLinkTab from "@/components/Settings/settings-link-tab";
-import { manager_settings_link_tabs } from '@/components/Settings/data';
-
+import Cookies from "js-cookie"
+import { getSettingsLinks } from "@/app/(onboarding)/auth/data";
+import { manager_settings_link_tabs } from "@/components/Settings/data";
 
 const SettingsLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const pathname = usePathname();
+  const role = Cookies.get("role") || "";
+  const links = getSettingsLinks(role)
 
   return (
     <div className='custom-flex-col gap-10'>

@@ -29,14 +29,14 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
   const isDirector = role === "director";
 
   return (
-    <div className="custom-flex-col pb-3">
-      <div className="flex md:hidden justify-center p-3 pt-0">
+    <div className='custom-flex-col pb-3'>
+      <div className='flex md:hidden justify-center p-3 pt-0'>
         <Image
           src={company_logo || empty}
-          alt="company logo"
+          alt='company logo'
           width={200}
           height={55}
-          className="w-full h-[55px] object-contain"
+          className='w-full h-[55px] object-contain'
         />
       </div>
 
@@ -60,12 +60,13 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
           </NavDropdown>
         ) : (
           <NavButton
-            highlight={
-              item.href &&
-              isDirector
-                ? pathname.includes(item.href)
-                : pathname.includes(`${getNavs(role)}/${item.href}`)
-            }
+            // highlight={
+            //   item.href &&
+            //   isDirector
+            //     ? pathname.includes(item.href)
+            //     : pathname.includes(`${item.href}`)
+            // }
+            highlight={item.href ? pathname.includes(item.href) : false}
             key={idx}
             href={item.href}
             type={item.type}

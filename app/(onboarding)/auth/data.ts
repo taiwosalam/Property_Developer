@@ -8,6 +8,10 @@ import { useWalletStore } from '@/store/wallet-store';
 import { InputData } from '@/utils/checkFormDataForImageOrAvatar';
 import Cookies from 'js-cookie';
 import { manager_nav_items, nav_items } from '@/components/Nav/data';
+import {
+  manager_settings_link_tabs,
+  settings_link_tabs,
+} from '@/components/Settings/data';
 
 export const getDashboardPage = (role: string | null) => {
   switch (role) {
@@ -30,6 +34,33 @@ export const getNavs = (role: string | null) => {
       return nav_items;
     case 'manager':
       return manager_nav_items;
+    default:
+      return null;
+  }
+};
+
+export const getSettingsLinks = (role: string | null) => {
+  switch (role) {
+    case 'director':
+      return settings_link_tabs;
+    case 'tenant':
+      return settings_link_tabs;
+    case 'manager':
+      return manager_settings_link_tabs;
+    default:
+      return null;
+  }
+};
+
+
+export const getSettingsPath:any = (role: string | null) => {
+  switch (role) {
+    case 'director':
+      return "/";
+    case 'tenant':
+      return "/";
+    case 'manager':
+      return "/manager";
     default:
       return null;
   }
