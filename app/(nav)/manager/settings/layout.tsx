@@ -5,7 +5,13 @@ import { usePathname } from "next/navigation";
 
 // Imports
 import SettingsLinkTab from "@/components/Settings/settings-link-tab";
-import { settings_link_tabs } from "@/components/Settings/data";
+
+export const settings_link_tabs = [
+  'profile',
+  'management',
+  'security',
+  'others',
+] as const;
 
 const SettingsLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
