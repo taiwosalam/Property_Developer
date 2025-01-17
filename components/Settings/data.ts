@@ -13,6 +13,13 @@ export const settings_link_tabs = [
   "others",
 ] as const;
 
+export const manager_settings_link_tabs = [
+  "profile",
+  "management",
+  "security",
+  "others",
+] as const;
+
 export const website_color_schemes = [
   "#2563EB",
   "#0033C4",

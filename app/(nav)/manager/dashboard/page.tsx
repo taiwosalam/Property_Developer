@@ -118,7 +118,7 @@ const Dashboard = () => {
           tableHeadCellSx={{ fontSize: "1rem" }}
         />
       </SectionContainer>
-      {/* <SectionContainer heading="To do list" href="/tasks/complaints">
+      <SectionContainer heading="Recent Complains" href="/tasks/complaints">
         <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array(6)
             .fill(null)
@@ -152,12 +152,12 @@ const Dashboard = () => {
               />
             ))}
         </div>
-      </SectionContainer> */}
-      {!isMobile && (
+      </SectionContainer>
+      {/* {!isMobile && (
         <SectionContainer heading="To do list">
           <KanbanBoard />
         </SectionContainer>
-      )}
+      )} */}
     </section>
   );
 };

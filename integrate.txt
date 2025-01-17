@@ -219,3 +219,44 @@ const ForgetWalletModal: React.FC<DefaultSettingsModalProps> = ({
 };
 
 export default ForgetWalletModal;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                {/* <Select
+                  options={landlordOptions}
+                  id="land_lord_id"
+                  label="Landlord"
+                  inputContainerClassName="bg-white"
+                  resetKey={resetKey}
+                  defaultValue={
+                    editMode && propertyDetails?.land_lord_id
+                      ? landlordOptions.find(
+                          (landlord) => landlord.value === propertyDetails.land_lord_id
+                        )
+                      : undefined
+                  }
+                  hiddenInputClassName="property-form-input"
+                  placeholder={
+                    landlordsLoading
+                      ? "Loading landlords..."
+                      : landlordsError
+                      ? "Error loading landlords"
+                      : "Select landlord"
+                  }
+                  error={landlordsError}
+                /> */}

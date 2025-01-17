@@ -23,7 +23,7 @@ const TeamChartCard: React.FC<MessageCardProps> = ({
 }) => {
   return (
     <Link
-      href={`/management/team-chat/${id}`}
+      href={`manager/management/team-chat/${id}`}
       className={clsx("custom-flex-col gap-4", {
         "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
       })}
