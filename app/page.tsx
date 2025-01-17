@@ -21,7 +21,7 @@ export default function Home() {
     }
     // If user is not authenticated, redirect to sign-in
     router.replace("/auth/sign-in");
-  }, [router]);
+  }, [router, dashboardPage]);
 
   // Optional: Show a loading state while redirecting
   return <PageCircleLoader />;
