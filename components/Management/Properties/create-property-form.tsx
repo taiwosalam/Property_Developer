@@ -174,9 +174,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     data: staffsData,
     loading: staffsLoading,
     error: staffsError,
-  } = useFetch<AllLandlordsResponse>(
-    `branch/${selectedBranchId}/staff`
-  );
+  } = useFetch<AllLandlordsResponse>(`branch/${selectedBranchId}/staff`);
 
   // console.log('branch officer', accountOfficerData);
   // console.log("branch staff", staffsData)
@@ -200,7 +198,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     })) || [];
 
   const officerOptions =
-    accountOfficerData?.data.map((officer:any) => ({
+    accountOfficerData?.data.map((officer: any) => ({
       value: officer.id,
       label: officer.user.name,
     })) || [];
@@ -212,34 +210,45 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     })) || [];
 
   const staffOption =
-    staffsData?.data.map((s:any) => ({
+    staffsData?.data.map((s: any) => ({
       value: s.id,
       label: s.user.name,
     })) || [];
 
+  // set staffOptions if staffData is available
+  useEffect(() => {
+    if (staffsData) {
+      setPropertyState({
+        staffOptions: staffsData.data.map((s: any) => ({
+          value: s.id,
+          label: s.user.name,
+        })),
+      });
+    }
+  }, [staffsData]);
   console.log('staffOption', staffOption);
 
-  useEffect(() => {
-    if (!selectedBranch.value) return;
-    const fetchStaff = async () => {
-      const staffMembers = await getAllStaffByBranch(selectedBranch.value);
-      setPropertyState({
-        staffOptions: staffMembers
-          .filter((staff) => staff.position.toLowerCase() !== 'account officer')
-          .map((staff) => ({
-            value: staff.id,
-            label: staff.full_name,
-          })),
-        accountOfficerOptions: staffMembers
-          .filter((staff) => staff.position.toLowerCase() === 'account officer')
-          .map((staff) => ({
-            value: staff.id,
-            label: staff.full_name,
-          })),
-      });
-    };
-    fetchStaff();
-  }, [selectedBranch]);  
+  // useEffect(() => {
+  //   if (!selectedBranch.value) return;
+  //   const fetchStaff = async () => {
+  //     const staffMembers = await getAllStaffByBranch(selectedBranch.value);
+  //     setPropertyState({
+  //       staffOptions: staffMembers
+  //         .filter((staff) => staff.position.toLowerCase() !== 'account officer')
+  //         .map((staff) => ({
+  //           value: staff.id,
+  //           label: staff.full_name,
+  //         })),
+  //       accountOfficerOptions: staffMembers
+  //         .filter((staff) => staff.position.toLowerCase() === 'account officer')
+  //         .map((staff) => ({
+  //           value: staff.id,
+  //           label: staff.full_name,
+  //         })),
+  //     });
+  //   };
+  //   fetchStaff();
+  // }, [selectedBranch]);
 
   useEffect(() => {
     if (editMode && propertyDetails) {
@@ -538,8 +547,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 className='relative'
               >
                 <Select
-                  // options={staffOptions}
-                  options={staffOption}
+                  options={staffOptions}
+                  // options={staffOption}
                   id={id}
                   label={label}
                   inputContainerClassName='bg-white'

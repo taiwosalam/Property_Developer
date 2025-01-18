@@ -60,7 +60,7 @@ export const getSettingsPath:any = (role: string | null) => {
     case 'tenant':
       return "/";
     case 'manager':
-      return "/manager";
+      return "/manager/";
     default:
       return null;
   }
@@ -142,10 +142,6 @@ export const login = async (formData: Record<string, any>) => {
         company_logo: additional_details.company?.company_logo || null,
       },
     };
-
-    if (additional_details) {
-      console.log('additional_details', details);
-    }
 
     // SAVE TO ZUSTAND
     useAuthStore.getState().setAuthState('token', token);

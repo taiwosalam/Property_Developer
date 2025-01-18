@@ -25,6 +25,7 @@ export const addStaff = async (formData: FormData, branchId: string) => {
   }
 };
 
+// {{base_url}}/branch/send-email-verification
 export const getEmailVerificationOTP = async (email: string) => {
   try {
     const { data } = await api.post("/branch/send-email-verification", {
@@ -45,6 +46,18 @@ export const verifyEmailOTP = async (code: string) => {
     return true;
   } catch (error) {
     handleAxiosError(error, "Failed to verify email OTP");
+    return false;
+  }
+};
+
+// {{base_url}}/branch/1/lock?action=lock
+export const lockBranch = async (branchId: string) => {
+  try {
+    const res = await api.post(`/branch/${branchId}/lock`, { action: 'lock' });
+    toast.success(res.data?.message || 'Branch locked successfully');
+    return true;
+  } catch (error) {
+    handleAxiosError(error, 'Failed to lock branch');
     return false;
   }
 };

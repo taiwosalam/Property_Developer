@@ -31,7 +31,7 @@ const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> =
 
   return (
     <Link
-      href={`${path}/settings/${type}`}
+      href={`${path}settings/${type}`}
       className={clsx(
         'py-[14px] w-[138px] flex items-center justify-center gap-1 border-b-[2px] border-solid',
         {

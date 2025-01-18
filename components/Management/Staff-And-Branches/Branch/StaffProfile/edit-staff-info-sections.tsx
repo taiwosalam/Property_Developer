@@ -27,6 +27,7 @@ import { moveStaffToAnotherBranch, updateStaffAbout, updateStaffPicture, updateS
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import useFetch from "@/hooks/useFetch";
 import { lockStaffAccount, sendVerifyStaffOTP } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/data";
+import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 
 
 export const StaffEditProfileInfoSection = () => {
@@ -59,61 +60,64 @@ export const StaffEditProfileInfoSection = () => {
     }
   };
   return (
-    <LandlordTenantInfoEditSection title="profile">
-      <AuthForm onFormSubmit={handleUpdateProfile} skipValidation>
+    <LandlordTenantInfoEditSection title='profile'>
+      <AuthForm
+        onFormSubmit={handleUpdateProfile}
+        skipValidation
+      >
         <LandlordTenantInfoEditGrid>
           <Select
             isSearchable={false}
-            id="personal_title"
-            label="personal title / qualifiction"
-            inputContainerClassName="bg-neutral-2"
+            id='personal_title'
+            label='personal title / qualifiction'
+            inputContainerClassName='bg-neutral-2'
             options={titles}
             defaultValue={staff?.personal_title}
           />
           <Select
             isSearchable={false}
-            id="real_estate_title"
-            label="real estate title"
-            inputContainerClassName="bg-neutral-2"
+            id='real_estate_title'
+            label='real estate title'
+            inputContainerClassName='bg-neutral-2'
             options={industryOptions}
             defaultValue={staff?.real_estate_title}
           />
           <Input
-            id="fullname"
-            label="full name"
+            id='fullname'
+            label='full name'
             required
             defaultValue={staff?.full_name}
           />
           <Input
-            id="email"
-            type="email"
-            label="email"
+            id='email'
+            type='email'
+            label='email'
             disabled
             defaultValue={staff?.email}
           />
           <Select
-            id="gender"
-            label="gender"
+            id='gender'
+            label='gender'
             isSearchable={false}
             options={genderTypes}
-            inputContainerClassName="bg-neutral-2"
+            inputContainerClassName='bg-neutral-2'
             defaultValue={staff?.gender}
           />
-          <Input
-            id="phone_number"
-            label="phone number"
+          <PhoneNumberInput
+            id='phone_number'
+            label='phone number'
             required
             defaultValue={staff?.phone_number}
           />
 
-          <div className="md:col-span-2 flex justify-end">
+          <div className='md:col-span-2 flex justify-end'>
             <Button
-              size="base_medium"
-              className="py-2 px-6"
-              type="submit"
+              size='base_medium'
+              className='py-2 px-6'
+              type='submit'
               disabled={reqLoading}
             >
-              {reqLoading ? "updating..." : "update"}
+              {reqLoading ? 'updating...' : 'update'}
             </Button>
           </div>
         </LandlordTenantInfoEditGrid>

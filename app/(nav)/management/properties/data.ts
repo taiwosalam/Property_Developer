@@ -30,9 +30,9 @@ export const propertyFilterOptionsMenu: FilterOptionMenu[] = [
     radio: true,
     label: "Property Type",
     value: [
+      { label: "All properties", value: "all" },
       { label: "Rental Property", value: "rental" },
       { label: "Facility Property", value: "facility" },
-      { label: "All properties", value: "all" },
     ],
   },
 ];
