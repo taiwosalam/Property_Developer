@@ -116,8 +116,8 @@ const Property = () => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  // if (error)
+  //   return <p className="text-base text-red-500 font-medium">{error}</p>;
   return (
     <div className="custom-flex-col gap-9">
       <div className="hidden md:flex gap-5 flex-wrap">

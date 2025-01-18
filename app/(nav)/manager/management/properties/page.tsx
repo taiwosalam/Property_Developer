@@ -153,8 +153,8 @@ const Properties = () => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  // if (error)
+  //   return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-9">
@@ -209,14 +209,6 @@ const Properties = () => {
         isDateTrue
         filterOptionsMenu={[
           ...propertyFilterOptionsMenu,
-          ...(branchOptions.length > 0
-            ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
-                },
-              ]
-            : []),
         ]}
         onSort={handleSort}
         handleSearch={handleSearch}

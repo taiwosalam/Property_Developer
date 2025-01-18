@@ -5,14 +5,10 @@ import Image from 'next/image';
 import dayjs from 'dayjs';
 
 // Images
-import { UploadImageIcon } from '@/public/icons/icons';
-import Transparent from '@/public/empty/transparent.png';
-import WebsiteTemplate1 from '@/public/website template/template-1.svg';
-import WebsiteTemplate2 from '@/public/website template/template-2.svg';
-import WebsiteTemplate3 from '@/public/website template/template-3.svg';
+import { DeleteIconOrange, PersonIcon, UploadImageIcon } from '@/public/icons/icons';
+import CameraCircle from '@/public/icons/camera-circle.svg';
 
 // Imports
-import { industryOptions } from '@/data';
 import { getAllStates, getLocalGovernments, getCities } from '@/utils/states';
 import Input from '@/components/Form/Input/input';
 import Button from '@/components/Form/Button/button';
@@ -21,18 +17,9 @@ import { useImageUploader } from '@/hooks/useImageUploader';
 import SettingsSection from '@/components/Settings/settings-section';
 
 import {
-  CustomColorPicker,
-  SettingsColorScheme,
-  SettingsSectionTitle,
   SettingsUpdateButton,
-  WebsiteColorSchemes,
-  SettingsVerifiedBadge,
-  SettingsOthersCheckBox,
-  ThemeCard,
 } from '@/components/Settings/settings-components';
-
 import TextArea from '@/components/Form/TextArea/textarea';
-import { website_color_schemes } from '@/components/Settings/data';
 import { ModalContent } from '@/components/Modal/modal';
 import { ModalTrigger } from '@/components/Modal/modal';
 import { Modal } from '@/components/Modal/modal';
@@ -61,13 +48,38 @@ import {
 import NetworkError from '@/components/Error/NetworkError';
 import { usePersonalInfoStore } from '@/store/personal-info-store';
 import useBranchStore from '@/store/branch-store';
-
+import LandlordTenantModalPreset from '@/components/Management/landlord-tenant-modal-preset';
+import Avatars from '@/components/Avatars/avatars';
+import ManagerProfile from '@/components/Settings/settingsBranchManager';
 
 const Profile = () => {
-  const [selectedFont, setSelectedFont] = useState<string | null>(null);
-  const [customDomain, setCustomDomain] = useState<string>('');
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const company_id = usePersonalInfoStore((state) => state.company_id);
+
+    const {
+      preview,
+      handleImageChange: originalHandleImageChange,
+      inputFileRef,
+      clearSelection: clearImageSelection,
+      setPreview,
+    } = useImageUploader({
+      placeholder: CameraCircle,
+    });
+
+    const [successModalOpen, setSuccessModalOpen] = useState(false);
+
+    const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+    const [selectedAvatar, setSelectedAvatar] = useState('');
+
+    const handleAvatarSelection = (avatarUrl: string) => {
+      clearImageSelection();
+      setSelectedAvatar(avatarUrl);
+      setAvatarModalOpen(false);
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSelectedAvatar('');
+      originalHandleImageChange(e);
+    };
 
   const [checkedStates, setCheckedStates] = useState<{
     [key: string]: boolean;
@@ -112,143 +124,150 @@ const Profile = () => {
     }
   }, [apiData]);
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [customColor, setCustomColor] = useState('#ffffff');
-  const { preview, handleImageChange } = useImageUploader({
-    placeholder: Transparent,
-  });
-
-  const [socialInputs, setSocialInputs] = useState({
-    instagram: companyData.instagram || 'https://instagram.com/',
-    facebook: companyData.facebook || 'https://facebook.com/',
-    twitter: companyData.x || 'https://x.com/',
-    linkedin: companyData.linkedin || 'https://www.linkedin.com/company/',
-    tiktok: companyData.tiktok || 'https://tiktok.com/',
-    youtube: companyData.youtube || 'https://www.youtube.com/@',
-  });
-
-  const handleCustomColorChange = (color: string) => {
-    setCustomColor(color);
-    setSelectedColor(color);
-  };
-
-  const handleColorSelect = (color: string) => {
-    setSelectedColor(color);
-    setCustomColor(color);
-  };
-
-  const handleSocialInputChange = (platform: string, value: string) => {
-    setSocialInputs((prev) => ({
-      ...prev,
-      [platform]: value,
-    }));
-  };
-
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-
-  const handleSelect = (type: string, value: string) => {
-    setSelectedTemplate(value);
-  };
-
-  const handleCustomDomainChange = (value: string) => {
-    setCustomDomain(value);
-  };
-
-  const googleFonts = useGoogleFonts();
-
-  const handleFontSelect = (fontName: string) => {
-    setSelectedFont(fontName);
-    const link = document.createElement('link');
-    link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(
-      / /g,
-      '+'
-    )}:wght@400;700&display=swap`;
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
-  };
-
-  const [uploadingUtility, setUploadingUtility] = useState(false);
-  const [uploadingMembership, setUploadingMembership] = useState(false);
-
-  const handleUploadUtility = (file: File | null) => {
-    console.log(file);
-    if (file) {
-      setUploadingUtility(true);
-    } else {
-      setUploadingUtility(false);
-    }
-  };
-
-  const handleUploadMembership = (file: File | null) => {
-    console.log(file);
-    if (file) {
-      setUploadingMembership(true);
-    } else {
-      setUploadingMembership(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className='flex items-center justify-center min-h-screen'>
-        <div className='w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full animate-spin'></div>
-      </div>
-    );
-  }
-
-  if (isNetworkError) return <NetworkError />;
-
-  //  if (error)
-  //    return <p className="text-base text-red-500 font-medium">{error}</p>;
-
   return (
     <>
       <SettingsSection title='Branch Pofile'>
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5'>
           <Input
             id='branch_name'
-            label='Branch name'
-            placeholder='Taiwo Salam & Co.'
-            // value={socialInputs.instagram}
+            label='branch title'
+            placeholder='Write Here'
+            inputClassName='bg-white'
+            // defaultValue={somedata?.branch_name}
           />
+          <Select
+            options={getAllStates()}
+            id='state'
+            label='state'
+            value={address.state}
+            hiddenInputClassName='setup-f'
+            defaultValue={state.companyData.state}
+            onChange={(value) => handleAddressChange('state', value)} // Update handler
+            required
+          />
+          <Select
+            options={getLocalGovernments(address.state)}
+            id='local_government'
+            label='local government'
+            hiddenInputClassName='setup-f'
+            onChange={(value) => handleAddressChange('lga', value)} // Update handler
+            value={address.lga} // Controlled value
+            required
+            defaultValue={state.companyData.local_government}
+          />
+
+          <Select
+            options={getCities(address.state, address.lga)}
+            id='city'
+            label='City / Area'
+            allowCustom={true}
+            hiddenInputClassName='setup-f'
+            onChange={(value) => handleAddressChange('city', value)} // Update handler
+            value={address.city} // Controlled value
+            required
+            defaultValue={state.companyData.city}
+          />
+
           <Input
-            id='id'
-            label='ID'
-            placeholder='12345678'
+            id='branch_address'
+            label='Branch Full Address'
+            placeholder='Enter Address'
+            inputClassName='bg-white'
+            // defaultValue={somedata?.address}
           />
-          <Input
-            id='lga'
-            label='Local Government'
-            placeholder='Akinyele LG'
+        </div>
+        <div className='flex flex-col gap-2 w-full my-4'>
+          <TextArea
+            inputSpaceClassName='bg-white dark:bg-darkText-primary'
+            id='branch_description'
+            // defaultValue={somedata?.description}
+            label='About Branch'
           />
-          <Input
-            id='linkedin'
-            label='linkedIn'
-            placeholder='username'
-            // value={socialInputs.linkedin}
-            // onChange={(value) => handleSocialInputChange('linkedin', value)}
-          />
+        </div>
+        <div className='custom-flex-col gap-3'>
+          <p className='text-black dark:text-white text-base font-normal'>
+            Upload Branch picture or choose from options.
+          </p>
+          <div className='flex gap-3 items-center'>
+            <label
+              htmlFor='picture'
+              className='cursor-pointer relative'
+            >
+              <Picture
+                src={preview}
+                alt='Camera'
+                size={40}
+                rounded
+              />
+              {preview && preview !== CameraCircle && (
+                <div
+                  role='button'
+                  aria-label='remove image'
+                  className='absolute top-0 right-0'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    clearImageSelection();
+                  }}
+                >
+                  <DeleteIconOrange size={20} />
+                </div>
+              )}
+              <input
+                type='file'
+                id='picture'
+                name='picture'
+                accept='image/*'
+                className='hidden pointer-events-none'
+                onChange={handleImageChange}
+                ref={inputFileRef}
+              />
+            </label>
+            <Modal
+              state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
+            >
+              <ModalTrigger
+                className='bg-[rgba(42,42,42,0.63)] w-[40px] h-[40px] rounded-full flex items-center justify-center text-white relative'
+                aria-label='choose avatar'
+              >
+                {selectedAvatar ? (
+                  <>
+                    <Image
+                      src={selectedAvatar}
+                      alt='selected avatar'
+                      width={40}
+                      height={40}
+                      className='object-cover object-center w-[40px] h-[40px] rounded-full bg-brand-9'
+                    />
+                    <div
+                      role='button'
+                      aria-label='remove avatar'
+                      className='absolute top-0 right-0'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedAvatar('');
+                      }}
+                    >
+                      <DeleteIconOrange size={20} />
+                    </div>
+                  </>
+                ) : (
+                  <PersonIcon size={18} />
+                )}
+              </ModalTrigger>
+              <ModalContent>
+                <LandlordTenantModalPreset heading='Choose Avatar'>
+                  <Avatars
+                    branch
+                    onClick={handleAvatarSelection}
+                  />
+                </LandlordTenantModalPreset>
+              </ModalContent>
+            </Modal>
+          </div>
         </div>
         <SettingsUpdateButton />
       </SettingsSection>
-      <SettingsSection title='about branch'>
-        <div className='custom-flex-col gap-8'>
-          <TextArea
-            id='about_branch'
-            label=''
-          />
-          <div className="flex w-full">
-          <Input
-            id='lga'
-            label='Local Government'
-            placeholder='Akinyele LG'
-            inputClassName='w-full'
-            className='w-1/4'
-          />
-          </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
+      <ManagerProfile />
     </>
   );
 };

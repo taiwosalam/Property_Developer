@@ -1,21 +1,29 @@
+import {
+  getRentalPropertyCreatePath,
+  getFacilityPropertyCreatePath,
+} from '@/app/(onboarding)/auth/data';
 import AddPropertyCard from "../add-landlord-or-tenant-card";
 import { AddPropertyOptionsViewProps } from "./types";
+import Cookies from "js-cookie"
 
 const AddPropertyOptionsView: React.FC<AddPropertyOptionsViewProps> = ({
   setModalView,
 }) => {
+  const role = Cookies.get("role") || "";
+  const rental_path = getRentalPropertyCreatePath(role);
+  const facility_path = getFacilityPropertyCreatePath(role);
   return (
     <div className="flex flex-col md:flex-row items-center justify-center gap-7 md:gap-14">
       <AddPropertyCard
         buttonText="create"
         title="Add Rental Property"
-        buttonHref="/management/properties/create-rental-property"
+        buttonHref={rental_path}
         desc="Are you looking to add a single standalone property for rent?"
       />
       <AddPropertyCard
         buttonText="choose"
         title="Add Facility Property"
-        buttonHref="/management/properties/create-gated-estate-property"
+        buttonHref={facility_path}
         desc="Are you managing an entire estate, facilities, or a gated community?"
       />
       <AddPropertyCard

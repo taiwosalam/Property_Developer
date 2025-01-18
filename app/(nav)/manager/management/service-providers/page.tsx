@@ -29,34 +29,37 @@ const ServiceProviders = () => {
   }, []);
 
   return (
-    <div className="space-y-9">
-      <div className="page-header-container">
-        <div className="hidden md:flex gap-5 flex-wrap">
+    <div className='space-y-9'>
+      <div className='page-header-container'>
+        <div className='hidden md:flex gap-5 flex-wrap'>
           <ManagementStatistcsCard
-            title="Total Users"
+            title='Total Users'
             newData={30}
             total={40}
-            className="w-[230px]"
+            className='w-[230px]'
             colorScheme={1}
           />
           <ManagementStatistcsCard
-            title="Mobile Users"
+            title='Mobile Users'
             newData={40}
             total={40}
-            className="w-[230px]"
+            className='w-[230px]'
             colorScheme={2}
           />
           <ManagementStatistcsCard
-            title="Vacant Units"
+            title='Vacant Units'
             newData={40}
             total={40}
-            className="w-[230px]"
+            className='w-[230px]'
             colorScheme={3}
           />
         </div>
         <Modal>
           <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
+            <Button
+              type='button'
+              className='page-header-button'
+            >
               + Create New Service Provider
             </Button>
           </ModalTrigger>
@@ -67,22 +70,22 @@ const ServiceProviders = () => {
       </div>
       <FilterBar
         azFilter
-        pageTitle="Service Provider"
+        pageTitle='Service Provider'
         aboutPageModalData={{
-          title: "Service Provider",
+          title: 'Service Provider',
           description:
-            "This page contains a list of Service Provider on the platform.",
+            'This page contains a list of Service Provider on the platform.',
         }}
-        searchInputPlaceholder="Search for service provider"
+        searchInputPlaceholder='Search for service provider'
         handleFilterApply={() => {}}
         isDateTrue
         filterOptionsMenu={serviceProviderFilterOptionsWithDropdown}
         hasGridListToggle={false}
       />
       <section
-        className="grid gap-4"
+        className='grid gap-4'
         style={{
-          gridTemplateColumns: "repeat(auto-fill, minmax(284px, 1fr))",
+          gridTemplateColumns: 'repeat(auto-fill, minmax(284px, 1fr))',
         }}
       >
         {Array(10)
@@ -91,21 +94,23 @@ const ServiceProviders = () => {
             <Link
               href={{
                 // remove this pathname and query shit
-                pathname: `/management/service-providers/${index + 1}/manage`,
+                pathname: `/manager/management/service-providers/${
+                  index + 1
+                }/manage`,
                 query: {
-                  user_tag: index % 2 === 0 ? "web" : "mobile",
+                  user_tag: index % 2 === 0 ? 'web' : 'mobile',
                 },
               }}
               key={index}
             >
               <ServiceProviderCard
-                name="Allys Quantrill"
-                email="aquantrill0@tinypic.com"
-                user_tag={index % 2 === 0 ? "web" : "mobile"}
-                badge_color="yellow"
-                phone_number="1787991995"
+                name='Allys Quantrill'
+                email='aquantrill0@tinypic.com'
+                user_tag={index % 2 === 0 ? 'web' : 'mobile'}
+                badge_color='yellow'
+                phone_number='1787991995'
                 picture_url={DefaultLandlordAvatar.src}
-                other_info="Plumber, Electrician"
+                other_info='Plumber, Electrician'
               />
             </Link>
           ))}
