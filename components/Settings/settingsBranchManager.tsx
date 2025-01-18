@@ -32,7 +32,7 @@ import { FormState } from '@/app/(nav)/settings/security/data';
 import PhoneNumberInput from '../Form/PhoneNumberInput/phone-number-input';
 import TextArea from '@/components/Form/TextArea/textarea';
 
-const ManagerProfile = () => {
+const ManagerProfile = ({accountant}: {accountant?: boolean}) => {
   const name = usePersonalInfoStore((state) => state.full_name);
   const title = usePersonalInfoStore((state) => state.title);
   const { preview, inputFileRef, handleImageChange } = useImageUploader();
@@ -83,7 +83,7 @@ const ManagerProfile = () => {
 
   return (
     <>
-      <SettingsSection title='Manager profile'>
+      <SettingsSection title={accountant ? "My Profile" : 'Manager profile'}>
         <AuthForm
           onFormSubmit={() => {}}
           skipValidation
@@ -155,7 +155,7 @@ const ManagerProfile = () => {
                   inputSpaceClassName='bg-white dark:bg-darkText-primary'
                   id='branch_description'
                   // defaultValue={somedata?.description}
-                  label='About Manager'
+                  label='About Branch'
                 />
               </div>
             </div>

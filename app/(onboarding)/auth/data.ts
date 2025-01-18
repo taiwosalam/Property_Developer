@@ -7,13 +7,25 @@ import { useAuthStore } from '@/store/authStore';
 import { useWalletStore } from '@/store/wallet-store';
 import { InputData } from '@/utils/checkFormDataForImageOrAvatar';
 import Cookies from 'js-cookie';
-import { manager_nav_items, nav_items } from '@/components/Nav/data';
+import {
+  manager_nav_items,
+  nav_items,
+  account_nav_items,
+} from '@/components/Nav/data';
 import {
   manager_settings_link_tabs,
   settings_link_tabs,
 } from '@/components/Settings/data';
-import { create_new_items, manager_create_new_items } from '@/components/Nav/nav-create-new-items';
-import { manager_profile_actions, profile_actions } from '@/components/Nav/options';
+import {
+  create_new_items,
+  manager_create_new_items,
+  accountant_create_new_items,
+} from '@/components/Nav/nav-create-new-items';
+import {
+  manager_profile_actions,
+  profile_actions,
+  account_profile_actions,
+} from '@/components/Nav/options';
 
 export const getDashboardPage = (role: string | null) => {
   switch (role) {
@@ -23,6 +35,8 @@ export const getDashboardPage = (role: string | null) => {
       return '/dashboard';
     case 'manager':
       return '/manager/dashboard';
+    case 'account':
+      return '/accountant/dashboard';
     default:
       return '';
   }
@@ -34,6 +48,8 @@ export const getNavs = (role: string | null) => {
       return nav_items;
     case 'tenant':
       return nav_items;
+    case 'account':
+      return account_nav_items;
     case 'manager':
       return manager_nav_items;
     default:
@@ -48,6 +64,8 @@ export const getNavCreateItems = (role: string | null) => {
       return create_new_items;
     case 'tenant':
       return create_new_items;
+    case 'account':
+      return accountant_create_new_items;
     case 'manager':
       return manager_create_new_items;
     default:
@@ -62,6 +80,8 @@ export const getProfileDropdownItems = (role: string | null) => {
       return profile_actions;
     case 'tenant':
       return profile_actions;
+    case 'account':
+      return account_profile_actions;
     case 'manager':
       return manager_profile_actions;
     default:
@@ -89,6 +109,8 @@ export const getSettingsPath:any = (role: string | null) => {
       return "/";
     case 'tenant':
       return "/";
+    case 'account':
+      return "/accountant/";
     case 'manager':
       return "/manager/";
     default:
@@ -204,6 +226,8 @@ export const login = async (formData: Record<string, any>) => {
     useAuthStore
       .getState()
       .setAuthState('additional_details', details);
+
+    console.log('details', details);
 
     // Save to cookies for middleware
     Cookies.set('authToken', token, { expires: 7 }); // Expires in 7 days

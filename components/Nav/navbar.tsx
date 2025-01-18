@@ -69,6 +69,7 @@ const Header = () => {
     ({ company: loggedUserCompany, branch: loggedUserBranch } = loggedInUserDetails);
   }
 
+  console.log('loggedInUserDetails', loggedInUserDetails);
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
     const primaryColor = localStorage.getItem("primary-color");

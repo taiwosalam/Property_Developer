@@ -108,8 +108,6 @@ export const manager_create_new_items: CreateNewItemsProps = [
     content: [
       { label: 'landlord / landlady', modal: <AddLandlordModal /> },
       { label: 'tenants / occupants', modal: <AddTenantModal /> },
-      // { label: 'branch', modal: <CreateBranchModal /> },
-      //   { label: "staff", modal: <CreateStaffModal /> }, // NOTE: This modal require a branch id, thats why its commented out
       { label: 'inventory', link: '/management/inventory/create-inventory' },
       { label: 'property', modal: <AddPropertyModal /> },
     ],
@@ -197,6 +195,38 @@ export const manager_create_new_items: CreateNewItemsProps = [
           />
         ),
       },
+    ],
+  },
+];
+
+
+
+export const accountant_create_new_items: CreateNewItemsProps = [
+  {
+    type: 'people',
+    label: 'management',
+    content: [
+      { label: 'inventory', link: '/accountant/management/inventory/create-inventory' },
+      { label: 'property', modal: <AddPropertyModal /> },
+    ],
+  },
+  {
+    type: 'briefcase_timer',
+    label: 'tasks',
+    content: [
+      { label: 'examine', modal: <CreateExamineModal /> },
+      {
+        label: 'announcement',
+        link: '/accountant/tasks/announcements/create-announcement',
+      },
+    ],
+  },
+  {
+    type: 'menu_board',
+    label: 'accounting',
+    content: [
+      { label: 'invoice', link: '/accountant/accounting/invoice/create-invoice' },
+      { label: 'expenses', link: '/accountant/accounting/expenses/create-expenses' },
     ],
   },
 ];

@@ -127,15 +127,6 @@ export const manager_nav_items: NavItemsProps = [
   {
     type: 'briefcase_timer',
     label: 'tasks',
-    // content: [
-    //   { label: "schedule visit", href: "/manager/tasks/schedule" },
-    //   { label: "announcement", href: "/manager/tasks/announcement" },
-    //   { label: "complaints", href: "/manager/tasks/complaints" },
-    //   { label: "examine report", href: "/manager/tasks/examine" },
-    //   { label: "maintenance report", href: "/manager/tasks/maintenance" },
-    //   { label: "caution deposit", href: "/manager/tasks/deposits" },
-    //   { label: "move out", href: "/manager/tasks/move-out" },
-    // ],
     content: [
       { label: 'complaints', href: '/manager/tasks/complaints' },
       { label: 'inspections', href: '/manager/tasks/inspections' },
@@ -202,6 +193,71 @@ export const manager_nav_items: NavItemsProps = [
   },
   { type: 'settings', label: 'settings', href: '/manager/settings' },
 ];
+
+
+export const account_nav_items: NavItemsProps = [
+  {
+    type: 'buildings',
+    label: 'dashboard',
+    href: '/accountant/dashboard',
+  },
+  {
+    type: 'people',
+    label: 'management',
+    content: [
+      { label: 'landlord & landlady', href: '/accountant/management/landlord' },
+      { label: 'tenants & occupants', href: '/accountant/management/tenants' },
+      { label: 'Other Staff', href: '/accountant/management/staff-branch' },
+      { label: 'inventory', href: '/accountant/management/inventory' },
+      { label: 'properties', href: '/accountant/management/properties' },
+      {
+        label: 'vehicles record',
+        href: '/accountant/management/vehicles-record',
+      },
+      {
+        label: 'service providers',
+        href: '/accountant/management/service-providers',
+      },
+      { label: 'team chat', href: '/accountant/management/team-chat' },
+      { label: 'agent community', href: '/management/agent-community' },
+    ],
+  },
+  {
+    type: 'briefcase_timer',
+    label: 'tasks',
+    content: [
+      { label: 'complaints', href: '/accountant/tasks/complaints' },
+      { label: 'inspections', href: '/accountant/tasks/inspections' },
+      { label: 'examine', href: '/accountant/tasks/examine' },
+      { label: 'maintenance', href: '/accountant/tasks/maintenance' },
+      { label: 'calendars', href: '/accountant/tasks/calendars' },
+      { label: 'announcements', href: '/accountant/tasks/announcements' },
+      { label: 'call request', href: '/accountant/tasks/inquires' },
+      { label: 'visitors request', href: '/accountant/tasks/visitors' },
+      { label: 'property request', href: '/accountant/tasks/property-request' },
+      { label: 'deposits request', href: '/accountant/tasks/deposits' },
+    ],
+  },
+  {
+    type: 'menu_board',
+    label: 'accounting',
+    content: [
+      { label: 'invoice', href: '/accountant/accounting/invoice' },
+      { label: 'receipts', href: '/accountant/accounting/receipts' },
+      { label: 'expenses', href: '/accountant/accounting/expenses' },
+      { label: 'disbursement', href: '/accountant/accounting/disbursement' },
+      { label: 'statement', href: '/accountant/accounting/statement' },
+      { label: 'VAT', href: '/accountant/accounting/vat' },
+    ],
+  },
+  {
+    type: 'task',
+    label: 'applications',
+    href: '/accountant/applications',
+  },
+  { type: 'settings', label: 'settings', href: '/accountant/settings' },
+];
+
 
 export const getGreeting = () => {
   const currentHour = new Date().getHours();
