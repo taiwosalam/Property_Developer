@@ -57,7 +57,7 @@ const LockBranchModal: React.FC<{
     if (canResend) {
       setResendReqLoading(true);
       const status = await getEmailVerificationOTP(email);
-      if (true) {
+      if (status) {
         setCountdown(40);
         setCanResend(false);
       }
@@ -66,22 +66,24 @@ const LockBranchModal: React.FC<{
   };
 
 
-  const handleLockVerfiyLock = async()=> {
-    try{
-      setRequestLoading(true)
-      const verifyStatus = await verifyEmailOTP(otp)
-      if (verifyStatus){
-       const res = await lockBranch(branch_id)
-       if (res){
-        changeStep(3)
-       }
+  const handleLockVerfiyLock = async () => {
+    try {
+      setRequestLoading(true);
+      const verifyStatus = await verifyEmailOTP(otp);
+      if (verifyStatus) {
+        const res = await lockBranch(branch_id);
+        if (res) {
+          changeStep(3);
+        }
+      } else {
+        toast.error("OTP verification failed. Please try again.");
       }
-    }catch(err){
-      toast.error("Failed to Lock Branch")
-    }finally{
-      setRequestLoading(false)
+    } catch (err) {
+      toast.error("Failed to Lock Branch");
+    } finally {
+      setRequestLoading(false);
     }
-  }
+  };
 
   return activeStep === 1 ? (
     <ModalPreset
@@ -152,7 +154,6 @@ const LockBranchModal: React.FC<{
         onClick={handleLockVerfiyLock}
       >
         {requestLoading ? 'Please wait...' : 'Proceed'}
-        Proceed
       </Button>
     </WalletModalPreset>
   ) : activeStep === 3 ? (

@@ -42,10 +42,10 @@ export const getEmailVerificationOTP = async (email: string) => {
 export const verifyEmailOTP = async (code: string) => {
   try {
     const { data } = await api.post("/branch/email-verification", { code });
-    toast.success(data?.message || "Email verified successfully");
+    toast.success(data?.message || "OTP verified successfully");
     return true;
   } catch (error) {
-    handleAxiosError(error, "Failed to verify email OTP");
+    handleAxiosError(error, "Failed to verify OTP");
     return false;
   }
 };
@@ -54,7 +54,7 @@ export const verifyEmailOTP = async (code: string) => {
 export const lockBranch = async (branchId: string) => {
   try {
     const res = await api.post(`/branch/${branchId}/lock`, { action: 'lock' });
-    toast.success(res.data?.message || 'Branch locked successfully');
+    toast.success('Branch locked successfully');
     return true;
   } catch (error) {
     handleAxiosError(error, 'Failed to lock branch');

@@ -35,7 +35,7 @@ export const PropertyListingTitleDesc: React.FC<
 > = ({ desc, title }) => (
   <div className="custom-flex-col text-text-primary dark:text-darkText-1 text-base">
     <p className="font-bold">{title}</p>
-    <p>{desc}</p>
+    <p className="text-brand-9">{desc}</p>
   </div>
 );
 
@@ -45,7 +45,7 @@ export const PropertyListingRed: React.FC<PropertyListingRedProps> = ({
 
 export const PropertyListingParagraph: React.FC<PropertyListingRedProps> = ({
   children,
-}) => <p className="text-text-secondary dark:text-darkText-1 text-base font-medium">{children}</p>;
+}) => <p className="text-text-secondar text-brand-9 dark:text-darkText-1 text-base font-medium">{children}</p>;
 
 export const PropertyListingStatusItem: React.FC<
   PropertyListingStatusItemProps
@@ -56,7 +56,7 @@ export const PropertyListingStatusItem: React.FC<
         className="w-[14px] h-[14px] sm:w-5 sm:h-5 rounded-full"
         style={{ backgroundColor: color }}
       ></div>
-      <p className="text-[#6C6D6D] text-xs font-medium capitalize">{text}</p>
+      <p className="text-[#6C6D6D text-brand-9 text-xs font-medium capitalize">{text}</p>
     </div>
   );
 };

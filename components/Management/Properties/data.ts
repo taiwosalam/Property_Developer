@@ -1,13 +1,13 @@
 // Imports
-import type { PropertyFormStateType, AllStaffResponse } from "./types";
-import api, { handleAxiosError } from "@/services/api";
-import toast from "sonner";
+import type { PropertyFormStateType, AllStaffResponse } from './types';
+import api, { handleAxiosError } from '@/services/api';
+import toast from 'sonner';
 
 export const property_form_state_data: PropertyFormStateType = {
-  state: "",
-  city: "",
-  lga: "",
-  selectedBranch: { value: "", label: "" },
+  state: '',
+  city: '',
+  lga: '',
+  selectedBranch: { value: '', label: '' },
   staff: [],
   staffOptions: [],
   accountOfficerOptions: [],
@@ -30,9 +30,10 @@ export const transformPropertyFormData = (
   imageFiles: (File | string)[],
   company_id: string
 ) => {
+  console.log('Data', data);
   // Collect staff IDs
   const staffIds = Object.entries(data)
-    .filter(([key]) => key.startsWith("staff") && key.endsWith("_id"))
+    .filter(([key]) => key.startsWith('staff') && key.endsWith('_id'))
     .map(([_, value]) => value as string)
     .filter(Boolean);
   // Add account officer if present
@@ -73,6 +74,8 @@ export const transformPropertyFormData = (
     currency: data.currency,
     coordinate: data.coordinate,
     images: imageFiles,
+    // images: imageFiles.slice(1),
+    default_image: imageFiles[0] || null,
     staff: staffIds,
   };
 
@@ -88,7 +91,7 @@ export const transformUnitFormData = (
     if (!value) {
       return 0;
     }
-    return parseFloat(value.replace(/,/g, ""));
+    return parseFloat(value.replace(/,/g, ''));
   };
 
   const parseIntOrNull = (value: string | undefined | null) => {
@@ -109,7 +112,7 @@ export const transformUnitFormData = (
     bathroom: parseIntOrNull(formData.bathroom),
     toilet: parseIntOrNull(formData.toilet),
     facilities: formData.facilities
-      ? formData.facilities.split(",").map(decodeURIComponent)
+      ? formData.facilities.split(',').map(decodeURIComponent)
       : [],
     en_suit: formData.en_suit ?? null,
     prepaid: formData.prepaid ?? null,
