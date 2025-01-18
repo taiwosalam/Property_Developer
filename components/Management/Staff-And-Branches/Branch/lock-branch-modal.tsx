@@ -69,14 +69,10 @@ const LockBranchModal: React.FC<{
   const handleLockVerfiyLock = async () => {
     try {
       setRequestLoading(true);
-      const verifyStatus = await verifyEmailOTP(otp);
-      if (verifyStatus) {
-        const res = await lockBranch(branch_id);
-        if (res) {
-          changeStep(3);
-        }
-      } else {
-        toast.error("OTP verification failed. Please try again.");
+      const res = await lockBranch(branch_id, otp);
+      if (res) {
+        toast.success("Branch Locked Successfully")
+        changeStep(3);
       }
     } catch (err) {
       toast.error("Failed to Lock Branch");
