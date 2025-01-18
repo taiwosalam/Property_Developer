@@ -33,6 +33,7 @@ import { usePersonalInfoStore } from '@/store/personal-info-store';
 import useFetch from '@/hooks/useFetch';
 import clsx from 'clsx';
 import { useAddUnitStore } from '@/store/add-unit-store';
+import Cookies from 'js-cookie';
 
 const maxNumberOfImages = 6;
 
@@ -54,8 +55,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const [state, setState] = useState<PropertyFormStateType>(
     property_form_state_data
   );
-
-  console.log(propertyDetails);
+  const role = Cookies.get('role') || '';
+  const isDirector = role === 'director';
+  console.log('role', isDirector);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const {
@@ -458,37 +460,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             />
 
             <Select
-              id='branch_id'
-              required
-              label='Branch'
-              resetKey={resetKey}
-              options={branchOptions}
-              inputContainerClassName='bg-white'
-              onChange={(selectedBranchId) =>
-                setPropertyState({
-                  selectedBranch: {
-                    value: selectedBranchId,
-                    label:
-                      branchOptions.find(
-                        (branch) =>
-                          String(branch.value) === String(selectedBranchId)
-                      )?.label || '',
-                  },
-                })
-              }
-              value={selectedBranch}
-              hiddenInputClassName='property-form-input'
-              placeholder={
-                branchesLoading
-                  ? 'Loading branches...'
-                  : branchesError
-                  ? 'Error loading branches'
-                  : 'Select branch'
-              }
-              error={branchesError}
-            />
-
-            <Select
               options={landlordOptions}
               id='land_lord_id'
               label='Landlord'
@@ -512,6 +483,39 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               }
               error={landlordsError}
             />
+
+            {isDirector && (
+              <Select
+                id='branch_id'
+                required
+                label='Branch'
+                resetKey={resetKey}
+                options={branchOptions}
+                inputContainerClassName='bg-white'
+                onChange={(selectedBranchId) =>
+                  setPropertyState({
+                    selectedBranch: {
+                      value: selectedBranchId,
+                      label:
+                        branchOptions.find(
+                          (branch) =>
+                            String(branch.value) === String(selectedBranchId)
+                        )?.label || '',
+                    },
+                  })
+                }
+                value={selectedBranch}
+                hiddenInputClassName='property-form-input'
+                placeholder={
+                  branchesLoading
+                    ? 'Loading branches...'
+                    : branchesError
+                    ? 'Error loading branches'
+                    : 'Select branch'
+                }
+                error={branchesError}
+              />
+            )}
 
             {formType === 'rental' && (
               <>

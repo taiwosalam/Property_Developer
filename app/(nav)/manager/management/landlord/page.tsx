@@ -232,35 +232,38 @@ const Landlord = () => {
     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
-    <div className="space-y-8">
-      <div className="page-header-container">
-        <div className="hidden md:flex flex-wrap gap-5">
+    <div className='space-y-8'>
+      <div className='page-header-container'>
+        <div className='hidden md:flex flex-wrap gap-5'>
           <ManagementStatistcsCard
-            title="Total Landlords"
+            title='Total Landlords'
             newData={new_landlords_this_month}
             total={total_landlords}
-            className="w-[260px]"
+            className='w-[260px]'
             colorScheme={1}
           />
           <ManagementStatistcsCard
-            title="Web Landlords"
+            title='Web Landlords'
             newData={new_web_landlords_this_month}
             total={web_landlords}
-            className="w-[260px]"
+            className='w-[260px]'
             colorScheme={2}
           />
           <ManagementStatistcsCard
-            title="Mobile Landlords"
+            title='Mobile Landlords'
             newData={new_mobile_landlords_this_month}
             total={mobile_landlords}
-            className="w-[260px]"
+            className='w-[260px]'
             colorScheme={3}
           />
         </div>
 
         <Modal>
           <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
+            <Button
+              type='button'
+              className='page-header-button'
+            >
               + create new landlord
             </Button>
           </ModalTrigger>
@@ -272,26 +275,26 @@ const Landlord = () => {
 
       <FilterBar
         azFilter
-        gridView={view === "grid"}
-        setGridView={() => setView("grid")}
-        setListView={() => setView("list")}
-        pageTitle="Landlords/Landladies (Owners)"
+        gridView={view === 'grid'}
+        setGridView={() => setView('grid')}
+        setListView={() => setView('list')}
+        pageTitle='Landlords/Landladies (Owners)'
         aboutPageModalData={{
-          title: fetchedLandlordHelpInfo?.slug || "",
-          description: fetchedLandlordHelpInfo?.description || "",
-          video: fetchedLandlordHelpInfo?.acf.video_link || "",
-          readingLink: fetchedLandlordHelpInfo?.link || "",
+          title: fetchedLandlordHelpInfo?.slug || '',
+          description: fetchedLandlordHelpInfo?.description || '',
+          video: fetchedLandlordHelpInfo?.acf.video_link || '',
+          readingLink: fetchedLandlordHelpInfo?.link || '',
         }}
-        searchInputPlaceholder="Search for Landlords"
+        searchInputPlaceholder='Search for Landlords'
         handleFilterApply={handleFilterApply}
         isDateTrue
-        dateLabel="Registration Date"
+        dateLabel='Registration Date'
         handleSearch={handleSearch}
         onSort={handleSort}
         appliedFilters={appliedFilters}
         filterOptionsMenu={[
           {
-            label: "State",
+            label: 'State',
             value: states.map((state) => ({
               label: state,
               value: state.toLowerCase(),
@@ -299,13 +302,13 @@ const Landlord = () => {
           },
           {
             radio: true,
-            label: "Landlord Type",
+            label: 'Landlord Type',
             value: [
-              { label: "Mobile Landlord", value: "mobile" },
-              { label: "Web Landlord", value: "web" },
-              { label: "All Landlords", value: "all" },
+              { label: 'Mobile Landlord', value: 'mobile' },
+              { label: 'Web Landlord', value: 'web' },
+              { label: 'All Landlords', value: 'all' },
             ],
-          }
+          },
         ]}
       />
       <section>
@@ -314,46 +317,47 @@ const Landlord = () => {
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="+ Create New Landlord"
+              buttonText='+ Create New Landlord'
               modalContent={<AddLandlordModal />}
-              title="The landlord and landlady files are empty"
+              title='The landlord and landlady files are empty'
               body={
                 <p>
-                  You can create a property by clicking on the &quot;Add
-                  Property&quot; button. You can create two types of properties:
-                  rental and facility properties. Rental properties are mainly
-                  tailored for managing properties for rent, including landlord
-                  and tenant management processes. Facility properties are
-                  designed for managing occupants in gated estates, overseeing
-                  their due payments, visitor access, and vehicle records.{" "}
+                  You don&apos;t have any landlord or landlady profiles yet. You
+                  can easily create one by clicking on the &quot;Create New
+                  Landlord&quot; button and add them using their profile ID.
+                  After adding profiles to this page, this guide will disappear.{' '}
                   <br />
                   <br />
-                  Once a property is added to this page, this guide will
-                  disappear. To learn more about this page in the future, you
-                  can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
+                  To learn more about this page in the future,you can click on
+                  this icon{' '}
+                  <span className='inline-block text-brand-10 align-text-top'>
                     <ExclamationMark />
-                  </span>{" "}
+                  </span>{' '}
                   at the top left of the dashboard page.
                   <br />
                   <br />
-                  Property creation involves several segments: property
-                  settings, details, what to showcase on the dashboard or user
-                  app, unit creation, permissions, and assigning staff.
+                  Before creating or managing a rental property, you need to
+                  create a profile for the landlord or landlady of the property.
+                  You can invite them using their email and phone number for
+                  registration. If you already have their list, you can add them
+                  in bulk using an XML file or add them manually.
                 </p>
               }
             />
           )
         ) : (
           <>
-            {view === "grid" ? (
-              <AutoResizingGrid minWidth={284} gap={16}>
+            {view === 'grid' ? (
+              <AutoResizingGrid
+                minWidth={284}
+                gap={16}
+              >
                 {silentLoading ? (
                   <CardsLoading />
                 ) : (
                   landlords.map((l) => (
                     <Link
-                      href={`/management/landlord/${l.id}/manage`}
+                      href={`/manager/management/landlord/${l.id}/manage`}
                       key={l.id}
                     >
                       <LandlordCard
@@ -377,7 +381,7 @@ const Landlord = () => {
                     displayTableHead={false}
                     fields={landlordTableFields}
                     data={transformedLandlords}
-                    tableBodyCellSx={{ color: "#3F4247" }}
+                    tableBodyCellSx={{ color: '#3F4247' }}
                   />
                 )}
               </>

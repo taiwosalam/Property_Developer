@@ -6,6 +6,8 @@ import { SectionSeparator } from "../Section/section-components";
 import { NavCloseIcon } from "@/public/icons/icons";
 import useStep from "@/hooks/useStep";
 import { useState } from "react";
+import Cookies from "js-cookie"
+import { getNavCreateItems } from "@/app/(onboarding)/auth/data";
 // import { NavCreateNewContext } from "./nav-create-new-context";
 
 const NavCreateNew = () => {
@@ -17,6 +19,9 @@ const NavCreateNew = () => {
     setStep2Content(modal);
     changeStep("next");
   };
+
+  const role = Cookies.get("role") || "";
+  const new_items = getNavCreateItems(role) || [];
 
   return activeStep === 1 ? (
     <div
@@ -35,7 +40,7 @@ const NavCreateNew = () => {
         <SectionSeparator />
       </div>
       <NavCreateNewColumn
-        data={create_new_items}
+        data={new_items}
         handleModalTrigger={handleModalTrigger}
       />
     </div>

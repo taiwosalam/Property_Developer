@@ -11,14 +11,6 @@ export const listingUnitFilter: FilterOptionMenu[] = [
     ],
   },
   {
-    label: "branch",
-    value: [
-      { label: "branch 1", value: "branch1" },
-      { label: "branch 2", value: "branch2" },
-      { label: "branch 3", value: "branch3" },
-    ],
-  },
-  {
     radio: true,
     label: "Status",
     value: [

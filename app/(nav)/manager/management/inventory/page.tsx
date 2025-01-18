@@ -217,10 +217,6 @@ const Inventory = () => {
         { label: "Account Officer 3", value: "account_officer3" },
       ],
     },
-    {
-      label: "Branch",
-      value: branchOptions,
-    },
   ];
 
 

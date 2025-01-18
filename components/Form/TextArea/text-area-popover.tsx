@@ -59,7 +59,7 @@ const AIPopOver = ({
   }, [showAiCreator, closePopover]);
 
   const handleShowPopOver = ()=> {
-    if (editorValue.length < 30){
+    if (editorValue && editorValue.length < 30){
       toast.error("Please enter more than 30 characters to get AI suggestions.")
     } else {
       setShowAiCreator((prev: any) => !prev);

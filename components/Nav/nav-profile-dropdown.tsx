@@ -7,7 +7,7 @@ import { getGreeting } from "./data";
 import Picture from "../Picture/picture";
 import { LogoutIcon } from "@/public/icons/icons";
 import useWindowWidth from "@/hooks/useWindowWidth";
-import { logout } from "@/app/(onboarding)/auth/data";
+import { getProfileDropdownItems, logout } from "@/app/(onboarding)/auth/data";
 import { profile_actions } from "@/components/Nav/options";
 import { SectionSeparator } from "../Section/section-components";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
@@ -28,6 +28,8 @@ const NavProfileDropdown = () => {
     (state) => state.profile_picture
   );
   const [requestLoading, setRequestLoading] = useState(false);
+
+  const actions = getProfileDropdownItems(role) || "";
 
   const class_styles =
     "py-2 px-5 sm:py-3 sm:px-[30px] text-start text-text-primary dark:text-darkText-1 hover:bg-neutral-2 dark:hover:bg-[#3C3D37]";
@@ -66,7 +68,7 @@ const NavProfileDropdown = () => {
         </div>
         <SectionSeparator />
       </div>
-      {profile_actions.map(({ label, link, modal }, index) =>
+      {actions && actions?.map(({ label, link, modal }, index) =>
         link ? (
           <Link
             key={index}

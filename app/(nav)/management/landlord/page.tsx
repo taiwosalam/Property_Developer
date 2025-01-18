@@ -326,28 +326,26 @@ const Landlord = () => {
               modalContent={<AddLandlordModal />}
               title="The landlord and landlady files are empty"
               body={
-                <p>
-                  You can create a property by clicking on the &quot;Add
-                  Property&quot; button. You can create two types of properties:
-                  rental and facility properties. Rental properties are mainly
-                  tailored for managing properties for rent, including landlord
-                  and tenant management processes. Facility properties are
-                  designed for managing occupants in gated estates, overseeing
-                  their due payments, visitor access, and vehicle records.{" "}
+                 <p>
+                  You don&apos;t have any landlord or landlady profiles yet. You
+                  can easily create one by clicking on the &quot;Create New
+                  Landlord&quot; button and add them using their profile ID.
+                  After adding profiles to this page, this guide will disappear.{' '}
                   <br />
                   <br />
-                  Once a property is added to this page, this guide will
-                  disappear. To learn more about this page in the future, you
-                  can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
+                  To learn more about this page in the future,you can click on
+                  this icon{' '}
+                  <span className='inline-block text-brand-10 align-text-top'>
                     <ExclamationMark />
-                  </span>{" "}
+                  </span>{' '}
                   at the top left of the dashboard page.
                   <br />
                   <br />
-                  Property creation involves several segments: property
-                  settings, details, what to showcase on the dashboard or user
-                  app, unit creation, permissions, and assigning staff.
+                  Before creating or managing a rental property, you need to
+                  create a profile for the landlord or landlady of the property.
+                  You can invite them using their email and phone number for
+                  registration. If you already have their list, you can add them
+                  in bulk using an XML file or add them manually.
                 </p>
               }
             />

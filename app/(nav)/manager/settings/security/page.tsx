@@ -84,50 +84,6 @@ const Security = () => {
 
   return (
     <>
-      <SettingsSection title="directors profile">
-        <AuthForm onFormSubmit={handleUpdateProfile} skipValidation returnType="form-data">
-          <div className="custom-flex-col gap-8">
-            <div className="custom-flex-col gap-4">
-              <SettingsSectionTitle
-                title="Director Display Picture"
-                desc="The profile photo size should be 180 x 180 pixels with a maximum file size of 2MB."
-              />
-              <div className="custom-flex-col gap-[18px]">
-                <ProfileUpload
-                  preview={preview || profile_picture || ""}
-                  onChange={handleImageChange}
-                  inputFileRef={inputFileRef}
-                  onClick={changeImage}
-                />
-                <div className="flex flex-col lg:flex-row gap-5">
-                  <Select
-                    id="personal_title"
-                    name="title"
-                    options={titles}
-                    label="personal title"
-                    inputContainerClassName="w-[277px] bg-neutral-2"
-                    defaultValue={title as string}
-                  />
-                  <Input
-                    id="fullname"
-                    name="name"
-                    label="full name"
-                    placeholder="Write Here"
-                    className="w-[277px]"
-                    defaultValue={name}
-                  />
-                </div>
-              </div>
-            </div>
-            <SettingsUpdateButton
-              submit
-              loading={reqLoading}
-              action={handleUpdateProfile as any}
-              next={next}
-            />
-          </div>
-        </AuthForm>
-      </SettingsSection>
       <SettingsWalletSection />
       <SettingsPasswordSection />
       <SettingsBank />

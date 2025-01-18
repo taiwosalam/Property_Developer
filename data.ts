@@ -49719,7 +49719,7 @@ export const adminRoutes = [
   "/management/service-providers",
   "/management/vehicles-record",
   "/management/team-chat",
-  "/agent-community",
+  "/management/agent-community",
   "/tasks/schedule",
   "/tasks/announcement",
   "/tasks/complaints",
@@ -49792,7 +49792,7 @@ export const managerRoutes = [
   "/manager/reports/landlord",
   "/manager/reports/properties",
   "/manager/reports/units",
-   "/manager/reports/rent",
+  "/manager/reports/rent",
   "/manager/reports/listings",
   "/manager/reports/email",
   "/manager/reports/sms",
@@ -49806,6 +49806,7 @@ export const managerRoutes = [
   "/manager/documents",
   "/manager/settings",
   "/manager/settings/profile",
+  "/agent-community"
 ];
 export const directorRoutes = ["/dashboard", "/wallet", "/auth/sign-in"];
 

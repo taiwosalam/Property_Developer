@@ -250,14 +250,6 @@ const branchOptions =
         filterOptions={RentAndUnitFilters}
         filterOptionsMenu={[
           ...RentAndUnitFiltersWithDropdown,
-          ...(branchOptions.length > 0
-            ? [
-              {
-                label: "Branch",
-                value: branchOptions,
-              },
-            ]
-            : []),
         ]}
       />
       <section className="capitalize">

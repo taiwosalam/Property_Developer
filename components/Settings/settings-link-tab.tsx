@@ -27,8 +27,6 @@ const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> =
    const role = Cookies.get("role") || "";
   const path = getSettingsPath(role)
 
-  console.log("path", path)
-
   return (
     <Link
       href={`${path}settings/${type}`}

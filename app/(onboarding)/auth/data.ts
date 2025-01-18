@@ -12,6 +12,8 @@ import {
   manager_settings_link_tabs,
   settings_link_tabs,
 } from '@/components/Settings/data';
+import { create_new_items, manager_create_new_items } from '@/components/Nav/nav-create-new-items';
+import { manager_profile_actions, profile_actions } from '@/components/Nav/options';
 
 export const getDashboardPage = (role: string | null) => {
   switch (role) {
@@ -34,6 +36,34 @@ export const getNavs = (role: string | null) => {
       return nav_items;
     case 'manager':
       return manager_nav_items;
+    default:
+      return null;
+  }
+};
+
+
+export const getNavCreateItems = (role: string | null) => {
+  switch (role) {
+    case 'director':
+      return create_new_items;
+    case 'tenant':
+      return create_new_items;
+    case 'manager':
+      return manager_create_new_items;
+    default:
+      return null;
+  }
+};
+
+
+export const getProfileDropdownItems = (role: string | null) => {
+  switch (role) {
+    case 'director':
+      return profile_actions;
+    case 'tenant':
+      return profile_actions;
+    case 'manager':
+      return manager_profile_actions;
     default:
       return null;
   }
@@ -74,6 +104,30 @@ export const getRoleSignInPage = (role: string | null): string => {
       return '/auth/user/sign-in';
     default:
       return '/auth/user/sign-in';
+  }
+};
+
+
+export const getRentalPropertyCreatePath = (role: string | null): string => {
+  switch (role) {
+    case 'director':
+      return '/management/properties/create-rental-property';
+    case 'manager':
+      return '/manager/management/properties/create-rental-property';
+    default:
+      return '/management/properties/create-rental-property';
+  }
+};
+
+
+export const getFacilityPropertyCreatePath = (role: string | null): string => {
+  switch (role) {
+    case 'director':
+      return '/management/properties/create-gated-estate-property';
+    case 'manager':
+      return '/manager/management/properties/create-gated-estate-property';
+    default:
+      return '/management/properties/create-gated-estate-property';
   }
 };
 
