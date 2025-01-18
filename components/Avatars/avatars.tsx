@@ -1,12 +1,12 @@
-"use client";
-import { useState, useEffect } from "react";
+'use client';
+import { useState, useEffect } from 'react';
 
 // Types
-import type { AvatarsProps } from "./types";
-import Skeleton from "@mui/material/Skeleton";
-import { branchAvatarLinks, getAvatarLinks } from "./data";
-import Picture from "../Picture/picture";
-import useWindowWidth from "@/hooks/useWindowWidth";
+import type { AvatarsProps } from './types';
+import Skeleton from '@mui/material/Skeleton';
+import { branchAvatarLinks, getAvatarLinks } from './data';
+import Picture from '../Picture/picture';
+import useWindowWidth from '@/hooks/useWindowWidth';
 
 const Avatars: React.FC<AvatarsProps> = ({
   onClick,
@@ -19,48 +19,68 @@ const Avatars: React.FC<AvatarsProps> = ({
     ({ id: string; image_url: string } | string)[]
   >([]);
 
+  // useEffect(() => {
+  //   const fetchAvatarLinks = async () => {
+  //     setLoading(true);
+  //     if (branch) {
+  //       setLinks(branchAvatarLinks);
+  //     } else {
+  //       const fetchedLinks = await getAvatarLinks();
+  //       setLinks(fetchedLinks);
+  //     }
+  //     setLoading(false);
+  //   };
+  //   fetchAvatarLinks();
+  // }, [branch]);
+
   useEffect(() => {
     const fetchAvatarLinks = async () => {
       setLoading(true);
-      if (branch) {
-        setLinks(branchAvatarLinks);
-      } else {
-        const fetchedLinks = await getAvatarLinks();
-        setLinks(fetchedLinks);
+      try {
+        if (branch) {
+          setLinks(branchAvatarLinks);
+        } else {
+          const fetchedLinks = await getAvatarLinks();
+          setLinks(fetchedLinks);
+        }
+      } catch (error) {
+        console.error('Error fetching avatar links:', error);
+        // Handle error (e.g., set an error state)
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchAvatarLinks();
   }, [branch]);
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-10">
+    <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-10'>
       {loading
         ? Array.from({ length: maxNumber }).map((_, idx) => (
             <Skeleton
               key={idx}
-              variant="circular"
+              variant='circular'
               width={isMobile ? 70 : 110}
               height={isMobile ? 70 : 110}
-              animation="wave"
+              animation='wave'
             />
           ))
         : links.slice(0, maxNumber).map((avatar, idx) => (
             <button
-              type="button"
-              key={typeof avatar === "string" ? idx : avatar.id}
+              type='button'
+              key={typeof avatar === 'string' ? idx : avatar.id}
               onClick={() => {
                 onClick?.(
-                  typeof avatar === "string" ? avatar : avatar.image_url
+                  typeof avatar === 'string' ? avatar : avatar.image_url
                 );
               }}
-              className="w-fit mx-auto"
+              className='w-fit mx-auto'
             >
               <Picture
                 rounded
                 size={isMobile ? 70 : 110}
-                alt="avatar"
-                src={typeof avatar === "string" ? avatar : avatar.image_url}
+                alt='avatar'
+                src={typeof avatar === 'string' ? avatar : avatar.image_url}
               />
             </button>
           ))}

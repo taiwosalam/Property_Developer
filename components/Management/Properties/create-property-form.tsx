@@ -226,7 +226,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       });
     }
   }, [staffsData]);
-  console.log('staffOption', staffOption);
+  // console.log('staffOption', staffOption);
 
   // useEffect(() => {
   //   if (!selectedBranch.value) return;
