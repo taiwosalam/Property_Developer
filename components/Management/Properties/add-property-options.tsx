@@ -5,11 +5,12 @@ import {
 import AddPropertyCard from "../add-landlord-or-tenant-card";
 import { AddPropertyOptionsViewProps } from "./types";
 import Cookies from "js-cookie"
+import { useRole } from '@/hooks/roleContext';
 
 const AddPropertyOptionsView: React.FC<AddPropertyOptionsViewProps> = ({
   setModalView,
 }) => {
-  const role = Cookies.get("role") || "";
+   const { role, setRole } = useRole();
   const rental_path = getRentalPropertyCreatePath(role);
   const facility_path = getFacilityPropertyCreatePath(role);
   return (

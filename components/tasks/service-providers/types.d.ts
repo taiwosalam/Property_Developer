@@ -15,7 +15,8 @@ export type AddServiceProviderModalOptions =
   | "options"
   | "add-service-provider"
   | "invite-service-provider"
-  | "add-with-id";
+  // | "add-with-id"
+  | "add-with-email";
 
 export interface AddServiceProviderOptionsProps {
   showForm: React.Dispatch<

@@ -1,0 +1,70 @@
+"use client";
+
+import { useRouter, useParams } from "next/navigation";
+import { ChevronLeft } from "@/public/icons/icons";
+import Button from "@/components/Form/Button/button";
+import AnnouncementPost from "@/components/tasks/announcements/announcement-post";
+import AttachedImagesGrid from "@/components/tasks/complainid/Attached-images-grid";
+import { LandlordTenantInfo as AnnouncementInfo } from "@/components/Management/landlord-tenant-info-components";
+import ReadBy from "@/components/tasks/announcements/read-by";
+
+const PreviewAnnouncement = () => {
+  const router = useRouter();
+  const { announcementId } = useParams();
+  const images = [
+    { src: "/empty/SampleProperty.jpeg", isVideo: false },
+    { src: "/empty/SampleProperty2.jpeg", isVideo: true },
+    { src: "/empty/SampleProperty3.jpeg", isVideo: false },
+    { src: "/empty/SampleProperty4.png", isVideo: false },
+    { src: "/empty/SampleProperty5.jpg", isVideo: false },
+    { src: "/empty/SampleProperty6.jpg", isVideo: false },
+    { src: "/empty/SampleProperty.jpeg", isVideo: false },
+  ];
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-1 mb-1">
+          <button
+            type="button"
+            aria-label="Go Back"
+            onClick={() => router.back()}
+            className="p-2"
+          >
+            <ChevronLeft />
+          </button>
+          <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
+            Rent Increase & Maintenance
+          </h1>
+        </div>
+        {/* <Button
+          href={`/tasks/announcements/${announcementId}/manage`}
+          size="sm_medium"
+          className="py-2 px-3"
+        >
+          Manage Announcement
+        </Button> */}
+      </div>
+      <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
+        {/* Left Side */}
+        <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
+          <AnnouncementPost />
+        </div>
+        {/* Right Side */}
+        <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
+          <AttachedImagesGrid images={images} />
+          <AnnouncementInfo
+            containerClassName="rounded-lg"
+            heading="summary"
+            info={{
+              branch: "All/ Bodija, Moniya, Tokyo",
+              properties: "All Projects/ Harmony Cottage, Bodija Hotels",
+            }}
+          />
+          <ReadBy />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PreviewAnnouncement;

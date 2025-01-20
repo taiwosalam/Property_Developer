@@ -10,6 +10,7 @@ import {
 } from "@/public/icons/icons";
 import Button from "@/components/Form/Button/button";
 import Cookies from 'js-cookie'
+import { useRole } from "@/hooks/roleContext";
 
 interface AnnouncementCardProps {
   title: string;
@@ -40,7 +41,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
   announcementId,
   viewOnly,
 }) => {
-  const role = Cookies.get('role') || '';
+  const { role, setRole } = useRole();
   const path =
     role === 'director'
       ? ''

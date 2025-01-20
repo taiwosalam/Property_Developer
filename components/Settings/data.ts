@@ -25,6 +25,12 @@ export const accountant_settings_link_tabs = [
   "others",
 ] as const;
 
+export const staff_settings_link_tabs = [
+  "profile",
+  "security",
+  "others",
+] as const;
+
 export const website_color_schemes = [
   "#2563EB",
   "#0033C4",

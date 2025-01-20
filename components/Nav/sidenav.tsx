@@ -13,12 +13,12 @@ import NavDropdown from "./nav-dropdown";
 import { NavButton } from "./nav-components";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { getNavs } from "@/app/(onboarding)/auth/data";
-import Cookies from "js-cookie";
+import { useRole } from "@/hooks/roleContext";
 
 const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
   const pathname = usePathname();
   const [loading, setLoading] = useState(false);
-  const role = Cookies.get("role") || "";
+  const { role, setRole } = useRole();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const handleDropdownToggle = (label: string) => {
@@ -60,12 +60,6 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
           </NavDropdown>
         ) : (
           <NavButton
-            // highlight={
-            //   item.href &&
-            //   isDirector
-            //     ? pathname.includes(item.href)
-            //     : pathname.includes(`${item.href}`)
-            // }
             highlight={item.href ? pathname.includes(item.href) : false}
             key={idx}
             href={item.href}

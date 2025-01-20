@@ -28,9 +28,9 @@ const AddServiceProviderOptions: React.FC<AddServiceProviderOptionsProps> = ({
         <Button
           size="base_medium"
           className="py-2 px-8"
-          onClick={() => showForm("add-with-id")}
+          onClick={() => showForm("add-with-email")}
         >
-          Add with ID
+          Add with Email
         </Button>
       </div>
     </>

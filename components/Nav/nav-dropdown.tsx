@@ -9,6 +9,7 @@ import type { NavDropdownProps } from "./types";
 import { NavButton } from "./nav-components";
 import { AnimatePresence, motion } from "framer-motion";
 import Cookies from 'js-cookie'
+import { useRole } from "@/hooks/roleContext";
 
 const NavDropdown: React.FC<NavDropdownProps> = ({
   type,
@@ -21,7 +22,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
   isCollapsed,
 }) => {
   const pathname = usePathname();
-  const role = Cookies.get("role") || "";
+  const { role, setRole } = useRole();
   const isDirector = role === "director";
   
   return (

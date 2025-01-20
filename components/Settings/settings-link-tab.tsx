@@ -18,13 +18,14 @@ import {
 import clsx from "clsx";
 import Cookies from 'js-cookie';
 import { getSettingsPath } from "@/app/(onboarding)/auth/data";
+import { useRole } from "@/hooks/roleContext";
 
 const SettingsLinkTab: React.FC<SettingsLinkTabProps & { className?: string }> = ({ type, active, className }) => {
   const active_color = "#fff";
   const default_color = "#000";
 
   const color = active ? '#000' : '#fff';
-   const role = Cookies.get("role") || "";
+  const { role, setRole } = useRole();
   const path = getSettingsPath(role)
 
   return (

@@ -1,4 +1,4 @@
-// Types
+// SESSION IMPORT
 import type { AuthSliderContent } from '@/components/Auth/AuthSlider/types';
 import { toast } from 'sonner';
 import axios from 'axios';
@@ -6,17 +6,19 @@ import api, { handleAxiosError } from '@/services/api';
 import { useAuthStore } from '@/store/authStore';
 import { useWalletStore } from '@/store/wallet-store';
 import { InputData } from '@/utils/checkFormDataForImageOrAvatar';
-import Cookies from 'js-cookie';
+
 import {
   manager_nav_items,
   nav_items,
   account_nav_items,
   tabs,
   accountant_search_tabs,
+  staff_nav_items,
 } from '@/components/Nav/data';
 import {
   manager_settings_link_tabs,
   settings_link_tabs,
+  staff_settings_link_tabs,
 } from '@/components/Settings/data';
 import {
   create_new_items,
@@ -28,6 +30,7 @@ import {
   profile_actions,
   account_profile_actions,
 } from '@/components/Nav/options';
+import { saveRoleToCookie } from '@/utils/saveRole';
 
 export const getDashboardPage = (role: string | null) => {
   switch (role) {
@@ -39,8 +42,10 @@ export const getDashboardPage = (role: string | null) => {
       return '/manager/dashboard';
     case 'account':
       return '/accountant/dashboard';
+    case 'staff':
+      return '/staff/dashboard';
     default:
-      return '';
+      return '/aunthorized';
   }
 };
 
@@ -52,6 +57,8 @@ export const getNavs = (role: string | null) => {
       return nav_items;
     case 'account':
       return account_nav_items;
+    case 'staff':
+      return staff_nav_items;
     case 'manager':
       return manager_nav_items;
     default:
@@ -74,7 +81,6 @@ export const getGlobalSearchTabs = (role: string | null) => {
   }
 };
 
-
 export const getNavCreateItems = (role: string | null) => {
   switch (role) {
     case 'director':
@@ -89,7 +95,6 @@ export const getNavCreateItems = (role: string | null) => {
       return null;
   }
 };
-
 
 export const getProfileDropdownItems = (role: string | null) => {
   switch (role) {
@@ -110,8 +115,8 @@ export const getSettingsLinks = (role: string | null) => {
   switch (role) {
     case 'director':
       return settings_link_tabs;
-    case 'tenant':
-      return settings_link_tabs;
+    case 'staff':
+      return staff_settings_link_tabs;
     case 'manager':
       return manager_settings_link_tabs;
     default:
@@ -119,17 +124,16 @@ export const getSettingsLinks = (role: string | null) => {
   }
 };
 
-
-export const getSettingsPath:any = (role: string | null) => {
+export const getSettingsPath: any = (role: string | null) => {
   switch (role) {
     case 'director':
-      return "/";
-    case 'tenant':
-      return "/";
+      return '/';
+    case 'staff':
+      return '/staff/';
     case 'account':
-      return "/accountant/";
+      return '/accountant/';
     case 'manager':
-      return "/manager/";
+      return '/manager/';
     default:
       return null;
   }
@@ -146,18 +150,18 @@ export const getRoleSignInPage = (role: string | null): string => {
   }
 };
 
-
 export const getRentalPropertyCreatePath = (role: string | null): string => {
   switch (role) {
     case 'director':
       return '/management/properties/create-rental-property';
     case 'manager':
       return '/manager/management/properties/create-rental-property';
+    case 'account':
+      return '/accountant/management/properties/create-rental-property';
     default:
       return '/management/properties/create-rental-property';
   }
 };
-
 
 export const getFacilityPropertyCreatePath = (role: string | null): string => {
   switch (role) {
@@ -165,6 +169,8 @@ export const getFacilityPropertyCreatePath = (role: string | null): string => {
       return '/management/properties/create-gated-estate-property';
     case 'manager':
       return '/manager/management/properties/create-gated-estate-property';
+    case 'account':
+      return '/accountant/management/properties/create-gated-estate-property';
     default:
       return '/management/properties/create-gated-estate-property';
   }
@@ -242,17 +248,10 @@ export const login = async (formData: Record<string, any>) => {
     useAuthStore.getState().setAuthState('token', token);
     useAuthStore.getState().setAuthState('email', email);
     useAuthStore.getState().setAuthState('role', role);
-    useAuthStore
-      .getState()
-      .setAuthState('additional_details', details);
+    useAuthStore.getState().setAuthState('additional_details', details);
 
-    console.log('details', details);
-
-    // Save to cookies for middleware
-    Cookies.set('authToken', token, { expires: 7 }); // Expires in 7 days
-    Cookies.set('role', role, { expires: 7 });
-    Cookies.set('emailVerified', String(emailVerified), { expires: 7 });
-
+    // SECURE ROLE
+    await saveRoleToCookie(role);
     if (emailVerified) {
       toast.success(data?.message || 'Login successful!');
       if (role === 'user') {
