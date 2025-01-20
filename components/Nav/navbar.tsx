@@ -41,6 +41,7 @@ import useFetch from "@/hooks/useFetch";
 import { ProfileResponse } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { getLocalStorage } from "@/utils/local-storage";
+import { useRole } from "@/hooks/roleContext";
 
 const NotificationBadge = ({
   count,
@@ -52,7 +53,7 @@ const NotificationBadge = ({
   if (count === 0) return null; // Don't render if count is 0
   return (
     <span
-      className={`absolute top-0 right-0 bg-${color}-500 text-white text-xs rounded-full px-1`}
+    className={`absolute top-0 right-0 bg-${color}-500 text-white text-xs rounded-full px-1`}
     >
       {count}
     </span>
@@ -68,8 +69,9 @@ const Header = () => {
   if (loggedInUserDetails) {
     ({ company: loggedUserCompany, branch: loggedUserBranch } = loggedInUserDetails);
   }
-
-  console.log('loggedInUserDetails', loggedInUserDetails);
+  const {role} = useRole()
+  
+  console.log("log role", role)
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
     const primaryColor = localStorage.getItem("primary-color");

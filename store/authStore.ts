@@ -53,7 +53,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.removeItem('authToken');
     localStorage.removeItem('additional_details');
     Cookies.remove('authToken');
-    // Cookies.remove("role");
+    Cookies.remove('user_role'); 
+    Cookies.remove("role");
     set({
       email: email ?? null,
       token: null,

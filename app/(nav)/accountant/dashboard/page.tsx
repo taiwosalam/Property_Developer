@@ -18,8 +18,11 @@ import CustomTable from "@/components/Table/table";
 import Link from "next/link";
 import { useWalletStore } from "@/store/wallet-store";
 import clsx from "clsx";
+import { useRole } from "@/hooks/roleContext";
 
 const Dashboard = () => {
+    const { role, setRole } = useRole();
+
   const walletId = useWalletStore((state) => state.walletId);
   const recentTransactions = useWalletStore(
     (state) => state.recentTransactions
@@ -33,7 +36,8 @@ const Dashboard = () => {
     debit: t.type === "debit" ? t.amount : 0,
   }));
 
-  console.log("transactions", transactions)
+  // console.log("transactions", transactions)
+
 
   return (
     <section className='custom-flex-col gap-10'>

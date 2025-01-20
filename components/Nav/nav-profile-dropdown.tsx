@@ -16,11 +16,11 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import Cookies from "js-cookie";
+import { useRole } from "@/hooks/roleContext";
 
 const NavProfileDropdown = () => {
   const router = useRouter();
-  // const role = useAuthStore((state) => state.role);
-  const role = Cookies.get("role") || "";
+  const { role, setRole } = useRole();
   const { isMobile } = useWindowWidth();
   const name = usePersonalInfoStore((state) => state.name);
   const userId = usePersonalInfoStore((state) => state.user_id);

@@ -26,10 +26,15 @@ import CalendarHeader from "./calendar-header";
 import { Calendar, calendar_event_tags } from "./data";
 import CalendarActivities from "./calendar-activities";
 import { calendar_events } from "./events";
+import Cookies from 'js-cookie'
+import { useRole } from "@/hooks/roleContext";
+
 
 const CalendarComponent = () => {
+   const { role, setRole } = useRole();
   const today = new Date();
-
+  
+  const isStaff = role === 'staff';
   // States
   const [activeDate, setActiveDate] = useState(today);
   const [currentDate, setCurrentDate] = useState(startOfMonth(today));
@@ -95,7 +100,7 @@ const CalendarComponent = () => {
             <SectionSeparator
               style={{ backgroundColor: "rgba(120, 122, 126, 0.20)" }}
             />
-            <div className="flex justify-end">
+           {!isStaff && <div className="flex justify-end">
               <Button
                 size="sm_medium"
                 className="py-2 px-8"
@@ -103,7 +108,7 @@ const CalendarComponent = () => {
               >
                 manage
               </Button>
-            </div>
+            </div>}
           </div>
         </div>
         <div style={{ maxHeight: "460px" }} className="lg:w-[40%]">

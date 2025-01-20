@@ -259,6 +259,51 @@ export const account_nav_items: NavItemsProps = [
 ];
 
 
+export const staff_nav_items: NavItemsProps = [
+  {
+    type: 'buildings',
+    label: 'dashboard',
+    href: '/staff/dashboard',
+  },
+  {
+    type: 'people',
+    label: 'management',
+    content: [
+      { label: 'landlord & landlady', href: '/staff/management/landlord' },
+      { label: 'tenants & occupants', href: '/staff/management/tenants' },
+      { label: 'Other Staff', href: '/staff/management/staff-branch' },
+      { label: 'inventory', href: '/staff/management/inventory' },
+      { label: 'properties', href: '/staff/management/properties' },
+      {
+        label: 'vehicles record',
+        href: '/staff/management/vehicles-record',
+      },
+      {
+        label: 'service providers',
+        href: '/staff/management/service-providers',
+      },
+      { label: 'team chat', href: '/staff/management/team-chat' },
+      { label: 'agent community', href: '/management/agent-community' },
+    ],
+  },
+  {
+    type: 'briefcase_timer',
+    label: 'tasks',
+    content: [
+      { label: 'complaints', href: '/staff/tasks/complaints' },
+      { label: 'inspections', href: '/staff/tasks/inspections' },
+      { label: 'examine', href: '/staff/tasks/examine' },
+      { label: 'maintenance', href: '/staff/tasks/maintenance' },
+      { label: 'calendars', href: '/staff/tasks/calendars' },
+      { label: 'announcements', href: '/staff/tasks/announcements' },
+      { label: 'call request', href: '/staff/tasks/inquires' },
+      { label: 'visitors request', href: '/staff/tasks/visitors' },
+    ],
+  },
+  { type: 'settings', label: 'settings', href: '/staff/settings' },
+];
+
+
 export const tabs: {
   icon: SVGType;
   label: string;

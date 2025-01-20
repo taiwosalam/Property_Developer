@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { SidenavArrow } from "@/public/icons/icons";
 
@@ -17,18 +17,22 @@ import { useOutsideClick } from "@/hooks/useOutsideClick";
 import useSettingsStore from "@/store/settings";
 import TopNav from "@/components/Nav/topnav";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
+import { useRole } from "@/hooks/roleContext";
+import { getRoleFromCookie } from "@/utils/getRole";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const { selectedOptions } = useSettingsStore();
   const sideNavRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowWidth();
   const [isSideNavOpen, setIsSideNavOpen] = useState(true);
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
 
   const navbar = selectedOptions.navbar;
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
-
+  const { role, setRole } = useRole();
+  
   useOutsideClick(sideNavRef, () => {
     if (isMobile) {
       setIsSideNavOpen(false);
@@ -38,6 +42,16 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useEffect(() => {
     setIsSideNavOpen(!isMobile);
   }, [isMobile]);
+
+  // Fetch role on component mount
+  useEffect(() => {
+    const fetchRole = async () => {
+      const userRole = await getRoleFromCookie();
+      setRole(userRole || "");
+      setIsLoading(false);
+    };
+    fetchRole();
+  }, [setRole]);
 
   // Simulate
   useEffect(() => {
@@ -49,8 +63,8 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center w-full h-screen bg-neutral-100 dark:bg-neutral-900">
-        <div className="animate-spin w-12 h-12 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      <div className='flex items-center justify-center w-full h-screen bg-neutral-100 dark:bg-neutral-900'>
+        <div className='animate-spin w-12 h-12 border-4 border-brand-9 border-t-transparent rounded-full'></div>
       </div>
     );
   }
@@ -58,24 +72,24 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <LayoutContext.Provider value={{ isSideNavOpen }}>
       <Header />
-      {navbar === "row" ? (
-        <div className="sticky top-[100px] z-[2] bg-white dark:bg-[#020617]">
+      {navbar === 'row' ? (
+        <div className='sticky top-[100px] z-[2] bg-white dark:bg-[#020617]'>
           <TopNav />
         </div>
       ) : (
         <aside
           ref={sideNavRef}
           className={clsx(
-            "h-[calc(100vh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white dark:bg-[#020617] dark:border-[#252525] dark:border-r no-scrollbar overflow-auto transition-transform duration-300",
+            'h-[calc(100vh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white dark:bg-[#020617] dark:border-[#252525] dark:border-r no-scrollbar overflow-auto transition-transform duration-300',
             {
-              "-translate-x-full md:w-[110px]": !isSideNavOpen,
-              "translate-x-0 md:w-[235px] lg:w-[250px]": isSideNavOpen,
+              '-translate-x-full md:w-[110px]': !isSideNavOpen,
+              'translate-x-0 md:w-[235px] lg:w-[250px]': isSideNavOpen,
             },
-            "md:translate-x-0"
+            'md:translate-x-0'
           )}
           style={{
             // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-            transitionProperty: "width, transform",
+            transitionProperty: 'width, transform',
           }}
         >
           <SideNav
@@ -92,48 +106,48 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <>
         <div
           style={{
-            boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)",
-            transitionProperty: "margin-left",
-            transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+            boxShadow: '0px 2px 20px 0px rgba(0, 0, 0, 0.02)',
+            transitionProperty: 'margin-left',
+            transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
           }}
-          className={clsx("custom-flex-col sticky z-[2] duration-300", {
-            "w-full top-[150px]": navbar === "row", // Adjusted top to 150px to account for TopNav height
-            "top-[99px]": navbar !== "row",
-            "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen && navbar !== "row",
-            "md:ml-[235px] lg:ml-[250px]": isSideNavOpen && navbar !== "row",
+          className={clsx('custom-flex-col sticky z-[2] duration-300', {
+            'w-full top-[150px]': navbar === 'row', // Adjusted top to 150px to account for TopNav height
+            'top-[99px]': navbar !== 'row',
+            'md:ml-[110px] lg:ml-[110px]': !isSideNavOpen && navbar !== 'row',
+            'md:ml-[235px] lg:ml-[250px]': isSideNavOpen && navbar !== 'row',
           })}
         >
           <div
-            className="h-[1px]"
-            style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
+            className='h-[1px]'
+            style={{ boxShadow: '0px 2px 20px 0px rgba(0, 0, 0, 0.02)' }}
           />
           <div
             className={`h-[50px] px-3 flex items-center ${
-              navbar !== "row" ? "justify-between" : "justify-end"
+              navbar !== 'row' ? 'justify-between' : 'justify-end'
             } gap-2 bg-white dark:bg-[#020617] max-w-full overflow-hidden`}
           >
-            {navbar !== "row" && (
+            {navbar !== 'row' && (
               <button
-                type="button"
-                aria-label="toggle sidenav"
+                type='button'
+                aria-label='toggle sidenav'
                 onClick={() => {
                   setIsSideNavOpen(!isSideNavOpen);
                 }}
               >
                 {isSideNavOpen ? (
                   <SVG
-                    type="sidebar"
+                    type='sidebar'
                     color={primaryColor as Color}
-                    className="w-8 h-8"
+                    className='w-8 h-8'
                   />
                 ) : (
                   <>
                     <SVG
-                      type="sidebar"
+                      type='sidebar'
                       color={primaryColor as Color}
-                      className="w-8 h-8 md:hidden"
+                      className='w-8 h-8 md:hidden'
                     />
-                    <div className="hidden md:block text-brand-9">
+                    <div className='hidden md:block text-brand-9'>
                       <SidenavArrow />
                     </div>
                   </>
@@ -141,34 +155,34 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               </button>
             )}
             <p
-              className="capitalize text-text-primary dark:text-darkText-2 text-sm font-medium truncate"
+              className='capitalize text-text-primary dark:text-darkText-2 text-sm font-medium truncate'
               style={{
-                direction: "rtl", // RTL direction for truncating from the start
+                direction: 'rtl', // RTL direction for truncating from the start
               }}
             >
-              {pathname.split("/").slice(1).join(" > ")}
+              {pathname.split('/').slice(1).join(' > ')}
             </p>
           </div>
           <div
-            className="h-[1px]"
-            style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
+            className='h-[1px]'
+            style={{ boxShadow: '0px 2px 20px 0px rgba(0, 0, 0, 0.02)' }}
           />
         </div>
         <main
           style={{
-            transitionProperty: "margin-left",
-            transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+            transitionProperty: 'margin-left',
+            transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
           }}
           className={clsx(
-            "px-2 sm:px-3 md:p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300 min-h-[calc(100vh-152px)]",
+            'px-2 sm:px-3 md:p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300 min-h-[calc(100vh-152px)]',
             {
-              "w-full md:ml-0 lg:ml-0": navbar === "row",
-              "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen && navbar !== "row",
-              "opacity-50 pointer-events-none md:ml-[235px] lg:ml-[250px]":
-                isSideNavOpen && navbar !== "row",
+              'w-full md:ml-0 lg:ml-0': navbar === 'row',
+              'md:ml-[110px] lg:ml-[110px]': !isSideNavOpen && navbar !== 'row',
+              'opacity-50 pointer-events-none md:ml-[235px] lg:ml-[250px]':
+                isSideNavOpen && navbar !== 'row',
             },
             {
-              "md:opacity-100 md:pointer-events-auto": navbar !== "row",
+              'md:opacity-100 md:pointer-events-auto': navbar !== 'row',
             }
           )}
         >

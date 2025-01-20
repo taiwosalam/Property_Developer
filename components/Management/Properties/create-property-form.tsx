@@ -34,6 +34,7 @@ import useFetch from '@/hooks/useFetch';
 import clsx from 'clsx';
 import { useAddUnitStore } from '@/store/add-unit-store';
 import Cookies from 'js-cookie';
+import { useRole } from '@/hooks/roleContext';
 
 const maxNumberOfImages = 6;
 
@@ -55,9 +56,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const [state, setState] = useState<PropertyFormStateType>(
     property_form_state_data
   );
-  const role = Cookies.get('role') || '';
+  const { role, setRole } = useRole();
   const isDirector = role === 'director';
-  console.log('role', isDirector);
+  const isAccountOfficer = role === 'account';
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const {
@@ -537,6 +538,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 />
               </>
             )}
+
+            {!isAccountOfficer && 
             <Select
               options={officerOptions}
               id='account_officer_id'
@@ -544,7 +547,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               inputContainerClassName='bg-white'
               resetKey={resetKey}
               hiddenInputClassName='property-form-input'
-            />
+            />}
             {staff.map(({ id, label }) => (
               <div
                 key={id}

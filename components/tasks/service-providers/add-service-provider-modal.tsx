@@ -67,8 +67,8 @@ const AddServiceProviderModal = () => {
         </form>
       ),
     },
-    "add-with-id": {
-      heading: "Add Service Provider with ID",
+    "add-with-email": {
+      heading: "Add Service Provider with Email",
       content: (
         <form className="flex justify-center" onSubmit={() => {}}>
           <div className="custom-flex-col gap-5 w-[300px]">

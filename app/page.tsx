@@ -6,10 +6,11 @@ import { getLocalStorage } from "@/utils/local-storage";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { getDashboardPage } from "./(onboarding)/auth/data";
 import Cookies from 'js-cookie'
+import { useRole } from "@/hooks/roleContext";
 
 export default function Home() {
   const router = useRouter();
-  const role = Cookies.get('role') || "";
+  const { role, setRole } = useRole();
   const dashboardPage = getDashboardPage(role)
 
   useEffect(() => {

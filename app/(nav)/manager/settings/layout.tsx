@@ -8,12 +8,13 @@ import SettingsLinkTab from "@/components/Settings/settings-link-tab";
 import Cookies from "js-cookie"
 import { getSettingsLinks } from "@/app/(onboarding)/auth/data";
 import { manager_settings_link_tabs } from "@/components/Settings/data";
+import { useRole } from "@/hooks/roleContext";
 
 const SettingsLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const pathname = usePathname();
-  const role = Cookies.get("role") || "";
+   const { role, setRole } = useRole();
   const links = getSettingsLinks(role)
 
   return (

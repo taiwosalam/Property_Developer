@@ -15,11 +15,11 @@ import {
 import { getDashboardPage, login } from "@/app/(onboarding)/auth/data";
 import { useAuthStore } from "@/store/authStore";
 import Cookies from "js-cookie";
+import { useRole } from "@/hooks/roleContext";
 
 const SignIn = () => {
   const router = useRouter();
-  // const role = useAuthStore((state) => state.role);
-  const role = Cookies.get("role") || "";
+  const { role, setRole } = useRole();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,10 +30,9 @@ const SignIn = () => {
       router.push("/auth/sign-up");
     } else if (a === "redirect to dashboard") {
       const interval = setInterval(() => {
-        const currentRole = useAuthStore.getState().role;
-        if (currentRole) {
+        if (role) {
           clearInterval(interval);
-          router.push(getDashboardPage(currentRole));
+          router.push(getDashboardPage(role));
         }
       }, 50);
     } else if (a === "redirect to setup") {
