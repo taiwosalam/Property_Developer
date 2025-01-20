@@ -28,11 +28,14 @@ export interface AddLandlordOptionsProps {
 export interface FilterOption {
   label: string;
   value: string;
+  isChecked?: boolean;
 }
 
 export interface FilterOptionMenu {
   radio?: boolean;
   label: string;
+  radio?: boolean;
+  isChecked?: boolean;
   value: FilterOption[];
 }
 

@@ -11,47 +11,15 @@ import { NavSearchTab } from "./nav-components";
 import { NavCloseIcon } from "@/public/icons/icons";
 import NavGlobalSearchItem from "./nav-global-search-item";
 import { SectionSeparator } from "../Section/section-components";
+import Cookies from 'js-cookie'
+import { getGlobalSearchTabs } from "@/app/(onboarding)/auth/data";
 
 const NavGlobalSearch = () => {
-  const tabs: {
-    icon: SVGType;
-    label: string;
-  }[] = [
-    {
-      icon: "people",
-      label: "managememt",
-    },
-    {
-      icon: "briefcase_timer",
-      label: "task",
-    },
-    {
-      icon: "chart",
-      label: "listing",
-    },
-    {
-      icon: "menu_board",
-      label: "accounting",
-    },
-    {
-      icon: "status_up",
-      label: "reports",
-    },
-    {
-      icon: "empty_wallet",
-      label: "wallet",
-    },
-    {
-      icon: "task",
-      label: "applications",
-    },
-    {
-      icon: "folder",
-      label: "documents",
-    },
-  ];
-
+  const role = Cookies.get("role") || "";
   const [activeTab, setActiveTab] = useState(0);
+  const tabs = getGlobalSearchTabs(role) || [];
+
+  if (!tabs.length) return null;
 
   return (
     <div

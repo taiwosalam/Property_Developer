@@ -11,6 +11,8 @@ import {
   manager_nav_items,
   nav_items,
   account_nav_items,
+  tabs,
+  accountant_search_tabs,
 } from '@/components/Nav/data';
 import {
   manager_settings_link_tabs,
@@ -52,6 +54,21 @@ export const getNavs = (role: string | null) => {
       return account_nav_items;
     case 'manager':
       return manager_nav_items;
+    default:
+      return null;
+  }
+};
+
+export const getGlobalSearchTabs = (role: string | null) => {
+  switch (role) {
+    case 'director':
+      return tabs;
+    case 'tenant':
+      return tabs;
+    case 'account':
+      return accountant_search_tabs;
+    case 'manager':
+      return tabs;
     default:
       return null;
   }
@@ -152,6 +169,8 @@ export const getFacilityPropertyCreatePath = (role: string | null): string => {
       return '/management/properties/create-gated-estate-property';
   }
 };
+
+
 
 interface LoginResponse {
   message: string;

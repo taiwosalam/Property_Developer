@@ -1,0 +1,43 @@
+LAYOUT ROUTES
+- all / routes are for director role
+- all /manager routes are for manager role
+- all /accountant route are for account role
+
+
+FILTER MODAL
+- A component for filtering 
+- it accept these props
+
+--- filterOptionsMenu > an array object of filter options
+export const maintenanceFilterOptionsWithDropdown: FilterOptionMenu[] = [
+  {
+    label: "Property",
+    value: [
+      { label: "Property 1", value: "Property1" },
+      { label: "Property 2", value: "Property2" },
+      { label: "Property 3", value: "Property3" },
+    ],
+  },
+  {
+    radio: true,
+    label: "Status",
+    value: [
+      { label: "all", value: "all", isChecked: true }, use isChecked to check any value by default
+      { label: "Pending", value: "Pending" },
+      { label: "Ongoing", value: "Ongoing" },
+      { label: "Completed", value: "Completed" },
+    ],
+  },
+];
+
+
+---FilterOptions > an object for filter option without menu
+check management/vehicles-record filter for reference
+    filterOptions={{
+          radio: true, --- to change the checkbox to radio option
+          value: [
+            { label: "All", value: "all" },
+            { label: "Rental", value: "rental" },
+            { label: "Facility", value: "facility" },
+          ],
+        }}

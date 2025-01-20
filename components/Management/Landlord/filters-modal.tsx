@@ -54,12 +54,35 @@ const FilterModal: React.FC<FilterModalProps> = ({
   };
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilters, setSelectedFilters] = useState<string[]>(
-    appliedFilters?.options || []
-  );
-  const [selectedFilterMenus, setSelectedFilterMenus] = useState<
-    Record<string, string[]>
-  >(appliedFilters?.menuOptions || {});
+  const [selectedFilters, setSelectedFilters] = useState<string[]>(() => {
+    if (appliedFilters?.options) return appliedFilters.options;
+    
+    // Find radio group with default checked option
+    const defaultRadioValue = filterOptionsMenu?.find(menu => menu.radio)
+      ?.value.find(option => option.isChecked)?.value;
+    
+    if (defaultRadioValue) {
+      return [String(defaultRadioValue)];
+    }
+    
+    return [];
+  });
+  const [selectedFilterMenus, setSelectedFilterMenus] = useState<Record<string, string[]>>(() => {
+    if (appliedFilters?.menuOptions) return appliedFilters.menuOptions;
+    
+    // Initialize radio groups with default values
+    const initialMenus: Record<string, string[]> = {};
+    filterOptionsMenu?.forEach(menu => {
+      if (menu.radio) {
+        const defaultValue = menu.value.find(option => option.isChecked)?.value;
+        if (defaultValue) {
+          initialMenus[menu.label] = [String(defaultValue)];
+        }
+      }
+    });
+    
+    return initialMenus;
+  });
   const [view, setView] = useState<"default" | "date" | "menu">("default");
   const commonCheckboxClasses =
     "flex-row-reverse w-full justify-between bg-[#F5F5F5] dark:bg-[#3C3D37] py-2 px-4 capitalize";
@@ -163,6 +186,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   <CheckboxCheckedIcon />
                 ) : (
                   <ChevronRight className="text-[#344054]" />
+                )}
+                {option.isChecked && (
+                  <Checkbox
+                    checked={selectedFilters.includes(String(option.value)) || option.isChecked}
+                    onChange={() => handleOptionClick(String(option.value))}
+                  />
                 )}
               </div>
             ))}
