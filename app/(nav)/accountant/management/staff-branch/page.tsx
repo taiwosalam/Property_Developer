@@ -159,23 +159,23 @@ const StaffAndBranches = () => {
     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
-    <div className="space-y-9">
-      <div className="page-header-container">
-        <div className="hidden md:flex gap-5 flex-wrap">
+    <div className='space-y-9'>
+      <div className='page-header-container'>
+        <div className='hidden md:flex gap-5 flex-wrap'>
           <ManagementStatistcsCard
-            title="Total Branches"
+            title='Total Branches'
             newData={new_branches_count}
             total={total_branches}
             colorScheme={1}
           />
           <ManagementStatistcsCard
-            title="Total Properties"
+            title='Total Properties'
             newData={new_properties_count}
             total={total_properties}
             colorScheme={2}
           />
           <ManagementStatistcsCard
-            title="Total Staff"
+            title='Total Staff'
             newData={new_staffs_count}
             total={total_staffs}
             colorScheme={3}
@@ -183,7 +183,10 @@ const StaffAndBranches = () => {
         </div>
         <Modal>
           <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
+            <Button
+              type='button'
+              className='page-header-button'
+            >
               + create branch
             </Button>
           </ModalTrigger>
@@ -194,23 +197,23 @@ const StaffAndBranches = () => {
       </div>
       <FilterBar
         azFilter
-        gridView={view === "grid"}
-        setGridView={() => setView("grid")}
-        setListView={() => setView("list")}
-        pageTitle="Staff & Branch"
+        gridView={view === 'grid'}
+        setGridView={() => setView('grid')}
+        setListView={() => setView('list')}
+        pageTitle='Staff & Branch'
         aboutPageModalData={{
-          title: "Staff & Branch",
+          title: 'Staff & Branch',
           description:
-            "This page contains a list of all Staff & Branch on the platform.",
+            'This page contains a list of all Staff & Branch on the platform.',
         }}
-        searchInputPlaceholder="Search for Staff & Branch"
+        searchInputPlaceholder='Search for Staff & Branch'
         handleFilterApply={handleFilterApply}
         appliedFilters={appliedFilters}
         isDateTrue
-        dateLabel="Date Created"
+        dateLabel='Date Created'
         filterOptionsMenu={[
           {
-            label: "State",
+            label: 'State',
             value: allStates.map((state) => ({
               label: state,
               value: state,
@@ -223,8 +226,12 @@ const StaffAndBranches = () => {
 
       <section>
         {loading || silentLoading ? (
-          view === "grid" ? (
-            <AutoResizingGrid minWidth={284} gap={16} key="loading">
+          view === 'grid' ? (
+            <AutoResizingGrid
+              minWidth={284}
+              gap={16}
+              key='loading'
+            >
               <CardsLoading />
             </AutoResizingGrid>
           ) : (
@@ -232,14 +239,14 @@ const StaffAndBranches = () => {
           )
         ) : branches.length === 0 ? (
           config.params.search || isFilterApplied() ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
+            <div className='col-span-full text-center py-8 text-gray-500'>
               No Search/Filter Found
             </div>
           ) : (
             <EmptyList
-              buttonText="+ create branch"
+              buttonText='+ create branch'
               modalContent={<CreateBranchModal />}
-              title="You have not created any branches or added any staff yet"
+              title='You have not created any branches or added any staff yet'
               body={
                 <p>
                   You can create profiles for all your branches and assign staff
@@ -247,19 +254,25 @@ const StaffAndBranches = () => {
                   Branch&quot; button. Branch managers will have the same access
                   to their branch as you do, while you will have access to all
                   staff accounts and branches created. To learn more about this
-                  page later, you can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
+                  page later, you can click on this icon{' '}
+                  <span className='inline-block text-brand-10 align-text-top'>
                     <ExclamationMark />
-                  </span>{" "}
+                  </span>{' '}
                   at the top left of the dashboard page.
                 </p>
               }
             />
           )
-        ) : view === "grid" ? (
-          <AutoResizingGrid minWidth={284} key="card">
+        ) : view === 'grid' ? (
+          <AutoResizingGrid
+            minWidth={284}
+            key='card'
+          >
             {branches.map((b) => (
-              <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
+              <Link
+                href={`/accountant/management/staff-branch/${b.id}`}
+                key={b.id}
+              >
                 <BranchCard {...b} />
               </Link>
             ))}
@@ -268,9 +281,9 @@ const StaffAndBranches = () => {
           <CustomTable
             fields={branchTableFields}
             data={branches}
-            tableHeadClassName="bg-brand-5 h-[76px]"
+            tableHeadClassName='bg-brand-5 h-[76px]'
             tableHeadStyle={{
-              borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
+              borderBottom: '1px solid rgba(234, 236, 240, 0.20)',
             }}
             handleSelect={handleSelectTableItem}
           />

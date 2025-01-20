@@ -1,10 +1,17 @@
 import React from "react";
 
 // Types
-import type { AddLandlordCardProps } from "./types";
+// import type { AddLandlordCardProps } from "./types";
 
 // Imports
 import Button from "../../Form/Button/button";
+
+interface AddLandlordCardProps {
+  desc: string;
+  title: string;
+  buttonText: string;
+  onClick?: () => void;
+}
 
 const AddLandlordCard: React.FC<AddLandlordCardProps> = ({
   desc,

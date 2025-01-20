@@ -13,10 +13,10 @@ export const maintenanceFilterOptionsWithDropdown: FilterOptionMenu[] = [
     radio: true,
     label: "Status",
     value: [
+      { label: "all", value: "all", isChecked: true},
       { label: "Pending", value: "Pending" },
       { label: "Ongoing", value: "Ongoing" },
       { label: "Completed", value: "Completed" },
-      { label: "all", value: "all" },
     ],
   },
 ];

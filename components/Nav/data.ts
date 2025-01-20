@@ -4,6 +4,7 @@ import type { NavItemsProps } from "./types";
 // import { useAuthStore } from "@/store/auth-store";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
+import { SVGType } from "../SVG/types";
 
 // The nav_items is used for the director role and it uses the top label joined the href unlinke manager
 export const nav_items: NavItemsProps = [
@@ -247,7 +248,6 @@ export const account_nav_items: NavItemsProps = [
       { label: 'expenses', href: '/accountant/accounting/expenses' },
       { label: 'disbursement', href: '/accountant/accounting/disbursement' },
       { label: 'statement', href: '/accountant/accounting/statement' },
-      { label: 'VAT', href: '/accountant/accounting/vat' },
     ],
   },
   {
@@ -256,6 +256,68 @@ export const account_nav_items: NavItemsProps = [
     href: '/accountant/applications',
   },
   { type: 'settings', label: 'settings', href: '/accountant/settings' },
+];
+
+
+export const tabs: {
+  icon: SVGType;
+  label: string;
+}[] = [
+  {
+    icon: 'people',
+    label: 'managememt',
+  },
+  {
+    icon: 'briefcase_timer',
+    label: 'task',
+  },
+  {
+    icon: 'chart',
+    label: 'listing',
+  },
+  {
+    icon: 'menu_board',
+    label: 'accounting',
+  },
+  {
+    icon: 'status_up',
+    label: 'reports',
+  },
+  {
+    icon: 'empty_wallet',
+    label: 'wallet',
+  },
+  {
+    icon: 'task',
+    label: 'applications',
+  },
+  {
+    icon: 'folder',
+    label: 'documents',
+  },
+];
+
+
+export const accountant_search_tabs: {
+  icon: SVGType;
+  label: string;
+}[] = [
+  {
+    icon: 'people',
+    label: 'managememt',
+  },
+  {
+    icon: 'briefcase_timer',
+    label: 'task',
+  },
+  {
+    icon: 'menu_board',
+    label: 'accounting',
+  },
+  {
+    icon: 'task',
+    label: 'applications',
+  },
 ];
 
 

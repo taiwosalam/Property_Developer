@@ -41,12 +41,8 @@ import {
 import Avatars from "@/components/Avatars/avatars";
 const notificationSettings = [
   {
-    title: "General Notification",
-    desc: "Receive priority notifications for general events or whenever there is a new event of notification.",
-  },
-  {
-    title: "Email Notification",
-    desc: "Receive email notifications for every notification and reminder, as well as whenever I make any transaction in my wallet and other payment transactions.",
+    title: 'General Notification',
+    desc: 'Receive priority notifications for general events or whenever there is a new event of notification.',
   },
 ];
 
@@ -104,24 +100,26 @@ const Others = () => {
   return (
     <>
       {/* NOTIFICATIONS */}
-      <SettingsSection title="Notifications">
-        <div className="custom-flex-col gap-6 mt-4">
-          <div className="mt-2 flex flex-col gap-2">
+      <SettingsSection title='Notifications'>
+        <div className='custom-flex-col gap-6 mt-4'>
+          <div className='mt-2 flex flex-col gap-2'>
             <h4> Notify me when: </h4>
             {[
-              "Ever there is a new message from either a client or a group chat related to the branch.",
-              "Task is created or if there are unattended tasks pending for an extended period.",
-              "A profile is created for web landlords/landladies and tenants/occupants awaiting approval.",
-              "A property is created and awaiting approval.",
-              "Property becomes vacant and is moved to the listing page.",
+              'Whenever there is a new message from either a client or a group chat related to the company.',
+              'Task is created or if there are unattended tasks pending for an extended period.',
+              'Document is created using my signature, name, or consent.',
             ].map((option, index) => (
-              <DocumentCheckbox darkText key={index} checked={true}>
+              <DocumentCheckbox
+                darkText
+                key={index}
+                checked={true}
+              >
                 {option}
               </DocumentCheckbox>
             ))}
           </div>
 
-          <div className="toggle flex flex-col gap-2">
+          <div className='toggle flex flex-col gap-2'>
             {notificationSettings.map((setting, index) => (
               <SettingsOthersCheckBox
                 key={index}
@@ -140,7 +138,7 @@ const Others = () => {
             ))}
           </div>
         </div>
-        <div className="flex justify-end mt-2">
+        <div className='flex justify-end mt-2'>
           <SettingsUpdateButton />
         </div>
       </SettingsSection>

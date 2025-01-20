@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 // Types
-import type { AddLandlordModalOptions } from "./types";
+// import type { AddLandlordModalOptions } from "./types";
 
 // Imports
 import { useRouter, usePathname } from "next/navigation";
@@ -19,6 +19,15 @@ import {
 } from "./data";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { useModal } from "@/components/Modal/modal";
+
+type AddLandlordModalOptions =
+  | 'options'
+  | 'add-landlord'
+  | 'add-multiple-owners'
+  | 'invite-owner'
+  | 'invite-multiple-owners'
+  | 'add-landlord-with-id';
+
 
 const AddLandlordModal = () => {
   const router = useRouter();

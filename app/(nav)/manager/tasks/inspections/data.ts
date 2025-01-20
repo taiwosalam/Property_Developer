@@ -10,16 +10,6 @@ export const inspectionFilterOptionsWithDropdown = [
       { label: "Property 3", value: "Property3" },
     ],
   },
-  {
-    label: "Tenant/Occupant",
-    value: [
-      { label: "Tenant/Occupant 1", value: "Tenant/Occupant1" },
-      { label: "Tenant/Occupant 2", value: "Tenant/Occupant2" },
-      { label: "Tenant/Occupant 3", value: "Tenant/Occupant3" },
-      { label: "Tenant/Occupant 4", value: "Tenant/Occupant4" },
-      { label: "Tenant/Occupant 5", value: "Tenant/Occupant5" },
-    ],
-  },
 ];
 
 export const articleOptions = [
