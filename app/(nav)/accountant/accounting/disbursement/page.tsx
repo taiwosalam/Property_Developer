@@ -47,7 +47,7 @@ const Disbursement = () => {
         <FilterBar
           azFilter
           searchInputPlaceholder="Search for disbursement"
-          handleFilterApply={() => {}}
+          handleFilterApply={()=> {}}
           isDateTrue
           filterOptionsMenu={accountingDisbursementOptionsWithDropdown}
           hasGridListToggle={false}

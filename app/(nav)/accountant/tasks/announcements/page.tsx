@@ -13,7 +13,47 @@ import { Announcement } from "./types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 
 const AnnouncementPage = () => {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([
+    {
+      id: '1',
+      title: 'New Feature Release',
+      body: 'We are excited to announce the release of our new feature!',
+      company_id: '101',
+      branch_id: '1',
+      property_id: 1,
+      created_at: '2023-10-01T12:00:00Z',
+      updated_at: '2023-10-01T12:00:00Z',
+      deleted_at: '2023-10-01T12:00:00Z',
+      image_urls: ['/empty/SampleProperty.jpeg'],
+      image_paths: ['path/to/image1.jpg'],
+    },
+    {
+      id: '2',
+      title: 'Maintenance Update',
+      body: 'Scheduled maintenance will occur on October 5th.',
+      company_id: '102',
+      branch_id: '2',
+      property_id: 2,
+      created_at: '2023-09-25T09:00:00Z',
+      updated_at: '2023-09-25T09:00:00Z',
+      deleted_at: '2023-10-01T12:00:00Z',
+      image_urls: ['/empty/SampleProperty.jpeg'],
+      image_paths: ['path/to/image2.jpg'],
+    },
+    {
+      id: '3',
+      title: 'Webinar Invitation',
+      body: 'Join us for a webinar on October 10th.',
+      company_id: '103',
+      branch_id: '3',
+      property_id: 3,
+      created_at: '2023-09-20T15:00:00Z',
+      updated_at: '2023-09-20T15:00:00Z',
+      deleted_at: '2023-10-01T12:00:00Z',
+      image_urls: ['/empty/SampleProperty.jpeg'],
+      image_paths: ['path/to/image3.jpg'],
+    },
+  ]);
 
   // console.log(announcements);
 

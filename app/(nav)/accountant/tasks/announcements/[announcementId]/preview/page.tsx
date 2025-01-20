@@ -36,13 +36,13 @@ const PreviewAnnouncement = () => {
             Rent Increase & Maintenance
           </h1>
         </div>
-        <Button
+        {/* <Button
           href={`/tasks/announcements/${announcementId}/manage`}
           size="sm_medium"
           className="py-2 px-3"
         >
           Manage Announcement
-        </Button>
+        </Button> */}
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         {/* Left Side */}

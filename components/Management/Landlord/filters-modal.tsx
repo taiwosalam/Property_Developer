@@ -4,10 +4,36 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 import DateInput from "@/components/Form/DateInput/date-input";
 import dayjs, { Dayjs } from "dayjs";
 import Button from "@/components/Form/Button/button";
-import { FilterModalProps, FilterOptionMenu } from "./types";
+// import { FilterModalProps, FilterOptionMenu } from "./types";
 import { CancelIcon, CheckboxCheckedIcon } from "@/public/icons/icons";
 import { useModal } from "@/components/Modal/modal";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
+import { FilterOptionObj } from "./types";
+import { FilterResult } from "./types";
+
+interface FilterOption {
+  label: string;
+  value: string;
+  isChecked?: boolean;
+}
+
+interface FilterOptionMenu {
+  radio?: boolean;
+  label: string;
+  isChecked?: boolean;
+  value: FilterOption[];
+}
+
+interface FilterModalProps {
+  handleFilterApply: (selectedFilters: FilterResult) => void;
+  filterTitle?: string;
+  isDateTrue?: boolean;
+  dateLabel?: string;
+  filterOptions?: FilterOption[] | FilterOptionObj;
+  filterOptionsMenu?: FilterOptionMenu[];
+  appliedFilters?: FilterResult;
+}
+
 
 const FilterModal: React.FC<FilterModalProps> = ({
   filterOptions,

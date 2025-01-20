@@ -254,7 +254,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
           <Button
             type="button"
             className="page-header-button"
-            href={`/management/staff-branch/${branchId}/edit-branch`}
+            href={`/accountant/management/staff-branch/${branchId}/edit-branch`}
           >
             Edit Branch
           </Button>

@@ -16,12 +16,12 @@ import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
-import { FilterResult } from "@/components/Management/Landlord/types";
 import { ArticlesRequestParams } from "../type";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import { stateOptions } from "@/app/(nav)/tasks/inspections/data";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { FilterResult } from "@/components/Management/Landlord/types";
 
 const lists = [
   {
