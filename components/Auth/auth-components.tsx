@@ -30,16 +30,17 @@ export const AuthHeading: React.FC<AuthHeadingProps> = ({
   logo
 }) => (
   <div className='custom-flex-col gap-1'>
-    {logo && <div className='w-16 h-16 my-2 flex items-start justify-start'>
+    {logo && 
+    <div className='w-16 h-16 my-2 flex items-start justify-start'>
       <Image
         src={logo}
         alt='Company logo'
         width={100}
         height={100}
-        className='w-20 h-20 object-contain mb-2'
+        className='w-[40%] h-24 object-contain'
       />
     </div>}
-    <h1 className='custom-primary-color text-[32px] font-bold capitalize'>
+    <h1 className='custom-primary-color text-[32px] font-bold capitalize mt-2'>
       {title}
     </h1>
     <p className='text-text-label text-base font-normal'>{children}</p>

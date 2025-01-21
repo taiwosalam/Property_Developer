@@ -34,13 +34,16 @@ import {
   staff_profile_actions,
 } from '@/components/Nav/options';
 import { saveRoleToCookie } from '@/utils/saveRole';
+import { saveMiddlewareRoleToCookie } from '@/utils/setMiddlewareRole';
 
 export const getDashboardPage = (role: string | null) => {
   switch (role) {
     case 'director':
       return '/dashboard';
     case 'tenant':
-      return '/dashboard';
+      return '/user/dashboard';
+    case 'landlord':
+      return '/user/dashboard';
     case 'manager':
       return '/manager/dashboard';
     case 'account':
@@ -256,6 +259,7 @@ export const login = async (formData: Record<string, any>) => {
 
     // SECURE ROLE
     await saveRoleToCookie(role);
+    await saveMiddlewareRoleToCookie(role)
     if (emailVerified) {
       toast.success(data?.message || 'Login successful!');
       if (role === 'user') {

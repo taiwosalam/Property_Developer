@@ -54,16 +54,6 @@ const ServiceProviders = () => {
             colorScheme={3}
           />
         </div>
-        <Modal>
-          <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
-              + Create New Service Provider
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <AddServiceProviderModal />
-          </ModalContent>
-        </Modal>
       </div>
       <FilterBar
         azFilter
@@ -87,7 +77,7 @@ const ServiceProviders = () => {
             <Link
               href={{
                 // remove this pathname and query shit
-                pathname: `/accountant/management/service-providers/${index + 1}/manage`,
+                pathname: `/staff/management/service-providers/${index + 1}/manage`,
                 query: {
                   user_tag: index % 2 === 0 ? "web" : "mobile",
                 },

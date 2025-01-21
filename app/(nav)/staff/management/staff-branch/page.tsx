@@ -39,7 +39,8 @@ const BranchStaffPage = () => {
   const loggedInUserDetails = getLocalStorage('additional_details');
   const { company: loggedUserCompany, branch: loggedUserBranch } =
     loggedInUserDetails;
-  const branchId = loggedUserBranch.branch_id;
+  // const branchId = loggedUserBranch.branch_id;
+  const branchId = 8;
   console.log("id", branchId)
   const router = useRouter();
   const companyVerified = usePersonalInfoStore((state) => state.is_verified);
@@ -164,8 +165,8 @@ const BranchStaffPage = () => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error)
-    return <p className='text-base text-red-500 font-medium'>{error}</p>;
+  // if (error)
+  //   return <p className='text-base text-red-500 font-medium'>{error}</p>;
 
   return (
     <div className='custom-flex-col gap-6'>

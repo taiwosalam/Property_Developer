@@ -269,11 +269,7 @@ export const staff_nav_items: NavItemsProps = [
     type: 'people',
     label: 'management',
     content: [
-      { label: 'landlord & landlady', href: '/staff/management/landlord' },
-      { label: 'tenants & occupants', href: '/staff/management/tenants' },
       { label: 'Other Staff', href: '/staff/management/staff-branch' },
-      { label: 'inventory', href: '/staff/management/inventory' },
-      { label: 'properties', href: '/staff/management/properties' },
       {
         label: 'vehicles record',
         href: '/staff/management/vehicles-record',

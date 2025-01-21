@@ -9,6 +9,7 @@ export async function middleware(req: NextRequest) {
   const authToken = req.cookies.get('authToken')?.value;
   const emailVerified = req.cookies.get('emailVerified')?.value;
   const currentPath = req.nextUrl.pathname;
+  const role = req.cookies.get('role')?.value;
 
   // Allow acces to /auth/sign-in if the authToken does not exist
   if (req.nextUrl.pathname === '/auth/user/sign-in' && !authToken) {

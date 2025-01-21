@@ -15,6 +15,7 @@ import CustomTable from "@/components/Table/table";
 import Link from "next/link";
 import { useWalletStore } from "@/store/wallet-store";
 import clsx from "clsx";
+import DashboarddCalendar from "@/components/dashboard/Dashcalendar";
 
 const Dashboard = () => {
   const walletId = useWalletStore((state) => state.walletId);
@@ -53,6 +54,9 @@ const Dashboard = () => {
               </Link>
             ))}
           </div>
+        </div>
+        <div className='w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6'>
+          <DashboarddCalendar />
         </div>
       </div>
 
