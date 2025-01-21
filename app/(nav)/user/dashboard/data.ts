@@ -12,6 +12,7 @@ import {
 } from "@/public/icons/dashboard-cards/icons";
 import { subDays, format } from "date-fns";
 import type { Field } from "@/components/Table/types";
+import { Transaction } from "@/store/wallet-store";
 
 function getBackgroundColor(title: string): string {
   let backgroundColor: string;
@@ -181,6 +182,124 @@ export const userDashboardCardData = [
   },
 ];
 
+export const recentTransactionTableFields: Field[] = [
+  { id: '1', accessor: 'icon' },
+  { id: '2', label: 'Transaction ID', accessor: 'id' },
+  { id: '3', label: 'Source', accessor: 'source' },
+  { id: '4', label: 'Description', accessor: 'description' },
+  { id: '5', label: 'Amount', accessor: 'amount' },
+  {
+    id: '6',
+    label: 'Status',
+    accessor: 'status',
+    cellStyle: { color: '#3F4247' },
+  },
+  { id: '7', label: 'Date', accessor: 'date' },
+  { id: '8', label: 'Time', accessor: 'time' },
+];
+
+export const recentTransactions: Transaction[] = [
+  {
+    id: '1',
+    source: 'PayPal',
+    description: 'Payment for freelance work',
+    amount: '150.00',
+    status: 'Completed',
+    date: '2025-01-20',
+    time: '14:35',
+    type: 'credit',
+  },
+  {
+    id: '2',
+    source: 'Bank Transfer',
+    description: 'Office Supplies Purchase',
+    amount: '65.75',
+    status: 'Pending',
+    date: '2025-01-19',
+    time: '10:15',
+    type: 'debit',
+  },
+  {
+    id: '3',
+    source: 'Stripe',
+    description: 'E-commerce Sale',
+    amount: '300.00',
+    status: 'Completed',
+    date: '2025-01-18',
+    time: '16:50',
+    type: 'credit',
+  },
+  {
+    id: '4',
+    source: 'Direct Debit',
+    description: 'Utility Bill Payment',
+    amount: '120.45',
+    status: 'Failed',
+    date: '2025-01-17',
+    time: '09:00',
+    type: 'debit',
+  },
+  {
+    id: '5',
+    source: 'Wallet',
+    description: 'Transfer to Savings Account',
+    amount: '200.00',
+    status: 'Processing',
+    date: '2025-01-16',
+    time: '12:20',
+    type: 'debit',
+  },
+  {
+    id: '6',
+    source: 'DVA',
+    description: 'Government Grant',
+    amount: '1000.00',
+    status: 'Completed',
+    date: '2025-01-15',
+    time: '08:45',
+    type: 'DVA',
+  },
+  {
+    id: '7',
+    source: 'Cash Deposit',
+    description: 'Customer Payment',
+    amount: '500.00',
+    status: 'Completed',
+    date: '2025-01-14',
+    time: '15:30',
+    type: 'credit',
+  },
+  {
+    id: '8',
+    source: 'Credit Card',
+    description: 'Subscription Fee',
+    amount: '29.99',
+    status: 'Pending',
+    date: '2025-01-13',
+    time: '11:10',
+    type: 'debit',
+  },
+  {
+    id: '9',
+    source: 'Wire Transfer',
+    description: 'Refund for Overcharge',
+    amount: '50.00',
+    status: 'Completed',
+    date: '2025-01-12',
+    time: '17:00',
+    type: 'credit',
+  },
+  {
+    id: '10',
+    source: 'DVA',
+    description: 'Veterans Allowance',
+    amount: '750.00',
+    status: 'Completed',
+    date: '2025-01-11',
+    time: '14:25',
+    type: 'DVA',
+  },
+];
 
 export const walletBalanceCardData = {
   mainBalance: 1000,

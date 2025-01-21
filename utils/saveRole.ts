@@ -1,18 +1,15 @@
-import Cookies from 'js-cookie';
-import { encryptRole } from './session';
+export const saveRoleToCookie = async (role: string) => {
+  try {
+    const response = await fetch('/api/set-role-cookie', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role }),
+    });
 
-/**
- * Save the user role in a cookie securely after encrypting it.
- * @param role - The role to save (e.g., 'admin', 'user').
- */
-export async function saveRoleToCookie(role: string): Promise<void> {
-  const encryptedRole = await encryptRole(role);
-
-  // Store the encrypted role in a cookie
-  Cookies.set('user_role', encryptedRole, {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: false, // Accessible on the client-side
-    sameSite: 'strict',
-    expires: 1, // Optional: Expire in 1 day
-  });
-}
+    if (!response.ok) {
+      throw new Error('Failed to set role cookie');
+    }
+  } catch (error) {
+    console.error('Error saving role to cookie:', error);
+  }
+};

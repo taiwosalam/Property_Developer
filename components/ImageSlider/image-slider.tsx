@@ -18,6 +18,7 @@ interface ImageSliderProps {
   className?: string;
   showImageIndexOnHover?: boolean;
   children?: React.ReactNode;
+  dot?: boolean;
 }
 
 const ImageSlider: React.FC<ImageSliderProps> = ({
@@ -25,7 +26,13 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
   className,
   showImageIndexOnHover,
   children,
+  dot,
 }) => {
+
+  const goToImage = (index: number) => {
+    setPage([index, index > imageIndex ? 1 : -1]);
+  };
+
   const NPButtonClasses =
     "w-6 h-6 rounded-full grid place-items-center absolute z-[2] top-1/2 transform -translate-y-1/2";
   const [[page, direction], setPage] = useState([0, 0]);
@@ -39,7 +46,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
   return (
     <div
       className={cn(
-        "relative overflow-hidden",
+        'relative overflow-hidden',
         {
           group: showImageIndexOnHover,
         },
@@ -47,22 +54,22 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
       )}
       //   Make sure u pass height
     >
-      {images.length > 1 && (
+      {!dot && images.length > 1 && (
         <>
           <button
-            type="button"
-            aria-label="previous"
-            className={cn(NPButtonClasses, "left-2")}
-            style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
+            type='button'
+            aria-label='previous'
+            className={cn(NPButtonClasses, 'left-2')}
+            style={{ backgroundColor: 'rgba(239, 246, 255, 0.5)' }}
             onClick={(e) => paginate(e, -1)}
           >
             <PreviousIcon />
           </button>
           <button
-            type="button"
-            aria-label="next"
-            className={cn(NPButtonClasses, "right-2")}
-            style={{ backgroundColor: "rgba(239, 246, 255, 0.5)" }}
+            type='button'
+            aria-label='next'
+            className={cn(NPButtonClasses, 'right-2')}
+            style={{ backgroundColor: 'rgba(239, 246, 255, 0.5)' }}
             onClick={(e) => paginate(e, 1)}
           >
             <NextIcon />
@@ -70,35 +77,41 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
         </>
       )}
       {/* Top left corner */}
-      {images.length > 0 && (
+      {!dot && images.length > 0 && (
         <div
           className={cn(
-            "absolute z-[2] top-2 left-2 bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1",
+            'absolute z-[2] top-2 left-2 bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1',
             {
-              "opacity-0 group-hover:opacity-100 transition-opacity duration-300":
+              'opacity-0 group-hover:opacity-100 transition-opacity duration-300':
                 showImageIndexOnHover,
             }
           )}
         >
-          <CameraIcon width={16} height={16} />
-          <span className="text-sm font-medium">
+          <CameraIcon
+            width={16}
+            height={16}
+          />
+          <span className='text-sm font-medium'>
             {`${imageIndex + 1}/${images.length}`}
           </span>
         </div>
       )}
       {images.length > 0 ? (
-        <AnimatePresence initial={false} custom={direction}>
+        <AnimatePresence
+          initial={false}
+          custom={direction}
+        >
           <motion.div
             key={page}
             custom={direction}
             variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
+            initial='enter'
+            animate='center'
+            exit='exit'
             transition={{
-              x: { type: "spring", stiffness: 300, damping: 30 },
+              x: { type: 'spring', stiffness: 300, damping: 30 },
             }}
-            drag="x"
+            drag='x'
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={1}
             onDragEnd={(e, { offset, velocity }) => {
@@ -110,19 +123,38 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
                 paginate(e, -1);
               }
             }}
-            className="absolute inset-0"
+            className='absolute inset-0'
           >
             <Image
               src={images[imageIndex] || empty}
               alt={`image-${imageIndex + 1}`}
               fill
-              className="object-cover"
+              className='object-cover'
             />
           </motion.div>
         </AnimatePresence>
       ) : (
-        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
-          <p className="text-gray-500">No images available</p>
+        <div className='absolute inset-0 bg-gray-100 flex items-center justify-center'>
+          <p className='text-gray-500'>No images available</p>
+        </div>
+      )}
+      {/* Dots */}
+      {dot && images.length > 1 && (
+        <div className='absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center justify-center gap-2 z-[2]'>
+          {images.map((_, index) => (
+            <button
+              key={index}
+              type='button'
+              aria-label={`Go to image ${index + 1}`}
+              className={cn(
+                'rounded-full border border-gray-300 bg-brand-9',
+                imageIndex === index
+                  ? 'bg-white w-5 h-5'
+                  : 'bg-gray-200 dark:bg-gray-600 w-3 h-3'
+              )}
+              onClick={() => goToImage(index)}
+            ></button>
+          ))}
         </div>
       )}
       {children}

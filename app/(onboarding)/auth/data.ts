@@ -6,6 +6,7 @@ import api, { handleAxiosError } from '@/services/api';
 import { useAuthStore } from '@/store/authStore';
 import { useWalletStore } from '@/store/wallet-store';
 import { InputData } from '@/utils/checkFormDataForImageOrAvatar';
+import Cookies from 'js-cookie';
 
 import {
   manager_nav_items,
@@ -33,6 +34,7 @@ import {
   profile_actions,
   account_profile_actions,
   staff_profile_actions,
+  user_profile_actions,
 } from '@/components/Nav/options';
 import { saveRoleToCookie } from '@/utils/saveRole';
 import { saveMiddlewareRoleToCookie } from '@/utils/setMiddlewareRole';
@@ -115,6 +117,8 @@ export const getProfileDropdownItems = (role: string | null) => {
       return profile_actions;
     case 'staff':
       return staff_profile_actions;
+    case 'landlord':
+      return user_profile_actions;
     case 'account':
       return account_profile_actions;
     case 'manager':
@@ -191,8 +195,6 @@ export const getFacilityPropertyCreatePath = (role: string | null): string => {
   }
 };
 
-
-
 interface LoginResponse {
   message: string;
   access_token: string;
@@ -247,7 +249,7 @@ export const login = async (formData: Record<string, any>) => {
     const email = data.data.details?.email || formData.email;
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
-    console.log("res", data)
+    console.log('res', data);
     const additional_details = data.additional_details;
     const details = {
       branch: {
@@ -268,7 +270,6 @@ export const login = async (formData: Record<string, any>) => {
 
     // SECURE ROLE
     await saveRoleToCookie(role);
-    await saveMiddlewareRoleToCookie(role)
     if (emailVerified) {
       toast.success(data?.message || 'Login successful!');
       if (role === 'user') {

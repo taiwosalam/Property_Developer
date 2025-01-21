@@ -1,22 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { roleBasedRoutes, managerRoutes } from './data';
-import { getRoleFromCookie } from './utils/getRole';
-import { withIronSession } from 'next-iron-session';
-import { getSession } from './utils/authRole';
-import { updateSession } from './utils/authRole';
+import { roleBasedRoutes } from './data';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET =
+  process.env.NEXT_PUBLIC_SESSION_SESSION || 'json-web-token-secret-key';
+
+function verifyToken(token: string) {
+  if (!token) {
+    console.log('No token provided');
+    return null; // No token means unauthenticated
+  }
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch (error) {
+    console.log('JWT verification failed:', error);
+    return null;
+  }
+}
 
 export async function middleware(req: NextRequest) {
-  const authToken = req.cookies.get('authToken')?.value;
+  const authToken = req.cookies.get('authToken')?.value || '';
   const emailVerified = req.cookies.get('emailVerified')?.value;
+  // const role = req.cookies.get('role')?.value;
   const currentPath = req.nextUrl.pathname;
-  const role = req.cookies.get('role')?.value;
+   const role = req.cookies.get('role')?.value;
+  // const decoded = verifyToken(authToken);
+  // const role = decoded?.role;
 
-  // Allow acces to /auth/sign-in if the authToken does not exist
-  if (req.nextUrl.pathname === '/auth/user/sign-in' && !authToken) {
-    return NextResponse.next();
-  }
-
-  // Routes accessible without authentication
+  console.log('server role', role);
+  console.log('server token', authToken);
+  // Public routes accessible without authentication
   const publicRoutes = [
     '/auth/user/sign-in',
     '/auth/sign-in',
@@ -24,53 +37,40 @@ export async function middleware(req: NextRequest) {
     '/auth/forgot-password',
   ];
 
-  // Check if the current path is public
+  // Allow public routes if no authToken or role exists
   if (publicRoutes.includes(currentPath) && (!authToken || !role)) {
     return NextResponse.next();
   }
 
-  // Restrict access to `/manager` routes to the `manager` role
-  if (
-    currentPath.startsWith('/manager') &&
-    (role === 'manager' || managerRoutes.includes(currentPath))
-  ) {
-    return NextResponse.next(); // Allow access if role is manager or route is in managerRoutes
+  // Allow access to `/auth/user/sign-in` if there's no authToken
+  if (currentPath === '/auth/user/sign-in' && !authToken) {
+    return NextResponse.next();
   }
 
-  // Allow access to /auth/sign-up for users without emailVerified or role
+  // Special case: Allow `/auth/sign-up` for unverified users or users without a role
   if (currentPath === '/auth/sign-up' && (!emailVerified || !role)) {
     return NextResponse.next();
   }
 
-  // if there's role and emailverified, block access to /auth/sign-up except for role === director
-  if (role && emailVerified && currentPath === '/auth/sign-up') {
-    return NextResponse.next();
+  // Block access to `/auth/sign-up` for verified users unless they are directors
+  if (
+    role &&
+    emailVerified &&
+    currentPath === '/auth/sign-up' &&
+    role !== 'director'
+  ) {
+    return NextResponse.redirect(new URL('/unauthorized', req.url));
   }
 
-  // Allow access to /auth/sign-up if there's no role
-  if (currentPath === '/auth/sign-up' && !role) {
-    return NextResponse.next();
-  }
-
-  // Allow access to /auth/sign-in for users with the director role
-  if (currentPath === '/auth/sign-in' && role === 'director') {
-    return NextResponse.next();
-  }
-
-  // If the current path is `/auth/sign-in` and the user's role is not `director`, redirect them to `/auth/user/sign-in`
-  if (currentPath === '/auth/sign-in' && role !== 'director') {
+  // Allow `/auth/sign-in` for directors; redirect others to `/auth/user/sign-in`
+  if (currentPath === '/auth/sign-in') {
+    if (role === 'director') return NextResponse.next();
     return NextResponse.redirect(new URL('/auth/user/sign-in', req.url));
   }
 
-  // Get allowed routes for the user's role
-  const allowedRoutes = role ? roleBasedRoutes[role] : [];
-
-  // // Allow access if the current path matches any of the allowed routes for the user's role || LATER
-  // if (allowedRoutes.some((route) => currentPath.startsWith(route))) {
-  //   return NextResponse.next();
-  // }
-
-  // Block access if the route is not in the user's allowed routes
+  // Role-based route restrictions
+  const allowedRoutes =
+    roleBasedRoutes[role as keyof typeof roleBasedRoutes] || [];
   if (!allowedRoutes.some((route) => currentPath.startsWith(route))) {
     return NextResponse.redirect(new URL('/unauthorized', req.url));
   }
@@ -78,12 +78,8 @@ export async function middleware(req: NextRequest) {
   // Allow access and set headers for debugging or downstream use
   const response = NextResponse.next();
   response.headers.set('x-authorization-status', 'authorized');
-  // response.headers.set('x-user-role', `${role}`);
-
   return response;
 }
-
-// export const handler = withIronSession(middleware, sessionOptions);
 
 export const config = {
   matcher: [
