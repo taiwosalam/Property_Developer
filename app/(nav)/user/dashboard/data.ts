@@ -128,6 +128,60 @@ export const dashboardCardData = [
   },
 ];
 
+
+
+export const userDashboardCardData = [
+  {
+    title: 'Properties',
+    bg: getBackgroundColor('properties'),
+    icon: BuildingIcon,
+    value: 10,
+    subValue: 20,
+    link: 'user/management/staff-branch/',
+  },
+  {
+    title: 'Facilities',
+    bg: getBackgroundColor('landlords'),
+    icon: LandlordIcon,
+    value: 15,
+    subValue: 20,
+    link: '/management/landlord',
+  },
+  {
+    title: 'Rent',
+    bg: getBackgroundColor('tenants & occupants'),
+    icon: TenantIcon,
+    value: 25,
+    subValue: 20,
+    link: '/management/tenants',
+  },
+  {
+    title: 'Schedule Visit',
+    bg: getBackgroundColor('vacant unit'),
+    icon: BedIcon,
+    value: 5,
+    subValue: 20,
+    link: '/management/rent-unit',
+  },
+  {
+    title: 'Complaints',
+    bg: getBackgroundColor('complaints'),
+    icon: ComplaintsIcon,
+    value: 8,
+    subValue: 20,
+    link: '/tasks/complaints',
+  },
+  {
+    title: 'Listings',
+    bg: getBackgroundColor('listings'),
+    icon: ListingsIcon,
+    value: 7,
+    subValue: 20,
+    link: '/listing/units',
+  },
+];
+
+
 export const walletBalanceCardData = {
   mainBalance: 1000,
   cautionDeposit: 200,
