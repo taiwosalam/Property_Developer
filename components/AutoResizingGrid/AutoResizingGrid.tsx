@@ -29,14 +29,12 @@ const AutoResizingGrid: React.FC<AutoResizingGridProps> = ({
 
   useEffect(() => {
     const observer = gridRef.current;
-
     // Function to calculate and set the number of columns based on container width
     const handleResize = ([entry]: ResizeObserverEntry[]) => {
       const newColumns = Math.max(
         Math.floor((entry.contentRect.width + gap) / (minWidth + gap)),
         1
       ); // Ensure at least 1 column
-
       setHasCalculated(true); // Set state to true after calculating columns
       setColumns((prev) => (prev !== newColumns ? newColumns : prev));
     };

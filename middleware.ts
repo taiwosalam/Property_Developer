@@ -19,16 +19,13 @@ function verifyToken(token: string) {
 }
 
 export async function middleware(req: NextRequest) {
-  const authToken = req.cookies.get('authToken')?.value || '';
   const emailVerified = req.cookies.get('emailVerified')?.value;
   // const role = req.cookies.get('role')?.value;
   const currentPath = req.nextUrl.pathname;
-   const role = req.cookies.get('role')?.value;
-  // const decoded = verifyToken(authToken);
+  const role = req.cookies.get('role')?.value;
   // const role = decoded?.role;
 
   console.log('server role', role);
-  console.log('server token', authToken);
   // Public routes accessible without authentication
   const publicRoutes = [
     '/auth/user/sign-in',
@@ -38,28 +35,18 @@ export async function middleware(req: NextRequest) {
   ];
 
   // Allow public routes if no authToken or role exists
-  if (publicRoutes.includes(currentPath) && (!authToken || !role)) {
+  if (publicRoutes.includes(currentPath) && !role) {
     return NextResponse.next();
   }
 
   // Allow access to `/auth/user/sign-in` if there's no authToken
-  if (currentPath === '/auth/user/sign-in' && !authToken) {
+  if (currentPath === '/auth/user/sign-in') {
     return NextResponse.next();
   }
 
   // Special case: Allow `/auth/sign-up` for unverified users or users without a role
-  if (currentPath === '/auth/sign-up' && (!emailVerified || !role)) {
+  if (currentPath === '/auth/sign-up' && !role) {
     return NextResponse.next();
-  }
-
-  // Block access to `/auth/sign-up` for verified users unless they are directors
-  if (
-    role &&
-    emailVerified &&
-    currentPath === '/auth/sign-up' &&
-    role !== 'director'
-  ) {
-    return NextResponse.redirect(new URL('/unauthorized', req.url));
   }
 
   // Allow `/auth/sign-in` for directors; redirect others to `/auth/user/sign-in`

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 // Imports
 import SettingsLinkTab from "@/components/Settings/settings-link-tab";
-import { settings_link_tabs } from "@/components/Settings/data";
+import { user_settings_link_tabs } from "@/components/Settings/data";
 
 const SettingsLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -16,7 +16,7 @@ const SettingsLayout: React.FC<{ children: React.ReactNode }> = ({
     <div className="custom-flex-col gap-10">
       <div className="flex overflow-x-auto gap-1 bg-neutral-2 dark:bg-[#3C3D37] pb-2 no-scrollbar">
         <div className="flex">
-          {settings_link_tabs.map((tab) => (
+          {user_settings_link_tabs.map((tab) => (
             <SettingsLinkTab
               key={tab}
               type={tab}

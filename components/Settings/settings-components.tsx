@@ -54,11 +54,15 @@ export const SettingsVerifiedBadge = ({
 }) => (
   <div
     className={`flex items-center py-[2px] px-2 rounded-full border-[0.1px] ${
-      status === "verified" ? "bg-status-success-1" : "bg-[#FF8EE] border-[#FFBB53]"
+      status === "verified"
+        ? "bg-status-success-1"
+        : "bg-[#FF8EE] border-[#FFBB53]"
     }`}
   >
     <p
-      className={`text-[10px] ${status === "verified" ? "text-status-success-primary" : "text-[#FFBB53]"} font-normal ${secondaryFont.className}`}
+      className={`text-[10px] ${
+        status === "verified" ? "text-status-success-primary" : "text-[#FFBB53]"
+      } font-normal ${secondaryFont.className}`}
     >
       {status}
     </p>
@@ -114,14 +118,14 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
   //   }
   // }, [next])
 
-  const handleAction = ()=> {
-    if (action){
-      action()
+  const handleAction = () => {
+    if (action) {
+      action();
     }
-    if (next){
-      setModalOpen(true)
+    if (next) {
+      setModalOpen(true);
     }
-  }
+  };
 
   return (
     <div className="flex justify-end gap-4">
@@ -132,8 +136,8 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
               {...(remove
                 ? { ...remove_props }
                 : addMore
-                  ? { ...add_more_props }
-                  : null)}
+                ? { ...add_more_props }
+                : null)}
             >
               {remove ? "remove" : addMore ? "add more" : ""}
             </Button>
@@ -229,12 +233,14 @@ export const GroupRadio: React.FC<GroupRadioProps> = ({ checked, onClick }) => {
   return (
     <button className="flex gap-3 text-start rounded-full" onClick={onClick}>
       <div
-        className={`rounded-full p-[2px] flex items-center justify-center ${checked ? "border border-blue-600" : ""
-          }`}
+        className={`rounded-full p-[2px] flex items-center justify-center ${
+          checked ? "border border-blue-600" : ""
+        }`}
       >
         <div
-          className={`rounded-full w-5 h-5 border min-w-2 min-h-2 border-darkText-2 ${checked ? "bg-blue-600" : ""
-            }`}
+          className={`rounded-full w-5 h-5 border min-w-2 min-h-2 border-darkText-2 ${
+            checked ? "bg-blue-600" : ""
+          }`}
         ></div>
       </div>
     </button>
@@ -279,8 +285,9 @@ export const SettingsOthersCheckBox: React.FC<SettingsOthersCheckBoxProps> = ({
           onChange={(e) => onChange(value, e.target.checked)} // Call onChange with value and checked state
         />
         <div
-          className={`w-11 h-6 ${checked ? "bg-status-success-primary" : "bg-gray-200"
-            } peer-focus:outline-none peer-focus:ring-4 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all`}
+          className={`w-11 h-6 ${
+            checked ? "bg-status-success-primary" : "bg-gray-200"
+          } peer-focus:outline-none peer-focus:ring-4 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all`}
         />
       </label>
     </div>
@@ -389,8 +396,9 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
             alt="Theme"
             width={1000}
             height={1000}
-            className={`w-full h-full object-contain ${isSelected ? "border-4 border-brand-9 rounded-lg" : ""
-              }`}
+            className={`w-full h-full object-contain ${
+              isSelected ? "border-4 border-brand-9 rounded-lg" : ""
+            }`}
           />
         </div>
         {isSelected && profile && (
@@ -472,10 +480,11 @@ export const WebsiteColorSchemes: React.FC<{
         <div
           key={index}
           role="button"
-          className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${selectedColor?.toLowerCase() === color.toLowerCase()
-            ? "border-2 border-blue-500 rounded-md h-[40px] w-[40px]"
-            : ""
-            }`}
+          className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${
+            selectedColor?.toLowerCase() === color.toLowerCase()
+              ? "border-2 border-blue-500 rounded-md h-[40px] w-[40px]"
+              : ""
+          }`}
           style={{ backgroundColor: color }}
           onClick={() => onColorSelect(color)}
         >

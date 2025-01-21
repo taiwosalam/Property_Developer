@@ -18,7 +18,7 @@ export type SettingsLinkTab = (typeof settings_link_tabs)[number];
 
 export interface SettingsLinkTabProps {
   active?: boolean;
-  type: SettingsLinkTab;
+  type: SettingsLinkTab
 }
 
 export interface SettingsSectionProps {

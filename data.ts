@@ -49707,7 +49707,7 @@ export const states: State[] = [
 
 export const adminRoutes = [
   "/dashboard",
-  "/dashboard/reports", 
+  "/dashboard/reports",
   "/auth/forgot-password",
   "/management/landlord",
   "/management/tenants",
@@ -49761,7 +49761,57 @@ export const adminRoutes = [
 ];
 
 // "/dashboard", "/auth/sign-up", "/auth/forgot-password"
-export const userRoutes = ["/dashboard", "/dashboard/orders", "/auth/forgot-password"];
+export const userRoutes = [
+  "/user/dashboard",
+  "/auth/forgot-password",
+  "/user/management/landlord",
+  "/user/management/tenants",
+  "/user/management/occupants",
+  "/user/management/staff-branch",
+  "/user/management/inventory",
+  "/user/management/inventory/create-inventory",
+  "/user/management/properties",
+  "/user/management/rent-unit",
+  "/user/management/service-providers",
+  "/user/management/vehicles-record",
+  "/user/management/team-chat",
+  "/management/agent-community",
+  "/user/tasks/schedule",
+  "/user/tasks/announcement",
+  "/user/tasks/complaints",
+  "/user/tasks/examine",
+  "/user/tasks/maintenance",
+  "/user/tasks/deposits",
+  "/user/tasks/move-out",
+  "/user/listing/units",
+  "/user/listing/statistics",
+  "/user/listing/property",
+  "/user/accounting/invoice",
+  "/user/accounting/receipts",
+  "/user/accounting/expenses",
+  "/user/accounting/disbursement",
+  "/user/accounting/statement",
+  "/user/accounting/vat",
+  "/user/reports/tenants",
+  "/user/reports/landlord",
+  "/user/reports/properties",
+  "/user/reports/units",
+  "/user/reports/rent",
+  "/user/reports/listings",
+  "/user/reports/email",
+  "/user/reports/sms",
+  "/user/reports/tracking",
+  "/user/reports/call",
+  "/user/reports/visitors",
+  "/user/reports/undo",
+  "/user/reports/vehicles-record",
+  "/user/wallet",
+  "/user/applications",
+  "/user/documents",
+  "/user/settings",
+  "/user/settings/profile",
+  "/agent-community"
+];
 export const staffRoutes = [
   '/auth/forgot-password',
   '/staff/dashboard',
@@ -49814,9 +49864,9 @@ export const staffRoutes = [
   '/agent-community',
 ];
 export const accountRoutes = [
-  "/accountant/dashboard", 
+  "/accountant/dashboard",
   "/auth/forgot-password",
-  "/accountant/dashboard", 
+  "/accountant/dashboard",
   "/accountant/management/landlord",
   "/accountant/management/tenants",
   "/accountant/management/occupants",
@@ -49866,7 +49916,7 @@ export const accountRoutes = [
   "/agent-community"
 ];
 export const managerRoutes = [
-  "/manager/dashboard", 
+  "/manager/dashboard",
   "/auth/forgot-password",
   "/manager/management/landlord",
   "/manager/management/tenants",
@@ -49921,6 +49971,7 @@ export const directorRoutes = ["/dashboard", "/wallet", "/auth/sign-in"];
 // Combine individual routes into a role-based object
 export const roleBasedRoutes: Record<string, string[]> = {
   director: adminRoutes,
+  landlord: userRoutes,
   user: userRoutes,
   staff: staffRoutes,
   account: accountRoutes,

@@ -10,6 +10,7 @@ export const settings_link_tabs = [
   "security",
   "enrollment",
   "appearance",
+  "preference",
   "others",
 ] as const;
 
@@ -23,6 +24,12 @@ export const accountant_settings_link_tabs = [
   "profile",
   "security",
   "others",
+] as const;
+
+export const user_settings_link_tabs = [
+  "profile",
+  "security",
+  "preference",
 ] as const;
 
 export const staff_settings_link_tabs = [
@@ -46,7 +53,7 @@ export const website_color_schemes = [
   "#FFBB53",
   "#C18A37",
   "#CE9EA1",
-  "#FC63FF",  
+  "#FC63FF",
   "#9B00FAAB",
   "#8C62FF",
   "#000000",

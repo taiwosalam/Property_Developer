@@ -30,7 +30,12 @@ interface DirectorsFormProps {
 
 type Address = "selectedState" | "selectedLGA" | "selectedCity";
 
-const DirectorsForm: React.FC<DirectorsFormProps> = ({ submitAction, chooseAvatar, avatar, setAvatar}) => {
+const DirectorsForm: React.FC<DirectorsFormProps> = ({
+  submitAction,
+  chooseAvatar,
+  avatar,
+  setAvatar,
+}) => {
   const {
     preview: imagePreview,
     inputFileRef,
