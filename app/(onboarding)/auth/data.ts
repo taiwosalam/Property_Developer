@@ -15,6 +15,7 @@ import {
   accountant_search_tabs,
   staff_nav_items,
   staff_search_tabs,
+  user_nav_items,
 } from '@/components/Nav/data';
 import {
   manager_settings_link_tabs,
@@ -60,7 +61,9 @@ export const getNavs = (role: string | null) => {
     case 'director':
       return nav_items;
     case 'tenant':
-      return nav_items;
+      return user_nav_items;
+    case 'landlord':
+      return user_nav_items;
     case 'account':
       return account_nav_items;
     case 'staff':
@@ -82,6 +85,8 @@ export const getGlobalSearchTabs = (role: string | null) => {
       return accountant_search_tabs;
     case 'manager':
       return tabs;
+    case 'landlord':
+      return tabs;
     default:
       return null;
   }
@@ -90,6 +95,8 @@ export const getGlobalSearchTabs = (role: string | null) => {
 export const getNavCreateItems = (role: string | null) => {
   switch (role) {
     case 'director':
+      return create_new_items;
+    case 'landlord':
       return create_new_items;
     case 'staff':
       return staff_create_new_items;
