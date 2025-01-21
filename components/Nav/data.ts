@@ -366,6 +366,21 @@ export const accountant_search_tabs: {
 ];
 
 
+export const staff_search_tabs: {
+  icon: SVGType;
+  label: string;
+}[] = [
+  {
+    icon: 'people',
+    label: 'managememt',
+  },
+  {
+    icon: 'briefcase_timer',
+    label: 'task',
+  },
+];
+
+
 export const getGreeting = () => {
   const currentHour = new Date().getHours();
 

@@ -230,3 +230,26 @@ export const accountant_create_new_items: CreateNewItemsProps = [
     ],
   },
 ];
+
+
+export const staff_create_new_items: CreateNewItemsProps = [
+  {
+    type: 'people',
+    label: 'management',
+    content: [
+      { label: 'inventory', link: '/accountant/management/inventory/create-inventory' },
+      { label: 'property', modal: <AddPropertyModal /> },
+    ],
+  },
+  {
+    type: 'briefcase_timer',
+    label: 'tasks',
+    content: [
+      { label: 'examine', modal: <CreateExamineModal /> },
+      {
+        label: 'announcement',
+        link: '/accountant/tasks/announcements/create-announcement',
+      },
+    ],
+  },
+];

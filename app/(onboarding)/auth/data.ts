@@ -14,6 +14,7 @@ import {
   tabs,
   accountant_search_tabs,
   staff_nav_items,
+  staff_search_tabs,
 } from '@/components/Nav/data';
 import {
   manager_settings_link_tabs,
@@ -24,11 +25,13 @@ import {
   create_new_items,
   manager_create_new_items,
   accountant_create_new_items,
+  staff_create_new_items,
 } from '@/components/Nav/nav-create-new-items';
 import {
   manager_profile_actions,
   profile_actions,
   account_profile_actions,
+  staff_profile_actions,
 } from '@/components/Nav/options';
 import { saveRoleToCookie } from '@/utils/saveRole';
 
@@ -70,8 +73,8 @@ export const getGlobalSearchTabs = (role: string | null) => {
   switch (role) {
     case 'director':
       return tabs;
-    case 'tenant':
-      return tabs;
+    case 'staff':
+      return staff_search_tabs;
     case 'account':
       return accountant_search_tabs;
     case 'manager':
@@ -85,8 +88,8 @@ export const getNavCreateItems = (role: string | null) => {
   switch (role) {
     case 'director':
       return create_new_items;
-    case 'tenant':
-      return create_new_items;
+    case 'staff':
+      return staff_create_new_items;
     case 'account':
       return accountant_create_new_items;
     case 'manager':
@@ -100,8 +103,8 @@ export const getProfileDropdownItems = (role: string | null) => {
   switch (role) {
     case 'director':
       return profile_actions;
-    case 'tenant':
-      return profile_actions;
+    case 'staff':
+      return staff_profile_actions;
     case 'account':
       return account_profile_actions;
     case 'manager':

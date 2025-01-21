@@ -23,13 +23,13 @@ export const useRole = (): RoleContextType => {
 
 // Provider component
 export const RoleProvider = ({ children }: { children: React.ReactNode }) => {
-  const [role, setRole] = useState<string>(''); // Initialize with empty role
+  const [role, setRole] = useState<string>('');
 
   // Fetch role from cookies on first render
   useEffect(() => {
     const fetchRole = async () => {
       const userRole = await getRoleFromCookie();
-      setRole(userRole || 'guest'); // Default to 'guest' if no role found
+      setRole(userRole || 'guest'); 
     };
 
     fetchRole();

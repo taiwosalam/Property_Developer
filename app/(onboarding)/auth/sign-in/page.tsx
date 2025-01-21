@@ -21,6 +21,8 @@ const SignIn = () => {
   const router = useRouter();
   const { role, setRole } = useRole();
 
+  // console.log("role", role)
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (formData: Record<string, any>) => { 

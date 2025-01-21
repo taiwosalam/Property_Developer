@@ -1,6 +1,4 @@
 import { sealData, unsealData } from 'iron-session';
-
-// Secret key for encryption (must be 32 characters long for production)
 const SECRET =
   process.env.NEXT_PUBLIC_SESSION_SESSION ||
   '82ca21ceec0a10e94f43ad351a50d7ef';
