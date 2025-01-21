@@ -26,10 +26,12 @@ export interface PropertyPreviewProps
   id: string;
   property_name: string;
   address: string;
-  propertyType: "rental" | "facility";
+  // propertyType: "rental" | "facility";
+  propertyType: string;
   total_units: number;
   images: string[];
   video_link?: string;
+  landlord?: boolean;
   units: UnitItemProps[];
 }
 
@@ -43,6 +45,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
     total_units,
     video_link,
     isRental,
+    landlord,
     units,
     ...others
   } = props;
@@ -53,39 +56,45 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
   }, []);
 
   return (
-    <div className="space-y-5">
-      <BackButton as="p" bold>
+    <div className='space-y-5'>
+      <BackButton
+        as='p'
+        bold
+      >
         Preview
       </BackButton>
 
       {/* Heading */}
-      <div className="text-black dark:text-white">
-        <p className="text-base font-medium dark:text-darkText-1">ID: {id}</p>
-        <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
-          {property_name} ({total_units} Unit{total_units > 1 ? "s" : ""})
+      <div className='text-black dark:text-white'>
+        <p className='text-base font-medium dark:text-darkText-1'>ID: {id}</p>
+        <h1 className='text-lg md:text-xl lg:text-2xl font-bold'>
+          {property_name} ({total_units} Unit{total_units > 1 ? 's' : ''})
         </h1>
-        <p className="text-sm text-text-label font-normal flex items-center gap-1">
+        <p className='text-sm text-text-label font-normal flex items-center gap-1'>
           <LocationIcon />
           {address}
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-x-[30px] gap-y-5">
-        <div className="lg:w-[60%] space-y-6">
+      <div className='flex flex-col lg:flex-row gap-x-[30px] gap-y-5'>
+        <div className='lg:w-[60%] space-y-6'>
           {/* Main Image */}
-          <ImageSlider images={images} className="aspect-[1.4] rounded-lg" />
+          <ImageSlider
+            images={images}
+            className='aspect-[1.4] rounded-lg'
+          />
 
           {/* Videos */}
           {isRental && isClient && video_link && (
-            <div className="space-y-4">
-              <p className="text-black text-lg md:text-xl lg:text-2xl font-bold">
+            <div className='space-y-4'>
+              <p className='text-black text-lg md:text-xl lg:text-2xl font-bold'>
                 Video
               </p>
-              <div className="relative aspect-[1.85] overflow-hidden rounded-xl max-w-[330px] max-h-[180px]">
+              <div className='relative aspect-[1.85] overflow-hidden rounded-xl max-w-[330px] max-h-[180px]'>
                 <DynamicReactPlayer
                   url={video_link}
-                  width="100%"
-                  height="100%"
+                  width='100%'
+                  height='100%'
                   pip
                   controls
                 />
@@ -94,21 +103,24 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
           )}
         </div>
 
-        <div className="lg:flex-1 space-y-4">
+        <div className='lg:flex-1 space-y-4'>
           <PropeertyDetailsSettingsCard
             property_name={property_name}
             total_units={total_units}
             isRental={isRental}
             {...others}
           />
-          <div className="flex items-center justify-between flex-wrap gap-y-2">
+          <div className='flex items-center justify-between flex-wrap gap-y-2'>
             {Object.entries(UnitStatusColors).map(([status, color]) => (
-              <div key={status} className="flex items-center gap-2">
+              <div
+                key={status}
+                className='flex items-center gap-2'
+              >
                 <div
-                  className="w-5 h-5 rounded-full"
+                  className='w-5 h-5 rounded-full'
                   style={{ backgroundColor: color }}
                 />
-                <p className="text-xs text-[#6C6D6D] font-medium capitalize">
+                <p className='text-xs text-[#6C6D6D] font-medium capitalize'>
                   {status}
                 </p>
               </div>
@@ -117,9 +129,14 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
         </div>
       </div>
 
-      <section className="space-y-4">
+      {landlord && <section>Progress Card here</section>}
+
+      <section className='space-y-4'>
         {units.map((unit) => (
-          <UnitItem key={unit.unitId} {...unit} />
+          <UnitItem
+            key={unit.unitId}
+            {...unit}
+          />
         ))}
       </section>
     </div>
