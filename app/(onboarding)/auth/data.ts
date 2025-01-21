@@ -134,6 +134,8 @@ export const getSettingsPath: any = (role: string | null) => {
   switch (role) {
     case 'director':
       return '/';
+    case 'landlord':
+      return '/user/';
     case 'staff':
       return '/staff/';
     case 'account':
@@ -203,8 +205,8 @@ interface LoginResponse {
       picture: string | null;
     };
     // company: {
-      id: string | null;
-      company_logo: string | null;
+    id: string | null;
+    company_logo: string | null;
     // };
   };
 }
