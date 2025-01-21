@@ -560,3 +560,73 @@ const FilterModal: React.FC<FilterModalProps> = ({
 };
 
 export default FilterModal;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Login function
+export const login = async (formData: Record<string, any>) => {
+  try {
+    const { data } = await axios.post<LoginResponse>(
+      `${base_url}login`,
+      formData
+    );
+    useAuthStore.getState().reset();
+    const token = data.access_token;
+    const email = data.data.details?.email || formData.email;
+    const emailVerified = data.data.details.email_verification;
+    const role = data.data.details.role[0];
+    // console.log('res', data);
+    const additional_details = data.additional_details;
+    const details = {
+      branch: {
+        branch_id: additional_details.branch?.id || null,
+        picture: additional_details.branch?.picture || null,
+      },
+      company: {
+        company_id: additional_details.id || null,
+        company_logo: additional_details.company_logo || null,
+      },
+    };
+
+    // SAVE TO ZUSTAND
+    useAuthStore.getState().setAuthState('token', token);
+    useAuthStore.getState().setAuthState('email', email);
+    useAuthStore.getState().setAuthState('role', role);
+    useAuthStore.getState().setAuthState('additional_details', details);
+
+    // SECURE ROLE
+    await saveRoleToCookie(role);
+    await saveClientRoleToCookie(role);
+    if (emailVerified) {
+      toast.success(data?.message || 'Login successful!');
+      if (role === 'user') {
+        return 'redirect to setup';
+      } else {
+        useWalletStore
+          .getState()
+          .setWalletStore('walletPinStatus', data.wallet_pin_status);
+        useWalletStore.getState().setWalletStore('walletId', data.wallet_id);
+        return 'redirect to dashboard';
+      }
+    }
+    if (!emailVerified) {
+      useAuthStore.getState().setAuthState('emailVerified', false);
+      toast.warning('Please verify your email to continue');
+      return 'redirect to verify email';
+    }
+  } catch (error) {
+    handleAxiosError(error, 'Login failed. Please try again.');
+  }
+};

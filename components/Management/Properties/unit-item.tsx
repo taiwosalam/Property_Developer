@@ -11,7 +11,8 @@ import PropertyTag from "@/components/Tags/property-tag";
 import { UnitStatusColors } from "./property-preview";
 
 export interface UnitItemProps {
-  propertyType: "rental" | "facility";
+  propertyType: string;
+  // propertyType: "rental" | "facility";
   unitId: string;
   unitImages: string[];
   unitDetails: string;
@@ -136,7 +137,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
       </div>
 
       <SectionSeparator className="my-4 h-[2px]" />
-      <PropertyTag propertyType={propertyType} />
+      <PropertyTag propertyType={propertyType as "facility" | "rental"} />
     </div>
   );
 };

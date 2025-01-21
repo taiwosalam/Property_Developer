@@ -38,6 +38,7 @@ import {
 } from '@/components/Nav/options';
 import { saveRoleToCookie } from '@/utils/saveRole';
 import { saveMiddlewareRoleToCookie } from '@/utils/setMiddlewareRole';
+import { saveClientRoleToCookie } from '@/utils/saveClientRole';
 
 export const getDashboardPage = (role: string | null) => {
   switch (role) {
@@ -249,7 +250,7 @@ export const login = async (formData: Record<string, any>) => {
     const email = data.data.details?.email || formData.email;
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
-    console.log('res', data);
+    // console.log('res', data);
     const additional_details = data.additional_details;
     const details = {
       branch: {
@@ -269,7 +270,8 @@ export const login = async (formData: Record<string, any>) => {
     useAuthStore.getState().setAuthState('additional_details', details);
 
     // SECURE ROLE
-    await saveRoleToCookie(role);
+    await saveRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION
+    await saveClientRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION
     if (emailVerified) {
       toast.success(data?.message || 'Login successful!');
       if (role === 'user') {
