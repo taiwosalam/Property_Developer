@@ -5,6 +5,7 @@ import type { ValidationErrors, ValidationOutput } from "@/utils/types";
 export interface AuthHeadingProps {
   title: string;
   children: React.ReactNode;
+  logo?: string;
 }
 
 export interface AuthFormProps {
