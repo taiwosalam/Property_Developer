@@ -27,6 +27,7 @@ import { useWalletStore } from '@/store/wallet-store';
 import { ChevronRight } from 'lucide-react';
 import clsx from 'clsx';
 import { getTransactionIcon } from '@/components/Wallet/icons';
+import { KanbanBoard } from '@/components/dashboard/kanban/KanbanBoard';
 
 const Dashboard = () => {
   const walletId = useWalletStore((state) => state.walletId);
@@ -105,7 +106,7 @@ const Dashboard = () => {
 
       <SectionContainer
         heading='Recent Transaction'
-        href='#'
+        href='/user/dashboard/transactions'
       >
         <CustomTable
           data={transformedWalletTableData}
@@ -119,43 +120,9 @@ const Dashboard = () => {
           tableHeadCellSx={{ fontSize: '1rem' }}
         />
       </SectionContainer>
-      <SectionContainer
-        heading='Recent Complains'
-        href='/tasks/complaints'
-      >
-        <div className='bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {Array(6)
-            .fill(null)
-            .map((_, index) => (
-              <TaskCard
-                statusChanger={false}
-                noDrag
-                isNew
-                key={index}
-                task={{
-                  id: 'task9',
-                  columnId: 'approved',
-                  content: {
-                    messageCount: 2,
-                    linkCount: 1,
-                    userAvatars: [
-                      '/empty/avatar.png',
-                      '/empty/avatar.png',
-                      '/empty/avatar.png',
-                    ],
-                    date: '25 Jan 2024',
-                    status: 'pending',
-                    progress: 50,
-                  },
-                  name: 'John Doe',
-                  title: 'Project Manager',
-                  message:
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                  avatarSrc: '/empty/avatar.png',
-                }}
-              />
-            ))}
-        </div>
+
+      <SectionContainer heading='Complaints'>
+        <KanbanBoard />
       </SectionContainer>
     </section>
   );
