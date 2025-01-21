@@ -42,112 +42,84 @@ const ManageServiceProvider = () => {
   const { notes, user_tag } = serviceProviderData;
 
   return (
-    <div className="space-y-5">
-      <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
+    <div className='space-y-5'>
+      <div className='grid lg:grid-cols-2 gap-y-5 gap-x-8'>
         <InfoBox
-          style={{ padding: "24px 40px" }}
-          className="relative space-y-5"
+          style={{ padding: '24px 40px' }}
+          className='relative space-y-5'
         >
-          <div className="flex flex-col xl:flex-row gap-5">
+          <div className='flex flex-col xl:flex-row gap-5'>
             <button
-              type="button"
-              aria-label="back"
-              className="absolute top-3 left-3"
+              type='button'
+              aria-label='back'
+              className='absolute top-3 left-3'
               onClick={() => router.back()}
             >
               <ChevronLeft />
             </button>
             <Picture
               src={DefaultLandlordAvatar}
-              alt="profile picture"
+              alt='profile picture'
               size={120}
               rounded
             />
-            <div className="custom-flex-col gap-4">
-              <div className="custom-flex-col">
-                <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
+            <div className='custom-flex-col gap-4'>
+              <div className='custom-flex-col'>
+                <p className='text-black dark:text-white text-lg lg:text-xl font-bold capitalize'>
                   Abimbola Adedeji
                 </p>
                 <p
-                  style={{ color: isDarkMode ? "#FFFFFF" : "#151515B3" }}
+                  style={{ color: isDarkMode ? '#FFFFFF' : '#151515B3' }}
                   className={`${secondaryFont.className} text-sm font-normal dark:text-darkText-1`}
                 >
                   abimbola@gmail.com
                 </p>
               </div>
               <UserTag type={user_tag} />
-              {user_tag === "mobile" && (
-                <div className="custom-flex-col gap-1">
-                  <p className="text-base font-normal">
+              {user_tag === 'mobile' && (
+                <div className='custom-flex-col gap-1'>
+                  <p className='text-base font-normal'>
                     Wallet ID: 22132876554444
                   </p>
-                  <p className="text-base font-normal">Phone NO: 08132086958</p>
+                  <p className='text-base font-normal'>Phone NO: 08132086958</p>
                 </div>
               )}
+              <div className="w-full">
+              <Button
+                size='base_medium'
+                className='!w-fit ml-auto py-2 px-8'
+              >
+                message
+              </Button>
+              </div>
             </div>
-          </div>
-          <div className="w-fit mx-auto flex flex-wrap gap-4">
-            {user_tag === "mobile" ? (
-              <>
-                <Button size="base_medium" className="!w-fit ml-auto py-2 px-8">
-                  message
-                </Button>
-                <Modal>
-                  <ModalTrigger asChild>
-                    <Button
-                      variant="sky_blue"
-                      size="base_medium"
-                      className="py-2 px-8"
-                    >
-                      Note
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <MobileNotesModal notes={notes} />
-                  </ModalContent>
-                </Modal>
-              </>
-            ) : (
-              <>
-                <Button
-                  size="base_medium"
-                  className="py-2 px-8"
-                  href={"/management/service-providers/1/manage/edit"}
-                >
-                  Manage
-                </Button>
-                <Button size="base_medium" className="py-2 px-8">
-                  update with ID
-                </Button>
-              </>
-            )}
           </div>
         </InfoBox>
 
-        {user_tag === "web" ? (
+        {user_tag === 'web' ? (
           <ContactInfo
-            containerClassName="flex flex-col justify-center rounded-lg"
+            containerClassName='flex flex-col justify-center rounded-lg'
             info={{
-              "Company Name": "Abmbola Services",
-              "Full name": "Abimbola Adedeji",
-              email: "abimbolaadedeji@gmail.com",
-              "Company Phone": "+2348132086958 ; +2348132086958",
-              services: "Painter",
+              'Company Name': 'Abmbola Services',
+              'Full name': 'Abimbola Adedeji',
+              email: 'abimbolaadedeji@gmail.com',
+              'Company Phone': '+2348132086958 ; +2348132086958',
+              services: 'Painter',
             }}
           />
         ) : (
-          <InfoBox className="space-y-6 rounded-lg">
-            <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
+          <InfoBox className='space-y-6 rounded-lg'>
+            <p className='text-black dark:text-white text-lg lg:text-xl font-bold capitalize'>
               About Business
             </p>
             <Picture
               src={SampleLogo}
-              alt="sample logo"
+              alt='sample logo'
               width={300}
               height={67}
-              containerClassName="ml-10"
+              containerClassName='ml-10'
             />
-            <p className="font-normal text-xs text-text-quaternary dark:text-darkText-1">
+            <p className='font-normal text-xs text-text-quaternary dark:text-darkText-1'>
               A multi-family home, also know as a duplex, triplex, or multi-unit
               building, is a residential property that living read more. They
               want to work with their budget in booking an appointment. They
@@ -159,43 +131,42 @@ const ManageServiceProvider = () => {
       </div>
       <div
         className={clsx(
-          "grid gap-y-5 gap-x-8",
-          user_tag === "mobile" ? "lg:grid-cols-3" : "lg:grid-cols-2"
+          'grid gap-y-5 gap-x-8',
+          user_tag === 'mobile' ? 'lg:grid-cols-3' : 'lg:grid-cols-2'
         )}
       >
-        {user_tag === "mobile" && (
+        {user_tag === 'mobile' && (
           <ContactInfo
-            containerClassName="rounded-lg"
-            heading="Social Media"
+            containerClassName='rounded-lg'
+            heading='Social Media'
             info={{
-              instagram: "@abimbola",
-              twitter: "@abimbola",
-              facebook: "@abimbola",
+              instagram: '@abimbola',
+              twitter: '@abimbola',
+              facebook: '@abimbola',
             }}
           />
         )}
         <ContactInfo
-          containerClassName="rounded-lg"
-          heading="bank details"
+          containerClassName='rounded-lg'
+          heading='bank details'
           info={{
-            "bank name": "---",
-            "Bank Account No": "---",
-            "Account Name": "---",
+            'bank name': '---',
+            'Bank Account No': '---',
+            'Account Name': '---',
           }}
         />
         <ContactInfo
-          containerClassName="rounded-lg"
-          heading="Contact Address"
+          containerClassName='rounded-lg'
+          heading='Contact Address'
           info={{
-            "Company Address": "U4, Joke Palza bodija ibadan.",
-            state: "Oyo State",
-            "Local Government": "Akinyele",
+            'Company Address': 'U4, Joke Palza bodija ibadan.',
+            state: 'Oyo State',
+            'Local Government': 'Akinyele',
           }}
         />
-        {user_tag === "web" && <NotesInfoBox notes={notes} />}
       </div>
-      {user_tag === "mobile" && (
-        <InfoSection title="Services">
+      {user_tag === 'mobile' && (
+        <InfoSection title='Services'>
           <AutoResizingGrid minWidth={250}>
             {Array.from({ length: 6 }).map((_, index) => (
               <ServiceCard key={index} />

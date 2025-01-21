@@ -22,7 +22,7 @@ import {
     type LandlordRequestParams,
     transformLandlordApiResponse,
     initialLandlordsPageData,
-} from "../../../landlord/data";
+} from "@/app/(nav)/management/landlord/data";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
@@ -37,9 +37,9 @@ import type { AllBranchesResponse } from "@/components/Management/Properties/typ
 import useFetch from "@/hooks/useFetch";
 import type { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
-import { LandlordHelpInfo } from "../../../landlord/types";
 import BackButton from "@/components/BackButton/back-button";
 import useBranchStore from "@/store/branch-store";
+import { LandlordHelpInfo } from "@/app/(nav)/management/landlord/types";
 
 const states = getAllStates();
 
@@ -51,8 +51,7 @@ const Landlord = () => {
     const [pageData, setPageData] = useState<LandlordsPageData>(
         initialLandlordsPageData
     );
-
-    console.log("branch", branchId)
+    // console.log("branch", branchId)
     const {
         total_pages,
         current_page,
