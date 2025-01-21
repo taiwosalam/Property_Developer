@@ -182,6 +182,42 @@ export const accountantDashboardCardData = [
 ];
 
 
+export const staffDashboardCardData = [
+  {
+    title: 'Properties',
+    bg: getBackgroundColor('properties'),
+    icon: BuildingIcon,
+    value: 10,
+    subValue: 20,
+    link: '/management/staff-branch/',
+  },
+  {
+    title: 'Landlords',
+    bg: getBackgroundColor('landlords'),
+    icon: LandlordIcon,
+    value: 15,
+    subValue: 20,
+    link: '/management/landlord',
+  },
+  {
+    title: 'Tenants & Occupants',
+    bg: getBackgroundColor('tenants & occupants'),
+    icon: TenantIcon,
+    value: 25,
+    subValue: 20,
+    link: '/management/tenants',
+  },
+  {
+    title: 'Complaints',
+    bg: getBackgroundColor('complaints'),
+    icon: ComplaintsIcon,
+    value: 8,
+    subValue: 20,
+    link: '/tasks/complaints',
+  },
+];
+
+
 export const walletBalanceCardData = {
   mainBalance: 1000,
   cautionDeposit: 200,

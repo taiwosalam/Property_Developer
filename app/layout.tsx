@@ -20,7 +20,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const role = await getRoleFromCookie();
-  console.log("role", role)
+  // console.log("role", role)
   return (
     <html lang='en'>
       <body

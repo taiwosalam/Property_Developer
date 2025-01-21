@@ -199,10 +199,10 @@ interface LoginResponse {
       id: string | null;
       picture: string | null;
     };
-    company: {
+    // company: {
       id: string | null;
       company_logo: string | null;
-    };
+    // };
   };
 }
 
@@ -235,6 +235,7 @@ export const login = async (formData: Record<string, any>) => {
     const email = data.data.details?.email || formData.email;
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
+    console.log("res", data)
     const additional_details = data.additional_details;
     const details = {
       branch: {
@@ -242,8 +243,8 @@ export const login = async (formData: Record<string, any>) => {
         picture: additional_details.branch?.picture || null,
       },
       company: {
-        company_id: additional_details.company?.id || null,
-        company_logo: additional_details.company?.company_logo || null,
+        company_id: additional_details.id || null,
+        company_logo: additional_details.company_logo || null,
       },
     };
 
