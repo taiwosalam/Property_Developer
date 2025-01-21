@@ -1,3 +1,4 @@
+// `/pages/api/set-role-cookie.ts`
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
@@ -11,15 +12,16 @@ export async function POST(req: Request) {
       );
     }
 
-    // Set the role as a cookie
+    // Set the role cookie securely
     const response = NextResponse.json(
-      { message: 'Role set successfully' },
+      { message: 'Role cookie set successfully' },
       { status: 200 }
     );
     response.cookies.set('role', role, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
+      httpOnly: true, // Makes it inaccessible to JavaScript
+      secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
+      sameSite: 'strict', // Protects against CSRF attacks
+      path: '/', // Makes the cookie available to the entire site
     });
 
     return response;
