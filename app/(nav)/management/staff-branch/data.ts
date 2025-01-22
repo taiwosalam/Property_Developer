@@ -96,6 +96,7 @@ export interface BranchApiResponse {
     staffs_count: number;
     properties_count: number;
     units_count: number;
+    is_active: 1 | 0;
     manager: {
       id: string;
       name: string;
@@ -126,6 +127,7 @@ export const transformBranchApiResponse = (
     branches: data.map((branch) => ({
       id: branch.id,
       branch_title: branch.branch_name,
+      is_active: branch.is_active,
       branch_full_address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
       manager_name: branch.manager?.name || "",
       branch_picture: branch.picture,

@@ -53,6 +53,7 @@ const eventToComponentMap = {
   "Branch Details": (
     <div className="min-w-[285px] max-w-full pb-7 dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
       <BranchCard
+        is_active={1}
         id="1"
         branch_title="Branch 1"
         branch_full_address="123 Main St, Anytown, USA"
