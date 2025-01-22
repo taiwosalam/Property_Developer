@@ -53,11 +53,22 @@ export const verifyEmailOTP = async (code: string) => {
 // {{base_url}}/branch/1/lock?action=lock
 export const lockBranch = async (branchId: string, otp: string) => {
   try {
-    const res = await api.post(`/branch/${branchId}/lock`, { action: 'lock', otp: otp });
+    const res = await api.post(`/branch/${branchId}/lock`, { action: 'lock', code: otp });
     toast.success('Branch locked successfully');
     return true;
   } catch (error) {
     handleAxiosError(error, 'Failed to lock branch');
+    return false;
+  }
+};
+
+export const unLockBranch = async (branchId: string, otp: string) => {
+  try {
+    const res = await api.post(`/branch/${branchId}/lock`, { action: 'unlock', code: otp });
+    toast.success('Branch unLocked successfully');
+    return true;
+  } catch (error) {
+    handleAxiosError(error, 'Failed to unLock branch');
     return false;
   }
 };

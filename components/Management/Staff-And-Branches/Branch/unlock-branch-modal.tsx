@@ -3,17 +3,33 @@ import { useEffect, useState } from "react";
 // Imports
 import useStep from "@/hooks/useStep";
 import Button from "@/components/Form/Button/button";
-import { ModalTrigger } from "@/components/Modal/modal";
+import { ModalTrigger, useModal } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import { AuthPinField } from "@/components/Auth/auth-components";
 import { XIcon, ReloadIcon } from "@/public/icons/icons";
+import useBranchStore from "@/store/branch-store";
+import { useAuthStore } from "@/store/authStore";
+import { getEmailVerificationOTP, unLockBranch } from "../data";
+import { toast } from "sonner";
+import obfuscateEmail from "@/utils/obfuscateEmail";
+import { useRouter } from "next/navigation";
 
 const UnLockBranchModal: React.FC<{
   branchId: string;
 }> = ({ branchId }) => {
+  const router = useRouter();
   const { activeStep, changeStep } = useStep(3);
   const [canResend, setCanResend] = useState(false);
   const [countdown, setCountdown] = useState(40);
+  const [loading, setLoading] = useState(false)
+  const [resendReqLoading, setResendReqLoading] = useState(false);
+  const [requestLoading, setRequestLoading] = useState(false);
+  const [otp, setOtp] = useState("");
+  const { branch } = useBranchStore()
+  const email = useAuthStore.getState().email || "";
+  const { setIsOpen } = useModal();
+
+  const branch_id = branch.branch_id;
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -26,15 +42,52 @@ const UnLockBranchModal: React.FC<{
   }, [countdown]);
 
   const handleConfirmLock = async () => {
-    changeStep("next");
+    try {
+      setLoading(true)
+      const res = await getEmailVerificationOTP(email);
+      if (res) {
+        changeStep("next");
+      }
+    } catch (error) {
+      toast.error("Can't Send OTP, Please try again!")
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleResendCode = async () => {
     if (canResend) {
-      setCountdown(40);
-      setCanResend(false);
+      setResendReqLoading(true);
+      const status = await getEmailVerificationOTP(email);
+      if (status) {
+        setCountdown(40);
+        setCanResend(false);
+      }
+      setResendReqLoading(false);
     }
   };
+
+  const handleUnLockVerfiyLock = async () => {
+    try {
+      setRequestLoading(true);
+      const res = await unLockBranch(branch_id, otp);
+      if (res) {
+        toast.success("Branch Unlocked Successfully")
+        // router.push("/management/staff-branch");
+        // window.dispatchEvent(new Event("refectch-branch"));
+        changeStep(3);
+      }
+    } catch (err) {
+      toast.error("Failed to UnLock Branch");
+    } finally {
+      setRequestLoading(false);
+    }
+  }
+
+  const handleCloseModal = ()=> {
+    setIsOpen(false)
+    window.dispatchEvent(new Event("refectch-branch"));
+  }
 
   return activeStep === 1 ? (
     <ModalPreset type="warning" className="md:max-w-[440px]">
@@ -44,7 +97,12 @@ const UnLockBranchModal: React.FC<{
         resume as normal within the branch.
       </p>
       <div className="flex flex-col items-center gap-4">
-        <Button onClick={handleConfirmLock}>proceed</Button>
+        <Button
+          disabled={loading}
+          onClick={handleConfirmLock}
+        >
+           {loading ? 'Please wait...' : 'Proceed'}
+        </Button>
         <ModalTrigger
           close
           className="text-brand-primary text-sm font-medium px-3"
@@ -70,16 +128,13 @@ const UnLockBranchModal: React.FC<{
       <div className="p-6">
         <p className="text-text-label text-xs font-normal mb-10">
           An OTP code has been sent to your email <br />
-          <span className="text-support-1">(************oke@gmail.com)</span>
+          <span className="text-support-1">({obfuscateEmail(email)})</span>
           <br /> for confirmation.
         </p>
         <div className="mb-[72px]">
           <AuthPinField
             length={4}
-            onChange={
-              // Handle changes in the input values
-              () => {}
-            }
+            onChange={setOtp}
           />
         </div>
         <button
@@ -97,11 +152,13 @@ const UnLockBranchModal: React.FC<{
         <div className="w-full px-6 mb-4">
           <Button
             className="w-full"
-            onClick={() => {
-              changeStep("next");
-            }}
+            // onClick={() => {
+            //   changeStep("next");
+            // }}
+            disabled={requestLoading}
+            onClick={handleUnLockVerfiyLock}
           >
-            Proceed
+            {requestLoading ? 'Please wait...' : 'Proceed'}
           </Button>
         </div>
       </div>
@@ -114,9 +171,9 @@ const UnLockBranchModal: React.FC<{
         and can continue their operations.
       </p>
       <div className="flex justify-center">
-        <ModalTrigger close asChild>
-          <Button>ok</Button>
-        </ModalTrigger>
+        {/* <ModalTrigger close asChild> */}
+          <Button onClick={handleCloseModal}>ok</Button>
+        {/* </ModalTrigger> */}
       </div>
     </ModalPreset>
   ) : null;

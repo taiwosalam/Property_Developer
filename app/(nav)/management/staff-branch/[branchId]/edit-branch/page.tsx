@@ -19,6 +19,7 @@ import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import type { SingleBranchResponseType } from "../types";
 import { transformSingleBranchAPIResponseToEditBranchFormDetails } from "../data";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const EditBranch = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -26,9 +27,10 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
 
   const [updateRequestLoading, setUpdateRequestLoading] = useState(false);
 
-  const { data, error, loading } = useFetch<SingleBranchResponseType>(
+  const { data, error, loading, refetch } = useFetch<SingleBranchResponseType>(
     `branch/${branchId}`
   );
+  useRefetchOnEvent("refectch-branch", () => refetch({ silent: true }));
 
   
   const branchData = data

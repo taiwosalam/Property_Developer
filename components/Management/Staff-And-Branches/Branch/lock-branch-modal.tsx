@@ -13,10 +13,12 @@ import { useAuthStore } from "@/store/authStore";
 import { getEmailVerificationOTP, lockBranch, verifyEmailOTP } from "../data";
 import { toast } from "sonner";
 import useBranchStore from "@/store/branch-store";
+import { useRouter } from "next/navigation";
 
 const LockBranchModal: React.FC<{
   branchId: string;
 }> = ({ branchId }) => {
+  const router = useRouter();
   const { activeStep, changeStep } = useStep(3);
   const [canResend, setCanResend] = useState(false);
    const { branch } = useBranchStore()
@@ -50,7 +52,7 @@ const LockBranchModal: React.FC<{
       toast.error("Can't Send OTP, Please try again!")
     } finally {
       setLoading(false);
-    }
+    } 
   };
 
   const handleResendCode = async () => {
@@ -73,6 +75,8 @@ const LockBranchModal: React.FC<{
       if (res) {
         toast.success("Branch Locked Successfully")
         changeStep(3);
+        window.dispatchEvent(new Event("refectch-branch"));
+        router.push("/management/staff-branch");
       }
     } catch (err) {
       toast.error("Failed to Lock Branch");

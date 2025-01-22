@@ -153,6 +153,8 @@ const StaffAndBranches = () => {
       />
     );
 
+    console.log("Branches", apiData);
+
   if (isNetworkError) return <NetworkError />;
 
   if (error)
@@ -259,9 +261,13 @@ const StaffAndBranches = () => {
         ) : view === "grid" ? (
           <AutoResizingGrid minWidth={284} key="card">
             {branches.map((b) => (
-              <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
-                <BranchCard {...b} />
-              </Link>
+              b.is_active === 1 ? (
+                <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
+                  <BranchCard {...b} />
+                </Link>
+              ) : (
+                <BranchCard {...b} key={b.id} />
+              )
             ))}
           </AutoResizingGrid>
         ) : (
