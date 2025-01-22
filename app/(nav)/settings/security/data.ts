@@ -83,6 +83,20 @@ export const createSignatureProfiles = async (data: FormData)=> {
   }
 }
 
+
+// Add Bank 
+export const addBankInfo = async(data: FormData) => {
+  try{
+    const res = await api.post('/banks/company-add', data)
+    if (res.status === 201) {
+      return true
+    }
+  }catch(err){
+    handleAxiosError(err)
+    return false
+  }
+}
+
 export interface FormState {
     name?: string;
     title?: string;

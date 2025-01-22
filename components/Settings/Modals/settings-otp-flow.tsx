@@ -17,11 +17,13 @@ const SettingsOTPFlow = ({
   saveOtp,
   resetPass,
   changePassword,
+  addBank,
 }: {
   isForgetWallet?: boolean;
   saveOtp?: boolean;
   resetPass?: boolean;
   changePassword?: boolean;
+  addBank?: boolean;
 }) => {
   const setWalletStore = useWalletStore((s) => s.setWalletStore)
   const { data, error, refetch } =
@@ -43,6 +45,7 @@ const SettingsOTPFlow = ({
       />
     ) : (
       <SettingsOTPModal
+        addBank={addBank}
         changeStep={changeStep}
         saveOtp={saveOtp}
         resetPass={resetPass}
@@ -58,6 +61,7 @@ const SettingsOTPFlow = ({
     />
   ) : activeStep === 2 ? (
     <SettingsOTPModal
+      addBank={addBank}
       changeStep={changeStep}
       isForgetWallet={isForgetWallet}
       saveOtp={saveOtp}
