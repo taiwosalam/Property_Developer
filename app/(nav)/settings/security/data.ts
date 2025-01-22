@@ -102,3 +102,17 @@ export interface FormState {
     title?: string;
     picture?: string;
 }
+
+// /company/settings/smtp_settings
+export const updateSMTPSettings = async (data: FormData) => {
+  try {
+    // data.append("_method", "PATCH");
+    const response = await api.patch("/company/settings/smtp_settings", data);
+    if (response.status === 200) {
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};

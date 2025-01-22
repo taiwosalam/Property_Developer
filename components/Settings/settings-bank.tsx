@@ -135,10 +135,6 @@ const handleEdit = ()=> {
   setOpenEdit(true);
 }
 
-
-  console.log("Bnak name", bankNotAvailable)
-
-
   return (
     <SettingsSection title="Bank Details">
       <div className="custom-flex-col gap-8">
