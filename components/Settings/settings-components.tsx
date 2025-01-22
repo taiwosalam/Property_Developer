@@ -112,15 +112,15 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
 
   const [modalOpen, setModalOpen] = useState(false);
 
-  // useEffect(() => {
-  //   if (next && next === true) {
-  //     setModalOpen(true);
-  //   }
-  // }, [next])
+  useEffect(() => {
+    if (next && next === true) {
+      setModalOpen(true);
+    }
+  }, [next])
 
-  const handleAction = () => {
+  const handleAction = async () => {
     if (action) {
-      action();
+      await action();
     }
     if (next) {
       setModalOpen(true);
@@ -159,7 +159,7 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
           {type === "default" ? (
             <SettingsUpdateModal />
           ) : type === "otp" ? (
-            <SettingsOTPFlow isForgetWallet={false} />
+            <SettingsOTPFlow addBank isForgetWallet={false} />
           ) : type === "add domain" ? (
             <SettingsPaymentModal
               limitTransferFields

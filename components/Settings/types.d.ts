@@ -72,6 +72,7 @@ export interface DefaultSettingsModalProps {
   saveOtp?: boolean;
   resetPass?: boolean;
   changePassword?: boolean;
+  addBank?: boolean;
 }
 
 export interface SettingsAnnumSwitcherProps {

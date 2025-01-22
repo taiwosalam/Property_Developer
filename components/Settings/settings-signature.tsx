@@ -14,43 +14,86 @@ import Input from "@/components/Form/Input/input";
 import Picture from "@/components/Picture/picture";
 import Select from "@/components/Form/Select/select";
 import { useImageUploader } from "@/hooks/useImageUploader";
-import FundingCard from "@/components/Wallet/AddFunds/funding-card";
 import SettingsSection from "@/components/Settings/settings-section";
-import { ProfileUpload } from "@/components/Settings/settings-components";
-import SettingsPasswordSection from "@/components/Settings/settings-password-section";
-import SettingsWalletSection from "@/components/Settings/settings-wallet-section";
 
 import {
   SettingsSectionTitle,
   SettingsUpdateButton,
 } from "@/components/Settings/settings-components";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
-import { cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { createSignatureProfiles, FormState } from "@/app/(nav)/settings/security/data";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { SignaturePageData, transformSignature } from "@/app/(nav)/settings/data";
+import { empty } from "@/app/config";
+
 
 const SettingsSignature = () => {
-  const name = usePersonalInfoStore((state) => state.full_name);
-  const title = usePersonalInfoStore((state) => state.title);
+  const [state, setState] = useState<SignaturePageData[]>([]);
   const { preview, inputFileRef, handleImageChange } = useImageUploader();
-  // const [inputFields, setInputFields] = useState([
-  //   { id: Date.now(), signature: SignatureImage, signatureFile: new File([], "") },
-  // ]);
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<any>("/company-signatures");
+  useRefetchOnEvent("refetchSignatures", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    // Assuming apiData is defined somewhere in your component
+    if (apiData) {
+      const transformedData = transformSignature(apiData);
+      setState(transformedData);
+
+      // Update inputFields based on new state
+      setInputFields(transformedData.length > 0 ? transformedData.map(signature => ({
+        id: signature.id,
+        signature: signature.signature_image || empty,
+        signatureFile: new File([], ""), // Create File only on the client
+        name: signature.name,
+        title: signature.title,
+        professional_title: signature.professional_title
+      })) : [{
+        id: Date.now(),
+        signature: SignatureImage,
+        signatureFile: new File([], ""),
+      }]);
+    }
+  }, [apiData]);
+
 
   const [inputFields, setInputFields] = useState(() => {
     if (typeof window !== "undefined") {
-      return [
-        {
+      // Check if state is empty and use default values if so
+      if (state.length > 0) {
+        return state.map(signature => ({
           id: Date.now(),
-          signature: SignatureImage,
+          signature: signature.signature_image,
           signatureFile: new File([], ""), // Create File only on the client
-        },
-      ];
+          name: signature.name,
+          title: signature.title,
+          professional_title: signature.professional_title
+        }));
+      } else {
+        return [
+          {
+            id: Date.now(),
+            signature: SignatureImage,
+            signatureFile: new File([], ""),
+          },
+        ];
+      }
     }
     return [];
   });
-  
+
+  console.log("INput fields", inputFields)
+
+
   const [reqLoading, setReqLoading] = useState(false);
   const [next, setNext] = useState(false);
   const changeImage = () => {
@@ -99,7 +142,13 @@ const SettingsSignature = () => {
       formData.append(`name[${index}]`, data.get(`fullname_${index}`) as string);
       formData.append(`title[${index}]`, data.get(`personal_title_qualification_${index}`) as string);
       formData.append(`professional_title[${index}]`, data.get(`real_estate_title_${index}`) as string);
-      formData.append(`signature[${index}]`, field.signatureFile); // Binary file
+      // formData.append(`signature[${index}]`, field.signatureFile); // Binary file
+
+      if (typeof field.signature === 'string') {
+        formData.append(`signature[${index}]`, field.signature); // Append the string directly
+      } else {
+        formData.append(`signature[${index}]`, field.signatureFile); // Append the file
+      }
     });
 
     console.log("Payload:", Object.fromEntries(formData));
@@ -110,7 +159,7 @@ const SettingsSignature = () => {
       if (res) {
         toast.success("Signature created successfully");
         setNext(true);
-        window.dispatchEvent(new Event("fetch-profile"));
+        window.dispatchEvent(new Event("refetchSignatures"));
       }
     } catch (error) {
       toast.error("Error creating signature");
@@ -166,6 +215,7 @@ const SettingsSignature = () => {
                         <Select
                           id={`personal_title_qualification_${index}`}
                           options={titles}
+                          defaultValue={state[index]?.title}
                           label="personal title / qualification"
                           inputContainerClassName="w-full bg-neutral-2"
                         />
@@ -176,12 +226,14 @@ const SettingsSignature = () => {
                           label="full name"
                           placeholder="Write Here"
                           className="w-full"
+                          defaultValue={state[index]?.name}
                         />
                       </div>
                       <div className="flex flex-col sm:flex-row gap-3 items-end">
                         <Select
                           id={`real_estate_title_${index}`}
                           options={industryOptions}
+                          defaultValue={state[index]?.professional_title}
                           label="real estate title"
                           inputContainerClassName="w-full bg-neutral-2"
                         />
