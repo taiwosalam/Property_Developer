@@ -59,7 +59,7 @@ const SettingsSignature = () => {
         professional_title: signature.professional_title
       })) : [{
         id: Date.now(),
-        signature: SignatureImage,
+        signature: empty,
         signatureFile: new File([], ""),
       }]);
     }
@@ -82,7 +82,7 @@ const SettingsSignature = () => {
         return [
           {
             id: Date.now(),
-            signature: SignatureImage,
+            signature: empty,
             signatureFile: new File([], ""),
           },
         ];
@@ -103,7 +103,7 @@ const SettingsSignature = () => {
   const addInputField = () => {
     setInputFields([
       ...inputFields,
-      { id: Date.now(), signature: SignatureImage, signatureFile: new File([], "") },
+      { id: Date.now(), signature: empty, signatureFile: new File([], "") },
     ]);
   };
 
@@ -190,12 +190,13 @@ const SettingsSignature = () => {
                       />
                       <div
                         style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
+                        onClick={() => changeSignatureImage(index)}
                         className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
                       >
                         <Picture src={ImageBlue} alt="image icon" size={20} />
                         <p
                           className="text-brand-9 text-xs font-normal"
-                          onClick={() => changeSignatureImage(index)}
+                          // onClick={() => changeSignatureImage(index)}
                         >
                           Change Image
                         </p>

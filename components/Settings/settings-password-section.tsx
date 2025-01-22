@@ -82,15 +82,6 @@ const SettingsPasswordSection = () => {
                 type="password"
                 validationErrors={validationErrors}
               />
-              <div className="self-start">
-                <button
-                  type="button"
-                  onClick={handleForgetPassword}
-                  className="text-brand-9 hover:underline"
-                >
-                 {loading ? "Please wait..." : "Forget Current Password?"}
-                </button>
-              </div>
             </div>
             <AuthNewPassword
               label="New Password"
