@@ -64,8 +64,10 @@ const SettingsBank = () => {
   useEffect(() => {
     if(companyBank){
       const res = transformBank(companyBank);
-      setCompanyBankDetails(res)
-      setEdit(true)
+      if(res){
+        setCompanyBankDetails(res) 
+        setEdit(true)
+      }
     }
   }, [companyBank])
 
@@ -134,7 +136,7 @@ const handleEdit = ()=> {
 }
 
 
-  console.log("Bnak name", bank_name)
+  console.log("Bnak name", bankNotAvailable)
 
 
   return (
@@ -144,7 +146,7 @@ const handleEdit = ()=> {
           title="Bank Account For Withdrawal"
           desc="A bank account for wallet withdrawal is the account linked to your wallet, allowing you to transfer funds from your digital wallet directly to your bank."
         />
-        {bankNotAvailable || openEdit &&  
+        {(bankNotAvailable || openEdit) &&  
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-end">
             <Select
               id="bank_name"
@@ -195,7 +197,7 @@ const handleEdit = ()=> {
               </div>
             }
           </div>}
-          <div className="flex">
+          {!bankNotAvailable && <div className="flex">
             <div className="custom-flex-col max-w-[436px]  gap-4">
               <FundingCard
                 type="sterling"
@@ -212,7 +214,7 @@ const handleEdit = ()=> {
                 </p>
               </div>
             </div>
-          </div>
+          </div>}
           {edit && 
           <div className="flex justify-end gap-4">
           <Button size="base_bold" className="py-[10px] px-8" onClick={handleEdit}>
