@@ -518,7 +518,7 @@ export const ProfileUpload: React.FC<ProfileUploadProps> = ({
         size={100}
         fit="contain"
         src={preview}
-        alt="official signature"
+        alt="Picture"
       />
       <div
         style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}

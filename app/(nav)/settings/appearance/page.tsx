@@ -70,19 +70,19 @@ const Appearance = () => {
   const [reqLoading, setReqLoading] = useState(false);
   const [next, setNext] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(
-    appearance.theme || selectedOptions.theme
+    appearance.theme
   );
   const [selectedView, setSelectedView] = useState<string | null>(
-    appearance.view || selectedOptions.view
+    appearance.view
   );
   const [selectedNavbar, setSelectedNavbar] = useState<string | null>(
-    appearance.navbar || selectedOptions.navbar
+    appearance.navbar
   );
   const [selectedMode, setSelectedMode] = useState<string | null>(
-    appearance.mode || selectedOptions.mode
+    appearance.mode 
   );
   const [selectedFont, setSelectedFont] = useState<string | null>(
-    appearance.font || selectedOptions.font
+    appearance.font
   );
   const [selectedColor, setSelectedColor] = useState<string | null>(
     primaryColor
@@ -499,6 +499,7 @@ const Appearance = () => {
           placeholder={storedFont || "Select a font"}
           onChange={(value) => handleFontSelect(value)}
           options={modifiedGoogleFonts}
+          defaultValue={appearance?.font}
           inputContainerClassName="bg-neutral-2"
           className="max-w-[300px] mt-2 mb-4"
         />

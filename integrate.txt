@@ -45,6 +45,7 @@
 
 
 
+
  const handleUpdateProfile = async (data: Record<string, string>) => {
     const paylo
     ad = {
@@ -1257,3 +1258,41 @@ const SettingsSignature = () => {
 }
 
 export default SettingsSignature
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///appearance
+  const { selectedOptions, setSelectedOption } = useSettingsStore();
+  const [reqLoading, setReqLoading] = useState(false);
+  const [next, setNext] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState<string | null>(
+    appearance.theme
+    // appearance.theme || selectedOptions.theme
+  );
+  const [selectedView, setSelectedView] = useState<string | null>(
+    appearance.view
+    // appearance.view || selectedOptions.view
+  );
+  const [selectedNavbar, setSelectedNavbar] = useState<string | null>(
+    // appearance.navbar || selectedOptions.navbar
+  );
+  const [selectedMode, setSelectedMode] = useState<string | null>(
+    appearance.mode || selectedOptions.mode
+  );
+  const [selectedFont, setSelectedFont] = useState<string | null>(
+    appearance.font || selectedOptions.font
+  );
+  const [selectedColor, setSelectedColor] = useState<string | null>(
+    primaryColor
+  );
