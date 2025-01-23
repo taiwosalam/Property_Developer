@@ -25,11 +25,11 @@ const useSettingsStore = create<SettingsStore>(
   (persist as MyPersist)(
     (set) => ({
       selectedOptions: {
-        theme: null,
-        view: null,
-        navbar: null,
-        mode: null,
-        font: null,
+        theme: "theme1",
+        view: "grid",
+        navbar: "column",
+        mode: "light",
+        font: "lato",
       },
       setSelectedOption: (type, value) =>
         set((state) => ({

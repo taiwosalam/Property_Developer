@@ -91,7 +91,7 @@ const SettingsSignature = () => {
     return [];
   });
 
-  console.log("INput fields", inputFields)
+  // console.log("INput fields", inputFields)
 
 
   const [reqLoading, setReqLoading] = useState(false);
@@ -110,7 +110,7 @@ const SettingsSignature = () => {
   const removeInputField = (id: number) => {
     const updatedFields = inputFields.filter((field) => field.id !== id);
     setInputFields(updatedFields);
-    console.log("Input Fields after removing:", updatedFields);
+    // console.log("Input Fields after removing:", updatedFields);
   };
 
   const changeSignatureImage = (index: number) => {

@@ -24,9 +24,40 @@ import useSettingsStore from "@/store/settings";
 import { useZoomStore } from "@/store/zoomStore";
 import { SelectedOptions } from "@/components/Settings/types";
 import { debounce } from "@/utils/debounce";
+import { useSettings } from "@/hooks/settingsContext";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { updateSettings } from "../security/data";
 
 const Appearance = () => {
   const isDarkMode = useDarkMode();
+  const { data, isLoading, error } = useSettings();
+  const defaultAppearance = {
+    theme: "theme1",
+    view: "grid",
+    navbar: "column",
+    mode: "light",
+    font: "Lato",
+    color: "#2563EB",
+  };
+  const [appearance, setAppearance] = useState(defaultAppearance);
+
+  useEffect(() => {
+    if (data?.appearance) {
+      setAppearance({
+        theme: data.appearance.theme || defaultAppearance.theme,
+        view: data.appearance.card || defaultAppearance.view,
+        navbar: data.appearance.navbar || defaultAppearance.navbar,
+        mode: data.appearance.colorMode || defaultAppearance.mode,
+        font: data.appearance.fonts || defaultAppearance.font,
+        color: data.appearance.dashboardColor || defaultAppearance.color,
+      });
+    } else {
+      setAppearance(defaultAppearance);
+    }
+  }, [data, setAppearance]);
+
+  let storedFont = "";
   const setColor = useThemeStoreSelectors.getState().setColor;
   const primaryColor = useThemeStore((state) => state.primaryColor);
 
@@ -36,19 +67,23 @@ const Appearance = () => {
 
   // State variables for managing selected options
   const { selectedOptions, setSelectedOption } = useSettingsStore();
+  const [reqLoading, setReqLoading] = useState(false);
+  const [next, setNext] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(
-    selectedOptions.theme
+    appearance.theme || selectedOptions.theme
   );
   const [selectedView, setSelectedView] = useState<string | null>(
-    selectedOptions.view
+    appearance.view || selectedOptions.view
   );
   const [selectedNavbar, setSelectedNavbar] = useState<string | null>(
-    selectedOptions.navbar
+    appearance.navbar || selectedOptions.navbar
   );
   const [selectedMode, setSelectedMode] = useState<string | null>(
-    selectedOptions.mode
+    appearance.mode || selectedOptions.mode
   );
-  const [selectedFont, setSelectedFont] = useState<string | null>(null);
+  const [selectedFont, setSelectedFont] = useState<string | null>(
+    appearance.font || selectedOptions.font
+  );
   const [selectedColor, setSelectedColor] = useState<string | null>(
     primaryColor
   );
@@ -137,8 +172,6 @@ const Appearance = () => {
     }
   };
 
-  let storedFont = "";
-
   const handleSelect = (type: keyof SelectedOptions, value: string) => {
     if (!value) return;
     setSelectedOption(type, value);
@@ -208,6 +241,103 @@ const Appearance = () => {
     300
   );
 
+  // THEME
+  const handleUpdateTheme = async () => {
+    const payload = {
+      theme: selectedTheme,
+    }
+    try {
+      setReqLoading(true)
+      const res = await updateSettings(objectToFormData(payload), 'appearance')
+      if (res && res.status === 200) {
+        // toast.success("Theme updated successfully")
+        setNext(true)
+      }
+    } catch (err) {
+      toast.error("Failed to Update Theme")
+    } finally {
+      setReqLoading(false)
+    }
+  }
+
+  // MANAGEMENT CARD
+  const handleUpdateCard = async () => {
+    const payload = {
+      card: selectedView,
+    }
+    try {
+      setReqLoading(true)
+      const res = await updateSettings(objectToFormData(payload), 'appearance')
+      if (res && res.status === 200) {
+        // toast.success(`Card arrangement updated successfully`)
+        setNext(true)
+      }
+    } catch (err) {
+      toast.error("Failed to Update Card Arrangement")
+    } finally {
+      setReqLoading(false)
+    }
+  }
+
+  // NAVBAR
+  const handleUpdateNavbar = async () => {
+    const payload = {
+      navbar: selectedNavbar,
+    }
+    try {
+      setReqLoading(true)
+      const res = await updateSettings(objectToFormData(payload), 'appearance')
+      if (res && res.status === 200) {
+        // toast.success(`Navbar updated successfully`)
+        setNext(true)
+      }
+    } catch (err) {
+      toast.error("Failed to Update Navbar")
+    } finally {
+      setReqLoading(false)
+    }
+  }
+
+  // LIGHT / DARK MODE
+  const handleUpdateMode = async () => {
+    const payload = {
+      mode: selectedMode,
+    }
+    try {
+      setReqLoading(true)
+      const res = await updateSettings(objectToFormData(payload), 'appearance')
+      if (res && res.status === 200) {
+        // toast.success(`Mode updated successfully`)
+        setNext(true)
+      }
+    } catch (err) {
+      toast.error("Failed to Update Mode")
+    } finally {
+      setReqLoading(false)
+    }
+  }
+
+
+  // COLOR, FONT
+  const handleUpdateScheme = async () => {
+    const payload = {
+      dashboardColor: selectedColor,
+      fonts: selectedFont,
+    }
+    try {
+      setReqLoading(true)
+      const res = await updateSettings(objectToFormData(payload), 'appearance')
+      if (res && res.status === 200) {
+        // toast.success(`Scheme updated successfully`)
+        setNext(true)
+      }
+    } catch (err) {
+      toast.error("Failed to Update Scheme")
+    } finally {
+      setReqLoading(false)
+    }
+  }
+
   return (
     <>
       {/* DASHBOARD THEMES */}
@@ -216,42 +346,49 @@ const Appearance = () => {
           title="Select Theme Template"
           desc="Select the themes that best match your interests."
         />
-        <div className="themes flex gap-5 flex-wrap mt-6">
-          <ThemeCard
-            img="/global/theme1.svg"
-            value="theme1"
-            onSelect={(value) => handleSelect("theme", value)}
-            isSelected={selectedTheme === "theme1"}
-          />
-          <div
-            className="relative"
-            title="Sorry, this theme is for Professional Plan subscribers only"
-          >
+        <AuthForm onFormSubmit={handleUpdateTheme} skipValidation>
+          <div className="themes flex gap-5 flex-wrap mt-6">
             <ThemeCard
-              img="/global/theme2.svg"
-              value="theme2"
-              onSelect={() => {}}
-              isSelected={false}
-              className="opacity-50 cursor-not-allowed"
+              img="/global/theme1.svg"
+              value="theme1"
+              onSelect={(value) => handleSelect("theme", value)}
+              isSelected={selectedTheme === "theme1"}
             />
-          </div>
+            <div
+              className="relative"
+              title="Sorry, this theme is for Professional Plan subscribers only"
+            >
+              <ThemeCard
+                img="/global/theme2.svg"
+                value="theme2"
+                onSelect={() => { }}
+                isSelected={false}
+                className="opacity-50 cursor-not-allowed"
+              />
+            </div>
 
-          <div
-            className="relative"
-            title="Sorry, this theme is for Professional Plan subscribers only"
-          >
-            <ThemeCard
-              img="/global/theme3.svg"
-              value="theme3"
-              onSelect={() => {}}
-              isSelected={false}
-              className="opacity-50 cursor-not-allowed"
+            <div
+              className="relative"
+              title="Sorry, this theme is for Professional Plan subscribers only"
+            >
+              <ThemeCard
+                img="/global/theme3.svg"
+                value="theme3"
+                onSelect={() => { }}
+                isSelected={false}
+                className="opacity-50 cursor-not-allowed"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end mt-4">
+            <SettingsUpdateButton
+              submit
+              action={handleUpdateTheme}
+              next={next}
+              loading={reqLoading}
             />
           </div>
-        </div>
-        <div className="flex justify-end mt-4">
-          <SettingsUpdateButton />
-        </div>
+        </AuthForm>
       </SettingsSection>
 
       {/* GRID & LIST DISPLAY SETTINGS */}
@@ -260,82 +397,103 @@ const Appearance = () => {
           title="Card Arrangement"
           desc="Kindly select from 'grid' or 'list' to determine the appearance of your cards."
         />
-        <div className="themes flex gap-5 flex-wrap mt-6">
-          <ThemeCard
-            img="/global/grid-view.svg"
-            value="grid"
-            onSelect={(value) => handleSelect("view", value)}
-            isSelected={selectedView === "grid"}
-          />
-          <ThemeCard
-            img="/global/list-view.svg"
-            value="list"
-            onSelect={(value) => handleSelect("view", value)}
-            isSelected={selectedView === "list"}
-          />
-        </div>
-        <div className="flex justify-end mt-4">
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
+        <AuthForm onFormSubmit={handleUpdateCard} skipValidation>
+          <div className="themes flex gap-5 flex-wrap mt-6">
+            <ThemeCard
+              img="/global/grid-view.svg"
+              value="grid"
+              onSelect={(value) => handleSelect("view", value)}
+              isSelected={selectedView === "grid"}
+            />
+            <ThemeCard
+              img="/global/list-view.svg"
+              value="list"
+              onSelect={(value) => handleSelect("view", value)}
+              isSelected={selectedView === "list"}
+            />
+          </div>
+          <div className="flex justify-end mt-4">
+            <SettingsUpdateButton
+              submit
+              action={handleUpdateCard}
+              next={next}
+              loading={reqLoading}
+            />
+          </div>
+        </AuthForm>
+      </SettingsSection >
 
       {/* NAVBAR DISPLAY SETTINGS */}
-      <SettingsSection title="Navbar Settings">
+      < SettingsSection title="Navbar Settings" >
         <SettingsSectionTitle
           title="Navbar"
           desc="Kindly select how you want your nav bar to be like"
         />
-        <div className="themes flex gap-5 flex-wrap mt-6">
-          <ThemeCard
-            img="/global/nav1.svg"
-            value="column"
-            onSelect={(value) => handleSelect("navbar", value)}
-            isSelected={selectedNavbar === "column"}
-          />
-          <ThemeCard
-            img="/global/nav2.svg"
-            value="row"
-            onSelect={(value) => handleSelect("navbar", value)}
-            isSelected={selectedNavbar === "row"}
-          />
-        </div>
-        <div className="flex justify-end mt-4">
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
+        <AuthForm onFormSubmit={handleUpdateNavbar} skipValidation>
+          <div className="themes flex gap-5 flex-wrap mt-6">
+            <ThemeCard
+              img="/global/nav1.svg"
+              value="column"
+              onSelect={(value) => handleSelect("navbar", value)}
+              isSelected={selectedNavbar === "column"}
+            />
+            <ThemeCard
+              img="/global/nav2.svg"
+              value="row"
+              onSelect={(value) => handleSelect("navbar", value)}
+              isSelected={selectedNavbar === "row"}
+            />
+          </div>
+          <div className="flex justify-end mt-4">
+            <SettingsUpdateButton
+              submit
+              action={handleUpdateNavbar}
+              next={next}
+              loading={reqLoading}
+            />
+          </div>
+        </AuthForm>
+      </SettingsSection >
 
       {/* MODE - DARK/LIGHT MODE SETTINGS */}
-      <SettingsSection title="Mode">
+      < SettingsSection title="Mode" >
         <SettingsSectionTitle
           title="Color scheme"
           desc="Choose Light or Dark Mode Scheme."
         />
-        <div className="themes flex gap-5 flex-wrap mt-4">
-          <ThemeCard
-            img="/global/light-mode.svg"
-            value="light"
-            onSelect={(value) => handleSelect("mode", value)}
-            isSelected={selectedMode === "light"}
-          />
-          <ThemeCard
-            img="/global/dark-mode.svg"
-            value="dark"
-            onSelect={(value) => handleSelect("mode", value)}
-            isSelected={selectedMode === "dark"}
-          />
-        </div>
-        <div className="flex justify-end mt-4">
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
+        <AuthForm onFormSubmit={handleUpdateMode} skipValidation>
+          <div className="themes flex gap-5 flex-wrap mt-4">
+            <ThemeCard
+              img="/global/light-mode.svg"
+              value="light"
+              onSelect={(value) => handleSelect("mode", value)}
+              isSelected={selectedMode === "light"}
+            />
+            <ThemeCard
+              img="/global/dark-mode.svg"
+              value="dark"
+              onSelect={(value) => handleSelect("mode", value)}
+              isSelected={selectedMode === "dark"}
+            />
+          </div>
+          <div className="flex justify-end mt-4">
+            <SettingsUpdateButton 
+              submit
+              action={handleUpdateMode}
+              next={next}
+              loading={reqLoading}
+            />
+          </div>
+        </AuthForm>
+      </SettingsSection >
 
       {/* DASHBOARD COLOR SETTINGS */}
-      <SettingsSection title="Theme Font and Color Settings">
+      < SettingsSection title="Theme Font and Color Settings" >
         <SettingsSectionTitle
           title="Fonts Templates"
           desc="Choose Your Preferred Font Style for Your Company Profile Website"
         />
-
+         <AuthForm onFormSubmit={handleUpdateScheme} skipValidation>
         <Select
           id="font"
           placeholder={storedFont || "Select a font"}
@@ -418,9 +576,15 @@ const Appearance = () => {
           />
         </div>
         <div className="flex justify-end mt-4">
-          <SettingsUpdateButton />
+          <SettingsUpdateButton
+            submit
+            action={handleUpdateScheme}
+            next={next}
+            loading={reqLoading}
+           />
         </div>
-      </SettingsSection>
+        </AuthForm>
+      </SettingsSection >
     </>
   );
 };

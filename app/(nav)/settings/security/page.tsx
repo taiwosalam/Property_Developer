@@ -32,6 +32,7 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import SettingsSignature from "@/components/Settings/settings-signature";
 import SettingsBank from "@/components/Settings/settings-bank";
 import SettingsSmtp from "@/components/Settings/settings-smtp";
+import SettingsSMS from "@/components/Settings/settings-sms";
 
 const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
@@ -133,20 +134,7 @@ const Security = () => {
       <SettingsWalletSection />
       <SettingsPasswordSection />
       <SettingsBank />
-      <SettingsSection title="Customized SMS name">
-        <div className="custom-flex-col gap-8">
-          <SettingsSectionTitle desc="Custom sender SMS name allows you to input a preferred name, providing a way to brand your SMS messages with a personalized touch.  replaces the sender numbers displayed on devices receiving your SMS messages with a name of your choice, up to 11 characters in length." />
-          <div className="flex gap-5">
-            <Input
-              id="desired_name"
-              label="input desired name"
-              className="w-[277px]"
-              maxLength={11}
-            />
-          </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
+      <SettingsSMS />
       <SettingsSmtp />
     </>
   );
