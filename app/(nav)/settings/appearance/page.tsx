@@ -33,12 +33,12 @@ const Appearance = () => {
   const isDarkMode = useDarkMode();
   const { data, isLoading, error } = useSettings();
   const defaultAppearance = {
-    theme: "theme1",
-    view: "grid",
-    navbar: "column",
-    mode: "light",
-    font: "Lato",
-    color: "#2563EB",
+    theme: "",
+    view: "",
+    navbar: "",
+    mode: "",
+    font: "",
+    color: "",
   };
   const [appearance, setAppearance] = useState(defaultAppearance);
 
@@ -55,12 +55,12 @@ const Appearance = () => {
     } else {
       setAppearance(defaultAppearance);
     }
-  }, [data, setAppearance]);
+  }, [data]);
 
-  let storedFont = "";
+
   const setColor = useThemeStoreSelectors.getState().setColor;
   const primaryColor = useThemeStore((state) => state.primaryColor);
-
+  
   const googleFonts = useGoogleFonts();
   // Ensure 'Lato' is the first font in the array
   const modifiedGoogleFonts = ["Lato", ...googleFonts];
@@ -79,14 +79,16 @@ const Appearance = () => {
     appearance.navbar
   );
   const [selectedMode, setSelectedMode] = useState<string | null>(
-    appearance.mode 
+    appearance.mode
   );
   const [selectedFont, setSelectedFont] = useState<string | null>(
     appearance.font
   );
-  const [selectedColor, setSelectedColor] = useState<string | null>(
-    primaryColor
-  );
+  const [selectedColor, setSelectedColor] = useState<string | null>(primaryColor);
+  let storedFont =   appearance.font;
+
+  console.log("font", storedFont)
+  console.log("primary color", primaryColor)
 
   // Zoom control
   const zoomLevel = useZoomStore((state) => state.zoomLevel);
@@ -99,22 +101,22 @@ const Appearance = () => {
   const [customColor, setCustomColor] = useState("#ffffff");
   const { theme, setTheme } = useTheme();
   const [fullScreen, setFullScreen] = useState(false);
-  // Update primary color and generate secondary color when selectedColor changes
-  useEffect(() => {
-    if (selectedColor) {
-      setColor(selectedColor);
-    }
-  }, [setColor, selectedColor]);
 
   useEffect(() => {
-    if (primaryColor) {
-      setSelectedColor(primaryColor);
+    if (appearance.color) {
+      setColor(appearance.color);
+      setAppearance({ ...appearance, color: appearance.color });
+      setCustomColor(appearance.color);
     }
-  }, [primaryColor]);
+  }, [appearance.color]);
 
   useEffect(() => {
     // Check if running in the browser
     if (typeof window !== "undefined") {
+      // check if storedFont has value
+      if (storedFont){
+        localStorage.setItem("selectedFont", storedFont);
+      }
       storedFont = localStorage.getItem("selectedFont") || "";
       if (storedFont) {
         setSelectedFont(storedFont);
@@ -207,6 +209,7 @@ const Appearance = () => {
     } else {
       setSelectedColor(color);
       setCustomColor(color);
+      console.log("selected color",color)
     }
   };
 
@@ -250,6 +253,7 @@ const Appearance = () => {
       setReqLoading(true)
       const res = await updateSettings(objectToFormData(payload), 'appearance')
       if (res && res.status === 200) {
+        window.dispatchEvent(new Event("refetch-settings"));
         // toast.success("Theme updated successfully")
         setNext(true)
       }
@@ -269,8 +273,9 @@ const Appearance = () => {
       setReqLoading(true)
       const res = await updateSettings(objectToFormData(payload), 'appearance')
       if (res && res.status === 200) {
-        // toast.success(`Card arrangement updated successfully`)
-        setNext(true)
+        window.dispatchEvent(new Event("refetch-settings"));
+        toast.success(`Card arrangement updated successfully`)
+        // setNext(true)
       }
     } catch (err) {
       toast.error("Failed to Update Card Arrangement")
@@ -288,8 +293,9 @@ const Appearance = () => {
       setReqLoading(true)
       const res = await updateSettings(objectToFormData(payload), 'appearance')
       if (res && res.status === 200) {
-        // toast.success(`Navbar updated successfully`)
-        setNext(true)
+        window.dispatchEvent(new Event("refetch-settings"));
+        toast.success(`Navbar updated successfully`)
+        // setNext(true)
       }
     } catch (err) {
       toast.error("Failed to Update Navbar")
@@ -307,8 +313,9 @@ const Appearance = () => {
       setReqLoading(true)
       const res = await updateSettings(objectToFormData(payload), 'appearance')
       if (res && res.status === 200) {
-        // toast.success(`Mode updated successfully`)
-        setNext(true)
+        window.dispatchEvent(new Event("refetch-settings"));
+        toast.success(`Mode updated successfully`)
+        // setNext(true)
       }
     } catch (err) {
       toast.error("Failed to Update Mode")
@@ -328,8 +335,9 @@ const Appearance = () => {
       setReqLoading(true)
       const res = await updateSettings(objectToFormData(payload), 'appearance')
       if (res && res.status === 200) {
-        // toast.success(`Scheme updated successfully`)
-        setNext(true)
+        window.dispatchEvent(new Event("refetch-settings"));
+        toast.success(`Scheme updated successfully`)
+        // setNext(true)
       }
     } catch (err) {
       toast.error("Failed to Update Scheme")
@@ -384,7 +392,7 @@ const Appearance = () => {
             <SettingsUpdateButton
               submit
               action={handleUpdateTheme}
-              next={next}
+              // next={next}
               loading={reqLoading}
             />
           </div>
@@ -416,7 +424,7 @@ const Appearance = () => {
             <SettingsUpdateButton
               submit
               action={handleUpdateCard}
-              next={next}
+              // next={next}
               loading={reqLoading}
             />
           </div>
@@ -448,7 +456,7 @@ const Appearance = () => {
             <SettingsUpdateButton
               submit
               action={handleUpdateNavbar}
-              next={next}
+              // next={next}
               loading={reqLoading}
             />
           </div>
@@ -477,10 +485,10 @@ const Appearance = () => {
             />
           </div>
           <div className="flex justify-end mt-4">
-            <SettingsUpdateButton 
+            <SettingsUpdateButton
               submit
               action={handleUpdateMode}
-              next={next}
+              // next={next}
               loading={reqLoading}
             />
           </div>
@@ -493,97 +501,97 @@ const Appearance = () => {
           title="Fonts Templates"
           desc="Choose Your Preferred Font Style for Your Company Profile Website"
         />
-         <AuthForm onFormSubmit={handleUpdateScheme} skipValidation>
-        <Select
-          id="font"
-          placeholder={storedFont || "Select a font"}
-          onChange={(value) => handleFontSelect(value)}
-          options={modifiedGoogleFonts}
-          defaultValue={appearance?.font}
-          inputContainerClassName="bg-neutral-2"
-          className="max-w-[300px] mt-2 mb-4"
-        />
+        <AuthForm onFormSubmit={handleUpdateScheme} skipValidation>
+          <Select
+            id="font"
+            placeholder={storedFont || "Select a font"}
+            onChange={(value) => handleFontSelect(value)}
+            options={modifiedGoogleFonts}
+            defaultValue={appearance?.font}
+            inputContainerClassName="bg-neutral-2"
+            className="max-w-[300px] mt-2 mb-4"
+          />
 
-        <SettingsSectionTitle
-          title="Dashboard Color Scheme"
-          desc="Customize the default color to your preference from the available options listed below."
-        />
-
-        <WebsiteColorSchemes
-          websiteColorSchemes={website_color_schemes as unknown as string[]}
-          selectedColor={selectedColor}
-          onColorSelect={debouncedHandleColorSelect}
-        />
-
-        <div className="">
-          <p className="text-sm text-text-disabled">
-            Specify a color code or select a color that best represents your
-            brand. You can also incorporate additional color designs based on
-            your preferences.
-          </p>
-        </div>
-
-        <div className="flex gap-2">
-          {customColor && (
-            <div
-              className={`h-[40px] w-[40px] my-2 rounded-md text-base border border-gray-300 flex items-center justify-center cursor-pointer relative`}
-              style={{ backgroundColor: customColor }}
-            >
-              {selectedColor === customColor && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Image
-                    src="/icons/whitemark.svg"
-                    alt="Selected"
-                    width={24}
-                    height={24}
-                  />
-                </div>
-              )}
-            </div>
-          )}
-          <Modal
-            state={{
-              isOpen: modalOpen,
-              setIsOpen: setModalOpen,
-            }}
-          >
-            <ModalTrigger className="h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white dark:bg-darkText-primary flex items-center justify-center cursor-pointer">
-              +
-            </ModalTrigger>
-            <ModalContent>
-              <CustomColorPicker
-                color={customColor}
-                onChange={debouncedHandleCustomColorChange}
-                setModalOpen={setModalOpen}
-              />
-            </ModalContent>
-          </Modal>
-        </div>
-        {/* ZOOM SETTINGS */}
-        <div className="zoom mt-4">
           <SettingsSectionTitle
-            title="Zoom Moderation"
-            desc="Customize the dashboard's size and font weight to perfectly suit your desired style and functionality."
+            title="Dashboard Color Scheme"
+            desc="Customize the default color to your preference from the available options listed below."
           />
-          {/* ZOOM & FULLSCREEN */}
-          <ZoomSettings
-            resetZoom={resetZoom}
-            increaseZoom={increaseZoom}
-            decreaseZoom={decreaseZoom}
-            zoomLevel={zoomLevel}
-            setZoom={setZoom}
-            toggleFullscreen={toggleFullscreen}
-            fullScreen={fullScreen}
+
+          <WebsiteColorSchemes
+            websiteColorSchemes={website_color_schemes as unknown as string[]}
+            selectedColor={selectedColor}
+            onColorSelect={debouncedHandleColorSelect}
           />
-        </div>
-        <div className="flex justify-end mt-4">
-          <SettingsUpdateButton
-            submit
-            action={handleUpdateScheme}
-            next={next}
-            loading={reqLoading}
-           />
-        </div>
+
+          <div className="">
+            <p className="text-sm text-text-disabled">
+              Specify a color code or select a color that best represents your
+              brand. You can also incorporate additional color designs based on
+              your preferences.
+            </p>
+          </div>
+
+          <div className="flex gap-2">
+            {customColor && (
+              <div
+                className={`h-[40px] w-[40px] my-2 rounded-md text-base border border-gray-300 flex items-center justify-center cursor-pointer relative`}
+                style={{ backgroundColor: customColor }}
+              >
+                {selectedColor === customColor && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Image
+                      src="/icons/whitemark.svg"
+                      alt="Selected"
+                      width={24}
+                      height={24}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+            <Modal
+              state={{
+                isOpen: modalOpen,
+                setIsOpen: setModalOpen,
+              }}
+            >
+              <ModalTrigger className="h-[40px] w-[40px] my-2 border-dashed rounded-md text-base border border-gray-300 bg-white dark:bg-darkText-primary flex items-center justify-center cursor-pointer">
+                +
+              </ModalTrigger>
+              <ModalContent>
+                <CustomColorPicker
+                  color={customColor}
+                  onChange={debouncedHandleCustomColorChange}
+                  setModalOpen={setModalOpen}
+                />
+              </ModalContent>
+            </Modal>
+          </div>
+          {/* ZOOM SETTINGS */}
+          <div className="zoom mt-4">
+            <SettingsSectionTitle
+              title="Zoom Moderation"
+              desc="Customize the dashboard's size and font weight to perfectly suit your desired style and functionality."
+            />
+            {/* ZOOM & FULLSCREEN */}
+            <ZoomSettings
+              resetZoom={resetZoom}
+              increaseZoom={increaseZoom}
+              decreaseZoom={decreaseZoom}
+              zoomLevel={zoomLevel}
+              setZoom={setZoom}
+              toggleFullscreen={toggleFullscreen}
+              fullScreen={fullScreen}
+            />
+          </div>
+          <div className="flex justify-end mt-4">
+            <SettingsUpdateButton
+              submit
+              action={handleUpdateScheme}
+              // next={next}
+              loading={reqLoading}
+            />
+          </div>
         </AuthForm>
       </SettingsSection >
     </>
