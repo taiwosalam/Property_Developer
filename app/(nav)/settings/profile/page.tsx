@@ -24,23 +24,29 @@ import CompanyMobileNumber from "@/components/Setup/company-mobile-number";
 import CompanyLogo from "./company-logo";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { 
-  companyData, 
-  CompanyDataApiResponse, 
-  initialPageData, 
-  ProfileSettingsPageState, 
-  transformProfileApiResponse, 
-  userData 
+import {
+  cleanStringtoArray,
+  companyData,
+  CompanyDataApiResponse,
+  initialPageData,
+  ProfileSettingsPageState,
+  transformFormCompanyData,
+  transformProfileApiResponse,
+  updateCompanyDetails,
+  userData
 } from "./data";
 import NetworkError from "@/components/Error/NetworkError";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import CompanySocials from "@/components/Settings/settings-company-social";
 import SettingsWebsiteDomain from "@/components/Settings/settings-website-domain";
 import WebsiteColor from "@/components/Settings/website-color";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { toast } from "sonner";
 
 
 const Profile = () => {
   const company_id = usePersonalInfoStore((state) => state.company_id)
+  const [requestLoading, setRequestLoading] = useState(false);
 
   const [checkedStates, setCheckedStates] = useState<{
     [key: string]: boolean;
@@ -78,12 +84,12 @@ const Profile = () => {
 
   useEffect(() => {
     if (apiData) {
-      // console.log(apiData);
       const transformedData: ProfileSettingsPageState = transformProfileApiResponse(apiData as CompanyDataApiResponse);
       setState(transformedData);
     }
   }, [apiData]);
-
+  
+  console.log("apiData", state?.companyData?.phone_number);
   const { preview, handleImageChange } = useImageUploader({
     placeholder: Transparent,
   });
@@ -123,94 +129,184 @@ const Profile = () => {
 
   //  if (error)
   //    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  const handleSubmit = async (formData: FormData) => {
+    setRequestLoading(true);
+    const data = transformFormCompanyData(formData);
+    console.log(data);
+    try {
+      console.log("id", company_id)
+      const status = await updateCompanyDetails(data, company_id as string);
+      console.log(status)
+      if (status) {
+        toast.success("Company Details Updated Successfully")
+        window.dispatchEvent(new Event("refetchProfile"));
+      }
+    } catch (err) {
+      toast.error("Failed to Update Company Details")
+    } finally {
+      setRequestLoading(false);
+    }
+  };
 
+  // const phones = cleanStringtoArray(state?.companyData?.phone_number);
+  // console.log("phones", phones)
 
   return (
     <>
       <SettingsSection title="company profile and details">
-        <div className="custom-flex-col gap-8">
-          <div className="">
-            <div className="flex w-full items-start gap-4 md:flex-row flex-col">
-              <div className="md:w-2/3 w-full gap-1 flex items-end">
-                <Input
-                  required
-                  id="company_name"
-                  label="company name"
-                  placeholder={companyData.company_name}
-                  className="w-full"
-                  disabled
-                />
-                <div className="flex mt-2 sm:mt-0 sm:ml-2">
-                  <SettingsVerifiedBadge status="verified" />
+        <AuthForm
+          skipValidation
+          onFormSubmit={handleSubmit}
+          returnType="form-data"
+        >
+          <div className="custom-flex-col gap-8">
+            <div className="">
+              <div className="flex w-full items-start gap-4 md:flex-row flex-col">
+                <div className="md:w-2/3 w-full gap-1 flex items-end">
+                  <Input
+                    required
+                    id="company_name"
+                    label="company name"
+                    placeholder={companyData.company_name}
+                    className="w-full"
+                    disabled
+                  />
+                  <div className="flex mt-2 sm:mt-0 sm:ml-2">
+                    <SettingsVerifiedBadge status="verified" />
+                  </div>
+                </div>
+                <div className="md:w-1/3 w-full gap-1 flex items-end">
+                  <Input
+                    required
+                    label="company mail"
+                    id="company_mail"
+                    placeholder="ourtenantsdeveloper@gmail.com"
+                    inputClassName="rounded-[8px] bg-white w-full"
+                    value={companyData.email}
+                    disabled
+                  />
+                  <div className="flex mt-2 sm:mt-0 sm:ml-2">
+                    <SettingsVerifiedBadge status="verified" />
+                  </div>
                 </div>
               </div>
-              <div className="md:w-1/3 w-full gap-1 flex items-end">
-                <Input
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 w-full items-center justify-between">
+                <DateInput
                   required
-                  label="company mail"
-                  id="company_mail"
-                  placeholder="ourtenantsdeveloper@gmail.com"
-                  inputClassName="rounded-[8px] bg-white w-full"
-                  value={companyData.email}
+                  id="cac_date"
+                  label="date of registration"
+                  value={dayjs(companyData.date_of_registration)}
+                  onChange={() => { }}
                   disabled
                 />
-                <div className="flex mt-2 sm:mt-0 sm:ml-2">
-                  <SettingsVerifiedBadge status="verified" />
+                <Input
+                  required
+                  label="CAC Registration Number"
+                  id="cac_number"
+                  placeholder="Write here"
+                  inputClassName="rounded-[8px] setup-f bg-white"
+                  value={companyData.cac_registration_number}
+                  disabled
+                />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
+                  <Input
+                    required
+                    label="CAC document"
+                    id="cac_certificate"
+                    placeholder="CAC"
+                    inputClassName="rounded-[8px] setup-f bg-white"
+                    value={"certificate.pdf"}
+                    disabled
+                  />
+                  <div className="flex pt-2 sm:pt-7">
+                    <SettingsVerifiedBadge status={verifications.cac_status} />
+                  </div>
+                </div>
+                <Select
+                  id="industry"
+                  label="industry"
+                  options={industryOptions}
+                  inputContainerClassName="bg-neutral-2 w-full"
+                  defaultValue={companyData.industry || ""}
+                />
+                <Input
+                  id="membership_number"
+                  label="membership number"
+                  placeholder="write here"
+                  className="w-full"
+                  defaultValue={companyData.membership_number || ""}
+                />
+                <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
+                  <FileInput
+                    required
+                    id="membership_document"
+                    label="Membership document"
+                    placeholder=""
+                    buttonName="Document"
+                    fileType="pdf"
+                    size={2}
+                    sizeUnit="MB"
+                    hiddenInputClassName="setup-f required w-full sm:w-[250px]"
+                    settingsPage={true}
+                  />
                 </div>
               </div>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 w-full items-center justify-between">
-              <DateInput
-                required
-                id="cac_date"
-                label="date of registration"
-                value={dayjs(companyData.date_of_registration)}
-                onChange={() => { }}
-                disabled
-              />
-              <Input
-                required
-                label="CAC Registration Number"
-                id="cac_number"
-                placeholder="Write here"
-                inputClassName="rounded-[8px] setup-f bg-white"
-                value={companyData.cac_registration_number}
-                disabled
-              />
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
-                <Input
-                  required
-                  label="CAC document"
-                  id="cac_certificate"
-                  placeholder="CAC"
-                  inputClassName="rounded-[8px] setup-f bg-white"
-                  value={"certificate.pdf"}
-                  disabled
-                />
-                <div className="flex pt-2 sm:pt-7">
-                  <SettingsVerifiedBadge status={verifications.cac_status} />
-                </div>
-              </div>
+            <SettingsSectionTitle
+              title="company address"
+              desc="Provide your complete head office address for the verification process. Please select your state, local government area, city, and upload a utility bill that is no older than 3 months."
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               <Select
-                id="industry"
-                label="industry"
-                options={industryOptions}
-                inputContainerClassName="bg-neutral-2 w-full"
-                defaultValue={companyData.industry || ""}
+                options={getAllStates()}
+                id="state"
+                label="state"
+                value={address.state}
+                hiddenInputClassName="setup-f"
+                defaultValue={state.companyData.state}
+                onChange={(value) => handleAddressChange("state", value)} // Update handler
+                required
               />
+
+              {/* Local Government Selector */}
+              <Select
+                options={getLocalGovernments(address.state)}
+                id="local_government"
+                label="local government"
+                hiddenInputClassName="setup-f"
+                onChange={(value) => handleAddressChange("lga", value)} // Update handler
+                value={address.lga} // Controlled value
+                required
+                defaultValue={state.companyData.local_government}
+              />
+
+              {/* City Selector */}
+              <Select
+                options={getCities(address.state, address.lga)}
+                id="city"
+                label="City / Area"
+                allowCustom={true}
+                hiddenInputClassName="setup-f"
+                onChange={(value) => handleAddressChange("city", value)} // Update handler
+                value={address.city} // Controlled value
+                required
+                defaultValue={state.companyData.city}
+              />
+            </div>
+            <div className="w-full flex flex-col lg:flex-row gap-4">
               <Input
-                id="membership_number"
-                label="membership number"
-                placeholder="write here"
-                className="w-full"
-                defaultValue={companyData.membership_number || ""}
+                id="head_office_address"
+                label="Head Office Address"
+                placeholder=""
+                className="w-full lg:w-[500px]"
+                defaultValue={state.companyData.head_office_address}
               />
-              <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
+              <div className="flex flex-col sm:flex-row items-start sm:items-end gap-2 w-full lg:w-auto">
                 <FileInput
                   required
-                  id="membership_document"
-                  label="Membership document"
+                  id="utility_document  "
+                  label="utility document"
                   placeholder=""
                   buttonName="Document"
                   fileType="pdf"
@@ -218,87 +314,29 @@ const Profile = () => {
                   sizeUnit="MB"
                   hiddenInputClassName="setup-f required w-full sm:w-[250px]"
                   settingsPage={true}
+                // onChange={handleUploadUtility}
                 />
+                {uploadingUtility && (
+                  <button className="w-1/2 sm:w-auto py-2 px-3 mt-2 sm:mt-0 text-brand-9  ">
+                    Verify Document
+                  </button>
+                )}
               </div>
             </div>
+            <CompanyMobileNumber
+              phoneNumbers={state.companyData.phone_number}
+            />
+            <CompanyLogo
+              lightLogo={state.companyData.company_logo}
+              darkLogo={state.companyData.dark_logo}
+            />
           </div>
-          <SettingsSectionTitle
-            title="company address"
-            desc="Provide your complete head office address for the verification process. Please select your state, local government area, city, and upload a utility bill that is no older than 3 months."
+          <SettingsUpdateButton
+            submit
+            action={handleSubmit as any}
+            loading={requestLoading}
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            <Select
-              options={getAllStates()}
-              id="state"
-              label="state"
-              value={address.state}
-              hiddenInputClassName="setup-f"
-              defaultValue={state.companyData.state}
-              onChange={(value) => handleAddressChange("state", value)} // Update handler
-              required
-            />
-
-            {/* Local Government Selector */}
-            <Select
-              options={getLocalGovernments(address.state)}
-              id="local_government"
-              label="local government"
-              hiddenInputClassName="setup-f"
-              onChange={(value) => handleAddressChange("lga", value)} // Update handler
-              value={address.lga} // Controlled value
-              required
-              defaultValue={state.companyData.local_government}
-            />
-
-            {/* City Selector */}
-            <Select
-              options={getCities(address.state, address.lga)}
-              id="city"
-              label="City / Area"
-              allowCustom={true}
-              hiddenInputClassName="setup-f"
-              onChange={(value) => handleAddressChange("city", value)} // Update handler
-              value={address.city} // Controlled value
-              required
-              defaultValue={state.companyData.city}
-            />
-          </div>
-          <div className="w-full flex flex-col lg:flex-row gap-4">
-            <Input
-              id="head_office_address"
-              label="Head Office Address"
-              placeholder=""
-              className="w-full lg:w-[500px]"
-              defaultValue={state.companyData.head_office_address}
-            />
-            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-2 w-full lg:w-auto">
-              <FileInput
-                required
-                id="utility_document  "
-                label="utility document"
-                placeholder=""
-                buttonName="Document"
-                fileType="pdf"
-                size={2}
-                sizeUnit="MB"
-                hiddenInputClassName="setup-f required w-full sm:w-[250px]"
-                settingsPage={true}
-              // onChange={handleUploadUtility}
-              />
-              {uploadingUtility && (
-                <button className="w-1/2 sm:w-auto py-2 px-3 mt-2 sm:mt-0 text-brand-9  ">
-                  Verify Document
-                </button>
-              )}
-            </div>
-          </div>
-          <CompanyMobileNumber phoneNumbers={state.companyData.phone_number} />
-          <CompanyLogo
-            lightLogo={state.companyData.company_logo}
-            darkLogo={""}
-          />
-        </div>
-        <SettingsUpdateButton />
+        </AuthForm>
       </SettingsSection>
       <CompanySocials companyData={companyData} />
       <SettingsWebsiteDomain />
