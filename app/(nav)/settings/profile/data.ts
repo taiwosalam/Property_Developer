@@ -1,4 +1,5 @@
 import api, { handleAxiosError } from "@/services/api";
+import { cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
 interface SocialLinks {
   facebook: string;
@@ -34,6 +35,7 @@ export interface CompanyDataApiResponse {
   company_name: string;
   email: string;
   company_logo: string;
+  dark_logo: string;
   is_verified: boolean;
   phone_number: string[];
   head_office_address: string;
@@ -79,6 +81,7 @@ export interface companyData {
   company_id: number;
   company_name: string;
   company_logo: string;
+  dark_logo: string;
   is_verified: boolean;
   date_of_registration: string;
   cac_registration_number: string;
@@ -142,6 +145,7 @@ export const initialPageData:ProfileSettingsPageState = {
     email: "",
     company_id: 0,
     company_logo: "",
+    dark_logo: "",
     is_verified: false,
     date_of_registration: "",
     cac_registration_number: "",
@@ -183,13 +187,14 @@ export const transformProfileApiResponse = (
   response: CompanyDataApiResponse
 ): ProfileSettingsPageState => {
   const res = response.data
-  console.log("profile settings response ", res);
+  // console.log("profile settings response ", res);
   return {
     companyData: { 
       company_name: res.company_name,
       email: res.email,
       company_id: res.id,
       company_logo: res.company_logo,
+      dark_logo: res.dark_logo,
       is_verified: res.is_verified,
       date_of_registration: res.date_of_registration,
       cac_registration_number: res.cac_registration_number,
@@ -279,4 +284,98 @@ export const createNewWalletPin = async(data:any)=>{
   handleAxiosError(err);
     return false;
  }
+}
+
+interface CompanyPayload {
+  company_name: string;
+  company_logo: string | File;
+  state: string;
+  local_government: string;
+  city: string;
+  date_of_registration: string;
+  bio: string;
+  industry: string;
+  membership_number: string;
+  company_type_id: number;
+  head_office_address: string;
+  facebook: string;
+  x: string;
+  instagram: string;
+  linkedin: string;
+  tiktok: string;
+  youtube: string;
+  website: string;
+  cac_registration_number: string;
+  dark_logo: string | File;
+  utility_document: string | File;
+  phone_number: string[];
+  // directors: Director[];
+}
+
+
+export const transformFormCompanyData = (formData: FormData): CompanyPayload => {
+  const data = {} as CompanyPayload;
+
+  console.log(formData)
+
+  data.company_logo = formData.get("light_company_logo") as string | File;
+  data.dark_logo = formData.get("dark_company_logo") as string | File;
+  data.industry = formData.get("industry") as string;
+  data.membership_number = formData.get("membership_number") as string;
+
+  data.head_office_address = formData.get("head_office_address") as string;
+  data.state = formData.get("state") as string;
+  data.local_government = formData.get("local_government") as string;
+  data.city = formData.get("city") as string;
+  data.utility_document = formData.get("utility_document") as string | File;
+
+  // Collect phone numbers into an array
+  data.phone_number = [
+    formData.get("phone_number_1"),
+    formData.get("phone_number_2"),
+    formData.get("phone_number_3"),
+    formData.get("phone_number_4"),
+  ].filter(Boolean) as string[];
+
+  // Add certificates
+  // data.cac_certificate = formData.get("cac_certificate") as string | File;
+  // data.membership_certificate = formData.get("membership_certificate") as
+  //   | string
+  //   | File;
+
+  return data;
+};
+
+
+export const updateCompanyDetails = async(formData: Record<string, any>, id: string ) => {
+  try {
+    const data = objectToFormData(formData)
+    data.append("_method", "PATCH");
+    const response = await api.post(`/company/${id}/update`, data);
+    if (response.status === 200) {
+      return response;
+    }
+    console.log('res', response)
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+}
+
+
+
+export const cleanStringtoArray = (phone_number:any)=> {
+  // Check if the string is empty or not
+  if (phone_number && phone_number.trim()) {
+    try {
+        // Parse the string to an array
+        const phoneNumbersArray = JSON.parse(phone_number);
+        console.log("Parsed phone numbers array:", phoneNumbersArray);
+        console.log("Type of phoneNumbersArray:", typeof phoneNumbersArray); // Should log "object"
+    } catch (error) {
+        console.error("Failed to parse phone_number:", error);
+    }
+  } else {
+    console.error("The phone_number string is empty or invalid.");
+  }
 }
