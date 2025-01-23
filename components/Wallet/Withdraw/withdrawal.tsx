@@ -31,7 +31,7 @@ const Withdrawal: React.FC<
   useEffect(()=> {
     setWalletStore("amount", amount)
     setWalletStore("desc", description)
-  }, [amount, description])
+  }, [amount, description, setWalletStore])
   
   return (
     <div className="custom-flex-col gap-8">

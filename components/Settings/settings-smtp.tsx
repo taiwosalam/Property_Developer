@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { AuthForm } from "@/components/Auth/auth-components";
 import Input from "../Form/Input/input"
 import Select from "../Form/Select/select"
@@ -9,12 +9,40 @@ import SettingsSection from "./settings-section"
 import Button from "../Form/Button/button";
 import { useAuthStore } from "@/store/authStore"
 import { toast } from "sonner"
-import { updateSMTPSettings } from "@/app/(nav)/settings/security/data"
+import { updateSettings } from "@/app/(nav)/settings/security/data"
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar"
+import { useSettings } from "@/hooks/settingsContext";
 
 const SettingsSmtp = () => {
+    const { data, isLoading, error } = useSettings();
     const [loading, setLoading] = useState(false);
+    const [next, setNext] = useState(false);
     const email = useAuthStore((state) => state.email);
+    const smtp_data = data?.smtp_settings;
+    const [state, setState] = useState({
+        username: "",
+        password: "",
+        smtp_server: "",
+        encryption: "",
+        mail_port: "",
+        from_name: "",
+        email_protocol: "",
+    });
+
+    useEffect(() => {
+        if (smtp_data) {
+            setState({
+                username: smtp_data.smtp_username,
+                password: smtp_data.smtp_password,
+                smtp_server: smtp_data.smtp_host,
+                encryption: smtp_data.email_encryption,
+                mail_port: smtp_data.smtp_port,
+                from_name: smtp_data.from_name,
+                email_protocol: smtp_data.email_protocol
+            })
+        }
+    }, [smtp_data]);
+
 
     const handleAddSMTP = async (data: Record<string, string>) => {
         const payload = {
@@ -29,9 +57,11 @@ const SettingsSmtp = () => {
         }
         try {
             setLoading(true)
-            const res = await updateSMTPSettings(objectToFormData(payload));
-            if (res) {
+            const res = await updateSettings(objectToFormData(payload), 'smtp_settings');
+            if (res && res.status === 200) {
+                console.log(res);
                 toast.success("SMTP settings updated successfully");
+                setNext(true)
             }
         } catch (error) {
             toast.error("Failed to Update SMTP settings");
@@ -54,18 +84,21 @@ const SettingsSmtp = () => {
                                 id="username"
                                 label="SMTP username"
                                 className="w-full"
+                                defaultValue={state.username}
                                 required
                             />
                             <Input
                                 id="password"
                                 label="SMTP password"
                                 className="w-full"
+                                defaultValue={state.password}
                                 required
                             />
                             <Input
                                 id="smtp_server"
                                 label="SMTP Server"
                                 className="w-full"
+                                defaultValue={state.smtp_server}
                                 required
                             />
                         </div>
@@ -74,6 +107,7 @@ const SettingsSmtp = () => {
                                 id="encryption"
                                 options={["tls", "ssl"]}
                                 label="mail encryption"
+                                defaultValue={state.encryption}
                                 inputContainerClassName="w-full bg-neutral-2"
                             />
                             <Input
@@ -81,6 +115,7 @@ const SettingsSmtp = () => {
                                 name="port"
                                 label="mail port"
                                 className="w-full"
+                                defaultValue={state.mail_port}
                                 required
                             />
                             <Input
@@ -88,10 +123,11 @@ const SettingsSmtp = () => {
                                 name="from_name"
                                 label="from name"
                                 className="w-full"
+                                defaultValue={state.from_name}
                                 required
                             />
                         </div>
-                        <div className="flex justify-end gap-4">
+                        {/* <div className="flex justify-end gap-4">
                             <Button
                                 disabled={loading}
                                 size="base_bold"
@@ -100,7 +136,13 @@ const SettingsSmtp = () => {
                             >
                                 {loading ? "Please wait..." : "Update"}
                             </Button>
-                        </div>
+                        </div> */}
+                        <SettingsUpdateButton
+                            submit
+                            loading={loading}
+                            next={next}
+                            action={handleAddSMTP as any}
+                        />
                     </AuthForm>
                 </div>
             </SettingsSection>

@@ -104,10 +104,10 @@ export interface FormState {
 }
 
 // /company/settings/smtp_settings
-export const updateSMTPSettings = async (data: FormData) => {
+export const updateSettings = async (data: FormData, type: string) => {
   try {
     // data.append("_method", "PATCH");
-    const response = await api.patch("/company/settings/smtp_settings", data);
+    const response = await api.patch(`/company/settings/${type}`, data);
     if (response.status === 200) {
       return response;
     }
@@ -116,3 +116,18 @@ export const updateSMTPSettings = async (data: FormData) => {
     return false;
   }
 };
+
+
+export const updateSMSSettings = async (data: FormData) => {
+  try {
+    data.append("_method", "PATCH");
+    const response = await api.post(`/company/settings/sms_name`, data);
+    if (response.status === 200) {
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+

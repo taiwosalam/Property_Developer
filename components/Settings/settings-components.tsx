@@ -373,14 +373,13 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
   const [showProfessionalMessage, setShowProfessionalMessage] = useState(false);
 
   const handleClick = () => {
-    console.log("value = ", value);
     if (value === "theme2" || value === "theme3") {
       setShowProfessionalMessage(true);
       setTimeout(() => setShowProfessionalMessage(false), 3000);
     } else {
       onSelect(value);
       isSelected = false;
-      console.log("isSelected = ", isSelected);
+      // console.log("isSelected = ", isSelected);
     }
   };
 
