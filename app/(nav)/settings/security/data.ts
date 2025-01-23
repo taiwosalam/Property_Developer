@@ -106,8 +106,8 @@ export interface FormState {
 // /company/settings/smtp_settings
 export const updateSettings = async (data: FormData, type: string) => {
   try {
-    // data.append("_method", "PATCH");
-    const response = await api.patch(`/company/settings/${type}`, data);
+    data.append("_method", "PATCH");
+    const response = await api.post(`/company/settings/${type}`, data);
     if (response.status === 200) {
       return response;
     }
