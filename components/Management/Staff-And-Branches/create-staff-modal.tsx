@@ -5,7 +5,7 @@ import type { CreateStaffModalProps } from "./types";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import Image from "next/image";
 import { toast } from "sonner";
-import { addStaff } from "./data";
+import { addStaff, isValidEmail } from "./data";
 import Input from "@/components/Form/Input/input";
 import Avatars from "@/components/Avatars/avatars";
 import Picture from "@/components/Picture/picture";
@@ -59,10 +59,19 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
   };
 
   const handleCreateStaff = async (data: FormData) => {
+    const email = data.get("email")?.toString() || "";
+ 
     if (!checkFormDataForImageOrAvatar(data)) {
       toast.warning("Please upload a picture or select an avatar.");
       return;
     }
+
+    const isEmailValid = await isValidEmail(email);
+    if (!isEmailValid) {
+      toast.error("Invalid email address!");
+      return;
+    }
+
     setIsLoading(true);
     cleanPhoneNumber(data);
     if (!data.get("phone_number")) {

@@ -41,6 +41,8 @@ const EditBranchForm = ({
     placeholder: CameraCircle,
   });
 
+  console.log("some data", somedata)
+
   const [successModalOpen, setSuccessModalOpen] = useState(false);
 
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
@@ -168,7 +170,7 @@ const EditBranchForm = ({
               />
               <Select
                 id="branch_wallet"
-                label="branch wallet"
+                label="Activate branch wallet"
                 options={["yes", "no"]}
                 inputContainerClassName="bg-white"
                 defaultValue={somedata?.wallet}

@@ -32,12 +32,11 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
   );
   useRefetchOnEvent("refectch-branch", () => refetch({ silent: true }));
 
-  
   const branchData = data
   ? transformSingleBranchAPIResponseToEditBranchFormDetails(data)
   : null;
   
-  // console.log("branch data", branchData)
+  console.log("branch data", branchData)
   if (loading) return <PageCircleLoader />;
 
   if (error) return <div>{error}</div>;
@@ -102,7 +101,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <DeleteBranchModal branchId={branchId} />
+            <DeleteBranchModal branchId={branchId} hasMoney={branchData?.hasMoney} />
           </ModalContent>
         </Modal>
         <Button

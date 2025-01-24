@@ -71,7 +71,6 @@ const Header = () => {
   }
   const {role} = useRole()
   
-  console.log("log role", role)
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
     const primaryColor = localStorage.getItem("primary-color");

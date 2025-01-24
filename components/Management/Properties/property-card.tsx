@@ -29,6 +29,7 @@ export interface PropertyCardProps {
   currency?: keyof typeof currencySymbols;
   isClickable?: boolean;
   viewOnly?: boolean;
+  default_image?: string;
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
@@ -52,6 +53,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   currency,
   isClickable,
   viewOnly,
+  default_image,
 }) => {
   const isRental = property_type === "rental";
   const symbol =
@@ -99,6 +101,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         )}
       </AnimatePresence>
       <ImageSlider
+        default_image={default_image}
         images={images}
         showImageIndexOnHover
         className="h-[200px] rounded-t-2xl"

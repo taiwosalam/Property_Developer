@@ -12,6 +12,7 @@ export interface UnitCardProps {
   data: UnitDataObject & { notYetUploaded?: boolean };
   setIsEditing: (a: boolean) => void;
   index: number;
+  default_image?: string;
 }
 
 export interface CreatePropertyFormProps {

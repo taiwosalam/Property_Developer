@@ -74,6 +74,7 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
     }
   };
 
+
   return (
     <>
       <div className="flex gap-4 flex-wrap items-center justify-between">
@@ -110,7 +111,7 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
           {data.images.length > 0 && (
             <div className="relative rounded-2xl overflow-hidden">
               <Picture
-                src={data.images[0].path}
+                src={data.default_image || data.images[0].path}
                 alt="property preview"
                 size={168}
               />

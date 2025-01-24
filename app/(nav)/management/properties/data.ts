@@ -51,6 +51,7 @@ export interface PropertiesPageState {
 
 export interface UnitDataObject {
   id: string;
+  default_image?: string;
   // user_id: string;
   // property_id: string;
   unit_name: string;
@@ -93,6 +94,7 @@ export interface UnitDataObject {
   images: {
     id: string;
     path: string;
+    is_default?: number;
   }[];
 }
 
@@ -114,6 +116,7 @@ export interface PropertyDataObject {
   images: {
     id: string;
     path: string;
+    is_default: number;
   }[];
   branch: {
     id: string;
@@ -192,6 +195,9 @@ export const transformPropertiesApiResponse = (
       return {
         id: p.id,
         images: p.images.map((image) => image.path),
+        default_image: p.images.find((image) => image.is_default === 1)
+          ? p.images.find((image) => image.is_default === 1)!.path
+          : p.images[0].path,
         property_name: p.title,
         address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
         total_units: p.units_count,

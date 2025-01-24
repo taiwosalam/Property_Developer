@@ -59,6 +59,8 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
 
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
+
+  // console.log('added  units', addedUnits)
   // const resetStore = useAddUnitStore((s) => s.resetStore);
 
   const {

@@ -18,9 +18,10 @@ import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { PersonIcon, DeleteIconOrange } from "@/public/icons/icons";
 import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
 import { createBranch } from "./data";
+import { BranchCardProps } from "./branch-card";
 // import VerifyEmailModal from "./verify-email-modal";
 
-const CreateBranchModal = () => {
+const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
   const { setIsOpen } = useModal();
   const router = useRouter();
   const pathname = usePathname();
@@ -71,6 +72,22 @@ const CreateBranchModal = () => {
   };
 
   const handleFormSubmit = async (data: Record<string, any>) => {
+    // Check if the branch name already exists
+    const branchExists = branches?.some(
+      (branch) => branch.branch_title.toLowerCase() === data.branch_name.toLowerCase()
+    );
+
+    if (branchExists) {
+      toast.error("A branch with this name already exists. Please choose a different name.");
+      return; // Prevent further processing
+    }
+
+    // Check if the branch description is empty
+    if (!data.branch_description || data.branch_description.trim() === "") {
+      toast.error("Branch description cannot be empty.");
+      return; // Prevent further processing
+    }
+
     if (!checkFormDataForImageOrAvatar(data)) {
       toast.warning("Please upload a picture or choose an avatar.");
       return;
@@ -100,9 +117,8 @@ const CreateBranchModal = () => {
       <div className="relative">
         <AuthForm
           skipValidation
-          className={`custom-flex-col gap-5 transition-opacity duration-150 ${
-            formStep === 2 ? "pointer-events-none opacity-0" : "opacity-100"
-          }`}
+          className={`custom-flex-col gap-5 transition-opacity duration-150 ${formStep === 2 ? "pointer-events-none opacity-0" : "opacity-100"
+            }`}
           onFormSubmit={handleFormSubmit}
         >
           <input type="hidden" name="avatar" value={activeAvatar} />
@@ -116,6 +132,7 @@ const CreateBranchModal = () => {
             <Select
               label="state"
               id="state"
+              required
               options={getAllStates()}
               value={selectedState}
               onChange={(value) => handleAddressChange("selectedState", value)}
@@ -126,12 +143,14 @@ const CreateBranchModal = () => {
               id="local_government"
               options={getLocalGovernments(selectedState)}
               value={selectedLGA}
+              required
               onChange={(value) => handleAddressChange("selectedLGA", value)}
               inputContainerClassName="bg-neutral-2"
             />
             <Select
               label="city"
               id="city"
+              required
               options={getCities(selectedState, selectedLGA)}
               value={selectedCity}
               onChange={(value) => handleAddressChange("selectedCity", value)}
@@ -141,6 +160,7 @@ const CreateBranchModal = () => {
             <Input
               label="Branch Full Address"
               id="branch_address"
+              required
               inputClassName="rounded-[8px]"
             />
             <Select
@@ -166,6 +186,7 @@ const CreateBranchModal = () => {
               id="branch_description"
               label="Branch Description"
               placeholder="Write here"
+              required
               inputSpaceClassName="bg-neutral-2 dark:bg-darkText-primary !h-[100px]"
               className="md:col-span-2 lg:col-span-3"
             />

@@ -143,6 +143,8 @@ const Properties = () => {
     }
   }, [apiData]);
 
+  // console.log("data", pageData)
+
   if (loading)
     return (
       <CustomLoader layout="page" pageTitle="Properties" statsCardCount={3} />

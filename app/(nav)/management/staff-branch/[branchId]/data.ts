@@ -94,12 +94,14 @@ export const transformSingleBranchAPIResponse = (
   };
 };
 
+
 export const transformSingleBranchAPIResponseToEditBranchFormDetails = (
   response: SingleBranchResponseType
 ): EditBranchFormData => {
   const {
-    data: { branch },
+    data: { branch, sub_wallet },
   } = response;
+  const branchHasMoney = Number(sub_wallet?.balance) > 0;
   return {
     id: branch.id,
     branch_name: branch.branch_name,
@@ -110,7 +112,8 @@ export const transformSingleBranchAPIResponseToEditBranchFormDetails = (
     address: branch.branch_address,
     description: branch.branch_desc,
     picture: branch.picture,
-    wallet: "no",
+    wallet: branch.is_active === 1 ? "yes" : "no",
+    hasMoney: branchHasMoney,
     // wallet: "no",
   };
 };
