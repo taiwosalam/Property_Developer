@@ -61,6 +61,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const { role, setRole } = useRole();
   const [lat, setLat] = useState(0)
   const [lng, setLng] = useState(0)
+  const [coordinate, setCoordinate] = useState('0,0')
   const isDirector = role === 'director';
   const isAccountOfficer = role === 'account';
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -821,6 +822,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                     <input
                       name="coordinate"
                       value={`${lat}, ${lng}`}
+                      onChange={(e) => setCoordinate(e.target.value)}
                       defaultValue={
                         editMode ? propertySettings?.coordinate || `${lat}, ${lng}` : undefined
                       }
