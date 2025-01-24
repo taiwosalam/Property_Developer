@@ -49,6 +49,7 @@ export interface EditBranchFormData {
   wallet: "yes" | "no";
   description: string;
   picture: string | null;
+  hasMoney?: boolean; 
 }
 
 export interface Transactions{

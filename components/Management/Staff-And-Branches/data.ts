@@ -1,6 +1,7 @@
 // Imports
 import { toast } from "sonner";
 import api, { handleAxiosError } from "@/services/api";
+// import emailExistence from 'email-existence';
 
 export const createBranch = async (formData: any) => {
   try {
@@ -72,3 +73,14 @@ export const unLockBranch = async (branchId: string, otp: string) => {
     return false;
   }
 };
+
+
+export const isValidEmail = (email: string) => {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailRegex.test(email)) {
+    toast.error("Please provide a valid email address.");
+    return false;
+  }
+  return true;
+};
+

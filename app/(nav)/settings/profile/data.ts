@@ -368,7 +368,7 @@ export const updateCompanyDetails = async(formData: Record<string, any>, id: str
     if (response.status === 200) {
       return response;
     }
-    console.log('res', response)
+    // console.log('res', response)
   } catch (error) {
     handleAxiosError(error);
     return false;

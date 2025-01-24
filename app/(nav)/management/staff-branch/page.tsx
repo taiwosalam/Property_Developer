@@ -34,6 +34,7 @@ import { ExclamationMark } from "@/public/icons/icons";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
+import { toast } from "sonner";
 
 const allStates = getAllStates();
 
@@ -87,6 +88,10 @@ const StaffAndBranches = () => {
     endDate: null,
   });
   const handleSelectTableItem = (item: DataItem) => {
+    if (item.is_active !== 1){
+      toast.error("Branch is not active");
+      return;
+    }
     router.push(`/management/staff-branch/${item.id}`);
   };
 
@@ -153,7 +158,7 @@ const StaffAndBranches = () => {
       />
     );
 
-    console.log("Branches", apiData);
+    console.log("Branches", branches);
 
   if (isNetworkError) return <NetworkError />;
 
@@ -190,7 +195,7 @@ const StaffAndBranches = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <CreateBranchModal />
+            <CreateBranchModal branches={branches} />
           </ModalContent>
         </Modal>
       </div>
@@ -240,7 +245,7 @@ const StaffAndBranches = () => {
           ) : (
             <EmptyList
               buttonText="+ create branch"
-              modalContent={<CreateBranchModal />}
+              modalContent={<CreateBranchModal branches={branches} />}
               title="You have not created any branches or added any staff yet"
               body={
                 <p>

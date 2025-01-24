@@ -9,8 +9,10 @@ import { useWalletStore } from "@/store/wallet-store";
 import { toast } from "sonner";
 import useBranchStore from "@/store/branch-store";
 import { withdrawBranchFunds } from "../data";
+import { useModal } from "@/components/Modal/modal";
 
 const InputPin = () => {
+  const {setIsOpen} = useModal()
   const pinFieldRef = useRef<HTMLInputElement[] | null>(null);
   const [pin, setPin] = useState("");
   const { branch } = useBranchStore()
@@ -43,6 +45,7 @@ const InputPin = () => {
       setLoading(true)
       const res = await withdrawBranchFunds(branch_id, { amount, description: desc, pin })
       if (res) {
+        setIsOpen(false)
         toast.success("Withdrawal successful")
         window.dispatchEvent(new Event("refetch-wallet"));
         window.dispatchEvent(new Event("refetch_staff"));

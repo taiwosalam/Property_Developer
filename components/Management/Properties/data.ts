@@ -136,8 +136,8 @@ export const transformUnitFormData = (
     renew_total_package: parseFee(formData.renew_total_package),
     property_id,
     images,
+    default_image: images[0] || null,
   };
-
   return payload;
 };
 

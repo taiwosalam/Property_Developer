@@ -19,6 +19,7 @@ interface ImageSliderProps {
   showImageIndexOnHover?: boolean;
   children?: React.ReactNode;
   dot?: boolean;
+  default_image?: string;
 }
 
 const ImageSlider: React.FC<ImageSliderProps> = ({
@@ -27,6 +28,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
   showImageIndexOnHover,
   children,
   dot,
+  default_image,
 }) => {
 
   const goToImage = (index: number) => {
@@ -126,7 +128,8 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
             className='absolute inset-0'
           >
             <Image
-              src={images[imageIndex] || empty}
+            //  src={images[imageIndex] || empty}
+              src={imageIndex === 0 ? default_image || images[0] : images[imageIndex] || empty}
               alt={`image-${imageIndex + 1}`}
               fill
               className='object-cover'

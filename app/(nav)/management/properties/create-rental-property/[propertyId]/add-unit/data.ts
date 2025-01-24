@@ -17,6 +17,8 @@ export const transformPropertyData = (
   const { data } = response;
   if (!data) return null;
 
+  console.log("res", response)
+
   return {
     property_id: data.id,
     propertyType: data.property_type === "rental" ? "rental" : "facility",
@@ -50,7 +52,13 @@ export const transformPropertyData = (
       currency: data.currency || undefined,
       coordinate: data.coordinate || undefined,
     },
-    addedUnits: data.units,
+    // addedUnits: data.units,
+    addedUnits: data.units.map((unit) => ({
+      ...unit,
+      default_image: unit.images.find((image) => image.is_default === 1)
+        ? unit.images.find((image) => image.is_default === 1)!.path
+        : unit.images[0].path,
+    })),
     canDelete:
       !data.units.length ||
       data.units.every((unit) => unit.is_active === "vacant"),

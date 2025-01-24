@@ -6,15 +6,21 @@ import ModalPreset from "@/components/Modal/modal-preset";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteBranch } from "@/app/(nav)/management/staff-branch/[branchId]/edit-branch/data";
+import { toast } from "sonner";
 
 const DeleteBranchModal: React.FC<{
   branchId: string;
-}> = ({ branchId }) => {
+  hasMoney?: boolean;
+}> = ({ branchId, hasMoney }) => {
   const router = useRouter();
   const { activeStep, changeStep } = useStep(2);
   const [reqLoading, setReqLoading] = useState(false);
 
   const handleConfirmDelete = async () => {
+    if (hasMoney){
+      toast.error("Sorry, you cannot delete this branch due to the existing wallet balance.");
+      return;
+    }
     setReqLoading(true);
     const status = await deleteBranch(branchId);
     if (status) {
