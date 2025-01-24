@@ -78,9 +78,12 @@ const CompanySummary = ({ loading, companySummary }: { loading?: boolean, compan
           <div className="flex gap-2 text-sm text-text-disabled">
             <PhoneIcon />
             <span>
-              {companySummary?.contact_details?.[0]?.phone_number || 
+              {/* {companySummary?.contact_details?.[0]?.phone_number || 
               (companySummary?.contact_details?.phone_numbers?.length > 0 ? 
-                companySummary.contact_details.phone_numbers.join(", ") : "___")}
+                companySummary.contact_details.phone_numbers.join(", ") : "___")} */}
+                {typeof companySummary?.contact_details?.[0]?.phone_number === "string" ? 
+                JSON.parse(companySummary?.contact_details?.[0]?.phone_number) :
+                companySummary?.contact_details?.phone_numbers || "___"}
             </span>
           </div>
           <div className="flex gap-2 text-sm text-text-disabled">
