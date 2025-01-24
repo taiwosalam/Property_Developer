@@ -61,6 +61,9 @@ const ThreadPreview = () => {
     }
   }, [data, targetAudience]);
 
+
+  console.log("summary", companySummary)
+
   return (
     <div className="mb-16">
       <div className="flex items-center justify-between flex-wrap gap-2">
