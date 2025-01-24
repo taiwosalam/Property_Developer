@@ -35,6 +35,8 @@ import clsx from 'clsx';
 import { useAddUnitStore } from '@/store/add-unit-store';
 import Cookies from 'js-cookie';
 import { useRole } from '@/hooks/roleContext';
+import { Modal, ModalContent, ModalTrigger } from '@/components/Modal/modal';
+import GoogleMapsModal from './google-maps';
 
 const maxNumberOfImages = 6;
 
@@ -57,6 +59,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     property_form_state_data
   );
   const { role, setRole } = useRole();
+  const [lat, setLat] = useState(0)
+  const [lng, setLng] = useState(0)
   const isDirector = role === 'director';
   const isAccountOfficer = role === 'account';
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -73,7 +77,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   } = state;
 
   const selectedBranchId = selectedBranch.value;
-  // console.log("selected branch", selectedBranch)
+  // console.log("Location", lat, lng)
 
   const setPropertyState = (changes: SetPropertyStateChanges) => {
     setState((x) => {
@@ -381,10 +385,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             {formType === 'rental'
               ? 'Property Details'
               : selectedCategory?.toLocaleLowerCase() === 'estate'
-              ? 'Estate Details'
-              : selectedCategory?.toLocaleLowerCase() === 'facility'
-              ? 'Facility Details'
-              : 'Estate/Facility Details'}
+                ? 'Estate Details'
+                : selectedCategory?.toLocaleLowerCase() === 'facility'
+                  ? 'Facility Details'
+                  : 'Estate/Facility Details'}
           </p>
           <hr className='my-4' />
           <div className='mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 dark:bg-darkText-primary dark:p-4 dark:rounded-lg'>
@@ -410,8 +414,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 formType === 'rental'
                   ? 'Property Title'
                   : selectedCategory?.toLocaleLowerCase() === 'estate'
-                  ? 'Estate Name'
-                  : 'Facility Name'
+                    ? 'Estate Name'
+                    : 'Facility Name'
               }
               inputClassName='bg-white dark:bg-darkText-primary rounded-[8px] property-form-input'
               required
@@ -469,9 +473,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               defaultValue={
                 editMode && propertyDetails?.land_lord_id
                   ? landlordOptions.find(
-                      (landlord) =>
-                        landlord.value === propertyDetails.land_lord_id
-                    )
+                    (landlord) =>
+                      landlord.value === propertyDetails.land_lord_id
+                  )
                   : undefined
               }
               hiddenInputClassName='property-form-input'
@@ -479,8 +483,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 landlordsLoading
                   ? 'Loading landlords...'
                   : landlordsError
-                  ? 'Error loading landlords'
-                  : 'Select landlord'
+                    ? 'Error loading landlords'
+                    : 'Select landlord'
               }
               error={landlordsError}
             />
@@ -511,8 +515,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   branchesLoading
                     ? 'Loading branches...'
                     : branchesError
-                    ? 'Error loading branches'
-                    : 'Select branch'
+                      ? 'Error loading branches'
+                      : 'Select branch'
                 }
                 error={branchesError}
               />
@@ -531,23 +535,23 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                     inventoryLoading
                       ? 'Loading inventories...'
                       : inventoryError
-                      ? 'Error loading inventories'
-                      : 'Select inventory'
+                        ? 'Error loading inventories'
+                        : 'Select inventory'
                   }
                   error={inventoryError}
                 />
               </>
             )}
 
-            {!isAccountOfficer && 
-            <Select
-              options={officerOptions}
-              id='account_officer_id'
-              label='Account Officer'
-              inputContainerClassName='bg-white'
-              resetKey={resetKey}
-              hiddenInputClassName='property-form-input'
-            />}
+            {!isAccountOfficer &&
+              <Select
+                options={officerOptions}
+                id='account_officer_id'
+                label='Account Officer'
+                inputContainerClassName='bg-white'
+                resetKey={resetKey}
+                hiddenInputClassName='property-form-input'
+              />}
             {staff.map(({ id, label }) => (
               <div
                 key={id}
@@ -602,10 +606,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             {formType === 'rental'
               ? 'Property Settings'
               : selectedCategory?.toLocaleLowerCase() === 'estate'
-              ? 'Estate Settings'
-              : selectedCategory?.toLocaleLowerCase() === 'facility'
-              ? 'Facility Settings'
-              : 'Estate/Facility Settings'}
+                ? 'Estate Settings'
+                : selectedCategory?.toLocaleLowerCase() === 'facility'
+                  ? 'Facility Settings'
+                  : 'Estate/Facility Settings'}
           </p>
 
           <hr className='my-4' />
@@ -636,8 +640,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 editMode && formType === 'rental'
                   ? `${propertySettings?.agency_fee}%`
                   : editMode && formType === 'facility'
-                  ? `${propertySettings?.management_fee}%`
-                  : '5%'
+                    ? `${propertySettings?.management_fee}%`
+                    : '5%'
               }
             />
             {formType === 'rental' && (
@@ -706,8 +710,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 editMode
                   ? propertySettings?.group_chat
                   : formType === 'rental'
-                  ? 'no'
-                  : 'yes'
+                    ? 'no'
+                    : 'yes'
               }
             />
             <Select
@@ -723,8 +727,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 editMode && formType === 'rental'
                   ? propertySettings?.rent_penalty
                   : editMode && formType === 'facility'
-                  ? propertySettings?.fee_penalty
-                  : 'no'
+                    ? propertySettings?.fee_penalty
+                    : 'no'
               }
             />
             <Select
@@ -753,8 +757,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 editMode
                   ? propertySettings?.book_visitors
                   : formType === 'rental'
-                  ? 'no'
-                  : 'yes'
+                    ? 'no'
+                    : 'yes'
               }
             />
             <Select
@@ -785,9 +789,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   options={Object.entries(currencySymbols).map(
                     ([key, symbol]) => ({
                       value: key.toLowerCase(),
-                      label: `${symbol} ${
-                        key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
-                      }`,
+                      label: `${symbol} ${key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
+                        }`,
                     })
                   )}
                   id='currency'
@@ -800,28 +803,43 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   defaultValue={
                     editMode && propertySettings?.currency
                       ? {
-                          value: propertySettings.currency,
-                          label: `${
-                            currencySymbols[propertySettings.currency]
-                          } ${
-                            propertySettings.currency.charAt(0).toUpperCase() +
-                            propertySettings.currency.slice(1).toLowerCase()
+                        value: propertySettings.currency,
+                        label: `${currencySymbols[propertySettings.currency]
+                          } ${propertySettings.currency.charAt(0).toUpperCase() +
+                          propertySettings.currency.slice(1).toLowerCase()
                           }`,
-                        }
+                      }
                       : {
-                          value: 'naira',
-                          label: `${currencySymbols.naira} Naira`,
-                        }
+                        value: 'naira',
+                        label: `${currencySymbols.naira} Naira`,
+                      }
                   }
                 />
-                <Input
-                  id='coordinate'
-                  label='Cordinates'
-                  inputClassName='bg-white rounded-[8px]'
-                  defaultValue={
-                    editMode ? propertySettings?.coordinate : undefined
-                  }
-                />
+                <div className="flex flex-col gap-2">
+                  <label> Coordinates </label>
+                  <div className="flex items-center pr-2 h-12 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
+                    <input
+                      name="coordinate"
+                      value={`${lat}, ${lng}`}
+                      defaultValue={
+                        editMode ? propertySettings?.coordinate || `${lat}, ${lng}` : undefined
+                      }
+                      type="text"
+                      className="w-full h-full rounded-[4px] outline-none px-2"
+                    />
+                    <Modal>
+                      <ModalTrigger asChild>
+                        <button className='bg-brand-9 text-xs rounded-md px-2 text-white h-3/4'> Pick location </button>
+                      </ModalTrigger>
+                      <ModalContent>
+                        <GoogleMapsModal
+                          setLat={setLat}
+                          setLng={setLng}
+                        />
+                      </ModalContent>
+                    </Modal>
+                  </div>
+                </div>
               </>
             )}
           </div>
