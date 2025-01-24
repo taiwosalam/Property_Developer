@@ -30,6 +30,7 @@ import {
   CompanyDataApiResponse,
   initialPageData,
   ProfileSettingsPageState,
+  safeParse,
   transformFormCompanyData,
   transformProfileApiResponse,
   updateCompanyDetails,
@@ -89,7 +90,7 @@ const Profile = () => {
     }
   }, [apiData]);
   
-  console.log("apiData", state?.companyData?.phone_number);
+  console.log("apiData", apiData);
   const { preview, handleImageChange } = useImageUploader({
     placeholder: Transparent,
   });
@@ -123,7 +124,7 @@ const Profile = () => {
         <div className="w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full animate-spin"></div>
       </div>
     )
-  }
+  } 
 
   if (isNetworkError) return <NetworkError />;
 
@@ -148,8 +149,6 @@ const Profile = () => {
     }
   };
 
-  // const phones = cleanStringtoArray(state?.companyData?.phone_number);
-  // console.log("phones", phones)
 
   return (
     <>
@@ -324,7 +323,8 @@ const Profile = () => {
               </div>
             </div>
             <CompanyMobileNumber
-              phoneNumbers={state.companyData.phone_number}
+              // phoneNumbers={JSON.parse(state.companyData.phone_number)}
+              phoneNumbers={safeParse<string[]>(state.companyData.phone_number, [])}
             />
             <CompanyLogo
               lightLogo={state.companyData.company_logo}
