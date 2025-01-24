@@ -192,12 +192,19 @@ export const transformPropertiesApiResponse = (
       }, 0);
       const feePercentage =
         p.property_type === "rental" ? p.agency_fee : p.management_fee;
+
+      const defaultImage =
+        p.images && p.images.length > 0
+          ? p.images.find((image) => image.is_default === 1)?.path || p.images[0].path
+          : undefined;
+
       return {
         id: p.id,
-        images: p.images.map((image) => image.path),
-        default_image: p.images.find((image) => image.is_default === 1)
-          ? p.images.find((image) => image.is_default === 1)!.path
-          : p.images[0].path,
+        images: p.images.map((image) => image.path) || [],
+        // default_image: p.images.find((image) => image.is_default === 1)
+        //   ? p.images.find((image) => image.is_default === 1)!.path
+        //   : p.images[0].path,
+        default_image: defaultImage,
         property_name: p.title,
         address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
         total_units: p.units_count,

@@ -55,9 +55,13 @@ export const transformPropertyData = (
     // addedUnits: data.units,
     addedUnits: data.units.map((unit) => ({
       ...unit,
-      default_image: unit.images.find((image) => image.is_default === 1)
-        ? unit.images.find((image) => image.is_default === 1)!.path
-        : unit.images[0].path,
+      // default_image: unit.images.find((image) => image.is_default === 1)
+      //   ? unit.images.find((image) => image.is_default === 1)!.path
+      //   : unit.images[0].path,
+      default_image:
+        unit.images && unit.images.length > 0
+          ? unit.images.find((image) => image.is_default === 1)?.path || unit.images[0].path
+          : undefined,
     })),
     canDelete:
       !data.units.length ||
