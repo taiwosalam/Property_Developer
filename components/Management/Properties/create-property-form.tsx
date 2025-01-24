@@ -821,7 +821,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   <div className="flex items-center pr-2 h-12 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
                     <input
                       name="coordinate"
-                      value={`${lat}, ${lng}`}
+                      id="coordinate"
+                      value={ editMode ? propertySettings?.coordinate || `${lat}, ${lng}` : `${lat}, ${lng}`}
                       onChange={(e) => setCoordinate(e.target.value)}
                       defaultValue={
                         editMode ? propertySettings?.coordinate || `${lat}, ${lng}` : undefined

@@ -60,6 +60,7 @@ const GoogleMapsModal = ({
 
     useEffect(() => {
         if (selectedLocation) {
+            // console.log("selectedLocation:", selectedLocation);
             setLat(selectedLocation.lat);
             setLng(selectedLocation.lng);
         }
@@ -116,129 +117,147 @@ const GoogleMapsModal = ({
 export default GoogleMapsModal;
 
 
-
-
-
-
-
-
-
-
+// LATEST GOOGLE MAP AS AT 2025 BUT NO MARKER SHOW 
 // import React, { useState, useEffect, useRef } from "react";
-// import { GoogleMap, useLoadScript } from "@react-google-maps/api";
 // import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 // import Button from "@/components/Form/Button/button";
+// import { toast } from "sonner";
+// import { useModal } from "@/components/Modal/modal";
+// import { Loader } from "@googlemaps/js-api-loader";
 
 // const containerStyle = {
-//   width: "100%",
-//   height: "400px",
+//     width: "100%",
+//     height: "400px",
 // };
 
-// const defaultCenter = {
-//   lat: 6.5244, // Default Latitude (e.g., Lagos)
-//   lng: 3.3792, // Default Longitude (e.g., Lagos)
+// const center = {
+//     lat: 6.5244, // Default Latitude (e.g., Lagos)
+//     lng: 3.3792, // Default Longitude (e.g., Lagos)
 // };
 
 // const GoogleMapsModal = ({
-//   setLat,
-//   setLng,
+//     setLat,
+//     setLng,
 // }: {
-//   setLat: (lat: number) => void;
-//   setLng: (lng: number) => void;
+//     setLat: (lat: number) => void;
+//     setLng: (lng: number) => void;
 // }) => {
-//   const { isLoaded, loadError } = useLoadScript({
-//     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-//     libraries: ["marker"], // Required for AdvancedMarkerElement
-//   });
+//     const { setIsOpen } = useModal();
+//     const [selectedLocation, setSelectedLocation] = useState(center);
+//     const mapRef = useRef<google.maps.Map | null>(null);
+//     const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null);
+//     const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
-//   const [selectedLocation, setSelectedLocation] = useState(defaultCenter);
-//   const mapRef = useRef<google.maps.Map | null>(null);
-//   const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null);
+//     const handleMapClick = (event: google.maps.MapMouseEvent) => {
+//         if (event.latLng) {
+//             const newLocation = {
+//                 lat: event.latLng.lat(),
+//                 lng: event.latLng.lng(),
+//             };
+//             setSelectedLocation(newLocation);
 
-//   const handleMapClick = (event: google.maps.MapMouseEvent) => {
-//     if (event.latLng) {
-//       const newLocation = {
-//         lat: event.latLng.lat(),
-//         lng: event.latLng.lng(),
-//       };
-//       setSelectedLocation(newLocation);
-
-//       if (markerRef.current) {
-//         markerRef.current.position = newLocation;
-//       }
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (isLoaded) {
-//       const map = new google.maps.Map(document.getElementById("map") as HTMLElement, {
-//         center: selectedLocation,
-//         zoom: 10,
-//       });
-
-//       mapRef.current = map;
-
-//       const marker = new google.maps.marker.AdvancedMarkerElement({
-//         map,
-//         position: selectedLocation,
-//         title: "Selected Location",
-//         draggable: true, // Allow users to drag the marker
-//       });
-
-//       markerRef.current = marker;
-
-//       // Update state when the marker is dragged
-//       marker.addListener("position_changed", () => {
-//         const position = marker.position;
-//         if (position) {
-//           const newLocation = {
-//             lat: position.lat(),
-//             lng: position.lng(),
-//           };
-//           setSelectedLocation(newLocation);
+//             if (markerRef.current) {
+//                 markerRef.current.position = newLocation;
+//             }
 //         }
-//       });
+//     };
 
-//       // Listen for map clicks to update marker position
-//       map.addListener("click", handleMapClick);
-//     }
-//   }, [isLoaded]);
+//     const handleGetCurrentLocation = () => {
+//         if ("geolocation" in navigator) {
+//             navigator.geolocation.getCurrentPosition(
+//                 (position) => {
+//                     const { latitude, longitude } = position.coords;
+//                     const newLocation = { lat: latitude, lng: longitude };
+//                     setSelectedLocation(newLocation);
 
-//   // Update state when selectedLocation changes
-//   useEffect(() => {
-//     if (selectedLocation) {
-//       setLat(selectedLocation.lat);
-//       setLng(selectedLocation.lng);
-//     }
-//   }, [selectedLocation, setLat, setLng]);
+//                     if (markerRef.current) {
+//                         markerRef.current.position = newLocation;
+//                     }
+//                     toast.success("Your current location has been added successfully.");
+//                 },
+//                 (error) => {
+//                     console.error("Error getting location:", error);
+//                     toast.error("Unable to fetch your current location.");
+//                 }
+//             );
+//         } else {
+//             toast.error("Geolocation is not supported by your browser.");
+//         }
+//     };
 
-//   if (loadError) {
+//     useEffect(() => {
+//         if (selectedLocation) {
+//             setLat(selectedLocation.lat);
+//             setLng(selectedLocation.lng);
+//         }
+//     }, [selectedLocation, setLat, setLng]);
+
+//     useEffect(() => {
+//         const loader = new Loader({
+//             apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+//             version: "weekly",
+//         });
+
+//         loader.load().then(() => {
+//             if (mapContainerRef.current) {
+//                 const map = new google.maps.Map(mapContainerRef.current, {
+//                     center: selectedLocation,
+//                     zoom: 10,
+//                 });
+//                 mapRef.current = map;
+
+//                 const marker = new google.maps.marker.AdvancedMarkerElement({
+//                     map,
+//                     position: selectedLocation,
+//                     title: "Selected Location",
+//                     gmpDraggable: true, // Correct property to make the marker draggable
+//                 });
+//                 markerRef.current = marker;
+
+//                 // Update marker position when dragged
+//                 marker.addListener("position_changed", () => {
+//                     const position = marker.position;
+//                     if (position) {
+//                         // Check if lat and lng are functions or numbers
+//                         const newLocation = {
+//                             lat: typeof position.lat === "function" ? position.lat() : position.lat,
+//                             lng: typeof position.lng === "function" ? position.lng() : position.lng,
+//                         };
+//                         setSelectedLocation(newLocation);
+//                         console.log("new location", newLocation)
+//                     }
+//                 });
+
+
+//                 // Update marker position on map click
+//                 map.addListener("click", handleMapClick);
+//             }
+//         });
+//     }, []);
+
 //     return (
-//       <LandlordTenantModalPreset heading="Choose Location">
-//         <p>Error loading map: {loadError.message}</p>
-//       </LandlordTenantModalPreset>
+//         <LandlordTenantModalPreset heading="Choose Location">
+//             <div ref={mapContainerRef} style={containerStyle}></div>
+//             <div className="flex justify-end gap-4 my-4">
+//                 <Button
+//                     size="base_bold"
+//                     className="py-[10px] px-8"
+//                     type="button"
+//                     onClick={handleGetCurrentLocation}
+//                 >
+//                     Pick Current Location
+//                 </Button>
+//                 <Button
+//                     size="base_bold"
+//                     className="py-[10px] px-8"
+//                     type="button"
+//                     onClick={() => setIsOpen(false)}
+//                 >
+//                     Save Location
+//                 </Button>
+//             </div>
+//         </LandlordTenantModalPreset>
 //     );
-//   }
-
-//   return (
-//     <LandlordTenantModalPreset heading="Choose Location">
-//       {!isLoaded ? (
-//         <p>Loading map...</p>
-//       ) : (
-//         <>
-//           <div id="map" style={containerStyle}></div>
-//           <div className="flex justify-end gap-4 my-4">
-//             <Button size="base_bold" className="py-[10px] px-8" type="button">
-//               Pick Current Location
-//             </Button>
-//             <Button size="base_bold" className="py-[10px] px-8" type="button">
-//               Save Location
-//             </Button>
-//           </div>
-//         </>
-//       )}
-//     </LandlordTenantModalPreset>
-//   );
 // };
 
 // export default GoogleMapsModal;
