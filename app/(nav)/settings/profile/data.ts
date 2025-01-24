@@ -37,7 +37,7 @@ export interface CompanyDataApiResponse {
   company_logo: string;
   dark_logo: string;
   is_verified: boolean;
-  phone_number: string[];
+  phone_number: string;
   head_office_address: string;
   state: string;
   local_government: string;
@@ -82,6 +82,7 @@ export interface companyData {
   company_name: string;
   company_logo: string;
   dark_logo: string;
+  bio: string;
   is_verified: boolean;
   date_of_registration: string;
   cac_registration_number: string;
@@ -92,7 +93,7 @@ export interface companyData {
   state: string;
   local_government: string;
   city: string;
-  phone_number: string[];
+  phone_number: string;
   utility_document: string;
   cac_certificate: string;
   membership_certificate: string
@@ -146,6 +147,7 @@ export const initialPageData:ProfileSettingsPageState = {
     company_id: 0,
     company_logo: "",
     dark_logo: "",
+    bio: "",
     is_verified: false,
     date_of_registration: "",
     cac_registration_number: "",
@@ -155,7 +157,7 @@ export const initialPageData:ProfileSettingsPageState = {
     state: "",
     local_government: "",
     city: "",
-    phone_number: [],
+    phone_number: "",
     utility_document: "",
     cac_certificate: "",
     membership_certificate: "",
@@ -192,6 +194,7 @@ export const transformProfileApiResponse = (
     companyData: { 
       company_name: res.company_name,
       email: res.email,
+      bio: res.bio,
       company_id: res.id,
       company_logo: res.company_logo,
       dark_logo: res.dark_logo,
@@ -227,6 +230,16 @@ export const transformProfileApiResponse = (
     }
   };
 };
+
+export function safeParse<T>(jsonString: string | null | undefined, defaultValue: T): T {
+  try {
+    return jsonString ? JSON.parse(jsonString) : defaultValue;
+  } catch (error) {
+    console.error("Failed to parse JSON:", error, "Input:", jsonString);
+    return defaultValue;
+  }
+}
+
 
 // Send OTP to verify wallet PIN
 // /security/wallet-otp
