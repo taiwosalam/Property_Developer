@@ -5,27 +5,12 @@ import jwt from 'jsonwebtoken';
 const JWT_SECRET =
   process.env.NEXT_PUBLIC_SESSION_SESSION || 'json-web-token-secret-key';
 
-function verifyToken(token: string) {
-  if (!token) {
-    console.log('No token provided');
-    return null; // No token means unauthenticated
-  }
-  try {
-    return jwt.verify(token, JWT_SECRET);
-  } catch (error) {
-    console.log('JWT verification failed:', error);
-    return null;
-  }
-}
-
 export async function middleware(req: NextRequest) {
   const emailVerified = req.cookies.get('emailVerified')?.value;
-  // const role = req.cookies.get('role')?.value;
   const currentPath = req.nextUrl.pathname;
   const role = req.cookies.get('role')?.value;
-  // const role = decoded?.role;
 
-  console.log('server role', role);
+  // console.log('server role', role);
   // Public routes accessible without authentication
   const publicRoutes = [
     '/auth/user/sign-in',

@@ -50,7 +50,7 @@ const SettingsSignature = () => {
       setState(transformedData);
 
       // Update inputFields based on new state
-      setInputFields(transformedData.length > 0 ? transformedData.map(signature => ({
+      setInputFields(transformedData?.length > 0 ? transformedData?.map(signature => ({
         id: signature.id,
         signature: signature.signature_image || empty,
         signatureFile: new File([], ""), // Create File only on the client
@@ -65,6 +65,7 @@ const SettingsSignature = () => {
     }
   }, [apiData]);
 
+  console.log("INput fields", state)
 
   const [inputFields, setInputFields] = useState(() => {
     if (typeof window !== "undefined") {
@@ -91,7 +92,6 @@ const SettingsSignature = () => {
     return [];
   });
 
-  // console.log("INput fields", inputFields)
 
 
   const [reqLoading, setReqLoading] = useState(false);
@@ -139,15 +139,17 @@ const SettingsSignature = () => {
     const formData = new FormData();
 
     inputFields.forEach((field, index) => {
-      formData.append(`name[${index}]`, data.get(`fullname_${index}`) as string);
-      formData.append(`title[${index}]`, data.get(`personal_title_qualification_${index}`) as string);
-      formData.append(`professional_title[${index}]`, data.get(`real_estate_title_${index}`) as string);
-      // formData.append(`signature[${index}]`, field.signatureFile); // Binary file
-
-      if (typeof field.signature === 'string') {
-        formData.append(`signature[${index}]`, field.signature); // Append the string directly
+      formData.append(`signatures[${index}][name]`, data.get(`fullname_${index}`) as string || "");
+      formData.append(`signatures[${index}][title]`, data.get(`personal_title_qualification_${index}`) as string || "");
+      formData.append(`signatures[${index}][professional_title]`, data.get(`real_estate_title_${index}`) as string || "");
+      // formData.append(`signatures[${index}][signature]`, field.signatureFile || ""); // Binary file
+      // Check if the file size is greater than 0
+      if (field.signatureFile && field.signatureFile.size > 0) {
+        formData.append(`signatures[${index}][signature]`, field.signatureFile); // Use the file
+      } else if (field.signature) {
+        formData.append(`signatures[${index}][signature]`, field.signature); // Fallback to string
       } else {
-        formData.append(`signature[${index}]`, field.signatureFile); // Append the file
+        formData.append(`signatures[${index}][signature]`, ""); // Fallback to empty string
       }
     });
 
@@ -190,13 +192,12 @@ const SettingsSignature = () => {
                       />
                       <div
                         style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
-                        onClick={() => changeSignatureImage(index)}
                         className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
                       >
                         <Picture src={ImageBlue} alt="image icon" size={20} />
                         <p
                           className="text-brand-9 text-xs font-normal"
-                          // onClick={() => changeSignatureImage(index)}
+                          onClick={() => changeSignatureImage(index)}
                         >
                           Change Image
                         </p>

@@ -33,6 +33,8 @@ import SettingsSignature from "@/components/Settings/settings-signature";
 import SettingsBank from "@/components/Settings/settings-bank";
 import SettingsSmtp from "@/components/Settings/settings-smtp";
 import SettingsSMS from "@/components/Settings/settings-sms";
+import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
+import TextArea from "@/components/Form/TextArea/textarea";
 
 const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
@@ -101,13 +103,13 @@ const Security = () => {
                   inputFileRef={inputFileRef}
                   onClick={changeImage}
                 />
-                <div className="flex flex-col lg:flex-row gap-5">
+               <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <Select
                     id="personal_title"
                     name="title"
                     options={titles}
                     label="personal title"
-                    inputContainerClassName="w-[277px] bg-neutral-2"
+                    inputContainerClassName="bg-neutral-2"
                     defaultValue={title as string}
                   />
                   <Input
@@ -115,10 +117,35 @@ const Security = () => {
                     name="name"
                     label="full name"
                     placeholder="Write Here"
-                    className="w-[277px]"
                     defaultValue={name}
                   />
+                  <Select
+                    id="director_experience"
+                    label="years in business"
+                    placeholder="Write here"
+                    options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
+                    hiddenInputClassName="setup-f"
+                  />
+                  <Input
+                    id="director_email"
+                    label="alternative email"
+                    type="email"
+                    placeholder="example@mail.com"
+                    inputClassName="rounded-[8px] setup-f bg-white"
+                  />
+                  <PhoneNumberInput
+                    id="director_phone_number"
+                    label="phone number"
+                    placeholder="800 0000 000"
+                    inputClassName="setup-f"
+                  />
                 </div>
+                <TextArea
+                  id="about_director"
+                  label="About Director"
+                  placeholder="Write about the director"
+                  hiddenInputClassName="setup-f"
+                />
               </div>
             </div>
             <SettingsUpdateButton
@@ -129,7 +156,7 @@ const Security = () => {
             />
           </div>
         </AuthForm>
-      </SettingsSection>
+      </SettingsSection >
       <SettingsSignature />
       <SettingsWalletSection />
       <SettingsPasswordSection />
