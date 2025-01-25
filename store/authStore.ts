@@ -15,6 +15,7 @@ interface AuthState {
     company: {
       company_id: string | null;
       company_logo: string | null;
+      dark_logo: string | null;
     };
   };
   setAuthState: <K extends keyof Omit<AuthState, 'setAuthState' | 'reset'>>(
@@ -36,6 +37,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     company: {
       company_id: null,
       company_logo: null,
+      dark_logo: null,
     },
   },
   setAuthState: (key, value) => {
@@ -68,6 +70,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         company: {
           company_id: null,
           company_logo: null,
+          dark_logo: null,
         },
       },
     });

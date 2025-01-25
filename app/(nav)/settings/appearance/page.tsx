@@ -29,6 +29,8 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { updateSettings } from "../security/data";
 import { SettingsAppearanceIcon } from "@/public/icons/icons";
+import { applyFont } from "@/app/(onboarding)/auth/data";
+import { saveLocalStorage } from "@/utils/local-storage";
 
 const Appearance = () => {
   const isDarkMode = useDarkMode();
@@ -68,11 +70,11 @@ const Appearance = () => {
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const [reqLoading, setReqLoading] = useState(false);
   const [next, setNext] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string | null>(primaryColor);
+  const [selectedColor, setSelectedColor] = useState<string | null>(appearance.color || primaryColor);
   let storedFont =   appearance.font;
 
-  console.log("font", storedFont)
-  console.log("primary color", primaryColor)
+  // console.log("font", storedFont)
+  // console.log("primary color", primaryColor)
 
   // Zoom control
   const zoomLevel = useZoomStore((state) => state.zoomLevel);
@@ -105,14 +107,7 @@ const Appearance = () => {
       if (storedFont) {
         // setSelectedFont(storedFont);
         setAppearance({ ...appearance, font: storedFont });
-        const link = document.createElement("link");
-        link.href = `https://fonts.googleapis.com/css2?family=${storedFont.replace(
-          / /g,
-          "+"
-        )}:wght@400;700&display=swap`;
-        link.rel = "stylesheet";
-        document.head.appendChild(link);
-        document.body.style.fontFamily = storedFont;
+        applyFont(storedFont);
       }
     }
   }, [setAppearance, appearance.font]);
@@ -135,6 +130,33 @@ const Appearance = () => {
     };
   }, []);
 
+
+  const handleSelect = (type: keyof SelectedOptions, value: string) => {
+    if (!value) return;
+    setSelectedOption(type, value);
+    switch (type) {
+      case "theme":
+        setAppearance({ ...appearance, theme: value });
+        break;
+      case "view":
+        setAppearance({ ...appearance, view: value });
+        toast.success(`Management card view set to ${value}`);
+        break;
+      case "navbar":
+        setAppearance({ ...appearance, navbar: value });
+        break;
+      case "mode":
+        setTheme(value);
+        setAppearance({ ...appearance, mode: value });
+        break;
+      case "font":
+        handleFontSelect(value);
+        break;
+      default:
+        break;
+    }
+  };
+
   const toggleFullscreen = () => {
     const elem = document.documentElement;
 
@@ -156,36 +178,6 @@ const Appearance = () => {
             `Error attempting to exit full-screen mode: ${err.message} (${err.name})`
           );
         });
-    }
-  };
-
-  const handleSelect = (type: keyof SelectedOptions, value: string) => {
-    if (!value) return;
-    setSelectedOption(type, value);
-    switch (type) {
-      case "theme":
-        // setSelectedTheme(value);
-        setAppearance({ ...appearance, theme: value });
-        break;
-      case "view":
-        // setSelectedView(value);
-        setAppearance({ ...appearance, view: value });
-        toast.success(`Management card view set to ${value}`);
-        break;
-      case "navbar":
-        // setSelectedNavbar(value);
-        setAppearance({ ...appearance, navbar: value });
-        break;
-      case "mode":
-        setTheme(value);
-        setAppearance({ ...appearance, mode: value });
-        // setSelectedMode(value);
-        break;
-      case "font":
-        handleFontSelect(value);
-        break;
-      default:
-        break;
     }
   };
 
@@ -325,6 +317,14 @@ const Appearance = () => {
       setReqLoading(true)
       const res = await updateSettings(objectToFormData(payload), 'appearance')
       if (res && res.status === 200) {
+        const additionalDetails = localStorage.getItem("additional_details");
+        const details = additionalDetails ? JSON.parse(additionalDetails) : {}; 
+        if (details.appearance) {
+          details.appearance.dashboardColor = res.data.data.dashboardColor;
+        }
+        // console.log("color res",details)
+        details.dashboardColor = selectedColor;
+        localStorage.setItem("additional_details", JSON.stringify(details));
         window.dispatchEvent(new Event("refetch-settings"));
         toast.success(`Scheme updated successfully`)
         // setNext(true)

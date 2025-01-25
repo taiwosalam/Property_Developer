@@ -89,7 +89,7 @@ const Profile = () => {
       setState(transformedData);
     }
   }, [apiData]);
-  
+
   console.log("apiData", apiData);
   const { preview, handleImageChange } = useImageUploader({
     placeholder: Transparent,
@@ -124,7 +124,7 @@ const Profile = () => {
         <div className="w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full animate-spin"></div>
       </div>
     )
-  } 
+  }
 
   if (isNetworkError) return <NetworkError />;
 
@@ -135,7 +135,6 @@ const Profile = () => {
     const data = transformFormCompanyData(formData);
     console.log(data);
     try {
-      console.log("id", company_id)
       const status = await updateCompanyDetails(data, company_id as string);
       console.log(status)
       if (status) {
@@ -148,6 +147,8 @@ const Profile = () => {
       setRequestLoading(false);
     }
   };
+
+  console.log("company data", companyData)
 
 
   return (
@@ -209,14 +210,19 @@ const Profile = () => {
                   disabled
                 />
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
-                  <Input
+                  <FileInput
                     required
-                    label="CAC document"
-                    id="cac_certificate"
-                    placeholder="CAC"
-                    inputClassName="rounded-[8px] setup-f bg-white"
-                    value={"certificate.pdf"}
-                    disabled
+                    noUpload
+                    id="membership_document"
+                    label="Membership document"
+                    placeholder=""
+                    buttonName="Document"
+                    fileType="pdf"
+                    size={2}
+                    sizeUnit="MB"
+                    hiddenInputClassName="setup-f required w-full sm:w-[250px]"
+                    settingsPage={true}
+                    defaultValue={companyData.cac_certificate}
                   />
                   <div className="flex pt-2 sm:pt-7">
                     <SettingsVerifiedBadge status={verifications.cac_status} />
@@ -248,7 +254,12 @@ const Profile = () => {
                     sizeUnit="MB"
                     hiddenInputClassName="setup-f required w-full sm:w-[250px]"
                     settingsPage={true}
+                    defaultValue={companyData.membership_certificate}
                   />
+                  {companyData.membership_certificate &&
+                    <div className="flex pt-2 sm:pt-7">
+                      <SettingsVerifiedBadge status={verifications.membership_status} />
+                    </div>}
                 </div>
               </div>
             </div>
@@ -313,8 +324,13 @@ const Profile = () => {
                   sizeUnit="MB"
                   hiddenInputClassName="setup-f required w-full sm:w-[250px]"
                   settingsPage={true}
+                  defaultValue={companyData.utility_document}
                 // onChange={handleUploadUtility}
                 />
+                {companyData.utility_document &&
+                  <div className="flex pt-2 sm:pt-7">
+                    <SettingsVerifiedBadge status={verifications.utility_status} />
+                  </div>}
                 {uploadingUtility && (
                   <button className="w-1/2 sm:w-auto py-2 px-3 mt-2 sm:mt-0 text-brand-9  ">
                     Verify Document

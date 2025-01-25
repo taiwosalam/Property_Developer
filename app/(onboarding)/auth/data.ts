@@ -217,7 +217,11 @@ interface LoginResponse {
     // company: {
     id: string | null;
     company_logo: string | null;
+    dark_logo: string | null;
     // };
+    settings: {
+      appearance: any;
+    };
   };
 }
 
@@ -252,6 +256,7 @@ export const login = async (formData: Record<string, any>) => {
     const role = data.data.details.role[0];
     // console.log('res', data);
     const additional_details = data.additional_details;
+    const appearance = data.additional_details.settings.appearance;
     const details = {
       branch: {
         branch_id: additional_details.branch?.id || null,
@@ -260,7 +265,9 @@ export const login = async (formData: Record<string, any>) => {
       company: {
         company_id: additional_details.id || null,
         company_logo: additional_details.company_logo || null,
+        dark_logo: additional_details.dark_logo || null,
       },
+      appearance: appearance,
     };
 
     // SAVE TO ZUSTAND
@@ -414,3 +421,26 @@ export const updatePassword = async (formData: FormData) => {
     return false;
   }
 };
+
+
+
+export function applyFont(font: string) {
+  if (typeof window !== "undefined" && font) {
+    // Store the selected font in localStorage
+    localStorage.setItem("selectedFont", font);
+
+    // Create a link element for the Google Font
+    const link = document.createElement("link");
+    link.href = `https://fonts.googleapis.com/css2?family=${font.replace(/ /g, "+")}:wght@400;700&display=swap`;
+    link.rel = "stylesheet";
+
+    // Append the link to the document head if not already appended
+    const existingLink = document.head.querySelector(`link[href="${link.href}"]`);
+    if (!existingLink) {
+      document.head.appendChild(link);
+    }
+
+    // Set the font family on the body
+    document.body.style.fontFamily = font;
+  }
+}
