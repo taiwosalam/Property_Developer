@@ -193,24 +193,25 @@ const handleEdit = ()=> {
               </div>
             }
           </div>}
-          {!bankNotAvailable && <div className="flex">
+           <div className="flex">
             <div className="custom-flex-col max-w-[436px]  gap-4">
-              <FundingCard
+             {(!bankNotAvailable || !openEdit) && 
+             <FundingCard
                 type="sterling"
-                title={accountNumber}
-                desc={accountName}
-                cta={bankName}
+                title={accountNumber || "___"}
+                desc={accountName || "___"}
+                cta={bankName || "___"}
                 notRounded
                 logo={logo}
-              />
-              <div className="flex items-center gap-2">
+              />}
+            {!bankNotAvailable &&  <div className="flex items-center gap-2">
                 <Picture src={DangerIcon} alt="danger" size={24} />
                 <p className="text-text-label text-xs font-normal">
                   It is advisable to use a bank account name that matches the registered name of your company.
                 </p>
-              </div>
+              </div>}
             </div>
-          </div>}
+          </div>
           {edit && 
           <div className="flex justify-end gap-4">
           <Button size="base_bold" className="py-[10px] px-8" onClick={handleEdit}>

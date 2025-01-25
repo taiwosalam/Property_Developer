@@ -1,19 +1,19 @@
 
 
 interface SignatureAPIResponse {
-    signature: {
-        company_id: number;
-        created_at: string;
-        id: number;
-        signatories: {
+    signatures: {
+        // company_id: number;
+        // created_at: string;
+        // id: number;
+        // signatories: {
             id: number;
             name: string;
             professional_title: string;
-            signature_image: string;
+            signature: string;
             title: string;
         }[];
-        updated_at: string;
-    }
+        // updated_at: string;
+    // }
 }
 
 export interface SignaturePageData {
@@ -51,11 +51,11 @@ export interface BankPageData {
 
 export const transformSignature = (data: SignatureAPIResponse):SignaturePageData[]  => {
     return (
-        data.signature.signatories.map((item) => ({
+        data?.signatures?.map((item) => ({
             id: item.id,
             name: item.name,
             professional_title: item.professional_title,
-            signature_image: item.signature_image,
+            signature_image: item.signature,
             title: item.title,
         }))
     )
