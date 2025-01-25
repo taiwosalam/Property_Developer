@@ -42,6 +42,9 @@ import { ProfileResponse } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { getLocalStorage } from "@/utils/local-storage";
 import { useRole } from "@/hooks/roleContext";
+import useDarkMode from "@/hooks/useCheckDarkMode";
+import { useThemeStoreSelectors } from "@/store/themeStore";
+import { applyFont } from "@/app/(onboarding)/auth/data";
 
 const NotificationBadge = ({
   count,
@@ -62,16 +65,28 @@ const NotificationBadge = ({
 
 const Header = () => {
   const { isMobile } = useWindowWidth();
+  const isDarkMode = useDarkMode();
+  const setColor = useThemeStoreSelectors.getState().setColor;
+  const { theme, setTheme } = useTheme();
+  const {role} = useRole()
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
   const loggedInUserDetails = getLocalStorage('additional_details');
-  let loggedUserCompany: { company_id: string | null; company_logo: string | null } | undefined;
+  let loggedUserCompany: { company_id: string | null; company_logo: string | null; dark_logo: string | null } | undefined;
   let loggedUserBranch: { branch_id: string | null; picture: string | null } | undefined;
+  let appearance: { colorMode: string; view: string; navbar: string; fonts: string; dashboardColor: string; } | undefined;
   if (loggedInUserDetails) {
-    ({ company: loggedUserCompany, branch: loggedUserBranch } = loggedInUserDetails);
+    ({ company: loggedUserCompany, branch: loggedUserBranch, appearance } = loggedInUserDetails);
   }
-  const {role} = useRole()
   
-  const { theme, setTheme } = useTheme();
+  useEffect(() => {
+    if (appearance) {
+      const { colorMode, view, navbar, fonts, dashboardColor } = appearance;
+      setColor(dashboardColor);
+      applyFont(fonts);
+    }
+  }, [appearance, setColor, setTheme]);
+  
+
   const toggleTheme = () => {
     const primaryColor = localStorage.getItem("primary-color");
     if (primaryColor === "#000000") {
@@ -79,7 +94,6 @@ const Header = () => {
       setTheme("light"); // Set theme to light
       return; // Exit the function if the condition is met
     }
-
     switch (theme) {
       case "light":
         setTheme("dark");
@@ -92,6 +106,8 @@ const Header = () => {
         break;
     }
   };
+
+
   const lgIconsInteractionClasses =
     "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
 
@@ -103,8 +119,17 @@ const Header = () => {
   );
   const name = usePersonalInfoStore((state) => state.name);
   const company_logo = usePersonalInfoStore(
-    (state) => state.company_logo || loggedUserCompany?.company_logo
+    // (state) => state.company_logo || loggedUserCompany?.company_logo
+    (state) => {
+      if (theme === "light") {
+        return loggedUserCompany?.company_logo;
+      } else {
+        return loggedUserCompany?.dark_logo;
+      }
+    }
   );
+
+
   const profile_picture = usePersonalInfoStore(
     (state) => state.profile_picture
   );
