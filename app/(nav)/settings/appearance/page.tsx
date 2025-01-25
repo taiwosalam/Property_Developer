@@ -28,6 +28,7 @@ import { useSettings } from "@/hooks/settingsContext";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { updateSettings } from "../security/data";
+import { SettingsAppearanceIcon } from "@/public/icons/icons";
 
 const Appearance = () => {
   const isDarkMode = useDarkMode();
@@ -45,16 +46,14 @@ const Appearance = () => {
   useEffect(() => {
     if (data?.appearance) {
       setAppearance({
-        theme: data.appearance.theme || defaultAppearance.theme,
-        view: data.appearance.card || defaultAppearance.view,
-        navbar: data.appearance.navbar || defaultAppearance.navbar,
-        mode: data.appearance.colorMode || defaultAppearance.mode,
-        font: data.appearance.fonts || defaultAppearance.font,
-        color: data.appearance.dashboardColor || defaultAppearance.color,
+        theme: data.appearance.theme,
+        view: data.appearance.card,
+        navbar: data.appearance.navbar,
+        mode: data.appearance.colorMode,
+        font: data.appearance.fonts,
+        color: data.appearance.dashboardColor,
       });
-    } else {
-      setAppearance(defaultAppearance);
-    }
+    } 
   }, [data]);
 
 
@@ -69,21 +68,6 @@ const Appearance = () => {
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const [reqLoading, setReqLoading] = useState(false);
   const [next, setNext] = useState(false);
-  const [selectedTheme, setSelectedTheme] = useState<string | null>(
-    appearance.theme
-  );
-  const [selectedView, setSelectedView] = useState<string | null>(
-    appearance.view
-  );
-  const [selectedNavbar, setSelectedNavbar] = useState<string | null>(
-    appearance.navbar
-  );
-  const [selectedMode, setSelectedMode] = useState<string | null>(
-    appearance.mode
-  );
-  const [selectedFont, setSelectedFont] = useState<string | null>(
-    appearance.font
-  );
   const [selectedColor, setSelectedColor] = useState<string | null>(primaryColor);
   let storedFont =   appearance.font;
 
@@ -119,7 +103,8 @@ const Appearance = () => {
       }
       storedFont = localStorage.getItem("selectedFont") || "";
       if (storedFont) {
-        setSelectedFont(storedFont);
+        // setSelectedFont(storedFont);
+        setAppearance({ ...appearance, font: storedFont });
         const link = document.createElement("link");
         link.href = `https://fonts.googleapis.com/css2?family=${storedFont.replace(
           / /g,
@@ -130,7 +115,7 @@ const Appearance = () => {
         document.body.style.fontFamily = storedFont;
       }
     }
-  }, [setSelectedFont]);
+  }, [setAppearance, appearance.font]);
 
   // Zoom controls
   useEffect(() => {
@@ -179,18 +164,22 @@ const Appearance = () => {
     setSelectedOption(type, value);
     switch (type) {
       case "theme":
-        setSelectedTheme(value);
+        // setSelectedTheme(value);
+        setAppearance({ ...appearance, theme: value });
         break;
       case "view":
-        setSelectedView(value);
+        // setSelectedView(value);
+        setAppearance({ ...appearance, view: value });
         toast.success(`Management card view set to ${value}`);
         break;
       case "navbar":
-        setSelectedNavbar(value);
+        // setSelectedNavbar(value);
+        setAppearance({ ...appearance, navbar: value });
         break;
       case "mode":
         setTheme(value);
-        setSelectedMode(value);
+        setAppearance({ ...appearance, mode: value });
+        // setSelectedMode(value);
         break;
       case "font":
         handleFontSelect(value);
@@ -223,7 +212,8 @@ const Appearance = () => {
     if (fontName === "Lato") {
       fontName = "Lato"; // Set to Lato if Default Font is selected
     }
-    setSelectedFont(fontName);
+    // setSelectedFont(fontName);
+    setAppearance({ ...appearance, font: fontName });
     // Check if running in the browser
     if (typeof window !== "undefined") {
       localStorage.setItem("selectedFont", fontName);
@@ -247,7 +237,7 @@ const Appearance = () => {
   // THEME
   const handleUpdateTheme = async () => {
     const payload = {
-      theme: selectedTheme,
+      theme: appearance.theme,
     }
     try {
       setReqLoading(true)
@@ -267,7 +257,7 @@ const Appearance = () => {
   // MANAGEMENT CARD
   const handleUpdateCard = async () => {
     const payload = {
-      card: selectedView,
+      card: appearance.view,
     }
     try {
       setReqLoading(true)
@@ -287,7 +277,7 @@ const Appearance = () => {
   // NAVBAR
   const handleUpdateNavbar = async () => {
     const payload = {
-      navbar: selectedNavbar,
+      navbar: appearance.navbar,
     }
     try {
       setReqLoading(true)
@@ -307,7 +297,7 @@ const Appearance = () => {
   // LIGHT / DARK MODE
   const handleUpdateMode = async () => {
     const payload = {
-      mode: selectedMode,
+      mode: appearance.mode,
     }
     try {
       setReqLoading(true)
@@ -329,7 +319,7 @@ const Appearance = () => {
   const handleUpdateScheme = async () => {
     const payload = {
       dashboardColor: selectedColor,
-      fonts: selectedFont,
+      fonts: appearance.font
     }
     try {
       setReqLoading(true)
@@ -360,7 +350,8 @@ const Appearance = () => {
               img="/global/theme1.svg"
               value="theme1"
               onSelect={(value) => handleSelect("theme", value)}
-              isSelected={selectedTheme === "theme1"}
+              // isSelected={selectedTheme === "theme1"}
+              isSelected={appearance.theme === "theme1"}
             />
             <div
               className="relative"
@@ -411,13 +402,13 @@ const Appearance = () => {
               img="/global/grid-view.svg"
               value="grid"
               onSelect={(value) => handleSelect("view", value)}
-              isSelected={selectedView === "grid"}
+              isSelected={appearance.view === "grid"}
             />
             <ThemeCard
               img="/global/list-view.svg"
               value="list"
               onSelect={(value) => handleSelect("view", value)}
-              isSelected={selectedView === "list"}
+              isSelected={appearance.view === "list"}
             />
           </div>
           <div className="flex justify-end mt-4">
@@ -443,13 +434,13 @@ const Appearance = () => {
               img="/global/nav1.svg"
               value="column"
               onSelect={(value) => handleSelect("navbar", value)}
-              isSelected={selectedNavbar === "column"}
+              isSelected={appearance.navbar === "column"}
             />
             <ThemeCard
               img="/global/nav2.svg"
               value="row"
               onSelect={(value) => handleSelect("navbar", value)}
-              isSelected={selectedNavbar === "row"}
+              isSelected={appearance.navbar === "row"}
             />
           </div>
           <div className="flex justify-end mt-4">
@@ -475,13 +466,15 @@ const Appearance = () => {
               img="/global/light-mode.svg"
               value="light"
               onSelect={(value) => handleSelect("mode", value)}
-              isSelected={selectedMode === "light"}
+              // isSelected={selectedMode === "light"}
+              isSelected={appearance.mode === "light"}
             />
             <ThemeCard
               img="/global/dark-mode.svg"
               value="dark"
               onSelect={(value) => handleSelect("mode", value)}
-              isSelected={selectedMode === "dark"}
+              isSelected={appearance.mode === "dark"}
+              // isSelected={selectedMode === "dark"}
             />
           </div>
           <div className="flex justify-end mt-4">
@@ -507,7 +500,7 @@ const Appearance = () => {
             placeholder={storedFont || "Select a font"}
             onChange={(value) => handleFontSelect(value)}
             options={modifiedGoogleFonts}
-            defaultValue={appearance?.font}
+            defaultValue={appearance?.font || storedFont}
             inputContainerClassName="bg-neutral-2"
             className="max-w-[300px] mt-2 mb-4"
           />
