@@ -11,4 +11,6 @@ export interface FileInputProps {
   size: number;
   sizeUnit: "KB" | "MB";
   settingsPage?: boolean;
+  defaultValue?: string;
+  noUpload?: boolean;
 }

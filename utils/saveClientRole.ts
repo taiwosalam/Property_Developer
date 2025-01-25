@@ -13,6 +13,6 @@ export async function saveClientRoleToCookie(role: string): Promise<void> {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: false, // Accessible on the client-side
     sameSite: 'strict',
-    expires: 1, // Optional: Expire in 1 day
+    expires: 7, // Optional: Expire in 7 days
   });
 }

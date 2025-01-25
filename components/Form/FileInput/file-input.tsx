@@ -22,6 +22,8 @@ const FileInput: React.FC<FileInputProps> = ({
   size,
   sizeUnit,
   settingsPage,
+  defaultValue,
+  noUpload,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [file, setFile] = useState<File | null>(null);
@@ -103,6 +105,12 @@ const FileInput: React.FC<FileInputProps> = ({
     }
   };
 
+  const handleView = () => {
+    if (defaultValue) {
+      window.open(defaultValue, "_blank");
+    }
+  };
+
   const handleDeleteFile = () => {
     setFile(null);
     if (fileInputRef.current) {
@@ -140,6 +148,7 @@ const FileInput: React.FC<FileInputProps> = ({
           id={id}
           name={id}
           type="file"
+          disabled={noUpload}
           // required={required}
           className={clsx(
             "absolute w-0 h-0 opacity-0 pointer-events-none",
@@ -171,7 +180,7 @@ const FileInput: React.FC<FileInputProps> = ({
             </span>
           ) : (
             <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
-              Click to upload document
+             {noUpload ? "Click eye icon to view document" : "Click to upload document"} 
             </span>
           )}
 
@@ -196,6 +205,22 @@ const FileInput: React.FC<FileInputProps> = ({
                 }}
               >
                 <DeleteIconX />
+              </button>
+            </div>
+          )}
+
+
+          {defaultValue && (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                aria-label="View File"
+                onClick={(e) => {
+                  handleView();
+                  e.stopPropagation();
+                }}
+              >
+                <EyeShowIcon />
               </button>
             </div>
           )}

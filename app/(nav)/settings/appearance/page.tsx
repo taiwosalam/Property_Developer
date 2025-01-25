@@ -71,8 +71,8 @@ const Appearance = () => {
   const [selectedColor, setSelectedColor] = useState<string | null>(primaryColor);
   let storedFont =   appearance.font;
 
-  console.log("font", storedFont)
-  console.log("primary color", primaryColor)
+  // console.log("font", storedFont)
+  // console.log("primary color", primaryColor)
 
   // Zoom control
   const zoomLevel = useZoomStore((state) => state.zoomLevel);
