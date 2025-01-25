@@ -818,18 +818,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 />
                 <div className="flex flex-col gap-2">
                   <label> Coordinates </label>
-                  <div className="flex items-center pr-2 h-12 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
-                    <input
-                      name="coordinate"
-                      id="coordinate"
-                      value={ editMode ? propertySettings?.coordinate || `${lat}, ${lng}` : `${lat}, ${lng}`}
-                      onChange={(e) => setCoordinate(e.target.value)}
-                      defaultValue={
-                        editMode ? propertySettings?.coordinate || `${lat}, ${lng}` : undefined
-                      }
-                      type="text"
-                      className="w-full h-full rounded-[4px] outline-none px-2"
-                    />
+                  <div className="flex items-center px-2 h-12 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
                     <Modal>
                       <ModalTrigger asChild>
                         <button className='bg-brand-9 text-xs rounded-md px-2 text-white h-3/4'> Pick location </button>
@@ -841,6 +830,32 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                         />
                       </ModalContent>
                     </Modal>
+                    <input
+                      name="coordinate"
+                      id="coordinate"
+                      value={editMode ? propertySettings?.coordinate || `${lat}, ${lng}` : `${lat}, ${lng}`}
+                      onChange={(e) => setCoordinate(e.target.value)}
+                      defaultValue={
+                        editMode ? propertySettings?.coordinate || `${lat}, ${lng}` : undefined
+                      }
+                      type="text"
+                      className="w-full h-full rounded-[4px] outline-none px-2"
+                    />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        const previousSibling = e.currentTarget.previousElementSibling as HTMLInputElement;
+                        if (previousSibling) {
+                          setCoordinate('0,0');
+                          previousSibling.value = '0,0';
+                          e.stopPropagation();
+                        } else {
+                          console.warn('Previous sibling does not exist.');
+                        }
+                      }}
+                    >
+                      <DeleteIconX />
+                    </button>
                   </div>
                 </div>
               </>
