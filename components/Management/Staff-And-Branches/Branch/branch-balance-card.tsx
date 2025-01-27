@@ -60,7 +60,7 @@ const BranchBalanceCard = ({
         earned_bonus: data.balance.earned_bonus,
       });
     }
-  }, [data])
+  }, [data,setWalletStore])
 
   const options = [
     {

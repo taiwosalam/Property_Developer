@@ -17,8 +17,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import ReactPlayer from 'react-player';
 
-const link = "/management/agent-community/";
-
 const ThreadCard = ({
   name,
   picture_url,
@@ -40,7 +38,7 @@ const ThreadCard = ({
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-lg p-4 shadow-md flex flex-col h-full">
       <Link
-        href={`${link}${myArticle ? "my-articles" : "threads"}/${slug}/preview?id=${id}`}
+        href={link}
         className="flex-1"
       >
         <ThreadHeader

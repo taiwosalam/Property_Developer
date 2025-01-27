@@ -23,9 +23,6 @@ export const ContributorDetails = ({
   updatedDate?: string 
 }) => {
 
-    console.log("post here", post);
-    console.log("target_audience", typeof targetAudience);
-
   if (loading) {
     return (
       <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
@@ -84,7 +81,7 @@ export const ContributorDetails = ({
 };
 
 const ContributorUser = ({ contributors }: { contributors: any }) => {
-  console.log("contributors here", contributors);
+  // console.log("contributors here", contributors);
   return (
     <div className="flex flex-col mt-6 gap-4">
       <div className="flex flex-col md:flex-row gap-4">

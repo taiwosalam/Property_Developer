@@ -22,7 +22,7 @@ const CommunityComments = ({
     comments,
     edit,
   }: ThreadCommentProps) => {
-    console.log("comments", comments);
+    // console.log("comments", comments);
     const [likeCount, setLikeCount] = useState(() => {
       if (comments && 'likes' in comments) {
         return parseInt(comments.likes as string);
@@ -39,8 +39,8 @@ const CommunityComments = ({
     const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
     const [isLoading, setIsLoading] = useState(false);
   
+    // console.log('like clicked', commentId);
     const handleLike = async (commentId: string | number) => {
-      console.log('like clicked', commentId);
       if (isLoading || userAction === 'like') return;
       setIsLoading(true);
       
@@ -78,7 +78,6 @@ const CommunityComments = ({
       } finally {
         setIsLoading(false);
     }
-    console.log('dislikeCount', dislikeCount);
     };
   
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -98,14 +97,12 @@ const CommunityComments = ({
           const status = await sendMyArticleReply(slug, parentId, reply);
           if (status) {
             window.dispatchEvent(new Event("refetchComments"));
-            console.log("event triggered for reply");
           }
         } else if (message) {
           // Send comment to the server
           const status = await sendMyArticleComment(slug, message);
           if (status) {
             window.dispatchEvent(new Event("refetchComments"));
-            console.log("event triggered for commentx");
           }
         }
       } catch (error) {
