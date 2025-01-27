@@ -55,13 +55,14 @@ const Appearance = () => {
         font: data.appearance.fonts,
         color: data.appearance.dashboardColor,
       });
-    } 
+    }
   }, [data]);
 
+  // console.log("appearance", data)
 
   const setColor = useThemeStoreSelectors.getState().setColor;
   const primaryColor = useThemeStore((state) => state.primaryColor);
-  
+
   const googleFonts = useGoogleFonts();
   // Ensure 'Lato' is the first font in the array
   const modifiedGoogleFonts = ["Lato", ...googleFonts];
@@ -71,7 +72,7 @@ const Appearance = () => {
   const [reqLoading, setReqLoading] = useState(false);
   const [next, setNext] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string | null>(appearance.color || primaryColor);
-  let storedFont =   appearance.font;
+  let storedFont = appearance.font;
 
   // console.log("font", storedFont)
   // console.log("primary color", primaryColor)
@@ -100,7 +101,7 @@ const Appearance = () => {
     // Check if running in the browser
     if (typeof window !== "undefined") {
       // check if storedFont has value
-      if (storedFont){
+      if (storedFont) {
         localStorage.setItem("selectedFont", storedFont);
       }
       storedFont = localStorage.getItem("selectedFont") || "";
@@ -190,7 +191,7 @@ const Appearance = () => {
     } else {
       setSelectedColor(color);
       setCustomColor(color);
-      console.log("selected color",color)
+      console.log("selected color", color)
     }
   };
 
@@ -318,7 +319,7 @@ const Appearance = () => {
       const res = await updateSettings(objectToFormData(payload), 'appearance')
       if (res && res.status === 200) {
         const additionalDetails = localStorage.getItem("additional_details");
-        const details = additionalDetails ? JSON.parse(additionalDetails) : {}; 
+        const details = additionalDetails ? JSON.parse(additionalDetails) : {};
         if (details.appearance) {
           details.appearance.dashboardColor = res.data.data.dashboardColor;
         }
@@ -335,6 +336,16 @@ const Appearance = () => {
       setReqLoading(false)
     }
   }
+
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
 
   return (
     <>
@@ -474,7 +485,7 @@ const Appearance = () => {
               value="dark"
               onSelect={(value) => handleSelect("mode", value)}
               isSelected={appearance.mode === "dark"}
-              // isSelected={selectedMode === "dark"}
+            // isSelected={selectedMode === "dark"}
             />
           </div>
           <div className="flex justify-end mt-4">

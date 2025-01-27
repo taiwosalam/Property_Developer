@@ -31,9 +31,6 @@ import { empty } from "@/app/config";
 import SignaturePad from "signature_pad";
 import { useRef } from "react";
 import SignatureCanvas from "react-signature-canvas";
-import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
-import Button from "../Form/Button/button";
-import SignatureModal from "../Management/Properties/signature";
 
 const SettingsSignature = () => {
   const [state, setState] = useState<SignaturePageData[]>([]);
@@ -108,8 +105,34 @@ const SettingsSignature = () => {
   }, []);
 
 
+  const handleSignatureChange =
+  (index: number) => (dataURL: string) => {
+    setInputFields(
+      inputFields.map((field) =>
+        field.id === inputFields[index].id
+          ? { ...field, signature: dataURL }
+          : field
+      )
+    );
+  };
+
+const handleClearSignature = (index: number) => {
+  setInputFields(
+    inputFields.map((field) =>
+      field.id === inputFields[index].id
+        ? { ...field, signature: empty }
+        : field
+    )
+  );
+};
+
+
+
   const [reqLoading, setReqLoading] = useState(false);
   const [next, setNext] = useState(false);
+  const changeImage = () => {
+    inputFileRef.current?.click();
+  };
 
   const addInputField = () => {
     setInputFields([
@@ -124,52 +147,27 @@ const SettingsSignature = () => {
     // console.log("Input Fields after removing:", updatedFields);
   };
 
-  // const handleCreateSignature = (image: string, index: number) => {
-  //   setInputFields((prevState) =>
-  //     prevState.map((field) =>
-  //       field.id === inputFields[index].id
-  //         ? { ...field, signature: image }
-  //         : field
-  //     )
-  //   );
-  // };
-
-
-  // const handleCreateSignature = (image: string, index: number, file?: File) => {
-  //   console.log("Base64:", image);
-  //   console.log("Image File:", file);
-  //   setInputFields(prevState =>
-  //     prevState.map((field) =>
-  //       field.id === inputFields[index].id
-  //         ? { ...field, signature: image, signatureFile: file || field.signatureFile }
-  //         : field
-  //     )
-  //   );
-  // };
-
-
-  const handleCreateSignature = (imageBase64: string, index: number, imageFile?: File) => {
-    console.log("image", imageBase64)
-    console.log("image file", imageFile)
-    setInputFields(prevState =>
-      prevState.map((field, idx) =>
-        idx === index
-          ? { ...field, signature: imageBase64, signatureFile: imageFile || field.signatureFile }
-          : field
-      )
-    );
+  const changeSignatureImage = (index: number) => {
+    document.getElementById(`signature_input_${index}`)?.click();
   };
 
-  const handleSignatureChange = (index: number) => (dataURL: string) => {
-    setInputFields(prevState =>
-      prevState.map((field) =>
-        field.id === inputFields[index].id
-          ? { ...field, signature: dataURL }
-          : field
-      )
-    );
-  };
-
+  // const handleSignatureChange =
+  //   (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     if (typeof window === "undefined" || !e.target.files || !e.target.files[0]) {
+  //       return;
+  //     }
+  //     if (e.target.files && e.target.files[0]) {
+  //       const newSignature = URL.createObjectURL(e.target.files[0]);
+  //       const newFile = e.target.files[0];
+  //       setInputFields(
+  //         inputFields.map((inputField) =>
+  //           inputField.id === inputFields[index].id
+  //             ? { ...inputField, signature: newSignature, signatureFile: newFile }
+  //             : inputField
+  //         )
+  //       );
+  //     }
+  //   };
 
   const hanleCreateSignature = async (data: FormData) => {
     const formData = new FormData();
@@ -213,31 +211,73 @@ const SettingsSignature = () => {
           <div className="custom-flex-col gap-6">
             <SettingsSectionTitle
               title=""
-              desc="This signature is applied to all documents requiring authorization. Click the 'Add Signature' button to sign on the pad track using your mouse, trackpad, touch screen, or pen to input your signature in the designated area."
+              desc="This signature is affixed to every document requiring authorization. Please sign on a plain white paper and take a photo for uploading. If possible, remove the background picture of the signature before uploading for a cleaner appearance."
             />
             <div className="custom-flex-col gap-[18px]">
               <div className="flex flex-col gap-5">
                 {inputFields.map((field, index) => (
                   <React.Fragment key={field.id}>
-                    <div className="flex rounded-lg items-center overflow-hidden gap-2 cursor-pointer">
-                      <Picture
+                    <div className="relative max-w-[100px] rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer">
+                      {/* <Picture
                         size={100}
-                        className="max-w-[100px] max-h-[120px]"
                         fit="contain"
                         src={field.signature}
                         alt="official signature"
                       />
-                      <Modal>
-                        <ModalTrigger asChild>
-                          <button className="self-end bg-brand-9 text-white text-xs font-normal py-2 px-3 rounded-md">Add signature</button>
-                        </ModalTrigger>
-                        <ModalContent>
-                          <SignatureModal
-                            onCreateSignature={handleCreateSignature}
-                            index={index}
-                          />
-                        </ModalContent>
-                      </Modal>
+                      <div
+                        style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
+                        className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
+                      >
+                        <Picture src={ImageBlue} alt="image icon" size={20} />
+                        <p
+                          className="text-brand-9 text-xs font-normal"
+                          onClick={() => changeSignatureImage(index)}
+                        >
+                          Change Image
+                        </p>
+                      </div>
+                      <input
+                        type="file"
+                        id={`signature_input_${index}`}
+                        name={`signature_${index}`}
+                        accept="image/*"
+                        onChange={handleSignatureChange(index)}
+                        className="hidden"
+                        ref={React.createRef()}
+                      /> */}
+
+                      {/* <canvas id="signature-pad" width="400" height="200"></canvas> */}
+                      {/* <div className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300">
+                        <p
+                          className="text-brand-9 text-xs font-normal"
+                          onClick={() => clearSignature()}
+                        >
+                          Clear
+                        </p>
+                      </div> */}
+
+
+                      <SignatureCanvas
+                        penColor="black"
+                        canvasProps={{
+                          width: 400,
+                          height: 200,
+                          className: "signature-canvas",
+                        }}
+                        onEnd={() =>
+                          handleSignatureChange(index, canvasRef.current.toDataURL())
+                        }
+                      />
+                      {/* <div
+                        className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
+                      >
+                        <p
+                          className="text-brand-9 text-xs font-normal"
+                          onClick={() => handleClearSignature(index)}
+                        >
+                          Clear
+                        </p>
+                      </div> */}
                     </div>
                     <div className="flex flex-col md:flex-row gap-5 justify-start md:justify-end md:items-end items-start">
                       <div className="flex-1">

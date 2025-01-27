@@ -33,6 +33,7 @@ const SettingsBank = () => {
   const [lookupLoading, setLookupLoading] = useState(false);
   const [bankName, setBankName] = useState("");
   const [bankCode, setBankCode] = useState("");
+  const [showCard, setShowCard] = useState(false)
   const [accountNumber, setAccountNumber] = useState("");
   const [accountName, setAccountName] = useState("");
   const [companyBankDetails, setCompanyBankDetails] = useState<BankPageData>({
@@ -67,6 +68,7 @@ const SettingsBank = () => {
       if(res){
         setCompanyBankDetails(res) 
         setEdit(true)
+        setShowCard(true)
       }
     }
   }, [companyBank])
@@ -133,6 +135,7 @@ const SettingsBank = () => {
 const handleEdit = ()=> {
   setEdit(false);
   setOpenEdit(true);
+  setShowCard(false)
 }
 
   return (
@@ -193,9 +196,9 @@ const handleEdit = ()=> {
               </div>
             }
           </div>}
-           <div className="flex">
+           <div className="flex flex-col">
+           {showCard && 
             <div className="custom-flex-col max-w-[436px]  gap-4">
-             {(!bankNotAvailable || !openEdit) && 
              <FundingCard
                 type="sterling"
                 title={accountNumber || "___"}
@@ -203,7 +206,9 @@ const handleEdit = ()=> {
                 cta={bankName || "___"}
                 notRounded
                 logo={logo}
-              />}
+              />
+              </div>}
+            <div className="custom-flex-col max-w-[436px]  gap-4">
             {!bankNotAvailable &&  <div className="flex items-center gap-2">
                 <Picture src={DangerIcon} alt="danger" size={24} />
                 <p className="text-text-label text-xs font-normal">

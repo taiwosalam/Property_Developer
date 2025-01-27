@@ -1765,7 +1765,7 @@ export const ManagementIcon: React.FC<IconProps> = () => (
   </svg>
 );
 
-export const SubscriptionIcon: React.FC<IconProps> = ({}) => (
+export const SubscriptionIcon: React.FC<IconProps> = ({ }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="18"
@@ -3564,3 +3564,24 @@ export const PreferenceIcon = () => {
     </svg>
   );
 };
+
+
+
+
+export const UndoSigArrow = () => {
+  return (
+    <svg width="23" height="19" viewBox="0 0 23 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0.25 7.625L9 14.5V9.5H10.25C15.25 9.5 19 12 19 17V18.25H22.75V17C22.75 9.5 16.5 5.75 10.25 5.75H9V0.75L0.25 7.625Z" fill="currentColor" />
+    </svg>
+  )
+}
+
+
+
+export const RedoSigArrow = () => {
+  return (
+    <svg width="23" height="19" viewBox="0 0 23 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 0.75V5.75H12.75C6.5 5.75 0.25 9.5 0.25 17V18.25H4V17C4 12 7.75 9.5 12.75 9.5H14V14.5L22.75 7.625L14 0.75Z" fill="currentColor" />
+    </svg>
+  )
+}
