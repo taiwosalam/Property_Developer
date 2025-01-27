@@ -30,6 +30,7 @@ interface PropertyDetails {
   images: { path: string; id: string }[];
   land_lord_id?: string;
 }
+
 interface PropertySettings {
   agency_fee?: number;
   management_fee?: number;

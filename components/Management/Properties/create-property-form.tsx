@@ -78,7 +78,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   } = state;
 
   const selectedBranchId = selectedBranch.value;
-  // console.log("Location", lat, lng)
+  console.log("staff", staffOptions)
 
   const setPropertyState = (changes: SetPropertyStateChanges) => {
     setState((x) => {
@@ -92,6 +92,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       return newState;
     });
   };
+
+  console.log("property details", propertyDetails)
 
   const {
     images,
@@ -184,9 +186,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     error: staffsError,
   } = useFetch<AllLandlordsResponse>(`branch/${selectedBranchId}/staff`);
 
-  // console.log('branch officer', accountOfficerData);
-  // console.log("branch staff", staffsData)
-
   const {
     data: inventoryData,
     loading: inventoryLoading,
@@ -234,7 +233,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       });
     }
   }, [staffsData]);
-  // console.log('staffOption', staffOption);
+  console.log('staffOption', staffOptions);
+  console.log('staff', staff);
 
   // useEffect(() => {
   //   if (!selectedBranch.value) return;

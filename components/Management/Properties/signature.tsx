@@ -1,0 +1,120 @@
+import React, { useRef, useState } from 'react';
+import SignaturePad from 'react-signature-canvas';
+import LandlordTenantModalPreset from '../landlord-tenant-modal-preset';
+import { useModal } from '@/components/Modal/modal';
+import { RedoSigArrow, UndoSigArrow } from '@/public/icons/icons';
+
+interface SignatureModalProps {
+    onCreateSignature: (imageBase64: string, index: number, imageFile?: File) => void; // updated to pass index
+    index: number; // pass index from parent
+}
+
+const SignatureModal: React.FC<SignatureModalProps> = ({ onCreateSignature, index }) => {
+    const { setIsOpen } = useModal();
+    const sigPadRef = useRef<SignaturePad>(null);
+    const [signatureImageBase64, setSignatureImageBase64] = useState<string | null>(null);
+    const [signatureImageFile, setSignatureImageFile] = useState<File | null>(null);
+
+    // Disable undo/redo button state
+    const [canUndo, setCanUndo] = useState(false);
+    const [canRedo, setCanRedo] = useState(false);
+
+    // Clear the signature pad
+    const clear = () => {
+        sigPadRef.current?.clear();
+        setSignatureImageBase64(null);
+        setSignatureImageFile(null);
+        setCanUndo(false);
+        setCanRedo(false);
+    };
+
+    const handleSaveSignature = () => {
+        const trimmedCanvas = sigPadRef.current?.getTrimmedCanvas();
+        if (trimmedCanvas) {
+            const imageBase64 = trimmedCanvas.toDataURL('image/png');
+            console.log("Base64 image:", imageBase64);
+
+            // Save the base64 string in state
+            setSignatureImageBase64(imageBase64);
+
+            // Convert the base64 to a Blob
+            const byteString = atob(imageBase64.split(',')[1]); // Decode base64
+            const arrayBuffer = new ArrayBuffer(byteString.length);
+            const uintArray = new Uint8Array(arrayBuffer);
+
+            for (let i = 0; i < byteString.length; i++) {
+                uintArray[i] = byteString.charCodeAt(i);
+            }
+
+            // Create a Blob from the Uint8Array
+            const imageBlob = new Blob([uintArray], { type: 'image/png' });
+
+            // Create an image file from the Blob
+            const imageFile = new File([imageBlob], 'signature.png', { type: 'image/png' });
+            console.log("Image file:", imageFile);
+
+            // Save the image file in state
+            setSignatureImageFile(imageFile);
+
+            // Pass both the base64 string and the file along with the index to the parent
+            onCreateSignature(imageBase64, index, imageFile);
+
+            setIsOpen(false);
+        }
+    };
+
+    // Handle undo action
+    const handleUndo = () => {
+        if (sigPadRef.current) {
+            const data = sigPadRef.current.toData();
+            if (data.length > 0) {
+                data.pop(); // Remove the last line or dot
+                sigPadRef.current.fromData(data); // Set the new data to the pad
+                setCanRedo(true); // Enable redo after undo
+            }
+            setCanUndo(sigPadRef.current?.toData().length > 0 || false);
+        }
+    };
+
+    // Handle redo action
+    const handleRedo = () => {
+        // This part can be tricky because `SignaturePad` doesn't provide redo functionality directly.
+        // I'd need to save and restore the `redoStack` similarly to the `undo` stack.
+        if (sigPadRef.current) {
+            // For now, I am going to add the redo functionality by tracking the signature data.
+            // This requires a more complex approach that involves storing the undo stack and redo stack separately.
+
+            setCanUndo(true); // improve this by implementing a redo mechanism if needed
+        }
+    };
+
+    const handleEnd = () => {
+        const data = sigPadRef.current?.toData();
+        setCanUndo(!!(data && data.length > 0));
+        setCanRedo(false);
+    };
+
+    return (
+        <LandlordTenantModalPreset style={{ width: '100%', height: '60vh' }} heading="Draw your signature">
+            <SignaturePad
+                ref={sigPadRef}
+                canvasProps={{ className: 'w-full h-[39vh] custom-secondary-bg' }}
+                onEnd={handleEnd}
+            />
+            <div className='w-full flex justify-between mt-2'>
+                <div className="flex gap-2 items-center">
+                    <button onClick={clear} className='bg-brand-9 px-2 py-1 text-sm rounded-md text-white'>Clear</button>
+                    <button onClick={handleUndo} disabled={!canUndo} className=''>
+                        <UndoSigArrow />
+                    </button>
+                    <button onClick={handleRedo} disabled={!canRedo} className=''>
+                        <RedoSigArrow />
+                    </button>
+                </div>
+                <button onClick={handleSaveSignature} className='bg-brand-9 px-2 py-1 text-sm rounded-md text-white'>Save Signature</button>
+            </div>
+        </LandlordTenantModalPreset>
+    );
+};
+
+export default SignatureModal;

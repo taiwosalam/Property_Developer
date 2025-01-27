@@ -41,28 +41,33 @@ const ThreadPreview = () => {
   const [comments, setComments] = useState<CommentData[]>([]);
   const [targetAudience, setTargetAudience] = useState<string[]>([]);
   const { data, error, loading, refetch: refetchComments } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
-
   useRefetchOnEvent("refetchComments", ()=> refetchComments({silent:true}));
-
+    
   useEffect(() => {
-    console.log("data", data);
     if (data) {
-      setPost(data.post.post);
-      setCompanySummary(data.post.company_summary);
-      setContributors(data.post.contributor);
-      setComments(data.post.comments);
-      
-      // Parse target_audience if it's a string
-      const audience = typeof data.post.post.target_audience === 'string' 
-        ? JSON.parse(data.post.post.target_audience) 
-        : data.post.post.target_audience;
-
-      setTargetAudience(Array.isArray(audience) ? audience : []); // Ensure it's an array
+      console.log("Fetched data:", data);
+  
+      // Set post data safely
+      setPost(data.post?.post ?? null);
+      setCompanySummary(data.post?.company_summary ?? null);
+      setContributors(data.post?.contributor ?? null);
+      setComments(data.post?.comments ?? []);
+  
+      // Parse target_audience safely
+      try {
+        const audience = typeof data.post?.post?.target_audience === 'string'
+          ? JSON.parse(data.post.post.target_audience)
+          : data.post?.post?.target_audience;
+  
+        setTargetAudience(Array.isArray(audience) ? audience : []);
+      } catch (error) {
+        console.error("Error parsing target_audience:", error);
+        setTargetAudience([]); // Fallback to empty array
+      }
     }
-  }, [data, targetAudience]);
-
-
-  console.log("summary", companySummary)
+  }, [data]); // Minimal dependencies
+  
+    console.log("summary", companySummary)
 
   return (
     <div className="mb-16">

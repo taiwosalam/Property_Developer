@@ -73,12 +73,12 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (propertyData) {
-    // console.log("prop data", propertyData)
       const transformedData = transformPropertyData(propertyData);
       if (!transformedData) {
         setDataNotFound(true);
         return;
       }
+      // console.log("prop data", transformedData.propertyDetails)
       setDataNotFound(false);
       setAddUnitStore("canDelete", transformedData.canDelete);
       setAddUnitStore("property_id", transformedData.property_id);

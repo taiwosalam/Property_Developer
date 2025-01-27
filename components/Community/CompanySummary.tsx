@@ -15,12 +15,12 @@ import { calculateYearsInIndustry } from "@/app/(nav)/management/agent-community
 import { useEffect } from "react";
 
 const CompanySummary = ({ loading, companySummary }: { loading?: boolean, companySummary: any }) => {
-  useEffect(() => {
-    const details = companySummary;
-    console.log("details", details);
-    const phone_numbers = companySummary?.contact_details?.phone_numbers;
-    // console.log("phone_numbers", phone_numbers);
-  }, [companySummary]);
+  // useEffect(() => {
+  //   const details = companySummary;
+  //   // console.log("details", details);
+  //   const phone_numbers = companySummary?.contact_details?.phone_numbers;
+  //   // console.log("phone_numbers", phone_numbers);
+  // }, [companySummary]);
   
  const companyStats = [
     { label: "Joined ourproperty.ng", value: companySummary?.join_ourproperty },
