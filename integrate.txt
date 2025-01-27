@@ -1585,3 +1585,44 @@ export default SettingsSignature
   const [selectedColor, setSelectedColor] = useState<string | null>(
     primaryColor
   );
+
+
+
+
+
+
+
+
+
+  ==============STAFF
+         {/* {staff.map(({ id, label }) => (
+              <div
+                key={id}
+                className='relative'
+              >
+                <Select
+                  options={staffOptions}
+                  // options={staffOption}
+                  id={id}
+                  label={label}
+                  inputContainerClassName='bg-white'
+                />
+                <button
+                  type='button'
+                  aria-label='Remove Staff'
+                  onClick={() => removeStaff(id)}
+                  className='absolute top-0 right-0 w-[18px] h-[18px]'
+                >
+                  <DeleteIconX size={20} />
+                </button>
+              </div>
+            ))}
+            {staff.length < 3 && (
+              <button
+                type='button'
+                onClick={addStaff}
+                className='text-brand-9 text-xs md:text-sm font-normal md:self-end md:justify-self-start'
+              >
+                {`${staff.length > 0 ? 'Add more staff' : 'Add Staff'}`}
+              </button>
+            )} */}

@@ -258,7 +258,7 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
       return [];
     })();
 
-    console.log("Processed initialSelectedStates:", initialSelectedStates);
+    // console.log("Processed initialSelectedStates:", initialSelectedStates);
     setSelectedStates(initialSelectedStates);
   }, [data?.target_audience]);
 

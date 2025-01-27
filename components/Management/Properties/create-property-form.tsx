@@ -37,6 +37,8 @@ import Cookies from 'js-cookie';
 import { useRole } from '@/hooks/roleContext';
 import { Modal, ModalContent, ModalTrigger } from '@/components/Modal/modal';
 import GoogleMapsModal from './google-maps';
+import { MultiSelect } from '@/components/multiselect/multi-select';
+import { Cat } from 'lucide-react';
 
 const maxNumberOfImages = 6;
 
@@ -65,6 +67,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const isDirector = role === 'director';
   const isAccountOfficer = role === 'account';
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>(["react", "angular"]);
 
   const {
     state: selectedState,
@@ -78,7 +81,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   } = state;
 
   const selectedBranchId = selectedBranch.value;
-  console.log("staff", staffOptions)
+  // console.log("staff", staffOptions)
 
   const setPropertyState = (changes: SetPropertyStateChanges) => {
     setState((x) => {
@@ -220,8 +223,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     staffsData?.data.map((s: any) => ({
       value: s.id,
       label: s.user.name,
+      icon: s.user.profile.picture,
     })) || [];
 
+  console.log("staff data", staffOptions)
   // set staffOptions if staffData is available
   useEffect(() => {
     if (staffsData) {
@@ -229,6 +234,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         staffOptions: staffsData.data.map((s: any) => ({
           value: s.id,
           label: s.user.name,
+          icon: s.user.profile.picture,
         })),
       });
     }
@@ -553,37 +559,18 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 resetKey={resetKey}
                 hiddenInputClassName='property-form-input'
               />}
-            {staff.map(({ id, label }) => (
-              <div
-                key={id}
-                className='relative'
-              >
-                <Select
-                  options={staffOptions}
-                  // options={staffOption}
-                  id={id}
-                  label={label}
-                  inputContainerClassName='bg-white'
-                />
-                <button
-                  type='button'
-                  aria-label='Remove Staff'
-                  onClick={() => removeStaff(id)}
-                  className='absolute top-0 right-0 w-[18px] h-[18px]'
-                >
-                  <DeleteIconX size={20} />
-                </button>
-              </div>
-            ))}
-            {staff.length < 3 && (
-              <button
-                type='button'
-                onClick={addStaff}
-                className='text-brand-9 text-xs md:text-sm font-normal md:self-end md:justify-self-start'
-              >
-                {`${staff.length > 0 ? 'Add more staff' : 'Add Staff'}`}
-              </button>
-            )}
+            <div className='bg-neutral-2 flex self-end'>
+              <MultiSelect
+                options={staffOption}
+                onValueChange={setSelectedFrameworks}
+                // defaultValue={selectedFrameworks}
+                placeholder="Select staffs" 
+                variant="default"
+                // animation={2}
+                maxCount={1}
+                className="bg-white text-black dark:text-white py-3"
+              />
+            </div>
             <TextArea
               id='description'
               label={
