@@ -1,13 +1,20 @@
 import React, { useRef, useState } from 'react';
-import SignaturePad from 'react-signature-canvas';
+import SignaturePad, { ReactSignatureCanvasProps } from 'react-signature-canvas';
 import LandlordTenantModalPreset from '../landlord-tenant-modal-preset';
 import { useModal } from '@/components/Modal/modal';
 import { RedoSigArrow, UndoSigArrow } from '@/public/icons/icons';
+import ReactSignatureCanvas from 'react-signature-canvas';
 
 interface SignatureModalProps {
     onCreateSignature: (imageBase64: string, index: number, imageFile?: File) => void; // updated to pass index
     index: number; // pass index from parent
 }
+
+// Extend the existing props interface to include onEnd
+interface ExtendedSignatureCanvasProps extends ReactSignatureCanvasProps {
+    onEnd?: () => void;
+}
+
 
 const SignatureModal: React.FC<SignatureModalProps> = ({ onCreateSignature, index }) => {
     const { setIsOpen } = useModal();
@@ -99,7 +106,7 @@ const SignatureModal: React.FC<SignatureModalProps> = ({ onCreateSignature, inde
             <SignaturePad
                 ref={sigPadRef}
                 canvasProps={{ className: 'w-full h-[39vh] custom-secondary-bg' }}
-                onEnd={handleEnd}
+                // onEnd={handleEnd}
             />
             <div className='w-full flex justify-between mt-2'>
                 <div className="flex gap-2 items-center">

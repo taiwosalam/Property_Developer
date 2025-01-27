@@ -158,6 +158,8 @@ const Appearance = () => {
     }
   };
 
+  // console.log("appearnce", appearance)
+
   const toggleFullscreen = () => {
     const elem = document.documentElement;
 
