@@ -23,7 +23,7 @@ const CreateArticle = () => {
     // Check the lenght of the content char
     const content = formData.get("content");
     if (typeof content === "string" && content.length < 200) {
-      toast.error("Content must be at least 200 characters long.");
+        toast.error("Content must be at least 200 characters long.");
       return;
     }
 

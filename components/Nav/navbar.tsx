@@ -84,7 +84,7 @@ const Header = () => {
       const { colorMode, view, navbar, fonts, dashboardColor } = appearance;
       setColor(dashboardColor);
       applyFont(fonts);
-      setTheme(colorMode);
+      // setTheme(colorMode);
     }
   }, [appearance, setColor, setTheme]);
   
