@@ -12,7 +12,7 @@ import { updateCompanyDetails } from '@/app/(nav)/settings/profile/data';
 const CompanySocials = ({ companyData }: { companyData: any }) => {
 
     const { instagram, facebook, x, linkedin, tiktok, youtube } = companyData
-    console.log("social data fetch", companyData)
+    // console.log("social data fetch", companyData)
     const [loading, setLoading] = useState(false);
     const [socialInputs, setSocialInputs] = useState({
         instagram: companyData.instagram || "https://instagram.com/",

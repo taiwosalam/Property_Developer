@@ -20,7 +20,7 @@ import { NavIcon } from "@/components/Nav/nav-components";
 import NavSwitchUserSwitch from "./nav-switch-user-switch";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import NavProfileDropdown from "@/components/Nav/nav-profile-dropdown";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   SearchIcon,
   MailIcon,
@@ -66,6 +66,7 @@ const NotificationBadge = ({
 const Header = () => {
   const { isMobile } = useWindowWidth();
   const isDarkMode = useDarkMode();
+  const hasMounted = useRef(false); 
   const setColor = useThemeStoreSelectors.getState().setColor;
   const { theme, setTheme } = useTheme();
   const {role} = useRole()
@@ -83,6 +84,7 @@ const Header = () => {
       const { colorMode, view, navbar, fonts, dashboardColor } = appearance;
       setColor(dashboardColor);
       applyFont(fonts);
+      setTheme(colorMode);
     }
   }, [appearance, setColor, setTheme]);
   
@@ -106,6 +108,8 @@ const Header = () => {
         break;
     }
   };
+
+  // console.log("mode", appearance.colorMode)
 
 
   const lgIconsInteractionClasses =
