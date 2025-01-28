@@ -279,7 +279,7 @@ const Appearance = () => {
   // LIGHT / DARK MODE
   const handleUpdateMode = async () => {
     const payload = {
-      mode: appearance.mode,
+      colorMode: appearance.mode,
     }
     try {
       setReqLoading(true)

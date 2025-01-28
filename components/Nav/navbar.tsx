@@ -57,7 +57,7 @@ const NotificationBadge = ({
   if (count === 0) return null; // Don't render if count is 0
   return (
     <span
-    className={`absolute top-0 right-0 bg-${color}-500 text-white text-xs rounded-full px-1`}
+      className={`absolute top-0 right-0 bg-${color}-500 text-white text-xs rounded-full px-1`}
     >
       {count}
     </span>
@@ -66,12 +66,10 @@ const NotificationBadge = ({
 
 const Header = () => {
   const { isMobile } = useWindowWidth();
-  const isDarkMode = useDarkMode();
-  const hasMounted = useRef(false); 
+  const hasMounted = useRef(false);
   const setColor = useThemeStoreSelectors.getState().setColor;
   const { theme, setTheme } = useTheme();
-  const { selectedOptions, setSelectedOption } = useSettingsStore();
-  const {role} = useRole()
+  const { role } = useRole()
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
   const loggedInUserDetails = getLocalStorage('additional_details');
   let loggedUserCompany: { company_id: string | null; company_logo: string | null; dark_logo: string | null } | undefined;
@@ -80,18 +78,22 @@ const Header = () => {
   if (loggedInUserDetails) {
     ({ company: loggedUserCompany, branch: loggedUserBranch, appearance } = loggedInUserDetails);
   }
-  
+
   useEffect(() => {
-    if (appearance) {
+    if (appearance && !hasMounted.current) {
+      // Run this only once during initialization
       const { colorMode, view, navbar, fonts, dashboardColor } = appearance;
-      console.log("appearance", colorMode)
+      console.log("Initializing appearance with colorMode:", colorMode);
       setColor(dashboardColor);
       applyFont(fonts);
+      setTheme(colorMode);
+
+      hasMounted.current = true; // Mark as initialized
     }
-  }, [appearance, setColor]);
-  
+  }, [appearance, setColor, setTheme]);
 
   const toggleTheme = () => {
+    if (!hasMounted.current) return; // Prevent toggling before initialization
     const primaryColor = localStorage.getItem("primary-color");
     if (primaryColor === "#000000") {
       toast.error("Cannot use dark mode on the selected primary color"); // Show toast message
@@ -110,9 +112,6 @@ const Header = () => {
         break;
     }
   };
-
-  // console.log("mode", appearance.colorMode)
-
 
   const lgIconsInteractionClasses =
     "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
