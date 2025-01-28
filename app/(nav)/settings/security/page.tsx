@@ -26,7 +26,7 @@ import {
 } from "@/components/Settings/settings-components";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
-import { FormState, updateDirectorProfile, updateUserProfile } from "./data";
+import { FormState, initialData, InitialDataTypes, transformProfileData, updateDirectorProfile, updateUserProfile } from "./data";
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
 import SettingsSignature from "@/components/Settings/settings-signature";
@@ -35,11 +35,13 @@ import SettingsSmtp from "@/components/Settings/settings-smtp";
 import SettingsSMS from "@/components/Settings/settings-sms";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import TextArea from "@/components/Form/TextArea/textarea";
+import useFetch from "@/hooks/useFetch";
 
 const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
   const title = usePersonalInfoStore((state) => state.title);
   const { preview, inputFileRef, handleImageChange } = useImageUploader();
+  const [pageData, setPageData] = useState<InitialDataTypes>(initialData);
 
   const [inputFields, setInputFields] = useState([
     { id: Date.now(), signature: SignatureImage },
@@ -53,6 +55,21 @@ const Security = () => {
     name: name || "",
     title: title || "",
   });
+
+  const {
+    data,
+    loading,
+    error
+  } = useFetch("/user/full-profile");
+  // console.log("data", pageData)
+  useEffect(() => {
+    if (data){
+      setPageData((x)=> ({
+        ...x,
+        ...transformProfileData(data)
+      }))
+    }
+  }, [data])
 
   const setUpdateState = (fieldName: keyof FormState, value: any) => {
     setFormState((prev) => ({ ...prev, [fieldName]: value }));
@@ -114,18 +131,19 @@ const Security = () => {
                     options={titles}
                     label="personal title"
                     inputContainerClassName="bg-neutral-2"
-                    defaultValue={title as string}
+                    defaultValue={pageData?.personal_title}
                   />
                   <Input
                     id="fullname"
                     name="name"
                     label="full name"
                     placeholder="Write Here"
-                    defaultValue={name}
+                    defaultValue={pageData?.fullname}
                   />
                   <Select
                     id="director_experience"
                     label="years in business"
+                    defaultValue={pageData?.director_experience}
                     placeholder="Select Option"
                     options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
                     hiddenInputClassName="setup-f"
@@ -136,12 +154,14 @@ const Security = () => {
                     type="email"
                     placeholder="write here"
                     inputClassName="rounded-[8px] setup-f bg-white"
+                    defaultValue={pageData?.email}
                   />
                   <PhoneNumberInput
                     id="phone"
                     label="phone number"
                     placeholder="800 0000 000"
                     inputClassName="setup-f"
+                    defaultValue={pageData?.phone}
                   />
                 </div>
                 <TextArea
@@ -149,6 +169,7 @@ const Security = () => {
                   label="About Director"
                   placeholder="Write about the director"
                   hiddenInputClassName="setup-f"
+                  defaultValue={pageData?.about_director}
                 />
               </div>
             </div>

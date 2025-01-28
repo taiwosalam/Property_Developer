@@ -63,7 +63,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const { role, setRole } = useRole();
   const [lat, setLat] = useState(0)
   const [lng, setLng] = useState(0)
-  const [coordinate, setCoordinate] = useState('0,0')
+  const [coordinate, setCoordinate] = useState(editMode ? propertySettings?.coordinate : '')
   const isDirector = role === 'director';
   const isAccountOfficer = role === 'account';
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -96,7 +96,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     });
   };
 
-  console.log("property details", propertyDetails)
+  console.log("property coordinate", coordinate)
 
   const {
     images,
@@ -567,7 +567,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 variant="default"
                 // animation={2}
                 maxCount={1}
-                className="bg-white text-black dark:text-white py-3"
+                className="bg-white dark:bg-darkText-primary dark:border dark:border-solid dark:border-[#C1C2C366] hover:bg-white dark:hover:bg-darkText-primary text-black dark:text-white py-3"
               />
             </div>
             <TextArea
@@ -804,7 +804,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 />
                 <div className="flex flex-col gap-2">
                   <label> Coordinates </label>
-                  <div className="flex items-center px-2 h-12 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
+                  <div className="flex items-center px-2 h-12 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
                     <Modal>
                       <ModalTrigger asChild>
                         <button className='bg-brand-9 text-xs rounded-md px-2 text-white h-3/4'> Pick location </button>
@@ -813,27 +813,26 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                         <GoogleMapsModal
                           setLat={setLat}
                           setLng={setLng}
+                          setCoordinate={setCoordinate}
                         />
                       </ModalContent>
                     </Modal>
                     <input
                       name="coordinate"
                       id="coordinate"
-                      value={editMode ? propertySettings?.coordinate || `${lat}, ${lng}` : `${lat}, ${lng}`}
                       onChange={(e) => setCoordinate(e.target.value)}
-                      defaultValue={
-                        editMode ? propertySettings?.coordinate || `${lat}, ${lng}` : undefined
-                      }
+                      value={coordinate}
                       type="text"
                       className="w-full h-full rounded-[4px] outline-none px-2"
                     />
-                    <button
+                   {coordinate && <button
                       type="button"
+                      className="bg-transparent outline-none"
                       onClick={(e) => {
                         const previousSibling = e.currentTarget.previousElementSibling as HTMLInputElement;
                         if (previousSibling) {
-                          setCoordinate('0,0');
-                          previousSibling.value = '0,0';
+                          setCoordinate('');
+                          previousSibling.value = '';
                           e.stopPropagation();
                         } else {
                           console.warn('Previous sibling does not exist.');
@@ -841,7 +840,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                       }}
                     >
                       <DeleteIconX />
-                    </button>
+                    </button>}
                   </div>
                 </div>
               </>

@@ -37,7 +37,7 @@ const AddPhotoAndVideo = ({
         setVideoLink(data.video_link);
       }
     }
-  }, [data, editing]);
+  }, [data, editing, setRetainMedia]);
 
   // console.log(imagePreviews);
   console.log('retainMedia', retainMedia);

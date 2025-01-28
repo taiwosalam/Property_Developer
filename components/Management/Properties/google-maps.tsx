@@ -18,9 +18,11 @@ const center = {
 const GoogleMapsModal = ({
     setLat,
     setLng,
+    setCoordinate,
 }: {
     setLat: (lat: number) => void;
     setLng: (lng: number) => void;
+    setCoordinate: (coordinate: string) => void;
 }) => {
     const { setIsOpen } = useModal();
     const { isLoaded, loadError } = useLoadScript({
@@ -36,6 +38,7 @@ const GoogleMapsModal = ({
                 lng: event.latLng.lng(),
             };
             setSelectedLocation(newLocation);
+            setCoordinate(`${event.latLng.lat()}, ${event.latLng.lng()}`);
         }
     };
 
@@ -60,7 +63,7 @@ const GoogleMapsModal = ({
 
     useEffect(() => {
         if (selectedLocation) {
-            // console.log("selectedLocation:", selectedLocation);
+            console.log("selectedLocation:", selectedLocation);
             setLat(selectedLocation.lat);
             setLng(selectedLocation.lng);
         }
@@ -81,6 +84,7 @@ const GoogleMapsModal = ({
                 <p>Loading map...</p>
             ) : (
                 <>
+                <p className="text-[#747474] mb-5">Drag the map pointer to the property&apos;s exact location, paste the previously recorded coordinates, or pick your current location if you&apos;re on-site. Ensure your device&apos;s location is enabled and accurate before selecting the current location.</p>
                     <GoogleMap
                         mapContainerStyle={containerStyle}
                         center={selectedLocation}
