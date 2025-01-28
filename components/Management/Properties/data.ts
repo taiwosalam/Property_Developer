@@ -28,7 +28,8 @@ export const getAllStaffByBranch = async (branchId: string) => {
 export const transformPropertyFormData = (
   data: Record<string, any>,
   imageFiles: (File | string)[],
-  company_id: string
+  company_id: string,
+  selectedStaffs: any,
 ) => {
   console.log('Data', data);
   // Collect staff IDs
@@ -76,7 +77,8 @@ export const transformPropertyFormData = (
     images: imageFiles,
     // images: imageFiles.slice(1),
     default_image: imageFiles[0] || null,
-    staff: staffIds,
+    // staff: staffIds,
+    staff: selectedStaffs,
   };
 
   return payload;

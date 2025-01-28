@@ -67,7 +67,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const isDirector = role === 'director';
   const isAccountOfficer = role === 'account';
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>(["react", "angular"]);
+  const [selectedStaffs, setSelectedStaffs] = useState<string[]>([]);
 
   const {
     state: selectedState,
@@ -225,9 +225,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       label: s.user.name,
       icon: s.user.profile.picture,
     })) || [];
-
-  console.log("staff data", staffOptions)
-  // set staffOptions if staffData is available
+    
   useEffect(() => {
     if (staffsData) {
       setPropertyState({
@@ -239,8 +237,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       });
     }
   }, [staffsData]);
-  console.log('staffOption', staffOptions);
-  console.log('staff', staff);
+  // console.log('staffOption', staffOptions);
+  // console.log('staff', staff);
 
   // useEffect(() => {
   //   if (!selectedBranch.value) return;
@@ -288,11 +286,12 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     'vehicle_record',
     'active_vat',
   ];
-
+  
+  // console.log("selected", selectedStaffs)
   const handleFormSubmit = async (data: Record<string, any>) => {
     setRequestLoading(true);
     convertYesNoToBoolean(data, yesNoFields);
-    const payload = transformPropertyFormData(data, imageFiles, companyId);
+    const payload = transformPropertyFormData(data, imageFiles, companyId, selectedStaffs);
     await handleSubmit(payload);
     setRequestLoading(false);
   };
@@ -562,7 +561,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             <div className='bg-neutral-2 flex self-end'>
               <MultiSelect
                 options={staffOption}
-                onValueChange={setSelectedFrameworks}
+                onValueChange={setSelectedStaffs}
                 // defaultValue={selectedFrameworks}
                 placeholder="Select staffs" 
                 variant="default"

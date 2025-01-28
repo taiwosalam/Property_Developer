@@ -45,6 +45,7 @@ import { useRole } from "@/hooks/roleContext";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 import { applyFont } from "@/app/(onboarding)/auth/data";
+import useSettingsStore from "@/store/settings";
 
 const NotificationBadge = ({
   count,
@@ -69,6 +70,7 @@ const Header = () => {
   const hasMounted = useRef(false); 
   const setColor = useThemeStoreSelectors.getState().setColor;
   const { theme, setTheme } = useTheme();
+  const { selectedOptions, setSelectedOption } = useSettingsStore();
   const {role} = useRole()
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
   const loggedInUserDetails = getLocalStorage('additional_details');
@@ -82,11 +84,11 @@ const Header = () => {
   useEffect(() => {
     if (appearance) {
       const { colorMode, view, navbar, fonts, dashboardColor } = appearance;
+      console.log("appearance", colorMode)
       setColor(dashboardColor);
       applyFont(fonts);
-      // setTheme(colorMode);
     }
-  }, [appearance, setColor, setTheme]);
+  }, [appearance, setColor]);
   
 
   const toggleTheme = () => {

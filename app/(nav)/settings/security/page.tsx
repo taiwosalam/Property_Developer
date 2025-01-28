@@ -26,7 +26,7 @@ import {
 } from "@/components/Settings/settings-components";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
-import { FormState, updateUserProfile } from "./data";
+import { FormState, updateDirectorProfile, updateUserProfile } from "./data";
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
 import SettingsSignature from "@/components/Settings/settings-signature";
@@ -64,14 +64,18 @@ const Security = () => {
 
   const handleUpdateProfile = async (data: FormData) => {
     const payload = {
-      name: data.get("name"),
-      title: data.get("title"),
-      picture: data.get("picture"),
+      full_name: data.get("fullname"),
+      personal_title: data.get("personal_title"),
+      profile_picture: data.get("picture"),
+      years_in_business: data.get("director_experience"),
+      about_director: data.get("about_director"),
+      phone_number: data.get("phone"),
+      email: data.get("director_email"),
     };
 
     try {
       setReqLoading(true);
-      const res = await updateUserProfile(objectToFormData(payload));
+      const res = await updateDirectorProfile(objectToFormData(payload));
       if (res && 'status' in res && res.status === 200) {
         // console.log(res);
         toast.success("Profile updated successfully");
@@ -128,13 +132,13 @@ const Security = () => {
                   />
                   <Input
                     id="director_email"
-                    label="alternative email"
+                    label="email"
                     type="email"
                     placeholder="example@mail.com"
                     inputClassName="rounded-[8px] setup-f bg-white"
                   />
                   <PhoneNumberInput
-                    id="director_phone_number"
+                    id="phone"
                     label="phone number"
                     placeholder="800 0000 000"
                     inputClassName="setup-f"

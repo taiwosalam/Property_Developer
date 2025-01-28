@@ -28,9 +28,7 @@ import { useSettings } from "@/hooks/settingsContext";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { updateSettings } from "../security/data";
-import { SettingsAppearanceIcon } from "@/public/icons/icons";
-import { applyFont } from "@/app/(onboarding)/auth/data";
-import { saveLocalStorage } from "@/utils/local-storage";
+import { transformData } from "./data";
 
 const Appearance = () => {
   const isDarkMode = useDarkMode();
@@ -43,22 +41,14 @@ const Appearance = () => {
     font: "",
     color: "",
   };
+
   const [appearance, setAppearance] = useState(defaultAppearance);
 
   useEffect(() => {
-    if (data?.appearance) {
-      setAppearance({
-        theme: data.appearance.theme,
-        view: data.appearance.card,
-        navbar: data.appearance.navbar,
-        mode: data.appearance.colorMode,
-        font: data.appearance.fonts,
-        color: data.appearance.dashboardColor,
-      });
+    if (data) {
+      setAppearance((x) => ({ ...x, ...transformData(data) }));
     }
   }, [data]);
-
-  // console.log("appearance", data)
 
   const setColor = useThemeStoreSelectors.getState().setColor;
   const primaryColor = useThemeStore((state) => state.primaryColor);
@@ -73,10 +63,6 @@ const Appearance = () => {
   const [next, setNext] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string | null>(appearance.color || primaryColor);
   let storedFont = appearance.font;
-
-  // console.log("font", storedFont)
-  // console.log("primary color", primaryColor)
-
   // Zoom control
   const zoomLevel = useZoomStore((state) => state.zoomLevel);
   const increaseZoom = useZoomStore((state) => state.increaseZoom);
@@ -97,21 +83,21 @@ const Appearance = () => {
     }
   }, [appearance.color]);
 
-  useEffect(() => {
-    // Check if running in the browser
-    if (typeof window !== "undefined") {
-      // check if storedFont has value
-      if (storedFont) {
-        localStorage.setItem("selectedFont", storedFont);
-      }
-      storedFont = localStorage.getItem("selectedFont") || "";
-      if (storedFont) {
-        // setSelectedFont(storedFont);
-        setAppearance({ ...appearance, font: storedFont });
-        applyFont(storedFont);
-      }
-    }
-  }, [setAppearance, appearance.font]);
+  // useEffect(() => {
+  //   // Check if running in the browser
+  //   if (typeof window !== "undefined") {
+  //     // check if storedFont has value
+  //     if (storedFont) {
+  //       localStorage.setItem("selectedFont", storedFont);
+  //     }
+  //     storedFont = localStorage.getItem("selectedFont") || "";
+  //     if (storedFont) {
+  //       // setSelectedFont(storedFont);
+  //       setAppearance({ ...appearance, font: storedFont });
+  //       applyFont(storedFont);
+  //     }
+  //   }
+  // }, [setAppearance, appearance.font]);
 
   // Zoom controls
   useEffect(() => {
@@ -209,6 +195,7 @@ const Appearance = () => {
     }
     // setSelectedFont(fontName);
     setAppearance({ ...appearance, font: fontName });
+    // applyFont(fontName)
     // Check if running in the browser
     if (typeof window !== "undefined") {
       localStorage.setItem("selectedFont", fontName);

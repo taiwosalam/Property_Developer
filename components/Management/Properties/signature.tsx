@@ -4,6 +4,10 @@ import LandlordTenantModalPreset from '../landlord-tenant-modal-preset';
 import { useModal } from '@/components/Modal/modal';
 import { RedoSigArrow, UndoSigArrow } from '@/public/icons/icons';
 import ReactSignatureCanvas from 'react-signature-canvas';
+import useStep from '@/hooks/useStep';
+import AddMultipleLandlordsOrTenants from '../add-multiple-landlords-or-tenants';
+import UploadSignature from './signature-component';
+import Button from '@/components/Form/Button/button';
 
 interface SignatureModalProps {
     onCreateSignature: (imageBase64: string, index: number, imageFile?: File) => void; // updated to pass index
@@ -21,6 +25,7 @@ const SignatureModal: React.FC<SignatureModalProps> = ({ onCreateSignature, inde
     const sigPadRef = useRef<SignaturePad>(null);
     const [signatureImageBase64, setSignatureImageBase64] = useState<string | null>(null);
     const [signatureImageFile, setSignatureImageFile] = useState<File | null>(null);
+    const { activeStep, changeStep } = useStep(2);
 
     // Disable undo/redo button state
     const [canUndo, setCanUndo] = useState(false);
@@ -58,7 +63,7 @@ const SignatureModal: React.FC<SignatureModalProps> = ({ onCreateSignature, inde
 
             // Create an image file from the Blob
             const imageFile = new File([imageBlob], 'signature.png', { type: 'image/png' });
-            console.log("Image file:", imageFile);
+            // console.log("Image file:", imageFile);
 
             // Save the image file in state
             setSignatureImageFile(imageFile);
@@ -99,29 +104,78 @@ const SignatureModal: React.FC<SignatureModalProps> = ({ onCreateSignature, inde
         const data = sigPadRef.current?.toData();
         setCanUndo(!!(data && data.length > 0));
         setCanRedo(false);
+
     };
 
-    return (
-        <LandlordTenantModalPreset style={{ width: '100%', height: '60vh' }} heading="Draw your signature">
-            <SignaturePad
-                ref={sigPadRef}
-                canvasProps={{ className: 'w-full h-[39vh] custom-secondary-bg' }}
+    const handleUpload = async (file: File) => {
+        if (file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                const imageBase64 = reader.result as string;
+                setSignatureImageBase64(imageBase64);
+                setSignatureImageFile(file);
+                onCreateSignature(imageBase64, index, file);
+                setIsOpen(false);
+            };
+        }
+    };
+
+    return activeStep === 1 ? (
+        <LandlordTenantModalPreset
+            style={{ width: '100%', height: '70vh' }}
+            heading="Draw your signature"
+        >
+            <div className='flex flex-col justify-between h-full'>
+                <p className="text-sm font-normal mb-4">
+                Use your mouse, trackpad, touchscreen, or pen to sign directly in the designated area.
+                </p>
+                <SignaturePad
+                    ref={sigPadRef}
+                    canvasProps={{ className: 'w-full h-[39vh] light-shadow' }}
                 // onEnd={handleEnd}
-            />
-            <div className='w-full flex justify-between mt-2'>
-                <div className="flex gap-2 items-center">
-                    <button onClick={clear} className='bg-brand-9 px-2 py-1 text-sm rounded-md text-white'>Clear</button>
-                    <button onClick={handleUndo} disabled={!canUndo} className=''>
-                        <UndoSigArrow />
-                    </button>
-                    <button onClick={handleRedo} disabled={!canRedo} className=''>
-                        <RedoSigArrow />
-                    </button>
+                />
+                <div className='w-full flex justify-between mt-10'>
+                    <div className="flex gap-2 items-center">
+                        <button onClick={clear} className='bg-brand-9 px-3 py-2 text-xs rounded-md text-white'>Clear</button>
+                        <button onClick={handleUndo} disabled={!canUndo} className=''>
+                            <UndoSigArrow />
+                        </button>
+                        <button onClick={handleRedo} disabled={!canRedo} className=''>
+                            <RedoSigArrow />
+                        </button>
+                    </div>
+                    <div className='flex gap-2 self-end'>
+                        <Button
+                            size='sm'
+                            variant='border'
+                            onClick={() => changeStep(2)}
+                            className='border border-brand-9 px-3 py-2 text-xs rounded-md text-brand-9'>
+                            Upload Signature
+                        </Button>
+                        <Button
+                            onClick={handleSaveSignature}
+                            size='sm'
+                            className='bg-brand-9 px-3 py-2 text-xs rounded-md text-white'>
+                            Save Signature
+                        </Button>
+                    </div>
                 </div>
-                <button onClick={handleSaveSignature} className='bg-brand-9 px-2 py-1 text-sm rounded-md text-white'>Save Signature</button>
             </div>
         </LandlordTenantModalPreset>
-    );
+    ) : (
+        <LandlordTenantModalPreset
+            style={{ width: '100%', height: '60vh' }}
+            heading="Upload Your Signature"
+            back={{ handleBack: () => changeStep(1) }}
+        >
+            <UploadSignature
+                type="landlord"
+                method="import"
+                submitAction={handleUpload}
+            />
+        </LandlordTenantModalPreset>
+    )
 };
 
 export default SignatureModal;

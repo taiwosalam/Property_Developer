@@ -124,33 +124,7 @@ const SettingsSignature = () => {
     // console.log("Input Fields after removing:", updatedFields);
   };
 
-  // const handleCreateSignature = (image: string, index: number) => {
-  //   setInputFields((prevState) =>
-  //     prevState.map((field) =>
-  //       field.id === inputFields[index].id
-  //         ? { ...field, signature: image }
-  //         : field
-  //     )
-  //   );
-  // };
-
-
-  // const handleCreateSignature = (image: string, index: number, file?: File) => {
-  //   console.log("Base64:", image);
-  //   console.log("Image File:", file);
-  //   setInputFields(prevState =>
-  //     prevState.map((field) =>
-  //       field.id === inputFields[index].id
-  //         ? { ...field, signature: image, signatureFile: file || field.signatureFile }
-  //         : field
-  //     )
-  //   );
-  // };
-
-
   const handleCreateSignature = (imageBase64: string, index: number, imageFile?: File) => {
-    console.log("image", imageBase64)
-    console.log("image file", imageFile)
     setInputFields(prevState =>
       prevState.map((field, idx) =>
         idx === index
@@ -213,7 +187,7 @@ const SettingsSignature = () => {
           <div className="custom-flex-col gap-6">
             <SettingsSectionTitle
               title=""
-              desc="This signature is applied to all documents requiring authorization. Click the 'Add Signature' button to sign on the pad track using your mouse, trackpad, touch screen, or pen to input your signature in the designated area."
+              desc="This signature will be used for all documents requiring authorization. Click the 'Add Signature' button to draw your signature, or select 'Upload Signature' to add a scanned or digital version of your handwritten signature."
             />
             <div className="custom-flex-col gap-[18px]">
               <div className="flex flex-col gap-5">

@@ -14,6 +14,19 @@ export const updateUserProfile = async (data: FormData) => {
   }
 };
 
+export const updateDirectorProfile = async (data: FormData) => {
+  try {
+    data.append("_method", "PATCH");
+    const response = await api.post("/directors/update", data);
+    if (response.status === 200) {
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
 export const lockStaffAccount = async (id: string, otp: string) => {
   try {
     const response = await api.post(`/staff/${id}/restrict`, { otp });

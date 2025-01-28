@@ -42,6 +42,11 @@ body {
   min-height: 100vh;
 }
 
+.light-shadow{
+  /* box-shadow: 0 0 10px 0 #0000000d; */
+  border: 3px dashed var(--primary-color);
+}
+
 /* * {
   outline: 1px solid red; //FOR CSS DEBUGGING
 } */
