@@ -5,9 +5,7 @@ import { Toaster } from "sonner";
 import { primaryFont } from "@/utils/fonts";
 import ThemeProvider from "./theme-provider";
 import { Theme } from "@/components/theme";
-import { getRoleFromCookie } from "@/utils/getRole";
 import { RoleProvider } from "@/hooks/roleContext";
-import { getLocalStorage } from "@/utils/local-storage";
 
 export const metadata = {
   title: "Our Property",
@@ -20,11 +18,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const loggedInUserDetails = getLocalStorage('additional_details');
-  let appearance: { colorMode: string; view: string; navbar: string; fonts: string; dashboardColor: string; } | undefined;
-  if (loggedInUserDetails) {
-    ({ appearance } = loggedInUserDetails);
-  }
   return (
     <html lang='en'>
       <body
@@ -34,8 +27,7 @@ export default async function RootLayout({
         <RoleProvider>
           <Theme
             attribute='class'
-            // defaultTheme='light'
-            defaultTheme={appearance?.colorMode || 'light'}
+            defaultTheme='dark'
             enableSystem
             disableTransitionOnChange
           >
