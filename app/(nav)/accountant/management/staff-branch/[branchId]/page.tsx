@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  dashboardCardData,
+  initialDashboardStats,
   walletBalanceCardData,
 } from "@/app/(nav)/dashboard/data";
 import NotificationCard from "@/components/dashboard/notification-card";
@@ -67,7 +67,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   });
 
   // console.log("branch wallet", branchData)
-  const updatedDashboardCardData = dashboardCardData.map((card) => {
+  const updatedDashboardCardData = initialDashboardStats.map((card) => {
     let stats: Stats | undefined;
     let link = "";
     switch (card.title) {

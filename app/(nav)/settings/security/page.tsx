@@ -126,7 +126,7 @@ const Security = () => {
                   <Select
                     id="director_experience"
                     label="years in business"
-                    placeholder="Write here"
+                    placeholder="Select Option"
                     options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
                     hiddenInputClassName="setup-f"
                   />
@@ -134,7 +134,7 @@ const Security = () => {
                     id="director_email"
                     label="email"
                     type="email"
-                    placeholder="example@mail.com"
+                    placeholder="write here"
                     inputClassName="rounded-[8px] setup-f bg-white"
                   />
                   <PhoneNumberInput
