@@ -204,6 +204,81 @@ export const initialDashboardStats = [
   },
 ];
 
+export const dashboardCardData = [
+  {
+    title: "Properties",
+    bg: getBackgroundColor("properties"),
+    icon: BuildingIcon,
+    value: 0,
+    subValue: 0,
+    link: "/management/staff-branch/",
+  },
+  {
+    title: "Landlords",
+    bg: getBackgroundColor("landlords"),
+    icon: LandlordIcon,
+    value: 0,
+    subValue: 0,
+    link: "/management/landlord",
+  },
+  {
+    title: "Tenants & Occupants",
+    bg: getBackgroundColor("tenants & occupants"),
+    icon: TenantIcon,
+    value: 0,
+    subValue: 0,
+    link: "/management/tenants",
+  },
+  {
+    title: "Vacant Unit",
+    bg: getBackgroundColor("vacant unit"),
+    icon: BedIcon,
+    value: 0,
+    subValue: 0,
+    link: "/management/rent-unit",
+  },
+  {
+    title: "Expired",
+    bg: getBackgroundColor("expired"),
+    icon: ExpiredIcon,
+    value: 0,
+    subValue: 0,
+    link: "/management/rent-unit",
+  },
+  {
+    title: "Invoices",
+    bg: getBackgroundColor("invoices"),
+    icon: InvoiceIcon,
+    value: 0,
+    subValue: 0,
+    link: "/accounting/invoice",
+  },
+  {
+    title: "Inquiries",
+    bg: getBackgroundColor("inquiries"),
+    icon: InquiriesIcon,
+    value: 0,
+    subValue: 0,
+    link: "/tasks/inquires",
+  },
+  {
+    title: "Complaints",
+    bg: getBackgroundColor("complaints"),
+    icon: ComplaintsIcon,
+    value: 0,
+    subValue: 0,
+    link: "/tasks/complaints",
+  },
+  {
+    title: "Listings",
+    bg: getBackgroundColor("listings"),
+    icon: ListingsIcon,
+    value: 0,
+    subValue: 0,
+    link: "/listing/units",
+  },
+];
+
 export const walletBalanceCardData = {
   mainBalance: 1000,
   cautionDeposit: 200,
