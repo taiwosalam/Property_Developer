@@ -4,7 +4,6 @@
 import Card from "@/components/dashboard/card";
 import {
   complaintsData,
-  dashboardCardData,
   dashboardListingsChartConfig,
   dashboardListingsChartData,
   dashboardPerformanceChartConfig,
@@ -13,6 +12,8 @@ import {
   walletBalanceCardData,
   invoiceTableFields,
   dashboardInvoiceTableData,
+  getDashboardCardData,
+  initialDashboardStats,
 } from "./data";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import NotificationCard from "@/components/dashboard/notification-card";
@@ -23,12 +24,15 @@ import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
 import CustomTable from "@/components/Table/table";
 import Link from "next/link";
 import { useWalletStore } from "@/store/wallet-store";
+import useFetch from "@/hooks/useFetch";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
   const walletId = useWalletStore((state) => state.walletId);
   const recentTransactions = useWalletStore(
     (state) => state.recentTransactions
   );
+
   const transactions = useWalletStore((state) => state.transactions);
 
   const dashboardPerformanceChartData = transactions.map((t) => ({
@@ -38,14 +42,26 @@ const Dashboard = () => {
     debit: t.type === "debit" ? t.amount : 0,
   }));
 
-  console.log("transactions", transactions)
+  const {
+    data, 
+    loading,
+    error,
+    refetch
+  } = useFetch('/dashboard/data');
+  
+  const [dashboardStats, setDashboardStats] = useState(initialDashboardStats)
+  useEffect(()=> {
+    if (data){
+      setDashboardStats(getDashboardCardData(data));
+    }
+  }, [data])
 
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
         <div className="w-full xl:flex-1 space-y-4 xl:space-y-6">
           <div className="w-full flex py-1.5 xl:py-7 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
-            {dashboardCardData.map((card, index) => (
+            {dashboardStats.map((card, index) => (
               <Link href={card.link} key={index} prefetch={false}>
                 <Card
                   title={card.title}
