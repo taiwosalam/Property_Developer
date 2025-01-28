@@ -19,6 +19,7 @@ import TopNav from "@/components/Nav/topnav";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { useRole } from "@/hooks/roleContext";
 import { getRoleFromCookie } from "@/utils/getRole";
+import { getLocalStorage } from "@/utils/local-storage";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
@@ -32,6 +33,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navbar = selectedOptions.navbar;
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
   const { role, setRole } = useRole();
+  const loggedInUserDetails = getLocalStorage('additional_details');
   
   useOutsideClick(sideNavRef, () => {
     if (isMobile) {
