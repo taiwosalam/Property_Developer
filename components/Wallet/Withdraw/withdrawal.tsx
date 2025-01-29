@@ -32,6 +32,14 @@ const Withdrawal: React.FC<
     setWalletStore("amount", amount)
     setWalletStore("desc", description)
   }, [amount, description, setWalletStore])
+
+  const handleContinue = () => {
+    if (amount > 0 && description.length > 0) {
+      changeStep("input pin");
+    } else {
+      toast.warning("Please enter an amount and description");
+    }
+  }
   
   return (
     <div className="custom-flex-col gap-8">
@@ -67,7 +75,8 @@ const Withdrawal: React.FC<
       </div>
       <div className="custom-flex-col gap-3">
         <Button
-          onClick={() => changeStep("input pin")}
+          // onClick={() => changeStep("input pin")}
+          onClick={handleContinue}
           size="sm_medium"
           className="py-2 px-8"
         >

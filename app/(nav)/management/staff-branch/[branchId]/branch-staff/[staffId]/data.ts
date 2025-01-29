@@ -13,6 +13,8 @@ import Avatar3 from "@/public/empty/avatar-3.svg";
 import Avatar4 from "@/public/empty/avatar-4.svg";
 import { StaffAPIResponse, StaffPageTypes } from "./type";
 import api, { handleAxiosError } from "@/services/api";
+import { properties } from "@/app/(nav)/user/management/landlord/data";
+import { empty } from "@/app/config";
 
 export const sendVerifyStaffOTP = async () => {
   try {
@@ -80,16 +82,19 @@ export const initialPageData: StaffPageTypes = {
   },
   activities: [],
   chats: [],
-  properties: [
-    {
-      property_name: "",
-      default_image: "",
-      address: "",
-    },
-  ],
-  landlords: [],
-  tenants: [],
+  portfolio: {
+    properties: [
+      {
+        property_name: "",
+        image: [""],
+        address: "",
+      },
+    ],
+    landlords: [],
+    tenants: [],
+  }
 }
+
 export const placeholder_portfolio_data: StaffProfilePortfolioProps[] = [
   {
     title: "Properties",
@@ -253,6 +258,46 @@ export const placeholder_portfolio_data: StaffProfilePortfolioProps[] = [
   },
 ];
 
+export const getPortfolioData = (portfolio: any) => {
+  if (!portfolio) return [];
+
+  return [
+    {
+      title: "Properties",
+      items: portfolio.properties?.map((p: any) => ({
+        image: p.image,
+        property: {
+          name: p.property_name,
+          location: p.address,
+        },
+      })) || [],
+    },
+    {
+      title: "Landlords",
+      items: portfolio.landlords?.map((l: any) => ({
+        image: l.image || "", 
+        user: {
+          name: l.name,
+          email: l.email,
+          phone_number: l.phone,
+        },
+      })) || [],
+    },
+    {
+      title: "Occupants & Tenants",
+      items: portfolio.tenants?.map((t: any) => ({
+        image: t.image || "", 
+        user: {
+          name: t.name,
+          email: t.email,
+          phone_number: t.phone,
+        },
+      })) || [],
+    },
+  ];
+};
+
+
 export const staffActivitiesTableFields: Field[] = [
   { id: "1", label: "S/N", accessor: "S/N" },
   { id: "2", label: "Username", accessor: "username" },
@@ -326,18 +371,30 @@ export const transformStaffAPIResponse = (
       }
     }),
     chats: [],
-    properties: res.properties.map((p) => {
-      // const defaultImage =
-      //   p.images && p.images.length > 0
-      //     ? p.images.find((image) => image.is_default === 1)?.path || p.images[0].path
-      //     : undefined;
-      return {
-        property_name: p.title,
-        address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
-        default_image: "",
-      }
-    }),
-    landlords: [],
-    tenants: [],
+    portfolio: {
+      properties: res?.data?.properties?.map((p) => {
+        return {
+          property_name: p.name,
+          address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
+          image: p.images?.[0]?.path || empty,
+        }
+      }),
+      landlords: res?.data?.landlords?.map((l)=> {
+        return{
+          name: l.name,
+          email: l.email,
+          phone: l.phone || "",
+          image: l.picture || empty,
+        }
+      }),
+      tenants: res?.data?.tenants?.map((t)=> {
+        return {
+          name: t.name,
+          email: t.email,
+          phone: t.phone,
+          image: t.picture || empty,
+        }
+      }),
+    }
   }
 }

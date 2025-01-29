@@ -25,7 +25,7 @@ const StaffActivitiesExportPage = () => {
     staff,
     activities,
     chats,
-    properties,
+    portfolio,
   } = pageData
 
   const {
