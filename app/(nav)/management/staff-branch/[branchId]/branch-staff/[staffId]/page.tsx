@@ -24,6 +24,7 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import StaffProfilePortfolio from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/staff-profile-portfolio";
 import {
   activitiesTableData,
+  getPortfolioData,
   initialPageData,
   placeholder_portfolio_data,
   staffActivitiesTableFields,
@@ -55,10 +56,8 @@ const StaffProfile = () => {
     staff,
     activities,
     chats,
-    properties,
-    landlords,
-    tenants
-  } = pageData
+    portfolio,
+  } = pageData;
 
   const {
     data: apiData,
@@ -77,7 +76,9 @@ const StaffProfile = () => {
     }
   }, [apiData]);
 
-  // console.log("Data for staff page", pageData);
+  const portfolioData = getPortfolioData(portfolio)
+
+  console.log("Data for staff page", portfolioData);
 
   useEffect(() => {
     if (activities) {
@@ -236,7 +237,7 @@ const StaffProfile = () => {
           {`${staff?.title} ${staff?.name}`} Portfolios
         </h1>
         <div className="custom-flex-col gap-8">
-          {placeholder_portfolio_data.map(({ title, items }, index) => (
+          {portfolioData.map(({ title, items }, index) => (
             <StaffProfilePortfolio key={index} title={title} items={items} />
           ))}
         </div>

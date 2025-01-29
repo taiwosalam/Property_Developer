@@ -22,15 +22,18 @@ export interface StaffAPIResponse {
         updated_at: string;
         about_staff: string;
         status: string;
+        properties: PropertiesRes[];
+        landlords: any[];
+        tenants: any[];
     };
     activities: StaffActivitiies[];
-    properties: PropertiesRes[];
 }
 
 export interface PropertiesRes {
     id: number;
     video_link: string | null;
-    title: string;
+    title?: string;
+    name: string;
     state: string;
     local_government: string;
     city_area: string;
@@ -60,6 +63,9 @@ export interface PropertiesRes {
     fee_period: string | null;
     created_at: string;
     updated_at: string;
+    images: {
+        path: string;
+    }[];
 }
 
 export interface StaffActivitiies{
@@ -104,11 +110,13 @@ export interface StaffPageTypes {
     },
     activities: StaffActivitiies[],
     chats: [],
-    properties: {
-        property_name: string;
-        default_image: string;
-        address: string;
-    }[],  
-    landlords: [],  
-    tenants: [],  
+    portfolio: {
+        properties: {
+            property_name: string;
+            image: string[];
+            address: string;
+        }[],  
+        landlords: any[],  
+        tenants: any[],  
+    }
 }
