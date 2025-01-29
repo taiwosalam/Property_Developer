@@ -83,22 +83,6 @@ const Appearance = () => {
     }
   }, [appearance.color]);
 
-  // useEffect(() => {
-  //   // Check if running in the browser
-  //   if (typeof window !== "undefined") {
-  //     // check if storedFont has value
-  //     if (storedFont) {
-  //       localStorage.setItem("selectedFont", storedFont);
-  //     }
-  //     storedFont = localStorage.getItem("selectedFont") || "";
-  //     if (storedFont) {
-  //       // setSelectedFont(storedFont);
-  //       setAppearance({ ...appearance, font: storedFont });
-  //       applyFont(storedFont);
-  //     }
-  //   }
-  // }, [setAppearance, appearance.font]);
-
   // Zoom controls
   useEffect(() => {
     document.documentElement.style.fontSize = `${zoomLevel}%`;
@@ -267,6 +251,7 @@ const Appearance = () => {
       if (res && res.status === 200) {
         window.dispatchEvent(new Event("refetch-settings"));
         toast.success(`Navbar updated successfully`)
+        setSelectedOption("navbar", appearance.navbar);
         // setNext(true)
       }
     } catch (err) {

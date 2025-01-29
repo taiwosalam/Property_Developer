@@ -29,8 +29,9 @@ const LockBranchModal: React.FC<{
   const [countdown, setCountdown] = useState(40);
   const [otp, setOtp] = useState("");
 
-  const branch_id = branch.branch_id;
+  // const branch_id = branch.branch_id;
 
+  console.log("id", branchId)
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (countdown > 0) {
@@ -71,7 +72,7 @@ const LockBranchModal: React.FC<{
   const handleLockVerfiyLock = async () => {
     try {
       setRequestLoading(true);
-      const res = await lockBranch(branch_id, otp);
+      const res = await lockBranch(branchId, otp);
       if (res) {
         toast.success("Branch Locked Successfully")
         changeStep(3);

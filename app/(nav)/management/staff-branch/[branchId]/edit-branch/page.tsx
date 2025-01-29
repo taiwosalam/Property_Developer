@@ -36,7 +36,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
   ? transformSingleBranchAPIResponseToEditBranchFormDetails(data)
   : null;
   
-  console.log("branch data", branchData)
+  console.log("branch datas", branchId)
   if (loading) return <PageCircleLoader />;
 
   if (error) return <div>{error}</div>;
@@ -61,7 +61,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <LockBranchModal branchId={branchId} />
+                    <LockBranchModal branchId={branchData.id} />
                   </ModalContent>
                 </Modal>
               ) : (
@@ -77,7 +77,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <UnLockBranchModal branchId={branchId} />
+                    <UnLockBranchModal branchId={branchData.id} />
                   </ModalContent>
                 </Modal>
               ))}

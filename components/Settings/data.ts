@@ -39,9 +39,9 @@ export const staff_settings_link_tabs = [
 ] as const;
 
 export const website_color_schemes = [
-  "#2563EB",
   "#0033C4",
-  "#0FA7E2",
+  "#2563EB",
+"#0FA7E2",
   "#377FC1",
   "#005623",
   "#01BA4C",
