@@ -24,23 +24,36 @@ import { getLocalStorage } from "@/utils/local-storage";
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const { selectedOptions } = useSettingsStore();
+  const { selectedOptions, setSelectedOption } = useSettingsStore();
   const sideNavRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowWidth();
   const [isSideNavOpen, setIsSideNavOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-
-  const navbar = selectedOptions.navbar;
+  // const navbar = selectedOptions.navbar;
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
   const { role, setRole } = useRole();
+  const hasMounted = useRef(false);
   const loggedInUserDetails = getLocalStorage('additional_details');
-  
+  let appearance: { colorMode: string; view: string; navbar: string; fonts: string; dashboardColor: string; } | undefined;
+  if (loggedInUserDetails) {
+    ({ appearance } = loggedInUserDetails);
+  }
+  const [navbar, setNavbar] = useState(appearance?.navbar)
+
   useOutsideClick(sideNavRef, () => {
     if (isMobile) {
       setIsSideNavOpen(false);
     }
   });
 
+  useEffect(() => {
+    if (appearance && !hasMounted.current) {
+      const { colorMode, view, navbar, fonts, dashboardColor } = appearance;
+      setSelectedOption("navbar", navbar);
+      hasMounted.current = true;
+    }
+  }, [appearance]);
+  
   useEffect(() => {
     setIsSideNavOpen(!isMobile);
   }, [isMobile]);

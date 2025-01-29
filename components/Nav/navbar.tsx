@@ -83,7 +83,6 @@ const Header = () => {
     if (appearance && !hasMounted.current) {
       // Run this only once during initialization
       const { colorMode, view, navbar, fonts, dashboardColor } = appearance;
-      console.log("Initializing appearance with colorMode:", colorMode);
       setColor(dashboardColor);
       applyFont(fonts);
       setTheme(colorMode);
