@@ -1,22 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
-
-// Types
-import type { SettingsServicesTagProps } from "./types";
-
-// Imports
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
+
+interface SettingsServicesTagProps {
+  active?: boolean;
+  children: React.ReactNode;
+  onClick?: () => void;
+  isSelected?: boolean;
+}
 
 const SettingsServicesTag: React.FC<SettingsServicesTagProps> = ({
   active,
   children,
+  onClick,
+  isSelected,
 }) => {
   const [clicked, setClicked] = useState<boolean>(!!active);
 
+  useEffect(() => {
+    if(isSelected){
+      setClicked(isSelected);
+    }
+  }, [isSelected]);
+
   return (
     <button
-      onClick={() => setClicked((prev) => !prev)}
+      onClick={onClick}
       className={clsx("py-3 px-4 rounded-[4px] group", {
         "bg-brand-1 dark:bg-darkBrand-1": clicked,
         "bg-[rgba(245,245,245,0.5)] dark:text-darkText-1": !clicked,

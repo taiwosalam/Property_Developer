@@ -61,13 +61,14 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     property_form_state_data
   );
   const { role, setRole } = useRole();
-  const [lat, setLat] = useState(0)
-  const [lng, setLng] = useState(0)
-  const [coordinate, setCoordinate] = useState(editMode ? propertySettings?.coordinate : '')
   const isDirector = role === 'director';
   const isAccountOfficer = role === 'account';
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedStaffs, setSelectedStaffs] = useState<string[]>([]);
+  
+  const [lat, setLat] = useState(0)
+  const [lng, setLng] = useState(0)
+  const [coordinate, setCoordinate] = useState(propertySettings?.coordinate || '')
 
   const {
     state: selectedState,
@@ -814,6 +815,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                           setLat={setLat}
                           setLng={setLng}
                           setCoordinate={setCoordinate}
+                          coordinate={coordinate as string}
                         />
                       </ModalContent>
                     </Modal>
