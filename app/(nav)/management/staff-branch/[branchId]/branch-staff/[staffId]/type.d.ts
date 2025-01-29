@@ -24,6 +24,42 @@ export interface StaffAPIResponse {
         status: string;
     };
     activities: StaffActivitiies[];
+    properties: PropertiesRes[];
+}
+
+export interface PropertiesRes {
+    id: number;
+    video_link: string | null;
+    title: string;
+    state: string;
+    local_government: string;
+    city_area: string;
+    full_address: string;
+    category: string;
+    description: string;
+    property_type: string;
+    branch_id: string | null;
+    inventory_id: string | null;
+    land_lord_id: string | null;
+    user_id: number;
+    company_id: number;
+    agency_fee: number;
+    who_to_charge_new_tenant: string;
+    who_to_charge_renew_tenant: string;
+    caution_deposit: string;
+    group_chat: number;
+    rent_penalty: number;
+    fee_penalty: number;
+    request_call_back: number;
+    book_visitors: number;
+    vehicle_record: number;
+    active_vat: number;
+    currency: string;
+    coordinate: string | null;
+    management_fee: number;
+    fee_period: string | null;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface StaffActivitiies{
@@ -68,5 +104,11 @@ export interface StaffPageTypes {
     },
     activities: StaffActivitiies[],
     chats: [],
-    portfolio: StaffProfilePortfolioProps[],  
+    properties: {
+        property_name: string;
+        default_image: string;
+        address: string;
+    }[],  
+    landlords: [],  
+    tenants: [],  
 }

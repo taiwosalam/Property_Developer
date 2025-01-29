@@ -55,7 +55,9 @@ const StaffProfile = () => {
     staff,
     activities,
     chats,
-    portfolio
+    properties,
+    landlords,
+    tenants
   } = pageData
 
   const {

@@ -19,10 +19,12 @@ const GoogleMapsModal = ({
     setLat,
     setLng,
     setCoordinate,
+    coordinate
 }: {
     setLat: (lat: number) => void;
     setLng: (lng: number) => void;
     setCoordinate: (coordinate: string) => void;
+    coordinate: string | number;
 }) => {
     const { setIsOpen } = useModal();
     const { isLoaded, loadError } = useLoadScript({
@@ -49,6 +51,7 @@ const GoogleMapsModal = ({
                     const { latitude, longitude } = position.coords;
                     const newLocation = { lat: latitude, lng: longitude };
                     setSelectedLocation(newLocation);
+                    setCoordinate(`${latitude}, ${longitude}`);
                     toast.success("Your current Location has been added successfully.");
                 },
                 (error) => {
@@ -62,12 +65,12 @@ const GoogleMapsModal = ({
     };
 
     useEffect(() => {
-        if (selectedLocation) {
-            console.log("selectedLocation:", selectedLocation);
-            setLat(selectedLocation.lat);
-            setLng(selectedLocation.lng);
+        if (coordinate) {
+            // console.log("selectedLocation:", selectedLocation);
+            setLat(selectedLocation.lat as number);
+            setLng(selectedLocation.lng as number);
         }
-    }, [selectedLocation, setLat, setLng]);
+    }, [coordinate, setLat, setLng]);
 
     if (loadError) {
         return (
@@ -88,6 +91,7 @@ const GoogleMapsModal = ({
                     <GoogleMap
                         mapContainerStyle={containerStyle}
                         center={selectedLocation}
+                        // center={coordinate}
                         zoom={10}
                         onClick={handleMapClick}
                     >

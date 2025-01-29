@@ -23,7 +23,6 @@ const StaffActivitiesPage = () => {
     staff,
     activities,
     chats,
-    portfolio
   } = pageData
 
   const {

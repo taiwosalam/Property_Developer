@@ -131,6 +131,21 @@ export const updateSettings = async (data: FormData, type: string) => {
 };
 
 
+///company/services/legal_practitioner
+export const updateServicesSettings = async (data: FormData, type: string) => {
+  try {
+    data.append("_method", "PATCH");
+    const response = await api.post(`/company/services/${type}`, data);
+    if (response.status === 200) {
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+
 export const updateSMSSettings = async (data: FormData) => {
   try {
     data.append("_method", "PATCH");

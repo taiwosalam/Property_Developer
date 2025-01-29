@@ -50,6 +50,8 @@ export interface SettingsTenantOccupantTierProps {
 export interface SettingsServicesTagProps {
   active?: boolean;
   children: React.ReactNode;
+  onClick: () => void;
+  isSelected: boolean;
 }
 
 export type SettingsServiceOwners = keyof typeof services;
