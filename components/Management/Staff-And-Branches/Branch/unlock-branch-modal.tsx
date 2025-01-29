@@ -29,7 +29,7 @@ const UnLockBranchModal: React.FC<{
   const email = useAuthStore.getState().email || "";
   const { setIsOpen } = useModal();
 
-  const branch_id = branch.branch_id;
+  // const branch_id = branch.branch_id;
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -70,7 +70,7 @@ const UnLockBranchModal: React.FC<{
   const handleUnLockVerfiyLock = async () => {
     try {
       setRequestLoading(true);
-      const res = await unLockBranch(branch_id, otp);
+      const res = await unLockBranch(branchId, otp);
       if (res) {
         toast.success("Branch Unlocked Successfully")
         // router.push("/management/staff-branch");
