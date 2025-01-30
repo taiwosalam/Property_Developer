@@ -15,6 +15,7 @@ import { addBeneficiary, branchFundWallet, transferFunds } from "@/components/Wa
 import { empty } from "@/app/config";
 import { toast } from "sonner";
 import useBranchStore from "@/store/branch-store";
+import { ArrowLeftIcon } from "@/public/icons/icons";
 
 const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
   picture,
@@ -157,8 +158,9 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
         <div className="custom-flex-col gap-8">
           <button
             onClick={() => setActiveStep("send funds")}
-            className="w-6 h-6 flex items-center justify-center text-brand-9"
+            className="w-6 h-6 flex gap-2 items-center justify-start text-brand-9"
           >
+            <ArrowLeftIcon />
             Back
           </button>
           <p className="text-center">Please enter your PIN to confirm.</p>

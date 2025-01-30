@@ -19,7 +19,7 @@ import TopNav from "@/components/Nav/topnav";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { useRole } from "@/hooks/roleContext";
 import { getRoleFromCookie } from "@/utils/getRole";
-import { getLocalStorage } from "@/utils/local-storage";
+import { getLocalStorage, saveLocalStorage } from "@/utils/local-storage";
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
@@ -29,7 +29,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isMobile } = useWindowWidth();
   const [isSideNavOpen, setIsSideNavOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  // const navbar = selectedOptions.navbar;
+  const navs = getLocalStorage('navbar');
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
   const { role, setRole } = useRole();
   const hasMounted = useRef(false);
@@ -47,13 +47,10 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   });
 
   useEffect(() => {
-    if (appearance && !hasMounted.current) {
-      const { colorMode, view, navbar, fonts, dashboardColor } = appearance;
-      setSelectedOption("navbar", navbar);
-      hasMounted.current = true;
-    }
-  }, [appearance]);
-  
+    setNavbar(navs)
+    setSelectedOption("view", appearance?.view || "grid")
+  }, [navs]);
+
   useEffect(() => {
     setIsSideNavOpen(!isMobile);
   }, [isMobile]);

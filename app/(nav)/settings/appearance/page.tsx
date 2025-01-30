@@ -29,6 +29,7 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { updateSettings } from "../security/data";
 import { transformData } from "./data";
+import { saveLocalStorage } from "@/utils/local-storage";
 
 const Appearance = () => {
   const isDarkMode = useDarkMode();
@@ -109,12 +110,13 @@ const Appearance = () => {
       case "theme":
         setAppearance({ ...appearance, theme: value });
         break;
-      case "view":
-        setAppearance({ ...appearance, view: value });
-        toast.success(`Management card view set to ${value}`);
-        break;
-      case "navbar":
+        case "view":
+          setAppearance({ ...appearance, view: value });
+          toast.success(`Management card view set to ${value}`);
+          break;
+          case "navbar":
         setAppearance({ ...appearance, navbar: value });
+        saveLocalStorage("navbar", value);
         break;
       case "mode":
         setTheme(value);
@@ -251,7 +253,8 @@ const Appearance = () => {
       if (res && res.status === 200) {
         window.dispatchEvent(new Event("refetch-settings"));
         toast.success(`Navbar updated successfully`)
-        setSelectedOption("navbar", appearance.navbar);
+        localStorage.setItem("navbar", appearance.navbar);
+        setAppearance((prev) => ({ ...prev, navbar: appearance.navbar }));
         // setNext(true)
       }
     } catch (err) {
