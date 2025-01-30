@@ -78,7 +78,7 @@ const StaffProfile = () => {
 
   const portfolioData = getPortfolioData(portfolio)
 
-  console.log("Data for staff page", portfolioData);
+  console.log("Data for staff page", portfolio);
 
   useEffect(() => {
     if (activities) {

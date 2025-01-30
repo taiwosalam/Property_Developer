@@ -5,6 +5,7 @@ import type { StaffProfilePortfolioProps } from "./types";
 
 // Imports
 import StaffProfilePortfolioItem from "./staff-profile-portfolio-item";
+import Link from "next/link";
 
 const StaffProfilePortfolio: React.FC<StaffProfilePortfolioProps> = ({
   title,
@@ -19,7 +20,9 @@ const StaffProfilePortfolio: React.FC<StaffProfilePortfolioProps> = ({
       </div>
       <div className="flex gap-4 overflow-auto custom-round-scrollbar pb-2">
         {items.map((item, index) => (
-          <StaffProfilePortfolioItem key={index} {...item} />
+          <Link href={item?.link || ""} key={index}>
+            <StaffProfilePortfolioItem {...item} />
+          </Link>
         ))}
       </div>
     </div>
