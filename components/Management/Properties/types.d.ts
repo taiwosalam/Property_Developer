@@ -60,6 +60,7 @@ export interface AllLandlordsResponse {
   data: {
     id: string;
     name: string;
+    picture: string;
   }[];
 }
 export interface AllBranchesResponse {

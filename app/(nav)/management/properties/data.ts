@@ -30,7 +30,7 @@ export const propertyFilterOptionsMenu: FilterOptionMenu[] = [
     radio: true,
     label: "Property Type",
     value: [
-      { label: "All properties", value: "all" },
+      { label: "All properties", value: "all", isChecked: true },
       { label: "Rental Property", value: "rental" },
       { label: "Facility Property", value: "facility" },
     ],
@@ -122,7 +122,11 @@ export interface PropertyDataObject {
     id: string;
     branch_name: string;
   } | null;
-  staff: string[]; //check after adding staff
+  staff: {
+    id: string;
+    staff_role: string;
+  }[] | null;
+  // staff: string[]; //check after adding staff
   agency_fee: number;
   management_fee: number;
   caution_deposit?: string;

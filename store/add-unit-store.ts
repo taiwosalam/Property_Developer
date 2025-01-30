@@ -29,6 +29,8 @@ interface PropertyDetails {
   description: string;
   images: { path: string; id: string }[];
   land_lord_id?: string;
+  staff_id?: string[];
+  officer_id?: string[];
 }
 
 interface PropertySettings {

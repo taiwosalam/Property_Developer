@@ -114,6 +114,8 @@ interface MultiSelectProps
    */
   asChild?: boolean;
 
+  maxSelect?: number;
+
   /**
    * Additional class names to apply custom styles to the multi-select component.
    * Optional, can be used to add custom styles.
@@ -130,21 +132,28 @@ export const MultiSelect = React.forwardRef<
       options,
       onValueChange,
       variant,
-      defaultValue = [],
+      defaultValue,
       placeholder = "Select options",
       animation = 0,
       maxCount = 3,
       modalPopover = false,
       asChild = false,
       className,
+      maxSelect,
       ...props
     },
     ref
   ) => {
     const [selectedValues, setSelectedValues] =
-      React.useState<string[]>(defaultValue);
+    React.useState<string[]>(defaultValue || []);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
+    
+    console.log("default", defaultValue)
+    React.useEffect(() => {
+      console.log("defaultValue changed:", selectedValues);
+    }, [defaultValue]);
+
 
     const handleInputKeyDown = (
       event: React.KeyboardEvent<HTMLInputElement>
@@ -159,14 +168,34 @@ export const MultiSelect = React.forwardRef<
       }
     };
 
+    // const toggleOption = (option: string) => {
+    //   const newSelectedValues = selectedValues.includes(option)
+    //     ? selectedValues.filter((value) => value !== option)
+    //     : [...selectedValues, option];
+    //   setSelectedValues(newSelectedValues);
+    //   onValueChange(newSelectedValues);
+    // };
+
     const toggleOption = (option: string) => {
-      const newSelectedValues = selectedValues.includes(option)
-        ? selectedValues.filter((value) => value !== option)
-        : [...selectedValues, option];
-      setSelectedValues(newSelectedValues);
-      onValueChange(newSelectedValues);
+      if (selectedValues.includes(option)) {
+        // If the option is already selected, remove it
+        const newSelectedValues = selectedValues.filter((value) => value !== option);
+        setSelectedValues(newSelectedValues);
+        onValueChange(newSelectedValues);
+      } else {
+        // If maxSelect is defined and the limit is reached, do nothing
+        if (maxSelect && selectedValues.length >= maxSelect) {
+          return;
+        }
+    
+        // Otherwise, add the new option
+        const newSelectedValues = [...selectedValues, option];
+        setSelectedValues(newSelectedValues);
+        onValueChange(newSelectedValues);
+      }
     };
 
+    
     const handleClear = () => {
       setSelectedValues([]);
       onValueChange([]);
@@ -229,13 +258,13 @@ export const MultiSelect = React.forwardRef<
                         {/* {IconComponent && ( */}
                         {option?.icon && (
                           // <IconComponent className="h-4 w-4 mr-2" />
-                          <div className="custom-secondary-bg p-[2px] mr-[1px] rounded-full items-center">
+                          <div className="custom-secondary-bg p-[2px] h-5 w-5 mr-[1px] rounded-full items-center">
                             <Image
                               src={option?.icon as string}
                               alt={option?.value}
                               width={20}
                               height={20}
-                              className=""
+                              className="w-full h-full object-contain"
                             />
                           </div>
                         )}
@@ -309,7 +338,7 @@ export const MultiSelect = React.forwardRef<
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
-                <CommandItem
+               {!maxSelect && <CommandItem
                   key="all"
                   onSelect={toggleAll}
                   className="cursor-pointer"
@@ -324,8 +353,8 @@ export const MultiSelect = React.forwardRef<
                   >
                     <CheckIcon className="h-4 w-4" />
                   </div>
-                  <span>(Select All)</span>
-                </CommandItem>
+                <span>(Select All)</span>
+                </CommandItem>}
                 {options.map((option) => {
                   const isSelected = selectedValues.includes(option.value);
                   return (
@@ -346,13 +375,13 @@ export const MultiSelect = React.forwardRef<
                       </div>
                       {option.icon && (
                         // <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-                        <div className="custom-secondary-bg p-[2px] mr-[1px] rounded-full items-center justify-center">
+                        <div className="custom-secondary-bg h-6 w-6 p-[2px] mr-[1px] rounded-full items-center justify-center">
                           <Image
                             src={option.icon}
                             alt={option.value}
                             width={25}
                             height={25}
-                            className=""
+                            className="w-full h-full object-contain"
                           />
                         </div>
                       )}

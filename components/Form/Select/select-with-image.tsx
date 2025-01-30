@@ -8,8 +8,9 @@ import { DeleteIconX, ArrowDownIcon, SearchIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { checkValidatonError } from "@/utils/validation";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
+import Image from "next/image";
 
-const Select: React.FC<SelectProps> = ({
+const SelectWithImage: React.FC<SelectProps> = ({
   id,
   name,
   label,
@@ -41,6 +42,7 @@ const Select: React.FC<SelectProps> = ({
     filteredOptions: [] as (string | SelectOptionObject)[],
     selectedValue: "",
     selectedLabel: "",
+    selectedIcon: "",
   };
   const [state, setState] = useState(initialState);
   const {
@@ -49,6 +51,7 @@ const Select: React.FC<SelectProps> = ({
     filteredOptions,
     selectedValue,
     selectedLabel,
+    selectedIcon,
     showAbove,
   } = state;
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -68,10 +71,12 @@ const Select: React.FC<SelectProps> = ({
   const handleSelection = (option: string | SelectOptionObject) => {
     const value = typeof option === "string" ? option : option.value;
     const label = typeof option === "string" ? option : option.label;
+    const icon = typeof option === "string" ? option : option.icon;
     setState((x) => ({
       ...x,
       selectedValue: `${value}`,
       selectedLabel: label,
+      selectedIcon: `${icon}`,
       searchTerm: "",
       isOpen: false,
     }));
@@ -113,26 +118,30 @@ const Select: React.FC<SelectProps> = ({
 
   // Initialize
   useEffect(() => {
-    const updateSelection = (value: string, label: string) => {
+    const updateSelection = (value: string, label: string, icon: string) => {
       setState((prevState) => ({
         ...prevState,
         selectedValue: value,
         selectedLabel: label,
+        selectedIcon: icon,
       }));
     };
 
     if (propValue) {
       const value = typeof propValue === "string" ? propValue : propValue.value;
       const label = typeof propValue === "string" ? propValue : propValue.label;
-      updateSelection(`${value}`, label);
+      const icon = typeof propValue === "string" ? propValue : propValue.icon;
+      updateSelection(`${value}`, label, `${icon}`);
     } else if (defaultValue) {
       const value =
         typeof defaultValue === "string" ? defaultValue : defaultValue.value;
       const label =
         typeof defaultValue === "string" ? defaultValue : defaultValue.label;
-      updateSelection(`${value}`, label);
+      const icon =
+        typeof defaultValue === "string" ? defaultValue : defaultValue.icon;
+      updateSelection(`${value}`, label, `${icon}`);
     } else {
-      updateSelection("", "");
+      updateSelection("", "", "");
     }
   }, [propValue, resetKey, defaultValue]);
 
@@ -165,7 +174,7 @@ const Select: React.FC<SelectProps> = ({
         type="hidden"
         className={hiddenInputClassName}
         value={selectedValue || ""}
-          required={required || requiredNoStar}
+        required={required || requiredNoStar}
         disabled={disabled}
       />
       {label && (
@@ -199,14 +208,28 @@ const Select: React.FC<SelectProps> = ({
           )}
           {/* Conditionally render input or selected value based on `isSearchable` */}
           {selectedValue && !isOpen ? (
+            <div className="flex items-center gap-1">
+                {selectedIcon && (
+                        // <IconComponent className="h-4 w-4 mr-2" />
+                        <div className="custom-secondary-bg p-[2px] h-5 w-5 mr-[1px] rounded-full items-center">
+                          <Image
+                            src={selectedIcon as string}
+                            alt={`${selectedLabel} icon`}
+                            width={20}
+                            height={20}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      )}
             <span
               className={clsx(
                 "flex-1 capitalize text-text-disabled dark:bg-transparent text-xs md:text-sm font-normal",
                 inputTextClassName
               )}
-            >
-              {selectedLabel}
-            </span>
+              >
+                {selectedLabel}
+              </span>
+            </div>
           ) : isSearchable ? (
             <input
               ref={inputRef}
@@ -283,13 +306,29 @@ const Select: React.FC<SelectProps> = ({
                 filteredOptions.map((option) => {
                   const label =
                     typeof option === "string" ? option : option.label;
+                  const value =
+                    typeof option === "string" ? option : option.value;
+                  const icon =
+                    typeof option === "string" ? option : option.icon;
                   return (
                     <div
                       role="button"
                       key={uuidv4()}
-                      className="p-2 hover:bg-gray-100 dark:hover:bg-darkText-2 capitalize"
+                      className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-darkText-2 capitalize"
                       onClick={() => handleSelection(option)}
                     >
+                      {icon && (
+                        // <IconComponent className="h-4 w-4 mr-2" />
+                        <div className="custom-secondary-bg p-[2px] h-5 w-5 mr-[1px] rounded-full items-center">
+                          <Image
+                            src={icon as string}
+                            alt={`${value}`}
+                            width={20}
+                            height={20}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      )}
                       {label}
                     </div>
                   );
@@ -324,4 +363,4 @@ const Select: React.FC<SelectProps> = ({
   );
 };
 
-export default Select;
+export default SelectWithImage;

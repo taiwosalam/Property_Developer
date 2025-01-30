@@ -1,6 +1,7 @@
 export interface SelectOptionObject {
   value: string | number;
   label: string;
+  icon?: string;
 }
 
 export interface SelectProps {

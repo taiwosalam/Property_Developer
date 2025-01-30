@@ -17,7 +17,7 @@ export const transformPropertyData = (
   const { data } = response;
   if (!data) return null;
 
-  // console.log("res", response)
+  console.log("res", response)
 
   return {
     property_id: data.id,
@@ -38,6 +38,8 @@ export const transformPropertyData = (
       branch_name: data.branch?.branch_name,
       branch_id: data.branch?.id,
       land_lord_id: data.land_lord_id,
+      staff_id: data.staff?.filter((s) => s.staff_role === "staff").map((s) => s.id),
+      officer_id: data.staff?.filter((s) => s.staff_role === "account officer").map((s) => s.id),
     },
     propertySettings: {
       agency_fee: data.agency_fee || undefined,

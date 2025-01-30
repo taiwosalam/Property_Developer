@@ -18,6 +18,7 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
   checked,
   alignCheckboxCenter,
   className,
+  onClick,
 }) => {
   // Internal state for when the component is uncontrolled
   const [internalIsChecked, setInternalIsChecked] = useState(checked || false);
@@ -28,6 +29,9 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
 
   const handleClick = () => {
     setIsChecked((prev) => !prev);
+    if (onClick){
+      onClick()
+    }
   };
 
   return (
