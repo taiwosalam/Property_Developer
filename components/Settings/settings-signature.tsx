@@ -36,6 +36,7 @@ import Button from "../Form/Button/button";
 import SignatureModal from "../Management/Properties/signature";
 
 const SettingsSignature = () => {
+  const [openModal, setOpenModal] = useState(false)
   const [state, setState] = useState<SignaturePageData[]>([]);
   const [signaturePad, setSignaturePad] = useState<SignaturePad | null>(null); // SignaturePad state
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -72,7 +73,6 @@ const SettingsSignature = () => {
     }
   }, [apiData]);
 
-  console.log("INput fields", state)
 
   const [inputFields, setInputFields] = useState(() => {
     if (typeof window !== "undefined") {
@@ -99,6 +99,7 @@ const SettingsSignature = () => {
     return [];
   });
 
+  // console.log("INput fields", inputFields)
 
   // Initialize signature pad after component mount
   useEffect(() => {
@@ -194,16 +195,40 @@ const SettingsSignature = () => {
                 {inputFields.map((field, index) => (
                   <React.Fragment key={field.id}>
                     <div className="flex rounded-lg items-center overflow-hidden gap-2 cursor-pointer">
-                      <Picture
-                        size={100}
-                        className="max-w-[100px] max-h-[120px]"
-                        fit="contain"
-                        src={field.signature}
-                        alt="official signature"
-                      />
-                      <Modal>
+                      {typeof field.signature !== "string" ? (
+                        <div className="relative max-w-[100px] rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer">
+                          <Picture
+                            size={100}
+                            className="max-w-[100px] max-h-[120px]"
+                            fit="contain"
+                            src={field.signature}
+                            alt="official signature"
+                          />
+                          <div
+                            style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
+                            className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
+                          >
+                            <Picture src={ImageBlue} alt="image icon" size={20} />
+                            <p className="text-brand-9 text-xs font-normal" onClick={() => { setOpenModal(true) }}>
+                              Add Signature
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <Picture
+                          size={100}
+                          className="max-w-[100px] max-h-[120px]"
+                          fit="contain"
+                          src={field.signature}
+                          alt="official signature"
+                        />)}
+                      <Modal
+                        state={{ isOpen: openModal, setIsOpen: setOpenModal }}
+                      >
                         <ModalTrigger asChild>
-                          <button className="self-end bg-brand-9 text-white text-xs font-normal py-2 px-3 rounded-md">Add signature</button>
+                          <button className="self-end bg-brand-9 text-white text-xs font-normal py-2 px-3 rounded-md">
+                            {typeof field.signature === "string" ? "Change signature" : "Add signature"}
+                          </button>
                         </ModalTrigger>
                         <ModalContent>
                           <SignatureModal
@@ -258,7 +283,7 @@ const SettingsSignature = () => {
                     onClick={addInputField}
                     type="button"
                   >
-                    Add More
+                    Add More Signatories
                   </button>
                 </div>
               </div>

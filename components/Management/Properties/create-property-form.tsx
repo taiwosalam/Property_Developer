@@ -39,6 +39,7 @@ import { Modal, ModalContent, ModalTrigger } from '@/components/Modal/modal';
 import GoogleMapsModal from './google-maps';
 import { MultiSelect } from '@/components/multiselect/multi-select';
 import { Cat } from 'lucide-react';
+import SelectWithImage from '@/components/Form/Select/select-with-image';
 
 const maxNumberOfImages = 6;
 
@@ -65,10 +66,14 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const isAccountOfficer = role === 'account';
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedStaffs, setSelectedStaffs] = useState<string[]>([]);
-  
+  const [selectedLandlord, setSelectedLandlord] = useState<string[]>([]);
+  const [selectedOfficer, setSelectedOfficer] = useState<string[]>([]);
+
   const [lat, setLat] = useState(0)
   const [lng, setLng] = useState(0)
   const [coordinate, setCoordinate] = useState(propertySettings?.coordinate || '')
+
+  console.log("data here ", propertyDetails)
 
   const {
     state: selectedState,
@@ -96,8 +101,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       return newState;
     });
   };
-
-  console.log("property coordinate", coordinate)
 
   const {
     images,
@@ -206,13 +209,16 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     landlordsData?.data.map((landlord) => ({
       value: landlord.id,
       label: landlord.name,
+      icon: landlord.picture,
     })) || [];
 
   const officerOptions =
     accountOfficerData?.data.map((officer: any) => ({
       value: officer.id,
       label: officer.user.name,
+      icon: officer.user.profile.picture,
     })) || [];
+
 
   const inventoryOptions =
     inventoryData?.data.map((inventory) => ({
@@ -226,7 +232,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       label: s.user.name,
       icon: s.user.profile.picture,
     })) || [];
-    
+
   useEffect(() => {
     if (staffsData) {
       setPropertyState({
@@ -238,30 +244,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       });
     }
   }, [staffsData]);
-  // console.log('staffOption', staffOptions);
-  // console.log('staff', staff);
-
-  // useEffect(() => {
-  //   if (!selectedBranch.value) return;
-  //   const fetchStaff = async () => {
-  //     const staffMembers = await getAllStaffByBranch(selectedBranch.value);
-  //     setPropertyState({
-  //       staffOptions: staffMembers
-  //         .filter((staff) => staff.position.toLowerCase() !== 'account officer')
-  //         .map((staff) => ({
-  //           value: staff.id,
-  //           label: staff.full_name,
-  //         })),
-  //       accountOfficerOptions: staffMembers
-  //         .filter((staff) => staff.position.toLowerCase() === 'account officer')
-  //         .map((staff) => ({
-  //           value: staff.id,
-  //           label: staff.full_name,
-  //         })),
-  //     });
-  //   };
-  //   fetchStaff();
-  // }, [selectedBranch]);
 
   useEffect(() => {
     if (editMode && propertyDetails) {
@@ -287,7 +269,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     'vehicle_record',
     'active_vat',
   ];
-  
+
   // console.log("selected", selectedStaffs)
   const handleFormSubmit = async (data: Record<string, any>) => {
     setRequestLoading(true);
@@ -471,7 +453,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               }
             />
 
-            <Select
+            <SelectWithImage
               options={landlordOptions}
               id='land_lord_id'
               label='Landlord'
@@ -551,20 +533,38 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             )}
 
             {!isAccountOfficer &&
-              <Select
+              <SelectWithImage
                 options={officerOptions}
+                // defaultValue={selectedOfficer}
+                defaultValue={
+                  editMode && (propertyDetails?.officer_id ?? [])[0]
+                    ? officerOptions.find(
+                      (staff) => String(staff.value) === String((propertyDetails?.officer_id ?? [])[0])
+                    ) || { value: '', label: '', icon: '' }
+                    : undefined
+                }
                 id='account_officer_id'
                 label='Account Officer'
                 inputContainerClassName='bg-white'
                 resetKey={resetKey}
                 hiddenInputClassName='property-form-input'
-              />}
-            <div className='bg-neutral-2 flex self-end'>
+              />
+            }
+            <div className='bg-transparent flex flex-col gap-2 self-end'>
+              <label className='text-text-label dark:text-darkText-2'>Staff</label>
               <MultiSelect
                 options={staffOption}
                 onValueChange={setSelectedStaffs}
+                // defaultValue={
+                //   editMode && propertyDetails?.staff_id
+                //     ? staffOption.find(
+                //       (staff) =>
+                //         String(staff.value) === String(propertyDetails.staff_id)
+                //     )?.label || ''
+                //     : undefined
+                // }
                 // defaultValue={selectedFrameworks}
-                placeholder="Select staffs" 
+                placeholder="Select staffs"
                 variant="default"
                 // animation={2}
                 maxCount={1}
@@ -827,7 +827,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                       type="text"
                       className="w-full h-full rounded-[4px] outline-none px-2"
                     />
-                   {coordinate && <button
+                    {coordinate && <button
                       type="button"
                       className="bg-transparent outline-none"
                       onClick={(e) => {

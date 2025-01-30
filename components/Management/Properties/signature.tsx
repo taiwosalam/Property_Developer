@@ -127,15 +127,15 @@ const SignatureModal: React.FC<SignatureModalProps> = ({ onCreateSignature, inde
             heading="Draw your signature"
         >
             <div className='flex flex-col justify-between h-full'>
-                <p className="text-sm font-normal mb-4">
+                <p className="text-sm font-normal mb-2">
                 Use your mouse, trackpad, touchscreen, or pen to sign directly in the designated area.
                 </p>
                 <SignaturePad
                     ref={sigPadRef}
-                    canvasProps={{ className: 'w-full h-[39vh] light-shadow' }}
+                    canvasProps={{ className: 'w-full h-[38vh] light-shadow' }}
                 // onEnd={handleEnd}
                 />
-                <div className='w-full flex justify-between mt-10'>
+                <div className='w-full flex justify-between mt-5'>
                     <div className="flex gap-2 items-center">
                         <button onClick={clear} className='bg-brand-9 px-3 py-2 text-xs rounded-md text-white'>Clear</button>
                         <button onClick={handleUndo} disabled={!canUndo} className=''>
@@ -165,7 +165,7 @@ const SignatureModal: React.FC<SignatureModalProps> = ({ onCreateSignature, inde
         </LandlordTenantModalPreset>
     ) : (
         <LandlordTenantModalPreset
-            style={{ width: '100%', height: '60vh' }}
+            style={{ width: '100%', height: '70vh' }}
             heading="Upload Your Signature"
             back={{ handleBack: () => changeStep(1) }}
         >

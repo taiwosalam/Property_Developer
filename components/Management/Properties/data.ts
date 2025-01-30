@@ -30,15 +30,18 @@ export const transformPropertyFormData = (
   imageFiles: (File | string)[],
   company_id: string,
   selectedStaffs: any,
+  // selectedLandlord: any,
+  // selectedOfficer: any,
 ) => {
-  console.log('Data', data);
+  const staffIds = [...selectedStaffs];
   // Collect staff IDs
-  const staffIds = Object.entries(data)
-    .filter(([key]) => key.startsWith('staff') && key.endsWith('_id'))
-    .map(([_, value]) => value as string)
-    .filter(Boolean);
+  // const staffIds = Object.entries(data)
+  //   .filter(([key]) => key.startsWith('staff') && key.endsWith('_id'))
+  //   .map(([_, value]) => value as string)
+  //   .filter(Boolean);
   // Add account officer if present
   if (data.account_officer_id) {
+    console.log("officer", data.account_officer_id);
     staffIds.push(data.account_officer_id);
   }
 
@@ -55,6 +58,7 @@ export const transformPropertyFormData = (
     branch_id: data.branch_id,
     inventory_id: data.inventory_id,
     land_lord_id: data.land_lord_id,
+    // land_lord_id: landlord_id,
     company_id,
     agency_fee: isNaN(parseFloat(data.agency_fee))
       ? null
@@ -77,8 +81,8 @@ export const transformPropertyFormData = (
     images: imageFiles,
     // images: imageFiles.slice(1),
     default_image: imageFiles[0] || null,
-    // staff: staffIds,
-    staff: selectedStaffs,
+    staff: staffIds,
+    // staff: selectedStaffs,
   };
 
   return payload;
