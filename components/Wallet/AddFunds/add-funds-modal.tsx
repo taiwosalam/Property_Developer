@@ -19,17 +19,17 @@ const AddFundsModal = ({branch}: {branch?: boolean}) => {
   useState<WalletSendFundsOptions>("send funds menu");
 
   return (
-    <WalletModalPreset 
-    title={branch ? "Add Funds" : "Select payment method"}
-    back={
-      activeStep !== "send funds menu"
-        ? () => {
-            setActiveStep("send funds menu");
-          }
-        : undefined
-    }
+    <WalletModalPreset
+      title={branch ? "Add Funds" : "Select payment method"}
+      back={
+        activeStep !== "send funds menu"
+          ? () => {
+              setActiveStep("send funds menu");
+            }
+          : undefined
+      }
     >
-      <div className="custom-flex-col gap-4"> 
+      <div className="custom-flex-col gap-4">
       {branch ? (
         <SendFundRecipient
           name={`${company_name} / ${branch_details?.branch_name}`}
