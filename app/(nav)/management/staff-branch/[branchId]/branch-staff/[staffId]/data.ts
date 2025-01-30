@@ -15,6 +15,7 @@ import { StaffAPIResponse, StaffPageTypes } from "./type";
 import api, { handleAxiosError } from "@/services/api";
 import { properties } from "@/app/(nav)/user/management/landlord/data";
 import { empty } from "@/app/config";
+import { link } from "fs";
 
 export const sendVerifyStaffOTP = async () => {
   try {
@@ -265,6 +266,7 @@ export const getPortfolioData = (portfolio: any) => {
     {
       title: "Properties",
       items: portfolio.properties?.map((p: any) => ({
+        link: `/management/properties/${p.id}`,
         image: p.image,
         property: {
           name: p.property_name,
@@ -275,6 +277,7 @@ export const getPortfolioData = (portfolio: any) => {
     {
       title: "Landlords",
       items: portfolio.landlords?.map((l: any) => ({
+        link: `/management/landlord/${l.id}/manage`,
         image: l.image || "", 
         user: {
           name: l.name,
@@ -286,6 +289,7 @@ export const getPortfolioData = (portfolio: any) => {
     {
       title: "Occupants & Tenants",
       items: portfolio.tenants?.map((t: any) => ({
+        link: `/management/tenants/${t.id}/manage`,
         image: t.image || "", 
         user: {
           name: t.name,
@@ -374,6 +378,7 @@ export const transformStaffAPIResponse = (
     portfolio: {
       properties: res?.data?.properties?.map((p) => {
         return {
+          id: p.id.toString(),
           property_name: p.name,
           address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
           image: p.images?.[0]?.path || empty,
@@ -381,6 +386,7 @@ export const transformStaffAPIResponse = (
       }),
       landlords: res?.data?.landlords?.map((l)=> {
         return{
+          id: l.id.toString(),
           name: l.name,
           email: l.email,
           phone: l.phone || "",
@@ -389,6 +395,7 @@ export const transformStaffAPIResponse = (
       }),
       tenants: res?.data?.tenants?.map((t)=> {
         return {
+          id: t.id.toString(),
           name: t.name,
           email: t.email,
           phone: t.phone,

@@ -4,9 +4,11 @@ import { StaticImageData } from "next/image";
 export interface StaffProfilePortfolioProps {
   title: string;
   items: StaffProfilePortfolioItemProps[];
+  branchId?: string;
 }
 
 export interface StaffProfilePortfolioItemProps {
+  link?: string;
   image: string | StaticImageData;
   property?: {
     name: string;
