@@ -53,6 +53,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
   reset: (email) => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('navbar');
     // localStorage.removeItem('additional_details');
     Cookies.remove('authToken');
     Cookies.remove('user_role'); 

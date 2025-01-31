@@ -6,8 +6,13 @@ import LogoPlaceholder from "@/public/empty/logo-placeholder.svg";
 // Imports
 import Button from "@/components/Form/Button/button";
 import { message_card_data } from "@/components/Message/data";
+import { getLocalStorage } from "@/utils/local-storage";
+import { empty } from "@/app/config";
 
 const Messages = () => {
+  const loggedInUserDetails = getLocalStorage('additional_details');
+  const logo = loggedInUserDetails?.company?.company_logo || empty;
+
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div className="custom-flex-col gap-6 max-w-[80%]">
@@ -15,7 +20,12 @@ const Messages = () => {
           <>
             <div className="custom-flex-col gap-4">
               <div className="flex justify-center">
-                <Image src={LogoPlaceholder} alt="logo" width={200} />
+                <Image
+                  src={logo}
+                  alt="logo"
+                  width={200}
+                  height={100}
+                />
               </div>
               <p className="text-center text-text-quaternary dark:text-darkText-1 text-sm font-normal">
                 It appears that you do not have any chats open. Please click on a
