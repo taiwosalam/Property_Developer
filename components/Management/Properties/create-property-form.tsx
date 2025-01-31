@@ -73,7 +73,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const [lng, setLng] = useState(0)
   const [coordinate, setCoordinate] = useState(propertySettings?.coordinate || '')
 
-  console.log("data here ", propertyDetails)
+  // console.log("coordinate ", coordinate)
 
   const {
     state: selectedState,

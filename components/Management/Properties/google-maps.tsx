@@ -40,6 +40,7 @@ const GoogleMapsModal = ({
                 lng: event.latLng.lng(),
             };
             setSelectedLocation(newLocation);
+            // console.log("new location", newLocation)
             setCoordinate(`${event.latLng.lat()}, ${event.latLng.lng()}`);
         }
     };
@@ -87,7 +88,7 @@ const GoogleMapsModal = ({
                 <p>Loading map...</p>
             ) : (
                 <>
-                <p className="text-[#747474] mb-5">Drag the map pointer to the property&apos;s exact location, paste the previously recorded coordinates, or pick your current location if you&apos;re on-site. Ensure your device&apos;s location is enabled and accurate before selecting the current location.</p>
+                <p className="text-[#747474] mb-5">Zoom in to the property area, then drag and click the map pointer to mark the exact location. Alternatively, if you&apos;re on-site, select your current location and click &apos;Save Location.&apos; Make sure your device&apos;s location services are enabled and accurate before choosing the current location.</p>
                     <GoogleMap
                         mapContainerStyle={containerStyle}
                         center={selectedLocation}

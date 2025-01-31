@@ -90,7 +90,7 @@ const Profile = () => {
     }
   }, [apiData]);
 
-  console.log("apiData", apiData);
+  // console.log("apiData", apiData);
   const { preview, handleImageChange } = useImageUploader({
     placeholder: Transparent,
   });
@@ -147,8 +147,6 @@ const Profile = () => {
       setRequestLoading(false);
     }
   };
-
-  console.log("company data", companyData)
 
 
   return (
