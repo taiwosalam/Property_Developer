@@ -8,12 +8,20 @@ import { UsersProps } from '@/app/(nav)/(messages-reviews)/messages/types';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useModal } from '../Modal/modal';
+import { Filters, positionMap } from '@/app/(nav)/(messages-reviews)/messages/data';
 
-const SelectChatUsersModal = ({ usersData }: { usersData: UsersProps[] }) => {
+const SelectChatUsersModal = ({
+    usersData,
+    filters
+}: {
+    usersData: UsersProps[],
+    filters: Filters
+}) => {
     const router = useRouter()
     const { setIsOpen } = useModal()
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
     const [filteredUsers, setFilteredUsers] = useState<UsersProps[]>(usersData);
 
     const handleMenuClose = () => {
@@ -23,6 +31,23 @@ const SelectChatUsersModal = ({ usersData }: { usersData: UsersProps[] }) => {
     // Handle search input change
     const handleSearchChange = (data: string, event?: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(data);
+    };
+
+
+    const handleFilterApply = (selectedFilters: string[]) => {
+        if (selectedFilters.length === 0) {
+            setFilteredUsers(usersData); // Reset to all users if no filter is selected
+        } else {
+            const normalizedFilters = selectedFilters
+                .map(filter => positionMap[filter]) // Convert filters to match user.position
+                .filter(Boolean); // Remove undefined values
+
+            const filtered = usersData.filter(user =>
+                normalizedFilters.includes(user.position)
+            );
+
+            setFilteredUsers(filtered);
+        }
     };
 
     useEffect(() => {
@@ -68,13 +93,16 @@ const SelectChatUsersModal = ({ usersData }: { usersData: UsersProps[] }) => {
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
                         onClose={handleMenuClose}
+                        onFilterApply={handleFilterApply}
+                        setSelectedLabel={setSelectedFilter}
                         filterOptions={[
-                            { label: "Branch Manager" },
-                            { label: "Account Officer" },
-                            { label: "Staff" },
-                            { label: "Landlord/Landlady" },
-                            { label: "Tenant/Occupants" },
-                            { label: "Service Provider" },
+                            { label: "Branch Manager", value: filters.roles.manager },
+                            { label: "Account Officer", value: filters.roles.account },
+                            { label: "Staff", value: filters.roles.staff },
+                            { label: "Director", value: filters.roles.director },
+                            { label: "Landlord/Landlady", value: 0 },
+                            { label: "Tenant/Occupants", value: 0 },
+                            { label: "Service Provider", value: 0 },
                         ]}
                     />
                 </div>
