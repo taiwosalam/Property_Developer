@@ -19,6 +19,8 @@ import MessageCard from "@/components/Message/message-card";
 import { message_card_data } from "@/components/Message/data";
 import FilterButton from "@/components/FilterButton/filter-button";
 import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
+import Messages from "./page";
+import { NoMessage } from "./messages-component";
 
 const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { id } = useParams();
@@ -72,15 +74,21 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                 see reviews
               </Button>
             </div>
-            <div className="custom-flex-col relative z-[1] pb-4">
-              {message_card_data.map((message, idx) => (
-                <MessageCard
-                  key={idx}
-                  {...message}
-                  highlight={message.id === id}
-                />
-              ))}
-            </div>
+            {message_card_data.length === 0 ? (
+              <>
+                <NoMessage />
+              </>
+            ) : (
+              <div className="custom-flex-col relative z-[1] pb-4">
+                {message_card_data.map((message, idx) => (
+                  <MessageCard
+                    key={idx}
+                    {...message}
+                    highlight={message.id === id}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

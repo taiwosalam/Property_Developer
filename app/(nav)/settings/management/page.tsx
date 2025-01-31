@@ -100,6 +100,7 @@ const Management = () => {
       toast.error("Please enter rent penalty")
       return
     }
+    
     try {
       setLoading(true)
       const res = await updateSettings(objectToFormData(payload), 'rent_penalty_setting')
