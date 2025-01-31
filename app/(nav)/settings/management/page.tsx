@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { updateSettings } from "../security/data";
+import { useSettings } from "@/hooks/settingsContext";
 
 
 const roleMapping: Record<string, string> = {
@@ -38,8 +39,27 @@ const roleMapping: Record<string, string> = {
 };
 
 const Management = () => {
+  const { data, isLoading, error } = useSettings();
   const [updating, setUpdating] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [rentPenalty, setRentPenalty] = useState("")
+  const [screeningLevel, setScreeningLevel] = useState({
+    tenant_screening_level: 0,
+    occupant_screening_level: 0,
+  })
+
+  useEffect(()=> {
+    if(data?.screening_levels !== null){
+      setScreeningLevel({
+        tenant_screening_level: data?.screening_levels?.tenant_screening_level,
+        occupant_screening_level: data?.screening_levels?.occupant_screening_level
+      })
+    }
+
+    if (data?.rent_penalty_setting !== null){
+      setRentPenalty(data?.rent_penalty_setting?.penalty_value);
+    }
+  },[data])
 
   const formatPermission = (text: string) => {
     return text
@@ -100,7 +120,7 @@ const Management = () => {
       toast.error("Please enter rent penalty")
       return
     }
-    
+
     try {
       setLoading(true)
       const res = await updateSettings(objectToFormData(payload), 'rent_penalty_setting')
@@ -239,12 +259,14 @@ const Management = () => {
                 <Select
                   id="tenant_screening_level_type"
                   label="tenant screening level type"
+                  defaultValue={`${screeningLevel?.tenant_screening_level}%`}
                   options={tenant_occupant_options as unknown as string[]}
                   inputContainerClassName="bg-neutral-2 w-full sm:w-[277px]"
                 />
                 <Select
                   id="occupant_screening_level_type"
                   label="occupant screening level type"
+                  defaultValue={`${screeningLevel?.occupant_screening_level}%`}
                   options={tenant_occupant_options as unknown as string[]}
                   inputContainerClassName="bg-neutral-2 w-full sm:w-[277px]"
                 />
@@ -284,6 +306,7 @@ const Management = () => {
                   "9%",
                   "10%",
                 ]}
+                defaultValue={rentPenalty}
                 id="monthly_interest_rent"
                 label="They will be subject to a monthly interest charge on rent"
                 inputContainerClassName="bg-neutral-2"

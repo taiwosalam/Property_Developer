@@ -14,13 +14,13 @@ const MessageUserCard = ({
 }: CardProps) => {
     return (
         <div className="flex items-center gap-4 mt-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center h-14 w-14 gap-2 custom-secondary-bg rounded-full">
                 <Image
                     src={imageUrl}
                     alt="profile"
                     width={60}
                     height={60}
-                    className="rounded-full w-full h-full object-contain"
+                    className="rounded-full w-full h-full object-cover"
                 />
             </div>
             <div className="flex flex-col">

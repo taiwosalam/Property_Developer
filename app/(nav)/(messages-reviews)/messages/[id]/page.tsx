@@ -8,13 +8,13 @@ import ChevronLeft from "@/public/icons/chevron-left.svg";
 // Imports
 import Picture from "@/components/Picture/picture";
 import Messages from "@/components/Message/messages";
-import { message_card_data } from "@/components/Message/data";
+import { message_card_data, message_data } from "@/components/Message/data";
 
 const Chat = () => {
   const router = useRouter();
   const { id } = useParams();
 
-  const data = message_card_data.find((item) => item.id === id);
+  const data = message_data.find((item) => item.id === id);
 
   if (!data) return router.replace("/messages");
 

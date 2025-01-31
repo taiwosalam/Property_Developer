@@ -16,17 +16,22 @@ import SearchInput from "../SearchInput/search-input";
 
 type FilterOption = {
   label: string;
+  value?: string | number;
   bgColor?: string;
 };
 
 interface MessagesFilterMenuProps extends MenuProps {
   filterOptions: FilterOption[];
+  onFilterApply?: any;
+  setSelectedLabel?: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
   onClose,
   open,
   filterOptions,
+  onFilterApply,
+  setSelectedLabel,
   ...props
 }) => {
   const isDarkMode = useDarkMode();
@@ -90,7 +95,7 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
     >
       <div
         className="sticky top-0 z-[2] flex items-center justify-between gap-4 mb-[10px] bg-white dark:bg-[#1C1C1C] px-4 pt-4 remove-tab-index"
-        // tabIndex={undefined}
+      // tabIndex={undefined}
       >
         <p className="text-base font-medium text-text-label dark:text-darkText-2 flex items-center gap-1">
           {activeStep !== 1 && (
@@ -122,6 +127,8 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
             filterOptions={filterOptions}
             selectedFilters={selectedFilters}
             setSelectedFilters={setSelectedFilters}
+            onFilterApply={onFilterApply}
+            setSelectedLabel={setSelectedLabel}
           />
         ) : (
           <Step2Menu
@@ -130,9 +137,9 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
             setSelectedBranches={setSelectedBranches}
           />
         )}
-        <Button size="base_medium" className="!mt-8 w-full py-2 px-8">
+        {/* <Button size="base_medium" onClick={applyFilters} className="!mt-8 w-full py-2 px-8">
           Apply Filter
-        </Button>
+        </Button> */}
       </div>
     </Menu>
   );
@@ -146,6 +153,8 @@ const Step1Menu: React.FC<{
   hasSelectedBranches: boolean;
   filterOptions: FilterOption[];
   selectedFilters: string[];
+  onFilterApply: (selectedFilters: string[]) => void;
+  setSelectedLabel?: React.Dispatch<React.SetStateAction<string | null>>;
   setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>;
 }> = ({
   changeStep,
@@ -154,49 +163,60 @@ const Step1Menu: React.FC<{
   filterOptions,
   selectedFilters,
   setSelectedFilters,
+  onFilterApply,
+  setSelectedLabel,
 }) => {
-  const handleFilterToggle = (label: string) => {
-    setSelectedFilters((prev) =>
-      prev.includes(label)
-        ? prev.filter((item) => item !== label)
-        : [...prev, label]
-    );
-  };
-  return (
-    <>
-      <button
-        type="button"
-        className={commonClasses}
-        onClick={() => changeStep("next")}
-      >
-        By Branches
-        {hasSelectedBranches ? (
-          <CheckboxChecked size={18} />
-        ) : (
-          <CheckboxDefault size={18} />
-        )}
-      </button>
-      {filterOptions.map((option, index) => (
+    const handleFilterToggle = (label: string) => {
+      setSelectedFilters((prev) =>
+        prev.includes(label)
+          ? prev.filter((item) => item !== label)
+          : [...prev, label]
+      );
+    };
+
+    const applyFilters = () => {
+      if (onFilterApply) {
+        onFilterApply(selectedFilters);
+      }
+    };
+
+    return (
+      <>
         <button
           type="button"
-          className={`${commonClasses} ${
-            selectedFilters.includes(option.label) ? "!bg-[#bfb3b3]" : ""
-          }`}
-          key={index}
-          onClick={() => handleFilterToggle(option.label)}
+          className={commonClasses}
+          onClick={() => changeStep("next")}
         >
-          <span>{option.label}</span>
-          <span
-            style={{ backgroundColor: option.bgColor || "#01BA4C" }}
-            className="text-white rounded-full p-1 flex items-center justify-center w-5 h-5"
-          >
-            12
-          </span>
+          By Branches
+          {hasSelectedBranches ? (
+            <CheckboxChecked size={18} />
+          ) : (
+            <CheckboxDefault size={18} />
+          )}
         </button>
-      ))}
-    </>
-  );
-};
+        {filterOptions.map((option, index) => (
+          <button
+            type="button"
+            className={`${commonClasses} ${selectedFilters.includes(option.label) ? "!bg-[#bfb3b3]" : ""
+              }`}
+            key={index}
+            onClick={() => handleFilterToggle(option.label)}
+          >
+            <span>{option.label}</span>
+            <span
+              style={{ backgroundColor: option.bgColor || "#01BA4C" }}
+              className="text-white rounded-full p-1 flex items-center justify-center w-5 h-5"
+            >
+              {option.value}
+            </span>
+          </button>
+        ))}
+        <Button size="base_medium" onClick={applyFilters} className="!mt-8 w-full py-2 px-8">
+          Apply Filter
+        </Button>
+      </>
+    );
+  };
 
 const Step2Menu: React.FC<{
   commonClasses: string;

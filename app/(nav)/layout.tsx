@@ -40,6 +40,8 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
   const [navbar, setNavbar] = useState(appearance?.navbar)
 
+  // console.log("api navbar", appearance?.navbar)
+  // console.log("navbar", navbar)
   useOutsideClick(sideNavRef, () => {
     if (isMobile) {
       setIsSideNavOpen(false);
@@ -47,7 +49,9 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   });
 
   useEffect(() => {
-    setNavbar(navs)
+    if (navs !== null){
+      setNavbar(navs)
+    }
     setSelectedOption("view", appearance?.view || "grid")
   }, [navs]);
 

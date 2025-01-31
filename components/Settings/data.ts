@@ -10,7 +10,7 @@ export const settings_link_tabs = [
   "security",
   "enrollment",
   "appearance",
-  "preference",
+  // "preference",
   "others",
 ] as const;
 
