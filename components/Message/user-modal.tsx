@@ -9,20 +9,26 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useModal } from '../Modal/modal';
 import { Filters, positionMap } from '@/app/(nav)/(messages-reviews)/messages/data';
+import MessageUserCardSkeleton from '../Skeleton/message-user-card-skeleton';
 
 const SelectChatUsersModal = ({
     usersData,
-    filters
+    loading,
+    filters = { 
+        roles: { manager: 0, account: 0, staff: 0, director: 0 },
+        branches: [] 
+    },  
 }: {
     usersData: UsersProps[],
-    filters: Filters
+    filters?: Filters
+    loading?: boolean;
 }) => {
     const router = useRouter()
     const { setIsOpen } = useModal()
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
-    const [filteredUsers, setFilteredUsers] = useState<UsersProps[]>(usersData);
+    const [filteredUsers, setFilteredUsers] = useState<UsersProps[]>(usersData || []);
 
     const handleMenuClose = () => {
         setAnchorEl(null);
@@ -89,39 +95,43 @@ const SelectChatUsersModal = ({
                         className="bg-transparent py-[10px] px-4"
                         onClick={(e) => setAnchorEl(e.currentTarget)}
                     />
-                    <MessagesFilterMenu
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={handleMenuClose}
-                        onFilterApply={handleFilterApply}
-                        setSelectedLabel={setSelectedFilter}
-                        filterOptions={[
-                            { label: "Branch Manager", value: filters.roles.manager },
-                            { label: "Account Officer", value: filters.roles.account },
-                            { label: "Staff", value: filters.roles.staff },
-                            { label: "Director", value: filters.roles.director },
-                            { label: "Landlord/Landlady", value: 0 },
-                            { label: "Tenant/Occupants", value: 0 },
-                            { label: "Service Provider", value: 0 },
-                        ]}
-                    />
+                    {!loading &&
+                        <MessagesFilterMenu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleMenuClose}
+                            onFilterApply={handleFilterApply}
+                            setSelectedLabel={setSelectedFilter}
+                            filterOptions={[
+                                { label: "Branch Manager", value: filters.roles?.manager ?? 0 },
+                                { label: "Account Officer", value: filters.roles?.account ?? 0 },
+                                { label: "Staff", value: filters.roles?.staff ?? 0 },
+                                { label: "Director", value: filters.roles?.director ?? 0 },
+                                { label: "Landlord/Landlady", value: 0 },
+                                { label: "Tenant/Occupants", value: 0 },
+                                { label: "Service Provider", value: 0 },
+                            ]}
+                        />}
                 </div>
             </div>
 
             {/* User List */}
-            {filteredUsers.length > 0 ? (
-                filteredUsers.map((user) => (
-                    <div className='hover:cursor-pointer' onClick={() => handleUserClicked(user.id)} key={user.id}>
-                        <MessageUserCard
-                            imageUrl={user.imageUrl}
-                            name={user.name}
-                            position={user.position}
-                        />
-                    </div>
-                ))
-            ) : (
-                <p className="text-center text-muted">No user found.</p>
-            )}
+            {loading
+                ? [...Array(5)].map((_, index) => <MessageUserCardSkeleton key={index} />)
+                : filteredUsers.length > 0 ? (
+                    filteredUsers.map((user) => (
+                        <div className='hover:cursor-pointer' onClick={() => handleUserClicked(user.id)} key={user.id}>
+                            <MessageUserCard
+                                imageUrl={user.imageUrl}
+                                name={user.name}
+                                position={user.position}
+                            />
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-center text-muted">No user found.</p>
+                )
+            }
         </LandlordTenantModalPreset>
     );
 };
