@@ -12,7 +12,9 @@ export interface MessageCardProps {
 }
 
 export interface MessagesProps {
-  day: string;
+  day?: string;
+  messages?: any[];
+  userId?: string | number;
 }
 
 export interface MessageProps {
