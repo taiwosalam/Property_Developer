@@ -10,7 +10,7 @@ import { getLocalStorage } from "@/utils/local-storage";
 import { empty } from "@/app/config";
 import { useChatStore } from "@/store/message";
 
-export const NoMessage = () => {
+export const NoMessage = ({ loading }: { loading?: boolean }) => {
     const usersData = useChatStore((state) => state?.data?.users);
     const loggedInUserDetails = getLocalStorage('additional_details');
     const logo = loggedInUserDetails?.company?.company_logo || empty;
@@ -40,6 +40,7 @@ export const NoMessage = () => {
                         </ModalTrigger>
                         <ModalContent>
                             <SelectChatUsersModal
+                                loading={loading}
                                 usersData={usersData?.users}
                                 filters={usersData?.filters}
                             />

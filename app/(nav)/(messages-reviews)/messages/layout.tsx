@@ -55,7 +55,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
 
   const {
     data: usersData,
-    loading,
+    loading:loadingUsers,
     error,
   } = useFetch<CompanyUsersAPIResponse>('/company/users');
 
@@ -128,7 +128,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
             </div>
             {message_card_data.length === 0 ? (
               <>
-                <NoMessage />
+                <NoMessage loading={loadingUsers} />
               </>
             ) : (
               <div className="custom-flex-col relative z-[1] pb-4">
