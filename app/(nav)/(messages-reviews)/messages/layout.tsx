@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Types
 import type { MessagesLayoutProps } from "./types";
@@ -9,6 +9,7 @@ import type { MessagesLayoutProps } from "./types";
 // Images
 import ClipBlue from "@/public/icons/clip-blue.svg";
 import MicrophoneBlue from "@/public/icons/microphone-blue.svg";
+import SendIcon from "@/public/icons/send-msg.svg"
 
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -21,17 +22,68 @@ import FilterButton from "@/components/FilterButton/filter-button";
 import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
 import Messages from "./page";
 import { NoMessage } from "./messages-component";
+import useFetch from "@/hooks/useFetch";
+import { CompanyUsersAPIResponse, initialData, MessageUserPageTypes, SendMessage, transformCompanyUsersData } from "./data";
+import { useChatStore } from "@/store/message";
+import { AuthForm } from "@/components/Auth/auth-components";
+import clsx from "clsx";
+import { toast } from "sonner";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import useGetConversation from "@/hooks/getConversation";
 
 const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
+  const { setChatData } = useChatStore();
   const { id } = useParams();
-
   const { isCustom } = useWindowWidth(900);
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [message, setMessage] = useState("");
+  const [reqLoading, setReqLoading] = useState(false)
+  const store_messages = useChatStore((state) => state?.data?.conversations);
+  const [conversations, setConversations] = useState<any[]>([]);
+
+
+  // const [messages, setMessages] = 
+  // console.log("store messages", store_messages)
+
+  useEffect(() => {
+    setMessage(message)
+  }, [message])
 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const {
+    data: usersData,
+    loading,
+    error,
+  } = useFetch<CompanyUsersAPIResponse>('/company/users');
+
+  useEffect(() => {
+    if (usersData) {
+      setChatData("users", transformCompanyUsersData(usersData)); // Store users dynamically to store
+    }
+  }, [usersData]);
+
+  const handleSendMsg = async () => {
+    const payload = {
+      content: message,
+      content_type: "text",
+      receiver_type: "user"
+    }
+
+    try {
+      setReqLoading(true)
+      const res = await SendMessage(objectToFormData(payload), `${id}`)
+      if (res) {
+        setMessage("")
+      }
+    } catch (err) {
+      toast.error("Failed to send msg")
+    } finally {
+      setReqLoading(false)
+    }
+  }
 
   return (
     <>
@@ -97,19 +149,33 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
           <div className="custom-flex-col h-full">
             {children}
             {id && (
-              <div className="py-4 px-6 flex items-center gap-4">
-                <button>
-                  <Picture src={ClipBlue} alt="attachment" size={24} />
-                </button>
-                <Input
-                  id="chat"
-                  placeholder="Type your message here"
-                  className="flex-1 text-sm"
-                />
-                <button>
-                  <Picture src={MicrophoneBlue} alt="voice note" size={24} />
-                </button>
-              </div>
+              <>
+                <AuthForm onFormSubmit={() => { }}>
+                  <div className="py-4 px-6 flex items-center gap-4">
+                    <button>
+                      <Picture src={ClipBlue} alt="attachment" size={24} />
+                    </button>
+                    <Input
+                      id="chat"
+                      placeholder="Type your message here"
+                      className="flex-1 text-sm"
+                      onChange={setMessage}
+                    />
+                    <button
+                      className={clsx({
+                        "animate-spin h-5 w-5 border-b-2 border-blue-500 rounded-full mr-2": reqLoading,
+                      },)}
+                      onClick={handleSendMsg}
+                    >
+                        <Picture
+                          src={message ? SendIcon : MicrophoneBlue}
+                          alt="voice note"
+                          size={24}
+                        />
+                    </button>
+                  </div>
+                </AuthForm>
+              </>
             )}
           </div>
         </div>
