@@ -1690,3 +1690,104 @@ const Messages: React.FC<MessagesProps> = ({ day, messages }) => {
 };
 
 export default Messages;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+===========CHAT INTEGARET
+
+"use client";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useChatStore } from "@/store/message";
+import { transformMessages } from "../data";
+import Picture from "@/components/Picture/picture";
+import Messages from "@/components/Message/messages";
+import { empty } from "@/app/config";
+import { UsersProps } from "../types";
+import useGetConversation from "@/hooks/getConversation";
+
+const Chat = () => {
+  const router = useRouter();
+  const { data, setChatData } = useChatStore();
+  const usersData = useChatStore((state) => state?.data?.users);
+  const { id } = useParams<{ id: string }>();
+  const users = usersData?.users || [];
+  const userId = Number(id);
+  const store_messages = useChatStore((state) => state?.data?.conversations);
+  const [conversations, setConversations] = useState<any[]>([]);
+
+  // Clear local conversation state when conversation id changes.
+  useEffect(() => {
+    setConversations([]);
+  }, [id]);
+
+  // Fetch the conversation messages (this hook uses your fetch-event-source logic)
+  useGetConversation(`${id}`);
+
+  // Transform and set sorted conversations whenever the store updates.
+  useEffect(() => {
+    if (store_messages) {
+      const transformedMessages = transformMessages(store_messages);
+      // Instead of accumulating new messages, simply override with the full sorted list.
+      setConversations(transformedMessages);
+    }
+  }, [store_messages]);
+
+  // If user not found, redirect to messages page
+  const user = users.find((user: UsersProps) => Number(user.id) === userId);
+  if (!user) {
+    router.replace("/messages");
+    return null;
+  }
+
+  return (
+    <>
+      <div className="py-4 px-6 bg-neutral-2 dark:bg-black">
+        <div className="flex items-center gap-3">
+          <button onClick={() => router.push("/messages")}>
+            <Picture src="/icons/chevron-left.svg" alt="back" size={20} />
+          </button>
+          <button className="flex items-center gap-4 text-left">
+            <Picture
+              src={user?.imageUrl || empty}
+              alt="profile picture"
+              containerClassName="custom-secondary-bg rounded-full"
+              size={32}
+              rounded
+              status
+            />
+            <div className="custom-flex-col">
+              <p className="text-text-primary dark:text-white text-base font-medium capitalize">
+                {user?.name}
+              </p>
+              <p className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal">
+                Tap here for contact info
+              </p>
+            </div>
+          </button>
+        </div>
+      </div>
+      <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
+        {conversations.length > 0 &&
+          conversations.map((m) => (
+            <Messages key={m.id} day={m.day} messages={m.details} userId={user.id} />
+          ))}
+      </div>
+    </>
+  );
+};
+
+export default Chat;

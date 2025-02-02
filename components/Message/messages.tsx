@@ -1,11 +1,7 @@
-// Imports
-import { usePersonalInfoStore } from "@/store/personal-info-store";
 import Message from "./message";
 import { MessagesProps } from "./types";
 
 const Messages: React.FC<MessagesProps> = ({ day, messages, userId }) => {
-
-  // console.log("user id", messages)
   return (
     <div className="custom-flex-col gap-8">
       {/* Day Label */}
