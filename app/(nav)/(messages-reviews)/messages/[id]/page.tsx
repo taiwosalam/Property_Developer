@@ -1,21 +1,15 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-
-// Images
-import ChevronLeft from "@/public/icons/chevron-left.svg";
-
-// Imports
+import { useEffect, useState } from "react";
+import { useChatStore } from "@/store/message";
+import { transformMessages } from "../data"; // Your original transformation function, if needed
+import { groupMessagesByDay } from "../data"; // The new grouping helper
 import Picture from "@/components/Picture/picture";
 import Messages from "@/components/Message/messages";
-import { message_card_data, message_data } from "@/components/Message/data";
-import { useChatStore } from "@/store/message";
 import { empty } from "@/app/config";
 import { UsersProps } from "../types";
 import useGetConversation from "@/hooks/getConversation";
-import { useEffect, useState } from "react";
-import { transformMessages } from "../data";
-// import { transformMessages } from "../data";
 
 const Chat = () => {
   const router = useRouter();
@@ -26,30 +20,25 @@ const Chat = () => {
   const userId = Number(id);
   const store_messages = useChatStore((state) => state?.data?.conversations);
   const [conversations, setConversations] = useState<any[]>([]);
-  // Find user whose ID matches the route ID
-  const user = users.find((user: UsersProps) => Number(user.id) === Number(userId));
-  const messages = useGetConversation(`${id}`);
 
-  
+  // Clear local conversation state when conversation id changes.
+  useEffect(() => {
+    setConversations([]);
+  }, [id]);
+
+  // Initiate fetching messages (this hook handles SSE, etc.)
+  useGetConversation(`${id}`);
+
+  // When store_messages updates, group messages by day and update local state.
   useEffect(() => {
     if (store_messages) {
-      const transformedMessages = transformMessages(store_messages); // Get transformed messages
-
-      setConversations((prevConversations) => {
-        // Filter out the transformed messages that already exist in prevConversations
-        const newMessages = transformedMessages.filter((newMessage: any) =>
-          !prevConversations.some(
-            (existingMessage: any) => existingMessage.id === newMessage.id
-          )
-        );
-
-        return [...prevConversations, ...newMessages]; // Add only the unique messages
-      });
+      const groupedMessages = groupMessagesByDay(store_messages);
+      setConversations(groupedMessages);
     }
   }, [store_messages]);
-  
-  
-  // If user not found, redirect to messages page
+
+  // If user not found, redirect to messages page.
+  const user = users.find((user: UsersProps) => Number(user.id) === userId);
   if (!user) {
     router.replace("/messages");
     return null;
@@ -60,7 +49,7 @@ const Chat = () => {
       <div className="py-4 px-6 bg-neutral-2 dark:bg-black">
         <div className="flex items-center gap-3">
           <button onClick={() => router.push("/messages")}>
-            <Picture src={ChevronLeft} alt="back" size={20} />
+            <Picture src="/icons/chevron-left.svg" alt="back" size={20} />
           </button>
           <button className="flex items-center gap-4 text-left">
             <Picture
@@ -83,13 +72,15 @@ const Chat = () => {
         </div>
       </div>
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
-        {conversations?.length > 0 &&
-          conversations.map((m) => (
-            <>
-              <Messages day={m?.day} messages={m?.details} userId={user?.id} />
-            </>
-          ))
-        }
+        {conversations.length > 0 &&
+          conversations.map((group, index) => (
+            <Messages
+              key={index}
+              day={group.day}
+              messages={group.messages}
+              userId={user.id}
+            />
+          ))}
       </div>
     </>
   );

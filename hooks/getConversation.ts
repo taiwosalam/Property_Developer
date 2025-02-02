@@ -1,92 +1,64 @@
 import { useEffect } from "react";
 import { useChatStore } from "@/store/message";
 import { useAuthStore } from "@/store/authStore";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 type MessageType = {
-  id: string;
+  id: number; // Use a number for easier sorting
   text: string;
-  senderId: string;
+  senderId: number;
   timestamp: string;
 };
 
 const useGetConversation = (id: string) => {
-  const { data, setChatData } = useChatStore(); // Directly destructure data from store
+  const { data, setChatData } = useChatStore();
   const token = useAuthStore.getState().token;
 
   useEffect(() => {
-    const fetchSSE = () => {
-      const controller = new AbortController();
-      const signal = controller.signal;
+    const controller = new AbortController();
 
-      fetch(`https://be1.ourproperty.ng/api/v1/messages/sse/user/${id}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "text/event-stream",
-        },
-        signal,
-      })
-        .then((response) => {
-          const reader = response?.body?.getReader();
-          const decoder = new TextDecoder();
-          let stream = "";
+    fetchEventSource(`https://be1.ourproperty.ng/api/v1/messages/sse/user/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "text/event-stream",
+      },
+      signal: controller.signal,
+      onmessage: (ev) => {
+        try {
+          const newMessage: MessageType = JSON.parse(ev.data);
+          const currentConversations = data.conversations || [];
 
-          reader?.read().then(function processText({ done, value }) {
-            if (done) {
-              console.log("Stream finished.");
-              return;
-            }
-
-            stream += decoder.decode(value, { stream: true });
-            const messages = stream.split("\n");
-
-            messages.forEach((message) => {
-              if (message) {
-                const lines = message.split("\n");
-                const dataLine = lines.find((line) => line.startsWith("data:"));
-
-                if (dataLine) {
-                  try {
-                    const jsonData = dataLine.replace("data:", "").trim(); // Extract the JSON string after "data:"
-                    const newMessage: MessageType = JSON.parse(jsonData);
-
-                    // console.log("New Message Received:", newMessage);
-
-                    // Get the current conversations from store
-                    const currentConversations = data.conversations || [];
-
-                    // Check if the new message is unique (based on ID) and add it
-                    const messageExists = currentConversations.some(
-                      (message: MessageType) => message.id === newMessage.id
-                    );
-
-                    if (!messageExists) {
-                      // Update the store with the new message (append to the existing messages)
-                      setChatData("conversations", [...currentConversations, newMessage]);
-                    }
-                  } catch (error) {
-                    console.error("Error parsing SSE message:", error);
-                  }
-                }
-              }
-            });
-
-            reader?.read().then(processText);
-          });
-        })
-        .catch((error) => {
-          console.error("SSE Error:", error);
-        });
-
-      return controller;
-    };
-
-    fetchSSE();
+          const messageExists = currentConversations.some(
+            (msg: MessageType) => msg.id === newMessage.id
+          );
+          if (!messageExists) {
+            const updatedConversations = [...currentConversations, newMessage].sort(
+              (a, b) => a.id - b.id
+            );
+            setChatData("conversations", updatedConversations);
+          }
+        } catch (error) {
+          console.error("Error parsing SSE message:", error);
+        }
+      },
+      onopen: async (response: Response) => {
+        if (response.ok && response.status === 200) {
+          console.log("Connection established.");
+        } else if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+          console.error("Client error encountered, closing connection:", response.status);
+          throw new Error("Client error, closing connection.");
+        }
+      },
+      onerror: (err) => {
+        console.error("SSE connection error:", err);
+      },
+    });
 
     return () => {
-      // Cleanup if necessary
+      controller.abort();
     };
-  }, [id, setChatData, token]);
+  }, [id, token, data.conversations, setChatData]);
 
   return null;
 };

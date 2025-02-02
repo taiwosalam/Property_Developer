@@ -73,54 +73,60 @@ export const transformCompanyUsersData = (
 
 
 export const transformMessages = (data: any) => {
-    // console.log("data", data)
-    return data?.map((d: any) => ({
-        id: d.id,
-        details: [
-            {
-                text: d.content,
-                sender_id: Number(d.sender_id), // Ensure it's a number
-                time: moment(d.timestamp).calendar(),
-            }
-        ],
-        day: moment(d.timestamp).calendar(),
-    })) || []; // Return an empty array if no data exists
+  if (!data) return [];
+  return data
+    .map((d: any) => ({
+      id: d.id,
+      details: [
+        {
+          text: d.content,
+          sender_id: Number(d.sender_id),
+          time: moment(d.timestamp).format("hh:mm A"),
+        },
+      ],
+      day: moment(d.timestamp).calendar(),
+      // Include a numeric timestamp for sorting
+      timestamp: new Date(d.timestamp).getTime(),
+    }))
+    .sort((a:any, b:any) => a.timestamp - b.timestamp);
 };
 
 
-// export const transformMessages = (data: any) => {
-//     if (!data) return [];
-  
-//     let lastDay = "";
+
+export const groupMessagesByDay = (data: any[]) => {
+    if (!data || !data.length) return [];
     
-//     return data.map((d: any) => {
-//       const messageDate = moment(d.timestamp);
-//       let dayLabel = messageDate.format("MMMM D"); // Default: "April 12"
-  
-//       if (messageDate.isSame(moment(), "day")) {
-//         dayLabel = "Today";
-//       } else if (messageDate.isSame(moment().subtract(1, "day"), "day")) {
-//         dayLabel = "Yesterday";
-//       }
-  
-//       // Only show the day label if it's different from the last message's day
-//       const showDay = lastDay !== dayLabel ? dayLabel : "";
-  
-//       lastDay = dayLabel;
-  
-//       return {
-//         id: d.id,
-//         details: [
-//           {
-//             text: d.content,
-//             sender_id: Number(d.sender_id),
-//             time: messageDate.format("h:mm A"), // Example: "6:10 PM"
-//           },
-//         ],
-//         day: showDay, // Only show when the date changes
-//       };
-//     });
-//   };
+    // Sort messages by timestamp in ascending order.
+    const sorted = [...data].sort(
+      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+    
+    // Reduce the sorted messages into groups based on day.
+    const groups = sorted.reduce((acc, message) => {
+      // Use 'YYYY-MM-DD' for grouping.
+      const dayKey = moment(message.timestamp).format('YYYY-MM-DD');
+      // Use calendar format for display (e.g., "Today", "Yesterday", etc.).
+      const displayDay = moment(message.timestamp).calendar();
+      
+      if (!acc[dayKey]) {
+        acc[dayKey] = { day: displayDay, messages: [] };
+      }
+      
+      // Push the transformed message details.
+      acc[dayKey].messages.push({
+        id: message.id,
+        text: message.content,
+        sender_id: Number(message.sender_id),
+        time: moment(message.timestamp).format("hh:mm A"),
+      });
+      
+      return acc;
+    }, {} as Record<string, { day: string; messages: any[] }>);
+    
+    // Convert the groups object into an array.
+    return Object.values(groups);
+  };
+
 
 
 
