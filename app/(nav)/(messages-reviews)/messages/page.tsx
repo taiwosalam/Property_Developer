@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image";
 
 // Images
@@ -8,10 +9,15 @@ import Button from "@/components/Form/Button/button";
 import { message_card_data } from "@/components/Message/data";
 import { getLocalStorage } from "@/utils/local-storage";
 import { empty } from "@/app/config";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import SelectChatUsersModal from "@/components/Message/user-modal";
+import { useChatStore } from "@/store/message";
+import { MessagesProps } from "@/components/Message/types";
 
-const Messages = () => {
+const MessagesPage:React.FC<{loading?: boolean}> = ({ loading }) => {
   const loggedInUserDetails = getLocalStorage('additional_details');
   const logo = loggedInUserDetails?.company?.company_logo || empty;
+  const usersData = useChatStore((state) => state?.data?.users);
 
   return (
     <div className="w-full h-full flex items-center justify-center">
@@ -34,9 +40,20 @@ const Messages = () => {
               </p>
             </div>
             <div className="flex justify-center">
-              <Button size="sm_medium" className="py-2 px-7">
-                Start New Message
-              </Button>
+              <Modal>
+                <ModalTrigger asChild>
+                  <Button size="sm_medium" className="py-2 px-7">
+                    Start New Chat
+                  </Button>
+                </ModalTrigger>
+                <ModalContent>
+                  <SelectChatUsersModal
+                    loading={loading}
+                    usersData={usersData?.users}
+                    filters={usersData?.filters}
+                  />
+                </ModalContent>
+              </Modal>
             </div>
           </>
         }
@@ -45,4 +62,4 @@ const Messages = () => {
   );
 };
 
-export default Messages;
+export default MessagesPage;

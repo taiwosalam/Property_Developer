@@ -11,6 +11,7 @@ import clsx from "clsx";
 import { empty } from "@/app/config";
 import Picture from "../Picture/picture";
 import { SectionSeparator } from "../Section/section-components";
+import { getIconByContentType } from "@/app/(nav)/(messages-reviews)/messages/data";
 
 const MessageCard: React.FC<MessageCardProps> = ({
   id,
@@ -22,7 +23,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
   highlight,
   messages = 0,
   onClick,
+  content_type,
 }) => {
+  const IconComponent = getIconByContentType(content_type as string);
   const Children = () => (
     <>
       <div></div>
@@ -38,9 +41,18 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 <Picture src={VerifiedIcon} alt="verified" size={16} />
               )}
             </div>
-            <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal custom-truncated">
-              {desc}
-            </p>
+            {content_type === "text" ? (
+              <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full">
+                {desc}
+              </p>
+            ) : (
+              <div className="flex gap-1 text-sm items-center text-brand-9">
+                {IconComponent && <IconComponent />}
+                {content_type}
+              </div>
+            )
+            }
+
           </div>
         </div>
         <div className="flex flex-col gap-2 justify-center items-center font-normal">

@@ -4,11 +4,11 @@ import Input from '../Form/Input/input';
 import FilterButton from '../FilterButton/filter-button';
 import MessagesFilterMenu from './messages-filter-menu';
 import MessageUserCard from './user-card';
-import { UsersProps } from '@/app/(nav)/(messages-reviews)/messages/types';
+import { Filters, UsersProps } from '@/app/(nav)/(messages-reviews)/messages/types';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useModal } from '../Modal/modal';
-import { Filters, positionMap } from '@/app/(nav)/(messages-reviews)/messages/data';
+import { positionMap } from '@/app/(nav)/(messages-reviews)/messages/data';
 import MessageUserCardSkeleton from '../Skeleton/message-user-card-skeleton';
 
 const SelectChatUsersModal = ({

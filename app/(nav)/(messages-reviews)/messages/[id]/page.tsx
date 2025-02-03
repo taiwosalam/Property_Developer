@@ -3,7 +3,6 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useChatStore } from "@/store/message";
-import { transformMessages } from "../data"; // Your original transformation function, if needed
 import { groupMessagesByDay } from "../data"; // The new grouping helper
 import Picture from "@/components/Picture/picture";
 import Messages from "@/components/Message/messages";
@@ -21,10 +20,11 @@ const Chat = () => {
   const store_messages = useChatStore((state) => state?.data?.conversations);
   const [conversations, setConversations] = useState<any[]>([]);
 
-  // Clear local conversation state when conversation id changes.
+  // Clear local conversation & store state when conversation id changes.
   useEffect(() => {
     setConversations([]);
-  }, [id]);
+    setChatData("conversations", []);
+  }, [id, setChatData]);
 
   // Initiate fetching messages (this hook handles SSE, etc.)
   useGetConversation(`${id}`);

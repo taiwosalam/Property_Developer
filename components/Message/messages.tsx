@@ -2,6 +2,7 @@ import Message from "./message";
 import { MessagesProps } from "./types";
 
 const Messages: React.FC<MessagesProps> = ({ day, messages, userId }) => {
+  // console.log("messgaes", messages)
   return (
     <div className="custom-flex-col gap-8">
       {/* Day Label */}
@@ -13,11 +14,12 @@ const Messages: React.FC<MessagesProps> = ({ day, messages, userId }) => {
 
       {/* Messages List */}
       <div className="custom-flex-col gap-4">
-        {messages?.map((m) => {
+        {messages?.map((m, index) => {
           const isFromUser = m.sender_id === userId;
           return (
             <Message
-              key={m.time}
+              key={index}
+              content_type={m.content_type}
               type={isFromUser ? "from user" : "to user"}
               time={m.time}
               text={m.text}

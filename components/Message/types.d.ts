@@ -9,6 +9,7 @@ export interface MessageCardProps {
   highlight?: boolean;
   groupDesc?: string;
   onClick?: () => void;
+  content_type?: string;
 }
 
 export interface MessagesProps {
@@ -20,5 +21,6 @@ export interface MessagesProps {
 export interface MessageProps {
   text: string;
   time: string;
+  content_type?: string;
   type: "to user" | "from user";
 }
