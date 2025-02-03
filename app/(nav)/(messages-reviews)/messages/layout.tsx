@@ -30,6 +30,8 @@ import clsx from "clsx";
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import useGetConversation from "@/hooks/getConversation";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import MessageAttachment from "@/components/Message/message-attachment";
 
 const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { setChatData } = useChatStore();
@@ -42,9 +44,6 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const [conversations, setConversations] = useState<any[]>([]);
 
 
-  // const [messages, setMessages] = 
-  // console.log("store messages", store_messages)
-
   useEffect(() => {
     setMessage(message)
   }, [message])
@@ -53,9 +52,14 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     setAnchorEl(null);
   };
 
+  // Handler to update the message input when an emoji is selected.
+  const handleEmojiSelect = (emoji: string) => {
+    setMessage((prev) => prev + emoji);
+  };
+
   const {
     data: usersData,
-    loading:loadingUsers,
+    loading: loadingUsers,
     error,
   } = useFetch<CompanyUsersAPIResponse>('/company/users');
 
@@ -152,13 +156,21 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
               <>
                 <AuthForm onFormSubmit={() => { }}>
                   <div className="py-4 px-6 flex items-center gap-4">
-                    <button>
-                      <Picture src={ClipBlue} alt="attachment" size={24} />
-                    </button>
+                    <Modal>
+                      <ModalTrigger asChild>
+                        <button>
+                          <Picture src={ClipBlue} alt="attachment" size={24} />
+                        </button>
+                      </ModalTrigger>
+                      <ModalContent>
+                        <MessageAttachment onEmojiSelect={handleEmojiSelect}  />
+                      </ModalContent>
+                    </Modal>
                     <Input
                       id="chat"
                       placeholder="Type your message here"
                       className="flex-1 text-sm"
+                      value={message}
                       onChange={setMessage}
                     />
                     <button
@@ -167,11 +179,11 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                       },)}
                       onClick={handleSendMsg}
                     >
-                        <Picture
-                          src={message ? SendIcon : MicrophoneBlue}
-                          alt="voice note"
-                          size={24}
-                        />
+                      <Picture
+                        src={message ? SendIcon : MicrophoneBlue}
+                        alt="voice note"
+                        size={24}
+                      />
                     </button>
                   </div>
                 </AuthForm>

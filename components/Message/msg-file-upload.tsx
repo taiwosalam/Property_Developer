@@ -2,20 +2,20 @@ import { ImportCircle, DeleteIconOrange } from "@/public/icons/icons";
 import { useFileUploader } from "@/hooks/useFileUploader";
 import { useState } from "react";
 import { toast } from "sonner";
-import { LandlordTenantInfoDocument } from "../landlord-tenant-info-components";
 import Button from "@/components/Form/Button/button";
+import { LandlordTenantInfoDocument } from "../Management/landlord-tenant-info-components";
 
 interface AddMultipleLandlordsOrTenantsProps {
-    type: "landlord" | "tenant";
-    method: "import" | "invite";
+    accept?: string;
+    heading?: string;
     submitAction: (file: File) => Promise<void>;
 }
 
-const UploadSignature: React.FC<
+const UploadMsgFile: React.FC<
     AddMultipleLandlordsOrTenantsProps
-> = ({ type, method, submitAction }) => {
+> = ({ submitAction, accept, heading }) => {
     const [requestLoading, setRequestLoading] = useState(false);
-    const acceptedExtensions = ["jpg", "jpeg", "png", "pdf"];
+    const acceptedExtensions = ["jpg", "jpeg", "png", "pdf", "mp3"];
     const {
         file,
         fileName,
@@ -48,7 +48,7 @@ const UploadSignature: React.FC<
     return (
         <>
             <div
-                className="max-w-[570px] mx-auto mb-5 md:mb-8 lg:mb-12 border-4 border-dotted dark:border-darkText-2 py-8 md:py-12"
+                className="max-w-[570px] mx-auto mb-3 md:mb-4 lg:mb-12 border-4 border-dotted dark:border-darkText-2 py-8 md:py-12"
                 onDrop={handleDrop}
                 onDragOver={(e) => e.preventDefault()}
             >
@@ -66,7 +66,7 @@ const UploadSignature: React.FC<
                         </button>
                         <div className="custom-flex-col gap-[10px] text-center">
                             <p className="text-base md:text-xl lg:text-2xl font-bold">
-                                Import file
+                               {heading ? heading : "Import File"} 
                             </p>
                             <p className="text-[#6C6D6D] text-sm font-medium">
                                 Please click to select a file{" "}
@@ -100,14 +100,11 @@ const UploadSignature: React.FC<
                 type="file"
                 ref={fileInputRef}
                 style={{ display: "none" }}
-                accept=".jpg, .jpeg, .png, .pdf"
+                // accept=".jpg, .jpeg, .png"
+                accept={accept}
                 onChange={handleFileChange}
             />
             <div className="flex justify-end gap-4 items-center">
-                <p className="text-sm font-normal">
-                    Please sign on a plain white paper and take a photo for uploading. If possible, remove the
-                    background picture of the signature before uploading for a cleaner appearance.
-                </p>
                 <Button
                     type="button"
                     onClick={handleSubmit}
@@ -115,11 +112,11 @@ const UploadSignature: React.FC<
                     className="py-2 px-8"
                     disabled={requestLoading}
                 >
-                    {requestLoading ? "Hang on..." : "Submit"}
+                    {requestLoading ? "Hang on..." : "Send"}
                 </Button>
             </div>
         </>
     );
 };
 
-export default UploadSignature;
+export default UploadMsgFile;

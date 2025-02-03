@@ -91,6 +91,9 @@ export const message_card_data: MessageCardProps[] = [
   // },
 ];
 
+export interface EmojiComponentProps {
+  onEmojiSelect: (emoji: string) => void;
+}
 
 export const message_data: MessageCardProps[] = [
   {

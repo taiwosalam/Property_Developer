@@ -13,11 +13,11 @@ const Messages: React.FC<MessagesProps> = ({ day, messages, userId }) => {
 
       {/* Messages List */}
       <div className="custom-flex-col gap-4">
-        {messages?.map((m) => {
+        {messages?.map((m, index) => {
           const isFromUser = m.sender_id === userId;
           return (
             <Message
-              key={m.time}
+              key={index}
               type={isFromUser ? "from user" : "to user"}
               time={m.time}
               text={m.text}

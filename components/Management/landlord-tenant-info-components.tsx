@@ -14,6 +14,7 @@ import DocThumbnail from "@/public/document-thumbnails/docx-thumbnail.jpg";
 import PdfThumbnail from "@/public/document-thumbnails/pdf-thumbnail.jpg";
 import JpgThumbnail from "@/public/document-thumbnails/jpg-thumbnail.png";
 import ExcelThumbnail from "@/public/document-thumbnails/xlsx-thumbnail.jpg";
+import Mp3Thumbnail from "@/public/document-thumbnails/mp3_thumbnail.jpg";
 import Image from "next/image";
 
 export const LandlordTenantInfoBox: React.FC<{
@@ -127,6 +128,8 @@ export const LandlordTenantInfoDocument: React.FC<AttachedDocumentCard> = ({
     switch (extension) {
       case "pdf":
         return PdfThumbnail;
+      case "mp3":
+        return Mp3Thumbnail;
       case "doc":
       case "docx":
         return DocThumbnail;
