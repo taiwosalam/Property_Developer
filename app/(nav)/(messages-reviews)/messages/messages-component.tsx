@@ -10,7 +10,7 @@ import { getLocalStorage } from "@/utils/local-storage";
 import { empty } from "@/app/config";
 import { useChatStore } from "@/store/message";
 
-export const NoMessage = ({ loading }: { loading?: boolean }) => {
+const NoMessage:React.FC<{ loading?: boolean }> = ({ loading }) => {
     const usersData = useChatStore((state) => state?.data?.users);
     const loggedInUserDetails = getLocalStorage('additional_details');
     const logo = loggedInUserDetails?.company?.company_logo || empty;
@@ -51,3 +51,5 @@ export const NoMessage = ({ loading }: { loading?: boolean }) => {
         </div>
     )
 }
+
+export default NoMessage;

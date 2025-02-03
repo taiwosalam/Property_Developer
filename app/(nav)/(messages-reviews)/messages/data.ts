@@ -1,21 +1,18 @@
 import { empty } from "@/app/config";
-import { UsersProps } from "./types";
+import { CompanyUsersAPIResponse, ConversationsAPIResponse, PageMessages, UsersProps } from "./types";
 import api, { handleAxiosError } from "@/services/api";
 import moment from "moment";
+import {
+    AudioIcon,
+    CancelIcon,
+    ChevronLeft,
+    DocumentIcon,
+    EmojiIcon,
+    GalleryIcon,
+  } from '@/public/icons/icons';
 
 export const users_data: UsersProps[] = [
     { id: "1", name: "", imageUrl: "", position: "" },
-    //   { id: "2", name: "Dada Teniola Emmanuel", imageUrl: "/empty/SampleLandlord.jpeg", position: "Staff" },
-    //   { id: "3", name: "Abdulrafiu Mubi", imageUrl: "/empty/SampleLandlord.jpeg", position: "Director" },
-    //   { id: "4", name: "Aisha Oladimeji", imageUrl: "/empty/SampleLandlord.jpeg", position: "Account Officer" },
-    //   { id: "5", name: "Oluwaseun Olorunyomi", imageUrl: "/empty/SampleLandlord.jpeg", position: "Branch Manager" },
-    //   { id: "6", name: "Opeyemi Olorunfemi", imageUrl: "/empty/SampleLandlord.jpeg", position: "Staff" },
-    //   { id: "7", name: "Aisha Oladimeji", imageUrl: "/empty/SampleLandlord.jpeg", position: "Director" },
-    //   { id: "8", name: "Oluwaseun Olorunyomi", imageUrl: "/empty/SampleLandlord.jpeg", position: "Account Officer" },
-    //   { id: "9", name: "Opeyemi Olorunfemi", imageUrl: "/empty/SampleLandlord.jpeg", position: "Branch Manager" },
-    //   { id: "10", name: "Oluwaseun Olorunyomi", imageUrl: "/empty/SampleLandlord.jpeg", position: "Staff" },
-    //   { id: "11", name: "Opeyemi Olorunfemi", imageUrl: "/empty/SampleLandlord.jpeg", position: "Director" },
-    //   { id: "12", name: "Aisha Oladimeji", imageUrl: "/empty/SampleLandlord.jpeg", position: "Account Officer" },
 ];
 
 export const initialData = {
@@ -71,96 +68,136 @@ export const transformCompanyUsersData = (
     }
 }
 
+export const transformUsersMessages = (
+    data: ConversationsAPIResponse | null | undefined
+): PageMessages[] => {
+    if (!data || !data.conversations) return []; // Ensure data exists
 
-export const transformMessages = (data: any) => {
-  if (!data) return [];
-  return data
-    .map((d: any) => ({
-      id: d.id,
-      details: [
-        {
-          text: d.content,
-          sender_id: Number(d.sender_id),
-          time: moment(d.timestamp).format("hh:mm A"),
-        },
-      ],
-      day: moment(d.timestamp).calendar(),
-      // Include a numeric timestamp for sorting
-      timestamp: new Date(d.timestamp).getTime(),
-    }))
-    .sort((a:any, b:any) => a.timestamp - b.timestamp);
+    return data.conversations.map((c) => {
+        let finalContentType = 'text'; // Default to 'text'
+
+        if (c.latest_message_type !== 'text') {
+            // If it's a file, check the file extension.
+            const extension = c.latest_message.split('.').pop()?.toLowerCase() || '';
+            if (['mp3', 'wav', 'ogg'].includes(extension)) {
+                finalContentType = 'audio';
+            } else if (['mp4', 'webm', 'avi', 'mov'].includes(extension)) {
+                finalContentType = 'video';
+            } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(extension)) {
+                finalContentType = 'image';
+            } else if (['pdf', 'doc', 'docx', 'txt'].includes(extension)) {
+                finalContentType = 'document';
+            } else {
+                // Fallback for unrecognized file types.
+                finalContentType = 'file';
+            }
+        }
+
+        return {
+            id: c.participant_id,
+            pfp: c.profile_picture,
+            desc: c.latest_message,
+            time: c.latest_message_time,
+            fullname: c.participant_name,
+            messages: 1, // change later
+            verified: true, // change later
+            content_type: finalContentType,
+        };
+    });
 };
 
+
+type IconComponent = () => JSX.Element;
+export const getIconByContentType = (contentType:string) => {
+    const iconMap:Record<string, IconComponent | null> = {
+      audio: AudioIcon,
+      video: GalleryIcon, 
+      image: GalleryIcon,
+      document: DocumentIcon,
+    };
+    if (contentType === 'text' || !iconMap[contentType]) {
+      return null;
+    }
+    return iconMap[contentType];
+  };
+
+export const transformMessages = (data: any) => {
+    if (!data) return [];
+    return data
+        .map((d: any) => ({
+            id: d.id,
+            details: [
+                {
+                    text: d.content,
+                    sender_id: Number(d.sender_id),
+                    time: moment(d.timestamp).format("hh:mm A"),
+                },
+            ],
+            day: moment(d.timestamp).calendar(),
+            // Include a numeric timestamp for sorting
+            timestamp: new Date(d.timestamp).getTime(),
+        }))
+        .sort((a: any, b: any) => a.timestamp - b.timestamp);
+};
 
 
 export const groupMessagesByDay = (data: any[]) => {
     if (!data || !data.length) return [];
-    
+
     // Sort messages by timestamp in ascending order.
     const sorted = [...data].sort(
-      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+        (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     );
-    
+
     // Reduce the sorted messages into groups based on day.
     const groups = sorted.reduce((acc, message) => {
-      // Use 'YYYY-MM-DD' for grouping.
-      const dayKey = moment(message.timestamp).format('YYYY-MM-DD');
-      // Use calendar format for display (e.g., "Today", "Yesterday", etc.).
-      const displayDay = moment(message.timestamp).calendar();
-      
-      if (!acc[dayKey]) {
-        acc[dayKey] = { day: displayDay, messages: [] };
-      }
-      
-      // Push the transformed message details.
-      acc[dayKey].messages.push({
-        id: message.id,
-        text: message.content,
-        sender_id: Number(message.sender_id),
-        time: moment(message.timestamp).format("hh:mm A"),
-      });
-      
-      return acc;
+        // Use 'YYYY-MM-DD' for grouping.
+        const dayKey = moment(message.timestamp).format('YYYY-MM-DD');
+        // Use calendar format for display (e.g., "Today", "Yesterday", etc.).
+        const displayDay = moment(message.timestamp).calendar();
+
+        if (!acc[dayKey]) {
+            acc[dayKey] = { day: displayDay, messages: [] };
+        }
+
+        // Determine the appropriate content type.
+        let finalContentType = message.content_type;
+        let contentDisplay = message.content;
+
+        if (message.content_type !== 'text') {
+            // If it's a file, check the file extension.
+            if (message.content_type === 'file') {
+                const extension = message.content.split('.').pop()?.toLowerCase() || '';
+                if (['mp3', 'wav', 'ogg'].includes(extension)) {
+                    finalContentType = 'audio';
+                } else if (['mp4', 'webm', 'avi', 'mov'].includes(extension)) {
+                    finalContentType = 'video';
+                } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(extension)) {
+                    finalContentType = 'image';
+                } else if (['pdf', 'doc', 'docx', 'txt'].includes(extension)) {
+                    finalContentType = 'document';
+                } else {
+                    // Fallback for unrecognized file types.
+                    finalContentType = 'file';
+                }
+            }
+        }
+
+        // Push the transformed message details.
+        acc[dayKey].messages.push({
+            id: message.id,
+            text: contentDisplay,
+            sender_id: Number(message.sender_id),
+            time: moment(message.timestamp).format("hh:mm A"),
+            content_type: finalContentType, // Added for UI rendering logic.
+        });
+
+        return acc;
     }, {} as Record<string, { day: string; messages: any[] }>);
-    
+
     // Convert the groups object into an array.
     return Object.values(groups);
-  };
-
-
-
-
-
-export interface User {
-    id: string;
-    name: string;
-    profile_picture: string | null;
-    role: string;
-}
-
-export interface RoleFilters {
-    director: number;
-    staff: number;
-    account: number;
-    manager: number;
-}
-
-export interface Branch {
-    id: number;
-    name: string;
-}
-
-export interface Filters {
-    roles: RoleFilters;
-    branches: Branch[];
-}
-
-export interface CompanyUsersAPIResponse {
-    data: {
-        users: User[];
-        filters: Filters;
-    }
-}
+};
 
 
 
@@ -187,3 +224,13 @@ export const SendMessage = async (data: FormData, id: string) => {
         return false
     }
 }
+
+
+// Helper to convert audio to FormData
+export const convertToFormData = (audioBlob: Blob) => {
+    const formData = new FormData();
+    formData.append("file", audioBlob, "voice-note.wav");
+    formData.append("content_type", "audio");
+    formData.append("receiver_type", "user");
+    return formData;
+};

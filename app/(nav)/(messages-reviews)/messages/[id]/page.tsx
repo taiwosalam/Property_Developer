@@ -20,8 +20,6 @@ const Chat = () => {
   const store_messages = useChatStore((state) => state?.data?.conversations);
   const [conversations, setConversations] = useState<any[]>([]);
 
-  console.log("id", id)
-
   // Clear local conversation & store state when conversation id changes.
   useEffect(() => {
     setConversations([]);

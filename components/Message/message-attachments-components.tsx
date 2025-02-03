@@ -1,11 +1,14 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ModalTrigger } from '../Modal/modal'
+import { ModalTrigger, useModal } from '../Modal/modal'
 import { CancelIcon, ChevronLeft } from '@/public/icons/icons'
 import EmojiPicker from 'emoji-picker-react';
-import { EmojiComponentProps } from './data';
+import { AudioProps, EmojiComponentProps } from './data';
 import UploadMsgFile from './msg-file-upload';
+import { SendMessage } from '@/app/(nav)/(messages-reviews)/messages/data';
+import { objectToFormData } from '@/utils/checkFormDataForImageOrAvatar';
+import { toast } from 'sonner';
 
 
 export const MessageModalPreset = ({
@@ -43,149 +46,33 @@ export const MessageModalPreset = ({
     )
 }
 
-
-// export const MessageAudioComponent: React.FC = () => {
-//     const [isRecording, setIsRecording] = useState<boolean>(false);
-//     const [audioURL, setAudioURL] = useState<string | null>(null);
-//     const [timer, setTimer] = useState<number>(0);
-//     const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-
-//     // References for MediaRecorder and audio chunks.
-//     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-//     const audioChunksRef = useRef<Blob[]>([]);
-
-//     // Start recording using MediaRecorder.
-//     const startRecording = async () => {
-//         try {
-//             // Request audio stream from the user.
-//             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-//             const mediaRecorder = new MediaRecorder(stream);
-//             mediaRecorderRef.current = mediaRecorder;
-//             audioChunksRef.current = [];
-
-//             // Collect audio chunks as they become available.
-//             mediaRecorder.addEventListener("dataavailable", (event) => {
-//                 if (event.data.size > 0) {
-//                     audioChunksRef.current.push(event.data);
-//                 }
-//             });
-
-//             // When recording stops, create a Blob and store its URL.
-//             mediaRecorder.addEventListener("stop", () => {
-//                 const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
-//                 const url = URL.createObjectURL(audioBlob);
-//                 setAudioURL(url);
-//             });
-
-//             mediaRecorder.start();
-//             setIsRecording(true);
-//             setAudioURL(null);
-//             setTimer(0);
-
-//             // Start a timer that updates every second.
-//             const id = setInterval(() => {
-//                 setTimer((prev) => prev + 1);
-//             }, 1000);
-//             setIntervalId(id);
-//         } catch (error) {
-//             console.error("Failed to start recording:", error);
-//         }
-//     };
-
-//     // Stop the recording and clear the timer.
-//     const stopRecording = () => {
-//         if (mediaRecorderRef.current && isRecording) {
-//             mediaRecorderRef.current.stop();
-//             setIsRecording(false);
-//         }
-//         if (intervalId) {
-//             clearInterval(intervalId);
-//             setIntervalId(null);
-//         }
-//     };
-
-//     // Reset the recording state.
-//     const resetRecording = () => {
-//         setAudioURL(null);
-//         setTimer(0);
-//         setIsRecording(false);
-//         if (intervalId) {
-//             clearInterval(intervalId);
-//             setIntervalId(null);
-//         }
-//         audioChunksRef.current = [];
-//     };
-
-//     return (
-//         <div className="flex flex-col items-center p-4">
-//             <div className="w-full max-w-md bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow-md">
-//                 <div className="text-center mb-4">
-//                     {isRecording ? (
-//                         <div className="text-xl text-red-500 font-semibold">
-//                             Recording... {timer}s
-//                         </div>
-//                     ) : (
-//                         <div className="text-xl text-gray-700">
-//                             {audioURL ? "Recording complete" : "Not recording"}
-//                         </div>
-//                     )}
-//                 </div>
-//                 <div className="flex gap-4 justify-center">
-//                     {/* Start Recording Button */}
-//                     {!isRecording && (
-//                         <button
-//                             onClick={startRecording}
-//                             className="bg-green-500 hover:bg-green-600 text-white font-medium px-6 py-2 rounded shadow"
-//                         >
-//                             Start Recording
-//                         </button>
-//                     )}
-//                     {/* Stop Recording Button */}
-//                     {isRecording && (
-//                         <button
-//                             onClick={stopRecording}
-//                             className="bg-red-500 hover:bg-red-600 text-white font-medium px-6 py-2 rounded shadow"
-//                         >
-//                             Stop Recording
-//                         </button>
-//                     )}
-//                     {/* Reset Button (only when recording is complete) */}
-//                     {audioURL && !isRecording && (
-//                         <button
-//                             onClick={resetRecording}
-//                             className="bg-gray-500 hover:bg-gray-600 text-white font-medium px-6 py-2 rounded shadow"
-//                         >
-//                             Reset
-//                         </button>
-//                     )}
-//                 </div>
-//             </div>
-//             {/* Audio Preview */}
-//             {audioURL && (
-//                 <div className="mt-6 w-full max-w-md">
-//                     <p className="text-sm text-gray-600 mb-2">Preview:</p>
-//                     <audio src={audioURL} controls className="w-full rounded" />
-//                 </div>
-//             )}
-//         </div>
-//     );
-// };
-
-
-export const MessageAudioComponent: React.FC = () => {
+export const MessageAudioComponent: React.FC<AudioProps> = ({ id }) => {
+    const [loading, setLoading] = useState(false)
+    const { setIsOpen } = useModal()
     const handleUpload = async (file: File) => {
-        if (file) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                const imageBase64 = reader.result as string;
-                // setSignatureImageBase64(imageBase64);
-                // setSignatureImageFile(file);
-                // onCreateSignature(imageBase64, index, file);
-                // setIsOpen(false);
-            };
+
+        if (!file) return;
+        const payload = {
+            content_file: file,
+            content_type: "audio",
+            receiver_type: "user"
+        }
+        console.log("payload", payload)
+
+        try {
+            setLoading(true);
+            const res = await SendMessage(objectToFormData(payload), `${id}`);
+            if (res) {
+                setIsOpen(false)
+                window.dispatchEvent(new Event("refetch-users-msg"));
+            }
+        } catch (err) {
+            toast.error("Failed to send audio message");
+        } finally {
+            setLoading(false);
         }
     };
+
     return (
         <div className='mt-4'>
             <UploadMsgFile
@@ -211,19 +98,30 @@ export const EmojiComponent: React.FC<EmojiComponentProps> = ({ onEmojiSelect })
 
 
 
-export const MessageGalleryComponent = () => {
+export const MessageGalleryComponent = ({id}: {id: string}) => {
+    const [loading, setLoading] = useState(false)
+    const { setIsOpen } = useModal()
+
     const handleUpload = async (file: File) => {
-        if (file) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                const imageBase64 = reader.result as string;
-                // setSignatureImageBase64(imageBase64);
-                // setSignatureImageFile(file);
-                // onCreateSignature(imageBase64, index, file);
-                // setIsOpen(false);
-            };
+        if (!file) return;
+        const payload = {
+            content_file: file,
+            content_type: "file",
+            receiver_type: "user"
         }
+        try {
+            setLoading(true);
+            const res = await SendMessage(objectToFormData(payload), `${id}`);
+            if (res) {
+                setIsOpen(false)
+                window.dispatchEvent(new Event("refetch-users-msg"));
+            }
+        } catch (err) {
+            toast.error("Failed to send audio message");
+        } finally {
+            setLoading(false);
+        }
+
     };
 
     return (
@@ -237,19 +135,30 @@ export const MessageGalleryComponent = () => {
 }
 
 
-export const MessageDocumentComponent = () => {
+export const MessageDocumentComponent = ({ id }: { id: string }) => {
+    const [loading, setLoading] = useState(false)
+    const { setIsOpen } = useModal()
+
     const handleUpload = async (file: File) => {
-        if (file) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                const imageBase64 = reader.result as string;
-                // setSignatureImageBase64(imageBase64);
-                // setSignatureImageFile(file);
-                // onCreateSignature(imageBase64, index, file);
-                // setIsOpen(false);
-            };
+        if (!file) return;
+        const payload = {
+            content_file: file,
+            content_type: "file",
+            receiver_type: "user"
         }
+        try {
+            setLoading(true);
+            const res = await SendMessage(objectToFormData(payload), `${id}`);
+            if (res) {
+                setIsOpen(false)
+                window.dispatchEvent(new Event("refetch-users-msg"));
+            }
+        } catch (err) {
+            toast.error("Failed to send audio message");
+        } finally {
+            setLoading(false);
+        }
+
     };
     return (
         <div className='mt-4'>
