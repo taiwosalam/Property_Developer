@@ -33,6 +33,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import { ExclamationMark } from "@/public/icons/icons";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
 
 const RentAndUnit = () => {
   const view = useView();
@@ -266,9 +267,10 @@ const branchOptions =
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="Create New Unit"
+              buttonText="Add Property"
               buttonLink="/management/rent-unit/create"
               title="No Unit Found"
+              modalContent={<AddPropertyModal />}
               body={
                 <p>
                   You can create a Unit by clicking on the &quot;Add

@@ -99,6 +99,7 @@ export interface TenantApiResponse {
 export const transformTenantApiResponse = (
   response: TenantApiResponse
 ): TenantPageData => {
+  // console.log("res", response)
   const {
     data: { pagination, tenants },
     mobile_tenant_count,

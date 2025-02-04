@@ -18,6 +18,7 @@ export async function middleware(req: NextRequest) {
     '/auth/sign-up',
     '/auth/setup',
     '/auth/forgot-password',
+    '/management/agent-community'
   ];
   
   if (publicRoutes.includes(currentPath)) {

@@ -183,7 +183,7 @@ const AgentCommunityPage = () => {
   }, [apiData]);
 
   const handleCreateArticleClick = () => {
-    router.push("/tasks/agent-community/my-articles/create");
+    router.push("/management/agent-community/my-articles/create");
   };
 
   if (loading)
@@ -259,7 +259,7 @@ const AgentCommunityPage = () => {
           <section>
             <EmptyList
               buttonText="+ Create New Article"
-              buttonLink="/tasks/agent-community/my-articles/create"
+              buttonLink="/management/agent-community/my-articles/create"
               title="You do not have any articles"
               body={
                 <p>

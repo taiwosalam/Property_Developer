@@ -9,14 +9,18 @@ import Messages from "@/components/Message/messages";
 import { empty } from "@/app/config";
 import { UsersProps } from "../types";
 import useGetConversation from "@/hooks/getConversation";
+import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
+import { useAuthStore } from "@/store/authStore";
 
 const Chat = () => {
   const router = useRouter();
   const { data, setChatData } = useChatStore();
   const usersData = useChatStore((state) => state?.data?.users);
   const { id } = useParams<{ id: string }>();
+  const user_id = useAuthStore((state) => state.user_id);
   const users = usersData?.users || [];
   const userId = Number(id);
+  const [isLoading, setIsLoading] = useState(true);
   const store_messages = useChatStore((state) => state?.data?.conversations);
   const [conversations, setConversations] = useState<any[]>([]);
 
@@ -36,6 +40,16 @@ const Chat = () => {
       setConversations(groupedMessages);
     }
   }, [store_messages]);
+
+  useEffect(() => {
+    if (usersData) {
+      setIsLoading(false);
+    }
+  }, [usersData]);
+
+  if (isLoading) {
+    return <ChatSkeleton />;
+  }
 
   // If user not found, redirect to messages page.
   const user = users.find((user: UsersProps) => Number(user.id) === userId);
@@ -78,7 +92,7 @@ const Chat = () => {
               key={index}
               day={group.day}
               messages={group.messages}
-              userId={user.id}
+              userId={user_id as string}
             />
           ))}
       </div>

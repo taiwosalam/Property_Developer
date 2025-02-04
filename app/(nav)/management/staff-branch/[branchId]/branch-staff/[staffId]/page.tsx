@@ -78,7 +78,7 @@ const StaffProfile = () => {
 
   const portfolioData = getPortfolioData(portfolio)
 
-  console.log("Data for staff page", portfolio);
+  // console.log("Data for staff page", staff);
 
   useEffect(() => {
     if (activities) {
@@ -155,7 +155,11 @@ const StaffProfile = () => {
                   >
                     edit
                   </Button>
-                  <Button size="base_medium" className="py-2 px-8">
+                  <Button
+                    href={`/messages/${staff.user_id}`}
+                    size="base_medium"
+                    className="py-2 px-8"
+                  >
                     message
                   </Button>
                 </div>

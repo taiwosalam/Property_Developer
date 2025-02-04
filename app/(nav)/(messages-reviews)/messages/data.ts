@@ -142,6 +142,7 @@ export const transformMessages = (data: any) => {
 
 
 export const groupMessagesByDay = (data: any[]) => {
+    console.log("data", data)
     if (!data || !data.length) return [];
 
     // Sort messages by timestamp in ascending order.

@@ -18,6 +18,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
   className,
   seeAllLink,
 }) => {
+  console.log("branch data", notifications)
   // Determine the icon and message text based on the sectionHeader prop
   const getEmptyState = () => {
     if (sectionHeader === "Recent Messages") {
@@ -131,11 +132,19 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                 </p>
               </div>
             </Link>
-            <div>
-              <p className="text-[10px] text-text-disabled">
-                {sectionHeader === "Staffs" ? "Message" : notification.time}
-              </p>
-            </div>
+            {sectionHeader === "Staffs" ? (
+              <Link href={`/messages/${notification.user_id}`}>
+                <p className="text-[10px] text-text-disabled">
+                  Message
+                </p>
+              </Link>
+            ) : (
+              <div>
+                <p className="text-[10px] text-text-disabled">
+                  {notification.time}
+                </p>
+              </div>
+            )}
           </div>
         ))}
         {notifications.length === 0 && (

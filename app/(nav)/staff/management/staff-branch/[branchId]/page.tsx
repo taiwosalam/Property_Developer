@@ -45,6 +45,7 @@ import clsx from "clsx";
 import { getTransactionIcon } from "@/components/Wallet/icons";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
+
   const { branchId } = params;
   const { branch, setBranch } = useBranchStore();
   const setWalletStore = useWalletStore((s) => s.setWalletStore);
@@ -58,7 +59,8 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const yesNoToActiveInactive = (yesNo: string): boolean => {
     return yesNo === "Yes" ? true : false;
   };
-
+  
+  console.log("branch data", branchData?.staffs)
   // console.log("transactions", recent_transactions);
   setWalletStore("sub_wallet", {
     status: branch_wallet !== null ? "active" : "inactive",

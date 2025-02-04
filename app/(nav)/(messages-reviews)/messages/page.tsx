@@ -19,7 +19,7 @@ const MessagesPage = () => {
   const usersMessages = useChatStore((state) => state?.data?.users_messages);
   const usersData = useChatStore((state) => state?.data?.users);
 
-  console.log("mess", usersMessages)
+  const isLoading = !usersData;
 
   return (
     <div className="w-full h-full flex items-center justify-center">
@@ -50,7 +50,7 @@ const MessagesPage = () => {
                 </ModalTrigger>
                 <ModalContent>
                   <SelectChatUsersModal
-                    // loading={loading}
+                    loading={isLoading}
                     usersData={usersData?.users}
                     filters={usersData?.filters}
                   />
