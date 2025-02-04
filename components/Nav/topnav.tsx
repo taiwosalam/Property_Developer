@@ -17,7 +17,7 @@ const TopNav = () => {
   const pathname = usePathname();
   const { role, setRole } = useRole();
   
-  // console.log("user role", role)
+  console.log("user role", role)
 
   return (
     <div className="flex overflow-x-auto no-scrollbar">

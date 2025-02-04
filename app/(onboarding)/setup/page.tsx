@@ -22,12 +22,15 @@ import { transformFormData, createCompany } from "./data";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
+import { useRole } from "@/hooks/roleContext";
+import { getDashboardPage } from "../auth/data";
 
 const Setup = () => {
   const router = useRouter();
+  const { role, setRole } = useRole()
   // const setRole = useAuthStore((state) => state.setRole);
   const setAuthState = useAuthStore((state) => state.setAuthState);
-  const role = useAuthStore((state) => state.role);
+  // const role = useAuthStore((state) => state.role);
   const [requestLoading, setRequestLoading] = useState(false);
   // Define the index of the last step in the flow
   const last_step = 0;
@@ -38,7 +41,7 @@ const Setup = () => {
     console.log(data);
     const status = await createCompany(data);
     if (status) {
-      // setRole("director");
+      setRole("director");
       setAuthState("role", "director"); 
     }
     setRequestLoading(false);
@@ -46,7 +49,9 @@ const Setup = () => {
 
   useEffect(() => {
     if (role && role !== "user") {
-      router.replace("/dashboard");
+     const dashboardPage = getDashboardPage(role)
+      router.replace(dashboardPage);
+      // router.replace("/dashboard");
     }
   }, [role, router]);
 
