@@ -16,6 +16,7 @@ export async function middleware(req: NextRequest) {
     '/auth/user/sign-in',
     '/auth/sign-in',
     '/auth/sign-up',
+    '/auth/setup',
     '/auth/forgot-password',
   ];
   
@@ -27,12 +28,6 @@ export async function middleware(req: NextRequest) {
   if (currentPath === '/auth/user/sign-in') {
     return NextResponse.next();
   }
-
-
-  // // Special case: Allow `/auth/sign-up` for unverified users or users without a role
-  // if (currentPath === '/auth/sign-up' && !role) {
-  //   return NextResponse.next();
-  // }
 
   // Allow `/auth/sign-in` for directors; redirect others to `/auth/user/sign-in`
   if (currentPath === '/auth/sign-in') {
