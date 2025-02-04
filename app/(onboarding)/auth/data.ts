@@ -278,10 +278,8 @@ export const login = async (formData: Record<string, any>) => {
     useAuthStore.getState().setAuthState('role', role);
     useAuthStore.getState().setAuthState('email', email);
     useAuthStore.getState().setAuthState('user_id', details?.user_id);
-    console.log('details', details);
-    if (details) {
-      useAuthStore.getState().setAuthState('additional_details', details);
-    }
+    useAuthStore.getState().setAuthState('additional_details', details);
+
 
     // SECURE ROLE
     await saveRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION

@@ -1,7 +1,9 @@
+import { useAuthStore } from "@/store/authStore";
 import Message from "./message";
 import { MessagesProps } from "./types";
 
 const Messages: React.FC<MessagesProps> = ({ day, messages, userId }) => {
+  const user_id = useAuthStore((state) => state.user_id);
   console.log("user", userId)
   return (
     <div className="custom-flex-col gap-8">
@@ -15,7 +17,7 @@ const Messages: React.FC<MessagesProps> = ({ day, messages, userId }) => {
       {/* Messages List */}
       <div className="custom-flex-col gap-4">
         {messages?.map((m, index) => {
-          const isFromUser = m.sender_id === userId;
+          const isFromUser = m.sender_id === user_id;
           console.log("sender", m.sender_id)
           return (
             <Message
