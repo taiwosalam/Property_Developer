@@ -160,7 +160,7 @@ const Profile = () => {
           <div className="custom-flex-col gap-8">
             <div className="">
               <div className="flex w-full items-start gap-4 md:flex-row flex-col">
-                <div className="md:w-2/3 w-full gap-1 flex items-end">
+                <div className="flex-1 gap-1 flex items-end">
                   <Input
                     required
                     id="company_name"
@@ -173,7 +173,17 @@ const Profile = () => {
                     <SettingsVerifiedBadge status="verified" />
                   </div>
                 </div>
-                <div className="md:w-1/3 w-full gap-1 flex items-end">
+                <div className="flex-1">
+                <Select
+                    id="director_experience"
+                    label="years in business"
+                    // defaultValue={pageData?.director_experience}
+                    placeholder="Select Option"
+                    options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
+                    hiddenInputClassName="setup-f"
+                  />
+                </div>
+                <div className="flex-1 gap-1 flex items-end">
                   <Input
                     required
                     label="company mail"

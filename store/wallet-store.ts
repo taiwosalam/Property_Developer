@@ -51,7 +51,7 @@ interface WalletStore {
       total_credit: string;
       total_debit: string;
     };
-    before_current_day: {
+    previous_month: {
       total_funds: string;
       total_credit: string;
       total_debit: string;
@@ -104,7 +104,7 @@ export const useWalletStore = create<WalletStore>((set) => ({
       total_credit: "0",
       total_debit: "0",
     },
-    before_current_day: {
+    previous_month: {
       total_funds: "0",
       total_credit: "0",
       total_debit: "0",

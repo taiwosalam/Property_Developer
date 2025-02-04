@@ -95,7 +95,7 @@ export interface WalletDataResponse {
       total_credit: string;
       total_debit: string;
     };
-    before_current_day: {
+    previous_month: {
       total_funds: string;
       total_credit: string;
       total_debit: string;

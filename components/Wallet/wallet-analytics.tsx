@@ -6,6 +6,7 @@ import { WalletAnalyticsProps } from "./types";
 // Images
 import TrendingUpIcon from "@/public/icons/trending-up.svg";
 import TrendingDownIcon from "@/public/icons/trending-down.svg";
+import EqualArrow from "@/public/icons/equal-arrow.svg";
 
 // Imports
 import Picture from "../Picture/picture";
@@ -57,6 +58,8 @@ const WalletAnalytics: React.FC<WalletAnalyticsProps> = ({
               ? TrendingUpIcon
               : type === "down"
               ? TrendingDownIcon
+              : type === "equal"
+              ? EqualArrow
               : empty
           }
           alt={`trending ${type}`}
