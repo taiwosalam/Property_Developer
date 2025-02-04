@@ -120,7 +120,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     }
   }, [usersMessages]);
 
-  console.log("page", pageUsersMsg)
+  // console.log("page", pageUsersMsg)
   useEffect(() => {
     if (usersData) {
       setChatData("users", transformCompanyUsersData(usersData)); // Store users dynamically to store
@@ -347,6 +347,9 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                   )}
                   {audioBlob && (
                     <div className="flex w-full items-center justify-end gap-2">
+                      <button onClick={()=>{setAudioBlob(null)}}>
+                      <Picture src={DeleteIcon} alt="delete voice" size={28} />
+                      </button>
                       <WavesurferPlayer
                         height={40}
                         width={400}

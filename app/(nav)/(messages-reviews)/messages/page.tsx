@@ -12,7 +12,6 @@ import { empty } from "@/app/config";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import SelectChatUsersModal from "@/components/Message/user-modal";
 import { useChatStore } from "@/store/message";
-import { MessagesProps } from "@/components/Message/types";
 
 const MessagesPage:React.FC<{loading?: boolean}> = ({ loading }) => {
   const loggedInUserDetails = getLocalStorage('additional_details');
