@@ -11,6 +11,7 @@ import { UsersProps } from "../types";
 import useGetConversation from "@/hooks/getConversation";
 import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
 import { useAuthStore } from "@/store/authStore";
+import { getLocalStorage } from "@/utils/local-storage";
 
 const Chat = () => {
   const router = useRouter();
@@ -23,6 +24,8 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(true);
   const store_messages = useChatStore((state) => state?.data?.conversations);
   const [conversations, setConversations] = useState<any[]>([]);
+  const users_Id = getLocalStorage("user_id")
+  console.log("user", userId)
 
   // Clear local conversation & store state when conversation id changes.
   useEffect(() => {
@@ -36,27 +39,30 @@ const Chat = () => {
   // When store_messages updates, group messages by day and update local state.
   useEffect(() => {
     if (store_messages) {
+      console.log("store", store_messages)
       const groupedMessages = groupMessagesByDay(store_messages);
       setConversations(groupedMessages);
     }
   }, [store_messages]);
 
-  useEffect(() => {
-    if (usersData) {
-      setIsLoading(false);
-    }
-  }, [usersData]);
+  // useEffect(() => {
+  //   if (usersData) {
+  //     setIsLoading(false);
+  //   }
+  // }, [usersData]);
 
-  if (isLoading) {
-    return <ChatSkeleton />;
-  }
+  // if (isLoading) {
+  //   return <ChatSkeleton />;
+  // }
 
-  // If user not found, redirect to messages page.
-  const user = users.find((user: UsersProps) => Number(user.id) === userId);
-  if (!user) {
-    router.replace("/messages");
-    return null;
-  }
+  // // If user not found, redirect to messages page.
+  // const user = users.find((user: UsersProps) => Number(user.id) === userId);
+  // if (!user) {
+  //   router.replace("/messages");
+  //   return null;
+  // }
+
+  // TODO: Fix the users data as i don't want to use SSE for the sender details
 
   return (
     <>
@@ -67,7 +73,8 @@ const Chat = () => {
           </button>
           <button className="flex items-center gap-4 text-left">
             <Picture
-              src={user?.imageUrl || empty}
+              // src={user?.imageUrl || empty}
+              src={empty}
               alt="profile picture"
               containerClassName="custom-secondary-bg rounded-full"
               size={32}
@@ -76,7 +83,7 @@ const Chat = () => {
             />
             <div className="custom-flex-col">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-                {user?.name}
+                {/* {user?.name} */} name
               </p>
               <p className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal">
                 Tap here for contact info

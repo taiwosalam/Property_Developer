@@ -78,7 +78,7 @@ const SelectChatUsersModal = ({
 
     return (
         <LandlordTenantModalPreset
-            heading="Select User to send message"
+            heading="Select User"
             style={{ width: isMobile ? "80%" : "40%", maxWidth: "80%", maxHeight: "70%" }}
         >
             <div className="flex-1 relative -mt-4 mb-4 sticky top-4 z-[2]">

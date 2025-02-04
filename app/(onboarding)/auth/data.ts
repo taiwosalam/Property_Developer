@@ -39,6 +39,7 @@ import {
 import { saveRoleToCookie } from '@/utils/saveRole';
 import { saveMiddlewareRoleToCookie } from '@/utils/setMiddlewareRole';
 import { saveClientRoleToCookie } from '@/utils/saveClientRole';
+import { saveLocalStorage } from '@/utils/local-storage';
 
 export const getDashboardPage = (role: string | null) => {
   switch (role) {
@@ -256,6 +257,7 @@ export const login = async (formData: Record<string, any>) => {
     const email = data.data.details?.email || formData.email;
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
+    const managerId = data.data.details.id
     // console.log('res', data);
     const additional_details = data?.additional_details;
     const appearance = data?.additional_details?.settings?.appearance;
@@ -278,10 +280,11 @@ export const login = async (formData: Record<string, any>) => {
     useAuthStore.getState().setAuthState('role', role);
     useAuthStore.getState().setAuthState('email', email);
     useAuthStore.getState().setAuthState('user_id', details?.user_id);
-    console.log('details', details);
-    if (details) {
-      useAuthStore.getState().setAuthState('additional_details', details);
-    }
+    useAuthStore.getState().setAuthState('additional_details', details);
+
+    // save user id to localstorage for msg
+    saveLocalStorage("user_id", details?.user_id || managerId)
+
 
     // SECURE ROLE
     await saveRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION
