@@ -117,6 +117,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   useEffect(() => {
     if (usersMessages) {
       setPageUsersMsg(transformUsersMessages(usersMessages));
+      setChatData("users_messages", transformUsersMessages(usersMessages))
     }
   }, [usersMessages]);
 

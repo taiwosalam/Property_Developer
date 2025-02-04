@@ -13,15 +13,18 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import SelectChatUsersModal from "@/components/Message/user-modal";
 import { useChatStore } from "@/store/message";
 
-const MessagesPage:React.FC<{loading?: boolean}> = ({ loading }) => {
+const MessagesPage = () => {
   const loggedInUserDetails = getLocalStorage('additional_details');
   const logo = loggedInUserDetails?.company?.company_logo || empty;
+  const usersMessages = useChatStore((state) => state?.data?.users_messages);
   const usersData = useChatStore((state) => state?.data?.users);
+
+  console.log("mess", usersMessages)
 
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div className="custom-flex-col gap-6 max-w-[80%]">
-        {message_card_data.length > 0 &&
+      {(message_card_data?.length > 0 && !Array.isArray(usersMessages) && usersMessages?.length === 0)  &&
           <>
             <div className="custom-flex-col gap-4">
               <div className="flex justify-center">
@@ -47,7 +50,7 @@ const MessagesPage:React.FC<{loading?: boolean}> = ({ loading }) => {
                 </ModalTrigger>
                 <ModalContent>
                   <SelectChatUsersModal
-                    loading={loading}
+                    // loading={loading}
                     usersData={usersData?.users}
                     filters={usersData?.filters}
                   />

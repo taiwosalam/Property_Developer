@@ -6,7 +6,7 @@ export interface WalletAnalyticsProps {
   title: "credit" | "debit" | "funds";
   trend: {
     percent: number;
-    type: "up" | "down" | "none";
+    type: "up" | "down" | "none" | "equal";
     from: "last month" | "last week" | "none";
   };
 

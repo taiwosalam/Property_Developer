@@ -84,7 +84,7 @@ const Security = () => {
       full_name: data.get("fullname"),
       personal_title: data.get("personal_title"),
       profile_picture: data.get("picture"),
-      years_in_business: data.get("director_experience"),
+      // years_in_business: data.get("director_experience"),
       about_director: data.get("about_director"),
       phone_number: data.get("phone"),
       email: data.get("director_email"),
@@ -140,14 +140,14 @@ const Security = () => {
                     placeholder="Write Here"
                     defaultValue={pageData?.fullname}
                   />
-                  <Select
+                  {/* <Select
                     id="director_experience"
                     label="years in business"
                     defaultValue={pageData?.director_experience}
                     placeholder="Select Option"
                     options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
                     hiddenInputClassName="setup-f"
-                  />
+                  /> */}
                   <Input
                     id="director_email"
                     label="email"
