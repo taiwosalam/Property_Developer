@@ -46,6 +46,8 @@ import MessageCardSkeleton from "@/components/Skeleton/message-card-skeleton";
 import WavesurferPlayer from '@wavesurfer/react';
 import WaveSurfer from 'wavesurfer.js';
 import NoMessage from "./messages-component";
+import { PlusIcon } from "@/public/icons/icons";
+import SelectChatUsersModal from "@/components/Message/user-modal";
 
 const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { setChatData } = useChatStore();
@@ -64,6 +66,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const audioChunksRef = useRef<Blob[]>([]);
   const [wavesurfer, setWavesurfer] = useState<WaveSurfer | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const users_data = useChatStore((state) => state?.data?.users);
 
   const onReady = (ws: any) => {
     setWavesurfer(ws);
@@ -208,7 +211,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     <>
       {isCustom && id ? null : (
         <div className="flex flex-1 p-4 pr-0">
-          <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar">
+          <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar relative">
             <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
               <div className="flex-1 relative">
                 <Input
@@ -268,6 +271,26 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                 )}
               </>
             )}
+            {/* STICKY PLUS */}
+            <div className="absolute bottom-5 z-[10]">
+              <Modal>
+                <ModalTrigger asChild>
+                  <button
+                    onClick={() => { }}
+                    className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
+                  >
+                    <PlusIcon />
+                  </button>
+                </ModalTrigger>
+                <ModalContent>
+                  <SelectChatUsersModal
+                    loading={usersMsgLoading}
+                    usersData={users_data?.users}
+                    filters={users_data?.filters}
+                  />
+                </ModalContent>
+              </Modal>
+            </div>
           </div>
         </div>
       )}
@@ -348,8 +371,8 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                   )}
                   {audioBlob && (
                     <div className="flex w-full items-center justify-end gap-2">
-                      <button onClick={()=>{setAudioBlob(null)}}>
-                      <Picture src={DeleteIcon} alt="delete voice" size={28} />
+                      <button onClick={() => { setAudioBlob(null) }}>
+                        <Picture src={DeleteIcon} alt="delete voice" size={28} />
                       </button>
                       <WavesurferPlayer
                         height={40}

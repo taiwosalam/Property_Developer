@@ -59,6 +59,7 @@ export const transformSingleBranchAPIResponse = (
         name: `${s.title ? s.title + " " : ""}${s.name}`,
         position: s.staff_role,
         staff_ID: s.id,
+        user_id: s.user_id,
       };
     }),
     transactions: recentTransactions !== null ? recentTransactions.map((t) => {

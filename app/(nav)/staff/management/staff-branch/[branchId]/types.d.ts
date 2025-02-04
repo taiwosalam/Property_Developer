@@ -92,6 +92,7 @@ export type SingleBranchResponseType = {
       properties_count: number; // do d monthly/this month stuff
       staffs: {
         id: string;
+        user_id: string;
         picture: string;
         // user_id: string;
         is_active: 1 | 0;

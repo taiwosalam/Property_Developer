@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useModal } from '../Modal/modal';
 import { positionMap } from '@/app/(nav)/(messages-reviews)/messages/data';
 import MessageUserCardSkeleton from '../Skeleton/message-user-card-skeleton';
+import useWindowWidth from '@/hooks/useWindowWidth';
 
 const SelectChatUsersModal = ({
     usersData,
@@ -25,6 +26,7 @@ const SelectChatUsersModal = ({
 }) => {
     const router = useRouter()
     const { setIsOpen } = useModal()
+    const { isMobile } = useWindowWidth();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
@@ -77,7 +79,7 @@ const SelectChatUsersModal = ({
     return (
         <LandlordTenantModalPreset
             heading="Select User to send message"
-            style={{ width: "40%", maxWidth: "40%", maxHeight: "70%" }}
+            style={{ width: isMobile ? "80%" : "40%", maxWidth: "80%", maxHeight: "70%" }}
         >
             <div className="flex-1 relative -mt-4 mb-4 sticky top-4 z-[2]">
                 <Input
@@ -89,6 +91,7 @@ const SelectChatUsersModal = ({
                     value={searchTerm}
                     onChange={handleSearchChange} // Attach the change handler
                 />
+
                 <div className="absolute top-1/2 right-0 -translate-y-1/2">
                     <FilterButton
                         noTitle
@@ -118,8 +121,8 @@ const SelectChatUsersModal = ({
             {/* User List */}
             {loading
                 ? [...Array(5)].map((_, index) => <MessageUserCardSkeleton key={index} />)
-                : filteredUsers.length > 0 ? (
-                    filteredUsers.map((user) => (
+                : filteredUsers?.length > 0 ? (
+                    filteredUsers?.map((user) => (
                         <div className='hover:cursor-pointer' onClick={() => handleUserClicked(user.id)} key={user.id}>
                             <MessageUserCard
                                 imageUrl={user.imageUrl}

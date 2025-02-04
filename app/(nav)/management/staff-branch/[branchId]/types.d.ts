@@ -97,6 +97,7 @@ export type SingleBranchResponseType = {
         // user_id: string;
         is_active: 1 | 0;
         title: string | null;
+        user_id: string;
         // estate_title: string | null;
         staff_role: "manager" | "staff" | "account officer";
         name: string;

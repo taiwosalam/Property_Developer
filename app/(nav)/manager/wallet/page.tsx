@@ -39,32 +39,32 @@ const Wallet = () => {
   const beneficiaries = useWalletStore((state) => state.beneficiaries);
 
   const fundsPercent = determinePercentageDifference(
-    stats.before_current_day.total_funds,
+    stats.previous_month.total_funds,
     stats.current_day.total_funds
   );
   const fundsUpDown = determineTrend(
     stats.current_day.total_funds,
-    stats.before_current_day.total_funds
+    stats.previous_month.total_funds
   );
 
   // DEBIT
   const debitPercent = determinePercentageDifference(
-    stats.before_current_day.total_debit,
+    stats.previous_month.total_debit,
     stats.current_day.total_debit
   );
   const debitUpDown = determineTrend(
     stats.current_day.total_debit,
-    stats.before_current_day.total_debit
+    stats.previous_month.total_debit
   );
 
   // CREDIT
   const creditPercent = determinePercentageDifference(
-    stats.before_current_day.total_credit,
+    stats.previous_month.total_credit,
     stats.current_day.total_credit
   );
   const creditUpDown = determineTrend(
     stats.current_day.total_credit,
-    stats.before_current_day.total_credit
+    stats.previous_month.total_credit
   );
 
   const transformedWalletTableData = recentTransactions.map((t) => ({

@@ -30,6 +30,7 @@ export interface notificationCardProps {
     title?: string;
     position?: string;
     staff_ID?: string;
+    user_id?: string;
     badgeColor?: BadgeIconColors;
   }[];
 }

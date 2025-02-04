@@ -6,6 +6,7 @@ interface AuthState {
   email: string | null;
   token: string | null;
   role: string | null;
+  user_id: string | null;
   emailVerified?: boolean;
   additional_details: {
     branch: {
@@ -28,6 +29,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   email: null,
   token: null,
+  user_id: null,
   role: null,
   additional_details: {
     branch: {

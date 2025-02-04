@@ -202,6 +202,7 @@ interface LoginResponse {
   data: {
     details: {
       id: string;
+      user_id: string;
       email: string;
       role: [string];
       email_verification: boolean;
@@ -210,6 +211,7 @@ interface LoginResponse {
   wallet_pin_status: boolean;
   wallet_id: string | null;
   additional_details: {
+    user_id: string;
     branch: {
       id: string | null;
       picture: string | null;
@@ -255,10 +257,10 @@ export const login = async (formData: Record<string, any>) => {
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
     // console.log('res', data);
-    console.log('data', data);
     const additional_details = data?.additional_details;
     const appearance = data?.additional_details?.settings?.appearance;
     const details = {
+      user_id: additional_details?.user_id || null,
       branch: {
         branch_id: additional_details?.branch?.id || null,
         picture: additional_details?.branch?.picture || null,
@@ -273,9 +275,13 @@ export const login = async (formData: Record<string, any>) => {
 
     // SAVE TO ZUSTAND
     useAuthStore.getState().setAuthState('token', token);
-    useAuthStore.getState().setAuthState('email', email);
     useAuthStore.getState().setAuthState('role', role);
-    useAuthStore.getState().setAuthState('additional_details', details);
+    useAuthStore.getState().setAuthState('email', email);
+    useAuthStore.getState().setAuthState('user_id', details?.user_id);
+    console.log('details', details);
+    if (details) {
+      useAuthStore.getState().setAuthState('additional_details', details);
+    }
 
     // SECURE ROLE
     await saveRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION
@@ -298,6 +304,7 @@ export const login = async (formData: Record<string, any>) => {
       return 'redirect to verify email';
     }
   } catch (error) {
+    console.error(error)
     handleAxiosError(error, 'Login failed. Please try again.');
   }
 };
@@ -315,6 +322,7 @@ export const signup = async (
     return true;
   } catch (error) {
     handleAxiosError(error, 'Signup failed. Please try again.');
+    console.error(error)
     return false;
   }
 };
