@@ -255,17 +255,18 @@ export const login = async (formData: Record<string, any>) => {
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
     // console.log('res', data);
-    const additional_details = data.additional_details;
-    const appearance = data.additional_details.settings.appearance;
+    console.log('data', data);
+    const additional_details = data?.additional_details;
+    const appearance = data?.additional_details?.settings?.appearance;
     const details = {
       branch: {
-        branch_id: additional_details.branch?.id || null,
-        picture: additional_details.branch?.picture || null,
+        branch_id: additional_details?.branch?.id || null,
+        picture: additional_details?.branch?.picture || null,
       },
       company: {
-        company_id: additional_details.id || null,
-        company_logo: additional_details.company_logo || null,
-        dark_logo: additional_details.dark_logo || null,
+        company_id: additional_details?.id || null,
+        company_logo: additional_details?.company_logo || null,
+        dark_logo: additional_details?.dark_logo || null,
       },
       appearance: appearance,
     };
