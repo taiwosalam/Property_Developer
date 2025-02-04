@@ -18,21 +18,21 @@ export async function middleware(req: NextRequest) {
     '/auth/sign-up',
     '/auth/forgot-password',
   ];
-
-  // Allow public routes if no authToken or role exists
-  if (publicRoutes.includes(currentPath) && !role) {
+  
+  if (publicRoutes.includes(currentPath)) {
     return NextResponse.next();
   }
-
+  
   // Allow access to `/auth/user/sign-in` if there's no authToken
   if (currentPath === '/auth/user/sign-in') {
     return NextResponse.next();
   }
 
-  // Special case: Allow `/auth/sign-up` for unverified users or users without a role
-  if (currentPath === '/auth/sign-up' && !role) {
-    return NextResponse.next();
-  }
+
+  // // Special case: Allow `/auth/sign-up` for unverified users or users without a role
+  // if (currentPath === '/auth/sign-up' && !role) {
+  //   return NextResponse.next();
+  // }
 
   // Allow `/auth/sign-in` for directors; redirect others to `/auth/user/sign-in`
   if (currentPath === '/auth/sign-in') {
