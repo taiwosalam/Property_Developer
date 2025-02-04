@@ -42,7 +42,7 @@ const MessagesPage:React.FC<{loading?: boolean}> = ({ loading }) => {
               <Modal>
                 <ModalTrigger asChild>
                   <Button size="sm_medium" className="py-2 px-7">
-                    Start New Chat
+                    New Message
                   </Button>
                 </ModalTrigger>
                 <ModalContent>

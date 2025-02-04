@@ -37,6 +37,7 @@ const SignIn = () => {
   const handleSubmit = async (formData: Record<string, any>) => {
     setIsLoading(true);
     const a = await login(formData);
+    // console.log('a', a);
     if (a === 'redirect to verify email') {
       router.push('/auth/sign-up');
     } else if (a === 'redirect to dashboard') {
