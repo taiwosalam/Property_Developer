@@ -36,6 +36,7 @@ export const ProfileForm: React.FC<{
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
   const [rentPeriod, setRentPeriod] = useState<RentPeriod>("biennially");
 
+
   // Simulate API call
   useEffect(() => {
     if (!selectedId) {
