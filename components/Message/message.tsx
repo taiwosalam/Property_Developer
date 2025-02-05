@@ -11,6 +11,7 @@ import type { MessageProps } from "./types";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import { MessageModalPreset } from "./message-attachments-components";
 import useWindowWidth from "@/hooks/useWindowWidth";
+import { formatMessageText } from "@/app/(nav)/(messages-reviews)/messages/data";
 
 const Message: React.FC<MessageProps> = ({
   text,
@@ -39,16 +40,18 @@ const Message: React.FC<MessageProps> = ({
           "bg-status-caution-1 rounded-tl-none": type === "to user",
         })}
       >
-        {/* Text Content */}
+       
+       {/* Text Content */}
         {content_type === "text" && (
-          <p
+          <div
             className={clsx("flex-1 text-sm font-normal", {
               "text-white": type === "from user",
               "text-text-quaternary": type === "to user",
             })}
-          >
-            {text}
-          </p>
+            dangerouslySetInnerHTML={{
+              __html: formatMessageText(text),
+            }}
+          />
         )}
 
         {/* Image Content */}
@@ -67,17 +70,17 @@ const Message: React.FC<MessageProps> = ({
             </ModalTrigger>
             <ModalContent>
               <MessageModalPreset
-               style={{ width: isMobile ? "80%" : "50%", height: "60%" }}
+                style={{ width: isMobile ? "80%" : "50%", height: "60%" }}
               >
-              <div className="relative w-full h-full mt-4">
-                <Image
-                  src={text}
-                  alt="Sent Image"
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-md"
-                />
-              </div>
+                <div className="relative w-full h-full mt-4">
+                  <Image
+                    src={text}
+                    alt="Sent Image"
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-md"
+                  />
+                </div>
               </MessageModalPreset>
             </ModalContent>
           </Modal>

@@ -38,22 +38,22 @@ const Setup = () => {
   const handleSubmit = async (formData: FormData) => {
     setRequestLoading(true);
     const data = transformFormData(formData);
-    console.log(data);
     const status = await createCompany(data);
     if (status) {
       setRole("director");
       setAuthState("role", "director"); 
-    }
+      router.replace("/auth/sign-in");
+    }    
     setRequestLoading(false);
   };
 
-  useEffect(() => {
-    if (role && role !== "user") {
-     const dashboardPage = getDashboardPage(role)
-      router.replace(dashboardPage);
-      // router.replace("/dashboard");
-    }
-  }, [role, router]);
+  // useEffect(() => {
+  //   if (role && role !== "user") {
+  //   //  const dashboardPage = getDashboardPage(role)
+  //   //   router.replace(dashboardPage);
+  //     router.replace("/auth/sign-in");
+  //   }
+  // }, [role, router]);
 
   useAuthRedirect({ skipSetupRedirect: true });
 
