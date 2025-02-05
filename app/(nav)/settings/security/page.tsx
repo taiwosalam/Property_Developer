@@ -106,7 +106,6 @@ const Security = () => {
     }
   };
 
-
   return (
     <>
       <SettingsSection title="directors profile">

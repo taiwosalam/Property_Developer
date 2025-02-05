@@ -36,7 +36,6 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
   ? transformSingleBranchAPIResponseToEditBranchFormDetails(data)
   : null;
   
-  console.log("branch datas", branchId)
   if (loading) return <PageCircleLoader />;
 
   if (error) return <div>{error}</div>;

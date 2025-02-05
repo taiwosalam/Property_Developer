@@ -31,7 +31,14 @@ const MessageCard: React.FC<MessageCardProps> = ({
       <div></div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 flex-1">
-          <Picture src={pfp} alt="profile picture" size={60} rounded status />
+          <Picture
+            src={pfp}
+            alt="profile picture"
+            size={60}
+            rounded
+            status={false}
+            containerClassName="custom-secondary-bg rounded-full"
+          />
           <div className="custom-flex-col gap-1 flex-1">
             <div className="flex items-center gap-[10px]">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">

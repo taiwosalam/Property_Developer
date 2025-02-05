@@ -7,6 +7,7 @@ import {
   verifyEmail,
   verifyOtpAndResetPassword,
   requestPasswordReset,
+  getDashboardPage,
 } from "@/app/(onboarding)/auth/data";
 import Button from "@/components/Form/Button/button";
 import { objectLength } from "@/utils/object-length";
@@ -50,9 +51,12 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
       if (status) {
         if (type === "sign up") {
           if (role !== "director") {
-            router.push("/dashboard"); //FIX ROUTE TO DASHBOARD ACCORDING TO ROLE LATER
-          } else {
             router.push("/setup");
+            // router.push("/dashboard"); //FIX ROUTE TO DASHBOARD ACCORDING TO ROLE LATER
+          } else {
+            const dashboardPage = getDashboardPage(role)
+            router.push(dashboardPage)
+            // router.push("/setup");
           }
         } else if (type === "forgot password") {
           changeStep("next");
