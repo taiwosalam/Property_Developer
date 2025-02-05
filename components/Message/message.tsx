@@ -1,18 +1,38 @@
-import React from "react";
+"use client"
+
+import React, { useEffect, useRef } from "react";
 import clsx from "clsx";
 import ReactPlayer from "react-player"; // For video & audio
 import Image from "next/image"; // For images
 import { FaFileAlt } from "react-icons/fa"; // File icon
-import WavesurferPlayer from "@wavesurfer/react"; // Wavesurfer component
-
-// Import Types
-import type { MessageProps } from "./types";
-import AudioWaveform from "./audio-waveeform";
 import { OneCheckMark, TwoCheckMark } from "@/public/icons/icons";
 
-const Message: React.FC<MessageProps> = ({ text, seen, time, content_type, type = "from user" }) => {
+import type { MessageProps } from "./types";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import { MessageModalPreset } from "./message-attachments-components";
+import useWindowWidth from "@/hooks/useWindowWidth";
+
+const Message: React.FC<MessageProps> = ({
+  text,
+  seen,
+  time,
+  content_type,
+  type = "from user",
+}) => {
+  const { isMobile } = useWindowWidth();
+  const messageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (messageRef.current) {
+      messageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [text]); // Runs whenever text changes
+
   return (
-    <div className={clsx("flex", { "justify-end": type === "from user" })}>
+    <div
+      ref={messageRef}
+      className={clsx("flex", { "justify-end": type === "from user" })}
+    >
       <div
         className={clsx("py-2 px-4 flex gap-4 rounded-2xl max-w-[70%]", {
           "bg-brand-primary rounded-tr-none": type === "from user",
@@ -33,15 +53,34 @@ const Message: React.FC<MessageProps> = ({ text, seen, time, content_type, type 
 
         {/* Image Content */}
         {content_type === "image" && (
-          <div className="relative w-40 h-40">
-            <Image
-              src={text} 
-              alt="Sent Image"
-              layout="fill"
-              objectFit="cover"
-              className="rounded-md"
-            />
-          </div>
+          <Modal>
+            <ModalTrigger asChild>
+              <div className="relative w-40 h-40 cursor-pointer">
+                <Image
+                  src={text}
+                  alt="Sent Image"
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-md cursor-pointer"
+                />
+              </div>
+            </ModalTrigger>
+            <ModalContent>
+              <MessageModalPreset
+               style={{ width: isMobile ? "80%" : "50%", height: "60%" }}
+              >
+              <div className="relative w-full h-full mt-4">
+                <Image
+                  src={text}
+                  alt="Sent Image"
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-md"
+                />
+              </div>
+              </MessageModalPreset>
+            </ModalContent>
+          </Modal>
         )}
 
         {/* Video Content */}
@@ -51,7 +90,7 @@ const Message: React.FC<MessageProps> = ({ text, seen, time, content_type, type 
           </div>
         )}
 
-        {/* Audio Content with AudioWaveform */}
+        {/* Audio Content */}
         {content_type === "audio" && (
           <div className="min-w-full">
             <audio controls>
@@ -75,9 +114,7 @@ const Message: React.FC<MessageProps> = ({ text, seen, time, content_type, type 
             })}
           >
             <FaFileAlt size={20} />
-            <span>
-              Download File
-            </span>
+            <span>Download File</span>
           </a>
         )}
 
@@ -93,9 +130,7 @@ const Message: React.FC<MessageProps> = ({ text, seen, time, content_type, type 
           </p>
           {/* CHECKMARK */}
           {type === "from user" && (
-            <p className="text-white">
-              {seen ? <TwoCheckMark /> : <OneCheckMark />}
-            </p>
+            <p className="text-white">{seen ? <TwoCheckMark /> : <OneCheckMark />}</p>
           )}
         </div>
       </div>

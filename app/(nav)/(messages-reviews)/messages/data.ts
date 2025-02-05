@@ -71,6 +71,7 @@ export const transformCompanyUsersData = (
 export const transformUsersMessages = (
     data: ConversationsAPIResponse | null | undefined
 ): PageMessages[] => {
+    console.log("data got", data)
     if (!data || !data.conversations) return []; // Ensure data exists
 
     return data.conversations.map((c) => {
@@ -99,7 +100,7 @@ export const transformUsersMessages = (
             desc: c.latest_message,
             time: c.latest_message_time,
             fullname: c.participant_name,
-            messages: 1, // change later
+            messages: c.unread_count,
             verified: true, // change later
             content_type: finalContentType,
         };
