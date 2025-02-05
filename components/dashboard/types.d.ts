@@ -34,5 +34,6 @@ export interface notificationCardProps {
     user_id?: string;
     badgeColor?: BadgeIconColors;
     count?: number;
+    content_type?: string;
   }[];
 }

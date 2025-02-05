@@ -8,6 +8,8 @@ export interface UsersProps {
   name: string
   imageUrl: string
   position: string;
+  staff_id?: string;
+  branch_id?: string;
 }
 
 export interface Conversations {
@@ -45,6 +47,8 @@ export interface User {
   name: string;
   profile_picture: string | null;
   role: string;
+  staff_id: string;
+  branch_id: string;
 }
 
 export interface RoleFilters {

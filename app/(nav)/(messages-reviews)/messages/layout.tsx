@@ -135,7 +135,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     }
   }, [usersData]);
 
-  // console.log("users data", usersData)
+  // console.log("users data", pageUser)
 
   // Function to send a text message
   const handleSendMsg = async () => {
