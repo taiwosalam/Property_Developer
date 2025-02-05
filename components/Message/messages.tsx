@@ -28,6 +28,7 @@ const Messages: React.FC<MessagesProps> = ({ day, messages, userId }) => {
               type={isFromUser ? "from user" : "to user"}
               time={m.time}
               text={m.text}
+              seen={m.seen}
             />
           );
         })}

@@ -190,7 +190,8 @@ export const groupMessagesByDay = (data: any[]) => {
             text: contentDisplay,
             sender_id: Number(message.sender_id),
             time: moment(message.timestamp).format("hh:mm A"),
-            content_type: finalContentType, // Added for UI rendering logic.
+            content_type: finalContentType,
+            seen: message.read_at,
         });
 
         return acc;

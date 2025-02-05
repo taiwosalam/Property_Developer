@@ -20,6 +20,7 @@ export interface MessagesProps {
 
 export interface MessageProps {
   text: string;
+  seen: string;
   time: string;
   content_type?: string;
   type: "to user" | "from user";

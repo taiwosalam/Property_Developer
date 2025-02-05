@@ -8,8 +8,9 @@ import WavesurferPlayer from "@wavesurfer/react"; // Wavesurfer component
 // Import Types
 import type { MessageProps } from "./types";
 import AudioWaveform from "./audio-waveeform";
+import { OneCheckMark, TwoCheckMark } from "@/public/icons/icons";
 
-const Message: React.FC<MessageProps> = ({ text, time, content_type, type = "from user" }) => {
+const Message: React.FC<MessageProps> = ({ text, seen, time, content_type, type = "from user" }) => {
   return (
     <div className={clsx("flex", { "justify-end": type === "from user" })}>
       <div
@@ -34,7 +35,7 @@ const Message: React.FC<MessageProps> = ({ text, time, content_type, type = "fro
         {content_type === "image" && (
           <div className="relative w-40 h-40">
             <Image
-              src={text} // Assuming `text` contains the image URL
+              src={text} 
               alt="Sent Image"
               layout="fill"
               objectFit="cover"
@@ -55,26 +56,11 @@ const Message: React.FC<MessageProps> = ({ text, time, content_type, type = "fro
           <div className="min-w-full">
             <audio controls>
               <source src={text} type="audio/mpeg" />
-                Your browser does not support the audio element.
+              Your browser does not support the audio element.
             </audio>
-
           </div>
         )}
-        {/* Audio Content with AudioWaveform */}
-        {/* {content_type === "audio" && (
-          <div className="min-w-full">
-            <AudioWaveform
-              url={text} // `text` holds the audio URL
-              options={{
-                waveColor: "#ddd",
-                progressColor: "#ff4500",
-                cursorColor: "#333",
-                height: 60,
-                barWidth: 2,
-              }}
-            />
-          </div>
-        )} */}
+
         {/* File / Document Content */}
         {(content_type === "file" || content_type === "document") && (
           <a
@@ -83,24 +69,34 @@ const Message: React.FC<MessageProps> = ({ text, time, content_type, type = "fro
             rel="noopener noreferrer"
             className={clsx("flex items-center gap-2", {
               "text-blue-500 hover:underline": content_type === "file",
-              "text-white hover:underline": content_type === "document",
+              "hover:underline": content_type === "document",
+              "text-white": type === "from user",
+              "text-black": type === "to user",
             })}
           >
             <FaFileAlt size={20} />
-            <span>Download File</span>
+            <span>
+              Download File
+            </span>
           </a>
         )}
 
         {/* Timestamp */}
-        <div className="flex items-end">
+        <div className="flex items-center self-end gap-1">
           <p
-            className={clsx("text-[10px] font-normal", {
+            className={clsx("text-[8px] font-normal", {
               "text-text-invert": type === "from user",
               "text-text-disabled": type === "to user",
             })}
           >
             {time}
           </p>
+          {/* CHECKMARK */}
+          {type === "from user" && (
+            <p className="text-white">
+              {seen ? <TwoCheckMark /> : <OneCheckMark />}
+            </p>
+          )}
         </div>
       </div>
     </div>

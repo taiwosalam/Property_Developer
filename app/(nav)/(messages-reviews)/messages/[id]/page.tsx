@@ -45,24 +45,22 @@ const Chat = () => {
     }
   }, [store_messages]);
 
-  // useEffect(() => {
-  //   if (usersData) {
-  //     setIsLoading(false);
-  //   }
-  // }, [usersData]);
+  useEffect(() => {
+    if (usersData) {
+      setIsLoading(false);
+    }
+  }, [usersData]);
 
-  // if (isLoading) {
-  //   return <ChatSkeleton />;
-  // }
+  if (isLoading) {
+    return <ChatSkeleton />;
+  }
 
   // // If user not found, redirect to messages page.
-  // const user = users.find((user: UsersProps) => Number(user.id) === userId);
-  // if (!user) {
-  //   router.replace("/messages");
-  //   return null;
-  // }
-
-  // TODO: Fix the users data as i don't want to use SSE for the sender details
+  const user = users.find((user: UsersProps) => Number(user.id) === userId);
+  if (!user) {
+    router.replace("/messages");
+    return null;
+  }
 
   return (
     <>
@@ -73,8 +71,7 @@ const Chat = () => {
           </button>
           <button className="flex items-center gap-4 text-left">
             <Picture
-              // src={user?.imageUrl || empty}
-              src={empty}
+              src={user?.imageUrl || empty}
               alt="profile picture"
               containerClassName="custom-secondary-bg rounded-full"
               size={32}
@@ -83,7 +80,7 @@ const Chat = () => {
             />
             <div className="custom-flex-col">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-                {/* {user?.name} */} name
+                {user?.name} 
               </p>
               <p className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal">
                 Tap here for contact info

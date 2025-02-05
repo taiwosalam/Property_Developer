@@ -14,19 +14,20 @@ import BackButton from "@/components/BackButton/back-button";
 import { useParams, useSearchParams } from "next/navigation";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useEffect, useState } from "react";
-import { 
-  initData, 
-  initDataProps, 
-  initialSingleData, 
-  InitialSingleUnit, 
-  InitialSingleUnitProps, 
-  singleUnitApiResponse, 
-  transformSingleUnitData, 
-  transformUnitData, 
-  UnitDetails 
+import {
+  initData,
+  initDataProps,
+  initialSingleData,
+  InitialSingleUnit,
+  InitialSingleUnitProps,
+  singleUnitApiResponse,
+  transformSingleUnitData,
+  transformUnitData,
+  UnitDetails
 } from "../../data";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
+import { initialTenants, Tenant, TenantResponse, transformUnitsTenants } from "./data";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -35,6 +36,7 @@ const StartRent = () => {
   const isRental = propertyType === "rental";
 
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
+  const [tenants_data, setTenants_data] = useState<Tenant[]>(initialTenants);
   const endpoint = `/unit/${id}/view`
   const {
     data: apiData,
@@ -45,6 +47,15 @@ const StartRent = () => {
     refetch,
   } = useFetch<singleUnitApiResponse>(endpoint);
 
+  const {
+    data: allTenantData,
+    loading: allTenantsLoading,
+    // silentLoading,
+    // isNetworkError,
+    error: allTenantsError,
+    refetch: refetchTenants,
+  } = useFetch<TenantResponse>("/all-tenants");
+
   useEffect(() => {
     if (apiData) {
       setUnit_data((x: any) => ({
@@ -53,6 +64,18 @@ const StartRent = () => {
       }))
     }
   }, [apiData])
+
+  useEffect(() => {
+    if (allTenantData) {
+      const transformedTenants = transformUnitsTenants(allTenantData);
+      setTenants_data(transformedTenants);
+    }
+  }, [allTenantData])
+
+
+  console.log('tenants', tenants_data)
+
+
 
   if (loading)
     return (
@@ -86,7 +109,7 @@ const StartRent = () => {
     { label: "Group Chat", value: `${unit_data?.group_chat}` },
     { label: "Rent Penalty", value: `${unit_data?.rent_penalty}` },
   ];
-  
+
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Start {isRental ? "Rent" : "Counting"}</BackButton>
@@ -105,18 +128,22 @@ const StartRent = () => {
         />
         <OccupantProfile
           isRental={isRental}
-          occupants={[
-            { name: "Abimbola Adedeji", id: "id-1" },
-            { name: "Tomi Lola", id: "id-2" },
-            { name: "Hello World", id: "id-3" },
-          ]}
+          // occupants={[
+          //   { name: "Abimbola Adedeji", id: "id-1" },
+          //   { name: "Tomi Lola", id: "id-2" },
+          //   { name: "Hello World", id: "id-3" },
+          // ]}
+          occupants={tenants_data.map((tenant) => ({
+            name: tenant.name,
+            id: tenant.id,
+          }))}
           feeDetails={[
             { name: isRental ? "Annual Rent" : "Annual Fee", amount: Number(unit_data.newTenantPrice) },
-            { name: "Service Charge", amount: Number(unit_data.service_charge)},
-            { name: "Caution Fee", amount: Number(unit_data.caution_fee)},
-            { name: "Security Fee", amount: Number(unit_data.security_fee)},
-            { name: "Agency Fee", amount: Number(unit_data.unitAgentFee)},
-            { name: "Other Charges", amount: Number(unit_data.other_charge)},
+            { name: "Service Charge", amount: Number(unit_data.service_charge) },
+            { name: "Caution Fee", amount: Number(unit_data.caution_fee) },
+            { name: "Security Fee", amount: Number(unit_data.security_fee) },
+            { name: "Agency Fee", amount: Number(unit_data.unitAgentFee) },
+            { name: "Other Charges", amount: Number(unit_data.other_charge) },
           ]}
           total_package={Number(unit_data.total_package)}
           loading={loading}
