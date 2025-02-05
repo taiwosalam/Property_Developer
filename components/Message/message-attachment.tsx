@@ -22,10 +22,10 @@ const MessageAttachment: React.FC<{ onEmojiSelect: (emoji: string) => void; id: 
       heading: "Emoji",
     },
     {
-      name: "Gallery",
+      name: "Image",
       icon: <GalleryIcon />,
       component: <MessageGalleryComponent id={id} />,
-      heading: "Gallery",
+      heading: "Image",
     },
     {
       name: "Audio",

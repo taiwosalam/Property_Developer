@@ -1,3 +1,4 @@
+"use client"
 import clsx from "clsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
@@ -10,6 +11,7 @@ import BadgeIcon from "../BadgeIcon/badge-icon";
 import { empty } from "@/app/config";
 import Link from "next/link";
 import Picture from "../Picture/picture";
+import { getIconByContentType } from "@/app/(nav)/(messages-reviews)/messages/data";
 
 const NotificationCard: React.FC<notificationCardProps> = ({
   sectionHeader,
@@ -18,7 +20,6 @@ const NotificationCard: React.FC<notificationCardProps> = ({
   className,
   seeAllLink,
 }) => {
-  // Determine the icon and message text based on the sectionHeader prop
   const getEmptyState = () => {
     if (sectionHeader === "Recent Messages") {
       return {
@@ -35,11 +36,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
           "You do not have any complaints from tenants or occupants. They can create complaints using the mobile app, and recent complaints will be listed here.",
       };
     } else {
-      return {
-        icon: "", // default empty icon if needed
-        altText: "",
-        message: "",
-      };
+      return { icon: "", altText: "", message: "" };
     }
   };
 
@@ -85,76 +82,79 @@ const NotificationCard: React.FC<notificationCardProps> = ({
           }
         )}
       >
-        {notifications.map((notification, index) => (
-          <div key={index} className="flex items-center justify-between">
-            <Link
-              href={
-                sectionHeader === "Staffs"
-                  ? `/management/staff-branch/${branchId}/branch-staff/${notification.staff_ID}`
-                  : sectionHeader === "Recent Messages"
-                  ? `/messages/${notification.id}`
-                  : "#"
-              }
-              className="flex items-center gap-3 w-[70%]"
-            >
-              <div className="custom-secondary-bg rounded-full p-[1px]">
-                <Picture
-                  src={notification.avatarSrc || empty}
-                  alt="profile picture"
-                  size={36}
-                  rounded
-                />
-              </div>
-              <div className="w-full gap-1">
-                {/* <div className=""> */}
-                <p className="text-sm font-medium text-text-primary dark:text-[#f1f1fd] flex items-center line-clamp-1 text-ellipsis">
-                  {notification.name}
-                  {sectionHeader !== "Staffs" && (
-                    <BadgeIcon color={notification.badgeColor || "red"} />
-                  )}
-                </p>
-                {/* <p className="text-[10px] text-text-disabled">
-                  {sectionHeader === "Staffs" ? "Message" : notification.time}
-                </p> */}
-                {/* </div> */}
-                {notification.title && (
-                  <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
-                    {notification.title === "manager"
-                      ? "Branch Manager"
-                      : notification.title}
+        {notifications.map((notification, index) => {
+          const IconComponent = getIconByContentType(notification.content_type as string);
+
+          return (
+            <div key={index} className="flex items-center justify-between">
+              <Link
+                href={
+                  sectionHeader === "Staffs"
+                    ? `/management/staff-branch/${branchId}/branch-staff/${notification.staff_ID}`
+                    : sectionHeader === "Recent Messages"
+                      ? `/messages/${notification.id}`
+                      : "#"
+                }
+                className="flex items-center gap-3 w-[70%]"
+              >
+                <div className="custom-secondary-bg rounded-full p-[1px]">
+                  <Picture
+                    src={notification.avatarSrc || empty}
+                    alt="profile picture"
+                    size={36}
+                    rounded
+                  />
+                </div>
+                <div className="w-full gap-1">
+                  <p className="text-sm font-medium text-text-primary dark:text-[#f1f1fd] flex items-center line-clamp-1 text-ellipsis">
+                    {notification.name}
+                    {sectionHeader !== "Staffs" && (
+                      <BadgeIcon color={notification.badgeColor || "red"} />
+                    )}
                   </p>
-                )}
-                <p className="text-xs text-text-tertiary font-normal capitalize">
-                  {sectionHeader !== "Staffs"
-                    ? notification.message
-                    : notification.position === "manager"
-                      ? "Branch Manager"
-                      : notification.position}
-                </p>
-              </div>
-            </Link>
-            {sectionHeader === "Staffs" ? (
-              <Link href={`/messages/${notification.user_id}`}>
-                <p className="text-[10px] text-text-disabled">
-                  Message
-                </p>
-              </Link>
-            ) : (
-              <div className="custom-flex-col items-center">
-                <p className="text-[10px] text-text-disabled">
-                  {notification.time}
-                </p>
-                {notification.count && (
-                  <div className="bg-rbrand-9 px-2 py-1 rounded-full flex items-center justify-center">
-                    <p className="text-white text-[10px] font-medium">
-                      {notification.count}
+                  {notification.title && (
+                    <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
+                      {notification.title === "manager"
+                        ? "Branch Manager"
+                        : notification.title}
                     </p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        ))}
+                  )}
+                  <p className="text-xs text-text-tertiary font-normal capitalize">
+                    {notification.content_type === "text" ? (
+                      sectionHeader !== "Staffs"
+                        ? notification.message
+                        : notification.position === "manager"
+                          ? "Branch Manager"
+                          : notification.position
+                    ) : (
+                      <>
+                        {IconComponent && <IconComponent />}
+                      </>
+                    )}
+                  </p>
+                </div>
+              </Link>
+              {sectionHeader === "Staffs" ? (
+                <Link href={`/messages/${notification.user_id}`}>
+                  <p className="text-[10px] text-text-disabled">Message</p>
+                </Link>
+              ) : (
+                <div className="custom-flex-col items-center">
+                  <p className="text-[10px] text-text-disabled">
+                    {notification.time}
+                  </p>
+                  {notification.count && (
+                    <div className="bg-rbrand-9 px-2 py-1 rounded-full flex items-center justify-center">
+                      <p className="text-white text-[10px] font-medium">
+                        {notification.count}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
         {notifications.length === 0 && (
           <div className="flex flex-col items-center text-center gap-6">
             {emptyState.icon && (

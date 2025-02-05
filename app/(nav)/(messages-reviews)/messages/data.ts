@@ -52,6 +52,8 @@ export const transformCompanyUsersData = (
     return {
         users: res.data.users.map((u) => ({
             id: u.id,
+            staff_id: u.staff_id,
+            branch_id: u.branch_id,
             name: u.name,
             imageUrl: u.profile_picture || empty,
             position: u.role

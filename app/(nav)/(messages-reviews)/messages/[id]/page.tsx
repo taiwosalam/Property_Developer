@@ -12,6 +12,7 @@ import useGetConversation from "@/hooks/getConversation";
 import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
 import { useAuthStore } from "@/store/authStore";
 import { getLocalStorage } from "@/utils/local-storage";
+import Link from "next/link";
 
 const Chat = () => {
   const router = useRouter();
@@ -70,7 +71,10 @@ const Chat = () => {
           <button onClick={() => router.push("/messages")}>
             <Picture src="/icons/chevron-left.svg" alt="back" size={20} />
           </button>
-          <button className="flex items-center gap-4 text-left">
+          <Link
+            href={`/management/staff-branch/${user.branch_id}/branch-staff/${user?.staff_id}`}
+            className="flex items-center gap-4 text-left"
+          >
             <Picture
               src={user?.imageUrl || empty}
               alt="profile picture"
@@ -87,7 +91,7 @@ const Chat = () => {
                 Tap here for contact info
               </p>
             </div>
-          </button>
+          </Link>
         </div>
       </div>
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
