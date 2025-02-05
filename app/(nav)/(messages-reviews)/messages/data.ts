@@ -71,7 +71,7 @@ export const transformCompanyUsersData = (
 export const transformUsersMessages = (
     data: ConversationsAPIResponse | null | undefined
 ): PageMessages[] => {
-    console.log("data got", data)
+    // console.log("data got", data)
     if (!data || !data.conversations) return []; // Ensure data exists
 
     return data.conversations.map((c) => {
@@ -101,8 +101,9 @@ export const transformUsersMessages = (
             time: c.latest_message_time,
             fullname: c.participant_name,
             messages: c.unread_count,
-            verified: true, // change later
+            verified: false, // change later
             content_type: finalContentType,
+            unread_count: c.unread_count,
         };
     });
 };

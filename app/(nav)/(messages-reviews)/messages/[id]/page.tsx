@@ -25,8 +25,7 @@ const Chat = () => {
   const store_messages = useChatStore((state) => state?.data?.conversations);
   const [conversations, setConversations] = useState<any[]>([]);
   const users_Id = getLocalStorage("user_id")
-  console.log("user", userId)
-
+  
   // Clear local conversation & store state when conversation id changes.
   useEffect(() => {
     setConversations([]);
@@ -39,7 +38,6 @@ const Chat = () => {
   // When store_messages updates, group messages by day and update local state.
   useEffect(() => {
     if (store_messages) {
-      console.log("store", store_messages)
       const groupedMessages = groupMessagesByDay(store_messages);
       setConversations(groupedMessages);
     }
@@ -55,6 +53,8 @@ const Chat = () => {
     return <ChatSkeleton />;
   }
 
+  // console.log("users", users)
+
   // // If user not found, redirect to messages page.
   const user = users.find((user: UsersProps) => Number(user.id) === userId);
   if (!user) {
@@ -62,6 +62,7 @@ const Chat = () => {
     return null;
   }
 
+  // /management/staff-branch/1/branch-staff/7
   return (
     <>
       <div className="py-4 px-6 bg-neutral-2 dark:bg-black">
@@ -76,7 +77,7 @@ const Chat = () => {
               containerClassName="custom-secondary-bg rounded-full"
               size={32}
               rounded
-              status
+              status={false}
             />
             <div className="custom-flex-col">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">

@@ -135,6 +135,8 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     }
   }, [usersData]);
 
+  // console.log("users data", usersData)
+
   // Function to send a text message
   const handleSendMsg = async () => {
     const payload = {
@@ -291,7 +293,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
               <Modal>
                 <ModalTrigger asChild>
                   <button
-                    onClick={() => {}}
+                    onClick={() => { }}
                     className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
                   >
                     <PlusIcon />
@@ -314,7 +316,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
           <div className="custom-flex-col w-full h-full">
             {children}
             {id && (
-              <AuthForm onFormSubmit={() => {}}>
+              <AuthForm onFormSubmit={() => { }}>
                 <div className="py-4 px-6 flex w-full items-center gap-4">
                   {(!isRecording && !audioBlob) && (
                     <div className="flex w-full items-center gap-4">
@@ -353,6 +355,11 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                       {(!audioBlob && !isRecording) && (
                         <button type="button" onClick={handleStartRecording}>
                           <Picture src={MicrophoneBlue} alt="voice note" size={24} />
+                        </button>
+                      )}
+                      {isRecording && (
+                        <button type="button" onClick={() => {}}>
+                          <Picture src={PauseIcon} alt="voice note" size={24} />
                         </button>
                       )}
                       {isRecording && (

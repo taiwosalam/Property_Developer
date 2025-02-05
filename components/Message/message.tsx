@@ -95,7 +95,7 @@ const Message: React.FC<MessageProps> = ({
 
         {/* Audio Content */}
         {content_type === "audio" && (
-          <div className="min-w-full">
+          <div className="relative w-auto h-auto">
             <audio controls>
               <source src={text} type="audio/mpeg" />
               Your browser does not support the audio element.

@@ -23,6 +23,7 @@ export interface notificationCardProps {
   className?: string;
   branchId?: string;
   notifications: {
+    id?: string;
     avatarSrc: string;
     name: string;
     message?: string;
@@ -32,5 +33,6 @@ export interface notificationCardProps {
     staff_ID?: string;
     user_id?: string;
     badgeColor?: BadgeIconColors;
+    count?: number;
   }[];
 }

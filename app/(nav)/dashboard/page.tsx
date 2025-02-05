@@ -14,6 +14,7 @@ import {
   dashboardInvoiceTableData,
   getDashboardCardData,
   initialDashboardStats,
+  getRecentMessages,
 } from "./data";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import NotificationCard from "@/components/dashboard/notification-card";
@@ -26,9 +27,16 @@ import Link from "next/link";
 import { useWalletStore } from "@/store/wallet-store";
 import useFetch from "@/hooks/useFetch";
 import { useEffect, useState } from "react";
+import { ConversationsAPIResponse, PageMessages } from "../(messages-reviews)/messages/types";
+import { transformUsersMessages } from "../(messages-reviews)/messages/data";
+import { message_card_data } from "@/components/Message/data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { useChatStore } from "@/store/message";
 
 const Dashboard = () => {
   const walletId = useWalletStore((state) => state.walletId);
+  const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[]>(message_card_data);
+  const { setChatData } = useChatStore();
   const recentTransactions = useWalletStore(
     (state) => state.recentTransactions
   );
@@ -48,6 +56,16 @@ const Dashboard = () => {
     error,
     refetch
   } = useFetch('/dashboard/data');
+
+  const {
+    data: usersMessages,
+    loading: usersMsgLoading,
+    error: usersMsgError,
+    refetch:refetchMsg,
+  } = useFetch<ConversationsAPIResponse>("/messages");
+  useRefetchOnEvent("refetch-users-msg", () => {
+    refetchMsg({ silent: true });
+  });
   
   const [dashboardStats, setDashboardStats] = useState(initialDashboardStats)
   useEffect(()=> {
@@ -56,6 +74,15 @@ const Dashboard = () => {
     }
   }, [data])
 
+  useEffect(() => {
+    if (usersMessages) {
+      const transformed = transformUsersMessages(usersMessages);
+      setPageUsersMsg(transformed);
+      setChatData("users_messages", transformed);
+    }
+  }, [usersMessages]);
+
+  console.log("messgaes", pageUsersMsg)
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
@@ -102,7 +129,7 @@ const Dashboard = () => {
             className="h-[358px]"
             seeAllLink="/messages"
             sectionHeader="Recent Messages"
-            notifications={recentMessagesData}
+            notifications={getRecentMessages(pageUsersMsg)}
           />
           <NotificationCard
             className="h-[358px]"
