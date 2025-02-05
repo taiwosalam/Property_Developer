@@ -108,19 +108,25 @@ export const CommentTextArea = ({
   placeholder, 
   id, 
   name, 
-  disabled
+  disabled,
+  value,
+  onChange,
 }: {
   className?: string, 
   placeholder: string, 
   id: string, 
   name: string, 
+  value?: string,
   disabled?: boolean
+  onChange?: React.ChangeEventHandler<HTMLTextAreaElement>; 
 })=> {
   return (
     <textarea
       name={name}
       id={id}
+      value={value}
       placeholder={placeholder}
+      onChange={onChange}
       className={cn(
         "w-full px-2 py-1 border border-solid border-[#C1C2C366] bg-neutral-3 outline-brand-9 max-h-[80px] rounded-[4px] overflow-y-auto custom-round-scrollbar",
         className

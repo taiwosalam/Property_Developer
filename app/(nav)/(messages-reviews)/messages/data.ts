@@ -9,7 +9,7 @@ import {
     DocumentIcon,
     EmojiIcon,
     GalleryIcon,
-  } from '@/public/icons/icons';
+} from '@/public/icons/icons';
 
 export const users_data: UsersProps[] = [
     { id: "1", name: "", imageUrl: "", position: "" },
@@ -108,19 +108,36 @@ export const transformUsersMessages = (
 };
 
 
+// export const formatMessageText = (message: string) => {
+//     // Replace \r\n with <br /> for new lines
+//     let formattedText = message.replace(/\\r\\n/g, "<br />");
+
+//     // Decode emojis and special characters (like \ud83d\ude04 -> 😊)
+//     formattedText = formattedText.replace(/\\u[\dA-Fa-f]{4}/g, (match) =>
+//         String.fromCharCode(parseInt(match.replace(/\\u/g, ""), 16))
+//     );
+
+//     return formattedText;
+// };
+
+
+export const formatMessageText = (message: string) => {
+    return message.replace(/(?:\r\n|\r|\n)/g, "<br />");
+  };
+
 type IconComponent = () => JSX.Element;
-export const getIconByContentType = (contentType:string) => {
-    const iconMap:Record<string, IconComponent | null> = {
-      audio: AudioIcon,
-      video: GalleryIcon, 
-      image: GalleryIcon,
-      document: DocumentIcon,
+export const getIconByContentType = (contentType: string) => {
+    const iconMap: Record<string, IconComponent | null> = {
+        audio: AudioIcon,
+        video: GalleryIcon,
+        image: GalleryIcon,
+        document: DocumentIcon,
     };
     if (contentType === 'text' || !iconMap[contentType]) {
-      return null;
+        return null;
     }
     return iconMap[contentType];
-  };
+};
 
 export const transformMessages = (data: any) => {
     if (!data) return [];
@@ -143,7 +160,7 @@ export const transformMessages = (data: any) => {
 
 
 export const groupMessagesByDay = (data: any[]) => {
-    console.log("data", data)
+    // console.log("data", data)
     if (!data || !data.length) return [];
 
     // Sort messages by timestamp in ascending order.

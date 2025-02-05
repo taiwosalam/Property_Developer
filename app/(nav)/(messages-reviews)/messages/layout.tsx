@@ -4,15 +4,20 @@ import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 // Types
-import type { CompanyUsersAPIResponse, ConversationsAPIResponse, MessagesLayoutProps, PageMessages } from "./types";
+import type {
+  CompanyUsersAPIResponse,
+  ConversationsAPIResponse,
+  MessagesLayoutProps,
+  PageMessages,
+} from "./types";
 
 // Images
 import ClipBlue from "@/public/icons/clip-blue.svg";
 import MicrophoneBlue from "@/public/icons/microphone-blue.svg";
-import SendIcon from "@/public/icons/send-msg.svg"
-import PlayIcon from "@/public/icons/play-icon.svg"
-import PauseIcon from "@/public/icons/pause-icon.svg"
-import DeleteIcon from "@/public/icons/del.svg"
+import SendIcon from "@/public/icons/send-msg.svg";
+import PlayIcon from "@/public/icons/play-icon.svg";
+import PauseIcon from "@/public/icons/pause-icon.svg";
+import DeleteIcon from "@/public/icons/del.svg";
 
 // Imports
 import Input from "@/components/Form/Input/input";
@@ -23,31 +28,28 @@ import MessageCard from "@/components/Message/message-card";
 import { message_card_data } from "@/components/Message/data";
 import FilterButton from "@/components/FilterButton/filter-button";
 import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
-import Messages from "./page";
 import useFetch from "@/hooks/useFetch";
 import {
-  convertToFormData,
-  initialData,
-  MessageUserPageTypes,
   SendMessage,
   transformCompanyUsersData,
-  transformUsersMessages
+  transformUsersMessages,
 } from "./data";
 import { useChatStore } from "@/store/message";
 import { AuthForm } from "@/components/Auth/auth-components";
 import clsx from "clsx";
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
-import useGetConversation from "@/hooks/getConversation";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import MessageAttachment from "@/components/Message/message-attachment";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import MessageCardSkeleton from "@/components/Skeleton/message-card-skeleton";
-import WavesurferPlayer from '@wavesurfer/react';
-import WaveSurfer from 'wavesurfer.js';
+import WavesurferPlayer from "@wavesurfer/react";
+import WaveSurfer from "wavesurfer.js";
+import RecordPlugin from "wavesurfer.js/dist/plugins/record.esm.js";
 import NoMessage from "./messages-component";
 import { PlusIcon } from "@/public/icons/icons";
 import SelectChatUsersModal from "@/components/Message/user-modal";
+import { CommentTextArea } from "../../management/agent-community/NewComment";
 
 const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { setChatData } = useChatStore();
@@ -57,32 +59,34 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const [message, setMessage] = useState("");
   const [reqLoading, setReqLoading] = useState(false);
   const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[]>(message_card_data);
-  const store_messages = useChatStore((state) => state?.data?.conversations);
-  const [conversations, setConversations] = useState<any[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string>("");
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const [wavesurfer, setWavesurfer] = useState<WaveSurfer | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const users_data = useChatStore((state) => state?.data?.users);
 
+  // Playback wavesurfer state (for playing the recorded audio)
+  const [playbackWS, setPlaybackWS] = useState<WaveSurfer | null>(null);
   const onReady = (ws: any) => {
-    setWavesurfer(ws);
+    setPlaybackWS(ws);
     setIsPlaying(false);
   };
-
   const onPlayPause = () => {
-    wavesurfer && wavesurfer.playPause();
+    playbackWS && playbackWS.playPause();
   };
 
-  // When audioBlob is set, create a URL string for Wavesurfer
+  // Ref for the recording waveform container (always rendered)
+  const micContainerRef = useRef<HTMLDivElement>(null);
+  // Recorder WaveSurfer instance reference (for recording)
+  const [recorderWS, setRecorderWS] = useState<WaveSurfer | null>(null);
+  // New ref to store the Record plugin instance
+  const recordPluginRef = useRef<any>(null);
+
+  // When audioBlob is set, create a URL string for playback
   useEffect(() => {
     if (audioBlob) {
       const url = URL.createObjectURL(audioBlob);
       setAudioUrl(url);
-      // Clean up the URL object when the blob changes or the component unmounts
       return () => URL.revokeObjectURL(url);
     } else {
       setAudioUrl("");
@@ -101,11 +105,11 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     setMessage((prev) => prev + emoji);
   };
 
-  const {
-    data: usersData,
-    loading: loadingUsers,
-    error,
-  } = useFetch<CompanyUsersAPIResponse>('/company/users');
+  const handleMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(event.target.value);
+  };
+
+  const { data: usersData, loading: loadingUsers, error } = useFetch<CompanyUsersAPIResponse>("/company/users");
 
   const {
     data: usersMessages,
@@ -119,25 +123,25 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
 
   useEffect(() => {
     if (usersMessages) {
-      setPageUsersMsg(transformUsersMessages(usersMessages));
-      setChatData("users_messages", transformUsersMessages(usersMessages))
+      const transformed = transformUsersMessages(usersMessages);
+      setPageUsersMsg(transformed);
+      setChatData("users_messages", transformed);
     }
   }, [usersMessages]);
 
-  // console.log("page", pageUsersMsg)
   useEffect(() => {
     if (usersData) {
-      setChatData("users", transformCompanyUsersData(usersData)); // Store users dynamically to store
+      setChatData("users", transformCompanyUsersData(usersData));
     }
   }, [usersData]);
 
+  // Function to send a text message
   const handleSendMsg = async () => {
     const payload = {
       content: message,
       content_type: "text",
-      receiver_type: "user"
+      receiver_type: "user",
     };
-
     try {
       setReqLoading(true);
       const res = await SendMessage(objectToFormData(payload), `${id}`);
@@ -152,51 +156,66 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     }
   };
 
-  const handleStartRecording = () => {
-    setIsRecording(true);
-    audioChunksRef.current = []; // Clear previous chunks
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then((stream) => {
-        mediaRecorderRef.current = new MediaRecorder(stream);
-        mediaRecorderRef.current.ondataavailable = (e) => {
-          audioChunksRef.current.push(e.data);
-        };
-        mediaRecorderRef.current.onstop = () => {
-          const recordedBlob = new Blob(audioChunksRef.current, { type: "audio/wav" });
-          setAudioBlob(recordedBlob);
-        };
-        mediaRecorderRef.current.start();
-      })
-      .catch((err) => {
-        console.error("Error accessing microphone: ", err);
+  // When isRecording becomes true, initialize the recorder
+  useEffect(() => {
+    if (isRecording && micContainerRef.current) {
+      const ws = WaveSurfer.create({
+        container: micContainerRef.current,
+        waveColor: "rgb(200, 0, 200)",
+        progressColor: "rgb(100, 0, 100)",
+        height: 25,
       });
+      // Register the Record plugin and store it in a ref
+      const recordPlugin = ws.registerPlugin(
+        RecordPlugin.create({
+          renderRecordedAudio: false,
+          scrollingWaveform: false,
+          continuousWaveform: true,
+          continuousWaveformDuration: 30,
+        })
+      );
+      recordPluginRef.current = recordPlugin;
+      // Listen for record-end event to capture the audio blob
+      recordPlugin.on("record-end", (blob: Blob) => {
+        setAudioBlob(blob);
+        ws.destroy();
+        setRecorderWS(null);
+        recordPluginRef.current = null;
+      });
+      // Start recording using the plugin's API
+      recordPlugin.startRecording();
+      setRecorderWS(ws);
+    }
+  }, [isRecording]);
+
+  const handleStartRecording = () => {
+    console.log("record start");
+    setIsRecording(true);
   };
 
   const handleStopRecording = () => {
-    setIsRecording(false);
-    if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();
+    if (recordPluginRef.current) {
+      // Use the plugin instance to stop recording
+      recordPluginRef.current.stopRecording();
+    } else {
+      console.warn("Record plugin instance is not available");
     }
+    setIsRecording(false);
   };
 
   const handleSendAudio = async () => {
     if (!audioBlob) return;
-
     const audioFile = new File([audioBlob], "voice-note.wav", { type: audioBlob.type });
     const payload = {
       content_file: audioFile,
       content_type: "audio",
-      receiver_type: "user"
+      receiver_type: "user",
     };
-
-    console.log("formdata", payload)
-
     try {
       setReqLoading(true);
       const res = await SendMessage(objectToFormData(payload), `${id}`);
       if (res) {
-        setAudioBlob(null); // Reset audio state after sending
+        setAudioBlob(null);
         setAudioUrl("");
         window.dispatchEvent(new Event("refetch-users-msg"));
       }
@@ -261,11 +280,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                 ) : (
                   <div className="custom-flex-col relative z-[1] pb-4">
                     {pageUsersMsg.map((message, idx) => (
-                      <MessageCard
-                        key={idx}
-                        {...message}
-                        highlight={message.id === id}
-                      />
+                      <MessageCard key={idx} {...message} highlight={message.id === id} />
                     ))}
                   </div>
                 )}
@@ -276,7 +291,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
               <Modal>
                 <ModalTrigger asChild>
                   <button
-                    onClick={() => { }}
+                    onClick={() => {}}
                     className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
                   >
                     <PlusIcon />
@@ -296,37 +311,36 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
       )}
       {(!isCustom || id) && (
         <div className="flex-1">
-          <div className="custom-flex-col h-full">
+          <div className="custom-flex-col w-full h-full">
             {children}
             {id && (
-              <AuthForm onFormSubmit={() => { }}>
-                <div className="py-4 px-6 flex items-center gap-4">
-                  {(!isRecording && !audioBlob) &&
-                    <>
+              <AuthForm onFormSubmit={() => {}}>
+                <div className="py-4 px-6 flex w-full items-center gap-4">
+                  {(!isRecording && !audioBlob) && (
+                    <div className="flex w-full items-center gap-4">
                       <Modal>
                         <ModalTrigger asChild>
-                          <button>
+                          <button type="button">
                             <Picture src={ClipBlue} alt="attachment" size={24} />
                           </button>
                         </ModalTrigger>
                         <ModalContent>
-                          <MessageAttachment
-                            onEmojiSelect={handleEmojiSelect}
-                            id={id as string}
-                          />
+                          <MessageAttachment onEmojiSelect={handleEmojiSelect} id={id as string} />
                         </ModalContent>
                       </Modal>
-                      <Input
+                      <CommentTextArea
+                        name="chat"
                         id="chat"
                         placeholder="Type your message here"
-                        className="flex-1 text-sm"
+                        className="w-full text-sm"
                         value={message}
-                        onChange={setMessage}
+                        onChange={handleMessageChange}
                       />
-                    </>
-                  }
+                    </div>
+                  )}
                   {message ? (
                     <button
+                      type="button"
                       className={clsx({
                         "animate-spin h-5 w-5 border-b-2 border-blue-500 rounded-full mr-2": reqLoading,
                       })}
@@ -336,58 +350,41 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                     </button>
                   ) : (
                     <>
-                      {!audioBlob &&
-                        <button onClick={handleStartRecording}>
+                      {(!audioBlob && !isRecording) && (
+                        <button type="button" onClick={handleStartRecording}>
                           <Picture src={MicrophoneBlue} alt="voice note" size={24} />
-                        </button>}
-                      {isRecording &&
-                        <button onClick={handleStopRecording} className="flex items-center space-x-2">
-                          <div className="flex space-x-1 items-center">
-                            <div
-                              className="w-1 h-4 bg-red-500 animate-pulse"
-                              style={{ animationDelay: "0ms" }}
-                            ></div>
-                            <div
-                              className="w-1 h-6 bg-red-500 animate-pulse"
-                              style={{ animationDelay: "100ms" }}
-                            ></div>
-                            <div
-                              className="w-1 h-3 bg-red-500 animate-pulse"
-                              style={{ animationDelay: "200ms" }}
-                            ></div>
-                            <div
-                              className="w-1 h-5 bg-red-500 animate-pulse"
-                              style={{ animationDelay: "300ms" }}
-                            ></div>
-                            <div
-                              className="w-1 h-4 bg-red-500 animate-pulse"
-                              style={{ animationDelay: "400ms" }}
-                            ></div>
-                          </div>
+                        </button>
+                      )}
+                      {isRecording && (
+                        <button
+                          type="button"
+                          onClick={handleStopRecording}
+                          className="flex items-center space-x-2"
+                        >
                           <span className="text-sm text-red-500">Stop Recording</span>
                         </button>
-                      }
+                      )}
                     </>
                   )}
                   {audioBlob && (
                     <div className="flex w-full items-center justify-end gap-2">
-                      <button onClick={() => { setAudioBlob(null) }}>
+                      <button type="button" onClick={() => setAudioBlob(null)}>
                         <Picture src={DeleteIcon} alt="delete voice" size={28} />
                       </button>
                       <WavesurferPlayer
                         height={40}
                         width={400}
                         waveColor="violet"
-                        url={audioUrl} // Use the URL string instead of the Blob directly
+                        url={audioUrl}
                         onReady={onReady}
                         onPlay={() => setIsPlaying(true)}
                         onPause={() => setIsPlaying(false)}
                       />
                       <div className="flex gap-2">
-                        <button onClick={onPlayPause}>
+                        <button type="button" onClick={onPlayPause}>
                           <Picture src={isPlaying ? PauseIcon : PlayIcon} alt="voice pause-play" size={24} />
                         </button>
-                        <button onClick={handleSendAudio} disabled={reqLoading}>
+                        <button type="button" onClick={handleSendAudio} disabled={reqLoading}>
                           {reqLoading ? (
                             <div className="w-5 h-5 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
                           ) : (
@@ -397,6 +394,13 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                       </div>
                     </div>
                   )}
+                  {/* Always render the recording container; show/hide via style */}
+                  <div
+                    ref={micContainerRef}
+                    id="mic"
+                    className="w-full mt-4 h-full flex items-center justify-center mb-4"
+                    style={{ display: isRecording ? "block" : "none" }}
+                  ></div>
                 </div>
               </AuthForm>
             )}
