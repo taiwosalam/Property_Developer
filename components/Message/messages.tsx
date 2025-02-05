@@ -20,7 +20,6 @@ const Messages: React.FC<MessagesProps> = ({ day, messages, userId }) => {
       <div className="custom-flex-col gap-4">
         {messages?.map((m, index) => {
           const isFromUser = m.sender_id === id;
-          console.log("sender", m.sender_id)
           return (
             <Message
               key={index}

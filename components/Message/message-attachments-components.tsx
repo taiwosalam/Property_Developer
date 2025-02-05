@@ -15,13 +15,19 @@ export const MessageModalPreset = ({
     back,
     children,
     heading,
+    noheading,
+    style,
 }: {
-    heading: string,
+    heading?: string,
     back?: { handleBack: () => void },
-    children: React.ReactNode
+    children: React.ReactNode,
+    noheading?: boolean,
+    style?: React.CSSProperties;
 }) => {
     return (
-        <div className='w-[400px] max-h-[90vh] overflow-y-auto rounded-[20px] bg-white dark:bg-darkText-primary p-[20px] custom-flex-col'>
+        <div
+            style={style}
+            className='w-[400px] max-h-[90vh] overflow-y-auto rounded-[20px] bg-white dark:bg-darkText-primary p-[20px] custom-flex-col'>
             <div className="flex items-center justify-between border-b border-solid border-gray-300 ">
                 <div className='flex items-center gap-2'>
                     {back && (
@@ -33,9 +39,11 @@ export const MessageModalPreset = ({
                             <ChevronLeft />
                         </button>
                     )}
-                    <h2 className="text-lg font-bold text-primary-navy dark:text-white">
-                        {heading}
-                    </h2>
+                    {!noheading && (
+                        <h2 className="text-lg font-bold text-primary-navy dark:text-white">
+                            {heading}
+                        </h2>
+                    )}
                 </div>
                 <ModalTrigger close>
                     <CancelIcon />
@@ -98,7 +106,7 @@ export const EmojiComponent: React.FC<EmojiComponentProps> = ({ onEmojiSelect })
 
 
 
-export const MessageGalleryComponent = ({id}: {id: string}) => {
+export const MessageGalleryComponent = ({ id }: { id: string }) => {
     const [loading, setLoading] = useState(false)
     const { setIsOpen } = useModal()
 
