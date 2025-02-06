@@ -22,6 +22,7 @@ export interface Transaction {
 }
 
 interface WalletStore {
+  id: string | null;
   walletId: string | null;
   current_pin: string;
   new_pin: string;
@@ -76,6 +77,7 @@ interface WalletStore {
 
 export const useWalletStore = create<WalletStore>((set) => ({
   walletId: null,
+  id: null,
   walletPinStatus: false,
   amount: 0,
   desc: "",

@@ -132,6 +132,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
       }
       setWalletStore("walletPinStatus", data.balance.pin_status);
       setWalletStore("walletId", data.balance.wallet_id);
+      setWalletStore("id", data.balance.id);
       setWalletStore("balance", {
         my_balance: data.balance.my_balance,
         caution_deposit: data.balance.escrow_balance,

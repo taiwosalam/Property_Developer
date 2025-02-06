@@ -15,7 +15,7 @@ const UploadMsgFile: React.FC<
     AddMultipleLandlordsOrTenantsProps
 > = ({ submitAction, accept, heading }) => {
     const [requestLoading, setRequestLoading] = useState(false);
-    const acceptedExtensions = ["jpg", "jpeg", "png", "pdf", "mp3"];
+    const acceptedExtensions = ["jpg", "jpeg", "png", "pdf", "mp3",'doc', 'docx', 'txt', 'clx', 'csv'];
     const {
         file,
         fileName,

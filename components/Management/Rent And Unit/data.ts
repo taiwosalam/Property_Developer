@@ -1,4 +1,5 @@
-import type { Occupant, UnitDetails } from "./types";
+import { empty } from "@/app/config";
+import type { Occupant, TenantResponse, UnitDetails } from "./types";
 import type { Field } from "@/components/Table/types";
 import { Dayjs } from "dayjs";
 
@@ -19,6 +20,26 @@ export const getBackgroundColor = (StatusName: string): string => {
   }
 };
 
+export const transformTenantData = (res: TenantResponse): Occupant => {
+  const { data } = res;
+  return {
+    id: data.id.toString(),
+    name: data.name,
+    email: data.email,
+    userTag: data.agent as "mobile" | "web",
+    avatar: data.picture || empty,
+    gender: data.gender,
+    birthday: "12/12/12", //TODO - Add birthday
+    phone: data.phone,
+    maritalStatus: data.tenant_type,
+    address: `${data.city}, ${data.local_government}, ${data.state}` || "___",
+    city: data.city,
+    state: data.state,
+    lg: data.local_government,
+    religion: "___", //TODO - Add religion
+  };
+}
+
 export const activeStatuses = [
   "vacant",
   "occupied",
@@ -31,8 +52,8 @@ type Action = {
   color: string;
   label: string | ((propertyType: "rental" | "facility") => string);
   route?:
-    | string
-    | ((id: string, propertyType: "rental" | "facility") => string);
+  | string
+  | ((id: string, propertyType: "rental" | "facility") => string);
   modal?: string;
 };
 

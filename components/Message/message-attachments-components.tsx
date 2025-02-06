@@ -173,7 +173,7 @@ export const MessageDocumentComponent = ({ id }: { id: string }) => {
             <UploadMsgFile
                 submitAction={handleUpload}
                 heading='Import Document'
-                accept=".pdf, .clx, .csv,.docx"
+                accept=".pdf, .clx, .csv, .docx, .txt, .doc" 
             />
         </div>
     )

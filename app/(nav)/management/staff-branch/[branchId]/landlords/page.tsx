@@ -255,12 +255,6 @@ const Landlord = () => {
                 setGridView={() => setView("grid")}
                 setListView={() => setView("list")}
                 pageTitle="Landlords/Landladies (Owners)"
-                aboutPageModalData={{
-                    title: fetchedLandlordHelpInfo?.slug || "",
-                    description: fetchedLandlordHelpInfo?.description || "",
-                    video: fetchedLandlordHelpInfo?.acf.video_link || "",
-                    readingLink: fetchedLandlordHelpInfo?.link || "",
-                }}
                 searchInputPlaceholder="Search for Landlords"
                 handleFilterApply={handleFilterApply}
                 isDateTrue
@@ -268,6 +262,7 @@ const Landlord = () => {
                 handleSearch={handleSearch}
                 onSort={handleSort}
                 appliedFilters={appliedFilters}
+                noExclamationMark
                 filterOptionsMenu={[
                     {
                         label: "State",
@@ -303,30 +298,10 @@ const Landlord = () => {
                         <EmptyList
                             buttonText="+ Create New Landlord"
                             modalContent={<AddLandlordModal />}
-                            title="The landlord and landlady files are empty"
+                            title="No landlord or landlady has been assigned to this branch yet."
                             body={
                                 <p>
-                                    You can create a property by clicking on the &quot;Add
-                                    Property&quot; button. You can create two types of properties:
-                                    rental and facility properties. Rental properties are mainly
-                                    tailored for managing properties for rent, including landlord
-                                    and tenant management processes. Facility properties are
-                                    designed for managing occupants in gated estates, overseeing
-                                    their due payments, visitor access, and vehicle records.{" "}
-                                    <br />
-                                    <br />
-                                    Once a property is added to this page, this guide will
-                                    disappear. To learn more about this page in the future, you
-                                    can click on this icon{" "}
-                                    <span className="inline-block text-brand-10 align-text-top">
-                                        <ExclamationMark />
-                                    </span>{" "}
-                                    at the top left of the dashboard page.
-                                    <br />
-                                    <br />
-                                    Property creation involves several segments: property
-                                    settings, details, what to showcase on the dashboard or user
-                                    app, unit creation, permissions, and assigning staff.
+                                    To add a landlord or landlady to this branch, click the &apos;Create New Landlord&apos; button to set up a profile. During property creation or editing, select this branch in the branch input section under property details, then assign the property owner in the landlord input field to link them to this branch.
                                 </p>
                             }
                         />

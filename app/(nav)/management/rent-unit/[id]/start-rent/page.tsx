@@ -73,9 +73,7 @@ const StartRent = () => {
   }, [allTenantData])
 
 
-  console.log('tenants', tenants_data)
-
-
+  // console.log('tenants', tenants_data)
 
   if (loading)
     return (
@@ -128,11 +126,6 @@ const StartRent = () => {
         />
         <OccupantProfile
           isRental={isRental}
-          // occupants={[
-          //   { name: "Abimbola Adedeji", id: "id-1" },
-          //   { name: "Tomi Lola", id: "id-2" },
-          //   { name: "Hello World", id: "id-3" },
-          // ]}
           occupants={tenants_data.map((tenant) => ({
             name: tenant.name,
             id: tenant.id,

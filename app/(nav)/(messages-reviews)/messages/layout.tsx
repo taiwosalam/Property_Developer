@@ -44,12 +44,13 @@ import MessageAttachment from "@/components/Message/message-attachment";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import MessageCardSkeleton from "@/components/Skeleton/message-card-skeleton";
 import WavesurferPlayer from "@wavesurfer/react";
-import WaveSurfer from "wavesurfer.js";
-import RecordPlugin from "wavesurfer.js/dist/plugins/record.esm.js";
 import NoMessage from "./messages-component";
 import { PlusIcon } from "@/public/icons/icons";
 import SelectChatUsersModal from "@/components/Message/user-modal";
 import { CommentTextArea } from "../../management/agent-community/NewComment";
+
+// Import the voice visualizer hook and component
+import { useVoiceVisualizer, VoiceVisualizer } from "@hasma/react-voice-visualizer";
 
 const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { setChatData } = useChatStore();
@@ -59,14 +60,14 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const [message, setMessage] = useState("");
   const [reqLoading, setReqLoading] = useState(false);
   const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[]>(message_card_data);
-  const [isRecording, setIsRecording] = useState(false);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  // We'll no longer use our own isRecording/audioBlob state for recording;
+  // Instead, we use the voice visualizer hook.
   const [audioUrl, setAudioUrl] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState(false);
   const users_data = useChatStore((state) => state?.data?.users);
 
   // Playback wavesurfer state (for playing the recorded audio)
-  const [playbackWS, setPlaybackWS] = useState<WaveSurfer | null>(null);
+  const [playbackWS, setPlaybackWS] = useState<any>(null);
   const onReady = (ws: any) => {
     setPlaybackWS(ws);
     setIsPlaying(false);
@@ -75,23 +76,25 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     playbackWS && playbackWS.playPause();
   };
 
-  // Ref for the recording waveform container (always rendered)
-  const micContainerRef = useRef<HTMLDivElement>(null);
-  // Recorder WaveSurfer instance reference (for recording)
-  const [recorderWS, setRecorderWS] = useState<WaveSurfer | null>(null);
-  // New ref to store the Record plugin instance
-  const recordPluginRef = useRef<any>(null);
+  // Voice Visualizer hook for recording.
+  const voiceControls = useVoiceVisualizer();
+  // voiceControls provides:
+  // - recordedBlob
+  // - isRecordingInProgress
+  // - isPausedRecording
+  // - startRecording, stopRecording, togglePauseResume
+  // - audioRef (for the visualizer component)
 
-  // When audioBlob is set, create a URL string for playback
+  // When recordedBlob updates, create a URL for playback.
   useEffect(() => {
-    if (audioBlob) {
-      const url = URL.createObjectURL(audioBlob);
+    if (voiceControls.recordedBlob) {
+      const url = URL.createObjectURL(voiceControls.recordedBlob);
       setAudioUrl(url);
-      return () => URL.revokeObjectURL(url);
     } else {
       setAudioUrl("");
     }
-  }, [audioBlob]);
+  }, [voiceControls.recordedBlob]);
+
 
   useEffect(() => {
     setMessage(message);
@@ -135,8 +138,6 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     }
   }, [usersData]);
 
-  // console.log("users data", pageUser)
-
   // Function to send a text message
   const handleSendMsg = async () => {
     const payload = {
@@ -158,56 +159,10 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     }
   };
 
-  // When isRecording becomes true, initialize the recorder
-  useEffect(() => {
-    if (isRecording && micContainerRef.current) {
-      const ws = WaveSurfer.create({
-        container: micContainerRef.current,
-        waveColor: "rgb(200, 0, 200)",
-        progressColor: "rgb(100, 0, 100)",
-        height: 25,
-      });
-      // Register the Record plugin and store it in a ref
-      const recordPlugin = ws.registerPlugin(
-        RecordPlugin.create({
-          renderRecordedAudio: false,
-          scrollingWaveform: false,
-          continuousWaveform: true,
-          continuousWaveformDuration: 30,
-        })
-      );
-      recordPluginRef.current = recordPlugin;
-      // Listen for record-end event to capture the audio blob
-      recordPlugin.on("record-end", (blob: Blob) => {
-        setAudioBlob(blob);
-        ws.destroy();
-        setRecorderWS(null);
-        recordPluginRef.current = null;
-      });
-      // Start recording using the plugin's API
-      recordPlugin.startRecording();
-      setRecorderWS(ws);
-    }
-  }, [isRecording]);
-
-  const handleStartRecording = () => {
-    console.log("record start");
-    setIsRecording(true);
-  };
-
-  const handleStopRecording = () => {
-    if (recordPluginRef.current) {
-      // Use the plugin instance to stop recording
-      recordPluginRef.current.stopRecording();
-    } else {
-      console.warn("Record plugin instance is not available");
-    }
-    setIsRecording(false);
-  };
-
+  // Function to send audio; uses audioUrl and the recordedBlob (set via voiceControls)
   const handleSendAudio = async () => {
-    if (!audioBlob) return;
-    const audioFile = new File([audioBlob], "voice-note.wav", { type: audioBlob.type });
+    if (!voiceControls.recordedBlob) return;
+    const audioFile = new File([voiceControls.recordedBlob], "voice-note.wav", { type: voiceControls.recordedBlob.type });
     const payload = {
       content_file: audioFile,
       content_type: "audio",
@@ -217,8 +172,8 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
       setReqLoading(true);
       const res = await SendMessage(objectToFormData(payload), `${id}`);
       if (res) {
-        setAudioBlob(null);
-        setAudioUrl("");
+        // Clear the recording data after sending
+        // (Optionally, you may want to reset the voiceControls hook state)
         window.dispatchEvent(new Event("refetch-users-msg"));
       }
     } catch (err) {
@@ -318,7 +273,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
             {id && (
               <AuthForm onFormSubmit={() => { }}>
                 <div className="py-4 px-6 flex w-full items-center gap-4">
-                  {(!isRecording && !audioBlob) && (
+                  {(!audioUrl && !voiceControls.isRecordingInProgress) && (
                     <div className="flex w-full items-center gap-4">
                       <Modal>
                         <ModalTrigger asChild>
@@ -352,36 +307,41 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                     </button>
                   ) : (
                     <>
-                      {(!audioBlob && !isRecording) && (
-                        <button type="button" onClick={handleStartRecording}>
+                      {(!audioUrl && !voiceControls.isRecordingInProgress) && (
+                        <button type="button" onClick={voiceControls.startRecording}>
                           <Picture src={MicrophoneBlue} alt="voice note" size={24} />
                         </button>
                       )}
-                      {isRecording && (
-                        <button type="button" onClick={() => {}}>
-                          <Picture src={PauseIcon} alt="voice note" size={24} />
-                        </button>
-                      )}
-                      {isRecording && (
-                        <button
-                          type="button"
-                          onClick={handleStopRecording}
-                          className="flex items-center space-x-2"
-                        >
-                          <span className="text-sm text-red-500">Stop Recording</span>
-                        </button>
+                      {voiceControls.isRecordingInProgress && (
+                        <>
+                          {/* <button type="button" onClick={voiceControls.togglePauseResume}>
+                            <Picture
+                              src={PauseIcon}
+                              alt={voiceControls.isPausedRecording ? "Resume" : "Pause"}
+                              size={24}
+                            />
+                          </button> */}
+                          {/* <button
+                            type="button"
+                            onClick={voiceControls.stopRecording}
+                            className="flex items-center space-x-2"
+                          >
+                            <span className="text-sm text-red-500">Stop Recording</span>
+                          </button> */}
+                        </>
                       )}
                     </>
                   )}
-                  {audioBlob && (
+                  {audioUrl && (
                     <div className="flex w-full items-center justify-end gap-2">
-                      <button type="button" onClick={() => setAudioBlob(null)}>
+                      <button type="button" onClick={() => setAudioUrl("")}>
                         <Picture src={DeleteIcon} alt="delete voice" size={28} />
                       </button>
                       <WavesurferPlayer
                         height={40}
                         width={400}
-                        waveColor="violet"
+                        waveColor="rgb(100, 0, 100)"
+                        progressColor="rgb(200, 0, 200)"
                         url={audioUrl}
                         onReady={onReady}
                         onPlay={() => setIsPlaying(true)}
@@ -401,13 +361,30 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                       </div>
                     </div>
                   )}
-                  {/* Always render the recording container; show/hide via style */}
-                  <div
-                    ref={micContainerRef}
-                    id="mic"
-                    className="w-full mt-4 h-full flex items-center justify-center mb-4"
-                    style={{ display: isRecording ? "block" : "none" }}
-                  ></div>
+                  {/* Recording waveform visualizer */}
+                  {/* {voiceControls.isRecordingInProgress && (
+                    <div className="w-full mt-4 h-full">
+                      <VoiceVisualizer ref={voiceControls.audioRef} controls={voiceControls} />
+                    </div>
+                  )} */}
+
+                  {voiceControls.isRecordingInProgress && (
+                    <div className="w-full mt-4" style={{ height: "100px" }}>
+                      <VoiceVisualizer
+                        ref={voiceControls.audioRef}
+                        controls={voiceControls}
+                        height={50}               // Set a fixed canvas height (in pixels)
+                        width="80%"               // Make it fill the container’s width
+                        backgroundColor="transparent"
+                        mainBarColor="#2392f5"     // Customize as desired
+                        secondaryBarColor="#fe0095"// Customize as desired
+                        speed={3}                  // Adjust animation speed if needed
+                        barWidth={3}
+                        gap={1}
+                        rounded={5}
+                      />
+                    </div>
+                  )}
                 </div>
               </AuthForm>
             )}
