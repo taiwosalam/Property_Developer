@@ -17,6 +17,9 @@ import Button from "@/components/Form/Button/button";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { useWalletStore } from "@/store/wallet-store";
 import { toast } from "sonner";
+import useFetch from "@/hooks/useFetch";
+import { BankAPIResponse, BankPageData, transformBank } from "@/app/(nav)/settings/data";
+import useBankLogo from "@/app/(nav)/bank";
 
 const Withdrawal: React.FC<
   WalletModalDefaultProps<WalletWithdrawFundsOptions>
@@ -26,12 +29,38 @@ const Withdrawal: React.FC<
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("");
+  const [companyBankDetails, setCompanyBankDetails] = useState<BankPageData>({
+    bank_name: "",
+    account_name: "",
+    account_number: "",
+    bank_code: "",
+  });
   const securityText = branch ? "For security reasons and to ensure accurate record-keeping, withdrawals are only permitted from the branch wallet to the company's main wallet. This policy helps maintain transparency, streamline financial management, and safeguard funds within the organization's system." : "For security purposes, you can only withdraw money from your wallet to a verified account details. You can modify these details only from your profile."
 
-  useEffect(()=> {
+  const {
+    data: bankData,
+    error: bankError,
+    refetch: bankRefetch
+  } = useFetch<BankAPIResponse>("/banks")
+
+  useEffect(() => {
+    if (bankData) {
+      const res = transformBank(bankData);
+      if (res) {
+        setCompanyBankDetails(res)
+      }
+    }
+  }, [bankData])
+
+  // console.log("bank name", companyBankDetails.bank_name)
+
+  useEffect(() => {
     setWalletStore("amount", amount)
     setWalletStore("desc", description)
   }, [amount, description, setWalletStore])
+
+  const slug = companyBankDetails.bank_name?.toLowerCase().replace(/\s+/g, '-');
+  const logo = useBankLogo({ slug }) || "/icons/default-bank.svg";
 
   const handleContinue = () => {
     if (amount > 0 && description.length > 0) {
@@ -40,17 +69,19 @@ const Withdrawal: React.FC<
       toast.warning("Please enter an amount and description");
     }
   }
-  
+
   return (
     <div className="custom-flex-col gap-8">
       <div className="custom-flex-col gap-[18px]">
-        {!branch && <FundingCard
-          type="sterling"
-          title="0068190063"
-          desc="David Ajala"
-          cta="Sterling Bank"
-          notRounded
-        />}
+        {!branch &&
+          <FundingCard
+            type="sterling"
+            title={companyBankDetails.account_number}
+            desc={companyBankDetails.account_name}
+            cta={companyBankDetails.bank_name}
+            notRounded
+            logo={logo}
+          />}
         <div className="custom-flex-col gap-4">
           <Input
             id="amount"

@@ -49716,6 +49716,8 @@ export const adminRoutes = [
   "/management/inventory",
   "/management/properties",
   "/management/rent-unit",
+  "/management/expired-units",
+  "/management/vacant-units",
   "/management/service-providers",
   "/management/vehicles-record",
   "/management/team-chat",

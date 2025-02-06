@@ -79,7 +79,6 @@ const Dashboard = () => {
     }
   }, [usersMessages]);
 
-  console.log("messgaes", pageUsersMsg)
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">

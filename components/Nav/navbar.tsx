@@ -46,18 +46,22 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 import { applyFont } from "@/app/(onboarding)/auth/data";
 import useSettingsStore from "@/store/settings";
+import { roundUptoNine, sumUnreadCount, transformUsersMessages } from "@/app/(nav)/(messages-reviews)/messages/data";
+import { ConversationsAPIResponse, PageMessages } from "@/app/(nav)/(messages-reviews)/messages/types";
+import { useChatStore } from "@/store/message";
+import { message_card_data } from "../Message/data";
 
 const NotificationBadge = ({
   count,
   color,
 }: {
-  count: number;
+  count: number | string;
   color: string;
 }) => {
   if (count === 0) return null; // Don't render if count is 0
   return (
     <span
-      className={`absolute top-0 right-0 bg-${color}-500 text-white text-xs rounded-full px-1`}
+      className={`absolute top-0 right-0 bg-${color}-500 text-white text-[10px] rounded-full px-1`}
     >
       {count}
     </span>
@@ -70,6 +74,8 @@ const Header = () => {
   const setColor = useThemeStoreSelectors.getState().setColor;
   const { theme, setTheme } = useTheme();
   const { role } = useRole()
+  const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[]>(message_card_data);
+  const { setChatData } = useChatStore();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
   const loggedInUserDetails = getLocalStorage('additional_details');
   let loggedUserCompany: { company_id: string | null; company_logo: string | null; dark_logo: string | null } | undefined;
@@ -117,6 +123,16 @@ const Header = () => {
 
   const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
   useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
+
+  const {
+    data: usersMessages,
+    loading: usersMsgLoading,
+    error: usersMsgError,
+    refetch:refetchMsg,
+  } = useFetch<ConversationsAPIResponse>("/messages");
+  useRefetchOnEvent("refetch-users-msg", () => {
+    refetchMsg({ silent: true });
+  });
 
   const setPersonalInfo = usePersonalInfoStore(
     (state) => state.setPersonalInfo
@@ -173,6 +189,17 @@ const Header = () => {
     }
   }, [data, setPersonalInfo]);
 
+  // MESSAGES
+  useEffect(() => {
+    if (usersMessages) {
+      const transformed = transformUsersMessages(usersMessages);
+      setPageUsersMsg(transformed);
+      setChatData("users_messages", transformed);
+    }
+  }, [usersMessages]);
+  
+  const unreadMsg = sumUnreadCount(pageUsersMsg);
+  
   return (
     <header
       className={clsx(
@@ -347,7 +374,7 @@ const Header = () => {
                 className={lgIconsInteractionClasses}
               >
                 <MailIcon />
-                <NotificationBadge count={2} color="red" />
+                <NotificationBadge count={roundUptoNine(unreadMsg)} color="red" />
               </Link>
             </div>
             <div className="relative">
@@ -357,7 +384,7 @@ const Header = () => {
                 className={lgIconsInteractionClasses}
               >
                 <BellIcon />
-                <NotificationBadge count={3} color="green" />
+                <NotificationBadge count={roundUptoNine(31)} color="green" />
               </Link>
             </div>
             <button

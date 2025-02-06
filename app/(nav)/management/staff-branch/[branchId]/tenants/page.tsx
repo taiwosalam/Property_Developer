@@ -228,10 +228,7 @@ const Tenants = () => {
                 setGridView={() => setView("grid")}
                 setListView={() => setView("list")}
                 pageTitle="Tenants/Occupants (Users)"
-                aboutPageModalData={{
-                    title: "Tenants/Occupants (Users)",
-                    description: "This page contains a list of all tenants and occupants",
-                }}
+                noExclamationMark
                 searchInputPlaceholder="Search for Tenants & Occupants"
                 dateLabel="Registration Date"
                 handleFilterApply={handleFilterApply}
@@ -276,28 +273,10 @@ const Tenants = () => {
                         <EmptyList
                             buttonText="+ Create New Tenant"
                             modalContent={<AddTenantModal />}
-                            title="The tenants and occupants profile files are empty."
+                            title="No tenant or occupant has been assigned to this branch yet."
                             body={
                                 <p>
-                                    You don&apos;t have any profiles for tenants and occupants
-                                    yet. You can create them manually by clicking on the
-                                    &quot;Create New User&quot; button or add them using their
-                                    profile ID. Tenant profiles are for rental properties, while
-                                    occupant profiles are for residents in gated estates. Once you
-                                    add profiles to this page, this guide will no longer show. To
-                                    learn more about this page later, you can click on this icon{" "}
-                                    <span className="inline-block text-brand-10 align-text-top">
-                                        <ExclamationMark />
-                                    </span>{" "}
-                                    at the top left of the dashboard page.
-                                    <br />
-                                    <br />
-                                    Occupants and tenants can be onboarded manually which creates
-                                    two types of users: web and mobile profile types. When
-                                    creating or managing a rental or gated estate property, adding
-                                    tenants and occupants comes last. You can invite them using
-                                    their email and phone number for registration. If you already
-                                    have their list, you can add them in bulk using an XML file.
+                                    To add a tenant or occupant to this branch, click the &apos;Create New Tenant&apos; button to set up a profile. During property creation or editing, create a property unit and assign it to the tenant or occupant in the Rent & Unit module. Since the property is already linked to this branch, assigning tenants or occupants to its unit will automatically display them under this branch.
                                 </p>
                             }
                         />

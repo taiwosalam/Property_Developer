@@ -1,6 +1,11 @@
-import { AudioIcon, CancelIcon, ChevronLeft, DocumentIcon, EmojiIcon, GalleryIcon } from '@/public/icons/icons';
+import {
+  AudioIcon,
+  DocumentIcon, 
+  EmojiIcon, 
+  GalleryIcon
+} from '@/public/icons/icons';
 import React from 'react'
-import { ModalTrigger } from '../Modal/modal';
+
 import {
   EmojiComponent,
   MessageAudioComponent,

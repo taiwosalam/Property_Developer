@@ -42,7 +42,7 @@ body {
   min-height: 100vh;
 }
 
-.light-shadow{
+.light-shadow {
   /* box-shadow: 0 0 10px 0 #0000000d; */
   border: 3px dashed var(--primary-color);
 }
@@ -75,14 +75,18 @@ body {
 
 .custom-list {
   margin-top: 5px;
-  list-style: none; /* Removes default bullets */
+  list-style: none;
+  /* Removes default bullets */
   padding-left: 0;
 }
 
 .custom-list li::before {
-  content: "•"; /* Unicode for a bullet */
-  font-size: 1.5rem; /* Custom size */
-  margin-right: 8px; /* Spacing between dot and text */
+  content: "•";
+  /* Unicode for a bullet */
+  font-size: 1.5rem;
+  /* Custom size */
+  margin-right: 8px;
+  /* Spacing between dot and text */
 }
 
 
@@ -94,7 +98,7 @@ body {
   pointer-events: none;
 }
 
-#portal > * {
+#portal>* {
   position: absolute;
   pointer-events: all;
 }
@@ -106,12 +110,12 @@ h1 {
 }
 
 .lato,
-.lato > * {
+.lato>* {
   font-family: "Lato", sans-serif !important;
 }
 
 .dm-sans,
-.dm-sans > * {
+.dm-sans>* {
   font-family: "DM Sans", sans-serif !important;
 }
 
@@ -169,7 +173,7 @@ h1 {
   flex-direction: column;
 }
 
-.custom-flex-col > * {
+.custom-flex-col>* {
   width: 100%;
 }
 
@@ -221,12 +225,43 @@ h1 {
   background-color: #c1c1c1;
 }
 
+/* ----------------------------------------------------------- */
+/* overwriting voicevisualizer styles */
+/* ------------------------------------------------------------ */
+.voice-visualizer__audio-info-container {
+  height: 0px !important;
+}
+
+.voice-visualizer button{
+  height: 2em !important;
+  width: 2em !important;
+}
+
+.voice-visualizer__btn{
+  min-height: 2em !important;
+  min-width: 4em !important;
+  border-radius: .6em !important;
+  /* display: flex !important; */
+  text-align: center !important;
+  padding: 0 !important;
+  /* align-items: center !important;
+  justify-content: center !important; */
+}
+
+.voice-visualizer__buttons-container{
+  /* background-color: #000000; */
+  margin-top: 1em !important;
+  display: flex !important;
+  gap: 0.5em !important;
+}
+
+
 /* -------------------------------------------------------------- */
 
 /* Overwriting default behaviour */
 /* -------------------------------------------------------------- */
 
-.sections > *:last-child .separator {
+.sections>*:last-child .separator {
   display: none;
 }
 
@@ -362,6 +397,7 @@ button:disabled:not(.retain-opacity) {
 .dash-table tbody tr:nth-child(2n + 1) {
   @apply bg-brand-1 text-[#f1f1fd] dark:bg-[#020617];
 }
+
 .dash-table tbody tr:nth-child(2n + 1):hover {
   background-color: #ffffff21;
 }
@@ -411,7 +447,7 @@ button:disabled:not(.retain-opacity) {
 }
 
 /* for the blue buttons */
-.page-header-container > :last-child {
+.page-header-container> :last-child {
   @apply flex-shrink-0;
 }
 
@@ -476,9 +512,11 @@ button:disabled:not(.retain-opacity) {
   0% {
     opacity: 0.6;
   }
+
   50% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.6;
   }

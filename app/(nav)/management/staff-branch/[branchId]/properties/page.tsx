@@ -164,6 +164,7 @@ const BranchProperties = () => {
                 searchInputPlaceholder="Search for Properties"
                 handleFilterApply={() => { }}
                 isDateTrue
+                noExclamationMark
             />
             <section className="capitalize">
                 {properties.length === 0 && !silentLoading ? (
@@ -173,30 +174,10 @@ const BranchProperties = () => {
                         <EmptyList
                             buttonText="+ Add Property"
                             modalContent={<AddPropertyModal />}
-                            title="You have not creared any properties yet"
+                            title="No properties have been assigned to this branch yet."
                             body={
                                 <p>
-                                    You can create a property by clicking on the &quot;Add
-                                    Property&quot; button. You can create two types of properties:
-                                    rental and facility properties. Rental properties are mainly
-                                    tailored for managing properties for rent, including landlord
-                                    and tenant management processes. Facility properties are
-                                    designed for managing occupants in gated estates, overseeing
-                                    their due payments, visitor access, and vehicle records.{" "}
-                                    <br />
-                                    <br />
-                                    Once a property is added to this page, this guide will
-                                    disappear. To learn more about this page in the future, you
-                                    can click on this icon{" "}
-                                    <span className="inline-block text-brand-10 align-text-top">
-                                        <ExclamationMark />
-                                    </span>{" "}
-                                    at the top left of the dashboard page.
-                                    <br />
-                                    <br />
-                                    Property creation involves several segments: property
-                                    settings, details, what to showcase on the dashboard or user
-                                    app, unit creation, permissions, and assigning staff.
+                                    To add a property to this branch, click the &apos;Add Property&apos;s button. You can create two types of properties: rental and facility properties. During the creation process, select this branch name in the branch input section under property details.
                                 </p>
                             }
                         />

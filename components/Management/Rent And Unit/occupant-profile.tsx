@@ -24,6 +24,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   const [occupantLoading, setOccupantLoading] = useState(false);
   const [occupantError, setOccupantError] = useState<Error | null>(null);
 
+
   return (
     <>
     {loading ? (

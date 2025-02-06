@@ -9,6 +9,7 @@ export const MatchedProfile: React.FC<{
   isLoading?: boolean;
   error?: Error | null;
 }> = ({ occupant, title, isLoading, error }) => {
+  // console.log(occupant);
   return (
     <RentSectionContainer title={title} hidebar className="p-8">
       {occupant ? (

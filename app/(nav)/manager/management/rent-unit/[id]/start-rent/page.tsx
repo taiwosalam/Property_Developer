@@ -14,7 +14,17 @@ import BackButton from "@/components/BackButton/back-button";
 import { useParams, useSearchParams } from "next/navigation";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useEffect, useState } from "react";
-import { initData, initDataProps, initialSingleData, InitialSingleUnit, InitialSingleUnitProps, singleUnitApiResponse, transformSingleUnitData, transformUnitData, UnitDetails } from "../../data";
+import { 
+  initData, 
+  initDataProps, 
+  initialSingleData, 
+  InitialSingleUnit, 
+  InitialSingleUnitProps, 
+  singleUnitApiResponse, 
+  transformSingleUnitData, 
+  transformUnitData, 
+  UnitDetails 
+} from "../../data";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
 

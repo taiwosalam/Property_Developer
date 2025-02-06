@@ -82,9 +82,9 @@ export const transformUsersMessages = (
         if (c.latest_message_type !== 'text') {
             // If it's a file, check the file extension.
             const extension = c.latest_message.split('.').pop()?.toLowerCase() || '';
-            if (['mp3', 'wav', 'ogg'].includes(extension)) {
+            if (['mp3', 'wav', 'ogg', 'webm'].includes(extension)) {
                 finalContentType = 'audio';
-            } else if (['mp4', 'webm', 'avi', 'mov'].includes(extension)) {
+            } else if (['mp4', 'avi', 'mov'].includes(extension)) {
                 finalContentType = 'video';
             } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(extension)) {
                 finalContentType = 'image';
@@ -105,24 +105,17 @@ export const transformUsersMessages = (
             messages: c.unread_count,
             verified: false, // change later
             content_type: finalContentType,
+            // content_type: c.latest_message_type,
             unread_count: c.unread_count,
         };
     });
 };
 
 
-// export const formatMessageText = (message: string) => {
-//     // Replace \r\n with <br /> for new lines
-//     let formattedText = message.replace(/\\r\\n/g, "<br />");
-
-//     // Decode emojis and special characters (like \ud83d\ude04 -> 😊)
-//     formattedText = formattedText.replace(/\\u[\dA-Fa-f]{4}/g, (match) =>
-//         String.fromCharCode(parseInt(match.replace(/\\u/g, ""), 16))
-//     );
-
-//     return formattedText;
-// };
-
+export const sumUnreadCount = (data: any[]) => 
+    data.reduce((total, item) => total + item.unread_count, 0);
+  
+export const roundUptoNine = (num: number): string => (num > 9 ? "9+" : num.toString());
 
 export const formatMessageText = (message: string) => {
     return message.replace(/(?:\r\n|\r|\n)/g, "<br />");

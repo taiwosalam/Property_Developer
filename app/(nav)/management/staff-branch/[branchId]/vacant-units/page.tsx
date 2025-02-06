@@ -35,7 +35,7 @@ import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import BackButton from "@/components/BackButton/back-button";
 import useBranchStore from "@/store/branch-store";
 
-const RentAndUnit = () => {
+const VacantUnits = () => {
   const view = useView();
   const { branch } = useBranchStore();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
@@ -146,7 +146,7 @@ const RentAndUnit = () => {
     })) || [];
 
   // console.log("Braches", branchOptions)
-// endpoint - /branch/8/vacant_units
+  // endpoint - /branch/8/vacant_units
   const {
     data: apiData,
     loading,
@@ -217,11 +217,7 @@ const RentAndUnit = () => {
         setGridView={setGridView}
         setListView={setListView}
         pageTitle="Vacant Units"
-        aboutPageModalData={{
-          title: "Vacant Units",
-          description:
-            "This page contains a list of vacant units on the platform.",
-        }}
+        noExclamationMark
         searchInputPlaceholder="Search for vacant units"
         handleFilterApply={handleFilterApply}
         handleSearch={handleSearch}
@@ -251,30 +247,10 @@ const RentAndUnit = () => {
             <EmptyList
               buttonText="Create New Unit"
               buttonLink="/management/rent-unit/create"
-              title="No Unit Found"
+              title="There are no vacant units available in this branch."
               body={
                 <p>
-                  You can create a Unit by clicking on the &quot;Add
-                  Property&quot; button. You can create two types of properties:
-                  rental and facility properties. Rental properties are mainly
-                  tailored for managing properties for rent, including landlord
-                  and tenant management processes. Facility properties are
-                  designed for managing occupants in gated estates, overseeing
-                  their due payments, visitor access, and vehicle records.{" "}
-                  <br />
-                  <br />
-                  Once a property is added to this page, this guide will
-                  disappear. To learn more about this page in the future, you
-                  can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
-                  <br />
-                  <br />
-                  Property creation involves several segments: property
-                  settings, details, what to showcase on the dashboard or user
-                  app, unit creation, permissions, and assigning staff.
+                  This may be because no units have been created yet or all existing units have been assigned to tenants or occupants. To add units, you can create new properties or update existing ones under this branch. Once a unit becomes available, it will automatically be displayed in this section.
                 </p>
               }
             />
@@ -338,4 +314,4 @@ const RentAndUnit = () => {
   );
 };
 
-export default RentAndUnit;
+export default VacantUnits;

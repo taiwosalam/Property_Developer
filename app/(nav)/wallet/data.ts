@@ -102,6 +102,7 @@ export interface WalletDataResponse {
     };
   };
   balance: {
+    id: string;
     wallet_id: string;
     my_balance: string;
     escrow_balance: string;

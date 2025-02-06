@@ -11,7 +11,7 @@ import BadgeIcon from "../BadgeIcon/badge-icon";
 import { empty } from "@/app/config";
 import Link from "next/link";
 import Picture from "../Picture/picture";
-import { getIconByContentType } from "@/app/(nav)/(messages-reviews)/messages/data";
+import { getIconByContentType, roundUptoNine } from "@/app/(nav)/(messages-reviews)/messages/data";
 
 const NotificationCard: React.FC<notificationCardProps> = ({
   sectionHeader,
@@ -108,9 +108,9 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                 <div className="w-full gap-1">
                   <p className="text-sm font-medium text-text-primary dark:text-[#f1f1fd] flex items-center line-clamp-1 text-ellipsis">
                     {notification.name}
-                    {sectionHeader !== "Staffs" && (
+                    {/* {sectionHeader !== "Staffs" && (
                       <BadgeIcon color={notification.badgeColor || "red"} />
-                    )}
+                    )} */}
                   </p>
                   {notification.title && (
                     <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
@@ -127,9 +127,10 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                           ? "Branch Manager"
                           : notification.position
                     ) : (
-                      <>
+                      <div className="flex gap-1 items-center">
                         {IconComponent && <IconComponent />}
-                      </>
+                        {notification.content_type}
+                      </div>
                     )}
                   </p>
                 </div>
@@ -146,7 +147,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                   {notification.count && (
                     <div className="bg-rbrand-9 px-2 py-1 rounded-full flex items-center justify-center">
                       <p className="text-white text-[10px] font-medium">
-                        {notification.count}
+                        {roundUptoNine(notification.count)}
                       </p>
                     </div>
                   )}

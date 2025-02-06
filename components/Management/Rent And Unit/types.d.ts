@@ -80,3 +80,65 @@ export interface OccupantProfileProps {
   loading?: boolean;
   id: string;
 }
+
+
+
+interface BankDetails {
+  bank_name: string | null;
+  account_name: string | null;
+  account_number: string | null;
+}
+
+interface Others {
+  occupation: string | null;
+  job_type: string | null;
+  family_type: string | null;
+}
+
+interface NextOfKin {
+  name: string | null;
+  phone: string | null;
+  email: string | null;
+  address: string | null;
+  relationship: string | null;
+}
+
+interface Note {
+  id: number | null;
+  note: string | null;
+  last_updated_at: string | null;
+}
+
+interface TenantData {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  username: string;
+  gender: string;
+  tenant_type: string;
+  state: string;
+  local_government: string;
+  city: string;
+  address: string;
+  picture: string;
+  agent: string;
+  profile_id: number;
+  branch_id: number;
+  company_id: number;
+  bank_details: BankDetails;
+  Others: Others;
+  next_of_kin: NextOfKin;
+  note: Note;
+  documents: any[]; // You can replace 'any' with a specific type if needed
+  units: any[]; // Replace 'any' with a specific type if needed
+  created_at: string;
+  updated_at: string;
+}
+
+interface TenantResponse {
+  status: string;
+  statusCode: number;
+  data: TenantData;
+  message: string;
+}

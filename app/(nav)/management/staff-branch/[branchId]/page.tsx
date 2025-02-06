@@ -89,7 +89,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
         break;
       case "Expired":
         stats = branchData?.expired;
-        link = `/management/staff-branch/${branchId}/vacant-units`;
+        link = `/management/staff-branch/${branchId}/expired-units`;
         break;
       case "Invoices":
         stats = branchData?.invoices;
