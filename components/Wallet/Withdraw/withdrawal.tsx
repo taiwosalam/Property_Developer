@@ -35,7 +35,7 @@ const Withdrawal: React.FC<
     account_number: "",
     bank_code: "",
   });
-  const securityText = branch ? "For security reasons and to ensure accurate record-keeping, withdrawals are only permitted from the branch wallet to the company's main wallet. This policy helps maintain transparency, streamline financial management, and safeguard funds within the organization's system." : "For security purposes, you can only withdraw money from your wallet to a verified account details. You can modify these details only from your profile."
+  const securityText = branch ? "For security reasons and to ensure accurate record-keeping, withdrawals are only permitted from the branch wallet to the company's main wallet. This policy helps maintain transparency, streamline financial management, and safeguard funds within the organization's system." : "Each withdrawal incurs a fee of 1.5% of the withdrawal amount. We collaborate with a trusted third-party provider to facilitate wallet withdrawals to any pre-registered Nigerian bank account."
 
   const {
     data: bankData,
@@ -61,6 +61,21 @@ const Withdrawal: React.FC<
 
   const slug = companyBankDetails.bank_name?.toLowerCase().replace(/\s+/g, '-');
   const logo = useBankLogo({ slug }) || "/icons/default-bank.svg";
+  const bankNotAvailable = !companyBankDetails.bank_name && !companyBankDetails.account_name && !companyBankDetails.account_number && !companyBankDetails.bank_code;
+
+  const [error, setError] = useState<string | null>(null);
+
+  const handleAmountChange = (value: string) => {
+    const newAmount = parseFloat(value.replace(/,/g, ""));
+    setAmount(newAmount);
+
+    if (newAmount > 10000000) {
+      setError("Maximum withdrawal limit is ₦10,000,000");
+    } else {
+      setError(null);
+    }
+  };
+
 
   const handleContinue = () => {
     if (amount > 0 && description.length > 0) {
@@ -73,7 +88,7 @@ const Withdrawal: React.FC<
   return (
     <div className="custom-flex-col gap-8">
       <div className="custom-flex-col gap-[18px]">
-        {!branch &&
+        {(!branch && !bankNotAvailable) &&
           <FundingCard
             type="sterling"
             title={companyBankDetails.account_number}
@@ -82,17 +97,31 @@ const Withdrawal: React.FC<
             notRounded
             logo={logo}
           />}
+        {bankNotAvailable &&
+          <div
+            className="p-4 flex items-center justify-between rounded-2xl bg-neutral-2 dark:bg-darkText-primary"
+            style={{ boxShadow: "5px 5px 10px 0px rgba(0, 0, 0, 0.02)" }}
+          >
+            <p>Sorry, your withdrawal cannot be processed at this time. Please add your company&apos;s bank account details to your account. Click here to update your bank details.</p>
+          </div>
+        }
         <div className="custom-flex-col gap-4">
-          <Input
-            id="amount"
-            label="amount"
-            placeholder="₦"
-            style={{ backgroundColor: isDarkMode ? 'black' : "white" }}
-            required
-            onChange={(value) => {
-              setAmount(parseFloat(value.replace(/,/g, "")));
-            }}
-          />
+          <div className="custom-flex-col">
+            <Input
+              id="amount"
+              label="amount"
+              placeholder="₦"
+              style={{ backgroundColor: isDarkMode ? 'black' : "white" }}
+              required
+              // onChange={(value) => {
+              //   setAmount(parseFloat(value.replace(/,/g, "")));
+              // }}
+              onChange={handleAmountChange}
+            />
+            {(!branch && error) &&
+              <p className="text-red-600 text-sm">{error}</p>
+            }
+          </div>
           <Input
             id="description"
             label="description"
@@ -108,6 +137,7 @@ const Withdrawal: React.FC<
         <Button
           // onClick={() => changeStep("input pin")}
           onClick={handleContinue}
+          disabled={!!error}
           size="sm_medium"
           className="py-2 px-8"
         >
