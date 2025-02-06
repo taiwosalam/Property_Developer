@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import useFetch from "@/hooks/useFetch";
 import { BankAPIResponse, BankPageData, transformBank } from "@/app/(nav)/settings/data";
 import useBankLogo from "@/app/(nav)/bank";
+import { currencySymbols } from "@/utils/number-formatter";
 
 const Withdrawal: React.FC<
   WalletModalDefaultProps<WalletWithdrawFundsOptions>
@@ -69,8 +70,10 @@ const Withdrawal: React.FC<
     const newAmount = parseFloat(value.replace(/,/g, ""));
     setAmount(newAmount);
 
-    if (newAmount > 10000000) {
-      setError("Maximum withdrawal limit is ₦10,000,000");
+    if (newAmount < 1000) {
+      setError("Minimum withdrawal amount is ₦1,000.");
+    } else if (newAmount > 10000000) {
+      setError("Maximum withdrawal limit is ₦10,000,000.");
     } else {
       setError(null);
     }
@@ -84,6 +87,8 @@ const Withdrawal: React.FC<
       toast.warning("Please enter an amount and description");
     }
   }
+
+  const CURRENCY_SYMBOL = currencySymbols.naira;
 
   return (
     <div className="custom-flex-col gap-8">
@@ -110,7 +115,7 @@ const Withdrawal: React.FC<
             <Input
               id="amount"
               label="amount"
-              placeholder="₦"
+              CURRENCY_SYMBOL={CURRENCY_SYMBOL}
               style={{ backgroundColor: isDarkMode ? 'black' : "white" }}
               required
               // onChange={(value) => {
@@ -119,7 +124,7 @@ const Withdrawal: React.FC<
               onChange={handleAmountChange}
             />
             {(!branch && error) &&
-              <p className="text-red-600 text-sm">{error}</p>
+              <p className="text-red-600 text-sm mt-1">{error}</p>
             }
           </div>
           <Input
