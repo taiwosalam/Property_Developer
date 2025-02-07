@@ -1,3 +1,4 @@
+import { empty } from "@/app/config";
 import { getAllStates } from "@/utils/states";
 import { number } from "zod";
 //
@@ -657,6 +658,7 @@ export interface singleUnitApiResponse {
           branch_name: string;
         }
       };
+      occupant: Occupant;
       user: {
         id: number;
         encodedId: string;
@@ -695,6 +697,46 @@ export interface singleUnitApiResponse {
     total: number;
   }
 }
+
+
+export interface Occupant {
+  id: string;
+  name: string;
+  email: string;
+  userTag: "mobile" | "web";
+  avatar: string;
+  gender: string;
+  birthday: string;
+  religion: string;
+  phone: string;
+  maritalStatus: string;
+  address: string;
+  city: string;
+  state: string;
+  lg: string;
+}
+
+export interface PreviousRecord {
+  id: string;
+  payment_date: string | null;
+  amount_paid: string;
+  details: string;
+  start_date: string;
+  due_date: string;
+}
+
+export interface Pagination {
+  current_page: number;
+  per_page: number;
+  total: number;
+  total_pages: number;
+}
+
+export interface PreviousRecords {
+  data: PreviousRecord[];
+  pagination: Pagination;
+}
+
 
 export interface UnitDetails {
   unit_id: string;
@@ -821,6 +863,22 @@ export const initData = {
   service_charge: "",
   renew_service_charge: "",
   renew_other_charge: "",
+  occupant: {
+    id: "",
+    name:"",
+    email: "",
+    userTag: "" as "mobile",
+    avatar: "",
+    gender: "",
+    birthday: "",
+    religion: "",
+    phone: "",
+    maritalStatus: "",
+    address: "",
+    city: "",
+    state: "",
+    lg: "",
+  }
 }
 
 
@@ -862,12 +920,16 @@ export interface initDataProps{
   unitAgentFee?: string;
   service_charge?: string;
   renew_other_charge?: string;
+  occupant: Occupant;
+  previous_records?: PreviousRecords[];
 }
 
 // ================ transform /unit/${id}/view =================
 export const transformUnitData = (response: any) => {
   const data = response.data;
-  console.log("data", data)
+  const occupant = response.data.occupant;
+  const previous_records = response.data.previous_records;
+  // console.log("data", data)
   return {
     title: data.property.title,
     unit_id: data.id,
@@ -913,5 +975,34 @@ export const transformUnitData = (response: any) => {
     other_charge: data.other_charge,
     unitAgentFee: data.agency_fee,
     service_charge: data.service_charge,
+    occupant: {
+      id: occupant.id,
+      name: occupant.name || "___",
+      email: occupant.email || "___",
+      userTag: occupant.userTag || "___",
+      avatar: occupant.avatar || empty,
+      gender: occupant.gender || "___",
+      birthday: occupant.birthday || "___",
+      religion: occupant.religion || "___",
+      phone: occupant.phone || "___",
+      maritalStatus: occupant.maritalStatus || "____",
+      address: occupant.address || "____",
+      city: occupant.city || "____",
+      state: occupant.state || "____",
+      lg: occupant.lg || "___"
+    },
+    previous_records: previous_records
+    // previous_records: previous_records.map((r:PreviousRecord)=> {
+
+    //   return {
+    //     id: r.id,
+    //     payment_date: r.payment_date,
+    //     amount_paid: r.amount_paid,
+    //     details: r.details,
+    //     start_date: r.start_date,
+    //     due_date: r.due_date,
+    //   }
+    // })
+    
   }
 }

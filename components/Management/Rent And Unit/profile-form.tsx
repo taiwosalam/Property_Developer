@@ -21,6 +21,10 @@ export const ProfileForm: React.FC<{
   onError: (error: Error | null) => void;
   occupantLoading: boolean;
   occupantError: Error | null;
+  setSelectedTenantId?: any;
+  setStart_date?: any;
+  setSelectedCheckboxOptions?: any;
+  period: RentPeriod;
 }> = ({
   occupants,
   isRental,
@@ -30,48 +34,39 @@ export const ProfileForm: React.FC<{
   onLoadingChange,
   occupantLoading,
   occupantError,
+  setSelectedTenantId,
+  setSelectedCheckboxOptions,
+  period,
+  setStart_date,
 }) => {
     const [selectedId, setSelectedId] = useState<string>("");
 
     const [startDate, setStartDate] = useState<Dayjs | null>(null);
     const [dueDate, setDueDate] = useState<Dayjs | null>(null);
-    const [rentPeriod, setRentPeriod] = useState<RentPeriod>("biennially");
+    const [rentPeriod, setRentPeriod] = useState<RentPeriod>(period);
 
+
+    useEffect(() => {
+      if (period) {
+        setRentPeriod(period);
+      }
+    }, [period]);
+
+    // handle select id
+    const handleSelectId = (id: string) => {
+      setSelectedId(id);
+      setSelectedTenantId(id);
+    };
 
     // Simulate API call
-    // useEffect(() => {
-    //   if (!selectedId) {
-    //     onOccupantSelect(null);
-    //     onLoadingChange(false);
-    //     onError(null);
-    //     return;
-    //   }
-
-    //   const fetchOccupantData = async () => {
-    //     onLoadingChange(true);
-    //     onError(null);
-
-    //     try {
-    //       const res = await getTenants();
-    //       // Simulate API delay
-    //       // await new Promise((resolve) => setTimeout(resolve, 1500));
-    //       // Simulate API response
-    //       // onOccupantSelect(DUMMY_OCCUPANT as Occupant);
-    //     } catch (error) {
-    //       console.error("Error fetching occupant:", error);
-    //       onOccupantSelect(null);
-    //       onError(
-    //         error instanceof Error
-    //           ? error
-    //           : new Error("Failed to fetch occupant data")
-    //       );
-    //     } finally {
-    //       onLoadingChange(false);
-    //     }
-    //   };
-
-    //   fetchOccupantData();
-    // }, [selectedId, onOccupantSelect, onLoadingChange, onError]);
+    useEffect(() => {
+      if (!selectedId) {
+        onOccupantSelect(null);
+        onLoadingChange(false);
+        onError(null);
+        return;
+      }
+    }, [selectedId, onLoadingChange, onOccupantSelect])
 
     const {
       data,
@@ -80,11 +75,10 @@ export const ProfileForm: React.FC<{
     } = useFetch<TenantResponse>(`/tenant/${selectedId}`)
 
     useEffect(() => {
-      onLoadingChange(loading)
+      onLoadingChange(false)
       // onError(error)
       if (data) {
         const transformedData = transformTenantData(data)
-        console.log("selected", transformedData)
         onOccupantSelect(transformedData)
       }
     }, [data])
@@ -96,8 +90,48 @@ export const ProfileForm: React.FC<{
         setDueDate(null);
         return;
       }
+      // Convert Dayjs object to a valid date string
+      const formattedStartDate = startDate.format("YYYY-MM-DD");
+
+      setStart_date(formattedStartDate);
       setDueDate(calculateDueDate(startDate, rentPeriod));
     }, [startDate, rentPeriod]);
+
+    // Initial state for each option
+    const [selectedOptions, setSelectedOptions] = useState<Record<string, boolean>>({
+      create_invoice: true,
+      mobile_notification: true,
+      sms_alert: true,
+      email_alert: true,
+    });
+
+
+    // Handler for checkbox change events
+    const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
+      setSelectedOptions((prev) => ({
+        ...prev,
+        [optionKey]: checked,
+      }));
+    };
+
+    // Update parent's state when selectedOptions changes
+    useEffect(() => {
+      if (setSelectedCheckboxOptions) {
+        setSelectedCheckboxOptions(selectedOptions);
+      }
+    }, [selectedOptions, setSelectedCheckboxOptions]);
+
+
+    // Optional: if you need a string representation
+    const optionsAsString = JSON.stringify(selectedOptions);
+
+    const options = [
+      "Create Invoice",
+      "Mobile Notification",
+      "SMS Alert",
+      "Email Alert",
+    ];
+
 
     return (
       <div className="space-y-6">
@@ -111,7 +145,8 @@ export const ProfileForm: React.FC<{
                 value: occupant.id,
               }))}
               className="md:flex-1 md:max-w-[300px]"
-              onChange={setSelectedId}
+              // onChange={setSelectedId}
+              onChange={(value) => handleSelectId(value)}
             />
             <Modal>
               <ModalTrigger asChild>
@@ -139,6 +174,7 @@ export const ProfileForm: React.FC<{
         <div className="h-[1px] bg-[#C0C2C8] mb-4" />
         <div className="grid grid-cols-2 gap-4">
           <DateInput
+            disablePast
             id="start date"
             label="Start Date"
             value={startDate}
@@ -153,20 +189,19 @@ export const ProfileForm: React.FC<{
           />
         </div>
         <div className="flex items-center justify-end gap-4 flex-wrap">
-          {[
-            "Create Invoice",
-            "Mobile Notification",
-            "SMS Alert",
-            "Email Alert",
-          ].map((option) => (
-            <Checkbox
-              sm
-              key={option}
-              defaultChecked={option === "Create Invoice"}
-            >
-              {option}
-            </Checkbox>
-          ))}
+          {options.map((option) => {
+            const key = option.toLowerCase().replace(/\s+/g, "_");
+            return (
+              <Checkbox
+                sm
+                key={key}
+                defaultChecked={selectedOptions[key]}
+                onChange={handleCheckboxChange(key)}
+              >
+                {option}
+              </Checkbox>
+            );
+          })}
         </div>
       </div>
     );

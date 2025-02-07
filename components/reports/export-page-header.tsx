@@ -22,7 +22,7 @@ const ExportPageHeader = () => {
     (state) => state.company_phone_number
   );
 
-  console.log("number", typeof phoneNumbers)
+  console.log("number", phoneNumbers)
 
   return (
     <div
@@ -39,7 +39,7 @@ const ExportPageHeader = () => {
             "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 4px 6px 0px rgba(13, 23, 33, 0.08)",
         }}
       >
-        <Image src={logo || ""} alt="logo" fill className="object-cover" />
+        <Image src={logo || ""} alt="logo" fill className="object-contain" />
       </div>
       <div className="space-y-2">
         <h4 className="text-text-quaternary dark:text-white text-sm font-medium">
@@ -69,11 +69,7 @@ const ExportPageHeader = () => {
               <TelephoneIcon />
             </span>
             <p className="dark:text-darkText-1">
-              {typeof phoneNumbers === "object"
-                ? JSON.parse(`${phoneNumbers}`).map((number: string) => number)
-                : typeof phoneNumbers === "string"
-                ? phoneNumbers
-                : "___"}
+              {(typeof phoneNumbers === "object" ? phoneNumbers : JSON.parse(`${phoneNumbers}`)).join(", ")}
             </p>
           </li>
         </ul>

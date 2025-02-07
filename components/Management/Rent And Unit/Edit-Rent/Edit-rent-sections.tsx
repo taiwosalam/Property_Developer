@@ -63,6 +63,7 @@ export const EditCurrentRent: React.FC<{
       <SectionSeparator className="mt-4 mb-6" />
       <div className="grid md:grid-cols-2 gap-4 mb-6">
         <DateInput
+          disablePast
           id="payment_date"
           label="Payment Date"
           containerClassName="bg-white"
@@ -117,7 +118,12 @@ export const AddPartPayment = () => {
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           inputClassName="bg-white"
         />
-        <DateInput id="date" label="Date" containerClassName="bg-white" />
+        <DateInput
+          id="date"
+          label="Date"
+          containerClassName="bg-white"
+          disablePast
+        />
       </div>
       <div className="flex items-center justify-between gap-4 mb-2">
         <Checkbox sm checked={createInvoice} onChange={setCreateInvoice}>

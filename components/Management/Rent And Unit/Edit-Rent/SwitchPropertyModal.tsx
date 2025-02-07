@@ -6,14 +6,39 @@ import ModalPreset from "@/components/Modal/modal-preset";
 import FormModalPreset from "../../landlord-tenant-modal-preset";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import useFetch from "@/hooks/useFetch";
+import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
+import { toast } from "sonner";
 
 const SwitchPropertyModal: React.FC<{
   isRental: boolean;
 }> = ({ isRental }) => {
   const searchParams = useSearchParams();
+  const id = searchParams.get("id");
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const router = useRouter();
   const [modalView, setModalView] = useState<"warning" | "form">("warning");
+  const [selectedProperty, setPropertySelected] = useState('')
+
+  const {
+    data: propertyData,
+    error,
+    loading,
+  } = useFetch<PropertyListResponse>("/property/all");
+
+  const propertyOptions =
+    propertyData?.data.map((p) => ({
+      value: p.id,
+      label: p.title,
+    })) || [];
+
+    const handleContinue = () => {
+      if (!selectedProperty) 
+        return toast.warning("Please select a property")
+      router.push(
+        `/management/rent-unit/${id}/edit-rent/change-property?type=${propertyType}&p=${selectedProperty}`
+      );
+    }
 
   if (modalView === "warning") {
     return (
@@ -48,26 +73,12 @@ const SwitchPropertyModal: React.FC<{
           <Select
             id=""
             label={`Choose ${isRental ? "Property" : "Facility"}`}
-            options={[
-              { value: "1", label: "Option 1" },
-              { value: "2", label: "Option 2" },
-              { value: "3", label: "Option 3" },
-              { value: "3", label: "Option 3" },
-              { value: "3", label: "Option 3" },
-              { value: "3", label: "Option 3" },
-              { value: "3", label: "Option 3" },
-              { value: "3", label: "Option 3" },
-              { value: "3", label: "Option 3" },
-              { value: "3", label: "Option 3" },
-            ]}
+            options={propertyOptions}
+            onChange={setPropertySelected}
           />
           <div className="w-full flex items-center justify-center">
             <Button
-              onClick={() => {
-                router.push(
-                  `/management/rent-unit/1/edit-rent/change-property?type=${propertyType}`
-                );
-              }}
+              onClick={handleContinue}
               className="py-2 px-8"
               size="base_medium"
             >

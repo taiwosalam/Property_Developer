@@ -1,4 +1,5 @@
 import { StaticImageData } from "next/image";
+import { CheckBoxOptions, RentPeriod } from "./data";
 
 export interface PropertyDetailsProps {
   rent: number;
@@ -74,11 +75,15 @@ export interface FeeDetail {
 
 export interface OccupantProfileProps {
   occupants: { name: string; id: string }[];
+  period?: RentPeriod;
   isRental: boolean;
   feeDetails: FeeDetail[];
   total_package: number;
   loading?: boolean;
   id: string;
+  setSelectedTenantId?: (id: string) => void;
+  setStart_date?: (date: string) => void;
+  setSelectedCheckboxOptions?: (options: CheckBoxOptions) => void;
 }
 
 
