@@ -17,8 +17,11 @@ import Checkbox from "@/components/Form/Checkbox/checkbox";
 import DateInput from "@/components/Form/DateInput/date-input";
 import CustomTable from "@/components/Table/table";
 import { Dayjs } from "dayjs";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import useFetch from "@/hooks/useFetch";
+import NetworkError from "@/components/Error/NetworkError";
+import TableLoading from "@/components/Loader/TableLoading";
+import { PreviousRecords } from "@/app/(nav)/management/rent-unit/data";
 
 export const RenewalRentDetails: React.FC<{
   isRental: boolean;
@@ -37,7 +40,7 @@ export const RenewalRentDetails: React.FC<{
       { label: "Current Start Date", value: startDate },
       { label: "Due Date", value: dueDate },
       { label: "Annual Rent", value: `₦${(rentFee ? Number(rentFee) : 0).toLocaleString()}` },
-      { label: "Other Fees", value: `₦${(otherFee ? Number(otherFee) : 0).toLocaleString()}` },  
+      { label: "Other Fees", value: `₦${(otherFee ? Number(otherFee) : 0).toLocaleString()}` },
     ];
     return (
       <div className="space-y-6">
@@ -185,41 +188,20 @@ export const RenewalRent: React.FC<{
   );
 };
 
-// export const PreviousRentRecords: React.FC<{ isRental: boolean, previous_records: any, unit_id: string }> = ({
-//   isRental,
-//   previous_records,
-//   unit_id,
-// }) => {
-//   console.log("previous records", previous_records)
-//   return (
-//     <div>
-//       <RentSectionTitle>
-//         {isRental ? "Previous Rent Records" : "Previous Fee Records"}
-//       </RentSectionTitle>
-//       <SectionSeparator className="mt-4 mb-6 h-[2px]" />
-//       <CustomTable
-//         data={previousRentRecordsData}
-//         fields={previousRentRecordsTableFields}
-//         tableHeadCellSx={{
-//           fontSize: "1rem",
-//           paddingTop: "18px",
-//           paddingBottom: "18px",
-//         }}
-//         tableBodyCellSx={{
-//           fontSize: "1rem",
-//           paddingTop: "18px",
-//           paddingBottom: "18px",
-//         }}
-//       />
-//     </div>
-//   );
-// };
 
-
+type UnitViewResponse = {
+  previous_records: {
+    data: any[]; 
+    pagination: {
+      current_page: number;
+      total_pages: number;
+    };
+  };
+};
 
 type PreviousRentRecordsProps = {
   isRental: boolean;
-  previous_records?: any;
+  previous_records?: PreviousRecords;
   unit_id?: string;
 };
 
@@ -228,95 +210,136 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   previous_records,
   unit_id,
 }) => {
-  const [records, setRecords] = useState(previous_records.data || []);
-  const [state, setState] = useState({
-    current_page: previous_records.pagination?.current_page || 1,
-    total_pages: previous_records.pagination?.total_pages || 1,
-    hasMore: previous_records.pagination?.current_page < previous_records.pagination?.total_pages,
+  // if (!unit_id) return null;
+  const [records, setRecords] = useState<any[]>(previous_records?.data || []);
+
+  // Set up pagination state using provided pagination info if any
+  const [pagination, setPagination] = useState<{
+    current_page: number;
+    total_pages: number;
+    hasMore: boolean;
+  }>({
+    current_page: previous_records?.pagination?.current_page || 1,
+    total_pages: previous_records?.pagination?.total_pages || 1,
+    hasMore:
+      (previous_records?.pagination?.current_page || 1) <
+      (previous_records?.pagination?.total_pages || 1),
   });
+
   const observer = useRef<IntersectionObserver | null>(null);
-  
-  const { data, loading, silentLoading } = useFetch(`unit/${unit_id}/view`, {
-    params: { page: state.current_page },
-  });
 
-  // const fetchNextPage = useCallback(() => {
-  //   if (state.hasMore && !silentLoading) {
-  //     setState((prev) => ({
-  //       ...prev,
-  //       current_page: prev.current_page + 1,
-  //     }));
-  //   }
-  // }, [state.hasMore, silentLoading]);
+  // Memoize the fetch options so they don’t change on every render.
+  const fetchOptions = useMemo(
+    () => ({
+      params: { page: pagination.current_page },
+    }),
+    [pagination.current_page]
+  );
 
+  // Pass the expected response type to useFetch so that TS knows about previous_records
+  const { data, loading, silentLoading, error, isNetworkError } =
+    useFetch<UnitViewResponse>(`/unit/${unit_id}/view`, fetchOptions);
+
+  // Helper: debounce function to limit rapid calls.
   const debounce = (func: Function, delay: number) => {
     let timer: NodeJS.Timeout;
-    return (...args: any) => {
+    return (...args: any[]) => {
       clearTimeout(timer);
       timer = setTimeout(() => func(...args), delay);
     };
   };
-  
+
+  // When there are more pages and not silently loading, increment the current page.
   const fetchNextPage = useCallback(
     debounce(() => {
-      if (state.hasMore && !silentLoading) {
-        setState((prev) => ({
+      if (pagination.hasMore && !silentLoading) {
+        setPagination((prev) => ({
           ...prev,
           current_page: prev.current_page + 1,
         }));
       }
-    }, 500), // 500ms delay to avoid excessive requests
-    [state.hasMore, silentLoading]
+    }, 500),
+    [pagination.hasMore, silentLoading]
   );
-  
 
+  // Intersection Observer: attach to the last record's ref.
   const lastRowRef = useCallback(
     (node: HTMLElement | null) => {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && state.hasMore) {
+        if (entries[0].isIntersecting && pagination.hasMore) {
           fetchNextPage();
         }
       });
       if (node) observer.current.observe(node);
     },
-    [fetchNextPage, state.hasMore]
+    [fetchNextPage, pagination.hasMore]
   );
 
-  
-  // useEffect(() => {
-  //   if (data) {
-  //     setRecords((prevRecords:any) => {
-  //       const newRecords = data.previous_records.data || [];
-  //       const combinedRecords = [...prevRecords, ...newRecords];
-  //       const uniqueRecords = combinedRecords.filter(
-  //         (record, index, self) =>
-  //           index === self.findIndex((r) => r.id === record.id)
-  //       );
-  //       return uniqueRecords;
-  //     });
-  //     setState((prevState) => ({
-  //       ...prevState,
-  //       total_pages: data.previous_records.pagination.total_pages,
-  //       hasMore: data.previous_records.pagination.current_page < data.previous_records.pagination.total_pages,
-  //     }));
-  //   }
-  // }, [data]);
+  // Update records and pagination when new API data arrives.
+  useEffect(() => {
+    if (data && data.previous_records) {
+      const newRecords = data.previous_records.data || [];
+      setRecords((prevRecords) => {
+        const combined = [...prevRecords, ...newRecords];
+        const unique = combined.filter(
+          (record, index, self) =>
+            index === self.findIndex((r) => r.id === record.id)
+        );
+        return unique;
+      });
+      const newPagination = data.previous_records.pagination;
+      if (newPagination) {
+        setPagination((prev) => ({
+          ...prev,
+          current_page: newPagination.current_page,
+          total_pages: newPagination.total_pages,
+          hasMore: newPagination.current_page < newPagination.total_pages,
+        }));
+      }
+    }
+  }, [data]);
 
-  console.log("records", data)
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <p className="text-base text-red-500 font-medium">{error}</p>;
+
+  const tableData = records.map((record, index) => ({
+    ...record,
+    ref: index === records.length - 1 ? lastRowRef : null,
+  }));
+
   return (
-    <div>
-      <RentSectionTitle>
-        {isRental ? "Previous Rent Records" : "Previous Fee Records"}
-      </RentSectionTitle>
-      <SectionSeparator className="mt-4 mb-6 h-[2px]" />
-      <CustomTable
-        data={records}
-        fields={previousRentRecordsTableFields}
-        tableHeadCellSx={{ fontSize: "1rem", paddingTop: "18px", paddingBottom: "18px" }}
-        tableBodyCellSx={{ fontSize: "1rem", paddingTop: "18px", paddingBottom: "18px" }}
-      />
-      {/* <div ref={lastRowRef} style={{ height: 1 }} /> */}
+    <div className="previous-records-container">
+      {loading ? (
+        <TableLoading length={10} />
+      ) : (
+        <div>
+          <RentSectionTitle>
+            {isRental ? "Previous Rent Records" : "Previous Fee Records"}
+          </RentSectionTitle>
+          <SectionSeparator className="mt-4 mb-6 h-[2px]" />
+          <CustomTable
+            data={tableData}
+            fields={previousRentRecordsTableFields}
+            tableHeadCellSx={{
+              fontSize: "1rem",
+              paddingTop: "18px",
+              paddingBottom: "18px",
+            }}
+            tableBodyCellSx={{
+              fontSize: "1rem",
+              paddingTop: "18px",
+              paddingBottom: "18px",
+            }}
+          />
+        </div>
+      )}
+      {silentLoading && (
+        <div className="flex items-center justify-center py-4">
+          <div className="loader" />
+        </div>
+      )}
     </div>
   );
 };
+

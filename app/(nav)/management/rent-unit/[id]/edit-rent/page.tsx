@@ -143,7 +143,7 @@ const EditRent = () => {
         </div>
         <PreviousRentRecords
           isRental={isRental}
-          previous_records={unit_data.previous_records}
+          previous_records={unit_data.previous_records as any}
           unit_id={unit_data.unit_id}
         />
       </section>
