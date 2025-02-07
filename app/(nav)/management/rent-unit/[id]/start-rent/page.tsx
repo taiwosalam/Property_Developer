@@ -6,6 +6,9 @@ import {
   estateData,
   propertySettingsData,
   rentalData,
+  RentPeriod,
+  CheckBoxOptions,
+  defaultChecks,
 } from "@/components/Management/Rent And Unit/data";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
@@ -27,7 +30,9 @@ import {
 } from "../../data";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
-import { initialTenants, Tenant, TenantResponse, transformUnitsTenants } from "./data";
+import { initialTenants, startRent, Tenant, TenantResponse, transformUnitsTenants } from "./data";
+import { toast } from "sonner";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -37,6 +42,11 @@ const StartRent = () => {
 
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
   const [tenants_data, setTenants_data] = useState<Tenant[]>(initialTenants);
+  const [selectedTenantId, setSelectedTenantId] = useState("")
+  const [startDate, setStartDate] = useState("")
+  const [selectedCheckboxOptions, setSelectedCheckboxOptions] = useState<CheckBoxOptions>(defaultChecks)
+  const [reqLoading, setReqLoading] = useState(false)
+
   const endpoint = `/unit/${id}/view`
   const {
     data: apiData,
@@ -73,7 +83,48 @@ const StartRent = () => {
   }, [allTenantData])
 
 
-  // console.log('tenants', tenants_data)
+  const handleStartRent = async () => {
+    // Validate that all required fields are available
+    if (!unit_data?.unit_id || !selectedTenantId) {
+      toast.error("Missing required information: unit or tenant not selected.");
+      return;
+    }
+
+    if (!selectedCheckboxOptions) {
+      toast.error("Notification preferences not set.");
+      return;
+    }
+
+    const payload = {
+      unit_id: unit_data.unit_id,
+      tenant_id: selectedTenantId,
+      start_date: startDate,
+      payment_type: "full",
+      rent_type: "new",
+      // mobile_notification: selectedCheckboxOptions.mobile_notification,
+      // email_alert: selectedCheckboxOptions.email_alert,
+      // has_invoice: selectedCheckboxOptions.create_invoice,
+      mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
+      email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
+      has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
+      // sms_alert: selectedCheckboxOptions.sms_alert, //TODO - uncomment after backend added it 
+    };
+    try {
+      setReqLoading(true);
+      const res = await startRent(payload);
+      // const res = await startRent(objectToFormData(payload));
+
+      if (res) {
+        toast.success("Rent Started Successfully");
+      }
+    } catch (err) {
+      toast.error("Failed to start Rent");
+    } finally {
+      setReqLoading(false);
+    }
+  };
+
+
 
   if (loading)
     return (
@@ -130,6 +181,10 @@ const StartRent = () => {
             name: tenant.name,
             id: tenant.id,
           }))}
+          period={unit_data?.fee_period as RentPeriod}
+          setStart_date={setStartDate}
+          setSelectedTenantId={setSelectedTenantId} //Try better way aside drilling prop later
+          setSelectedCheckboxOptions={setSelectedCheckboxOptions} //Try better way aside drilling prop later
           feeDetails={[
             { name: isRental ? "Annual Rent" : "Annual Fee", amount: Number(unit_data.newTenantPrice) },
             { name: "Service Charge", amount: Number(unit_data.service_charge) },
@@ -143,14 +198,20 @@ const StartRent = () => {
           id={propertyId as string}
         />
       </section>
-      <FixedFooter className={`flex justify-${isRental ? "between" : "end"}`}>
+      {/* <FixedFooter className={`flex justify-${isRental ? "between" : "end"}`}> */}
+      <FixedFooter className={`flex justify-end gap-4`}>
         {isRental && (
           <Button size="base_medium" className="py-2 px-6">
             Download Agreement
           </Button>
         )}
-        <Button size="base_medium" className="py-2 px-6">
-          Save
+        <Button
+          size="base_medium"
+          className="py-2 px-6"
+          disabled={reqLoading}
+          onClick={handleStartRent}
+        >
+          {reqLoading ? "Please wait..." : "Start Rent"}
         </Button>
       </FixedFooter>
     </div>

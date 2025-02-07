@@ -24,18 +24,18 @@ export const transformTenantData = (res: TenantResponse): Occupant => {
   const { data } = res;
   return {
     id: data.id.toString(),
-    name: data.name,
+    name: data.name || "___",
     email: data.email,
-    userTag: data.agent as "mobile" | "web",
+    userTag: data.agent as "mobile" | "web" || "___",
     avatar: data.picture || empty,
     gender: data.gender,
-    birthday: "12/12/12", //TODO - Add birthday
-    phone: data.phone,
-    maritalStatus: data.tenant_type,
-    address: `${data.city}, ${data.local_government}, ${data.state}` || "___",
-    city: data.city,
-    state: data.state,
-    lg: data.local_government,
+    birthday: "___", //TODO - Add birthday
+    phone: data.phone || "___",
+    maritalStatus: data.tenant_type || "___",
+    address: `${data.city || "___"}, ${data.local_government || "___"}, ${data.state || "_____"}` || "___",
+    city: data.city || "___",
+    state: data.state || "____",
+    lg: data.local_government || "___",
     religion: "___", //TODO - Add religion
   };
 }
@@ -116,6 +116,22 @@ export const actions: Action[] = [
 //     "/empty/SampleProperty5.jpg",
 //   ],
 // };
+
+
+export interface CheckBoxOptions {
+  mobile_notification: boolean;
+  email_alert: boolean;
+  create_invoice: boolean;
+  sms_alert: boolean;
+}
+
+
+export const defaultChecks: CheckBoxOptions = {
+  mobile_notification: true,
+  email_alert: true,
+  create_invoice: true,
+  sms_alert: true,
+}
 
 export const estateData = [
   { label: "Property Title", value: "Golden Estate" },
@@ -260,6 +276,8 @@ export const calculateDueDate = (
       return startDate.add(1, "month");
   }
 };
+
+
 
 export const sampleDocuments = [
   {

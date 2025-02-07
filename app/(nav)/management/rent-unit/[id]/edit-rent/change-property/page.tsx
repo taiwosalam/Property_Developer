@@ -14,6 +14,7 @@ import { useSearchParams } from "next/navigation";
 
 const ChangePropertyPage: React.FC = () => {
   const searchParams = useSearchParams();
+  const id = searchParams.get("id");
   const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
   const isRental = propertyType === "rental";
 
@@ -26,6 +27,8 @@ const ChangePropertyPage: React.FC = () => {
   };
 
   const handleChangeContent = () => setStep1Done(true);
+
+  console.log("id", id)
 
   if (step1Done) {
     return <PostProceedContent />;

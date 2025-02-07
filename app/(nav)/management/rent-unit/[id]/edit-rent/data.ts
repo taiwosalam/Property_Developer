@@ -21,3 +21,4 @@ const generateRentRecordsTableData = (numItems: number) => {
 };
 
 export const rentRecordsTableData = generateRentRecordsTableData(2);
+

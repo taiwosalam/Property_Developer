@@ -53,10 +53,10 @@ const EditRent = () => {
         ...x,
         ...transformUnitData(apiData)
       }))
-      // console.log("Data", unit_data)
     }
   }, [apiData])
-  
+  // console.log("Data", unit_data)
+
   if (loading)
     return (
       <div className="min-h-[80vh] flex justify-center items-center">
@@ -67,7 +67,7 @@ const EditRent = () => {
   if (isNetworkError) return <NetworkError />;
 
   if (error) return <div>{error}</div>;
-  
+
   const propertyId = unit_data.propertyId;
   const rentalData = [
     { label: "Property Title", value: unit_data?.title },
@@ -135,13 +135,17 @@ const EditRent = () => {
           </div>
           <div className="lg:flex-1 lg:!mt-[52px] space-y-8">
             <MatchedProfile
-              occupant={DUMMY_OCCUPANT}
+              occupant={unit_data.occupant}
               title={`${isRental ? "Tenant" : "Occupant"} Profile`}
             />
             <TransferTenants isRental={isRental} />
           </div>
         </div>
-        <PreviousRentRecords isRental={isRental} />
+        <PreviousRentRecords
+          isRental={isRental}
+          previous_records={unit_data.previous_records as any}
+          unit_id={unit_data.unit_id}
+        />
       </section>
 
       <FixedFooter className="flex gap-4 justify-end">
