@@ -28,12 +28,17 @@ import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import NetworkError from "@/components/Error/NetworkError";
+import { useOccupantStore } from "@/hooks/occupant-store";
 
 const EditRent = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const isRental = propertyType === "rental";
+
+  //STORE TO SAVE SELECTED OCCUPANT/TENANT 
+  const { setOccupant } = useOccupantStore();
+
 
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
   const endpoint = `/unit/${id}/view`
@@ -47,15 +52,21 @@ const EditRent = () => {
     refetch,
   } = useFetch<singleUnitApiResponse>(endpoint);
 
+
   useEffect(() => {
     if (apiData) {
+      const transformedData = transformUnitData(apiData);
       setUnit_data((x: any) => ({
         ...x,
-        ...transformUnitData(apiData)
-      }))
+        ...transformedData,
+      }));
+
+      if (transformedData.occupant) {
+        setOccupant(transformedData.occupant); // Store occupant data in Zustand
+      }
     }
-  }, [apiData])
-  // console.log("Data", unit_data)
+  }, [apiData, setOccupant]);
+
 
   if (loading)
     return (
@@ -82,7 +93,7 @@ const EditRent = () => {
   ];
 
   const propertySettingsData = [
-    { label: "Agency Fee", value: `${unit_data?.agency_fee}%` },
+    { label: "Agency Fee", value: `${unit_data?.unitAgentFee}` },
     { label: "Period", value: unit_data?.fee_period },
     { label: "Charge", value: unit_data?.whoToCharge },
     { label: "Caution Deposit", value: unit_data.caution_deposit },
@@ -127,10 +138,13 @@ const EditRent = () => {
                 { name: "Service Charge", amount: Number(unit_data.renew_service_charge) },
                 { name: "Other Charges", amount: Number(unit_data.renew_other_charge) },
               ]}
-              total_package={Number(unit_data.total_package)}
+              total_package={Number(unit_data.renewalTenantTotalPrice)}
               id={propertyId as string}
             />
-            <EditCurrentRent isRental={isRental} />
+            <EditCurrentRent
+              isRental={isRental}
+              total={unit_data.renewalTenantTotalPrice}
+            />
             <AddPartPayment />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px] space-y-8">

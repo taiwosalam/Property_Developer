@@ -5,6 +5,7 @@ import {
   propertySettingsData,
   DUMMY_OCCUPANT,
   rentalData,
+  initialPreviousRecords,
 } from "@/components/Management/Rent And Unit/data";
 import {
   RenewalRent as StartRent,
@@ -49,7 +50,11 @@ const ChangeUnitpage = () => {
 
         <div className="pt-6 lg:flex lg:gap-10 space-y-8">
           <div className="lg:w-3/5 space-y-8">
-            <PreviousUnitBalance isRental={isRental} />
+            <PreviousUnitBalance
+              isRental={isRental}
+              items={initialPreviousRecords}
+              total="2000"
+            />
             <NewUnitCost
               isRental={isRental}
               feeDetails={[

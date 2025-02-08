@@ -16,12 +16,14 @@ import { SectionSeparator } from "@/components/Section/section-components";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import DateInput from "@/components/Form/DateInput/date-input";
 import CustomTable from "@/components/Table/table";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
 import TableLoading from "@/components/Loader/TableLoading";
 import { PreviousRecords } from "@/app/(nav)/management/rent-unit/data";
+import { formatNumber } from "@/utils/number-formatter";
+import { useOccupantStore } from "@/hooks/occupant-store";
 
 export const RenewalRentDetails: React.FC<{
   isRental: boolean;
@@ -210,8 +212,12 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   previous_records,
   unit_id,
 }) => {
+  // console.log(unit_id)
   // if (!unit_id) return null;
   const [records, setRecords] = useState<any[]>(previous_records?.data || []);
+  const { setRecords: setOccupantRecords } =
+    useOccupantStore();
+
 
   // Set up pagination state using provided pagination info if any
   const [pagination, setPagination] = useState<{
@@ -300,14 +306,31 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
     }
   }, [data]);
 
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <p className="text-base text-red-500 font-medium">{error}</p>;
-
   const tableData = records.map((record, index) => ({
     ...record,
+    amount_paid: `₦${formatNumber(record.amount_paid) || 0}`,
+    start_date: record.start_date
+      ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
+      : null,
+    due_date: record.due_date
+      ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
+      : null,
+    payment_date: record.payment_date
+      ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
+      : null,
     ref: index === records.length - 1 ? lastRowRef : null,
   }));
 
+  useEffect(()=> {
+    setOccupantRecords(tableData)
+  },[data])
+
+  
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <p className="text-base text-red-500 font-medium">{error}</p>;
+
+
+  console.log("redcord", tableData)
   return (
     <div className="previous-records-container">
       {loading ? (

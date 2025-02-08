@@ -4,12 +4,12 @@ import {
   FeeDetails,
 } from "../rent-section-container";
 import { EstateDetailItem as DetailItem } from "../detail-item";
-import { renewalRentDetailItems } from "../data";
+import { getRenewalRentDetailItems, renewalRentDetailItems, RentPreviousRecords } from "../data";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { useState } from "react";
 import DateInput from "@/components/Form/DateInput/date-input";
 import Input from "@/components/Form/Input/input";
-import { currencySymbols } from "@/utils/number-formatter";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Button from "@/components/Form/Button/button";
 import ModalPreset from "@/components/Modal/modal-preset";
@@ -54,11 +54,12 @@ export const RentDetails: React.FC<{
 
 export const EditCurrentRent: React.FC<{
   isRental: boolean;
-}> = ({ isRental }) => {
+  total: string;
+}> = ({ isRental, total }) => {
   const CURRENCY_SYMBOL = currencySymbols.naira;
   return (
     <div>
-      <RentSectionTitle>{`Edit Current ${isRental ? "Rent" : "Fee"
+      <RentSectionTitle>{`Upfront ${isRental ? "Rent" : "Fee"
         }`}</RentSectionTitle>
       <SectionSeparator className="mt-4 mb-6" />
       <div className="grid md:grid-cols-2 gap-4 mb-6">
@@ -71,8 +72,10 @@ export const EditCurrentRent: React.FC<{
         <Input
           id="amount_paid"
           placeholder="300,000"
-          label="Amount Paid"
+          label="Renewal Fee"
           inputClassName="bg-white"
+          value={total}
+          readOnly
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           formatNumber
         />
@@ -200,8 +203,10 @@ export const TransferTenants = ({ isRental }: { isRental: boolean }) => {
   );
 };
 
-export const PreviousUnitBalance: React.FC<{ isRental: boolean }> = ({
+export const PreviousUnitBalance: React.FC<{ isRental: boolean, items: RentPreviousRecords[], total?: string; }> = ({
   isRental,
+  items,
+  total,
 }) => {
   return (
     <div className="space-y-6">
@@ -209,11 +214,11 @@ export const PreviousUnitBalance: React.FC<{ isRental: boolean }> = ({
       <RentSectionContainer title={isRental ? "Rent Fee" : "Fee"}>
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 gap-4">
-            {renewalRentDetailItems.map((item, index) => (
+            {getRenewalRentDetailItems(items).map((item, index) => (
               <DetailItem
                 key={index}
                 label={item.label}
-                value={item.value}
+                value={item.value as string}
                 style={{ width: "150px" }}
               />
             ))}
@@ -223,7 +228,7 @@ export const PreviousUnitBalance: React.FC<{ isRental: boolean }> = ({
               Balance
             </p>
             <p className="text-lg lg:text-xl font-bold text-brand-9">
-              ₦300,000
+              ₦{formatNumber(Number(total))}
             </p>
           </div>
         </div>
@@ -235,15 +240,17 @@ export const PreviousUnitBalance: React.FC<{ isRental: boolean }> = ({
 export const NewUnitCost: React.FC<{
   isRental: boolean;
   feeDetails: FeeDetail[];
-}> = ({ isRental, feeDetails }) => {
+  total?: number;
+  id?:string;
+}> = ({ isRental, feeDetails, total, id }) => {
   return (
     <div className="space-y-6">
       <RentSectionTitle>New Unit Cost</RentSectionTitle>
       <FeeDetails
         title={isRental ? "Annual Rent" : "Annual Fee"}
         feeDetails={feeDetails}
-        total_package={1}
-        id={""}
+        total_package={total as number}
+        id={id as string}
       />
     </div>
   );

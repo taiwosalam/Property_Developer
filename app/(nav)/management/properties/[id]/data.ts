@@ -18,6 +18,9 @@ export const transformSinglePropertyData = (
   }, 0);
   const feePercentage =
     data.property_type === "rental" ? data.agency_fee : data.management_fee;
+  const manager = data?.staff?.find((staff) => staff.staff_role === "manager");
+  const accountOfficer = data?.staff?.find((staff) => staff.staff_role === "officer");
+
   return {
     id: data.id,
     video_link: data.video_link,
@@ -41,9 +44,11 @@ export const transformSinglePropertyData = (
     request_call_back: mapNumericToYesNo(data.request_call_back),
     vehicle_records: mapNumericToYesNo(data.vehicle_record),
     branch: data.branch?.branch_name,
-    account_officer: "", // to do
+    rent_penalty: mapNumericToYesNo(data.rent_penalty),
+    fee_period: data.fee_period,
+    account_officer: `${accountOfficer?.estate_title} ${accountOfficer?.user?.name}`, // to do
     landlord_name: "", //to do
-    branch_manager: "", //  later
+    branch_manager: `${manager?.estate_title} ${manager?.user?.name}`, //  later
     mobile_tenants: 0, // backend shit
     web_tenants: 0, // backend shit
     last_updated: moment(data.updated_at).format("Do MMM, YYYY"),

@@ -1,7 +1,7 @@
 import { empty } from "@/app/config";
 import type { Occupant, TenantResponse, UnitDetails } from "./types";
 import type { Field } from "@/components/Table/types";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 export const getBackgroundColor = (StatusName: string): string => {
   switch (StatusName) {
@@ -193,6 +193,85 @@ export const DUMMY_OCCUPANT: Occupant = {
   userTag: "mobile",
   id: "123",
 };
+
+export interface RentPreviousRecords{
+  amount_paid: string;
+  due_date: string;
+  start_date: string;
+  other_fees: string;
+}
+export const initialPreviousRecords=[{
+  amount_paid: "",
+  due_date: "",
+  start_date: "",
+  other_fees: "",
+}]
+
+export function getRenewalRentDetailItems(records: Array<RentPreviousRecords>): Array<{ label: string; value: string | null }> {
+  if (!records || records.length === 0) return [];
+  
+  // Using the first record from the passed data
+  const record = records[0];
+  
+  return [
+    { 
+      label: "Current Start Date", 
+      value: record.start_date 
+        ? dayjs(record.start_date).format("MMM D, YYYY") 
+        : null 
+    },
+    { 
+      label: "Due Date", 
+      value: record.due_date 
+        ? dayjs(record.due_date).format("MMM D, YYYY") 
+        : null 
+    },
+    { 
+      label: "Annual Rent", 
+      value: record.amount_paid || null 
+    },
+    { 
+      label: "Other Fees", 
+      value: record.other_fees || "___" 
+    },
+  ];
+}
+
+
+// Helper: Capitalize the first letter (to ensure proper parsing)
+function capitalizeDateString(dateStr: string): string {
+  if (!dateStr) return dateStr;
+  return dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+}
+
+// Helper: Convert a currency string like "₦30,000" into a number (30000)
+function parseCurrency(amountStr: string): number {
+  if (!amountStr) return 0;
+  return Number(amountStr.replace(/[₦,]/g, ''));
+}
+
+
+export function calculateBalance(
+  amount_paid: string,
+  start_date: string,
+  due_date: string
+): number {
+  const amount = parseCurrency(amount_paid);
+  // Ensure the month name is capitalized for proper parsing
+  const start = dayjs(capitalizeDateString(start_date));
+  const due = dayjs(capitalizeDateString(due_date));
+  
+  const totalDays = due.diff(start, 'day');
+  const remainingDays = due.diff(dayjs(), 'day');
+  
+  if (totalDays <= 0) return 0;
+  
+  // Ratio of remaining days over total days
+  const ratio = remainingDays / totalDays;
+  // return amount * ratio;
+  return Math.round(amount * ratio);
+}
+
 
 export const renewalRentDetailItems = [
   { label: "Current Start Date", value: "12/1/2023" },
