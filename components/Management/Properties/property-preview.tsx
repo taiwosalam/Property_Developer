@@ -32,6 +32,8 @@ export interface PropertyPreviewProps
   images: string[];
   video_link?: string;
   landlord?: boolean;
+  rent_penalty?: string;
+  fee_period?: string;
   units: UnitItemProps[];
 }
 

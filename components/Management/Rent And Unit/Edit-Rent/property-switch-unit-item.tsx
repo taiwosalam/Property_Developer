@@ -17,6 +17,13 @@ interface PropertySwitchUnitItemProps {
   isSelected: boolean;
   onSelect: (id: string) => void;
   isRental?: boolean;
+  cautionDeposit?: string;
+  serviceCharge?: string;
+  unitDetails: string;
+  unitImages: string[];
+  rent: string;
+  propertyType: string;
+  unitName: string;
 }
 
 const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
@@ -24,6 +31,13 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
   isSelected,
   onSelect,
   isRental,
+  cautionDeposit,
+  serviceCharge,
+  unitDetails,
+  unitImages,
+  rent,
+  propertyType,
+  unitName,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
@@ -38,13 +52,13 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
       <PopupImageModal
         isOpen={screenModal}
         onClose={() => setScreenModal(false)}
-        images={sampleImages.map((image) => ({
-          src: image.src,
+        images={unitImages.map((image) => ({
+          src: image,
         }))}
       />
       <div className="flex items-center justify-between">
         <h4 className="text-brand-10 text-base font-bold">
-          Unit ID: 123456776342
+          Unit ID: {id}
         </h4>
         <Checkbox onChange={() => onSelect(id)} checked={isSelected} />
       </div>
@@ -53,29 +67,27 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
         <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
           <div>
             <p className="text-[#747474] dark:text-white">Unit Details</p>
-            <p className="text-black dark:text-darkText-1">
-              Newly Built 5 Bedroom Detached Duplex
-            </p>
+            <p className="text-black dark:text-darkText-1">{unitDetails}</p>
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Rent</p>
-            <p className="text-black dark:text-darkText-1">₦300,000</p>
+            <p className="text-black dark:text-darkText-1">{rent}</p>
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Unit No/Name</p>
-            <p className="text-black dark:text-darkText-1">Flat 4</p>
+            <p className="text-black dark:text-darkText-1">{unitName}</p>
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Caution Deposit</p>
-            <p className="text-black dark:text-darkText-1">₦300,000</p>
+            <p className="text-black dark:text-darkText-1">{cautionDeposit}</p>
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Unit Description</p>
-            <p className="text-black dark:text-darkText-1">Abiola Moniya</p>
+            <p className="text-black dark:text-darkText-1">{unitDetails}</p>
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Service Charge</p>
-            <p className="text-black dark:text-darkText-1">₦300,000</p>
+            <p className="text-black dark:text-darkText-1">{serviceCharge}</p>
           </div>
         </div>
 
@@ -87,10 +99,10 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
         >
           <div className="absolute z-[1] left-[65%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
             <CameraIcon />
-            <p className="text-black font-medium text-[10px]">+23</p>
+            <p className="text-black font-medium text-[10px]">+{unitImages.length}</p>
           </div>
           <Image
-            src={"/empty/SampleProperty3.jpeg"}
+            src={unitImages[0]}
             alt={""}
             fill
             className="object-cover object-center"

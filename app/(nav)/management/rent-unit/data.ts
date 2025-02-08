@@ -1,4 +1,5 @@
 import { empty } from "@/app/config";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { getAllStates } from "@/utils/states";
 import { number } from "zod";
 //
@@ -46,7 +47,7 @@ export interface UnitPageState {
   month_relocate: number;
   published_vacant?: number;
   month_published_vacant?: number;
-  unpublished_vacant?:number;
+  unpublished_vacant?: number;
   month_unpublished_vacant?: number;
   unit: RentalPropertyCardProps[];
 }
@@ -67,7 +68,7 @@ export interface UnitApiResponse {
     month_relocate: number;
     published_vacant?: number;
     month_published_vacant?: number;
-    unpublished_vacant?:number;
+    unpublished_vacant?: number;
     month_unpublished_vacant?: number;
     unit: {
       current_page: number;
@@ -865,7 +866,7 @@ export const initData = {
   renew_other_charge: "",
   occupant: {
     id: "",
-    name:"",
+    name: "",
     email: "",
     userTag: "" as "mobile",
     avatar: "",
@@ -882,29 +883,31 @@ export const initData = {
 }
 
 
-export interface initDataProps{
-  title:string;
-  unit_id:string;
-  unit_name:string;
-  address:string;
+export interface initDataProps {
+  id?: string;
+  title: string;
+  unit_id: string;
+  unit_name: string;
+  address: string;
   images: string[];
-  categories:string;
-  unitNumber:string;
-  unitPreference:string;
+  categories: string;
+  unitNumber: string;
+  unitPreference: string;
   unitType: string,
   unitSubType: string;
-  state:string;
-  localGovernment:string;
-  accountOfficer:string;
-  bedrooms:string;
-  bathrooms:string;
-  toilets:string;
-  fee_period:string;
-  newTenantPrice:string;
-  newTenantTotalPrice:string;
-  renew_fee_period:string;
-  renewalTenantPrice:string;
-  renewalTenantTotalPrice:string;
+  state: string;
+  localGovernment: string;
+  accountOfficer: string;
+  bedrooms: string;
+  bathrooms: string;
+  toilets: string;
+  fee_period: string;
+  fee_amount?: string;
+  newTenantPrice: string;
+  newTenantTotalPrice: string;
+  renew_fee_period: string;
+  renewalTenantPrice: string;
+  renewalTenantTotalPrice: string;
   renew_service_charge?: string;
   branchName?: string,
   agency_fee?: string;
@@ -929,7 +932,7 @@ export const transformUnitData = (response: any) => {
   const data = response.data;
   const occupant = response.data.occupant;
   const previous_records = response.data.previous_records;
-  // console.log("data", data)
+  console.log("data", data)
   return {
     title: data.property.title,
     unit_id: data.id,
@@ -965,15 +968,24 @@ export const transformUnitData = (response: any) => {
     whoToCharge: data.property.who_to_charge_new_tenant,
     group_chat: convertToYesNo(Number(data.property.group_chat)),
     rent_penalty: convertToYesNo(Number(data.property.rent_penalty)),
-    caution_deposit: data.property.caution_deposit,
+    // caution_deposit: data.property.caution_deposit,
+    caution_deposit: data.caution_fee
+      ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
+        parseFloat(data.caution_fee)
+      )}`
+      : undefined,
     location: "",
-    fee_amount: "",
+    fee_amount: data.fee_amount,
     propertyId: data.property.id,
     total_package: data.total_package,
-    caution_fee: data.caution_fee, 
+    caution_fee: data.caution_fee,
     security_fee: data.security_fee,
     other_charge: data.other_charge,
-    unitAgentFee: data.agency_fee,
+    unitAgentFee: data.agency_fee
+      ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
+        parseFloat(data.agency_fee)
+      )}`
+      : undefined,
     service_charge: data.service_charge,
     occupant: {
       id: occupant.id,
@@ -1003,6 +1015,6 @@ export const transformUnitData = (response: any) => {
     //     due_date: r.due_date,
     //   }
     // })
-    
+
   }
 }

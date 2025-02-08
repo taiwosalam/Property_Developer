@@ -8,6 +8,12 @@ export async function middleware(req: NextRequest) {
   const role = req.cookies.get('role')?.value;
 
   console.log('server role', role);
+
+   // Redirect to sign-in if role is undefined
+  //  if (!role) {
+  //   return NextResponse.redirect(new URL('/auth/sign-in', req.url));
+  // }
+
   // Public routes accessible without authentication
   const publicRoutes = [
     '/auth/user/sign-in',
@@ -22,7 +28,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
   
-  // Allow access to `/auth/user/sign-in` if there's no authToken
+  // Allow access to `/auth/user/sign-in` 
   if (currentPath === '/auth/user/sign-in') {
     return NextResponse.next();
   }

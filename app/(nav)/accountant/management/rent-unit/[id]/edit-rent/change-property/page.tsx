@@ -11,6 +11,7 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { RentSectionTitle } from "@/components/Management/Rent And Unit/rent-section-container";
 import PropeertyDetailsSettingsCard from "@/components/Management/Properties/property-details-settings-others-card";
 import { useSearchParams } from "next/navigation";
+import { empty } from "@/app/config";
 
 const ChangePropertyPage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -117,7 +118,12 @@ const ChangePropertyPage: React.FC = () => {
           return (
             <PropertySwitchUnitItem
               key={index}
+              unitName="Unit name"
+              propertyType="rental" //fix later
               id={unitId}
+              unitDetails=""
+              rent={"10"}
+              unitImages={[empty]}
               isSelected={selectedUnitId === unitId}
               onSelect={handleUnitSelect}
               isRental={isRental}

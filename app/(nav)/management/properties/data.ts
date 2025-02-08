@@ -109,6 +109,7 @@ export interface PropertyDataObject {
   category: string;
   description: string;
   property_type: string;
+  fee_period: string;
   updated_at: Date;
   currency?: keyof typeof currencySymbols;
   units_count: number;
@@ -125,6 +126,8 @@ export interface PropertyDataObject {
   staff: {
     id: string;
     staff_role: string;
+    user: any;
+    estate_title: string; 
   }[] | null;
   // staff: string[]; //check after adding staff
   agency_fee: number;

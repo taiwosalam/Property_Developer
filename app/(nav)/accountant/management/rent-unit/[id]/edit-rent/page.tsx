@@ -130,7 +130,10 @@ const EditRent = () => {
               total_package={Number(unit_data.total_package)}
               id={propertyId as string}
             />
-            <EditCurrentRent isRental={isRental} />
+            <EditCurrentRent
+              isRental={isRental}
+              total="2000" //change later
+            />
             <AddPartPayment />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px] space-y-8">
