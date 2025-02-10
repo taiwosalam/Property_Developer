@@ -17,6 +17,7 @@ import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import dynamic from "next/dynamic";
 import { useOccupantStore } from "@/hooks/occupant-store";
+import Select from "@/components/Form/Select/select";
 const DynamicReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
 });
@@ -49,22 +50,21 @@ const ChangePropertyPage: React.FC = () => {
 
   const propertyData = data ? transformSinglePropertyData(data) : null;
 
-
   useEffect(() => {
     if (propertyData && propertyData.id !== useOccupantStore.getState().propertyData?.id) {
       setPropertyData(propertyData);
     }
   }, [propertyData, setPropertyData]);
-  
+
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <div>{error}</div>;
   if (!propertyData) return <div>No property data found</div>;
 
-  // console.log("property", propertyData)
+  console.log("property", propertyData)
 
   if (step1Done) {
-    return <PostProceedContent selectedUnitId={selectedUnitId as string } />;
+    return <PostProceedContent selectedUnitId={selectedUnitId as string} />;
   }
 
   const isRental = propertyData.isRental;
@@ -124,16 +124,18 @@ const ChangePropertyPage: React.FC = () => {
 
       <RentSectionTitle>Select New Unit For Tenant</RentSectionTitle>
       <section className="space-y-4">
-        {propertyData.units.map((u, index) => (
-          <PropertySwitchUnitItem
-            key={index}
-            id={u.unitId}
-            isSelected={selectedUnitId === u.unitId}
-            onSelect={handleUnitSelect}
-            isRental={isRental}
-            {...u}
-          />
-        ))}
+        {propertyData.units
+          .filter((u) => u.unitStatus === "vacant")
+          .map((u, index) => (
+            <PropertySwitchUnitItem
+              key={index}
+              id={u.unitId}
+              isSelected={selectedUnitId === u.unitId}
+              onSelect={handleUnitSelect}
+              isRental={isRental}
+              {...u}
+            />
+          ))}
       </section>
       <FixedFooter className="flex justify-end">
         <Button

@@ -6,6 +6,8 @@ import {
   DUMMY_OCCUPANT,
   rentalData,
   initialPreviousRecords,
+  RentPreviousRecords,
+  calculateBalance,
 } from "@/components/Management/Rent And Unit/data";
 import {
   RenewalRent as StartRent,
@@ -24,13 +26,93 @@ import ModalPreset from "@/components/Modal/modal-preset";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
+import { useOccupantStore } from "@/hooks/occupant-store";
+import { initData, initDataProps, singleUnitApiResponse, transformUnitData } from "../../../data";
+import { useEffect, useState } from "react";
+import useFetch from "@/hooks/useFetch";
+import { formatNumber } from "@/utils/number-formatter";
+import dayjs from "dayjs";
+import { getPropertySettingsData, getRentalData } from "../data";
+import { toast } from "sonner";
 
 const ChangeUnitpage = () => {
   const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+  const id = searchParams.get("p");
+  const selectedUnitId = searchParams.get("u");
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const isRental = propertyType === "rental";
   const router = useRouter();
+  const {
+    occupant,
+    propertyData,
+    records,
+    unitBalance,
+    calculation,
+    deduction,
+    setCalculation,
+    setDeduction,
+  } = useOccupantStore();
+  const [unit_data, setUnit_data] = useState<initDataProps>(initData);
+  const endpoint = `/unit/${id}/view`
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<singleUnitApiResponse>(endpoint);
+
+  useEffect(() => {
+    if (apiData) {
+      const transformedData = transformUnitData(apiData);
+      setUnit_data((x: any) => ({
+        ...x,
+        ...transformedData,
+      }));
+    }
+  }, [apiData]);
+
+  // console.log("calculation", calculation)
+  // console.log("deduction", deduction)
+  // console.log("unit data", unit_data)
+
+
+  if(!unitBalance) {
+    toast.warning("Back to Rent Unit for security reasons")
+    router.back()
+    return;
+  }
+
+  const balance = unitBalance?.data?.map((record: any, index: any) => ({
+    ...record,
+    amount_paid: `₦${formatNumber(record.amount_paid) || 0}`,
+    start_date: record?.start_date
+      ? dayjs(record?.start_date).format("MMM D, YYYY").toLowerCase()
+      : null,
+    due_date: record?.due_date
+      ? dayjs(record?.due_date).format("MMM D, YYYY").toLowerCase()
+      : null,
+    payment_date: record?.payment_date
+      ? dayjs(record?.payment_date).format("MMM D, YYYY").toLowerCase()
+      : null,
+  }));
+
+
+  const propertySettingsData = getPropertySettingsData(unit_data)
+  const rentalData = getRentalData(unit_data);
+
+  const startday = balance?.[0]?.start_date;
+  const endDay = balance?.[0]?.due_date;
+  const amt = balance?.[0]?.amount_paid;
+  // Only calculate the balance if all values exist, otherwise default to 0
+  const bal = startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
+  const newUnitTotal = calculation ? Number(unit_data.newTenantTotalPrice) : Number(unit_data.renewalTenantTotalPrice);
+  const totalPayable = !deduction ? newUnitTotal - bal : newUnitTotal;
+
+  console.log("Total Payable:", totalPayable);
+
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Change Unit</BackButton>
@@ -48,23 +130,47 @@ const ChangeUnitpage = () => {
           {...(isRental ? { gridThree: true } : {})}
         />
 
+        <PreviousUnitBalance
+          isRental={isRental}
+          items={balance as RentPreviousRecords[]}
+          total={`${bal}`}
+        />
         <div className="pt-6 lg:flex lg:gap-10 space-y-8">
           <div className="lg:w-3/5 space-y-8">
-            <PreviousUnitBalance
-              isRental={isRental}
-              items={initialPreviousRecords}
-              total="2000"
-            />
             <NewUnitCost
               isRental={isRental}
               feeDetails={[
                 {
                   name: isRental ? "Rent" : "Fee",
-                  amount: 300000,
+                  amount: calculation ? Number(unit_data.newTenantPrice) : Number(unit_data.renewalTenantPrice),
                 },
-                { name: "Service Charge", amount: 300000 },
-                { name: "Other Charges", amount: 300000 },
+                {
+                  name: "Service Charge",
+                  amount: calculation ? Number(unit_data.service_charge) : Number(unit_data.renew_service_charge)
+                },
+                { name: "Other Charges", amount: Number(unit_data.other_charge) },
               ]}
+              total={newUnitTotal}
+              calculation={calculation}
+            />
+
+            <NewUnitCost
+              title="Payable Cost"
+              noEdit
+              isRental={isRental}
+              feeDetails={[
+                {
+                  name: isRental ? "Rent" : "Fee",
+                  amount: calculation ? Number(unit_data.newTenantPrice) : Number(unit_data.renewalTenantPrice),
+                },
+                {
+                  name: "Service Charge",
+                  amount: calculation ? Number(unit_data.service_charge) : Number(unit_data.renew_service_charge)
+                },
+                { name: "Other Charges", amount: Number(unit_data.other_charge) },
+              ]}
+              total={totalPayable}
+              calculation={calculation}
             />
             <StartRent
               isRental={isRental}
@@ -74,10 +180,15 @@ const ChangeUnitpage = () => {
             />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px]">
-            <MatchedProfile occupant={DUMMY_OCCUPANT} title="User Profile" />
+            <MatchedProfile occupant={occupant} title="User Profile" />
           </div>
         </div>
-        <PreviousRentRecords isRental={isRental} />
+        <PreviousRentRecords
+          isRental={isRental}
+          unit_id={id as string}
+          previous_records={unitBalance as any}
+          noRefetch={true}
+        />
       </section>
 
       <FixedFooter className="flex items-center justify-end">

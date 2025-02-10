@@ -21,7 +21,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
 import TableLoading from "@/components/Loader/TableLoading";
-import { PreviousRecords } from "@/app/(nav)/management/rent-unit/data";
+// import { PreviousRecords } from "@/app/(nav)/management/rent-unit/data";
 import { formatNumber } from "@/utils/number-formatter";
 import { useOccupantStore } from "@/hooks/occupant-store";
 
@@ -192,12 +192,22 @@ export const RenewalRent: React.FC<{
 
 
 type UnitViewResponse = {
-  previous_records: {
-    data: any[]; 
-    pagination: {
-      current_page: number;
-      total_pages: number;
+  data: {
+    previous_records: {
+      data: any[];
+      pagination: {
+        current_page: number;
+        total_pages: number;
+      };
     };
+  };
+};
+
+type PreviousRecords = {
+  data: any[];
+  pagination: {
+    current_page: number;
+    total_pages: number;
   };
 };
 
@@ -205,19 +215,19 @@ type PreviousRentRecordsProps = {
   isRental: boolean;
   previous_records?: PreviousRecords;
   unit_id?: string;
+  noRefetch?: boolean;
 };
 
 export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   isRental,
   previous_records,
   unit_id,
+  noRefetch = false,
 }) => {
-  // console.log(unit_id)
-  // if (!unit_id) return null;
+  console.log(unit_id);
+  // Initialize records state from props
   const [records, setRecords] = useState<any[]>(previous_records?.data || []);
-  const { setRecords: setOccupantRecords } =
-    useOccupantStore();
-
+  const { setRecords: setOccupantRecords } = useOccupantStore();
 
   // Set up pagination state using provided pagination info if any
   const [pagination, setPagination] = useState<{
@@ -242,7 +252,7 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
     [pagination.current_page]
   );
 
-  // Pass the expected response type to useFetch so that TS knows about previous_records
+  // Always call useFetch, but we ignore its results if noRefetch is true.
   const { data, loading, silentLoading, error, isNetworkError } =
     useFetch<UnitViewResponse>(`/unit/${unit_id}/view`, fetchOptions);
 
@@ -256,36 +266,40 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   };
 
   // When there are more pages and not silently loading, increment the current page.
+  // Only trigger refetch if noRefetch is false.
   const fetchNextPage = useCallback(
     debounce(() => {
-      if (pagination.hasMore && !silentLoading) {
+      if (!noRefetch && pagination.hasMore && !silentLoading) {
         setPagination((prev) => ({
           ...prev,
           current_page: prev.current_page + 1,
         }));
       }
     }, 500),
-    [pagination.hasMore, silentLoading]
+    [noRefetch, pagination.hasMore, silentLoading]
   );
 
   // Intersection Observer: attach to the last record's ref.
   const lastRowRef = useCallback(
     (node: HTMLElement | null) => {
+      if (noRefetch) return; // Do nothing if refetching is disabled.
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && pagination.hasMore) {
           fetchNextPage();
+          console.log("fetching next page");
         }
       });
       if (node) observer.current.observe(node);
     },
-    [fetchNextPage, pagination.hasMore]
+    [noRefetch, fetchNextPage, pagination.hasMore]
   );
 
   // Update records and pagination when new API data arrives.
+  // Only update if noRefetch is false.
   useEffect(() => {
-    if (data && data.previous_records) {
-      const newRecords = data.previous_records.data || [];
+    if (!noRefetch && data && data.data.previous_records) {
+      const newRecords = data.data.previous_records.data || [];
       setRecords((prevRecords) => {
         const combined = [...prevRecords, ...newRecords];
         const unique = combined.filter(
@@ -294,7 +308,7 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
         );
         return unique;
       });
-      const newPagination = data.previous_records.pagination;
+      const newPagination = data.data.previous_records.pagination;
       if (newPagination) {
         setPagination((prev) => ({
           ...prev,
@@ -304,8 +318,9 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
         }));
       }
     }
-  }, [data]);
+  }, [data, noRefetch]);
 
+  // Map records to tableData with formatted fields.
   const tableData = records.map((record, index) => ({
     ...record,
     amount_paid: `₦${formatNumber(record.amount_paid) || 0}`,
@@ -318,22 +333,22 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
     payment_date: record.payment_date
       ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
       : null,
-    ref: index === records.length - 1 ? lastRowRef : null,
+    // Only attach ref if refetching is enabled
+    ref: !noRefetch && index === records.length - 1 ? lastRowRef : null,
   }));
 
-  useEffect(()=> {
-    setOccupantRecords(tableData)
-  },[data])
+  // Update occupant records whenever tableData changes.
+  useEffect(() => {
+    setOccupantRecords(tableData);
+  }, [data]);
 
-  
   if (isNetworkError) return <NetworkError />;
   if (error) return <p className="text-base text-red-500 font-medium">{error}</p>;
 
 
-  console.log("redcord", tableData)
   return (
     <div className="previous-records-container">
-      {loading ? (
+      {loading && !noRefetch ? (
         <TableLoading length={10} />
       ) : (
         <div>
@@ -357,7 +372,7 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
           />
         </div>
       )}
-      {silentLoading && (
+      {silentLoading && !noRefetch && (
         <div className="flex items-center justify-center py-4">
           <div className="loader" />
         </div>
@@ -365,4 +380,3 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
     </div>
   );
 };
-

@@ -44,7 +44,8 @@ export const FeeDetails: React.FC<{
   feeDetails: FeeDetail[];
   total_package: number;
   id: string;
-}> = ({ title, feeDetails, total_package, id }) => {
+  noEdit?: boolean;
+}> = ({ title, feeDetails, total_package, id, noEdit }) => {
   const totalFee = feeDetails
     .reduce((acc, fee) => acc + fee.amount, 0)
     .toLocaleString();
@@ -67,19 +68,20 @@ export const FeeDetails: React.FC<{
               Total Package
             </p>
             <p className="text-lg lg:text-xl text-brand-9 font-bold">
-            {`₦${total_package?.toLocaleString()}`}
+              {`₦${total_package?.toLocaleString()}`}
             </p>
           </div>
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="submit" className="py-2 px-6" size="base_medium">
-                Edit
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <EditWarningModal id={id}/>
-            </ModalContent>
-          </Modal>
+          {!noEdit &&
+            <Modal>
+              <ModalTrigger asChild>
+                <Button type="submit" className="py-2 px-6" size="base_medium">
+                  Edit
+                </Button>
+              </ModalTrigger>
+              <ModalContent>
+                <EditWarningModal id={id} />
+              </ModalContent>
+            </Modal>}
         </div>
       </div>
     </RentSectionContainer>

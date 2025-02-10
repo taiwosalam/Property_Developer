@@ -28,6 +28,10 @@ import { useOccupantStore } from "@/hooks/occupant-store";
 import { initData, initDataProps, singleUnitApiResponse, transformUnitData } from "@/app/(nav)/management/rent-unit/data";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
+import dayjs from "dayjs";
+import { formatNumber } from "@/utils/number-formatter";
+import { toast } from "sonner";
+import { getPropertySettingsData, getRentalData } from "./data";
 
 const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => {
   const router = useRouter();
@@ -35,10 +39,18 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const id = searchParams.get("p");
   const isRental = propertyType === "rental";
-  const { occupant, propertyData, records } = useOccupantStore();
+  const {
+    occupant,
+    propertyData,
+    records,
+    unitBalance,
+    calculation,
+    deduction,
+    setCalculation,
+    setDeduction
+  } = useOccupantStore();
 
   // SELECTED UNIT DATA FETCH
-  console.log('sele id', selectedUnitId)
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
   const endpoint = `/unit/${selectedUnitId}/view`
   const {
@@ -50,7 +62,6 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
     refetch,
   } = useFetch<singleUnitApiResponse>(endpoint);
 
-
   useEffect(() => {
     if (apiData) {
       const transformedData = transformUnitData(apiData);
@@ -61,33 +72,59 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
     }
   }, [apiData]);
 
-  console.log("occupant", unit_data)
-  const startday = records?.[0]?.start_date;
-  const endDay = records?.[0]?.due_date;
-  const amt = records?.[0]?.amount_paid;
-  
+  if (!unitBalance) {
+    toast.warning("Back to Rent & Unit for security reasons");
+    router.back();
+    return null;
+  }
+
+  const balance = unitBalance?.data?.map((record: any, index: any) => ({
+    ...record,
+    amount_paid: `₦${formatNumber(record.amount_paid) || 0}`,
+    start_date: record.start_date
+      ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
+      : null,
+    due_date: record.due_date
+      ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
+      : null,
+    payment_date: record.payment_date
+      ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
+      : null,
+  })) || [];
+
+  const startday = balance?.[0]?.start_date;
+  const endDay = balance?.[0]?.due_date;
+  const amt = balance?.[0]?.amount_paid;
+
   // Only calculate the balance if all values exist, otherwise default to 0
   const bal = startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
-  const rentalData = [
-    { label: "Property Title", value: propertyData?.property_name },
-    { label: "State", value: propertyData?.state },
-    { label: "Local Government", value: propertyData?.local_government },
-    { label: "Full Address", value: propertyData?.address },
-    { label: "Branch", value: propertyData?.branch },
-    { label: "Account Officer", value: propertyData?.account_officer || "" },
-    { label: "Landlord", value: propertyData?.landlord_name },
-    { label: "Categories", value: propertyData?.category },
-    // { label: "Unit ID", value: propertyData?.units },
-  ];
+  const newUnitTotal = calculation ? Number(unit_data.newTenantTotalPrice) : Number(unit_data.renewalTenantTotalPrice);
+  const totalPayable = !deduction ? newUnitTotal - bal : newUnitTotal;
 
-  const propertySettingsData = [
-    { label: "Agency Fee", value: `${propertyData?.agency_fee}%` },
-    { label: "Period", value: propertyData?.fee_period },
-    { label: "Charge", value: propertyData?.rent_penalty },
-    { label: "Caution Deposit", value: propertyData.caution_deposit },
-    { label: "Group Chat", value: `${propertyData?.group_chat}` },
-    { label: "Rent Penalty", value: `${propertyData?.who_to_charge_new_tenant}` },
-  ];
+
+  // const rentalData = [
+  //   { label: "Property Title", value: propertyData?.property_name },
+  //   { label: "State", value: propertyData?.state },
+  //   { label: "Local Government", value: propertyData?.local_government },
+  //   { label: "Full Address", value: propertyData?.address },
+  //   { label: "Branch", value: propertyData?.branch },
+  //   { label: "Account Officer", value: propertyData?.account_officer || "" },
+  //   { label: "Landlord", value: propertyData?.landlord_name },
+  //   { label: "Categories", value: propertyData?.category },
+  // ];
+
+  const rentalData = getRentalData(propertyData); 
+  const propertySettingsData = getPropertySettingsData(propertyData);
+
+  // const propertySettingsData = [
+  //   { label: "Agency Fee", value: `${propertyData?.agency_fee}%` },
+  //   { label: "Period", value: propertyData?.fee_period },
+  //   { label: "Charge", value: propertyData?.rent_penalty },
+  //   { label: "Caution Deposit", value: propertyData.caution_deposit },
+  //   { label: "Group Chat", value: `${propertyData?.group_chat}` },
+  //   { label: "Rent Penalty", value: `${propertyData?.who_to_charge_new_tenant}` },
+  // ];
+
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Change Property Unit</BackButton>
@@ -104,26 +141,50 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
           {...(isRental ? { gridThree: true } : {})}
           id={id as string}
         />
+        <PreviousUnitBalance
+          isRental={isRental}
+          items={balance as RentPreviousRecords[]}
+          total={`${bal}`}
+        />
         <div className="pt-6 lg:flex lg:gap-10 space-y-8">
           <div className="lg:w-3/5 space-y-8">
-            <PreviousUnitBalance
-              isRental={isRental}
-              items={records as RentPreviousRecords[]}
-              total={`${bal}`}
-            />
             <NewUnitCost
               isRental={isRental}
               feeDetails={[
                 {
                   name: isRental ? "Rent" : "Fee",
-                  amount: Number(unit_data?.fee_amount),
+                  amount: calculation ? Number(unit_data.newTenantPrice) : Number(unit_data.renewalTenantPrice),
                 },
-                { name: "Service Charge", amount: Number(unit_data?.service_charge) },
-                { name: "Caution Fee", amount: Number(unit_data?.caution_fee) },
-                { name: "Other Charges", amount: Number(unit_data?.other_charge) },
+                {
+                  name: "Service Charge",
+                  amount: calculation ? Number(unit_data.service_charge) : Number(unit_data.renew_service_charge)
+                },
+                { 
+                  name: "Other Charges", 
+                  amount: Number(unit_data?.other_charge)
+                },
               ]}
-              total={Number(unit_data?.total_package)}
+              total={newUnitTotal}
               id={unit_data?.id}
+            />
+
+            <NewUnitCost
+              title="Payable Cost"
+              noEdit
+              isRental={isRental}
+              feeDetails={[
+                {
+                  name: isRental ? "Rent" : "Fee",
+                  amount: calculation ? Number(unit_data.newTenantPrice) : Number(unit_data.renewalTenantPrice),
+                },
+                {
+                  name: "Service Charge",
+                  amount: calculation ? Number(unit_data.service_charge) : Number(unit_data.renew_service_charge)
+                },
+                { name: "Other Charges", amount: Number(unit_data.other_charge) },
+              ]}
+              total={totalPayable}
+              calculation={calculation}
             />
             <StartRent
               isRental={isRental}
@@ -140,7 +201,10 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
           </div>
         </div>
         <PreviousRentRecords
+          previous_records={unitBalance && unitBalance as any}
           isRental={isRental}
+          unit_id={selectedUnitId}
+          noRefetch={true}
         />
       </section>
 
@@ -150,23 +214,23 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
             <Button size="base_medium" className="py-2 px-6">
               Proceed
             </Button>
-            <ModalContent>
-              <ModalPreset type="success" className="w-full">
-                <div className="flex flex-col gap-8">
-                  <p className="text-text-tertiary text-sm">
-                    Record Added Successfully
-                  </p>
-                  <Button
-                    onClick={() => {
-                      router.push("/management/rent-unit");
-                    }}
-                  >
-                    OK
-                  </Button>
-                </div>
-              </ModalPreset>
-            </ModalContent>
           </ModalTrigger>
+          <ModalContent>
+            <ModalPreset type="success" className="w-full">
+              <div className="flex flex-col gap-8">
+                <p className="text-text-tertiary text-sm">
+                  Record Added Successfully
+                </p>
+                <Button
+                  onClick={() => {
+                    router.push("/management/rent-unit");
+                  }}
+                >
+                  OK
+                </Button>
+              </div>
+            </ModalPreset>
+          </ModalContent>
         </Modal>
       </FixedFooter>
     </div>

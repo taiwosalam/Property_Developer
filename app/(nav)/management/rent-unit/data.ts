@@ -1,4 +1,5 @@
 import { empty } from "@/app/config";
+import { propertyCategories } from "@/data";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { getAllStates } from "@/utils/states";
 import { number } from "zod";
@@ -724,6 +725,7 @@ export interface PreviousRecord {
   details: string;
   start_date: string;
   due_date: string;
+  data?: any;
 }
 
 export interface Pagination {
@@ -925,14 +927,18 @@ export interface initDataProps {
   renew_other_charge?: string;
   occupant: Occupant;
   previous_records?: PreviousRecords[];
+  whoToChargeRenew?: string;
+  property_title?: string;
+  property_state?: string;
+  property_address?: string;
 }
 
 // ================ transform /unit/${id}/view =================
 export const transformUnitData = (response: any) => {
   const data = response.data;
-  const occupant = response.data.occupant;
+  const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
-  console.log("data", data)
+  console.log("data to trans", response)
   return {
     title: data.property.title,
     unit_id: data.id,
@@ -965,56 +971,51 @@ export const transformUnitData = (response: any) => {
     fee_period: data.fee_period,
     branchName: data.property.branch.branch_name,
     agency_fee: data.property.agency_fee,
-    whoToCharge: data.property.who_to_charge_new_tenant,
     group_chat: convertToYesNo(Number(data.property.group_chat)),
     rent_penalty: convertToYesNo(Number(data.property.rent_penalty)),
-    // caution_deposit: data.property.caution_deposit,
-    caution_deposit: data.caution_fee
+    caution_deposit: data.user.property.caution_deposit,
+    // PROPERTY VALUES
+    property_title: data.property.title,
+    whoToCharge: data.user.property.who_to_charge_new_tenant,
+    whoToChargeRenew: data.user.property.who_to_charge_renew_tenant,
+    property_state: data.property.state,
+    property_address: `${data.property.full_address}, ${data.property.city_area} ${data.property.local_government}, ${data.property.state}`,
+    caution_fee: data.caution_fee
       ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
-        parseFloat(data.caution_fee)
+      parseFloat(data.caution_fee)
       )}`
       : undefined,
     location: "",
     fee_amount: data.fee_amount,
     propertyId: data.property.id,
     total_package: data.total_package,
-    caution_fee: data.caution_fee,
+    // caution_fee: data.caution_fee,
     security_fee: data.security_fee,
     other_charge: data.other_charge,
     unitAgentFee: data.agency_fee
       ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
-        parseFloat(data.agency_fee)
+      parseFloat(data.agency_fee)
       )}`
       : undefined,
     service_charge: data.service_charge,
-    occupant: {
-      id: occupant.id,
-      name: occupant.name || "___",
-      email: occupant.email || "___",
-      userTag: occupant.userTag || "___",
-      avatar: occupant.avatar || empty,
-      gender: occupant.gender || "___",
-      birthday: occupant.birthday || "___",
-      religion: occupant.religion || "___",
-      phone: occupant.phone || "___",
-      maritalStatus: occupant.maritalStatus || "____",
-      address: occupant.address || "____",
-      city: occupant.city || "____",
-      state: occupant.state || "____",
-      lg: occupant.lg || "___"
-    },
-    previous_records: previous_records
-    // previous_records: previous_records.map((r:PreviousRecord)=> {
-
-    //   return {
-    //     id: r.id,
-    //     payment_date: r.payment_date,
-    //     amount_paid: r.amount_paid,
-    //     details: r.details,
-    //     start_date: r.start_date,
-    //     due_date: r.due_date,
-    //   }
-    // })
-
+    occupant: occupant
+      ? {
+        id: occupant.id,
+        name: occupant.name || "___",
+        email: occupant.email || "___",
+        userTag: occupant.userTag || "___",
+        avatar: occupant.avatar || empty,
+        gender: occupant.gender || "___",
+        birthday: occupant.birthday || "___",
+        religion: occupant.religion || "___",
+        phone: occupant.phone || "___",
+        maritalStatus: occupant.maritalStatus || "____",
+        address: occupant.address || "____",
+        city: occupant.city || "____",
+        state: occupant.state || "____",
+        lg: occupant.lg || "___"
+      }
+      : undefined,
+    previous_records: previous_records ? previous_records : undefined
   }
 }

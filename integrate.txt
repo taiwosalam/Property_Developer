@@ -3259,3 +3259,200 @@ export default Chat;
 // };
 
 // export default MessagesLayout;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// type UnitViewResponse = {
+//   data: {
+//     previous_records: {
+//       data: any[];
+//       pagination: {
+//         current_page: number;
+//         total_pages: number;
+//       };
+//     };
+//   };
+// };
+
+
+// type PreviousRentRecordsProps = {
+//   isRental: boolean;
+//   previous_records?: PreviousRecords;
+//   unit_id?: string;
+// };
+
+// export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
+//   isRental,
+//   previous_records,
+//   unit_id,
+// }) => {
+//   console.log(unit_id)
+//   // console.log("data records reach", previous_records)
+//   // if (!unit_id) return null;
+//   const [records, setRecords] = useState<any[]>(previous_records?.data || []);
+//   const { setRecords: setOccupantRecords } =
+//     useOccupantStore();
+
+
+//   // Set up pagination state using provided pagination info if any
+//   const [pagination, setPagination] = useState<{
+//     current_page: number;
+//     total_pages: number;
+//     hasMore: boolean;
+//   }>({
+//     current_page: previous_records?.pagination?.current_page || 1,
+//     total_pages: previous_records?.pagination?.total_pages || 1,
+//     hasMore:
+//       (previous_records?.pagination?.current_page || 1) <
+//       (previous_records?.pagination?.total_pages || 1),
+//   });
+
+//   const observer = useRef<IntersectionObserver | null>(null);
+
+//   // Memoize the fetch options so they don’t change on every render.
+//   const fetchOptions = useMemo(
+//     () => ({
+//       params: { page: pagination.current_page },
+//     }),
+//     [pagination.current_page]
+//   );
+
+//   // Pass the expected response type to useFetch so that TS knows about previous_records
+//   const { data, loading, silentLoading, error, isNetworkError } =
+//     useFetch<UnitViewResponse>(`/unit/${unit_id}/view`, fetchOptions);
+
+//   // Helper: debounce function to limit rapid calls.
+//   const debounce = (func: Function, delay: number) => {
+//     let timer: NodeJS.Timeout;
+//     return (...args: any[]) => {
+//       clearTimeout(timer);
+//       timer = setTimeout(() => func(...args), delay);
+//     };
+//   };
+
+//   // When there are more pages and not silently loading, increment the current page.
+//   const fetchNextPage = useCallback(
+//     debounce(() => {
+//       if (pagination.hasMore && !silentLoading) {
+//         setPagination((prev) => ({
+//           ...prev,
+//           current_page: prev.current_page + 1,
+//         }));
+//       }
+//     }, 500),
+//     [pagination.hasMore, silentLoading]
+//   );
+
+//   // Intersection Observer: attach to the last record's ref.
+//   const lastRowRef = useCallback(
+//     (node: HTMLElement | null) => {
+//       if (observer.current) observer.current.disconnect();
+//       observer.current = new IntersectionObserver((entries) => {
+//         if (entries[0].isIntersecting && pagination.hasMore) {
+//           fetchNextPage();
+//         }
+//       });
+//       if (node) observer.current.observe(node);
+//     },
+//     [fetchNextPage, pagination.hasMore]
+//   );
+
+//   // Update records and pagination when new API data arrives.
+//   useEffect(() => {
+//     if (data && data.data.previous_records) {
+//       const newRecords = data.data.previous_records.data || [];
+//       setRecords((prevRecords) => {
+//         const combined = [...prevRecords, ...newRecords];
+//         const unique = combined.filter(
+//           (record, index, self) =>
+//             index === self.findIndex((r) => r.id === record.id)
+//         );
+//         return unique;
+//       });
+//       const newPagination = data.data.previous_records.pagination;
+//       if (newPagination) {
+//         setPagination((prev) => ({
+//           ...prev,
+//           current_page: newPagination.current_page,
+//           total_pages: newPagination.total_pages,
+//           hasMore: newPagination.current_page < newPagination.total_pages,
+//         }));
+//       }
+//     }
+//   }, [data]);
+
+//   const tableData = records.map((record, index) => ({
+//     ...record,
+//     amount_paid: `₦${formatNumber(record.amount_paid) || 0}`,
+//     start_date: record.start_date
+//       ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
+//       : null,
+//     due_date: record.due_date
+//       ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
+//       : null,
+//     payment_date: record.payment_date
+//       ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
+//       : null,
+//     ref: index === records.length - 1 ? lastRowRef : null,
+//   }));
+
+//   useEffect(()=> {
+//     setOccupantRecords(tableData)
+//   },[data])
+//   console.log("records last", tableData)
+
+  
+//   if (isNetworkError) return <NetworkError />;
+//   if (error) return <p className="text-base text-red-500 font-medium">{error}</p>;
+
+
+//   console.log("redcord", tableData)
+//   return (
+//     <div className="previous-records-container">
+//       {loading ? (
+//         <TableLoading length={10} />
+//       ) : (
+//         <div>
+//           <RentSectionTitle>
+//             {isRental ? "Previous Rent Records" : "Previous Fee Records"}
+//           </RentSectionTitle>
+//           <SectionSeparator className="mt-4 mb-6 h-[2px]" />
+//           <CustomTable
+//             data={tableData}
+//             fields={previousRentRecordsTableFields}
+//             tableHeadCellSx={{
+//               fontSize: "1rem",
+//               paddingTop: "18px",
+//               paddingBottom: "18px",
+//             }}
+//             tableBodyCellSx={{
+//               fontSize: "1rem",
+//               paddingTop: "18px",
+//               paddingBottom: "18px",
+//             }}
+//           />
+//         </div>
+//       )}
+//       {silentLoading && (
+//         <div className="flex items-center justify-center py-4">
+//           <div className="loader" />
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
