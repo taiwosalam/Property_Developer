@@ -163,18 +163,18 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
         <div className="relative">
           <div className="flex items-center justify-between">
             <h3 className="text-2xl font-bold text-[#374151] dark:text-white">
-             { unit_title }
+              {unit_title}
             </h3>
             <div className="flex items-center space-x-1">
-                <div
-                  key={status}
-                  className="w-[15px] h-[15px] rounded-full"
-                  style={{ backgroundColor: getBackgroundColor(status) }}
-                />
+              <div
+                key={status}
+                className="w-[15px] h-[15px] rounded-full"
+                style={{ backgroundColor: getBackgroundColor(status) }}
+              />
             </div>
           </div>
           <p className="text-sm font-normal">
-          { unit_name + " " + unit_type }
+            {unit_name + " " + unit_type}
           </p>
 
           {/* Hover information */}
@@ -186,21 +186,21 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Unit ID
               </span>
-              <p className="text-brand-primary font-medium"> { unitId } </p>
+              <p className="text-brand-primary font-medium"> {unitId} </p>
             </div>
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Tenant&lsquo;s Name
               </span>
               <p className="text-brand-primary font-medium">
-                { tenant_name } <span className="text-green-500">●</span>
+                {tenant_name} <span className="text-green-500">●</span>
               </p>
             </div>
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Expiry Date
               </span>
-              <p className="text-brand-primary font-medium"> { expiry_date } </p>
+              <p className="text-brand-primary font-medium"> {expiry_date} </p>
             </div>
           </div>
         </div>
@@ -210,7 +210,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
           serviceCharge={Number(service_charge)}
         />
       </div>
-      <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
+      {/* <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
         {actions
           .filter((action) => {
             // For rental properties, exclude Relocate
@@ -239,7 +239,62 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               }
             />
           ))}
+      </div> */}
+
+      <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
+        {actions
+          .filter((action) => {
+            const label =
+              typeof action.label === "function"
+                ? action.label(propertyType)
+                : action.label;
+
+            // Define button visibility based on status
+            if (status === "vacant") {
+              return label === "Start Rent" || label === "Start Counting";
+            }
+            if (status === "occupied") {
+              return label !== "Start Rent" && label !== "Start Counting";
+            }
+            if (status === "expire") {
+              return label === "Renew Rent" || label === "Renew Fee" || label === "Edit";
+            }
+            return false; // Default: hide all buttons if status is unknown
+          })
+          .filter((action) => {
+            const label =
+              typeof action.label === "function"
+                ? action.label(propertyType)
+                : action.label;
+
+            // Additional filtering based on propertyType
+            if (propertyType === "rental" && label === "Relocate") {
+              return false;
+            }
+            if (propertyType === "facility" && label === "Move Out") {
+              return false;
+            }
+            return true;
+          })
+          .map((action, i) => (
+            <ActionButton
+              key={i}
+              {...action}
+              route={
+                typeof action.route === "function"
+                  ? action.route(unitId, propertyType)
+                  : action.route
+              }
+              label={
+                typeof action.label === "function"
+                  ? action.label(propertyType)
+                  : action.label
+              }
+            />
+          ))}
       </div>
+
+
     </div>
   );
 };

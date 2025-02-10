@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
       sameSite: 'strict', // Protects against (CSRF) attacks
       path: '/', // Makes the cookie available to the entire site
-      maxAge: 60 * 60 * 24, // Cookie will expire after 1 day
+      maxAge: 60 * 60 * 168, // Cookie will expire after 7 days
     });
 
     return response;
