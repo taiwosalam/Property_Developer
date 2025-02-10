@@ -5,15 +5,78 @@ import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import MenuModalPreset from "../../landlord-tenant-modal-preset";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useFetch from "@/hooks/useFetch";
+import { transformUnitOptions, UnitsApiResponse } from "./data";
+import { useOccupantStore } from "@/hooks/occupant-store";
+import { toast } from "sonner";
 
-const SwitchUnitModal: React.FC<{ isRental: boolean }> = ({ isRental }) => {
+const SwitchUnitModal: React.FC<{ 
+  isRental: boolean,
+  propertyId: number 
+}> = ({ isRental, propertyId }) => {
   const searchParams = useSearchParams();
+  const id = searchParams.get("id");
   const propertyType = searchParams.get("type") as "rental" | "facility";
-  const [checked1, setChecked1] = useState(false);
-  const [checked2, setChecked2] = useState(false);
+  const {
+    calculation,
+    deduction,
+    setCalculation,
+    setDeduction,
+  } = useOccupantStore();
+  const [checked1, setChecked1] = useState(calculation);
+  const [checked2, setChecked2] = useState(deduction);
   const router = useRouter();
   const [modalView, setModalView] = useState<"warning" | "menu">("warning");
+  const [unitsOptions, setUnitsOptions] = useState<any[]>([]);
+  const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
+
+
+
+  const {
+    data: unitsData,
+    error,
+    loading,
+  } = useFetch<UnitsApiResponse>(`/unit/${propertyId}/all`);
+
+  useEffect(()=> {
+    if (unitsData) {
+      const unitsTransformOptions = transformUnitOptions(unitsData);
+      setUnitsOptions(unitsTransformOptions);
+    }
+  }, [unitsData]);
+
+  useEffect(() => {
+    setChecked1(calculation);
+  }, [calculation]);
+
+  useEffect(() => {
+    setChecked2(deduction);
+  }, [deduction]);
+
+  console.log("calculation", checked1)
+  console.log("deduction", checked2)
+  const handleChecked1Click = () => {
+    const newChecked1 = !checked1;
+    setChecked1(newChecked1);
+    setCalculation(newChecked1);
+  };
+
+  const handleChecked2Click = () => {
+    const newChecked2 = !checked2;
+    setChecked2(newChecked2);
+    setDeduction(newChecked2);
+  };
+
+
+
+  const handleContinue = () => {
+    if (!selectedUnitId) {
+      toast.warning("Please select a unit");
+      return;
+    }
+    router.push(`/management/rent-unit/${id}/edit-rent/change-unit?type=${propertyType}&p=${propertyId}&u=${selectedUnitId}`);
+  }
 
   if (modalView === "warning") {
     return (
@@ -52,9 +115,10 @@ const SwitchUnitModal: React.FC<{ isRental: boolean }> = ({ isRental }) => {
                   <Switch
                     size={15}
                     checked={checked1}
-                    onClick={() => {
-                      setChecked1((x) => !x);
-                    }}
+                    onClick={handleChecked1Click}
+                    // onClick={() => {
+                    //   setChecked1((x) => !x);
+                    // }}
                   />
                   <p>Calculation</p>
                 </div>
@@ -68,9 +132,10 @@ const SwitchUnitModal: React.FC<{ isRental: boolean }> = ({ isRental }) => {
                 <Switch
                   size={15}
                   checked={checked2}
-                  onClick={() => {
-                    setChecked2((x) => !x);
-                  }}
+                  onClick={handleChecked2Click}
+                  // onClick={() => {
+                  //   setChecked2((x) => !x);
+                  // }}
                 />
                 <p>Deduction</p>
               </div>
@@ -87,19 +152,12 @@ const SwitchUnitModal: React.FC<{ isRental: boolean }> = ({ isRental }) => {
                 id=""
                 label="Select Unit"
                 className="min-w-[300px]"
-                options={[
-                  { value: "1", label: "Option 1" },
-                  { value: "2", label: "Option 2" },
-                  { value: "3", label: "Option 3" },
-                ]}
+                options={unitsOptions}
+                onChange={setSelectedUnitId}
               />
               <div className="w-full flex items-center justify-center">
                 <Button
-                  onClick={() => {
-                    router.push(
-                      `/management/rent-unit/1/edit-rent/change-unit?type=${propertyType}`
-                    );
-                  }}
+                  onClick={handleContinue}
                   className="py-2 px-8"
                   size="base_medium"
                 >

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CameraIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import Sample from "@/public/empty/SampleProperty.jpeg";
@@ -11,6 +11,7 @@ import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import Switch from "@/components/Form/Switch/switch";
+import { useOccupantStore } from "@/hooks/occupant-store";
 
 interface PropertySwitchUnitItemProps {
   id: string;
@@ -39,10 +40,44 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
   propertyType,
   unitName,
 }) => {
+  const {
+    occupant,
+    propertyData,
+    records,
+    unitBalance,
+    calculation,
+    deduction,
+    setCalculation,
+    setDeduction,
+  } = useOccupantStore();
   const [screenModal, setScreenModal] = useState(false);
+
+
+  useEffect(() => {
+    setChecked1(calculation);
+  }, [calculation]);
+
+  useEffect(() => {
+    setChecked2(deduction);
+  }, [deduction]);
+
+  const handleChecked1Click = () => {
+    const newChecked1 = !checked1;
+    setChecked1(newChecked1);
+    setCalculation(newChecked1);
+  };
+
+  const handleChecked2Click = () => {
+    const newChecked2 = !checked2;
+    setChecked2(newChecked2);
+    setDeduction(newChecked2);
+  };
+
   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
+  console.log("calculation", checked1)
+  console.log("deduction", checked2)
   return (
     <div
       className="p-6 rounded-2xl bg-white dark:bg-darkText-primary"
@@ -116,7 +151,8 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
             <div className="flex items-center gap-2">
               <Switch
                 checked={checked1}
-                onClick={() => setChecked1((x) => !x)}
+                onClick={handleChecked1Click}
+                // onClick={() => setChecked1((x) => !x)}
               />
               <p>Calclation</p>
             </div>
@@ -130,7 +166,8 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
             <div className="flex items-center gap-2">
               <Switch
                 checked={checked2}
-                onClick={() => setChecked2((x) => !x)}
+                onClick={handleChecked2Click}
+                // onClick={() => setChecked2((x) => !x)}
               />
               <p>Deduction</p>
             </div>

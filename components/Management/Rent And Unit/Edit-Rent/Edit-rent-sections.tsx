@@ -161,7 +161,13 @@ export const AddPartPayment = () => {
   );
 };
 
-export const TransferTenants = ({ isRental }: { isRental: boolean }) => {
+export const TransferTenants = ({
+  isRental,
+  propertyId
+}: {
+  isRental: boolean,
+  propertyId?: number;
+}) => {
   return (
     <RentSectionContainer
       title={`Transfer ${isRental ? "Tenants" : "Occupants"}`}
@@ -195,7 +201,7 @@ export const TransferTenants = ({ isRental }: { isRental: boolean }) => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <SwitchUnitModal isRental={isRental} />
+            <SwitchUnitModal isRental={isRental} propertyId={propertyId as number} />
           </ModalContent>
         </Modal>
       </div>
@@ -241,17 +247,31 @@ export const NewUnitCost: React.FC<{
   isRental: boolean;
   feeDetails: FeeDetail[];
   total?: number;
-  id?:string;
-}> = ({ isRental, feeDetails, total, id }) => {
-  return (
-    <div className="space-y-6">
-      <RentSectionTitle>New Unit Cost</RentSectionTitle>
-      <FeeDetails
-        title={isRental ? "Annual Rent" : "Annual Fee"}
-        feeDetails={feeDetails}
-        total_package={total as number}
-        id={id as string}
-      />
-    </div>
-  );
-};
+  id?: string;
+  calculation?: boolean;
+  title?: string;
+  noEdit?: boolean;
+}> = ({
+  isRental,
+  feeDetails,
+  total,
+  id,
+  calculation,
+  title,
+  noEdit
+}) => {
+    const feeTitle = isRental ? "Annual Rent" : "Annual Fee";
+    const finalTitle = calculation ? `${feeTitle} - (new tenant charge)` : `${feeTitle} - (renewal tenant charge)`;
+    return (
+      <div className="space-y-6">
+        <RentSectionTitle>{title || "New Unit Cost"}</RentSectionTitle>
+        <FeeDetails
+          noEdit={noEdit}
+          title={finalTitle}
+          feeDetails={feeDetails}
+          total_package={total as number}
+          id={id as string}
+        />
+      </div>
+    );
+  };
