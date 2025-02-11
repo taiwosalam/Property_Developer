@@ -970,7 +970,7 @@ export const transformUnitData = (response: any) => {
     wardrobe: data.wardrobe,
     fee_period: data.fee_period,
     branchName: data.property.branch.branch_name,
-    agency_fee: data.property.agency_fee,
+    agency_fee: data.user.property.agency_fee,
     group_chat: convertToYesNo(Number(data.property.group_chat)),
     rent_penalty: convertToYesNo(Number(data.property.rent_penalty)),
     caution_deposit: data.user.property.caution_deposit,

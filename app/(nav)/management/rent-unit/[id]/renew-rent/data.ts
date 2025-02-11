@@ -1,0 +1,24 @@
+
+
+export const getPropertySettingsData = (unit_data: any) => [
+    { label: "Agency Fee", value: `${unit_data?.agency_fee}%` || "____" },
+    { label: "Period", value: unit_data?.fee_period || "____" },
+    { label: "Charge", value: unit_data?.whoToCharge || "____" },
+    { label: "Caution Deposit", value: unit_data?.caution_deposit || "____" },
+    { label: "Group Chat", value: `${unit_data?.group_chat}` || "____" },
+    { label: "Rent Penalty", value: `${unit_data?.rent_penalty}`  },
+];
+
+
+export const getRentalData = (unit_data: any) => [
+    { label: "Property Title", value: unit_data?.title || "____" },
+    { label: "State", value: unit_data?.state || "____" },
+    { label: "Local Government", value: unit_data?.localGovernment || "____" },
+    { label: "Full Address", value: unit_data?.address || "____"},
+    { label: "Branch", value: unit_data?.branchName || "___" },
+    { label: "Account Officer", value: unit_data.account_officer || "____" }, // TODO: Replace dynamically if available
+    { label: "Landlord", value: unit_data.landlord || "___" }, // TODO: Replace dynamically if available
+    { label: "Categories", value: unit_data?.categories || "____" },
+    { label: "Unit ID", value: unit_data?.unit_id || "____" },
+  ];
+  

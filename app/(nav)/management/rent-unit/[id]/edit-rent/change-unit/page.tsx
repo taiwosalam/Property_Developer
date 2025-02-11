@@ -74,11 +74,6 @@ const ChangeUnitpage = () => {
     }
   }, [apiData]);
 
-  // console.log("calculation", calculation)
-  // console.log("deduction", deduction)
-  // console.log("unit data", unit_data)
-
-
   if(!unitBalance) {
     toast.warning("Back to Rent Unit for security reasons")
     router.back()

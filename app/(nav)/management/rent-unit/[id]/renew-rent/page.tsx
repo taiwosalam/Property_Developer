@@ -23,6 +23,8 @@ import { initData, initDataProps, singleUnitApiResponse, transformUnitData } fro
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
+import { getPropertySettingsData, getRentalData } from "./data";
+import dayjs from "dayjs";
 
 const RenewRent = () => {
   const searchParams = useSearchParams();
@@ -50,6 +52,8 @@ const RenewRent = () => {
     }
   }, [apiData])
 
+  console.log("data here -", unit_data);
+
   if (loading)
     return (
       <div className="min-h-[80vh] flex justify-center items-center">
@@ -58,33 +62,15 @@ const RenewRent = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error) return <div>{error}</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   const propertyId = unit_data.propertyId;
-  const rentalData = [
-    { label: "Property Title", value: unit_data?.title },
-    { label: "State", value: unit_data?.state },
-    { label: "Local Government", value: unit_data?.localGovernment },
-    { label: "Full Address", value: unit_data?.address },
-    { label: "Branch", value: unit_data?.branchName },
-    { label: "Account Officer", value: "No Officer" }, //TODO
-    { label: "Landlord", value: "No Landlord" }, //TODO
-    { label: "Categories", value: unit_data?.categories },
-    { label: "Unit ID", value: unit_data?.unit_id },
-  ];
+  const record = (unit_data?.previous_records as any)?.data?.[0];
+  const start_date = record?.start_date ? dayjs(record?.start_date).format("DD/MM/YYYY") : "__,__,___";
+  const due_date = record?.due_date ? dayjs(record?.due_date).format("DD/MM/YYYY") : "___,___,___";
+  const propertySettingsData = getPropertySettingsData(unit_data)
+  const rentalData = getRentalData(unit_data)
 
-  const propertySettingsData = [
-    { label: "Agency Fee", value: `${unit_data?.agency_fee}%` },
-    { label: "Period", value: unit_data?.fee_period },
-    { label: "Charge", value: unit_data?.whoToCharge },
-    { label: "Caution Deposit", value: unit_data.caution_deposit },
-    { label: "Group Chat", value: `${unit_data?.group_chat}` },
-    { label: "Rent Penalty", value: `${unit_data?.rent_penalty}` },
-  ];
-
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <div className="text-red-500">{error}</div>;
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Renew {isRental ? "Rent" : "Fee"}</BackButton>
@@ -105,8 +91,8 @@ const RenewRent = () => {
           <div className="lg:w-3/5 space-y-8">
             <RenewalRentDetails
               isRental={isRental}
-              startDate="12/12/24"
-              dueDate="12/12/24"
+              startDate={start_date}
+              dueDate={due_date}
               rentFee={unit_data.newTenantPrice}
               otherFee={unit_data.other_charge as string}
             />
@@ -126,10 +112,17 @@ const RenewRent = () => {
             <RenewalRent isRental={isRental} rentPeriod="yearly" />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px]">
-            <MatchedProfile occupant={DUMMY_OCCUPANT} title="User Profile" />
+            <MatchedProfile
+              occupant={unit_data?.occupant}
+              title="User Profile"
+            />
           </div>
         </div>
-        <PreviousRentRecords isRental={isRental} />
+        <PreviousRentRecords
+          isRental={isRental}
+          unit_id={id as string}
+          previous_records={unit_data.previous_records as any}
+        />
       </section>
       <FixedFooter className="flex items-center justify-end">
         <Button size="base_medium" className="py-2 px-6">

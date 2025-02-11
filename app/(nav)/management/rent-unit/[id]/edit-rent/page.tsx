@@ -84,33 +84,13 @@ const EditRent = () => {
 
   // const record = unit_data?.previous_records?.data?.[0];
   const record = (unit_data?.previous_records as any)?.data?.[0];
-  const start_date = record?.start_date ? dayjs(record?.start_date).format("DD/MM/YYYY") : "___";
-  const due_date = record?.due_date ? dayjs(record?.due_date).format("DD/MM/YYYY") : "___";
+  const start_date = record?.start_date ? dayjs(record?.start_date).format("DD/MM/YYYY") : "__,__,___";
+  const due_date = record?.due_date ? dayjs(record?.due_date).format("DD/MM/YYYY") : "_,__,___";
   const propertyId = unit_data.propertyId;
-  // const rentalData = [
-  //   { label: "Property Title", value: unit_data?.title },
-  //   { label: "State", value: unit_data?.state },
-  //   { label: "Local Government", value: unit_data?.localGovernment },
-  //   { label: "Full Address", value: unit_data?.address },
-  //   { label: "Branch", value: unit_data?.branchName },
-  //   { label: "Account Officer", value: "No Officer" }, //TODO
-  //   { label: "Landlord", value: "No Landlord" }, //TODO
-  //   { label: "Categories", value: unit_data?.categories },
-  //   { label: "Unit ID", value: unit_data?.unit_id },
-  // ];
+
 
   const rentalData = getRentalData(unit_data);
   const propertySettingsData = getPropertySettingsData(unit_data);
-
-  // const propertySettingsData = [
-  //   { label: "Agency Fee", value: `${unit_data?.unitAgentFee}` },
-  //   { label: "Period", value: unit_data?.fee_period },
-  //   { label: "Charge", value: unit_data?.whoToCharge },
-  //   { label: "Caution Deposit", value: unit_data.caution_deposit },
-  //   { label: "Group Chat", value: `${unit_data?.group_chat}` },
-  //   { label: "Rent Penalty", value: `${unit_data?.rent_penalty}` },
-  // ];
-
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Edit {isRental ? "Rent" : "Fee"}</BackButton>
