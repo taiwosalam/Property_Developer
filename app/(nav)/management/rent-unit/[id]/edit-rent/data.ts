@@ -35,7 +35,7 @@ export const getRentalData = (unit_data: any): RentalField[] => {
     { label: "Full Address", value: unit_data.property_address },
     { label: "Branch", value: unit_data.branchName },
     { label: "Account Officer", value: unit_data.accountOfficer },
-    { label: "Landlord", value: "No Landlord" },
+    { label: "Landlord", value: unit_data.landlord || "____" },
     { label: "Categories", value: unit_data.categories },
     { label: "Unit ID", value: unit_data.unit_id },
   ];
@@ -51,7 +51,7 @@ export const getPropertySettingsData = (unit_data: any): PropertySetting[] => {
   return [
     { label: "Agency Fee", value: unit_data.unitAgentFee },
     { label: "Period", value: unit_data.renew_fee_period },
-    { label: "Charge", value: unit_data.whoToChargeRenew },
+    { label: "Who to Charge", value: unit_data.whoToChargeRenew },
     { label: "Caution Deposit", value: unit_data.caution_deposit },
     { label: "Group Chat", value: unit_data.group_chat },
     { label: "Rent Penalty", value: unit_data.rent_penalty },

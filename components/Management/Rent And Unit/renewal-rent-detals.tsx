@@ -70,12 +70,13 @@ export const RenewalFee: React.FC<{
   feeDetails: FeeDetail[];
   total_package: number;
   id: string;
-}> = ({ isRental, feeDetails, total_package, id }) => {
+  period?: string;
+}> = ({ isRental, feeDetails, total_package, id, period }) => {
   return (
     <div className="space-y-6">
-      <RentSectionTitle>Renewal Fee</RentSectionTitle>
+      <RentSectionTitle>Renewal Rent</RentSectionTitle>
       <FeeDetails
-        title={isRental ? "Annual Rent" : "Annual Fee"}
+        title={isRental ? "Renewal Details" : "Annual Fee"}
         feeDetails={feeDetails}
         total_package={total_package}
         id={id}
@@ -143,6 +144,7 @@ export const RenewalRent: React.FC<{
         <DateInput
           id="payment_date"
           label="Payment Date"
+          disablePast
           value={startDate}
           onChange={setStartDate}
         />

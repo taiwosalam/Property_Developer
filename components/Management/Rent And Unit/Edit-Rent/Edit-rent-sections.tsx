@@ -24,19 +24,20 @@ export const RentDetails: React.FC<{
   dueDate: string;
   rentFee: string;
   otherFee: string;
-}> = ({ isRental, startDate, dueDate, rentFee, otherFee }) => {
+  period?: string;
+}> = ({ isRental, startDate, dueDate, rentFee, otherFee, period }) => {
   const renewalRentDetailItems = [
-    { label: "Current Start Date", value: startDate },
+    { label: "Start Date", value: startDate },
     { label: "Due Date", value: dueDate },
-    { label: "Annual Rent", value: rentFee },
+    { label: `${period} Rent`, value: rentFee },
     { label: "Other Fees", value: otherFee },
   ];
   return (
     <div className="space-y-6">
       <RentSectionTitle>
-        {isRental ? "Rent Details" : "Fee Details"}
+        {isRental ? "Current Rent" : "Fee Details"}
       </RentSectionTitle>
-      <RentSectionContainer title={isRental ? "Rent Fee" : "Fee"}>
+      <RentSectionContainer title={isRental ? "Rent Details" : "Fee"}>
         <div className="grid md:grid-cols-2 gap-4">
           {renewalRentDetailItems.map((item, index) => (
             <DetailItem
@@ -59,7 +60,7 @@ export const EditCurrentRent: React.FC<{
   const CURRENCY_SYMBOL = currencySymbols.naira;
   return (
     <div>
-      <RentSectionTitle>{`Upfront ${isRental ? "Rent" : "Fee"
+      <RentSectionTitle>{`Add Upfront ${isRental ? "Payment" : "Fee"
         }`}</RentSectionTitle>
       <SectionSeparator className="mt-4 mb-6" />
       <div className="grid md:grid-cols-2 gap-4 mb-6">
@@ -115,7 +116,7 @@ export const AddPartPayment = () => {
       <div className="grid md:grid-cols-2 gap-4 mb-6">
         <Input
           id="amount"
-          placeholder="300,000"
+          placeholder=""
           label="Amount"
           formatNumber
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
@@ -209,15 +210,27 @@ export const TransferTenants = ({
   );
 };
 
-export const PreviousUnitBalance: React.FC<{ isRental: boolean, items: RentPreviousRecords[], total?: string; }> = ({
+export const PreviousUnitBalance: React.FC<{ 
+  isRental: boolean; 
+  items: RentPreviousRecords[];
+  total?: string;
+  calculation?: boolean 
+  deduction?: boolean 
+}> = ({
   isRental,
   items,
   total,
+  calculation,
+  deduction,
 }) => {
+  // const displayDetails = feeDetails.length > 0 ? feeDetails : [{ label: "No Fee Details", value: "N/A" }];
+  const sub_title = deduction ? "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into." : "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost.";
+  
   return (
-    <div className="space-y-6">
+    <div className="space-y-1">
       <RentSectionTitle>Previous Unit Balance</RentSectionTitle>
-      <RentSectionContainer title={isRental ? "Rent Fee" : "Fee"}>
+      <p className="text-xs"> {sub_title} </p>
+      <RentSectionContainer title={isRental ? "Rent Details" : "Fee"}>
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 gap-4">
             {getRenewalRentDetailItems(items).map((item, index) => (
@@ -249,6 +262,7 @@ export const NewUnitCost: React.FC<{
   total?: number;
   id?: string;
   calculation?: boolean;
+  deduction?: boolean;
   title?: string;
   noEdit?: boolean;
 }> = ({
@@ -257,19 +271,23 @@ export const NewUnitCost: React.FC<{
   total,
   id,
   calculation,
+  deduction,
   title,
   noEdit
 }) => {
-    const feeTitle = isRental ? "Annual Rent" : "Annual Fee";
-    const finalTitle = calculation ? `${feeTitle} - (new tenant charge)` : `${feeTitle} - (renewal tenant charge)`;
+    const feeTitle = isRental ? (deduction ? "Rent Details" : "Rent Calculation") : "Annual Fee";
+    const finalTitle = calculation ? `${feeTitle}` : `${feeTitle}`;
+    const sub_title = calculation ? "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges for the tenants that you are transferring to the new unit." : "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before.";
     return (
-      <div className="space-y-6">
+      <div className="space-y-1">
         <RentSectionTitle>{title || "New Unit Cost"}</RentSectionTitle>
+        {!noEdit && <p className="text-xs">{sub_title}</p>}
         <FeeDetails
           noEdit={noEdit}
           title={finalTitle}
           feeDetails={feeDetails}
           total_package={total as number}
+          deduction={deduction}
           id={id as string}
         />
       </div>

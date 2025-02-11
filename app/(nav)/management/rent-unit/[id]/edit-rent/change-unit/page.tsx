@@ -30,7 +30,7 @@ import { useOccupantStore } from "@/hooks/occupant-store";
 import { initData, initDataProps, singleUnitApiResponse, transformUnitData } from "../../../data";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
-import { formatNumber } from "@/utils/number-formatter";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import dayjs from "dayjs";
 import { getPropertySettingsData, getRentalData } from "../data";
 import { toast } from "sonner";
@@ -74,7 +74,7 @@ const ChangeUnitpage = () => {
     }
   }, [apiData]);
 
-  if(!unitBalance) {
+  if (!unitBalance) {
     toast.warning("Back to Rent Unit for security reasons")
     router.back()
     return;
@@ -106,7 +106,11 @@ const ChangeUnitpage = () => {
   const newUnitTotal = calculation ? Number(unit_data.newTenantTotalPrice) : Number(unit_data.renewalTenantTotalPrice);
   const totalPayable = !deduction ? newUnitTotal - bal : newUnitTotal;
 
-  console.log("Total Payable:", totalPayable);
+  const prev_unit_bal = bal ? `${'₦'}${formatNumber(
+    parseFloat(`${bal}`)
+  )}` : undefined;
+
+  // console.log("Total Payable:", totalPayable);
 
   return (
     <div className="space-y-6 pb-[100px]">
@@ -126,6 +130,8 @@ const ChangeUnitpage = () => {
         />
 
         <PreviousUnitBalance
+          calculation={calculation}
+          deduction={deduction}
           isRental={isRental}
           items={balance as RentPreviousRecords[]}
           total={`${bal}`}
@@ -155,17 +161,20 @@ const ChangeUnitpage = () => {
               isRental={isRental}
               feeDetails={[
                 {
-                  name: isRental ? "Rent" : "Fee",
-                  amount: calculation ? (unit_data.newTenantPrice as any) : (unit_data.renewalTenantPrice),
+                  name: "Previous Unit",
+                  amount: (prev_unit_bal as any),
+                  // amount: calculation ? (unit_data.newTenantPrice as any) : (unit_data.renewalTenantPrice),
                 },
                 {
-                  name: "Service Charge",
-                  amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
+                  name: "Current Unit",
+                  amount: (unit_data.newTenantPrice as any),
+                  // amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
                 },
                 { name: "Other Charges", amount: (unit_data.other_charge) },
               ]}
               total={totalPayable}
               calculation={calculation}
+              deduction={deduction}
             />
             <StartRent
               isRental={isRental}
