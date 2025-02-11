@@ -194,13 +194,13 @@ export const DUMMY_OCCUPANT: Occupant = {
   id: "123",
 };
 
-export interface RentPreviousRecords{
+export interface RentPreviousRecords {
   amount_paid: string;
   due_date: string;
   start_date: string;
   other_fees: string;
 }
-export const initialPreviousRecords=[{
+export const initialPreviousRecords = [{
   amount_paid: "",
   due_date: "",
   start_date: "",
@@ -209,30 +209,30 @@ export const initialPreviousRecords=[{
 
 export function getRenewalRentDetailItems(records: Array<RentPreviousRecords>): Array<{ label: string; value: string | null }> {
   if (!records || records.length === 0) return [];
-  
+
   // Using the first record from the passed data
   const record = records[0];
-  
+
   return [
-    { 
-      label: "Current Start Date", 
-      value: record.start_date 
-        ? dayjs(record.start_date).format("MMM D, YYYY") 
-        : null 
+    {
+      label: "Current Start Date",
+      value: record.start_date
+        ? dayjs(record.start_date).format("MMM D, YYYY")
+        : null
     },
-    { 
-      label: "Due Date", 
-      value: record.due_date 
-        ? dayjs(record.due_date).format("MMM D, YYYY") 
-        : null 
+    {
+      label: "Due Date",
+      value: record.due_date
+        ? dayjs(record.due_date).format("MMM D, YYYY")
+        : null
     },
-    { 
-      label: "Annual Rent", 
-      value: record.amount_paid || null 
+    {
+      label: "Annual Rent",
+      value: record.amount_paid || null
     },
-    { 
-      label: "Other Fees", 
-      value: record.other_fees || "___" 
+    {
+      label: "Other Fees",
+      value: record.other_fees || "___"
     },
   ];
 }
@@ -260,18 +260,26 @@ export function calculateBalance(
   // Ensure the month name is capitalized for proper parsing
   const start = dayjs(capitalizeDateString(start_date));
   const due = dayjs(capitalizeDateString(due_date));
-  
+
   const totalDays = due.diff(start, 'day');
   const remainingDays = due.diff(dayjs(), 'day');
-  
+
   if (totalDays <= 0) return 0;
-  
+
   // Ratio of remaining days over total days
   const ratio = remainingDays / totalDays;
   // return amount * ratio;
   return Math.round(amount * ratio);
 }
 
+// Simple debounce function to prevent rapid calls to fetch
+export const debounce = (func: Function, delay: number) => {
+  let timer: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => func(...args), delay);
+  };
+};
 
 export const renewalRentDetailItems = [
   { label: "Current Start Date", value: "12/1/2023" },
@@ -407,3 +415,30 @@ export const sampleDocuments = [
     document_type: "other document",
   },
 ];
+
+
+export const transformDocuments = (docs: any) => {
+  return docs.flatMap((doc: any) => {
+    const baseId = String(doc.id);
+    const typeFormatted = doc.type.charAt(0).toUpperCase() + doc.type.slice(1);
+    const baseName = `${typeFormatted}`;
+    const date = doc.created_at ? doc.created_at.substring(0, 10) : "";
+    // Use the thumbnail if provided, otherwise default to an empty string
+    const thumbnail = doc.thumbnail || "";
+
+    // For each file in the files array, create a transformed object.
+    return doc.files.map((file: any, index: number) => {
+      // For the first file, use the base name. For subsequent files, append plus signs.
+      const name = `${baseName} ${index + 1}`;
+      const link = file.url || "";
+      return {
+        id: baseId,
+        name,
+        link,
+        date,
+        thumbnail,
+        document_type: doc.type,
+      };
+    });
+  });
+};

@@ -88,15 +88,38 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
       </div>
       <div className="flex items-center justify-between mt-5 gap-2 px-2 flex-wrap">
         <PropertyTag propertyType={propertyType} />
-        <div className="flex items-center gap-2 flex-wrap">
+        {/* BUTTONS WITH STATUS */}
+        <div className="flex items-center justify-end gap-2 px-2 flex-wrap">
           {actions
             .filter((action) => {
-              // For rental properties, exclude Relocate
-              if (propertyType === "rental" && action.label === "Relocate") {
+              const label =
+                typeof action.label === "function"
+                  ? action.label(propertyType)
+                  : action.label;
+
+              // Define button visibility based on status
+              if (status === "vacant") {
+                return label === "Start Rent" || label === "Start Counting";
+              }
+              if (status === "occupied") {
+                return label !== "Start Rent" && label !== "Start Counting";
+              }
+              if (status === "expire") {
+                return label === "Renew Rent" || label === "Renew Fee" || label === "Edit";
+              }
+              return false; // Default: hide all buttons if status is unknown
+            })
+            .filter((action) => {
+              const label =
+                typeof action.label === "function"
+                  ? action.label(propertyType)
+                  : action.label;
+
+              // Additional filtering based on propertyType
+              if (propertyType === "rental" && label === "Relocate") {
                 return false;
               }
-              // For facilities, exclude Move Out
-              if (propertyType === "facility" && action.label === "Move Out") {
+              if (propertyType === "facility" && label === "Move Out") {
                 return false;
               }
               return true;

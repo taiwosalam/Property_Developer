@@ -224,7 +224,7 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   unit_id,
   noRefetch = false,
 }) => {
-  console.log(unit_id);
+  // console.log(unit_id);
   // Initialize records state from props
   const [records, setRecords] = useState<any[]>(previous_records?.data || []);
   const { setRecords: setOccupantRecords } = useOccupantStore();

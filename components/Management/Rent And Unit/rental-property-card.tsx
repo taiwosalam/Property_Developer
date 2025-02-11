@@ -193,7 +193,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
                 Tenant&lsquo;s Name
               </span>
               <p className="text-brand-primary font-medium">
-                {tenant_name} <span className="text-green-500">●</span>
+                {tenant_name}
               </p>
             </div>
             <div className="text-sm">
@@ -210,37 +210,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
           serviceCharge={Number(service_charge)}
         />
       </div>
-      {/* <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
-        {actions
-          .filter((action) => {
-            // For rental properties, exclude Relocate
-            if (propertyType === "rental" && action.label === "Relocate") {
-              return false;
-            }
-            // For facilities, exclude Move Out
-            if (propertyType === "facility" && action.label === "Move Out") {
-              return false;
-            }
-            return true;
-          })
-          .map((action, i) => (
-            <ActionButton
-              key={i}
-              {...action}
-              route={
-                typeof action.route === "function"
-                  ? action.route(unitId, propertyType)
-                  : action.route
-              }
-              label={
-                typeof action.label === "function"
-                  ? action.label(propertyType)
-                  : action.label
-              }
-            />
-          ))}
-      </div> */}
-
+      {/* BUTTONS ACCORDING TO STATUS */}
       <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
         {actions
           .filter((action) => {
@@ -293,8 +263,6 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
             />
           ))}
       </div>
-
-
     </div>
   );
 };
