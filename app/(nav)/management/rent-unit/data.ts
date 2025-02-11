@@ -959,12 +959,20 @@ export const transformUnitData = (response: any) => {
     tenant_name: data.user.name,
     unit_features: data.facilities,
     newTenantTotalPrice: data.total_package,
-    newTenantPrice: data.fee_amount,
+    newTenantPrice: data.fee_amount ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
+      parseFloat(data.fee_amount)
+      )}` : undefined,
     renewalTenantTotalPrice: data.renew_total_package,
     renew_fee_period: data.renew_fee_period,
-    renewalTenantPrice: data.renew_fee_amount,
-    renew_service_charge: data.renew_service_charge,
-    renew_other_charge: data.renew_other_charge,
+    renewalTenantPrice: data.renew_fee_amount ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
+      parseFloat(data.renew_fee_amount)
+      )}` : undefined,
+    renew_service_charge: data.renew_service_charge ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
+      parseFloat(data.renew_service_charge)
+      )}` : undefined,
+    renew_other_charge: data.renew_other_charge ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
+      parseFloat(data.renew_other_charge)
+      )}` : undefined,
     en_suit: data.en_suit,
     prepaid: data.prepaid,
     wardrobe: data.wardrobe,
@@ -990,14 +998,22 @@ export const transformUnitData = (response: any) => {
     propertyId: data.property.id,
     total_package: data.total_package,
     // caution_fee: data.caution_fee,
-    security_fee: data.security_fee,
-    other_charge: data.other_charge,
+    security_fee: data.security_fee ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
+      parseFloat(data.security_fee)
+      )}` : undefined,
+    other_charge: data.other_charge ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
+      parseFloat(data.other_charge)
+      )}` : undefined,
     unitAgentFee: data.agency_fee
       ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
       parseFloat(data.agency_fee)
       )}`
       : undefined,
-    service_charge: data.service_charge,
+    service_charge: data.service_charge 
+      ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
+        parseFloat(data.service_charge)
+        )}`
+        : undefined,
     occupant: occupant
       ? {
         id: occupant.id,

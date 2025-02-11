@@ -101,9 +101,6 @@ const StartRent = () => {
       start_date: startDate,
       payment_type: "full",
       rent_type: "new",
-      // mobile_notification: selectedCheckboxOptions.mobile_notification,
-      // email_alert: selectedCheckboxOptions.email_alert,
-      // has_invoice: selectedCheckboxOptions.create_invoice,
       mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
       email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
       has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
@@ -186,12 +183,12 @@ const StartRent = () => {
           setSelectedTenantId={setSelectedTenantId} //Try better way aside drilling prop later
           setSelectedCheckboxOptions={setSelectedCheckboxOptions} //Try better way aside drilling prop later
           feeDetails={[
-            { name: isRental ? "Annual Rent" : "Annual Fee", amount: Number(unit_data.newTenantPrice) },
-            { name: "Service Charge", amount: Number(unit_data.service_charge) },
-            { name: "Caution Fee", amount: Number(unit_data.caution_fee) },
-            { name: "Security Fee", amount: Number(unit_data.security_fee) },
-            { name: "Agency Fee", amount: Number(unit_data.unitAgentFee) },
-            { name: "Other Charges", amount: Number(unit_data.other_charge) },
+            { name: isRental ? "Annual Rent" : "Annual Fee", amount: (unit_data.newTenantPrice as any) },
+            { name: "Service Charge", amount: (unit_data.service_charge as any) },
+            { name: "Caution Fee", amount: (unit_data.caution_fee as any) },
+            { name: "Security Fee", amount: (unit_data.security_fee as any) },
+            { name: "Agency Fee", amount: (unit_data.unitAgentFee as any) },
+            { name: "Other Charges", amount: (unit_data.other_charge as any) },
           ]}
           total_package={Number(unit_data.total_package)}
           loading={loading}
@@ -202,7 +199,7 @@ const StartRent = () => {
       <FixedFooter className={`flex justify-end gap-4`}>
         {isRental && (
           <Button size="base_medium" className="py-2 px-6">
-            Download Agreement
+            Download Agreement 
           </Button>
         )}
         <Button

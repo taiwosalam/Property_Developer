@@ -137,13 +137,13 @@ const ChangeUnitpage = () => {
               feeDetails={[
                 {
                   name: isRental ? "Rent" : "Fee",
-                  amount: calculation ? Number(unit_data.newTenantPrice) : Number(unit_data.renewalTenantPrice),
+                  amount: calculation ? (unit_data.newTenantPrice as any) : (unit_data.renewalTenantPrice),
                 },
                 {
                   name: "Service Charge",
-                  amount: calculation ? Number(unit_data.service_charge) : Number(unit_data.renew_service_charge)
+                  amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
                 },
-                { name: "Other Charges", amount: Number(unit_data.other_charge) },
+                { name: "Other Charges", amount: (unit_data.other_charge) },
               ]}
               total={newUnitTotal}
               calculation={calculation}
@@ -156,13 +156,13 @@ const ChangeUnitpage = () => {
               feeDetails={[
                 {
                   name: isRental ? "Rent" : "Fee",
-                  amount: calculation ? Number(unit_data.newTenantPrice) : Number(unit_data.renewalTenantPrice),
+                  amount: calculation ? (unit_data.newTenantPrice as any) : (unit_data.renewalTenantPrice),
                 },
                 {
                   name: "Service Charge",
-                  amount: calculation ? Number(unit_data.service_charge) : Number(unit_data.renew_service_charge)
+                  amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
                 },
-                { name: "Other Charges", amount: Number(unit_data.other_charge) },
+                { name: "Other Charges", amount: (unit_data.other_charge) },
               ]}
               total={totalPayable}
               calculation={calculation}

@@ -28,8 +28,8 @@ export const RentDetails: React.FC<{
   const renewalRentDetailItems = [
     { label: "Current Start Date", value: startDate },
     { label: "Due Date", value: dueDate },
-    { label: "Annual Rent", value: `₦${(rentFee ? Number(rentFee) : 0).toLocaleString()}` },
-    { label: "Other Fees", value: `₦${(otherFee ? Number(otherFee) : 0).toLocaleString()}` },
+    { label: "Annual Rent", value: rentFee },
+    { label: "Other Fees", value: otherFee },
   ];
   return (
     <div className="space-y-6">
@@ -74,7 +74,7 @@ export const EditCurrentRent: React.FC<{
           placeholder="300,000"
           label="Renewal Fee"
           inputClassName="bg-white"
-          value={total}
+          value={formatNumber(total)}
           readOnly
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           formatNumber
