@@ -14,7 +14,7 @@ import EstateDetails from "@/components/Management/Rent And Unit/estate-details"
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
 import { OccupantProfile } from "@/components/Management/Rent And Unit/occupant-profile";
 import BackButton from "@/components/BackButton/back-button";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useEffect, useState } from "react";
 import {
@@ -30,12 +30,13 @@ import {
 } from "../../data";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
-import { initialTenants, startRent, Tenant, TenantResponse, transformUnitsTenants } from "./data";
+import { getEstateData, getEstateSettingsData, getPropertySettingsData, getRentalData, initialTenants, startRent, Tenant, TenantResponse, transformUnitsTenants } from "./data";
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const id = searchParams.get("id");
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const isRental = propertyType === "rental";
@@ -82,8 +83,8 @@ const StartRent = () => {
     }
   }, [allTenantData])
 
-  console.log("unit data", unit_data);
-  console.log("api data", apiData);
+  // console.log("unit data", unit_data);
+  // console.log("api data", apiData);
 
   const handleStartRent = async () => {
     // Validate that all required fields are available
@@ -111,10 +112,9 @@ const StartRent = () => {
     try {
       setReqLoading(true);
       const res = await startRent(payload);
-      // const res = await startRent(objectToFormData(payload));
-
       if (res) {
         toast.success("Rent Started Successfully");
+        router.back()
       }
     } catch (err) {
       toast.error("Failed to start Rent");
@@ -137,49 +137,11 @@ const StartRent = () => {
   if (error) return <div>{error}</div>;
 
   const propertyId = unit_data.propertyId;
-  const rentalData = [
-    { label: "Property Title", value: unit_data?.title },
-    { label: "State", value: unit_data?.state },
-    { label: "Local Government", value: unit_data?.localGovernment },
-    { label: "Full Address", value: unit_data?.address },
-    { label: "Branch", value: unit_data?.branchName },
-    { label: "Account Officer", value: "No Officer" }, //TODO
-    { label: "Landlord", value: "No Landlord" }, //TODO
-    { label: "Categories", value: unit_data?.categories },
-    { label: "Unit ID", value: unit_data?.unit_id },
-  ];
+  const rentalData = getRentalData(unit_data);
+  const propertySettingsData = getPropertySettingsData(unit_data);
+  const estateData = getEstateData(unit_data);
+  const estateSettingsDta = getEstateSettingsData(unit_data);
 
-  const propertySettingsData = [
-    { label: "Agency Fee", value: `${unit_data?.agency_fee}%` },
-    { label: "Period", value: unit_data?.fee_period },
-    { label: "Charge", value: unit_data?.whoToCharge },
-    { label: "Caution Deposit", value: unit_data.caution_deposit },
-    { label: "Group Chat", value: `${unit_data?.group_chat}` },
-    { label: "Rent Penalty", value: `${unit_data?.rent_penalty}` },
-  ];
-
-
-  const estateData = [
-    { label: "Property Title", value: unit_data.property_title },
-    { label: "State", value: unit_data.state },
-    { label: "Local Government", value: unit_data.localGovernment },
-    { label: "Full Address", value: unit_data.address },
-    { label: "Branch", value: unit_data.branchName },
-    { label: "Account Officer", value: unit_data.accountOfficer || "No Officer" },
-    {
-      label: "Description",
-      value: unit_data.description || "No Description",
-    },
-    { label: "Categories", value: unit_data.categories },
-    { label: "Unit ID", value: unit_data.unit_id },
-  ];
-
-   const estateSettingsDta = [
-    { label: "Management Fee", value: unit_data.management_fee },
-    { label: "Period", value: unit_data.fee_period },
-    { label: "Fee Penalty", value: unit_data.rent_penalty },
-    { label: "Group Chat", value: unit_data.group_chat },
-  ];
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Start {isRental ? "Rent" : "Counting"}</BackButton>
@@ -223,7 +185,7 @@ const StartRent = () => {
       <FixedFooter className={`flex justify-end gap-4`}>
         {isRental && (
           <Button size="base_medium" className="py-2 px-6">
-            Download Agreement 
+            Download Agreement
           </Button>
         )}
         <Button

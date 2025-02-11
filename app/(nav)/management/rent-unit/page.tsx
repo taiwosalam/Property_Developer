@@ -144,8 +144,7 @@ const branchOptions =
     value: branch.id,
   })) || [];
 
-  // console.log("Braches", branchOptions)
-
+  
   const {
     data: apiData,
     loading,
@@ -154,7 +153,8 @@ const branchOptions =
     error,
     refetch,
   } = useFetch<UnitApiResponse | UnitFilterResponse>(endpoint, config);
-
+  
+  // console.log("Braches", apiData)
   useEffect(() => {
     if (apiData) {
       setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData) }));

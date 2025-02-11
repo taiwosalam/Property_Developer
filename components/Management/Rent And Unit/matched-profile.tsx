@@ -20,7 +20,7 @@ export const MatchedProfile: React.FC<{
               alt="Profile Picture"
               size={64}
               rounded
-              containerClassName="w-fit mx-auto"
+              containerClassName="w-fit mx-auto custom-secondary-bg rounded-full"
             />
             <div className="w-full text-center">
               <p className="font-bold text-xl">{occupant?.name}</p>

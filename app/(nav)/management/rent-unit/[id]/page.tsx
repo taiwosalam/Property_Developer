@@ -11,6 +11,7 @@ import useFetch from "@/hooks/useFetch";
 import { useEffect, useState } from "react";
 import { initData, initDataProps, singleUnitApiResponse, transformSingleUnitData, transformUnitData } from "../data";
 import NetworkError from "@/components/Error/NetworkError";
+import { formatNumber } from "@/utils/number-formatter";
 
 const PriceSection: React.FC<{ period: string; title: string; total_package: number; price: number }> = ({
   title,
@@ -22,14 +23,14 @@ const PriceSection: React.FC<{ period: string; title: string; total_package: num
     <h3 className="font-medium text-base text-brand-10">{title}</h3>
     <div>
       <p className="text-lg lg:text-xl font-bold text-brand-9">
-        ₦{price.toLocaleString()}
+        {price}
       </p>
       <p className="text-xs font-normal text-text-label dark:text-darkText-1">
         Total Package
       </p>
       <p className="text-sm font-medium text-text-disabled dark:text-darkText-1">
         <span className="text-highlight">
-          ₦{(total_package).toLocaleString()}
+          ₦{formatNumber(total_package).toLocaleString()}
         </span>{" "}
         / {period}
       </p>
@@ -70,7 +71,7 @@ const UnitPreviewPage = () => {
         ...x,
         ...transformUnitData(apiData)
       }))
-      // console.log("Data", unit_data)
+      console.log("Data", unit_data.previous_tenants)
     }
   }, [apiData])
 
@@ -120,7 +121,7 @@ const UnitPreviewPage = () => {
               <DetailItem label="Categories" value={unit_data.categories} />
               <DetailItem
                 label="Unit Number/Name"
-                value={unit_data.unitNumber}
+                value={unit_data.unit_name}
               />
               <DetailItem
                 label="Unit Preference"
@@ -156,14 +157,14 @@ const UnitPreviewPage = () => {
               <PriceSection
                 title="New Tenant"
                 period={unit_data.fee_period}
-                price={Number(unit_data.newTenantPrice)}
-                total_package={Number(unit_data.newTenantTotalPrice)}
+                price={(unit_data.newTenantPrice as any) || 0}
+                total_package={(unit_data.newTenantTotalPrice as any) || 0}
               />
               <PriceSection
                 title="Renewal Tenant"
                 period={unit_data.renew_fee_period}
-                price={Number(unit_data.renewalTenantPrice)}
-                total_package={Number(unit_data.renewalTenantTotalPrice)}
+                price={(unit_data.renewalTenantPrice as any) || 0}
+                total_package={(unit_data.renewalTenantTotalPrice as any) || 0}
               />
             </div>
           </div>
@@ -173,11 +174,13 @@ const UnitPreviewPage = () => {
       <div className="space-y-6">
         <RentSectionTitle>Previously Assigned Tenants Records</RentSectionTitle>
         <div className="space-y-4">
-          <TenancyRecord />
-          <TenancyRecord />
-          <TenancyRecord />
-          <TenancyRecord />
-          <TenancyRecord />
+          {unit_data?.previous_tenants?.map((t: any, index: number) => (
+              <TenancyRecord
+                key={index}
+                unit_id={id}
+                {...t}
+              />
+          ))}
         </div>
       </div>
     </section>

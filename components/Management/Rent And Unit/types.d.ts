@@ -147,3 +147,36 @@ interface TenantResponse {
   data: TenantData;
   message: string;
 }
+
+
+interface TenancyRecordProps {
+  name: string;
+  period: string;
+  email: string;
+  picture: string;
+  phone: string;
+  renew_rent: string;
+  renew_total_package: string;
+  renewalPackage: string;
+  // tenant is expected to have rents and pagination info
+  tenant: {
+    id: number | string;
+    rents: Array<{
+      id: number | string;
+      payment_date: string | null;
+      amount_paid: string;
+      details: string;
+      start_date: string;
+      due_date: string;
+    }>;
+    pagination: {
+      current_page: number;
+      per_page: number;
+      total: number;
+      total_pages: number;
+    };
+    // Optionally, documents can be provided here.
+    documents?: any[];
+  };
+  unit_id: number | string;
+}

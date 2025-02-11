@@ -82,13 +82,14 @@ export interface UnitApiResponse {
 
 export interface UnitFilterResponse {
   data: {
+    unit: UnitDataObject[];
     current_page: number;
     last_page: number;
-    data: UnitDataObject[];
   };
 }
 
 export const transformRentUnitApiResponse = (
+  // response: UnitApiResponse 
   response: UnitApiResponse | UnitFilterResponse
 ): Partial<UnitPageState> => {
   const isUnitApiResponse = (
@@ -98,21 +99,21 @@ export const transformRentUnitApiResponse = (
   };
 
   const unitData = isUnitApiResponse(response)
-    ? response.data.unit
-    : response.data;
+    ? (response.data.unit as any)
+    : (response.data.unit as any);
 
-  const transformedUnits: RentalPropertyCardProps[] = unitData.data.map(
-    (u) => {
+  const transformedUnits: RentalPropertyCardProps[] = unitData.map(
+    (u: any) => {
       return {
         unitId: u.id.toString(),
         unit_title: u.property.title,
         unit_type: u.unit_type,
-        tenant_name: "No Tenant", //TODO
-        expiry_date: "No Expiry", //TODO
+        tenant_name: u.occupant.name !== null ? u.occupant.name : "No Tenant", //TODO
+        expiry_date: u.occupant.expiry !== null ? u.occupant.expiry : "No Expiry", //TODO 
         rent: u.fee_amount,
         caution_deposit: u.caution_fee,
         service_charge: u.service_charge,
-        images: u.images.map((image) => image.path),
+        images: u.images.map((image: any) => image.path),
         unit_name: u.unit_name,
         caution_fee: u.caution_fee,
         status: u.is_active,
@@ -934,6 +935,7 @@ export interface initDataProps {
   property_title?: string;
   property_state?: string;
   property_address?: string;
+  previous_tenants?: any;
 }
 
 // ================ transform /unit/${id}/view =================
@@ -941,7 +943,8 @@ export const transformUnitData = (response: any) => {
   const data = response.data;
   const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
-  console.log("data to trans", response)
+  // const previous_tenants = response.data.previous_tenants;
+  // console.log("data to trans", response)
   return {
     title: data.property.title,
     unit_id: data.id,
@@ -1039,6 +1042,7 @@ export const transformUnitData = (response: any) => {
         lg: occupant.lg || "___"
       }
       : undefined,
-    previous_records: previous_records ? previous_records : undefined
+    previous_records: previous_records ? previous_records : undefined,
+    previous_tenants: data.previous_tenants ? data.previous_tenants : undefined,
   }
 }
