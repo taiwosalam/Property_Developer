@@ -82,6 +82,8 @@ const StartRent = () => {
     }
   }, [allTenantData])
 
+  console.log("unit data", unit_data);
+  console.log("api data", apiData);
 
   const handleStartRent = async () => {
     // Validate that all required fields are available
@@ -156,6 +158,28 @@ const StartRent = () => {
     { label: "Rent Penalty", value: `${unit_data?.rent_penalty}` },
   ];
 
+
+  const estateData = [
+    { label: "Property Title", value: unit_data.property_title },
+    { label: "State", value: unit_data.state },
+    { label: "Local Government", value: unit_data.localGovernment },
+    { label: "Full Address", value: unit_data.address },
+    { label: "Branch", value: unit_data.branchName },
+    { label: "Account Officer", value: unit_data.accountOfficer || "No Officer" },
+    {
+      label: "Description",
+      value: unit_data.description || "No Description",
+    },
+    { label: "Categories", value: unit_data.categories },
+    { label: "Unit ID", value: unit_data.unit_id },
+  ];
+
+   const estateSettingsDta = [
+    { label: "Management Fee", value: unit_data.management_fee },
+    { label: "Period", value: unit_data.fee_period },
+    { label: "Fee Penalty", value: unit_data.rent_penalty },
+    { label: "Group Chat", value: unit_data.group_chat },
+  ];
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Start {isRental ? "Rent" : "Counting"}</BackButton>
