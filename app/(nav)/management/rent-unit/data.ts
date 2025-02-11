@@ -959,7 +959,7 @@ export const transformUnitData = (response: any) => {
     unitSubType: data.unit_sub_type,
     state: data.property.state,
     localGovernment: data.property.local_government,
-    accountOfficer: "",
+    accountOfficer: data.account_officer || "___",
     bedrooms: data.bedroom,
     bathrooms: data.bathroom,
     toilets: data.toilet,

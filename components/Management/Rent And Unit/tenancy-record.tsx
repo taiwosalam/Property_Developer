@@ -12,7 +12,6 @@ import { LandlordTenantInfoDocument } from "../landlord-tenant-info-components";
 import {
   previousRentRecordsTableFields as tableFields,
   previousRentRecordsData as tableData,
-  sampleDocuments,
   debounce,
   transformDocuments,
 } from "./data";
@@ -54,8 +53,10 @@ const TenancyRecord = ({
   const transformedDocs = transformDocuments(documents || []);
   const groupedDocuments = groupDocumentsByType(transformedDocs);
 
+  console.log("grouped doc", groupedDocuments);
+
   // Initialize records and pagination from the tenant prop
-  const [records, setRecords] = useState<any[]>(tenant?.rents || []);
+  const [records, setRecords] = useState<any[]>(tenant?.rents || []); 
   const [pagination, setPagination] = useState<{
     current_page: number;
     total_pages: number;

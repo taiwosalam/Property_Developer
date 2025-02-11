@@ -84,8 +84,8 @@ const EditRent = () => {
 
   // const record = unit_data?.previous_records?.data?.[0];
   const record = (unit_data?.previous_records as any)?.data?.[0];
-  const start_date = record?.start_date ? dayjs(record?.start_date).format("DD/MM/YYYY") : "__,__,___";
-  const due_date = record?.due_date ? dayjs(record?.due_date).format("DD/MM/YYYY") : "_,__,___";
+  const start_date = record?.start_date ? dayjs(record?.start_date).format("DD/MM/YYYY") : "__,__,__";
+  const due_date = record?.due_date ? dayjs(record?.due_date).format("DD/MM/YYYY") : "__,__,__";
   const propertyId = unit_data.propertyId;
 
 
@@ -113,6 +113,7 @@ const EditRent = () => {
             <RentDetails
               isRental={isRental}
               startDate={start_date}
+              period={unit_data.fee_period}
               dueDate={due_date}
               rentFee={unit_data.newTenantPrice}
               otherFee={unit_data.other_charge as string}

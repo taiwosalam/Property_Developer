@@ -100,31 +100,12 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
   const bal = startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
   const newUnitTotal = calculation ? Number(unit_data.newTenantTotalPrice) : Number(unit_data.renewalTenantTotalPrice);
   const totalPayable = !deduction ? newUnitTotal - bal : newUnitTotal;
-
-
-  // const rentalData = [
-  //   { label: "Property Title", value: propertyData?.property_name },
-  //   { label: "State", value: propertyData?.state },
-  //   { label: "Local Government", value: propertyData?.local_government },
-  //   { label: "Full Address", value: propertyData?.address },
-  //   { label: "Branch", value: propertyData?.branch },
-  //   { label: "Account Officer", value: propertyData?.account_officer || "" },
-  //   { label: "Landlord", value: propertyData?.landlord_name },
-  //   { label: "Categories", value: propertyData?.category },
-  // ];
+    const prev_unit_bal = bal ? `${'₦'}${formatNumber(
+      parseFloat(`${bal}`)
+    )}` : undefined;
 
   const rentalData = getRentalData(propertyData); 
   const propertySettingsData = getPropertySettingsData(propertyData);
-
-  // const propertySettingsData = [
-  //   { label: "Agency Fee", value: `${propertyData?.agency_fee}%` },
-  //   { label: "Period", value: propertyData?.fee_period },
-  //   { label: "Charge", value: propertyData?.rent_penalty },
-  //   { label: "Caution Deposit", value: propertyData.caution_deposit },
-  //   { label: "Group Chat", value: `${propertyData?.group_chat}` },
-  //   { label: "Rent Penalty", value: `${propertyData?.who_to_charge_new_tenant}` },
-  // ];
-
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Change Property Unit</BackButton>
