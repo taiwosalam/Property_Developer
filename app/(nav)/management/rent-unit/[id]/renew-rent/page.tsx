@@ -101,10 +101,10 @@ const RenewRent = () => {
               feeDetails={[
                 {
                   name: isRental ? "Rent" : "Fee",
-                  amount: Number(unit_data.renewalTenantPrice),
+                  amount: (unit_data.renewalTenantPrice as any),
                 },
-                { name: "Service Charge", amount: Number(unit_data.renew_service_charge) },
-                { name: "Other Charges", amount: Number(unit_data.renew_other_charge) },
+                { name: "Service Charge", amount: (unit_data.renew_service_charge as any) },
+                { name: "Other Charges", amount: (unit_data.renew_other_charge as any) },
               ]}
               total_package={Number(unit_data.total_package)}
               id={propertyId as string}

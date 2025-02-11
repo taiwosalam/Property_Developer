@@ -58,7 +58,8 @@ export const FeeDetails: React.FC<{
               key={index}
               style={{ width: "120px" }}
               label={fee.name}
-              value={`₦${fee?.amount?.toLocaleString()}`}
+              // value={`₦${fee?.amount?.toLocaleString()}`}
+              value={`${fee?.amount}`}
             />
           ))}
         </div>
