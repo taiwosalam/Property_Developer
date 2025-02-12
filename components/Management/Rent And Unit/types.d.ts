@@ -12,6 +12,7 @@ export interface ActionButtonProps {
   color: string;
   route?: string;
   modal?: string;
+  unit_id?: string;
 }
 
 interface PropertyImageSliderProps {

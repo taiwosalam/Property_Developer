@@ -245,6 +245,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
           })
           .map((action, i) => (
             <ActionButton
+              unit_id={unitId}
               key={i}
               {...action}
               route={

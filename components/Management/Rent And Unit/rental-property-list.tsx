@@ -32,15 +32,10 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
     <div className="p-6 bg-white dark:bg-darkText-primary rounded-2xl shadow-md text-[16px]">
       <div className="flex items-center justify-between mb-4">
         <span className="text-sm font-bold text-brand-10 dark:text-darkText-1">
-          Unit ID: {unitId} {status}
+          Unit ID: {unitId}
         </span>
         <div className="flex items-center gap-1 flex-wrap">
-          {/* <div
-            key={status}
-            className="w-4 h-4 rounded-full"
-            style={{ backgroundColor: getBackgroundColor(status) }}
-          /> */}
-          <StatusDots status={status} />
+          <StatusDots status={status} propertyType={propertyType} />
         </div>
       </div>
       <div className="flex items-center justify-between gap-4 py-4 border-y border-gray-200 overflow-y-auto">
@@ -58,8 +53,9 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
             label="Tenants Name"
             value={
               <span className="flex items-center">
-                <span className="border-black border-b">{tenant_name}</span>{" "}
-                <BadgeIcon color="green" />
+                <span className="border-black border-b">{tenant_name}</span>
+                {/* BADGE ICON IS FOR MOBILE USERS ONLY */}
+                {/* <BadgeIcon color="green" /> */} 
               </span>
             }
           />

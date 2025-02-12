@@ -6,13 +6,51 @@ import ActionModalPreset from "@/components/Modal/modal-preset";
 import { ModalTrigger } from "@/components/Modal/modal";
 import Button from "@/components/Form/Button/button";
 import DepositRequestModal from "@/components/tasks/deposit-requests/deposit-request-modal";
+import { toast } from "sonner";
+import { moveOut } from "./Edit-Rent/data";
 
-const MoveOutModal = () => {
+const MoveOutModal = ({ unit_id }: { unit_id: string; }) => {
   const commonClasses =
     "bg-neutral-3 dark:bg-[#3C3D37] px-[18px] py-2 rounded-[4px] flex-row-reverse justify-between items-center w-full";
   const [modalView, setModalView] = useState<
     "warning" | "menu" | "success" | "deposit"
   >("menu");
+  const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+  const [reqLoading, setReqLoading] = useState(false);
+
+  const reasonOptions = [
+    "Check Inventory",
+    "Create Examine",
+    "Create Maintenance",
+    "Flag Tenant",
+  ];
+  
+  const toggleReason = (reason: string) => {
+    setSelectedReasons((prev) =>
+      prev.includes(reason) ? prev.filter((r) => r !== reason) : [...prev, reason]
+    );
+  };
+
+  const handleMoveOut = async () => {
+    const payload = {
+      unit_id,
+      reason: selectedReasons,
+    };
+    try {
+      setReqLoading(true);
+      const res = await moveOut(payload);
+      if (res) {
+        window.dispatchEvent(new Event("refetchRentUnit"));
+        setModalView("success");
+      }
+    } catch (error) {
+      toast.error("Fail to Move out. Please try again later.");
+    }
+
+    console.log("payload", payload);
+  };
+
+
   if (modalView === "menu") {
     return (
       <ModalPreset title="Move Out">
@@ -28,10 +66,16 @@ const MoveOutModal = () => {
               Caution Deposit Requirement
             </h3>
             <div className="space-y-3">
-              <Checkbox className={commonClasses}>Check Inventory</Checkbox>
-              <Checkbox className={commonClasses}>Create Examine</Checkbox>
-              <Checkbox className={commonClasses}>Create Maintenance</Checkbox>
-              <Checkbox className={commonClasses}>Flag Tenant</Checkbox>
+              {reasonOptions.map((option) => (
+                <Checkbox
+                  key={option}
+                  checked={selectedReasons.includes(option)}
+                  onChange={() => toggleReason(option)}
+                  className={commonClasses}
+                >
+                  {option}
+                </Checkbox>
+              ))}
             </div>
           </div>
           <button
@@ -53,7 +97,12 @@ const MoveOutModal = () => {
             tenant&apos;s records from the unit?
           </p>
           <div className="flex flex-col gap-2">
-            <Button onClick={() => setModalView("success")}>Proceed</Button>
+            <Button
+              onClick={handleMoveOut}
+              disabled={reqLoading}
+            >
+            { reqLoading ? "Please wait..." : "Proceed" }
+            </Button>
             <Button
               variant="blank"
               className="text-brand-9 font-medium"

@@ -108,8 +108,8 @@ export const transformRentUnitApiResponse = (
         unitId: u.id.toString(),
         unit_title: u.property.title,
         unit_type: u.unit_type,
-        tenant_name: u.occupant.name !== null ? u.occupant.name : "No Tenant", //TODO
-        expiry_date: u.occupant.expiry !== null ? u.occupant.expiry : "No Expiry", //TODO 
+        tenant_name: u.occupant.name !== null ? u.occupant.name : "____", //TODO
+        expiry_date: u.occupant.expiry !== null ? u.occupant.expiry : "____", //TODO 
         rent: u.fee_amount,
         caution_deposit: u.caution_fee,
         service_charge: u.service_charge,
