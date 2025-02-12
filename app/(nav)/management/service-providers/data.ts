@@ -31,7 +31,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const getAllServiceProviders = async () => {
   try {
-    const response = await api.get("/service-providers");
+    const response = await api.get("service-providers");
     return response.data;
   } catch (error) {
     if (error instanceof Error) {
@@ -45,6 +45,8 @@ export const createServiceProvider = async (
 ): Promise<boolean> => {
   try {
     const response = await api.post("service-providers", formData);
+
+    console.log("Providers")
 
     if (response.status === 200 || response.status === 201) {
       window.dispatchEvent(new Event("refetchServiceProvider"));
@@ -68,7 +70,7 @@ export const inviteProviderByPhone = async (
 
     if (response.status === 200 || response.status === 201) {
       window.dispatchEvent(new Event("refetchServiceProvider"));
-      if (status) {
+      if (response) {
         toast.success("Invitation sent");
       }
       return true;
