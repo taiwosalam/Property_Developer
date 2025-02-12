@@ -1,3 +1,5 @@
+import api, { handleAxiosError } from "@/services/api";
+
 export interface Unit {
     id: number;
     user_id: number;
@@ -136,3 +138,17 @@ export const getPropertySettingsData = (propertyData: any): any[] => {
         { label: "Rent Penalty", value: propertyData?.who_to_charge_new_tenant !== undefined ? `${propertyData.who_to_charge_new_tenant}` : undefined },
     ];
 };
+
+
+// /tenant-rent/move_out
+export const moveOut = async (data: any) => {
+    try {
+        const res = await api.post("/tenant-rent/move_out", data);
+        if (res.status === 201) {
+            return true
+        }
+    } catch (error) {
+        handleAxiosError(error);
+        return false
+    }
+}

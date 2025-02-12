@@ -9,6 +9,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   color,
   route,
   modal,
+  unit_id,
 }) => {
   const commonStyles =
     "py-2 px-4 rounded-[20px] text-white text-xs font-medium cursor-pointer";
@@ -37,7 +38,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
           </ModalContent>
         ) : (
           <ModalContent>
-            <MoveOutModal />
+            <MoveOutModal unit_id={unit_id as string} />
           </ModalContent>
         )}
       </Modal>

@@ -336,6 +336,7 @@ export const yesNoToActiveInactive = (yesNo: string): string => {
 export const transformStaffAPIResponse = (
   res: StaffAPIResponse
 ): StaffPageTypes => {
+  console.log("our res", res)
   return {
     staff: {
       id: res.data.id.toString(),
@@ -359,21 +360,22 @@ export const transformStaffAPIResponse = (
       about_staff: res.data.about_staff,
       status: yesNoToActiveInactive(res.data.status),
     },
-    activities: res.activities.map((a) => {
-      const actionTaken = JSON.parse(a.action_taken);
-      const message = actionTaken.message;
+    activities: res.activities?.map((a) => {
+      // const actionTaken = JSON.parse(a.action_taken);
+      // const message = actionTaken.message;
       const { latitude, longitude } = a.location;
       return {
         id: a["S/N"],
         username: a.username,
         page_visits: a.page_visits,
-        action_taken: message,
+        // action_taken: message,
+        action_taken: a.page_visits,
         ip_address: a.ip_address,
         location: a.location,
         date: a.date,
         time: a.time,
       }
-    }),
+    }) || [],
     chats: [],
     portfolio: {
       properties: res?.data?.properties?.map((p) => {
@@ -383,7 +385,7 @@ export const transformStaffAPIResponse = (
           address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
           image: p.images?.[0]?.path || empty,
         }
-      }),
+      }) || [],
       landlords: res?.data?.landlords?.map((l)=> {
         return{
           id: l.id.toString(),
@@ -392,7 +394,7 @@ export const transformStaffAPIResponse = (
           phone: l.phone || "",
           image: l.picture || empty,
         }
-      }),
+      }) || [],
       tenants: res?.data?.tenants?.map((t)=> {
         return {
           id: t.id.toString(),
@@ -401,7 +403,7 @@ export const transformStaffAPIResponse = (
           phone: t.phone,
           image: t.picture || empty,
         }
-      }),
+      }) || [],
     }
   }
 }

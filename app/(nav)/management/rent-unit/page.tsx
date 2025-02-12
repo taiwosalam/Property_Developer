@@ -34,6 +34,8 @@ import { ExclamationMark } from "@/public/icons/icons";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import TableLoading from "@/components/Loader/TableLoading";
 
 const RentAndUnit = () => {
   const view = useView();
@@ -136,15 +138,15 @@ const RentAndUnit = () => {
   };
 
   const { data: branchesData } =
-  useFetch<AllBranchesResponse>("/branches/select");
+    useFetch<AllBranchesResponse>("/branches/select");
 
-const branchOptions =
-  branchesData?.data.map((branch) => ({
-    label: branch.branch_name,
-    value: branch.id,
-  })) || [];
+  const branchOptions =
+    branchesData?.data.map((branch) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
 
-  
+
   const {
     data: apiData,
     loading,
@@ -153,7 +155,7 @@ const branchOptions =
     error,
     refetch,
   } = useFetch<UnitApiResponse | UnitFilterResponse>(endpoint, config);
-  
+
   // console.log("Braches", apiData)
   useEffect(() => {
     if (apiData) {
@@ -207,7 +209,7 @@ const branchOptions =
           newData={pageData?.month_unit}
           total={pageData?.total_unit}
           className="w-[240px]"
-        colorScheme={1}
+          colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Occupied Units"
@@ -312,45 +314,53 @@ const branchOptions =
               </div>
               {view === "grid" || gridView ? (
                 <AutoResizingGrid minWidth={315}>
-                  {pageData?.unit.map((unit, index) => (
-                    <RentalPropertyCard
-                      key={index}
-                      propertyType={unit.propertyType as 'rental' | 'facility'}
-                      unitId={unit.unitId || ""}
-                      images={unit.images}
-                      unit_title={unit.unit_title}
-                      unit_name={unit.unit_name}
-                      unit_type={unit.unit_type}
-                      tenant_name={unit.tenant_name || ""}
-                      expiry_date={unit.expiry_date || ""}
-                      rent={unit.rent || ""}
-                      caution_deposit={unit.caution_deposit || ""}
-                      service_charge={unit.service_charge}
-                      status={unit.status || ""}
-                      property_type={unit.propertyType || ""}
-                    />
-                  ))}
+                  {silentLoading ? (
+                    <CardsLoading />
+                  ) : (
+                    pageData?.unit.map((unit, index) => (
+                      <RentalPropertyCard
+                        key={index}
+                        propertyType={unit.propertyType as 'rental' | 'facility'}
+                        unitId={unit.unitId || ""}
+                        images={unit.images}
+                        unit_title={unit.unit_title}
+                        unit_name={unit.unit_name}
+                        unit_type={unit.unit_type}
+                        tenant_name={unit.tenant_name || ""}
+                        expiry_date={unit.expiry_date || ""}
+                        rent={unit.rent || ""}
+                        caution_deposit={unit.caution_deposit || ""}
+                        service_charge={unit.service_charge}
+                        status={unit.status || ""}
+                        property_type={unit.propertyType || ""}
+                      />
+                    ))
+                  )}
                 </AutoResizingGrid>
               ) : (
                 <div className="space-y-4">
-                  {pageData?.unit.map((unit, index) => (
-                    <RentalPropertyListCard
-                      key={index}
-                      propertyType={unit.propertyType as 'rental' | 'facility'}
-                      unitId={unit.unitId || ""}
-                      images={unit.images}
-                      unit_title={unit.unit_title}
-                      unit_name={unit.unit_name}
-                      unit_type={unit.unit_type}
-                      tenant_name={unit.tenant_name || ""}
-                      expiry_date={unit.expiry_date || ""}
-                      rent={unit.rent || ""}
-                      caution_deposit={unit.caution_deposit || ""}
-                      service_charge={unit.service_charge}
-                      status={unit.status || ""}
-                      property_type={unit.propertyType || ""}
-                    />
-                  ))}
+                  {silentLoading ? (
+                    <TableLoading />
+                  ) : (
+                    pageData?.unit.map((unit, index) => (
+                      <RentalPropertyListCard
+                        key={index}
+                        propertyType={unit.propertyType as 'rental' | 'facility'}
+                        unitId={unit.unitId || ""}
+                        images={unit.images}
+                        unit_title={unit.unit_title}
+                        unit_name={unit.unit_name}
+                        unit_type={unit.unit_type}
+                        tenant_name={unit.tenant_name || ""}
+                        expiry_date={unit.expiry_date || ""}
+                        rent={unit.rent || ""}
+                        caution_deposit={unit.caution_deposit || ""}
+                        service_charge={unit.service_charge}
+                        status={unit.status || ""}
+                        property_type={unit.propertyType || ""}
+                      />
+                    )
+                    ))}
                 </div>
               )}
             </section>
