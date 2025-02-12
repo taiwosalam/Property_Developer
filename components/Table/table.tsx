@@ -138,6 +138,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     fontWeight: 500,
                     fontSize: "14px",
                     whiteSpace: "nowrap",
+                    maxWidth: "200px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                     ...tableHeadCellSx,
                   }}
                 >
@@ -178,6 +181,10 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     fontWeight: 500,
                     fontSize: "14px",
                     textAlign: "left",
+                    maxWidth: "200px", // Set a fixed width
+                    whiteSpace: "nowrap", // Prevents text from wrapping
+                    overflow: "hidden", // Hides the overflow
+                    textOverflow: "ellipsis", // Adds "..." when text overflows
                     color: isDarkMode ? "#C1C2C3" : "#050901",
                     ...tableBodyCellSx,
                     ...field.cellStyle,

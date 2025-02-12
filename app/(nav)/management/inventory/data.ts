@@ -17,7 +17,7 @@ export const createInventory = async (formData: FormData) => {
       return response.status === 200 || response.status === 201;
     } catch (error) {
       console.error('Error in createInventory:', error);
-      handleAxiosError(error)
+      handleAxiosError(error);
       return false;
     }
 }

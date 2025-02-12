@@ -32,8 +32,8 @@ interface FilterModalProps {
   filterOptions?: FilterOption[] | FilterOptionObj;
   filterOptionsMenu?: FilterOptionMenu[];
   appliedFilters?: FilterResult;
+  inputOff?: boolean;
 }
-
 
 const FilterModal: React.FC<FilterModalProps> = ({
   filterOptions,
@@ -43,6 +43,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   isDateTrue,
   dateLabel = "Date",
   appliedFilters,
+  inputOff = true,
 }) => {
   const { setIsOpen } = useModal();
   const isRadio =
@@ -82,31 +83,36 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>(() => {
     if (appliedFilters?.options) return appliedFilters.options;
-    
+
     // Find radio group with default checked option
-    const defaultRadioValue = filterOptionsMenu?.find(menu => menu.radio)
-      ?.value.find(option => option.isChecked)?.value;
-    
+    const defaultRadioValue = filterOptionsMenu
+      ?.find((menu) => menu.radio)
+      ?.value.find((option) => option.isChecked)?.value;
+
     if (defaultRadioValue) {
       return [String(defaultRadioValue)];
     }
-    
+
     return [];
   });
-  const [selectedFilterMenus, setSelectedFilterMenus] = useState<Record<string, string[]>>(() => {
+  const [selectedFilterMenus, setSelectedFilterMenus] = useState<
+    Record<string, string[]>
+  >(() => {
     if (appliedFilters?.menuOptions) return appliedFilters.menuOptions;
-    
+
     // Initialize radio groups with default values
     const initialMenus: Record<string, string[]> = {};
-    filterOptionsMenu?.forEach(menu => {
+    filterOptionsMenu?.forEach((menu) => {
       if (menu.radio) {
-        const defaultValue = menu.value.find(option => option.isChecked)?.value;
+        const defaultValue = menu.value.find(
+          (option) => option.isChecked
+        )?.value;
         if (defaultValue) {
           initialMenus[menu.label] = [String(defaultValue)];
         }
       }
     });
-    
+
     return initialMenus;
   });
   const [view, setView] = useState<"default" | "date" | "menu">("default");
@@ -172,8 +178,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
             {view === "default"
               ? filterTitle
               : view === "date"
-                ? dateLabel
-                : activeOptionMenu?.label}
+              ? dateLabel
+              : activeOptionMenu?.label}
           </h2>
         </div>
         {view === "default" && (
@@ -208,14 +214,17 @@ const FilterModal: React.FC<FilterModalProps> = ({
               >
                 <span>{option.label}</span>
                 {selectedFilterMenus[option.label] &&
-                  selectedFilterMenus[option.label].length > 0 ? (
+                selectedFilterMenus[option.label].length > 0 ? (
                   <CheckboxCheckedIcon />
                 ) : (
                   <ChevronRight className="text-[#344054]" />
                 )}
                 {option.isChecked && (
                   <Checkbox
-                    checked={selectedFilters.includes(String(option.value)) || option.isChecked}
+                    checked={
+                      selectedFilters.includes(String(option.value)) ||
+                      option.isChecked
+                    }
                     onChange={() => handleOptionClick(String(option.value))}
                   />
                 )}
@@ -236,7 +245,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
             {isRadio &&
               Array.isArray(filterOptions?.value) &&
               filterOptions.value.map((option, i) => (
-                <Checkbox 
+                <Checkbox
                   key={i}
                   radio={true}
                   className={commonCheckboxClasses}
@@ -248,7 +257,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   {option.label}
                 </Checkbox>
               ))}
-           </>
+          </>
         ) : view === "date" ? (
           <>
             <DateInput
@@ -268,13 +277,15 @@ const FilterModal: React.FC<FilterModalProps> = ({
           </>
         ) : (
           <>
-            <input
-              type="text"
-              className="w-full border p-2"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+            {inputOff && (
+              <input
+                type="text"
+                className="w-full border p-2"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            )}
             <div className="max-h-[200px] overflow-y-auto pr-1 custom-round-scrollbar space-y-2 my-2">
               {filteredOptions?.map((option, i) => (
                 <Checkbox

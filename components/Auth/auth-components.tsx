@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useEffect, useRef, useState, forwardRef } from 'react';
+import Link from "next/link";
+import { useEffect, useRef, useState, forwardRef } from "react";
 
 // Types
 import type {
@@ -10,40 +10,41 @@ import type {
   AuthHeadingProps,
   AuthPinFieldProps,
   AuthNewPasswordProps,
-} from './types';
+} from "./types";
 
 // Imports
-import gsap from 'gsap';
-import PinField from 'react-pin-field';
-import Input from '../Form/Input/input';
-import { validateData } from '@/utils/validation';
-import { objectLength } from '@/utils/object-length';
-import { password_conditions, password_strength } from './data';
-import FlowProgressBar from '../FlowProgress/flow-progress-bar';
-import Image from 'next/image';
-import { empty } from '@/app/config';
+import gsap from "gsap";
+import PinField from "react-pin-field";
+import Input from "../Form/Input/input";
+import { validateData } from "@/utils/validation";
+import { objectLength } from "@/utils/object-length";
+import { password_conditions, password_strength } from "./data";
+import FlowProgressBar from "../FlowProgress/flow-progress-bar";
+import Image from "next/image";
+import { empty } from "@/app/config";
 
 // AuthHeading Component: Displays the heading and subheading for the auth form
 export const AuthHeading: React.FC<AuthHeadingProps> = ({
   title,
   children,
-  logo
+  logo,
 }) => (
-  <div className='custom-flex-col gap-1'>
-    {logo && 
-    <div className='w-16 h-16 my-2 flex items-start justify-start'>
-      <Image
-        src={logo}
-        alt='Company logo'
-        width={100}
-        height={100}
-        className='w-[40%] h-24 object-contain'
-      />
-    </div>}
-    <h1 className='custom-primary-color text-[32px] font-bold capitalize mt-2'>
+  <div className="custom-flex-col gap-1">
+    {logo && (
+      <div className="w-16 h-16 my-2 flex items-start justify-start">
+        <Image
+          src={logo}
+          alt="Company logo"
+          width={100}
+          height={100}
+          className="w-[40%] h-24 object-contain"
+        />
+      </div>
+    )}
+    <h1 className="custom-primary-color text-[32px] font-bold capitalize mt-2">
       {title}
     </h1>
-    <p className='text-text-label text-base font-normal'>{children}</p>
+    <p className="text-text-label text-base font-normal">{children}</p>
   </div>
 );
 
@@ -68,7 +69,7 @@ export const AuthForm = forwardRef<HTMLFormElement, AuthFormProps>(
       id,
       onFormSubmit,
       setValidationErrors,
-      returnType = 'string',
+      returnType = "string",
       skipValidation,
       autoComplete,
     },
@@ -76,9 +77,9 @@ export const AuthForm = forwardRef<HTMLFormElement, AuthFormProps>(
   ) => {
     return (
       <form
-        method='post'
-        autoComplete={autoComplete ? autoComplete : 'on'}
-        encType='multipart/form-data'
+        method="post"
+        autoComplete={autoComplete ? autoComplete : "on"}
+        encType="multipart/form-data"
         id={id}
         ref={ref}
         onSubmit={(e) => {
@@ -90,16 +91,21 @@ export const AuthForm = forwardRef<HTMLFormElement, AuthFormProps>(
           const formData = new FormData(form);
           const data = formDataToString(formData);
 
+          // console.log("Raw FormData:");
+          // for (let pair of formData.entries()) {
+          //   console.log(`${pair[0]}: ${pair[1]}`);
+          // }
+
           if (skipValidation) {
             // Directly submit the form data if validation is skipped
-            onFormSubmit(returnType === 'form-data' ? formData : data, e);
+            onFormSubmit(returnType === "form-data" ? formData : data, e);
             return;
           }
 
           const validation = validateData(data);
 
           if (!objectLength(validation.invalidKeys)) {
-            onFormSubmit(returnType === 'form-data' ? formData : data, e);
+            onFormSubmit(returnType === "form-data" ? formData : data, e);
           } else {
             Object.entries(validation.invalidKeys).forEach(([key, messge]) => {
               errors.push(`${key}: ${messge}`);
@@ -120,23 +126,20 @@ export const AuthForm = forwardRef<HTMLFormElement, AuthFormProps>(
 );
 
 // Ensure to use displayName for better debugging
-AuthForm.displayName = 'AuthForm';
+AuthForm.displayName = "AuthForm";
 
 // AuthAction Component: Renders a form's alternative action with a link
 export const AuthAction: React.FC<AuthActionProps> = ({
-  href = '',
+  href = "",
   children,
   linkText,
 }) => (
   // Render a paragraph with children content and a link
-  <p className='text-text-black text-sm md:text-base font-normal'>
-    {children}{' '}
-    <Link
-      href={href}
-      className='custom-primary-color font-medium capitalize'
-    >
+  <p className="text-text-black text-sm md:text-base font-normal">
+    {children}{" "}
+    <Link href={href} className="custom-primary-color font-medium capitalize">
       {/* Render link text or a default value if not provided */}
-      {linkText || 'link'}
+      {linkText || "link"}
     </Link>
   </p>
 );
@@ -157,7 +160,7 @@ export const AuthPinField: React.FC<AuthPinFieldProps> = ({
   }, []);
 
   return (
-    <div className='flex justify-center gap-6'>
+    <div className="flex justify-center gap-6">
       {/* 
         Render the PinField component, using the ref to track the input fields.
         The onChange prop is passed down to handle changes in the input values.
@@ -166,11 +169,11 @@ export const AuthPinField: React.FC<AuthPinFieldProps> = ({
       <PinField
         length={length || 4} // Defines the length of the pin (number of inputs)
         ref={pinFieldRef} // Attach the ref to the PinField
-        inputMode='numeric' // Ensure that the input is numeric
+        inputMode="numeric" // Ensure that the input is numeric
         onChange={onChange} // Handle input changes
         validate={/^[0-9]$/} // Regex to allow only numeric characters
-        className='w-[35px] h-10 text-center custom-primary-color rounded-[4px] border border-solid custom-primary-outline bg-background-1'
-        style={{ borderColor: 'rgba(186, 199, 213, 0.50)' }} // Inline style for border color
+        className="w-[35px] h-10 text-center custom-primary-color rounded-[4px] border border-solid custom-primary-outline bg-background-1"
+        style={{ borderColor: "rgba(186, 199, 213, 0.50)" }} // Inline style for border color
       />
     </div>
   );
@@ -180,11 +183,11 @@ export const AuthPinField: React.FC<AuthPinFieldProps> = ({
 export const AuthNewPassword: React.FC<AuthNewPasswordProps> = ({
   setValue,
   validationErrors,
-  label = 'password',
+  label = "password",
   className,
 }) => {
-  const empty_label = 'empty'; // Default label when no conditions are met
-  const empty_color = '#E8EDF1'; // Default color when no conditions are met
+  const empty_label = "empty"; // Default label when no conditions are met
+  const empty_color = "#E8EDF1"; // Default color when no conditions are met
 
   // State to manage the current password strength label and color
   const [strength, setStrength] = useState({
@@ -222,22 +225,22 @@ export const AuthNewPassword: React.FC<AuthNewPasswordProps> = ({
     gsap.to(barRef.current, {
       width: `${percentage_complete}%`,
       backgroundColor: current_strength.color,
-      ease: 'expo.out',
+      ease: "expo.out",
     });
   };
 
   return (
     <div className={`custom-flex-col gap-2 ${className}`}>
       <Input
-        id='password'
-        type='password'
+        id="password"
+        type="password"
         label={label}
-        placeholder='Write here'
+        placeholder="Write here"
         onChange={handleOnChange}
         validationErrors={validationErrors} // Uncomment this line if validation errors are being handled elsewhere
       />
-      <div className='flex gap-5 items-center justify-between'>
-        <div className='flex w-[200px]'>
+      <div className="flex gap-5 items-center justify-between">
+        <div className="flex w-[200px]">
           <FlowProgressBar
             ref={barRef}
             bg_color={empty_color} // Set initial background color
@@ -245,7 +248,7 @@ export const AuthNewPassword: React.FC<AuthNewPasswordProps> = ({
           />
         </div>
         <p
-          className='text-xs font-normal capitalize'
+          className="text-xs font-normal capitalize"
           style={{ color: strength.color }} // Apply the current strength color to the label
         >
           {strength.label} {/* Display the current password strength label */}

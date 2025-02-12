@@ -51,7 +51,8 @@ const Landlord = () => {
     const [pageData, setPageData] = useState<LandlordsPageData>(
         initialLandlordsPageData
     );
-    // console.log("branch", branchId)
+
+    console.log(pageData)
     const {
         total_pages,
         current_page,
@@ -248,6 +249,7 @@ const Landlord = () => {
                 </BackButton>
             </div>
 
+            {/* Filter header component */}
             <FilterBar
                 azFilter
                 gridView={view === "grid"}
@@ -294,6 +296,7 @@ const Landlord = () => {
                         : []),
                 ]}
             />
+            {/* Populate the list view */}
             <section>
                 {landlords.length === 0 && !silentLoading ? (
                     config.params.search || isFilterApplied() ? (
