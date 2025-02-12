@@ -81,14 +81,12 @@ const AddServiceProviderForm = ({
       toast.warning("Please upload a picture or select an avatar");
       return;
     }
-    setIsLoading(true);
+    
     cleanPhoneNumber(data);
     if (!data.get("phone_number")) {
       data.append("phone_number", "");
     }
-    console.log(avatar);
-    await submitAction(data);
-    setIsLoading(false);
+    submitAction(data);
   };
 
   const companyId = usePersonalInfoStore((state) => state.company_id);
@@ -197,12 +195,11 @@ const AddServiceProviderForm = ({
         <div className="flex justify-between items-end gap-4 flex-wrap">
           <div className="custom-flex-col gap-3">
             <p className="text-black text-base font-medium">
-              Upload picture or select an avatar.
+             <span className="text-red-500 text-lg">*</span> Upload picture or select an avatar.
             </p>
             <div className="flex items-end gap-3">
               <label htmlFor="avatar" className="cursor-pointer relative">
                 <div className="flex justify-start items-start">
-                  <p className="text-red-500 text-lg">*</p>
                   <Picture src={preview} alt="Camera" size={70} rounded />
                 </div>
                 {preview && preview !== CameraCircle && (
@@ -220,7 +217,6 @@ const AddServiceProviderForm = ({
                 )}
 
                 <input
-                  required
                   type="file"
                   id="avatar"
                   name="avatar"

@@ -67,8 +67,8 @@ const AddServiceProviderModal = () => {
   };
 
   const handleCreateProvider = async (data: FormData) => {
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await createServiceProvider(data);
       if (response) {
         toast.success("Service provider created successfully");
@@ -128,8 +128,12 @@ const AddServiceProviderModal = () => {
             />
 
             <div className="flex justify-center">
-              <Button type="submit" size="base_medium" className="py-2 px-8"
-              disabled={inviteByPhoneLoading}>
+              <Button
+                type="submit"
+                size="base_medium"
+                className="py-2 px-8"
+                disabled={inviteByPhoneLoading}
+              >
                 invite
               </Button>
             </div>
