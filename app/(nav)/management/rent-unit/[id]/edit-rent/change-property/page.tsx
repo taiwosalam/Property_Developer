@@ -125,7 +125,7 @@ const ChangePropertyPage: React.FC = () => {
       <RentSectionTitle>Select New Unit For Tenant</RentSectionTitle>
       <section className="space-y-4">
         {propertyData.units
-          .filter((u) => u.unitStatus === "vacant")
+          .filter((u) => u.unitStatus === "vacant" || u.unitStatus === "relocate")
           .map((u, index) => (
             <PropertySwitchUnitItem
               key={index}
@@ -135,7 +135,22 @@ const ChangePropertyPage: React.FC = () => {
               isRental={isRental}
               {...u}
             />
-          ))}
+          )).length > 0 ? (
+            propertyData.units
+              .filter((u) => u.unitStatus === "vacant" || u.unitStatus === "relocate")
+              .map((u, index) => (
+          <PropertySwitchUnitItem
+            key={index}
+            id={u.unitId}
+            isSelected={selectedUnitId === u.unitId}
+            onSelect={handleUnitSelect}
+            isRental={isRental}
+            {...u}
+          />
+              ))
+          ) : (
+            <div className="flex items-center w-full justify-center">You do not have any Vacant Unit</div>
+          )}
       </section>
       <FixedFooter className="flex justify-end">
         <Button

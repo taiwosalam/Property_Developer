@@ -10,6 +10,7 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { ActionButton } from "./action-button";
 import { RentalPropertyCardProps } from "@/app/(nav)/management/rent-unit/data";
 import { formatNumber } from "@/utils/number-formatter";
+import { StatusDots } from "./status-dot";
 
 const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   propertyType,
@@ -34,11 +35,12 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
           Unit ID: {unitId} {status}
         </span>
         <div className="flex items-center gap-1 flex-wrap">
-          <div
+          {/* <div
             key={status}
             className="w-4 h-4 rounded-full"
             style={{ backgroundColor: getBackgroundColor(status) }}
-          />
+          /> */}
+          <StatusDots status={status} />
         </div>
       </div>
       <div className="flex items-center justify-between gap-4 py-4 border-y border-gray-200 overflow-y-auto">
@@ -98,7 +100,7 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
                   : action.label;
 
               // Define button visibility based on status
-              if (status === "vacant") {
+              if (status === "vacant" || status === "relocate") {
                 return label === "Start Rent" || label === "Start Counting";
               }
               if (status === "occupied") {

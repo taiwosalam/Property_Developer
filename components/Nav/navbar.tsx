@@ -40,7 +40,7 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
 import { ProfileResponse } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { getLocalStorage } from "@/utils/local-storage";
+import { getLocalStorage, saveLocalStorage } from "@/utils/local-storage";
 import { useRole } from "@/hooks/roleContext";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { useThemeStoreSelectors } from "@/store/themeStore";
@@ -89,6 +89,7 @@ const Header = () => {
     if (appearance && !hasMounted.current) {
       // Run this only once during initialization
       const { colorMode, view, navbar, fonts, dashboardColor } = appearance;
+      saveLocalStorage("navbar", navbar);  // Save navbar to local storage for fixed footer, change later
       setColor(dashboardColor);
       applyFont(fonts);
       setTheme(colorMode);

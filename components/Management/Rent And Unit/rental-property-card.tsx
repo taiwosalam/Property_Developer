@@ -11,6 +11,7 @@ import PropertyTag from "@/components/Tags/property-tag";
 import { useRouter } from "next/navigation";
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import { RentalPropertyCardProps } from "@/app/(nav)/management/rent-unit/data";
+import { StatusDots } from "./status-dot";
 
 export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
   images,
@@ -166,11 +167,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               {unit_title}
             </h3>
             <div className="flex items-center space-x-1">
-              <div
-                key={status}
-                className="w-[15px] h-[15px] rounded-full"
-                style={{ backgroundColor: getBackgroundColor(status) }}
-              />
+              <StatusDots status={status} propertyType={propertyType} />
             </div>
           </div>
           <p className="text-sm font-normal">
@@ -220,7 +217,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
                 : action.label;
 
             // Define button visibility based on status
-            if (status === "vacant") {
+            if (status === "vacant" || status === "relocate") {
               return label === "Start Rent" || label === "Start Counting";
             }
             if (status === "occupied") {

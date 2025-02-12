@@ -1,4 +1,5 @@
 import type { Field } from "@/components/Table/types";
+import api, { handleAxiosError } from "@/services/api";
 
 export const rentRecordsTableFields: Field[] = [
   { id: "1", label: "S/N", accessor: "S/N" },
@@ -57,3 +58,31 @@ export const getPropertySettingsData = (unit_data: any): PropertySetting[] => {
     { label: "Rent Penalty", value: unit_data.rent_penalty },
   ];
 };
+
+
+///tenant-rent/4/switch
+export const switchUnit = async (id: String, data: any) => {
+  try{
+    const res = await api.post(`/tenant-rent/${id}/switch`, data);
+    if (res.status === 200) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+}
+
+
+// /tenant-rent/edit
+export const editRent = async (data: any) => {
+  try{
+    const res = await api.post(`/tenant-rent/edit`, data);
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+}

@@ -27,7 +27,7 @@ const ManageInvoice = () => {
             direction="column"
             referenceObject={{
               "invoice id": "",
-              "customer name": "",
+              "unit name": "",
               "property name": "",
               date: "",
               "account officer": "",

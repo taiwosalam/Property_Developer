@@ -7,7 +7,7 @@ const CreateInvoiceModal = () => {
   const router = useRouter();
   return (
     <LandlordTenantModalPreset
-      heading="Add Property"
+      heading="Create Invoice"
       style={{ maxWidth: "600px", height: "400px" }}
     >
       <div className="space-y-5 max-w-[300px] mx-auto mt-5">
