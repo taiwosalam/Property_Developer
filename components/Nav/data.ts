@@ -59,11 +59,11 @@ export const nav_items: NavItemsProps = [
     label: "accounting",
     content: [
       { label: "invoice", href: "/invoice" },
-      { label: "receipts", href: "/receipts" },
+      { label: "VAT", href: "/vat" },
+      // { label: "receipts", href: "/receipts" },
       { label: "expenses", href: "/expenses" },
       { label: "disbursement", href: "/disbursement" },
       { label: "statement", href: "/statement" },
-      { label: "VAT", href: "/vat" },
     ],
   },
   {

@@ -32,6 +32,8 @@ import dayjs from "dayjs";
 import { formatNumber } from "@/utils/number-formatter";
 import { toast } from "sonner";
 import { getPropertySettingsData, getRentalData } from "./data";
+import { switchUnit } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/data";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
 const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => {
   const router = useRouter();
@@ -39,6 +41,11 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const id = searchParams.get("p");
   const isRental = propertyType === "rental";
+  const [reqLoading, setReqLoading] = useState(false);
+  const [startDate, setStartDate] = useState<string | null>(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+
   const {
     occupant,
     propertyData,
@@ -100,12 +107,38 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
   const bal = startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
   const newUnitTotal = calculation ? Number(unit_data.newTenantTotalPrice) : Number(unit_data.renewalTenantTotalPrice);
   const totalPayable = !deduction ? newUnitTotal - bal : newUnitTotal;
-    const prev_unit_bal = bal ? `${'₦'}${formatNumber(
-      parseFloat(`${bal}`)
-    )}` : undefined;
+  const prev_unit_bal = bal ? `${'₦'}${formatNumber(
+    parseFloat(`${bal}`)
+  )}` : undefined;
 
-  const rentalData = getRentalData(propertyData); 
+  const rentalData = getRentalData(propertyData);
   const propertySettingsData = getPropertySettingsData(propertyData);
+
+  // FUNCTION TO SWITCH UNIT
+  const handleSwitchUnit = async () => {
+    const id = balance[0].id;
+    const data = {
+      new_unit_id: selectedUnitId,
+      calculation: calculation ? 1 : 0,
+      deduction: deduction ? 1 : 0,
+      payment_date: startDate,
+    };
+    console.log("payload", data)
+    try {
+      setReqLoading(true);
+      const res = await switchUnit(id as string, objectToFormData(data));
+      if (res) {
+        setModalIsOpen(true);
+        toast.success("Record Added Successfully");
+        // router.push("/management/rent-unit");
+      }
+    } catch (err) {
+      toast.error("Failed to switch Unit, please try again");
+    } finally {
+      setReqLoading(false);
+    }
+  }
+
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Change Property Unit</BackButton>
@@ -140,8 +173,8 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
                   name: "Service Charge",
                   amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
                 },
-                { 
-                  name: "Other Charges", 
+                {
+                  name: "Other Charges",
                   amount: (unit_data?.other_charge)
                 },
               ]}
@@ -155,12 +188,14 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
               isRental={isRental}
               feeDetails={[
                 {
-                  name: isRental ? "Rent" : "Fee",
-                  amount: calculation ? (unit_data.newTenantPrice as any) : (unit_data.renewalTenantPrice),
+                  name: "Previous Unit",
+                  amount: (prev_unit_bal as any),
+                  // amount: calculation ? (unit_data.newTenantPrice as any) : (unit_data.renewalTenantPrice),
                 },
                 {
-                  name: "Service Charge",
-                  amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
+                  name: "Current Unit",
+                  amount: (unit_data.newTenantPrice as any),
+                  // amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
                 },
                 { name: "Other Charges", amount: (unit_data.other_charge) },
               ]}
@@ -172,6 +207,7 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
               rentPeriod="yearly"
               title={`Start ${isRental ? "Rent" : "Counting"}`}
               start
+              setStart_Date={setStartDate}
             />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px]">
@@ -190,12 +226,18 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
       </section>
 
       <FixedFooter className="flex items-center justify-end">
-        <Modal>
-          <ModalTrigger asChild>
-            <Button size="base_medium" className="py-2 px-6">
-              Proceed
-            </Button>
-          </ModalTrigger>
+        {/* <ModalTrigger asChild> */}
+        <Button
+          size="base_medium"
+          className="py-2 px-6"
+          disabled={reqLoading}
+          onClick={handleSwitchUnit}>
+          {reqLoading ? "Please wait..." : "Proceed"}
+        </Button>
+        {/* </ModalTrigger> */}
+        <Modal
+          state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}
+        >
           <ModalContent>
             <ModalPreset type="success" className="w-full">
               <div className="flex flex-col gap-8">

@@ -59,9 +59,9 @@ const CreateInvoicePage = () => {
         <Details />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Select
-            id="client_name"
-            options={["Client Name", "Client Name 2"]}
-            label="Client Name"
+            id="unit_name"
+            options={["Unit 1", "Unit 2"]}
+            label="Unit Name"
             disabled={isSelectDisabled}
           />
           <Checkbox

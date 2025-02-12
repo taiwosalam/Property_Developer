@@ -90,7 +90,8 @@ export const RenewalRent: React.FC<{
   rentPeriod: RentPeriod;
   title?: string;
   start?: boolean;
-}> = ({ isRental, rentPeriod, title, start }) => {
+  setStart_Date?: (date: string | null) => void;
+}> = ({ isRental, rentPeriod, title, start, setStart_Date }) => {
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
 
@@ -134,6 +135,13 @@ export const RenewalRent: React.FC<{
     setDueDate(calculateDueDate(startDate, rentPeriod));
   }, [startDate, rentPeriod]);
 
+  const handleStartDate = (date: Dayjs | null) => {
+    setStartDate(date);
+    if(setStart_Date){
+      setStart_Date(date?.format("YYYY-MM-DD") || null);
+    }
+  }
+  
   return (
     <div>
       <RentSectionTitle>
@@ -146,7 +154,7 @@ export const RenewalRent: React.FC<{
           label="Payment Date"
           disablePast
           value={startDate}
-          onChange={setStartDate}
+          onChange={handleStartDate}
         />
         <DateInput
           id="due_date"

@@ -32,7 +32,7 @@ import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import dayjs from "dayjs";
-import { getPropertySettingsData, getRentalData } from "../data";
+import { getPropertySettingsData, getRentalData, switchUnit } from "../data";
 import { toast } from "sonner";
 
 const ChangeUnitpage = () => {
@@ -42,6 +42,10 @@ const ChangeUnitpage = () => {
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const isRental = propertyType === "rental";
   const router = useRouter();
+  const [reqLoading, setReqLoading] = useState(false);
+  const [startDate, setStartDate] = useState<string | null>(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
   const {
     occupant,
     propertyData,
@@ -110,7 +114,33 @@ const ChangeUnitpage = () => {
     parseFloat(`${bal}`)
   )}` : undefined;
 
-  // console.log("Total Payable:", totalPayable);
+  // console.log("Total Payable:", balance[0].id);
+
+  //FUNCTION TO SWITH UNIT
+  const handleSwitchUnit = async () => {
+    const id = balance[0].id;
+    const data = {
+      new_unit_id: selectedUnitId,
+      calculation: calculation ? 1 : 0,
+      deduction: deduction ? 1 : 0,
+      payment_date: startDate,
+    };
+
+    // console.log("payload", data)
+    try {
+      setReqLoading(true);
+      const res = await switchUnit(id as string, data);
+      if (res) {
+        setModalIsOpen(true);
+        toast.success("Record Added Successfully");
+        // router.push("/management/rent-unit");
+      }
+    } catch (err) {
+      toast.error("Failed to switch Unit, please try again");
+    } finally {
+      setReqLoading(false);
+    }
+  }
 
   return (
     <div className="space-y-6 pb-[100px]">
@@ -181,6 +211,7 @@ const ChangeUnitpage = () => {
               rentPeriod="yearly"
               title={`Start ${isRental ? "Rent" : "Fee"}`}
               start
+              setStart_Date={setStartDate}
             />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px]">
@@ -196,28 +227,35 @@ const ChangeUnitpage = () => {
       </section>
 
       <FixedFooter className="flex items-center justify-end">
-        <Modal>
-          <ModalTrigger asChild>
-            <Button size="base_medium" className="py-2 px-6">
-              Proceed
-            </Button>
-            <ModalContent>
-              <ModalPreset type="success" className="w-full">
-                <div className="flex flex-col gap-8">
-                  <p className="text-text-tertiary text-sm">
-                    Record Added Successfully
-                  </p>
-                  <Button
-                    onClick={() => {
-                      router.push("/management/rent-unit");
-                    }}
-                  >
-                    OK
-                  </Button>
-                </div>
-              </ModalPreset>
-            </ModalContent>
-          </ModalTrigger>
+        {/* <ModalTrigger asChild> */}
+        <Button
+          size="base_medium"
+          className="py-2 px-6"
+          disabled={reqLoading}
+          onClick={handleSwitchUnit}
+        >
+          {reqLoading ? "Please wait..." : "Proceed"}
+        </Button>
+        <Modal
+          state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}
+        >
+          <ModalContent>
+            <ModalPreset type="success" className="w-full">
+              <div className="flex flex-col gap-8">
+                <p className="text-text-tertiary text-sm">
+                  Record Added Successfully
+                </p>
+                <Button
+                  onClick={() => {
+                    router.push("/management/rent-unit");
+                  }}
+                >
+                  OK
+                </Button>
+              </div>
+            </ModalPreset>
+          </ModalContent>
+          {/* </ModalTrigger> */}
         </Modal>
       </FixedFooter>
     </div>
