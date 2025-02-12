@@ -28,5 +28,5 @@ export const serviceProviderData: ServiceProviderData = {
     write_up:
       "Hello World How are you doing today? Dont come late to work tomorrow and dont come last in your exams",
   },
-
 };
+

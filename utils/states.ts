@@ -2,7 +2,7 @@ import { states } from "@/data";
 
 export const getAllStates = (): string[] => {
   const allStates = Array.from(
-    new Set(states.map((stateObj) => Object.keys(stateObj)[0]))
+    new Set(states.map((stateObj) => Object?.keys(stateObj)[0]))
   ).sort();
   // console.log(allStates.length);
   return allStates;
@@ -11,7 +11,7 @@ export const getAllStates = (): string[] => {
 export const getLocalGovernments = (stateName: string): string[] => {
   const state = states.find(
     (stateObj) =>
-      Object.keys(stateObj)[0].toLowerCase() === stateName.toLowerCase()
+      Object.keys(stateObj)[0].toLowerCase() === stateName?.toLowerCase()
   );
   if (state) {
     const stateKey = Object.keys(state)[0]; // Get the actual key from the state object

@@ -61,6 +61,7 @@ interface FilterBarProps extends FilterModalProps {
   noFilterButton?: boolean;
   isDateTrue?: boolean;
   handleFilterApply: (filters: any) => void;
+  inputOff?: boolean
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -87,6 +88,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
   appliedFilters,
   dateLabel,
   noFilterButton,
+  inputOff
 }) => {
   return (
     <div className='page-title-container w-full'>
@@ -155,6 +157,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
               filterOptionsMenu={filterOptionsMenu}
               appliedFilters={appliedFilters}
               dateLabel={dateLabel}
+              inputOff={inputOff}
             />
           </ModalContent>
         </Modal>

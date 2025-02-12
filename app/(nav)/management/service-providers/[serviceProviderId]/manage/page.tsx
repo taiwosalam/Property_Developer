@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { secondaryFont } from "@/utils/fonts";
 import {
   LandlordTenantInfoBox as InfoBox,
@@ -17,29 +17,55 @@ import UserTag from "@/components/Tags/user-tag";
 import SampleLogo from "@/public/empty/SampleLogo.jpeg";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { ChevronLeft } from "@/public/icons/icons";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import ServiceCard from "@/components/tasks/service-providers/service-card";
 import useDarkMode from "@/hooks/useCheckDarkMode";
-import type { ServiceProviderData } from "./types";
-import { serviceProviderData as Mockdata } from "./data";
+import type {
+  ServiceProviderData,
+  ServiceProviderDetailsResponse,
+  ServiceProviderPageDetails,
+} from "./types";
+import {
+  serviceProviderData as Mockdata,
+  remapServiceProviderData,
+} from "./data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { useSearchParams } from "next/navigation";
+import useFetch from "@/hooks/useFetch";
+import NetworkError from "@/components/Error/NetworkError";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const ManageServiceProvider = () => {
+  const params = useParams();
+  const paramId = params.serviceProviderId;
+  const {
+    data: apiData,
+    error,
+    isNetworkError,
+    loading,
+    refetch,
+    silentLoading,
+  } = useFetch<ServiceProviderDetailsResponse>(`service-providers/${paramId}`);
+
+  const providerData = apiData?.data
   // remove this search params stuff later
   const searchParams = useSearchParams();
   const tag = searchParams.get("user_tag");
   const isDarkMode = useDarkMode();
   const router = useRouter();
-  // const [serviceProviderData, setServiceProviderData] =
-  //   useState<ServiceProviderData | null>(Mockdata);
+
   const serviceProviderData = {
     ...Mockdata,
     user_tag: tag,
   } as ServiceProviderData;
 
   if (!serviceProviderData) return null;
-  const { notes, user_tag } = serviceProviderData;
+  const { notes, user_tag = "web" } = serviceProviderData;
+
+  if (loading) return <CustomLoader layout="profile" />;
+  if (isNetworkError) return <NetworkError />;
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-5">
@@ -58,7 +84,7 @@ const ManageServiceProvider = () => {
               <ChevronLeft />
             </button>
             <Picture
-              src={DefaultLandlordAvatar}
+              src={providerData?.avatar ? providerData.avatar : DefaultLandlordAvatar}
               alt="profile picture"
               size={120}
               rounded
@@ -66,22 +92,23 @@ const ManageServiceProvider = () => {
             <div className="custom-flex-col gap-4">
               <div className="custom-flex-col">
                 <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                  Abimbola Adedeji
+                  {providerData?.name}
                 </p>
                 <p
                   style={{ color: isDarkMode ? "#FFFFFF" : "#151515B3" }}
                   className={`${secondaryFont.className} text-sm font-normal dark:text-darkText-1`}
                 >
-                  abimbola@gmail.com
+                  {providerData?.email}
                 </p>
               </div>
-              <UserTag type={user_tag} />
+
+             { providerData?.agent === "web" && <UserTag type="web" />}
               {user_tag === "mobile" && (
                 <div className="custom-flex-col gap-1">
                   <p className="text-base font-normal">
-                    Wallet ID: 22132876554444
+                  {providerData?.wallet_id ? providerData?.wallet_id : "---"}
                   </p>
-                  <p className="text-base font-normal">Phone NO: 08132086958</p>
+                  <p className="text-base font-normal">Phone NO: ${providerData?.phone ?? "---"}</p>
                 </div>
               )}
             </div>
@@ -112,7 +139,7 @@ const ManageServiceProvider = () => {
                 <Button
                   size="base_medium"
                   className="py-2 px-8"
-                  href={"/management/service-providers/1/manage/edit"}
+                  href={`/management/service-providers/${paramId}/manage/edit`}
                 >
                   Manage
                 </Button>
@@ -124,15 +151,15 @@ const ManageServiceProvider = () => {
           </div>
         </InfoBox>
 
-        {user_tag === "web" ? (
+        {!(user_tag === "web") ? (
           <ContactInfo
             containerClassName="flex flex-col justify-center rounded-lg"
             info={{
-              "Company Name": "Abmbola Services",
-              "Full name": "Abimbola Adedeji",
-              email: "abimbolaadedeji@gmail.com",
-              "Company Phone": "+2348132086958 ; +2348132086958",
-              services: "Painter",
+              "Company Name": providerData?.company_name ? providerData.company_name : "",
+              "Full name": providerData?.name ?? "---",
+              email: providerData?.name,
+              "Company Phone": providerData?.company_phone ?? "---",
+              services: providerData?.service_render ?? "---",
             }}
           />
         ) : (
@@ -147,12 +174,9 @@ const ManageServiceProvider = () => {
               height={67}
               containerClassName="ml-10"
             />
-            <p className="font-normal text-xs text-text-quaternary dark:text-darkText-1">
-              A multi-family home, also know as a duplex, triplex, or multi-unit
-              building, is a residential property that living read more. They
-              want to work with their budget in booking an appointment. They
-              wants to ease themselves of the stress of having to que, and also
-              reduce.
+            <p className="font-normal text-xs text-text-quaternary dark:text-darkText-1"
+            dangerouslySetInnerHTML={{__html: providerData?.note ?? "---"}}>
+             
             </p>
           </InfoBox>
         )}
@@ -178,18 +202,18 @@ const ManageServiceProvider = () => {
           containerClassName="rounded-lg"
           heading="bank details"
           info={{
-            "bank name": "---",
-            "Bank Account No": "---",
-            "Account Name": "---",
+            "bank name": providerData?.bank_name ?? "---",
+            "Bank Account No": providerData?.account_number ?? "---",
+            "Account Name": providerData?.account_name ?? "---",
           }}
         />
         <ContactInfo
           containerClassName="rounded-lg"
           heading="Contact Address"
           info={{
-            "Company Address": "U4, Joke Palza bodija ibadan.",
-            state: "Oyo State",
-            "Local Government": "Akinyele",
+            "Company Address": providerData?.company_address ?? "---",
+            state: providerData?.state ?? "---",
+            "Local Government": providerData?.local_government ?? "---",
           }}
         />
         {user_tag === "web" && <NotesInfoBox notes={notes} />}

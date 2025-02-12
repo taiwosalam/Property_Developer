@@ -24,7 +24,7 @@ const UserCard: React.FC<UserCardProps> = ({
 }) => {
   return (
     <div
-      className="h-full border border-brand-tertiary bg-[#F9F9F9] dark:bg-[#020617] dark:border-[#3C3D37] p-2 rounded-lg flex gap-2 items-start"
+      className="h-full border border-brand-tertiary bg-[#F9F9F9] dark:bg-[#020617] dark:border-[#3C3D37] p-2 rounded-lg flex gap-2 justify-center items-center"
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="rounded-lg relative overflow-hidden flex-shrink-0 w-[82px] h-[90px] bg-[#F0F2F5]">
@@ -39,7 +39,7 @@ const UserCard: React.FC<UserCardProps> = ({
       <div className="flex-1 flex flex-col items-start">
         <p className="flex items-center font-bold text-black dark:text-darkText-1 text-sm capitalize">
           <span className="text-ellipsis line-clamp-1 break-all">{name}</span>
-          {badge_color && <BadgeIcon color={badge_color} />}
+          {badge_color && user_tag && <BadgeIcon color={badge_color} />}
         </p>
         <p className="font-normal text-black dark:text-darkText-1 text-xs mb-1 text-ellipsis line-clamp-1 break-all">
           {email}
@@ -55,7 +55,7 @@ const UserCard: React.FC<UserCardProps> = ({
           {phone_number}
         </p>
         {other_info && (
-          <p className="font-medium text-xs text-black dark:text-darkText-1 mt-2 text-ellipsis line-clamp-2">
+          <p className="w-40 font-medium text-xs text-black dark:text-darkText-1 mt-2 text-ellipsis line-clamp-1">
             {other_info}
           </p>
         )}
