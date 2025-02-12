@@ -266,7 +266,7 @@ const ServiceProviders = () => {
               title="You have not created any service providers yet"
               body={
                 <p className="tracking-wider">
-                  No service provider records found" means there are currently
+                  No service provider records found means there are currently
                   no registered or available service providers in the system.
                   Service providers refer to artisans and skilled workers
                   essential for property management, including carpenters,
