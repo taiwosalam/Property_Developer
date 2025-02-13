@@ -57,7 +57,7 @@ export const transformPropertyFormData = (
     property_type: data.property_type,
     branch_id: data.branch_id,
     inventory_id: data.inventory_id,
-    land_lord_id: data.land_lord_id,
+    landlord_id: data.land_lord_id,
     // land_lord_id: landlord_id,
     company_id,
     agency_fee: isNaN(parseFloat(data.agency_fee))

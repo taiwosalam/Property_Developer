@@ -67,14 +67,14 @@ const TextArea: React.FC<TextAreaProps> = ({
   const [cursorPosition, setCursorPosition] = useState({ top: 0, left: 0 });
   const { content: apiContent, error: apiError, generateText, loading } = useTextGenerator();
 
-  useEffect(() => {
-    if (apiContent?.length) {
-      setSuggestions(apiContent);
-      setShowSuggestion(true); // Show suggestions when they exist
-    } else {
-      setShowSuggestion(false); // Hide suggestions if the list is empty
-    }
-  }, [apiContent]);
+  // useEffect(() => {
+  //   if (apiContent?.length) {
+  //     setSuggestions(apiContent);
+  //     setShowSuggestion(true); // Show suggestions when they exist
+  //   } else {
+  //     setShowSuggestion(false); // Hide suggestions if the list is empty
+  //   }
+  // }, [apiContent]);
 
   const updateCursorPosition = () => {
     const editor = quillRef.current?.getEditor();
@@ -89,16 +89,16 @@ const TextArea: React.FC<TextAreaProps> = ({
     }
   };
 
-  const insertSuggestionAtCursor = (text: string) => {
-    const editor = quillRef.current?.getEditor();
-    if (editor) {
-      const range = editor.getSelection();
-      if (range) {
-        editor.deleteText(range.index, range.length);
-        editor.insertText(range.index, text);
-      }
-    }
-  };
+  // const insertSuggestionAtCursor = (text: string) => {
+  //   const editor = quillRef.current?.getEditor();
+  //   if (editor) {
+  //     const range = editor.getSelection();
+  //     if (range) {
+  //       editor.deleteText(range.index, range.length);
+  //       editor.insertText(range.index, text);
+  //     }
+  //   }
+  // };
 
   // const handleKeyDown = (e: KeyboardEvent) => {
   //   const editor = quillRef.current?.getEditor();
@@ -142,7 +142,7 @@ const TextArea: React.FC<TextAreaProps> = ({
 
     const newTimeout = setTimeout(() => {
       if (content && content.length >= 20) {
-        generateText("Autocomplete", content);
+        // generateText("Autocomplete", content);
         setShowSuggestion(true);
       } else {
         setShowSuggestion(false);

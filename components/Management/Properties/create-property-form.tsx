@@ -212,6 +212,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       icon: landlord.picture,
     })) || [];
 
+  console.log("landlord options", propertyDetails)
+
   const officerOptions =
     accountOfficerData?.data.map((officer: any) => ({
       value: officer.id,
@@ -552,24 +554,38 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             }
             <div className='bg-transparent flex flex-col gap-2 self-end'>
               <label className='text-text-label dark:text-darkText-2'>Staff</label>
-              <MultiSelect
+              {/* <MultiSelect
                 options={staffOption}
                 onValueChange={setSelectedStaffs}
-                // defaultValue={
-                //   editMode && propertyDetails?.staff_id
-                //     ? staffOption.find(
-                //       (staff) =>
-                //         String(staff.value) === String(propertyDetails.staff_id)
-                //     )?.label || ''
-                //     : undefined
-                // }
+                defaultValue={
+                  editMode && propertyDetails?.staff_id
+                    ? staffOption.find(
+                      (staff) =>
+                        String(staff.value) === String(propertyDetails.staff_id)
+                    )?.label || ''
+                    : undefined
+                }
                 // defaultValue={selectedFrameworks}
                 placeholder="Select staffs"
                 variant="default"
                 // animation={2}
                 maxCount={1}
                 className="bg-white dark:bg-darkText-primary dark:border dark:border-solid dark:border-[#C1C2C366] hover:bg-white dark:hover:bg-darkText-primary text-black dark:text-white py-3"
+              /> */}
+              <MultiSelect
+                options={staffOption}
+                onValueChange={setSelectedStaffs}
+                defaultValue={
+                  editMode && propertyDetails?.staff_id
+                    ? [String(propertyDetails.staff_id)]
+                    : []
+                }
+                placeholder="Select staffs"
+                variant="default"
+                maxCount={1}
+                className="bg-white dark:bg-darkText-primary dark:border dark:border-solid dark:border-[#C1C2C366] hover:bg-white dark:hover:bg-darkText-primary text-black dark:text-white py-3"
               />
+
             </div>
             <TextArea
               id='description'
