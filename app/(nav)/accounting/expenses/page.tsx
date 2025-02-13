@@ -188,6 +188,7 @@ const AccountingExpensesPage = () => {
               trendColor="green"
               percentage={4.3}
             />
+            <img src="https://khrimisay.s3.eu-north-1.amazonaws.com/utter/rHJ2CHenXMDuEnzwqveGdJu9V2d4vEUELMTIGDXb.png" alt="hhhh" />
           </AutoResizingGrid>
         </div>
       </div>

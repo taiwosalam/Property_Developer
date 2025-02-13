@@ -90,7 +90,7 @@ const AIPopOver = ({
   // Watch for content updates and set editorValue with formatted content
   useEffect(() => {
     if (content) {
-      // console.log("Formatted content", content)
+      console.log("Formatted content", content)
       setEditorValue(content); // Update editorValue only when contentGenerated changes
       
     }

@@ -9,6 +9,7 @@ import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { checkValidatonError } from "@/utils/validation";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import Image from "next/image";
+import { empty } from "@/app/config";
 
 const SelectWithImage: React.FC<SelectProps> = ({
   id,
@@ -209,23 +210,23 @@ const SelectWithImage: React.FC<SelectProps> = ({
           {/* Conditionally render input or selected value based on `isSearchable` */}
           {selectedValue && !isOpen ? (
             <div className="flex items-center gap-1">
-                {selectedIcon && (
-                        // <IconComponent className="h-4 w-4 mr-2" />
-                        <div className="custom-secondary-bg p-[2px] h-5 w-5 mr-[1px] rounded-full items-center">
-                          <Image
-                            src={selectedIcon as string}
-                            alt={`${selectedLabel} icon`}
-                            width={20}
-                            height={20}
-                            className="w-full h-full object-contain"
-                          />
-                        </div>
-                      )}
-            <span
-              className={clsx(
-                "flex-1 capitalize text-text-disabled dark:bg-transparent text-xs md:text-sm font-normal",
-                inputTextClassName
+              {selectedIcon && selectedIcon !== "null" && (
+                <div className="custom-secondary-bg p-[2px] h-5 w-5 mr-[1px] rounded-full items-center">
+                  <Image
+                    src={selectedIcon}
+                    alt={`${selectedLabel} icon`}
+                    width={20}
+                    height={20}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
               )}
+
+              <span
+                className={clsx(
+                  "flex-1 capitalize text-text-disabled dark:bg-transparent text-xs md:text-sm font-normal",
+                  inputTextClassName
+                )}
               >
                 {selectedLabel}
               </span>
@@ -321,6 +322,7 @@ const SelectWithImage: React.FC<SelectProps> = ({
                         // <IconComponent className="h-4 w-4 mr-2" />
                         <div className="custom-secondary-bg p-[2px] h-5 w-5 mr-[1px] rounded-full items-center">
                           <Image
+                            // src={icon as string || empty}
                             src={icon as string}
                             alt={`${value}`}
                             width={20}
