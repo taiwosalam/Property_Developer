@@ -157,7 +157,7 @@ const ManageServiceProvider = () => {
             info={{
               "Company Name": providerData?.company_name ? providerData.company_name : "",
               "Full name": providerData?.name ?? "---",
-              email: providerData?.name,
+              email: providerData?.company_email ?? "---",
               "Company Phone": providerData?.company_phone ?? "---",
               services: providerData?.service_render ?? "---",
             }}

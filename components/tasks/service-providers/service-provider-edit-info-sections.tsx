@@ -9,7 +9,7 @@ import { getAllStates, getLocalGovernments } from "@/utils/states";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import Select from "@/components/Form/Select/select";
 import { useServiceProviderEditContext } from "./service-provider-edit-context";
-import { useState, useEffect, useRef, ChangeEvent } from "react";
+import { useState, useEffect, useRef, ChangeEvent, useCallback } from "react";
 import type { ServiceProviderData } from "@/app/(nav)/management/service-providers/[serviceProviderId]/manage/types";
 import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
 import CameraCircle from "@/public/icons/camera-circle.svg";
@@ -17,6 +17,8 @@ import TextArea from "@/components/Form/TextArea/textarea";
 import Picture from "@/components/Picture/picture";
 import Avatars from "@/components/Avatars/avatars";
 import Image from "next/image";
+import { debounce } from "lodash";
+
 import {
   checkFormDataForImageOrAvatar,
   cleanPhoneNumber,
@@ -48,6 +50,7 @@ import {
 } from "@/app/(nav)/settings/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { Check } from "lucide-react";
+import { CommandLoading } from "cmdk";
 
 export const ServiceProviderEditProfileInfoSection = () => {
   const { data: serviceProvider } = useServiceProviderEditContext();
@@ -276,83 +279,82 @@ export const ServiceProviderBankDetailsSection = () => {
   const params = useParams();
   const paramId = params.serviceProviderId;
 
-  const [openEdit, setOpenEdit] = useState(false);
-  const [isVerified, setIsVerified] = useState(false);
-  const [edit, setEdit] = useState(false);
-
-  const [lookupLoading, setLookupLoading] = useState(false);
-  const [bankName, setBankName] = useState("");
-  const [bankCode, setBankCode] = useState("");
-  const [showCard, setShowCard] = useState(false);
-  const [accountNumber, setAccountNumber] = useState("");
-  const [accountName, setAccountName] = useState("");
-  const [companyBankDetails, setCompanyBankDetails] = useState<BankPageData>({
-    bank_name: "",
-    account_name: "",
-    account_number: "",
-    bank_code: "",
-  });
-  const { bank_name, account_name, account_number, bank_code } =
-    companyBankDetails;
-  const bankNotAvailable =
-    bank_name === "" &&
-    account_name === "" &&
-    account_number === "" &&
-    bank_code === "";
+  // Fetching service provider details
+  const { data: apiData } = useFetch<ServiceProviderResponse>(
+    `service-providers/${paramId}`
+  );
+  const defaultVal = apiData?.data;
 
   const {
     data: bankList,
     loading: bankListLoading,
     error: bankListError,
-  } = useFetch<{
-    data: { bank_name: string; bank_code: string }[];
-  }>("bank/bank-list");
+  } = useFetch<{ data: { bank_name: string; bank_code: string }[] }>(
+    "bank/bank-list"
+  );
 
-  const {
-    data: companyBank,
-    error: companyBankError,
-    refetch: refetchCompanyBank,
-  } = useFetch<BankAPIResponse>("/banks");
-  useRefetchOnEvent("fetch-banks", () => refetchCompanyBank({ silent: true }));
+  const [providerAccountNumber, setProviderAccountNumber] = useState(
+    defaultVal?.account_number ?? ""
+  );
+  const [providerAccountName, setProviderAccountName] = useState("");
+  const [bankCode, setBankCode] = useState("");
+  const [bankName, setBankName] = useState(defaultVal?.bank_name ?? "");
+  const [isVerified, setIsVerified] = useState(false);
+  const [lookupLoading, setLookupLoading] = useState(false);
 
   useEffect(() => {
-    if (companyBank) {
-      const res = transformBank(companyBank);
-      if (res) {
-        setCompanyBankDetails(res);
-        setEdit(true);
-        setShowCard(true);
-      }
+    if (defaultVal) {
+      setProviderAccountNumber(defaultVal.account_number ?? "");
+      setProviderAccountName(defaultVal.account_name ?? "");
+      setBankName(defaultVal.bank_name ?? "");
+      setIsVerified(!!defaultVal.account_name);
     }
-  }, [companyBank]);
+  }, [defaultVal]);
 
-  useEffect(() => {
-    // Sync API data with local states
-    setBankName(bank_name || "");
-    setBankCode(bank_code || "");
-    setAccountNumber(account_number || "");
-    setAccountName(account_name || "");
-  }, [bank_name, account_name, account_number, bank_code]);
+  // Handle bank selection change
+  const handleBankChange = (value: string) => {
+    setBankCode(value);
+    setIsVerified(false);
+    setProviderAccountName("");
 
-  const handleAccountNumberChange = async (value: string) => {
-    const numericValue = value.replace(/\D/g, "");
-    setAccountNumber(numericValue.slice(0, 10));
-    setAccountName("");
+    const selectedBank = bankList?.data.find(
+      (bank) => String(bank.bank_code) === value
+    );
+    setBankName(selectedBank?.bank_name || "");
+  };
+
+  const handleProviderAccountChange = (
+    e?: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (!e) return;
+    const numericValue = e.target.value.replace(/\D/g, "").slice(0, 10);
+    setProviderAccountNumber(numericValue);
+    setProviderAccountName("");
+
     if (numericValue.length === 10 && bankCode) {
-      setLookupLoading(true);
-      const name = await lookupBankDetails(bankCode, numericValue);
-      setAccountName(name || "");
-      setIsVerified(!!name);
-      setLookupLoading(false);
+      debouncedLookup(numericValue);
     } else {
       setIsVerified(false);
     }
   };
 
-  const { data: apiData } = useFetch<ServiceProviderResponse>(
-    `service-providers/${paramId}`
+  // Debounce API lookup to avoid excessive calls
+  const debouncedLookup = useCallback(
+    debounce(async (numericValue: string) => {
+      setLookupLoading(true);
+      try {
+        const name = await lookupBankDetails(bankCode, numericValue);
+        setProviderAccountName(name || "");
+        setIsVerified(!!name);
+      } catch (error) {
+        console.error("Error fetching bank details:", error);
+        setIsVerified(false);
+      } finally {
+        setLookupLoading(false);
+      }
+    }, 500),
+    [bankCode]
   );
-  const defaultVal = apiData?.data;
 
   const handleUpdateProviderBankDetails = async (data: FormData) => {
     if (serviceProvider?.id) {
@@ -370,21 +372,21 @@ export const ServiceProviderBankDetailsSection = () => {
     }
   };
 
-  useEffect(() => {
-    if(defaultVal?.account_number){
-       setAccountNumber(defaultVal?.account_number)
-    }
-  }, [])
-
   return (
     <InfoEditSection title="bank details">
       <AuthForm onFormSubmit={handleUpdateProviderBankDetails} skipValidation>
-        <input id="company_id" name="company_id" type="hidden" defaultValue={company_id as string}/>
+        <input
+          id="company_id"
+          name="company_id"
+          type="hidden"
+          defaultValue={company_id as string}
+        />
         <InfoEditGrid>
           <Select
             id="bank_name"
             label="bank name"
-            defaultValue={defaultVal?.bank_name ?? defaultVal?.bank_name}
+            name="bank_name"
+            defaultValue={bankName}
             inputContainerClassName="w-full bg-neutral-2"
             options={
               bankList?.data.map((bank) => ({
@@ -399,34 +401,26 @@ export const ServiceProviderBankDetailsSection = () => {
                 ? "Error loading bank list"
                 : "Select bank"
             }
-            value={bankName}
             error={bankListError}
-            onChange={(value) => {
-              setBankCode(value);
-              setIsVerified(false);
-              setAccountName("");
-              const selectedBank = bankList?.data.find(
-                (bank) => String(bank.bank_code) === value
-              );
-              setBankName(selectedBank?.bank_name || "");
-            }}
+            onChange={handleBankChange}
           />
           <Input
             id="account_number"
+            name="account_number"
             label="account number"
+            value={providerAccountNumber}
             className="w-full"
-            value={accountNumber}
             maxLength={10}
-            onChange={handleAccountNumberChange}
-            
+            onChange={(data, event) => handleProviderAccountChange(event)}
           />
 
           <Input
+            className="w-full"
             id="account_name"
-            label="account name"
-            readOnly
             name="account_name"
-            value={accountName}
+            label="account name"
+            value={providerAccountName}
+            readOnly
           />
         </InfoEditGrid>
 
