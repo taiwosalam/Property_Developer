@@ -119,11 +119,11 @@ const ManageExpenses = () => {
             direction="column"
             referenceObject={{
               "payment id": "",
-              "customer name": "",
-              "property name": "",
               date: "",
+              "property name": "",
+              "landlord": "",
               "account officer": "",
-              "unit id": "",
+              "unit names": "",
             }}
           />
         </div>
@@ -145,7 +145,7 @@ const ManageExpenses = () => {
                 id="payment_amount"
                 label="amount"
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                placeholder="300,000"
+                // placeholder="300,000"
                 inputClassName="bg-white"
                 formatNumber
                 value={paymentAmount}

@@ -18,19 +18,17 @@ const PrintVatPage = () => {
         <BackButton as="p">Back</BackButton>
         <ExportPageHeader />
         <h1 className="text-center my-7 font-medium text-2xl">VAT</h1>
-        <div className="rounded-lg bg-white p-8 flex flex-col">
+        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
-            data={{
-              "property status": "successful",
-            }}
+            data={{}}
             chunkSize={2}
             direction="column"
             referenceObject={{
-              "Vat id": "",
+              "VAT ID": "",
               "Payer name": "",
-              "property status": "",
+              "Payment status": "",
               "date and time": "",
-              description: "",
+              "desciption": "",
             }}
           />
         </div>
@@ -47,26 +45,6 @@ const PrintVatPage = () => {
               paddingBottom: "16px",
             }}
           />
-        </AccountingTitleSection>
-        <AccountingTitleSection title="Account Details">
-          <div className="p-6 bg-white rounded-lg space-y-5">
-            <div className="flex flex-col">
-              <KeyValueList
-                data={{
-                  "Account Number": "1234567879",
-                  "Account Name": "John Doe & Co Estate surveyors",
-                  "Bank Name": "Info Bank",
-                }}
-                chunkSize={1}
-                direction="column"
-                referenceObject={{
-                  "Account Number": "",
-                  "Account Name": "",
-                  "Bank Name": "",
-                }}
-              />
-            </div>
-          </div>
         </AccountingTitleSection>
         <Signature />
       </div>

@@ -13,8 +13,8 @@ export interface RentAndUnitState {
 //
 
 export const RentAndUnitFilters = [
-  { label: "Single Property", value: "single-property" },
-  { label: "Gated Eestate", value: "gated-estate" },
+  { label: "Rental Property", value: "rental-property" },
+  { label: "Facility Property", value: "facility-property" },
 ];
 
 export const initialState: UnitPageState = {
@@ -299,14 +299,6 @@ export const RentAndUnitFiltersWithDropdown = [
       value: state,
     })),
   },
-  // {
-  //   label: "Branch",
-  //   value: [
-  //     { label: "Branch 1", value: "branch1" },
-  //     { label: "Branch 2", value: "branch2" },
-  //     { label: "Branch 3", value: "branch3" },
-  //   ],
-  // },
   {
     label: "Account Officer",
     value: [

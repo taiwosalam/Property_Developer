@@ -110,7 +110,7 @@ const EditRent = () => {
       type: "upfront_payment",
     };
 
-    console.log("Payload", payload);
+    // console.log("Payload", payload);
     try {
       setReqLoading(true);
       const success = await editRent(payload);
@@ -140,7 +140,7 @@ const EditRent = () => {
         type: "part_payment",
       };
 
-      console.log("Payload", payload);
+      // console.log("Payload", payload);
       try {
         setReqLoading(true);
         const success = await editRent(payload);

@@ -13,6 +13,7 @@ import {
   currencySymbols,
   formatCostInputValue,
 } from "@/utils/number-formatter";
+import MultiSelectObj from "@/components/Form/MultiSelect/multi-select-object";
 
 const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
   nextStep,
@@ -23,7 +24,7 @@ const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
     setAmountDisburse(formatCostInputValue(value));
   };
   return (
-    <ModalPreset title="New Disbursement">
+    <ModalPreset title="Create New Disbursement">
       <div className="custom-flex-col gap-6">
         <div className="grid md:grid-cols-2 gap-x-6 gap-y-3">
           <Select
@@ -32,11 +33,11 @@ const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
             label="property"
             options={["apartment", "house", "land"]}
           />
-          <Select
-            required
-            id="tenant-occupant"
-            label="tenant / occupany"
-            options={["tenant 1", "tenant 2"]}
+          <MultiSelectObj
+            // required
+            id="unit_name"
+            label="unit name"
+            options={[{label: "unit 1", value: 1 }, {label: "unit 2", value: 2}]}
           />
           <Select
             required
@@ -55,7 +56,7 @@ const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
             required
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}
             id="amount-disburse"
-            label="amount disburse"
+            label="total disburse"
             inputClassName="bg-white"
             value={amountDisburse}
             onChange={handleAmountDisburseChange}
@@ -63,7 +64,7 @@ const NewDisbursementForm: React.FC<NewDisbursementFormProps> = ({
         </div>
         <div className="custom-flex-col gap-1">
           <Label required id="transaction-description">
-            transaction description
+            disbursement description
           </Label>
           <TextArea id="transaction-description" />
         </div>

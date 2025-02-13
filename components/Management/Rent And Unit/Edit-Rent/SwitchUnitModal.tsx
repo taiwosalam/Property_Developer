@@ -54,8 +54,6 @@ const SwitchUnitModal: React.FC<{
     setChecked2(deduction);
   }, [deduction]);
 
-  console.log("calculation", checked1)
-  console.log("deduction", checked2)
   const handleChecked1Click = () => {
     const newChecked1 = !checked1;
     setChecked1(newChecked1);

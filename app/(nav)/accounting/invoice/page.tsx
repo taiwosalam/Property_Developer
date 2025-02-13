@@ -234,7 +234,7 @@ const AccountingInvoicePage = () => {
             href={`/accounting/invoice/${selectedItemId}/print-invoice`}
             className="w-full text-left"
           >
-            Print Invoice
+            Preview
           </Link>
         </MenuItem>
       </TableMenu>
