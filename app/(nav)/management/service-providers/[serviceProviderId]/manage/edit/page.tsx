@@ -38,7 +38,7 @@ const EditServiceProvider = () => {
 
   }, [data])
 
-  //console.log(providersData);
+  console.log(data);
 
   if(loading) return <CustomLoader layout="edit-page" pageTitle="Edit Service Provider"/>
   if (isNetworkError) return <NetworkError />;

@@ -59,7 +59,7 @@ const ServiceProviders = () => {
   };
 
   const storedView = useView();
-  console.log(storedView);
+
   const [view, setView] = useState<string | null>(storedView);
 
   const [page, setPage] = useState(1);
@@ -100,11 +100,13 @@ const ServiceProviders = () => {
       search: "",
     };
     if (accountType !== "all") queryParams.account_type = accountType;
-    if (startDate){
+    if (startDate) {
       queryParams.from_date = dayjs(startDate).format("YYYY-MM-DD");
     }
 
-    if (endDate){ queryParams.to_date = dayjs(endDate).format("YYYY-MM-DD");}
+    if (endDate) {
+      queryParams.to_date = dayjs(endDate).format("YYYY-MM-DD");
+    }
 
     setConfig({
       params: queryParams,
@@ -266,8 +268,8 @@ const ServiceProviders = () => {
               title="You have not created any service providers yet"
               body={
                 <p className="tracking-wider">
-                  No service provider records found means there are currently
-                  no registered or available service providers in the system.
+                  No service provider records found means there are currently no
+                  registered or available service providers in the system.
                   Service providers refer to artisans and skilled workers
                   essential for property management, including carpenters,
                   plumbers, painters, electricians, and more. These
@@ -293,12 +295,10 @@ const ServiceProviders = () => {
                   <CardsLoading />
                 ) : (
                   serviceProviders.map((provider) => (
-                    
                     <Link
                       key={provider.id}
                       href={`/management/service-providers/${provider.id}/manage`}
                     >
-                      
                       <ServiceProviderCard
                         name={provider.name}
                         email={provider.email}

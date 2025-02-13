@@ -93,6 +93,7 @@ export interface ServiceProviderDetailsResponse {
     bank_name: string | null;
     company_name: string;
     company_phone: string;
+    company_email: string;
     company_address: string;
     email: string;
     id: number;
