@@ -31,28 +31,37 @@ const PreviewDisbursement = () => {
             }}
           />
         </div>
+        <AccountingTitleSection title="Description">
+          <p className="text-sm text-text-secondary">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+          </p>
+        </AccountingTitleSection>
         <AccountingTitleSection title="Disbursement Details">
-          <div className="p-6 gap-4 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 bg-white dark:bg-darkText-primary rounded-lg">
-            <EstateDetailItem
-              label="description"
-              value="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
-              truncate
-              column
-            />
-            <EstateDetailItem
-              label="tenant / occupant"
-              value="Wasiu Ismail"
-              column
-            />
-            <EstateDetailItem label="unit no/name" value="Room 407" column />
-            <EstateDetailItem
-              label="amount disburse"
-              value="₦1,950,000"
-              column
-            />
-            <div className="text-base font-medium capitalize custom-flex-col gap-1">
-              <p className="text-[#747474]">total</p>
-              <p className="text-brand-9 text-xl font-bold">₦1,950,000</p>
+          <div className="p-6 bg-white dark:bg-darkText-primary rounded-lg space-y-5">
+            <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
+              <KeyValueList
+                data={{
+                  "Unit 1": "₦650,000",
+                  "Unit 2": "₦650,000",
+                  "Unit 3": "₦650,000",
+                  "UNit 4": "₦650,000",
+                  "Unit 5": "₦650,000",
+                }}
+                chunkSize={2}
+                direction="column"
+                referenceObject={{
+                  "Unit 1": "",
+                  "Unit 2": "",
+                  "Unit 3": "",
+                  "UNit 4": "",
+                  "Unit 5": "",
+                }}
+              />
+            </div>
+            <div className="w-full h-[2px] bg-opacity-20 bg-[#C0C2C8]" />
+            <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1">
+              <p className="text-[#747474]">total payment</p>
+              <p className="text-brand-primary text-xl font-bold">₦1,950,000</p>
             </div>
           </div>
         </AccountingTitleSection>

@@ -10,15 +10,25 @@ import ExportPageHeader from "@/components/reports/export-page-header";
 import { SectionSeparator } from "@/components/Section/section-components";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import TextArea from "@/components/Form/TextArea/textarea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { DeleteIconX } from "@/public/icons/icons";
+import { useSearchParams } from "next/navigation";
+import useFetch from "@/hooks/useFetch";
+import { SinglePropertyResponse, transformSinglePropertyData } from "@/app/(nav)/management/properties/[id]/data";
+import { transformUnitOptions, UnitsApiResponse } from "@/components/Management/Rent And Unit/Edit-Rent/data";
+import MultiSelect from "@/components/Form/MultiSelect/multiselect";
+import MultiSelectObj from "@/components/Form/MultiSelect/multi-select-object";
+
 
 const CreateExpensePage = () => {
   const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
     []
   );
+  const searchParams = useSearchParams();
+  const property_id = searchParams.get("p");
+  const [unitsOptions, setUnitsOptions] = useState<any[]>([]);
   const [paymentTitle, setPaymentTitle] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
   const handleAddPaymentClick = () => {
@@ -44,17 +54,42 @@ const CreateExpensePage = () => {
     setPayments(payments.filter((_, i) => i !== index));
   };
 
+  //FETCH D PROPERTY DATA
+  const { data, loading, error, isNetworkError } =
+    useFetch<SinglePropertyResponse>(`property/${property_id}/view`);
+  const propertyData = data ? transformSinglePropertyData(data) : null;
+
+  // FETCH ALL PROPERTY UNITS
+  const {
+    data: unitsData,
+    error: unitError,
+    loading: loadingUnits,
+  } = useFetch<UnitsApiResponse>(`/unit/${property_id}/all`);
+
+  useEffect(() => {
+    if (unitsData) {
+      const unitsTransformOptions = transformUnitOptions(unitsData);
+      setUnitsOptions(unitsTransformOptions);
+    }
+  }, [unitsData]);
+
+  // console.log("p id", propertyData)
+
   return (
     <section className="space-y-7 pb-[100px]">
       <BackButton>Create New Expense</BackButton>
       <ExportPageHeader />
       <div className="space-y-8">
-        <Details />
+        <Details
+          property_id={property_id as string}
+          property_name={propertyData?.property_name}
+          account_officer={propertyData?.account_officer}
+        />
         <div className="space-y-4 max-w-[600px]">
-          <Select
-            id="client_name"
-            options={["Client Name", "Client Name 2"]}
-            label="Client Name"
+          <MultiSelectObj
+            id="unit"
+            options={unitsOptions}
+            label="Unit Name"
             className="max-w-[300px]"
           />
           <TextArea id="expenses_description" label="Expenses Description" />

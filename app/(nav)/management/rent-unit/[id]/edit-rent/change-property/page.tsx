@@ -61,7 +61,7 @@ const ChangePropertyPage: React.FC = () => {
   if (error) return <div>{error}</div>;
   if (!propertyData) return <div>No property data found</div>;
 
-  console.log("property", propertyData)
+  // console.log("property", propertyData)
 
   if (step1Done) {
     return <PostProceedContent selectedUnitId={selectedUnitId as string} />;

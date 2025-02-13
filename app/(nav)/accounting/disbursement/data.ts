@@ -18,7 +18,7 @@ export const disbursementTableFields = [
     label: "Payment ID",
     accessor: "payment_id",
   },
-  { id: "5", label: "Amount", accessor: "amount" },
+  { id: "5", label: "Amount Disburse", accessor: "amount" },
   { id: "6", label: "Description", accessor: "description" },
   { id: "7", label: "Mode", accessor: "mode" },
   { id: "8", accessor: "action" },

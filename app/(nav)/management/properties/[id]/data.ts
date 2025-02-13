@@ -46,7 +46,7 @@ export const transformSinglePropertyData = (
     branch: data.branch?.branch_name,
     rent_penalty: mapNumericToYesNo(data.rent_penalty),
     fee_period: data.fee_period,
-    account_officer: `${accountOfficer?.estate_title} ${accountOfficer?.user?.name}`, // to do
+    account_officer: `${accountOfficer?.estate_title || "__"} ${accountOfficer?.user?.name || "__"}`, // to do
     landlord_name: "", //to do
     branch_manager: `${manager?.estate_title} ${manager?.user?.name}`, //  later
     mobile_tenants: 0, // backend shit

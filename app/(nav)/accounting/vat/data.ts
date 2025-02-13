@@ -24,7 +24,7 @@ export const vatTableFields: Field[] = [
   { id: "3", label: "VAT ID", accessor: "vat_id" },
   {
     id: "4",
-    label: "Payment Reason",
+    label: "Payment Description",
     accessor: "payment_reason",
     cellStyle: {
       textOverflow: "ellipsis",
@@ -33,7 +33,7 @@ export const vatTableFields: Field[] = [
       maxWidth: "350px",
     },
   },
-  { id: "5", label: "Total VAT", accessor: "total_vat" },
+  { id: "5", label: "VAT Amount", accessor: "total_vat" },
   { id: "6", label: "Date", accessor: "date" },
 ];
 

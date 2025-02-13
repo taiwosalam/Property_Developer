@@ -33,6 +33,7 @@ export const nav_items: NavItemsProps = [
     type: "briefcase_timer",
     label: "tasks",
     content: [
+      { label: "Applications", href: "/applications" },
       { label: "complaints", href: "/complaints" },
       { label: "inspections", href: "/inspections" },
       { label: "examine", href: "/examine" },
@@ -86,11 +87,11 @@ export const nav_items: NavItemsProps = [
     ],
   },
   { type: "empty_wallet", label: "wallet", href: "/wallet" },
-  {
-    type: "task",
-    label: "applications",
-    href: "/applications",
-  },
+  // {
+  //   type: "task",
+  //   label: "applications",
+  //   href: "/applications",
+  // },
   {
     type: "folder",
     label: "documents",

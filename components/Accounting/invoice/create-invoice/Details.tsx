@@ -1,6 +1,11 @@
 import KeyValueList from "@/components/KeyValueList/key-value-list";
+interface DetailsProps {
+  property_id?: string;
+  property_name?: string;
+  account_officer?: string;
+}
 
-const Details = () => {
+const Details: React.FC<DetailsProps> = ({ property_id, property_name, account_officer }) => {
   return (
     <div
       className="rounded-[8px] bg-white dark:bg-darkText-primary px-4 py-6 space-y-[10px]"
@@ -12,12 +17,16 @@ const Details = () => {
       <div className="h-[2px] bg-[#C0C2C8] bg-opacity-20" />
       <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
         <KeyValueList
-          data={{}}
+          data={{
+            "Property Id": property_id,
+            "Property Name": property_name,
+            "Account Officer": account_officer,
+          }}
           chunkSize={1}
           referenceObject={{
-            "Property Id": "1234567894",
-            "Property Name": "Olayomi Cottage",
-            "Account Officer": "Mr Taiwo Salam",
+            "Property Id": property_id,
+            "Property Name": property_name,
+            "Account Officer": account_officer,
           }}
         />
       </div>

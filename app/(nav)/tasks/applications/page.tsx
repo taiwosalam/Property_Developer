@@ -6,7 +6,7 @@ import ApplicationCard from "@/components/Applications/application-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { DocumentssFilterOptionsWithDropdown } from "../documents/data";
+import { DocumentssFilterOptionsWithDropdown } from "../../documents/data";
 
 const Applications = () => {
   return (
