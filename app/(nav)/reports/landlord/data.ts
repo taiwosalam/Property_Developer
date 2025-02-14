@@ -53,3 +53,81 @@ const generateTableData = (numItems: number) => {
 };
 
 export const landlordsReportTableData = generateTableData(10);
+
+
+// Original API interfaces
+export interface Landlord {
+  landlord_id: number;
+  landlord_name: string;
+  property_name: string;
+  branch_name: string;
+  account_officer: string;
+  created_at: string;
+}
+
+export interface LandlordsOriginalData {
+  total_landlords: number;
+  monthly_landlords: number;
+  landlords: Landlord[];
+}
+
+export interface LandlordsApiResponse {
+  status: string;
+  message: string;
+  data: {
+    headers: Record<string, unknown>;
+    original: {
+      status: string;
+      message: string;
+      data: LandlordsOriginalData;
+    };
+    exception: any;
+  };
+}
+
+// Transformed data interfaces
+export interface LandlordReportEntry {
+  id: number;
+  property: string;
+  branch: string;
+  account_officer: string;
+  date_created: string;
+  landlord: string;
+}
+
+export interface LandlordsReport {
+  total_landlords: number;
+  monthly_landlords: number;
+  landlords: LandlordReportEntry[];
+}
+
+// Transformation function
+export const transformLandlordsData = (apiResponse: LandlordsApiResponse): LandlordsReport => {
+  const { total_landlords, monthly_landlords, landlords } = apiResponse.data.original.data;
+  return {
+    total_landlords,
+    monthly_landlords,
+    landlords: landlords.map((item) => ({
+      id: item.landlord_id,
+      property: item.property_name,
+      branch: item.branch_name,
+      account_officer: item.account_officer,
+      date_created: item.created_at,
+      landlord: item.landlord_name,
+    })),
+  };
+};
+
+// // You might also have your table fields and filter options defined here
+// export const landlordsReportTableFields = [
+//   { key: "id", label: "ID" },
+//   { key: "property", label: "Property" },
+//   { key: "branch", label: "Branch" },
+//   { key: "account_officer", label: "Account Officer" },
+//   { key: "date_created", label: "Date Created" },
+//   { key: "landlord", label: "Landlord" },
+// ];
+
+// export const reportsLandlordsFilterOptionsWithDropdown = [
+//   // ... your filter options
+// ];
