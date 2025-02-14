@@ -20,6 +20,7 @@ import { SinglePropertyResponse, transformSinglePropertyData } from "@/app/(nav)
 import { transformUnitOptions, UnitsApiResponse } from "@/components/Management/Rent And Unit/Edit-Rent/data";
 import MultiSelect from "@/components/Form/MultiSelect/multiselect";
 import MultiSelectObj from "@/components/Form/MultiSelect/multi-select-object";
+import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
 
 
 const CreateExpensePage = () => {
@@ -54,9 +55,23 @@ const CreateExpensePage = () => {
     setPayments(payments.filter((_, i) => i !== index));
   };
 
+  const [selectedPropertyId, setSelectedPropertyId] = useState('')
+
+  const {
+    data: propertyOptionData,
+    error: propertiesError,
+    loading: propertiesLoading,
+  } = useFetch<PropertyListResponse>("/property/all");
+
+  const propertyOptions =
+    propertyOptionData?.data.map((p) => ({
+      value: p.id,
+      label: p.title,
+    })) || [];
+
   //FETCH D PROPERTY DATA
   const { data, loading, error, isNetworkError } =
-    useFetch<SinglePropertyResponse>(`property/${property_id}/view`);
+    useFetch<SinglePropertyResponse>(`property/${selectedPropertyId}/view`);
   const propertyData = data ? transformSinglePropertyData(data) : null;
 
   // FETCH ALL PROPERTY UNITS
@@ -64,7 +79,7 @@ const CreateExpensePage = () => {
     data: unitsData,
     error: unitError,
     loading: loadingUnits,
-  } = useFetch<UnitsApiResponse>(`/unit/${property_id}/all`);
+  } = useFetch<UnitsApiResponse>(`/unit/${selectedPropertyId}/all`);
 
   useEffect(() => {
     if (unitsData) {
@@ -73,38 +88,55 @@ const CreateExpensePage = () => {
     }
   }, [unitsData]);
 
-  console.log("payments", payments)
+  // console.log("payments", payments)
 
-  const handleCreateExpense = ()=> {
-   const payload = {
+  const handleCreateExpense = () => {
+    const payload = {
       company_id: 1,
       property_id: 2,
       description: "Building",
       unit_id: 1,
       payments: [
-          { "payment_title": "Labor", "amount": 100 },
-          { "payment_title": "Materials", "amount": 50 }
+        { "payment_title": "Labor", "amount": 100 },
+        { "payment_title": "Materials", "amount": 50 }
       ]
-  }
+    }
   }
 
   return (
     <section className="space-y-7 pb-[100px]">
       <BackButton>Create New Expense</BackButton>
-      <ExportPageHeader />
       <div className="space-y-8">
-        <Details
+        {/* <Details
           property_id={property_id as string}
           property_name={propertyData?.property_name}
           account_officer={propertyData?.account_officer}
-        />
-        <div className="space-y-4 max-w-[600px]">
+        /> */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] max-w-[968px]">
+          <Select
+            id="property"
+            label={`Choose Property`}
+            onChange={setSelectedPropertyId}
+            options={propertyOptions}
+            disabled={propertiesLoading}
+            placeholder={
+              propertiesLoading
+                ? 'Loading properties...'
+                : propertiesError
+                  ? 'Error loading properties'
+                  : 'Select property'
+            }
+            error={propertiesError}
+          />
           <MultiSelectObj
             id="unit"
             options={unitsOptions}
             label="Unit Name"
             className="max-w-[300px]"
           />
+        </div>
+          
+        <div className='max-w-[968px]'>
           <TextArea id="expenses_description" label="Expenses Description" />
         </div>
       </div>
@@ -197,9 +229,9 @@ const CreateExpensePage = () => {
         </div>
       )}
       <FixedFooter className="flex justify-end gap-4">
-        <Button variant="border" size="sm_normal" className="py-2 px-8">
+        {/* <Button variant="border" size="sm_normal" className="py-2 px-8">
           Cancel
-        </Button>
+        </Button> */}
         <Button size="sm_normal" className="py-2 px-8">
           Create
         </Button>

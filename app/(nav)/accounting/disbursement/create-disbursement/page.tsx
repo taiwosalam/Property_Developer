@@ -88,7 +88,7 @@ const CreateDisbursement = () => {
           <Select
             id="disbursement-mode"
             label="disbursement mode"
-            placeholder="Bank Transfer"
+            placeholder="Select Options"
             options={paymentModes}
             className="self-end"
             inputContainerClassName="bg-white"
@@ -114,7 +114,7 @@ const CreateDisbursement = () => {
               onChange={() => setIsAddPaymentChecked(true)}
             />
           </div>
-          <p>Select this option if you are recording a disbursement for the entire property, and assign a title based on the event.</p>
+          <p>Select this option if you are recording a disbursement for the entire property, and assign a payment title based on the event.</p>
         </div>
         {isAddPaymentChecked && (
           <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
@@ -151,16 +151,6 @@ const CreateDisbursement = () => {
       </div>
 
       <div className="space-y-6">
-        {/* <div className="flex items-center gap-4">
-          <h1 className="text-[#092C4C] font-bold text-xl dark:text-white">
-            Add Unit Disbursement
-          </h1>
-          <Checkbox
-            radio
-            checked={!isAddPaymentChecked}
-            onChange={() => setIsAddPaymentChecked(false)}
-          />
-        </div> */}
         <div className="flex gap-1 flex-col">
           <div className="flex gap-2">
             <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
@@ -172,7 +162,7 @@ const CreateDisbursement = () => {
               onChange={() => setIsAddPaymentChecked(false)}
             />
           </div>
-          <p>Select whether you are disbursing payment for a specific unit or multiple units within the same property.</p>
+          <p>Select this option if you are disbursing payment for a specific unit or multiple units within the same property.</p>
         </div>
         {!isAddPaymentChecked && (
           <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
@@ -189,7 +179,7 @@ const CreateDisbursement = () => {
                 id="amount"
                 label="Amount"
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                placeholder="300,000"
+                // placeholder="300,000"
                 value={paymentAmount}
                 onChange={(v) => setPaymentAmount(v)}
               />
@@ -247,7 +237,7 @@ const CreateDisbursement = () => {
             <SectionSeparator />
             <div className="flex flex-col gap-4">
               <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                Total Added Payment
+                Total Disbursement
               </p>
               <p className="font-bold text-xl text-brand-9">
                 {new Intl.NumberFormat("en-NG", {

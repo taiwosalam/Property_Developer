@@ -11,6 +11,7 @@ import DeleteInvoiceModal from "@/components/Accounting/invoice/delete-invoice-m
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { currencySymbols } from "@/utils/number-formatter";
+import Breakdown from "@/components/Accounting/invoice/create-invoice/Breakdown";
 
 const ManageInvoice = () => {
   const CURRENCY_SYMBOL = currencySymbols.naira;
@@ -40,7 +41,10 @@ const ManageInvoice = () => {
             New rent payment for 3 bedroom bungalow at Ajibade road 2, Lekki
             Lagos
           </p>
-          <div className="flex">
+          <div>
+            <Breakdown />
+          </div>
+          {/* <div className="flex">
             <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
               <Input
                 id="annual-rent"
@@ -84,7 +88,7 @@ const ManageInvoice = () => {
                 formatNumber
               />
             </div>
-          </div>
+          </div> */}
           <p className="font-normal text-[14px] text-[#6C6D6D] dark:text-darkText-1">
             <span className="text-status-error-primary text-2xl">*</span>
             Invoices with payment cannot be edited or deleted.

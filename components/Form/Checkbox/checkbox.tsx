@@ -19,11 +19,13 @@ const Checkbox: React.FC<CheckboxProps> = ({
   hoverContent,
   radio,
   defaultChecked = false,
+  disabled, // new optional prop
 }) => {
   const [internalChecked, setInternalChecked] = useState(defaultChecked);
   const [isHovered, setIsHovered] = useState(false);
 
   const handleCheckboxClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (disabled) return; // Prevent clicking when disabled
     const newCheckedState = checked !== undefined ? !checked : !internalChecked;
     if (onChange) {
       onChange(newCheckedState);
@@ -43,9 +45,14 @@ const Checkbox: React.FC<CheckboxProps> = ({
 
   return (
     <button
-      className={cn("flex items-center gap-2 relative", className)}
+      className={cn(
+        "flex items-center gap-2 relative",
+        className,
+        disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+      )}
       onClick={handleCheckboxClick}
       type="button"
+      disabled={disabled}
       {...(hoverContent && {
         onMouseEnter: () => setIsHovered(true),
         onMouseLeave: () => setIsHovered(false),
