@@ -23,7 +23,7 @@ import MultiSelectObj from "@/components/Form/MultiSelect/multi-select-object";
 
 
 const CreateExpensePage = () => {
-  const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
+  const [payments, setPayments] = useState<{ payment_title: string; amount: number }[]>(
     []
   );
   const searchParams = useSearchParams();
@@ -38,7 +38,7 @@ const CreateExpensePage = () => {
       if (!isNaN(parsedAmount)) {
         setPayments([
           ...payments,
-          { title: paymentTitle, amount: parsedAmount },
+          { payment_title: paymentTitle, amount: parsedAmount },
         ]);
         setPaymentTitle("");
         setPaymentAmount("");
@@ -73,7 +73,20 @@ const CreateExpensePage = () => {
     }
   }, [unitsData]);
 
-  // console.log("p id", propertyData)
+  console.log("payments", payments)
+
+  const handleCreateExpense = ()=> {
+   const payload = {
+      company_id: 1,
+      property_id: 2,
+      description: "Building",
+      unit_id: 1,
+      payments: [
+          { "payment_title": "Labor", "amount": 100 },
+          { "payment_title": "Materials", "amount": 50 }
+      ]
+  }
+  }
 
   return (
     <section className="space-y-7 pb-[100px]">
@@ -142,7 +155,7 @@ const CreateExpensePage = () => {
               {payments.map((payment, index) => (
                 <div key={index} className="flex flex-col gap-4">
                   <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1 capitalize">
-                    {payment.title}
+                    {payment.payment_title}
                   </p>
                   <div className="flex items-center gap-2">
                     <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
@@ -152,12 +165,12 @@ const CreateExpensePage = () => {
                       }).format(payment.amount)}
                     </p>
                     <Modal>
-                      <ModalTrigger aria-label={`Delete ${payment.title}`}>
+                      <ModalTrigger aria-label={`Delete ${payment.payment_title}`}>
                         <DeleteIconX />
                       </ModalTrigger>
                       <ModalContent>
                         <DeleteItemWarningModal
-                          item={payment.title}
+                          item={payment.payment_title}
                           amount={payment.amount}
                           handleDelete={() => handleDeletePayment(index)}
                           useCase="expenses"

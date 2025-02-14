@@ -41,3 +41,58 @@ export const tenantsReportTableFields: Field[] = [
   { id: "5", label: "Telephone", accessor: "telephone" },
   { id: "6", label: "Status", accessor: "status" },
 ];
+
+
+
+
+interface Tenant {
+  tenant_id: number;
+  name: string;
+  gender: string;
+  address: string;
+  lga: string;
+  city: string;
+  state: string;
+  telephone: string;
+  status: string;
+}
+
+interface Data {
+  total_tenants: number;
+  monthly_tenants: number;
+  tenants: Tenant[];
+}
+
+export interface TenantListResponse {
+  status: string;
+  message: string;
+  data: Data;
+}
+
+
+export interface TenantReport {
+  total_tenants: number;
+  monthly_tenants: number;
+  tenants: {
+    id: number | string;
+    name: string;
+    gender: string;
+    address: string;
+    telephone: string;
+    status: string;
+  }[];
+}
+
+
+export const transformTenantData = (data: TenantListResponse): TenantReport => ({
+  total_tenants: data.data.total_tenants,
+  monthly_tenants: data.data.monthly_tenants,
+  tenants: data.data.tenants.map(tenant => ({
+    id: tenant.tenant_id || "__ __",
+    name: tenant.name || "__ __",
+    gender: tenant.gender || "__ __",
+    address: tenant.address || "__ __",
+    telephone: tenant.telephone || "__ __",
+    status: tenant.status || "__ __",
+  })),
+});

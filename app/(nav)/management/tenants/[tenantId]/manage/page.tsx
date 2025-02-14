@@ -52,6 +52,8 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   if (error) return <div className="text-red-500">{error}</div>;
   if (!tenant) return null;
 
+  console.log("tenant", tenant)
+
   const groupedDocuments = groupDocumentsByType(tenant?.documents);
 
   const otherData = getObjectProperties({ obj: tenant, exceptions: ["notes"] });
@@ -99,7 +101,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               <div className="custom-flex-col gap-2">
                 <UserTag type={tenant.user_tag} />
                 <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
-                  ID: {tenant.user_id}
+                  ID: {tenant.id}
                 </p>
               </div>
             </div>
