@@ -1,3 +1,8 @@
+
+
+
+
+
 "use client";
 
 import Breakdown from "@/components/Accounting/invoice/create-invoice/Breakdown";
@@ -54,14 +59,14 @@ const CreateInvoicePage = () => {
   return (
     <section className="space-y-7 pb-20">
       <BackButton>Create New Invoice</BackButton>
-      <ExportPageHeader />
+      {/* <ExportPageHeader /> */}
       <div className="flex flex-col gap-4">
         <Details />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Select
-            id="unit_name"
-            options={["Unit 1", "Unit 2"]}
-            label="Unit Name"
+            id="tenant_name"
+            options={["Tenant 1", "Tenant 2"]}
+            label="Tenant/Occupant"
             disabled={isSelectDisabled}
           />
           <Checkbox
@@ -89,15 +94,18 @@ const CreateInvoicePage = () => {
       </div>
 
       <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
-            Add Payment
-          </h3>
-          <Checkbox
-            radio
-            checked={isAddPaymentChecked}
-            onChange={() => setIsAddPaymentChecked(true)}
-          />
+        <div className="flex gap-1 flex-col">
+          <div className="flex gap-2">
+            <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
+              Add Payment
+            </h3>
+            <Checkbox
+              radio
+              checked={isAddPaymentChecked}
+              onChange={() => setIsAddPaymentChecked(true)}
+            />
+          </div>
+          <p>Choose to create a manual payment for a specific bill or set it to auto-payment for a designated period.</p>
         </div>
         {isAddPaymentChecked && (
           <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
@@ -134,15 +142,19 @@ const CreateInvoicePage = () => {
       </div>
 
       <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <h1 className="text-[#092C4C] font-bold text-xl dark:text-white">
-            Gnerated Rent Breakdown
-          </h1>
-          <Checkbox
-            radio
-            checked={!isAddPaymentChecked}
-            onChange={() => setIsAddPaymentChecked(false)}
-          />
+        <div className="flex gap-1 flex-col">
+          <div className="flex gap-2">
+            <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
+              Generated Rent Breakdown
+            </h3>
+            <Checkbox
+              disabled={isSelectDisabled}
+              radio
+              checked={!isAddPaymentChecked}
+              onChange={() => setIsAddPaymentChecked(false)}
+            />
+          </div>
+          <p>Select to create a pending payment for tenants/occupants to pay their renewal fees.</p>
         </div>
         {!isAddPaymentChecked && <Breakdown />}
       </div>
@@ -200,7 +212,7 @@ const CreateInvoicePage = () => {
         </div>
       )}
 
-      <div className="space-y-4 text-[#3F4247] text-sm dark:text-darkText-1">
+      {/* <div className="space-y-4 text-[#3F4247] text-sm dark:text-darkText-1">
         <div className="flex gap-4">
           {["Notification", "SMS Alert", "Email Alert"].map((option) => (
             <Checkbox sm key={option} defaultChecked>
@@ -212,11 +224,11 @@ const CreateInvoicePage = () => {
           Payment will be reflected on the receipt page once the selected client
           makes a payment for this generated invoice
         </p>
-      </div>
+      </div> */}
       <FixedFooter className="flex items-center justify-end gap-4">
-        <Button className="py-2 px-8" size="base_medium" variant="sky_blue">
+        {/* <Button className="py-2 px-8" size="base_medium" variant="sky_blue">
           Cancel
-        </Button>
+        </Button> */}
         <Button type="submit" className="py-2 px-8" size="base_medium">
           Create
         </Button>

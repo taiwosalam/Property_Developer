@@ -1,3 +1,4 @@
+
 "use client";
 
 import AccountStatsCard from "@/components/Accounting/account-stats-card";
@@ -30,8 +31,10 @@ import CustomTable from "@/components/Table/table";
 import TableMenu from "@/components/Table/table-menu";
 import type { DataItem } from "@/components/Table/types";
 import ExportButton from "@/components/reports/export-button";
+import { useRouter } from "next/navigation";
 
 const AccountingExpensesPage = () => {
+  const router = useRouter()
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >();
@@ -94,16 +97,20 @@ const AccountingExpensesPage = () => {
             <span className="text-2xl font-bold">Expenses</span>
             <ExclamationMark />
           </div>
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
-                + create Expenses
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
+          {/* <Modal>
+            <ModalTrigger asChild> */}
+          <Button
+            type="button"
+            className="page-header-button"
+            onClick={()=> router.push("/accounting/expenses/create-expenses")}
+          >
+            + create Expenses
+          </Button>
+          {/* </ModalTrigger> */}
+          {/* <ModalContent>
               <CreateExpenceModal />
             </ModalContent>
-          </Modal>
+          </Modal> */}
         </div>
         <div className="bg-white rounded-[8px] border border-opacity-20 border-[#BAC7D533] dark:bg-[#3C3D37] dark:border-[#292d32] p-4 space-y-6">
           <div className="flex flex-wrap gap-y-4 items-center justify-between">
