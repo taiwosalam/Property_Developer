@@ -16,8 +16,10 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import MenuItem from "@mui/material/MenuItem";
 import CustomTable from "@/components/Table/table";
 import TableMenu from "@/components/Table/table-menu";
+import { useRouter } from "next/navigation";
 
 const Disbursement = () => {
+  const router = useRouter()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
@@ -29,25 +31,30 @@ const Disbursement = () => {
     setAnchorEl(null);
     setSelectedItemId(null);
   };
+
   return (
     <div className="custom-flex-col gap-8">
       <div className="flex items-center justify-end">
-        <Modal>
-          <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
-              + new disbursement
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
+        {/* <Modal>
+          <ModalTrigger asChild> */}
+          <Button
+            type="button"
+            className="page-header-button"
+            onClick={()=> router.push('/accounting/disbursement/create-disbursement')}
+          >
+            + new disbursement
+          </Button>
+        {/* </ModalTrigger> */}
+        {/* <ModalContent>
             <NewDisbursementModal />
-          </ModalContent>
-        </Modal>
+          </ModalContent> */}
+        {/* </Modal> */}
       </div>
       <div className="custom-flex-col gap-4">
         <FilterBar
           azFilter
           searchInputPlaceholder="Search for disbursement"
-          handleFilterApply={() => {}}
+          handleFilterApply={() => { }}
           isDateTrue
           filterOptionsMenu={accountingDisbursementOptionsWithDropdown}
           hasGridListToggle={false}
@@ -92,7 +99,7 @@ const Disbursement = () => {
           </Link>
         </MenuItem>
       </TableMenu>
-    </div>
+    </div >
   );
 };
 

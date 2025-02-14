@@ -227,49 +227,6 @@ const ManageDisbursement = () => {
             </div>
           </div>
         </AccountingTitleSection>
-        <AccountingTitleSection title="Disbursement Details">
-          <div className="p-6 flex flex-col xl:flex-row xl:justify-between gap-4 bg-white dark:bg-darkText-primary rounded-lg">
-            <div className="xl:flex-1 xl:max-w-[968px] space-y-4">
-              <div className="flex flex-col lg:flex-row gap-4 lg:gap-0">
-                <KeyValueList
-                  data={{}}
-                  chunkSize={1}
-                  direction="column"
-                  referenceObject={{
-                    "tenant / occupant": "",
-                    "unit no/name": "",
-                    "amount disburse": "",
-                  }}
-                />
-              </div>
-              <div className="flex flex-col lg:flex-row gap-4 lg:gap-0">
-                <KeyValueList
-                  data={{}}
-                  chunkSize={1}
-                  direction="column"
-                  referenceObject={{
-                    "tenant / occupant": "",
-                    "unit no/name": "",
-                    "amount disburse": "",
-                  }}
-                />
-              </div>
-            </div>
-            <div className="space-y-2 self-end">
-              <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                Total Disbursement
-              </p>
-              <p className="font-bold text-xl text-brand-9">
-                {new Intl.NumberFormat("en-NG", {
-                  style: "currency",
-                  currency: "NGN",
-                })
-                  .format(1000000)
-                  .split(".")}
-              </p>
-            </div>
-          </div>
-        </AccountingTitleSection>
       </div>
       <FixedFooter className="flex gap-4 items-center justify-between">
         <Modal>

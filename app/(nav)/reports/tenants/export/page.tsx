@@ -38,12 +38,10 @@ const ExportTenants = () => {
     monthly_tenants,
     tenants
   } = tenant_reports
-
   if (loading) return <CustomLoader layout="page" pageTitle="Tenants/Occupants" view="table" />
   if (isNetworkError) return <NetworkError />;
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
-
   return (
     <div className="space-y-9 pb-[100px]">
       <BackButton as="p">Back</BackButton>
