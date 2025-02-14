@@ -2,7 +2,7 @@
 
 // Imports
 import dayjs from "dayjs";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import AddLandlordModal from "@/components/Management/Landlord/add-landlord-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordCard from "@/components/Management/landlord-and-tenant-card";
@@ -76,7 +76,7 @@ const Landlord = () => {
       const data = await getLandlordsHelpInfo();
       //
       setFetchedLandlordHelpInfo(data.res[0]);
-    } catch (error) {}
+    } catch (error) { }
   }, []);
 
   const { data: branchesData } =
@@ -183,7 +183,64 @@ const Landlord = () => {
   // Listen for the refetch event
   useRefetchOnEvent("refetchLandlords", () => refetch({ silent: true }));
 
-  const transformedLandlords = landlords.map((l) => ({
+  // --- Infinite Scroll Logic ---
+  // Create an observer to detect when the last row is visible
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (
+          entries[0].isIntersecting &&
+          current_page < total_pages &&
+          !silentLoading
+        ) {
+          // Load next page when the last row becomes visible
+          handlePageChange(current_page + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [current_page, total_pages, silentLoading]
+  );
+
+  // const transformedLandlords = landlords.map((l) => ({
+  //   ...l,
+  //   full_name: (
+  //     <p className="flex items-center whitespace-nowrap">
+  //       <span>{l.name}</span>
+  //       {l.badge_color && <BadgeIcon color={l.badge_color} />}
+  //     </p>
+  //   ),
+  //   user_tag: <UserTag type={l.user_tag} />,
+  //   "manage/chat": (
+  //     <div className="flex gap-x-[4%] items-center w-full">
+  //       <Button
+  //         href={`/management/landlord/${l.id}/manage`}
+  //         size="sm_medium"
+  //         className="px-8 py-2 mx-auto"
+  //       >
+  //         Manage
+  //       </Button>
+  //       {l.user_tag === "mobile" && (
+  //         <Button
+  //           variant="sky_blue"
+  //           size="sm_medium"
+  //           className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
+  //         // onClick={() => onClickChat(l)}
+  //         >
+  //           Chat
+  //         </Button>
+  //       )}
+  //     </div>
+  //   ),
+  // }));
+
+
+  // Transform landlord data to table rows.
+  // Attach the lastRowRef to the last row if there are more pages.
+  const transformedLandlords = landlords.map((l, index) => ({
     ...l,
     full_name: (
       <p className="flex items-center whitespace-nowrap">
@@ -206,13 +263,17 @@ const Landlord = () => {
             variant="sky_blue"
             size="sm_medium"
             className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
-            // onClick={() => onClickChat(l)}
           >
             Chat
           </Button>
         )}
       </div>
     ),
+    // Attach the lastRowRef to the final row if more pages exist.
+    ref:
+      index === landlords.length - 1 && current_page < total_pages
+        ? lastRowRef
+        : undefined,
   }));
 
   if (loading)
@@ -306,11 +367,11 @@ const Landlord = () => {
           },
           ...(branchOptions.length > 0
             ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
-                },
-              ]
+              {
+                label: "Branch",
+                value: branchOptions,
+              },
+            ]
             : []),
         ]}
       />
@@ -374,18 +435,25 @@ const Landlord = () => {
               </AutoResizingGrid>
             ) : (
               <>
-                {silentLoading ? (
+                {/* {silentLoading ? (
                   <TableLoading />
-                ) : (
-                  <CustomTable
-                    displayTableHead={false}
-                    fields={landlordTableFields}
-                    data={transformedLandlords}
-                    tableBodyCellSx={{ color: "#3F4247" }}
-                  />
+                ) : ( */}
+                <CustomTable
+                  displayTableHead={false}
+                  fields={landlordTableFields}
+                  data={transformedLandlords}
+                  tableBodyCellSx={{ color: "#3F4247" }}
+                />
+                {/* )} */}
+                {silentLoading && current_page > 1 && (
+                  <div className="flex items-center justify-center py-4">
+                    {/* Replace this div with your spinner component if available */}
+                    <div className="loader" />
+                  </div>
                 )}
               </>
             )}
+
             <Pagination
               totalPages={total_pages}
               currentPage={current_page}

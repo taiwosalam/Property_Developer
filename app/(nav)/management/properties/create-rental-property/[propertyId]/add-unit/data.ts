@@ -38,7 +38,7 @@ export const transformPropertyData = (
       branch_name: data.branch?.branch_name,
       branch_id: data.branch?.id,
       land_lord_id: data.landlord_id,
-      staff_id: data.staff?.filter((s) => s.staff_role === "staff").map((s) => s.id),
+      staff_id: data.staff?.filter((s) => s.staff_role === "staff" || s.staff_role === "manager").map((s) => s.id),
       officer_id: data.staff?.filter((s) => s.staff_role === "account officer").map((s) => s.id),
     },
     propertySettings: {

@@ -112,14 +112,19 @@ export const transformUsersMessages = (
 };
 
 
-export const sumUnreadCount = (data: any[]) => 
+export const sumUnreadCount = (data: any[]) =>
     data.reduce((total, item) => total + item.unread_count, 0);
-  
-export const roundUptoNine = (num: number): string => (num > 9 ? "9+" : num.toString());
+
+// export const roundUptoNine = (num: number): string => (num > 9 ? "9+" : num.toString());
+export const roundUptoNine = (num: number): string => {
+    if (Number.isNaN(num)) return "0"; // or another fallback value
+    return num > 9 ? "9+" : num.toString();
+};
+
 
 export const formatMessageText = (message: string) => {
     return message.replace(/(?:\r\n|\r|\n)/g, "<br />");
-  };
+};
 
 type IconComponent = () => JSX.Element;
 export const getIconByContentType = (contentType: string) => {

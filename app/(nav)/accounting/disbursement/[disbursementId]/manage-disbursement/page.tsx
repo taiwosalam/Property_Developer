@@ -33,23 +33,23 @@ const ManageDisbursement = () => {
   const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
     [
       {
-        title: "Annual Fee",
+        title: "Unit 1",
         amount: 1000000,
       },
       {
-        title: "Service Charge",
+        title: "Unit 2",
         amount: 1000000,
       },
       {
-        title: "Refundable Caution Fee",
+        title: "Unit 3",
         amount: 1000000,
       },
       {
-        title: "Tax Charges",
+        title: "Unit 4",
         amount: 1000000,
       },
       {
-        title: "Security Fee",
+        title: "Unit 5",
         amount: 1000000,
       },
     ]

@@ -412,7 +412,7 @@ export const MultiSelect = React.forwardRef<
                     onSelect={() => setIsPopoverOpen(false)}
                     className="flex-1 justify-center cursor-pointer max-w-full"
                   >
-                    Close
+                    Ok
                   </CommandItem>
                 </div>
               </CommandGroup>

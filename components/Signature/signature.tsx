@@ -1,21 +1,55 @@
-import Image from "next/image";
+"use client";
 
-// Images
-import SignatureImage from "@/public/accounting/signature.svg";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import useFetch from "@/hooks/useFetch";
+
+interface CompanySignature {
+  id: number;
+  company_id: number;
+  name: string;
+  title: string;
+  professional_title: string;
+  signature: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface CompanySignaturesResponse {
+  message: string;
+  signatures: CompanySignature[];
+}
 
 const Signature = () => {
+  const { data, loading, error } = useFetch<CompanySignaturesResponse>("/company-signatures");
+
+  if (loading) return <p>Loading signature...</p>;
+  if (error) return <p>Error loading signature</p>;
+  if (!data || data.signatures.length === 0) return <p>No signature available</p>;
+
   return (
-    <div className="custom-flex-col gap-2 text-text-quaternary dark:text-darkText-1 text-base font-medium">
-      <p>Authorized Signature </p>
-      <div className="flex">
-        <Image src={SignatureImage} alt="signature" height={60} />
+    <>
+      <p>Authorized Signature</p>
+      <div className="space-y- flex gap-4">
+        {data.signatures.map((sig) => (
+          <div key={sig.id} className="custom-flex-col gap-2 text-text-quaternary dark:text-darkText-1 text-base font-medium">
+            <div className="flex">
+              <Image
+                src={sig.signature}
+                alt="signature"
+                height={60}
+                width={120} // Adjust width as needed
+              />
+            </div>
+            <p>
+              {sig.name}
+              <br />
+              {sig.professional_title}
+            </p>
+          </div>
+        ))}
       </div>
-      <p>
-        ESQ John Doe
-        <br />
-        Legal Practitioner
-      </p>
-    </div>
+    </>
   );
 };
 
