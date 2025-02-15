@@ -43,3 +43,63 @@ export const propertiesReportTablefields: Field[] = [
   { id: "6", label: "landlord / landlady", accessor: "landlord" },
   { id: "7", label: "Date Created", accessor: "date_created" },
 ];
+
+
+
+interface Property {
+  property_id: number;
+  landlord_name: string;
+  property_name: string;
+  branch_name: string;
+  account_officer: string;
+  created_at: string;
+}
+interface PropertyData {
+  total_properties: number;
+  monthly_properties: number;
+  properties: Property[];
+}
+
+export interface PropertyApiResponse {
+  status: string;
+  message: string;
+  data: PropertyData;
+}
+
+
+// Interface representing the transformed property data
+interface TransformedProperty {
+  id: number;
+  property: string;
+  branch: string;
+  account_officer: string;
+  landlord: string;
+  date_created: string;
+}
+
+// Interface representing the transformed state
+export interface TransformedPropertyData {
+  total_properties: number;
+  monthly_properties: number;
+  properties: TransformedProperty[];
+}
+
+// Function to transform API data to the required format
+export const transformPropertyData = (apiData: PropertyApiResponse): TransformedPropertyData => {
+  const { total_properties, monthly_properties, properties } = apiData.data;
+
+  const transformedProperties = properties.map((property) => ({
+    id: property.property_id,
+    property: property.property_name,
+    branch: property.branch_name,
+    account_officer: property.account_officer,
+    landlord: property.landlord_name,
+    date_created: property.created_at,
+  }));
+
+  return {
+    total_properties,
+    monthly_properties,
+    properties: transformedProperties,
+  };
+};

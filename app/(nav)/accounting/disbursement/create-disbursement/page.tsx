@@ -10,7 +10,7 @@ import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { empty } from "@/app/config";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
@@ -18,6 +18,9 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { DeleteIconX } from "@/public/icons/icons";
 import { currencySymbols } from "@/utils/number-formatter";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
+import useFetch from "@/hooks/useFetch";
+import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
+import { transformUnitOptions, UnitsApiResponse } from "@/components/Management/Rent And Unit/Edit-Rent/data";
 
 const paymentModes = [
   "Bank Transfer",
@@ -28,6 +31,36 @@ const paymentModes = [
 ];
 
 const CreateDisbursement = () => {
+  const [selectedPropertyId, setSelectedPropertyId] = useState('')
+  const [unitsOptions, setUnitsOptions] = useState<any[]>([]);
+
+  const {
+    data: propertyOptionData,
+    error: propertiesError,
+    loading: propertiesLoading,
+  } = useFetch<PropertyListResponse>("/property/all");
+
+  const propertyOptions =
+    propertyOptionData?.data.map((p) => ({
+      value: p.id,
+      label: p.title,
+    })) || [];
+
+  // FETCH ALL PROPERTY UNITS
+  const {
+    data: unitsData,
+    error: unitError,
+    loading: loadingUnits,
+  } = useFetch<UnitsApiResponse>(`/unit/${selectedPropertyId}/all`);
+
+  useEffect(() => {
+    if (unitsData) {
+      const unitsTransformOptions = transformUnitOptions(unitsData);
+      setUnitsOptions(unitsTransformOptions);
+    }
+  }, [unitsData]);
+
+
   const [isAddPaymentChecked, setIsAddPaymentChecked] = useState(true);
   const [isSelectDisabled, setIsSelectDisabled] = useState(false);
   const handleGenerateInvoiceCheckboxChange = (checked: boolean) => {
@@ -83,7 +116,17 @@ const CreateDisbursement = () => {
             required
             id="property"
             label="property"
-            options={["property 1", "property 2", "property 3"]}
+            onChange={setSelectedPropertyId}
+            options={propertyOptions}
+            disabled={propertiesLoading}
+            placeholder={
+              propertiesLoading
+                ? 'Loading properties...'
+                : propertiesError
+                  ? 'Error loading properties'
+                  : 'Select property'
+            }
+            error={propertiesError}
           />
           <Select
             id="disbursement-mode"
@@ -170,8 +213,14 @@ const CreateDisbursement = () => {
               <Select
                 id="unit"
                 label="Unit name"
-                placeholder="Select Options"
-                options={["unit 1", "unit 2"]}
+                options={unitsOptions}
+                placeholder={
+                  loadingUnits
+                    ? 'Loading units...'
+                    : unitError
+                      ? 'Error loading units'
+                      : 'Select unit'
+                }
                 value={paymentTitle}
                 onChange={(v) => setPaymentTitle(v)}
               />
