@@ -53,7 +53,7 @@ export const transformSingleBranchAPIResponse = (
     complaints: { total: branch.complaints_count, new_this_month: branch.current_month_complaints_count },
     listings: { total: 0, new_this_month: 0 },
     branch_wallet: sub_wallet !== null ? { ...sub_wallet } : null,
-    staffs: branch.staffs.map((s) => {
+    staffs: branch.staffs.slice(0,5).map((s) => {
       return {
         avatarSrc: s.picture,
         name: `${s.title ? s.title + " " : ""}${s.name}`,

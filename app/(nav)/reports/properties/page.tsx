@@ -5,29 +5,49 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
   reportsPropertiessFilterOptions,
   propertiesReportTablefields,
+  TransformedPropertyData,
+  PropertyApiResponse,
+  transformPropertyData,
 } from "./data";
+import { useEffect, useState } from "react";
+import useFetch from "@/hooks/useFetch";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import NetworkError from "@/components/Error/NetworkError";
 
 const PropertiesReport = () => {
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      id: (index + 1).toString(),
-      property: `Property ${index + 1}`,
-      branch: `branch ${index + 1}`,
-      account_officer: `Officer ${index + 1}`,
-      landlord: `Landlord ${index + 1}`,
-      date_created: `12/12/12`,
-    }));
-  };
+  const [pageData, setPageData] = useState<TransformedPropertyData>({
+    total_properties: 0,
+    monthly_properties: 0,
+    properties: [],
+  });
 
-  const tableData = generateTableData(10);
+  const { data, loading, error, isNetworkError } = useFetch<PropertyApiResponse>("/report/properties");
+
+  useEffect(() => {
+    if (data) {
+      const transformedData = transformPropertyData(data);
+      setPageData(transformedData);
+    }
+  }, [data]);
+
+  const {
+    total_properties,
+    monthly_properties,
+    properties,
+  } = pageData
+
+  if (loading) return <CustomLoader layout="page" pageTitle="Properties Report" view="table" />
+  if (isNetworkError) return <NetworkError />;
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total"
-          newData={23}
-          total={200}
+          newData={monthly_properties}
+          total={total_properties}
           colorScheme={1}
         />
       </div>
@@ -42,14 +62,14 @@ const PropertiesReport = () => {
             "This page contains a list of Properties Report on the platform.",
         }}
         searchInputPlaceholder="Search for Properties Report"
-        handleFilterApply={() => {}}
+        handleFilterApply={() => { }}
         filterOptionsMenu={reportsPropertiessFilterOptions}
         hasGridListToggle={false}
         exportHref="/reports/properties/export"
       />
       <CustomTable
         fields={propertiesReportTablefields}
-        data={tableData}
+        data={properties}
         tableHeadClassName="h-[45px]"
       />
     </div>

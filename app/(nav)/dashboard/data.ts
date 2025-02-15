@@ -317,20 +317,37 @@ export const recentMessagesData = [
   },
 ];
 
+// export const getRecentMessages = (data: any) => {
+//   return (
+//     data?.map((m: any) => ({
+//       id: m?.id,
+//       avatarSrc: m?.pfp,
+//       name: m?.fullname,
+//       message: m?.desc,
+//       time: m?.time,
+//       count: m?.unread_count,
+//       content_type: m?.content_type,
+//     }))
+//   );
+// };
+
 export const getRecentMessages = (data: any) => {
   console.log("data", data);
   return (
-    data?.map((m: any) => ({
-      id: m?.id,
-      avatarSrc: m?.pfp,
-      name: m?.fullname,
-      message: m?.desc,
-      time: m?.time,
-      count: m?.unread_count,
-      content_type: m?.content_type,
-    }))
+    data
+      ?.slice(0, 7) // Limit to the first 7 messages
+      .map((m: any) => ({
+        id: m?.id,
+        avatarSrc: m?.pfp,
+        name: m?.fullname,
+        message: m?.desc,
+        time: m?.time,
+        count: m?.unread_count,
+        content_type: m?.content_type,
+      }))
   );
 };
+
 
 export const complaintsData = [
   {
