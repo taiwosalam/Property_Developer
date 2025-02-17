@@ -1,3 +1,7 @@
+import api, { handleAxiosError } from "@/services/api";
+import { formatNumber } from "@/utils/number-formatter";
+import dayjs from "dayjs";
+
 export const accountingDisbursementOptionsWithDropdown = [
   {
     label: "Landlord/Landlady",
@@ -38,3 +42,85 @@ const generateDisbursementTableData = (num: number) => {
 };
 
 export const disbursementTableData = generateDisbursementTableData(15);
+
+
+// Interfaces for the raw API response
+export interface DisburseItem {
+  id: number;
+  pay_id: string;
+  property: string;
+  description: string;
+  landlord: string;
+  picture: string;
+  total_amount: string;
+  disburse_mode: string;
+  date: string;
+}
+
+export interface Pagination {
+  current_page: number;
+  per_page: number;
+  total: number;
+  total_pages: number;
+}
+
+export interface DisburseData {
+  disburses: DisburseItem[];
+  pagination: Pagination;
+}
+
+export interface DisburseApiResponse {
+  status: string;
+  message: string;
+  data: DisburseData;
+}
+
+// Interface for the transformed data (to be used in CustomTable)
+export interface TransformedDisburseItem {
+  id: number;
+  date: string;
+  picture: string;
+  landlord: string;
+  payment_id: string;
+  amount: string;
+  description: string;
+  mode: string;
+}
+
+export const formatHtmlDescription = (html: string): string => {
+  return html.replace(/<\/?[^>]+(>|$)/g, "").trim();
+};
+
+// Transformation function
+export const transformDisburseData = (
+  apiResponse: DisburseApiResponse
+): TransformedDisburseItem[] => {
+  return apiResponse.data.disburses.map((item) => ({
+    id: item.id,
+    date: dayjs(item.date).format("MMM DD YYYY"),
+    picture: item.picture,
+    landlord: item.landlord,
+    payment_id: item.pay_id,
+    amount: item.total_amount ? `${'₦'}${formatNumber(
+      parseFloat(item.total_amount)
+    )}` : "___",
+    description: formatHtmlDescription(item.description),
+    // description: item.description,
+    mode: item.disburse_mode,
+  }));
+};
+
+
+
+
+export const createDisbursement = async (data: any) => {
+  try {
+    const res = await api.post('/disburses', data);
+    if (res.status === 201) {
+      return true
+    }
+  } catch (error) {
+    handleAxiosError(error)
+    return false
+  }
+}

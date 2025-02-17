@@ -21,6 +21,11 @@ import AccountingTitleSection from "@/components/Accounting/accounting-title-sec
 import useFetch from "@/hooks/useFetch";
 import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
 import { transformUnitOptions, UnitsApiResponse } from "@/components/Management/Rent And Unit/Edit-Rent/data";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { toast } from "sonner";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { createDisbursement } from "../data";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
 const paymentModes = [
   "Bank Transfer",
@@ -31,8 +36,9 @@ const paymentModes = [
 ];
 
 const CreateDisbursement = () => {
+  const companyId = usePersonalInfoStore((state) => state.company_id) || '';
   const [selectedPropertyId, setSelectedPropertyId] = useState('')
-  const [unitsOptions, setUnitsOptions] = useState<any[]>([]);
+  const [reqLoading, setReqLoading] = useState(false)
 
   const {
     data: propertyOptionData,
@@ -53,12 +59,13 @@ const CreateDisbursement = () => {
     loading: loadingUnits,
   } = useFetch<UnitsApiResponse>(`/unit/${selectedPropertyId}/all`);
 
-  useEffect(() => {
-    if (unitsData) {
-      const unitsTransformOptions = transformUnitOptions(unitsData);
-      setUnitsOptions(unitsTransformOptions);
-    }
-  }, [unitsData]);
+  const UnitsOptions =
+    unitsData?.data
+      .filter(unit => unit.is_active === 'vacant')
+      .map(unit => ({
+        value: unit.id.toString(),
+        label: unit.unit_name,
+      })) ?? [];
 
 
   const [isAddPaymentChecked, setIsAddPaymentChecked] = useState(true);
@@ -107,206 +114,238 @@ const CreateDisbursement = () => {
   );
   const CURRENCY_SYMBOL = currencySymbols.naira;
 
+  // FUNCTION TO CREATE DISBURSEMENT
+  const handleCreateDisbursement = async (data: Record<string, string>) => {
+    const payload = {
+      company_id: companyId,
+      property_id: data.property,
+      description: data.description,
+      disburse_mode: data.disbursement_mode.toLowerCase(), // 'bank transfer', 'wallet', 'cash deposit', 'bank deposit', 'other mode'
+      disbursement: isAddPaymentChecked ? payments : unitPayments,
+    }
+    try {
+      console.log("payload", payload)
+      setReqLoading(true)
+      const res = await createDisbursement(objectToFormData(payload))
+      if (res) {
+        toast.success("Disbursement Created Successfully")
+      }
+    } catch (error) {
+      toast.error('Failed to create disbursement. Please try again!')
+    } finally {
+      setReqLoading(false)
+    }
+  }
+
   return (
     <section className="space-y-7 pb-20">
-      <BackButton>Create New Disbursement</BackButton>
-      <div className="flex flex-col gap-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] max-w-[968px]">
-          <Select
+      <AuthForm onFormSubmit={handleCreateDisbursement}>
+        <BackButton>Create New Disbursement</BackButton>
+        <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] max-w-[968px]">
+            <Select
+              required
+              id="property"
+              label="property"
+              onChange={setSelectedPropertyId}
+              options={propertyOptions}
+              disabled={propertiesLoading}
+              placeholder={
+                propertiesLoading
+                  ? 'Loading properties...'
+                  : propertiesError
+                    ? 'Error loading properties'
+                    : 'Select property'
+              }
+              error={propertiesError}
+            />
+            <Select
+              id="disbursement_mode"
+              label="disbursement mode"
+              placeholder="Select Options"
+              options={paymentModes}
+              className="self-end"
+              inputContainerClassName="bg-white"
+            />
+          </div>
+          <TextArea
+            id="description"
+            label="Disbursement Description"
             required
-            id="property"
-            label="property"
-            onChange={setSelectedPropertyId}
-            options={propertyOptions}
-            disabled={propertiesLoading}
-            placeholder={
-              propertiesLoading
-                ? 'Loading properties...'
-                : propertiesError
-                  ? 'Error loading properties'
-                  : 'Select property'
-            }
-            error={propertiesError}
-          />
-          <Select
-            id="disbursement-mode"
-            label="disbursement mode"
-            placeholder="Select Options"
-            options={paymentModes}
-            className="self-end"
-            inputContainerClassName="bg-white"
+            className="lg:max-w-[50%]"
           />
         </div>
-        <TextArea
-          id="description"
-          label="Disbursement Description"
-          required
-          className="lg:max-w-[50%]"
-        />
-      </div>
 
-      <div className="space-y-6">
-        <div className="flex gap-1 flex-col">
-          <div className="flex gap-2">
-            <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
-              Add Property Disbursement
-            </h3>
-            <Checkbox
-              radio
-              checked={isAddPaymentChecked}
-              onChange={() => setIsAddPaymentChecked(true)}
-            />
-          </div>
-          <p>Select this option if you are recording a disbursement for the entire property, and assign a payment title based on the event.</p>
-        </div>
-        {isAddPaymentChecked && (
-          <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Input
-                type="text"
-                id="payment_title"
-                label="Payment Title"
-                value={paymentTitle}
-                onChange={(value) => setPaymentTitle(value)}
-              />
-              <Input
-                type="text"
-                id="amount"
-                label="Amount"
-                className="w-full"
-                CURRENCY_SYMBOL={"₦"}
-                formatNumber
-                value={paymentAmount}
-                onChange={(value) => setPaymentAmount(value)}
-              />
-            </div>
-            <div className="flex items-center justify-end">
-              <Button
-                size="base_medium"
-                className="py-2 px-8"
-                onClick={handleAddPaymentClick}
-              >
-                Add
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="space-y-6">
-        <div className="flex gap-1 flex-col">
-          <div className="flex gap-2">
-            <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
-              Add Unit Disbursement
-            </h3>
-            <Checkbox
-              radio
-              checked={!isAddPaymentChecked}
-              onChange={() => setIsAddPaymentChecked(false)}
-            />
-          </div>
-          <p>Select this option if you are disbursing payment for a specific unit or multiple units within the same property.</p>
-        </div>
-        {!isAddPaymentChecked && (
-          <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] max-w-[968px]">
-              <Select
-                id="unit"
-                label="Unit name"
-                options={unitsOptions}
-                placeholder={
-                  loadingUnits
-                    ? 'Loading units...'
-                    : unitError
-                      ? 'Error loading units'
-                      : 'Select unit'
-                }
-                value={paymentTitle}
-                onChange={(v) => setPaymentTitle(v)}
-              />
-              <Input
-                id="amount"
-                label="Amount"
-                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                // placeholder="300,000"
-                value={paymentAmount}
-                onChange={(v) => setPaymentAmount(v)}
-              />
-            </div>
-            <div className="flex justify-end">
-              <Button
-                size="base_medium"
-                className="py-2 px-14"
-                onClick={handleAddPaymentClick}
-              >
-                Add
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {displayedPayments.length > 0 && (
         <div className="space-y-6">
-          <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
-            Payment Added
-          </h3>
-
-          <div className="flex bg-white dark:bg-darkText-primary w-full p-6 rounded-lg flex-col gap-8">
-            <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
-              {displayedPayments.map((payment, index) => (
-                <div key={index} className="flex flex-col gap-4">
-                  <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1 capitalize">
-                    {payment.title}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                      {new Intl.NumberFormat("en-NG", {
-                        style: "currency",
-                        currency: "NGN",
-                      }).format(payment.amount)}
-                    </p>
-                    <Modal>
-                      <ModalTrigger aria-label={`Delete ${payment.title}`}>
-                        <DeleteIconX />
-                      </ModalTrigger>
-                      <ModalContent>
-                        <DeleteItemWarningModal
-                          item={payment.title}
-                          amount={payment.amount}
-                          handleDelete={() => handleDeletePayment(index)}
-                          useCase="invoices"
-                        />
-                      </ModalContent>
-                    </Modal>
-                  </div>
-                </div>
-              ))}
+          <div className="flex gap-1 flex-col">
+            <div className="flex gap-2">
+              <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
+                Add Property Disbursement
+              </h3>
+              <Checkbox
+                radio
+                checked={isAddPaymentChecked}
+                onChange={() => setIsAddPaymentChecked(true)}
+              />
             </div>
-            <SectionSeparator />
-            <div className="flex flex-col gap-4">
-              <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                Total Disbursement
-              </p>
-              <p className="font-bold text-xl text-brand-9">
-                {new Intl.NumberFormat("en-NG", {
-                  style: "currency",
-                  currency: "NGN",
-                }).format(totalAmount)}
-              </p>
+            <p>Select this option if you are recording a disbursement for the entire property, and assign a payment title based on the event.</p>
+          </div>
+          {isAddPaymentChecked && (
+            <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Input
+                  type="text"
+                  id="payment_title"
+                  label="Payment Title"
+                  value={paymentTitle}
+                  onChange={(value) => setPaymentTitle(value)}
+                />
+                <Input
+                  type="text"
+                  id="amount"
+                  label="Amount"
+                  className="w-full"
+                  CURRENCY_SYMBOL={"₦"}
+                  formatNumber
+                  value={paymentAmount}
+                  onChange={(value) => setPaymentAmount(value)}
+                />
+              </div>
+              <div className="flex items-center justify-end">
+                <Button
+                  type="button"
+                  size="base_medium"
+                  className="py-2 px-8"
+                  onClick={handleAddPaymentClick}
+                >
+                  Add
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-6">
+          <div className="flex gap-1 flex-col">
+            <div className="flex gap-2">
+              <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
+                Add Unit Disbursement
+              </h3>
+              <Checkbox
+                radio
+                checked={!isAddPaymentChecked}
+                onChange={() => setIsAddPaymentChecked(false)}
+              />
+            </div>
+            <p>Select this option if you are disbursing payment for a specific unit or multiple units within the same property.</p>
+          </div>
+          {!isAddPaymentChecked && (
+            <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] max-w-[968px]">
+                <Select
+                  id="unit"
+                  label="Unit name"
+                  options={UnitsOptions}
+                  placeholder={
+                    loadingUnits
+                      ? 'Loading units...'
+                      : unitError
+                        ? 'Error loading units'
+                        : 'Select unit'
+                  }
+                  error={propertiesError}
+                  value={paymentTitle}
+                  onChange={(v) => setPaymentTitle(v)}
+                />
+                <Input
+                  id="amount"
+                  label="Amount"
+                  CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+                  value={paymentAmount}
+                  onChange={(v) => setPaymentAmount(v)}
+                />
+              </div>
+              <div className="flex justify-end">
+                <Button
+                  type="button"
+                  size="base_medium"
+                  className="py-2 px-14"
+                  onClick={handleAddPaymentClick}
+                >
+                  Add
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {displayedPayments.length > 0 && (
+          <div className="space-y-6">
+            <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
+              Payment Added
+            </h3>
+
+            <div className="flex bg-white dark:bg-darkText-primary w-full p-6 rounded-lg flex-col gap-8">
+              <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
+                {displayedPayments.map((payment, index) => (
+                  <div key={index} className="flex flex-col gap-4">
+                    <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1 capitalize">
+                      {payment.title}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
+                        {new Intl.NumberFormat("en-NG", {
+                          style: "currency",
+                          currency: "NGN",
+                        }).format(payment.amount)}
+                      </p>
+                      <Modal>
+                        <ModalTrigger aria-label={`Delete ${payment.title}`}>
+                          <DeleteIconX />
+                        </ModalTrigger>
+                        <ModalContent>
+                          <DeleteItemWarningModal
+                            item={payment.title}
+                            amount={payment.amount}
+                            handleDelete={() => handleDeletePayment(index)}
+                            useCase="invoices"
+                          />
+                        </ModalContent>
+                      </Modal>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <SectionSeparator />
+              <div className="flex flex-col gap-4">
+                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                  Total Disbursement
+                </p>
+                <p className="font-bold text-xl text-brand-9">
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                  }).format(totalAmount)}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <FixedFooter className="flex items-center justify-end gap-4">
-        <Button className="py-2 px-8" size="base_medium" variant="sky_blue">
-          Cancel
-        </Button>
-        <Button type="submit" className="py-2 px-8" size="base_medium">
-          Create
-        </Button>
-      </FixedFooter>
+        <FixedFooter className="flex items-center justify-end gap-4">
+          <Button type="button" className="py-2 px-8" size="base_medium" variant="sky_blue">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleCreateDisbursement as any}
+            type="submit"
+            className="py-2 px-8"
+            size="base_medium"
+          >
+            {reqLoading ? "Please wait..." : "Create"}
+          </Button>
+        </FixedFooter>
+      </AuthForm>
     </section>
   );
 };

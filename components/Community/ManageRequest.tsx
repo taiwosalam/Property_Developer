@@ -236,7 +236,7 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
 
   useEffect(() => {
-    console.log("Original target_audience:", data?.target_audience);
+    // console.log("Original target_audience:", data?.target_audience);
 
     const initialSelectedStates = (() => {
       if (typeof data?.target_audience === "string") {
