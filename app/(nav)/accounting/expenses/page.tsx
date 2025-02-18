@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ExclamationMark } from "@/public/icons/icons";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 import Link from "next/link";
 import CreateExpenceModal from "@/components/Accounting/expenses/create-expense/CreateExpenceModal";
@@ -29,6 +29,7 @@ import {
   TransformedExpensesData,
   transformExpensesData,
   ExpensesApiResponse,
+  ExpensesRequestParams,
 } from "./data";
 import MenuItem from "@mui/material/MenuItem";
 import CustomTable from "@/components/Table/table";
@@ -39,6 +40,11 @@ import { useRouter } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
+import { AxiosRequestConfig } from "axios";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import dayjs from "dayjs";
+import FilterBar from "@/components/FIlterBar/FilterBar";
+import { PropertyListResponse } from "../../management/rent-unit/[id]/edit-rent/type";
 
 const AccountingExpensesPage = () => {
   const router = useRouter()
@@ -59,8 +65,56 @@ const AccountingExpensesPage = () => {
     stats
   } = pageData
 
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
 
-  const { data, loading, isNetworkError, error } = useFetch<ExpensesApiResponse>("/expenses");
+
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<"asc" | "desc" | "">("");
+
+  const isFilterApplied = useCallback(() => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  }, [appliedFilters]);
+
+  const config: AxiosRequestConfig = useMemo(() => {
+    return {
+      params: {
+        date_from: appliedFilters.startDate
+          ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+          : undefined,
+        date_to: appliedFilters.endDate
+          ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+          : undefined,
+        search: search,
+        property_ids: appliedFilters.menuOptions["Property"] || [],
+      } as ExpensesRequestParams,
+    };
+  }, [appliedFilters, search]);
+
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearch(query);
+  };
+
+  const {
+    data,
+    loading,
+    isNetworkError,
+    error
+  } = useFetch<ExpensesApiResponse>("/expenses", config);
 
   useEffect(() => {
     if (data) {
@@ -68,7 +122,17 @@ const AccountingExpensesPage = () => {
     }
   }, [data]);
 
-  // console.log("Page data", pageData)
+  const {
+    data: propertyData,
+    error: propertyError,
+    loading: propertyLoading,
+  } = useFetch<PropertyListResponse>("/property/all");
+
+  const propertyOptions =
+    propertyData?.data.map((p) => ({
+      value: `${p.id}`,
+      label: p.title,
+    })) || [];
 
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
@@ -98,11 +162,6 @@ const AccountingExpensesPage = () => {
         value === "90d" ? 90 : value === "30d" ? 30 : value === "7d" ? 7 : 1;
       setSelectedDateRange(calculateDateRange(days));
     }
-  };
-
-  const handleFilterApply = (filters: any) => {
-    console.log("Filter applied:", filters);
-    // Add filtering logic here for branches
   };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -138,8 +197,6 @@ const AccountingExpensesPage = () => {
             <span className="text-2xl font-bold">Expenses</span>
             <ExclamationMark />
           </div>
-          {/* <Modal>
-            <ModalTrigger asChild> */}
           <Button
             type="button"
             className="page-header-button"
@@ -147,69 +204,73 @@ const AccountingExpensesPage = () => {
           >
             + create Expenses
           </Button>
-          {/* </ModalTrigger> */}
-          {/* <ModalContent>
-              <CreateExpenceModal />
-            </ModalContent>
-          </Modal> */}
         </div>
         <div className="bg-white rounded-[8px] border border-opacity-20 border-[#BAC7D533] dark:bg-[#3C3D37] dark:border-[#292d32] p-4 space-y-6">
           <div className="flex flex-wrap gap-y-4 items-center justify-between">
-            <div
-              className={`w-fit flex bg-[#F5F5F5] dark:bg-darkText-primary rounded-md items-center justify-center`}
-            >
-              <DatePickerWithRange
-                selectedRange={selectedDateRange}
-                onDateChange={handleDateChange}
-              />
-              <Select value={timeRange} onValueChange={handleSelectChange}>
-                <SelectTrigger
-                  className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto"
-                  aria-label="Select a value"
-                >
-                  <SelectValue placeholder="Last 3 months" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  <SelectItem value="90d" className="rounded-lg">
-                    Last 3 months
-                  </SelectItem>
-                  <SelectItem value="30d" className="rounded-lg">
-                    Last 30 days
-                  </SelectItem>
-                  <SelectItem value="7d" className="rounded-lg">
-                    Last 7 days
-                  </SelectItem>
-                  <SelectItem value="1d" className="rounded-lg">
-                    Yesterday
-                  </SelectItem>
-                  <SelectItem value="custom" className="rounded-lg">
-                    Custom
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center gap-4 flex-wrap">
-              <SearchInput
-                placeholder="Search for Expenses"
-                className="max-w-[255px]"
-              />
-              <Modal>
-                <ModalTrigger asChild>
-                  <FilterButton />
-                </ModalTrigger>
-                <ModalContent>
-                  <FilterModal
-                    filterOptionsMenu={accountingExpensesOptionsWithDropdown}
-                    handleFilterApply={handleFilterApply}
-                    isDateTrue
-                  />
-                </ModalContent>
-              </Modal>
-              <div className="flex items-center gap-2">
-                <ExportButton type="pdf" href="/accounting/expenses/export" />
-                <ExportButton type="csv" href="/accounting/expenses/export" />
-              </div>
-            </div>
+            {/* Page Title with search */}
+            <FilterBar
+              hasGridListToggle={false}
+              exports
+              exportHref="/accounting/expenses/export"
+              customLeft={
+                <>
+                  <div
+                    className={`w-fit flex bg-[#F5F5F5] dark:bg-darkText-primary rounded-md items-center justify-center`}
+                  >
+                    <DatePickerWithRange
+                      selectedRange={selectedDateRange}
+                      onDateChange={handleDateChange}
+                    />
+                    <Select value={timeRange} onValueChange={handleSelectChange}>
+                      <SelectTrigger
+                        className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto"
+                        aria-label="Select a value"
+                      >
+                        <SelectValue placeholder="Last 3 months" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl">
+                        <SelectItem value="90d" className="rounded-lg">
+                          Last 3 months
+                        </SelectItem>
+                        <SelectItem value="30d" className="rounded-lg">
+                          Last 30 days
+                        </SelectItem>
+                        <SelectItem value="7d" className="rounded-lg">
+                          Last 7 days
+                        </SelectItem>
+                        <SelectItem value="1d" className="rounded-lg">
+                          Yesterday
+                        </SelectItem>
+                        <SelectItem value="custom" className="rounded-lg">
+                          Custom
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              }
+              aboutPageModalData={{
+                title: "Expenses",
+                description:
+                  "This page contains a list of Expenses on the platform.",
+              }}
+              searchInputPlaceholder="Search for Expenses"
+              handleFilterApply={handleFilterApply}
+              isDateTrue
+              filterOptionsMenu={[
+                ...accountingExpensesOptionsWithDropdown,
+                ...(propertyOptions.length > 0
+                  ? [
+                    {
+                      label: "Property",
+                      value: propertyOptions,
+                    },
+                  ]
+                  : []),
+              ]}
+              handleSearch={handleSearch}
+              appliedFilters={appliedFilters}
+            />
           </div>
           <AutoResizingGrid gap={24} minWidth={300}>
             <AccountStatsCard
