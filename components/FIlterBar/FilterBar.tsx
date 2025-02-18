@@ -15,6 +15,7 @@ import {
   // FilterModalProps,
   // FilterOptionObj,
 } from '../Management/Landlord/types';
+import { ReactNode } from 'react';
 
 interface FilterModalProps {
   handleFilterApply: (selectedFilters: FilterResult) => void;
@@ -62,6 +63,8 @@ interface FilterBarProps extends FilterModalProps {
   isDateTrue?: boolean;
   handleFilterApply: (filters: any) => void;
   inputOff?: boolean
+  customLeft?: ReactNode;
+  customRight?: ReactNode;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -88,16 +91,24 @@ const FilterBar: React.FC<FilterBarProps> = ({
   appliedFilters,
   dateLabel,
   noFilterButton,
-  inputOff
+  inputOff,
+  customLeft,
+  customRight,
 }) => {
   return (
     <div className='page-title-container w-full'>
-      {pageTitle && (
-        <PageTitle
-          title={pageTitle}
-          aboutPageModalData={aboutPageModalData}
-          noExclamationMark={noExclamationMark}
-        />
+      {customLeft ? (
+        <div className="custom-left">
+          {customLeft}
+        </div>
+      ) : (
+        pageTitle && (
+          <PageTitle
+            title={pageTitle}
+            aboutPageModalData={aboutPageModalData}
+            noExclamationMark={noExclamationMark}
+          />
+        )
       )}
 
       <div
@@ -108,9 +119,8 @@ const FilterBar: React.FC<FilterBarProps> = ({
       >
         <SearchInput
           placeholder={searchInputPlaceholder}
-          className={`max-w-[250px] md:max-w-max ${
-            hiddenSearchInput && 'hidden'
-          }`}
+          className={`max-w-[250px] md:max-w-max ${hiddenSearchInput && 'hidden'
+            }`}
           onSearch={handleSearch}
         />
         {hasGridListToggle && (

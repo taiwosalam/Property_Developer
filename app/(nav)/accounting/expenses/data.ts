@@ -3,15 +3,20 @@ import { formatHtmlDescription } from "../disbursement/data";
 import { formatNumber } from "@/utils/number-formatter";
 import dayjs from "dayjs";
 
+
+export interface ExpensesRequestParams {
+  // page?: number;
+  search?: string;
+  // sort_order?: "asc" | "desc";
+  states?: string;
+  from_date?: string;
+  to_date?: string;
+  // agent?: string;
+  property_ids?: string[];
+}
+
+
 export const accountingExpensesOptionsWithDropdown = [
-  {
-    label: "Property",
-    value: [
-      { label: "Property 1", value: "Property1" },
-      { label: "Property 2", value: "Property2" },
-      { label: "Property 3", value: "Property3" },
-    ],
-  },
   {
     label: "account officer",
     value: [
