@@ -19,6 +19,7 @@ import { Dayjs } from "dayjs";
 import { DeleteIconX } from "@/public/icons/icons";
 import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
 import { SectionSeparator } from "@/components/Section/section-components";
+import { useParams } from "next/navigation";
 
 const paymentModes = [
   "Bank Transfer",
@@ -29,6 +30,7 @@ const paymentModes = [
 ];
 
 const ManageDisbursement = () => {
+  const { disbursementId } = useParams()
   const CURRENCY_SYMBOL = currencySymbols.naira;
   const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
     [
@@ -54,6 +56,8 @@ const ManageDisbursement = () => {
       },
     ]
   );
+
+  console.log("id", disbursementId)
 
   const [paymentTitle, setPaymentTitle] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");

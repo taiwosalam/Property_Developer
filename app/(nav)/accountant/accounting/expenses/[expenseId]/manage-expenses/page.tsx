@@ -16,41 +16,54 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { SectionSeparator } from "@/components/Section/section-components";
 import ModalPreset from "@/components/Modal/modal-preset";
 import { currencySymbols } from "@/utils/number-formatter";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Dayjs } from "dayjs";
 import { format } from "date-fns";
 import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
+import { ManageExpenseApiResponse, ManageExpensePageData, transformManageExpenseData } from "./data";
+import useFetch from "@/hooks/useFetch";
 
 const ManageExpenses = () => {
   const router = useRouter();
-
+  const { expenseId } = useParams()
   const CURRENCY_SYMBOL = currencySymbols.naira;
+  const [pageData, setPageData] = useState<ManageExpensePageData | null>(null);
+  const { data, error, loading } = useFetch<ManageExpenseApiResponse>(`/expenses/${expenseId}`);
 
-  const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
-    [
-      {
-        title: "Annual Fee",
-        amount: 1000000,
-      },
-      {
-        title: "Service Charge",
-        amount: 1000000,
-      },
-      {
-        title: "Refundable Caution Fee",
-        amount: 1000000,
-      },
-      {
-        title: "Tax Charges",
-        amount: 1000000,
-      },
-      {
-        title: "Security Fee",
-        amount: 1000000,
-      },
-    ]
-  );
+  useEffect(() => {
+    if (data) {
+      setPageData(transformManageExpenseData(data));
+    }
+  }, [data]);
+
+  // const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
+  //   [
+  //     {
+  //       title: "Annual Fee",
+  //       amount: 1000000,
+  //     },
+  //     {
+  //       title: "Service Charge",
+  //       amount: 1000000,
+  //     },
+  //     {
+  //       title: "Refundable Caution Fee",
+  //       amount: 1000000,
+  //     },
+  //     {
+  //       title: "Tax Charges",
+  //       amount: 1000000,
+  //     },
+  //     {
+  //       title: "Security Fee",
+  //       amount: 1000000,
+  //     },
+  //   ]
+  // );
+
+  const [payments, setPayments] = useState<{ title: string; amount: number }[]>(pageData?.payments || []);
+
   const [paymentTitle, setPaymentTitle] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
   const handleAddPaymentClick = () => {
@@ -110,7 +123,7 @@ const ManageExpenses = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[150px] sm:pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
-        <BackButton>Manage Expenses</BackButton>
+        <BackButton>Manage </BackButton>
         <ExportPageHeader />
         <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList

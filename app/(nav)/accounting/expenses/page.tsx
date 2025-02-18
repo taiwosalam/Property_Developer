@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ExclamationMark } from "@/public/icons/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import Link from "next/link";
 import CreateExpenceModal from "@/components/Accounting/expenses/create-expense/CreateExpenceModal";
@@ -25,6 +25,10 @@ import {
   accountingExpensesOptionsWithDropdown,
   expenseTableFields,
   expenseTableData,
+  ExpenseStats,
+  TransformedExpensesData,
+  transformExpensesData,
+  ExpensesApiResponse,
 } from "./data";
 import MenuItem from "@mui/material/MenuItem";
 import CustomTable from "@/components/Table/table";
@@ -32,9 +36,40 @@ import TableMenu from "@/components/Table/table-menu";
 import type { DataItem } from "@/components/Table/types";
 import ExportButton from "@/components/reports/export-button";
 import { useRouter } from "next/navigation";
+import useFetch from "@/hooks/useFetch";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import NetworkError from "@/components/Error/NetworkError";
 
 const AccountingExpensesPage = () => {
   const router = useRouter()
+  const [pageData, setPageData] = useState<TransformedExpensesData>({
+    expenses: [],
+    stats: {
+      total_amount: 0,
+      total_balance: 0,
+      total_deduct: 0,
+      percentage_change_amount: 0,
+      percentage_change_deduct: 0,
+      percentage_change_balance: 0,
+    } as ExpenseStats,
+  });
+
+  const {
+    expenses,
+    stats
+  } = pageData
+
+
+  const { data, loading, isNetworkError, error } = useFetch<ExpensesApiResponse>("/expenses");
+
+  useEffect(() => {
+    if (data) {
+      setPageData(transformExpensesData(data));
+    }
+  }, [data]);
+
+  // console.log("Page data", pageData)
+
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >();
@@ -82,12 +117,18 @@ const AccountingExpensesPage = () => {
     setSelectedItemId(null);
   };
 
-  const transformedTableData = expenseTableData().map((item) => ({
+  const transformedTableData = expenses.map((item) => ({
     ...item,
     amount: <p className="text-status-success-3">{item.amount}</p>,
     payment: <p className="text-status-error-2">{item.payment}</p>,
     balance: item.balance ? item.balance : "--- ---",
   }));
+
+
+  if (loading) return <CustomLoader layout="page" pageTitle="Expenses" view="table" />
+  if (isNetworkError) return <NetworkError />;
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <section className="space-y-8 mt-4">
@@ -102,7 +143,7 @@ const AccountingExpensesPage = () => {
           <Button
             type="button"
             className="page-header-button"
-            onClick={()=> router.push("/accounting/expenses/create-expenses")}
+            onClick={() => router.push("/accounting/expenses/create-expenses")}
           >
             + create Expenses
           </Button>
@@ -173,27 +214,27 @@ const AccountingExpensesPage = () => {
           <AutoResizingGrid gap={24} minWidth={300}>
             <AccountStatsCard
               title="Total Expenses"
-              balance={12345432}
+              balance={Number(stats.total_amount)}
               variant="redOutgoing"
               trendDirection="up"
               trendColor="red"
-              percentage={53}
+              percentage={stats.percentage_change_amount}
             />
             <AccountStatsCard
               title="Part Payment"
-              balance={12345432}
+              balance={Number(stats.total_deduct)}
               variant="blueIncoming"
               trendDirection="down"
               trendColor="green"
-              percentage={4.3}
+              percentage={stats.percentage_change_deduct}
             />
             <AccountStatsCard
               title="Balance"
-              balance={12345432}
+              balance={Number(stats.total_balance)}
               variant="yellowCard"
               trendDirection="down"
               trendColor="green"
-              percentage={4.3}
+              percentage={stats.percentage_change_balance}
             />
           </AutoResizingGrid>
         </div>

@@ -8,8 +8,10 @@ import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import BackButton from "@/components/BackButton/back-button";
+import { useParams } from "next/navigation";
 
 const PreviewExpenses = () => {
+    const { expenseId } = useParams()
   return (
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
