@@ -22,7 +22,7 @@ const ExportPageHeader = () => {
     (state) => state.company_phone_number
   );
 
-  console.log("number", phoneNumbers)
+  // console.log("number", phoneNumbers)
 
   return (
     <div

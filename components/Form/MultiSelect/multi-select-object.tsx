@@ -18,6 +18,9 @@ interface MultiSelectProps {
   className?: string;
   resetKey?: number;
   defaultSelections?: (string | number)[];
+  placeholder?: string;
+  /** Callback triggered when selected values change */
+  onValueChange?: (selected: (string | number)[]) => void;
 }
 
 const MultiSelectObj: React.FC<MultiSelectProps> = ({
@@ -30,6 +33,8 @@ const MultiSelectObj: React.FC<MultiSelectProps> = ({
   inputTextClassName,
   resetKey,
   defaultSelections = [],
+  placeholder,
+  onValueChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<(string | number)[]>(defaultSelections);
@@ -40,12 +45,23 @@ const MultiSelectObj: React.FC<MultiSelectProps> = ({
   };
 
   const handleSelect = (option: Option) => {
+    let newSelectedItems: (string | number)[];
+
     if (selectedItems.includes(option.value)) {
       // Unselect the item if already selected
-      setSelectedItems((prev) => prev.filter((item) => item !== option.value));
+      newSelectedItems = selectedItems.filter((item) => item !== option.value);
     } else if (selectedItems.length < maxSelections) {
       // Add the item if within limit
-      setSelectedItems((prev) => [...prev, option.value]);
+      newSelectedItems = [...selectedItems, option.value];
+    } else {
+      newSelectedItems = selectedItems;
+    }
+
+    setSelectedItems(newSelectedItems);
+
+    // Call the onValueChange callback if provided
+    if (onValueChange) {
+      onValueChange(newSelectedItems);
     }
   };
 
@@ -55,10 +71,13 @@ const MultiSelectObj: React.FC<MultiSelectProps> = ({
     setIsOpen(false);
   });
 
-  // Only reset when resetKey is defined (and changes)
+  // Reset selections when resetKey or defaultSelections changes.
   useEffect(() => {
     if (resetKey !== undefined) {
       setSelectedItems(defaultSelections);
+      if (onValueChange) {
+        onValueChange(defaultSelections);
+      }
     }
   }, [resetKey, defaultSelections]);
 
@@ -88,7 +107,7 @@ const MultiSelectObj: React.FC<MultiSelectProps> = ({
             )}
           >
             {selectedItems.length === 0
-              ? "Select options"
+              ? placeholder ?? "Select options"
               : selectedItems
                   .map((item) => {
                     const found = options.find((option) => option.value === item);
@@ -99,9 +118,9 @@ const MultiSelectObj: React.FC<MultiSelectProps> = ({
         </div>
         {isOpen && (
           <div className="absolute z-10 w-full border bg-white dark:bg-darkText-primary mt-2 max-h-60 overflow-y-auto rounded-lg">
-            {options.map((option) => (
+            {options.map((option, index) => (
               <div
-                key={option.value}
+                key={index}
                 className={clsx(
                   "p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-darkText-2 capitalize",
                   isSelected(option) && "bg-blue-100 dark:bg-darkText-primary"

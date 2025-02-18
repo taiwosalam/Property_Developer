@@ -58,7 +58,8 @@ export const transformUnitOptions = (data: UnitsApiResponse): UnitOptionTypes[] 
     return data.data
         .filter(unit => unit.is_active === 'vacant')
         .map(unit => ({
-            value: unit.id.toString(),
+            // value: unit.id.toString(),
+            value: unit.unit_name,
             label: unit.unit_name,
         }));
 };

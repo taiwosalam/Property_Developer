@@ -124,7 +124,7 @@ const CreateDisbursement = () => {
       disbursement: isAddPaymentChecked ? payments : unitPayments,
     }
     try {
-      console.log("payload", payload)
+      // console.log("payload", payload)
       setReqLoading(true)
       const res = await createDisbursement(objectToFormData(payload))
       if (res) {
