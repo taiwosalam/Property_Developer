@@ -50,7 +50,10 @@ import SelectChatUsersModal from "@/components/Message/user-modal";
 import { CommentTextArea } from "../../management/agent-community/NewComment";
 
 // Import the voice visualizer hook and component
-import { useVoiceVisualizer, VoiceVisualizer } from "@hasma/react-voice-visualizer";
+import {
+  useVoiceVisualizer,
+  VoiceVisualizer,
+} from "@hasma/react-voice-visualizer";
 
 const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { setChatData } = useChatStore();
@@ -59,7 +62,8 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [message, setMessage] = useState("");
   const [reqLoading, setReqLoading] = useState(false);
-  const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[]>(message_card_data);
+  const [pageUsersMsg, setPageUsersMsg] =
+    useState<PageMessages[]>(message_card_data);
   // We'll no longer use our own isRecording/audioBlob state for recording;
   // Instead, we use the voice visualizer hook.
   const [audioUrl, setAudioUrl] = useState<string>("");
@@ -95,7 +99,6 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     }
   }, [voiceControls.recordedBlob]);
 
-
   useEffect(() => {
     setMessage(message);
   }, [message]);
@@ -108,11 +111,17 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     setMessage((prev) => prev + emoji);
   };
 
-  const handleMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleMessageChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     setMessage(event.target.value);
   };
 
-  const { data: usersData, loading: loadingUsers, error } = useFetch<CompanyUsersAPIResponse>("/company/users");
+  const {
+    data: usersData,
+    loading: loadingUsers,
+    error,
+  } = useFetch<CompanyUsersAPIResponse>("/company/users");
 
   const {
     data: usersMessages,
@@ -162,7 +171,9 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   // Function to send audio; uses audioUrl and the recordedBlob (set via voiceControls)
   const handleSendAudio = async () => {
     if (!voiceControls.recordedBlob) return;
-    const audioFile = new File([voiceControls.recordedBlob], "voice-note.wav", { type: voiceControls.recordedBlob.type });
+    const audioFile = new File([voiceControls.recordedBlob], "voice-note.wav", {
+      type: voiceControls.recordedBlob.type,
+    });
     const payload = {
       content_file: audioFile,
       content_type: "audio",
@@ -237,7 +248,11 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                 ) : (
                   <div className="custom-flex-col relative z-[1] pb-4">
                     {pageUsersMsg.map((message, idx) => (
-                      <MessageCard key={idx} {...message} highlight={message.id === id} />
+                      <MessageCard
+                        key={idx}
+                        {...message}
+                        highlight={message.id === id}
+                      />
                     ))}
                   </div>
                 )}
@@ -248,7 +263,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
               <Modal>
                 <ModalTrigger asChild>
                   <button
-                    onClick={() => { }}
+                    onClick={() => {}}
                     className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
                   >
                     <PlusIcon />
@@ -271,18 +286,25 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
           <div className="custom-flex-col w-full h-full">
             {children}
             {id && (
-              <AuthForm onFormSubmit={() => { }}>
+              <AuthForm onFormSubmit={() => {}}>
                 <div className="py-4 px-6 flex w-full items-center gap-4">
-                  {(!audioUrl && !voiceControls.isRecordingInProgress) && (
+                  {!audioUrl && !voiceControls.isRecordingInProgress && (
                     <div className="flex w-full items-center gap-4">
                       <Modal>
                         <ModalTrigger asChild>
                           <button type="button">
-                            <Picture src={ClipBlue} alt="attachment" size={24} />
+                            <Picture
+                              src={ClipBlue}
+                              alt="attachment"
+                              size={24}
+                            />
                           </button>
                         </ModalTrigger>
                         <ModalContent>
-                          <MessageAttachment onEmojiSelect={handleEmojiSelect} id={id as string} />
+                          <MessageAttachment
+                            onEmojiSelect={handleEmojiSelect}
+                            id={id as string}
+                          />
                         </ModalContent>
                       </Modal>
                       <CommentTextArea
@@ -299,7 +321,8 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                     <button
                       type="button"
                       className={clsx({
-                        "animate-spin h-5 w-5 border-b-2 border-blue-500 rounded-full mr-2": reqLoading,
+                        "animate-spin h-5 w-5 border-b-2 border-blue-500 rounded-full mr-2":
+                          reqLoading,
                       })}
                       onClick={handleSendMsg}
                     >
@@ -307,9 +330,16 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                     </button>
                   ) : (
                     <>
-                      {(!audioUrl && !voiceControls.isRecordingInProgress) && (
-                        <button type="button" onClick={voiceControls.startRecording}>
-                          <Picture src={MicrophoneBlue} alt="voice note" size={24} />
+                      {!audioUrl && !voiceControls.isRecordingInProgress && (
+                        <button
+                          type="button"
+                          onClick={voiceControls.startRecording}
+                        >
+                          <Picture
+                            src={MicrophoneBlue}
+                            alt="voice note"
+                            size={24}
+                          />
                         </button>
                       )}
                       {voiceControls.isRecordingInProgress && (
@@ -335,7 +365,11 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                   {audioUrl && (
                     <div className="flex w-full items-center justify-end gap-2">
                       <button type="button" onClick={() => setAudioUrl("")}>
-                        <Picture src={DeleteIcon} alt="delete voice" size={28} />
+                        <Picture
+                          src={DeleteIcon}
+                          alt="delete voice"
+                          size={28}
+                        />
                       </button>
                       <WavesurferPlayer
                         height={40}
@@ -349,13 +383,25 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                       />
                       <div className="flex gap-2">
                         <button type="button" onClick={onPlayPause}>
-                          <Picture src={isPlaying ? PauseIcon : PlayIcon} alt="voice pause-play" size={24} />
+                          <Picture
+                            src={isPlaying ? PauseIcon : PlayIcon}
+                            alt="voice pause-play"
+                            size={24}
+                          />
                         </button>
-                        <button type="button" onClick={handleSendAudio} disabled={reqLoading}>
+                        <button
+                          type="button"
+                          onClick={handleSendAudio}
+                          disabled={reqLoading}
+                        >
                           {reqLoading ? (
                             <div className="w-5 h-5 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
                           ) : (
-                            <Picture src={SendIcon} alt="voice note" size={24} />
+                            <Picture
+                              src={SendIcon}
+                              alt="voice note"
+                              size={24}
+                            />
                           )}
                         </button>
                       </div>
@@ -373,12 +419,12 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                       <VoiceVisualizer
                         ref={voiceControls.audioRef}
                         controls={voiceControls}
-                        height={50}               // Set a fixed canvas height (in pixels)
-                        width="80%"               // Make it fill the container’s width
+                        height={50} // Set a fixed canvas height (in pixels)
+                        width="80%" // Make it fill the container’s width
                         backgroundColor="transparent"
-                        mainBarColor="#2392f5"     // Customize as desired
-                        secondaryBarColor="#fe0095"// Customize as desired
-                        speed={3}                  // Adjust animation speed if needed
+                        mainBarColor="#2392f5" // Customize as desired
+                        secondaryBarColor="#fe0095" // Customize as desired
+                        speed={3} // Adjust animation speed if needed
                         barWidth={3}
                         gap={1}
                         rounded={5}

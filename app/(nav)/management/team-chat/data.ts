@@ -1,11 +1,28 @@
 // Types
 import type { MessageCardProps } from "@/components/Message/types";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 // Images
 import Avatar1 from "@/public/empty/avatar-1.svg";
 import Avatar2 from "@/public/empty/avatar-2.svg";
 import Avatar3 from "@/public/empty/avatar-3.svg";
 import Avatar4 from "@/public/empty/avatar-4.svg";
+import api, { handleAxiosError } from "@/services/api";
+import { toast } from "sonner";
+import { ChatMessage } from "./[id]/types";
+import { Day } from "react-day-picker";
+
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import isToday from "dayjs/plugin/isToday";
+import isYesterday from "dayjs/plugin/isYesterday";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import { MessageChat } from "./types";
+
+dayjs.extend(relativeTime);
+dayjs.extend(isToday);
+dayjs.extend(isYesterday);
+dayjs.extend(advancedFormat);
 
 export const team_chat_data: MessageCardProps[] = [
   {
@@ -16,7 +33,8 @@ export const team_chat_data: MessageCardProps[] = [
     fullname: "Security Department",
     messages: 5,
     verified: true,
-    groupDesc: 'Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.'
+    groupDesc:
+      "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
   {
     id: "2",
@@ -25,7 +43,8 @@ export const team_chat_data: MessageCardProps[] = [
     time: "3:15 PM",
     fullname: "Accounting Department",
     verified: true,
-     groupDesc: 'Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.',
+    groupDesc:
+      "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
   {
     id: "3",
@@ -34,7 +53,8 @@ export const team_chat_data: MessageCardProps[] = [
     time: "1:30 PM",
     fullname: "Lounge & Drinks",
     messages: 2,
-     groupDesc: 'Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.',
+    groupDesc:
+      "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
   {
     id: "4",
@@ -43,7 +63,8 @@ export const team_chat_data: MessageCardProps[] = [
     time: "4:00 PM",
     fullname: "Cleaning & Laundering",
     verified: false,
-     groupDesc: 'Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.',
+    groupDesc:
+      "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
   {
     id: "5",
@@ -52,7 +73,8 @@ export const team_chat_data: MessageCardProps[] = [
     time: "5:45 PM",
     fullname: "All Staff",
     messages: 3,
-     groupDesc: 'Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.',
+    groupDesc:
+      "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
   {
     id: "6",
@@ -62,7 +84,8 @@ export const team_chat_data: MessageCardProps[] = [
     fullname: "HR Department",
     messages: 1,
     verified: true,
-     groupDesc: 'Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.',
+    groupDesc:
+      "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
   {
     id: "7",
@@ -70,7 +93,8 @@ export const team_chat_data: MessageCardProps[] = [
     desc: "Let me know if you need any further assistance. I'm here to help with anything you might need.",
     time: "7:00 PM",
     fullname: "Maintenance Department",
-     groupDesc: 'Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.',
+    groupDesc:
+      "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
   {
     id: "8",
@@ -79,7 +103,8 @@ export const team_chat_data: MessageCardProps[] = [
     time: "8:10 PM",
     fullname: "Frontend Dev",
     verified: false,
-     groupDesc: 'Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.',
+    groupDesc:
+      "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
   {
     id: "9",
@@ -88,7 +113,8 @@ export const team_chat_data: MessageCardProps[] = [
     time: "9:05 PM",
     fullname: "Backend Dev",
     messages: 4,
-     groupDesc: 'Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.',
+    groupDesc:
+      "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
   {
     id: "10",
@@ -97,7 +123,8 @@ export const team_chat_data: MessageCardProps[] = [
     time: "10:30 PM",
     fullname: "Marketing Department",
     verified: true,
-     groupDesc: 'Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.',
+    groupDesc:
+      "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
 ];
 
@@ -113,3 +140,177 @@ export const team_chat_members_data = [
   { fullname: "Salam Taiwo", pfp: Avatar4, position: "Staff" },
   { fullname: "Salam Aishat", pfp: Avatar4, position: "Branch Manager" },
 ];
+
+export const createNewTeamChat = async (data: FormData) => {
+  try {
+    const response = await api.post(`group-chat/create`, data);
+    if (response.status === 201 || response.status === 200) {
+      toast.success("Team chat created");
+      window.dispatchEvent(new Event("refetch_team_chat"));
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const addUserToGroup = async (groupId: string, data: FormData) => {
+  try {
+    const response = await api.post(`group-chat/${groupId}/add-users`, data);
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetch_team_chat"));
+      toast.success("Member added successfully");
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+// group-chat/2?description=testing update&name=update name
+export const updateGroupNameAndDescription = async (
+  groupId: string,
+  name: string,
+  description: string
+) => {
+  try {
+    const response = await api.patch(
+      `group-chat/${groupId}?description=${description}&name=${name}`
+    );
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetch_team_chat"));
+      toast.success("Updated successfully");
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+// http://127.0.0.1:8000/api/v1/group-chat/2/status
+export const updateTeamAvatar = async (groupId: string, formData: FormData) => {
+  try {
+    const response = await api.patch(`group-chat/${groupId}/status`, formData);
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetch_team_chat"));
+      toast.success("Updated successfully");
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const deleteMember = async (groupId: string, userId: string) => {
+  try {
+    const response = await api.delete(`group-chat/${groupId}/${userId}`);
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetch_team_chat"));
+      toast.success("Updated successfully");
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const updateGroupAvatar = async (data: FormData) => {
+  try {
+    const response = await api.post(`group-chat/create`, data);
+    if (response.status === 201 || response.status === 200) {
+      toast.success("Avatar updated");
+      window.dispatchEvent(new Event("refetch_team_chat"));
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+//http://127.0.0.1:8000/api/v1/group-chat/2/remove-users
+export const deleteGroupMember = async (groupId: string, data: FormData) => {
+  try {
+    const response = await api.post(`group-chat/${groupId}/remove-users`, data);
+    if (response.status === 201 || response.status === 200) {
+      toast.success("Deleted");
+      window.dispatchEvent(new Event("refetch_team_chat"));
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+// curl --location --request POST 'http://127.0.0.1:8000/api/v1/group-chat/2/send-message?message=testing%20the%20chat'
+export const sendGroupMessage = async (groupId: string, data: FormData) => {
+  try {
+    const response = await api.post(
+      `group-chat/${groupId}/send-message`, data
+    );
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetch_team_chat"));
+      console.log(response);
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export function isImageFile(filename: string): boolean {
+  return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(filename);
+}
+
+export const transformMessageData = (data: MessageChat[]) => {
+  return data
+    .map((m) => {
+      const isImage = isImageFile(m?.content)
+      return {
+        content_type: isImage ? "image" : m?.content_type,
+        time: dayjs(m?.created_at).format("h:mm A"),
+        text: m?.content,
+        from: m?.sender_id,
+        sender_id: m?.sender_id,
+      };
+    })
+    .reverse();
+};
+
+export const formatDate = (dateString: string) => {
+  const date = dayjs(dateString);
+
+  if (date.isToday()) {
+    return "Today";
+  } else if (date.isYesterday()) {
+    return "Yesterday";
+  } else if (dayjs().diff(date, "day") < 7) {
+    return date.format("dddd"); // Show the day name (e.g., "Saturday")
+  } else {
+    return date.format("MMMM D, YYYY"); // Show full date (e.g., "February 10, 2025")
+  }
+};
+
+export const formatMessageDate = (dateString: string): string => {
+    const date = dayjs(dateString);
+    const now = dayjs();
+
+    if (date.isSame(now, "day")) {
+        // If today, show time in 12-hour format with AM/PM
+        return date.format("hh:mm A");
+    } else if (date.isSame(now.subtract(1, "day"), "day")) {
+        // If yesterday, show 'Yesterday'
+        return "Yesterday";
+    } else {
+        // Otherwise, show the day name (e.g., "Monday")
+        return date.format("dddd");
+    }
+};
+

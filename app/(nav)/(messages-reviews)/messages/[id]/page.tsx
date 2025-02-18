@@ -54,7 +54,7 @@ const Chat = () => {
     return <ChatSkeleton />;
   }
 
-  // console.log("users", users)
+  // 
 
   // // If user not found, redirect to messages page.
   const user = users.find((user: UsersProps) => Number(user.id) === userId);
