@@ -44,18 +44,19 @@ const Message: React.FC<MessageProps> = ({
        {/* Text Content */}
         {content_type === "text" && (
           <div
-            className={clsx("flex-1 text-sm font-normal", {
+            className={clsx("flex-1 text-sm font-normal overflow-hidden break-words whitespace-pre-wrap max-w-full", {
               "text-white": type === "from user",
               "text-text-quaternary": type === "to user",
             })}
             dangerouslySetInnerHTML={{
               __html: formatMessageText(text),
             }}
+            style={{ wordBreak: "break-word" }}
           />
         )}
 
         {/* Image Content */}
-        {content_type === "image" && (
+        {content_type === "image"  && (
           <Modal>
             <ModalTrigger asChild>
               <div className="relative w-40 h-40 cursor-pointer">

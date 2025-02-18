@@ -7,14 +7,25 @@ import PencilIcon from "@/public/icons/pencil.svg";
 import PageTitle from "@/components/PageTitle/page-title";
 import Image from "next/image";
 import ModalPreset from "@/components/Modal/modal-preset";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GroupChatCamera from "@/public/icons/group-camera.svg";
-import { team_chat_data, team_chat_members_data } from "./data";
+import {
+  team_chat_data,
+  team_chat_members_data,
+  updateGroupNameAndDescription,
+} from "./data";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import MemberComponent from "./Member";
 import useStep from "@/hooks/useStep";
 import SaveIcon from "@/public/icons/save.svg";
+import useFetch from "@/hooks/useFetch";
+import dayjs from "dayjs";
+import avatarIcon from "@/public/empty/avatar-2.svg";
+import { AuthForm } from "@/components/Auth/auth-components";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { AboutTeamModal } from "@/components/Skeleton/member-card-skeleton";
+import { GroupChatResponse, User } from "./types";
 
 const style = {
   position: "absolute",
@@ -49,44 +60,47 @@ export const TeamChatHeader = () => {
         >
           + Create Team Chat
         </button>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          {activeStep === 1 ? (
-            <Box sx={style}>
-              <div className="w-full h-full flex items-center justify-center">
-                <div className="flex flex-col gap-4 bg-white h-[500px] w-full dark:bg-darkText-primary rounded-lg overflow-y-auto custom-round-scrollbar">
-                  <MemberComponent
-                    title="New Group"
-                    group={true}
-                    nextStep={() => changeStep("next")}
-                  />
+        {open && (
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            {activeStep === 1 ? (
+              <Box sx={style}>
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="flex flex-col gap-4 bg-white h-[500px] w-full dark:bg-darkText-primary rounded-lg overflow-y-auto custom-round-scrollbar">
+                    <MemberComponent
+                      title="New Group"
+                      handleClose={handleClose}
+                      group={true}
+                      nextStep={() => changeStep("next")}
+                    />
+                  </div>
                 </div>
+              </Box>
+            ) : (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                <ModalPreset type="success">
+                  <p className="text-text-disabled text-sm font-normal">
+                    You have successfully set up a group chat for the team.
+                  </p>
+                  <div className="flex justify-center">
+                    <Button onClick={handleClose}>ok</Button>
+                  </div>
+                </ModalPreset>
               </div>
-            </Box>
-          ) : (
-            <div
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-            >
-              <ModalPreset type="success">
-                <p className="text-text-disabled text-sm font-normal">
-                  You have successfully set up a group chat for the team.
-                </p>
-                <div className="flex justify-center">
-                  <Button onClick={handleClose}>ok</Button>
-                </div>
-              </ModalPreset>
-            </div>
-          )}
-        </Modal>
+            )}
+          </Modal>
+        )}
       </div>
     </div>
   );
@@ -96,23 +110,47 @@ export const About = () => {
   const router = useRouter();
   const { id } = useParams();
 
-  const data = team_chat_data.find((item) => item.id === id) || {
-    pfp: null,
-    fullname: "",
-    groupDesc: "",
-  };
-  const [groupImage, setGroupImage] = useState<string | null>(data.pfp);
-  const [groupName, setGroupName] = useState<string>(data.fullname);
-  const [groupDescription, setGroupDescription] = useState<string>(
-    data.groupDesc || ""
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    refetch,
+  } = useFetch<GroupChatResponse>(`group-chat/${id}`);
+
+  const groupDetails = apiData?.group_chat;
+
+  const [groupImage, setGroupImage] = useState<string | null>(
+    groupDetails?.picture ?? ""
   );
+  const [groupName, setGroupName] = useState<string>(groupDetails?.name ?? "");
+  const [groupDescription, setGroupDescription] = useState<string>(
+    groupDetails?.description ?? ""
+  );
+  const [createdAt, setCreatedAt] = useState<string>(
+    groupDetails?.created_at ?? ""
+  );
+  const [groupMember, setGroupMember] = useState<User[] | null>(null);
   const [isEditingName, setIsEditingName] = useState<boolean>(false);
   const [isEditingDescription, setIsEditingDescription] =
     useState<boolean>(false);
 
-  if (!data.pfp) {
-    router.replace("/management/team-chat");
-    return null;
+  function formatDateTime(timestamp: string) {
+    if (timestamp) {
+      return dayjs(timestamp).format("M/D/YYYY h:mmA");
+    }
+  }
+
+  function formatNumber(num: number) {
+    if (num) {
+      if (num >= 1_000_000_000) {
+        return (num / 1_000_000_000).toFixed(1) + "B";
+      } else if (num >= 1_000_000) {
+        return (num / 1_000_000).toFixed(1) + "M";
+      } else if (num >= 1_000) {
+        return (num / 1_000).toFixed(1) + "K";
+      }
+      return num.toString();
+    }
   }
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,120 +163,188 @@ export const About = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  useEffect(() => {
+    if (apiData) {
+      setGroupName(groupDetails?.name ?? "---");
+      setGroupDescription(groupDetails?.description ?? "---");
+      setCreatedAt(groupDetails?.created_at ?? "---");
+      setGroupMember(groupDetails?.users ?? []);
+      setGroupImage(groupDetails?.picture ?? "");
+    }
+  }, [apiData]);
+
+  const groupId = groupDetails?.id;
+
+  async function updateGroupNameEditing() {
+    const updateGroupName = async () => {
+      if (groupName && groupId) {
+        await updateGroupNameAndDescription(
+          groupId.toString(),
+          groupName,
+          groupDescription
+        );
+      }
+    };
+    await updateGroupName();
+    setIsEditingName(false);
+  }
+  async function updateGroupDescriptionEditing() {
+    const updateGroupName = async () => {
+      if (groupDescription && groupId) {
+        await updateGroupNameAndDescription(
+          groupId.toString(),
+          groupName,
+          groupDescription
+        );
+      }
+    };
+    await updateGroupName();
+    setIsEditingDescription(false);
+  }
+
+  const updateTeamAvatar = async () => {
+    //if()
+  };
+
+  useRefetchOnEvent("refetch_team_chat", () => refetch({ silent: true }));
+
   return (
-    <div className="p-4 transition-all duration-300 ease-in-out">
-      <div className="imageWrapper h-20 w-20 relative overflow-hidden">
-        <Image
-          src={groupImage || GroupImage}
-          alt="team chat"
-          width={100}
-          height={100}
-          className="rounded-full w-full h-full object-contain"
-        />
-        <div className="absolute bottom-0 right-0 bg-text-black p-1 w-full rounded-b-full bg-opacity-45">
-          <button
-            type="button"
-            className="rounded-full text-center w-full"
-            onClick={() =>
-              (
-                document.querySelector('input[type="file"]') as HTMLInputElement
-              )?.click()
-            }
-          >
-            <input
-              type="file"
-              className="hidden"
-              onChange={handleImageUpload}
+    <>
+      <div className="p-4 transition-all duration-300 ease-in-out">
+        { loading ? <AboutTeamModal /> :
+        <div>
+          <div className="imageWrapper h-20 w-20 relative overflow-hidden">
+            <Image
+              src={groupImage || avatarIcon}
+              alt="team chat"
+              width={100}
+              height={100}
+              className="rounded-full w-full h-full object-contain"
             />
-            <div className="flex justify-center items-center">
-              <Image src={GroupChatCamera} alt="edit" width={16} height={16} />
-            </div>
-          </button>
-        </div>
-      </div>
-      <div className="flex flex-col gap-2 mt-3">
-        <div className="flex items-center w-full justify-between">
-          {isEditingName ? (
-            <div className="flex items-center w-full justify-between">
-              <input
-                type="text"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-                className="text-text-primary dark:text-white text-sm font-medium border border-text-disabled rounded-md p-1 w-3/4 focus:outline-none"
-              />
-              <button type="button" onClick={() => setIsEditingName(false)}>
-                <Image src={SaveIcon} alt="save" width={16} height={16} />
+            <div className="absolute bottom-0 right-0 bg-text-black p-1 w-full rounded-b-full bg-opacity-45">
+              <button
+                type="button"
+                className="rounded-full text-center w-full"
+                onClick={() =>
+                  (
+                    document.querySelector(
+                      'input[type="file"]'
+                    ) as HTMLInputElement
+                  )?.click()
+                }
+              >
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
+                <div className="flex justify-center items-center">
+                  <Image
+                    src={GroupChatCamera}
+                    alt="edit"
+                    width={16}
+                    height={16}
+                  />
+                </div>
               </button>
             </div>
-          ) : (
-            <h3 className="text-text-primary dark:text-white text-sm font-medium">
-              {groupName}
-            </h3>
-          )}
-          {isEditingName ? null : (
-            <button
-              type="button"
-              onClick={() => setIsEditingName(!isEditingName)}
-            >
-              <Image src={PencilIcon} alt="edit" width={16} height={16} />
-            </button>
-          )}
-        </div>
-        <div className="created">
-          <h4 className="text-text-disabled text-sm font-normal">Created</h4>
-          <p className="text-text-primary dark:text-white text-xs font-medium">
-            12/12/2024 1:50AM
-          </p>
-        </div>
-        <div className="stats">
-          <h4 className="text-text-disabled text-sm font-normal">Stats</h4>
-          <div className="flex items-center gap-2">
-            <p className="text-text-disabled text-xs font-medium">
-              30.2k Members
-            </p>
-            <div className="w-1 h-1 rounded-full bg-status-success-3"></div>
-            <p className="text-status-success-3 dark:text-status-success-2 text-xs font-medium">
-              30 Online
-            </p>
+          </div>
+          <div className="flex flex-col gap-2 mt-3">
+            <div className="flex items-center w-full justify-between">
+              {isEditingName ? (
+                <div className="flex items-center w-full justify-between">
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    value={groupName}
+                    onChange={(e) => setGroupName(e.target.value)}
+                    className="text-text-primary dark:text-white text-sm font-medium border border-text-disabled rounded-md p-1 w-3/4 focus:outline-none"
+                  />
+                  <button type="submit" onClick={updateGroupNameEditing}>
+                    <Image src={SaveIcon} alt="save" width={16} height={16} />
+                  </button>
+                </div>
+              ) : (
+                <h3 className="text-text-primary dark:text-white text-sm font-medium">
+                  {groupName}
+                </h3>
+              )}
+              {isEditingName ? null : (
+                <button
+                  type="submit"
+                  onClick={() => setIsEditingName(!isEditingName)}
+                >
+                  <Image src={PencilIcon} alt="edit" width={16} height={16} />
+                </button>
+              )}
+            </div>
+            <div className="created">
+              <h4 className="text-text-disabled text-sm font-normal">
+                Created
+              </h4>
+              <p className="text-text-primary dark:text-white text-xs font-medium">
+                {formatDateTime(createdAt) ?? ""}
+              </p>
+            </div>
+            <div className="stats">
+              <h4 className="text-text-disabled text-sm font-normal">Stats</h4>
+              <div className="flex items-center gap-2">
+                <p className="text-text-disabled text-xs font-medium">
+                  {formatNumber(groupMember?.length ?? 0)}{" "}
+                  {groupMember && groupMember?.length > 1
+                    ? "Members"
+                    : "Member"}
+                </p>
+                <div className="w-1 h-1 rounded-full bg-status-success-3"></div>
+                <p className="text-status-success-3 dark:text-status-success-2 text-xs font-medium">
+                  30 Online
+                </p>
+              </div>
+            </div>
+            <div className="flex">
+              <h3 className="text-text-disabled text-sm font-normal">
+                Description
+              </h3>
+            </div>
+            <div className="flex gap-2 w-full justify-between">
+              {isEditingDescription ? (
+                <div className="flex items-center w-full justify-between">
+                  <textarea
+                    id="description"
+                    name="description"
+                    value={groupDescription}
+                    onChange={(e) => setGroupDescription(e.target.value)}
+                    className="text-text-primary dark:text-white text-sm font-medium border border-text-disabled rounded-md p-1 focus:outline-none w-full h-20"
+                  />
+                  <button
+                    className="flex justify-end ml-2"
+                    type="button"
+                    onClick={updateGroupDescriptionEditing}
+                  >
+                    <Image src={SaveIcon} alt="save" width={16} height={16} />
+                  </button>
+                </div>
+              ) : (
+                <span className="text-text-primary dark:text-white text-xs font-medium">
+                  {groupDescription}
+                </span>
+              )}
+              {isEditingDescription ? null : (
+                <button
+                  className="w-1/4 flex justify-end"
+                  type="button"
+                  onClick={() => setIsEditingDescription(!isEditingDescription)}
+                >
+                  <Image src={PencilIcon} alt="edit" width={16} height={16} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
-        <div className="flex">
-          <h3 className="text-text-disabled text-sm font-normal">
-            Description
-          </h3>
-        </div>
-        <div className="flex gap-2 w-full justify-between">
-          {isEditingDescription ? (
-            <div className="flex items-center w-full justify-between">
-              <textarea
-                value={groupDescription}
-                onChange={(e) => setGroupDescription(e.target.value)}
-                className="text-text-primary dark:text-white text-sm font-medium border border-text-disabled rounded-md p-1 focus:outline-none w-full h-20"
-              />
-              <button
-                className="flex justify-end ml-2"
-                type="button"
-                onClick={() => setIsEditingDescription(false)}
-              >
-                <Image src={SaveIcon} alt="save" width={16} height={16} />
-              </button>
-            </div>
-          ) : (
-            <span className="text-text-primary dark:text-white text-xs font-medium">
-              {groupDescription}
-            </span>
-          )}
-          {isEditingDescription ? null : (
-            <button
-              className="w-1/4 flex justify-end"
-              type="button"
-              onClick={() => setIsEditingDescription(!isEditingDescription)}
-            >
-              <Image src={PencilIcon} alt="edit" width={16} height={16} />
-            </button>
-          )}
-        </div>
+}
       </div>
-    </div>
+    </>
   );
 };

@@ -10,6 +10,10 @@ import { empty } from "@/app/config";
 import Picture from "@/components/Picture/picture";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { MessageCardProps } from "@/components/Message/types";
+import Image from "next/image";
+
+import avatarIcon from "@/public/empty/avatar-2.svg"
+import { getIconByContentType } from "../../(messages-reviews)/messages/data";
 
 const TeamChartCard: React.FC<MessageCardProps> = ({
   id,
@@ -20,7 +24,9 @@ const TeamChartCard: React.FC<MessageCardProps> = ({
   verified,
   highlight,
   messages = 0,
+  content_type
 }) => {
+  const IconComponent = getIconByContentType(content_type as string);
   return (
     <Link
       href={`/management/team-chat/${id}`}
@@ -31,7 +37,7 @@ const TeamChartCard: React.FC<MessageCardProps> = ({
       <div></div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 flex-1">
-          <Picture src={pfp} alt="profile picture" size={60} rounded status />
+         { pfp ? <Picture src={pfp} alt="profile picture" size={60} rounded status /> : <Picture src={avatarIcon} size={60} rounded status/>}
           <div className="custom-flex-col gap-1 flex-1">
             <div className="flex items-center gap-[10px]">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
@@ -41,9 +47,17 @@ const TeamChartCard: React.FC<MessageCardProps> = ({
                 <Picture src={VerifiedIcon} alt="verified" size={16} />
               )}
             </div>
-            <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal custom-truncated">
-              {desc}
-            </p>
+            {content_type === "text" ? (
+              <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full">
+                {desc}
+              </p>
+            ) : (
+              <div className="flex gap-1 text-sm items-center text-brand-9">
+                {IconComponent && <IconComponent />}
+                {content_type}
+              </div>
+            )
+            }
           </div>
         </div>
         <div className="flex flex-col gap-2 justify-center items-center font-normal">

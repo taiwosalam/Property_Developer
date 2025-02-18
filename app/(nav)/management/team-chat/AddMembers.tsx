@@ -1,22 +1,57 @@
 "use client";
-import { team_chat_members_data } from "./data";
+import { deleteGroupMember, team_chat_members_data } from "./data";
 import { FilterIcons, SearchIcon, TrashIcon } from "@/public/icons/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, ModalContent, useModal } from "@/components/Modal/modal";
 import { useTeamChatStore } from "@/store/teamChatStore";
 import Image from "next/image";
 import Avatar1 from "@/public/empty/avatar-1.svg";
 import DeleteModal from "./DeleteModal";
+import useFetch from "@/hooks/useFetch";
+import { useParams } from "next/navigation";
+import { TeamMessageCardSkeleton } from "@/components/Skeleton/member-card-skeleton";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { useAuthStore } from "@/store/authStore";
+import MemberComponent from "./Member";
+import { GroupChatResponse, User } from "./types";
 // import TrashIcon from "@/public/icons/trash.svg";
 
 const AddMembers = () => {
+  const { id } = useParams();
   const { setIsOpen } = useModal();
-  const [searchTerm, setSearchTerm] = useState<string>(""); // State for search input
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   // Function to filter members based on search input
-  const filteredMembers = team_chat_members_data.filter((member) =>
-    member.fullname.toLowerCase().includes(searchTerm.toLowerCase())
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    refetch,
+  } = useFetch<GroupChatResponse>(`group-chat/${id}`);
+
+  useRefetchOnEvent("refetch_team_chat", () => refetch({ silent: true }));
+
+  const groupMembers = apiData?.group_chat?.users;
+
+  const [members, setMembers] = useState<User[] | undefined>(
+    groupMembers ?? undefined
   );
+  const [groupId, setGroupId] = useState("");
+
+  useEffect(() => {
+    if (apiData) {
+      setMembers(apiData?.group_chat?.users);
+      setGroupId(apiData?.group_chat?.id.toString());
+    }
+  }, [apiData]);
+
+  const filteredMembers = (members ?? []).filter((member) =>
+    member.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  console.log(groupMembers);
 
   const {
     isAddMember,
@@ -34,10 +69,11 @@ const AddMembers = () => {
     console.log("isAddMember is", isAddMember);
   };
 
-  const deleteMember = (fullname: string) => {
-    closeAddMember();
-    openDeleteMember();
-    setUserNameToDelete(fullname);
+  const deleteMemberFromList = async (userId: string) => {
+    const formData = new FormData();
+    formData.append("user_ids[]", userId);
+
+    await deleteGroupMember(groupId, formData);
   };
 
   return (
@@ -66,39 +102,48 @@ const AddMembers = () => {
           </button>
         </div>
       </div>
-      {filteredMembers.map((item, index) => (
-        <div
-          key={index}
-          className="userWrapper flex items-center gap-2 justify-between w-full mt-3 px-4"
-        >
-          <div className="flex items-center gap-2 w-3/4">
-            <div className="imgWrapper h-10 w-10 relative overflow-hidden">
-              <Image
-                src={Avatar1}
-                alt="profile"
-                width={100}
-                height={100}
-                className="rounded-full w-full h-full object-contain"
-              />
-            </div>
-            <div className="flex flex-col">
-              <p className="text-text-primary dark:text-white text-sm font-medium">
-                {item.fullname}
-              </p>
-              <p className="text-text-quaternary dark:text-text-disabled text-xs font-normal">
-                {item.position}
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            className="w-1/4 flex justify-end"
-            onClick={() => deleteMember(item.fullname)}
-          >
-            <TrashIcon size={16} />
-          </button>
+      {loading ? (
+        <div>
+          <TeamMessageCardSkeleton count={2} />
         </div>
-      ))}
+      ) : filteredMembers && filteredMembers.length > 0 ? (
+        filteredMembers.map((item, index) => (
+          <div
+            key={index}
+            className="userWrapper flex items-center gap-2 justify-between w-full mt-3 px-4"
+          >
+            <div className="flex items-center gap-2 w-3/4">
+              <div className="imgWrapper h-10 w-10 relative overflow-hidden">
+                <Image
+                  src={item?.profile?.picture || Avatar1}
+                  alt="profile"
+                  width={100}
+                  height={100}
+                  className="rounded-full w-full h-full object-contain"
+                />
+              </div>
+              <div className="flex flex-col">
+                <p className="text-text-primary dark:text-white text-sm font-medium">
+                  {item.name}
+                </p>
+                <p className="text-text-quaternary dark:text-text-disabled text-xs font-normal">
+                  {item?.email}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="w-1/4 flex justify-end"
+              onClick={() => deleteMemberFromList(item?.id.toString())}
+              //onClick={() => openDeleteMember()}
+            >
+              <TrashIcon size={16} />
+            </button>
+          </div>
+        ))
+      ) : (
+        <p>No member in this group yet</p>
+      )}
     </div>
   );
 };
