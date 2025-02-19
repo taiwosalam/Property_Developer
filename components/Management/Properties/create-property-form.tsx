@@ -212,7 +212,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       icon: landlord.picture,
     })) || [];
 
-  console.log("landlord options", propertyDetails)
 
   const officerOptions =
     accountOfficerData?.data.map((officer: any) => ({

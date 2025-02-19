@@ -10,11 +10,12 @@ import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import BackButton from "@/components/BackButton/back-button";
 import ExportPageFooter from "@/components/reports/export-page-footer";
 import CustomTable from "@/components/Table/table";
-import { expenseTableFields, expenseTableData, TransformedExpensesData, ExpenseStats, ExpensesApiResponse, transformExpensesData } from "../data";
+import { expenseTableFields, expenseTableData, transformExpensesData } from "../data";
 import { useEffect, useRef, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
+import { ExpensesApiResponse, ExpenseStats, TransformedExpensesData } from "../types.";
 
 const Exportexpense = () => {
   const exportRef = useRef<HTMLDivElement>(null);

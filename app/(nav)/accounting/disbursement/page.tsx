@@ -1,16 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
 import Button from "@/components/Form/Button/button";
 import type { DataItem } from "@/components/Table/types";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import NewDisbursementModal from "@/components/Accounting/Disbursement/new-disbursement-modal";
 import {
-  accountingDisbursementOptionsWithDropdown,
   DisburseApiResponse,
-  disbursementTableData,
+  DisbursementRequestParams,
   disbursementTableFields,
   transformDisburseData,
   TransformedDisburseItem,
@@ -23,22 +20,97 @@ import { useRouter } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
+import { PropertyListResponse } from "../../management/rent-unit/[id]/edit-rent/type";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import { AxiosRequestConfig } from "axios";
+import dayjs from "dayjs";
+import { AllLandlordsResponse } from "@/components/Management/Properties/types";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import TableLoading from "@/components/Loader/TableLoading";
 
 const Disbursement = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [tableData, setTableData] = useState<TransformedDisburseItem[]>([]);
 
-  const { data, loading, error, isNetworkError } = useFetch<DisburseApiResponse>("/disburses");
+  const {
+    data: propertyData,
+    error: propertyError,
+    loading: propertyLoading,
+  } = useFetch<PropertyListResponse>("/property/all");
 
-  useEffect(() => {
-    if (data) {
-      const transformed = transformDisburseData(data);
-      setTableData(transformed);
-    }
-  }, [data]);
+  const {
+    data: landlordsData,
+    loading: landlordsLoading,
+    error: landlordsError,
+  } = useFetch<AllLandlordsResponse>("/landlord/select");
 
+  const propertyOptions =
+    propertyData?.data.map((p) => ({
+      value: `${p.id}`,
+      label: p.title,
+    })) || [];
+
+  const landlordOptions =
+    landlordsData?.data.map((landlord) => ({
+      value: landlord.id,
+      label: landlord.name,
+    })) || [];
+
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<"asc" | "desc" | "">("");
+
+  const isFilterApplied = useCallback(() => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  }, [appliedFilters]);
+
+  const config: AxiosRequestConfig = useMemo(() => {
+    const fromDate = appliedFilters.startDate
+      ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+      : undefined;
+
+    const toDate = appliedFilters.endDate
+      ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+      : undefined;
+
+    const params: DisbursementRequestParams = {
+      from_date: fromDate,
+      to_date: toDate,
+      search,
+      property_ids: appliedFilters.menuOptions["Property"] || [],
+      created_by: appliedFilters.menuOptions["Landlords"] || [],
+      sort_by: sort,
+    };
+
+    return { params };
+  }, [appliedFilters, search, sort]);
+
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearch(query);
+  };
+
+  const handleSort = (order: "asc" | "desc") => {
+    setSort(order);
+  };
 
   const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
@@ -51,82 +123,130 @@ const Disbursement = () => {
     setSelectedItemId(null);
   };
 
+  const { data, loading, silentLoading, error, isNetworkError } =
+    useFetch<DisburseApiResponse>("/disburses", config);
 
-  if (loading) return <CustomLoader layout="page" pageTitle="Disbursement" view="table" />
+  useEffect(() => {
+    if (data) {
+      const transformed = transformDisburseData(data);
+      setTableData(transformed);
+    }
+  }, [data]);
+
+  if (loading)
+    return <CustomLoader layout="page" pageTitle="Disbursement" view="table" />;
   if (isNetworkError) return <NetworkError />;
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
-
   return (
     <div className="custom-flex-col gap-8">
       <div className="flex items-center justify-end">
-        {/* <Modal>
-          <ModalTrigger asChild> */}
         <Button
           type="button"
           className="page-header-button"
-          onClick={() => router.push('/accounting/disbursement/create-disbursement')}
+          onClick={() =>
+            router.push("/accounting/disbursement/create-disbursement")
+          }
         >
           + new disbursement
         </Button>
-        {/* </ModalTrigger> */}
-        {/* <ModalContent>
-            <NewDisbursementModal />
-          </ModalContent> */}
-        {/* </Modal> */}
       </div>
       <div className="custom-flex-col gap-4">
         <FilterBar
           azFilter
           searchInputPlaceholder="Search for disbursement"
-          handleFilterApply={() => { }}
+          handleFilterApply={handleFilterApply}
           isDateTrue
-          filterOptionsMenu={accountingDisbursementOptionsWithDropdown}
           hasGridListToggle={false}
           exports
           exportHref="/accounting/disbursement/export"
           pageTitle="Disbursement"
+          filterOptionsMenu={[
+            ...(landlordOptions.length > 0
+              ? [
+                  {
+                    label: "Landlords",
+                    value: landlordOptions,
+                  },
+                ]
+              : []),
+            ...(propertyOptions.length > 0
+              ? [
+                  {
+                    label: "Property",
+                    value: propertyOptions,
+                  },
+                ]
+              : []),
+          ]}
+          onSort={handleSort}
+          handleSearch={handleSearch}
+          appliedFilters={appliedFilters}
         />
-        <CustomTable
-          fields={disbursementTableFields}
-          // data={disbursementTableData}
-          data={tableData}
-          tableHeadStyle={{ height: "76px" }}
-          tableHeadCellSx={{ fontSize: "1rem" }}
-          tableBodyCellSx={{
-            fontSize: "1rem",
-            paddingTop: "12px",
-            paddingBottom: "12px",
-          }}
-          onActionClick={(item, e) => {
-            handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
-          }}
-        />
+        {tableData.length === 0 && !silentLoading ? (
+          config.params.search || isFilterApplied() ? (
+            <SearchError />
+          ) : (
+            <section>
+              <EmptyList
+                buttonText="+ new disbursement"
+                buttonLink="/accounting/disbursement/create-disbursement"
+                title="You do not have any disbursements yet"
+                body={
+                  <p>
+                    Create a new disbursement by clicking on the &rqous;+ new disbursement&rqous; button.
+                  </p>
+                }
+              />
+            </section>
+          )
+        ) : (
+          <>
+            {silentLoading ? (
+              <TableLoading />
+            ) : (
+              <CustomTable
+                fields={disbursementTableFields}
+                data={tableData}
+                tableHeadStyle={{ height: "76px" }}
+                tableHeadCellSx={{ fontSize: "1rem" }}
+                tableBodyCellSx={{
+                  fontSize: "1rem",
+                  paddingTop: "12px",
+                  paddingBottom: "12px",
+                }}
+                onActionClick={(item, e) => {
+                  handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
+                }}
+              />
+            )}
+            <TableMenu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={handleMenuClose} disableRipple>
+                <Link
+                  href={`/accounting/disbursement/${selectedItemId}/manage-disbursement`}
+                  className="w-full text-left"
+                >
+                  Manage Disbursement
+                </Link>
+              </MenuItem>
+              <MenuItem onClick={handleMenuClose} disableRipple>
+                <Link
+                  href={`/accounting/disbursement/${selectedItemId}/preview-disbursement`}
+                  className="w-full text-left"
+                >
+                  Preview Disbursement
+                </Link>
+              </MenuItem>
+            </TableMenu>
+          </>
+        )}
       </div>
-      <TableMenu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleMenuClose} disableRipple>
-          <Link
-            href={`/accounting/disbursement/${selectedItemId}/manage-disbursement`}
-            className="w-full text-left"
-          >
-            Manage Disbursement
-          </Link>
-        </MenuItem>
-        <MenuItem onClick={handleMenuClose} disableRipple>
-          <Link
-            href={`/accounting/disbursement/${selectedItemId}/preview-disbursement`}
-            className="w-full text-left"
-          >
-            Preview Disbursement
-          </Link>
-        </MenuItem>
-      </TableMenu>
-    </div >
+    </div>
   );
 };
 

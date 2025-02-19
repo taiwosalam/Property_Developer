@@ -1,4 +1,3 @@
-
 "use client";
 
 import AccountStatsCard from "@/components/Accounting/account-stats-card";
@@ -25,11 +24,9 @@ import {
   accountingExpensesOptionsWithDropdown,
   expenseTableFields,
   expenseTableData,
-  ExpenseStats,
-  TransformedExpensesData,
   transformExpensesData,
-  ExpensesApiResponse,
   ExpensesRequestParams,
+  transformStaffs,
 } from "./data";
 import MenuItem from "@mui/material/MenuItem";
 import CustomTable from "@/components/Table/table";
@@ -45,9 +42,13 @@ import { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { PropertyListResponse } from "../../management/rent-unit/[id]/edit-rent/type";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import TableLoading from "@/components/Loader/TableLoading";
+import { ExpensesApiResponse, ExpenseStats, StaffListResponse, TransformedExpensesData } from "./types.";
 
 const AccountingExpensesPage = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [pageData, setPageData] = useState<TransformedExpensesData>({
     expenses: [],
     stats: {
@@ -60,10 +61,7 @@ const AccountingExpensesPage = () => {
     } as ExpenseStats,
   });
 
-  const {
-    expenses,
-    stats
-  } = pageData
+  const { expenses, stats } = pageData;
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -72,9 +70,11 @@ const AccountingExpensesPage = () => {
     endDate: null,
   });
 
-
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
+  const [selectedDateRange, setSelectedDateRange] = useState<
+    DateRange | undefined
+  >();
 
   const isFilterApplied = useCallback(() => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
@@ -87,19 +87,35 @@ const AccountingExpensesPage = () => {
   }, [appliedFilters]);
 
   const config: AxiosRequestConfig = useMemo(() => {
-    return {
-      params: {
-        from_date: appliedFilters.startDate
-          ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
-          : undefined,
-        to_date: appliedFilters.endDate
-          ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
-          : undefined,
-        search: search,
-        property_ids: appliedFilters.menuOptions["Property"] || [],
-      } as ExpensesRequestParams,
+    // date range from the Select/DatePicker if available,
+    // otherwise use the appliedFilters date (if both start and end are defined)
+    const fromDate = selectedDateRange?.from
+      ? dayjs(selectedDateRange.from).format("YYYY-MM-DD")
+      : appliedFilters.startDate
+      ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+      : undefined;
+
+    const toDate = selectedDateRange?.to
+      ? dayjs(selectedDateRange.to).format("YYYY-MM-DD")
+      : appliedFilters.endDate
+      ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+      : undefined;
+
+    const params: ExpensesRequestParams = {
+      from_date: fromDate,
+      to_date: toDate,
+      search,
+      property_ids: appliedFilters.menuOptions["Property"] || [],
+      created_by: appliedFilters.menuOptions["Account Officer"] || [],
     };
-  }, [appliedFilters, search]);
+
+    // If either date is provided, add date_filter: "custom"
+    if (fromDate || toDate) {
+      params.date_filter = "custom";
+    }
+
+    return { params };
+  }, [appliedFilters, search, selectedDateRange]);
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
@@ -109,12 +125,8 @@ const AccountingExpensesPage = () => {
     setSearch(query);
   };
 
-  const {
-    data,
-    loading,
-    isNetworkError,
-    error
-  } = useFetch<ExpensesApiResponse>("/expenses", config);
+  const { data, loading, silentLoading, isNetworkError, error } =
+    useFetch<ExpensesApiResponse>("/expenses", config);
 
   useEffect(() => {
     if (data) {
@@ -128,15 +140,20 @@ const AccountingExpensesPage = () => {
     loading: propertyLoading,
   } = useFetch<PropertyListResponse>("/property/all");
 
+  const { 
+    data: staffsData,
+    error: staffsError,
+    loading: staffsLoading,
+  } = useFetch<StaffListResponse>("/report/staffs");
+  
+  const staffOptions =
+    staffsData ? transformStaffs(staffsData) : [];
+
   const propertyOptions =
     propertyData?.data.map((p) => ({
       value: `${p.id}`,
       label: p.title,
     })) || [];
-
-  const [selectedDateRange, setSelectedDateRange] = useState<
-    DateRange | undefined
-  >();
 
   const [timeRange, setTimeRange] = useState("90d");
 
@@ -183,8 +200,8 @@ const AccountingExpensesPage = () => {
     balance: item.balance ? item.balance : "--- ---",
   }));
 
-
-  if (loading) return <CustomLoader layout="page" pageTitle="Expenses" view="table" />
+  if (loading)
+    return <CustomLoader layout="page" pageTitle="Expenses" view="table" />;
   if (isNetworkError) return <NetworkError />;
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
@@ -221,7 +238,10 @@ const AccountingExpensesPage = () => {
                       selectedRange={selectedDateRange}
                       onDateChange={handleDateChange}
                     />
-                    <Select value={timeRange} onValueChange={handleSelectChange}>
+                    <Select
+                      value={timeRange}
+                      onValueChange={handleSelectChange}
+                    >
                       <SelectTrigger
                         className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto"
                         aria-label="Select a value"
@@ -258,14 +278,19 @@ const AccountingExpensesPage = () => {
               handleFilterApply={handleFilterApply}
               isDateTrue
               filterOptionsMenu={[
-                ...accountingExpensesOptionsWithDropdown,
+                ...staffOptions.length > 0 ? [
+                  {
+                    label: "Account Officer",
+                    value: staffOptions,
+                  },
+                ] : [],
                 ...(propertyOptions.length > 0
                   ? [
-                    {
-                      label: "Property",
-                      value: propertyOptions,
-                    },
-                  ]
+                      {
+                        label: "Property",
+                        value: propertyOptions,
+                      },
+                    ]
                   : []),
               ]}
               handleSearch={handleSearch}
@@ -300,42 +325,81 @@ const AccountingExpensesPage = () => {
           </AutoResizingGrid>
         </div>
       </div>
-      <CustomTable
-        fields={expenseTableFields}
-        data={transformedTableData}
-        tableHeadStyle={{ height: "76px" }}
-        tableHeadCellSx={{ fontSize: "1rem" }}
-        tableBodyCellSx={{
-          fontSize: "1rem",
-          paddingTop: "12px",
-          paddingBottom: "12px",
-        }}
-        onActionClick={(item, e) => {
-          handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
-        }}
-      />
-      <TableMenu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleMenuClose} disableRipple>
-          <Link
-            href={`/accounting/expenses/${selectedItemId}/manage-expenses`}
-            className="w-full text-left"
+    {/* Table and Menu */}
+    {transformedTableData.length === 0 && !silentLoading ? (
+        config.params.search || isFilterApplied() ? (
+          <SearchError />
+        ) : (
+          <section>
+            <EmptyList
+              buttonText="+ Create New Expense"
+              buttonLink="/accounting/expenses/create-expenses"
+              title="You do not have any expenses yet!"
+              body={
+                <p>
+                  Create an expense by clicking on the &rqous;Create New Expense&rqous; button.
+                </p>
+              }
+            />
+          </section>
+        )
+      ) : (
+        <>
+          {silentLoading ? (
+            <TableLoading />
+          ) : transformedTableData.length === 0 ? (
+            <section>
+              <EmptyList
+                buttonText="+ Create New Expense"
+                buttonLink="/accounting/expenses/create-expenses"
+                title="You do not have any expenses yet!"
+                body={
+                  <p>
+                    Create an expense by clicking on the &rqous;Create New Expense&rqous; button.
+                  </p>
+                }
+              />
+            </section>
+          ) : (
+            <CustomTable
+              fields={expenseTableFields}
+              data={transformedTableData}
+              tableHeadStyle={{ height: "76px" }}
+              tableHeadCellSx={{ fontSize: "1rem" }}
+              tableBodyCellSx={{
+                fontSize: "1rem",
+                paddingTop: "12px",
+                paddingBottom: "12px",
+              }}
+              onActionClick={(item, e) => {
+                handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
+              }}
+            />
+          )}
+          <TableMenu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
           >
-            Manage Expense
-          </Link>
-        </MenuItem>
-        <MenuItem onClick={handleMenuClose} disableRipple>
-          <Link
-            href={`/accounting/expenses/${selectedItemId}/preview-expenses`}
-            className="w-full text-left"
-          >
-            Preview Expense
-          </Link>
-        </MenuItem>
-      </TableMenu>
+            <MenuItem onClick={handleMenuClose} disableRipple>
+              <Link
+                href={`/accounting/expenses/${selectedItemId}/manage-expenses`}
+                className="w-full text-left"
+              >
+                Manage Expense
+              </Link>
+            </MenuItem>
+            <MenuItem onClick={handleMenuClose} disableRipple>
+              <Link
+                href={`/accounting/expenses/${selectedItemId}/preview-expenses`}
+                className="w-full text-left"
+              >
+                Preview Expense
+              </Link>
+            </MenuItem>
+          </TableMenu>
+        </>
+      )}
     </section>
   );
 };
