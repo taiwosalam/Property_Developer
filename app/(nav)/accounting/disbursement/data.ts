@@ -2,6 +2,21 @@ import api, { handleAxiosError } from "@/services/api";
 import { formatNumber } from "@/utils/number-formatter";
 import dayjs from "dayjs";
 
+
+export interface DisbursementRequestParams {
+  // page?: number;
+  search?: string;
+  sort_by?: "asc" | "desc" | "";
+  states?: string;
+  date_filter?: any;
+  from_date?: string;
+  to_date?: string;
+  property_ids?: string[];
+  created_by?: string[];
+}
+
+
+
 export const accountingDisbursementOptionsWithDropdown = [
   {
     label: "Landlord/Landlady",

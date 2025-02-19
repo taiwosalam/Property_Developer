@@ -2,6 +2,7 @@ import api, { handleAxiosError } from "@/services/api";
 import { formatHtmlDescription } from "../disbursement/data";
 import { formatNumber } from "@/utils/number-formatter";
 import dayjs from "dayjs";
+import { Expense, ExpensesApiResponse, ExpenseStats, StaffListResponse, TransformedExpensesData } from "./types.";
 
 
 export interface ExpensesRequestParams {
@@ -9,10 +10,11 @@ export interface ExpensesRequestParams {
   search?: string;
   // sort_order?: "asc" | "desc";
   states?: string;
+  date_filter?: any;
   from_date?: string;
   to_date?: string;
-  // agent?: string;
   property_ids?: string[];
+  created_by?: string[];
 }
 
 
@@ -71,61 +73,6 @@ export const expenseTableData = () => {
 };
 
 
-// Raw API response interfaces
-export interface ExpenseApiItem {
-  id: number;
-  property: string;
-  description: string;
-  amount: string;
-  payment: string;
-  balance: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface ExpenseStatsApi {
-  total_amount: string;
-  total_deduct: string;
-  total_balance: string;
-  percentage_change_amount: number;
-  percentage_change_deduct: number;
-  percentage_change_balance: number;
-}
-
-export interface ExpensesApiResponse {
-  status: string;
-  message: string;
-  data: {
-    expenses: ExpenseApiItem[];
-    statistic: ExpenseStatsApi;
-  };
-}
-export interface Expense {
-  id: number;
-  picture: string; // fallback if no picture is provided
-  date: string;
-  name: string;
-  description: string;
-  amount?: number | string;
-  payment?: number | string;
-  balance?: number | string;
-}
-
-export interface ExpenseStats {
-  total_amount?: number | string;
-  total_deduct?: number | string;
-  total_balance?: number | string;
-  percentage_change_amount: number;
-  percentage_change_deduct: number;
-  percentage_change_balance: number;
-}
-
-export interface TransformedExpensesData {
-  expenses: Expense[];
-  stats: ExpenseStats;
-}
-
-
 export const transformExpensesData = (
   apiResponse: ExpensesApiResponse
 ): TransformedExpensesData => {
@@ -157,6 +104,20 @@ export const transformExpensesData = (
   };
 
   return { expenses, stats };
+};
+
+
+export const transformStaffs = (
+  response: StaffListResponse
+): { value: string; label: string }[] => {
+  return response.data
+    .filter((staff) =>
+      staff.staff_role.toLowerCase().includes("officer")
+    )
+    .map((staff) => ({
+      value: `${staff.id}`,
+      label: staff.user.name,
+    }));
 };
 
 
