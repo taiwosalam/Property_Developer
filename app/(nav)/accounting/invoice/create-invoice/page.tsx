@@ -75,7 +75,7 @@ const CreateInvoicePage = () => {
             onChange={handleGenerateInvoiceCheckboxChange}
           >
             Click to generate invoive for all tenants and occupants of this
-            property
+            property (mobile users)
           </Checkbox>
           <Select
             id="auto_generate"

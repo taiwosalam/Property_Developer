@@ -89,10 +89,10 @@ const AccountingExpensesPage = () => {
   const config: AxiosRequestConfig = useMemo(() => {
     return {
       params: {
-        date_from: appliedFilters.startDate
+        from_date: appliedFilters.startDate
           ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
           : undefined,
-        date_to: appliedFilters.endDate
+        to_date: appliedFilters.endDate
           ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
           : undefined,
         search: search,
