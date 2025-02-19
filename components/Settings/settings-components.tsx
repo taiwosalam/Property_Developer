@@ -46,6 +46,9 @@ import {
 import Picture from "../Picture/picture";
 import ImageBlue from "@/public/icons/image-blue.svg";
 import { useEffect, useState } from "react";
+import Switch from "../Form/Switch/switch";
+import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const SettingsVerifiedBadge = ({
   status,
@@ -116,7 +119,7 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
     if (next && next === true) {
       setModalOpen(true);
     }
-  }, [next])
+  }, [next]);
 
   const handleAction = async () => {
     if (action) {
@@ -265,35 +268,34 @@ export const SettingsOthersCheckBox: React.FC<SettingsOthersCheckBoxProps> = ({
   checked = false,
   value,
   onChange,
-}) => (
-  <div className="flex justify-between">
-    <div className="flex flex-col">
-      <h4 className="text-text-quaternary dark:text-white text-base">
-        {title}
-      </h4>
-      <p className="text-text-disabled text-sm font-normal max-w-[900px]">
-        {desc}
-      </p>
-    </div>
+  plan,
+}) => {
+  const handleToggle = () => {
+    if (plan !== "professional") {
+      toast.error(
+        "You cannot toggle the switch until you upgrade to a professional plan."
+      );
+    } else {
+      onChange(value, !checked);
+    }
+  };
 
-    <div className="second flex justify-end items-center">
-      <label className="relative inline-flex items-center cursor-pointer">
-        <input
-          type="checkbox"
-          className="sr-only peer"
-          checked={checked}
-          onChange={(e) => onChange(value, e.target.checked)} // Call onChange with value and checked state
-        />
-        <div
-          className={`w-11 h-6 ${
-            checked ? "bg-status-success-primary" : "bg-gray-200"
-          } peer-focus:outline-none peer-focus:ring-4 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all`}
-        />
-      </label>
+  return (
+    <div className="flex justify-between">
+      <div className="flex flex-col">
+        <h4 className="text-text-quaternary dark:text-white text-base">
+          {title}
+        </h4>
+        <p className="text-text-disabled text-sm font-normal max-w-[900px]">
+          {desc}
+        </p>
+      </div>
+      <div className="flex justify-end items-center flex-1">
+        <Switch checked={checked} onClick={handleToggle} />
+      </div>
     </div>
-  </div>
-);
-
+  );
+};
 export const SettingsTenantOccupantTier: React.FC<
   SettingsTenantOccupantTierProps
 > = ({ tier, desc, color }) => (
@@ -371,25 +373,31 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
   profile,
 }) => {
   const [showProfessionalMessage, setShowProfessionalMessage] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = () => {
-    if (value === "theme2" || value === "theme3") {
+    if (
+      value === "theme2" ||
+      value === "theme3" ||
+      value === "template2" ||
+      value === "template3"
+    ) {
       setShowProfessionalMessage(true);
       setTimeout(() => setShowProfessionalMessage(false), 3000);
     } else {
       onSelect(value);
-      isSelected = false;
-      // console.log("isSelected = ", isSelected);
     }
   };
 
   return (
     <div
-      className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer relative r`}
+      className="themesWrapper shadow-lg rounded-md flex items-center flex-wrap gap-4 cursor-pointer relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
     >
       <div className="flex justify-center items-center">
-        <div className="relative max-h-[218px]">
+        <div className="relative">
           <Image
             src={img}
             alt="Theme"
@@ -399,22 +407,34 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
               isSelected ? "border-4 border-brand-9 rounded-lg" : ""
             }`}
           />
+          
+          <AnimatePresence>
+            {isHovered && profile && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="absolute inset-0 flex items-center justify-center"
+              >
+                <Link
+                  href="#"
+                  className="bg-brand-9 text-white py-2 px-5 rounded flex items-center justify-center z-20 text-sm sm:text-md"
+                >
+                  Preview Demo
+                </Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {showProfessionalMessage && (
+            <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-30">
+              <p className="text-white text-center px-4 py-2 rounded">
+                Sorry, this theme is for Professional Plan subscribers only
+              </p>
+            </div>
+          )}
         </div>
-        {isSelected && profile && (
-          <Link
-            href="#"
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand-9 text-white py-1 px-3 rounded flex items-center justify-center z-20 text-xs sm:text-md"
-          >
-            Preview Demo
-          </Link>
-        )}
-        {showProfessionalMessage && (
-          <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-30">
-            <p className="text-white text-center px-4 py-2 rounded">
-              Sorry, this theme is for Professional Plan subscribers only
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -514,12 +534,7 @@ export const ProfileUpload: React.FC<ProfileUploadProps> = ({
       className="relative max-w-[100px] rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer"
       onClick={() => document.getElementById("file-input")?.click()}
     >
-      <Picture
-        size={100}
-        fit="contain"
-        src={preview}
-        alt="Picture"
-      />
+      <Picture size={100} fit="contain" src={preview} alt="Picture" />
       <div
         style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
         className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"

@@ -18,7 +18,7 @@ export type SettingsLinkTab = (typeof settings_link_tabs)[number];
 
 export interface SettingsLinkTabProps {
   active?: boolean;
-  type: SettingsLinkTab | user_settings_link_tabs
+  type: SettingsLinkTab | user_settings_link_tabs;
 }
 
 export interface SettingsSectionProps {
@@ -152,6 +152,7 @@ export interface SettingsOthersCheckBoxProps {
   checked?: boolean;
   value: string;
   onChange: (value: string, checked: boolean) => void;
+  plan?: string;
 }
 
 export interface SettingsThemeTypes {
@@ -177,7 +178,7 @@ export interface CheckboxProps {
 }
 
 interface ThemeCardProps {
-  img: string;
+  img: any;
   value: string;
   isSelected: boolean;
   onSelect: (value: string) => void;

@@ -43,6 +43,8 @@ import SettingsWebsiteDomain from "@/components/Settings/settings-website-domain
 import WebsiteColor from "@/components/Settings/website-color";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { toast } from "sonner";
+import WebsitePages from "@/components/Settings/website-pages";
+import WebsiteTypography from "@/components/Settings/website-custom-typography";
 
 
 const Profile = () => {
@@ -364,7 +366,9 @@ const Profile = () => {
       </SettingsSection>
       <CompanySocials companyData={companyData} />
       <SettingsWebsiteDomain />
+      <WebsitePages />
       <WebsiteColor />
+      <WebsiteTypography />
     </>
   );
 };
