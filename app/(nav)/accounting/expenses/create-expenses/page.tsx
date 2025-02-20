@@ -107,8 +107,7 @@ const CreateExpensePage = () => {
       unit: unitsSelected,
       payments: payments
     }
-
-    console.log("payload", payload)
+    
     try {
       setReqLoading(true)
       const res = await createExpense(objectToFormData(payload))

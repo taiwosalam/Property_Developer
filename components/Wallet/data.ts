@@ -50,15 +50,50 @@ export const fundWallet = async (amount: number) => {
         payment_url: {
           url: string;
         };
-        // reference: string;
+        reference: string;
       };
     }>("wallets/fund", { amount });
-    return data.data.payment_url.url;
+    // return data.data.payment_url.url;
+    return data.data;
   } catch (error) {
     handleAxiosError(error, "Funding Initiation Failed. Please try again.");
     return null;
   }
 };
+
+
+
+export const checkPaymentStatus = async (reference: string) => {
+  try {
+    const res = await api.get(`/transactions/verify/${reference}`);
+
+    console.log("res here", res);
+
+    if (res.status === 200) {
+      const transactionStatus = res.data?.data?.status; // Extract actual payment status
+
+      if (transactionStatus === "success") {
+        return true; // Payment completed
+      }
+
+      if (transactionStatus === "pending") {
+        return false; // Keep polling, no need to show an error
+      }
+    }
+
+    return false; // Any other case, return false
+  } catch (error: any) {
+    if (error.response?.status === 400) {
+      console.warn("Payment is still processing. No need to show an error.");
+      return false; // Ignore 400 errors, keep polling
+    }
+
+    // Handle real errors (e.g., network failure, server error)
+    handleAxiosError(error, "Failed to check payment status");
+    return false;
+  }
+};
+
 
 export const getUserInfoFromWalletId = async (wallet_id: string) => {
   try {

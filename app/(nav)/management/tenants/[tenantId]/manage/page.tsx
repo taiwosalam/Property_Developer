@@ -1,3 +1,4 @@
+
 "use client";
 
 // Fonts
@@ -52,7 +53,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   if (error) return <div className="text-red-500">{error}</div>;
   if (!tenant) return null;
 
-  console.log("tenant", tenant)
+  // console.log("tenant", tenant)
 
   const groupedDocuments = groupDocumentsByType(tenant?.documents);
 

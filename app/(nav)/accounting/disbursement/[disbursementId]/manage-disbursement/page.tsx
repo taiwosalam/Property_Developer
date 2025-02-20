@@ -14,12 +14,24 @@ import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { currencySymbols } from "@/utils/number-formatter";
 import TextArea from "@/components/Form/TextArea/textarea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dayjs } from "dayjs";
 import { DeleteIconX } from "@/public/icons/icons";
 import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { useParams } from "next/navigation";
+import {
+  addDisburse,
+  DisburseApiResponse,
+  ManageDisbursementPageData,
+  transformDisburseData,
+  transformUnitOptions,
+} from "./data";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { UnitsApiResponse } from "@/components/Management/Rent And Unit/Edit-Rent/data";
+import { AnyAaaaRecord } from "dns";
+import { toast, Toaster } from "sonner";
 
 const paymentModes = [
   "Bank Transfer",
@@ -30,39 +42,54 @@ const paymentModes = [
 ];
 
 const ManageDisbursement = () => {
-  const { disbursementId } = useParams()
-  const [pageData, setPageData] = useState<any>(null)
+  const { disbursementId } = useParams();
+  const [unitsOptions, setUnitsOptions] = useState<any[]>([]);
+  const [reqLoading, setReqLoading] = useState(false)
+  const [unitId, setUnitId] = useState('')
+  const [pageData, setPageData] = useState<ManageDisbursementPageData | null>(
+    null
+  );
   const CURRENCY_SYMBOL = currencySymbols.naira;
   const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
-    [
-      {
-        title: "Unit 1",
-        amount: 1000000,
-      },
-      {
-        title: "Unit 2",
-        amount: 1000000,
-      },
-      {
-        title: "Unit 3",
-        amount: 1000000,
-      },
-      {
-        title: "Unit 4",
-        amount: 1000000,
-      },
-      {
-        title: "Unit 5",
-        amount: 1000000,
-      },
-    ]
+    []
   );
 
-  console.log("id", disbursementId)
+  const { data, error, loading, refetch } = useFetch<DisburseApiResponse>(
+    `/disburses/${disbursementId}`
+  );
+  useRefetchOnEvent("fetch-disburses", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (data) {
+      const transformed = transformDisburseData(data);
+      setPageData(transformed);
+      setPayments(
+        transformed.disbursement.map((d) => ({
+          title: `Unit ${d.unit_id ?? "-- --"}`,
+          amount: d.amount,
+        }))
+      );
+    }
+  }, [data]);
+
+  const {
+    data: unitsData,
+    error: unitError,
+    loading: loadingUnits,
+  } = useFetch<UnitsApiResponse>(`/unit/${pageData?.property_id}/all`);
+
+  useEffect(() => {
+    if (unitsData) {
+      const unitsTransformOptions = transformUnitOptions(unitsData);
+      setUnitsOptions(unitsTransformOptions);
+    }
+  }, [unitsData]);
 
   const [paymentTitle, setPaymentTitle] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
-  const handleAddPaymentClick = () => {
+
+  const handleAddPaymentClick = async() => {
+    if (!disbursementId) return toast.warning("Invalid Disbursement Id");
     if (paymentTitle && paymentAmount) {
       // Remove commas and parse the amount as a float
       const parsedAmount = parseFloat(paymentAmount.replace(/,/g, ""));
@@ -74,8 +101,29 @@ const ManageDisbursement = () => {
         setPaymentTitle("");
         setPaymentAmount("");
       }
+
+      const payload = {
+        amount: parsedAmount,
+        unit_id: paymentTitle,
+      }
+
+      // console.log("payload", payload)
+      try {
+        setReqLoading(true)
+        const res = await addDisburse(payload, Number(disbursementId))
+        if(res){
+          toast.success("Disbursement added successfully")
+          window.dispatchEvent(new Event('fetch-disburses'));
+        }
+      } catch (error) {
+        toast.error("Failed to add disbursement. Please try again!")
+      }finally{
+        setReqLoading(false)
+      }
     }
   };
+
+
   const handleDeletePayment = (index: number) => {
     setPayments(payments.filter((_, i) => i !== index));
   };
@@ -116,6 +164,11 @@ const ManageDisbursement = () => {
 
   const totalBalance = totalExpenses - totalDeductions;
 
+  const handleUnitChange = (e: any) => {
+    setPaymentTitle(e.target.value);
+    setUnitId(e.target.value)
+  }
+
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
@@ -123,7 +176,14 @@ const ManageDisbursement = () => {
         <ExportPageHeader />
         <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
-            data={{}}
+            data={{
+              "disbursement id": pageData?.date ?? "--- ---",
+              "landlord / landlady name": pageData?.landlord ?? "--- ---",
+              "property name": pageData?.property_name ?? "--- ---",
+              date: pageData?.date ?? "__,__,__",
+              "unit name": pageData?.unit_names ?? "--- ---",
+              "disbursement mode": pageData?.disbursement_mode ?? "--- ---",
+            }}
             chunkSize={2}
             direction="column"
             referenceObject={{
@@ -142,6 +202,7 @@ const ManageDisbursement = () => {
               id="transaction-description"
               className="sm:col-span-2"
               inputSpaceClassName="bg-white !h-[120px]"
+              defaultValue={pageData?.description ?? ""}
             />
             <Select
               id="disbursement-mode"
@@ -150,6 +211,7 @@ const ManageDisbursement = () => {
               options={paymentModes}
               className="self-end"
               inputContainerClassName="bg-white"
+              defaultValue={pageData?.disbursement_mode ?? ""}
             />
           </div>
         </AccountingTitleSection>
@@ -161,7 +223,7 @@ const ManageDisbursement = () => {
                 label="Unit name"
                 required
                 placeholder="Select Options"
-                options={["unit 1", "unit 2"]}
+                options={unitsOptions}
                 value={paymentTitle}
                 onChange={(v) => setPaymentTitle(v)}
               />
@@ -178,9 +240,10 @@ const ManageDisbursement = () => {
               <Button
                 size="base_medium"
                 className="py-2 px-14"
+                disabled={reqLoading}
                 onClick={handleAddPaymentClick}
               >
-                add
+               {reqLoading ? "Please wait..." : "add"}
               </Button>
             </div>
           </div>
@@ -227,7 +290,7 @@ const ManageDisbursement = () => {
                 {new Intl.NumberFormat("en-NG", {
                   style: "currency",
                   currency: "NGN",
-                }).format(totalExpenses)}
+                }).format(Number(pageData?.total_amount))}
               </p>
             </div>
           </div>
