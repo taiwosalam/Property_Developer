@@ -33,9 +33,9 @@ const ProfileInformation = () => {
         />
         <Input
           id="director_email"
-          label="alternative email"
+          label="director email"
           type="email"
-          placeholder="example@mail.com"
+          placeholder="Write here"
           inputClassName="rounded-[8px] setup-f bg-white"
         />
         <PhoneNumberInput

@@ -27,16 +27,12 @@ const SettingsWebsiteDomain = () => {
 
   return (
     <div>
-      <SettingsSection title="website domain and template">
+      <SettingsSection title="website domain & template">
         <SettingsSectionTitle
           title="Website Domain"
           desc=" Select a preferred subdomain to showcase your company profile and
           market your properties listings portfolio to the world."
         />
-        {/* <h5 className="text-text-disabled text-sm font-normal my-4">
-          Select a preferred subdomain to showcase your company profile and
-          market your properties listings portfolio to the world.
-        </h5> */}
         <p className="text-text-secondary dark:text-darkText-1 text-md mt-4">
           Customize website domain name
         </p>

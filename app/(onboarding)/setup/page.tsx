@@ -24,10 +24,14 @@ import { useAuthStore } from "@/store/authStore";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { useRole } from "@/hooks/roleContext";
 import { getDashboardPage } from "../auth/data";
+import { SettingsSectionTitle } from "@/components/Settings/settings-components";
+import CopyText from "@/components/CopyText/copy-text";
+import CompanyDomain from "@/components/Setup/company-domain";
 
 const Setup = () => {
   const router = useRouter();
-  const { role, setRole } = useRole()
+
+  const { role, setRole } = useRole();
   // const setRole = useAuthStore((state) => state.setRole);
   const setAuthState = useAuthStore((state) => state.setAuthState);
   // const role = useAuthStore((state) => state.role);
@@ -41,9 +45,9 @@ const Setup = () => {
     const status = await createCompany(data);
     if (status) {
       setRole("director");
-      setAuthState("role", "director"); 
+      setAuthState("role", "director");
       router.replace("/auth/sign-in");
-    }    
+    }
     setRequestLoading(false);
   };
 
@@ -101,7 +105,11 @@ const Setup = () => {
               <CompanyMobileNumber />
             </div>
           </Section>
+
+          <Section separatorStyles="max-w-[1200px]">
           <CompanyLogo />
+          <CompanyDomain />
+          </Section>
           <SectionHeading title="directors details">
             Fill the details below to add a director to your company
           </SectionHeading>

@@ -30,6 +30,7 @@ export interface SettingsSectionProps {
 export interface SettingsTitleProps {
   title?: string;
   desc?: string;
+  required?: boolean;
 }
 
 export type WebsiteColorScheme = (typeof website_color_schemes)[number];

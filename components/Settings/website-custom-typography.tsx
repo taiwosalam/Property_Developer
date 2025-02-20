@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import SettingsSection from "./settings-section";
 import Select from "../Form/Select/select";
 import Button from "@/components/Form/Button/button";
+import useGoogleFonts from "@/hooks/useFonts";
+import { SettingsSectionTitle } from "./settings-components";
 
 const settings = [
   {
@@ -63,11 +65,22 @@ const fontWeightsOptions = [
 ];
 
 const WebsiteTypography = () => {
-  // State to hold typography settings (fontWeight & fontSize) for each setting.
-  // Each key is the setting title.
+  const googleFonts = useGoogleFonts();
+  const [selectedFont, setSelectedFont] = useState<string | null>(null);
   const [typographySettings, setTypographySettings] = useState<{
     [key: string]: { fontWeight?: string; fontSize?: string };
   }>({});
+
+  const handleFontSelect = (fontName: string) => {
+    setSelectedFont(fontName);
+    const link = document.createElement("link");
+    link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(
+      / /g,
+      "+"
+    )}:wght@400;700&display=swap`;
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+  };
 
   // Update the font weight for a setting.
   const handleFontWeightSelect = (title: string, weightValue: string) => {
@@ -95,7 +108,34 @@ const WebsiteTypography = () => {
 
   return (
     <div>
-      <SettingsSection title="Website Typography Settings">
+      <SettingsSection title="Website Typography & Font Template">
+        <SettingsSectionTitle
+          title="Fonts Templates"
+          desc="Choose Your Preferred Font Style for Your Company Profile Website"
+        />
+        <div className="flex w-full items-start lg:items-center lg:flex-row flex-col gap-2 mb-8">
+          <Select
+            id="font"
+            label=""
+            placeholder="Select a font"
+            onChange={(value) => handleFontSelect(value)}
+            options={googleFonts}
+            inputContainerClassName="bg-neutral-2 w-full mt-2 lg:min-w-[300px]"
+          />
+          <p
+            className="font text-sm text-brand-9"
+            style={{ fontFamily: selectedFont || googleFonts[0] }}
+          >
+            Your website will display a default font initially, but selecting
+            your preferred font will update all text on your website to match
+            the chosen style.
+          </p>
+        </div>
+
+        <SettingsSectionTitle
+          title="Website Typography"
+          desc="Define the font size and style for your website's display."
+        />
         {settings.map((setting) => {
           // Get the current font weight (default is "400")
           const currentWeight =
@@ -113,10 +153,10 @@ const WebsiteTypography = () => {
           return (
             <div
               key={setting.title}
-              className="flex flex-wrap items-center justify-between mb-8"
+              className="flex flex-wrap items-center justify-between my-8"
             >
               <div className="flex flex-col flex-1">
-                <h3 className="font-semibold text-[18px]">{setting.title}</h3>
+                <h3 className="font-semibold text-[15px]">{setting.title}</h3>
                 <p className="text-text-disabled">{setting.desc}</p>
               </div>
 
