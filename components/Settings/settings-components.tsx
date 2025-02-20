@@ -56,16 +56,14 @@ export const SettingsVerifiedBadge = ({
   status: "verified" | "unverified";
 }) => (
   <div
-    className={`flex items-center py-[2px] px-2 rounded-full border-[0.1px] ${
-      status === "verified"
+    className={`flex items-center py-[2px] px-2 rounded-full border-[0.1px] ${status === "verified"
         ? "bg-status-success-1"
         : "bg-[#FF8EE] border-[#FFBB53]"
-    }`}
+      }`}
   >
     <p
-      className={`text-[10px] ${
-        status === "verified" ? "text-status-success-primary" : "text-[#FFBB53]"
-      } font-normal ${secondaryFont.className}`}
+      className={`text-[10px] ${status === "verified" ? "text-status-success-primary" : "text-[#FFBB53]"
+        } font-normal ${secondaryFont.className}`}
     >
       {status}
     </p>
@@ -76,13 +74,19 @@ export const SettingsVerifiedBadge = ({
 export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
   title,
   desc,
+  required
 }) => (
   <div className="custom-flex-col gap-[2px]">
-    {title && (
-      <p className="text-text-quaternary dark:text-white text-base font-medium capitalize">
-        {title}
-      </p>
-    )}
+    <div className="flex">
+      {required &&
+        <p className="text-red-500">*</p>
+      }
+      {title && (
+        <p className="text-text-quaternary dark:text-white text-base font-medium capitalize">
+          {title}
+        </p>
+      )}
+    </div>
     {desc && <p className="text-text-disabled text-sm font-normal">{desc}</p>}
   </div>
 );
@@ -139,8 +143,8 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
               {...(remove
                 ? { ...remove_props }
                 : addMore
-                ? { ...add_more_props }
-                : null)}
+                  ? { ...add_more_props }
+                  : null)}
             >
               {remove ? "remove" : addMore ? "add more" : ""}
             </Button>
@@ -236,14 +240,12 @@ export const GroupRadio: React.FC<GroupRadioProps> = ({ checked, onClick }) => {
   return (
     <button className="flex gap-3 text-start rounded-full" onClick={onClick}>
       <div
-        className={`rounded-full p-[2px] flex items-center justify-center ${
-          checked ? "border border-blue-600" : ""
-        }`}
+        className={`rounded-full p-[2px] flex items-center justify-center ${checked ? "border border-blue-600" : ""
+          }`}
       >
         <div
-          className={`rounded-full w-5 h-5 border min-w-2 min-h-2 border-darkText-2 ${
-            checked ? "bg-blue-600" : ""
-          }`}
+          className={`rounded-full w-5 h-5 border min-w-2 min-h-2 border-darkText-2 ${checked ? "bg-blue-600" : ""
+            }`}
         ></div>
       </div>
     </button>
@@ -403,11 +405,10 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
             alt="Theme"
             width={1000}
             height={1000}
-            className={`w-full h-full object-contain ${
-              isSelected ? "border-4 border-brand-9 rounded-lg" : ""
-            }`}
+            className={`w-full h-full object-contain ${isSelected ? "border-4 border-brand-9 rounded-lg" : ""
+              }`}
           />
-          
+
           <AnimatePresence>
             {isHovered && profile && (
               <motion.div
@@ -499,11 +500,10 @@ export const WebsiteColorSchemes: React.FC<{
         <div
           key={index}
           role="button"
-          className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${
-            selectedColor?.toLowerCase() === color.toLowerCase()
+          className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${selectedColor?.toLowerCase() === color.toLowerCase()
               ? "border-2 border-blue-500 rounded-md h-[40px] w-[40px]"
               : ""
-          }`}
+            }`}
           style={{ backgroundColor: color }}
           onClick={() => onColorSelect(color)}
         >

@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import SettingsSection from "./settings-section";
 import {
+  CustomColorPicker,
   SettingsOthersCheckBox,
+  SettingsSectionTitle,
   SettingsUpdateButton,
+  WebsiteColorSchemes,
 } from "./settings-components";
 import DocumentCheckbox from "../Documents/DocumentCheckbox/document-checkbox";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import { website_color_schemes } from "./data";
+import Picture from "../Picture/picture";
 
 const websiteOptions = [
   {
@@ -33,6 +39,21 @@ const WebsitePages = () => {
   const [checkedStates, setCheckedStates] = useState<{
     [key: string]: boolean;
   }>({});
+
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedFont, setSelectedFont] = useState<string | null>(null);
+  const [customColor, setCustomColor] = useState("#ffffff");
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleCustomColorChange = (color: string) => {
+    setCustomColor(color);
+    setSelectedColor(color);
+  };
+
+  const handleColorSelect = (color: string) => {
+    setSelectedColor(color);
+    setCustomColor(color);
+  };
   return (
     <div>
       <SettingsSection title="website page & Module">
@@ -61,14 +82,14 @@ const WebsitePages = () => {
           <DocumentCheckbox
             title="Properties For Sale"
             darkText={false}
-            checked={false}
+            checked={true}
           >
             {""}
           </DocumentCheckbox>
           <DocumentCheckbox
             title="Properties For Short Let"
             darkText={false}
-            checked={false}
+            checked={true}
           >
             {""}
           </DocumentCheckbox>
@@ -90,6 +111,60 @@ const WebsitePages = () => {
               }}
             />
           ))}
+        </div>
+
+        {/* WEBSITE COLORS SETTINGS  */}
+        <div className="custom-flex-col">
+          <SettingsSectionTitle
+            title="color scheme"
+            desc="Customize the default color to your preference from the available options listed below."
+          />
+          <div className="flex gap-4">
+            <WebsiteColorSchemes
+              websiteColorSchemes={website_color_schemes as unknown as string[]}
+              selectedColor={selectedColor}
+              onColorSelect={handleColorSelect}
+            />
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <SettingsSectionTitle desc="Specify a color code or select a color that best represents your brand website. You can also incorporate additional color designs based on your preferences." />
+          <div className="flex items-center gap-2">
+            {customColor && !modalOpen && (
+              <div
+                className={`h-[40px] w-[40px] my-2 rounded-md text-base border border-gray-300 flex items-center justify-center cursor-pointer relative`}
+                style={{ backgroundColor: customColor }}
+              >
+                {selectedColor === customColor && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Picture
+                      src="/icons/whitemark.svg"
+                      alt="Selected"
+                      width={24}
+                      height={24}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+            <Modal
+              state={{
+                isOpen: modalOpen,
+                setIsOpen: setModalOpen,
+              }}
+            >
+              <ModalTrigger className="w-10 h-10 rounded-lg border border-dashed border-borders-normal flex items-center justify-center">
+                +
+              </ModalTrigger>
+              <ModalContent>
+                <CustomColorPicker
+                  color={customColor}
+                  onChange={handleCustomColorChange}
+                  setModalOpen={setModalOpen}
+                />
+              </ModalContent>
+            </Modal>
+          </div>
         </div>
         <SettingsUpdateButton />
       </SettingsSection>

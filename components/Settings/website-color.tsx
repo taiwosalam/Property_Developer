@@ -16,8 +16,8 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 
 const WebsiteColor = () => {
   const googleFonts = useGoogleFonts();
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedFont, setSelectedFont] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [customColor, setCustomColor] = useState("#ffffff");
   const [modalOpen, setModalOpen] = useState(false);
 

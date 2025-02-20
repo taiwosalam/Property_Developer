@@ -31,6 +31,7 @@ const paymentModes = [
 
 const ManageDisbursement = () => {
   const { disbursementId } = useParams()
+  const [pageData, setPageData] = useState<any>(null)
   const CURRENCY_SYMBOL = currencySymbols.naira;
   const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
     [

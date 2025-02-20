@@ -153,7 +153,7 @@ const Profile = () => {
 
   return (
     <>
-      <SettingsSection title="company profile and details">
+      <SettingsSection title="profile & details">
         <AuthForm
           skipValidation
           onFormSubmit={handleSubmit}
@@ -367,7 +367,7 @@ const Profile = () => {
       <CompanySocials companyData={companyData} />
       <SettingsWebsiteDomain />
       <WebsitePages />
-      <WebsiteColor />
+      {/* <WebsiteColor /> */}
       <WebsiteTypography />
     </>
   );

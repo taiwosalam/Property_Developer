@@ -45,7 +45,7 @@ const SettingsLinkTab: React.FC<
         className
       )}
     >
-      {type === "profile" ? (
+      {type === "company" ? (
         <ProfileIcon />
       ) : type === "management" ? (
         <ManagementIcon />

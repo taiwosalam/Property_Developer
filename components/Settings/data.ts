@@ -3,7 +3,7 @@ import type { BadgeIconColors } from "../BadgeIcon/badge-icon";
 import type { SettingsServiceOwners, TenantOccupantTier } from "./types";
 
 export const settings_link_tabs = [
-  "profile",
+  "company",
   "management",
   "subscription",
   "services",
