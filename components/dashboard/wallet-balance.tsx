@@ -24,7 +24,7 @@ import AddFundsModal from "../Wallet/AddFunds/add-funds-modal";
 import ActivateWalletModal from "../Wallet/activate-wallet-modal";
 import SendFundsModal from "../Wallet/SendFunds/send-funds-modal";
 import WithdrawFundsModal from "../Wallet/Withdraw/withdraw-funds-modal";
-import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import { Modal, ModalContent, ModalTrigger, useModal } from "../Modal/modal";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import useFetch from "@/hooks/useFetch";
 import { useWalletStore } from "@/store/wallet-store";
@@ -38,6 +38,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   noHeader,
   className,
 }) => {
+  // const {isOpen, setIsOpen} = useModal()
   const walletPinStatus = useWalletStore((s) => s.walletPinStatus);
   const balance = useWalletStore((s) => s.balance);
   const setWalletStore = useWalletStore((s) => s.setWalletStore);

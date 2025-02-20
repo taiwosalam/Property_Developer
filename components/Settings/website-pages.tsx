@@ -56,10 +56,10 @@ const WebsitePages = () => {
   };
   return (
     <div>
-      <SettingsSection title="website page & Module">
+      <SettingsSection title="website page & Color Scheme">
         <div className="modules-list mb-5">
           <SettingsOthersCheckBox
-            title="Modules Listing"
+            title="Website Page"
             desc="Toggle on or off to control the visibility of your listing on the website, based on your subscription plan."
             checked={checkedStates["Modules Listing"] ?? true}
             value="Modules Listing"

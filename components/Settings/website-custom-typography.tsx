@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SettingsSection from "./settings-section";
 import Select from "../Form/Select/select";
 import Button from "@/components/Form/Button/button";
@@ -67,6 +67,7 @@ const fontWeightsOptions = [
 const WebsiteTypography = () => {
   const googleFonts = useGoogleFonts();
   const [selectedFont, setSelectedFont] = useState<string | null>(null);
+  const [hasChanged, setHasChanged] = useState(false);
   const [typographySettings, setTypographySettings] = useState<{
     [key: string]: { fontWeight?: string; fontSize?: string };
   }>({});
@@ -105,6 +106,13 @@ const WebsiteTypography = () => {
       },
     }));
   };
+
+  useEffect(() => {
+    const changesExist = Object.values(typographySettings).some(
+      (setting) => setting.fontWeight || setting.fontSize
+    );
+    setHasChanged(changesExist);
+  }, [typographySettings]);
 
   return (
     <div>
@@ -149,14 +157,15 @@ const WebsiteTypography = () => {
           const hasChanged =
             typographySettings[setting.title]?.fontWeight ||
             typographySettings[setting.title]?.fontSize;
-
           return (
             <div
               key={setting.title}
               className="flex flex-wrap items-center justify-between my-8"
             >
               <div className="flex flex-col flex-1">
-                <h3 className="font-semibold text-[15px]">{setting.title}</h3>
+                <h3 className="text-text-quaternary dark:text-white text-base font-medium capitalize">
+                  {setting.title}
+                </h3>
                 <p className="text-text-disabled">{setting.desc}</p>
               </div>
 
@@ -173,7 +182,12 @@ const WebsiteTypography = () => {
                   />
 
                   <div className="flex flex-col gap-2">
-                    <label htmlFor={`${setting.title}-size`}>Font Size</label>
+                    <label
+                      htmlFor={`${setting.title}-size`}
+                      className="text-text-label dark:text-darkText-2"
+                    >
+                      Font Size
+                    </label>
                     <div className="flex pr-2 gap-2 items-center rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out">
                       <input
                         className="max-w-[250px] px-3 py-[9px] text-xs md:text-sm rounded-[4px] font-normal focus:outline-none"
@@ -214,9 +228,11 @@ const WebsiteTypography = () => {
           );
         })}
         <div className="flex justify-end gap-4">
-          <Button variant="light_red" size="base_bold" className="py-2 px-8">
-            Reset section
-          </Button>
+          {hasChanged && (
+            <Button variant="light_red" size="base_bold" className="py-2 px-8">
+              Reset section
+            </Button>
+          )}
           <Button size="base_bold" className="py-2 px-8">
             Update
           </Button>
