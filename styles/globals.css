@@ -89,6 +89,17 @@ body {
   /* Spacing between dot and text */
 }
 
+/* HIDE PAYSTACK CLOSE BUTTON */
+button[data-v-81bf4389][data-v-87825872][aria-label="Close"] {
+  display: none !important;
+}
+
+
+button .button .button--standard{
+  display: none !important;
+}
+
+
 
 
 #portal {
