@@ -22,7 +22,7 @@ export interface FundingCardProps {
   type: "paystack" | "flutterwave" | "bank transfer" | "sterling";
 }
 
-export type WalletSendFundsOptions = "send funds menu" | "recipient";
+export type WalletSendFundsOptions = "send funds menu" | "recipient" | "payment";
 
 export type WalletWithdrawFundsOptions = "withdrawal" | "input pin";
 

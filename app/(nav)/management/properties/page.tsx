@@ -230,7 +230,7 @@ const Properties = () => {
             <EmptyList
               buttonText="+ Add Property"
               modalContent={<AddPropertyModal />}
-              title="You have not creared any properties yet"
+              title="You have not created any properties yet"
               body={
                 <p>
                   You can create a property by clicking on the &quot;Add
