@@ -4,9 +4,9 @@ import React, { useState } from "react";
 import SettingsSection from "./settings-section";
 import Input from "../Form/Input/input";
 import CopyText from "../CopyText/copy-text";
-import WebsiteTemplate1 from "@/public/templates/template2.png";
-import WebsiteTemplate2 from "@/public/templates/template3.png";
-import WebsiteTemplate3 from "@/public/templates/template1.png";
+import WebsiteTemplate3 from "@/public/templates/template2.png";
+import WebsiteTemplate1 from "@/public/templates/template3.png";
+import WebsiteTemplate2 from "@/public/templates/template1.png";
 import {
   SettingsSectionTitle,
   SettingsUpdateButton,
