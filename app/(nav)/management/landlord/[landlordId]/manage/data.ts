@@ -111,7 +111,7 @@ export interface IndividualLandlordAPIResponse {
 export const transformIndividualLandlordAPIResponse = ({
   data,
 }: IndividualLandlordAPIResponse): LandlordPageData => {
-  console.log('data', data)
+  // console.log('data', data)
   const lastUpdated = data.note.last_updated_at
     ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";

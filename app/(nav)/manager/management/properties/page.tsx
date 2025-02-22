@@ -134,7 +134,7 @@ const Properties = () => {
     config
   );
 
-  console.log("data", apiData)
+  // console.log("data", apiData)
 
   useEffect(() => {
     if (apiData) {

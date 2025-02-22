@@ -160,7 +160,7 @@ export const updateSMSSettings = async (data: FormData) => {
 };
 
 export const transformProfileData = (data:any): InitialDataTypes => {
-  console.log("data gotten", data)
+  // console.log("data gotten", data)
   return {
     email: data.user.email,
     fullname: data.user.name,

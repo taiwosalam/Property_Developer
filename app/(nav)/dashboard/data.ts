@@ -332,7 +332,7 @@ export const recentMessagesData = [
 // };
 
 export const getRecentMessages = (data: any) => {
-  console.log("data", data);
+  // console.log("data", data);
   return (
     data
       ?.slice(0, 7) // Limit to the first 7 messages

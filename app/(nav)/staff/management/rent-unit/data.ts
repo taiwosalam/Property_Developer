@@ -867,7 +867,7 @@ export interface initDataProps{
 // ================ transform /unit/${id}/view =================
 export const transformUnitData = (response: any) => {
   const data = response.data;
-  console.log("data", data)
+  // console.log("data", data)
   return {
     title: data.property.title,
     unit_id: data.id,
