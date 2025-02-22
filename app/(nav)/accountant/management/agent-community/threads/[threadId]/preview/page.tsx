@@ -45,7 +45,7 @@ const ThreadPreview = () => {
   useRefetchOnEvent("refetchComments", ()=> refetchComments({silent:true}));
 
   useEffect(() => {
-    console.log("data", data);
+    // console.log("data", data);
     if (data) {
       setPost(data.post.post);
       setCompanySummary(data.post.company_summary);

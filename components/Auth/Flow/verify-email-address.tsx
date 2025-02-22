@@ -51,12 +51,14 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
       if (status) {
         if (type === "sign up") {
           if (role !== "director") {
-            router.push("/setup");
-            // router.push("/dashboard"); //FIX ROUTE TO DASHBOARD ACCORDING TO ROLE LATER
-          } else {
             const dashboardPage = getDashboardPage(role)
             router.push(dashboardPage)
-            // router.push("/setup");
+            // router.push("/setup"); //NOT
+            // router.push("/dashboard"); //FIX ROUTE TO DASHBOARD ACCORDING TO ROLE LATER
+          } else {
+            // const dashboardPage = getDashboardPage(role)
+            // router.push(dashboardPage)
+            router.push("/setup");
           }
         } else if (type === "forgot password") {
           changeStep("next");

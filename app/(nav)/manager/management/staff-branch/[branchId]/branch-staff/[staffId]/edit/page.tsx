@@ -70,7 +70,7 @@ const EditStaffProfile = () => {
     }
   }
 
-  console.log("data -", apiData);
+  // console.log("data -", apiData);
   // console.log("page -", pageData);
 
   if (loading)

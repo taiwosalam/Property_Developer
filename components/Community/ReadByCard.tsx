@@ -8,7 +8,7 @@ import { useEffect } from "react";
 
 const ReadyByCard = ({data}: {data: any}) => {
   useEffect(() => {
-    console.log("data", data);
+    // console.log("data", data);
   }, [data]);
 
   const isArray = Array.isArray(data);

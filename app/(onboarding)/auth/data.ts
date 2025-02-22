@@ -248,6 +248,7 @@ export const auth_slider_content: AuthSliderContent = [
 // Login function
 export const login = async (formData: Record<string, any>) => {
   try {
+    Cookies.remove("role");
     const { data } = await axios.post<LoginResponse>(
       `${base_url}login`,
       formData

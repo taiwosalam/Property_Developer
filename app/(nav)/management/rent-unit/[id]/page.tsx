@@ -71,7 +71,7 @@ const UnitPreviewPage = () => {
         ...x,
         ...transformUnitData(apiData)
       }))
-      console.log("Data", unit_data.previous_tenants)
+      // console.log("Data", unit_data.previous_tenants)
     }
   }, [apiData])
 
