@@ -65,7 +65,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     if (isClickable && !viewOnly) {
       setIsModalActive(false);
     }
-  });
+  })
   return (
     <div
       className="rounded-2xl relative overflow-hidden bg-white dark:bg-darkText-primary "
