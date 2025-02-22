@@ -17,7 +17,6 @@ export const useAuthRedirect = (options: UseAuthRedirectOptions = {}) => {
   // const role = Cookies.get("role") || "";
 
   const { role, setRole } = useRole();
-  // console.log("redirct role", role)
   const authStoreToken = useAuthStore((state) => state.token);
   const setAuthState = useAuthStore((state) => state.setAuthState);
 
