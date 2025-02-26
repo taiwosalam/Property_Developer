@@ -5,31 +5,168 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
   reportsRentFilterOptionsWithDropdown,
   rentReportTableFields,
+  transformRentData,
 } from "./data";
+import useFetch from "@/hooks/useFetch";
+import { AxiosRequestConfig } from "axios";
+import { useState, useEffect } from "react";
+import { ReportsRequestParams } from "../tenants/data";
+import { RentListResponse, RentReportData } from "./types";
+import NetworkError from "@/components/Error/NetworkError";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import { BranchFilter, FilterResult, PropertyFilter } from "../tenants/types";
+import { BranchStaff } from "../../(messages-reviews)/messages/types";
+import dayjs from "dayjs";
+
+export interface RentRequestParams {
+  page?: number;
+  search?: string;
+  sort_order?: "asc" | "desc";
+  account_officer_id?: string;
+  start_date?: string;
+  end_date?: string;
+  property_id?: string;
+  branch_id?: string;
+}
 
 const RentReport = () => {
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      unit_id: (index + 1).toString(),
-      property_name: `Property ${index + 1}`,
-      tenant_name: `Tenant ${index + 1}`,
-      unit_description: `unit desc ${index + 1}`,
-      start_date: "12/12/12",
-      end_date: "12/12/12",
-      status: index % 2 === 0 ? "vacant" : "occupied",
-      caution_deposit: `2,600,800`,
-    }));
+  const [rentPageData, setRentPageData] = useState<RentReportData>({
+    total_rents: 0,
+    current_month_rents: 0,
+    rents: [],
+  });
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+    } as RentRequestParams,
+  });
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+
+  const [branches, setBranches] = useState<BranchFilter[]>([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
+    BranchStaff[]
+  >([]);
+  const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
+  const { data: apiData } = useFetch<any>("branches");
+  const { data: staff } = useFetch<any>(`report/staffs`);
+  const { data: property } = useFetch<any>(`property/all`);
+
+  const { data, loading, error, isNetworkError } = useFetch<RentListResponse>(
+    "report/rents",
+    config
+  );
+
+  useEffect(() => {
+    if (data) {
+      setRentPageData(transformRentData(data));
+    }
+  }, [data]);
+
+  const { rents, total_rents, current_month_rents } = rentPageData;
+
+  useEffect(() => {
+    if (apiData) {
+      setBranches(apiData.data);
+    }
+    if (staff) {
+      const filterStaff = staff.data.filter(
+        (staff: any) => staff.staff_role === "account officer"
+      );
+      setBranchAccountOfficers(filterStaff);
+    }
+    if (property) {
+      setPropertyList(property.data);
+    }
+  }, [apiData, staff, property]);
+
+  const reportTenantFilterOption = [
+    {
+      label: "Account Officer",
+      value: branchAccountOfficers.map((staff: any) => ({
+        label: staff.user.name,
+        value: staff.user.id.toString(),
+      })),
+    },
+    {
+      label: "Branch",
+      value: branches.map((branch) => ({
+        label: branch.branch_name,
+        value: branch?.id.toString(),
+      })),
+    },
+
+    {
+      label: "Property",
+      value: propertyList.map((property: any) => ({
+        label: property.title,
+        value: property.id.toString(),
+      })),
+    },
+  ];
+
+  const handleSearch = async (query: string) => {
+    setConfig({
+      params: { ...config.params, search: query },
+    });
   };
 
-  const tableData = generateTableData(10);
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({
+      params: { ...config.params, sort_order: order },
+    });
+  };
+
+  const handleAppliedFilter = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate } = filters;
+    const accountOfficer = menuOptions["Account Officer"] || [];
+    const branch = menuOptions["Branch"] || [];
+    const property = menuOptions["Property"] || [];
+
+    const queryParams: ReportsRequestParams = {
+      page: 1,
+      search: "",
+    };
+
+    if (accountOfficer.length > 0) {
+      queryParams.account_officer_id = accountOfficer.join(",");
+    }
+    if (branch.length > 0) {
+      queryParams.branch_id = branch.join(",");
+    }
+    if (property.length > 0) {
+      queryParams.property_id = property.join(",");
+    }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+    }
+    setConfig({
+      params: queryParams,
+    });
+  };
+
+  if (loading)
+    return <CustomLoader layout="page" pageTitle="Rent Report" view="table" />;
+  if (isNetworkError) return <NetworkError />;
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total Rent / Due"
-          newData={23}
-          total={200}
+          newData={rentPageData.current_month_rents}
+          total={rentPageData.total_rents}
           colorScheme={1}
         />
       </div>
@@ -43,17 +180,35 @@ const RentReport = () => {
           description:
             "This page contains a list of Rent / Due Roll on the platform.",
         }}
+        handleSearch={handleSearch}
+        onSort={handleSort}
+        handleFilterApply={handleAppliedFilter}
+        appliedFilters={appliedFilters}
+        filterOptionsMenu={reportTenantFilterOption}
         searchInputPlaceholder="Search for Rent Roll"
-        handleFilterApply={() => {}}
-        filterOptionsMenu={reportsRentFilterOptionsWithDropdown}
         hasGridListToggle={false}
         exportHref="/reports/rent/export"
       />
-      <CustomTable
-        fields={rentReportTableFields}
-        data={tableData}
-        tableHeadClassName="h-[45px]"
-      />
+
+      <section>
+        {rents.length === 0 && !loading ? (
+          config.params.search || appliedFilters ? (
+            <div className="col-span-full text-center py-8 text-gray-500">
+              No Search/Filter Found
+            </div>
+          ) : (
+            <div className="col-span-full text-center py-8 text-gray-500">
+              Reports are empty
+            </div>
+          )
+        ) : (
+          <CustomTable
+            fields={rentReportTableFields}
+            data={rents}
+            tableHeadClassName="h-[45px]"
+          />
+        )}
+      </section>
     </div>
   );
 };

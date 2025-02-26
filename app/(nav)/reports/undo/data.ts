@@ -1,4 +1,6 @@
 import type { Field } from "@/components/Table/types";
+import api, { handleAxiosError } from "@/services/api";
+import { toast } from "sonner";
 
 export const reportsUndoFilterOptionsWithDropdown = [
   {
@@ -29,7 +31,7 @@ export const reportsUndoFilterOptionsWithDropdown = [
 
 export const undoRequestTableFields: Field[] = [
   { id: "0", label: "S/N", accessor: "S/N" },
-  { id: "1", label: "Event Deleted", accessor: "event_deleted" },
+  { id: "1", label: "Event Deleted", accessor: "trashable_type" },
   {
     id: "2",
     label: "Category",
@@ -43,4 +45,42 @@ export const undoRequestTableFields: Field[] = [
   },
   { id: "6", label: "Date Deleted", accessor: "date_deleted" },
   { id: "7", label: "Time", accessor: "time" },
+  { id: "7", label: "", accessor: "action" },
 ];
+
+export async function deleteUndoItem(id: string) {
+  try {
+    const data = await api.post(
+      `report/trashes/permanent-delete?trash_id=${id}`
+    );
+    if (data.status === 200 || data.status === 201) {
+      window.dispatchEvent(new Event("trashes"));
+      toast.success("Item deleted permanently");
+      return true;
+    }
+    return false;
+  } catch (error) {
+    handleAxiosError(error, "Failed to delete item");
+    return false;
+  }
+}
+
+export async function restoreItem(id: string) {
+  try {
+    const payload = {
+      trash_id: id
+    }
+    const data = await api.post(
+      `report/trashes/restore`, payload
+    );
+    if (data.status === 200 || data.status === 201) {
+      window.dispatchEvent(new Event("trashes"));
+      toast.success("Item restored");
+      return true;
+    }
+    return false;
+  } catch (error) {
+    handleAxiosError(error, "Failed to delete item");
+    return false;
+  }
+}

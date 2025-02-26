@@ -7,20 +7,35 @@ import BackButton from "@/components/BackButton/back-button";
 import Signature from "@/components/Signature/signature";
 import ExportPageFooter from "@/components/reports/export-page-footer";
 import { unitsReportTableFields } from "../data";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import NetworkError from "@/components/Error/NetworkError";
+import useFetch from "@/hooks/useFetch";
+import { useState, useEffect } from "react";
+import { UnitsReportType, UnitListResponse, transformUnitListData } from "../types";
 
 const ExportUnits = () => {
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      unit_id: (index + 1).toString(),
-      property_name: `Property ${index + 1}`,
-      unit_name: `unit ${index + 1}`,
-      unit_description: `unit desc ${index + 1}`,
-      status: index % 2 === 0 ? "vacant" : "occupied",
-      annual_rent: `2,600,800`,
-    }));
-  };
+  const [unitData, setUnitData] = useState<UnitsReportType>({
+    total_unit: 0,
+    monthly_unit: 0,
+    units: [],
+  });
+  const { data, loading, error, isNetworkError } = useFetch<UnitListResponse>("/report/units");
 
-  const tableData = generateTableData(10);
+  useEffect(() => {
+    if(data){
+      setUnitData(transformUnitListData(data))
+    }
+  }, [data]);
+
+  const { units } = unitData;
+
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Export Report" view="table" />
+    );
+  if (isNetworkError) return <NetworkError />;
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-9 pb-[100px]">
@@ -31,7 +46,7 @@ const ExportUnits = () => {
       </h1>
       <CustomTable
         fields={unitsReportTableFields}
-        data={tableData}
+        data={units}
         tableHeadClassName="h-[45px]"
       />
       <Signature />

@@ -7,21 +7,34 @@ import { empty } from "@/app/config";
 import BackButton from "@/components/BackButton/back-button";
 import Signature from "@/components/Signature/signature";
 import ExportPageFooter from "@/components/reports/export-page-footer";
+import useFetch from "@/hooks/useFetch";
+import { config } from "process";
+import { useEffect, useState } from "react";
+import { ActivityTable, ActivityApiResponse, transformActivityAData } from "../[userId]/types";
+import NetworkError from "@/components/Error/NetworkError";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const ExportTracking = () => {
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      username: `User ${index + 1}`,
-      page_visited: `Landlord Page ${index + 1}`,
-      action_taken: `Login successful ${index + 1}`,
-      ip_address: `IP ${index + 1}`,
-      location: `Location ${index + 1}`,
-      date: "12/12/12",
-      time: "3:20pm",
-    }));
-  };
+  const [activity, setActivity] = useState<ActivityTable[]>([]);
+  const {
+    data: activityData,
+    loading,
+    isNetworkError,
+    error,
+  } = useFetch<ActivityApiResponse>("report/activities");
 
-  const tableData = generateTableData(10);
+  useEffect(() => {
+    if (activityData) {
+      setActivity(transformActivityAData(activityData));
+    }
+  }, [activityData]);
+
+  
+  if (loading)
+    return <CustomLoader layout="page" pageTitle="Tracking Report" view="table" />;
+  if (isNetworkError) return <NetworkError />;
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-9 pb-[100px]">
@@ -32,7 +45,7 @@ const ExportTracking = () => {
       </h1>
       <CustomTable
         fields={trackingTableFields}
-        data={tableData}
+        data={activity}
         tableHeadClassName="h-[45px]"
       />
       <Signature />
