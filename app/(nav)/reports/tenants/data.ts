@@ -96,3 +96,14 @@ export const transformTenantData = (data: TenantListResponse): TenantReport => (
     status: tenant.status || "__ __",
   })),
 });
+
+export interface ReportsRequestParams {
+  page?: number;
+  search?: string;
+  sort_order?: "asc" | "desc";
+  account_officer_id?: string;
+  start_date?: string;
+  end_date?: string;
+  property_id?: string;
+  branch_id?: string;
+}

@@ -10,34 +10,152 @@ import {
   LandlordsApiResponse,
   transformLandlordsData,
 } from "./data";
-import { type LandlordsReport } from './data';
+import { type LandlordsReport } from "./data";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
+import { BranchFilter, FilterResult, PropertyFilter } from "../tenants/types";
+import { BranchStaff } from "../../(messages-reviews)/messages/types";
+import { ReportsRequestParams } from "../tenants/data";
+import { AxiosRequestConfig } from "axios";
+import dayjs from "dayjs";
 
 const LandlordsReport = () => {
+  const [branches, setBranches] = useState<BranchFilter[]>([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
+    BranchStaff[]
+  >([]);
+  const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
+  const { data: apiData } = useFetch<any>("branches");
+  const { data: staff } = useFetch<any>(`report/staffs`);
+  const { data: property } = useFetch<any>(`property/all`);
+
   const [landlords_report, setLandlords_report] = useState<LandlordsReport>({
     total_landlords: 0,
     monthly_landlords: 0,
     landlords: [],
   });
 
-  const {
-    total_landlords,
-    monthly_landlords,
-    landlords
-  } = landlords_report
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
 
-  const { data, loading, error, isNetworkError } = useFetch<LandlordsApiResponse>("/report/landlords");
 
   useEffect(() => {
-    if (data) {
-      setLandlords_report(transformLandlordsData(data));
+    if (apiData) {
+      setBranches(apiData.data);
     }
-  }, [data]);
+    if (staff) {
+      const filterStaff = staff.data.filter(
+        (staff: any) => staff.staff_role === "account officer"
+      );
+      setBranchAccountOfficers(filterStaff);
+    }
+    if (property) {
+      setPropertyList(property.data);
+    }
+  }, [apiData, staff, property]);
 
-  if (loading) return <CustomLoader layout="page" pageTitle="Tenants/Occupants" view="table" />
+  const reportTenantFilterOption = [
+    {
+      label: "Account Officer",
+      value: branchAccountOfficers.map((staff: any) => ({
+        label: staff.user.name,
+        value: staff.user.id.toString(),
+      })),
+    },
+    {
+      label: "Branch",
+      value: branches.map((branch) => ({
+        label: branch.branch_name,
+        value: branch?.id.toString(),
+      })),
+    },
+
+    {
+      label: "Property",
+      value: propertyList.map((property: any) => ({
+        label: property.title,
+        value: property.id.toString(),
+      })),
+    },
+  ];
+
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+    } as ReportsRequestParams,
+  });
+
+  const handleSearch = async (query: string) => {
+    setConfig({
+      params: { ...config.params, search: query },
+    });
+    console.log("Searching...")
+  };
+
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({
+      params: { ...config.params, sort_order: order },
+    });
+    console.log("sorting....")
+  };
+
+  const handleAppliedFilter = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate } = filters;
+    const accountOfficer = menuOptions["Account Officer"] || [];
+    const branch = menuOptions["Branch"] || [];
+    const property = menuOptions["Property"] || [];
+
+    const queryParams: ReportsRequestParams = {
+      page: 1,
+      search: "",
+    };
+
+    if (accountOfficer.length > 0) {
+      queryParams.account_officer_id = accountOfficer.join(",");
+    }
+    if (branch.length > 0) {
+      queryParams.branch_id = branch.join(",");
+    }
+    if (property.length > 0) {
+      queryParams.property_id = property.join(",");
+    }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+    }
+    setConfig({
+      params: queryParams,
+    });
+  };
+
+  const { total_landlords, monthly_landlords, landlords } = landlords_report;
+
+  const { data, loading, error, isNetworkError } =
+    useFetch<LandlordsApiResponse>("/report/landlords", config);
+
+    useEffect(() => {
+      if (data) {
+        setLandlords_report(transformLandlordsData(data));
+      }
+    }, [data]);
+
+
+
+  
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Tenants/Occupants" view="table" />
+    );
   if (isNetworkError) return <NetworkError />;
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
@@ -63,17 +181,34 @@ const LandlordsReport = () => {
             "This page contains a list of Landlord/Landlady on the platform.",
         }}
         searchInputPlaceholder="Search for Landlord/Landlady"
-        handleFilterApply={() => { }}
-        filterOptionsMenu={reportsLandlordsFilterOptionsWithDropdown}
+        handleSearch={handleSearch}
+        onSort={handleSort}
+        handleFilterApply={handleAppliedFilter}
+        appliedFilters={appliedFilters}
+        filterOptionsMenu={reportTenantFilterOption}
         hasGridListToggle={false}
         exportHref="/reports/landlord/export"
       />
-      <CustomTable
-        fields={landlordsReportTableFields}
-        // data={landlordsReportTableData}
-        data={landlords}
-        tableHeadClassName="h-[45px]"
-      />
+      <section>
+        {landlords.length === 0 && !loading ? (
+          config.params.search || appliedFilters ? (
+            <div className="col-span-full text-center py-8 text-gray-500">
+              No Search/Filter Found
+            </div>
+          ) : (
+            <div className="col-span-full text-center py-8 text-gray-500">
+              Reports are empty
+            </div>
+          )
+        ) : (
+          <CustomTable
+            fields={landlordsReportTableFields}
+            // data={landlordsReportTableData}
+            data={landlords}
+            tableHeadClassName="h-[45px]"
+          />
+        )}
+      </section>
     </div>
   );
 };

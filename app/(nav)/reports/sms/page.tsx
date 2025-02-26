@@ -7,8 +7,11 @@ import SMSModal, { type SMSRecord } from "@/components/reports/sms-modal";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { reportsSmsFilterOptionsWithDropdown, smsTableFields } from "./data";
+import useFetch from "@/hooks/useFetch";
 
 const SMSReport = () => {
+  const [smsData, setSMSData] = useState();
+  const { data: apiData, loading, error, isNetworkError } = useFetch('/record/sms');
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedSMS, setSelectedSMS] = useState<SMSRecord | null>(null);
 
@@ -16,6 +19,8 @@ const SMSReport = () => {
     setSelectedSMS(record as SMSRecord);
     setModalOpen(true);
   };
+
+ /// console.log(apiData);
 
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
